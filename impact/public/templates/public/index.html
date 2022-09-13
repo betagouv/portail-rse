@@ -26,6 +26,17 @@
         Entreprises (DGE).
     </p>
 
+
+    <form action="{% url 'siren' %}" method="get">
+        {% csrf_token %}
+        <fieldset>
+            <legend><h1>Insérez votre numéro de SIREN</h1></legend>
+            <input type="text" name="siren" value="">
+        </fieldset>
+        <input type="submit" value="Envoyer">
+    </form>
+
+
     <!-- Script en version es6 module et nomodule pour les navigateurs le ne supportant pas -->
     <script type="module" src="/static/dsfr-1.7.2/dsfr/dsfr.module.min.js"></script>
     <script type="text/javascript" nomodule src="/static/dsfr-1.7.2/dsfr/dsfr.nomodule.min.js"></script>
