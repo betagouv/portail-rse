@@ -3,3 +3,4 @@ venv
 __pycache__
 
 impact/impact/static_collected/
+impact/db.sqlite3
