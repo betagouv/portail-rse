@@ -15,10 +15,14 @@
 
     <form action="{% url 'siren' %}" method="get">
         {% csrf_token %}
-        <fieldset>
-            <legend><h1>Insérez votre numéro de SIREN</h1></legend>
-            <input type="text" name="siren" value="">
-        </fieldset>
-        <input type="submit" value="Envoyer">
+        <div class="fr-input-group">
+            <label class="fr-label" for="text-input-siren">Insérez votre numéro de SIREN
+                <span class="fr-hint-text">disponible sur le K-bis</span>
+            </label>
+            <div class="fr-input-wrap fr-fi-alert-line">
+                <input class="fr-input" type="text" id="text-input-siren" name="siren">
+            </div>
+        </div>
+        <input type="submit" value="Envoyer" class="fr-btn">
     </form>
 {% endblock %}
