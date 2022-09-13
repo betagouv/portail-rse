@@ -1,22 +1,9 @@
-<!doctype html>
-<html lang="fr" data-fr-scheme="system">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="/static/dsfr-1.7.2/dsfr/dsfr.min.css">
+{% extends "public/base.html" %}
 
-    <meta name="theme-color" content="#000091"><!-- Défini la couleur de thème du navigateur (Safari/Android) -->
-    <link rel="apple-touch-icon" href="/static/dsfr-1.7.2/favicon/apple-touch-icon.png"><!-- 180×180 -->
-    <link rel="icon" href="/static/dsfr-1.7.2/favicon/favicon.svg" type="image/svg+xml">
-    <link rel="shortcut icon" href="/static/dsfr-1.7.2/favicon/favicon.ico" type="image/x-icon"><!-- 32×32 -->
-    <link rel="manifest" href="/static/dsfr-1.7.2/favicon/manifest.webmanifest" crossorigin="use-credentials">
-
-    <title>Impact</title>
-  </head>
-  <body>
+{% block content %}
     <h1>SEGA (Plateforme Impact)</h1>
     <p class="hero__startup__mission fr-mt-3w fr-h3">
-      Le meilleur moyen pour les entreprises de déclarer leur performance extra-financière
+        Le meilleur moyen pour les entreprises de déclarer leur performance extra-financière
     </p>
 
     <p>
@@ -26,7 +13,6 @@
         Entreprises (DGE).
     </p>
 
-
     <form action="{% url 'siren' %}" method="get">
         {% csrf_token %}
         <fieldset>
@@ -35,10 +21,4 @@
         </fieldset>
         <input type="submit" value="Envoyer">
     </form>
-
-
-    <!-- Script en version es6 module et nomodule pour les navigateurs le ne supportant pas -->
-    <script type="module" src="/static/dsfr-1.7.2/dsfr/dsfr.module.min.js"></script>
-    <script type="text/javascript" nomodule src="/static/dsfr-1.7.2/dsfr/dsfr.nomodule.min.js"></script>
-  </body>
-</html>
+{% endblock %}
