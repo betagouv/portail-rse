@@ -27,12 +27,13 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 DEBUG = True
 
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "0.0.0.0").split(",")
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "0.0.0.0,127.0.0.1").split(",")
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    "public",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
