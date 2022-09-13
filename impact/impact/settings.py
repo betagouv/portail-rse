@@ -21,7 +21,7 @@ APPS_DIR = Path(BASE_DIR, "impact")
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ""
+SECRET_KEY = os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -117,18 +117,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_ROOT = Path(APPS_DIR, "staticfiles")
+STATIC_ROOT = Path(APPS_DIR, "static_collected")
 
 STATIC_URL = "/static/"
 
-#STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
-
-#STATICFILES_FINDERS = (
-#    "django.contrib.staticfiles.finders.FileSystemFinder",
-#    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
-#)
-
-STATICFILES_DIRS = (Path(APPS_DIR, "static"),)
+STATICFILES_DIRS = (Path(BASE_DIR, "static"),)
 
 
 # Default primary key field type

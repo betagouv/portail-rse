@@ -1,1 +1,1 @@
-web: gunicorn --pythonpath=impact impact.wsgi --log-file -
+web: bash start.sh
