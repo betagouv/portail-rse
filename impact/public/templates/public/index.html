@@ -1,28 +1,18 @@
 {% extends "public/base.html" %}
 
 {% block content %}
-    <h1>SEGA (Plateforme Impact)</h1>
-    <p class="hero__startup__mission fr-mt-3w fr-h3">
-        Le meilleur moyen pour les entreprises de déclarer leur performance extra-financière
-    </p>
-
-    <p>
-        La plateforme « Impact » est un produit numérique en cours de construction ayant pour objectif de permettre à toutes les
-        entreprises de déclarer leur performance extra-financière. Le projet « Impact » a été initié en 2021 par la Secrétaire
-        d’État à l’Économie, Sociale, Solidaire et Responsable (ESSR) et est maintenant piloté par la Direction Générale des
-        Entreprises (DGE).
-    </p>
-
-    <form action="{% url 'siren' %}" method="get">
-        {% csrf_token %}
-        <div class="fr-input-group">
-            <label class="fr-label" for="text-input-siren">Insérez votre numéro de SIREN
-                <span class="fr-hint-text">disponible sur le K-bis</span>
-            </label>
-            <div class="fr-input-wrap fr-fi-alert-line">
+<div class="fr-container fr-my-16w">
+    <div class="fr-grid-row fr-grid-row--center">
+        <form action="{% url 'siren' %}" method="get">
+            {% csrf_token %}
+            <div class="fr-input-group">
+                <label class="fr-label" for="text-input-siren">Votre numéro de SIREN
+                    <span class="fr-hint-text">Saisissez un numéro SIREN valide, disponible sur le Kbis de votre organisation</span>
+                </label>
                 <input class="fr-input" type="text" id="text-input-siren" name="siren">
             </div>
-        </div>
-        <input type="submit" value="Envoyer" class="fr-btn">
-    </form>
+            <input type="submit" value="Envoyer" class="fr-btn ">
+        </form>
+    </div>
+</div>
 {% endblock %}

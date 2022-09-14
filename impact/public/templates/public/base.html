@@ -14,7 +14,94 @@
     <title>Impact</title>
   </head>
   <body>
-    {% block content %}{% endblock %}
+    {% block header %}
+    <header role="banner" class="fr-header">
+      <div class="fr-header__body">
+          <div class="fr-container">
+              <div class="fr-header__body-row">
+                  <div class="fr-header__brand fr-enlarge-link">
+                      <div class="fr-header__brand-top">
+                          <div class="fr-header__logo">
+                              <p class="fr-logo">
+                                  République
+                                  <br>Française
+                              </p>
+                          </div>
+                      </div>
+                      <div class="fr-header__service">
+                          <a href="/" title="Accueil - SEGA (Plateforme Impact)">
+                              <p class="fr-header__service-title">
+                                  SEGA (Plateforme Impact)
+                              </p>
+                          </a>
+                          <p class="fr-header__service-tagline">Le meilleur moyen pour les entreprises de déclarer leur performance extra-financière </p>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </header>
+    {% endblock %}
+
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+
+    {% block footer %}
+    <footer class="fr-footer" role="contentinfo" id="footer">
+      <div class="fr-container">
+          <div class="fr-footer__body">
+              <div class="fr-footer__brand fr-enlarge-link">
+                  <a href="/" title="Retour à l’accueil du site - SEGA (Plateforme Impact)">
+                      <p class="fr-logo">
+                          République
+                          <br>Française
+                      </p>
+                  </a>
+              </div>
+              <div class="fr-footer__content">
+                  <ul class="fr-footer__content-list">
+                      <li class="fr-footer__content-item">
+                          <a class="fr-footer__content-link" target="_blank" href="https://legifrance.gouv.fr">legifrance.gouv.fr</a>
+                      </li>
+                      <li class="fr-footer__content-item">
+                          <a class="fr-footer__content-link" target="_blank" href="https://gouvernement.fr">gouvernement.fr</a>
+                      </li>
+                      <li class="fr-footer__content-item">
+                          <a class="fr-footer__content-link" target="_blank" href="https://service-public.fr">service-public.fr</a>
+                      </li>
+                      <li class="fr-footer__content-item">
+                          <a class="fr-footer__content-link" target="_blank" href="https://data.gouv.fr">data.gouv.fr</a>
+                      </li>
+                  </ul>
+              </div>
+          </div>
+          <div class="fr-footer__bottom">
+              <ul class="fr-footer__bottom-list">
+                  <li class="fr-footer__bottom-item">
+                      <a class="fr-footer__bottom-link" href="#">Plan du site</a>
+                  </li>
+                  <li class="fr-footer__bottom-item">
+                      <a class="fr-footer__bottom-link" href="#">Accessibilité : partiellement conforme</a>
+                  </li>
+                  <li class="fr-footer__bottom-item">
+                      <a class="fr-footer__bottom-link" href="#">Mentions légales</a>
+                  </li>
+                  <li class="fr-footer__bottom-item">
+                      <a class="fr-footer__bottom-link" href="#">Données personnelles</a>
+                  </li>
+                  <li class="fr-footer__bottom-item">
+                      <a class="fr-footer__bottom-link" href="#">Gestion des cookies</a>
+                  </li>
+              </ul>
+              <div class="fr-footer__bottom-copy">
+                  <p>Sauf mention contraire, tous les contenus de ce site sont sous <a href="https://github.com/etalab/licence-ouverte/blob/master/LO.md" target="_blank">licence etalab-2.0</a>
+                  </p>
+              </div>
+          </div>
+      </div>
+    </footer>
+    {% endblock %}
 
     <!-- Script en version es6 module et nomodule pour les navigateurs le ne supportant pas -->
     <script type="module" src="/static/dsfr-1.7.2/dsfr/dsfr.module.min.js"></script>
