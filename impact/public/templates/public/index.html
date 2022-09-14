@@ -2,6 +2,12 @@
 
 {% block content %}
 <div class="fr-container fr-my-16w">
+    {% if errors %}
+    <div class="fr-alert fr-alert--error">
+        <h3 class="fr-alert__title">Erreur API Entreprise</h3>
+        <p>{{ errors }}</p>
+    </div>
+    {% endif %}
     <div class="fr-grid-row fr-grid-row--center">
         <form action="{% url 'siren' %}" method="get">
             {% csrf_token %}

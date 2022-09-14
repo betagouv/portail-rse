@@ -11,6 +11,7 @@ def index(request):
 
 def siren(request):
     form = SirenForm(request.GET)
+    errors = []
     if form.is_valid():
         siren = form.cleaned_data["siren"]
 
@@ -21,9 +22,15 @@ def siren(request):
             "object": "Test de l'API",
             "recipient": "10000001700010"
         }
+        
         response = requests.get(url, headers=headers, params=params)
-        return render(request, "public/siren.html", {
-            "siren": siren,
-            "response": response.json(),
-            })
-    return render(request, "public/index.html", {"form": form})
+        if response.status_code == 200:
+            data = response.json()["data"]
+            return render(request, "public/siren.html", {
+                "siren": siren,
+                "data": data,
+                })
+        else:
+            errors = response.json()["errors"]
+
+    return render(request, "public/index.html", {"form": form, "errors": errors})
