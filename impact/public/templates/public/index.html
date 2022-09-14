@@ -6,10 +6,10 @@
         <form action="{% url 'siren' %}" method="get">
             {% csrf_token %}
             <div class="fr-input-group">
-                <label class="fr-label" for="text-input-siren">Votre numéro de SIREN
-                    <span class="fr-hint-text">Saisissez un numéro SIREN valide, disponible sur le Kbis de votre organisation</span>
+                <label class="fr-label" for="text-input-siren">{{ form.siren.label }}
+                    <span class="fr-hint-text">{{ form.siren.help_text }}</span>
                 </label>
-                <input class="fr-input" type="text" id="text-input-siren" name="siren">
+                {{ form.siren }}
             </div>
             <input type="submit" value="Envoyer" class="fr-btn ">
         </form>
