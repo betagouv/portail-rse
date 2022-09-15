@@ -39,9 +39,7 @@ def siren(request):
                 request,
                 "public/siren.html",
                 {
-                    "siren": siren,
                     "raison_sociale": raison_sociale,
-                    "effectif": effectif,
                     "form": form,
                 },
             )
