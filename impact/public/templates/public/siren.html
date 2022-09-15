@@ -4,6 +4,25 @@
 <div class="fr-container fr-my-16w">
     <p>Votre SIREN est {{ siren }}.</p>
 
-    <p>La réponse de l'API Entreprise est {{ data }}</p>
+    <p>L'entreprise est {{ raison_sociale}}</p>
+    <p>Composé de {{ effectif }} salariés max.</p>
+
+    <div class="fr-grid-row fr-grid-row--center">
+        <form action="{% url 'eligibilite' %}" method="get">
+            {% csrf_token %}
+            <div class="fr-select-group">
+                <label class="fr-label" for="effectif">{{ form.effectif.label }}
+                    <span class="fr-hint-text">{{ form.effectif.help_text }}</span>
+                </label>
+                {{ form.effectif }}
+            </div>
+
+            <div class="fr-checkbox-group">
+                {{ form.accord }}
+                <label class="fr-label" for="id_accord">{{ form.accord.label }}</label>
+            </div>
+            <input type="submit" value="Envoyer" class="fr-btn ">
+        </form>
+    </div>
 </div>
 {% endblock %}

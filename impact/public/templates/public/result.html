@@ -1,0 +1,13 @@
+{% extends "public/base.html" %}
+
+{% block content %}
+<div class="fr-container fr-my-16w">
+    {% if bdese_result == BDESE_ELIGIBILITE.NON_ELIGIBLE %}
+    <p>Vous n'êtes pas soumis à la règlementation BDESE.</p>
+    {% elif bdese_result == BDESE_ELIGIBILITE.ELIGIBLE_AVEC_ACCORD %}
+    <p>Vous avez un accord d'entreprise. Veuillez vous y référer.</p>
+    {% else %}
+    <p>Bravo on va vous aider.</p>
+    {% endif %}
+</div>
+{% endblock %}
