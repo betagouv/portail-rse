@@ -32,5 +32,7 @@ def siren(request):
                 })
         else:
             errors = response.json()["errors"]
+    else:
+        errors = form.errors
 
     return render(request, "public/index.html", {"form": form, "errors": errors})
