@@ -28,7 +28,13 @@ def siren(request):
             data = response.json()["data"]
             raison_sociale = data["personne_morale_attributs"]["raison_sociale"]
             effectif = data["tranche_effectif_salarie"]["a"]
-            form = EligibiliteForm()
+            if effectif < 50:
+                taille = "petit"
+            elif effectif > 300:
+                taille = "grand"
+            else:
+                taille = "moyen"
+            form = EligibiliteForm(initial={"effectif": taille})
             return render(
                 request,
                 "public/siren.html",
