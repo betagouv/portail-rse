@@ -8,6 +8,7 @@
 
             <form action="{% url 'eligibilite' %}" method="get">
                 {% csrf_token %}
+                {{ form.raison_sociale.as_hidden }}
                 <div class="fr-select-group">
                     <label class="fr-label" for="{{ form.effectif.id_for_label }}">{{ form.effectif.label }}
                         <span class="fr-hint-text">{{ form.effectif.help_text }}</span>

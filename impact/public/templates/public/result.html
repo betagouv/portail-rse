@@ -11,7 +11,7 @@
         Bravo on va vous aider.
     </p>
     <p>
-        <a href="{% url 'result' %}" target="_blank">Télécharger le pdf</a>
+        <a href="{% url 'result' %}?raison_sociale={{ raison_sociale }}&bdese={{ bdese_result }}" target="_blank">Télécharger le pdf</a>
     </p>
     {% endif %}
 </div>

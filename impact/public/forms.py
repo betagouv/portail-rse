@@ -29,3 +29,4 @@ class EligibiliteForm(forms.Form):
         help_text="",
         required=False,
     )
+    raison_sociale = forms.CharField()

@@ -35,7 +35,7 @@ def siren(request):
                 taille = "grand"
             else:
                 taille = "moyen"
-            form = EligibiliteForm(initial={"effectif": taille})
+            form = EligibiliteForm(initial={"effectif": taille, "raison_sociale": raison_sociale})
             return render(
                 request,
                 "public/siren.html",
@@ -65,6 +65,7 @@ def eligibilite(request):
     if form.is_valid():
         accord = form.cleaned_data["accord"]
         effectif = form.cleaned_data["effectif"]
+        raison_sociale = form.cleaned_data["raison_sociale"]
         if effectif == "petit":
             bdese_result = BDESE_ELIGIBILITE["NON_ELIGIBLE"]
         elif accord:
@@ -77,11 +78,15 @@ def eligibilite(request):
     return render(
         request,
         "public/result.html",
-        {"BDESE_ELIGIBILITE": BDESE_ELIGIBILITE, "bdese_result": bdese_result},
+        {"BDESE_ELIGIBILITE": BDESE_ELIGIBILITE, "bdese_result": bdese_result, "raison_sociale": raison_sociale},
     )
 
 def result(request):
-    pdf_html = render_to_string("public/result_pdf.html", {"raison_sociale": "Yaal Coop"})
+    context = {
+        "raison_sociale": request.GET["raison_sociale"],
+        "bdese": request.GET["bdese"],
+    }
+    pdf_html = render_to_string("public/result_pdf.html", context)
     pdf_file = HTML(string=pdf_html).write_pdf()
 
     response = HttpResponse(pdf_file, content_type='application/pdf')
