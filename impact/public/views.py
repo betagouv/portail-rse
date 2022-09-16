@@ -6,6 +6,7 @@ from weasyprint import HTML
 
 from .forms import EligibiliteForm, SirenForm
 
+
 def index(request):
     return render(request, "public/index.html", {"form": SirenForm()})
 
@@ -35,7 +36,9 @@ def siren(request):
                 taille = "grand"
             else:
                 taille = "moyen"
-            form = EligibiliteForm(initial={"effectif": taille, "raison_sociale": raison_sociale})
+            form = EligibiliteForm(
+                initial={"effectif": taille, "raison_sociale": raison_sociale}
+            )
             return render(
                 request,
                 "public/siren.html",
@@ -78,8 +81,13 @@ def eligibilite(request):
     return render(
         request,
         "public/result.html",
-        {"BDESE_ELIGIBILITE": BDESE_ELIGIBILITE, "bdese_result": bdese_result, "raison_sociale": raison_sociale},
+        {
+            "BDESE_ELIGIBILITE": BDESE_ELIGIBILITE,
+            "bdese_result": bdese_result,
+            "raison_sociale": raison_sociale,
+        },
     )
+
 
 def result(request):
     context = {
@@ -90,6 +98,6 @@ def result(request):
     pdf_html = render_to_string("public/result_pdf.html", context)
     pdf_file = HTML(string=pdf_html).write_pdf()
 
-    response = HttpResponse(pdf_file, content_type='application/pdf')
-    response['Content-Disposition'] = 'filename="mypdf.pdf"'
+    response = HttpResponse(pdf_file, content_type="application/pdf")
+    response["Content-Disposition"] = 'filename="mypdf.pdf"'
     return response
