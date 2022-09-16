@@ -9,7 +9,7 @@
             <form action="{% url 'eligibilite' %}" method="get">
                 {% csrf_token %}
                 <div class="fr-select-group">
-                    <label class="fr-label" for="effectif">{{ form.effectif.label }}
+                    <label class="fr-label" for="{{ form.effectif.id_for_label }}">{{ form.effectif.label }}
                         <span class="fr-hint-text">{{ form.effectif.help_text }}</span>
                     </label>
                     {{ form.effectif }}
@@ -17,7 +17,7 @@
 
                 <div class="fr-checkbox-group">
                     {{ form.accord }}
-                    <label class="fr-label" for="id_accord">{{ form.accord.label }}</label>
+                    <label class="fr-label" for="{{ form.accord.id_for_label }}">{{ form.accord.label }}</label>
                 </div>
                 <input type="submit" value="Vérifier mon éligibilité" class="fr-btn ">
                 <a href="/" class="fr-btn fr-btn--secondary">Je ne suis pas {{ raison_sociale }}</a>

@@ -12,7 +12,7 @@
         <form action="{% url 'siren' %}" method="get">
             {% csrf_token %}
             <div class="fr-input-group">
-                <label class="fr-label" for="text-input-siren">{{ form.siren.label }}
+                <label class="fr-label" for="{{ form.siren.id_for_label }}">{{ form.siren.label }}
                     <span class="fr-hint-text">{{ form.siren.help_text }}</span>
                 </label>
                 {{ form.siren }}
