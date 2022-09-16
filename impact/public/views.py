@@ -84,7 +84,8 @@ def eligibilite(request):
 def result(request):
     context = {
         "raison_sociale": request.GET["raison_sociale"],
-        "bdese": request.GET["bdese"],
+        "bdese": int(request.GET["bdese"]),
+        "BDESE_ELIGIBILITE": BDESE_ELIGIBILITE,
     }
     pdf_html = render_to_string("public/result_pdf.html", context)
     pdf_file = HTML(string=pdf_html).write_pdf()

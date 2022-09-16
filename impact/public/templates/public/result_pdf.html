@@ -8,6 +8,9 @@
     <body>
         <h1>{{ raison_sociale }}</h1>
 
-        <p>état : {{ bdese }}</p>
+        <p>Plusieurs possibilités :</p>
+        {% for k, v in BDESE_ELIGIBILITE.items %}
+         - {{ k }} {% if v == bdese %}<strong>X</strong>{% endif %}<br>
+        {% endfor %}
     </body>
 </html>
