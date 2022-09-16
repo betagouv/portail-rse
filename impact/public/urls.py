@@ -7,4 +7,5 @@ urlpatterns = [
     path("siren", views.siren, name="siren"),
     path("eligibilite", views.eligibilite, name="eligibilite"),
     path("result", views.result, name="result"),
+    path("bdese", views.bdese, name="bdese")
 ]

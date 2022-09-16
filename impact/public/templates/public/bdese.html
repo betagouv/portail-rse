@@ -1,0 +1,40 @@
+{% extends "public/base.html" %}
+
+{% block content %}
+<div class="fr-container fr-my-16w">
+    <div class="fr-grid-row">
+        <div class="fr-col">
+            <h1>BDESE</h1>
+
+            <form action="{% url 'bdese' %}" method="post">
+                {% csrf_token %}
+                <div class="fr-select-group">
+                    <label class="fr-label" for="{{ form.effectif_total.id_for_label }}">{{ form.effectif_total.label }}
+                        <span class="fr-hint-text">{{ form.effectif_total.help_text }}</span>
+                    </label>
+                    {{ form.effectif_total }}
+                </div>
+                <div class="fr-select-group">
+                    <label class="fr-label" for="{{ form.effectif_permanent.id_for_label }}">{{ form.effectif_permanent.label }}
+                        <span class="fr-hint-text">{{ form.effectif_permanent.help_text }}</span>
+                    </label>
+                    {{ form.effectif_permanent }}
+                </div>
+                <div class="fr-select-group">
+                    <label class="fr-label" for="{{ form.effectif_cdd.id_for_label }}">{{ form.effectif_cdd.label }}
+                        <span class="fr-hint-text">{{ form.effectif_cdd.help_text }}</span>
+                    </label>
+                    {{ form.effectif_cdd }}
+                </div>
+                <div class="fr-select-group">
+                    <label class="fr-label" for="{{ form.effectif_mensuel_moyen.id_for_label }}">{{ form.effectif_mensuel_moyen.label }}
+                        <span class="fr-hint-text">{{ form.effectif_mensuel_moyen.help_text }}</span>
+                    </label>
+                    {{ form.effectif_mensuel_moyen }}
+                </div>
+                <input type="submit" value="Enregistrer" class="fr-btn ">
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

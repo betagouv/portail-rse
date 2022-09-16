@@ -1,5 +1,7 @@
 from django import forms
 
+from .models import BDESE
+
 
 class SirenForm(forms.Form):
     siren = forms.CharField(
@@ -30,3 +32,10 @@ class EligibiliteForm(forms.Form):
         required=False,
     )
     raison_sociale = forms.CharField()
+
+
+class BDESEForm(forms.ModelForm):
+    class Meta:
+        model = BDESE
+        exclude = ['year']
+

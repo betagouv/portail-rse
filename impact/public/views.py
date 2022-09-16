@@ -4,7 +4,8 @@ from django.shortcuts import HttpResponse, render
 from django.template.loader import render_to_string
 from weasyprint import HTML
 
-from .forms import EligibiliteForm, SirenForm
+from .forms import BDESEForm, EligibiliteForm, SirenForm
+
 
 
 def index(request):
@@ -101,3 +102,8 @@ def result(request):
     response = HttpResponse(pdf_file, content_type="application/pdf")
     response["Content-Disposition"] = 'filename="mypdf.pdf"'
     return response
+
+
+def bdese(request):
+    form = BDESEForm(request.POST)
+    return render(request, "public/bdese.html", {"form": form})
