@@ -2,5 +2,7 @@ venv
 *.pyc
 __pycache__
 
+.env
+
 impact/impact/static_collected/
 impact/db.sqlite3
