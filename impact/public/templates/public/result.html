@@ -7,7 +7,12 @@
     {% elif bdese_result == BDESE_ELIGIBILITE.ELIGIBLE_AVEC_ACCORD %}
     <p>Vous avez un accord d'entreprise. Veuillez vous y référer.</p>
     {% else %}
-    <p>Bravo on va vous aider.</p>
+    <p>
+        Bravo on va vous aider.
+    </p>
+    <p>
+        <a href="{% url 'result' %}" target="_blank">Télécharger le pdf</a>
+    </p>
     {% endif %}
 </div>
 {% endblock %}

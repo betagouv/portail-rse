@@ -1,9 +1,10 @@
-from django.conf import settings
-from django.shortcuts import render
 import requests
+from django.conf import settings
+from django.shortcuts import HttpResponse, render
+from django.template.loader import render_to_string
+from weasyprint import HTML
 
 from .forms import EligibiliteForm, SirenForm
-
 
 def index(request):
     return render(request, "public/index.html", {"form": SirenForm()})
@@ -78,3 +79,11 @@ def eligibilite(request):
         "public/result.html",
         {"BDESE_ELIGIBILITE": BDESE_ELIGIBILITE, "bdese_result": bdese_result},
     )
+
+def result(request):
+    pdf_html = render_to_string("public/result_pdf.html", {"raison_sociale": "Yaal Coop"})
+    pdf_file = HTML(string=pdf_html).write_pdf()
+
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="mypdf.pdf"'
+    return response
