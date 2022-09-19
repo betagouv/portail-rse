@@ -5,10 +5,10 @@
     {% if bdese_result == BDESE_ELIGIBILITE.NON_ELIGIBLE %}
     <p>Vous n'êtes pas soumis à la règlementation BDESE.</p>
     {% elif bdese_result == BDESE_ELIGIBILITE.ELIGIBLE_AVEC_ACCORD %}
-    <p>Vous avez un accord d'entreprise. Veuillez vous y référer.</p>
+    <p>Vous avez un accord d'entreprise spécifique. Veuillez vous y référer.</p>
     {% else %}
     <p>
-        Bravo on va vous aider.
+        Vous êtes soumis à la réglementation BDESE. Nous allons vous aider à la remplir.
     </p>
     <p>
         <a href="{% url 'result' %}?raison_sociale={{ raison_sociale }}&bdese={{ bdese_result }}" target="_blank">Télécharger le pdf</a>

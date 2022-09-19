@@ -3,7 +3,7 @@ from django import forms
 
 class SirenForm(forms.Form):
     siren = forms.CharField(
-        label="Votre numéro de SIREN",
+        label="Votre numéro SIREN",
         help_text="Saisissez un numéro SIREN valide, disponible sur le Kbis de votre organisation",
         required=True,
         min_length=9,
