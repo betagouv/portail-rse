@@ -37,8 +37,8 @@ class BDESE(models.Model):
     effectif_cadres = models.IntegerField()
     effectif_techniciens = models.IntegerField()
     effectif_agents_de_maitrise = models.IntegerField()
-    effectif_employés_qualifies = models.IntegerField()
-    effectif_employés_non_qualifies = models.IntegerField()
+    effectif_employes_qualifies = models.IntegerField()
+    effectif_employes_non_qualifies = models.IntegerField()
     effectif_ouvriers_qualifies = models.IntegerField()
     effectif_ouvriers_non_qualifies = models.IntegerField()
     # 1° A - a) ii - Travailleurs extérieurs
