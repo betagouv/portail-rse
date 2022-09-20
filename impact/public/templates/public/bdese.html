@@ -8,6 +8,8 @@
 
             <form action="{% url 'bdese' %}" method="post">
                 {% csrf_token %}
+                <h2>Investissements</h2>
+                <h3>Investissement social</h3>
                 {% include 'snippets/input_field.html' with field=form.effectif_total %}
                 {% include 'snippets/input_field.html' with field=form.effectif_permanent %}
                 {% include 'snippets/input_field.html' with field=form.effectif_cdd %}
