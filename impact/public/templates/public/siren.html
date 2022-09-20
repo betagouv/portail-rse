@@ -9,17 +9,8 @@
             <form action="{% url 'eligibilite' %}" method="get">
                 {% csrf_token %}
                 {{ form.raison_sociale.as_hidden }}
-                <div class="fr-select-group">
-                    <label class="fr-label" for="{{ form.effectif.id_for_label }}">{{ form.effectif.label }}
-                        <span class="fr-hint-text">{{ form.effectif.help_text }}</span>
-                    </label>
-                    {{ form.effectif }}
-                </div>
-
-                <div class="fr-checkbox-group">
-                    {{ form.accord }}
-                    <label class="fr-label" for="{{ form.accord.id_for_label }}">{{ form.accord.label }}</label>
-                </div>
+                {% include 'snippets/select_field.html' with field=form.effectif %}
+                {% include 'snippets/radio_field.html' with field=form.accord %}
                 <input type="submit" value="Vérifier mon éligibilité" class="fr-btn ">
                 <a href="/" class="fr-btn fr-btn--secondary">Mon entreprise n'est pas {{ raison_sociale }}</a>
             </form>

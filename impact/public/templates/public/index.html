@@ -14,12 +14,7 @@
             <p>Recherchez votre entreprise pour démarrer la simulation et savoir à quelle réglementation BDESE vous êtes soumis</p>
             <form action="{% url 'siren' %}" method="get">
                 {% csrf_token %}
-                <div class="fr-input-group">
-                    <label class="fr-label" for="{{ form.siren.id_for_label }}">{{ form.siren.label }}
-                        <span class="fr-hint-text">{{ form.siren.help_text }}</span>
-                    </label>
-                    {{ form.siren }}
-                </div>
+                {% include 'snippets/input_field.html' with field=form.siren %}
                 <button type="submit" class="fr-btn">Rechercher</button>
             </form>
         </div>
