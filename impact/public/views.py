@@ -32,12 +32,12 @@ def siren(request):
             effectif = data["tranche_effectif_salarie"]["a"]
             if effectif < 50:
                 taille = "petit"
-            elif effectif > 500:
-                taille = "sup500"
-            elif effectif > 300:
+            elif effectif < 300:
+                taille = "moyen"
+            elif effectif < 500:
                 taille = "grand"
             else:
-                taille = "moyen"
+                taille = "sup500"
             form = EligibiliteForm(
                 initial={"effectif": taille, "raison_sociale": raison_sociale}
             )
