@@ -46,4 +46,4 @@ class EligibiliteForm(DsfrForm):
 class BDESEForm(forms.ModelForm, DsfrForm):
     class Meta:
         model = BDESE
-        exclude = ["year"]
+        exclude = ["annee"]
