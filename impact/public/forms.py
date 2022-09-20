@@ -3,7 +3,17 @@ from django import forms
 from .models import BDESE
 
 
-class SirenForm(forms.Form):
+class DsfrForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            if type(field.widget) == forms.widgets.Select:
+                field.widget.attrs.update({"class": "fr-select"})
+            else:
+                field.widget.attrs.update({"class": "fr-input"})
+
+
+class SirenForm(DsfrForm):
     siren = forms.CharField(
         label="Votre numéro SIREN",
         help_text="Saisissez un numéro SIREN valide, disponible sur le Kbis de votre organisation",
@@ -11,10 +21,9 @@ class SirenForm(forms.Form):
         min_length=9,
         max_length=9,
     )
-    siren.widget.attrs.update({"class": "fr-input"})
 
 
-class EligibiliteForm(forms.Form):
+class EligibiliteForm(DsfrForm):
     effectif = forms.ChoiceField(
         label="Votre effectif total",
         choices=(
@@ -25,7 +34,6 @@ class EligibiliteForm(forms.Form):
         help_text="Saisissez le nombre de salariés",
         required=True,
     )
-    effectif.widget.attrs.update({"class": "fr-select"})
     accord = forms.BooleanField(
         label="Avez-vous un accord collectif d'entreprise concernant le BDESE ?",
         help_text="",
@@ -34,8 +42,7 @@ class EligibiliteForm(forms.Form):
     raison_sociale = forms.CharField()
 
 
-class BDESEForm(forms.ModelForm):
+class BDESEForm(forms.ModelForm, DsfrForm):
     class Meta:
         model = BDESE
-        exclude = ['year']
-
+        exclude = ["year"]

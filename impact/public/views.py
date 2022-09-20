@@ -7,7 +7,6 @@ from weasyprint import HTML
 from .forms import BDESEForm, EligibiliteForm, SirenForm
 
 
-
 def index(request):
     return render(request, "public/index.html", {"form": SirenForm()})
 
