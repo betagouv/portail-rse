@@ -29,7 +29,8 @@ class EligibiliteForm(DsfrForm):
         choices=(
             ("petit", "moins de 50"),
             ("moyen", "entre 50 et 300"),
-            ("grand", "plus de 300"),
+            ("grand", "entre 301 et 499"),
+            ("sup500", "500 et plus"),
         ),
         help_text="Saisissez le nombre de salariés",
         required=True,

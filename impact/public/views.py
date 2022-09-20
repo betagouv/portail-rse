@@ -32,6 +32,8 @@ def siren(request):
             effectif = data["tranche_effectif_salarie"]["a"]
             if effectif < 50:
                 taille = "petit"
+            elif effectif > 500:
+                taille = "sup500"
             elif effectif > 300:
                 taille = "grand"
             else:
@@ -59,7 +61,8 @@ BDESE_ELIGIBILITE = {
     "NON_ELIGIBLE": 0,
     "ELIGIBLE_AVEC_ACCORD": 1,
     "ELIGIBLE_INFERIEUR_300": 2,
-    "ELIGIBLE_SUPERIEUR_300": 3,
+    "ELIGIBLE_INFERIEUR_500": 3,
+    "ELIGIBLE_SUPERIEUR_500": 4,
 }
 
 
@@ -75,8 +78,10 @@ def eligibilite(request):
             bdese_result = BDESE_ELIGIBILITE["ELIGIBLE_AVEC_ACCORD"]
         elif effectif == "moyen":
             bdese_result = BDESE_ELIGIBILITE["ELIGIBLE_INFERIEUR_300"]
+        elif effectif == "grand":
+            bdese_result = BDESE_ELIGIBILITE["ELIGIBLE_INFERIEUR_500"]
         else:
-            bdese_result = BDESE_ELIGIBILITE["ELIGIBLE_SUPERIEUR_300"]
+            bdese_result = BDESE_ELIGIBILITE["ELIGIBLE_SUPERIEUR_500"]
 
     return render(
         request,
