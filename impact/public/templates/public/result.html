@@ -10,6 +10,12 @@
     <p>
         Vous êtes soumis à la réglementation BDESE. Nous allons vous aider à la remplir.
     </p>
+        {% if bdese_result == BDESE_ELIGIBILITE.ELIGIBLE_SUPERIEUR_500 %}
+        <p>
+            La déclaration de performance extra-financière est obligatoire pour les entreprises
+            d'au moins 500 salariés et qui dépassent 100 millions € de chiffre d'affaires ou de total du bilan.
+        </p>
+        {% endif %}
     <p>
         <a href="{% url 'result' %}?raison_sociale={{ raison_sociale }}&bdese={{ bdese_result }}" target="_blank">Télécharger le pdf</a>
     </p>
