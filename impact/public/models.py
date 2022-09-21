@@ -210,6 +210,24 @@ class BDESE(models.Model):
         verbose_name="Autres cas"
     )
     # 1° A - f) iii - Maladies professionnelles
+    nombre_maladies_professionnelles = models.IntegerField(
+        verbose_name="Nombre des maladies professionnelles",
+        help_text="Nombre des maladies professionnelles déclarées à la sécurité sociale au cours de l'année",
+    )
+    denomination_maladies_professionnelles = models.TextField(
+        verbose_name="Dénomination des maladies professionnelles",
+        help_text="Dénomination des maladies professionnelles déclarées à la sécurité sociale au cours de l'année",
+    )
+    nombre_salaries_affections_pathologiques = models.IntegerField(
+        verbose_name="Nombre de salariés atteints par des affections pathologiques à caractère professionnel",
+    )
+    caracterisation_affections_pathologiques = models.TextField(
+        verbose_name="Caractérisation des affections pathologiques à caractère professionnel",
+    )
+    nombre_declaration_procedes_travail_dangereux = models.IntegerField(
+        verbose_name="Nombre de déclarations par l'employeur de procédés de travail susceptibles de provoquer des maladies professionnelles",
+        help_text="En application de l'article L. 461-4 du code de la sécurité sociale",
+    )
     # 1° A - f) iv - Dépenses en matière de sécurité
     # 1° A - f) v - Durée et aménagement du temps de travail
     # 1° A - f) vi - Absentéisme
