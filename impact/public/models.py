@@ -242,6 +242,43 @@ class BDESE(models.Model):
         verbose_name="Nombre de plans spécifiques de sécurité"
     )
     # 1° A - f) v - Durée et aménagement du temps de travail
+    horaire_hebdomadaire_moyen_ouvriers_employes = models.IntegerField(
+        verbose_name="Horaire hebdomadaire moyen affiché des ouvriers et employés ou catégories assimilées",
+        help_text="Il est possible de remplacer cet indicateur par la somme des heures travaillées durant l'année.",
+    )
+    somme_heures_travaillees_ouvriers_employes = models.IntegerField(
+        verbose_name="Somme des heures travaillées durant l'année par les ouvriers et employés ou catégories assimilées",
+    )
+    nombre_salaries_repos_compensateur_code_travail = models.IntegerField(
+        verbose_name="Nombre de salariés ayant bénéficié d'un repos compensateur au titre du code du travail",
+        help_text="Au sens des dispositions du code du travail et du code rural et de la pêche maritime instituant un repos compensateur en matière d'heures supplémentaires.",
+    )
+    nombre_salaries_repos_compensateur_regime_conventionne = models.IntegerField(
+        verbose_name="Nombre de salariés ayant bénéficié d'un repos compensateur au titre d'un régime conventionne",
+    )
+    nombre_salaries_horaires_individualises = models.IntegerField(
+        verbose_name="Nombre de salariés bénéficiant d'un système d'horaires individualisés",
+        help_text="Au sens de l'article L. 3121-48.",
+    )
+    nombre_salaries_temps_partiel_20_30_heures = models.IntegerField(
+        verbose_name="Nombre de salariés employés à temps partiel entre 20 et 30 heures (33)",
+        help_text="Au sens de l'article L. 3123-1.",
+    )
+    nombre_salaries_temps_partiel_autres = models.IntegerField(
+        verbose_name="Autres formes de temps partiel",
+    )
+    nombre_salaries_2_jours_repos_hebdomadaire_consecutifs = models.IntegerField(
+        verbose_name="Nombre de salariés ayant bénéficié tout au long de l'année considérée de deux jours de repos hebdomadaire consécutifs",
+    )
+    nombre_moyen_jours_conges_annuels = models.IntegerField(
+        verbose_name="Nombre moyen de jours de congés annuels (non compris le repos compensateur)",
+        help_text="Repos compensateur non compris. Cet indicateur peut être calculé sur la dernière période de référence.",
+    )
+    nombre_jours_feries_payes = models.IntegerField(
+        verbose_name="Nombre de jours fériés payés",
+        help_text="Préciser, le cas échéant, les conditions restrictives.",
+    )
+    conditions_restrictives_jours_feries_payes = models.TextField()
     # 1° A - f) vi - Absentéisme
     # 1° A - f) vii - Organisation et contenu du travail
     # 1° A - f) viii - Conditions physiques de travail

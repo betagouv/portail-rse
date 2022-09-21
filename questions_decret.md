@@ -46,7 +46,7 @@ x 106 ?
     Nombre d'incapacités permanentes (partielles et totales) notifiées à l'entreprise au cours de l'année considérée (distinguer français et étrangers)
 
 1° A f) iii La dénomination des maladies pro est-elle réglementée/connue à l'avance ?
-
+1° A f) v Au titre du présent code = code du travail ?
 
 
 
