@@ -322,6 +322,20 @@ class BDESE(models.Model):
         verbose_name="Nombre de journées d'absence imputables à d'autres causes",
     )
     # 1° A - f) vii - Organisation et contenu du travail
+    nombre_personnes_horaires_alternant_ou_nuit = models.IntegerField(
+        verbose_name="Nombre de personnes occupant des emplois à horaires alternant ou de nuit",
+    )
+    nombre_personnes_horaires_alternant_ou_nuit_50_ans = models.IntegerField(
+        verbose_name="Nombre de personnes occupant des emplois à horaires alternant ou de nuit de plus de cinquante ans",
+    )
+    nombre_hommes_taches_repetitives = models.IntegerField(
+        verbose_name="Nombre de salariés homme affectés à des tâches répétitives",
+        help_text="Au sens de l'article D. 4163-2",
+    )
+    nombre_femmes_taches_repetitives = models.IntegerField(
+        verbose_name="Nombre de salariés femme affectés à des tâches répétitives",
+        help_text="Au sens de l'article D. 4163-2",
+    )
     # 1° A - f) viii - Conditions physiques de travail
     # 1° A - f) ix - Transformation de l’organisation du travail
     # 1° A - f) x - Dépenses d’amélioration de conditions de travail

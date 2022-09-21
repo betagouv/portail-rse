@@ -47,6 +47,7 @@ x 106 ?
 
 1° A f) iii La dénomination des maladies pro est-elle réglementée/connue à l'avance ?
 1° A f) v Au titre du présent code = code du travail ?
+1° A - f) vii Faut-il distinguer par seuils associés aux facteurs de risques pro ?
 
 
 
