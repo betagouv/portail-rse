@@ -229,6 +229,18 @@ class BDESE(models.Model):
         help_text="En application de l'article L. 461-4 du code de la sécurité sociale",
     )
     # 1° A - f) iv - Dépenses en matière de sécurité
+    effectif_forme_securite = models.IntegerField(
+        verbose_name="Effectif formé à la sécurité dans l'année",
+    )
+    montant_depenses_formation_securite = models.IntegerField(
+        verbose_name="Montant des dépenses de formation à la sécurité réalisées dans l'entreprise",
+    )
+    taux_realisation_programme_securite = models.IntegerField(
+        verbose_name="Taux de réalisation du programme de sécurité présenté l'année précédente",
+    )
+    nombre_plans_specifiques_securite = models.IntegerField(
+        verbose_name="Nombre de plans spécifiques de sécurité"
+    )
     # 1° A - f) v - Durée et aménagement du temps de travail
     # 1° A - f) vi - Absentéisme
     # 1° A - f) vii - Organisation et contenu du travail
