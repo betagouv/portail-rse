@@ -432,25 +432,47 @@ class BDESE(models.Model):
     nombre_categorie_professionelle_2_en_CDD = models.IntegerField()
 
    #       b) Durée et organisation du travail: Données chiffrées par sexe
-    effectif_temps_complet = models.IntegerField(
+    effectif_temps_complet_homme = models.IntegerField(
         help_text="Effectif à temps complet"
     )
-    effectif_temps_partiel_20_30_heures = models.IntegerField(
+    effectif_temps_complet_femme = models.IntegerField(
+        help_text="Effectif à temps complet"
+    )
+    effectif_temps_partiel_20_30_heures_homme = models.IntegerField(
         help_text="Effectif à temps partiel (compris entre 20 et 30 heures)"
     )
-    effectif_temps_partiel_autre = models.IntegerField(
+    effectif_temps_partiel_20_30_heures_femme = models.IntegerField(
+        help_text="Effectif à temps partiel (compris entre 20 et 30 heures)"
+    )
+
+    effectif_temps_partiel_autre_homme = models.IntegerField(
         help_text="Effectif à temps partiel (non compris entre 20 et 30 heures)"
     )
-    effectif_travail_poste = models.IntegerField(
+    effectif_temps_partiel_autre_femme = models.IntegerField(
+        help_text="Effectif à temps partiel (non compris entre 20 et 30 heures)"
+    )
+    effectif_travail_poste_homme = models.IntegerField(
         help_text="Effectif en travail posté"
     )
-    effectif_travail_nuit = models.IntegerField(
+    effectif_travail_poste_femme = models.IntegerField(
+        help_text="Effectif en travail posté"
+    )
+    effectif_travail_nuit_homme = models.IntegerField(
         help_text="Effectif en travail de nuit"
     )
-    effectif_horaires_variables = models.IntegerField(
+    effectif_travail_nuit_femme = models.IntegerField(
+        help_text="Effectif en travail de nuit"
+    )
+    effectif_horaires_variables_homme = models.IntegerField(
         help_text="Effectif en horaires variables"
     )
-    effectif_travail_atypique = models.IntegerField(
+    effectif_horaires_variables_femme = models.IntegerField(
+        help_text="Effectif en horaires variables"
+    )
+    effectif_travail_atypique_homme = models.IntegerField(
+        help_text="Effectif en travail atypique dont travail durant le week-end"
+    )
+    effectif_travail_atypique_femme = models.IntegerField(
         help_text="Effectif en travail atypique dont travail durant le week-end"
     )
    #       c) Données sur les congés
