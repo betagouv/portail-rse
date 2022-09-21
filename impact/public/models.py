@@ -358,6 +358,10 @@ class BDESE(models.Model):
         help_text="Renseignements tirés du rapport du directeur du service de prévention et de santé au travail interentreprises",
     )
     # 1° A - f) ix - Transformation de l’organisation du travail
+    experiences_transformation_organisation_travail = models.TextField(
+        verbose_name="Expériences de transformation de l'organisation du travail en vue d'en améliorer le contenu",
+        help_text="Pour l'explication de ces expériences d'amélioration du contenu du travail, donner le nombre de salariés concernés."
+    )
     # 1° A - f) x - Dépenses d’amélioration de conditions de travail
     # 1° A - f) xi - Médecine du travail
     # 1° A - f) xii - Travailleurs inaptes
