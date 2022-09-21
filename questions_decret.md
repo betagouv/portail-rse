@@ -25,3 +25,16 @@ par catégorie pro ?
 Comment on fait ça ?
 8. d) Evolution du nombre de stagiaires
 A quoi ça correspond ? Pour l'instant on ne met rien (il y a déjà le nombre de stagiaires)
+Puis à nouveau dans e) i- on a
+Nombre de stagiaires (II) ;
+Nombre d'heures de stage (II) :
+-rémunérées ;
+-non rémunérées.
+Décomposition par type de stages à titre d'exemple : adaptation, formation professionnelle, entretien ou perfectionnement des connaissances ;
+Que faut-il au final ici ?
+9. L59
+1° A - f) Conditions de travail
+    Durée du travail dont travail à temps partiel et aménagement du temps de travail, 
+    les données sur l'exposition aux risques et aux facteurs de pénibilité, 
+    (accidents du travail, maladies professionnelles, absentéisme, dépenses en matière de sécurité)
+Que met-on ?

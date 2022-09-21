@@ -84,7 +84,7 @@ class BDESE(models.Model):
     nombre_deces = models.IntegerField()
     # 1° A - b) iii - Promotions
     nombre_promotions = models.IntegerField(
-        help_text="Nombre de salariés promus dans l’année dans une catégorie supérieure."
+        help_text="Nombre de salariés promus dans l’année dans une catégorie supérieure. Utiliser les catégories de la nomenclature détaillée."
     )
     # 1° A - b) iv - Chômage
     nombre_salaries_chomage_partiel = models.IntegerField(
@@ -124,9 +124,28 @@ class BDESE(models.Model):
         help_text="Montant du versement auprès d'organismes agréés"
     )
     montant_formation_autres = models.FloatField()
+    # Nombre de stagiaires (II)
+    # Nombre d'heures de stage (II) rémunérées
+    # Nombre d'heures de stage (II) non rémunérées
+    # Décomposition par type de stages à titre d'exemple : adaptation, formation professionnelle, entretien ou perfectionnement des connaissances
     # 1° A - e) ii - Congés formation
-    # 1° A - e) iii - Apprentissage : Nombre de contrats d’apprentissage conclus dans l’année
+    nombre_salaries_conge_formation_remunere = models.IntegerField(
+        help_text="Nombre de salariés ayant bénéficié d'un congé formation rémunéré"
+    )
+    nombre_salaries_conge_formation_non_remunere = models.IntegerField(
+        help_text="Nombre de salariés ayant bénéficié d'un congé formation non rémunéré"
+    )
+    nombre_salaries_conge_formation_refuse = models.IntegerField(
+        help_text="Nombre de salariés auxquels a été refusé un congé formation"
+    )
+    # 1° A - e) iii - Apprentissage
+    nombre_contrats_apprentissage = models.IntegerField(
+        help_text="Nombre de contrats d’apprentissage conclus dans l’année"
+    )
     # 1° A - f) Conditions de travail
+    # Durée du travail dont travail à temps partiel et aménagement du temps de travail, 
+    # les données sur l'exposition aux risques et aux facteurs de pénibilité, 
+    # (accidents du travail, maladies professionnelles, absentéisme, dépenses en matière de sécurité)
     # 1° A - f) i - Accidents du travail et de trajet
     # 1° A - f) ii - Répartition des accidents par éléments matériels
     # 1° A - f) iii - Maladies professionnelles
