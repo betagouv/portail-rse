@@ -407,9 +407,18 @@ class BDESE(models.Model):
     )
     # 1° B - Investissement matériel et immatériel
     # 1° B - a) Evolution des actifs nets d’amortissement et de dépréciations éventuelles (immobilisations)
+    evolution_amortissement = models.TextField(
+        verbose_name="Evolution des actifs nets d’amortissement et de dépréciations éventuelles (immobilisations)",
+    )
     # 1° B - b) Le cas échéant, dépenses de recherche et développement
+    montant_depenses_recherche_developpement = models.IntegerField(
+        verbose_name="Dépenses de recherche et développement",
+    )
     # 1° B - c) L’évolution de la productivité et le taux d’utilisation des capacités de production, lorsque ces éléments sont mesurables dans l’entreprise
-
+    evolution_productivite = models.TextField(
+        verbose_name="Evolution de la productivité et le taux d’utilisation des capacités de production",
+        help_text="lorsque ces éléments sont mesurables dans l’entreprise",
+    )
 
    ###########################################################
 
