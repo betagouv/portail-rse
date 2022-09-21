@@ -328,3 +328,229 @@ class BDESE(models.Model):
     age_moyen_homme_niveau_2 = models.IntegerField()
     age_moyen_femme_niveau_1 = models.IntegerField()
     age_moyen_femme_niveau_2 = models.IntegerField()
+
+  #        d) Rémunérations
+    remuneration_moyenne_homme_categorie_professionnelle_1 = models.IntegerField()
+    remuneration_moyenne_homme_categorie_professionnelle_2 = models.IntegerField()
+    remuneration_moyenne_femme_categorie_professionnelle_1 = models.IntegerField()
+    remuneration_moyenne_femme_categorie_professionnelle_2 = models.IntegerField()
+    remuneration_moyenne_homme_niveau_1 = models.IntegerField(
+        help_text="Cet indicateur n'a pas à être renseigné lorsque sa mention est de nature à porter atteinte à la confidentialité des données correspondantes, compte tenu notamment du nombre réduit d'individus dans un niveau ou coefficient hiérarchique."
+    )
+    remuneration_moyenne_homme_niveau_2 = models.IntegerField(
+        help_text="Cet indicateur n'a pas à être renseigné lorsque sa mention est de nature à porter atteinte à la confidentialité des données correspondantes, compte tenu notamment du nombre réduit d'individus dans un niveau ou coefficient hiérarchique."
+    )
+    remuneration_moyenne_femme_niveau_1 = models.IntegerField(
+        help_text="Cet indicateur n'a pas à être renseigné lorsque sa mention est de nature à porter atteinte à la confidentialité des données correspondantes, compte tenu notamment du nombre réduit d'individus dans un niveau ou coefficient hiérarchique."
+    )
+    remuneration_moyenne_femme_niveau_2 = models.IntegerField(
+        help_text="Cet indicateur n'a pas à être renseigné lorsque sa mention est de nature à porter atteinte à la confidentialité des données correspondantes, compte tenu notamment du nombre réduit d'individus dans un niveau ou coefficient hiérarchique."
+    )
+
+  #     C - Formation
+    nombre_moyen_heures_formation_homme_categorie_1 = models.IntegerField(
+        help_text="nombre moyen d'heures d'actions de formation par salarié et par an"
+    )
+    nombre_moyen_heures_formation_homme_categorie_2 = models.IntegerField(
+        help_text="nombre moyen d'heures d'actions de formation par salarié et par an"
+    )
+    nombre_moyen_heures_formation_femme_categorie_1 = models.IntegerField(
+        help_text="nombre moyen d'heures d'actions de formation par salarié et par an"
+    )
+    nombre_moyen_heures_formation_femme_categorie_2 = models.IntegerField(
+        help_text="nombre moyen d'heures d'actions de formation par salarié et par an"
+    )
+    action_adaptation_au_poste_homme_categorie_1 = models.IntegerField()
+    action_maintien_emploi_homme_categorie_1 = models.IntegerField(
+        help_text="Action : maintien dans l'emploi"
+    )
+    action_developpement_competences_homme_categorie_1 = models.IntegerField(
+        help_text="Action : développement des compétences"
+    )
+    action_adaptation_au_poste_homme_categorie_2 = models.IntegerField()
+    action_maintien_emploi_homme_categorie_2 = models.IntegerField(
+        help_text="Action : maintien dans l'emploi"
+    )
+    action_developpement_competences_homme_categorie_2 = models.IntegerField(
+        help_text="Action : développement des compétences"
+    )
+    action_adaptation_au_poste_femme_categorie_1 = models.IntegerField()
+    action_maintien_emploi_homme_categorie_1 = models.IntegerField(
+        help_text="Action : maintien dans l'emploi"
+    )
+    action_developpement_competences_femme_categorie_1 = models.IntegerField(
+        help_text="Action : développement des compétences"
+    )
+    action_adaptation_au_poste_femme_categorie_2 = models.IntegerField()
+    action_maintien_emploi_femme_categorie_2 = models.IntegerField(
+        help_text="Action : maintien dans l'emploi"
+    )
+    action_developpement_competences_femme_categorie_2 = models.IntegerField(
+        help_text="Action : développement des compétences"
+    )
+
+  #     D - Conditions de travail, santé et sécurité au travail
+    poste_de_travail_1_homme_risque_pro_1_non_penible = models.IntegerField()
+    poste_de_travail_1_homme_risque_pro_1_penible = models.IntegerField()
+    poste_de_travail_1_homme_risque_pro_1_penible_repetitif = models.IntegerField(
+        help_text="pénibilité incluant le caractère répétitif des tâches"
+    )
+    poste_de_travail_1_homme_risque_pro_2_non_penible = models.IntegerField()
+    poste_de_travail_1_homme_risque_pro_2_penible = models.IntegerField()
+    poste_de_travail_1_homme_risque_pro_2_penible_repetitif = models.IntegerField(
+        help_text="pénibilité incluant le caractère répétitif des tâches"
+    )
+    poste_de_travail_1_femme_risque_pro_1_non_penible = models.IntegerField()
+    poste_de_travail_1_femme_risque_pro_1_penible = models.IntegerField()
+    poste_de_travail_1_femme_risque_pro_1_penible_repetitif = models.IntegerField(
+        help_text="pénibilité incluant le caractère répétitif des tâches"
+    )
+    poste_de_travail_1_femme_risque_pro_2_non_penible = models.IntegerField()
+    poste_de_travail_1_femme_risque_pro_2_penible = models.IntegerField()
+    poste_de_travail_1_femme_risque_pro_2_penible_repetitif = models.IntegerField(
+        help_text="pénibilité incluant le caractère répétitif des tâches"
+    )
+    poste_de_travail_2_homme_risque_pro_1_non_penible = models.IntegerField()
+    poste_de_travail_2_homme_risque_pro_1_penible = models.IntegerField()
+    poste_de_travail_2_homme_risque_pro_1_penible_repetitif = models.IntegerField(
+        help_text="pénibilité incluant le caractère répétitif des tâches"
+    )
+    poste_de_travail_2_homme_risque_pro_2_non_penible = models.IntegerField()
+    poste_de_travail_2_homme_risque_pro_2_penible = models.IntegerField()
+    poste_de_travail_2_homme_risque_pro_2_penible_repetitif = models.IntegerField(
+        help_text="pénibilité incluant le caractère répétitif des tâches"
+    )
+    poste_de_travail_2_femme_risque_pro_1_non_penible = models.IntegerField()
+    poste_de_travail_2_femme_risque_pro_1_penible = models.IntegerField()
+    poste_de_travail_2_femme_risque_pro_1_penible_repetitif = models.IntegerField(
+        help_text="pénibilité incluant le caractère répétitif des tâches"
+    )
+    poste_de_travail_2_femme_risque_pro_2_non_penible = models.IntegerField()
+    poste_de_travail_2_femme_risque_pro_2_penible = models.IntegerField()
+    poste_de_travail_2_femme_risque_pro_2_penible_repetitif = models.IntegerField(
+        help_text="pénibilité incluant le caractère répétitif des tâches"
+    )
+    accident_travail_homme = models.IntegerField(
+        help_text="accidents de travail, accidents de trajet et maladies professionnelles"
+    )
+    accident_travail_femme = models.IntegerField(
+        help_text="accidents de travail, accidents de trajet et maladies professionnelles"
+    )
+    nombre_accidents_travail_avec_arret_homme = models.IntegerField(
+        help_text="Nombre d'accidents de travail ayant entraîné un arrêt de travail"
+    )
+    nombre_accidents_travail_avec_arret_femme = models.IntegerField(
+        help_text="Nombre d'accidents de travail ayant entraîné un arrêt de travail"
+    )
+    nombre_accidents_trajet_avec_arret_homme = models.IntegerField(
+        help_text="Nombre d'accidents de trajet ayant entraîné un arrêt de travail"
+    )
+    nombre_accidents_trajet_avec_arret_femme = models.IntegerField(
+        help_text="Nombre d'accidents de trajet ayant entraîné un arrêt de travail"
+    )
+
+    nombre_accidents_riques_graves_homme = models.IntegerField(
+        help_text="Nombre d'accidents liés à l'existence de risques graves-codes 32 à 40"
+    )
+    nombre_accidents_riques_graves_femme = models.IntegerField(
+        help_text="Nombre d'accidents liés à l'existence de risques graves-codes 32 à 40"
+    )
+    nombre_accidents_chutes_denivellation_homme = models.IntegerField(
+        help_text="Nombre d'accidents liés à des chutes avec dénivellation-code 02"
+    )
+    nombre_accidents_chutes_denivellation_femme = models.IntegerField(
+        help_text="Nombre d'accidents liés à des chutes avec dénivellation-code 02"
+    )
+    nombre_accidents_machines_homme = models.IntegerField(
+        help_text="Nombre d'accidents occasionnés par des machines (à l'exception de ceux liés aux risques ci-dessus)-codes 09 à 30"
+    )
+    nombre_accidents_machines_femme = models.IntegerField(
+        help_text="Nombre d'accidents occasionnés par des machines (à l'exception de ceux liés aux risques ci-dessus)-codes 09 à 30"
+    )
+
+    nombre_accidents_circulation_manutention_stockage_homme = models.IntegerField(
+        help_text="Nombre d'accidents de circulation-manutention-stockage-codes 01,03,04 et 06,07,08 ; Nombre d'accidents occasionnés par des objets, masses, particules en mouvement accidentel-code 05"
+    )
+    nombre_accidents_circulation_manutention_stockage_femme = models.IntegerField(
+        help_text="Nombre d'accidents de circulation-manutention-stockage-codes 01,03,04 et 06,07,08 ; Nombre d'accidents occasionnés par des objets, masses, particules en mouvement accidentel-code 05"
+    )
+    nombre_accidents_autres_homme = models.IntegerField(
+        help_text="Nombre des autres cas d'accidents"
+    )
+    nombre_accidents_autres_femme = models.IntegerField(
+        help_text="Nombre des autres cas d'accidents"
+    )
+
+    nombre_maladie_1_homme = models.IntegerField(
+        help_text="nombre et dénomination des maladies professionnelles déclarées à la Sécurité sociale au cours de l'année"
+    )
+    nombre_maladie_1_femme = models.IntegerField(
+        help_text="nombre et dénomination des maladies professionnelles déclarées à la Sécurité sociale au cours de l'année"
+    )
+    nombre_maladie_2_homme = models.IntegerField(
+        help_text="nombre et dénomination des maladies professionnelles déclarées à la Sécurité sociale au cours de l'année"
+    )
+    nombre_maladie_2_femme = models.IntegerField(
+        help_text="nombre et dénomination des maladies professionnelles déclarées à la Sécurité sociale au cours de l'année"
+    )
+    nombre_journees_absence_accident_homme = models.IntegerField(
+        help_text="nombre de journée d'absence pour accidents de travail, accidents de trajet ou maladies professionnelles "
+    )
+    nombre_journees_absence_accident_femme = models.IntegerField(
+        help_text="nombre de journée d'absence pour accidents de travail, accidents de trajet ou maladies professionnelles "
+    )
+    maladies_hommes = models.StringField()
+    maladies_femmes = models.StringField()
+    nombre_arrets_travail_hommes = models.IntegerField()
+    nombre_arrets_travail_femmes = models.IntegerField()
+    nombre_journees_absence_hommes = models.IntegerField()
+    nombre_journees_absence_femmes = models.IntegerField()
+
+#   II. Indicateurs relatifs à l'articulation entre l'activité professionnelle et l'exercice de la responsabilité familiale
+#      A. Congés
+    complement_salaire_conge = models.BooleanField(
+        help_text="Existence d'un complément de salaire versé par l'employeur pour le congé de paternité, le congé de maternité, le congé d'adoption"
+    )
+    nombre_jours_conges_paternite_pris_categorie_professionnelle_1 = models.IntegerField(
+        help_text="nombre de jours de congés de paternité pris par le salarié par rapport au nombre de jours de congés théoriques "
+    )
+    nombre_jours_conges_paternite_pris_categorie_professionnelle_2 = models.IntegerField(
+        help_text="nombre de jours de congés de paternité pris par le salarié par rapport au nombre de jours de congés théoriques "
+    )
+
+#      B-Organisation du temps de travail dans l'entreprise
+    existence_organisation_facilitant_vie_familiale_et_professionnelle = models.BooleanField(
+        help_text="Existence de formules d'organisation du travail facilitant l'articulation de la vie familiale et de la vie professionnelle"
+    )
+    nombre_salaries_temps_partiel_choisi_homme_categorie_professionnelle_1 = models.IntegerField(
+        help_text="nombre de salariés ayant accédé au temps partiel choisi "
+    )
+    nombre_salaries_temps_partiel_choisi_homme_categorie_professionnelle_2 = models.IntegerField(
+        help_text="nombre de salariés ayant accédé au temps partiel choisi "
+    )
+    nombre_salaries_temps_partiel_choisi_femme_categorie_professionnelle_1 = models.IntegerField(
+        help_text="nombre de salariés ayant accédé au temps partiel choisi "
+    )
+    nombre_salaries_temps_partiel_choisi_femme_categorie_professionnelle_2 = models.IntegerField(
+        help_text="nombre de salariés ayant accédé au temps partiel choisi "
+    )
+    nombre_salaries_temps_partiel_choisi_ayant_repris_temps_plein_homme_categorie_professionnelle_1 = models.IntegerField(
+        help_text="nombre de salariés ayant accédé au temps partiel choisi "
+    )
+    nombre_salaries_temps_partiel_choisi_ayant_repris_temps_plein_homme_categorie_professionnelle_2 = models.IntegerField(
+        help_text="nombre de salariés ayant accédé au temps partiel choisi "
+    )
+    nombre_salaries_temps_partiel_choisi_ayant_repris_temps_plein_femme_categorie_professionnelle_1 = models.IntegerField(
+        help_text="nombre de salariés ayant accédé au temps partiel choisi "
+    )
+    nombre_salaries_temps_partiel_choisi_ayant_repris_temps_plein_femme_categorie_professionnelle_2 = models.IntegerField(
+        help_text="nombre de salariés ayant accédé au temps partiel choisi "
+    )
+    participant_accueil_petite_enfance = models.BooleanField(
+        help_text="participation de l'entreprise et du comité social et économique aux modes d'accueil de la petite enfance"
+    )
+    evolution_depenses_credit_impot_famille = models.BooleanField(
+        help_text="évolution des dépenses éligibles au crédit d'impôt famille"
+    )
+
+# III. Stratégie d'action

@@ -50,6 +50,25 @@ x 106 ?
 
 2° I A a) réparation par catégorie professionnelle: avec la définition des CSP de l'INSEE?
  https://www.insee.fr/fr/metadonnees/definition/c1758
+
+         dans la page, il est indiqué:
+         Concernant la notion de catégorie professionnelle, il peut s'agir de fournir des données distinguant :
+             a) Les ouvriers, les employés, techniciens, agents de maîtrise et les cadres ;
+             b) Ou les catégories d'emplois définies par la classification ;
+             c) Ou toute catégorie pertinente au sein de l'entreprise.
+
+
  2° I A c) le nombre de congé : quel est l'unité à prendre en compte (le nombre de congés, le nombre de jours)
         e) répartition des effectifs  par niveau ou coefficient hiérarchique : quel sont les niveaux? coefficient hiérarchique?
       B d) rémunération moyenne ou médiane mensuelle -> comment choisir
+      D "poste de travail": fournir une liste ?
+        "expositions à des risques professionnels" -> liste de risques professionnnels ? des niveaux (par ex. faible, moyen, haut) ?
+        "pénibilité": oui/non ? des niveaux ?
+        "accidents de travail, accidents de trajet et maladies professionnelles" : 3 champs différents ou aggrégés ?
+        "dénomination des maladies professionnelles" : permettre à l'utilisateur de remplir librement les maladies ?
+        "maladies": champ libre pour lister des maladies non professionnelles ?
+
+
+Doublon ?
+1° A f : Nombre de journées d'absence pour accidents du travail et de trajet ou maladies professionnelles (I) ;
+2° I D : nombre de journée d'absence pour accidents de travail, accidents de trajet ou maladies professionnelles ;
