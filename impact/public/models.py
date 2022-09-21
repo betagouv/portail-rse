@@ -167,10 +167,128 @@ class BDESE(models.Model):
    ###########################################################
 
    # 2° Egalité professionnelle entre les femmes et les hommes au sein de l'entreprise
-   #   A-Conditions générales d'emploi
-   #     I. Indicateurs sur la situation comparée des femmes et des hommes dans l'entreprise
+   #   I. Indicateurs sur la situation comparée des femmes et des hommes dans l'entreprise
+   #     A-Conditions générales d'emploi
    #       a) Effectifs : Données chiffrées par sexe
-   #       Répartition par catégorie professionnelle selon les différents contrats de travail (CDI ou CDD)
+    nombre_categorie_professionelle_1_en_CDI = models.IntegerField()
+    nombre_categorie_professionelle_2_en_CDI = models.IntegerField()
+    nombre_categorie_professionelle_1_en_CDD = models.IntegerField()
+    nombre_categorie_professionelle_2_en_CDD = models.IntegerField()
+
    #       b) Durée et organisation du travail: Données chiffrées par sexe
-   #       Répartition des effectifs selon la durée du travail : temps complet, temps partiel (compris entre 20 et 30 heures et autres formes de temps partiel)
-   #       Répartition des effectifs selon l'organisation du travail : travail posté, travail de nuit, horaires variables, travail atypique dont travail durant le week-end ;
+    effectif_temps_complet = models.IntegerField(
+        help_text="Effectif à temps complet"
+    )
+    effectif_temps_partiel_20_30_heures = models.IntegerField(
+        help_text="Effectif à temps partiel (compris entre 20 et 30 heures)"
+    )
+    effectif_temps_partiel_autre = models.IntegerField(
+        help_text="Effectif à temps partiel (non compris entre 20 et 30 heures)"
+    )
+    effectif_travail_poste = models.IntegerField(
+        help_text="Effectif en travail posté"
+    )
+    effectif_travail_nuit = models.IntegerField(
+        help_text="Effectif en travail de nuit"
+    )
+    effectif_horaires_variables = models.IntegerField(
+        help_text="Effectif en horaires variables"
+    )
+    effectif_travail_atypique = models.IntegerField(
+        help_text="Effectif en travail atypique dont travail durant le week-end"
+    )
+   #       c) Données sur les congés
+    conges_homme_categorie_professionelle_1 = models.IntegerField()
+    conges_homme_categorie_professionelle_2 = models.IntegerField()
+    conges_femme_categorie_professionelle_1 = models.IntegerField()
+    conges_femme_categorie_professionelle_2 = models.IntegerField()
+    effectif_homme_conges_compte_epargne_temps = models.IntegerField(
+        help_text="La durée du congé doit être supérieure à six mois"
+    )
+    effectif_homme_conges_parental = models.IntegerField(
+        help_text="La durée du congé doit être supérieure à six mois"
+    )
+    effectif_homme_conges_sabbatique = models.IntegerField(
+        help_text="La durée du congé doit être supérieure à six mois"
+    )
+    effectif_femme_conges_compte_epargne_temps = models.IntegerField(
+        help_text="La durée du congé doit être supérieure à six mois"
+    )
+    effectif_femme_conges_parental = models.IntegerField(
+        help_text="La durée du congé doit être supérieure à six mois"
+    )
+    effectif_femme_congés_sabbatique = models.IntegerField(
+        help_text="La durée du congé doit être supérieure à six mois"
+    )
+    #      d) Données sur les embauches et les départs
+    embauches_homme_categorie_professionnelle_1_CDI = models.IntegerField()
+    embauches_homme_categorie_professionnelle_1_CDD = models.IntegerField()
+    embauches_homme_categorie_professionnelle_2_CDI = models.IntegerField()
+    embauches_homme_categorie_professionnelle_2_CDD = models.IntegerField()
+    embauches_femme_categorie_professionnelle_1_CDI = models.IntegerField()
+    embauches_femme_categorie_professionnelle_1_CDD = models.IntegerField()
+    embauches_femme_categorie_professionnelle_2_CDI = models.IntegerField()
+    embauches_femme_categorie_professionnelle_2_CDD = models.IntegerField()
+    departs_homme_categorie_professionnelle_1_retraite = models.IntegerField()
+    departs_homme_categorie_professionnelle_1_demission = models.IntegerField()
+    departs_homme_categorie_professionnelle_1_fin_CDD = models.IntegerField()
+    departs_homme_categorie_professionnelle_1_licenciement = models.IntegerField()
+    departs_homme_categorie_professionnelle_2_retraite = models.IntegerField()
+    departs_homme_categorie_professionnelle_2_demission = models.IntegerField()
+    departs_homme_categorie_professionnelle_2_fin_CDD = models.IntegerField()
+    departs_homme_categorie_professionnelle_2_licenciement = models.IntegerField()
+    departs_femme_categorie_professionnelle_1_retraite = models.IntegerField()
+    departs_femme_categorie_professionnelle_1_demission = models.IntegerField()
+    departs_femme_categorie_professionnelle_1_fin_CDD = models.IntegerField()
+    departs_femme_categorie_professionnelle_1_licenciement = models.IntegerField()
+    departs_femme_categorie_professionnelle_2_retraite = models.IntegerField()
+    departs_femme_categorie_professionnelle_2_demission = models.IntegerField()
+    departs_femme_categorie_professionnelle_2_fin_CDD = models.IntegerField()
+    departs_femme_categorie_professionnelle_2_licenciement = models.IntegerField()
+
+    #      e) Positionnement dans l'entreprise
+    effectif_homme_categorie_professionnelle_1 = models.IntegerField()
+    effectif_homme_categorie_professionnelle_2 = models.IntegerField()
+    effectif_femme_categorie_professionnelle_1 = models.IntegerField()
+    effectif_femme_categorie_professionnelle_2 = models.IntegerField()
+    effectif_homme_niveau_1 = models.IntegerField()
+    effectif_homme_niveau_2 = models.IntegerField()
+    effectif_femme_niveau_1 = models.IntegerField()
+    effectif_femme_niveau_2 = models.IntegerField()
+
+  #     B - Rémunérations et déroulement de carrière
+  #        a) Promotion
+    nombre_homme_promotion_categorie_professionnelle_1 = models.IntegerField()
+    nombre_homme_promotion_categorie_professionnelle_2 = models.IntegerField()
+    nombre_femme_promotion_categorie_professionnelle_1 = models.IntegerField()
+    nombre_femme_promotion_categorie_professionnelle_2 = models.IntegerField()
+    duree_moyenne_entre_deux_promotions_homme = models.IntegerField()
+    duree_moyenne_entre_deux_promotions_femme = models.IntegerField()
+
+  #        b) Ancienneté
+    anciennete_moyenne_homme_categorie_professionnelle_1 = models.IntegerField()
+    anciennete_moyenne_homme_categorie_professionnelle_2 = models.IntegerField()
+    anciennete_moyenne_femme_categorie_professionnelle_1 = models.IntegerField()
+    anciennete_moyenne_femme_categorie_professionnelle_2 = models.IntegerField()
+    anciennete_moyenne_homme_dans_categorie_professionnelle_1 = models.IntegerField()
+    anciennete_moyenne_homme_dans_categorie_professionnelle_2 = models.IntegerField()
+    anciennete_moyenne_femme_dans_categorie_professionnelle_1 = models.IntegerField()
+    anciennete_moyenne_femme_dans_categorie_professionnelle_2 = models.IntegerField()
+    anciennete_moyenne_homme_niveau_1 = models.IntegerField()
+    anciennete_moyenne_homme_niveau_2 = models.IntegerField()
+    anciennete_moyenne_femme_niveau_1 = models.IntegerField()
+    anciennete_moyenne_femme_niveau_2 = models.IntegerField()
+    anciennete_moyenne_homme_dans_niveau_1 = models.IntegerField()
+    anciennete_moyenne_homme_dans_niveau_2 = models.IntegerField()
+    anciennete_moyenne_femme_dans_niveau_1 = models.IntegerField()
+    anciennete_moyenne_femme_dans_niveau_2 = models.IntegerField()
+
+  #        c) Age
+    age_moyen_homme_categorie_professionnelle_1 = models.IntegerField()
+    age_moyen_homme_categorie_professionnelle_2 = models.IntegerField()
+    age_moyen_femme_categorie_professionnelle_1 = models.IntegerField()
+    age_moyen_femme_categorie_professionnelle_2 = models.IntegerField()
+    age_moyen_homme_niveau_1 = models.IntegerField()
+    age_moyen_homme_niveau_2 = models.IntegerField()
+    age_moyen_femme_niveau_1 = models.IntegerField()
+    age_moyen_femme_niveau_2 = models.IntegerField()

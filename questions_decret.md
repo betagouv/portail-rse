@@ -45,3 +45,6 @@ Que met-on ?
 
 2° A I a) réparation par catégorie professionnelle: avec la définition des CSP de l'INSEE?
  https://www.insee.fr/fr/metadonnees/definition/c1758
+ 2° I A c) le nombre de congé : quel est l'unité à prendre en compte (le nombre de congés, le nombre de jours)
+        e) répartition des effectifs  par niveau ou coefficient hiérarchique : quel sont les niveaux? coefficient hiérarchique?
+      B d) rémunération moyenne ou médiane mensuelle -> comment choisir
