@@ -38,7 +38,12 @@ Que faut-il au final ici ?
     les données sur l'exposition aux risques et aux facteurs de pénibilité, 
     (accidents du travail, maladies professionnelles, absentéisme, dépenses en matière de sécurité)
 Que met-on ?
-
+10. L61-62
+    Nombre d'accidents avec arrêts de travail divisé par nombre d'heures travaillées ;
+    Nombre d'accidents de travail avec arrêt × 106 divisé par nombre d'heures travaillées ;
+x 106 ?
+11. L66
+    Nombre d'incapacités permanentes (partielles et totales) notifiées à l'entreprise au cours de l'année considérée (distinguer français et étrangers) 
 
 
 
