@@ -719,13 +719,13 @@ class BDESE(models.Model):
     nombre_journees_absence_accident_femme = models.IntegerField(
         help_text="nombre de journée d'absence pour accidents de travail, accidents de trajet ou maladies professionnelles "
     )
-    maladies_hommes = models.StringField()
-    maladies_femmes = models.StringField()
+    maladies_hommes = models.TextField()
+    maladies_femmes = models.TextField()
     nombre_arrets_travail_hommes = models.IntegerField()
     nombre_arrets_travail_femmes = models.IntegerField()
     nombre_journees_absence_hommes = models.IntegerField()
     nombre_journees_absence_femmes = models.IntegerField()
-
+    
 #   II. Indicateurs relatifs à l'articulation entre l'activité professionnelle et l'exercice de la responsabilité familiale
 #      A. Congés
     complement_salaire_conge = models.BooleanField(
