@@ -1,4 +1,4 @@
-1°  A   a)  i   (I) signifie-t-il qu'il faut remplir pour chaque indicateur où ce (I) apparait (comme par exemple le premier, mais de nombreux autres) une donnée pour chaque structure de qualification ? Comment définit-on cette classification ?
+1°  A   a)  i   (I) signifie-t-il qu'il faut remplir pour chaque indicateur où ce (I) apparait (comme par exemple le premier, mais de nombreux autres) une donnée pour chaque structure de qualification ? Comment définit-on cette classification ? Si cette classification peut être librement définie dans l'entreprise, au niveau de la BDESE, comment espère-t-on récupérer les infos par catégorie via API ?
 
 > I.-Une structure de qualification détaillée, en trois ou quatre postes minimum, est requise. 
 > Il est souhaitable de faire référence à la classification de la convention collective, de l’accord d’entreprise et aux pratiques habituellement retenues dans l’entreprise
