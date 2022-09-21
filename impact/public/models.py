@@ -2,8 +2,9 @@ from django.db import models
 
 
 class BDESE(models.Model):
-    # Décret no 2022-678 du 26 avril 202
     annee = models.IntegerField()
+    
+    # Décret no 2022-678 du 26 avril 202
     # 1° Investissements
     # 1° A - Investissement social
     # 1° A - a) Evolution des effectifs par type de contrat, par âge, par ancienneté
@@ -184,6 +185,30 @@ class BDESE(models.Model):
         verbose_name="Montant de la cotisation sécurité sociale d'accidents de travail"
     )
     # 1° A - f) ii - Répartition des accidents par éléments matériels
+    # Faire référence aux codes de classification des éléments matériels des accidents (arrêté du 10 octobre 1974).
+    nombre_accidents_existence_risques_graves = models.IntegerField(
+        verbose_name="Nombre d'accidents liés à l'existence de risques grave",
+        help_text="Codes 32 à 40",
+    )
+    nombre_accidents_chutes_dénivellation = models.IntegerField(
+        verbose_name="Nombre d'accidents liés à des chutes avec dénivellation",
+        help_text="Code 02",
+    )
+    nombre_accidents_machines = models.IntegerField(
+        verbose_name="Nombre d'accidents occasionnés par des machines",
+        help_text="A l'exception de ceux liés aux risques ci-dessus, codes 09 à 30",
+    )
+    nombre_accidents_circulation_manutention_stockage = models.IntegerField(
+        verbose_name="Nombre d'accidents de circulation-manutention-stockage",
+        help_text="Codes 01,03,04 et 06,07,08",
+    )
+    nombre_accidents_objets_en_mouvement = models.IntegerField(
+        verbose_name="Nombre d'accidents occasionnés par des objets, masses, particules en mouvement accidentel",
+        help_text="Code 05"
+    )
+    nombre_accidents_autres = models.IntegerField(
+        verbose_name="Autres cas"
+    )
     # 1° A - f) iii - Maladies professionnelles
     # 1° A - f) iv - Dépenses en matière de sécurité
     # 1° A - f) v - Durée et aménagement du temps de travail
