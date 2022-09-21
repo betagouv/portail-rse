@@ -143,3 +143,11 @@ class BDESE(models.Model):
     # 1° B - a) Evolution des actifs nets d’amortissement et de dépréciations éventuelles (immobilisations)
     # 1° B - b) Le cas échéant, dépenses de recherche et développement
     # 1° B - c) L’évolution de la productivité et le taux d’utilisation des capacités de production, lorsque ces éléments sont mesurables dans l’entreprise
+
+
+   ###########################################################
+
+   # 2° Egalité professionnelle entre les femmes et les hommes au sein de l'entreprise
+   # I. Indicateurs sur la situation comparée des femmes et des hommes dans l'entreprise
+   # a) Effectifs : Données chiffrées par sexe :
+   # Répartition par catégorie professionnelle selon les différents contrats de travail (CDI ou CDD) ;
