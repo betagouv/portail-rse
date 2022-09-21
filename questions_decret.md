@@ -38,3 +38,10 @@ Que faut-il au final ici ?
     les données sur l'exposition aux risques et aux facteurs de pénibilité, 
     (accidents du travail, maladies professionnelles, absentéisme, dépenses en matière de sécurité)
 Que met-on ?
+
+
+
+
+
+2° A I a) réparation par catégorie professionnelle: avec la définition des CSP de l'INSEE?
+ https://www.insee.fr/fr/metadonnees/definition/c1758
