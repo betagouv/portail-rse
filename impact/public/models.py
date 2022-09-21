@@ -167,6 +167,10 @@ class BDESE(models.Model):
    ###########################################################
 
    # 2° Egalité professionnelle entre les femmes et les hommes au sein de l'entreprise
-   # I. Indicateurs sur la situation comparée des femmes et des hommes dans l'entreprise
-   # a) Effectifs : Données chiffrées par sexe :
-   # Répartition par catégorie professionnelle selon les différents contrats de travail (CDI ou CDD) ;
+   #   A-Conditions générales d'emploi
+   #     I. Indicateurs sur la situation comparée des femmes et des hommes dans l'entreprise
+   #       a) Effectifs : Données chiffrées par sexe
+   #       Répartition par catégorie professionnelle selon les différents contrats de travail (CDI ou CDD)
+   #       b) Durée et organisation du travail: Données chiffrées par sexe
+   #       Répartition des effectifs selon la durée du travail : temps complet, temps partiel (compris entre 20 et 30 heures et autres formes de temps partiel)
+   #       Répartition des effectifs selon l'organisation du travail : travail posté, travail de nuit, horaires variables, travail atypique dont travail durant le week-end ;
