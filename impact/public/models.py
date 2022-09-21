@@ -397,6 +397,14 @@ class BDESE(models.Model):
         verbose_name="Part du temps consacré par le médecin du travail à l'intervention en milieu de travail",
     )
     # 1° A - f) xii - Travailleurs inaptes
+    nombre_salaries_inaptes = models.IntegerField(
+        verbose_name="Nombre de salariés inaptes",
+        help_text="Nombre de salariés déclarés définitivement inaptes à leur emploi par le médecin du travail",
+    )
+    nombre_salaries_reclasses = models.IntegerField(
+        verbose_name="Nombre de salariés reclassés",
+        help_text="Nombre de salariés reclassés dans l'entreprise à la suite d'une inaptitude",
+    )
     # 1° B - Investissement matériel et immatériel
     # 1° B - a) Evolution des actifs nets d’amortissement et de dépréciations éventuelles (immobilisations)
     # 1° B - b) Le cas échéant, dépenses de recherche et développement
