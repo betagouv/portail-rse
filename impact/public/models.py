@@ -371,6 +371,31 @@ class BDESE(models.Model):
         verbose_name="Taux de réalisation du programme d'amélioration des conditions de travail dans l'entreprise l'année précédente",
     )
     # 1° A - f) xi - Médecine du travail
+    # Renseignements tirés du rapport du directeur du service de prévention et de santé au travail interentreprises.
+    nombre_visites_medicales_suivi_droit_commun = models.IntegerField(
+        verbose_name="Nombre de visites d'information et de prévention des travailleurs en suivi de droit commun",
+    )
+    nombre_visites_medicales_suivi_individuel = models.IntegerField(
+        verbose_name="Nombre de visites d'information et de prévention des travailleurs en suivi individuel renforcé",
+    )
+    nombre_examens_medicaux_suivi_droit_commun = models.IntegerField(
+        verbose_name="Nombre d'examens médicaux des travailleurs en suivi de droit commun",
+    )
+    nombre_examens_medicaux_suivi_individuel = models.IntegerField(
+        verbose_name="Nombre d'examens médicaux des travailleurs en suivi individuel renforcé",
+    )
+    nombre_examens_complementaires_sous_surveillance = models.IntegerField(
+        verbose_name="Nombre d'examens complémentaires des travailleurs soumis à surveillance",
+    )
+    nombre_examens_complementaires_autres = models.IntegerField(
+        verbose_name="Nombre d'examens complémentaires des autres travailleurs",
+    )
+    pourcentage_temps_medecin_du_travail_analyse = models.IntegerField(
+        verbose_name="Part du temps consacré par le médecin du travail à l'analyse",
+    )
+    pourcentage_temps_medecin_du_travail_intervention = models.IntegerField(
+        verbose_name="Part du temps consacré par le médecin du travail à l'intervention en milieu de travail",
+    )
     # 1° A - f) xii - Travailleurs inaptes
     # 1° B - Investissement matériel et immatériel
     # 1° B - a) Evolution des actifs nets d’amortissement et de dépréciations éventuelles (immobilisations)

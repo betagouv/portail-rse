@@ -49,7 +49,7 @@ x 106 ?
 1° A f) v Au titre du présent code = code du travail ?
 1° A - f) vii Faut-il distinguer par seuils associés aux facteurs de risques pro ?
 1° A - f) viii Pourquoi le premier indicateur parle de "personnes" et les autres de "salariés" ? Le premier comprend les presta, stagiaires... ? 
-
+1° A - f) xi Part du temps consacré à l'analyse et à l'intervention = une seule part ou deux ?
 
 2° I A a) réparation par catégorie professionnelle: avec la définition des CSP de l'INSEE?
  https://www.insee.fr/fr/metadonnees/definition/c1758
