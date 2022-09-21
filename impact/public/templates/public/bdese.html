@@ -80,6 +80,7 @@
                 {% include 'snippets/input_field.html' with field=form.montant_formation_organismes_recouvrement %}
                 {% include 'snippets/input_field.html' with field=form.montant_formation_organismes_agrees %}
                 {% include 'snippets/input_field.html' with field=form.montant_formation_autres %}
+
                 <h5>Congés formation</h5>
                 {% include 'snippets/input_field.html' with field=form.nombre_salaries_conge_formation_remunere %}
                 {% include 'snippets/input_field.html' with field=form.nombre_salaries_conge_formation_non_remunere %}
@@ -174,6 +175,140 @@
                 {% include 'snippets/input_field.html' with field=form.evolution_amortissement %}
                 {% include 'snippets/input_field.html' with field=form.montant_depenses_recherche_developpement %}
                 {% include 'snippets/input_field.html' with field=form.evolution_productivite %}
+
+
+                <h2>2° Egalité professionnelle entre les femmes et les hommes au sein de l'entreprise</h2>
+                <h3>I. Indicateurs sur la situation comparée des femmes et des hommes dans l'entreprise</h3>
+                <h4>A-Conditions générales d'emploi</h4>
+
+                {% include 'snippets/input_field.html' with field=form.nombre_categorie_professionelle_1_en_CDI %}
+                {% include 'snippets/input_field.html' with field=form.nombre_categorie_professionelle_1_en_CDD %}
+                {% include 'snippets/input_field.html' with field=form.nombre_categorie_professionelle_2_en_CDI %}
+                {% include 'snippets/input_field.html' with field=form.nombre_categorie_professionelle_2_en_CDD %}
+
+                {% include 'snippets/input_field.html' with field=form.effectif_temps_complet_homme %}
+                {% include 'snippets/input_field.html' with field=form.effectif_temps_complet_femme %}
+                {% include 'snippets/input_field.html' with field=form.effectif_temps_partiel_20_30_heures_homme %}
+                {% include 'snippets/input_field.html' with field=form.effectif_temps_partiel_20_30_heures_femme %}
+                {% include 'snippets/input_field.html' with field=form.effectif_temps_partiel_autre_homme %}
+                {% include 'snippets/input_field.html' with field=form.effectif_temps_partiel_autre_femme %}
+                {% include 'snippets/input_field.html' with field=form.effectif_travail_poste_homme %}
+                {% include 'snippets/input_field.html' with field=form.effectif_travail_poste_femme %}
+                {% include 'snippets/input_field.html' with field=form.effectif_travail_nuit_homme %}
+                {% include 'snippets/input_field.html' with field=form.effectif_travail_nuit_femme %}
+                {% include 'snippets/input_field.html' with field=form.effectif_horaires_variables_homme %}
+                {% include 'snippets/input_field.html' with field=form.effectif_horaires_variables_femme %}
+                {% include 'snippets/input_field.html' with field=form.effectif_travail_atypique_homme %}
+                {% include 'snippets/input_field.html' with field=form.effectif_travail_atypique_femme %}
+                {% include 'snippets/input_field.html' with field=form.conges_homme_categorie_professionelle_1 %}
+                {% include 'snippets/input_field.html' with field=form.conges_homme_categorie_professionelle_2 %}
+                {% include 'snippets/input_field.html' with field=form.conges_femme_categorie_professionelle_1 %}
+                {% include 'snippets/input_field.html' with field=form.conges_femme_categorie_professionelle_2 %}
+
+                {% include 'snippets/input_field.html' with field=form.effectif_homme_conges_compte_epargne_temps %}
+                {% include 'snippets/input_field.html' with field=form.effectif_homme_conges_parental %}
+                {% include 'snippets/input_field.html' with field=form.effectif_homme_conges_sabbatique %}
+                {% include 'snippets/input_field.html' with field=form.effectif_femme_conges_compte_epargne_temps %}
+                {% include 'snippets/input_field.html' with field=form.effectif_femme_conges_parental %}
+                {% include 'snippets/input_field.html' with field=form.effectif_femme_congés_sabbatique %}
+                {% include 'snippets/input_field.html' with field=form.embauches_homme_categorie_professionnelle_1_CDI %}
+                {% include 'snippets/input_field.html' with field=form.embauches_homme_categorie_professionnelle_1_CDD %}
+                {% include 'snippets/input_field.html' with field=form.embauches_homme_categorie_professionnelle_2_CDI %}
+                {% include 'snippets/input_field.html' with field=form.embauches_homme_categorie_professionnelle_2_CDD %}
+                {% include 'snippets/input_field.html' with field=form.embauches_femme_categorie_professionnelle_1_CDI %}
+                {% include 'snippets/input_field.html' with field=form.embauches_femme_categorie_professionnelle_1_CDD %}
+                {% include 'snippets/input_field.html' with field=form.embauches_femme_categorie_professionnelle_2_CDI %}
+                {% include 'snippets/input_field.html' with field=form.embauches_femme_categorie_professionnelle_2_CDD %}
+
+                {% include 'snippets/input_field.html' with field=form.departs_homme_categorie_professionnelle_1_retraite %}
+                {% include 'snippets/input_field.html' with field=form.departs_homme_categorie_professionnelle_1_demission %}
+                {% include 'snippets/input_field.html' with field=form.departs_homme_categorie_professionnelle_1_fin_CDD %}
+                {% include 'snippets/input_field.html' with field=form.departs_homme_categorie_professionnelle_1_licenciement %}
+                {% include 'snippets/input_field.html' with field=form.departs_homme_categorie_professionnelle_2_retraite %}
+                {% include 'snippets/input_field.html' with field=form.departs_homme_categorie_professionnelle_2_demission %}
+                {% include 'snippets/input_field.html' with field=form.departs_homme_categorie_professionnelle_2_fin_CDD %}
+                {% include 'snippets/input_field.html' with field=form.departs_homme_categorie_professionnelle_2_licenciement %}
+                {% include 'snippets/input_field.html' with field=form.departs_femme_categorie_professionnelle_1_retraite %}
+                {% include 'snippets/input_field.html' with field=form.departs_femme_categorie_professionnelle_1_demission %}
+                {% include 'snippets/input_field.html' with field=form.departs_femme_categorie_professionnelle_1_fin_CDD %}
+                {% include 'snippets/input_field.html' with field=form.departs_femme_categorie_professionnelle_1_licenciement %}
+                {% include 'snippets/input_field.html' with field=form.departs_femme_categorie_professionnelle_2_retraite %}
+                {% include 'snippets/input_field.html' with field=form.departs_femme_categorie_professionnelle_2_demission %}
+                {% include 'snippets/input_field.html' with field=form.departs_femme_categorie_professionnelle_2_fin_CDD %}
+                {% include 'snippets/input_field.html' with field=form.departs_femme_categorie_professionnelle_2_licenciement %}
+
+                {% include 'snippets/input_field.html' with field=form.effectif_homme_categorie_professionnelle_1 %}
+                {% include 'snippets/input_field.html' with field=form.effectif_homme_categorie_professionnelle_2 %}
+                {% include 'snippets/input_field.html' with field=form.effectif_femme_categorie_professionnelle_1 %}
+                {% include 'snippets/input_field.html' with field=form.effectif_femme_categorie_professionnelle_2 %}
+                {% include 'snippets/input_field.html' with field=form.effectif_homme_niveau_1 %}
+                {% include 'snippets/input_field.html' with field=form.effectif_homme_niveau_2 %}
+                {% include 'snippets/input_field.html' with field=form.effectif_femme_niveau_1 %}
+                {% include 'snippets/input_field.html' with field=form.effectif_femme_niveau_2 %}
+
+                <h4>B - Rémunérations et déroulement de carrière</h4>
+
+                {% include 'snippets/input_field.html' with field=form.nombre_homme_promotion_categorie_professionnelle_1 %}
+                {% include 'snippets/input_field.html' with field=form.nombre_homme_promotion_categorie_professionnelle_2 %}
+                {% include 'snippets/input_field.html' with field=form.nombre_femme_promotion_categorie_professionnelle_1 %}
+                {% include 'snippets/input_field.html' with field=form.nombre_femme_promotion_categorie_professionnelle_1 %}
+                {% include 'snippets/input_field.html' with field=form.duree_moyenne_entre_deux_promotions_homme %}
+                {% include 'snippets/input_field.html' with field=form.duree_moyenne_entre_deux_promotions_femme %}
+                {% include 'snippets/input_field.html' with field=form.anciennete_moyenne_homme_categorie_professionnelle_1 %}
+                {% include 'snippets/input_field.html' with field=form.anciennete_moyenne_homme_categorie_professionnelle_2 %}
+                {% include 'snippets/input_field.html' with field=form.anciennete_moyenne_femme_categorie_professionnelle_1 %}
+                {% include 'snippets/input_field.html' with field=form.anciennete_moyenne_femme_categorie_professionnelle_2 %}
+
+                {% include 'snippets/input_field.html' with field=form.anciennete_moyenne_homme_niveau_1 %}
+                {% include 'snippets/input_field.html' with field=form.anciennete_moyenne_homme_niveau_2 %}
+                {% include 'snippets/input_field.html' with field=form.anciennete_moyenne_femme_niveau_1 %}
+                {% include 'snippets/input_field.html' with field=form.anciennete_moyenne_femme_niveau_2 %}
+                {% include 'snippets/input_field.html' with field=form.anciennete_moyenne_homme_dans_niveau_1 %}
+                {% include 'snippets/input_field.html' with field=form.anciennete_moyenne_homme_dans_niveau_2 %}
+                {% include 'snippets/input_field.html' with field=form.anciennete_moyenne_femme_dans_niveau_1 %}
+                {% include 'snippets/input_field.html' with field=form.anciennete_moyenne_femme_dans_niveau_1 %}
+                {% include 'snippets/input_field.html' with field=form.age_moyen_homme_categorie_professionnelle_1 %}
+                {% include 'snippets/input_field.html' with field=form.age_moyen_homme_categorie_professionnelle_2 %}
+                {% include 'snippets/input_field.html' with field=form.age_moyen_femme_categorie_professionnelle_1 %}
+                {% include 'snippets/input_field.html' with field=form.age_moyen_femme_categorie_professionnelle_2 %}
+                {% include 'snippets/input_field.html' with field=form.age_moyen_homme_niveau_1 %}
+                {% include 'snippets/input_field.html' with field=form.age_moyen_homme_niveau_2 %}
+                {% include 'snippets/input_field.html' with field=form.age_moyen_femme_niveau_1 %}
+                {% include 'snippets/input_field.html' with field=form.age_moyen_femme_niveau_2 %}
+                {% include 'snippets/input_field.html' with field=form.remuneration_moyenne_homme_categorie_professionnelle_1 %}
+                {% include 'snippets/input_field.html' with field=form.remuneration_moyenne_homme_categorie_professionnelle_2 %}
+                {% include 'snippets/input_field.html' with field=form.remuneration_moyenne_femme_categorie_professionnelle_1 %}
+                {% include 'snippets/input_field.html' with field=form.remuneration_moyenne_femme_categorie_professionnelle_2 %}
+                {% include 'snippets/input_field.html' with field=form.remuneration_moyenne_homme_niveau_1 %}
+                {% include 'snippets/input_field.html' with field=form.remuneration_moyenne_homme_niveau_2 %}
+                {% include 'snippets/input_field.html' with field=form.remuneration_moyenne_femme_niveau_1 %}
+                {% include 'snippets/input_field.html' with field=form.remuneration_moyenne_femme_niveau_2 %}
+
+                <h4>C - Formation</h4>
+
+
+
+                <h3>Indicateurs relatifs à l'articulation entre l'activité professionnelle et l'exercice de la responsabilité familiale</h3>
+                <h4>Congés</h4>
+
+                {% include 'snippets/input_field.html' with field=form.complement_salaire_conge %}
+                {% include 'snippets/input_field.html' with field=form.nombre_jours_conges_paternite_pris_categorie_professionnelle_1 %}
+                {% include 'snippets/input_field.html' with field=form.nombre_jours_conges_paternite_pris_categorie_professionnelle_2 %}
+
+                <h4>Organisation du temps de travail dans l'entreprise</h4>
+
+                {% include 'snippets/radio_field.html' with field=form.existence_organisation_facilitant_vie_familiale_et_professionnelle %}
+                {% include 'snippets/input_field.html' with field=form.nombre_salaries_temps_partiel_choisi_homme_categorie_professionnelle_1 %}
+                {% include 'snippets/input_field.html' with field=form.nombre_salaries_temps_partiel_choisi_homme_categorie_professionnelle_2 %}
+                {% include 'snippets/input_field.html' with field=form.nombre_salaries_temps_partiel_choisi_femme_categorie_professionnelle_1 %}
+                {% include 'snippets/input_field.html' with field=form.nombre_salaries_temps_partiel_choisi_femme_categorie_professionnelle_2 %}
+
+                {% include 'snippets/input_field.html' with field=form.nombre_salaries_temps_partiel_choisi_ayant_repris_temps_plein_homme_categorie_professionnelle_1 %}
+                {% include 'snippets/input_field.html' with field=form.nombre_salaries_temps_partiel_choisi_ayant_repris_temps_plein_homme_categorie_professionnelle_2 %}
+                {% include 'snippets/input_field.html' with field=form.nombre_salaries_temps_partiel_choisi_ayant_repris_temps_plein_femme_categorie_professionnelle_1 %}
+                {% include 'snippets/input_field.html' with field=form.nombre_salaries_temps_partiel_choisi_ayant_repris_temps_plein_femme_categorie_professionnelle_2 %}
+                {% include 'snippets/radio_field.html' with field=form.participant_accueil_petite_enfance %}
+                {% include 'snippets/radio_field.html' with field=form.evolution_depenses_credit_impot_famille %}
 
                 <input type="submit" value="Enregistrer" class="fr-btn ">
             </form>
