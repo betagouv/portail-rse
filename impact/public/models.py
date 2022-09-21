@@ -363,6 +363,13 @@ class BDESE(models.Model):
         help_text="Pour l'explication de ces expériences d'amélioration du contenu du travail, donner le nombre de salariés concernés."
     )
     # 1° A - f) x - Dépenses d’amélioration de conditions de travail
+    montant_depenses_amelioration_conditions_travail = models.IntegerField(
+        verbose_name="Montant des dépenses consacrées à l'amélioration des conditions de travail dans l'entreprise",
+        help_text="Non compris l'évaluation des dépenses en matière de santé et de sécurité.",
+    )
+    taux_realisation_programme_amelioration_conditions_travail = models.IntegerField(
+        verbose_name="Taux de réalisation du programme d'amélioration des conditions de travail dans l'entreprise l'année précédente",
+    )
     # 1° A - f) xi - Médecine du travail
     # 1° A - f) xii - Travailleurs inaptes
     # 1° B - Investissement matériel et immatériel
