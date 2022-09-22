@@ -499,36 +499,36 @@ class BDESE(models.Model):
         help_text="La durée du congé doit être supérieure à six mois"
     )
     #      d) Données sur les embauches et les départs
-    embauches_homme_categorie_professionnelle_1_CDI = models.IntegerField()
-    embauches_homme_categorie_professionnelle_1_CDD = models.IntegerField()
-    embauches_homme_categorie_professionnelle_2_CDI = models.IntegerField()
-    embauches_homme_categorie_professionnelle_2_CDD = models.IntegerField()
-    embauches_femme_categorie_professionnelle_1_CDI = models.IntegerField()
-    embauches_femme_categorie_professionnelle_1_CDD = models.IntegerField()
-    embauches_femme_categorie_professionnelle_2_CDI = models.IntegerField()
-    embauches_femme_categorie_professionnelle_2_CDD = models.IntegerField()
-    departs_homme_categorie_professionnelle_1_retraite = models.IntegerField()
-    departs_homme_categorie_professionnelle_1_demission = models.IntegerField()
-    departs_homme_categorie_professionnelle_1_fin_CDD = models.IntegerField()
-    departs_homme_categorie_professionnelle_1_licenciement = models.IntegerField()
-    departs_homme_categorie_professionnelle_2_retraite = models.IntegerField()
-    departs_homme_categorie_professionnelle_2_demission = models.IntegerField()
-    departs_homme_categorie_professionnelle_2_fin_CDD = models.IntegerField()
-    departs_homme_categorie_professionnelle_2_licenciement = models.IntegerField()
-    departs_femme_categorie_professionnelle_1_retraite = models.IntegerField()
-    departs_femme_categorie_professionnelle_1_demission = models.IntegerField()
-    departs_femme_categorie_professionnelle_1_fin_CDD = models.IntegerField()
-    departs_femme_categorie_professionnelle_1_licenciement = models.IntegerField()
-    departs_femme_categorie_professionnelle_2_retraite = models.IntegerField()
-    departs_femme_categorie_professionnelle_2_demission = models.IntegerField()
-    departs_femme_categorie_professionnelle_2_fin_CDD = models.IntegerField()
-    departs_femme_categorie_professionnelle_2_licenciement = models.IntegerField()
+    embauches_homme_ouvrier_CDI = models.IntegerField()
+    embauches_homme_ouvrier_CDD = models.IntegerField()
+    embauches_homme_employe_CDI = models.IntegerField()
+    embauches_homme_employe_CDD = models.IntegerField()
+    embauches_femme_ouvrier_CDI = models.IntegerField()
+    embauches_femme_ouvrier_CDD = models.IntegerField()
+    embauches_femme_employe_CDI = models.IntegerField()
+    embauches_femme_employe_CDD = models.IntegerField()
+    departs_homme_ouvrier_retraite = models.IntegerField()
+    departs_homme_ouvrier_demission = models.IntegerField()
+    departs_homme_ouvrier_fin_CDD = models.IntegerField()
+    departs_homme_ouvrier_licenciement = models.IntegerField()
+    departs_homme_employe_retraite = models.IntegerField()
+    departs_homme_employe_demission = models.IntegerField()
+    departs_homme_employe_fin_CDD = models.IntegerField()
+    departs_homme_employe_licenciement = models.IntegerField()
+    departs_femme_ouvrier_retraite = models.IntegerField()
+    departs_femme_ouvrier_demission = models.IntegerField()
+    departs_femme_ouvrier_fin_CDD = models.IntegerField()
+    departs_femme_ouvrier_licenciement = models.IntegerField()
+    departs_femme_employe_retraite = models.IntegerField()
+    departs_femme_employe_demission = models.IntegerField()
+    departs_femme_employe_fin_CDD = models.IntegerField()
+    departs_femme_employe_licenciement = models.IntegerField()
 
     #      e) Positionnement dans l'entreprise
-    effectif_homme_categorie_professionnelle_1 = models.IntegerField()
-    effectif_homme_categorie_professionnelle_2 = models.IntegerField()
-    effectif_femme_categorie_professionnelle_1 = models.IntegerField()
-    effectif_femme_categorie_professionnelle_2 = models.IntegerField()
+    effectif_homme_ouvrier = models.IntegerField()
+    effectif_homme_employe = models.IntegerField()
+    effectif_femme_ouvrier = models.IntegerField()
+    effectif_femme_employe = models.IntegerField()
     effectif_homme_niveau_1 = models.IntegerField()
     effectif_homme_niveau_2 = models.IntegerField()
     effectif_femme_niveau_1 = models.IntegerField()
@@ -536,22 +536,22 @@ class BDESE(models.Model):
 
   #     B - Rémunérations et déroulement de carrière
   #        a) Promotion
-    nombre_homme_promotion_categorie_professionnelle_1 = models.IntegerField()
-    nombre_homme_promotion_categorie_professionnelle_2 = models.IntegerField()
-    nombre_femme_promotion_categorie_professionnelle_1 = models.IntegerField()
-    nombre_femme_promotion_categorie_professionnelle_2 = models.IntegerField()
+    nombre_homme_promotion_ouvrier = models.IntegerField()
+    nombre_homme_promotion_employe = models.IntegerField()
+    nombre_femme_promotion_ouvrier = models.IntegerField()
+    nombre_femme_promotion_employe = models.IntegerField()
     duree_moyenne_entre_deux_promotions_homme = models.IntegerField()
     duree_moyenne_entre_deux_promotions_femme = models.IntegerField()
 
   #        b) Ancienneté
-    anciennete_moyenne_homme_categorie_professionnelle_1 = models.IntegerField()
-    anciennete_moyenne_homme_categorie_professionnelle_2 = models.IntegerField()
-    anciennete_moyenne_femme_categorie_professionnelle_1 = models.IntegerField()
-    anciennete_moyenne_femme_categorie_professionnelle_2 = models.IntegerField()
-    anciennete_moyenne_homme_dans_categorie_professionnelle_1 = models.IntegerField()
-    anciennete_moyenne_homme_dans_categorie_professionnelle_2 = models.IntegerField()
-    anciennete_moyenne_femme_dans_categorie_professionnelle_1 = models.IntegerField()
-    anciennete_moyenne_femme_dans_categorie_professionnelle_2 = models.IntegerField()
+    anciennete_moyenne_homme_ouvrier = models.IntegerField()
+    anciennete_moyenne_homme_employe = models.IntegerField()
+    anciennete_moyenne_femme_ouvrier = models.IntegerField()
+    anciennete_moyenne_femme_employe = models.IntegerField()
+    anciennete_moyenne_homme_dans_ouvrier = models.IntegerField()
+    anciennete_moyenne_homme_dans_employe = models.IntegerField()
+    anciennete_moyenne_femme_dans_ouvrier = models.IntegerField()
+    anciennete_moyenne_femme_dans_employe = models.IntegerField()
     anciennete_moyenne_homme_niveau_1 = models.IntegerField()
     anciennete_moyenne_homme_niveau_2 = models.IntegerField()
     anciennete_moyenne_femme_niveau_1 = models.IntegerField()
@@ -562,20 +562,20 @@ class BDESE(models.Model):
     anciennete_moyenne_femme_dans_niveau_2 = models.IntegerField()
 
   #        c) Age
-    age_moyen_homme_categorie_professionnelle_1 = models.IntegerField()
-    age_moyen_homme_categorie_professionnelle_2 = models.IntegerField()
-    age_moyen_femme_categorie_professionnelle_1 = models.IntegerField()
-    age_moyen_femme_categorie_professionnelle_2 = models.IntegerField()
+    age_moyen_homme_ouvrier = models.IntegerField()
+    age_moyen_homme_employe = models.IntegerField()
+    age_moyen_femme_ouvrier = models.IntegerField()
+    age_moyen_femme_employe = models.IntegerField()
     age_moyen_homme_niveau_1 = models.IntegerField()
     age_moyen_homme_niveau_2 = models.IntegerField()
     age_moyen_femme_niveau_1 = models.IntegerField()
     age_moyen_femme_niveau_2 = models.IntegerField()
 
   #        d) Rémunérations
-    remuneration_moyenne_homme_categorie_professionnelle_1 = models.IntegerField()
-    remuneration_moyenne_homme_categorie_professionnelle_2 = models.IntegerField()
-    remuneration_moyenne_femme_categorie_professionnelle_1 = models.IntegerField()
-    remuneration_moyenne_femme_categorie_professionnelle_2 = models.IntegerField()
+    remuneration_moyenne_homme_ouvrier = models.IntegerField()
+    remuneration_moyenne_homme_employe = models.IntegerField()
+    remuneration_moyenne_femme_ouvrier = models.IntegerField()
+    remuneration_moyenne_femme_employe = models.IntegerField()
     remuneration_moyenne_homme_niveau_1 = models.IntegerField(
         help_text="Cet indicateur n'a pas à être renseigné lorsque sa mention est de nature à porter atteinte à la confidentialité des données correspondantes, compte tenu notamment du nombre réduit d'individus dans un niveau ou coefficient hiérarchique."
     )
@@ -753,10 +753,10 @@ class BDESE(models.Model):
     complement_salaire_conge = models.BooleanField(
         help_text="Existence d'un complément de salaire versé par l'employeur pour le congé de paternité, le congé de maternité, le congé d'adoption"
     )
-    nombre_jours_conges_paternite_pris_categorie_professionnelle_1 = models.IntegerField(
+    nombre_jours_conges_paternite_pris_ouvrier = models.IntegerField(
         help_text="nombre de jours de congés de paternité pris par le salarié par rapport au nombre de jours de congés théoriques "
     )
-    nombre_jours_conges_paternite_pris_categorie_professionnelle_2 = models.IntegerField(
+    nombre_jours_conges_paternite_pris_employe = models.IntegerField(
         help_text="nombre de jours de congés de paternité pris par le salarié par rapport au nombre de jours de congés théoriques "
     )
 
@@ -764,28 +764,28 @@ class BDESE(models.Model):
     existence_organisation_facilitant_vie_familiale_et_professionnelle = models.BooleanField(
         help_text="Existence de formules d'organisation du travail facilitant l'articulation de la vie familiale et de la vie professionnelle"
     )
-    nombre_salaries_temps_partiel_choisi_homme_categorie_professionnelle_1 = models.IntegerField(
+    nombre_salaries_temps_partiel_choisi_homme_ouvrier = models.IntegerField(
         help_text="nombre de salariés ayant accédé au temps partiel choisi "
     )
-    nombre_salaries_temps_partiel_choisi_homme_categorie_professionnelle_2 = models.IntegerField(
+    nombre_salaries_temps_partiel_choisi_homme_employe = models.IntegerField(
         help_text="nombre de salariés ayant accédé au temps partiel choisi "
     )
-    nombre_salaries_temps_partiel_choisi_femme_categorie_professionnelle_1 = models.IntegerField(
+    nombre_salaries_temps_partiel_choisi_femme_ouvrier = models.IntegerField(
         help_text="nombre de salariés ayant accédé au temps partiel choisi "
     )
-    nombre_salaries_temps_partiel_choisi_femme_categorie_professionnelle_2 = models.IntegerField(
+    nombre_salaries_temps_partiel_choisi_femme_employe = models.IntegerField(
         help_text="nombre de salariés ayant accédé au temps partiel choisi "
     )
-    nombre_salaries_temps_partiel_choisi_ayant_repris_temps_plein_homme_categorie_professionnelle_1 = models.IntegerField(
+    nombre_salaries_temps_partiel_choisi_ayant_repris_temps_plein_homme_ouvrier = models.IntegerField(
         help_text="nombre de salariés ayant accédé au temps partiel choisi "
     )
-    nombre_salaries_temps_partiel_choisi_ayant_repris_temps_plein_homme_categorie_professionnelle_2 = models.IntegerField(
+    nombre_salaries_temps_partiel_choisi_ayant_repris_temps_plein_homme_employe = models.IntegerField(
         help_text="nombre de salariés ayant accédé au temps partiel choisi "
     )
-    nombre_salaries_temps_partiel_choisi_ayant_repris_temps_plein_femme_categorie_professionnelle_1 = models.IntegerField(
+    nombre_salaries_temps_partiel_choisi_ayant_repris_temps_plein_femme_ouvrier = models.IntegerField(
         help_text="nombre de salariés ayant accédé au temps partiel choisi "
     )
-    nombre_salaries_temps_partiel_choisi_ayant_repris_temps_plein_femme_categorie_professionnelle_2 = models.IntegerField(
+    nombre_salaries_temps_partiel_choisi_ayant_repris_temps_plein_femme_employe = models.IntegerField(
         help_text="nombre de salariés ayant accédé au temps partiel choisi "
     )
     participant_accueil_petite_enfance = models.BooleanField(
