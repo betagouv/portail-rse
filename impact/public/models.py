@@ -812,7 +812,56 @@ class BDESE(models.Model):
     emprunts_et_dettes_financieres = models.IntegerField(
         help_text="Emprunts et dettes financières dont échéances et charges financières"
     )
-    impots_et_taxes = models.IntegerField(
-    )
+    impots_et_taxes = models.IntegerField()
 
     # 4° Rémunération des salariés et dirigeants, dans l'ensemble de leurs éléments
+    #   A-Evolution des rémunérations salariales
+    #     a) Frais de personnel
+    #       i. Montant des rémunérations
+
+    rapport_masse_salariale_effectif_mensuel = models.IntegerField(
+        verbose_name="apport entre la masse salariale annuelle (Masse salariale annuelle totale, au sens de la déclaration annuelle de salaire.) et l'effectif mensuel moyen"
+    )
+    remuneration_moyenne_decembre = models.IntegerField(
+        help_text="rémunération moyenne du mois de décembre (effectif permanent) hors primes à périodicité non mensuelle ― base 35 heures"
+    )
+    remuneration_mensuelle_moyenne = models.IntegerField()
+    part_primes_non_mensuelle = models.IntegerField(
+        help_text="part des primes à périodicité non mensuelle dans la déclaration de salaire"
+    )
+    remunerations_tranche_1 = models.IntegerField()
+    remunerations_tranche_2 = models.IntegerField()
+    remunerations_tranche_3 = models.IntegerField()
+    remunerations_tranche_4 = models.IntegerField()
+    remunerations_tranche_5 = models.IntegerField()
+    remunerations_tranche_6 = models.IntegerField()
+
+    #       ii. Hiérarchie des rémunérations
+    rapport_moyenne_deciles = models.IntegerField(
+        help_text="rapport entre la moyenne des rémunérations des 10 % des salariés touchant les rémunérations les plus élevées et celle correspondant au 10 % des salariés touchant les rémunérations les moins élevées"
+    )
+    rapport_moyenne_cadres_ouvriers = models.IntegerField(
+        help_text="rapport entre la moyenne des rémunérations des cadres ou assimilés (y compris cadres supérieurs et dirigeants) et la moyenne des rémunérations des ouvriers non qualifiés ou assimilés. Pour être prises en compte, les catégories concernées doivent comporter au minimum dix salariés."
+    )
+    montant_10_remunerations_les_plus_eleves = models.IntegerField()
+
+    #       iii. Mode de calcul des rémunérations
+    pourcentage_salaries_rendement_primes_individuelles  = models.IntegerField(
+        verbose_name="Pourcentage des salariés dont le salaire dépend, en tout ou partie, du rendement",
+        help_text="primes individuelles"
+    )
+    pourcentage_salaries_rendement_primes_collectives  = models.IntegerField(
+        verbose_name="Pourcentage des salariés dont le salaire dépend, en tout ou partie, du rendement",
+        help_text="primes collectives"
+    )
+    pourcentage_ouvriers_employes_payes_au_mois  = models.IntegerField(
+        verbose_name="Pourcentage des ouvriers et employés payés au mois sur la base de l'horaire affiché",
+    )
+
+    #      iv. Charge salariale globale
+    #         vide
+
+    #   b) Pour les entreprises soumises aux dispositions de l'article L. 225-115 du code de commerce, montant global des rémunérations visées au 4° de cet article
+    #      vide
+
+    # B. Epargne salariale : intéressement, participation

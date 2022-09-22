@@ -60,6 +60,11 @@ Décomposition par type de stages à titre d'exemple : adaptation, formation pro
             "maladies": champ libre pour lister des maladies non professionnelles ?
 
 
+4°  A a)  indicateurs au choix -> on met tout et on laisse remplir ?
+         iv Charge salariale globale : pas d'indicateur de précisé
+      b) rien de précisé
+
+
 Doublon ?
 1° A f : Nombre de journées d'absence pour accidents du travail et de trajet ou maladies professionnelles (I) ;
 2° I D : nombre de journée d'absence pour accidents de travail, accidents de trajet ou maladies professionnelles ;
