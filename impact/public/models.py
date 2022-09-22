@@ -804,3 +804,15 @@ class BDESE(models.Model):
         verbose_name="objectifs de progression pour l'année à venir et indicateurs associés",
         help_text="Définition qualitative et quantitative des mesures permettant de les atteindre conformément à l'article R. 2242-2. Evaluation de leur coût. Echéancier des mesures prévues",
     )
+
+    # 3° Fonds propres, endettement et impôts
+    capitaux_propres = models.IntegerField(
+        help_text="Capitaux propres de l'entreprise"
+    )
+    emprunts_et_dettes_financieres = models.IntegerField(
+        help_text="Emprunts et dettes financières dont échéances et charges financières"
+    )
+    impots_et_taxes = models.IntegerField(
+    )
+
+    # 4° Rémunération des salariés et dirigeants, dans l'ensemble de leurs éléments

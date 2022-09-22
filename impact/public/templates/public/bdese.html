@@ -8,9 +8,9 @@
 
             <form action="{% url 'bdese' %}" method="post">
                 {% csrf_token %}
-                <h2>Investissements</h2>
-                <h3>Investissement social</h3>
-                <h4>Evolution des effectifs par type de contrat, par âge, par ancienneté</h4>
+                <h2>1° Investissements</h2>
+                <h3>A Investissement social</h3>
+                <h4>a) Evolution des effectifs par type de contrat, par âge, par ancienneté</h4>
                 <h5>Effectif</h5>
                 {% include 'snippets/input_field.html' with field=form.effectif_total %}
                 {% include 'snippets/input_field.html' with field=form.effectif_permanent %}
@@ -394,7 +394,10 @@
                 {% include 'snippets/input_field.html' with field=form.mesures_prises_egalite %}
                 {% include 'snippets/input_field.html' with field=form.objectifs_progression %}
 
-
+                <h2>3° Fonds propres, endettement et impôts</h2>
+                {% include 'snippets/input_field.html' with field=form.capitaux_propres %}
+                {% include 'snippets/input_field.html' with field=form.emprunts_et_dettes_financieres %}
+                {% include 'snippets/input_field.html' with field=form.impots_et_taxes %}
 
                 <input type="submit" value="Enregistrer" class="fr-btn ">
             </form>
