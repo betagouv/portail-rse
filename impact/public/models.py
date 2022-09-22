@@ -795,4 +795,12 @@ class BDESE(models.Model):
         help_text="évolution des dépenses éligibles au crédit d'impôt famille"
     )
 
-# III. Stratégie d'action
+#  III. Stratégie d'action
+    mesures_prises_egalite = models.TextField(
+        verbose_name="mesures prises au cours de l'année écoulée en vue d'assurer l'égalité professionnelle",
+        help_text="Bilan des actions de l'année écoulée et, le cas échéant, de l'année précédente. Evaluation du niveau de réalisation des objectifs sur la base des indicateurs retenus. Explications sur les actions prévues non réalisées",
+    )
+    objectifs_progression = models.TextField(
+        verbose_name="objectifs de progression pour l'année à venir et indicateurs associés",
+        help_text="Définition qualitative et quantitative des mesures permettant de les atteindre conformément à l'article R. 2242-2. Evaluation de leur coût. Echéancier des mesures prévues",
+    )

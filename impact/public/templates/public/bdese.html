@@ -368,7 +368,7 @@
                 {% include 'snippets/input_field.html' with field=form.nombre_journees_absence_femmes %}
 
 
-                <h3>Indicateurs relatifs à l'articulation entre l'activité professionnelle et l'exercice de la responsabilité familiale</h3>
+                <h3>II. Indicateurs relatifs à l'articulation entre l'activité professionnelle et l'exercice de la responsabilité familiale</h3>
                 <h4>Congés</h4>
 
                 {% include 'snippets/input_field.html' with field=form.complement_salaire_conge %}
@@ -389,6 +389,12 @@
                 {% include 'snippets/input_field.html' with field=form.nombre_salaries_temps_partiel_choisi_ayant_repris_temps_plein_femme_categorie_professionnelle_2 %}
                 {% include 'snippets/radio_field.html' with field=form.participant_accueil_petite_enfance %}
                 {% include 'snippets/radio_field.html' with field=form.evolution_depenses_credit_impot_famille %}
+
+                <h3>III. Stratégie d'action</h3>
+                {% include 'snippets/input_field.html' with field=form.mesures_prises_egalite %}
+                {% include 'snippets/input_field.html' with field=form.objectifs_progression %}
+
+
 
                 <input type="submit" value="Enregistrer" class="fr-btn ">
             </form>
