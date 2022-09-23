@@ -1,1 +1,4 @@
-{% for widget in widget.subwidgets %}{{ categories }}{% include widget.template_name %}{% endfor %}
+{% for widget in widget.subwidgets %}
+    {{ categories }}
+    {% include widget.template_name %}
+{% endfor %}
