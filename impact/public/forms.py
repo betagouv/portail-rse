@@ -1,6 +1,7 @@
 from django import forms
+from django.contrib.postgres.forms import SplitArrayField, SplitArrayWidget
 
-from .models import BDESE
+from .models import BDESE, categories_default
 
 
 class DsfrForm(forms.Form):
@@ -43,7 +44,28 @@ class EligibiliteForm(DsfrForm):
     raison_sociale = forms.CharField()
 
 
+class CategoryWidget(SplitArrayWidget):
+    template_name = "snippets/category_widget.html"
+
+    def __init__(self, categories, *args, **kwargs):
+        self.categories = categories
+        super().__init__(*args, **kwargs)
+
+    
+    def get_context(self, name, value, attrs=None):
+        context = super().get_context(name, value, {"class": "fr-input"})
+        context["categories"] = self.categories
+        return context
+
+
+class CategoryField(SplitArrayField):
+    def __init__(self, base_field, size, categories, *args, **kwargs):
+        widget = CategoryWidget(categories=categories, widget=base_field.widget, size=size)
+        super().__init__(base_field, size, *args, widget=widget)
+
+
 class BDESEForm(forms.ModelForm, DsfrForm):
+    effectif_total = CategoryField(forms.IntegerField(), 5, categories=categories_default())
     class Meta:
         model = BDESE
         exclude = ["annee"]
