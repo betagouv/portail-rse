@@ -1,4 +1,7 @@
+{% load filters %}
 {% for widget in widget.subwidgets %}
-    {{ categories }}
-    {% include widget.template_name %}
+    {% with counter=forloop.counter0 %}
+        {{ categories | index:counter }}
+        {% include widget.template_name %}
+    {% endwith %}
 {% endfor %}
