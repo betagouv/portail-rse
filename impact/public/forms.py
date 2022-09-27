@@ -51,7 +51,6 @@ class CategoryWidget(SplitArrayWidget):
         self.categories = categories
         super().__init__(*args, **kwargs)
 
-    
     def get_context(self, name, value, attrs=None):
         context = super().get_context(name, value, {"class": "fr-input"})
         context["categories"] = self.categories
@@ -64,8 +63,50 @@ class CategoryField(SplitArrayField):
         super().__init__(base_field, size, *args, widget=widget)
 
 
+class CategoryJSONWidget(forms.MultiWidget):
+    template_name = "snippets/category_json_widget.html"
+
+    def __init__(self, categories, widgets=None, attrs=None):
+        self.categories = categories
+        super().__init__(widgets, attrs)
+
+
+    def get_context(self, name, value, attrs=None):
+       context = super().get_context(name, value, attrs)
+       context["categories"] = list(self.categories.keys())
+       return context
+
+    def decompress(self, value):
+        return [int(i) for i in value.split(",")]
+
+
+class CategoryJSONField(forms.MultiValueField):
+    widget = CategoryJSONWidget
+
+    def __init__(self, base_field, categories, *args, **kwargs):
+        """https://docs.djangoproject.com/en/4.1/ref/forms/fields/#django.forms.MultiValueField.require_all_fields"""
+        fields = [
+            base_field() for category in categories
+        ]
+        widgets = [base_field.widget for category in categories]
+        super().__init__(
+            fields=fields,
+            widget=CategoryJSONWidget(categories, widgets, attrs={"class": "fr-input"}),
+            require_all_fields=False, *args, **kwargs
+        )
+
+    def compress(self, data_list):
+        return "1,2,3,4,5"
+
+
+def default_json_categories():
+    return {categorie: None for categorie in categories_default()}
+
+
 class BDESEForm(forms.ModelForm, DsfrForm):
-    effectif_total = CategoryField(forms.IntegerField(), 5, categories=categories_default())
+    #effectif_total = CategoryField(forms.IntegerField(), 5, categories=categories_default())
+    #effectif_total = CategoryJSONField(forms.JSONField(), 5, default=default_json_categories())
+    effectif_total = CategoryJSONField(forms.IntegerField, default_json_categories()) #forms.JSONField(), 5, default=default_json_categories())
     class Meta:
         model = BDESE
         exclude = ["annee"]
