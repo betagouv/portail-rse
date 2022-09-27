@@ -109,5 +109,6 @@ def result(request):
 
 
 def bdese(request):
-    form = BDESEForm(request.POST)
+    #form = BDESEForm(request.POST)
+    form = BDESEForm(initial={"effectif_total": (10, 22, 3, 3, 44)})
     return render(request, "public/bdese.html", {"form": form})

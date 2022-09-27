@@ -13,6 +13,7 @@
                 <h4>a) Evolution des effectifs par type de contrat, par âge, par ancienneté</h4>
                 <h5>Effectif</h5>
                 {% include 'snippets/category_field.html' with field=form.effectif_total %}
+{% comment %}
                 {% include 'snippets/input_field.html' with field=form.effectif_permanent %}
                 {% include 'snippets/input_field.html' with field=form.effectif_cdd %}
                 {% include 'snippets/input_field.html' with field=form.effectif_mensuel_moyen %}
@@ -432,7 +433,7 @@
 
                 <h3>B-Epargne salariale : intéressement, participation</h3>
 
-
+{% endcomment %}
 
                 <input type="submit" value="Enregistrer" class="fr-btn ">
             </form>
