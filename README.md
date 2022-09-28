@@ -5,13 +5,11 @@ https://beta.gouv.fr/startups/plateforme.impact.html
 
 ## développement local
 
+Créer le fichier de variable d'environnement `.env` à partir du fichier d'exemple `.env.example`
 
 ```
-export SECRET_KEY=fake-secret-key
-export API_ENTREPRISE_TOKEN=xxx
-. ./venv/bin/activate
-python3 impact/manage.py runserver
+make install
+make run
 ```
-
 
 Il est nécessaire d'installer le paquet système `libpq-dev` pour avoir `pg_config`.
