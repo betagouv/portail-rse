@@ -1,14 +1,23 @@
+from django import forms
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 
-class CategorieField(models.Field):
+class CategoryField(models.JSONField):
+    def __init__(self, base_field, categories, *args, **kwargs):
+        self.base_field = base_field
+        self.categories = categories
+        super().__init__(*args, **kwargs)
 
     def formfield(self, **kwargs):
         from .forms import CategoryJSONField
-        defaults = {'form_class': CategoryJSONField}
+        defaults = {
+            'form_class': CategoryJSONField,
+            'base_field': self.base_field,
+            "categories": self.categories,
+        }
         defaults.update(kwargs)
-        return super(CategorieField, self).formfield(**defaults)
+        return super().formfield(**defaults)
 
     def get_internal_type(self):
         return 'CategorieJSONField'
@@ -29,8 +38,10 @@ class BDESE(models.Model):
     # 1° A - Investissement social
     # 1° A - a) Evolution des effectifs par type de contrat, par âge, par ancienneté
     # 1° A - a) i - Effectif
-    #effectif_total = CategorieField(
-    effectif_total = models.JSONField(
+    effectif_total = CategoryField(
+        base_field=forms.IntegerField,
+        categories=categories_default(),
+    # effectif_total = models.JSONField(
     #effectif_total = ArrayField(
     #    models.IntegerField(blank=True),
         help_text="Tout salarié inscrit à l’effectif au 31/12 quelle que soit la nature de son contrat de travail",

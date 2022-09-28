@@ -73,7 +73,7 @@ class CategoryJSONWidget(forms.MultiWidget):
 
     def get_context(self, name, value, attrs=None):
        context = super().get_context(name, value, attrs)
-       context["categories"] = list(self.categories.keys())
+       context["categories"] = self.categories
        return context
 
     def decompress(self, value):
@@ -85,7 +85,7 @@ class CategoryJSONWidget(forms.MultiWidget):
 class CategoryJSONField(forms.MultiValueField):
     widget = CategoryJSONWidget
 
-    def __init__(self, base_field, categories, *args, **kwargs):
+    def __init__(self, base_field, categories, encoder=None, decoder=None, *args, **kwargs):
         """https://docs.djangoproject.com/en/4.1/ref/forms/fields/#django.forms.MultiValueField.require_all_fields"""
         self.categories = categories
         fields = [
@@ -109,8 +109,8 @@ def default_json_categories():
 
 
 class BDESEForm(forms.ModelForm, DsfrForm):
-    #effectif_total = CategoryField(forms.IntegerField(), 5, categories=categories_default())
-    effectif_total = CategoryJSONField(forms.IntegerField, default_json_categories())
+    # effectif_total = CategoryField(forms.IntegerField(), 5, categories=categories_default())
+    # effectif_total = CategoryJSONField(forms.IntegerField, default_json_categories())
     class Meta:
         model = BDESE
         exclude = ["annee"]
