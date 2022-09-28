@@ -77,7 +77,9 @@ class CategoryJSONWidget(forms.MultiWidget):
        return context
 
     def decompress(self, value):
-        return [int(i) for i in value.split(",")]
+        if type(value) != dict:
+            return []
+        return [value.get(category) for category in self.categories]
 
 
 class CategoryJSONField(forms.MultiValueField):
@@ -108,8 +110,7 @@ def default_json_categories():
 
 class BDESEForm(forms.ModelForm, DsfrForm):
     #effectif_total = CategoryField(forms.IntegerField(), 5, categories=categories_default())
-    #effectif_total = CategoryJSONField(forms.JSONField(), 5, default=default_json_categories())
-    effectif_total = CategoryJSONField(forms.IntegerField, default_json_categories()) #forms.JSONField(), 5, default=default_json_categories())
+    effectif_total = CategoryJSONField(forms.IntegerField, default_json_categories())
     class Meta:
         model = BDESE
         exclude = ["annee"]

@@ -5,6 +5,7 @@ from django.template.loader import render_to_string
 from weasyprint import HTML
 
 from .forms import BDESEForm, EligibiliteForm, SirenForm
+from .models import BDESE
 
 
 def index(request):
@@ -110,11 +111,17 @@ def result(request):
 
 def bdese(request):
     if request.method == 'POST':
-        form = BDESEForm(request.POST)
+        if bdese := BDESE.objects.get(pk=1):
+            form = BDESEForm(request.POST, instance=bdese)
+        else:
+            form = BDESEForm(request.POST)
         if form.is_valid():
             bdese = form.save()
         else:
             print(form.errors)
     else:
-        form = BDESEForm(initial={"effectif_total": (10, 22, 3, 3, 44)})
+        if bdese := BDESE.objects.get(pk=1):
+            form = BDESEForm(instance=bdese)
+        else:
+            form = BDESEForm(initial={"effectif_total": {"ouvrier":10, "employé":2, "technicien":3, "agent de maitrise":3, "cadre":44}})
     return render(request, "public/bdese.html", {"form": form})
