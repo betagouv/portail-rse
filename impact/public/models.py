@@ -19,10 +19,10 @@ def categories_default():
 
 
 class BDESE(models.Model):
-    categories = ArrayField(models.CharField(max_length=50), default=categories_default)
-    categories_detaillees = ArrayField(models.CharField(max_length=50), default=categories_default)
+    #categories = ArrayField(models.CharField(max_length=50), default=categories_default)
+    #categories_detaillees = ArrayField(models.CharField(max_length=50), default=categories_default)
 
-    annee = models.IntegerField()
+    annee = models.IntegerField(default=2022)
 
     # Décret no 2022-678 du 26 avril 202
     # 1° Investissements
@@ -35,6 +35,9 @@ class BDESE(models.Model):
     #    models.IntegerField(blank=True),
         help_text="Tout salarié inscrit à l’effectif au 31/12 quelle que soit la nature de son contrat de travail",
     )
+
+
+class Vide:
     effectif_permanent = models.IntegerField(
         help_text="Les salariés à temps plein, inscrits à l’effectif pendant toute l’année considérée et titulaires d’un contrat de travail à durée indéterminée."
     )
