@@ -85,6 +85,7 @@ class CategoryJSONField(forms.MultiValueField):
 
     def __init__(self, base_field, categories, *args, **kwargs):
         """https://docs.djangoproject.com/en/4.1/ref/forms/fields/#django.forms.MultiValueField.require_all_fields"""
+        self.categories = categories
         fields = [
             base_field() for category in categories
         ]
@@ -96,7 +97,9 @@ class CategoryJSONField(forms.MultiValueField):
         )
 
     def compress(self, data_list):
-        return "1,2,3,4,5"
+        if data_list:
+            return dict(zip(self.categories, data_list))
+        return None
 
 
 def default_json_categories():
