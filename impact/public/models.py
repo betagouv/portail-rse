@@ -6,6 +6,9 @@ from django.db import models
 class Entreprise(models.Model):
     siren = models.CharField(max_length=9)
 
+    def __str__(self):
+        return self.siren
+
 
 class CategoryField(models.JSONField):
     def __init__(self, base_field, *args, **kwargs):
@@ -54,6 +57,9 @@ class BDESE(models.Model):
         blank=True,
         null=True,
     )
+
+    def __str__(self):
+        return self.entreprise.siren
 
 
 class Vide:
