@@ -5,4 +5,4 @@ __pycache__
 .env
 
 impact/impact/static_collected/
-impact/db.sqlite3
+*.sqlite3
