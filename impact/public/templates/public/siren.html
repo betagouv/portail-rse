@@ -8,6 +8,7 @@
 
             <form action="{% url 'eligibilite' %}" method="get">
                 {% csrf_token %}
+                {{ form.siren.as_hidden }}
                 {{ form.raison_sociale.as_hidden }}
                 {% include 'snippets/select_field.html' with field=form.effectif %}
                 {% include 'snippets/radio_field.html' with field=form.accord %}

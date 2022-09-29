@@ -17,7 +17,8 @@
         </p>
         {% endif %}
     <p>
-        <a href="{% url 'result' %}?raison_sociale={{ raison_sociale }}&bdese={{ bdese_result }}" target="_blank">Télécharger le pdf</a>
+        <a class="fr-btn fr-btn--primary" href="{% url 'bdese' siren %}">Remplir ma BDESE</a>
+        <a class="fr-btn fr-btn--secondary" href="{% url 'result' %}?raison_sociale={{ raison_sociale }}&bdese={{ bdese_result }}" target="_blank">Télécharger le pdf</a>
     </p>
     {% endif %}
 </div>

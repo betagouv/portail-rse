@@ -42,6 +42,7 @@ class EligibiliteForm(DsfrForm):
         required=False,
     )
     raison_sociale = forms.CharField()
+    siren = forms.CharField()
 
 
 class CategoryWidget(SplitArrayWidget):

@@ -41,7 +41,11 @@ def siren(request):
             else:
                 taille = "sup500"
             form = EligibiliteForm(
-                initial={"effectif": taille, "raison_sociale": raison_sociale}
+                initial={
+                    "siren": siren,
+                    "effectif": taille,
+                    "raison_sociale": raison_sociale,
+                }
             )
             return render(
                 request,
@@ -74,6 +78,7 @@ def eligibilite(request):
         accord = form.cleaned_data["accord"]
         effectif = form.cleaned_data["effectif"]
         raison_sociale = form.cleaned_data["raison_sociale"]
+        siren = form.cleaned_data["siren"]
         if effectif == "petit":
             bdese_result = BDESE_ELIGIBILITE["NON_ELIGIBLE"]
         elif accord:
@@ -92,6 +97,7 @@ def eligibilite(request):
             "BDESE_ELIGIBILITE": BDESE_ELIGIBILITE,
             "bdese_result": bdese_result,
             "raison_sociale": raison_sociale,
+            "siren": siren,
         },
     )
 
