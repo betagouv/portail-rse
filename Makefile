@@ -11,3 +11,9 @@ install:
 
 shell:
 	./venv/bin/python3 impact/manage.py shell
+
+migrate:
+	./venv/bin/python3 impact/manage.py migrate
+
+migrations:
+	./venv/bin/python3 impact/manage.py makemigrations public

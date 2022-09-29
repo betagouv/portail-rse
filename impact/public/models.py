@@ -4,23 +4,25 @@ from django.db import models
 
 
 class CategoryField(models.JSONField):
-    def __init__(self, base_field, categories, *args, **kwargs):
+    def __init__(self, base_field, *args, **kwargs):
         self.base_field = base_field
-        self.categories = categories
         super().__init__(*args, **kwargs)
 
+    def deconstruct(self):
+        name, path, args, kwargs = super().deconstruct()
+        kwargs["base_field"] = self.base_field
+        return name, path, args, kwargs
+
+    @property
+    def non_db_attrs(self):
+        return super().non_db_attrs + ("base_field",)
+
     def formfield(self, **kwargs):
-        from .forms import CategoryJSONField
         defaults = {
-            'form_class': CategoryJSONField,
             'base_field': self.base_field,
-            "categories": self.categories,
         }
         defaults.update(kwargs)
         return super().formfield(**defaults)
-
-    def get_internal_type(self):
-        return 'CategorieJSONField'
 
 
 def categories_default():
@@ -40,7 +42,6 @@ class BDESE(models.Model):
     # 1° A - a) i - Effectif
     effectif_total = CategoryField(
         base_field=forms.IntegerField,
-        categories=categories_default(),
     # effectif_total = models.JSONField(
     #effectif_total = ArrayField(
     #    models.IntegerField(blank=True),

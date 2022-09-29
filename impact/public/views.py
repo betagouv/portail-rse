@@ -4,8 +4,8 @@ from django.shortcuts import HttpResponse, render
 from django.template.loader import render_to_string
 from weasyprint import HTML
 
-from .forms import BDESEForm, EligibiliteForm, SirenForm
-from .models import BDESE
+from .forms import bdese_form_factory, EligibiliteForm, SirenForm
+from .models import BDESE, categories_default
 
 
 def index(request):
@@ -110,18 +110,19 @@ def result(request):
 
 
 def bdese(request):
+    categories = categories_default()
     if request.method == 'POST':
-        if bdese := BDESE.objects.get(pk=1):
-            form = BDESEForm(request.POST, instance=bdese)
+        if bdese := BDESE.objects.first():
+            form = bdese_form_factory(categories, request.POST, instance=bdese)
         else:
-            form = BDESEForm(request.POST)
+            form = bdese_form_factory(categories, request.POST)
         if form.is_valid():
             bdese = form.save()
         else:
             print(form.errors)
     else:
-        if bdese := BDESE.objects.get(pk=1):
-            form = BDESEForm(instance=bdese)
+        if bdese := BDESE.objects.first():
+            form = bdese_form_factory(categories, instance=bdese)
         else:
-            form = BDESEForm(initial={"effectif_total": {"ouvrier":10, "employé":2, "technicien":3, "agent de maitrise":3, "cadre":44}})
+            form = bdese_form_factory(categories)
     return render(request, "public/bdese.html", {"form": form})
