@@ -59,7 +59,9 @@ class CategoryWidget(SplitArrayWidget):
 
 class CategoryField(SplitArrayField):
     def __init__(self, base_field, size, categories, *args, **kwargs):
-        widget = CategoryWidget(categories=categories, widget=base_field.widget, size=size)
+        widget = CategoryWidget(
+            categories=categories, widget=base_field.widget, size=size
+        )
         super().__init__(base_field, size, *args, widget=widget)
 
 
@@ -70,11 +72,10 @@ class CategoryJSONWidget(forms.MultiWidget):
         self.categories = categories
         super().__init__(widgets, attrs)
 
-
     def get_context(self, name, value, attrs=None):
-       context = super().get_context(name, value, attrs)
-       context["categories"] = self.categories
-       return context
+        context = super().get_context(name, value, attrs)
+        context["categories"] = self.categories
+        return context
 
     def decompress(self, value):
         if type(value) != dict:
@@ -89,14 +90,16 @@ def bdese_form_factory(categories, *args, **kwargs):
         def __init__(self, base_field, encoder=None, decoder=None, *args, **kwargs):
             """https://docs.djangoproject.com/en/4.1/ref/forms/fields/#django.forms.MultiValueField.require_all_fields"""
             self.categories = categories
-            fields = [
-                base_field() for category in self.categories
-            ]
+            fields = [base_field() for category in self.categories]
             widgets = [base_field.widget for category in self.categories]
             super().__init__(
                 fields=fields,
-                widget=CategoryJSONWidget(self.categories, widgets, attrs={"class": "fr-input"}),
-                require_all_fields=False, *args, **kwargs
+                widget=CategoryJSONWidget(
+                    self.categories, widgets, attrs={"class": "fr-input"}
+                ),
+                require_all_fields=False,
+                *args,
+                **kwargs
             )
 
         def compress(self, data_list):
@@ -104,17 +107,13 @@ def bdese_form_factory(categories, *args, **kwargs):
                 return dict(zip(self.categories, data_list))
             return None
 
-
     def default_json_categories():
         return {categorie: None for categorie in categories_default()}
-
 
     class BDESEForm(forms.ModelForm, DsfrForm):
         class Meta:
             model = BDESE
-            exclude = ["annee"]
-            field_classes = {
-                "effectif_total": CategoryJSONField
-            }
+            exclude = ["annee", "entreprise"]
+            field_classes = {"effectif_total": CategoryJSONField}
 
     return BDESEForm(*args, **kwargs)

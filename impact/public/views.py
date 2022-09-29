@@ -5,7 +5,7 @@ from django.template.loader import render_to_string
 from weasyprint import HTML
 
 from .forms import bdese_form_factory, EligibiliteForm, SirenForm
-from .models import BDESE, categories_default
+from .models import BDESE, Entreprise, categories_default
 
 
 def index(request):
@@ -28,6 +28,7 @@ def siren(request):
 
         response = requests.get(url, headers=headers, params=params)
         if response.status_code == 200:
+            Entreprise.objects.get_or_create(siren=siren)
             data = response.json()["data"]
             raison_sociale = data["personne_morale_attributs"]["raison_sociale"]
             effectif = data["tranche_effectif_salarie"]["a"]
@@ -109,20 +110,16 @@ def result(request):
     return response
 
 
-def bdese(request):
+def bdese(request, siren):
+    entreprise = Entreprise.objects.get(siren=siren)
+    bdese, created = BDESE.objects.get_or_create(entreprise=entreprise)
     categories = categories_default()
-    if request.method == 'POST':
-        if bdese := BDESE.objects.first():
-            form = bdese_form_factory(categories, request.POST, instance=bdese)
-        else:
-            form = bdese_form_factory(categories, request.POST)
+    if request.method == "POST":
+        form = bdese_form_factory(categories, request.POST, instance=bdese)
         if form.is_valid():
             bdese = form.save()
         else:
             print(form.errors)
     else:
-        if bdese := BDESE.objects.first():
-            form = bdese_form_factory(categories, instance=bdese)
-        else:
-            form = bdese_form_factory(categories)
-    return render(request, "public/bdese.html", {"form": form})
+        form = bdese_form_factory(categories, instance=bdese)
+    return render(request, "public/bdese.html", {"form": form, "siren": siren})
