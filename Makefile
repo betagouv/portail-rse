@@ -17,3 +17,6 @@ migrate:
 
 migrations:
 	./venv/bin/python3 impact/manage.py makemigrations public
+
+createsuperuser:
+	./venv/bin/python3 impact/manage.py createsuperuser

@@ -85,10 +85,10 @@ class CategoryJSONWidget(forms.MultiWidget):
 
 
 def bdese_form_factory(categories, *args, **kwargs):
-    class CategoryJSONField(forms.MultiValueField):
+    class CategoryMultiValueField(forms.MultiValueField):
         widget = CategoryJSONWidget
 
-        def __init__(self, base_field, encoder=None, decoder=None, *args, **kwargs):
+        def __init__(self, base_field=forms.IntegerField, encoder=None, decoder=None, *args, **kwargs):
             """https://docs.djangoproject.com/en/4.1/ref/forms/fields/#django.forms.MultiValueField.require_all_fields"""
             self.categories = categories
             fields = [base_field() for category in self.categories]
@@ -113,6 +113,6 @@ def bdese_form_factory(categories, *args, **kwargs):
         class Meta:
             model = BDESE
             exclude = ["annee", "entreprise"]
-            field_classes = {"effectif_total": CategoryJSONField}
+            field_classes = {category_field: CategoryMultiValueField for category_field in BDESE.category_fields()}
 
     return BDESEForm(*args, **kwargs)

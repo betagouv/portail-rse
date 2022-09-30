@@ -5,7 +5,7 @@ from .models import BDESE, Entreprise
 
 
 class CategoryJSONField(forms.JSONField):
-    def __init__(self, base_field, *args, **kwargs):
+    def __init__(self, base_field=forms.IntegerField, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
 
@@ -13,7 +13,7 @@ class BDESEForm(forms.ModelForm):
     class Meta:
         model = BDESE
         fields = "__all__"
-        field_classes = {"effectif_total": CategoryJSONField}
+        field_classes = {category_field: CategoryJSONField for category_field in BDESE.category_fields()}
 
 
 @admin.register(BDESE)

@@ -11,7 +11,7 @@ class Entreprise(models.Model):
 
 
 class CategoryField(models.JSONField):
-    def __init__(self, base_field, *args, **kwargs):
+    def __init__(self, base_field=forms.IntegerField, *args, **kwargs):
         self.base_field = base_field
         super().__init__(*args, **kwargs)
 
@@ -43,70 +43,117 @@ class BDESE(models.Model):
     annee = models.IntegerField(default=2022)
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
 
-    # Décret no 2022-678 du 26 avril 202
+    # Décret no 2022-678 du 26 avril 2022
     # 1° Investissements
     # 1° A - Investissement social
     # 1° A - a) Evolution des effectifs par type de contrat, par âge, par ancienneté
     # 1° A - a) i - Effectif
     effectif_total = CategoryField(
-        base_field=forms.IntegerField,
-        # effectif_total = models.JSONField(
-        # effectif_total = ArrayField(
-        #    models.IntegerField(blank=True),
         help_text="Tout salarié inscrit à l’effectif au 31/12 quelle que soit la nature de son contrat de travail",
-        blank=True,
         null=True,
+        blank=True,
     )
 
     def __str__(self):
         return self.entreprise.siren
 
+    @classmethod
+    def category_fields(cls):
+        return [
+            attribute_name
+            for attribute_name
+            in cls.__dict__.keys()
+            if hasattr(getattr(BDESE, attribute_name), "field") and type(getattr(BDESE, attribute_name).field) == CategoryField
+        ]
 
-class Vide:
-    effectif_permanent = models.IntegerField(
-        help_text="Les salariés à temps plein, inscrits à l’effectif pendant toute l’année considérée et titulaires d’un contrat de travail à durée indéterminée."
+
+    effectif_permanent = CategoryField(
+        help_text="Les salariés à temps plein, inscrits à l’effectif pendant toute l’année considérée et titulaires d’un contrat de travail à durée indéterminée.",
+        null=True,
+        blank=True,
     )
-    effectif_cdd = models.IntegerField(
-        "Effectif CDD",
+    effectif_cdd = CategoryField(
+        verbose_name="Effectif CDD",
         help_text="Nombre de salariés titulaires d’un contrat de travail à durée déterminée au 31/12",
+        blank=True,
+        null=True,
     )
-    effectif_mensuel_moyen = models.IntegerField(
-        help_text="Somme des effectifs totaux mensuels divisée par 12 (on entend par effectif total tout salarié inscrit à l’effectif au dernier jour du mois considéré)"
+    effectif_mensuel_moyen = CategoryField(
+        help_text="Somme des effectifs totaux mensuels divisée par 12 (on entend par effectif total tout salarié inscrit à l’effectif au dernier jour du mois considéré)",
+        null=True,
+        blank=True,
     )
-    effectif_sexe_homme = models.IntegerField()
-    effectif_sexe_femme = models.IntegerField()
-    effectif_sexe_autre = models.IntegerField()
-    effectif_moins_25_ans = models.IntegerField()
-    effectif_25_35_ans = models.IntegerField()
-    effectif_35_45_ans = models.IntegerField()
-    effectif_45_55_ans = models.IntegerField()
-    effectif_plus_55_ans = models.IntegerField()
-    effectif_anciennete_moins_10_ans = models.IntegerField()
-    effectif_anciennete_10_20_ans = models.IntegerField()
-    effectif_anciennete_20_30_ans = models.IntegerField()
-    effectif_anciennete_plus_30_ans = models.IntegerField()
-    effectif_nationalite_francaise = models.IntegerField()
-    effectif_nationalite_etrangere = models.IntegerField()
-    effectif_cadres = models.IntegerField()
-    effectif_techniciens = models.IntegerField()
-    effectif_agents_de_maitrise = models.IntegerField()
-    effectif_employes_qualifies = models.IntegerField()
-    effectif_employes_non_qualifies = models.IntegerField()
-    effectif_ouvriers_qualifies = models.IntegerField()
-    effectif_ouvriers_non_qualifies = models.IntegerField()
+    effectif_homme = CategoryField(
+        null=True,
+        blank=True,
+    )
+    effectif_femme = CategoryField(
+        null=True,
+        blank=True,
+    )
+    # effectif_moins_25_ans = models.IntegerField()
+    # effectif_25_35_ans = models.IntegerField()
+    # effectif_35_45_ans = models.IntegerField()
+    # effectif_45_55_ans = models.IntegerField()
+    # effectif_plus_55_ans = models.IntegerField()
+    # effectif_anciennete_moins_10_ans = models.IntegerField()
+    # effectif_anciennete_10_20_ans = models.IntegerField()
+    # effectif_anciennete_20_30_ans = models.IntegerField()
+    # effectif_anciennete_plus_30_ans = models.IntegerField()
+    effectif_nationalite_francaise = CategoryField(
+        verbose_name="Effectif de nationalité française",
+        null=True,
+        blank=True,
+    )
+    effectif_nationalite_etrangere = CategoryField(
+        verbose_name="Effectif de nationalité étrangère",
+        null=True,
+        blank=True,
+    )
+    # effectif_cadres = models.IntegerField()
+    # effectif_techniciens = models.IntegerField()
+    # effectif_agents_de_maitrise = models.IntegerField()
+    # effectif_employes_qualifies = models.IntegerField()
+    # effectif_employes_non_qualifies = models.IntegerField()
+    # effectif_ouvriers_qualifies = models.IntegerField()
+    # effectif_ouvriers_non_qualifies = models.IntegerField()
+
     # 1° A - a) ii - Travailleurs extérieurs
     nombre_travailleurs_exterieurs = models.IntegerField(
-        help_text="Nombre de salariés appartenant à une entreprise extérieure (prestataire de services) dont l’entreprise connaît le nombre, soit parce qu’il figure dans le contrat signé avec l’entreprise extérieure, soit parce que ces travailleurs sont inscrits aux effectifs."
+        verbose_name="Nombre de travailleurs extérieurs",
+        help_text="Nombre de salariés appartenant à une entreprise extérieure (prestataire de services) dont l’entreprise connaît le nombre, soit parce qu’il figure dans le contrat signé avec l’entreprise extérieure, soit parce que ces travailleurs sont inscrits aux effectifs.",
+        null=True,
+        blank=True,
     )
     nombre_stagiaires = models.IntegerField(
-        help_text="Stages supérieurs à une semaine."
+        verbose_name="Nombre de stagiaires",
+        help_text="Stages supérieurs à une semaine.",
+        null=True,
+        blank=True,
     )
     nombre_moyen_mensuel_salaries_temporaires = models.IntegerField(
-        help_text="Est considérée comme salarié temporaire toute personne mise à la disposition de l’entreprise, par une entreprise de travail temporaire."
+        verbose_name="Nombre moyen mensuel de salariés temporaires",
+        help_text="Est considérée comme salarié temporaire toute personne mise à la disposition de l’entreprise, par une entreprise de travail temporaire.",
+        null=True,
+        blank=True,
     )
-    duree_moyenne_contrat_de_travail_temporaire = models.IntegerField()
-    nombre_salaries_de_l_entreprise_detaches = models.IntegerField()
-    nombre_salaries_detaches_accueillis = models.IntegerField()
+    duree_moyenne_contrat_de_travail_temporaire = models.IntegerField(
+        verbose_name="Durée moyenne des contrats de travail temporaire",
+        help_text="En jours",
+        null=True,
+        blank=True,
+    )
+    nombre_salaries_de_l_entreprise_detaches = models.IntegerField(
+        verbose_name="Nombre de salariés de l'entreprise détachés",
+        null=True,
+        blank=True,
+    )
+    nombre_salaries_detaches_accueillis = models.IntegerField(
+        verbose_name="Nombre de salariés détachés accueillis",
+        null=True,
+        blank=True,
+    )
+class Vide:
     # 1° A - b) Evolution des emplois, notamment, par catégorie professionnelle
     # 1° A - b) i - Embauches
     nombre_embauches_cdi = models.IntegerField()

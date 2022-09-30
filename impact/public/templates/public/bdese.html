@@ -13,12 +13,12 @@
                 <h4>a) Evolution des effectifs par type de contrat, par âge, par ancienneté</h4>
                 <h5>Effectif</h5>
                 {% include 'snippets/category_field.html' with field=form.effectif_total %}
-{% comment %}
                 {% include 'snippets/input_field.html' with field=form.effectif_permanent %}
                 {% include 'snippets/input_field.html' with field=form.effectif_cdd %}
                 {% include 'snippets/input_field.html' with field=form.effectif_mensuel_moyen %}
                 {% include 'snippets/input_field.html' with field=form.effectif_sexe_homme %}
                 {% include 'snippets/input_field.html' with field=form.effectif_sexe_femme %}
+{% comment %}
                 {% include 'snippets/input_field.html' with field=form.effectif_moins_25_ans %}
                 {% include 'snippets/input_field.html' with field=form.effectif_25_35_ans %}
                 {% include 'snippets/input_field.html' with field=form.effectif_35_45_ans %}
@@ -28,8 +28,10 @@
                 {% include 'snippets/input_field.html' with field=form.effectif_anciennete_10_20_ans %}
                 {% include 'snippets/input_field.html' with field=form.effectif_anciennete_20_30_ans %}
                 {% include 'snippets/input_field.html' with field=form.effectif_anciennete_plus_30_ans %}
+{% endcomment %}
                 {% include 'snippets/input_field.html' with field=form.effectif_nationalite_francaise %}
                 {% include 'snippets/input_field.html' with field=form.effectif_nationalite_etrangere %}
+{% comment %}
                 {% include 'snippets/input_field.html' with field=form.effectif_cadres %}
                 {% include 'snippets/input_field.html' with field=form.effectif_techniciens %}
                 {% include 'snippets/input_field.html' with field=form.effectif_agents_de_maitrise %}
@@ -37,6 +39,7 @@
                 {% include 'snippets/input_field.html' with field=form.effectif_employes_non_qualifies %}
                 {% include 'snippets/input_field.html' with field=form.effectif_ouvriers_qualifies %}
                 {% include 'snippets/input_field.html' with field=form.effectif_ouvriers_non_qualifies %}
+{% endcomment %}
                 <h5>Travailleurs extérieurs</h5>
                 {% include 'snippets/input_field.html' with field=form.nombre_travailleurs_exterieurs %}
                 {% include 'snippets/input_field.html' with field=form.nombre_stagiaires %}
@@ -44,6 +47,7 @@
                 {% include 'snippets/input_field.html' with field=form.duree_moyenne_contrat_de_travail_temporaire %}
                 {% include 'snippets/input_field.html' with field=form.nombre_salaries_de_l_entreprise_detaches %}
                 {% include 'snippets/input_field.html' with field=form.nombre_salaries_detaches_accueillis %}
+{% comment %}
                 <h4>Evolution des emplois, notamment, par catégorie professionnelle</h4>
                 <h5>Embauches</h5>
                 {% include 'snippets/input_field.html' with field=form.nombre_embauches_cdi %}
