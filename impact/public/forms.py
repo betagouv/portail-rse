@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.postgres.forms import SplitArrayField, SplitArrayWidget
 
-from .models import BDESE, categories_default
+from .models import BDESE
 
 
 class DsfrForm(forms.Form):
@@ -108,8 +108,6 @@ def bdese_form_factory(categories, *args, **kwargs):
                 return dict(zip(self.categories, data_list))
             return None
 
-    def default_json_categories():
-        return {categorie: None for categorie in categories_default()}
 
     class BDESEForm(forms.ModelForm, DsfrForm):
         class Meta:
