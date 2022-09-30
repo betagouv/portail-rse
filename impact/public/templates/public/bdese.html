@@ -13,11 +13,11 @@
                 <h4>a) Evolution des effectifs par type de contrat, par âge, par ancienneté</h4>
                 <h5>Effectif</h5>
                 {% include 'snippets/category_field.html' with field=form.effectif_total %}
-                {% include 'snippets/input_field.html' with field=form.effectif_permanent %}
-                {% include 'snippets/input_field.html' with field=form.effectif_cdd %}
-                {% include 'snippets/input_field.html' with field=form.effectif_mensuel_moyen %}
-                {% include 'snippets/input_field.html' with field=form.effectif_sexe_homme %}
-                {% include 'snippets/input_field.html' with field=form.effectif_sexe_femme %}
+                {% include 'snippets/category_field.html' with field=form.effectif_permanent %}
+                {% include 'snippets/category_field.html' with field=form.effectif_cdd %}
+                {% include 'snippets/category_field.html' with field=form.effectif_mensuel_moyen %}
+                {% include 'snippets/category_field.html' with field=form.effectif_sexe_homme %}
+                {% include 'snippets/category_field.html' with field=form.effectif_sexe_femme %}
 {% comment %}
                 {% include 'snippets/input_field.html' with field=form.effectif_moins_25_ans %}
                 {% include 'snippets/input_field.html' with field=form.effectif_25_35_ans %}
@@ -29,8 +29,8 @@
                 {% include 'snippets/input_field.html' with field=form.effectif_anciennete_20_30_ans %}
                 {% include 'snippets/input_field.html' with field=form.effectif_anciennete_plus_30_ans %}
 {% endcomment %}
-                {% include 'snippets/input_field.html' with field=form.effectif_nationalite_francaise %}
-                {% include 'snippets/input_field.html' with field=form.effectif_nationalite_etrangere %}
+                {% include 'snippets/category_field.html' with field=form.effectif_nationalite_francaise %}
+                {% include 'snippets/category_field.html' with field=form.effectif_nationalite_etrangere %}
 {% comment %}
                 {% include 'snippets/input_field.html' with field=form.effectif_cadres %}
                 {% include 'snippets/input_field.html' with field=form.effectif_techniciens %}
