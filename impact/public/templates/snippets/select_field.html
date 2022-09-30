@@ -1,6 +1,13 @@
-<div class="fr-select-group">
+<div class="fr-select-group{% if field.errors %} fr-input-group--error {% endif %}">
     <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label }}
         <span class="fr-hint-text">{{ field.help_text }}</span>
     </label>
     {{ field }}
+    {% if field.errors %}
+    <p id="text-input-error-desc-error" class="fr-error-text">
+        {% for error in field.errors %}
+            {{ error|escape }}
+        {% endfor %}
+    </p>
+    {% endif %}
 </div>
