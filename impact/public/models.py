@@ -1,5 +1,4 @@
 from django import forms
-from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 
@@ -37,9 +36,6 @@ def categories_default():
 
 
 class BDESE(models.Model):
-    # categories = ArrayField(models.CharField(max_length=50), default=categories_default)
-    # categories_detaillees = ArrayField(models.CharField(max_length=50), default=categories_default)
-
     annee = models.IntegerField(default=2022)
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
 

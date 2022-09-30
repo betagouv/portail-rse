@@ -45,27 +45,6 @@ class EligibiliteForm(DsfrForm):
     siren = forms.CharField()
 
 
-class CategoryWidget(SplitArrayWidget):
-    template_name = "snippets/category_widget.html"
-
-    def __init__(self, categories, *args, **kwargs):
-        self.categories = categories
-        super().__init__(*args, **kwargs)
-
-    def get_context(self, name, value, attrs=None):
-        context = super().get_context(name, value, {"class": "fr-input"})
-        context["categories"] = self.categories
-        return context
-
-
-class CategoryField(SplitArrayField):
-    def __init__(self, base_field, size, categories, *args, **kwargs):
-        widget = CategoryWidget(
-            categories=categories, widget=base_field.widget, size=size
-        )
-        super().__init__(base_field, size, *args, widget=widget)
-
-
 class CategoryJSONWidget(forms.MultiWidget):
     template_name = "snippets/category_json_widget.html"
 
