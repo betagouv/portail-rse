@@ -383,49 +383,76 @@ class BDESE(models.Model):
         null=True,
         blank=True,
     )
-class Vide:
+
     # 1° A - f) ii - Répartition des accidents par éléments matériels
     # Faire référence aux codes de classification des éléments matériels des accidents (arrêté du 10 octobre 1974).
     nombre_accidents_existence_risques_graves = models.IntegerField(
         verbose_name="Nombre d'accidents liés à l'existence de risques grave",
         help_text="Codes 32 à 40",
+        null=True,
+        blank=True,
     )
     nombre_accidents_chutes_dénivellation = models.IntegerField(
         verbose_name="Nombre d'accidents liés à des chutes avec dénivellation",
         help_text="Code 02",
+        null=True,
+        blank=True,
     )
     nombre_accidents_machines = models.IntegerField(
         verbose_name="Nombre d'accidents occasionnés par des machines",
-        help_text="A l'exception de ceux liés aux risques ci-dessus, codes 09 à 30",
+        help_text="À l'exception de ceux liés aux risques ci-dessus, codes 09 à 30",
+        null=True,
+        blank=True,
     )
     nombre_accidents_circulation_manutention_stockage = models.IntegerField(
         verbose_name="Nombre d'accidents de circulation-manutention-stockage",
-        help_text="Codes 01,03,04 et 06,07,08",
+        help_text="Codes 01, 03, 04 et 06, 07, 08",
+        null=True,
+        blank=True,
     )
     nombre_accidents_objets_en_mouvement = models.IntegerField(
         verbose_name="Nombre d'accidents occasionnés par des objets, masses, particules en mouvement accidentel",
         help_text="Code 05",
+        null=True,
+        blank=True,
     )
-    nombre_accidents_autres = models.IntegerField(verbose_name="Autres cas")
+    nombre_accidents_autres = models.IntegerField(
+        verbose_name="Autres cas",
+        null=True,
+        blank=True,
+        )
+
     # 1° A - f) iii - Maladies professionnelles
     nombre_maladies_professionnelles = models.IntegerField(
         verbose_name="Nombre des maladies professionnelles",
         help_text="Nombre des maladies professionnelles déclarées à la sécurité sociale au cours de l'année",
+        null=True,
+        blank=True,
     )
     denomination_maladies_professionnelles = models.TextField(
         verbose_name="Dénomination des maladies professionnelles",
         help_text="Dénomination des maladies professionnelles déclarées à la sécurité sociale au cours de l'année",
+        null=True,
+        blank=True,
     )
     nombre_salaries_affections_pathologiques = models.IntegerField(
         verbose_name="Nombre de salariés atteints par des affections pathologiques à caractère professionnel",
+        null=True,
+        blank=True,
     )
     caracterisation_affections_pathologiques = models.TextField(
         verbose_name="Caractérisation des affections pathologiques à caractère professionnel",
+        null=True,
+        blank=True,
     )
     nombre_declaration_procedes_travail_dangereux = models.IntegerField(
         verbose_name="Nombre de déclarations par l'employeur de procédés de travail susceptibles de provoquer des maladies professionnelles",
         help_text="En application de l'article L. 461-4 du code de la sécurité sociale",
+        null=True,
+        blank=True,
     )
+
+class Vide:
     # 1° A - f) iv - Dépenses en matière de sécurité
     effectif_forme_securite = models.IntegerField(
         verbose_name="Effectif formé à la sécurité dans l'année",
