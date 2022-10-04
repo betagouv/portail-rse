@@ -94,18 +94,16 @@ class BDESE(models.Model):
     )
     effectif_age = CategoryField(
         categories=["moins de 25 ans", "entre 25 et 35 ans", "entre 35 et 45 ans", "entre 45 et 55 ans", "plus de 55 ans"],
+        verbose_name="Effectif par âge",
         null=True,
         blank=True,
     )
-    # effectif_moins_25_ans = models.IntegerField()
-    # effectif_25_35_ans = models.IntegerField()
-    # effectif_35_45_ans = models.IntegerField()
-    # effectif_45_55_ans = models.IntegerField()
-    # effectif_plus_55_ans = models.IntegerField()
-    # effectif_anciennete_moins_10_ans = models.IntegerField()
-    # effectif_anciennete_10_20_ans = models.IntegerField()
-    # effectif_anciennete_20_30_ans = models.IntegerField()
-    # effectif_anciennete_plus_30_ans = models.IntegerField()
+    effectif_anciennete = CategoryField(
+        categories=["moins de 10 ans", "entre 10 et 20 ans", "plus de 30 ans"],
+        verbose_name="Effectif par ancienneté",
+        null=True,
+        blank=True,
+    )
     effectif_nationalite_francaise = CategoryField(
         verbose_name="Effectif de nationalité française",
         null=True,

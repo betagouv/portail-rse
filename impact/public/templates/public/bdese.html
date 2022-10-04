@@ -19,17 +19,7 @@
                 {% include 'snippets/category_field.html' with field=form.effectif_sexe_homme %}
                 {% include 'snippets/category_field.html' with field=form.effectif_sexe_femme %}
                 {% include 'snippets/category_field.html' with field=form.effectif_age %}
-{% comment %}
-                {% include 'snippets/input_field.html' with field=form.effectif_moins_25_ans %}
-                {% include 'snippets/input_field.html' with field=form.effectif_25_35_ans %}
-                {% include 'snippets/input_field.html' with field=form.effectif_35_45_ans %}
-                {% include 'snippets/input_field.html' with field=form.effectif_45_55_ans %}
-                {% include 'snippets/input_field.html' with field=form.effectif_plus_55_ans %}
-                {% include 'snippets/input_field.html' with field=form.effectif_anciennete_moins_10_ans %}
-                {% include 'snippets/input_field.html' with field=form.effectif_anciennete_10_20_ans %}
-                {% include 'snippets/input_field.html' with field=form.effectif_anciennete_20_30_ans %}
-                {% include 'snippets/input_field.html' with field=form.effectif_anciennete_plus_30_ans %}
-{% endcomment %}
+                {% include 'snippets/category_field.html' with field=form.effectif_anciennete %}
                 {% include 'snippets/category_field.html' with field=form.effectif_nationalite_francaise %}
                 {% include 'snippets/category_field.html' with field=form.effectif_nationalite_etrangere %}
 {% comment %}
