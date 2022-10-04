@@ -44,17 +44,6 @@ class BDESE(models.Model):
     annee = models.IntegerField(default=2022)
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
 
-    # Décret no 2022-678 du 26 avril 2022
-    # 1° Investissements
-    # 1° A - Investissement social
-    # 1° A - a) Evolution des effectifs par type de contrat, par âge, par ancienneté
-    # 1° A - a) i - Effectif
-    effectif_total = CategoryField(
-        help_text="Tout salarié inscrit à l’effectif au 31/12 quelle que soit la nature de son contrat de travail",
-        null=True,
-        blank=True,
-    )
-
     def __str__(self):
         return self.entreprise.siren
 
@@ -67,7 +56,16 @@ class BDESE(models.Model):
             if hasattr(getattr(BDESE, attribute_name), "field") and type(getattr(BDESE, attribute_name).field) == CategoryField
         ]
 
-
+    # Décret no 2022-678 du 26 avril 2022
+    # 1° Investissements
+    # 1° A - Investissement social
+    # 1° A - a) Evolution des effectifs par type de contrat, par âge, par ancienneté
+    # 1° A - a) i - Effectif
+    effectif_total = CategoryField(
+        help_text="Tout salarié inscrit à l’effectif au 31/12 quelle que soit la nature de son contrat de travail",
+        null=True,
+        blank=True,
+    )
     effectif_permanent = CategoryField(
         help_text="Les salariés à temps plein, inscrits à l’effectif pendant toute l’année considérée et titulaires d’un contrat de travail à durée indéterminée.",
         null=True,
@@ -121,7 +119,6 @@ class BDESE(models.Model):
     # effectif_employes_non_qualifies = models.IntegerField()
     # effectif_ouvriers_qualifies = models.IntegerField()
     # effectif_ouvriers_non_qualifies = models.IntegerField()
-
     # 1° A - a) ii - Travailleurs extérieurs
     nombre_travailleurs_exterieurs = models.IntegerField(
         verbose_name="Nombre de travailleurs extérieurs",
@@ -157,7 +154,6 @@ class BDESE(models.Model):
         null=True,
         blank=True,
     )
-
     # 1° A - b) Evolution des emplois, notamment, par catégorie professionnelle
     # 1° A - b) i - Embauches
     nombre_embauches_cdi = models.IntegerField(
@@ -176,7 +172,6 @@ class BDESE(models.Model):
         null=True,
         blank=True,
     )
-    
     # 1° A - b) ii - Départs
     total_departs = CategoryField(
         verbose_name="Total des départs",
@@ -226,30 +221,60 @@ class BDESE(models.Model):
         null=True,
         blank=True,
     )
-class Vide:
     # 1° A - b) iii - Promotions
     nombre_promotions = models.IntegerField(
-        help_text="Nombre de salariés promus dans l’année dans une catégorie supérieure. Utiliser les catégories de la nomenclature détaillée."
+        verbose_name="Nombre de salariés promus dans l’année dans une catégorie supérieure",
+        help_text="Utiliser les catégories de la nomenclature détaillée",
+        null=True,
+        blank=True,
     )
     # 1° A - b) iv - Chômage
-    nombre_salaries_chomage_partiel = models.IntegerField(
-        help_text="Nombre de salariés mis en chômage partiel pendant l’année considérée."
+    nombre_salaries_chomage_partiel = CategoryField(
+        verbose_name="Nombre de salariés mis en chômage partiel pendant l’année considérée",
+        null=True,
+        blank=True,
     )
-    nombre_heures_chomage_partiel_indemnisees = models.IntegerField(
-        help_text="Y compris les heures indemnisées au titre du chômage total en cas d’arrêt de plus de quatre semaines consécutives"
+    nombre_heures_chomage_partiel_indemnisees = CategoryField(
+        verbose_name="Nombre total d'heures de chômage partiel indemnisées",
+        help_text="Y compris les heures indemnisées au titre du chômage total en cas d’arrêt de plus de quatre semaines consécutives",
+        null=True,
+        blank=True,
     )
-    nombre_heures_chomage_partiel_non_indemnisees = models.IntegerField()
-    nombre_salaries_chomage_intemperies = models.IntegerField()
-    nombre_heures_chomage_intemperies_indemnisees = models.IntegerField()
-    nombre_heures_chomage_intemperies_non_indemnisees = models.IntegerField()
+    nombre_heures_chomage_partiel_non_indemnisees = CategoryField(
+        verbose_name="Nombre total d'heures de chômage partiel non indemnisées",
+        null=True,
+        blank=True,
+    )
+    nombre_salaries_chomage_intemperies = CategoryField(
+        verbose_name="Nombre de salariés mis en chômage intempéries",
+        null=True,
+        blank=True,
+    )
+    nombre_heures_chomage_intemperies_indemnisees = CategoryField(
+        verbose_name="Nombre total d'heures de chômage intempéries indemnisées",
+        null=True,
+        blank=True,
+    )
+    nombre_heures_chomage_intemperies_non_indemnisees = CategoryField(
+        verbose_name="Nombre total d'heures de chômage intempéries non indemnisées",
+        null=True,
+        blank=True,
+    )
     # 1° A - c) Evolution de l’emploi des personnes handicapées et mesures prises pour le développer
     nombre_travailleurs_handicapés = models.IntegerField(
-        help_text="Nombre de travailleurs handicapés employés sur l'année considérée, tel qu’il résulte de la déclaration obligatoire prévue à l’article L. 5212-5."
+        verbose_name="Nombre de travailleurs handicapés employés sur l'année considérée",
+        help_text="tel qu’il résulte de la déclaration obligatoire prévue à l’article L. 5212-5.",
+        null=True,
+        blank=True,
     )
     nombre_travailleurs_handicapes_accidents_du_travail = models.IntegerField(
-        help_text="Nombre de travailleurs handicapés à la suite d'accidents du travail intervenus dans l'entreprise, employés sur l'année considérée"
+        verbose_name="Nombre de travailleurs handicapés à la suite d'accidents du travail intervenus dans l'entreprise",
+        help_text="employés sur l'année considérée",
+        null=True,
+        blank=True,
     )
     # 1° A - d) Evolution du nombre de stagiaires
+class Vide:
     # 1° A - e) Formation professionnelle : investissements en formation, publics concernés
     # 1° A - e) i - Formation professionnelle continue
     # Conformément aux données relatives aux contributions de formation professionnelle de la déclaration sociale nominative.

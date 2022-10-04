@@ -33,6 +33,8 @@ Puis à nouveau dans e) i- on a
 > -non rémunérées.
 > Décomposition par type de stages à titre d'exemple : adaptation, formation professionnelle, entretien ou perfectionnement des connaissances ;
 
+Si évolution par rapport à l'année précédente, on ne met pas un nouveau champ, on le calculera par rapport à l'année précédente ?
+
 1°  A   f)  Conditions de travail : Que met-on ? Champ libre ? | à enlever
 
 1°  A   f)  i   Est-ce normal de demander le "Nombre d'accidents avec arrêts de travail divisé par nombre d'heures travaillées" puis le "Nombre d'accidents de travail avec arrêt × 106 divisé par nombre d'heures travaillées" ? | bizarre, question au ministere du travail

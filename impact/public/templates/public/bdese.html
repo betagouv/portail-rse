@@ -53,20 +53,19 @@
                 {% include 'snippets/category_field.html' with field=form.nombre_mutations %}
                 {% include 'snippets/input_field.html' with field=form.nombre_departs_volontaires_retraite_preretraite %}
                 {% include 'snippets/category_field.html' with field=form.nombre_deces %}
-{% comment %}
                 <h5>Promotions</h5>
                 {% include 'snippets/input_field.html' with field=form.nombre_promotions %}
                 <h5>Chômage</h5>
-                {% include 'snippets/input_field.html' with field=form.nombre_salaries_chomage_partiel %}
-                {% include 'snippets/input_field.html' with field=form.nombre_heures_chomage_partiel_indemnisees %}
-                {% include 'snippets/input_field.html' with field=form.nombre_heures_chomage_partiel_non_indemnisees %}
-                {% include 'snippets/input_field.html' with field=form.nombre_salaries_chomage_intemperies %}
-                {% include 'snippets/input_field.html' with field=form.nombre_heures_chomage_intemperies_indemnisees %}
-                {% include 'snippets/input_field.html' with field=form.nombre_heures_chomage_intemperies_non_indemnisees %}
+                {% include 'snippets/category_field.html' with field=form.nombre_salaries_chomage_partiel %}
+                {% include 'snippets/category_field.html' with field=form.nombre_heures_chomage_partiel_indemnisees %}
+                {% include 'snippets/category_field.html' with field=form.nombre_heures_chomage_partiel_non_indemnisees %}
+                {% include 'snippets/category_field.html' with field=form.nombre_salaries_chomage_intemperies %}
+                {% include 'snippets/category_field.html' with field=form.nombre_heures_chomage_intemperies_indemnisees %}
+                {% include 'snippets/category_field.html' with field=form.nombre_heures_chomage_intemperies_non_indemnisees %}
                 <h4>Evolution de l’emploi des personnes handicapées et mesures prises pour le développer</h4>
                 {% include 'snippets/input_field.html' with field=form.nombre_travailleurs_handicapés %}
                 {% include 'snippets/input_field.html' with field=form.nombre_travailleurs_handicapes_accidents_du_travail %}
-                <h4>Evolution du nombre de stagiaires</h4>
+                {% comment %}
                 <h4>Formation professionnelle : investissements en formation, publics concernés</h4>
                 <h5>Formation professionnelle continue</h5>
                 {% include 'snippets/input_field.html' with field=form.pourcentage_masse_salariale_formation_continue %}
