@@ -119,13 +119,13 @@ def result(request):
 def bdese(request, siren):
     entreprise = Entreprise.objects.get(siren=siren)
     bdese, created = BDESE.objects.get_or_create(entreprise=entreprise)
-    categories = categories_default()
+    categories_professionnelles = categories_default()
     if request.method == "POST":
-        form = bdese_form_factory(categories, request.POST, instance=bdese)
+        form = bdese_form_factory(categories_professionnelles, request.POST, instance=bdese)
         if form.is_valid():
             bdese = form.save()
         else:
             print(form.errors)
     else:
-        form = bdese_form_factory(categories, instance=bdese)
+        form = bdese_form_factory(categories_professionnelles, instance=bdese)
     return render(request, "public/bdese.html", {"form": form, "siren": siren})

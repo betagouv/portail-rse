@@ -5,7 +5,7 @@ from .models import BDESE, Entreprise
 
 
 class CategoryJSONField(forms.JSONField):
-    def __init__(self, base_field=forms.IntegerField, *args, **kwargs):
+    def __init__(self, base_field=forms.IntegerField, categories=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
 

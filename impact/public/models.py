@@ -10,23 +10,28 @@ class Entreprise(models.Model):
 
 
 class CategoryField(models.JSONField):
-    def __init__(self, base_field=forms.IntegerField, *args, **kwargs):
+    def __init__(self, base_field=forms.IntegerField, categories=None, *args, **kwargs):
         self.base_field = base_field
+        self.categories = categories
         super().__init__(*args, **kwargs)
 
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()
         kwargs["base_field"] = self.base_field
+        if self.categories:
+            kwargs["categories"] = self.categories
         return name, path, args, kwargs
 
     @property
     def non_db_attrs(self):
-        return super().non_db_attrs + ("base_field",)
+        return super().non_db_attrs + ("base_field", "categories",)
 
     def formfield(self, **kwargs):
         defaults = {
             "base_field": self.base_field,
         }
+        if self.categories:
+            defaults["categories"] = self.categories
         defaults.update(kwargs)
         return super().formfield(**defaults)
 
@@ -84,6 +89,11 @@ class BDESE(models.Model):
         blank=True,
     )
     effectif_femme = CategoryField(
+        null=True,
+        blank=True,
+    )
+    effectif_age = CategoryField(
+        categories=["moins de 25 ans", "entre 25 et 35 ans", "entre 35 et 45 ans", "entre 45 et 55 ans", "plus de 55 ans"],
         null=True,
         blank=True,
     )
