@@ -44,6 +44,8 @@ On met un champ libre ?
 
 1°  A   f)  i   Est-ce normal de demander le "Nombre d'accidents avec arrêts de travail divisé par nombre d'heures travaillées" puis le "Nombre d'accidents de travail avec arrêt × 106 divisé par nombre d'heures travaillées" ? | bizarre, question au ministere du travail
 
+Quelle unité pour le taux de fréquence des accidents du travail et taux de gravité des accidents du travail (I) ? Est-ce que ce n'est pas plutôt à remplacer par les indicateurs suivants ? (Nombre d'accidents / Nombre d'heure travaillées, Nombre de journées perdues / Nombre d'heures travaillées) ? Et dans ce cas, faut-il ces indicateurs par catégorie pro ?
+
 "Nombre d'incapacités permanentes (partielles et totales) notifiées à l'entreprise au cours de l'année considérée (distinguer français et étrangers)" : français et etrangers ? | faire "partiel fr", "partiel etranger", "total fr", "total etranger"
 
 1°  A   f)  iii La dénomination des maladies pro est-elle réglementée/connue à l'avance ? | champ libre en attendant d'avoir une liste par secteur  https://www.ameli.fr/medecin/exercice-liberal/presciption-prise-charge/prise-charge-situation-type-soin/situation-patient-mp/maladies-professionnelles

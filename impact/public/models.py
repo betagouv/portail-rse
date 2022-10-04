@@ -327,48 +327,63 @@ class BDESE(models.Model):
         null=True,
         blank=True,
     )
-class Vide:
     # 1° A - f) Conditions de travail
-    # Durée du travail dont travail à temps partiel et aménagement du temps de travail,
-    # les données sur l'exposition aux risques et aux facteurs de pénibilité,
-    # (accidents du travail, maladies professionnelles, absentéisme, dépenses en matière de sécurité)
     # 1° A - f) i - Accidents du travail et de trajet
-    taux_frequence_accidents_travail = models.IntegerField(
-        verbose_name="Taux de fréquence des accidents du travail"
+    # taux_frequence_accidents_travail = CategoryField(
+    #     verbose_name="Taux de fréquence des accidents du travail"
+    # )
+    # nombre_accidents_travail_par_heure_travaillee = models.IntegerField(
+    #     verbose_name="Nombre d'accidents avec arrêts de travail divisé par nombre d'heures travaillées"
+    # )
+    # taux_gravite_accidents_travail = CategoryField(
+    #     verbose_name="Taux de gravité des accidents du travail"
+    # )
+    # nombre_journees_perdues_par_heure_travaillee = models.IntegerField(
+    #     verbose_name="Nombre des journées perdues divisé par nombre d'heures travaillées"
+    # )
+    nombre_incapacites_permanentes_partielles = CategoryField(
+        categories=["français", "étrangers"],
+        verbose_name="Nombre d'incapacités permanentes partielles notifiées à l'entreprise au cours de l'année considérée",
+        null=True,
+        blank=True,
     )
-    nombre_accidents_travail_par_heure_travaillee = models.IntegerField(
-        verbose_name="Nombre d'accidents avec arrêts de travail divisé par nombre d'heures travaillées"
-    )
-    taux_gravite_accidents_travail = models.IntegerField(
-        verbose_name="Taux de gravité des accidents du travail"
-    )
-    nombre_journees_perdues_par_heure_travaillee = models.IntegerField(
-        verbose_name="Nombre des journées perdues divisé par nombre d'heures travaillées"
-    )
-    nombre_incapacites_permanentes_français = models.IntegerField(
-        help_text="Nombre d'incapacités permanentes (partielles et totales) notifiées à l'entreprise au cours de l'année considérée (distinguer français et étrangers)"
-    )
-    nombre_incapacites_permanentes_etrangers = models.IntegerField(
-        help_text="Nombre d'incapacités permanentes (partielles et totales) notifiées à l'entreprise au cours de l'année considérée (distinguer français et étrangers)"
+    nombre_incapacites_permanentes_totales = CategoryField(
+        categories=["français", "étrangers"],
+        verbose_name="Nombre d'incapacités permanentes totales notifiées à l'entreprise au cours de l'année considérée",
+        null=True,
+        blank=True,
     )
     nombre_accidents_travail_mortels = models.IntegerField(
-        verbose_name="Nombre d'accidents mortels de travail"
+        verbose_name="Nombre d'accidents mortels de travail",
+        null=True,
+        blank=True,
     )
     nombre_accidents_trajet_mortels = models.IntegerField(
-        verbose_name="Nombre d'accidents mortels de trajet"
+        verbose_name="Nombre d'accidents mortels de trajet",
+        null=True,
+        blank=True,
     )
     nombre_accidents_trajet_avec_arret_travail = models.IntegerField(
-        verbose_name="Nombre d'accidents de trajet ayant entraîné un arrêt de travail"
+        verbose_name="Nombre d'accidents de trajet ayant entraîné un arrêt de travail",
+        null=True,
+        blank=True,
     )
     nombre_accidents_salaries_temporaires_ou_prestataires = models.IntegerField(
-        verbose_name="Nombre d'accidents dont sont victimes les salariés temporaires ou de prestations de services dans l'entreprise"
+        verbose_name="Nombre d'accidents dont sont victimes les salariés temporaires ou de prestations de services dans l'entreprise",
+        null=True,
+        blank=True,
     )
-    taux_cotisation_securite_sociale_accidents_travail = models.IntegerField(
-        verbose_name="Taux de la cotisation sécurité sociale d'accidents de travail"
+    taux_cotisation_securite_sociale_accidents_travail = models.FloatField(
+        verbose_name="Taux de la cotisation sécurité sociale d'accidents de travail",
+        null=True,
+        blank=True,
     )
     montant_cotisation_securite_sociale_accidents_travail = models.IntegerField(
-        verbose_name="Montant de la cotisation sécurité sociale d'accidents de travail"
+        verbose_name="Montant de la cotisation sécurité sociale d'accidents de travail",
+        null=True,
+        blank=True,
     )
+class Vide:
     # 1° A - f) ii - Répartition des accidents par éléments matériels
     # Faire référence aux codes de classification des éléments matériels des accidents (arrêté du 10 octobre 1974).
     nombre_accidents_existence_risques_graves = models.IntegerField(
