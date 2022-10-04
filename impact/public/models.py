@@ -157,35 +157,76 @@ class BDESE(models.Model):
         null=True,
         blank=True,
     )
-class Vide:
+
     # 1° A - b) Evolution des emplois, notamment, par catégorie professionnelle
     # 1° A - b) i - Embauches
-    nombre_embauches_cdi = models.IntegerField()
-    nombre_embauches_cdd = models.IntegerField()
-    nombre_embauches_saisonniers = models.IntegerField()
+    nombre_embauches_cdi = models.IntegerField(
+        verbose_name="Nombre d'embauches par contrats de travail à durée indéterminée",
+        null=True,
+        blank=True,
+    )
+    nombre_embauches_cdd = CategoryField(
+        verbose_name="Nombre d'embauches par contrats de travail à durée déterminée",
+        help_text="dont nombre de contrats de travailleurs saisonniers",
+        null=True,
+        blank=True,
+    )
     nombre_embauches_jeunes = models.IntegerField(
-        help_text="Salariés de moins de 25 ans."
+        verbose_name="Nombre d'embauches de salariés de moins de vingt-cinq ans",
+        null=True,
+        blank=True,
     )
+    
     # 1° A - b) ii - Départs
-    total_departs = models.IntegerField()
-    nombre_demissions = models.IntegerField()
-    nombre_licenciements_economiques = models.IntegerField(
-        help_text="Nombre de licenciements pour motif économique, dont départs en retraite et préretraite "
+    total_departs = CategoryField(
+        verbose_name="Total des départs",
+        null=True,
+        blank=True,
     )
-    nombre_licenciements_autres = models.IntegerField(
-        help_text="Nombre de licenciements pour d’autres causes"
+    nombre_demissions = CategoryField(
+        verbose_name="Nombre de démissions",
+        null=True,
+        blank=True,
     )
-    nombre_fin_cdd = models.IntegerField()
-    nombre_fin_periode_essai = models.IntegerField(
-        help_text="Nombre de départs au cours de la période d’essai, à ne remplir que si ces départs sont comptabilisés dans le total des départs."
+    nombre_licenciements_economiques = CategoryField(
+        verbose_name="Nombre de licenciements pour motif économique",
+        help_text="dont départs en retraite et préretraite",
+        null=True,
+        blank=True,
     )
-    nombre_mutations = models.IntegerField(
-        help_text="Nombre de mutations d’un établissement à un autre"
+    nombre_licenciements_autres = CategoryField(
+        verbose_name="Nombre de licenciements pour d’autres causes",
+        null=True,
+        blank=True,
     )
-    nombre_departs_volontaires_retraite_preretraite = models.IntegerField(
-        help_text="Nombre de départs volontaires en retraite et préretraite. Distinguer les différents systèmes légaux et conventionnels de toute nature."
+    nombre_fin_cdd = CategoryField(
+        verbose_name="Nombre de fins de contrats de travail à durée déterminée",
+        null=True,
+        blank=True,
     )
-    nombre_deces = models.IntegerField()
+    nombre_fin_periode_essai = CategoryField(
+        verbose_name="Nombre de départs au cours de la période d’essai",
+        help_text="à ne remplir que si ces départs sont comptabilisés dans le total des départs",
+        null=True,
+        blank=True,
+    )
+    nombre_mutations = CategoryField(
+        verbose_name="Nombre de mutations d’un établissement à un autre",
+        null=True,
+        blank=True,
+    )
+    nombre_departs_volontaires_retraite_preretraite = models.TextField(
+        verbose_name="Nombre de départs volontaires en retraite et préretraite",
+        help_text="Distinguer les différents systèmes légaux et conventionnels de toute nature",
+        null=True,
+        blank=True,
+    )
+    nombre_deces = CategoryField(
+        verbose_name="Nombre de décès",
+        null=True,
+        blank=True,
+    )
+class Vide:
     # 1° A - b) iii - Promotions
     nombre_promotions = models.IntegerField(
         help_text="Nombre de salariés promus dans l’année dans une catégorie supérieure. Utiliser les catégories de la nomenclature détaillée."

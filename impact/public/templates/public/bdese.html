@@ -9,7 +9,7 @@
             <form action="{% url 'bdese' siren %}" method="post">
                 {% csrf_token %}
                 <h2>1° Investissements</h2>
-                <h3>A Investissement social</h3>
+                <h3>A-Investissement social</h3>
                 <h4>a) Evolution des effectifs par type de contrat, par âge, par ancienneté</h4>
                 <h5>Effectif</h5>
                 {% include 'snippets/category_field.html' with field=form.effectif_total %}
@@ -38,23 +38,22 @@
                 {% include 'snippets/input_field.html' with field=form.duree_moyenne_contrat_de_travail_temporaire %}
                 {% include 'snippets/input_field.html' with field=form.nombre_salaries_de_l_entreprise_detaches %}
                 {% include 'snippets/input_field.html' with field=form.nombre_salaries_detaches_accueillis %}
-{% comment %}
-                <h4>Evolution des emplois, notamment, par catégorie professionnelle</h4>
+                <h4>b) Evolution des emplois, notamment, par catégorie professionnelle</h4>
                 <h5>Embauches</h5>
                 {% include 'snippets/input_field.html' with field=form.nombre_embauches_cdi %}
-                {% include 'snippets/input_field.html' with field=form.nombre_embauches_cdd %}
-                {% include 'snippets/input_field.html' with field=form.nombre_embauches_saisonniers %}
+                {% include 'snippets/category_field.html' with field=form.nombre_embauches_cdd %}
                 {% include 'snippets/input_field.html' with field=form.nombre_embauches_jeunes %}
                 <h5>Départs</h5>
-                {% include 'snippets/input_field.html' with field=form.total_departs %}
-                {% include 'snippets/input_field.html' with field=form.nombre_demissions %}
-                {% include 'snippets/input_field.html' with field=form.nombre_licenciements_economiques %}
-                {% include 'snippets/input_field.html' with field=form.nombre_licenciements_autres %}
-                {% include 'snippets/input_field.html' with field=form.nombre_fin_cdd %}
-                {% include 'snippets/input_field.html' with field=form.nombre_fin_periode_essai %}
-                {% include 'snippets/input_field.html' with field=form.nombre_mutations %}
+                {% include 'snippets/category_field.html' with field=form.total_departs %}
+                {% include 'snippets/category_field.html' with field=form.nombre_demissions %}
+                {% include 'snippets/category_field.html' with field=form.nombre_licenciements_economiques %}
+                {% include 'snippets/category_field.html' with field=form.nombre_licenciements_autres %}
+                {% include 'snippets/category_field.html' with field=form.nombre_fin_cdd %}
+                {% include 'snippets/category_field.html' with field=form.nombre_fin_periode_essai %}
+                {% include 'snippets/category_field.html' with field=form.nombre_mutations %}
                 {% include 'snippets/input_field.html' with field=form.nombre_departs_volontaires_retraite_preretraite %}
-                {% include 'snippets/input_field.html' with field=form.nombre_deces %}
+                {% include 'snippets/category_field.html' with field=form.nombre_deces %}
+{% comment %}
                 <h5>Promotions</h5>
                 {% include 'snippets/input_field.html' with field=form.nombre_promotions %}
                 <h5>Chômage</h5>
