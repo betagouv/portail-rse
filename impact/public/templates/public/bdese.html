@@ -62,25 +62,25 @@
                 {% include 'snippets/category_field.html' with field=form.nombre_salaries_chomage_intemperies %}
                 {% include 'snippets/category_field.html' with field=form.nombre_heures_chomage_intemperies_indemnisees %}
                 {% include 'snippets/category_field.html' with field=form.nombre_heures_chomage_intemperies_non_indemnisees %}
-                <h4>Evolution de l’emploi des personnes handicapées et mesures prises pour le développer</h4>
+                <h4>c) Evolution de l’emploi des personnes handicapées et mesures prises pour le développer</h4>
                 {% include 'snippets/input_field.html' with field=form.nombre_travailleurs_handicapés %}
                 {% include 'snippets/input_field.html' with field=form.nombre_travailleurs_handicapes_accidents_du_travail %}
-                {% comment %}
-                <h4>Formation professionnelle : investissements en formation, publics concernés</h4>
+                <h4>d) Evolution du nombre de stagiaires</h4>
+                <h4>e) Formation professionnelle : investissements en formation, publics concernés</h4>
                 <h5>Formation professionnelle continue</h5>
+                <p>Conformément aux données relatives aux contributions de formation professionnelle de la déclaration sociale nominative.</p>
                 {% include 'snippets/input_field.html' with field=form.pourcentage_masse_salariale_formation_continue %}
-                {% include 'snippets/input_field.html' with field=form.montant_formation_interne %}
-                {% include 'snippets/input_field.html' with field=form.montant_formation_conventions %}
-                {% include 'snippets/input_field.html' with field=form.montant_formation_organismes_recouvrement %}
-                {% include 'snippets/input_field.html' with field=form.montant_formation_organismes_agrees %}
-                {% include 'snippets/input_field.html' with field=form.montant_formation_autres %}
-
+                {% include 'snippets/category_field.html' with field=form.montant_formation_continue %}
+                {% include 'snippets/input_field.html' with field=form.nombre_heures_stage_remunerees %}
+                {% include 'snippets/input_field.html' with field=form.nombre_heures_stage_non_remunerees %}
+                {% include 'snippets/input_field.html' with field=form.type_stages %}
                 <h5>Congés formation</h5>
                 {% include 'snippets/input_field.html' with field=form.nombre_salaries_conge_formation_remunere %}
                 {% include 'snippets/input_field.html' with field=form.nombre_salaries_conge_formation_non_remunere %}
                 {% include 'snippets/input_field.html' with field=form.nombre_salaries_conge_formation_refuse %}
                 <h5>Apprentissage</h5>
                 {% include 'snippets/input_field.html' with field=form.nombre_contrats_apprentissage %}
+                {% comment %}
                 <h4>Conditions de travail</h4>
                 <h5>Accidents du travail et de trajet</h5>
                 {% include 'snippets/input_field.html' with field=form.taux_frequence_accidents_travail %}

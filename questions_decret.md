@@ -25,15 +25,20 @@ qualification détaillée : sous catégorie hommes et femmes ? | prendre Niveau 
 1°  A   b)   ii  Comment on distingue les différents systèmes légaux et conventionnels de toute nature ? | mettre champ libre
 
 1°  A   d)  Evolution du nombre de stagiaires : a quoi ça correspond ? Pour l'instant on ne met rien (il y a déjà le nombre de stagiaires)   | évolution sur l'année
+Si évolution par rapport à l'année précédente, on ne met pas un nouveau champ, on le calculera par rapport à l'année précédente ?
 
 Puis à nouveau dans e) i- on a
 > Nombre de stagiaires (II) ;
+
 > Nombre d'heures de stage (II) :
 > -rémunérées ;
 > -non rémunérées.
+
+Comme il y a (II), faut-il décomposer par catégorie pro détaillée ? Ou est-ce une erreur ?
+
 > Décomposition par type de stages à titre d'exemple : adaptation, formation professionnelle, entretien ou perfectionnement des connaissances ;
 
-Si évolution par rapport à l'année précédente, on ne met pas un nouveau champ, on le calculera par rapport à l'année précédente ?
+On met un champ libre ?
 
 1°  A   f)  Conditions de travail : Que met-on ? Champ libre ? | à enlever
 

@@ -274,44 +274,60 @@ class BDESE(models.Model):
         blank=True,
     )
     # 1° A - d) Evolution du nombre de stagiaires
-class Vide:
     # 1° A - e) Formation professionnelle : investissements en formation, publics concernés
     # 1° A - e) i - Formation professionnelle continue
     # Conformément aux données relatives aux contributions de formation professionnelle de la déclaration sociale nominative.
-    pourcentage_masse_salariale_formation_continue = models.IntegerField(
-        help_text="Pourcentage de la masse salariale afférent à la formation continue"
+    pourcentage_masse_salariale_formation_continue = models.FloatField(
+        verbose_name="Pourcentage de la masse salariale afférent à la formation continue",
+        null=True,
+        blank=True,
     )
-    montant_formation_interne = models.FloatField(
-        help_text="Montant consacré à la formation interne"
+    montant_formation_continue = CategoryField(
+        categories=["formation interne", "formation effectuée en application de conventions", "versement aux organismes de recouvrement", "versement auprès d'organismes agréés", "autres"],
+        verbose_name="Montant consacré à la formation continue",
+        null=True,
+        blank=True,
     )
-    montant_formation_conventions = models.FloatField(
-        help_text="Montant consacré à la formation effectuée en application de conventions"
-    )
-    montant_formation_organismes_recouvrement = models.FloatField(
-        help_text="Montant du versement aux organismes de recouvrement "
-    )
-    montant_formation_organismes_agrees = models.FloatField(
-        help_text="Montant du versement auprès d'organismes agréés"
-    )
-    montant_formation_autres = models.FloatField()
     # Nombre de stagiaires (II)
-    # Nombre d'heures de stage (II) rémunérées
-    # Nombre d'heures de stage (II) non rémunérées
-    # Décomposition par type de stages à titre d'exemple : adaptation, formation professionnelle, entretien ou perfectionnement des connaissances
+    nombre_heures_stage_remunerees = models.IntegerField(
+        verbose_name="Nombre d'heures de stage rémunérées",
+        null=True,
+        blank=True,
+    )
+    nombre_heures_stage_non_remunerees = models.IntegerField(
+        verbose_name="Nombre d'heures de stage non rémunérées",
+        null=True,
+        blank=True,
+    )
+    type_stages = models.TextField(
+        verbose_name="Décomposition par type de stages",
+        help_text="à titre d'exemple : adaptation, formation professionnelle, entretien ou perfectionnement des connaissances",
+        null=True,
+        blank=True,
+    )
     # 1° A - e) ii - Congés formation
     nombre_salaries_conge_formation_remunere = models.IntegerField(
-        help_text="Nombre de salariés ayant bénéficié d'un congé formation rémunéré"
+        verbose_name="Nombre de salariés ayant bénéficié d'un congé formation rémunéré",
+        null=True,
+        blank=True,
     )
     nombre_salaries_conge_formation_non_remunere = models.IntegerField(
-        help_text="Nombre de salariés ayant bénéficié d'un congé formation non rémunéré"
+        verbose_name="Nombre de salariés ayant bénéficié d'un congé formation non rémunéré",
+        null=True,
+        blank=True,
     )
     nombre_salaries_conge_formation_refuse = models.IntegerField(
-        help_text="Nombre de salariés auxquels a été refusé un congé formation"
+        verbose_name="Nombre de salariés auxquels a été refusé un congé formation",
+        null=True,
+        blank=True,
     )
     # 1° A - e) iii - Apprentissage
     nombre_contrats_apprentissage = models.IntegerField(
-        help_text="Nombre de contrats d’apprentissage conclus dans l’année"
+        verbose_name="Nombre de contrats d’apprentissage conclus dans l’année",
+        null=True,
+        blank=True,
     )
+class Vide:
     # 1° A - f) Conditions de travail
     # Durée du travail dont travail à temps partiel et aménagement du temps de travail,
     # les données sur l'exposition aux risques et aux facteurs de pénibilité,
