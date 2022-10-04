@@ -52,11 +52,6 @@ class CategoryJSONWidget(forms.MultiWidget):
         self.categories = categories
         super().__init__(widgets, attrs)
 
-    def get_context(self, name, value, attrs=None):
-        context = super().get_context(name, value, attrs)
-        context["categories"] = self.categories
-        return context
-
     def decompress(self, value):
         if type(value) != dict:
             return []
@@ -71,7 +66,7 @@ def bdese_form_factory(categories_professionnelles, *args, **kwargs):
             """https://docs.djangoproject.com/en/4.1/ref/forms/fields/#django.forms.MultiValueField.require_all_fields"""
             self.categories = categories or categories_professionnelles
             fields = [base_field() for category in self.categories]
-            widgets = [base_field.widget for category in self.categories]
+            widgets = [base_field.widget({"label": category}) for category in self.categories]
             super().__init__(
                 fields=fields,
                 widget=CategoryJSONWidget(

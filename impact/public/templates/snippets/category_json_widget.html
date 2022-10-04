@@ -2,12 +2,10 @@
 <div class="fr-container">
     <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--center">
     {% for widget in widget.subwidgets %}
-        {% with counter=forloop.counter0 %}
         <div class="fr-col-2">
-            {{ categories | index:counter }}
+            <label class="fr-label" for="{{ widget.attrs.id }}">{{ widget.attrs.label }}</label>
             {% include widget.template_name %}
         </div>
-        {% endwith %}
     {% endfor %}
     </div>
 </div>
