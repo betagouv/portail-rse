@@ -13,7 +13,10 @@ class BDESEForm(forms.ModelForm):
     class Meta:
         model = BDESE
         fields = "__all__"
-        field_classes = {category_field: CategoryJSONField for category_field in BDESE.category_fields()}
+        field_classes = {
+            category_field: CategoryJSONField
+            for category_field in BDESE.category_fields()
+        }
 
 
 @admin.register(BDESE)

@@ -117,6 +117,7 @@ def result(request):
     response["Content-Disposition"] = 'filename="mypdf.pdf"'
     return response
 
+
 @login_required
 def bdese(request, siren):
     entreprise = Entreprise.objects.get(siren=siren)
@@ -125,7 +126,9 @@ def bdese(request, siren):
     bdese, created = BDESE.objects.get_or_create(entreprise=entreprise)
     categories_professionnelles = categories_default()
     if request.method == "POST":
-        form = bdese_form_factory(categories_professionnelles, request.POST, instance=bdese)
+        form = bdese_form_factory(
+            categories_professionnelles, request.POST, instance=bdese
+        )
         if form.is_valid():
             bdese = form.save()
         else:

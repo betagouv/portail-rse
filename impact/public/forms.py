@@ -62,11 +62,21 @@ def bdese_form_factory(categories_professionnelles, *args, **kwargs):
     class CategoryMultiValueField(forms.MultiValueField):
         widget = CategoryJSONWidget
 
-        def __init__(self, base_field=forms.IntegerField, categories=None, encoder=None, decoder=None, *args, **kwargs):
+        def __init__(
+            self,
+            base_field=forms.IntegerField,
+            categories=None,
+            encoder=None,
+            decoder=None,
+            *args,
+            **kwargs
+        ):
             """https://docs.djangoproject.com/en/4.1/ref/forms/fields/#django.forms.MultiValueField.require_all_fields"""
             self.categories = categories or categories_professionnelles
             fields = [base_field() for category in self.categories]
-            widgets = [base_field.widget({"label": category}) for category in self.categories]
+            widgets = [
+                base_field.widget({"label": category}) for category in self.categories
+            ]
             super().__init__(
                 fields=fields,
                 widget=CategoryJSONWidget(
@@ -82,11 +92,13 @@ def bdese_form_factory(categories_professionnelles, *args, **kwargs):
                 return dict(zip(self.categories, data_list))
             return None
 
-
     class BDESEForm(forms.ModelForm, DsfrForm):
         class Meta:
             model = BDESE
             exclude = ["annee", "entreprise"]
-            field_classes = {category_field: CategoryMultiValueField for category_field in BDESE.category_fields()}
+            field_classes = {
+                category_field: CategoryMultiValueField
+                for category_field in BDESE.category_fields()
+            }
 
     return BDESEForm(*args, **kwargs)

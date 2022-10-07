@@ -26,7 +26,10 @@ class CategoryField(models.JSONField):
 
     @property
     def non_db_attrs(self):
-        return super().non_db_attrs + ("base_field", "categories",)
+        return super().non_db_attrs + (
+            "base_field",
+            "categories",
+        )
 
     def formfield(self, **kwargs):
         defaults = {
@@ -53,9 +56,9 @@ class BDESE(models.Model):
     def category_fields(cls):
         return [
             attribute_name
-            for attribute_name
-            in cls.__dict__.keys()
-            if hasattr(getattr(BDESE, attribute_name), "field") and type(getattr(BDESE, attribute_name).field) == CategoryField
+            for attribute_name in cls.__dict__.keys()
+            if hasattr(getattr(BDESE, attribute_name), "field")
+            and type(getattr(BDESE, attribute_name).field) == CategoryField
         ]
 
     # Décret no 2022-678 du 26 avril 2022
@@ -93,7 +96,13 @@ class BDESE(models.Model):
         blank=True,
     )
     effectif_age = CategoryField(
-        categories=["moins de 25 ans", "entre 25 et 35 ans", "entre 35 et 45 ans", "entre 45 et 55 ans", "plus de 55 ans"],
+        categories=[
+            "moins de 25 ans",
+            "entre 25 et 35 ans",
+            "entre 35 et 45 ans",
+            "entre 45 et 55 ans",
+            "plus de 55 ans",
+        ],
         verbose_name="Effectif par âge",
         null=True,
         blank=True,
@@ -285,7 +294,13 @@ class BDESE(models.Model):
         blank=True,
     )
     montant_formation_continue = CategoryField(
-        categories=["formation interne", "formation effectuée en application de conventions", "versement aux organismes de recouvrement", "versement auprès d'organismes agréés", "autres"],
+        categories=[
+            "formation interne",
+            "formation effectuée en application de conventions",
+            "versement aux organismes de recouvrement",
+            "versement auprès d'organismes agréés",
+            "autres",
+        ],
         verbose_name="Montant consacré à la formation continue",
         null=True,
         blank=True,
@@ -422,7 +437,7 @@ class BDESE(models.Model):
         verbose_name="Autres cas",
         null=True,
         blank=True,
-        )
+    )
 
     # 1° A - f) iii - Maladies professionnelles
     nombre_maladies_professionnelles = models.IntegerField(
@@ -453,6 +468,7 @@ class BDESE(models.Model):
         null=True,
         blank=True,
     )
+
 
 class Vide:
     # 1° A - f) iv - Dépenses en matière de sécurité

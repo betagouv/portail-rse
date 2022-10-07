@@ -81,7 +81,7 @@ WSGI_APPLICATION = "impact.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = { 'default': dj_database_url.config() }
+DATABASES = {"default": dj_database_url.config()}
 
 
 # Password validation
@@ -133,7 +133,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # API Entreprise
 API_ENTREPRISE_TOKEN = os.environ["API_ENTREPRISE_TOKEN"]
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = "users.User"
 LOGIN_URL = "/connexion"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
