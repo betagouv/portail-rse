@@ -1,5 +1,7 @@
 import requests
+from django.contrib.auth.decorators import login_required
 from django.conf import settings
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import HttpResponse, render
 from django.template.loader import render_to_string
 from weasyprint import HTML
@@ -115,9 +117,11 @@ def result(request):
     response["Content-Disposition"] = 'filename="mypdf.pdf"'
     return response
 
-
+@login_required
 def bdese(request, siren):
     entreprise = Entreprise.objects.get(siren=siren)
+    if request.user not in entreprise.users.all():
+        raise PermissionDenied
     bdese, created = BDESE.objects.get_or_create(entreprise=entreprise)
     categories_professionnelles = categories_default()
     if request.method == "POST":
