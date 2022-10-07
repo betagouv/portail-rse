@@ -1,5 +1,4 @@
 from django import forms
-from django.contrib.postgres.forms import SplitArrayField, SplitArrayWidget
 
 from .models import BDESE
 
