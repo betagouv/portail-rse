@@ -2,7 +2,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import path
 
 from .forms import LoginForm
-
+from . import views
 
 urlpatterns = [
     path(
@@ -13,4 +13,5 @@ urlpatterns = [
         name="login",
     ),
     path("deconnexion", auth_views.LogoutView.as_view(), name="logout"),
+    path("creation", views.creation, name="creation"),
 ]

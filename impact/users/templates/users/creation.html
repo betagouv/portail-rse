@@ -1,0 +1,18 @@
+{% extends "public/base.html" %}
+
+{% block content %}
+
+<div class="fr-container fr-my-16w">
+    <div class="fr-grid-row fr-grid-row--center">
+        <div class="fr-col-8">
+            <form action="{% url 'creation' %}" method="post">
+                {% csrf_token %}
+                {% include 'snippets/input_field.html' with field=form.email %}
+                {% include 'snippets/input_field.html' with field=form.password1 %}
+                {% include 'snippets/input_field.html' with field=form.password2 %}
+                <button type="submit" class="fr-btn">Créer mon compte</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
