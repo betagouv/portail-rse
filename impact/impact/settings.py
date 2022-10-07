@@ -37,6 +37,7 @@ ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "0.0.0.0,127.0.0.1").split(",")
 
 INSTALLED_APPS = [
     "public",
+    "users",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -131,3 +132,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # API Entreprise
 API_ENTREPRISE_TOKEN = os.environ["API_ENTREPRISE_TOKEN"]
+
+AUTH_USER_MODEL = 'users.User'
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"

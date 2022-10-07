@@ -1,0 +1,19 @@
+{% extends "public/base.html" %}
+
+{% block content %}
+
+{{ form.errors }}
+<div class="fr-container fr-my-16w">
+    <div class="fr-grid-row fr-grid-row--center">
+        <div class="fr-col-8">
+            <form action="{% url 'login' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}">
+                {% include 'snippets/input_field.html' with field=form.username %}
+                {% include 'snippets/input_field.html' with field=form.password %}
+                <button type="submit" class="fr-btn">Se connecter</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
