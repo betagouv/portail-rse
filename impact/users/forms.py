@@ -6,9 +6,12 @@ from .models import User
 
 
 class LoginForm(DsfrForm, AuthenticationForm):
+    username = forms.EmailField(
+        label="Email", widget=forms.TextInput(attrs={"autofocus": True})
+    )
+
     def __init__(self, *args, **kwargs):
         super(LoginForm, self).__init__(*args, **kwargs)
-        self.fields["username"].label = "Email"
         self.fields["password"].label = "Mot de passe"
 
 
