@@ -13,5 +13,6 @@ def creation(request):
             login(request, User.objects.get(email=form.cleaned_data["email"]))
             return redirect("bdese", siren=form.cleaned_data["siren"])
     else:
-        form = UserCreationForm()
+        siren = request.GET.get("siren")
+        form = UserCreationForm(initial={"siren": siren})
     return render(request, "users/creation.html", {"form": form})
