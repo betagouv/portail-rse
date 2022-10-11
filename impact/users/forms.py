@@ -24,7 +24,7 @@ class UserCreationForm(DsfrForm, forms.ModelForm):
     siren = forms.CharField(
         label="Votre numéro SIREN",
         help_text="Saisissez un numéro SIREN valide, disponible sur le Kbis de votre organisation",
-        required=True,
+        required=False,
         min_length=9,
         max_length=9,
     )
@@ -45,11 +45,13 @@ class UserCreationForm(DsfrForm, forms.ModelForm):
         # Save the provided password in hashed format
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password1"])
-        entreprise = Entreprise.objects.get(siren=self.cleaned_data["siren"])
+        if siren := self.cleaned_data.get("siren"):
+            entreprise = Entreprise.objects.get(siren=siren)
         if commit:
             user.save()
-            entreprise.users.add(user)
-            entreprise.save()
+            if siren:
+                entreprise.users.add(user)
+                entreprise.save()
         return user
 
 
