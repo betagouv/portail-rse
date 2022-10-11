@@ -109,5 +109,6 @@ def bdese_form_factory(categories_professionnelles, fetched_data=None, *args, **
             if fetched_data:
                 for field in fetched_data:
                     self.fields[field].help_text += " (valeur extraite de Index EgaPro)"
+                    self.fields[field].disabled = True
 
     return BDESEForm(fetched_data, *args, **kwargs)
