@@ -118,6 +118,29 @@ def result(request):
     return response
 
 
+def get_bdese_infos_from_index_egapro(siren, year):
+    url = f"https://index-egapro.travail.gouv.fr/api/declarations/{siren}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        bdese_infos_from_index_egapro = {}
+        for declaration in response.json():
+            if declaration["year"] == year:
+                index_egapro_data = declaration["data"]
+                indicateur_hautes_remunerations = index_egapro_data["indicateurs"][
+                    "hautes_rémunérations"
+                ]
+                bdese_infos_from_index_egapro = {
+                    "nombre_femmes_plus_hautes_remunerations": int(
+                        indicateur_hautes_remunerations["résultat"]
+                    )
+                    if indicateur_hautes_remunerations["population_favorable"]
+                    == "hommes"
+                    else 10 - int(indicateur_hautes_remunerations["résultat"])
+                }
+                break
+        return bdese_infos_from_index_egapro
+
+
 @login_required
 def bdese(request, siren):
     entreprise = Entreprise.objects.get(siren=siren)
@@ -127,12 +150,13 @@ def bdese(request, siren):
     categories_professionnelles = categories_default()
     if request.method == "POST":
         form = bdese_form_factory(
-            categories_professionnelles, request.POST, instance=bdese
+            categories_professionnelles, data=request.POST, instance=bdese
         )
         if form.is_valid():
             bdese = form.save()
         else:
             print(form.errors)
     else:
-        form = bdese_form_factory(categories_professionnelles, instance=bdese)
+        fetched_data = get_bdese_infos_from_index_egapro(siren, 2021)
+        form = bdese_form_factory(categories_professionnelles, instance=bdese, initial=fetched_data)
     return render(request, "public/bdese.html", {"form": form, "siren": siren})
