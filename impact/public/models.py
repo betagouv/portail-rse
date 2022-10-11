@@ -469,199 +469,197 @@ class BDESE(models.Model):
         blank=True,
     )
 
-
-class Vide:
-    # 1° A - f) iv - Dépenses en matière de sécurité
-    effectif_forme_securite = models.IntegerField(
-        verbose_name="Effectif formé à la sécurité dans l'année",
-    )
-    montant_depenses_formation_securite = models.IntegerField(
-        verbose_name="Montant des dépenses de formation à la sécurité réalisées dans l'entreprise",
-    )
-    taux_realisation_programme_securite = models.IntegerField(
-        verbose_name="Taux de réalisation du programme de sécurité présenté l'année précédente",
-    )
-    nombre_plans_specifiques_securite = models.IntegerField(
-        verbose_name="Nombre de plans spécifiques de sécurité"
-    )
-    # 1° A - f) v - Durée et aménagement du temps de travail
-    horaire_hebdomadaire_moyen_ouvriers_employes = models.IntegerField(
-        verbose_name="Horaire hebdomadaire moyen affiché des ouvriers et employés ou catégories assimilées",
-        help_text="Il est possible de remplacer cet indicateur par la somme des heures travaillées durant l'année.",
-    )
-    somme_heures_travaillees_ouvriers_employes = models.IntegerField(
-        verbose_name="Somme des heures travaillées durant l'année par les ouvriers et employés ou catégories assimilées",
-    )
-    nombre_salaries_repos_compensateur_code_travail = models.IntegerField(
-        verbose_name="Nombre de salariés ayant bénéficié d'un repos compensateur au titre du code du travail",
-        help_text="Au sens des dispositions du code du travail et du code rural et de la pêche maritime instituant un repos compensateur en matière d'heures supplémentaires.",
-    )
-    nombre_salaries_repos_compensateur_regime_conventionne = models.IntegerField(
-        verbose_name="Nombre de salariés ayant bénéficié d'un repos compensateur au titre d'un régime conventionne",
-    )
-    nombre_salaries_horaires_individualises = models.IntegerField(
-        verbose_name="Nombre de salariés bénéficiant d'un système d'horaires individualisés",
-        help_text="Au sens de l'article L. 3121-48.",
-    )
-    nombre_salaries_temps_partiel_20_30_heures = models.IntegerField(
-        verbose_name="Nombre de salariés employés à temps partiel entre 20 et 30 heures (33)",
-        help_text="Au sens de l'article L. 3123-1.",
-    )
-    nombre_salaries_temps_partiel_autres = models.IntegerField(
-        verbose_name="Autres formes de temps partiel",
-    )
-    nombre_salaries_2_jours_repos_hebdomadaire_consecutifs = models.IntegerField(
-        verbose_name="Nombre de salariés ayant bénéficié tout au long de l'année considérée de deux jours de repos hebdomadaire consécutifs",
-    )
-    nombre_moyen_jours_conges_annuels = models.IntegerField(
-        verbose_name="Nombre moyen de jours de congés annuels (non compris le repos compensateur)",
-        help_text="Repos compensateur non compris. Cet indicateur peut être calculé sur la dernière période de référence.",
-    )
-    nombre_jours_feries_payes = models.IntegerField(
-        verbose_name="Nombre de jours fériés payés",
-        help_text="Préciser, le cas échéant, les conditions restrictives.",
-    )
-    conditions_restrictives_jours_feries_payes = models.TextField()
-    # 1° A - f) vi - Absentéisme
-    # Possibilités de comptabiliser tous les indicateurs de la rubrique absentéisme, au choix, en journées, 1/2 journées ou heures.
-    UNITE_ABESENTEISME_CHOICES = [
-        ("J", "Journées"),
-        ("1/2J", "1/2 journées"),
-        ("H", "Heures"),
-    ]
-    unite_absenteisme = models.CharField(
-        max_length=10,
-        choices=UNITE_ABESENTEISME_CHOICES,
-    )
-    nombre_unites_absence = models.IntegerField(
-        verbose_name="Nombre de journées d'absence",
-        help_text="Ne sont pas comptés parmi les absences : les diverses sortes de congés, les conflits et le service national.",
-    )
-    nombre_unites_theoriques_travaillees = models.IntegerField(
-        verbose_name="Nombre de journées théoriques travaillées",
-    )
-    nombre_unites_absence_maladie = models.IntegerField(
-        verbose_name="Nombre de journées d'absence pour maladie",
-    )
-    nombre_unites_absence_duree_1 = models.IntegerField(
-        verbose_name="Répartition des absences pour maladie selon leur durée",
-        help_text="Les tranches choisies sont laissées au choix des entreprises.",
-    )
-    nombre_unites_absence_duree_2 = models.IntegerField(
-        verbose_name="Répartition des absences pour maladie selon leur durée",
-        help_text="Les tranches choisies sont laissées au choix des entreprises.",
-    )
-    nombre_unites_absence_accidents = models.IntegerField(
-        verbose_name="Nombre de journées d'absence pour accidents du travail et de trajet ou maladies professionnelles",
-    )
-    nombre_unites_absence_maternite = models.IntegerField(
-        verbose_name="Nombre de journées d'absence pour maternité",
-    )
-    nombre_unites_absence_conges_autorises = models.IntegerField(
-        verbose_name="Nombre de journées d'absence pour congés autorisés",
-        help_text="(événements familiaux, congés spéciaux pour les femmes …)",
-    )
-    nombre_unites_absence_autres = models.IntegerField(
-        verbose_name="Nombre de journées d'absence imputables à d'autres causes",
-    )
-    # 1° A - f) vii - Organisation et contenu du travail
-    nombre_personnes_horaires_alternant_ou_nuit = models.IntegerField(
-        verbose_name="Nombre de personnes occupant des emplois à horaires alternant ou de nuit",
-    )
-    nombre_personnes_horaires_alternant_ou_nuit_50_ans = models.IntegerField(
-        verbose_name="Nombre de personnes occupant des emplois à horaires alternant ou de nuit de plus de cinquante ans",
-    )
-    nombre_hommes_taches_repetitives = models.IntegerField(
-        verbose_name="Nombre de salariés homme affectés à des tâches répétitives",
-        help_text="Au sens de l'article D. 4163-2",
-    )
-    nombre_femmes_taches_repetitives = models.IntegerField(
-        verbose_name="Nombre de salariés femme affectés à des tâches répétitives",
-        help_text="Au sens de l'article D. 4163-2",
-    )
-    # 1° A - f) viii - Conditions physiques de travail
-    nombre_personnes_exposees_bruit = models.IntegerField(
-        verbose_name="Nombre de personnes exposées de façon habituelle et régulière à plus de 80 à 85 db à leur poste de travail",
-        help_text="Les valeurs limites d'exposition et les valeurs d'exposition déclenchant une action de prévention qui sont fixées dans le tableau prévu à l'article R. 4431-2.",
-    )
-    nombre_salaries_exposes_temperatures = models.IntegerField(
-        verbose_name="Nombre de salariés exposés au froid et à la chaleur",
-        help_text="Au sens des articles R. 4223-13 à R. 4223-15",
-    )
-    nombre_salaries_exposes_temperatures_extremes = models.IntegerField(
-        verbose_name="Nombre de salariés exposés aux températures extrêmes",
-        help_text="Au sens de l'article D. 4163-2 : température inférieure ou égale à 5 degrés Celsius ou au moins égale à 30 degrés Celsius pour minimum 900 heures par an.",
-    )
-    nombre_salaries_exposes_intemperies = models.IntegerField(
-        verbose_name="Nombre de salariés travaillant aux intempéries de façon habituelle et régulière",
-        help_text="Au sens de l'article L. 5424-8 : Sont considérées comme intempéries, les conditions atmosphériques et les inondations lorsqu'elles rendent dangereux ou impossible l'accomplissement du travail eu égard soit à la santé ou à la sécurité des salariés, soit à la nature ou à la technique du travail à accomplir.",
-    )
-    nombre_produits_toxiques = models.IntegerField(
-        verbose_name="Nombre de prélèvements, d'analyses de produits toxiques et mesures",
-        help_text="Renseignements tirés du rapport du directeur du service de prévention et de santé au travail interentreprises",
-    )
-    # 1° A - f) ix - Transformation de l’organisation du travail
-    experiences_transformation_organisation_travail = models.TextField(
-        verbose_name="Expériences de transformation de l'organisation du travail en vue d'en améliorer le contenu",
-        help_text="Pour l'explication de ces expériences d'amélioration du contenu du travail, donner le nombre de salariés concernés.",
-    )
-    # 1° A - f) x - Dépenses d’amélioration de conditions de travail
-    montant_depenses_amelioration_conditions_travail = models.IntegerField(
-        verbose_name="Montant des dépenses consacrées à l'amélioration des conditions de travail dans l'entreprise",
-        help_text="Non compris l'évaluation des dépenses en matière de santé et de sécurité.",
-    )
-    taux_realisation_programme_amelioration_conditions_travail = models.IntegerField(
-        verbose_name="Taux de réalisation du programme d'amélioration des conditions de travail dans l'entreprise l'année précédente",
-    )
-    # 1° A - f) xi - Médecine du travail
-    # Renseignements tirés du rapport du directeur du service de prévention et de santé au travail interentreprises.
-    nombre_visites_medicales_suivi_droit_commun = models.IntegerField(
-        verbose_name="Nombre de visites d'information et de prévention des travailleurs en suivi de droit commun",
-    )
-    nombre_visites_medicales_suivi_individuel = models.IntegerField(
-        verbose_name="Nombre de visites d'information et de prévention des travailleurs en suivi individuel renforcé",
-    )
-    nombre_examens_medicaux_suivi_droit_commun = models.IntegerField(
-        verbose_name="Nombre d'examens médicaux des travailleurs en suivi de droit commun",
-    )
-    nombre_examens_medicaux_suivi_individuel = models.IntegerField(
-        verbose_name="Nombre d'examens médicaux des travailleurs en suivi individuel renforcé",
-    )
-    nombre_examens_complementaires_sous_surveillance = models.IntegerField(
-        verbose_name="Nombre d'examens complémentaires des travailleurs soumis à surveillance",
-    )
-    nombre_examens_complementaires_autres = models.IntegerField(
-        verbose_name="Nombre d'examens complémentaires des autres travailleurs",
-    )
-    pourcentage_temps_medecin_du_travail_analyse = models.IntegerField(
-        verbose_name="Part du temps consacré par le médecin du travail à l'analyse",
-    )
-    pourcentage_temps_medecin_du_travail_intervention = models.IntegerField(
-        verbose_name="Part du temps consacré par le médecin du travail à l'intervention en milieu de travail",
-    )
-    # 1° A - f) xii - Travailleurs inaptes
-    nombre_salaries_inaptes = models.IntegerField(
-        verbose_name="Nombre de salariés inaptes",
-        help_text="Nombre de salariés déclarés définitivement inaptes à leur emploi par le médecin du travail",
-    )
-    nombre_salaries_reclasses = models.IntegerField(
-        verbose_name="Nombre de salariés reclassés",
-        help_text="Nombre de salariés reclassés dans l'entreprise à la suite d'une inaptitude",
-    )
-    # 1° B - Investissement matériel et immatériel
-    # 1° B - a) Evolution des actifs nets d’amortissement et de dépréciations éventuelles (immobilisations)
-    evolution_amortissement = models.TextField(
-        verbose_name="Evolution des actifs nets d’amortissement et de dépréciations éventuelles (immobilisations)",
-    )
-    # 1° B - b) Le cas échéant, dépenses de recherche et développement
-    montant_depenses_recherche_developpement = models.IntegerField(
-        verbose_name="Dépenses de recherche et développement",
-    )
-    # 1° B - c) L’évolution de la productivité et le taux d’utilisation des capacités de production, lorsque ces éléments sont mesurables dans l’entreprise
-    evolution_productivite = models.TextField(
-        verbose_name="Evolution de la productivité et le taux d’utilisation des capacités de production",
-        help_text="lorsque ces éléments sont mesurables dans l’entreprise",
-    )
+    #     # 1° A - f) iv - Dépenses en matière de sécurité
+    #     effectif_forme_securite = models.IntegerField(
+    #         verbose_name="Effectif formé à la sécurité dans l'année",
+    #     )
+    #     montant_depenses_formation_securite = models.IntegerField(
+    #         verbose_name="Montant des dépenses de formation à la sécurité réalisées dans l'entreprise",
+    #     )
+    #     taux_realisation_programme_securite = models.IntegerField(
+    #         verbose_name="Taux de réalisation du programme de sécurité présenté l'année précédente",
+    #     )
+    #     nombre_plans_specifiques_securite = models.IntegerField(
+    #         verbose_name="Nombre de plans spécifiques de sécurité"
+    #     )
+    #     # 1° A - f) v - Durée et aménagement du temps de travail
+    #     horaire_hebdomadaire_moyen_ouvriers_employes = models.IntegerField(
+    #         verbose_name="Horaire hebdomadaire moyen affiché des ouvriers et employés ou catégories assimilées",
+    #         help_text="Il est possible de remplacer cet indicateur par la somme des heures travaillées durant l'année.",
+    #     )
+    #     somme_heures_travaillees_ouvriers_employes = models.IntegerField(
+    #         verbose_name="Somme des heures travaillées durant l'année par les ouvriers et employés ou catégories assimilées",
+    #     )
+    #     nombre_salaries_repos_compensateur_code_travail = models.IntegerField(
+    #         verbose_name="Nombre de salariés ayant bénéficié d'un repos compensateur au titre du code du travail",
+    #         help_text="Au sens des dispositions du code du travail et du code rural et de la pêche maritime instituant un repos compensateur en matière d'heures supplémentaires.",
+    #     )
+    #     nombre_salaries_repos_compensateur_regime_conventionne = models.IntegerField(
+    #         verbose_name="Nombre de salariés ayant bénéficié d'un repos compensateur au titre d'un régime conventionne",
+    #     )
+    #     nombre_salaries_horaires_individualises = models.IntegerField(
+    #         verbose_name="Nombre de salariés bénéficiant d'un système d'horaires individualisés",
+    #         help_text="Au sens de l'article L. 3121-48.",
+    #     )
+    #     nombre_salaries_temps_partiel_20_30_heures = models.IntegerField(
+    #         verbose_name="Nombre de salariés employés à temps partiel entre 20 et 30 heures (33)",
+    #         help_text="Au sens de l'article L. 3123-1.",
+    #     )
+    #     nombre_salaries_temps_partiel_autres = models.IntegerField(
+    #         verbose_name="Autres formes de temps partiel",
+    #     )
+    #     nombre_salaries_2_jours_repos_hebdomadaire_consecutifs = models.IntegerField(
+    #         verbose_name="Nombre de salariés ayant bénéficié tout au long de l'année considérée de deux jours de repos hebdomadaire consécutifs",
+    #     )
+    #     nombre_moyen_jours_conges_annuels = models.IntegerField(
+    #         verbose_name="Nombre moyen de jours de congés annuels (non compris le repos compensateur)",
+    #         help_text="Repos compensateur non compris. Cet indicateur peut être calculé sur la dernière période de référence.",
+    #     )
+    #     nombre_jours_feries_payes = models.IntegerField(
+    #         verbose_name="Nombre de jours fériés payés",
+    #         help_text="Préciser, le cas échéant, les conditions restrictives.",
+    #     )
+    #     conditions_restrictives_jours_feries_payes = models.TextField()
+    #     # 1° A - f) vi - Absentéisme
+    #     # Possibilités de comptabiliser tous les indicateurs de la rubrique absentéisme, au choix, en journées, 1/2 journées ou heures.
+    #     UNITE_ABESENTEISME_CHOICES = [
+    #         ("J", "Journées"),
+    #         ("1/2J", "1/2 journées"),
+    #         ("H", "Heures"),
+    #     ]
+    #     unite_absenteisme = models.CharField(
+    #         max_length=10,
+    #         choices=UNITE_ABESENTEISME_CHOICES,
+    #     )
+    #     nombre_unites_absence = models.IntegerField(
+    #         verbose_name="Nombre de journées d'absence",
+    #         help_text="Ne sont pas comptés parmi les absences : les diverses sortes de congés, les conflits et le service national.",
+    #     )
+    #     nombre_unites_theoriques_travaillees = models.IntegerField(
+    #         verbose_name="Nombre de journées théoriques travaillées",
+    #     )
+    #     nombre_unites_absence_maladie = models.IntegerField(
+    #         verbose_name="Nombre de journées d'absence pour maladie",
+    #     )
+    #     nombre_unites_absence_duree_1 = models.IntegerField(
+    #         verbose_name="Répartition des absences pour maladie selon leur durée",
+    #         help_text="Les tranches choisies sont laissées au choix des entreprises.",
+    #     )
+    #     nombre_unites_absence_duree_2 = models.IntegerField(
+    #         verbose_name="Répartition des absences pour maladie selon leur durée",
+    #         help_text="Les tranches choisies sont laissées au choix des entreprises.",
+    #     )
+    #     nombre_unites_absence_accidents = models.IntegerField(
+    #         verbose_name="Nombre de journées d'absence pour accidents du travail et de trajet ou maladies professionnelles",
+    #     )
+    #     nombre_unites_absence_maternite = models.IntegerField(
+    #         verbose_name="Nombre de journées d'absence pour maternité",
+    #     )
+    #     nombre_unites_absence_conges_autorises = models.IntegerField(
+    #         verbose_name="Nombre de journées d'absence pour congés autorisés",
+    #         help_text="(événements familiaux, congés spéciaux pour les femmes …)",
+    #     )
+    #     nombre_unites_absence_autres = models.IntegerField(
+    #         verbose_name="Nombre de journées d'absence imputables à d'autres causes",
+    #     )
+    #     # 1° A - f) vii - Organisation et contenu du travail
+    #     nombre_personnes_horaires_alternant_ou_nuit = models.IntegerField(
+    #         verbose_name="Nombre de personnes occupant des emplois à horaires alternant ou de nuit",
+    #     )
+    #     nombre_personnes_horaires_alternant_ou_nuit_50_ans = models.IntegerField(
+    #         verbose_name="Nombre de personnes occupant des emplois à horaires alternant ou de nuit de plus de cinquante ans",
+    #     )
+    #     nombre_hommes_taches_repetitives = models.IntegerField(
+    #         verbose_name="Nombre de salariés homme affectés à des tâches répétitives",
+    #         help_text="Au sens de l'article D. 4163-2",
+    #     )
+    #     nombre_femmes_taches_repetitives = models.IntegerField(
+    #         verbose_name="Nombre de salariés femme affectés à des tâches répétitives",
+    #         help_text="Au sens de l'article D. 4163-2",
+    #     )
+    #     # 1° A - f) viii - Conditions physiques de travail
+    #     nombre_personnes_exposees_bruit = models.IntegerField(
+    #         verbose_name="Nombre de personnes exposées de façon habituelle et régulière à plus de 80 à 85 db à leur poste de travail",
+    #         help_text="Les valeurs limites d'exposition et les valeurs d'exposition déclenchant une action de prévention qui sont fixées dans le tableau prévu à l'article R. 4431-2.",
+    #     )
+    #     nombre_salaries_exposes_temperatures = models.IntegerField(
+    #         verbose_name="Nombre de salariés exposés au froid et à la chaleur",
+    #         help_text="Au sens des articles R. 4223-13 à R. 4223-15",
+    #     )
+    #     nombre_salaries_exposes_temperatures_extremes = models.IntegerField(
+    #         verbose_name="Nombre de salariés exposés aux températures extrêmes",
+    #         help_text="Au sens de l'article D. 4163-2 : température inférieure ou égale à 5 degrés Celsius ou au moins égale à 30 degrés Celsius pour minimum 900 heures par an.",
+    #     )
+    #     nombre_salaries_exposes_intemperies = models.IntegerField(
+    #         verbose_name="Nombre de salariés travaillant aux intempéries de façon habituelle et régulière",
+    #         help_text="Au sens de l'article L. 5424-8 : Sont considérées comme intempéries, les conditions atmosphériques et les inondations lorsqu'elles rendent dangereux ou impossible l'accomplissement du travail eu égard soit à la santé ou à la sécurité des salariés, soit à la nature ou à la technique du travail à accomplir.",
+    #     )
+    #     nombre_produits_toxiques = models.IntegerField(
+    #         verbose_name="Nombre de prélèvements, d'analyses de produits toxiques et mesures",
+    #         help_text="Renseignements tirés du rapport du directeur du service de prévention et de santé au travail interentreprises",
+    #     )
+    #     # 1° A - f) ix - Transformation de l’organisation du travail
+    #     experiences_transformation_organisation_travail = models.TextField(
+    #         verbose_name="Expériences de transformation de l'organisation du travail en vue d'en améliorer le contenu",
+    #         help_text="Pour l'explication de ces expériences d'amélioration du contenu du travail, donner le nombre de salariés concernés.",
+    #     )
+    #     # 1° A - f) x - Dépenses d’amélioration de conditions de travail
+    #     montant_depenses_amelioration_conditions_travail = models.IntegerField(
+    #         verbose_name="Montant des dépenses consacrées à l'amélioration des conditions de travail dans l'entreprise",
+    #         help_text="Non compris l'évaluation des dépenses en matière de santé et de sécurité.",
+    #     )
+    #     taux_realisation_programme_amelioration_conditions_travail = models.IntegerField(
+    #         verbose_name="Taux de réalisation du programme d'amélioration des conditions de travail dans l'entreprise l'année précédente",
+    #     )
+    #     # 1° A - f) xi - Médecine du travail
+    #     # Renseignements tirés du rapport du directeur du service de prévention et de santé au travail interentreprises.
+    #     nombre_visites_medicales_suivi_droit_commun = models.IntegerField(
+    #         verbose_name="Nombre de visites d'information et de prévention des travailleurs en suivi de droit commun",
+    #     )
+    #     nombre_visites_medicales_suivi_individuel = models.IntegerField(
+    #         verbose_name="Nombre de visites d'information et de prévention des travailleurs en suivi individuel renforcé",
+    #     )
+    #     nombre_examens_medicaux_suivi_droit_commun = models.IntegerField(
+    #         verbose_name="Nombre d'examens médicaux des travailleurs en suivi de droit commun",
+    #     )
+    #     nombre_examens_medicaux_suivi_individuel = models.IntegerField(
+    #         verbose_name="Nombre d'examens médicaux des travailleurs en suivi individuel renforcé",
+    #     )
+    #     nombre_examens_complementaires_sous_surveillance = models.IntegerField(
+    #         verbose_name="Nombre d'examens complémentaires des travailleurs soumis à surveillance",
+    #     )
+    #     nombre_examens_complementaires_autres = models.IntegerField(
+    #         verbose_name="Nombre d'examens complémentaires des autres travailleurs",
+    #     )
+    #     pourcentage_temps_medecin_du_travail_analyse = models.IntegerField(
+    #         verbose_name="Part du temps consacré par le médecin du travail à l'analyse",
+    #     )
+    #     pourcentage_temps_medecin_du_travail_intervention = models.IntegerField(
+    #         verbose_name="Part du temps consacré par le médecin du travail à l'intervention en milieu de travail",
+    #     )
+    #     # 1° A - f) xii - Travailleurs inaptes
+    #     nombre_salaries_inaptes = models.IntegerField(
+    #         verbose_name="Nombre de salariés inaptes",
+    #         help_text="Nombre de salariés déclarés définitivement inaptes à leur emploi par le médecin du travail",
+    #     )
+    #     nombre_salaries_reclasses = models.IntegerField(
+    #         verbose_name="Nombre de salariés reclassés",
+    #         help_text="Nombre de salariés reclassés dans l'entreprise à la suite d'une inaptitude",
+    #     )
+    #     # 1° B - Investissement matériel et immatériel
+    #     # 1° B - a) Evolution des actifs nets d’amortissement et de dépréciations éventuelles (immobilisations)
+    #     evolution_amortissement = models.TextField(
+    #         verbose_name="Evolution des actifs nets d’amortissement et de dépréciations éventuelles (immobilisations)",
+    #     )
+    #     # 1° B - b) Le cas échéant, dépenses de recherche et développement
+    #     montant_depenses_recherche_developpement = models.IntegerField(
+    #         verbose_name="Dépenses de recherche et développement",
+    #     )
+    #     # 1° B - c) L’évolution de la productivité et le taux d’utilisation des capacités de production, lorsque ces éléments sont mesurables dans l’entreprise
+    #     evolution_productivite = models.TextField(
+    #         verbose_name="Evolution de la productivité et le taux d’utilisation des capacités de production",
+    #         help_text="lorsque ces éléments sont mesurables dans l’entreprise",
+    #     )
 
     ###########################################################
 
@@ -669,169 +667,245 @@ class Vide:
     #   I. Indicateurs sur la situation comparée des femmes et des hommes dans l'entreprise
     #     A-Conditions générales d'emploi
     #       a) Effectifs : Données chiffrées par sexe
-    nombre_categorie_professionelle_1_en_CDI = models.IntegerField()
-    nombre_categorie_professionelle_2_en_CDI = models.IntegerField()
-    nombre_categorie_professionelle_1_en_CDD = models.IntegerField()
-    nombre_categorie_professionelle_2_en_CDD = models.IntegerField()
-
+    nombre_CDI_homme = CategoryField(
+        verbose_name="Nombre d'hommes en CDI",
+        null=True,
+        blank=True,
+    )
+    nombre_CDI_femme = CategoryField(
+        verbose_name="Nombre de femmes en CDI",
+        null=True,
+        blank=True,
+    )
+    nombre_CDD_homme = CategoryField(
+        verbose_name="Nombre d'hommes en CDD",
+        null=True,
+        blank=True,
+    )
+    nombre_CDD_femme = CategoryField(
+        verbose_name="Nombre de femmes en CDD",
+        null=True,
+        blank=True,
+    )
     #       b) Durée et organisation du travail: Données chiffrées par sexe
-    effectif_temps_complet_homme = models.IntegerField(
-        help_text="Effectif à temps complet"
+    effectif_par_duree_homme = CategoryField(
+        categories=[
+            "temps complet",
+            "temps partiel entre 20 et 30 heures",
+            "autres temps partiels",
+        ],
+        verbose_name="Répartition des effectifs hommes selon la durée du travail",
+        null=True,
+        blank=True,
     )
-    effectif_temps_complet_femme = models.IntegerField(
-        help_text="Effectif à temps complet"
+    effectif_par_duree_femme = CategoryField(
+        categories=[
+            "temps complet",
+            "temps partiel entre 20 et 30 heures",
+            "autres temps partiels",
+        ],
+        verbose_name="Répartition des effectifs femmes selon la durée du travail",
+        null=True,
+        blank=True,
     )
-    effectif_temps_partiel_20_30_heures_homme = models.IntegerField(
-        help_text="Effectif à temps partiel (compris entre 20 et 30 heures)"
+    effectif_par_organisation_du_travail_homme = CategoryField(
+        categories=[
+            "travail posté",
+            "travail de nuit",
+            "horaires variables",
+            "travail atypique dont travail durant le week-end",
+        ],
+        verbose_name="Répartition des effectifs hommes selon l'organisation du travail",
+        null=True,
+        blank=True,
     )
-    effectif_temps_partiel_20_30_heures_femme = models.IntegerField(
-        help_text="Effectif à temps partiel (compris entre 20 et 30 heures)"
-    )
-
-    effectif_temps_partiel_autre_homme = models.IntegerField(
-        help_text="Effectif à temps partiel (non compris entre 20 et 30 heures)"
-    )
-    effectif_temps_partiel_autre_femme = models.IntegerField(
-        help_text="Effectif à temps partiel (non compris entre 20 et 30 heures)"
-    )
-    effectif_travail_poste_homme = models.IntegerField(
-        help_text="Effectif en travail posté"
-    )
-    effectif_travail_poste_femme = models.IntegerField(
-        help_text="Effectif en travail posté"
-    )
-    effectif_travail_nuit_homme = models.IntegerField(
-        help_text="Effectif en travail de nuit"
-    )
-    effectif_travail_nuit_femme = models.IntegerField(
-        help_text="Effectif en travail de nuit"
-    )
-    effectif_horaires_variables_homme = models.IntegerField(
-        help_text="Effectif en horaires variables"
-    )
-    effectif_horaires_variables_femme = models.IntegerField(
-        help_text="Effectif en horaires variables"
-    )
-    effectif_travail_atypique_homme = models.IntegerField(
-        help_text="Effectif en travail atypique dont travail durant le week-end"
-    )
-    effectif_travail_atypique_femme = models.IntegerField(
-        help_text="Effectif en travail atypique dont travail durant le week-end"
+    effectif_par_organisation_du_travail_femme = CategoryField(
+        categories=[
+            "travail posté",
+            "travail de nuit",
+            "horaires variables",
+            "travail atypique dont travail durant le week-end",
+        ],
+        verbose_name="Répartition des effectifs femmes selon l'organisation du travail",
+        null=True,
+        blank=True,
     )
     #       c) Données sur les congés
-    conges_homme_categorie_professionelle_1 = models.IntegerField()
-    conges_homme_categorie_professionelle_2 = models.IntegerField()
-    conges_femme_categorie_professionelle_1 = models.IntegerField()
-    conges_femme_categorie_professionelle_2 = models.IntegerField()
-    effectif_homme_conges_compte_epargne_temps = models.IntegerField(
-        help_text="La durée du congé doit être supérieure à six mois"
+    conges_homme = CategoryField(
+        verbose_name="Répartition des congés des hommes",
+        null=True,
+        blank=True,
     )
-    effectif_homme_conges_parental = models.IntegerField(
-        help_text="La durée du congé doit être supérieure à six mois"
+    conges_femme = CategoryField(
+        verbose_name="Répartition des congés des femmes",
+        null=True,
+        blank=True,
     )
-    effectif_homme_conges_sabbatique = models.IntegerField(
-        help_text="La durée du congé doit être supérieure à six mois"
+    conges_par_type_homme = CategoryField(
+        categories=["compte épargne-temps", "congé parental", "congé sabbatique"],
+        verbose_name="Répartition des congés des hommes selon le type de congés dont la durée est supérieure à six mois",
+        null=True,
+        blank=True,
     )
-    effectif_femme_conges_compte_epargne_temps = models.IntegerField(
-        help_text="La durée du congé doit être supérieure à six mois"
-    )
-    effectif_femme_conges_parental = models.IntegerField(
-        help_text="La durée du congé doit être supérieure à six mois"
-    )
-    effectif_femme_congés_sabbatique = models.IntegerField(
-        help_text="La durée du congé doit être supérieure à six mois"
+    conges_par_type_femme = CategoryField(
+        categories=["compte épargne-temps", "congé parental", "congé sabbatique"],
+        verbose_name="Répartition des congés des femmes selon le type de congés dont la durée est supérieure à six mois",
+        null=True,
+        blank=True,
     )
     #      d) Données sur les embauches et les départs
-    embauches_homme_ouvrier_CDI = models.IntegerField()
-    embauches_homme_ouvrier_CDD = models.IntegerField()
-    embauches_homme_employe_CDI = models.IntegerField()
-    embauches_homme_employe_CDD = models.IntegerField()
-    embauches_femme_ouvrier_CDI = models.IntegerField()
-    embauches_femme_ouvrier_CDD = models.IntegerField()
-    embauches_femme_employe_CDI = models.IntegerField()
-    embauches_femme_employe_CDD = models.IntegerField()
-    departs_homme_ouvrier_retraite = models.IntegerField()
-    departs_homme_ouvrier_demission = models.IntegerField()
-    departs_homme_ouvrier_fin_CDD = models.IntegerField()
-    departs_homme_ouvrier_licenciement = models.IntegerField()
-    departs_homme_employe_retraite = models.IntegerField()
-    departs_homme_employe_demission = models.IntegerField()
-    departs_homme_employe_fin_CDD = models.IntegerField()
-    departs_homme_employe_licenciement = models.IntegerField()
-    departs_femme_ouvrier_retraite = models.IntegerField()
-    departs_femme_ouvrier_demission = models.IntegerField()
-    departs_femme_ouvrier_fin_CDD = models.IntegerField()
-    departs_femme_ouvrier_licenciement = models.IntegerField()
-    departs_femme_employe_retraite = models.IntegerField()
-    departs_femme_employe_demission = models.IntegerField()
-    departs_femme_employe_fin_CDD = models.IntegerField()
-    departs_femme_employe_licenciement = models.IntegerField()
-
+    embauches_CDI_homme = CategoryField(
+        verbose_name="Répartition des embauches hommes en CDI par catégorie professionnelle",
+        null=True,
+        blank=True,
+    )
+    embauches_CDI_femme = CategoryField(
+        verbose_name="Répartition des embauches femmes en CDI par catégorie professionnelle",
+        null=True,
+        blank=True,
+    )
+    embauches_CDD_homme = CategoryField(
+        verbose_name="Répartition des embauches hommes en CDD par catégorie professionnelle",
+        null=True,
+        blank=True,
+    )
+    embauches_CDD_femme = CategoryField(
+        verbose_name="Répartition des embauches femmes en CDD par catégorie professionnelle",
+        null=True,
+        blank=True,
+    )
+    departs_retraite_homme = CategoryField(
+        verbose_name="Nombre d'hommes partis en retraite",
+        null=True,
+        blank=True,
+    )
+    departs_demission_homme = CategoryField(
+        verbose_name="Nombre d'hommes ayant démissionné",
+        null=True,
+        blank=True,
+    )
+    departs_fin_CDD_homme = CategoryField(
+        verbose_name="Nombre d'hommes en fin de CDD",
+        null=True,
+        blank=True,
+    )
+    departs_licenciement_homme = CategoryField(
+        verbose_name="Nombre d'hommes licenciés",
+        null=True,
+        blank=True,
+    )
+    departs_retraite_femme = CategoryField(
+        verbose_name="Nombre de femmes partis en retraite",
+        null=True,
+        blank=True,
+    )
+    departs_demission_femme = CategoryField(
+        verbose_name="Nombre de femmes ayant démissionné",
+        null=True,
+        blank=True,
+    )
+    departs_fin_CDD_femme = CategoryField(
+        verbose_name="Nombre de femmes en fin de CDD",
+        null=True,
+        blank=True,
+    )
+    departs_licenciement_femme = CategoryField(
+        verbose_name="Nombre de femmes licenciées",
+        null=True,
+        blank=True,
+    )
     #      e) Positionnement dans l'entreprise
-    effectif_homme_ouvrier = models.IntegerField()
-    effectif_homme_employe = models.IntegerField()
-    effectif_femme_ouvrier = models.IntegerField()
-    effectif_femme_employe = models.IntegerField()
-    effectif_homme_niveau_1 = models.IntegerField()
-    effectif_homme_niveau_2 = models.IntegerField()
-    effectif_femme_niveau_1 = models.IntegerField()
-    effectif_femme_niveau_2 = models.IntegerField()
-
+    # répartition des effectifs par catégorie professionnelle : déduisible de a)
+    # répartition des effectifs par niveau ou coefficient hiérarchique : quels sont les niveaux/coeff ?
     #     B - Rémunérations et déroulement de carrière
     #        a) Promotion
-    nombre_homme_promotion_ouvrier = models.IntegerField()
-    nombre_homme_promotion_employe = models.IntegerField()
-    nombre_femme_promotion_ouvrier = models.IntegerField()
-    nombre_femme_promotion_employe = models.IntegerField()
-    duree_moyenne_entre_deux_promotions_homme = models.IntegerField()
-    duree_moyenne_entre_deux_promotions_femme = models.IntegerField()
-
+    nombre_promotions_homme = CategoryField(
+        verbose_name="Nombre de promotions homme",
+        null=True,
+        blank=True,
+    )
+    nombre_promotions_femme = CategoryField(
+        verbose_name="Nombre de promotions femme",
+        null=True,
+        blank=True,
+    )
+    duree_moyenne_entre_deux_promotions_homme = models.IntegerField(
+        verbose_name="Durée moyenne entre deux promotions pour les hommes",
+        null=True,
+        blank=True,
+    )
+    duree_moyenne_entre_deux_promotions_femme = models.IntegerField(
+        verbose_name="Durée moyenne entre deux promotions pour les femmes",
+        null=True,
+        blank=True,
+    )
     #        b) Ancienneté
-    anciennete_moyenne_homme_ouvrier = models.IntegerField()
-    anciennete_moyenne_homme_employe = models.IntegerField()
-    anciennete_moyenne_femme_ouvrier = models.IntegerField()
-    anciennete_moyenne_femme_employe = models.IntegerField()
-    anciennete_moyenne_homme_dans_ouvrier = models.IntegerField()
-    anciennete_moyenne_homme_dans_employe = models.IntegerField()
-    anciennete_moyenne_femme_dans_ouvrier = models.IntegerField()
-    anciennete_moyenne_femme_dans_employe = models.IntegerField()
-    anciennete_moyenne_homme_niveau_1 = models.IntegerField()
-    anciennete_moyenne_homme_niveau_2 = models.IntegerField()
-    anciennete_moyenne_femme_niveau_1 = models.IntegerField()
-    anciennete_moyenne_femme_niveau_2 = models.IntegerField()
-    anciennete_moyenne_homme_dans_niveau_1 = models.IntegerField()
-    anciennete_moyenne_homme_dans_niveau_2 = models.IntegerField()
-    anciennete_moyenne_femme_dans_niveau_1 = models.IntegerField()
-    anciennete_moyenne_femme_dans_niveau_2 = models.IntegerField()
-
+    anciennete_moyenne_homme = CategoryField(
+        verbose_name="Ancienneté moyenne des hommes par catégorie professionnelle",
+        null=True,
+        blank=True,
+    )
+    anciennete_moyenne_femme = CategoryField(
+        verbose_name="Ancienneté moyenne des femmes par catégorie professionnelle",
+        null=True,
+        blank=True,
+    )
+    anciennete_moyenne_dans_categorie_profesionnelle_homme = CategoryField(
+        verbose_name="Ancienneté moyenne des hommes dans chaque catégorie professionnelle",
+        null=True,
+        blank=True,
+    )
+    anciennete_moyenne_dans_categorie_profesionnelle_femme = CategoryField(
+        verbose_name="Ancienneté moyenne des femmes dans chaque catégorie professionnelle",
+        null=True,
+        blank=True,
+    )
+    # ancienneté moyenne par/dans niveau ou coefficient hiérarchique : quels sont les niveaux/coeff ?
     #        c) Age
-    age_moyen_homme_ouvrier = models.IntegerField()
-    age_moyen_homme_employe = models.IntegerField()
-    age_moyen_femme_ouvrier = models.IntegerField()
-    age_moyen_femme_employe = models.IntegerField()
-    age_moyen_homme_niveau_1 = models.IntegerField()
-    age_moyen_homme_niveau_2 = models.IntegerField()
-    age_moyen_femme_niveau_1 = models.IntegerField()
-    age_moyen_femme_niveau_2 = models.IntegerField()
-
+    age_moyen_homme = CategoryField(
+        verbose_name="Age moyen des hommes par catégorie professionnelle",
+        null=True,
+        blank=True,
+    )
+    age_moyen_femme = CategoryField(
+        verbose_name="Age moyen des femmes par catégorie professionnelle",
+        null=True,
+        blank=True,
+    )
+    # âge moyen par niveau ou coefficient hiérarchique : quels sont les niveaux/coeff ?
     #        d) Rémunérations
-    remuneration_moyenne_homme_ouvrier = models.IntegerField()
-    remuneration_moyenne_homme_employe = models.IntegerField()
-    remuneration_moyenne_femme_ouvrier = models.IntegerField()
-    remuneration_moyenne_femme_employe = models.IntegerField()
-    remuneration_moyenne_homme_niveau_1 = models.IntegerField(
-        help_text="Cet indicateur n'a pas à être renseigné lorsque sa mention est de nature à porter atteinte à la confidentialité des données correspondantes, compte tenu notamment du nombre réduit d'individus dans un niveau ou coefficient hiérarchique."
+    remuneration_moyenne_homme = CategoryField(
+        verbose_name="Rémunération moyenne mensuelle des hommes par catégorie professionnelle",
+        null=True,
+        blank=True,
     )
-    remuneration_moyenne_homme_niveau_2 = models.IntegerField(
-        help_text="Cet indicateur n'a pas à être renseigné lorsque sa mention est de nature à porter atteinte à la confidentialité des données correspondantes, compte tenu notamment du nombre réduit d'individus dans un niveau ou coefficient hiérarchique."
+    remuneration_moyenne_femme = CategoryField(
+        verbose_name="Rémunération moyenne mensuelle des femmes par catégorie professionnelle",
+        null=True,
+        blank=True,
     )
-    remuneration_moyenne_femme_niveau_1 = models.IntegerField(
-        help_text="Cet indicateur n'a pas à être renseigné lorsque sa mention est de nature à porter atteinte à la confidentialité des données correspondantes, compte tenu notamment du nombre réduit d'individus dans un niveau ou coefficient hiérarchique."
+    # rémunération moyenne ou médiane mensuelle par niveau ou coefficient hiérarchique : quels sont les niveaux/coeff ?
+    # Cet indicateur n'a pas à être renseigné lorsque sa mention est de nature à porter atteinte à la confidentialité des données correspondantes, compte tenu notamment du nombre réduit d'individus dans un niveau ou coefficient hiérarchique
+    remuneration_moyenne_par_age_homme = CategoryField(
+        categories=["moins de 30 ans", "30 à 39 ans", "40 à 49 ans", "50 ans et plus"],
+        verbose_name="Rémunération moyenne mensuelle des hommes par tranche d'âge",
+        null=True,
+        blank=True,
     )
-    remuneration_moyenne_femme_niveau_2 = models.IntegerField(
-        help_text="Cet indicateur n'a pas à être renseigné lorsque sa mention est de nature à porter atteinte à la confidentialité des données correspondantes, compte tenu notamment du nombre réduit d'individus dans un niveau ou coefficient hiérarchique."
+    remuneration_moyenne_par_age_femme = CategoryField(
+        categories=["moins de 30 ans", "30 à 39 ans", "40 à 49 ans", "50 ans et plus"],
+        verbose_name="Rémunération moyenne mensuelle des femmes par tranche d'âge",
+        null=True,
+        blank=True,
+    )
+    nombre_femmes_plus_hautes_remunerations = models.IntegerField(
+        verbose_name="Nombre de femmes dans les dix plus hautes rémunérations",
+        null=True,
+        blank=True,
     )
 
+
+class Vide:
     #     C - Formation
     nombre_moyen_heures_formation_homme_categorie_1 = models.IntegerField(
         help_text="nombre moyen d'heures d'actions de formation par salarié et par an"
@@ -1055,6 +1129,8 @@ class Vide:
         verbose_name="objectifs de progression pour l'année à venir et indicateurs associés",
         help_text="Définition qualitative et quantitative des mesures permettant de les atteindre conformément à l'article R. 2242-2. Evaluation de leur coût. Echéancier des mesures prévues",
     )
+
+    ###########################################################
 
     # 3° Fonds propres, endettement et impôts
     capitaux_propres = models.IntegerField(help_text="Capitaux propres de l'entreprise")
