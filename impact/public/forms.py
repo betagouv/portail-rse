@@ -57,7 +57,7 @@ class CategoryJSONWidget(forms.MultiWidget):
         return [value.get(category) for category in self.categories]
 
 
-def bdese_form_factory(categories_professionnelles, *args, **kwargs):
+def bdese_form_factory(categories_professionnelles, fetched_data=None, *args, **kwargs):
     class CategoryMultiValueField(forms.MultiValueField):
         widget = CategoryJSONWidget
 
@@ -100,4 +100,14 @@ def bdese_form_factory(categories_professionnelles, *args, **kwargs):
                 for category_field in BDESE.category_fields()
             }
 
-    return BDESEForm(*args, **kwargs)
+        def __init__(self, fetched_data=None, *args, **kwargs):
+            if fetched_data:
+                if "initial" not in kwargs:
+                    kwargs["initial"] = {}
+                kwargs["initial"].update(fetched_data)
+            super().__init__(*args, **kwargs)
+            if fetched_data:
+                for field in fetched_data:
+                    self.fields[field].help_text += " (valeur extraite de Index EgaPro)"
+
+    return BDESEForm(fetched_data, *args, **kwargs)

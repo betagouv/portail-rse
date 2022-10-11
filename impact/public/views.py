@@ -158,5 +158,5 @@ def bdese(request, siren):
             print(form.errors)
     else:
         fetched_data = get_bdese_data_from_index_egapro(siren, 2021)
-        form = bdese_form_factory(categories_professionnelles, instance=bdese, initial=fetched_data)
+        form = bdese_form_factory(categories_professionnelles, fetched_data=fetched_data, instance=bdese)
     return render(request, "public/bdese.html", {"form": form, "siren": siren})
