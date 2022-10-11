@@ -904,50 +904,51 @@ class BDESE(models.Model):
         blank=True,
     )
 
+    #     C - Formation
+    nombre_moyen_heures_formation_homme = CategoryField(
+        verbose_name="Nombre moyen d'heures d'actions de formation par salarié et par an",
+        help_text="hommes",
+        null=True,
+        blank=True,
+    )
+    nombre_moyen_heures_formation_femme = CategoryField(
+        verbose_name="Nombre moyen d'heures d'actions de formation par salariée et par an",
+        help_text="femmes",
+        null=True,
+        blank=True,
+    )
+    action_adaptation_au_poste_homme = CategoryField(
+        verbose_name="Répartition des hommes pour l'adaptation au poste",
+        null=True,
+        blank=True,
+    )
+    action_adaptation_au_poste_femme = CategoryField(
+        verbose_name="Répartition des femmes pour l'adaptation au poste",
+        null=True,
+        blank=True,
+    )
+    action_maintien_emploi_homme = CategoryField(
+        verbose_name="Répartition des hommes pour le maintien dans l'emploi",
+        null=True,
+        blank=True,
+    )
+    action_maintien_emploi_femme = CategoryField(
+        verbose_name="Répartition des femmes pour le maintien dans l'emploi",
+        null=True,
+        blank=True,
+    )
+    action_developpement_competences_homme = CategoryField(
+        verbose_name="Répartition des hommes pour le développement des compétences",
+        null=True,
+        blank=True,
+    )
+    action_developpement_competences_femme = CategoryField(
+        verbose_name="Répartition des femmes pour le développement des compétences",
+        null=True,
+        blank=True,
+    )
 
 class Vide:
-    #     C - Formation
-    nombre_moyen_heures_formation_homme_categorie_1 = models.IntegerField(
-        help_text="nombre moyen d'heures d'actions de formation par salarié et par an"
-    )
-    nombre_moyen_heures_formation_homme_categorie_2 = models.IntegerField(
-        help_text="nombre moyen d'heures d'actions de formation par salarié et par an"
-    )
-    nombre_moyen_heures_formation_femme_categorie_1 = models.IntegerField(
-        help_text="nombre moyen d'heures d'actions de formation par salarié et par an"
-    )
-    nombre_moyen_heures_formation_femme_categorie_2 = models.IntegerField(
-        help_text="nombre moyen d'heures d'actions de formation par salarié et par an"
-    )
-    action_adaptation_au_poste_homme_categorie_1 = models.IntegerField()
-    action_maintien_emploi_homme_categorie_1 = models.IntegerField(
-        help_text="Action : maintien dans l'emploi"
-    )
-    action_developpement_competences_homme_categorie_1 = models.IntegerField(
-        help_text="Action : développement des compétences"
-    )
-    action_adaptation_au_poste_homme_categorie_2 = models.IntegerField()
-    action_maintien_emploi_homme_categorie_2 = models.IntegerField(
-        help_text="Action : maintien dans l'emploi"
-    )
-    action_developpement_competences_homme_categorie_2 = models.IntegerField(
-        help_text="Action : développement des compétences"
-    )
-    action_adaptation_au_poste_femme_categorie_1 = models.IntegerField()
-    action_maintien_emploi_homme_categorie_1 = models.IntegerField(
-        help_text="Action : maintien dans l'emploi"
-    )
-    action_developpement_competences_femme_categorie_1 = models.IntegerField(
-        help_text="Action : développement des compétences"
-    )
-    action_adaptation_au_poste_femme_categorie_2 = models.IntegerField()
-    action_maintien_emploi_femme_categorie_2 = models.IntegerField(
-        help_text="Action : maintien dans l'emploi"
-    )
-    action_developpement_competences_femme_categorie_2 = models.IntegerField(
-        help_text="Action : développement des compétences"
-    )
-
     #     D - Conditions de travail, santé et sécurité au travail
     poste_de_travail_1_homme_risque_pro_1_non_penible = models.IntegerField()
     poste_de_travail_1_homme_risque_pro_1_penible = models.IntegerField()

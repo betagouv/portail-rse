@@ -222,25 +222,17 @@
                 {% include 'snippets/category_field.html' with field=form.remuneration_moyenne_par_age_homme %}
                 {% include 'snippets/category_field.html' with field=form.remuneration_moyenne_par_age_femme %}
                 {% include 'snippets/input_field.html' with field=form.nombre_femmes_plus_hautes_remunerations %}
-{% comment %}
-                <h4>C - Formation</h4>
-                {% include 'snippets/input_field.html' with field=form.nombre_moyen_heures_formation_homme_categorie_1 %}
-                {% include 'snippets/input_field.html' with field=form.nombre_moyen_heures_formation_homme_categorie_2 %}
-                {% include 'snippets/input_field.html' with field=form.nombre_moyen_heures_formation_femme_categorie_1 %}
-                {% include 'snippets/input_field.html' with field=form.nombre_moyen_heures_formation_femme_categorie_2 %}
-                {% include 'snippets/input_field.html' with field=form.action_adaptation_au_poste_homme_categorie_1 %}
-                {% include 'snippets/input_field.html' with field=form.action_maintien_emploi_homme_categorie_1 %}
-                {% include 'snippets/input_field.html' with field=form.action_developpement_competences_homme_categorie_1 %}
-                {% include 'snippets/input_field.html' with field=form.action_adaptation_au_poste_homme_categorie_2 %}
-                {% include 'snippets/input_field.html' with field=form.action_maintien_emploi_homme_categorie_2 %}
-                {% include 'snippets/input_field.html' with field=form.action_developpement_competences_homme_categorie_2 %}
-                {% include 'snippets/input_field.html' with field=form.action_adaptation_au_poste_femme_categorie_1 %}
-                {% include 'snippets/input_field.html' with field=form.action_maintien_emploi_homme_categorie_1 %}
-                {% include 'snippets/input_field.html' with field=form.action_developpement_competences_femme_categorie_1 %}
-                {% include 'snippets/input_field.html' with field=form.action_adaptation_au_poste_femme_categorie_2 %}
-                {% include 'snippets/input_field.html' with field=form.action_maintien_emploi_femme_categorie_2 %}
-                {% include 'snippets/input_field.html' with field=form.action_developpement_competences_femme_categorie_2 %}
 
+                <h4>C - Formation</h4>
+                {% include 'snippets/category_field.html' with field=form.nombre_moyen_heures_formation_homme %}
+                {% include 'snippets/category_field.html' with field=form.nombre_moyen_heures_formation_femme %}
+                {% include 'snippets/category_field.html' with field=form.action_adaptation_au_poste_homme %}
+                {% include 'snippets/category_field.html' with field=form.action_adaptation_au_poste_femme %}
+                {% include 'snippets/category_field.html' with field=form.action_maintien_emploi_homme %}
+                {% include 'snippets/category_field.html' with field=form.action_maintien_emploi_femme %}
+                {% include 'snippets/category_field.html' with field=form.action_developpement_competences_homme %}
+                {% include 'snippets/category_field.html' with field=form.action_developpement_competences_femme %}
+{% comment %}
                 <h4>D - Conditions de travail, santé et sécurité au travail</h4>
                 {% include 'snippets/input_field.html' with field=form.poste_de_travail_1_homme_risque_pro_1_non_penible %}
                 {% include 'snippets/input_field.html' with field=form.poste_de_travail_1_homme_risque_pro_1_penible %}
