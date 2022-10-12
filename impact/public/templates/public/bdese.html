@@ -112,19 +112,18 @@
                 {% include 'snippets/input_field.html' with field=form.montant_depenses_formation_securite %}
                 {% include 'snippets/input_field.html' with field=form.taux_realisation_programme_securite %}
                 {% include 'snippets/input_field.html' with field=form.nombre_plans_specifiques_securite %}
-                {% comment %}
                 <h5>Durée et aménagement du temps de travail</h5>
-                {% include 'snippets/input_field.html' with field=form.horaire_hebdomadaire_moyen_ouvriers_employes %}
-                {% include 'snippets/input_field.html' with field=form.somme_heures_travaillees_ouvriers_employes %}
-                {% include 'snippets/input_field.html' with field=form.nombre_salaries_repos_compensateur_code_travail %}
-                {% include 'snippets/input_field.html' with field=form.nombre_salaries_repos_compensateur_regime_conventionne %}
-                {% include 'snippets/input_field.html' with field=form.nombre_salaries_horaires_individualises %}
-                {% include 'snippets/input_field.html' with field=form.nombre_salaries_temps_partiel_20_30_heures %}
-                {% include 'snippets/input_field.html' with field=form.nombre_salaries_temps_partiel_autres %}
-                {% include 'snippets/input_field.html' with field=form.nombre_salaries_2_jours_repos_hebdomadaire_consecutifs %}
-                {% include 'snippets/input_field.html' with field=form.nombre_moyen_jours_conges_annuels %}
-                {% include 'snippets/input_field.html' with field=form.nombre_jours_feries_payes %}
-                {% include 'snippets/input_field.html' with field=form.conditions_restrictives_jours_feries_payes %}
+                {% include 'snippets/category_field.html' with field=form.horaire_hebdomadaire_moyen_ouvriers_employes %}
+                {% include 'snippets/category_field.html' with field=form.somme_heures_travaillees_ouvriers_employes %}
+                {% include 'snippets/category_field.html' with field=form.nombre_salaries_repos_compensateur_code_travail %}
+                {% include 'snippets/category_field.html' with field=form.nombre_salaries_repos_compensateur_regime_conventionne %}
+                {% include 'snippets/category_field.html' with field=form.nombre_salaries_horaires_individualises %}
+                {% include 'snippets/category_field.html' with field=form.nombre_salaries_temps_partiel_20_30_heures %}
+                {% include 'snippets/category_field.html' with field=form.nombre_salaries_temps_partiel_autres %}
+                {% include 'snippets/category_field.html' with field=form.nombre_salaries_2_jours_repos_hebdomadaire_consecutifs %}
+                {% include 'snippets/category_field.html' with field=form.nombre_moyen_jours_conges_annuels %}
+                {% include 'snippets/category_field.html' with field=form.nombre_jours_feries_payes %}
+{% comment %}
                 <h5>Absentéisme</h5>
                 {% include 'snippets/select_field.html' with field=form.unite_absenteisme %}
                 {% include 'snippets/input_field.html' with field=form.nombre_unites_absence %}
