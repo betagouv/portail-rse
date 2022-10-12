@@ -252,14 +252,11 @@
                 {% include 'snippets/category_field.html' with field=form.maladies_femme %}
                 {% include 'snippets/category_field.html' with field=form.maladies_avec_examen_de_reprise_homme %}
                 {% include 'snippets/category_field.html' with field=form.maladies_avec_examen_de_reprise_femme %}
-{% comment %}
                 <h3>II. Indicateurs relatifs à l'articulation entre l'activité professionnelle et l'exercice de la responsabilité familiale</h3>
                 <h4>Congés</h4>
-
-                {% include 'snippets/input_field.html' with field=form.complement_salaire_conge %}
-                {% include 'snippets/input_field.html' with field=form.nombre_jours_conges_paternite_pris_ouvrier %}
-                {% include 'snippets/input_field.html' with field=form.nombre_jours_conges_paternite_pris_employe %}
-
+                {% include 'snippets/radio_field.html' with field=form.complement_salaire_conge %}
+                {% include 'snippets/category_field.html' with field=form.nombre_jours_conges_paternite_pris %}
+{% comment %}
                 <h4>Organisation du temps de travail dans l'entreprise</h4>
 
                 {% include 'snippets/radio_field.html' with field=form.existence_organisation_facilitant_vie_familiale_et_professionnelle %}

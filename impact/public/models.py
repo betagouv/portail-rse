@@ -1136,7 +1136,7 @@ class BDESE(models.Model):
     )
     maladies_femme = CategoryField(
         categories=["nombre d'arrêts de travail", "nombre de journées d'absence"],
-        verbose_name="Maladies chez les hommes",
+        verbose_name="Maladies chez les femmes",
         null=True,
         blank=True,
     )
@@ -1154,21 +1154,21 @@ class BDESE(models.Model):
         null=True,
         blank=True,
     )
-
-
-class Vide:
     #   II. Indicateurs relatifs à l'articulation entre l'activité professionnelle et l'exercice de la responsabilité familiale
     #      A. Congés
     complement_salaire_conge = models.BooleanField(
-        help_text="Existence d'un complément de salaire versé par l'employeur pour le congé de paternité, le congé de maternité, le congé d'adoption"
+        verbose_name="Complément de salaire versé par l'employeur",
+        help_text="Existence d'un complément de salaire versé par l'employeur pour le congé de paternité, le congé de maternité, le congé d'adoption",
+        default=False,
     )
-    nombre_jours_conges_paternite_pris_ouvrier = models.IntegerField(
-        help_text="nombre de jours de congés de paternité pris par le salarié par rapport au nombre de jours de congés théoriques "
-    )
-    nombre_jours_conges_paternite_pris_employe = models.IntegerField(
-        help_text="nombre de jours de congés de paternité pris par le salarié par rapport au nombre de jours de congés théoriques "
+    nombre_jours_conges_paternite_pris = CategoryField(
+        verbose_name="Jours de congés parternité",
+        help_text="Nombre de jours de congés de paternité pris par le salarié par rapport au nombre de jours de congés théoriques",
+        null=True,
+        blank=True,
     )
 
+class Vide:
     #      B-Organisation du temps de travail dans l'entreprise
     existence_organisation_facilitant_vie_familiale_et_professionnelle = models.BooleanField(
         help_text="Existence de formules d'organisation du travail facilitant l'articulation de la vie familiale et de la vie professionnelle"
