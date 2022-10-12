@@ -606,21 +606,24 @@ class BDESE(models.Model):
         null=True,
         blank=True,
     )
-    #     # 1° A - f) vii - Organisation et contenu du travail
-    #     nombre_personnes_horaires_alternant_ou_nuit = models.IntegerField(
-    #         verbose_name="Nombre de personnes occupant des emplois à horaires alternant ou de nuit",
-    #     )
-    #     nombre_personnes_horaires_alternant_ou_nuit_50_ans = models.IntegerField(
-    #         verbose_name="Nombre de personnes occupant des emplois à horaires alternant ou de nuit de plus de cinquante ans",
-    #     )
-    #     nombre_hommes_taches_repetitives = models.IntegerField(
-    #         verbose_name="Nombre de salariés homme affectés à des tâches répétitives",
-    #         help_text="Au sens de l'article D. 4163-2",
-    #     )
-    #     nombre_femmes_taches_repetitives = models.IntegerField(
-    #         verbose_name="Nombre de salariés femme affectés à des tâches répétitives",
-    #         help_text="Au sens de l'article D. 4163-2",
-    #     )
+    # 1° A - f) vii - Organisation et contenu du travail
+    nombre_personnes_horaires_alternant_ou_nuit = models.IntegerField(
+        verbose_name="Nombre de personnes occupant des emplois à horaires alternant ou de nuit",
+        null=True,
+        blank=True,
+    )
+    nombre_personnes_horaires_alternant_ou_nuit_50_ans = models.IntegerField(
+        verbose_name="Nombre de personnes occupant des emplois à horaires alternant ou de nuit de plus de cinquante ans",
+        null=True,
+        blank=True,
+    )
+    nombre_taches_repetitives = CategoryField(
+        categories=["hommes", "femmes"],
+        verbose_name="Nombre de salarié(e)s affectés à des tâches répétitives",
+        help_text="Au sens de l'article D. 4163-2",
+        null=True,
+        blank=True,
+    )
     #     # 1° A - f) viii - Conditions physiques de travail
     #     nombre_personnes_exposees_bruit = models.IntegerField(
     #         verbose_name="Nombre de personnes exposées de façon habituelle et régulière à plus de 80 à 85 db à leur poste de travail",

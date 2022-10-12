@@ -136,12 +136,11 @@
                 {% include 'snippets/category_field.html' with field=form.nombre_unites_absence_maternite %}
                 {% include 'snippets/category_field.html' with field=form.nombre_unites_absence_conges_autorises %}
                 {% include 'snippets/category_field.html' with field=form.nombre_unites_absence_autres %}
-{% comment %}
                 <h5>Organisation et contenu du travail</h5>
                 {% include 'snippets/input_field.html' with field=form.nombre_personnes_horaires_alternant_ou_nuit %}
                 {% include 'snippets/input_field.html' with field=form.nombre_personnes_horaires_alternant_ou_nuit_50_ans %}
-                {% include 'snippets/input_field.html' with field=form.nombre_hommes_taches_repetitives %}
-                {% include 'snippets/input_field.html' with field=form.nombre_femmes_taches_repetitives %}
+                {% include 'snippets/category_field.html' with field=form.nombre_taches_repetitives %}
+{% comment %}
                 <h5>Conditions physiques de travail</h5>
                 {% include 'snippets/input_field.html' with field=form.nombre_personnes_exposees_bruit %}
                 {% include 'snippets/input_field.html' with field=form.nombre_salaries_exposes_temperatures %}
