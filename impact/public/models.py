@@ -1167,51 +1167,43 @@ class BDESE(models.Model):
         null=True,
         blank=True,
     )
-
-class Vide:
     #      B-Organisation du temps de travail dans l'entreprise
     existence_organisation_facilitant_vie_familiale_et_professionnelle = models.BooleanField(
-        help_text="Existence de formules d'organisation du travail facilitant l'articulation de la vie familiale et de la vie professionnelle"
+        verbose_name="Existence de formules d'organisation du travail facilitant l'articulation de la vie familiale et de la vie professionnelle",
+        default=False,
     )
-    nombre_salaries_temps_partiel_choisi_homme_ouvrier = models.IntegerField(
-        help_text="nombre de salariés ayant accédé au temps partiel choisi "
+    nombre_salaries_temps_partiel_choisi_homme = CategoryField(
+        verbose_name="Nombre de salariés homme ayant accédé au temps partiel choisi",
+        null=True,
+        blank=True,
     )
-    nombre_salaries_temps_partiel_choisi_homme_employe = models.IntegerField(
-        help_text="nombre de salariés ayant accédé au temps partiel choisi "
+    nombre_salaries_temps_partiel_choisi_femme = CategoryField(
+        verbose_name="Nombre de salariées femme ayant accédé au temps partiel choisi",
+        null=True,
+        blank=True,
     )
-    nombre_salaries_temps_partiel_choisi_femme_ouvrier = models.IntegerField(
-        help_text="nombre de salariés ayant accédé au temps partiel choisi "
+    nombre_salaries_temps_partiel_choisi_ayant_repris_temps_plein_homme = CategoryField(
+        verbose_name="Nombre de salariés homme à temps partiel choisi ayant repris un travail à temps plein",
+        null=True,
+        blank=True,
     )
-    nombre_salaries_temps_partiel_choisi_femme_employe = models.IntegerField(
-        help_text="nombre de salariés ayant accédé au temps partiel choisi "
+    nombre_salaries_temps_partiel_choisi_ayant_repris_temps_plein_femme = CategoryField(
+        verbose_name="Nombre de salariées femme à temps partiel choisi ayant repris un travail à temps plein",
+        null=True,
+        blank=True,
     )
-    nombre_salaries_temps_partiel_choisi_ayant_repris_temps_plein_homme_ouvrier = (
-        models.IntegerField(
-            help_text="nombre de salariés ayant accédé au temps partiel choisi "
-        )
+    participation_accueil_petite_enfance = models.BooleanField(
+        verbose_name="Participation de l'entreprise et du comité social et économique aux modes d'accueil de la petite enfance",
+        default=False,
     )
-    nombre_salaries_temps_partiel_choisi_ayant_repris_temps_plein_homme_employe = (
-        models.IntegerField(
-            help_text="nombre de salariés ayant accédé au temps partiel choisi "
-        )
-    )
-    nombre_salaries_temps_partiel_choisi_ayant_repris_temps_plein_femme_ouvrier = (
-        models.IntegerField(
-            help_text="nombre de salariés ayant accédé au temps partiel choisi "
-        )
-    )
-    nombre_salaries_temps_partiel_choisi_ayant_repris_temps_plein_femme_employe = (
-        models.IntegerField(
-            help_text="nombre de salariés ayant accédé au temps partiel choisi "
-        )
-    )
-    participant_accueil_petite_enfance = models.BooleanField(
-        help_text="participation de l'entreprise et du comité social et économique aux modes d'accueil de la petite enfance"
-    )
-    evolution_depenses_credit_impot_famille = models.BooleanField(
-        help_text="évolution des dépenses éligibles au crédit d'impôt famille"
+    evolution_depenses_credit_impot_famille = models.TextField(
+        verbose_name="Evolution des dépenses éligibles au crédit d'impôt famille",
+        null=True,
+        blank=True,
     )
 
+
+class Vide:
     #  III. Stratégie d'action
     mesures_prises_egalite = models.TextField(
         verbose_name="mesures prises au cours de l'année écoulée en vue d'assurer l'égalité professionnelle",
