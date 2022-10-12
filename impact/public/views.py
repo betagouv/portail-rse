@@ -104,6 +104,10 @@ def eligibilite(request):
     )
 
 
+def reglementations(request):
+    return render(request, "public/reglementations.html")
+
+
 def result(request):
     context = {
         "raison_sociale": request.GET["raison_sociale"],
