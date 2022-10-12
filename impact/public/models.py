@@ -42,7 +42,7 @@ class CategoryField(models.JSONField):
 
 
 def categories_default():
-    return ["ouvrier", "employé", "technicien", "agent de maitrise", "cadre"]
+    return ["ouvriers", "employés", "techniciens et agents de maitrise", "ingénieurs et cadres"]
 
 
 class BDESE(models.Model):
@@ -97,11 +97,10 @@ class BDESE(models.Model):
     )
     effectif_age = CategoryField(
         categories=[
-            "moins de 25 ans",
-            "entre 25 et 35 ans",
-            "entre 35 et 45 ans",
-            "entre 45 et 55 ans",
-            "plus de 55 ans",
+            "moins de 30 ans",
+            "30 à 39 ans",
+            "40 à 49 ans",
+            "50 ans et plus",
         ],
         verbose_name="Effectif par âge",
         null=True,
