@@ -542,49 +542,65 @@ class BDESE(models.Model):
         help_text="Préciser, le cas échéant, les conditions restrictives.",
         null=True,
         blank=True,
-    ) # à transformer en CategoryField(TextField) ?
-    #     # 1° A - f) vi - Absentéisme
-    #     # Possibilités de comptabiliser tous les indicateurs de la rubrique absentéisme, au choix, en journées, 1/2 journées ou heures.
-    #     UNITE_ABESENTEISME_CHOICES = [
-    #         ("J", "Journées"),
-    #         ("1/2J", "1/2 journées"),
-    #         ("H", "Heures"),
-    #     ]
-    #     unite_absenteisme = models.CharField(
-    #         max_length=10,
-    #         choices=UNITE_ABESENTEISME_CHOICES,
-    #     )
-    #     nombre_unites_absence = models.IntegerField(
-    #         verbose_name="Nombre de journées d'absence",
-    #         help_text="Ne sont pas comptés parmi les absences : les diverses sortes de congés, les conflits et le service national.",
-    #     )
-    #     nombre_unites_theoriques_travaillees = models.IntegerField(
-    #         verbose_name="Nombre de journées théoriques travaillées",
-    #     )
-    #     nombre_unites_absence_maladie = models.IntegerField(
-    #         verbose_name="Nombre de journées d'absence pour maladie",
-    #     )
-    #     nombre_unites_absence_duree_1 = models.IntegerField(
-    #         verbose_name="Répartition des absences pour maladie selon leur durée",
-    #         help_text="Les tranches choisies sont laissées au choix des entreprises.",
-    #     )
+    ) # TODO: à transformer en CategoryField(TextField) ?
+    # 1° A - f) vi - Absentéisme
+    # Possibilités de comptabiliser tous les indicateurs de la rubrique absentéisme, au choix, en journées, 1/2 journées ou heures.
+    UNITE_ABSENTEISME_CHOICES = [
+        ("J", "Journées"),
+        ("1/2J", "1/2 journées"),
+        ("H", "Heures"),
+    ]
+    unite_absenteisme = models.CharField(
+        max_length=10,
+        choices=UNITE_ABSENTEISME_CHOICES,
+        default="J",
+    )
+    nombre_unites_absence = CategoryField(
+        verbose_name="Nombre de journées d'absence",
+        help_text="Ne sont pas comptés parmi les absences : les diverses sortes de congés, les conflits et le service national.",
+        null=True,
+        blank=True,
+    )
+    nombre_unites_theoriques_travaillees = models.IntegerField(
+        verbose_name="Nombre de journées théoriques travaillées",
+        null=True,
+        blank=True,
+    )
+    nombre_unites_absence_maladie = CategoryField(
+        verbose_name="Nombre de journées d'absence pour maladie",
+        null=True,
+        blank=True,
+    )
+    # TODO: par categorie, par duree
+    #nombre_unites_absence_duree_1 = models.IntegerField(
+    #    verbose_name="Répartition des absences pour maladie selon leur durée",
+    #    help_text="Les tranches choisies sont laissées au choix des entreprises.",
+    #)
     #     nombre_unites_absence_duree_2 = models.IntegerField(
     #         verbose_name="Répartition des absences pour maladie selon leur durée",
     #         help_text="Les tranches choisies sont laissées au choix des entreprises.",
     #     )
-    #     nombre_unites_absence_accidents = models.IntegerField(
-    #         verbose_name="Nombre de journées d'absence pour accidents du travail et de trajet ou maladies professionnelles",
-    #     )
-    #     nombre_unites_absence_maternite = models.IntegerField(
-    #         verbose_name="Nombre de journées d'absence pour maternité",
-    #     )
-    #     nombre_unites_absence_conges_autorises = models.IntegerField(
-    #         verbose_name="Nombre de journées d'absence pour congés autorisés",
-    #         help_text="(événements familiaux, congés spéciaux pour les femmes …)",
-    #     )
-    #     nombre_unites_absence_autres = models.IntegerField(
-    #         verbose_name="Nombre de journées d'absence imputables à d'autres causes",
-    #     )
+    nombre_unites_absence_accidents = CategoryField(
+        verbose_name="Nombre de journées d'absence pour accidents du travail et de trajet ou maladies professionnelles",
+        null=True,
+        blank=True,
+    )
+    nombre_unites_absence_maternite = CategoryField(
+        verbose_name="Nombre de journées d'absence pour maternité",
+        null=True,
+        blank=True,
+    )
+    nombre_unites_absence_conges_autorises = CategoryField(
+        verbose_name="Nombre de journées d'absence pour congés autorisés",
+        help_text="(événements familiaux, congés spéciaux pour les femmes …)",
+        null=True,
+        blank=True,
+    )
+    nombre_unites_absence_autres = CategoryField(
+        verbose_name="Nombre de journées d'absence imputables à d'autres causes",
+        null=True,
+        blank=True,
+    )
     #     # 1° A - f) vii - Organisation et contenu du travail
     #     nombre_personnes_horaires_alternant_ou_nuit = models.IntegerField(
     #         verbose_name="Nombre de personnes occupant des emplois à horaires alternant ou de nuit",

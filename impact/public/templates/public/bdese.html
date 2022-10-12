@@ -123,18 +123,20 @@
                 {% include 'snippets/category_field.html' with field=form.nombre_salaries_2_jours_repos_hebdomadaire_consecutifs %}
                 {% include 'snippets/category_field.html' with field=form.nombre_moyen_jours_conges_annuels %}
                 {% include 'snippets/category_field.html' with field=form.nombre_jours_feries_payes %}
-{% comment %}
                 <h5>Absentéisme</h5>
                 {% include 'snippets/select_field.html' with field=form.unite_absenteisme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_unites_absence %}
+                {% include 'snippets/category_field.html' with field=form.nombre_unites_absence %}
                 {% include 'snippets/input_field.html' with field=form.nombre_unites_theoriques_travaillees %}
-                {% include 'snippets/input_field.html' with field=form.nombre_unites_absence_maladie %}
+                {% include 'snippets/category_field.html' with field=form.nombre_unites_absence_maladie %}
+{% comment %}
                 {% include 'snippets/input_field.html' with field=form.nombre_unites_absence_duree_1 %}
                 {% include 'snippets/input_field.html' with field=form.nombre_unites_absence_duree_2 %}
-                {% include 'snippets/input_field.html' with field=form.nombre_unites_absence_accidents %}
-                {% include 'snippets/input_field.html' with field=form.nombre_unites_absence_maternite %}
-                {% include 'snippets/input_field.html' with field=form.nombre_unites_absence_conges_autorises %}
-                {% include 'snippets/input_field.html' with field=form.nombre_unites_absence_autres %}
+{% endcomment %}
+                {% include 'snippets/category_field.html' with field=form.nombre_unites_absence_accidents %}
+                {% include 'snippets/category_field.html' with field=form.nombre_unites_absence_maternite %}
+                {% include 'snippets/category_field.html' with field=form.nombre_unites_absence_conges_autorises %}
+                {% include 'snippets/category_field.html' with field=form.nombre_unites_absence_autres %}
+{% comment %}
                 <h5>Organisation et contenu du travail</h5>
                 {% include 'snippets/input_field.html' with field=form.nombre_personnes_horaires_alternant_ou_nuit %}
                 {% include 'snippets/input_field.html' with field=form.nombre_personnes_horaires_alternant_ou_nuit_50_ans %}
