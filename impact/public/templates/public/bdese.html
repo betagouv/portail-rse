@@ -264,11 +264,12 @@
                 {% include 'snippets/category_field.html' with field=form.nombre_salaries_temps_partiel_choisi_ayant_repris_temps_plein_femme %}
                 {% include 'snippets/radio_field.html' with field=form.participation_accueil_petite_enfance %}
                 {% include 'snippets/input_field.html' with field=form.evolution_depenses_credit_impot_famille %}
-{% comment %}
                 <h3>III. Stratégie d'action</h3>
+                <p>A partir de l'analyse des indicateurs mentionnés aux I et II, la stratégie d'action comprend les éléments suivants :</p>
                 {% include 'snippets/input_field.html' with field=form.mesures_prises_egalite %}
                 {% include 'snippets/input_field.html' with field=form.objectifs_progression %}
 
+{% comment %}
                 <h2>3° Fonds propres, endettement et impôts</h2>
                 {% include 'snippets/input_field.html' with field=form.capitaux_propres %}
                 {% include 'snippets/input_field.html' with field=form.emprunts_et_dettes_financieres %}

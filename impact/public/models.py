@@ -1201,21 +1201,23 @@ class BDESE(models.Model):
         null=True,
         blank=True,
     )
-
-
-class Vide:
     #  III. Stratégie d'action
     mesures_prises_egalite = models.TextField(
-        verbose_name="mesures prises au cours de l'année écoulée en vue d'assurer l'égalité professionnelle",
+        verbose_name="Mesures prises au cours de l'année écoulée en vue d'assurer l'égalité professionnelle",
         help_text="Bilan des actions de l'année écoulée et, le cas échéant, de l'année précédente. Evaluation du niveau de réalisation des objectifs sur la base des indicateurs retenus. Explications sur les actions prévues non réalisées",
+        null=True,
+        blank=True,
     )
     objectifs_progression = models.TextField(
-        verbose_name="objectifs de progression pour l'année à venir et indicateurs associés",
+        verbose_name="Objectifs de progression pour l'année à venir et indicateurs associés",
         help_text="Définition qualitative et quantitative des mesures permettant de les atteindre conformément à l'article R. 2242-2. Evaluation de leur coût. Echéancier des mesures prévues",
+        null=True,
+        blank=True,
     )
 
     ###########################################################
 
+class Vide:
     # 3° Fonds propres, endettement et impôts
     capitaux_propres = models.IntegerField(help_text="Capitaux propres de l'entreprise")
     emprunts_et_dettes_financieres = models.IntegerField(
