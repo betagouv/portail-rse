@@ -123,6 +123,8 @@ class BDESE(models.Model):
         null=True,
         blank=True,
     )
+
+    # inutile car on a considété la même structure du qualification pour la qualification détaillée:
     # effectif_cadres = models.IntegerField()
     # effectif_techniciens = models.IntegerField()
     # effectif_agents_de_maitrise = models.IntegerField()
@@ -470,19 +472,27 @@ class BDESE(models.Model):
     )
 
     #     # 1° A - f) iv - Dépenses en matière de sécurité
-    #     effectif_forme_securite = models.IntegerField(
-    #         verbose_name="Effectif formé à la sécurité dans l'année",
-    #     )
-    #     montant_depenses_formation_securite = models.IntegerField(
-    #         verbose_name="Montant des dépenses de formation à la sécurité réalisées dans l'entreprise",
-    #     )
-    #     taux_realisation_programme_securite = models.IntegerField(
-    #         verbose_name="Taux de réalisation du programme de sécurité présenté l'année précédente",
-    #     )
-    #     nombre_plans_specifiques_securite = models.IntegerField(
-    #         verbose_name="Nombre de plans spécifiques de sécurité"
-    #     )
-    #     # 1° A - f) v - Durée et aménagement du temps de travail
+    effectif_forme_securite = models.IntegerField(
+        verbose_name="Effectif formé à la sécurité dans l'année",
+        null=True,
+        blank=True,
+    )
+    montant_depenses_formation_securite = models.IntegerField(
+        verbose_name="Montant des dépenses de formation à la sécurité réalisées dans l'entreprise",
+        null=True,
+        blank=True,
+    )
+    taux_realisation_programme_securite = models.IntegerField(
+        verbose_name="Taux de réalisation du programme de sécurité présenté l'année précédente",
+        null=True,
+        blank=True,
+    )
+    nombre_plans_specifiques_securite = models.IntegerField(
+        verbose_name="Nombre de plans spécifiques de sécurité",
+        null=True,
+        blank=True,
+    )
+    # 1° A - f) v - Durée et aménagement du temps de travail
     #     horaire_hebdomadaire_moyen_ouvriers_employes = models.IntegerField(
     #         verbose_name="Horaire hebdomadaire moyen affiché des ouvriers et employés ou catégories assimilées",
     #         help_text="Il est possible de remplacer cet indicateur par la somme des heures travaillées durant l'année.",
