@@ -89,6 +89,8 @@ dans la page, il est indiqué:
 
 "accidents de travail, accidents de trajet et maladies professionnelles" : 3 champs différents ou aggrégés ?
 
+"répartition des accidents par éléments matériels (28)" : champs aggrégés ou différents ? mêmes catégories que 1°A-f)ii ?
+
 "dénomination des maladies professionnelles" : permettre à l'utilisateur de remplir librement les maladies ?
 
 "maladies": champ libre pour lister des maladies non professionnelles ?

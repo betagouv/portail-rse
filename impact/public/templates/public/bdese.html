@@ -233,62 +233,26 @@
                 {% include 'snippets/category_field.html' with field=form.action_maintien_emploi_femme %}
                 {% include 'snippets/category_field.html' with field=form.action_developpement_competences_homme %}
                 {% include 'snippets/category_field.html' with field=form.action_developpement_competences_femme %}
-{% comment %}
                 <h4>D - Conditions de travail, santé et sécurité au travail</h4>
-                {% include 'snippets/input_field.html' with field=form.poste_de_travail_1_homme_risque_pro_1_non_penible %}
-                {% include 'snippets/input_field.html' with field=form.poste_de_travail_1_homme_risque_pro_1_penible %}
-                {% include 'snippets/input_field.html' with field=form.poste_de_travail_1_homme_risque_pro_1_penible_repetitif %}
-                {% include 'snippets/input_field.html' with field=form.poste_de_travail_1_homme_risque_pro_2_non_penible %}
-                {% include 'snippets/input_field.html' with field=form.poste_de_travail_1_homme_risque_pro_2_penible %}
-                {% include 'snippets/input_field.html' with field=form.poste_de_travail_1_homme_risque_pro_2_penible_repetitif %}
-                {% include 'snippets/input_field.html' with field=form.poste_de_travail_1_femme_risque_pro_1_non_penible %}
-                {% include 'snippets/input_field.html' with field=form.poste_de_travail_1_femme_risque_pro_1_penible %}
-                {% include 'snippets/input_field.html' with field=form.poste_de_travail_1_femme_risque_pro_1_penible_repetitif %}
-                {% include 'snippets/input_field.html' with field=form.poste_de_travail_1_femme_risque_pro_2_non_penible %}
-                {% include 'snippets/input_field.html' with field=form.poste_de_travail_1_femme_risque_pro_2_penible %}
-                {% include 'snippets/input_field.html' with field=form.poste_de_travail_1_femme_risque_pro_2_penible_repetitif %}
-                {% include 'snippets/input_field.html' with field=form.poste_de_travail_2_homme_risque_pro_1_non_penible %}
-                {% include 'snippets/input_field.html' with field=form.poste_de_travail_2_homme_risque_pro_1_penible %}
-                {% include 'snippets/input_field.html' with field=form.poste_de_travail_2_homme_risque_pro_1_penible_repetitif %}
-                {% include 'snippets/input_field.html' with field=form.poste_de_travail_2_homme_risque_pro_2_non_penible %}
-                {% include 'snippets/input_field.html' with field=form.poste_de_travail_2_homme_risque_pro_2_penible %}
-                {% include 'snippets/input_field.html' with field=form.poste_de_travail_2_homme_risque_pro_2_penible_repetitif %}
-                {% include 'snippets/input_field.html' with field=form.poste_de_travail_2_femme_risque_pro_1_non_penible %}
-                {% include 'snippets/input_field.html' with field=form.poste_de_travail_2_femme_risque_pro_1_penible %}
-                {% include 'snippets/input_field.html' with field=form.poste_de_travail_2_femme_risque_pro_1_penible_repetitif %}
-                {% include 'snippets/input_field.html' with field=form.poste_de_travail_2_femme_risque_pro_2_non_penible %}
-                {% include 'snippets/input_field.html' with field=form.poste_de_travail_2_femme_risque_pro_2_penible %}
-                {% include 'snippets/input_field.html' with field=form.poste_de_travail_2_femme_risque_pro_2_penible_repetitif %}
-                {% include 'snippets/input_field.html' with field=form.accident_travail_homme %}
-                {% include 'snippets/input_field.html' with field=form.accident_travail_femme %}
+                {% include 'snippets/category_field.html' with field=form.exposition_risques_pro_homme %}
+                {% include 'snippets/category_field.html' with field=form.exposition_risques_pro_femme %}
+                {% include 'snippets/category_field.html' with field=form.accidents_homme %}
+                {% include 'snippets/category_field.html' with field=form.accidents_femme %}
                 {% include 'snippets/input_field.html' with field=form.nombre_accidents_travail_avec_arret_homme %}
                 {% include 'snippets/input_field.html' with field=form.nombre_accidents_travail_avec_arret_femme %}
                 {% include 'snippets/input_field.html' with field=form.nombre_accidents_trajet_avec_arret_homme %}
                 {% include 'snippets/input_field.html' with field=form.nombre_accidents_trajet_avec_arret_femme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_accidents_riques_graves_homme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_accidents_riques_graves_femme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_accidents_chutes_denivellation_homme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_accidents_chutes_denivellation_femme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_accidents_machines_homme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_accidents_machines_femme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_accidents_circulation_manutention_stockage_homme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_accidents_circulation_manutention_stockage_femme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_accidents_autres_homme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_accidents_autres_femme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_maladie_1_homme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_maladie_1_femme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_maladie_2_homme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_maladie_2_femme %}
+                {% include 'snippets/input_field.html' with field=form.nombre_accidents_par_elements_materiels_homme %}
+                {% include 'snippets/input_field.html' with field=form.nombre_accidents_par_elements_materiels_femme %}
+                {% include 'snippets/input_field.html' with field=form.nombre_et_denominations_maladies_pro_homme %}
+                {% include 'snippets/input_field.html' with field=form.nombre_et_denominations_maladies_pro_femme %}
                 {% include 'snippets/input_field.html' with field=form.nombre_journees_absence_accident_homme %}
                 {% include 'snippets/input_field.html' with field=form.nombre_journees_absence_accident_femme %}
-                {% include 'snippets/input_field.html' with field=form.maladies_hommes %}
-                {% include 'snippets/input_field.html' with field=form.maladies_femmes %}
-                {% include 'snippets/input_field.html' with field=form.nombre_arrets_travail_hommes %}
-                {% include 'snippets/input_field.html' with field=form.nombre_arrets_travail_femmes %}
-                {% include 'snippets/input_field.html' with field=form.nombre_journees_absence_hommes %}
-                {% include 'snippets/input_field.html' with field=form.nombre_journees_absence_femmes %}
-
-
+                {% include 'snippets/category_field.html' with field=form.maladies_homme %}
+                {% include 'snippets/category_field.html' with field=form.maladies_femme %}
+                {% include 'snippets/category_field.html' with field=form.maladies_avec_examen_de_reprise_homme %}
+                {% include 'snippets/category_field.html' with field=form.maladies_avec_examen_de_reprise_femme %}
+{% comment %}
                 <h3>II. Indicateurs relatifs à l'articulation entre l'activité professionnelle et l'exercice de la responsabilité familiale</h3>
                 <h4>Congés</h4>
 

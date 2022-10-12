@@ -42,7 +42,12 @@ class CategoryField(models.JSONField):
 
 
 def categories_default():
-    return ["ouvriers", "employés", "techniciens et agents de maitrise", "ingénieurs et cadres"]
+    return [
+        "ouvriers",
+        "employés",
+        "techniciens et agents de maitrise",
+        "ingénieurs et cadres",
+    ]
 
 
 class BDESE(models.Model):
@@ -942,7 +947,6 @@ class BDESE(models.Model):
         null=True,
         blank=True,
     )
-
     #     C - Formation
     nombre_moyen_heures_formation_homme = CategoryField(
         verbose_name="Nombre moyen d'heures d'actions de formation par salarié et par an",
@@ -986,125 +990,173 @@ class BDESE(models.Model):
         null=True,
         blank=True,
     )
-
-class Vide:
     #     D - Conditions de travail, santé et sécurité au travail
-    poste_de_travail_1_homme_risque_pro_1_non_penible = models.IntegerField()
-    poste_de_travail_1_homme_risque_pro_1_penible = models.IntegerField()
-    poste_de_travail_1_homme_risque_pro_1_penible_repetitif = models.IntegerField(
-        help_text="pénibilité incluant le caractère répétitif des tâches"
+    exposition_risques_pro_homme = CategoryField(
+        categories=[
+            "manutentions manuelles de charges",
+            "postures pénibles",
+            "vibrations mécaniques",
+            "agents chimiques dangereux",
+            "milieu hyperbare",
+            "températures extrêmes",
+            "bruit",
+            "travail de nuit",
+            "travail en équipes successives alternantes",
+            "travail répétitif",
+        ],
+        verbose_name="Répartition des postes de travail exposés à des risques professionnels occupés par des hommes",
+        null=True,
+        blank=True,
     )
-    poste_de_travail_1_homme_risque_pro_2_non_penible = models.IntegerField()
-    poste_de_travail_1_homme_risque_pro_2_penible = models.IntegerField()
-    poste_de_travail_1_homme_risque_pro_2_penible_repetitif = models.IntegerField(
-        help_text="pénibilité incluant le caractère répétitif des tâches"
+    exposition_risques_pro_femme = CategoryField(
+        categories=[
+            "manutentions manuelles de charges",
+            "postures pénibles",
+            "vibrations mécaniques",
+            "agents chimiques dangereux",
+            "milieu hyperbare",
+            "températures extrêmes",
+            "bruit",
+            "travail de nuit",
+            "travail en équipes successives alternantes",
+            "travail répétitif",
+        ],
+        verbose_name="Répartition des postes de travail exposés à des risques professionnels occupés par des femmes",
+        null=True,
+        blank=True,
     )
-    poste_de_travail_1_femme_risque_pro_1_non_penible = models.IntegerField()
-    poste_de_travail_1_femme_risque_pro_1_penible = models.IntegerField()
-    poste_de_travail_1_femme_risque_pro_1_penible_repetitif = models.IntegerField(
-        help_text="pénibilité incluant le caractère répétitif des tâches"
+    accidents_homme = CategoryField(
+        categories=[
+            "accidents de travail",
+            "accidents de trajet",
+            "maladies professionnelles",
+        ],
+        verbose_name="Accidents de travail, accidents de trajet et maladies professionnelles chez les hommes",
+        null=True,
+        blank=True,
     )
-    poste_de_travail_1_femme_risque_pro_2_non_penible = models.IntegerField()
-    poste_de_travail_1_femme_risque_pro_2_penible = models.IntegerField()
-    poste_de_travail_1_femme_risque_pro_2_penible_repetitif = models.IntegerField(
-        help_text="pénibilité incluant le caractère répétitif des tâches"
-    )
-    poste_de_travail_2_homme_risque_pro_1_non_penible = models.IntegerField()
-    poste_de_travail_2_homme_risque_pro_1_penible = models.IntegerField()
-    poste_de_travail_2_homme_risque_pro_1_penible_repetitif = models.IntegerField(
-        help_text="pénibilité incluant le caractère répétitif des tâches"
-    )
-    poste_de_travail_2_homme_risque_pro_2_non_penible = models.IntegerField()
-    poste_de_travail_2_homme_risque_pro_2_penible = models.IntegerField()
-    poste_de_travail_2_homme_risque_pro_2_penible_repetitif = models.IntegerField(
-        help_text="pénibilité incluant le caractère répétitif des tâches"
-    )
-    poste_de_travail_2_femme_risque_pro_1_non_penible = models.IntegerField()
-    poste_de_travail_2_femme_risque_pro_1_penible = models.IntegerField()
-    poste_de_travail_2_femme_risque_pro_1_penible_repetitif = models.IntegerField(
-        help_text="pénibilité incluant le caractère répétitif des tâches"
-    )
-    poste_de_travail_2_femme_risque_pro_2_non_penible = models.IntegerField()
-    poste_de_travail_2_femme_risque_pro_2_penible = models.IntegerField()
-    poste_de_travail_2_femme_risque_pro_2_penible_repetitif = models.IntegerField(
-        help_text="pénibilité incluant le caractère répétitif des tâches"
-    )
-    accident_travail_homme = models.IntegerField(
-        help_text="accidents de travail, accidents de trajet et maladies professionnelles"
-    )
-    accident_travail_femme = models.IntegerField(
-        help_text="accidents de travail, accidents de trajet et maladies professionnelles"
+    accidents_femme = CategoryField(
+        categories=[
+            "accidents de travail",
+            "accidents de trajet",
+            "maladies professionnelles",
+        ],
+        verbose_name="Accidents de travail, accidents de trajet et maladies professionnelles chez les femmes",
+        null=True,
+        blank=True,
     )
     nombre_accidents_travail_avec_arret_homme = models.IntegerField(
-        help_text="Nombre d'accidents de travail ayant entraîné un arrêt de travail"
+        verbose_name="Nombre d'accidents de travail ayant entraîné un arrêt de travail chez les hommes",
+        null=True,
+        blank=True,
     )
     nombre_accidents_travail_avec_arret_femme = models.IntegerField(
-        help_text="Nombre d'accidents de travail ayant entraîné un arrêt de travail"
+        verbose_name="Nombre d'accidents de travail ayant entraîné un arrêt de travail chez les femmes",
+        null=True,
+        blank=True,
     )
     nombre_accidents_trajet_avec_arret_homme = models.IntegerField(
-        help_text="Nombre d'accidents de trajet ayant entraîné un arrêt de travail"
+        verbose_name="Nombre d'accidents de trajet ayant entraîné un arrêt de travail chez les hommes",
+        null=True,
+        blank=True,
     )
     nombre_accidents_trajet_avec_arret_femme = models.IntegerField(
-        help_text="Nombre d'accidents de trajet ayant entraîné un arrêt de travail"
+        verbose_name="Nombre d'accidents de trajet ayant entraîné un arrêt de travail chez les hommes",
+        null=True,
+        blank=True,
     )
-
-    nombre_accidents_riques_graves_homme = models.IntegerField(
-        help_text="Nombre d'accidents liés à l'existence de risques graves-codes 32 à 40"
+    nombre_accidents_par_elements_materiels_homme = models.IntegerField(
+        verbose_name="Répartition des accidents par éléments matériels chez les hommes",
+        help_text="Faire référence aux codes de classification des éléments matériels des accidents (arrêté du 10 octobre 1974).",
+        null=True,
+        blank=True,
     )
-    nombre_accidents_riques_graves_femme = models.IntegerField(
-        help_text="Nombre d'accidents liés à l'existence de risques graves-codes 32 à 40"
+    nombre_accidents_par_elements_materiels_femme = models.IntegerField(
+        verbose_name="Répartition des accidents par éléments matériels chez les hommes",
+        help_text="Faire référence aux codes de classification des éléments matériels des accidents (arrêté du 10 octobre 1974).",
+        null=True,
+        blank=True,
     )
-    nombre_accidents_chutes_denivellation_homme = models.IntegerField(
-        help_text="Nombre d'accidents liés à des chutes avec dénivellation-code 02"
+    # Faut-il les mêmes catégories qu'au 1°A-f)ii ?
+    # nombre_accidents_riques_graves_homme = models.IntegerField(
+    #     verbose_name="Nombre d'accidents liés à l'existence de risques graves-codes 32 à 40"
+    # )
+    # nombre_accidents_riques_graves_femme = models.IntegerField(
+    #     verbose_name="Nombre d'accidents liés à l'existence de risques graves-codes 32 à 40"
+    # )
+    # nombre_accidents_chutes_denivellation_homme = models.IntegerField(
+    #     verbose_name="Nombre d'accidents liés à des chutes avec dénivellation-code 02"
+    # )
+    # nombre_accidents_chutes_denivellation_femme = models.IntegerField(
+    #     verbose_name="Nombre d'accidents liés à des chutes avec dénivellation-code 02"
+    # )
+    # nombre_accidents_machines_homme = models.IntegerField(
+    #     verbose_name="Nombre d'accidents occasionnés par des machines (à l'exception de ceux liés aux risques ci-dessus)-codes 09 à 30"
+    # )
+    # nombre_accidents_machines_femme = models.IntegerField(
+    #     verbose_name="Nombre d'accidents occasionnés par des machines (à l'exception de ceux liés aux risques ci-dessus)-codes 09 à 30"
+    # )
+    # nombre_accidents_circulation_manutention_stockage_homme = models.IntegerField(
+    #     verbose_name="Nombre d'accidents de circulation-manutention-stockage-codes 01,03,04 et 06,07,08 ; Nombre d'accidents occasionnés par des objets, masses, particules en mouvement accidentel-code 05"
+    # )
+    # nombre_accidents_circulation_manutention_stockage_femme = models.IntegerField(
+    #     verbose_name="Nombre d'accidents de circulation-manutention-stockage-codes 01,03,04 et 06,07,08 ; Nombre d'accidents occasionnés par des objets, masses, particules en mouvement accidentel-code 05"
+    # )
+    # nombre_accidents_autres_homme = models.IntegerField(
+    #     verbose_name="Nombre des autres cas d'accidents"
+    # )
+    # nombre_accidents_autres_femme = models.IntegerField(
+    #     verbose_name="Nombre des autres cas d'accidents"
+    # )
+    nombre_et_denominations_maladies_pro_homme = models.TextField(
+        verbose_name="Nombre et dénomination des maladies professionnelles déclarées à la Sécurité sociale au cours de l'année concernant les hommes",
+        null=True,
+        blank=True,
     )
-    nombre_accidents_chutes_denivellation_femme = models.IntegerField(
-        help_text="Nombre d'accidents liés à des chutes avec dénivellation-code 02"
-    )
-    nombre_accidents_machines_homme = models.IntegerField(
-        help_text="Nombre d'accidents occasionnés par des machines (à l'exception de ceux liés aux risques ci-dessus)-codes 09 à 30"
-    )
-    nombre_accidents_machines_femme = models.IntegerField(
-        help_text="Nombre d'accidents occasionnés par des machines (à l'exception de ceux liés aux risques ci-dessus)-codes 09 à 30"
-    )
-
-    nombre_accidents_circulation_manutention_stockage_homme = models.IntegerField(
-        help_text="Nombre d'accidents de circulation-manutention-stockage-codes 01,03,04 et 06,07,08 ; Nombre d'accidents occasionnés par des objets, masses, particules en mouvement accidentel-code 05"
-    )
-    nombre_accidents_circulation_manutention_stockage_femme = models.IntegerField(
-        help_text="Nombre d'accidents de circulation-manutention-stockage-codes 01,03,04 et 06,07,08 ; Nombre d'accidents occasionnés par des objets, masses, particules en mouvement accidentel-code 05"
-    )
-    nombre_accidents_autres_homme = models.IntegerField(
-        help_text="Nombre des autres cas d'accidents"
-    )
-    nombre_accidents_autres_femme = models.IntegerField(
-        help_text="Nombre des autres cas d'accidents"
-    )
-
-    nombre_maladie_1_homme = models.IntegerField(
-        help_text="nombre et dénomination des maladies professionnelles déclarées à la Sécurité sociale au cours de l'année"
-    )
-    nombre_maladie_1_femme = models.IntegerField(
-        help_text="nombre et dénomination des maladies professionnelles déclarées à la Sécurité sociale au cours de l'année"
-    )
-    nombre_maladie_2_homme = models.IntegerField(
-        help_text="nombre et dénomination des maladies professionnelles déclarées à la Sécurité sociale au cours de l'année"
-    )
-    nombre_maladie_2_femme = models.IntegerField(
-        help_text="nombre et dénomination des maladies professionnelles déclarées à la Sécurité sociale au cours de l'année"
+    nombre_et_denominations_maladies_pro_femme = models.TextField(
+        verbose_name="Nombre et dénomination des maladies professionnelles déclarées à la Sécurité sociale au cours de l'année concernant les femmes",
+        null=True,
+        blank=True,
     )
     nombre_journees_absence_accident_homme = models.IntegerField(
-        help_text="nombre de journée d'absence pour accidents de travail, accidents de trajet ou maladies professionnelles "
+        verbose_name="Nombre de journée d'absence pour accidents de travail, accidents de trajet ou maladies professionnelles chez les hommes",
+        null=True,
+        blank=True,
     )
     nombre_journees_absence_accident_femme = models.IntegerField(
-        help_text="nombre de journée d'absence pour accidents de travail, accidents de trajet ou maladies professionnelles "
+        verbose_name="Nombre de journée d'absence pour accidents de travail, accidents de trajet ou maladies professionnelles chez les femmes",
+        null=True,
+        blank=True,
     )
-    maladies_hommes = models.TextField()
-    maladies_femmes = models.TextField()
-    nombre_arrets_travail_hommes = models.IntegerField()
-    nombre_arrets_travail_femmes = models.IntegerField()
-    nombre_journees_absence_hommes = models.IntegerField()
-    nombre_journees_absence_femmes = models.IntegerField()
+    maladies_homme = CategoryField(
+        categories=["nombre d'arrêts de travail", "nombre de journées d'absence"],
+        verbose_name="Maladies chez les hommes",
+        null=True,
+        blank=True,
+    )
+    maladies_femme = CategoryField(
+        categories=["nombre d'arrêts de travail", "nombre de journées d'absence"],
+        verbose_name="Maladies chez les hommes",
+        null=True,
+        blank=True,
+    )
+    maladies_avec_examen_de_reprise_homme = CategoryField(
+        categories=["nombre d'arrêts de travail", "nombre de journées d'absence"],
+        verbose_name="Maladies ayant donné lieu à un examen de reprise du travail chez les hommes",
+        help_text="en application du 3° de l'article R. 4624-31",
+        null=True,
+        blank=True,
+    )
+    maladies_avec_examen_de_reprise_femme = CategoryField(
+        categories=["nombre d'arrêts de travail", "nombre de journées d'absence"],
+        verbose_name="Maladies ayant donné lieu à un examen de reprise du travail chez les femmes",
+        help_text="en application du 3° de l'article R. 4624-31",
+        null=True,
+        blank=True,
+    )
 
+
+class Vide:
     #   II. Indicateurs relatifs à l'articulation entre l'activité professionnelle et l'exercice de la responsabilité familiale
     #      A. Congés
     complement_salaire_conge = models.BooleanField(
