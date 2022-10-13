@@ -1,5 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, ReadOnlyPasswordHashField
+from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm
+from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
 
 from public.forms import DsfrForm
 from public.models import Entreprise
@@ -61,3 +63,17 @@ class UserChangeForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ("email", "password", "is_active", "is_staff")
+
+
+class PasswordResetForm(DsfrForm, BasePasswordResetForm):
+    pass
+
+
+class SetPasswordForm(DsfrForm, BaseSetPasswordForm):
+    new_password1 = forms.CharField(label="Mot de passe", widget=forms.PasswordInput)
+    new_password2 = forms.CharField(
+        label="Confirmation du mot de passe", widget=forms.PasswordInput
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(SetPasswordForm, self).__init__(*args, **kwargs)

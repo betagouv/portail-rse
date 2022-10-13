@@ -130,9 +130,14 @@ STATICFILES_DIRS = (Path(BASE_DIR, "static"),)
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Email
+# TODO: variable d'environnement
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
 # API Entreprise
 API_ENTREPRISE_TOKEN = os.environ["API_ENTREPRISE_TOKEN"]
 
+# Users
 AUTH_USER_MODEL = "users.User"
 LOGIN_URL = "/connexion"
 LOGIN_REDIRECT_URL = "/"
