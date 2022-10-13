@@ -1260,8 +1260,56 @@ class BDESE(models.Model):
     # 4° Rémunération des salariés et dirigeants, dans l'ensemble de leurs éléments
     #   A-Evolution des rémunérations salariales
     #     a) Frais de personnel
-    #       i. Montant des rémunérations
 
+    frais_personnel = models.IntegerField(
+        verbose_name="Frais de personnel, y compris cotisations sociales",
+        null=True,
+        blank=True,
+    )
+    evolution_salariale_par_categorie = CategoryField(
+        null=True,
+        blank=True,
+    )
+    evolution_salariale_par_sexe = CategoryField(
+        categories=["homme", "femme"],
+        null=True,
+        blank=True,
+    )
+    salaire_base_minimum_par_categorie = CategoryField(
+        verbose_name="Salaire de base minimum par catégorie",
+        null=True,
+        blank=True,
+    )
+    salaire_base_minimum_par_sexe = CategoryField(
+        verbose_name="Salaire de base minimum par sexe",
+        categories=["homme", "femme"],
+        null=True,
+        blank=True,
+    )
+    salaire_moyen_par_categorie = CategoryField(
+        verbose_name="Salaire moyen par catégorie",
+        null=True,
+        blank=True,
+    )
+    salaire_moyen_par_sexe = CategoryField(
+        categories=["homme", "femme"],
+        null=True,
+        blank=True,
+    )
+    salaire_median_par_categorie = CategoryField(
+        verbose_name="Salaire médian par catégorie",
+        null=True,
+        blank=True,
+    )
+    salaire_median_par_sexe = CategoryField(
+        verbose_name="Salaire médian par sexe",
+        categories=["homme", "femme"],
+        null=True,
+        blank=True,
+    )
+
+
+    #       i. Montant des rémunérations
 class Vide:
     rapport_masse_salariale_effectif_mensuel = models.IntegerField(
         verbose_name="apport entre la masse salariale annuelle (Masse salariale annuelle totale, au sens de la déclaration annuelle de salaire.) et l'effectif mensuel moyen"

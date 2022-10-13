@@ -265,12 +265,24 @@
                 {% include 'snippets/input_field.html' with field=form.capitaux_propres %}
                 {% include 'snippets/input_field.html' with field=form.emprunts_et_dettes_financieres %}
                 {% include 'snippets/input_field.html' with field=form.impots_et_taxes %}
-{% comment %}
 
                 <h2>4° Rémunération des salariés et dirigeants, dans l'ensemble de leurs éléments</h2>
                 <h3>A-Evolution des rémunérations salariales</h3>
                 <h4>a) Frais de personnel</h4>
                 <p>Ils représentent l'ensemble des rémunérations et des cotisations sociales mises légalement ou conventionnellement à la charge de l'entreprise.</p>
+
+                {% include 'snippets/input_field.html' with field=form.frais_personnel %}
+                {% include 'snippets/category_field.html' with field=form.evolution_salariale_par_categorie %}
+                {% include 'snippets/category_field.html' with field=form.evolution_salariale_par_sexe %}
+                {% include 'snippets/category_field.html' with field=form.salaire_base_minimum_par_categorie %}
+                {% include 'snippets/category_field.html' with field=form.salaire_base_minimum_par_sexe %}
+                <p>Remplir le salaire moyen ou median :</p>
+                {% include 'snippets/category_field.html' with field=form.salaire_moyen_par_categorie %}
+                {% include 'snippets/category_field.html' with field=form.salaire_moyen_par_sexe %}
+                {% include 'snippets/category_field.html' with field=form.salaire_median_par_categorie %}
+                {% include 'snippets/category_field.html' with field=form.salaire_median_par_sexe %}
+
+{% comment %}
                 <h5>i Montant des rémunérations : Choix de deux indicateurs dans l'un des groupes suivants</h5>
                 <p>On entend par rémunération la somme des salaires effectivement perçus pendant l'année par le salarié (au sens de la déclaration sociale nominative).</p>
                 {% include 'snippets/input_field.html' with field=form.rapport_masse_salariale_effectif_mensuel %}
