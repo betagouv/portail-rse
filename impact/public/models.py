@@ -1101,7 +1101,7 @@ class BDESE(models.Model):
         null=True,
         blank=True,
     )
-    # Faut-il les mêmes catégories qu'au 1°A-f)ii ?
+    # TODO: Faut-il les mêmes catégories qu'au 1°A-f)ii ?
     # nombre_accidents_riques_graves_homme = models.IntegerField(
     #     verbose_name="Nombre d'accidents liés à l'existence de risques graves-codes 32 à 40"
     # )
@@ -1241,19 +1241,28 @@ class BDESE(models.Model):
 
     ###########################################################
 
-class Vide:
     # 3° Fonds propres, endettement et impôts
-    capitaux_propres = models.IntegerField(help_text="Capitaux propres de l'entreprise")
-    emprunts_et_dettes_financieres = models.IntegerField(
-        help_text="Emprunts et dettes financières dont échéances et charges financières"
+    capitaux_propres = models.IntegerField(
+        verbose_name="Capitaux propres de l'entreprise",
+        null=True,
+        blank=True,
     )
-    impots_et_taxes = models.IntegerField()
+    emprunts_et_dettes_financieres = models.IntegerField(
+        verbose_name="Emprunts et dettes financières dont échéances et charges financières",
+        null=True,
+        blank=True,
+    )
+    impots_et_taxes = models.IntegerField(
+        null=True,
+        blank=True,
+    )
 
     # 4° Rémunération des salariés et dirigeants, dans l'ensemble de leurs éléments
     #   A-Evolution des rémunérations salariales
     #     a) Frais de personnel
     #       i. Montant des rémunérations
 
+class Vide:
     rapport_masse_salariale_effectif_mensuel = models.IntegerField(
         verbose_name="apport entre la masse salariale annuelle (Masse salariale annuelle totale, au sens de la déclaration annuelle de salaire.) et l'effectif mensuel moyen"
     )
