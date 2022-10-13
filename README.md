@@ -13,3 +13,13 @@ make run
 ```
 
 Il est nécessaire d'installer le paquet système `libpq-dev` pour avoir `pg_config`.
+
+
+## migration en recette
+
+
+```
+scalingo --app ${PROJET} run python3 impact/manage.py migrate
+```
+
+Pour un migration en local, voir le `Makefile`.
