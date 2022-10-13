@@ -23,3 +23,14 @@ scalingo --app ${PROJET} run python3 impact/manage.py migrate
 ```
 
 Pour un migration en local, voir le `Makefile`.
+
+### suppression des données
+
+```
+$ scalingo --app ${PROJET} db-tunnel SCALINGO_POSTGRESQL_URL
+
+# dans un autre terminal:
+$ scalingo --app ${PROJET} pgsql-console
+puis:
+drop owned by ${PROJET}_3273;
+```
