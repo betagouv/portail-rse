@@ -624,27 +624,37 @@ class BDESE(models.Model):
         null=True,
         blank=True,
     )
-    #     # 1° A - f) viii - Conditions physiques de travail
-    #     nombre_personnes_exposees_bruit = models.IntegerField(
-    #         verbose_name="Nombre de personnes exposées de façon habituelle et régulière à plus de 80 à 85 db à leur poste de travail",
-    #         help_text="Les valeurs limites d'exposition et les valeurs d'exposition déclenchant une action de prévention qui sont fixées dans le tableau prévu à l'article R. 4431-2.",
-    #     )
-    #     nombre_salaries_exposes_temperatures = models.IntegerField(
-    #         verbose_name="Nombre de salariés exposés au froid et à la chaleur",
-    #         help_text="Au sens des articles R. 4223-13 à R. 4223-15",
-    #     )
-    #     nombre_salaries_exposes_temperatures_extremes = models.IntegerField(
-    #         verbose_name="Nombre de salariés exposés aux températures extrêmes",
-    #         help_text="Au sens de l'article D. 4163-2 : température inférieure ou égale à 5 degrés Celsius ou au moins égale à 30 degrés Celsius pour minimum 900 heures par an.",
-    #     )
-    #     nombre_salaries_exposes_intemperies = models.IntegerField(
-    #         verbose_name="Nombre de salariés travaillant aux intempéries de façon habituelle et régulière",
-    #         help_text="Au sens de l'article L. 5424-8 : Sont considérées comme intempéries, les conditions atmosphériques et les inondations lorsqu'elles rendent dangereux ou impossible l'accomplissement du travail eu égard soit à la santé ou à la sécurité des salariés, soit à la nature ou à la technique du travail à accomplir.",
-    #     )
-    #     nombre_produits_toxiques = models.IntegerField(
-    #         verbose_name="Nombre de prélèvements, d'analyses de produits toxiques et mesures",
-    #         help_text="Renseignements tirés du rapport du directeur du service de prévention et de santé au travail interentreprises",
-    #     )
+    # 1° A - f) viii - Conditions physiques de travail
+    nombre_personnes_exposees_bruit = models.IntegerField(
+        verbose_name="Nombre de personnes exposées de façon habituelle et régulière à plus de 80 à 85 db à leur poste de travail",
+        help_text="Les valeurs limites d'exposition et les valeurs d'exposition déclenchant une action de prévention qui sont fixées dans le tableau prévu à l'article R. 4431-2.",
+        null=True,
+        blank=True,
+    )
+    nombre_salaries_exposes_temperatures = models.IntegerField(
+        verbose_name="Nombre de salariés exposés au froid et à la chaleur",
+        help_text="Au sens des articles R. 4223-13 à R. 4223-15",
+        null=True,
+        blank=True,
+    )
+    nombre_salaries_exposes_temperatures_extremes = models.IntegerField(
+        verbose_name="Nombre de salariés exposés aux températures extrêmes",
+        help_text="Au sens de l'article D. 4163-2 : température inférieure ou égale à 5 degrés Celsius ou au moins égale à 30 degrés Celsius pour minimum 900 heures par an.",
+        null=True,
+        blank=True,
+    )
+    nombre_salaries_exposes_intemperies = models.IntegerField(
+        verbose_name="Nombre de salariés travaillant aux intempéries de façon habituelle et régulière",
+        help_text="Au sens de l'article L. 5424-8 : Sont considérées comme intempéries, les conditions atmosphériques et les inondations lorsqu'elles rendent dangereux ou impossible l'accomplissement du travail eu égard soit à la santé ou à la sécurité des salariés, soit à la nature ou à la technique du travail à accomplir.",
+        null=True,
+        blank=True,
+    )
+    nombre_analyses_produits_toxiques = models.IntegerField(
+        verbose_name="Nombre de prélèvements, d'analyses de produits toxiques et mesures",
+        help_text="Renseignements tirés du rapport du directeur du service de prévention et de santé au travail interentreprises",
+        null=True,
+        blank=True,
+    )
     #     # 1° A - f) ix - Transformation de l’organisation du travail
     #     experiences_transformation_organisation_travail = models.TextField(
     #         verbose_name="Expériences de transformation de l'organisation du travail en vue d'en améliorer le contenu",
