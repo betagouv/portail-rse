@@ -146,7 +146,6 @@
                 {% include 'snippets/input_field.html' with field=form.nombre_salaries_exposes_temperatures_extremes %}
                 {% include 'snippets/input_field.html' with field=form.nombre_salaries_exposes_intemperies %}
                 {% include 'snippets/input_field.html' with field=form.nombre_analyses_produits_toxiques %}
-                {% comment %}
                 <h5>Transformation de l’organisation du travail</h5>
                 {% include 'snippets/input_field.html' with field=form.experiences_transformation_organisation_travail %}
                 <h5>Dépenses d’amélioration de conditions de travail</h5>
@@ -154,17 +153,13 @@
                 {% include 'snippets/input_field.html' with field=form.taux_realisation_programme_amelioration_conditions_travail %}
                 <h5>Médecine du travail</h5>
                 <p>Renseignements tirés du rapport du directeur du service de prévention et de santé au travail interentreprises.</p>
-                {% include 'snippets/input_field.html' with field=form.nombre_visites_medicales_suivi_droit_commun %}
-                {% include 'snippets/input_field.html' with field=form.nombre_visites_medicales_suivi_individuel %}
-                {% include 'snippets/input_field.html' with field=form.nombre_examens_medicaux_suivi_droit_commun %}
-                {% include 'snippets/input_field.html' with field=form.nombre_examens_medicaux_suivi_individuel %}
-                {% include 'snippets/input_field.html' with field=form.nombre_examens_complementaires_sous_surveillance %}
-                {% include 'snippets/input_field.html' with field=form.nombre_examens_complementaires_autres %}
-                {% include 'snippets/input_field.html' with field=form.pourcentage_temps_medecin_du_travail_analyse %}
-                {% include 'snippets/input_field.html' with field=form.pourcentage_temps_medecin_du_travail_intervention %}
+                {% include 'snippets/category_field.html' with field=form.nombre_visites_medicales %}
+                {% include 'snippets/category_field.html' with field=form.nombre_examens_medicaux %}
+                {% include 'snippets/category_field.html' with field=form.pourcentage_temps_medecin_du_travail %}
                 <h5>Travailleurs inaptes</h5>
                 {% include 'snippets/input_field.html' with field=form.nombre_salaries_inaptes %}
                 {% include 'snippets/input_field.html' with field=form.nombre_salaries_reclasses %}
+{% comment %}
                 <h3>Investissement matériel et immatériel</h3>
                 {% include 'snippets/input_field.html' with field=form.evolution_amortissement %}
                 {% include 'snippets/input_field.html' with field=form.montant_depenses_recherche_developpement %}

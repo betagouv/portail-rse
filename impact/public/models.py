@@ -655,54 +655,59 @@ class BDESE(models.Model):
         null=True,
         blank=True,
     )
-    #     # 1° A - f) ix - Transformation de l’organisation du travail
-    #     experiences_transformation_organisation_travail = models.TextField(
-    #         verbose_name="Expériences de transformation de l'organisation du travail en vue d'en améliorer le contenu",
-    #         help_text="Pour l'explication de ces expériences d'amélioration du contenu du travail, donner le nombre de salariés concernés.",
-    #     )
-    #     # 1° A - f) x - Dépenses d’amélioration de conditions de travail
-    #     montant_depenses_amelioration_conditions_travail = models.IntegerField(
-    #         verbose_name="Montant des dépenses consacrées à l'amélioration des conditions de travail dans l'entreprise",
-    #         help_text="Non compris l'évaluation des dépenses en matière de santé et de sécurité.",
-    #     )
-    #     taux_realisation_programme_amelioration_conditions_travail = models.IntegerField(
-    #         verbose_name="Taux de réalisation du programme d'amélioration des conditions de travail dans l'entreprise l'année précédente",
-    #     )
-    #     # 1° A - f) xi - Médecine du travail
-    #     # Renseignements tirés du rapport du directeur du service de prévention et de santé au travail interentreprises.
-    #     nombre_visites_medicales_suivi_droit_commun = models.IntegerField(
-    #         verbose_name="Nombre de visites d'information et de prévention des travailleurs en suivi de droit commun",
-    #     )
-    #     nombre_visites_medicales_suivi_individuel = models.IntegerField(
-    #         verbose_name="Nombre de visites d'information et de prévention des travailleurs en suivi individuel renforcé",
-    #     )
-    #     nombre_examens_medicaux_suivi_droit_commun = models.IntegerField(
-    #         verbose_name="Nombre d'examens médicaux des travailleurs en suivi de droit commun",
-    #     )
-    #     nombre_examens_medicaux_suivi_individuel = models.IntegerField(
-    #         verbose_name="Nombre d'examens médicaux des travailleurs en suivi individuel renforcé",
-    #     )
-    #     nombre_examens_complementaires_sous_surveillance = models.IntegerField(
-    #         verbose_name="Nombre d'examens complémentaires des travailleurs soumis à surveillance",
-    #     )
-    #     nombre_examens_complementaires_autres = models.IntegerField(
-    #         verbose_name="Nombre d'examens complémentaires des autres travailleurs",
-    #     )
-    #     pourcentage_temps_medecin_du_travail_analyse = models.IntegerField(
-    #         verbose_name="Part du temps consacré par le médecin du travail à l'analyse",
-    #     )
-    #     pourcentage_temps_medecin_du_travail_intervention = models.IntegerField(
-    #         verbose_name="Part du temps consacré par le médecin du travail à l'intervention en milieu de travail",
-    #     )
-    #     # 1° A - f) xii - Travailleurs inaptes
-    #     nombre_salaries_inaptes = models.IntegerField(
-    #         verbose_name="Nombre de salariés inaptes",
-    #         help_text="Nombre de salariés déclarés définitivement inaptes à leur emploi par le médecin du travail",
-    #     )
-    #     nombre_salaries_reclasses = models.IntegerField(
-    #         verbose_name="Nombre de salariés reclassés",
-    #         help_text="Nombre de salariés reclassés dans l'entreprise à la suite d'une inaptitude",
-    #     )
+    # 1° A - f) ix - Transformation de l’organisation du travail
+    experiences_transformation_organisation_travail = models.TextField(
+        verbose_name="Expériences de transformation de l'organisation du travail en vue d'en améliorer le contenu",
+        help_text="Pour l'explication de ces expériences d'amélioration du contenu du travail, donner le nombre de salariés concernés.",
+        null=True,
+        blank=True,
+    )
+    # 1° A - f) x - Dépenses d’amélioration de conditions de travail
+    montant_depenses_amelioration_conditions_travail = models.IntegerField(
+        verbose_name="Montant des dépenses consacrées à l'amélioration des conditions de travail dans l'entreprise",
+        help_text="Non compris l'évaluation des dépenses en matière de santé et de sécurité.",
+        null=True,
+        blank=True,
+    )
+    taux_realisation_programme_amelioration_conditions_travail = models.IntegerField(
+        verbose_name="Taux de réalisation du programme d'amélioration des conditions de travail dans l'entreprise l'année précédente",
+        null=True,
+        blank=True,
+    )
+    # 1° A - f) xi - Médecine du travail
+    # Renseignements tirés du rapport du directeur du service de prévention et de santé au travail interentreprises.
+    nombre_visites_medicales = CategoryField(
+        categories=["droit commun", "individuel renforcé"],
+        verbose_name="Nombre de visites d'information et de prévention des travailleurs",
+        help_text="Selon le type de suivi",
+        null=True,
+        blank=True,
+    )
+    nombre_examens_medicaux = CategoryField(
+        categories=["soumis à surveillance", "autres"],
+        verbose_name="Nombre d'examens médicaux des travailleurs",
+        null=True,
+        blank=True,
+    )
+    pourcentage_temps_medecin_du_travail = CategoryField(
+        categories=["analyse", "intervention"],
+        verbose_name="Part du temps consacré par le médecin du travail en milieu de travail",
+        null=True,
+        blank=True,
+    )
+    # 1° A - f) xii - Travailleurs inaptes
+    nombre_salaries_inaptes = models.IntegerField(
+        verbose_name="Nombre de salariés inaptes",
+        help_text="Nombre de salariés déclarés définitivement inaptes à leur emploi par le médecin du travail",
+        null=True,
+        blank=True,
+    )
+    nombre_salaries_reclasses = models.IntegerField(
+        verbose_name="Nombre de salariés reclassés",
+        help_text="Nombre de salariés reclassés dans l'entreprise à la suite d'une inaptitude",
+        null=True,
+        blank=True,
+    )
     #     # 1° B - Investissement matériel et immatériel
     #     # 1° B - a) Evolution des actifs nets d’amortissement et de dépréciations éventuelles (immobilisations)
     #     evolution_amortissement = models.TextField(
