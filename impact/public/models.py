@@ -1370,10 +1370,18 @@ class BDESE(models.Model):
         blank=True,
     ) # TODO: remplacer le pourcentage par une valeur absolue ?
 
-    #      iv. Charge salariale globale
-    #         vide
+    #       iv. Charge salariale globale
+    charge_salariale_globale = models.IntegerField(
+        null=True,
+        blank=True,
+    )
 
-    #   b) Pour les entreprises soumises aux dispositions de l'article L. 225-115 du code de commerce, montant global des rémunérations visées au 4° de cet article
-    #      vide
+    #     b) Pour les entreprises soumises aux dispositions de l'article L. 225-115 du code de commerce, montant global des rémunérations visées au 4° de cet article
+    montant_global_hautes_remunerations = models.IntegerField(
+        verbose_name="Montant global des hautes rémunérations",
+        help_text="Montant global, certifié exact par les commissaires aux comptes, s'il en existe, des rémunérations versées aux personnes les mieux rémunérées, le nombre de ces personnes étant de dix ou de cinq selon que l'effectif du personnel excède ou non deux cents salariés ; uniquement pour les entreprises soumises aux dispositions de l'article L. 225-115 du code de commerce",
+        null=True,
+        blank=True,
+    ) # TODO: au 4 de cete article
 
     # B. Epargne salariale : intéressement, participation

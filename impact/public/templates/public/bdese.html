@@ -300,7 +300,11 @@
                 {% include 'snippets/category_field.html' with field=form.pourcentage_salaries_primes_de_rendement %}
                 {% include 'snippets/input_field.html' with field=form.pourcentage_ouvriers_employes_payes_au_mois %}
 
-                <!-- iv et b) à déterminer -->
+                <h5>iv Charge salariale globale</h5>
+                {% include 'snippets/input_field.html' with field=form.charge_salariale_globale %}
+
+                <h4>b) Montant global des rémunérations</h4>
+                {% include 'snippets/input_field.html' with field=form.montant_global_hautes_remunerations %}
 
                 <h3>B-Epargne salariale : intéressement, participation</h3>
 
