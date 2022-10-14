@@ -1357,19 +1357,18 @@ class BDESE(models.Model):
         blank=True,
     )
 
-class Vide:
     #       iii. Mode de calcul des rémunérations
-    pourcentage_salaries_rendement_primes_individuelles = models.IntegerField(
+    pourcentage_salaries_primes_de_rendement = CategoryField(
+        categories=["primes individuelles", "primes collectives"],
         verbose_name="Pourcentage des salariés dont le salaire dépend, en tout ou partie, du rendement",
-        help_text="primes individuelles",
-    )
-    pourcentage_salaries_rendement_primes_collectives = models.IntegerField(
-        verbose_name="Pourcentage des salariés dont le salaire dépend, en tout ou partie, du rendement",
-        help_text="primes collectives",
+        null=True,
+        blank=True,
     )
     pourcentage_ouvriers_employes_payes_au_mois = models.IntegerField(
         verbose_name="Pourcentage des ouvriers et employés payés au mois sur la base de l'horaire affiché",
-    )
+        null=True,
+        blank=True,
+    ) # TODO: remplacer le pourcentage par une valeur absolue ?
 
     #      iv. Charge salariale globale
     #         vide

@@ -296,17 +296,13 @@
                 {% include 'snippets/input_field.html' with field=form.rapport_moyenne_cadres_ouvriers %}
                 {% include 'snippets/input_field.html' with field=form.montant_10_remunerations_les_plus_eleves %}
 
-                {% comment %}
                 <h5>iii Mode de calcul des rémunérations</h5>
-                {% include 'snippets/input_field.html' with field=form.pourcentage_salaries_rendement_primes_individuelles %}
-                {% include 'snippets/input_field.html' with field=form.pourcentage_salaries_rendement_primes_collectives %}
+                {% include 'snippets/category_field.html' with field=form.pourcentage_salaries_primes_de_rendement %}
                 {% include 'snippets/input_field.html' with field=form.pourcentage_ouvriers_employes_payes_au_mois %}
 
                 <!-- iv et b) à déterminer -->
 
                 <h3>B-Epargne salariale : intéressement, participation</h3>
-
-{% endcomment %}
 
                 <input type="submit" value="Enregistrer" class="fr-btn ">
             </form>
