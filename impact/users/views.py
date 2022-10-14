@@ -1,7 +1,9 @@
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.views import PasswordResetView as BasePasswordResetView
-from django.contrib.auth.views import PasswordResetConfirmView as BasePasswordResetConfirmView
+from django.contrib.auth.views import (
+    PasswordResetConfirmView as BasePasswordResetConfirmView,
+)
 from django.shortcuts import redirect, render
 
 from .forms import UserCreationForm
