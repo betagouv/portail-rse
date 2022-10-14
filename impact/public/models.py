@@ -1516,3 +1516,55 @@ class BDESE(models.Model):
         null=True,
         blank=True,
     )
+
+    # 6° Rémunération des financeurs, en dehors des éléments mentionnés au 4°
+    #   A-Rémunération des actionnaires (revenus distribués)
+    remuneration_actionnaires = models.IntegerField(
+        verbose_name="Rémunération des actionnaires (revenus distribués)",
+        null=True,
+        blank=True,
+    )
+
+    #   B-Rémunération de l'actionnariat salarié
+    remuneration_actionnariat_salarie = models.IntegerField(
+        verbose_name="Rémunération de l'actionnariat salarié (montant des actions détenues dans le cadre de l'épargne salariale, part dans le capital, dividendes reçus)",
+        null=True,
+        blank=True,
+    )
+
+    # 7° Flux financiers à destination de l'entreprise
+    #   A-Aides publiques
+    aides_financieres = models.TextField(
+        verbose_name="Les aides ou avantages financiers consentis à l'entreprise par l'Union européenne, l'Etat, une collectivité territoriale, un de leurs établissements publics ou un organisme privé chargé d'une mission de service public, et leur utilisation",
+        help_text="Pour chacune de ces aides, l'employeur indique la nature de l'aide, son objet, son montant, les conditions de versement et d'emploi fixées, le cas échéant, par la personne publique qui l'attribue et son utilisation",
+        null=True,
+        blank=True,
+    )
+
+    #   B-Réductions d'impôts
+    reductions_impots = models.IntegerField(
+        verbose_name="Réductions d'impôts",
+        null=True,
+        blank=True,
+    )
+
+    #   C-Exonérations et réductions de cotisations sociales
+    exonerations_cotisations_sociales = models.IntegerField(
+        verbose_name="Exonérations et réductions de cotisations sociales",
+        null=True,
+        blank=True,
+    )
+
+    #   D-Crédits d'impôts
+    credits_impots = models.IntegerField(
+        verbose_name="Crédits d'impôts",
+        null=True,
+        blank=True,
+    )
+
+    #   E-Mécénat
+    mecenat = models.IntegerField(
+        verbose_name="Mécénat",
+        null=True,
+        blank=True,
+    )
