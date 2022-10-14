@@ -36,7 +36,7 @@ class EligibiliteForm(DsfrForm):
         required=True,
     )
     accord = forms.BooleanField(
-        label="Avez-vous un accord collectif d'entreprise concernant le BDESE ?",
+        label="Avez-vous un accord collectif d'entreprise concernant la BDESE ?",
         help_text="",
         required=False,
     )

@@ -1,0 +1,120 @@
+{% extends "public/base.html" %}
+
+{% block content %}
+<div class="fr-container fr-my-16w">
+
+    <div class="fr-alert fr-alert--warning">
+        <h3 class="fr-alert__title">La liste des réglementations ci-dessous n'est pas exhaustive</h3>
+        <p>La liste des réglementations actuellement prises en compte sur la plateforme est susceptible d'évoluer</p>
+    </div>
+
+    <!-- BDESE -->
+    <div class="fr-card fr-card--horizontal {% if bdese_result == BDESE_ELIGIBILITE.NON_ELIGIBLE %}fr-card--grey{% endif %} fr-mt-2w">
+        <div class="fr-card__body">
+            <div class="fr-card__content">
+                <h3 class="fr-card__title">
+                    <a href="#">Base de données économiques, sociales et environnementales (BDESE)</a>
+                </h3>
+                <p class="fr-card__desc">
+                    L'employeur d'au moins 50 salariés doit mettre à disposition du comité économique et social (CSE) ou des représentants du personnel une base de données économiques, sociales et environnementales (BDESE).
+                    La BDESE rassemble les informations sur les grandes orientations économiques et sociales de l'entreprise.
+                    Elle comprend des mentions obligatoires qui varient selon l'effectif de l'entreprise.
+                </p>
+                <div class="fr-card__start">
+                    <ul class="fr-badges-group">
+                        <li>
+                            {% if bdese_result == BDESE_ELIGIBILITE.NON_ELIGIBLE %}
+                            <p class="fr-badge">non soumis</p>
+                            {% else %}
+                            <p class="fr-badge fr-badge--error">à actualiser</p>
+                            {% endif %}
+                        </li>
+                    </ul>
+                    {% if bdese_result == BDESE_ELIGIBILITE.NON_ELIGIBLE %}
+                    <p class="fr-card__detail fr-icon-info-fill">Vous n'êtes pas soumis à cette réglementation</p>
+                    {% elif bdese_result == BDESE_ELIGIBILITE.ELIGIBLE_AVEC_ACCORD %}
+                    <p class="fr-card__detail fr-icon-warning-fill">Vous êtes soumis à cette réglementation. Vous avez un accord d'entreprise spécifique. Veuillez vous y référer.</p>
+                    {% else %}
+                    <p class="fr-card__detail fr-icon-warning-fill">Vous êtes soumis à cette réglementation. Nous allons vous aider à la remplir.</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="fr-card__footer">
+                <ul class="fr-btns-group fr-btns-group--inline-reverse fr-btns-group--inline-lg">
+                    <li>
+                        <a class="fr-btn fr-btn--secondary" href="https://entreprendre.service-public.fr/vosdroits/F32193" target="_blank" rel="noopener">
+                            En savoir plus
+                        </a>
+                    </li>
+                    {% if bdese_result == BDESE_ELIGIBILITE.ELIGIBLE_AVEC_ACCORD %}
+                    <li>
+                        <a class="fr-btn" href="#">
+                            Marquer ma BDESE comme actualisée
+                        </a>
+                    </li>
+                    {% elif bdeses_result != BDESE_ELIGIBILITE.NON_ELIGIBLE %}
+                    <li>
+                        <a class="fr-btn" href="{% url 'bdese' siren %}">
+                            Actualiser ma BDESE
+                        </a>
+                    </li>
+                    <li>
+                        <a class="fr-btn fr-btn--secondary" href="{% url 'result' %}?raison_sociale={{ raison_sociale }}&bdese={{ bdese_result }}" target="_blank">
+                            Télécharger le pdf
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Index Egapro -->
+    <div class="fr-card fr-card--horizontal {% if index_egapro_result == INDEX_EGAPRO_ELIGIBILITE.NON_ELIGIBLE %}fr-card--grey{% endif %} fr-mt-2w">
+        <div class="fr-card__body">
+            <div class="fr-card__content">
+                <h3 class="fr-card__title">
+                    <a href="#">Index de l'égalité professionnelle</a>
+                </h3>
+                <p class="fr-card__desc">Afin de lutter contre les inégalités salariales entre les femmes et les hommes, certaines entreprises doivent calculer et transmettre un index mesurant l’égalité salariale au sein de leur structure.</p>
+                <div class="fr-card__start">
+                    <ul class="fr-badges-group">
+                        <li>
+                            {% if index_egapro_result == INDEX_EGAPRO_ELIGIBILITE.NON_ELIGIBLE %}
+                            <p class="fr-badge">non soumis</p>
+                            {% elif index_egapro_result == INDEX_EGAPRO_ELIGIBILITE.ELIGIBLE_ACTUALISE %}
+                            <p class="fr-badge fr-badge--success">actualisé</p>
+                            {% else %}
+                            <p class="fr-badge fr-badge--error">à actualiser</p>
+                            {% endif %}
+                        </li>
+                    </ul>
+                    {% if index_egapro_result == INDEX_EGAPRO_ELIGIBILITE.NON_ELIGIBLE %}
+                    <p class="fr-card__detail fr-icon-info-fill">Vous n'êtes pas soumis à cette réglementation</p>
+                    {% elif index_egapro_result == INDEX_EGAPRO_ELIGIBILITE.ELIGIBLE_ACTUALISE %}
+                    <p class="fr-card__detail fr-icon-info-fill">Vous êtes soumis à cette réglementation. Vous avez rempli vos obligations d'après les données disponibles sur Index Egapro.</p>
+                    {% else %}
+                    <p class="fr-card__detail fr-icon-info-fill">Vous êtes soumis à cette réglementation. Vous n'avez pas encore déclaré votre index sur Index Egapro.</p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="fr-card__footer">
+                <ul class="fr-btns-group fr-btns-group--inline-reverse fr-btns-group--inline-lg">
+                    <li>
+                        <a class="fr-btn fr-btn--secondary" href="https://www.economie.gouv.fr/entreprises/index-egalite-professionnelle-obligatoire" target="_blank" rel="noopener">
+                            En savoir plus
+                        </a>
+                    </li>
+                    {% if index_egapro_result != INDEX_EGAPRO_ELIGIBILITE.NON_ELIGIBLE %}
+                    <li>
+                        <a class="fr-btn" href="https://index-egapro.travail.gouv.fr/" target="_blank" rel="noopener">
+                            Calculer et déclarer mon index sur Index Egapro
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

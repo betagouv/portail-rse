@@ -73,6 +73,20 @@ BDESE_ELIGIBILITE = {
     "ELIGIBLE_SUPERIEUR_500": 4,
 }
 
+INDEX_EGAPRO_ELIGIBILITE = {
+        "NON_ELIGIBLE": 0,
+        "ELIGIBLE_ACTUALISE": 1,
+        "ELIGIBLE_A_ACTUALISER": 2,
+}
+
+def is_index_egapro_updated(siren):
+    url = f"https://index-egapro.travail.gouv.fr/api/search?q={siren}"
+    response = requests.get(url)
+    if response.status_code == 200:
+        if index_egapro_data := response.json()["data"]:
+            if "2021" in index_egapro_data[0]["notes"]:
+                return True
+    return False
 
 def eligibilite(request):
     form = EligibiliteForm(request.GET)
@@ -81,23 +95,28 @@ def eligibilite(request):
         effectif = form.cleaned_data["effectif"]
         raison_sociale = form.cleaned_data["raison_sociale"]
         siren = form.cleaned_data["siren"]
+
         if effectif == "petit":
             bdese_result = BDESE_ELIGIBILITE["NON_ELIGIBLE"]
-        elif accord:
-            bdese_result = BDESE_ELIGIBILITE["ELIGIBLE_AVEC_ACCORD"]
-        elif effectif == "moyen":
-            bdese_result = BDESE_ELIGIBILITE["ELIGIBLE_INFERIEUR_300"]
-        elif effectif == "grand":
-            bdese_result = BDESE_ELIGIBILITE["ELIGIBLE_INFERIEUR_500"]
+            index_egapro_result = INDEX_EGAPRO_ELIGIBILITE["NON_ELIGIBLE"]
         else:
-            bdese_result = BDESE_ELIGIBILITE["ELIGIBLE_SUPERIEUR_500"]
-
+            index_egapro_result = INDEX_EGAPRO_ELIGIBILITE["ELIGIBLE_ACTUALISE"] if is_index_egapro_updated(siren) else INDEX_EGAPRO_ELIGIBILITE["ELIGIBLE_A_ACTUALISER"]
+            if accord:
+                bdese_result = BDESE_ELIGIBILITE["ELIGIBLE_AVEC_ACCORD"]
+            elif effectif == "moyen":
+                bdese_result = BDESE_ELIGIBILITE["ELIGIBLE_INFERIEUR_300"]
+            elif effectif == "grand":
+                bdese_result = BDESE_ELIGIBILITE["ELIGIBLE_INFERIEUR_500"]
+            else:
+                bdese_result = BDESE_ELIGIBILITE["ELIGIBLE_SUPERIEUR_500"]
     return render(
         request,
-        "public/result.html",
+        "public/reglementations_result.html",
         {
             "BDESE_ELIGIBILITE": BDESE_ELIGIBILITE,
             "bdese_result": bdese_result,
+            "INDEX_EGAPRO_ELIGIBILITE": INDEX_EGAPRO_ELIGIBILITE,
+            "index_egapro_result": index_egapro_result,
             "raison_sociale": raison_sociale,
             "siren": siren,
         },
