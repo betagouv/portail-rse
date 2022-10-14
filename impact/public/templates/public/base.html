@@ -65,6 +65,15 @@
         {% endblock %}
 
         <main>
+            <div class="fr-container fr-mt-4w">
+            {% if messages %}
+                {% for message in messages %}
+                <div class="fr-alert fr-alert--{{ message.tags }}">
+                    <h3 class="fr-alert__title">{{ message }}</h3>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
             {% block content %}{% endblock %}
         </main>
 
