@@ -1592,3 +1592,18 @@ class BDESE(models.Model):
         blank=True,
     ) # TODO: à remplacer par un CategoryField et les affectations possibles ?
 
+    # 8° Partenariats
+    #   A-Partenariats conclus pour produire des services ou des produits pour une autre entreprise
+    partenariats_pour_produire = models.TextField(
+        verbose_name="Partenariats conclus pour produire des services ou des produits pour une autre entreprise",
+        null=True,
+        blank=True,
+    )
+
+    #   B-Partenariats conclus pour bénéficier des services ou des produits d'une autre entreprise
+    partenariats_pour_beneficier = models.TextField(
+        verbose_name="Partenariats conclus pour bénéficier des services ou des produits d'une autre entreprise",
+        null=True,
+        blank=True,
+    )
+

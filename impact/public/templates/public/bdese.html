@@ -379,7 +379,12 @@
                 {% include 'snippets/category_field.html' with field=form.resultats_globaux %}
                 {% include 'snippets/input_field.html' with field=form.affectation_benefices %}
 
+                <h2>8° Partenariats</h2>
+                <h3>A-Partenariats conclus pour produire des services ou des produits pour une autre entreprise</h3>
+                {% include 'snippets/input_field.html' with field=form.partenariats_pour_produire %}
 
+                <h3>B-Partenariats conclus pour bénéficier des services ou des produits d'une autre entreprise</h3>
+                {% include 'snippets/input_field.html' with field=form.partenariats_pour_beneficier %}
 
 
                 <input type="submit" value="Enregistrer" class="fr-btn ">
