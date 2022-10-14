@@ -1607,3 +1607,75 @@ class BDESE(models.Model):
         blank=True,
     )
 
+    # 9° Pour les entreprises appartenant à un groupe, transferts commerciaux et financiers entre les entités du groupe
+    #    A-Transferts de capitaux tels qu'ils figurent dans les comptes individuels des sociétés du groupe lorsqu'ils présentent une importance significative
+    transferts_de_capitaux = models.TextField(
+        verbose_name="Transferts de capitaux tels qu'ils figurent dans les comptes individuels des sociétés du groupe lorsqu'ils présentent une importance significative",
+        null=True,
+        blank=True,
+    )
+
+    #    B-Cessions, fusions, et acquisitions réalisées
+    cessions_fusions_acquisitions = models.TextField(
+        verbose_name="Cessions, fusions, et acquisitions réalisées",
+        null=True,
+        blank=True,
+    )
+
+    # 10° Environnement
+    #    I-Pour les entreprises soumises à la déclaration prévue à l'article R. 225-105 du code de commerce
+    #        A-Politique générale en matière environnementale
+    informations_environnementales = models.TextField(
+        verbose_name="Informations environnementales présentées en application du 2° du A du II de l'article R. 225-105 du code de commerce",
+        null=True,
+        blank=True,
+    )
+
+    #       B-Economie circulaire
+    prevention_et_gestion_dechets = models.TextField(
+        verbose_name="Prévention et gestion de la production de déchets : évaluation de la quantité de déchets dangereux définis à l'article R. 541-8 du code de l'environnement et faisant l'objet d'une émission du bordereau mentionné à l'article R. 541-45 du même code",
+        null=True,
+        blank=True,
+    )
+
+    #     C-Changement climatique
+    bilan_gaz_effet_de_serre = models.TextField(
+        verbose_name="Bilan des émissions de gaz à effet de serre prévu par l'article L. 229-25 du code de l'environnement ou bilan simplifié prévu par l'article 244 de la loi n° 2020-1721 du 29 décembre 2020 de finances pour 2021 pour les entreprises tenues d'établir ces différents bilans",
+        null=True,
+        blank=True,
+    )
+
+    #    II-Pour les entreprises non soumises à la déclaration prévue à l'article R. 225-105 du code de commerce
+    #        A-Politique générale en matière environnementale
+    prise_en_compte_questions_environnementales = models.TextField(
+        verbose_name="Organisation de l'entreprise pour prendre en compte les questions environnementales et, le cas échéant, les démarches d'évaluation ou de certification en matière d'environnement",
+        null=True,
+        blank=True,
+    )
+
+    #       B-Economie circulaire
+    #          i-Prévention et gestion de la production de déchets
+    quantite_de_dechets_dangereux = models.TextField(
+        verbose_name="évaluation de la quantité de déchets dangereux définis à l'article R. 541-8 du code de l'environnement et faisant l'objet d'une émission du bordereau mentionné à l'article R. 541-45 du même code",
+        null=True,
+        blank=True,
+    )
+    #          ii-Utilisation durable des ressources
+    consommation_eau = models.IntegerField(
+        verbose_name="consommation d'eau",
+        null=True,
+        blank=True,
+    )
+    consommation_energie = models.IntegerField(
+        verbose_name="consommation d'énergie",
+        null=True,
+        blank=True,
+    )
+
+    #     C-Changement climatique
+    #        i-Identification des postes d'émissions directes de gaz à effet de serre
+    postes_emissions_directes_gaz_effet_de_serre = models.TextField(
+        verbose_name="Bilan des émissions de gaz à effet de serre prévu par l'article L. 229-25 du code de l'environnement ou bilan simplifié prévu par l'article 244 de la loi n° 2020-1721 du 29 décembre 2020 de finances pour 2021 pour les entreprises tenues d'établir ces différents bilans",
+        null=True,
+        blank=True,
+    )

@@ -386,6 +386,43 @@
                 <h3>B-Partenariats conclus pour bénéficier des services ou des produits d'une autre entreprise</h3>
                 {% include 'snippets/input_field.html' with field=form.partenariats_pour_beneficier %}
 
+                <h2>9° Pour les entreprises appartenant à un groupe, transferts commerciaux et financiers entre les entités du groupe</h2>
+                <h3>A-Transferts de capitaux tels qu'ils figurent dans les comptes individuels des sociétés du groupe lorsqu'ils présentent une importance significative</h3>
+                {% include 'snippets/input_field.html' with field=form.transferts_de_capitaux %}
+
+                <h3>B-Cessions, fusions, et acquisitions réalisées</h3>
+                {% include 'snippets/input_field.html' with field=form.cessions_fusions_acquisitions %}
+
+                <h2>10° Environnement</h2>
+                <p>Lorsque les données et informations environnementales transmises dans le cadre de cette rubrique ne sont pas éditées au niveau de l'entreprise (i. e. par exemple, au niveau du groupe ou des établissements distincts, le cas échéant), elles doivent être accompagnées d'informations supplémentaires pertinentes pour être mises en perspective à ce niveau.</p>
+                <h3>I-Pour les entreprises soumises à la déclaration prévue à l'article R. 225-105 du code de commerce</h3>
+                <h4>A-Politique générale en matière environnementale</h4>
+                {% include 'snippets/input_field.html' with field=form.informations_environnementales %}
+
+                <h4>B-Economie circulaire</h4>
+                {% include 'snippets/input_field.html' with field=form.prevention_et_gestion_dechets %}
+
+                <h4>C-Changement climatique</h4>
+                {% include 'snippets/input_field.html' with field=form.bilan_gaz_effet_de_serre %}
+
+                <h3>II-Pour les entreprises non soumises à la déclaration prévue à l'article R. 225-105 du code de commerce</h3>
+                <h4>A-Politique générale en matière environnementale</h4>
+                {% include 'snippets/input_field.html' with field=form.prise_en_compte_questions_environnementales %}
+
+                <h4>B-Economie circulaire</h4>
+                <h5>i-Prévention et gestion de la production de déchets</h5>
+                {% include 'snippets/input_field.html' with field=form.quantite_de_dechets_dangereux %}
+
+                <h5>ii-Utilisation durable des ressources</h5>
+                {% include 'snippets/input_field.html' with field=form.consommation_eau %}
+                {% include 'snippets/input_field.html' with field=form.consommation_energie %}
+
+                <h4>C-Changement climatique</h4>
+                <h5>i-Identification des postes d'émissions directes de gaz à effet de serre</h5>
+                {% include 'snippets/input_field.html' with field=form.postes_emissions_directes_gaz_effet_de_serre %}
+
+                <h5>ii-Bilan des émissions de gaz à effet de serre</h5>
+                {% include 'snippets/input_field.html' with field=form.bilan_gaz_effet_de_serre %}
 
                 <input type="submit" value="Enregistrer" class="fr-btn ">
             </form>
