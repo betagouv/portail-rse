@@ -1484,3 +1484,35 @@ class BDESE(models.Model):
         null=True,
         blank=True,
     )
+    #   B-Activités sociales et culturelles
+    #     a) Activités sociales
+    contributions_financement_CSE_CSEE = models.TextField(
+        verbose_name="Contributions au financement, le cas échéant, du comité social et économique et des comités sociaux économiques d'établissement",
+        null=True,
+        blank=True,
+    )
+    contributions_autres_depenses = CategoryField(
+        categories=["logement", "transport", "restauration", "loisirs", "vacances", "divers"],
+        verbose_name="Autres dépenses directement supportées par l'entreprise",
+        help_text="Dépenses consolidées de l'entreprise.",
+        null=True,
+        blank=True,
+    )
+    #    b) Autres charges sociales
+    cout_prestations_maladie_deces = models.IntegerField(
+        verbose_name="Coût pour l'entreprise des prestations complémentaires (maladie, décès)",
+        help_text="Versements directs ou par l'intermédiaire d'assurances",
+        null=True,
+        blank=True,
+    )
+    cout_prestations_vieillesse = models.IntegerField(
+        verbose_name="Coût pour l'entreprise des prestations complémentaires (vieillesse)",
+        help_text="Versements directs ou par l'intermédiaire d'assurances",
+        null=True,
+        blank=True,
+    )
+    equipements_pour_conditions_de_vie = models.TextField(
+        verbose_name="Equipements réalisés par l'entreprise et touchant aux conditions de vie des salariés à l'occasion de l'exécution du travail",
+        null=True,
+        blank=True,
+    )
