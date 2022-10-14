@@ -276,33 +276,27 @@
                 {% include 'snippets/category_field.html' with field=form.evolution_salariale_par_sexe %}
                 {% include 'snippets/category_field.html' with field=form.salaire_base_minimum_par_categorie %}
                 {% include 'snippets/category_field.html' with field=form.salaire_base_minimum_par_sexe %}
-                <p>Remplir le salaire moyen ou median :</p>
+                <p>i. Remplir le salaire moyen ou median :</p>
                 {% include 'snippets/category_field.html' with field=form.salaire_moyen_par_categorie %}
                 {% include 'snippets/category_field.html' with field=form.salaire_moyen_par_sexe %}
                 {% include 'snippets/category_field.html' with field=form.salaire_median_par_categorie %}
                 {% include 'snippets/category_field.html' with field=form.salaire_median_par_sexe %}
 
-{% comment %}
-                <h5>i Montant des rémunérations : Choix de deux indicateurs dans l'un des groupes suivants</h5>
+                <h5>ii. Montant des rémunérations : choix de deux indicateurs dans l'un des groupes suivants</h5>
                 <p>On entend par rémunération la somme des salaires effectivement perçus pendant l'année par le salarié (au sens de la déclaration sociale nominative).</p>
-                {% include 'snippets/input_field.html' with field=form.rapport_masse_salariale_effectif_mensuel %}
-                {% include 'snippets/input_field.html' with field=form.remuneration_moyenne_decembre %}
-                {% include 'snippets/input_field.html' with field=form.remuneration_mensuelle_moyenne %}
+                {% include 'snippets/category_field.html' with field=form.rapport_masse_salariale_effectif_mensuel %}
+                {% include 'snippets/category_field.html' with field=form.remuneration_moyenne_decembre %}
+                {% include 'snippets/category_field.html' with field=form.remuneration_mensuelle_moyenne %}
                 <p>OU</p>
-                {% include 'snippets/input_field.html' with field=form.part_primes_non_mensuelle %}
-                {% include 'snippets/input_field.html' with field=form.remunerations_tranche_1 %}
-                {% include 'snippets/input_field.html' with field=form.remunerations_tranche_2 %}
-                {% include 'snippets/input_field.html' with field=form.remunerations_tranche_3 %}
-                {% include 'snippets/input_field.html' with field=form.remunerations_tranche_4 %}
-                {% include 'snippets/input_field.html' with field=form.remunerations_tranche_5 %}
-                {% include 'snippets/input_field.html' with field=form.remunerations_tranche_6 %}
-
+                {% include 'snippets/category_field.html' with field=form.part_primes_non_mensuelle %}
+                {% include 'snippets/category_field.html' with field=form.remunerations %}
                 <h5>ii Hiérarchie des rémunérations : Choix d'un des deux indicateurs</h5>
                 {% include 'snippets/input_field.html' with field=form.rapport_moyenne_deciles %}
                 <p>OU</p>
                 {% include 'snippets/input_field.html' with field=form.rapport_moyenne_cadres_ouvriers %}
                 {% include 'snippets/input_field.html' with field=form.montant_10_remunerations_les_plus_eleves %}
 
+                {% comment %}
                 <h5>iii Mode de calcul des rémunérations</h5>
                 {% include 'snippets/input_field.html' with field=form.pourcentage_salaries_rendement_primes_individuelles %}
                 {% include 'snippets/input_field.html' with field=form.pourcentage_salaries_rendement_primes_collectives %}

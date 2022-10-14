@@ -1310,33 +1310,54 @@ class BDESE(models.Model):
 
 
     #       i. Montant des rémunérations
-class Vide:
-    rapport_masse_salariale_effectif_mensuel = models.IntegerField(
-        verbose_name="apport entre la masse salariale annuelle (Masse salariale annuelle totale, au sens de la déclaration annuelle de salaire.) et l'effectif mensuel moyen"
+    rapport_masse_salariale_effectif_mensuel = CategoryField(
+        verbose_name="Rapport entre la masse salariale annuelle et l'effectif mensuel moyen",
+        help_text="Masse salariale annuelle totale, au sens de la déclaration annuelle de salaire",
+        null=True,
+        blank=True,
     )
-    remuneration_moyenne_decembre = models.IntegerField(
-        help_text="rémunération moyenne du mois de décembre (effectif permanent) hors primes à périodicité non mensuelle ― base 35 heures"
+    remuneration_moyenne_decembre = CategoryField(
+        verbose_name="Rémunération moyenne du mois de décembre (effectif permanent) hors primes à périodicité non mensuelle",
+        help_text="base 35 heures",
+        null=True,
+        blank=True,
     )
-    remuneration_mensuelle_moyenne = models.IntegerField()
-    part_primes_non_mensuelle = models.IntegerField(
-        help_text="part des primes à périodicité non mensuelle dans la déclaration de salaire"
+    remuneration_mensuelle_moyenne = CategoryField(
+        verbose_name="Rémunération mensuelle moyenne",
+        null=True,
+        blank=True,
     )
-    remunerations_tranche_1 = models.IntegerField()
-    remunerations_tranche_2 = models.IntegerField()
-    remunerations_tranche_3 = models.IntegerField()
-    remunerations_tranche_4 = models.IntegerField()
-    remunerations_tranche_5 = models.IntegerField()
-    remunerations_tranche_6 = models.IntegerField()
+    part_primes_non_mensuelle = CategoryField(
+        help_text="part des primes à périodicité non mensuelle dans la déclaration de salaire",
+        null=True,
+        blank=True,
+    )
+    remunerations = CategoryField( #TODO: discuter des tranches
+        categories=["- de 1.000", "1.000-2.000", "2.000-3.000", "3.000-4.000", "4.000-5.000", "5.000 et plus"],
+        verbose_name="Grille des rémunérations",
+        null=True,
+        blank=True,
+    )
 
     #       ii. Hiérarchie des rémunérations
     rapport_moyenne_deciles = models.IntegerField(
-        help_text="rapport entre la moyenne des rémunérations des 10 % des salariés touchant les rémunérations les plus élevées et celle correspondant au 10 % des salariés touchant les rémunérations les moins élevées"
+        verbose_name="rapport entre la moyenne des rémunérations des 10 % des salariés touchant les rémunérations les plus élevées et celle correspondant au 10 % des salariés touchant les rémunérations les moins élevées",
+        null=True,
+        blank=True,
     )
     rapport_moyenne_cadres_ouvriers = models.IntegerField(
-        help_text="rapport entre la moyenne des rémunérations des cadres ou assimilés (y compris cadres supérieurs et dirigeants) et la moyenne des rémunérations des ouvriers non qualifiés ou assimilés. Pour être prises en compte, les catégories concernées doivent comporter au minimum dix salariés."
+        verbose_name="Rapport entre la moyenne des rémunérations des cadres ou assimilés (y compris cadres supérieurs et dirigeants) et la moyenne des rémunérations des ouvriers non qualifiés ou assimilés.",
+        help_text="Pour être prises en compte, les catégories concernées doivent comporter au minimum dix salariés.",
+        null=True,
+        blank=True,
     )
-    montant_10_remunerations_les_plus_eleves = models.IntegerField()
+    montant_10_remunerations_les_plus_eleves = models.IntegerField(
+        verbose_name="Montant global des dix rémunérations les plus élevées.",
+        null=True,
+        blank=True,
+    )
 
+class Vide:
     #       iii. Mode de calcul des rémunérations
     pourcentage_salaries_rendement_primes_individuelles = models.IntegerField(
         verbose_name="Pourcentage des salariés dont le salaire dépend, en tout ou partie, du rendement",
