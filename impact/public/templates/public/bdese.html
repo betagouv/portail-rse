@@ -307,6 +307,21 @@
                 {% include 'snippets/input_field.html' with field=form.montant_global_hautes_remunerations %}
 
                 <h3>B-Epargne salariale : intéressement, participation</h3>
+                {% include 'snippets/input_field.html' with field=form.montant_global_reserve_de_participation %}
+                {% include 'snippets/category_field.html' with field=form.montant_moyen_participation %}
+                {% include 'snippets/input_field.html' with field=form.part_capital_detenu_par_salaries %}
+
+                <h3>C-Rémunérations accessoires : primes par sexe et par catégorie professionnelle, avantages en nature, régimes de prévoyance et de retraite complémentaire</h3>
+                {% include 'snippets/input_field.html' with field=form.avantages_sociaux %}
+
+                <h3>D-Rémunération des dirigeants mandataires sociaux</h3>
+                <p>telles que présentées dans le rapport de gestion en application des trois premiers alinéas de l'article L. 225-102-1 du code de commerce, pour les entreprises soumises à l'obligation de présenter le rapport visé à l'article L. 225-102 du même code</p>
+
+                {% include 'snippets/input_field.html' with field=form.remuneration_dirigeants_mandataires_sociaux %}
+
+                <h2>5° Représentation du personnel et Activités sociales et culturelles : montant de la contribution aux activités sociales et culturelles du comité social et économique, mécénat</h2>
+
+
 
                 <input type="submit" value="Enregistrer" class="fr-btn ">
             </form>

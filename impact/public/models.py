@@ -1382,6 +1382,38 @@ class BDESE(models.Model):
         help_text="Montant global, certifié exact par les commissaires aux comptes, s'il en existe, des rémunérations versées aux personnes les mieux rémunérées, le nombre de ces personnes étant de dix ou de cinq selon que l'effectif du personnel excède ou non deux cents salariés ; uniquement pour les entreprises soumises aux dispositions de l'article L. 225-115 du code de commerce",
         null=True,
         blank=True,
-    ) # TODO: au 4 de cete article
+    )
 
     # B. Epargne salariale : intéressement, participation
+    montant_global_reserve_de_participation = models.IntegerField(
+        verbose_name="Montant global de la réserve de participation",
+        help_text="Le montant global de la réserve de participation est le montant de la réserve dégagée-ou de la provision constituée-au titre de la participation sur les résultats de l'exercice considéré.",
+        null=True,
+        blank=True,
+    )
+    montant_moyen_participation = CategoryField(
+        verbose_name="Montant moyen de la participation et/ ou de l'intéressement par salarié bénéficiaire",
+        help_text="La participation est envisagée ici au sens du titre II du livre III de la partie III.",
+        null=True,
+        blank=True,
+    )
+    part_capital_detenu_par_salaries = models.IntegerField(
+        verbose_name="Part du capital détenu par les salariés (dirigeants exclus) grâce à un système de participation",
+        help_text="système de participation : participation aux résultats, intéressement, actionnariat …",
+        null=True,
+        blank=True,
+    )
+
+    # C-Rémunérations accessoires : primes par sexe et par catégorie professionnelle, avantages en nature, régimes de prévoyance et de retraite complémentaire
+    avantages_sociaux = models.TextField(
+        verbose_name="Avantages sociaux dans l'entreprise : pour chaque avantage préciser le niveau de garantie pour les catégories retenues pour les effectifs",
+        null=True,
+        blank=True,
+    )
+
+    # D-Rémunération des dirigeants mandataires sociaux
+    remuneration_dirigeants_mandataires_sociaux = models.IntegerField(
+        verbose_name="Rémunération des dirigeants mandataires sociaux",
+        null=True,
+        blank=True,
+    )
