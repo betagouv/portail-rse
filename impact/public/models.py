@@ -1568,3 +1568,27 @@ class BDESE(models.Model):
         null=True,
         blank=True,
     )
+
+    #   F-Résultats financiers
+    chiffre_affaires = models.IntegerField(
+        verbose_name=" Le chiffre d'affaires",
+        null=True,
+        blank=True,
+    )
+    benefices_ou_pertes = models.IntegerField(
+        verbose_name="Les bénéfices ou pertes constatés",
+        null=True,
+        blank=True,
+    )
+    resultats_globaux = CategoryField(
+        categories=["valeur", "volume"],
+        verbose_name="Les résultats globaux de la production",
+        null=True,
+        blank=True,
+    )
+    affectation_benefices = models.TextField(
+        verbose_name="L'affectation des bénéfices réalisés",
+        null=True,
+        blank=True,
+    ) # TODO: à remplacer par un CategoryField et les affectations possibles ?
+
