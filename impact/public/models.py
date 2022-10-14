@@ -1417,3 +1417,70 @@ class BDESE(models.Model):
         null=True,
         blank=True,
     )
+
+    # 5° Représentation du personnel et Activités sociales et culturelles
+    #   A-Représentation du personnel
+    #     a) Représentants du personnel et délégués syndicaux
+
+    composition_CSE_etablissement = models.TextField(
+        verbose_name="Composition des comités sociaux et économiques et/ ou d'établissement avec indication, s'il y a lieu, de l'appartenance syndicale",
+        null=True,
+        blank=True,
+    )
+    participation_elections = models.TextField(
+        verbose_name="Participation aux élections (par collège) par catégories de représentants du personnel",
+        null=True,
+        blank=True,
+    )
+    volume_credit_heures = models.IntegerField(
+        verbose_name="Volume global des crédits d'heures utilisés pendant l'année considérée",
+        null=True,
+        blank=True,
+    )
+    nombre_reunion_representants_personnel = models.IntegerField(
+        verbose_name="Nombre de réunions avec les représentants du personnel et les délégués syndicaux pendant l'année considérée",
+        null=True,
+        blank=True,
+    )
+    accords_conclus = models.TextField(
+        verbose_name="Dates et signatures et objet des accords conclus dans l'entreprise pendant l'année considérée",
+        null=True,
+        blank=True,
+    )
+    nombre_personnes_conge_education_ouvriere = models.IntegerField(
+        verbose_name="Nombre de personnes bénéficiaires d'un congé d'éducation ouvrière",
+        help_text="Au sens des articles L. 2145-5 et suivants.",
+        null=True,
+        blank=True,
+    )
+
+    #     b) Information et communication
+    nombre_heures_reunion_personnel = models.IntegerField(
+        verbose_name="Nombre d'heures consacrées aux différentes formes de réunion du personnel",
+        help_text="On entend par réunion du personnel, les réunions régulières de concertation, concernant les relations et conditions de travail organisées par l'entreprise.",
+        null=True,
+        blank=True,
+    )
+    elements_systeme_accueil = models.TextField(
+        verbose_name="Eléments caractéristiques du système d'accueil",
+        null=True,
+        blank=True,
+    )
+    elements_systeme_information = models.TextField(
+        verbose_name="Eléments caractéristiques du système d'information ascendante ou descendante et niveau d'application",
+        null=True,
+        blank=True,
+    )
+    elements_systeme_entretiens_individuels = models.TextField(
+        verbose_name="Eléments caractéristiques du système d'entretiens individuels",
+        help_text="Préciser leur périodicité.",
+        null=True,
+        blank=True,
+    )
+    #     c) Différends concernant l'application du droit du travail
+    differends_application_droit_du_travail = models.TextField(
+        verbose_name="Différends concernant l'application du droit du travail",
+        help_text="Avec indication de la nature du différend et, le cas échéant, de la solution qui y a mis fin.",
+        null=True,
+        blank=True,
+    )
