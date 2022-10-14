@@ -14,8 +14,13 @@
             </form>
         </div>
     </div>
-    <div class="fr-grid-row fr-grid-row--center">
-        <p>Vous n'avez pas encore de compte ? <a href="{% url 'creation'%}?siren={{ siren }}">Créez votre compte</a></p>
+    <div class="fr-grid-row fr-grid-row--center fr-mt-4w">
+        <div class="fr-col-8">
+            <p>
+                Vous n'avez pas encore de compte ? <a href="{% url 'creation'%}?siren={{ siren }}">Créez votre compte</a><br>
+                Vous avez oublié votre mot de passe ? <a href="{% url 'password_reset'%}">Réinitialisez votre mot de passe</a>
+            </p>
+        </div>
     </div>
 </div>
 {% endblock %}
