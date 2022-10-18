@@ -7,7 +7,7 @@ run:
 install:
 	python3 -m venv venv
 	./venv/bin/pip install pipenv
-	./venv/bin/pipenv install
+	./venv/bin/pipenv install -d
 
 shell:
 	./venv/bin/python3 impact/manage.py shell
@@ -20,3 +20,10 @@ migrations:
 
 createsuperuser:
 	./venv/bin/python3 impact/manage.py createsuperuser
+
+pytest:
+	./venv/bin/pipenv shell
+	pytest
+
+test:
+	./venv/bin/python3 impact/manage.py test public
