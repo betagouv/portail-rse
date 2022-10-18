@@ -22,8 +22,7 @@ createsuperuser:
 	./venv/bin/python3 impact/manage.py createsuperuser
 
 pytest:
-	./venv/bin/pipenv shell
-	pytest
+	./venv/bin/pytest
 
 test:
 	./venv/bin/python3 impact/manage.py test public
