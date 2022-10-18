@@ -104,3 +104,54 @@ dans la page, il est indiqué:
 Doublon ?
 - 1° A f : Nombre de journées d'absence pour accidents du travail et de trajet ou maladies professionnelles (I) ; | par catégorie
 - 2° I D : nombre de journée d'absence pour accidents de travail, accidents de trajet ou maladies professionnelles ; | par sexe
+
+
+-----
+Deuxième round :
+
+
+1° A - f) v - Durée et aménagement du temps de travail
+ Comment le « Nombre de jours fériés payés » et ses « conditions restrictives » doit-il se matérialiser:
+   - un champ libre pour chaque catégorie de salarié à la place de chaque champ nombre ? (C'est ce qu'il y a actuellement.)
+   - un seul champ libre en plus pour les commentaires ?
+   - un champ libre pour chaque catégorie de salarié en plus de chaque champ nombre ?
+
+
+1° A - f) vi - Absentéisme
+La répartition des absences pour maladie selon leur durée est demandée par catégorie, par durée.
+ - On fait une fois par catégorie et une fois par durée ?
+ - Quelles durées indiquer ?
+
+
+2° I. D - Conditions de travail, santé et sécurité au travail
+
+La donnée « nombre et dénomination des maladies professionnelles déclarées à la Sécurité sociale au cours de l'année ; »
+fait-elle référence aux codes tels qu'on les trouve au  1°A-f)ii (« risques graves-codes 32 à 40 », etc.) ? Dans le cas contraire, lesquelles utiliser ?
+
+Une autre solution est de laisser un champ libre.
+
+ 
+
+4° A a i. Montant des rémunérations
+Concernant la « grille des rémunérations » (au moins 6 tranches), quelles tranches choisir ?
+
+
+
+4° A a iii. Mode de calcul des rémunérations
+
+Les deux indicateurs de cette sous-section demande d'indiquer des pourcentages. On pourrait demander les valeurs absolues et faire le calcul. Que fait-on ?
+
+
+
+7° F-Résultats financiers
+
+« L'affectation des bénéfices réalisés » est actuellement un champ libre. Il pourrait être transformé en une suite de champ de nombre à remplir car il semble que les affectations possibles soit limitées :
+ - L’affectation à la réserve légale
+ - L’affectation aux réserves statutaires éventuelles
+ - La distribution de dividendes aux associés ou actionnaires
+ - L’affectation aux autres réserves
+ - L’affectation en report à nouveau
+
+d'après https://www.lecoindesentrepreneurs.fr/affectation-des-benefices/
+
+Que choisir entre les deux ?
