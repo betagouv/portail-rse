@@ -8,9 +8,8 @@
     <body>
         <h1>{{ raison_sociale }}</h1>
 
-        <p>Plusieurs possibilités :</p>
-        {% for k, v in BDESE_ELIGIBILITE.items %}
-         - {{ k }} {% if v == bdese %}<strong>X</strong>{% endif %}<br>
-        {% endfor %}
+        <p>Vous êtes soumis à la réglementation BDESE de type :<br>
+            {{ bdese }}
+        </p>
     </body>
 </html>

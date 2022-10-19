@@ -9,7 +9,8 @@
     </div>
 
     <!-- BDESE -->
-    <div class="fr-card fr-card--horizontal {% if bdese_result == BDESE_ELIGIBILITE.NON_ELIGIBLE %}fr-card--grey{% endif %} fr-mt-2w">
+    {% with reglementation=bdese %}
+    <div class="fr-card fr-card--horizontal {% if reglementation.status == reglementation.STATUS_NON_SOUMIS %}fr-card--grey{% endif %} fr-mt-2w">
         <div class="fr-card__body">
             <div class="fr-card__content">
                 <h3 class="fr-card__title">
@@ -23,20 +24,18 @@
                 <div class="fr-card__start">
                     <ul class="fr-badges-group">
                         <li>
-                            {% if bdese_result == BDESE_ELIGIBILITE.NON_ELIGIBLE %}
+                            {% if reglementation.status == reglementation.STATUS_NON_SOUMIS %}
                             <p class="fr-badge">non soumis</p>
-                            {% else %}
+                            {% elif reglementation.status == reglementation.STATUS_A_ACTUALISER %}
                             <p class="fr-badge fr-badge--error">à actualiser</p>
+                            {% elif reglementation.status == reglementation.STATUS_ACTUALISE %}
+                            <p class="fr-badge fr-badge--success">actualisé</p>
                             {% endif %}
                         </li>
                     </ul>
-                    {% if bdese_result == BDESE_ELIGIBILITE.NON_ELIGIBLE %}
-                    <p class="fr-card__detail fr-icon-info-fill">Vous n'êtes pas soumis à cette réglementation</p>
-                    {% elif bdese_result == BDESE_ELIGIBILITE.ELIGIBLE_AVEC_ACCORD %}
-                    <p class="fr-card__detail fr-icon-warning-fill">Vous êtes soumis à cette réglementation. Vous avez un accord d'entreprise spécifique. Veuillez vous y référer.</p>
-                    {% else %}
-                    <p class="fr-card__detail fr-icon-warning-fill">Vous êtes soumis à cette réglementation. Nous allons vous aider à la remplir.</p>
-                    {% endif %}
+                    <p class="fr-card__detail {% if reglementation.status == reglementation.STATUS_A_ACTUALISER %}fr-icon-warning-fill{% else %}fr-icon-info-fill{% endif %}">
+                        {{ reglementation.status_detail }}
+                    </p>
                 </div>
             </div>
             <div class="fr-card__footer">
@@ -46,31 +45,31 @@
                             En savoir plus
                         </a>
                     </li>
-                    {% if bdese_result == BDESE_ELIGIBILITE.ELIGIBLE_AVEC_ACCORD %}
+                    {% if reglementation.primary_action %}
                     <li>
-                        <a class="fr-btn" href="#">
-                            Marquer ma BDESE comme actualisée
+                        <a class="fr-btn" href="{{ reglementation.primary_action.url }}">
+                            {{ reglementation.primary_action.title }}
                         </a>
                     </li>
-                    {% elif bdese_result != BDESE_ELIGIBILITE.NON_ELIGIBLE %}
-                    <li>
-                        <a class="fr-btn" href="{% url 'bdese' siren %}">
-                            Actualiser ma BDESE
-                        </a>
-                    </li>
-                    <li>
-                        <a class="fr-btn fr-btn--secondary" href="{% url 'result' %}?raison_sociale={{ raison_sociale }}&bdese={{ bdese_result }}" target="_blank">
-                            Télécharger le pdf
-                        </a>
-                    </li>
+                    {% endif %}
+                    {% if reglementation.secondary_actions %}
+                        {% for secondary_action in reglementation.secondary_actions %}
+                        <li>
+                            <a class="fr-btn fr-btn--secondary" href="{{ secondary_action.url }}">
+                                {{ secondary_action.title }}
+                            </a>
+                        </li>
+                        {% endfor %}
                     {% endif %}
                 </ul>
             </div>
         </div>
     </div>
+    {% endwith %}
 
     <!-- Index Egapro -->
-    <div class="fr-card fr-card--horizontal {% if index_egapro_result == INDEX_EGAPRO_ELIGIBILITE.NON_ELIGIBLE %}fr-card--grey{% endif %} fr-mt-2w">
+    {% with reglementation=index_egapro %}
+    <div class="fr-card fr-card--horizontal {% if reglementation.status == reglementation.STATUS_NON_SOUMIS %}fr-card--grey{% endif %} fr-mt-2w">
         <div class="fr-card__body">
             <div class="fr-card__content">
                 <h3 class="fr-card__title">
@@ -80,22 +79,18 @@
                 <div class="fr-card__start">
                     <ul class="fr-badges-group">
                         <li>
-                            {% if index_egapro_result == INDEX_EGAPRO_ELIGIBILITE.NON_ELIGIBLE %}
+                            {% if reglementation.status == reglementation.STATUS_NON_SOUMIS %}
                             <p class="fr-badge">non soumis</p>
-                            {% elif index_egapro_result == INDEX_EGAPRO_ELIGIBILITE.ELIGIBLE_ACTUALISE %}
-                            <p class="fr-badge fr-badge--success">actualisé</p>
-                            {% else %}
+                            {% elif reglementation.status == reglementation.STATUS_A_ACTUALISER %}
                             <p class="fr-badge fr-badge--error">à actualiser</p>
+                            {% elif reglementation.status == reglementation.STATUS_ACTUALISE %}
+                            <p class="fr-badge fr-badge--success">actualisé</p>
                             {% endif %}
                         </li>
                     </ul>
-                    {% if index_egapro_result == INDEX_EGAPRO_ELIGIBILITE.NON_ELIGIBLE %}
-                    <p class="fr-card__detail fr-icon-info-fill">Vous n'êtes pas soumis à cette réglementation</p>
-                    {% elif index_egapro_result == INDEX_EGAPRO_ELIGIBILITE.ELIGIBLE_ACTUALISE %}
-                    <p class="fr-card__detail fr-icon-info-fill">Vous êtes soumis à cette réglementation. Vous avez rempli vos obligations d'après les données disponibles sur Index Egapro.</p>
-                    {% else %}
-                    <p class="fr-card__detail fr-icon-info-fill">Vous êtes soumis à cette réglementation. Vous n'avez pas encore déclaré votre index sur Index Egapro.</p>
-                    {% endif %}
+                    <p class="fr-card__detail {% if reglementation.status == reglementation.STATUS_A_ACTUALISER %}fr-icon-warning-fill{% else %}fr-icon-info-fill{% endif %}">
+                        {{ reglementation.status_detail }}
+                    </p>
                 </div>
             </div>
             <div class="fr-card__footer">
@@ -105,7 +100,7 @@
                             En savoir plus
                         </a>
                     </li>
-                    {% if index_egapro_result != INDEX_EGAPRO_ELIGIBILITE.NON_ELIGIBLE %}
+                    {% if reglementation.status != reglementation.STATUS_NON_SOUMIS %}
                     <li>
                         <a class="fr-btn" href="https://index-egapro.travail.gouv.fr/" target="_blank" rel="noopener">
                             Calculer et déclarer mon index sur Index Egapro
@@ -116,5 +111,7 @@
             </div>
         </div>
     </div>
+    {% endwith %}
+
 </div>
 {% endblock %}
