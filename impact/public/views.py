@@ -33,7 +33,6 @@ def siren(request):
 
         response = requests.get(url, headers=headers, params=params)
         if response.status_code == 200:
-            Entreprise.objects.get_or_create(siren=siren)
             data = response.json()["data"]
             raison_sociale = data["personne_morale_attributs"]["raison_sociale"]
             effectif = data["tranche_effectif_salarie"]["a"]
@@ -187,6 +186,7 @@ def is_index_egapro_updated(siren):
 def eligibilite(request):
     form = EligibiliteForm(request.GET)
     if form.is_valid():
+        Entreprise.objects.get_or_create(siren=form.cleaned_data["siren"])
         entreprise = _Entreprise(**form.cleaned_data)
     return render(
         request,
