@@ -186,7 +186,9 @@ def is_index_egapro_updated(siren):
 def eligibilite(request):
     form = EligibiliteForm(request.GET)
     if form.is_valid():
-        Entreprise.objects.get_or_create(siren=form.cleaned_data["siren"])
+        siren = form.cleaned_data["siren"]
+        request.session["siren"] = siren
+        Entreprise.objects.get_or_create(siren=siren)
         entreprise = _Entreprise(**form.cleaned_data)
     return render(
         request,
