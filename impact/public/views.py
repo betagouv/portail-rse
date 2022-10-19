@@ -201,10 +201,6 @@ def eligibilite(request):
     )
 
 
-def reglementations(request):
-    return render(request, "public/reglementations.html")
-
-
 def result(request):
     bdese_type = int(request.GET["bdese"])
     if bdese_type == BDESEReglementation.TYPE_AVEC_ACCORD:
