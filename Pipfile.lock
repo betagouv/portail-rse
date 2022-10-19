@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "69839e145602d22a2d4b3e874e3369a3298e867b461700ab2c8a5c018b1d5539"
+            "sha256": "e4d81f0cbded29a7228d497fa04f7ca9d81436bc6c53624f746ca5b172876f48"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -194,11 +194,11 @@
         },
         "django": {
             "hashes": [
-                "sha256:a153ffd5143bf26a877bfae2f4ec736ebd8924a46600ca089ad96b54a1d4e28e",
-                "sha256:acb21fac9275f9972d81c7caf5761a89ec3ea25fe74545dd26b8a48cb3a0203e"
+                "sha256:26dc24f99c8956374a054bcbf58aab8dc0cad2e6ac82b0fe036b752c00eee793",
+                "sha256:b8d843714810ab88d59344507d4447be8b2cf12a49031363b6eed9f1b9b2280f"
             ],
             "index": "pypi",
-            "version": "==4.1.1"
+            "version": "==4.1.2"
         },
         "django-weasyprint": {
             "hashes": [
@@ -213,11 +213,11 @@
                 "woff"
             ],
             "hashes": [
-                "sha256:a5bc5f5d48faa4085310b8ebd4c5d33bf27c6636c5f10a7de792510af2745a81",
-                "sha256:f32ef6ec966cf0e7d2aa88601fed2e3a8f2851c26b5db2c80ccc8f82bee4eedc"
+                "sha256:86918c150c6412798e15a0de6c3e0d061ddefddd00f97b4f7b43dfa867ad315e",
+                "sha256:afae1b39555f9c3f0ad1f0f1daf678e5ad157e38c8842ecb567951bf1a9b9fd7"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==4.37.3"
+            "version": "==4.37.4"
         },
         "gunicorn": {
             "hashes": [
@@ -333,11 +333,11 @@
         },
         "pydyf": {
             "hashes": [
-                "sha256:1aea6c0c97cc7b809efb5427147e168a5404ed76a53d76a3aea590d4ca1b04a3",
-                "sha256:5d0aedc95f5fa040b62016ed40820b07008efbff2ebbdd328572ae635bad0952"
+                "sha256:116bc4b057822dc72d6afc826cad33444f7dcde8059aa85534380fb63e3e306f",
+                "sha256:51e751ae1504037c1fc1f4815119137b011802cd5f6c3539db066c455b14a7e1"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==0.3.0"
+            "version": "==0.5.0"
         },
         "pyphen": {
             "hashes": [
@@ -357,11 +357,11 @@
         },
         "setuptools": {
             "hashes": [
-                "sha256:a8f6e213b4b0661f590ccf40de95d28a177cd747d098624ad3f69c40287297e9",
-                "sha256:c2d2709550f15aab6c9110196ea312f468f41cd546bceb24127a1be6fdcaeeb1"
+                "sha256:512e5536220e38146176efb833d4a62aa726b7bbff82cfbc8ba9eaa3996e0b17",
+                "sha256:f62ea9da9ed6289bfe868cd6845968a2c854d1427f8548d52cae02a42b4f0356"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==65.4.0"
+            "version": "==65.5.0"
         },
         "six": {
             "hashes": [
@@ -381,11 +381,11 @@
         },
         "tinycss2": {
             "hashes": [
-                "sha256:b2e44dd8883c360c35dd0d1b5aad0b610e5156c2cb3b33434634e539ead9d8bf",
-                "sha256:fe794ceaadfe3cf3e686b22155d0da5780dd0e273471a51846d0a02bc204fec8"
+                "sha256:2b80a96d41e7c3914b8cda8bc7f705a4d9c49275616e886103dd839dfc847847",
+                "sha256:8cff3a8f066c2ec677c06dbc7b45619804a6938478d9d73c284b29d14ecb0627"
             ],
-            "markers": "python_version >= '3.6'",
-            "version": "==1.1.1"
+            "markers": "python_version >= '3.7'",
+            "version": "==1.2.1"
         },
         "urllib3": {
             "hashes": [
@@ -397,11 +397,11 @@
         },
         "weasyprint": {
             "hashes": [
-                "sha256:27f796abce8edebc9e5b3cff2d095a9fa2b0af5766801431659db51203c70b38",
-                "sha256:86ffa626a7b335d19a7024c0b59a6b3160fd5c0e7a3634500f50a2c35faeafb5"
+                "sha256:7b6f5cc13819e9a7d8748c1dbf0e8d2444f7a4818a98339f82dccaa822bf911b",
+                "sha256:c714681139a765964c3a8514ac1fc0f65ae063aada4aad752085575f2129e765"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==56.1"
+            "version": "==57.0"
         },
         "webencodings": {
             "hashes": [
