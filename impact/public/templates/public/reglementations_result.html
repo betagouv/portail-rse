@@ -30,6 +30,8 @@
                             <p class="fr-badge fr-badge--error">à actualiser</p>
                             {% elif reglementation.status == reglementation.STATUS_ACTUALISE %}
                             <p class="fr-badge fr-badge--success">actualisé</p>
+                            {% elif reglementation.status == reglementation.STATUS_EN_COURS %}
+                            <p class="fr-badge fr-badge--warning">en cours</p>
                             {% endif %}
                         </li>
                     </ul>
@@ -85,6 +87,8 @@
                             <p class="fr-badge fr-badge--error">à actualiser</p>
                             {% elif reglementation.status == reglementation.STATUS_ACTUALISE %}
                             <p class="fr-badge fr-badge--success">actualisé</p>
+                            {% elif reglementation.status == reglementation.STATUS_EN_COURS %}
+                            <p class="fr-badge fr-badge--warning">en cours</p>
                             {% endif %}
                         </li>
                     </ul>

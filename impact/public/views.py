@@ -130,11 +130,18 @@ class BDESEReglementation(Reglementation):
                 bdese_type = cls.TYPE_INFERIEUR_500
             else:
                 bdese_type = cls.TYPE_SUPERIEUR_500
-            status = cls.STATUS_A_ACTUALISER
-            status_detail = "Vous êtes soumis à cette réglementation. Nous allons vous aider à la remplir."
-            primary_action = ReglementationAction(
-                reverse_lazy("bdese", args=[entreprise.siren]), "Actualiser ma BDESE"
-            )
+            if BDESE.objects.filter(entreprise__siren=entreprise.siren, annee=2022):
+                status = cls.STATUS_EN_COURS
+                status_detail = "Vous êtes soumis à cette réglementation. Vous avez démarré le remplissage de votre BDESE sur la plateforme"
+                primary_action = ReglementationAction(
+                    reverse_lazy("bdese", args=[entreprise.siren]), "Reprendre l'actualisation de ma BDESE"
+                )
+            else:
+                status = cls.STATUS_A_ACTUALISER
+                status_detail = "Vous êtes soumis à cette réglementation. Nous allons vous aider à la remplir."
+                primary_action = ReglementationAction(
+                    reverse_lazy("bdese", args=[entreprise.siren]), "Actualiser ma BDESE"
+                )
             secondary_actions = [
                 ReglementationAction(
                     reverse_lazy("result")
