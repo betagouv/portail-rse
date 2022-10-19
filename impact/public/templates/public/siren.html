@@ -6,7 +6,7 @@
         <div class="fr-col">
             <h1>{{ raison_sociale }}</h1>
 
-            <form action="{% url 'eligibilite' %}" method="get">
+            <form action="{% url 'reglementations' %}" method="get">
                 {% csrf_token %}
                 {{ form.siren.as_hidden }}
                 {{ form.raison_sociale.as_hidden }}

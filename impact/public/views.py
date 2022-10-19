@@ -183,7 +183,7 @@ def is_index_egapro_updated(siren):
     return False
 
 
-def eligibilite(request):
+def reglementations(request):
     form = EligibiliteForm(request.GET)
     if form.is_valid():
         siren = form.cleaned_data["siren"]
@@ -192,7 +192,7 @@ def eligibilite(request):
         entreprise = _Entreprise(**form.cleaned_data)
     return render(
         request,
-        "public/reglementations_result.html",
+        "public/reglementations.html",
         {
             "entreprise": entreprise,
             "bdese": BDESEReglementation.calculate(entreprise),
