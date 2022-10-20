@@ -6,7 +6,6 @@
         <link rel="stylesheet" href="/static/dsfr-1.7.2/dsfr/dsfr.min.css">
         <link rel="stylesheet" href="/static/dsfr-1.7.2/utility/icons/icons.css">
 
-
         <meta name="theme-color" content="#000091"><!-- Défini la couleur de thème du navigateur (Safari/Android) -->
         <link rel="apple-touch-icon" href="/static/dsfr-1.7.2/favicon/apple-touch-icon.png"><!-- 180×180 -->
         <link rel="icon" href="/static/dsfr-1.7.2/favicon/favicon.svg" type="image/svg+xml">
@@ -44,6 +43,7 @@
                             <ul class="fr-btns-group">
                                 {% if user.is_authenticated %}
                                 <li>
+                                    <a class="fr-btn fr-icon-home-4-line" aria-hidden="true" href="{% url 'reglementations' %}">Réglementations</a>
                                     <a class="fr-btn fr-icon-lock-unlock-line" href="{% url 'logout' %}">
                                         Se déconnecter
                                     </a>

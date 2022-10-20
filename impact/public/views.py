@@ -184,12 +184,30 @@ def is_index_egapro_updated(siren):
 
 
 def reglementations(request):
+    if request.user:
+        return _reglementations_connecte(request)
     form = EligibiliteForm(request.GET)
     if form.is_valid():
         siren = form.cleaned_data["siren"]
         request.session["siren"] = siren
         Entreprise.objects.get_or_create(siren=siren)
         entreprise = _Entreprise(**form.cleaned_data)
+    return render(
+        request,
+        "public/reglementations.html",
+        {
+            "entreprise": entreprise,
+            "bdese": BDESEReglementation.calculate(entreprise),
+            "index_egapro": IndexEgaproReglementation.calculate(entreprise),
+        },
+    )
+
+
+def _reglementations_connecte(request):
+    entreprise = request.user.entreprise_set.all()[0]
+    entreprise.effectif = "sup500"
+    entreprise.accord = False
+    entreprise.raison_sociale = "xx"
     return render(
         request,
         "public/reglementations.html",
