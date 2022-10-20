@@ -12,7 +12,7 @@
                 {{ form.raison_sociale.as_hidden }}
                 {% include 'snippets/select_field.html' with field=form.effectif %}
                 {% include 'snippets/radio_field.html' with field=form.accord %}
-                <input type="submit" value="Vérifier mon éligibilité" class="fr-btn ">
+                <input type="submit" value="Vérifier mes obligations" class="fr-btn ">
                 <a href="/" class="fr-btn fr-btn--secondary">Mon entreprise n'est pas {{ raison_sociale }}</a>
             </form>
         </div>
