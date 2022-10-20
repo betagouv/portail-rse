@@ -194,27 +194,35 @@ def reglementations(request):
         entreprise.effectif = form.cleaned_data["effectif"]
         entreprise.accord = form.cleaned_data["accord"]
         entreprise.raison_sociale = form.cleaned_data["raison_sociale"]
-        entreprise = _Entreprise(**form.cleaned_data)
     return render(
         request,
         "public/reglementations.html",
         {
-            "entreprise": entreprise,
-            "bdese": BDESEReglementation.calculate(entreprise),
-            "index_egapro": IndexEgaproReglementation.calculate(entreprise),
+            "entreprises": [
+                {
+                    "entreprise": entreprise,
+                    "bdese": BDESEReglementation.calculate(entreprise),
+                    "index_egapro": IndexEgaproReglementation.calculate(entreprise),
+                },
+            ]
         },
     )
 
 
 def _reglementations_connecte(request):
-    entreprise = request.user.entreprise_set.all()[0]
+    entreprises = request.user.entreprise_set.all()
     return render(
         request,
         "public/reglementations.html",
         {
-            "entreprise": entreprise,
-            "bdese": BDESEReglementation.calculate(entreprise),
-            "index_egapro": IndexEgaproReglementation.calculate(entreprise),
+            "entreprises": [
+                {
+                    "entreprise": entreprise,
+                    "bdese": BDESEReglementation.calculate(entreprise),
+                    "index_egapro": IndexEgaproReglementation.calculate(entreprise),
+                }
+                for entreprise in entreprises
+            ]
         },
     )
 

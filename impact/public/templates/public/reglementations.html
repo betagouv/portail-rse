@@ -1,6 +1,14 @@
 {% extends "public/base.html" %}
 
 {% block content %}
+
+{% if not entreprises %}
+<div class="fr-container fr-my-8w">
+    Aucune entreprise à remplir.
+</div>
+{% else %}
+{% for elem in entreprises %}
+{% with entreprise=elem.entreprise %}
 <div class="fr-container fr-my-8w">
     <h2>{{ entreprise.raison_sociale }}</h2>
     <div class="fr-alert fr-alert--warning">
@@ -9,7 +17,7 @@
     </div>
 
     <!-- BDESE -->
-    {% with reglementation=bdese %}
+    {% with reglementation=elem.bdese %}
     <div class="fr-card fr-card--horizontal {% if reglementation.status == reglementation.STATUS_NON_SOUMIS %}fr-card--grey{% endif %} fr-mt-2w">
         <div class="fr-card__body">
             <div class="fr-card__content">
@@ -53,7 +61,7 @@
     {% endwith %}
 
     <!-- Index Egapro -->
-    {% with reglementation=index_egapro %}
+    {% with reglementation=elem.index_egapro %}
     <div class="fr-card fr-card--horizontal {% if reglementation.status == reglementation.STATUS_NON_SOUMIS %}fr-card--grey{% endif %} fr-mt-2w">
         <div class="fr-card__body">
             <div class="fr-card__content">
@@ -84,4 +92,7 @@
     {% endwith %}
 
 </div>
+{% endwith %}
+{% endfor %}
+{% endif %}
 {% endblock %}
