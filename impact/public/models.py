@@ -4,8 +4,11 @@ from django.db import models
 
 
 class Entreprise(models.Model):
-    siren = models.CharField(max_length=9)
+    siren = models.CharField(max_length=9, unique=True)
     users = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    effectif = models.CharField(max_length=9, default="grand")
+    accord = models.BooleanField(default=False)
+    raison_sociale = models.CharField(max_length=50, default="")
 
     def __str__(self):
         return self.siren
