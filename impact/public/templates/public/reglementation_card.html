@@ -1,0 +1,20 @@
+{% if user.is_authenticated %}
+<div class="fr-card__start">
+    <ul class="fr-badges-group">
+        <li>
+            {% if reglementation.status == reglementation.STATUS_NON_SOUMIS %}
+            <p class="fr-badge">non soumis</p>
+            {% elif reglementation.status == reglementation.STATUS_A_ACTUALISER %}
+            <p class="fr-badge fr-badge--error">à actualiser</p>
+            {% elif reglementation.status == reglementation.STATUS_ACTUALISE %}
+            <p class="fr-badge fr-badge--success">actualisé</p>
+            {% elif reglementation.status == reglementation.STATUS_EN_COURS %}
+            <p class="fr-badge fr-badge--warning">en cours</p>
+            {% endif %}
+        </li>
+    </ul>
+    <p class="fr-card__detail {% if reglementation.status == reglementation.STATUS_A_ACTUALISER %}fr-icon-warning-fill{% else %}fr-icon-info-fill{% endif %}">
+        {{ reglementation.status_detail }}
+    </p>
+</div>
+{% endif %}

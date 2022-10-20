@@ -21,26 +21,7 @@
                     La BDESE rassemble les informations sur les grandes orientations économiques et sociales de l'entreprise.
                     Elle comprend des mentions obligatoires qui varient selon l'effectif de l'entreprise.
                 </p>
-                {% if user.is_authenticated %}
-                <div class="fr-card__start">
-                    <ul class="fr-badges-group">
-                        <li>
-                            {% if reglementation.status == reglementation.STATUS_NON_SOUMIS %}
-                            <p class="fr-badge">non soumis</p>
-                            {% elif reglementation.status == reglementation.STATUS_A_ACTUALISER %}
-                            <p class="fr-badge fr-badge--error">à actualiser</p>
-                            {% elif reglementation.status == reglementation.STATUS_ACTUALISE %}
-                            <p class="fr-badge fr-badge--success">actualisé</p>
-                            {% elif reglementation.status == reglementation.STATUS_EN_COURS %}
-                            <p class="fr-badge fr-badge--warning">en cours</p>
-                            {% endif %}
-                        </li>
-                    </ul>
-                    <p class="fr-card__detail {% if reglementation.status == reglementation.STATUS_A_ACTUALISER %}fr-icon-warning-fill{% else %}fr-icon-info-fill{% endif %}">
-                        {{ reglementation.status_detail }}
-                    </p>
-                </div>
-                {% endif %}
+                {% include "./reglementation_card.html" %}
             </div>
             <div class="fr-card__footer">
                 <ul class="fr-btns-group fr-btns-group--inline-reverse fr-btns-group--inline-lg">
@@ -80,26 +61,7 @@
                     <a href="#">Index de l'égalité professionnelle</a>
                 </h3>
                 <p class="fr-card__desc">Afin de lutter contre les inégalités salariales entre les femmes et les hommes, certaines entreprises doivent calculer et transmettre un index mesurant l’égalité salariale au sein de leur structure.</p>
-                {% if user.is_authenticated %}
-                <div class="fr-card__start">
-                    <ul class="fr-badges-group">
-                        <li>
-                            {% if reglementation.status == reglementation.STATUS_NON_SOUMIS %}
-                            <p class="fr-badge">non soumis</p>
-                            {% elif reglementation.status == reglementation.STATUS_A_ACTUALISER %}
-                            <p class="fr-badge fr-badge--error">à actualiser</p>
-                            {% elif reglementation.status == reglementation.STATUS_ACTUALISE %}
-                            <p class="fr-badge fr-badge--success">actualisé</p>
-                            {% elif reglementation.status == reglementation.STATUS_EN_COURS %}
-                            <p class="fr-badge fr-badge--warning">en cours</p>
-                            {% endif %}
-                        </li>
-                    </ul>
-                    <p class="fr-card__detail {% if reglementation.status == reglementation.STATUS_A_ACTUALISER %}fr-icon-warning-fill{% else %}fr-icon-info-fill{% endif %}">
-                        {{ reglementation.status_detail }}
-                    </p>
-                </div>
-                {% endif %}
+                {% include "./reglementation_card.html" %}
             </div>
             <div class="fr-card__footer">
                 <ul class="fr-btns-group fr-btns-group--inline-reverse fr-btns-group--inline-lg">
