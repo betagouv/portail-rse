@@ -184,13 +184,13 @@ def is_index_egapro_updated(siren):
 
 
 def reglementations(request):
-    if request.user:
+    if request.user and request.user.is_authenticated:
         return _reglementations_connecte(request)
     form = EligibiliteForm(request.GET)
     if form.is_valid():
         siren = form.cleaned_data["siren"]
         request.session["siren"] = siren
-        entreprise = Entreprise.objects.get_or_create(siren=siren)
+        entreprise, _ = Entreprise.objects.get_or_create(siren=siren)
         entreprise.effectif = form.cleaned_data["effectif"]
         entreprise.accord = form.cleaned_data["accord"]
         entreprise.raison_sociale = form.cleaned_data["raison_sociale"]
