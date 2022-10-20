@@ -24,4 +24,8 @@ class BDESEAdmin(admin.ModelAdmin):
     form = BDESEForm
 
 
-admin.site.register(Entreprise)
+class EntrepriseAdmin(admin.ModelAdmin):
+    list_display = ["siren", "raison_sociale"]
+
+
+admin.site.register(Entreprise, EntrepriseAdmin)
