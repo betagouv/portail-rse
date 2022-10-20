@@ -3,14 +3,20 @@
 {% block content %}
 <div class="fr-container fr-my-8w">
     <h1>Entreprises</h1>
-    {% for entreprise in user.entreprise_set.all %}
-    <h2>{{ entreprise.raison_sociale }}</h2>
-    <ul>
-        <li>SIREN : {{ entreprise.siren }}</li>
-        <li>effectif : {{ entreprise.effectif }}</li>
-        <li>accord d'entreprise : {{ entreprise.accord }}</li>
-    </ul>
-    {% endfor %}
+    {% if not user.entreprise_set.all %}
+    <div class="fr-container fr-my-8w">
+        Aucune entreprise n'est associée à votre compte.
+    </div>
+    {% else %}
+        {% for entreprise in user.entreprise_set.all %}
+        <h2>{{ entreprise.raison_sociale }}</h2>
+        <ul>
+            <li>SIREN : {{ entreprise.siren }}</li>
+            <li>effectif : {{ entreprise.effectif }}</li>
+            <li>accord d'entreprise : {{ entreprise.accord }}</li>
+        </ul>
+        {% endfor %}
+    {% endif %}
 
 </div>
 {% endblock %}
