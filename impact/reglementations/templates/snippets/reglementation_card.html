@@ -35,7 +35,7 @@
                 </li>
                 {% if reglementation.primary_action %}
                 <li>
-                    <a class="fr-btn" href="{{ reglementation.external_action.url }}" {% if reglementation.primary_action.external %}target="_blank" rel="noopener"{% endif %}>
+                    <a class="fr-btn" href="{{ reglementation.primary_action.url }}" {% if reglementation.primary_action.external %}target="_blank" rel="noopener"{% endif %}>
                         {{ reglementation.primary_action.title }}
                     </a>
                 </li>
