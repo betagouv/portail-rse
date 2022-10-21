@@ -22,6 +22,4 @@ class Entreprise(models.Model):
     raison_sociale = models.CharField(max_length=50, default="")
 
     def __str__(self):
-        return self.siren
-
-
+        return f"{self.siren} {self.raison_sociale}"
