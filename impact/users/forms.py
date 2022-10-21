@@ -4,7 +4,7 @@ from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm
 from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
 
 from public.forms import DsfrForm
-from public.models import Entreprise
+from entreprises.models import Entreprise
 from .models import User
 
 

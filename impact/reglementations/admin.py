@@ -1,8 +1,7 @@
-from django.contrib import admin
 from django import forms
+from django.contrib import admin
 
-from .models import BDESE, Entreprise
-
+from .models import BDESE
 
 class CategoryJSONField(forms.JSONField):
     def __init__(self, base_field=forms.IntegerField, categories=None, *args, **kwargs):
@@ -22,10 +21,3 @@ class BDESEForm(forms.ModelForm):
 @admin.register(BDESE)
 class BDESEAdmin(admin.ModelAdmin):
     form = BDESEForm
-
-
-class EntrepriseAdmin(admin.ModelAdmin):
-    list_display = ["siren", "raison_sociale"]
-
-
-admin.site.register(Entreprise, EntrepriseAdmin)
