@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="BDESE",
+            name="BDESE_300",
             fields=[
                 (
                     "id",

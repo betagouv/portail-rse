@@ -11,7 +11,7 @@ from weasyprint import HTML
 from entreprises.models import Entreprise
 from public.forms import EligibiliteForm
 from .forms import bdese_form_factory
-from .models import BDESE, categories_default
+from .models import BDESE_300, categories_default
 
 
 @dataclass
@@ -75,7 +75,7 @@ class BDESEReglementation(Reglementation):
                 bdese_type = cls.TYPE_INFERIEUR_500
             else:
                 bdese_type = cls.TYPE_SUPERIEUR_500
-            if BDESE.objects.filter(entreprise__siren=entreprise.siren, annee=2022):
+            if BDESE_300.objects.filter(entreprise__siren=entreprise.siren, annee=2022):
                 status = cls.STATUS_EN_COURS
                 status_detail = "Vous êtes soumis à cette réglementation. Vous avez démarré le remplissage de votre BDESE sur la plateforme"
                 primary_action = ReglementationAction(
@@ -225,7 +225,7 @@ def bdese(request, siren):
     entreprise = Entreprise.objects.get(siren=siren)
     if request.user not in entreprise.users.all():
         raise PermissionDenied
-    bdese, created = BDESE.objects.get_or_create(entreprise=entreprise)
+    bdese, created = BDESE_300.objects.get_or_create(entreprise=entreprise)
     categories_professionnelles = categories_default()
     if request.method == "POST":
         form = bdese_form_factory(

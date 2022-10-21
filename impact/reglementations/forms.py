@@ -1,7 +1,8 @@
 from django import forms
 
 from public.forms import DsfrForm
-from .models import BDESE
+from .models import BDESE_300
+
 
 class CategoryJSONWidget(forms.MultiWidget):
     template_name = "snippets/category_json_widget.html"
@@ -52,11 +53,11 @@ def bdese_form_factory(categories_professionnelles, fetched_data=None, *args, **
 
     class BDESEForm(forms.ModelForm, DsfrForm):
         class Meta:
-            model = BDESE
+            model = BDESE_300
             exclude = ["annee", "entreprise"]
             field_classes = {
                 category_field: CategoryMultiValueField
-                for category_field in BDESE.category_fields()
+                for category_field in BDESE_300.category_fields()
             }
 
         def __init__(self, fetched_data=None, *args, **kwargs):

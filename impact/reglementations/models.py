@@ -3,6 +3,7 @@ from django.db import models
 
 from entreprises.models import Entreprise
 
+
 class CategoryField(models.JSONField):
     def __init__(self, base_field=forms.IntegerField, categories=None, *args, **kwargs):
         self.base_field = base_field
@@ -42,9 +43,12 @@ def categories_default():
     ]
 
 
-class BDESE(models.Model):
+class AbstractBDESE(models.Model):
     annee = models.IntegerField(default=2022)
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
+
+    class Meta:
+        abstract = True
 
     def __str__(self):
         return self.entreprise.siren
@@ -54,10 +58,11 @@ class BDESE(models.Model):
         return [
             attribute_name
             for attribute_name in cls.__dict__.keys()
-            if hasattr(getattr(BDESE, attribute_name), "field")
-            and type(getattr(BDESE, attribute_name).field) == CategoryField
+            if hasattr(getattr(cls, attribute_name), "field")
+            and type(getattr(cls, attribute_name).field) == CategoryField
         ]
 
+class BDESE_300(AbstractBDESE):
     # Décret no 2022-678 du 26 avril 2022
     # 1° Investissements
     # 1° A - Investissement social
@@ -1681,6 +1686,15 @@ class BDESE(models.Model):
     #        i-Identification des postes d'émissions directes de gaz à effet de serre
     postes_emissions_directes_gaz_effet_de_serre = models.TextField(
         verbose_name="Bilan des émissions de gaz à effet de serre prévu par l'article L. 229-25 du code de l'environnement ou bilan simplifié prévu par l'article 244 de la loi n° 2020-1721 du 29 décembre 2020 de finances pour 2021 pour les entreprises tenues d'établir ces différents bilans",
+        null=True,
+        blank=True,
+    )
+
+
+class BDESE_50_300(AbstractBDESE):
+
+    capitaux_propres = models.IntegerField(
+        verbose_name="Capitaux propres de l'entreprise",
         null=True,
         blank=True,
     )

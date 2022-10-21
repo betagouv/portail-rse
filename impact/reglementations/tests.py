@@ -1,5 +1,6 @@
 from django.test import Client
 
+
 def test_index():
     response = Client().get("/reglementations")
 
