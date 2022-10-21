@@ -80,8 +80,8 @@ class Reglementation:
     STATUS_EN_COURS = "en cours"
     STATUS_NON_SOUMIS = "non soumis"
 
-    status: str
-    status_detail: str
+    status: str | None = None
+    status_detail: str | None = None
 
 
 @dataclass
@@ -187,13 +187,28 @@ def reglementations(request):
     if request.user and request.user.is_authenticated:
         return _reglementations_connecte(request)
     form = EligibiliteForm(request.GET)
-    if form.is_valid():
+    if form and form.is_valid():
         siren = form.cleaned_data["siren"]
         request.session["siren"] = siren
         entreprise, _ = Entreprise.objects.get_or_create(siren=siren)
         entreprise.effectif = form.cleaned_data["effectif"]
         entreprise.accord = form.cleaned_data["accord"]
         entreprise.raison_sociale = form.cleaned_data["raison_sociale"]
+    else:
+        return render(
+            request,
+            "public/reglementations.html",
+            {
+                "entreprises": [
+                    {
+                        "entreprise": None,
+                        "bdese": BDESEReglementation(),
+                        "index_egapro": IndexEgaproReglementation(),
+                    },
+                ]
+            },
+        )
+
     return render(
         request,
         "public/reglementations.html",
