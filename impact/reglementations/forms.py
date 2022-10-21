@@ -1,7 +1,7 @@
 from django import forms
 
 from public.forms import DsfrForm
-from .models import BDESE_300
+from .models import BDESE_50_300, BDESE_300
 
 
 class CategoryJSONWidget(forms.MultiWidget):
@@ -17,7 +17,9 @@ class CategoryJSONWidget(forms.MultiWidget):
         return [value.get(category) for category in self.categories]
 
 
-def bdese_form_factory(categories_professionnelles, fetched_data=None, *args, **kwargs):
+def bdese_form_factory(
+    categories_professionnelles, instance, fetched_data=None, *args, **kwargs
+):
     class CategoryMultiValueField(forms.MultiValueField):
         widget = CategoryJSONWidget
 
@@ -53,7 +55,7 @@ def bdese_form_factory(categories_professionnelles, fetched_data=None, *args, **
 
     class BDESEForm(forms.ModelForm, DsfrForm):
         class Meta:
-            model = BDESE_300
+            model = instance.__class__
             exclude = ["annee", "entreprise"]
             field_classes = {
                 category_field: CategoryMultiValueField
@@ -68,7 +70,10 @@ def bdese_form_factory(categories_professionnelles, fetched_data=None, *args, **
             super().__init__(*args, **kwargs)
             if fetched_data:
                 for field in fetched_data:
-                    self.fields[field].help_text += " (valeur extraite de Index EgaPro)"
-                    self.fields[field].disabled = True
+                    if field in self.fields:
+                        self.fields[
+                            field
+                        ].help_text += " (valeur extraite de Index EgaPro)"
+                        self.fields[field].disabled = True
 
     return BDESEForm(fetched_data, *args, **kwargs)

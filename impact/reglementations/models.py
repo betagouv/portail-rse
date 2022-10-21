@@ -62,6 +62,7 @@ class AbstractBDESE(models.Model):
             and type(getattr(cls, attribute_name).field) == CategoryField
         ]
 
+
 class BDESE_300(AbstractBDESE):
     # Décret no 2022-678 du 26 avril 2022
     # 1° Investissements

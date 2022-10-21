@@ -11,7 +11,7 @@ from weasyprint import HTML
 from entreprises.models import Entreprise
 from public.forms import EligibiliteForm
 from .forms import bdese_form_factory
-from .models import BDESE_300, categories_default
+from .models import BDESE_300, BDESE_50_300, categories_default
 
 
 @dataclass
@@ -225,11 +225,13 @@ def bdese(request, siren):
     entreprise = Entreprise.objects.get(siren=siren)
     if request.user not in entreprise.users.all():
         raise PermissionDenied
-    bdese, created = BDESE_300.objects.get_or_create(entreprise=entreprise)
+    bdese = _bdese(entreprise)
     categories_professionnelles = categories_default()
     if request.method == "POST":
         form = bdese_form_factory(
-            categories_professionnelles, data=request.POST, instance=bdese
+            categories_professionnelles,
+            bdese,
+            data=request.POST,
         )
         if form.is_valid():
             bdese = form.save()
@@ -238,6 +240,18 @@ def bdese(request, siren):
     else:
         fetched_data = get_bdese_data_from_index_egapro(siren, 2021)
         form = bdese_form_factory(
-            categories_professionnelles, fetched_data=fetched_data, instance=bdese
+            categories_professionnelles, bdese, fetched_data=fetched_data
         )
-    return render(request, "reglementations/bdese.html", {"form": form, "siren": siren})
+    if bdese.__class__ == BDESE_300:
+        template_path = "reglementations/bdese.html"
+    else:
+        template_path = "reglementations/bdese_50_300.html"
+    return render(request, template_path, {"form": form, "siren": siren})
+
+
+def _bdese(entreprise):
+    if entreprise.effectif in ("grand", "sup500"):
+        bdese, _ = BDESE_300.objects.get_or_create(entreprise=entreprise)
+    elif entreprise.effectif == "moyen":
+        bdese, _ = BDESE_50_300.objects.get_or_create(entreprise=entreprise)
+    return bdese
