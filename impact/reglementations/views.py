@@ -142,33 +142,20 @@ def is_index_egapro_updated(siren):
 
 def reglementations(request):
     if request.user and request.user.is_authenticated:
-        return _reglementations_connecte(request)
-
-    form = EligibiliteForm(request.GET)
-    if "siren" in form.data:
-        entreprise = Entreprise.objects.filter(siren=form.data["siren"])
-        if entreprise:
-            form = EligibiliteForm(request.GET, instance=entreprise[0])
-    if form and form.is_valid():
-        siren = form.cleaned_data["siren"]
-        request.session["siren"] = siren
-        entreprise = form.save()
+        entreprises = request.user.entreprise_set.all()
     else:
-        return render(
-            request,
-            "reglementations/reglementations.html",
-            {
-                "entreprises": [
-                    {
-                        "entreprise": None,
-                        "reglementations": [
-                            BDESEReglementation(),
-                            IndexEgaproReglementation(),
-                        ],
-                    },
-                ]
-            },
-        )
+        form = EligibiliteForm(request.GET)
+        if "siren" in form.data:
+            entreprise = Entreprise.objects.filter(siren=form.data["siren"])
+            if entreprise:
+                form = EligibiliteForm(request.GET, instance=entreprise[0])
+        if form and form.is_valid():
+            siren = form.cleaned_data["siren"]
+            request.session["siren"] = siren
+            entreprise = form.save()
+        else:
+            entreprise = None
+        entreprises = [entreprise]
 
     return render(
         request,
@@ -178,27 +165,8 @@ def reglementations(request):
                 {
                     "entreprise": entreprise,
                     "reglementations": [
-                        BDESEReglementation.calculate(entreprise),
-                        IndexEgaproReglementation.calculate(entreprise),
-                    ],
-                },
-            ]
-        },
-    )
-
-
-def _reglementations_connecte(request):
-    entreprises = request.user.entreprise_set.all()
-    return render(
-        request,
-        "reglementations/reglementations.html",
-        {
-            "entreprises": [
-                {
-                    "entreprise": entreprise,
-                    "reglementations": [
-                        BDESEReglementation.calculate(entreprise),
-                        IndexEgaproReglementation.calculate(entreprise),
+                        BDESEReglementation.calculate(entreprise) if entreprise else BDESEReglementation(),
+                        IndexEgaproReglementation.calculate(entreprise) if entreprise else IndexEgaproReglementation(),
                     ],
                 }
                 for entreprise in entreprises
