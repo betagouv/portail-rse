@@ -1,3 +1,7 @@
-from django.test import TestCase
+from django.test import Client
 
-# Create your tests here.
+def test_index():
+    response = Client().get("/reglementations")
+
+    assert response.status_code == 200
+    assert "<!-- page reglementations -->" in str(response.content)
