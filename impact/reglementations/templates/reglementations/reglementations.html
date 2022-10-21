@@ -22,19 +22,15 @@
                 <div class="fr-card__body">
                     <div class="fr-card__content">
                         <h3 class="fr-card__title">
-                            <a href="#">Base de données économiques, sociales et environnementales (BDESE)</a>
+                            <a href="#">{{ reglementation.title }}</a>
                         </h3>
-                        <p class="fr-card__desc">
-                            L'employeur d'au moins 50 salariés doit mettre à disposition du comité économique et social (CSE) ou des représentants du personnel une base de données économiques, sociales et environnementales (BDESE).
-                            La BDESE rassemble les informations sur les grandes orientations économiques et sociales de l'entreprise.
-                            Elle comprend des mentions obligatoires qui varient selon l'effectif de l'entreprise.
-                        </p>
+                        <p class="fr-card__desc">{{ reglementation.description }}</p>
                         {% include "snippets/reglementation_status.html" %}
                     </div>
                     <div class="fr-card__footer">
                         <ul class="fr-btns-group fr-btns-group--inline-reverse fr-btns-group--inline-lg">
                             <li>
-                                <a class="fr-btn fr-btn--secondary" href="https://entreprendre.service-public.fr/vosdroits/F32193" target="_blank" rel="noopener">
+                                <a class="fr-btn fr-btn--secondary" href="{{ reglementation.more_info_url }}" target="_blank" rel="noopener">
                                     En savoir plus
                                 </a>
                             </li>
@@ -66,22 +62,22 @@
                 <div class="fr-card__body">
                     <div class="fr-card__content">
                         <h3 class="fr-card__title">
-                            <a href="#">Index de l'égalité professionnelle</a>
+                            <a href="#">{{ reglementation.title }}</a>
                         </h3>
-                        <p class="fr-card__desc">Afin de lutter contre les inégalités salariales entre les femmes et les hommes, certaines entreprises doivent calculer et transmettre un index mesurant l’égalité salariale au sein de leur structure.</p>
+                        <p class="fr-card__desc">{{ reglementation.description }}</p>
                         {% include "snippets/reglementation_status.html" %}
                     </div>
                     <div class="fr-card__footer">
                         <ul class="fr-btns-group fr-btns-group--inline-reverse fr-btns-group--inline-lg">
                             <li>
-                                <a class="fr-btn fr-btn--secondary" href="https://www.economie.gouv.fr/entreprises/index-egalite-professionnelle-obligatoire" target="_blank" rel="noopener">
+                                <a class="fr-btn fr-btn--secondary" href="{{ reglementation.more_info_url }}" target="_blank" rel="noopener">
                                     En savoir plus
                                 </a>
                             </li>
-                            {% if reglementation.status != reglementation.STATUS_NON_SOUMIS %}
+                            {% if reglementation.primary_action %}
                             <li>
-                                <a class="fr-btn" href="https://index-egapro.travail.gouv.fr/" target="_blank" rel="noopener">
-                                    Calculer et déclarer mon index sur Index Egapro
+                                <a class="fr-btn" href="{{ reglementation.external_action.url }}" {% if reglementation.primary_action.external %}target="_blank" rel="noopener"{% endif %}>
+                                    {{ reglementation.primary_action.title }}
                                 </a>
                             </li>
                             {% endif %}

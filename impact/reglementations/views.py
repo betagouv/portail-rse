@@ -18,6 +18,7 @@ from .models import BDESE, categories_default
 class ReglementationAction:
     url: str
     title: str
+    external: bool = False
 
 
 @dataclass
@@ -37,6 +38,12 @@ class BDESEReglementation(Reglementation):
     TYPE_INFERIEUR_300 = 2
     TYPE_INFERIEUR_500 = 3
     TYPE_SUPERIEUR_500 = 4
+
+    title = "Base de données économiques, sociales et environnementales (BDESE)"
+    description = """L'employeur d'au moins 50 salariés doit mettre à disposition du comité économique et social (CSE) ou des représentants du personnel une base de données économiques, sociales et environnementales (BDESE).
+                    La BDESE rassemble les informations sur les grandes orientations économiques et sociales de l'entreprise.
+                    Elle comprend des mentions obligatoires qui varient selon l'effectif de l'entreprise."""
+    more_info_url = "https://entreprendre.service-public.fr/vosdroits/F32193"
 
     primary_action: ReglementationAction | None = None
     secondary_actions: list[ReglementationAction] = field(default_factory=list)
@@ -100,6 +107,15 @@ class BDESEReglementation(Reglementation):
 
 @dataclass
 class IndexEgaproReglementation(Reglementation):
+    title = "Index de l'égalité professionnelle"
+    description = "Afin de lutter contre les inégalités salariales entre les femmes et les hommes, certaines entreprises doivent calculer et transmettre un index mesurant l’égalité salariale au sein de leur structure."
+    more_info_url = "https://www.economie.gouv.fr/entreprises/index-egalite-professionnelle-obligatoire"
+    primary_action = ReglementationAction(
+        "https://index-egapro.travail.gouv.fr/",
+        "Calculer et déclarer mon index sur Index Egapro",
+        external=True,
+    )
+
     @classmethod
     def calculate(cls, entreprise: Entreprise) -> "IndexEgaproReglementations":
         if entreprise.effectif == "petit":
