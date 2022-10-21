@@ -193,7 +193,7 @@ def result(request, siren):
     pdf_file = HTML(string=pdf_html).write_pdf()
 
     response = HttpResponse(pdf_file, content_type="application/pdf")
-    response["Content-Disposition"] = 'filename="mypdf.pdf"'
+    response["Content-Disposition"] = 'filename="bdese.pdf"'
     return response
 
 
