@@ -91,8 +91,7 @@ class BDESEReglementation(Reglementation):
                 )
             secondary_actions = [
                 ReglementationAction(
-                    reverse_lazy("result")
-                    + f"?raison_sociale={ entreprise.raison_sociale }&bdese={ bdese_type }",
+                    reverse_lazy("result", args=[entreprise.siren]),
                     "Télécharger le pdf",
                 ),
             ]
@@ -175,8 +174,9 @@ def reglementations(request):
     )
 
 
-def result(request):
-    bdese_type = int(request.GET["bdese"])
+def result(request, siren):
+    entreprise = Entreprise.objects.get(siren=siren)
+    bdese_type = BDESEReglementation.calculate(entreprise).bdese_type
     if bdese_type == BDESEReglementation.TYPE_AVEC_ACCORD:
         bdese = "REGLEMENTATION AVEC ACCORD"
     elif bdese_type == BDESEReglementation.TYPE_INFERIEUR_300:
@@ -186,7 +186,7 @@ def result(request):
     elif bdese_type == BDESEReglementation.TYPE_SUPERIEUR_500:
         bdese = "REGLEMENTATION PLUS DE 500 SALARIES"
     context = {
-        "raison_sociale": request.GET["raison_sociale"],
+        "raison_sociale": entreprise.raison_sociale,
         "bdese": bdese,
     }
     pdf_html = render_to_string("reglementations/result_pdf.html", context)
