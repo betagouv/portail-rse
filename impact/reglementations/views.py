@@ -250,8 +250,12 @@ def bdese(request, siren):
 
 
 def _bdese(entreprise):
-    if entreprise.effectif in ("grand", "sup500"):
+    reglementation = BDESEReglementation.calculate(entreprise)
+    if reglementation.bdese_type in (
+        BDESEReglementation.TYPE_INFERIEUR_500,
+        BDESEReglementation.TYPE_SUPERIEUR_500,
+    ):
         bdese, _ = BDESE_300.objects.get_or_create(entreprise=entreprise)
-    elif entreprise.effectif == "moyen":
+    else:
         bdese, _ = BDESE_50_300.objects.get_or_create(entreprise=entreprise)
     return bdese
