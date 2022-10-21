@@ -85,14 +85,6 @@ class Reglementation:
 
 
 @dataclass
-class _Entreprise:
-    effectif: str
-    accord: bool
-    raison_sociale: str
-    siren: str
-
-
-@dataclass
 class BDESEReglementation(Reglementation):
     TYPE_AVEC_ACCORD = 1
     TYPE_INFERIEUR_300 = 2
@@ -104,7 +96,7 @@ class BDESEReglementation(Reglementation):
     bdese_type: int | None = None
 
     @classmethod
-    def calculate(cls, entreprise: _Entreprise) -> "BDESEReglementation":
+    def calculate(cls, entreprise: Entreprise) -> "BDESEReglementation":
         if entreprise.effectif == "petit":
             status = cls.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
@@ -160,7 +152,7 @@ class BDESEReglementation(Reglementation):
 @dataclass
 class IndexEgaproReglementation(Reglementation):
     @classmethod
-    def calculate(cls, entreprise: _Entreprise) -> "IndexEgaproReglementations":
+    def calculate(cls, entreprise: Entreprise) -> "IndexEgaproReglementations":
         if entreprise.effectif == "petit":
             status = cls.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
