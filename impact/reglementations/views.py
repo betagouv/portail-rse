@@ -161,8 +161,10 @@ def reglementations(request):
                 "entreprises": [
                     {
                         "entreprise": None,
-                        "bdese": BDESEReglementation(),
-                        "index_egapro": IndexEgaproReglementation(),
+                        "reglementations": [
+                            BDESEReglementation(),
+                            IndexEgaproReglementation(),
+                        ],
                     },
                 ]
             },
@@ -175,8 +177,10 @@ def reglementations(request):
             "entreprises": [
                 {
                     "entreprise": entreprise,
-                    "bdese": BDESEReglementation.calculate(entreprise),
-                    "index_egapro": IndexEgaproReglementation.calculate(entreprise),
+                    "reglementations": [
+                        BDESEReglementation.calculate(entreprise),
+                        IndexEgaproReglementation.calculate(entreprise),
+                    ],
                 },
             ]
         },
@@ -192,8 +196,10 @@ def _reglementations_connecte(request):
             "entreprises": [
                 {
                     "entreprise": entreprise,
-                    "bdese": BDESEReglementation.calculate(entreprise),
-                    "index_egapro": IndexEgaproReglementation.calculate(entreprise),
+                    "reglementations": [
+                        BDESEReglementation.calculate(entreprise),
+                        IndexEgaproReglementation.calculate(entreprise),
+                    ],
                 }
                 for entreprise in entreprises
             ]
