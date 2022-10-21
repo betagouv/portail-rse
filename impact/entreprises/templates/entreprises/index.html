@@ -15,7 +15,7 @@
         <ul>
             <li>SIREN : {{ entreprise.siren }}</li>
             <li>effectif : {{ entreprise.effectif }}</li>
-            <li>accord d'entreprise : {{ entreprise.accord | translate_boolean }}</li>
+            <li>accord d'entreprise : {{ entreprise.bdese_accord | translate_boolean }}</li>
         </ul>
         {% endfor %}
     {% endif %}

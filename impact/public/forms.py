@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import BDESE
+from .models import BDESE, Entreprise
 
 
 class DsfrForm(forms.Form):
@@ -23,25 +23,13 @@ class SirenForm(DsfrForm):
     )
 
 
-class EligibiliteForm(DsfrForm):
-    effectif = forms.ChoiceField(
-        label="Votre effectif total",
-        choices=(
-            ("petit", "moins de 50"),
-            ("moyen", "entre 50 et 300"),
-            ("grand", "entre 301 et 499"),
-            ("sup500", "500 et plus"),
-        ),
-        help_text="Saisissez le nombre de salariés",
-        required=True,
-    )
-    accord = forms.BooleanField(
-        label="Avez-vous un accord collectif d'entreprise concernant la BDESE ?",
-        help_text="",
-        required=False,
-    )
-    raison_sociale = forms.CharField()
-    siren = forms.CharField()
+class EligibiliteForm(DsfrForm, forms.ModelForm):
+    class Meta:
+        model = Entreprise
+        fields = ["effectif", "bdese_accord", "raison_sociale", "siren"]
+        labels = {
+            "bdese_accord": "Avez-vous un accord collectif d'entreprise concernant la BDESE ?"
+        }
 
 
 class CategoryJSONWidget(forms.MultiWidget):

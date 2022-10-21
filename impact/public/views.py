@@ -101,7 +101,7 @@ class BDESEReglementation(Reglementation):
             status = cls.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
             return cls(status, status_detail)
-        elif entreprise.accord:
+        elif entreprise.bdese_accord:
             status = cls.STATUS_A_ACTUALISER
             status_detail = "Vous êtes soumis à cette réglementation. Vous avez un accord d'entreprise spécifique. Veuillez vous y référer."
             primary_action = ReglementationAction(
@@ -125,13 +125,15 @@ class BDESEReglementation(Reglementation):
                 status = cls.STATUS_EN_COURS
                 status_detail = "Vous êtes soumis à cette réglementation. Vous avez démarré le remplissage de votre BDESE sur la plateforme"
                 primary_action = ReglementationAction(
-                    reverse_lazy("bdese", args=[entreprise.siren]), "Reprendre l'actualisation de ma BDESE"
+                    reverse_lazy("bdese", args=[entreprise.siren]),
+                    "Reprendre l'actualisation de ma BDESE",
                 )
             else:
                 status = cls.STATUS_A_ACTUALISER
                 status_detail = "Vous êtes soumis à cette réglementation. Nous allons vous aider à la remplir."
                 primary_action = ReglementationAction(
-                    reverse_lazy("bdese", args=[entreprise.siren]), "Actualiser ma BDESE"
+                    reverse_lazy("bdese", args=[entreprise.siren]),
+                    "Actualiser ma BDESE",
                 )
             secondary_actions = [
                 ReglementationAction(
@@ -178,14 +180,16 @@ def is_index_egapro_updated(siren):
 def reglementations(request):
     if request.user and request.user.is_authenticated:
         return _reglementations_connecte(request)
+
     form = EligibiliteForm(request.GET)
+    if "siren" in form.data:
+        entreprise = Entreprise.objects.filter(siren=form.data["siren"])
+        if entreprise:
+            form = EligibiliteForm(request.GET, instance=entreprise[0])
     if form and form.is_valid():
         siren = form.cleaned_data["siren"]
         request.session["siren"] = siren
-        entreprise, _ = Entreprise.objects.get_or_create(siren=siren)
-        entreprise.effectif = form.cleaned_data["effectif"]
-        entreprise.accord = form.cleaned_data["accord"]
-        entreprise.raison_sociale = form.cleaned_data["raison_sociale"]
+        entreprise = form.save()
     else:
         return render(
             request,

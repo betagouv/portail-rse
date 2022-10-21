@@ -4,10 +4,22 @@ from django.db import models
 
 
 class Entreprise(models.Model):
+    EFFECTIF_CHOICES = [
+        ("petit", "moins de 50"),
+        ("moyen", "entre 50 et 300"),
+        ("grand", "entre 301 et 499"),
+        ("sup500", "500 et plus"),
+    ]
+
     siren = models.CharField(max_length=9, unique=True)
     users = models.ManyToManyField(settings.AUTH_USER_MODEL)
-    effectif = models.CharField(max_length=9, default="grand")
-    accord = models.BooleanField(default=False)
+    effectif = models.CharField(
+        max_length=9,
+        choices=EFFECTIF_CHOICES,
+        default="grand",
+        help_text="Saisissez le nombre de salariés",
+    )
+    bdese_accord = models.BooleanField(default=False)
     raison_sociale = models.CharField(max_length=50, default="")
 
     def __str__(self):
@@ -550,7 +562,7 @@ class BDESE(models.Model):
         help_text="Préciser, le cas échéant, les conditions restrictives.",
         null=True,
         blank=True,
-    ) # TODO: à transformer en CategoryField(TextField) ?
+    )  # TODO: à transformer en CategoryField(TextField) ?
     # 1° A - f) vi - Absentéisme
     # Possibilités de comptabiliser tous les indicateurs de la rubrique absentéisme, au choix, en journées, 1/2 journées ou heures.
     UNITE_ABSENTEISME_CHOICES = [
@@ -580,10 +592,10 @@ class BDESE(models.Model):
         blank=True,
     )
     # TODO: par categorie, par duree
-    #nombre_unites_absence_duree_1 = models.IntegerField(
+    # nombre_unites_absence_duree_1 = models.IntegerField(
     #    verbose_name="Répartition des absences pour maladie selon leur durée",
     #    help_text="Les tranches choisies sont laissées au choix des entreprises.",
-    #)
+    # )
     #     nombre_unites_absence_duree_2 = models.IntegerField(
     #         verbose_name="Répartition des absences pour maladie selon leur durée",
     #         help_text="Les tranches choisies sont laissées au choix des entreprises.",
@@ -1311,7 +1323,6 @@ class BDESE(models.Model):
         blank=True,
     )
 
-
     #       i. Montant des rémunérations
     rapport_masse_salariale_effectif_mensuel = CategoryField(
         verbose_name="Rapport entre la masse salariale annuelle et l'effectif mensuel moyen",
@@ -1335,8 +1346,15 @@ class BDESE(models.Model):
         null=True,
         blank=True,
     )
-    remunerations = CategoryField( #TODO: discuter des tranches
-        categories=["- de 1.000", "1.000-2.000", "2.000-3.000", "3.000-4.000", "4.000-5.000", "5.000 et plus"],
+    remunerations = CategoryField(  # TODO: discuter des tranches
+        categories=[
+            "- de 1.000",
+            "1.000-2.000",
+            "2.000-3.000",
+            "3.000-4.000",
+            "4.000-5.000",
+            "5.000 et plus",
+        ],
         verbose_name="Grille des rémunérations",
         null=True,
         blank=True,
@@ -1371,7 +1389,7 @@ class BDESE(models.Model):
         verbose_name="Pourcentage des ouvriers et employés payés au mois sur la base de l'horaire affiché",
         null=True,
         blank=True,
-    ) # TODO: remplacer le pourcentage par une valeur absolue ?
+    )  # TODO: remplacer le pourcentage par une valeur absolue ?
 
     #       iv. Charge salariale globale
     charge_salariale_globale = models.IntegerField(
@@ -1495,7 +1513,14 @@ class BDESE(models.Model):
         blank=True,
     )
     contributions_autres_depenses = CategoryField(
-        categories=["logement", "transport", "restauration", "loisirs", "vacances", "divers"],
+        categories=[
+            "logement",
+            "transport",
+            "restauration",
+            "loisirs",
+            "vacances",
+            "divers",
+        ],
         verbose_name="Autres dépenses directement supportées par l'entreprise",
         help_text="Dépenses consolidées de l'entreprise.",
         null=True,
@@ -1593,7 +1618,7 @@ class BDESE(models.Model):
         verbose_name="L'affectation des bénéfices réalisés",
         null=True,
         blank=True,
-    ) # TODO: à remplacer par un CategoryField et les affectations possibles ?
+    )  # TODO: à remplacer par un CategoryField et les affectations possibles ?
 
     # 8° Partenariats
     #   A-Partenariats conclus pour produire des services ou des produits pour une autre entreprise
