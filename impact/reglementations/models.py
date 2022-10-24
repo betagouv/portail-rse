@@ -51,7 +51,7 @@ class AbstractBDESE(models.Model):
         abstract = True
 
     def __str__(self):
-        return f"{self.siren} {self.raison_sociale}"
+        return f"{self.entreprise}"
 
     @classmethod
     def category_fields(cls):
