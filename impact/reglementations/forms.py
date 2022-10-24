@@ -59,7 +59,7 @@ def bdese_form_factory(
             exclude = ["annee", "entreprise"]
             field_classes = {
                 category_field: CategoryMultiValueField
-                for category_field in BDESE_300.category_fields()
+                for category_field in instance.__class__.category_fields()
             }
 
         def __init__(self, fetched_data=None, *args, **kwargs):
