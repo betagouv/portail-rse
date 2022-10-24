@@ -125,7 +125,7 @@ class IndexEgaproReglementation(Reglementation):
         if entreprise.effectif == "petit":
             status = cls.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
-        elif is_index_egapro_updated(entreprise.siren):
+        elif is_index_egapro_updated(entreprise):
             status = cls.STATUS_ACTUALISE
             status_detail = "Vous êtes soumis à cette réglementation. Vous avez rempli vos obligations d'après les données disponibles sur Index Egapro."
         else:
@@ -134,8 +134,8 @@ class IndexEgaproReglementation(Reglementation):
         return cls(status, status_detail)
 
 
-def is_index_egapro_updated(siren):
-    url = f"https://index-egapro.travail.gouv.fr/api/search?q={siren}"
+def is_index_egapro_updated(entreprise: Entreprise) -> bool:
+    url = f"https://index-egapro.travail.gouv.fr/api/search?q={entreprise.siren}"
     response = requests.get(url)
     if response.status_code == 200:
         if index_egapro_data := response.json()["data"]:
