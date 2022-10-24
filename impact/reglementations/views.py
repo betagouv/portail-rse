@@ -252,7 +252,7 @@ def bdese(request, siren):
             categories_professionnelles, bdese, fetched_data=fetched_data
         )
     if bdese.__class__ == BDESE_300:
-        template_path = "reglementations/bdese.html"
+        template_path = "reglementations/bdese_300.html"
     else:
         template_path = "reglementations/bdese_50_300.html"
     return render(request, template_path, {"form": form, "siren": siren})
