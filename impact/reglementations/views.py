@@ -225,7 +225,7 @@ def bdese(request, siren):
     entreprise = Entreprise.objects.get(siren=siren)
     if request.user not in entreprise.users.all():
         raise PermissionDenied
-    bdese = _bdese(entreprise)
+    bdese = _get_or_create_bdese(entreprise)
     categories_professionnelles = categories_default()
     if request.method == "POST":
         form = bdese_form_factory(
@@ -249,7 +249,7 @@ def bdese(request, siren):
     return render(request, template_path, {"form": form, "siren": siren})
 
 
-def _bdese(entreprise):
+def _get_or_create_bdese(entreprise):
     reglementation = BDESEReglementation.calculate(entreprise)
     if reglementation.bdese_type in (
         BDESEReglementation.TYPE_INFERIEUR_500,
