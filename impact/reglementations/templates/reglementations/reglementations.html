@@ -1,28 +1,26 @@
 {% extends "public/base.html" %}
 
 {% block content %}
+<!-- page reglementations -->
 
-{% if not entreprises %}
 <div class="fr-container fr-my-8w">
-    Aucune réglementation à remplir car aucune entreprise n'est associée à votre compte.
-</div>
+{% if not entreprises %}
+    <p>Aucune réglementation à remplir car aucune entreprise n'est associée à votre compte.</p>
 {% else %}
+    <div class="fr-alert fr-alert--warning">
+        <h3 class="fr-alert__title">La liste des réglementations ci-dessous n'est pas exhaustive</h3>
+        <p>La liste des réglementations actuellement prises en compte sur la plateforme est susceptible d'évoluer</p>
+    </div>
+
     {% for elem in entreprises %}
         {% with entreprise=elem.entreprise %}
-        <div class="fr-container fr-my-8w">
-            <h2>{{ entreprise.raison_sociale }}</h2>
-            <div class="fr-alert fr-alert--warning">
-                <h3 class="fr-alert__title">La liste des réglementations ci-dessous n'est pas exhaustive</h3>
-                <p>La liste des réglementations actuellement prises en compte sur la plateforme est susceptible d'évoluer</p>
-            </div>
-
+            {% if entreprise.raison_sociale %}<h2 class="fr-mt-4w">{{ entreprise.raison_sociale }}</h2>{% endif %}
             {% for reglementation in elem.reglementations %}
                 {% include "snippets/reglementation_card.html" with reglementation=reglementation %}
             {% endfor %}
-
-        </div>
         {% endwith %}
     {% endfor %}
 {% endif %}
-<!-- page reglementations -->
+</div>
+
 {% endblock %}
