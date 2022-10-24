@@ -247,8 +247,6 @@ def bdese(request, siren):
         )
         if form.is_valid():
             bdese = form.save()
-        else:
-            print(form.errors)
     else:
         fetched_data = get_bdese_data_from_index_egapro(siren, 2021)
         form = bdese_form_factory(
