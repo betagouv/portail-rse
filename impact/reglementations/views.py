@@ -209,11 +209,11 @@ def bdese_result(request, siren):
     return response
 
 
-def get_bdese_data_from_index_egapro(siren, year):
-    url = f"https://index-egapro.travail.gouv.fr/api/declarations/{siren}"
+def get_bdese_data_from_index_egapro(entreprise: Entreprise, year: int) -> dict:
+    bdese_data_from_index_egapro = {}
+    url = f"https://index-egapro.travail.gouv.fr/api/declarations/{entreprise.siren}"
     response = requests.get(url)
     if response.status_code == 200:
-        bdese_data_from_index_egapro = {}
         for declaration in response.json():
             if declaration["year"] == year:
                 index_egapro_data = declaration["data"]
@@ -229,7 +229,7 @@ def get_bdese_data_from_index_egapro(siren, year):
                         else 10 - int(indicateur_hautes_remunerations["résultat"])
                     }
                 break
-        return bdese_data_from_index_egapro
+    return bdese_data_from_index_egapro
 
 
 @login_required
@@ -248,7 +248,7 @@ def bdese(request, siren):
         if form.is_valid():
             bdese = form.save()
     else:
-        fetched_data = get_bdese_data_from_index_egapro(siren, 2021)
+        fetched_data = get_bdese_data_from_index_egapro(entreprise, 2021)
         form = bdese_form_factory(
             categories_professionnelles, bdese, fetched_data=fetched_data
         )
@@ -259,7 +259,7 @@ def bdese(request, siren):
     return render(request, template_path, {"form": form, "siren": siren})
 
 
-def _get_or_create_bdese(entreprise):
+def _get_or_create_bdese(entreprise: Entreprise) -> BDESE_300 | BDESE_50_300:
     reglementation = BDESEReglementation.calculate(entreprise)
     if reglementation.bdese_type in (
         BDESEReglementation.TYPE_INFERIEUR_500,
