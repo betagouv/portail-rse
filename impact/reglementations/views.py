@@ -183,8 +183,11 @@ def reglementations(request):
     )
 
 
+@login_required
 def bdese_result(request, siren):
     entreprise = Entreprise.objects.get(siren=siren)
+    if request.user not in entreprise.users.all():
+        raise PermissionDenied
     bdese_type = BDESEReglementation.calculate(entreprise).bdese_type
     if bdese_type == BDESEReglementation.TYPE_AVEC_ACCORD:
         bdese = "REGLEMENTATION AVEC ACCORD"
