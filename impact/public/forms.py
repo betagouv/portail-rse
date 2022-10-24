@@ -30,5 +30,3 @@ class EligibiliteForm(DsfrForm, forms.ModelForm):
         labels = {
             "bdese_accord": "Avez-vous un accord collectif d'entreprise concernant la BDESE ?"
         }
-
-

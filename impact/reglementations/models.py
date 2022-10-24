@@ -64,6 +64,10 @@ class AbstractBDESE(models.Model):
 
 
 class BDESE_300(AbstractBDESE):
+    class Meta:
+        verbose_name = "BDESE plus de 300 salariés"
+        verbose_name_plural = "BDESE plus de 300 salariés"
+
     # Décret no 2022-678 du 26 avril 2022
     # 1° Investissements
     # 1° A - Investissement social
@@ -1693,6 +1697,9 @@ class BDESE_300(AbstractBDESE):
 
 
 class BDESE_50_300(AbstractBDESE):
+    class Meta:
+        verbose_name = "BDESE 50 à 300 salariés"
+        verbose_name_plural = "BDESE 50 à 300 salariés"
 
     capitaux_propres = models.IntegerField(
         verbose_name="Capitaux propres de l'entreprise",
