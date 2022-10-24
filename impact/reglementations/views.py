@@ -71,11 +71,16 @@ class BDESEReglementation(Reglementation):
         else:
             if entreprise.effectif == "moyen":
                 bdese_type = cls.TYPE_INFERIEUR_300
+                bdese_class = BDESE_50_300
             elif entreprise.effectif == "grand":
                 bdese_type = cls.TYPE_INFERIEUR_500
+                bdese_class = BDESE_300
             else:
                 bdese_type = cls.TYPE_SUPERIEUR_500
-            if BDESE_300.objects.filter(entreprise__siren=entreprise.siren, annee=2022):
+                bdese_class = BDESE_300
+            if bdese_class.objects.filter(
+                entreprise__siren=entreprise.siren, annee=2022
+            ):
                 status = cls.STATUS_EN_COURS
                 status_detail = "Vous êtes soumis à cette réglementation. Vous avez démarré le remplissage de votre BDESE sur la plateforme"
                 primary_action = ReglementationAction(
@@ -164,8 +169,12 @@ def reglementations(request):
                 {
                     "entreprise": entreprise,
                     "reglementations": [
-                        BDESEReglementation.calculate(entreprise) if entreprise else BDESEReglementation(),
-                        IndexEgaproReglementation.calculate(entreprise) if entreprise else IndexEgaproReglementation(),
+                        BDESEReglementation.calculate(entreprise)
+                        if entreprise
+                        else BDESEReglementation(),
+                        IndexEgaproReglementation.calculate(entreprise)
+                        if entreprise
+                        else IndexEgaproReglementation(),
                     ],
                 }
                 for entreprise in entreprises
