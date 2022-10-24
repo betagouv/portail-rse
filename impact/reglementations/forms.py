@@ -76,4 +76,4 @@ def bdese_form_factory(
                         ].help_text += " (valeur extraite de Index EgaPro)"
                         self.fields[field].disabled = True
 
-    return BDESEForm(fetched_data, *args, **kwargs)
+    return BDESEForm(fetched_data, instance=instance, *args, **kwargs)
