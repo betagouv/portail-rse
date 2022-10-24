@@ -217,17 +217,17 @@ def get_bdese_data_from_index_egapro(siren, year):
         for declaration in response.json():
             if declaration["year"] == year:
                 index_egapro_data = declaration["data"]
-                indicateur_hautes_remunerations = index_egapro_data["indicateurs"][
-                    "hautes_rémunérations"
-                ]
-                bdese_data_from_index_egapro = {
-                    "nombre_femmes_plus_hautes_remunerations": int(
-                        indicateur_hautes_remunerations["résultat"]
-                    )
-                    if indicateur_hautes_remunerations["population_favorable"]
-                    == "hommes"
-                    else 10 - int(indicateur_hautes_remunerations["résultat"])
-                }
+                if indicateur_hautes_remunerations := index_egapro_data.get(
+                    "indicateurs", {}
+                ).get("hautes_rémunérations"):
+                    bdese_data_from_index_egapro = {
+                        "nombre_femmes_plus_hautes_remunerations": int(
+                            indicateur_hautes_remunerations["résultat"]
+                        )
+                        if indicateur_hautes_remunerations["population_favorable"]
+                        == "hommes"
+                        else 10 - int(indicateur_hautes_remunerations["résultat"])
+                    }
                 break
         return bdese_data_from_index_egapro
 
