@@ -145,21 +145,22 @@ def is_index_egapro_updated(entreprise: Entreprise) -> bool:
 
 
 def reglementations(request):
-    if request.user and request.user.is_authenticated:
-        entreprises = request.user.entreprise_set.all()
-    else:
-        form = EligibiliteForm(request.GET)
-        if "siren" in form.data:
-            entreprise = Entreprise.objects.filter(siren=form.data["siren"])
-            if entreprise:
-                form = EligibiliteForm(request.GET, instance=entreprise[0])
-        if form and form.is_valid():
-            siren = form.cleaned_data["siren"]
-            request.session["siren"] = siren
-            entreprise = form.save()
+    form = EligibiliteForm(request.GET)
+    if "siren" in form.data:
+        if entreprises := Entreprise.objects.filter(siren=form.data["siren"]):
+            entreprise = entreprises[0]
+            form = EligibiliteForm(request.GET, instance=entreprise)
+            commit = request.user.is_authenticated and request.user in entreprise.users.all()
         else:
-            entreprise = None
-        entreprises = [entreprise]
+            commit = False
+
+        if form.is_valid():
+            request.session["siren"] = form.cleaned_data["siren"]
+            entreprise = form.save(commit=commit)
+            entreprises = [entreprise]
+    
+    else:
+        entreprises = request.user.entreprise_set.all() if request.user.is_authenticated else [None]
 
     return render(
         request,
