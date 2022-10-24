@@ -96,7 +96,7 @@ class BDESEReglementation(Reglementation):
                 )
             secondary_actions = [
                 ReglementationAction(
-                    reverse_lazy("result", args=[entreprise.siren]),
+                    reverse_lazy("bdese_result", args=[entreprise.siren]),
                     "Télécharger le pdf",
                 ),
             ]
@@ -183,7 +183,7 @@ def reglementations(request):
     )
 
 
-def result(request, siren):
+def bdese_result(request, siren):
     entreprise = Entreprise.objects.get(siren=siren)
     bdese_type = BDESEReglementation.calculate(entreprise).bdese_type
     if bdese_type == BDESEReglementation.TYPE_AVEC_ACCORD:
@@ -198,7 +198,7 @@ def result(request, siren):
         "raison_sociale": entreprise.raison_sociale,
         "bdese": bdese,
     }
-    pdf_html = render_to_string("reglementations/result_pdf.html", context)
+    pdf_html = render_to_string("reglementations/bdese_result_pdf.html", context)
     pdf_file = HTML(string=pdf_html).write_pdf()
 
     response = HttpResponse(pdf_file, content_type="application/pdf")
