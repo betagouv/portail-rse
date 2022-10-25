@@ -48,7 +48,7 @@ class UserCreationForm(DsfrForm, forms.ModelForm):
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password1"])
         if siren := self.cleaned_data.get("siren"):
-            entreprise = Entreprise.objects.get(siren=siren)
+            entreprise, _ = Entreprise.objects.get_or_create(siren=siren)
         if commit:
             user.save()
             if siren:

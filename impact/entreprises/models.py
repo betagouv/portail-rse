@@ -15,7 +15,6 @@ class Entreprise(models.Model):
     effectif = models.CharField(
         max_length=9,
         choices=EFFECTIF_CHOICES,
-        default="grand",
         help_text="Saisissez le nombre de salariés",
     )
     bdese_accord = models.BooleanField(default=False)
