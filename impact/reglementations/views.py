@@ -152,7 +152,7 @@ def reglementations(request):
             form = EligibiliteForm(request.GET, instance=entreprise)
             commit = request.user.is_authenticated and request.user in entreprise.users.all()
         else:
-            commit = False
+            commit = True
 
         if form.is_valid():
             request.session["siren"] = form.cleaned_data["siren"]
