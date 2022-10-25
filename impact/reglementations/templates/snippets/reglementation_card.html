@@ -5,12 +5,14 @@
                 <a href="#">{{ reglementation.title }}</a>
             </h3>
             <p class="fr-card__desc">{{ reglementation.description }}</p>
-            {% if user.is_authenticated %}
+            {% if reglementation.status %}
             <div class="fr-card__start">
                 <ul class="fr-badges-group">
                     <li>
                         {% if reglementation.status == reglementation.STATUS_NON_SOUMIS %}
                         <p class="fr-badge">non soumis</p>
+                        {% elif not user.is_authenticated %}
+                        <p class="fr-badge">soumis</p>
                         {% elif reglementation.status == reglementation.STATUS_A_ACTUALISER %}
                         <p class="fr-badge fr-badge--error">à actualiser</p>
                         {% elif reglementation.status == reglementation.STATUS_ACTUALISE %}
@@ -20,8 +22,12 @@
                         {% endif %}
                     </li>
                 </ul>
-                <p class="fr-card__detail {% if reglementation.status == reglementation.STATUS_A_ACTUALISER %}fr-icon-warning-fill{% else %}fr-icon-info-fill{% endif %}">
+                <p class="fr-card__detail {% if reglementation.status == reglementation.STATUS_A_ACTUALISER and user.is_authenticated %}fr-icon-warning-fill{% else %}fr-icon-info-fill{% endif %}">
+                    {% if user.is_authenticated %}
                     {{ reglementation.status_detail }}
+                    {% else %}
+                    <a href="{% url 'login' %}?next=/reglementations">Connectez-vous pour en savoir plus sur votre statut</a>
+                    {% endif %}
                 </p>
             </div>
             {% endif %}
