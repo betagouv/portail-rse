@@ -150,7 +150,9 @@ def reglementations(request):
         if entreprises := Entreprise.objects.filter(siren=form.data["siren"]):
             entreprise = entreprises[0]
             form = EligibiliteForm(request.GET, instance=entreprise)
-            commit = request.user.is_authenticated and request.user in entreprise.users.all()
+            commit = (
+                request.user.is_authenticated and request.user in entreprise.users.all()
+            )
         else:
             commit = True
 
@@ -158,9 +160,13 @@ def reglementations(request):
             request.session["siren"] = form.cleaned_data["siren"]
             entreprise = form.save(commit=commit)
             entreprises = [entreprise]
-    
+
     else:
-        entreprises = request.user.entreprise_set.all() if request.user.is_authenticated else [None]
+        entreprises = (
+            request.user.entreprise_set.all()
+            if request.user.is_authenticated
+            else [None]
+        )
 
     return render(
         request,
