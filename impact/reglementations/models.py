@@ -69,6 +69,7 @@ class BDESE_300(AbstractBDESE):
         verbose_name_plural = "BDESE plus de 300 salariés"
 
     # Décret no 2022-678 du 26 avril 2022
+    # https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000045680845
     # 1° Investissements
     # 1° A - Investissement social
     # 1° A - a) Evolution des effectifs par type de contrat, par âge, par ancienneté
@@ -1701,6 +1702,215 @@ class BDESE_50_300(AbstractBDESE):
         verbose_name = "BDESE 50 à 300 salariés"
         verbose_name_plural = "BDESE 50 à 300 salariés"
 
+    # Décret no 2022-678 du 26 avril 2022
+    # https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000045680861
+    # 1° Investissements
+    # 1° A - Investissement social
+    # 1° A - a) Evolution des effectifs par type de contrat, par âge, par ancienneté
+    effectif_mensuel = CategoryField(
+        categories=["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre"],
+        help_text = "Evolution des effectifs retracée mois par mois",
+        null=True,
+        blank=True,
+    )
+    effectif_cdi = models.IntegerField(
+        verbose_name="Effectif CDI",
+        help_text="Nombre de salariés titulaires d’un contrat de travail à durée indéterminée",
+        blank=True,
+        null=True,
+    )
+    effectif_cdd = models.IntegerField(
+        verbose_name="Effectif CDD",
+        help_text="Nombre de salariés titulaires d’un contrat de travail à durée déterminée",
+        blank=True,
+        null=True,
+    )
+    nombre_salaries_temporaires = models.IntegerField(
+        verbose_name="Nombre de salariés temporaires",
+        null=True,
+        blank=True,
+    )
+    nombre_travailleurs_exterieurs = models.IntegerField(
+        verbose_name="Nombre de travailleurs extérieurs",
+        help_text="Nombre de salariés appartenant à une entreprise extérieure",
+        null=True,
+        blank=True,
+    )
+    nombre_journees_salaries_temporaires = models.IntegerField(
+        verbose_name="Nombre de journées de travai réalisées au cours des douze derniers mois par les salariés temporaires",
+        null=True,
+        blank=True,
+    )
+    nombre_contrats_insertion_formation_jeunes = models.IntegerField(
+        verbose_name="Nombre de contrats d'insertion et de formation en alternance ouverts aux jeunes de moins de vingt-six ans",
+        null=True,
+        blank=True,
+    )
+    motifs_contrats_cdd_temporaire_temps_partiel_exterieurs = models.TextField(
+        verbose_name="Motifs",
+        help_text="Motifs ayant conduit l'entreprise à recourir aux contrats de travail à durée déterminée, aux contrats de travail temporaire, aux contrats de travail à temps partiel, ainsi qu'à des salariés appartenant à une entreprise extérieure",
+        null=True,
+        blank=True,
+    )
+    # 1° A - b) Evolution des emplois par catégorie professionnelle
+    effectif_homme = CategoryField(
+        null=True,
+        blank=True,
+    )
+    effectif_femme = CategoryField(
+        null=True,
+        blank=True,
+    )
+    actions_prevention_formation = models.TextField(
+        verbose_name="Actions de prévention et de formation",
+        help_text="Indication des actions de prévention et de formation que l'employeur envisage de mettre en œuvre, notamment au bénéfice des salariés âgés, peu qualifiés ou présentant des difficultés sociales particulières",
+        null=True,
+        blank=True,
+    )
+    # 1° A - c) Evolution de l'emploi des personnes handicapées et mesures prises pour le développer
+    actions_emploi_personnes_handicapees = models.TextField(
+        verbose_name="Actions entreprises ou projetées",
+        help_text="Actions entreprises ou projetées en matière d'embauche, d'adaptation, de réadaptation ou de formation professionnelle",
+        null=True,
+        blank=True,
+    )
+    # Déclaration annuelle prévue à l'article L. 5212-5 à l'exclusion des informations mentionnées à l'article D. 5212-4 ;
+    # TODO: que contient cette déclaration annuelle pour les 50-300 salariés et cela se traduit par combien de champs dans notre formulaire ?
+    doeth = models.TextField(
+        verbose_name="Déclaration obligatoire d'emploi des travailleurs handicapés",
+        help_text="Déclaration annuelle prévue à l'article L. 5212-5 à l'exclusion des informations mentionnées à l'article D. 5212-4",
+        null=True,
+        blank=True,
+    )
+    # 1° A - d) Evolution du nombre de stagiaires de plus de 16 ans
+    nombre_stagiaires = models.IntegerField(
+        verbose_name="Nombre de stagiaires de plus de 16 ans",
+        null=True,
+        blank=True,
+    )
+    # 1° A - e) Formation professionnelle : investissements en formation, publics concernés
+    orientations_formation_professionnelle = models.TextField(
+        verbose_name="Orientations de la formation professionnelle",
+        help_text="Les orientations de la formation professionnelle dans l'entreprise telles qu'elles résultent de la consultation prévue à l'article L. 2312-24",
+        null=True,
+        blank=True,
+    )
+    resultat_negociations_L_2241_6 = models.TextField(
+        verbose_name="Résultat éventuel des négociations prévues à l'article L. 2241-6",
+        null=True,
+        blank=True,
+    )
+    conclusions_verifications_L_6361_1_L_6323_13_L_6362_4 = models.TextField(
+        verbose_name="Conclusions éventuelles des services de contrôle faisant suite aux vérifications effectuées en application des articles L. 6361-1, L. 6323-13 et L. 6362-4",
+        null=True,
+        blank=True,
+    )
+    bilan_actions_plan_formation = models.TextField(
+        verbose_name="Bilan des actions comprises dans le plan de formation de l'entreprise",
+        help_text="Le bilan des actions comprises dans le plan de formation de l'entreprise pour l'année antérieure et pour l'année en cours comportant la liste des actions de formation, des bilans de compétences et des validations des acquis de l'expérience réalisés, rapportés aux effectifs concernés répartis par catégorie socioprofessionnelle et par sexe",
+        null=True,
+        blank=True,
+    )
+    informations_conges_formation = models.TextField(
+        verbose_name="Informations relatives aux congés de formation",
+        help_text="Les informations, pour l'année antérieure et l'année en cours, relatives aux congés individuels de formation, aux congés de bilan de compétences, aux congés de validation des acquis de l'expérience et aux congés pour enseignement accordés ; notamment leur objet, leur durée et leur coût, aux conditions dans lesquelles ces congés ont été accordés ou reportés ainsi qu'aux résultats obtenus",
+        null=True,
+        blank=True,
+    )
+    nombre_salaries_beneficaires_abondement = models.IntegerField(
+        verbose_name="Nombre des salariés bénéficiaires de l'abondement mentionné à l'avant-dernier alinéa du II de l'article L. 6315-1",
+        null=True,
+        blank=True,
+    )
+    somme_abondement = models.FloatField(
+        verbose_name="Sommes versées à ce titre",
+        null=True,
+        blank=True,
+    )
+    nombre_salaries_beneficiaires_entretien_professionnel = models.IntegerField(
+        verbose_name="Nombre des salariés bénéficiaires de l'entretien professionnel mentionné au I de l'article L. 6315-1.",
+        null=True,
+        blank=True,
+    )
+    bilan_contrats_alternance = models.TextField(
+        verbose_name="Bilan, pour l'année antérieure et l'année en cours, des conditions de mise en œuvre des contrats d'alternance",
+        null=True,
+        blank=True,
+    )
+    emplois_periode_professionnalisation = models.TextField(
+        verbose_name="Emplois occupés pendant et à l'issue de leur action ou de leur période de professionnalisation",
+        null=True,
+        blank=True,
+    )
+    effectif_periode_professionnalisation_par_age = CategoryField(
+        categories=[
+            "moins de 30 ans",
+            "30 à 39 ans",
+            "40 à 49 ans",
+            "50 ans et plus",
+        ],
+        verbose_name="Effectifs intéressés par âge",
+        null=True,
+        blank=True,
+    )
+    effectif_periode_professionnalisation_par_sexe = CategoryField(
+        categories=["homme", "femme"],
+        verbose_name="Effectifs intéressés par sexe",
+        null=True,
+        blank=True,
+    )
+    effectif_periode_professionnalisation_par_niveau_initial = CategoryField(
+        categories=[
+            "niveau I",
+            "niveau II",
+            "niveau III",
+            "niveau IV",
+        ],
+        verbose_name="Effectifs intéressés par niveau initial de formation",
+        null=True,
+        blank=True,
+    )
+    resultats_periode_professionnalisation = models.TextField(
+        verbose_name="Résultats obtenus en fin d'action ou de période de professionnalisation ainsi que les conditions d'appréciation et de validation",
+        null=True,
+        blank=True,
+    )
+    bilan_cpf = models.TextField(
+        verbose_name="Bilan de la mise en œuvre du compte personnel de formation",
+        null=True,
+        blank=True,
+    )
+    # 1° A - f) Conditions de travail : durée du travail dont travail à temps partiel et aménagement du temps de travail ; Données sur le travail à temps partiel :
+    nombre_salaries_temps_partiel_par_sexe = CategoryField(
+        categories=["homme", "femme"],
+        verbose_name="Nombre de salariés travaillant à temps partiel",
+        null=True,
+        blank=True,
+    )
+    nombre_salaries_temps_partiel_par_qualification = CategoryField(
+        verbose_name="Qualification des salariés travaillant à temps partiel",
+        null=True,
+        blank=True,
+    )
+    horaires_temps_partiel = models.TextField(
+        verbose_name="Horaires de travail à temps partiel pratiqués dans l'entreprise",
+        null=True,
+        blank=True,
+    )
+    programme_prevention_risques_pro = models.TextField(
+        verbose_name="Programme annuel de prévention des risques professionnels et d'amélioration des conditions de travail",
+        help_text="""prévu au 2° de l'article L. 2312-27 établi à partir des analyses mentionnées à l'article L. 2312-9 et fixant la liste détaillée des mesures devant être prises au cours de l'année à venir dans les mêmes domaines afin de satisfaire, notamment :
+            i-Aux principes généraux de prévention prévus aux articles L. 4121-1 à L. 4121-5 et L. 4221-1 ;
+            ii-A l'information et à la formation des travailleurs prévues aux articles L. 4141-1 à L. 4143-1 ;
+            iii-A l'information et à la formation des salariés titulaires d'un contrat de travail à durée déterminée et des salariés temporaires prévues aux articles L. 4154-2 et L. 4154-4 ;
+            iv-A la coordination de la prévention prévue aux articles L. 4522-1 et L. 4522-2 ;
+        """,
+        null=True,
+        blank=True,
+    )
+    # 1° B - Investissement matériel et immatériel
+    # 2° Egalité professionnelle entre les femmes et les hommes au sein de l'entreprise
+    # 3° Fonds propres, endettement et impôts
     capitaux_propres = models.IntegerField(
         verbose_name="Capitaux propres de l'entreprise",
         null=True,
