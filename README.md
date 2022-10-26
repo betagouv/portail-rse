@@ -14,6 +14,12 @@ make run
 
 Il est nécessaire d'installer le paquet système `libpq-dev` pour avoir `pg_config`.
 
+Pour générer les nouvelles migrations éventuelles et les appliquer :
+
+```
+make migrations
+make migrate
+```
 
 ## migration en recette
 
@@ -22,15 +28,15 @@ Il est nécessaire d'installer le paquet système `libpq-dev` pour avoir `pg_con
 scalingo --app ${PROJET} run python3 impact/manage.py migrate
 ```
 
-Pour un migration en local, voir le `Makefile`.
 
 ### suppression des données
 
 ```
-$ scalingo --app ${PROJET} db-tunnel SCALINGO_POSTGRESQL_URL
-
-# dans un autre terminal:
-$ scalingo --app ${PROJET} pgsql-console
-puis:
+scalingo --app ${PROJET} pgsql-console
 drop owned by ${PROJET}_3273;
+```
+créer à nouveau le super utilisateur avec
+
+```
+scalingo --app ${PROJET} run python3 impact/manage.py createsuperuser
 ```
