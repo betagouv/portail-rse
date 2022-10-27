@@ -84,14 +84,14 @@ class BDESEReglementation(Reglementation):
                 status = cls.STATUS_EN_COURS
                 status_detail = "Vous êtes soumis à cette réglementation. Vous avez démarré le remplissage de votre BDESE sur la plateforme"
                 primary_action = ReglementationAction(
-                    reverse_lazy("bdese_investissement_social", args=[entreprise.siren]),
+                    reverse_lazy("bdese", args=[entreprise.siren, 1]),
                     "Reprendre l'actualisation de ma BDESE",
                 )
             else:
                 status = cls.STATUS_A_ACTUALISER
                 status_detail = "Vous êtes soumis à cette réglementation. Nous allons vous aider à la remplir."
                 primary_action = ReglementationAction(
-                    reverse_lazy("bdese_investissement_social", args=[entreprise.siren]),
+                    reverse_lazy("bdese", args=[entreprise.siren, 1]),
                     "Actualiser ma BDESE",
                 )
             secondary_actions = [
@@ -240,7 +240,7 @@ def get_bdese_data_from_index_egapro(entreprise: Entreprise, year: int) -> dict:
 
 
 @login_required
-def bdese(request, siren):
+def bdese(request, siren, step):
     entreprise = Entreprise.objects.get(siren=siren)
     if request.user not in entreprise.users.all():
         raise PermissionDenied
@@ -260,7 +260,20 @@ def bdese(request, siren):
             categories_professionnelles, bdese, fetched_data=fetched_data
         )
     if bdese.__class__ == BDESE_300:
-        template_path = "reglementations/bdese_300.html"
+        templates = {
+            1: "1_investissement_social.html",
+            2: "2_investissement_matériel_et_immatériel.html",
+            3: "3_egalite_professionnelle.html",
+            4: "4_fonds_propres_endettement_impots.html",
+            5: "5_remuneration.html",
+            6: "6_representation_du_personnel_et_activites_sociales_et_culturelles.html",
+            7: "7_remuneration_des_financeurs.html",
+            8: "8_flux_financiers.html",
+            9: "9_partenariats.html",
+            10: "10_transferts_commerciaux_et_financiers.html",
+            11: "11_environnement.html",
+        }
+        template_path = f"reglementations/bdese_300/{templates[step]}"
     else:
         template_path = "reglementations/bdese_50_300.html"
     return render(request, template_path, {"form": form, "siren": siren})
@@ -276,30 +289,3 @@ def _get_or_create_bdese(entreprise: Entreprise) -> BDESE_300 | BDESE_50_300:
     else:
         bdese, _ = BDESE_50_300.objects.get_or_create(entreprise=entreprise)
     return bdese
-
-
-@login_required
-def bdese_investissement_social(request, siren):
-    entreprise = Entreprise.objects.get(siren=siren)
-    if request.user not in entreprise.users.all():
-        raise PermissionDenied
-    bdese = _get_or_create_bdese(entreprise)
-    categories_professionnelles = categories_default()
-    if request.method == "POST":
-        form = bdese_form_factory(
-            categories_professionnelles,
-            bdese,
-            data=request.POST,
-        )
-        if form.is_valid():
-            bdese = form.save()
-    else:
-        fetched_data = get_bdese_data_from_index_egapro(entreprise, 2021)
-        form = bdese_form_factory(
-            categories_professionnelles, bdese, fetched_data=fetched_data
-        )
-    if bdese.__class__ == BDESE_300:
-        template_path = "reglementations/bdese_300/1_investissement_social.html"
-    else:
-        template_path = "reglementations/bdese_50_300.html"
-    return render(request, template_path, {"form": form, "siren": siren})

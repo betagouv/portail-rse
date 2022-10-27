@@ -11,7 +11,7 @@
         <div class="fr-col">
             <h1>BDESE</h1>
 
-            <form action="{% url 'bdese_investissement_social' siren %}" method="post">
+            <form action="{% url 'bdese' siren 8 %}" method="post">
                 {% csrf_token %}
                 <h2>1° Investissements</h2>
                 <h3>A-Investissement social</h3>
