@@ -10,5 +10,5 @@ Que contient cette déclaration annuelle pour les 50-300 salariés et cela se tr
 
 2° A - Analyse des données chiffrées : que des champs libres pour l'instant. Faut-il plutôt prévoir les mêmes champs chiffrés précis que pour la bdese > 300 salariés ?
 
-4° A - c) Epargne salariale (intéressement, participation) : que met-on comme champ ? Un champ libre ?
+4° A - c) Epargne salariale (intéressement, participation) : qu'est-ce qui est demandé ? Que met-on comme champ ? Un champ libre ?
 

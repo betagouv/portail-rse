@@ -547,10 +547,9 @@ class BDESE_300(AbstractBDESE):
     )
     nombre_jours_feries_payes = CategoryField(
         verbose_name="Nombre de jours fériés payés",
-        help_text="Préciser, le cas échéant, les conditions restrictives.",
         null=True,
         blank=True,
-    )  # TODO: à transformer en CategoryField(TextField) ?
+    )
     # 1° A - f) vi - Absentéisme
     # Possibilités de comptabiliser tous les indicateurs de la rubrique absentéisme, au choix, en journées, 1/2 journées ou heures.
     UNITE_ABSENTEISME_CHOICES = [
@@ -579,15 +578,17 @@ class BDESE_300(AbstractBDESE):
         null=True,
         blank=True,
     )
-    # TODO: par categorie, par duree
-    # nombre_unites_absence_duree_1 = models.IntegerField(
-    #    verbose_name="Répartition des absences pour maladie selon leur durée",
-    #    help_text="Les tranches choisies sont laissées au choix des entreprises.",
-    # )
-    #     nombre_unites_absence_duree_2 = models.IntegerField(
-    #         verbose_name="Répartition des absences pour maladie selon leur durée",
-    #         help_text="Les tranches choisies sont laissées au choix des entreprises.",
-    #     )
+    nombre_unites_absence_par_duree = CategoryField(
+        categories=["< 3 jours", "de 3 à 90 jours", "> 90 jours"],
+        verbose_name="Répartition des absences pour maladie selon leur durée",
+        null=True,
+        blank=True,
+    )
+    nombre_unites_absence_par_categorie_pro = CategoryField(
+        verbose_name="Répartition des absences pour maladie selon leur catégorie",
+        null=True,
+        blank=True,
+    )
     nombre_unites_absence_accidents = CategoryField(
         verbose_name="Nombre de journées d'absence pour accidents du travail et de trajet ou maladies professionnelles",
         null=True,
@@ -1104,37 +1105,6 @@ class BDESE_300(AbstractBDESE):
         null=True,
         blank=True,
     )
-    # TODO: Faut-il les mêmes catégories qu'au 1°A-f)ii ?
-    # nombre_accidents_riques_graves_homme = models.IntegerField(
-    #     verbose_name="Nombre d'accidents liés à l'existence de risques graves-codes 32 à 40"
-    # )
-    # nombre_accidents_riques_graves_femme = models.IntegerField(
-    #     verbose_name="Nombre d'accidents liés à l'existence de risques graves-codes 32 à 40"
-    # )
-    # nombre_accidents_chutes_denivellation_homme = models.IntegerField(
-    #     verbose_name="Nombre d'accidents liés à des chutes avec dénivellation-code 02"
-    # )
-    # nombre_accidents_chutes_denivellation_femme = models.IntegerField(
-    #     verbose_name="Nombre d'accidents liés à des chutes avec dénivellation-code 02"
-    # )
-    # nombre_accidents_machines_homme = models.IntegerField(
-    #     verbose_name="Nombre d'accidents occasionnés par des machines (à l'exception de ceux liés aux risques ci-dessus)-codes 09 à 30"
-    # )
-    # nombre_accidents_machines_femme = models.IntegerField(
-    #     verbose_name="Nombre d'accidents occasionnés par des machines (à l'exception de ceux liés aux risques ci-dessus)-codes 09 à 30"
-    # )
-    # nombre_accidents_circulation_manutention_stockage_homme = models.IntegerField(
-    #     verbose_name="Nombre d'accidents de circulation-manutention-stockage-codes 01,03,04 et 06,07,08 ; Nombre d'accidents occasionnés par des objets, masses, particules en mouvement accidentel-code 05"
-    # )
-    # nombre_accidents_circulation_manutention_stockage_femme = models.IntegerField(
-    #     verbose_name="Nombre d'accidents de circulation-manutention-stockage-codes 01,03,04 et 06,07,08 ; Nombre d'accidents occasionnés par des objets, masses, particules en mouvement accidentel-code 05"
-    # )
-    # nombre_accidents_autres_homme = models.IntegerField(
-    #     verbose_name="Nombre des autres cas d'accidents"
-    # )
-    # nombre_accidents_autres_femme = models.IntegerField(
-    #     verbose_name="Nombre des autres cas d'accidents"
-    # )
     nombre_et_denominations_maladies_pro_homme = models.TextField(
         verbose_name="Nombre et dénomination des maladies professionnelles déclarées à la Sécurité sociale au cours de l'année concernant les hommes",
         null=True,
@@ -1334,16 +1304,9 @@ class BDESE_300(AbstractBDESE):
         null=True,
         blank=True,
     )
-    remunerations = CategoryField(  # TODO: discuter des tranches
-        categories=[
-            "- de 1.000",
-            "1.000-2.000",
-            "2.000-3.000",
-            "3.000-4.000",
-            "4.000-5.000",
-            "5.000 et plus",
-        ],
+    remunerations = models.TextField(
         verbose_name="Grille des rémunérations",
+        help_text="Faire une grille des rémunérations en distinguant au moins six tranches.",
         null=True,
         blank=True,
     )
@@ -1606,7 +1569,7 @@ class BDESE_300(AbstractBDESE):
         verbose_name="L'affectation des bénéfices réalisés",
         null=True,
         blank=True,
-    )  # TODO: à remplacer par un CategoryField et les affectations possibles ?
+    )
 
     # 8° Partenariats
     #   A-Partenariats conclus pour produire des services ou des produits pour une autre entreprise
