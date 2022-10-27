@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 
 import requests
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import HttpResponse, render
@@ -253,6 +254,7 @@ def bdese(request, siren, step):
             data=request.POST,
         )
         if form.is_valid():
+            messages.success(request, "Étape enregistrée")
             bdese = form.save()
     else:
         fetched_data = get_bdese_data_from_index_egapro(entreprise, 2021)
