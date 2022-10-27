@@ -1708,8 +1708,21 @@ class BDESE_50_300(AbstractBDESE):
     # 1° A - Investissement social
     # 1° A - a) Evolution des effectifs par type de contrat, par âge, par ancienneté
     effectif_mensuel = CategoryField(
-        categories=["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Décembre"],
-        help_text = "Evolution des effectifs retracée mois par mois",
+        categories=[
+            "Janvier",
+            "Février",
+            "Mars",
+            "Avril",
+            "Mai",
+            "Juin",
+            "Juillet",
+            "Aout",
+            "Septembre",
+            "Octobre",
+            "Novembre",
+            "Décembre",
+        ],
+        help_text="Evolution des effectifs retracée mois par mois",
         null=True,
         blank=True,
     )
@@ -1908,11 +1921,338 @@ class BDESE_50_300(AbstractBDESE):
         null=True,
         blank=True,
     )
+
     # 1° B - Investissement matériel et immatériel
+    # 1° B - a) Evolution des actifs nets d'amortissement et de dépréciations éventuelles (immobilisations)
+    evolution_amortissement = models.TextField(
+        verbose_name="Evolution des actifs nets d’amortissement et de dépréciations éventuelles (immobilisations)",
+        null=True,
+        blank=True,
+    )
+    # 1° B - b) Le cas échéant, dépenses de recherche et développement
+    montant_depenses_recherche_developpement = models.IntegerField(
+        verbose_name="Dépenses de recherche et développement",
+        null=True,
+        blank=True,
+    )
+    # 1° B - c) Mesures envisagées en ce qui concerne l'amélioration, le renouvellement ou la transformation des méthodes de production et d'exploitation ; et incidences de ces mesures sur les conditions de travail et l'emploi ;
+    mesures_methodes_production_exploitation = models.TextField(
+        verbose_name="Mesures envisagées en ce qui concerne l'amélioration, le renouvellement ou la transformation des méthodes de production et d'exploitation",
+        help_text="et incidences de ces mesures sur les conditions de travail et l'emploi",
+        null=True,
+        blank=True,
+    )
+
     # 2° Egalité professionnelle entre les femmes et les hommes au sein de l'entreprise
+    # 2° A - Analyse des données chiffrées
+    analyse_egalite_embauche = models.TextField(
+        verbose_name="Analyse chiffrée de la situation en matière d'embauche",
+        null=True,
+        blank=True,
+    )
+    analyse_egalite_formation = models.TextField(
+        verbose_name="Analyse chiffrée de la situation en matière de formation",
+        null=True,
+        blank=True,
+    )
+    analyse_egalite_promotion_professionnelle = models.TextField(
+        verbose_name="Analyse chiffrée de la situation en matière de promotion professionnelle",
+        null=True,
+        blank=True,
+    )
+    analyse_egalite_qualification = models.TextField(
+        verbose_name="Analyse chiffrée de la situation en matière de qualification",
+        null=True,
+        blank=True,
+    )
+    analyse_egalite_classification = models.TextField(
+        verbose_name="Analyse chiffrée de la situation en matière de classification",
+        null=True,
+        blank=True,
+    )
+    analyse_egalite_conditions_de_travail = models.TextField(
+        verbose_name="Analyse chiffrée de la situation en matière de conditions de travail",
+        null=True,
+        blank=True,
+    )
+    analyse_egalite_sante_et_sécurite = models.TextField(
+        verbose_name="Analyse chiffrée de la situation en matière de santé et de sécurité au travail",
+        null=True,
+        blank=True,
+    )
+    analyse_egalite_remuneration = models.TextField(
+        verbose_name="Analyse chiffrée de la situation en matière de rémunération effective",
+        null=True,
+        blank=True,
+    )
+    analyse_egalite_articulation_activite_pro_perso = models.TextField(
+        verbose_name="Analyse chiffrée de la situation en matière d'articulation entre l'activité professionnelle et l'exercice de la responsabilité familiale",
+        null=True,
+        blank=True,
+    )
+    analyse_ecarts_salaires = models.TextField(
+        verbose_name="Analyse des écarts de salaires et de déroulement de carrière",
+        help_text="En fonction de leur âge, de leur qualification et de leur ancienneté",
+        null=True,
+        blank=True,
+    )
+    evolution_taux_promotion = models.TextField(
+        verbose_name="Description de l'évolution des taux de promotion respectifs des femmes et des hommes par métiers dans l'entreprise",
+        null=True,
+        blank=True,
+    )
+
+    # 2° B - Stratégie d'action
+    mesures_prises_egalite = models.TextField(
+        verbose_name="Mesures prises au cours de l'année écoulée en vue d'assurer l'égalité professionnelle",
+        help_text="Bilan des actions de l'année écoulée et, le cas échéant, de l'année précédente. Evaluation du niveau de réalisation des objectifs sur la base des indicateurs retenus. Explications sur les actions prévues non réalisées",
+        null=True,
+        blank=True,
+    )
+    objectifs_progression = models.TextField(
+        verbose_name="Objectifs de progression pour l'année à venir et indicateurs associés",
+        help_text="Définition qualitative et quantitative des mesures permettant de les atteindre conformément à l'article R. 2242-2. Evaluation de leur coût. Echéancier des mesures prévues",
+        null=True,
+        blank=True,
+    )
+
     # 3° Fonds propres, endettement et impôts
     capitaux_propres = models.IntegerField(
         verbose_name="Capitaux propres de l'entreprise",
+        null=True,
+        blank=True,
+    )
+    emprunts_et_dettes_financieres = models.IntegerField(
+        verbose_name="Emprunts et dettes financières dont échéances et charges financières",
+        null=True,
+        blank=True,
+    )
+    impots_et_taxes = models.IntegerField(
+        verbose_name="Impôts et taxes",
+        null=True,
+        blank=True,
+    )
+
+    # 4° Rémunération des salariés et dirigeants, dans l'ensemble de leurs éléments
+    # 4° A - Evolution des rémunérations salariales
+    # 4° A - a) Frais de personnel y compris cotisations sociales, évolutions salariales par catégorie et par sexe, salaire de base minimum, salaire moyen ou médian, par sexe et par catégorie professionnelle
+    frais_personnel = models.IntegerField(
+        verbose_name="Frais de personnel, y compris cotisations sociales",
+        null=True,
+        blank=True,
+    )
+    evolution_salariale_par_categorie = CategoryField(
+        null=True,
+        blank=True,
+    )
+    evolution_salariale_par_sexe = CategoryField(
+        categories=["homme", "femme"],
+        null=True,
+        blank=True,
+    )
+    salaire_base_minimum_par_categorie = CategoryField(
+        verbose_name="Salaire de base minimum par catégorie",
+        null=True,
+        blank=True,
+    )
+    salaire_base_minimum_par_sexe = CategoryField(
+        verbose_name="Salaire de base minimum par sexe",
+        categories=["homme", "femme"],
+        null=True,
+        blank=True,
+    )
+    salaire_moyen_par_categorie = CategoryField(
+        verbose_name="Salaire moyen par catégorie",
+        null=True,
+        blank=True,
+    )
+    salaire_moyen_par_sexe = CategoryField(
+        categories=["homme", "femme"],
+        null=True,
+        blank=True,
+    )
+    salaire_median_par_categorie = CategoryField(
+        verbose_name="Salaire médian par catégorie",
+        null=True,
+        blank=True,
+    )
+    salaire_median_par_sexe = CategoryField(
+        verbose_name="Salaire médian par sexe",
+        categories=["homme", "femme"],
+        null=True,
+        blank=True,
+    )
+    # 4° A - b) Pour les entreprises soumises aux dispositions de l'article L. 225-115 du code de commerce, montant global des rémunérations visées au 4° de cet article
+    # https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000038610196/
+    montant_global_hautes_remunerations = models.IntegerField(
+        verbose_name="Montant global des hautes rémunérations",
+        help_text="Montant global, certifié exact par les commissaires aux comptes, s'il en existe, des rémunérations versées aux personnes les mieux rémunérées, le nombre de ces personnes étant de dix ou de cinq selon que l'effectif du personnel excède ou non deux cents salariés ; uniquement pour les entreprises soumises aux dispositions de l'article L. 225-115 du code de commerce",
+        null=True,
+        blank=True,
+    )
+    # 4° A - c) Epargne salariale : intéressement, participation
+    epargne_salariale = models.TextField(
+        verbose_name="Epargne salariale : intéressement, participation",
+        null=True,
+        blank=True,
+    )
+
+    # 5° Activités sociales et culturelles
+    montant_contribution_activites_sociales_culturelles = models.IntegerField(
+        verbose_name="Montant de la contribution aux activités sociales et culturelles",
+        help_text="Du comité social et économique",
+        null=True,
+        blank=True,
+    )
+    mecenat = models.IntegerField(
+        verbose_name="Mécénat",
+        null=True,
+        blank=True,
+    )
+
+    # 6° Rémunération des financeurs, en dehors des éléments mentionnés au 4°
+    # 6° A - Rémunération des actionnaires (revenus distribués)
+    remuneration_actionnaires = models.IntegerField(
+        verbose_name="Rémunération des actionnaires (revenus distribués)",
+        null=True,
+        blank=True,
+    )
+
+    # 6° B - Rémunération de l'actionnariat salarié
+    remuneration_actionnariat_salarie = models.IntegerField(
+        verbose_name="Rémunération de l'actionnariat salarié (montant des actions détenues dans le cadre de l'épargne salariale, part dans le capital, dividendes reçus)",
+        null=True,
+        blank=True,
+    )
+
+    # 7° Flux financiers à destination de l'entreprise
+    # 7° A - Aides publiques
+    aides_financieres = models.TextField(
+        verbose_name="Les aides ou avantages financiers consentis à l'entreprise par l'Union européenne, l'Etat, une collectivité territoriale, un de leurs établissements publics ou un organisme privé chargé d'une mission de service public, et leur utilisation",
+        help_text="Pour chacune de ces aides, l'employeur indique la nature de l'aide, son objet, son montant, les conditions de versement et d'emploi fixées, le cas échéant, par la personne publique qui l'attribue et son utilisation",
+        null=True,
+        blank=True,
+    )
+
+    # 7° B - Réductions d'impôts
+    reductions_impots = models.IntegerField(
+        verbose_name="Réductions d'impôts",
+        null=True,
+        blank=True,
+    )
+
+    # 7° C - Exonérations et réductions de cotisations sociales
+    exonerations_cotisations_sociales = models.IntegerField(
+        verbose_name="Exonérations et réductions de cotisations sociales",
+        null=True,
+        blank=True,
+    )
+
+    # 7° D - Crédits d'impôts
+    credits_impots = models.IntegerField(
+        verbose_name="Crédits d'impôts",
+        null=True,
+        blank=True,
+    )
+
+    # 7° E - Mécénat
+    mecenat = models.IntegerField(
+        verbose_name="Mécénat",
+        null=True,
+        blank=True,
+    )
+
+    # 7° F - Résultats financiers
+    chiffre_affaires = models.IntegerField(
+        verbose_name=" Le chiffre d'affaires",
+        null=True,
+        blank=True,
+    )
+    benefices_ou_pertes = models.IntegerField(
+        verbose_name="Les bénéfices ou pertes constatés",
+        null=True,
+        blank=True,
+    )
+    resultats_globaux = CategoryField(
+        categories=["valeur", "volume"],
+        verbose_name="Les résultats globaux de la production",
+        null=True,
+        blank=True,
+    )
+    affectation_benefices = models.TextField(
+        verbose_name="L'affectation des bénéfices réalisés",
+        null=True,
+        blank=True,
+    )  # TODO: à remplacer par un CategoryField et les affectations possibles ?
+
+    # 8° Partenariats
+    # 8° A - Partenariats conclus pour produire des services ou des produits pour une autre entreprise
+    partenariats_pour_produire = models.TextField(
+        verbose_name="Partenariats conclus pour produire des services ou des produits pour une autre entreprise",
+        null=True,
+        blank=True,
+    )
+
+    # 8° B - Partenariats conclus pour bénéficier des services ou des produits d'une autre entreprise
+    partenariats_pour_beneficier = models.TextField(
+        verbose_name="Partenariats conclus pour bénéficier des services ou des produits d'une autre entreprise",
+        null=True,
+        blank=True,
+    )
+    # 9° Pour les entreprises appartenant à un groupe, transferts commerciaux et financiers entre les entités du groupe
+    # 9° A - Transferts de capitaux tels qu'ils figurent dans les comptes individuels des sociétés du groupe lorsqu'ils présentent une importance significative
+    transferts_de_capitaux = models.TextField(
+        verbose_name="Transferts de capitaux tels qu'ils figurent dans les comptes individuels des sociétés du groupe lorsqu'ils présentent une importance significative",
+        null=True,
+        blank=True,
+    )
+
+    # 9° B - Cessions, fusions, et acquisitions réalisées
+    cessions_fusions_acquisitions = models.TextField(
+        verbose_name="Cessions, fusions, et acquisitions réalisées",
+        null=True,
+        blank=True,
+    )
+
+    # 10° Environnement
+    # 10° A - Politique générale en matière environnementale
+    prise_en_compte_questions_environnementales = models.TextField(
+        verbose_name="Organisation de l'entreprise pour prendre en compte les questions environnementales",
+        help_text="et, le cas échéant, les démarches d'évaluation ou de certification en matière d'environnement",
+        null=True,
+        blank=True,
+    )
+
+    # 10° B - Economie circulaire
+    # 10° B - a) Prévention et gestion de la production de déchets
+    quantite_de_dechets_dangereux = models.TextField(
+        verbose_name="évaluation de la quantité de déchets dangereux définis à l'article R. 541-8 du code de l'environnement et faisant l'objet d'une émission du bordereau mentionné à l'article R. 541-45 du même code",
+        null=True,
+        blank=True,
+    )
+    # 10° B - b) Utilisation durable des ressources
+    consommation_eau = models.IntegerField(
+        verbose_name="consommation d'eau",
+        null=True,
+        blank=True,
+    )
+    consommation_energie = models.IntegerField(
+        verbose_name="consommation d'énergie",
+        null=True,
+        blank=True,
+    )
+
+    # 10° C - Changement climatique
+    # 10° C - a) Identification des postes d'émissions directes de gaz à effet de serre produites par les sources fixes et mobiles nécessaires aux activités de l'entreprise (communément appelées " émissions du scope 1 ") et, lorsque l'entreprise dispose de cette information, évaluation du volume de ces émissions de gaz à effet de serre ;
+    postes_emissions_directes_gaz_effet_de_serre = models.TextField(
+        verbose_name="Identification des postes d'émissions directes de gaz à effet de serre",
+        help_text="produites par les sources fixes et mobiles nécessaires aux activités de l'entreprise (communément appelées \"émissions du scope 1\") et, lorsque l'entreprise dispose de cette information, évaluation du volume de ces émissions de gaz à effet de serre ",
+        null=True,
+        blank=True,
+    )
+    # 10° C - b) Bilan des émissions de gaz à effet de serre prévu par l'article L. 229-25 du code de l'environnement ou bilan simplifié prévu par l'article 244 de la loi n° 2020-1721 du 29 décembre 2020 de finances pour 2021 pour les entreprises tenues d'établir ces différents bilans.
+    bilan_gaz_effet_de_serre = models.TextField(
+        verbose_name="Bilan des émissions de gaz à effet de serre prévu par l'article L. 229-25 du code de l'environnement ou bilan simplifié prévu par l'article 244 de la loi n° 2020-1721 du 29 décembre 2020 de finances pour 2021 pour les entreprises tenues d'établir ces différents bilans",
         null=True,
         blank=True,
     )
