@@ -206,8 +206,9 @@ def bdese_result(request, siren):
     elif bdese_type == BDESEReglementation.TYPE_SUPERIEUR_500:
         bdese = "REGLEMENTATION PLUS DE 500 SALARIES"
     context = {
-        "raison_sociale": entreprise.raison_sociale,
-        "bdese": bdese,
+        "entreprise": entreprise,
+        "bdese_result": bdese,
+        "bdese": _get_or_create_bdese(entreprise),
     }
     pdf_html = render_to_string("reglementations/bdese_result_pdf.html", context)
     pdf_file = HTML(string=pdf_html).write_pdf()
