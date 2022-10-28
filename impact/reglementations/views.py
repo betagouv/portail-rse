@@ -249,6 +249,7 @@ def bdese(request, siren, step):
     categories_professionnelles = categories_default()
     if request.method == "POST":
         form = bdese_form_factory(
+            step,
             categories_professionnelles,
             bdese,
             data=request.POST,
@@ -257,11 +258,14 @@ def bdese(request, siren, step):
             messages.success(request, "Étape enregistrée")
             bdese = form.save()
         else:
-            messages.error(request, "L'étape n'a pas été enregistrée car le formulaire contient des erreurs")
+            messages.error(
+                request,
+                "L'étape n'a pas été enregistrée car le formulaire contient des erreurs",
+            )
     else:
         fetched_data = get_bdese_data_from_index_egapro(entreprise, 2021)
         form = bdese_form_factory(
-            categories_professionnelles, bdese, fetched_data=fetched_data
+            step, categories_professionnelles, bdese, fetched_data=fetched_data
         )
     if bdese.__class__ == BDESE_300:
         templates = {

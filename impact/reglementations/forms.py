@@ -18,7 +18,7 @@ class CategoryJSONWidget(forms.MultiWidget):
 
 
 def bdese_form_factory(
-    categories_professionnelles, instance, fetched_data=None, *args, **kwargs
+    step, categories_professionnelles, instance, fetched_data=None, *args, **kwargs
 ):
     class CategoryMultiValueField(forms.MultiValueField):
         widget = CategoryJSONWidget
@@ -56,7 +56,7 @@ def bdese_form_factory(
     class BDESEForm(forms.ModelForm, DsfrForm):
         class Meta:
             model = instance.__class__
-            exclude = ["annee", "entreprise"]
+            fields = []
             field_classes = {
                 category_field: CategoryMultiValueField
                 for category_field in instance.__class__.category_fields()
@@ -76,4 +76,74 @@ def bdese_form_factory(
                         ].help_text += " (valeur extraite de Index EgaPro)"
                         self.fields[field].disabled = True
 
+    class BDESE1Form(BDESEForm):
+        class Meta:
+            model = BDESEForm.Meta.model
+            field_classes = BDESEForm.Meta.field_classes
+            fields = ["effectif_total"]
+
+    class BDESE2Form(BDESEForm):
+        class Meta:
+            model = BDESEForm.Meta.model
+            field_classes = BDESEForm.Meta.field_classes
+            fields = ["evolution_amortissement"]
+
+    class BDESE3Form(BDESEForm):
+        class Meta:
+            model = BDESEForm.Meta.model
+            field_classes = BDESEForm.Meta.field_classes
+            fields = ["evolution_amortissement"]
+
+    class BDESE4Form(BDESEForm):
+        class Meta:
+            model = BDESEForm.Meta.model
+            field_classes = BDESEForm.Meta.field_classes
+            fields = ["evolution_amortissement"]
+
+    class BDESE5Form(BDESEForm):
+        class Meta:
+            model = BDESEForm.Meta.model
+            field_classes = BDESEForm.Meta.field_classes
+            fields = ["evolution_amortissement"]
+
+    class BDESE6Form(BDESEForm):
+        class Meta:
+            model = BDESEForm.Meta.model
+            field_classes = BDESEForm.Meta.field_classes
+            fields = ["evolution_amortissement"]
+
+    class BDESE7Form(BDESEForm):
+        class Meta:
+            model = BDESEForm.Meta.model
+            field_classes = BDESEForm.Meta.field_classes
+            fields = ["evolution_amortissement"]
+
+    class BDESE8Form(BDESEForm):
+        class Meta:
+            model = BDESEForm.Meta.model
+            field_classes = BDESEForm.Meta.field_classes
+            fields = ["evolution_amortissement"]
+
+    class BDESE9Form(BDESEForm):
+        class Meta:
+            model = BDESEForm.Meta.model
+            field_classes = BDESEForm.Meta.field_classes
+            fields = ["evolution_amortissement"]
+
+    class BDESE10Form(BDESEForm):
+        class Meta:
+            model = BDESEForm.Meta.model
+            field_classes = BDESEForm.Meta.field_classes
+            fields = ["evolution_amortissement"]
+
+    class BDESE11Form(BDESEForm):
+        class Meta:
+            model = BDESEForm.Meta.model
+            field_classes = BDESEForm.Meta.field_classes
+            fields = ["evolution_amortissement"]
+
+    if step == 1:
+        return BDESE1Form(fetched_data, instance=instance, *args, **kwargs)
+    elif step == 2:
+        return BDESE2Form(fetched_data, instance=instance, *args, **kwargs)
     return BDESEForm(fetched_data, instance=instance, *args, **kwargs)
