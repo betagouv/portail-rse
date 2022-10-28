@@ -256,6 +256,8 @@ def bdese(request, siren, step):
         if form.is_valid():
             messages.success(request, "Étape enregistrée")
             bdese = form.save()
+        else:
+            messages.error(request, "L'étape n'a pas été enregistrée car le formulaire contient des erreurs")
     else:
         fetched_data = get_bdese_data_from_index_egapro(entreprise, 2021)
         form = bdese_form_factory(
