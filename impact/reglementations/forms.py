@@ -341,7 +341,12 @@ def bdese_form_factory(
             "bilan_gaz_effet_de_serre",
         ],
     }
+
+    bdese_model_class = instance.__class__
     Form = forms.modelform_factory(
-        instance.__class__, form=BDESEForm, fields=fields[step]
+        bdese_model_class,
+        form=BDESEForm,
+        fields=fields[step] if bdese_model_class == BDESE_300 else "__all__",
+        exclude=None if bdese_model_class == BDESE_300 else ["annee", "entreprise"],
     )
     return Form(fetched_data, instance=instance, *args, **kwargs)
