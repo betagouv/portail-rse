@@ -12,18 +12,8 @@
             {{ bdese_result }}
         </p>
         <h2>Investissements</h2>
-        Effectif total :
-        <ul>
-        {% for categorie, qte in bdese.effectif_total.items %}
-            <li>{{ categorie }} : {{ qte }}</li>
-        {% endfor %}
-        </ul>
 
-        Effectif permanent :
-        <ul>
-        {% for categorie, qte in bdese.effectif_permanent.items %}
-            <li>{{ categorie }} : {{ qte }}</li>
-        {% endfor %}
-        </ul>
+        {% include "snippets/stats_categorie_pdf.html" with titre="Effectif total" stats=bdese.effectif_total  %}
+        {% include "snippets/stats_categorie_pdf.html" with titre="Effectif permanent" stats=bdese.effectif_permanent  %}
     </body>
 </html>

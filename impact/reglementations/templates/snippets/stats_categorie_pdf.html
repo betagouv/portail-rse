@@ -1,0 +1,6 @@
+{{ titre }} :
+<ul>
+{% for categorie, qte in stats.items %}
+    <li>{{ categorie }} : {{ qte }}</li>
+{% endfor %}
+</ul>
