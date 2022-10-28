@@ -394,26 +394,18 @@ def bdese_form_factory(
                 "bilan_gaz_effet_de_serre",
             ]
 
-    if step == 1:
-        return BDESE1Form(fetched_data, instance=instance, *args, **kwargs)
-    elif step == 2:
-        return BDESE2Form(fetched_data, instance=instance, *args, **kwargs)
-    elif step == 3:
-        return BDESE3Form(fetched_data, instance=instance, *args, **kwargs)
-    elif step == 4:
-        return BDESE4Form(fetched_data, instance=instance, *args, **kwargs)
-    elif step == 5:
-        return BDESE5Form(fetched_data, instance=instance, *args, **kwargs)
-    elif step == 6:
-        return BDESE6Form(fetched_data, instance=instance, *args, **kwargs)
-    elif step == 7:
-        return BDESE7Form(fetched_data, instance=instance, *args, **kwargs)
-    elif step == 8:
-        return BDESE8Form(fetched_data, instance=instance, *args, **kwargs)
-    elif step == 9:
-        return BDESE9Form(fetched_data, instance=instance, *args, **kwargs)
-    elif step == 10:
-        return BDESE10Form(fetched_data, instance=instance, *args, **kwargs)
-    elif step == 11:
-        return BDESE11Form(fetched_data, instance=instance, *args, **kwargs)
-    return BDESEForm(fetched_data, instance=instance, *args, **kwargs)
+    _forms = {
+        1: BDESE1Form,
+        2: BDESE2Form,
+        3: BDESE3Form,
+        4: BDESE4Form,
+        5: BDESE5Form,
+        6: BDESE6Form,
+        7: BDESE7Form,
+        8: BDESE8Form,
+        9: BDESE9Form,
+        10: BDESE10Form,
+        11: BDESE11Form,
+    }
+    form = _forms[step]
+    return form(fetched_data, instance=instance, *args, **kwargs)
