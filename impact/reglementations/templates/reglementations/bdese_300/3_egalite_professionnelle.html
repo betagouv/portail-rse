@@ -5,113 +5,138 @@
 
 
 <div class="fr-container fr-my-8w">
+    <h1>BDESE</h1>
+
     <div class="fr-grid-row">
         {% include "snippets/bdese_menu.html" with active_item=3 %}
 
         <div class="fr-col">
-            <h1>BDESE</h1>
-
+            <h2>Egalité professionnelle entre les femmes et les hommes au sein de l'entreprise</h2>
+            
             <form action="{% url 'bdese' siren 3 %}" method="post">
                 {% csrf_token %}
-                <h2>2° Egalité professionnelle entre les femmes et les hommes au sein de l'entreprise</h2>
-                <h3>I. Indicateurs sur la situation comparée des femmes et des hommes dans l'entreprise</h3>
-                <h4>A-Conditions générales d'emploi</h4>
-                <h5>a) Effectifs : Données chiffrées par sexe</h5>
-                {% include 'snippets/category_field.html' with field=form.nombre_CDI_homme %}
-                {% include 'snippets/category_field.html' with field=form.nombre_CDI_femme %}
-                {% include 'snippets/category_field.html' with field=form.nombre_CDD_homme %}
-                {% include 'snippets/category_field.html' with field=form.nombre_CDD_femme %}
-                <h5>b) Durée et organisation du travail : Données chiffrées par sexe</h5>
-                {% include 'snippets/category_field.html' with field=form.effectif_par_duree_homme %}
-                {% include 'snippets/category_field.html' with field=form.effectif_par_duree_femme %}
-                {% include 'snippets/category_field.html' with field=form.effectif_par_organisation_du_travail_homme %}
-                {% include 'snippets/category_field.html' with field=form.effectif_par_organisation_du_travail_femme %}
-                <h5>c) Données sur les congés</h5>
-                {% include 'snippets/category_field.html' with field=form.conges_homme %}
-                {% include 'snippets/category_field.html' with field=form.conges_femme %}
-                {% include 'snippets/category_field.html' with field=form.conges_par_type_homme %}
-                {% include 'snippets/category_field.html' with field=form.conges_par_type_femme %}
-                <h5>d) Données sur les embauches et les départs</h5>
-                {% include 'snippets/category_field.html' with field=form.embauches_CDI_homme %}
-                {% include 'snippets/category_field.html' with field=form.embauches_CDI_femme %}
-                {% include 'snippets/category_field.html' with field=form.embauches_CDD_homme %}
-                {% include 'snippets/category_field.html' with field=form.embauches_CDD_femme %}
-                {% include 'snippets/category_field.html' with field=form.departs_retraite_homme %}
-                {% include 'snippets/category_field.html' with field=form.departs_demission_homme %}
-                {% include 'snippets/category_field.html' with field=form.departs_fin_CDD_homme %}
-                {% include 'snippets/category_field.html' with field=form.departs_licenciement_homme %}
-                {% include 'snippets/category_field.html' with field=form.departs_retraite_femme %}
-                {% include 'snippets/category_field.html' with field=form.departs_demission_femme %}
-                {% include 'snippets/category_field.html' with field=form.departs_fin_CDD_femme %}
-                {% include 'snippets/category_field.html' with field=form.departs_licenciement_femme %}
-                <h5>e) Positionnement dans l'entreprise</h5>
-                <h4>B - Rémunérations et déroulement de carrière</h4>
-                <h5>a) Promotion</h5>
-                {% include 'snippets/category_field.html' with field=form.nombre_promotions_homme %}
-                {% include 'snippets/category_field.html' with field=form.nombre_promotions_femme %}
-                {% include 'snippets/input_field.html' with field=form.duree_moyenne_entre_deux_promotions_homme %}
-                {% include 'snippets/input_field.html' with field=form.duree_moyenne_entre_deux_promotions_femme %}
-                <h5>b) Ancienneté</h5>
-                {% include 'snippets/category_field.html' with field=form.anciennete_moyenne_homme %}
-                {% include 'snippets/category_field.html' with field=form.anciennete_moyenne_femme %}
-                {% include 'snippets/category_field.html' with field=form.anciennete_moyenne_dans_categorie_profesionnelle_homme %}
-                {% include 'snippets/category_field.html' with field=form.anciennete_moyenne_dans_categorie_profesionnelle_femme %}
-                <h5>c) Age</h5>
-                {% include 'snippets/category_field.html' with field=form.age_moyen_homme %}
-                {% include 'snippets/category_field.html' with field=form.age_moyen_femme %}
-                <h5>d) Rémunérations</h5>
-                {% include 'snippets/category_field.html' with field=form.remuneration_moyenne_homme %}
-                {% include 'snippets/category_field.html' with field=form.remuneration_moyenne_femme %}
-                {% include 'snippets/category_field.html' with field=form.remuneration_moyenne_par_age_homme %}
-                {% include 'snippets/category_field.html' with field=form.remuneration_moyenne_par_age_femme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_femmes_plus_hautes_remunerations %}
 
-                <h4>C - Formation</h4>
-                {% include 'snippets/category_field.html' with field=form.nombre_moyen_heures_formation_homme %}
-                {% include 'snippets/category_field.html' with field=form.nombre_moyen_heures_formation_femme %}
-                {% include 'snippets/category_field.html' with field=form.action_adaptation_au_poste_homme %}
-                {% include 'snippets/category_field.html' with field=form.action_adaptation_au_poste_femme %}
-                {% include 'snippets/category_field.html' with field=form.action_maintien_emploi_homme %}
-                {% include 'snippets/category_field.html' with field=form.action_maintien_emploi_femme %}
-                {% include 'snippets/category_field.html' with field=form.action_developpement_competences_homme %}
-                {% include 'snippets/category_field.html' with field=form.action_developpement_competences_femme %}
-                <h4>D - Conditions de travail, santé et sécurité au travail</h4>
-                {% include 'snippets/category_field.html' with field=form.exposition_risques_pro_homme %}
-                {% include 'snippets/category_field.html' with field=form.exposition_risques_pro_femme %}
-                {% include 'snippets/category_field.html' with field=form.accidents_homme %}
-                {% include 'snippets/category_field.html' with field=form.accidents_femme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_accidents_travail_avec_arret_homme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_accidents_travail_avec_arret_femme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_accidents_trajet_avec_arret_homme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_accidents_trajet_avec_arret_femme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_accidents_par_elements_materiels_homme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_accidents_par_elements_materiels_femme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_et_denominations_maladies_pro_homme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_et_denominations_maladies_pro_femme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_journees_absence_accident_homme %}
-                {% include 'snippets/input_field.html' with field=form.nombre_journees_absence_accident_femme %}
-                {% include 'snippets/category_field.html' with field=form.maladies_homme %}
-                {% include 'snippets/category_field.html' with field=form.maladies_femme %}
-                {% include 'snippets/category_field.html' with field=form.maladies_avec_examen_de_reprise_homme %}
-                {% include 'snippets/category_field.html' with field=form.maladies_avec_examen_de_reprise_femme %}
-                <h3>II. Indicateurs relatifs à l'articulation entre l'activité professionnelle et l'exercice de la responsabilité familiale</h3>
-                <h4>Congés</h4>
-                {% include 'snippets/radio_field.html' with field=form.complement_salaire_conge %}
-                {% include 'snippets/category_field.html' with field=form.nombre_jours_conges_paternite_pris %}
-                <h4>Organisation du temps de travail dans l'entreprise</h4>
-                {% include 'snippets/radio_field.html' with field=form.existence_orga_facilitant_vie_familiale_et_professionnelle %}
-                {% include 'snippets/category_field.html' with field=form.nombre_salaries_temps_partiel_choisi_homme %}
-                {% include 'snippets/category_field.html' with field=form.nombre_salaries_temps_partiel_choisi_femme %}
-                {% include 'snippets/category_field.html' with field=form.nombre_salaries_temps_partiel_choisi_vers_temps_plein_homme %}
-                {% include 'snippets/category_field.html' with field=form.nombre_salaries_temps_partiel_choisi_vers_temps_plein_femme %}
-                {% include 'snippets/radio_field.html' with field=form.participation_accueil_petite_enfance %}
-                {% include 'snippets/input_field.html' with field=form.evolution_depenses_credit_impot_famille %}
-                <h3>III. Stratégie d'action</h3>
-                <p>A partir de l'analyse des indicateurs mentionnés aux I et II, la stratégie d'action comprend les éléments suivants :</p>
-                {% include 'snippets/input_field.html' with field=form.mesures_prises_egalite %}
-                {% include 'snippets/input_field.html' with field=form.objectifs_progression %}
+                <section class="fr-accordion">
+                    <h3 class="fr-accordion__title">
+                        <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-I">I. Indicateurs sur la situation comparée des femmes et des hommes dans l'entreprise</button>
+                    </h3>
+                    <div class="fr-collapse" id="accordion-I">
+                        <h4>A-Conditions générales d'emploi</h4>
+                        <h5>a) Effectifs : Données chiffrées par sexe</h5>
+                        {% include 'snippets/category_field.html' with field=form.nombre_CDI_homme %}
+                        {% include 'snippets/category_field.html' with field=form.nombre_CDI_femme %}
+                        {% include 'snippets/category_field.html' with field=form.nombre_CDD_homme %}
+                        {% include 'snippets/category_field.html' with field=form.nombre_CDD_femme %}
+                        <h5>b) Durée et organisation du travail : Données chiffrées par sexe</h5>
+                        {% include 'snippets/category_field.html' with field=form.effectif_par_duree_homme %}
+                        {% include 'snippets/category_field.html' with field=form.effectif_par_duree_femme %}
+                        {% include 'snippets/category_field.html' with field=form.effectif_par_organisation_du_travail_homme %}
+                        {% include 'snippets/category_field.html' with field=form.effectif_par_organisation_du_travail_femme %}
+                        <h5>c) Données sur les congés</h5>
+                        {% include 'snippets/category_field.html' with field=form.conges_homme %}
+                        {% include 'snippets/category_field.html' with field=form.conges_femme %}
+                        {% include 'snippets/category_field.html' with field=form.conges_par_type_homme %}
+                        {% include 'snippets/category_field.html' with field=form.conges_par_type_femme %}
+                        <h5>d) Données sur les embauches et les départs</h5>
+                        {% include 'snippets/category_field.html' with field=form.embauches_CDI_homme %}
+                        {% include 'snippets/category_field.html' with field=form.embauches_CDI_femme %}
+                        {% include 'snippets/category_field.html' with field=form.embauches_CDD_homme %}
+                        {% include 'snippets/category_field.html' with field=form.embauches_CDD_femme %}
+                        {% include 'snippets/category_field.html' with field=form.departs_retraite_homme %}
+                        {% include 'snippets/category_field.html' with field=form.departs_demission_homme %}
+                        {% include 'snippets/category_field.html' with field=form.departs_fin_CDD_homme %}
+                        {% include 'snippets/category_field.html' with field=form.departs_licenciement_homme %}
+                        {% include 'snippets/category_field.html' with field=form.departs_retraite_femme %}
+                        {% include 'snippets/category_field.html' with field=form.departs_demission_femme %}
+                        {% include 'snippets/category_field.html' with field=form.departs_fin_CDD_femme %}
+                        {% include 'snippets/category_field.html' with field=form.departs_licenciement_femme %}
+                        <h5>e) Positionnement dans l'entreprise</h5>
+        
+                        <h4>B - Rémunérations et déroulement de carrière</h4>
+                        <h5>a) Promotion</h5>
+                        {% include 'snippets/category_field.html' with field=form.nombre_promotions_homme %}
+                        {% include 'snippets/category_field.html' with field=form.nombre_promotions_femme %}
+                        {% include 'snippets/input_field.html' with field=form.duree_moyenne_entre_deux_promotions_homme %}
+                        {% include 'snippets/input_field.html' with field=form.duree_moyenne_entre_deux_promotions_femme %}
+                        <h5>b) Ancienneté</h5>
+                        {% include 'snippets/category_field.html' with field=form.anciennete_moyenne_homme %}
+                        {% include 'snippets/category_field.html' with field=form.anciennete_moyenne_femme %}
+                        {% include 'snippets/category_field.html' with field=form.anciennete_moyenne_dans_categorie_profesionnelle_homme %}
+                        {% include 'snippets/category_field.html' with field=form.anciennete_moyenne_dans_categorie_profesionnelle_femme %}
+                        <h5>c) Age</h5>
+                        {% include 'snippets/category_field.html' with field=form.age_moyen_homme %}
+                        {% include 'snippets/category_field.html' with field=form.age_moyen_femme %}
+                        <h5>d) Rémunérations</h5>
+                        {% include 'snippets/category_field.html' with field=form.remuneration_moyenne_homme %}
+                        {% include 'snippets/category_field.html' with field=form.remuneration_moyenne_femme %}
+                        {% include 'snippets/category_field.html' with field=form.remuneration_moyenne_par_age_homme %}
+                        {% include 'snippets/category_field.html' with field=form.remuneration_moyenne_par_age_femme %}
+                        {% include 'snippets/input_field.html' with field=form.nombre_femmes_plus_hautes_remunerations %}
+        
+                        <h4>C - Formation</h4>
+                        {% include 'snippets/category_field.html' with field=form.nombre_moyen_heures_formation_homme %}
+                        {% include 'snippets/category_field.html' with field=form.nombre_moyen_heures_formation_femme %}
+                        {% include 'snippets/category_field.html' with field=form.action_adaptation_au_poste_homme %}
+                        {% include 'snippets/category_field.html' with field=form.action_adaptation_au_poste_femme %}
+                        {% include 'snippets/category_field.html' with field=form.action_maintien_emploi_homme %}
+                        {% include 'snippets/category_field.html' with field=form.action_maintien_emploi_femme %}
+                        {% include 'snippets/category_field.html' with field=form.action_developpement_competences_homme %}
+                        {% include 'snippets/category_field.html' with field=form.action_developpement_competences_femme %}
+                        
+                        <h4>D - Conditions de travail, santé et sécurité au travail</h4>
+                        {% include 'snippets/category_field.html' with field=form.exposition_risques_pro_homme %}
+                        {% include 'snippets/category_field.html' with field=form.exposition_risques_pro_femme %}
+                        {% include 'snippets/category_field.html' with field=form.accidents_homme %}
+                        {% include 'snippets/category_field.html' with field=form.accidents_femme %}
+                        {% include 'snippets/input_field.html' with field=form.nombre_accidents_travail_avec_arret_homme %}
+                        {% include 'snippets/input_field.html' with field=form.nombre_accidents_travail_avec_arret_femme %}
+                        {% include 'snippets/input_field.html' with field=form.nombre_accidents_trajet_avec_arret_homme %}
+                        {% include 'snippets/input_field.html' with field=form.nombre_accidents_trajet_avec_arret_femme %}
+                        {% include 'snippets/input_field.html' with field=form.nombre_accidents_par_elements_materiels_homme %}
+                        {% include 'snippets/input_field.html' with field=form.nombre_accidents_par_elements_materiels_femme %}
+                        {% include 'snippets/input_field.html' with field=form.nombre_et_denominations_maladies_pro_homme %}
+                        {% include 'snippets/input_field.html' with field=form.nombre_et_denominations_maladies_pro_femme %}
+                        {% include 'snippets/input_field.html' with field=form.nombre_journees_absence_accident_homme %}
+                        {% include 'snippets/input_field.html' with field=form.nombre_journees_absence_accident_femme %}
+                        {% include 'snippets/category_field.html' with field=form.maladies_homme %}
+                        {% include 'snippets/category_field.html' with field=form.maladies_femme %}
+                        {% include 'snippets/category_field.html' with field=form.maladies_avec_examen_de_reprise_homme %}
+                        {% include 'snippets/category_field.html' with field=form.maladies_avec_examen_de_reprise_femme %}
+                    </div>
+                </section>
+                <section class="fr-accordion">
+                    <h3 class="fr-accordion__title">
+                        <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-II">II. Indicateurs relatifs à l'articulation entre l'activité professionnelle et l'exercice de la responsabilité familiale</button>
+                    </h3>
+                    <div class="fr-collapse" id="accordion-II">
+                        <h4>Congés</h4>
+                        {% include 'snippets/radio_field.html' with field=form.complement_salaire_conge %}
+                        {% include 'snippets/category_field.html' with field=form.nombre_jours_conges_paternite_pris %}
+                        <h4>Organisation du temps de travail dans l'entreprise</h4>
+                        {% include 'snippets/radio_field.html' with field=form.existence_orga_facilitant_vie_familiale_et_professionnelle %}
+                        {% include 'snippets/category_field.html' with field=form.nombre_salaries_temps_partiel_choisi_homme %}
+                        {% include 'snippets/category_field.html' with field=form.nombre_salaries_temps_partiel_choisi_femme %}
+                        {% include 'snippets/category_field.html' with field=form.nombre_salaries_temps_partiel_choisi_vers_temps_plein_homme %}
+                        {% include 'snippets/category_field.html' with field=form.nombre_salaries_temps_partiel_choisi_vers_temps_plein_femme %}
+                        {% include 'snippets/radio_field.html' with field=form.participation_accueil_petite_enfance %}
+                        {% include 'snippets/input_field.html' with field=form.evolution_depenses_credit_impot_famille %}
+                    </div>
+                </section>
 
-                <input type="submit" value="Enregistrer" class="fr-btn ">
+                <section class="fr-accordion">
+                    <h3 class="fr-accordion__title">
+                        <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-III">III. Stratégie d'action</button>
+                    </h3>
+                    <div class="fr-collapse" id="accordion-III">
+                        <p>A partir de l'analyse des indicateurs mentionnés aux I et II, la stratégie d'action comprend les éléments suivants :</p>
+                        {% include 'snippets/input_field.html' with field=form.mesures_prises_egalite %}
+                        {% include 'snippets/input_field.html' with field=form.objectifs_progression %}
+                    </div>
+                </section>
+
+                <div class="fr-mt-4w">
+                    <input type="submit" value="Enregistrer" class="fr-btn ">
+                </div>
             </form>
         </div>
     </div>
