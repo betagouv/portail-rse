@@ -292,43 +292,107 @@ def bdese_form_factory(
         class Meta:
             model = BDESEForm.Meta.model
             field_classes = BDESEForm.Meta.field_classes
-            fields = ["evolution_amortissement"]
+            fields = [
+                "frais_personnel",
+                "evolution_salariale_par_categorie",
+                "evolution_salariale_par_sexe",
+                "salaire_base_minimum_par_categorie",
+                "salaire_base_minimum_par_sexe",
+                "salaire_moyen_par_categorie",
+                "salaire_moyen_par_sexe",
+                "salaire_median_par_categorie",
+                "salaire_median_par_sexe",
+                "rapport_masse_salariale_effectif_mensuel",
+                "remuneration_moyenne_decembre",
+                "remuneration_mensuelle_moyenne",
+                "part_primes_non_mensuelle",
+                "remunerations",
+                "rapport_moyenne_deciles",
+                "rapport_moyenne_cadres_ouvriers",
+                "montant_10_remunerations_les_plus_eleves",
+                "pourcentage_salaries_primes_de_rendement",
+                "pourcentage_ouvriers_employes_payes_au_mois",
+                "charge_salariale_globale",
+                "montant_global_hautes_remunerations",
+                "montant_global_reserve_de_participation",
+                "montant_moyen_participation",
+                "part_capital_detenu_par_salaries",
+                "avantages_sociaux",
+                "remuneration_dirigeants_mandataires_sociaux",
+            ]
 
     class BDESE6Form(BDESEForm):
         class Meta:
             model = BDESEForm.Meta.model
             field_classes = BDESEForm.Meta.field_classes
-            fields = ["evolution_amortissement"]
+            fields = [
+                "composition_CSE_etablissement",
+                "participation_elections",
+                "volume_credit_heures",
+                "nombre_reunion_representants_personnel",
+                "accords_conclus",
+                "nombre_personnes_conge_education_ouvriere",
+                "nombre_heures_reunion_personnel",
+                "elements_systeme_accueil",
+                "elements_systeme_information",
+                "elements_systeme_entretiens_individuels",
+                "differends_application_droit_du_travail",
+                "contributions_financement_CSE_CSEE",
+                "contributions_autres_depenses",
+                "cout_prestations_maladie_deces",
+                "cout_prestations_vieillesse",
+                "equipements_pour_conditions_de_vie",
+            ]
 
     class BDESE7Form(BDESEForm):
         class Meta:
             model = BDESEForm.Meta.model
             field_classes = BDESEForm.Meta.field_classes
-            fields = ["evolution_amortissement"]
+            fields = ["remuneration_actionnaires", "remuneration_actionnariat_salarie"]
 
     class BDESE8Form(BDESEForm):
         class Meta:
             model = BDESEForm.Meta.model
             field_classes = BDESEForm.Meta.field_classes
-            fields = ["evolution_amortissement"]
+            fields = [
+                "aides_financieres",
+                "reductions_impots",
+                "exonerations_cotisations_sociales",
+                "credits_impots",
+                "mecenat",
+                "chiffre_affaires",
+                "benefices_ou_pertes",
+                "resultats_globaux",
+                "affectation_benefices",
+            ]
 
     class BDESE9Form(BDESEForm):
         class Meta:
             model = BDESEForm.Meta.model
             field_classes = BDESEForm.Meta.field_classes
-            fields = ["evolution_amortissement"]
+            fields = ["partenariats_pour_produire", "partenariats_pour_beneficier"]
 
     class BDESE10Form(BDESEForm):
         class Meta:
             model = BDESEForm.Meta.model
             field_classes = BDESEForm.Meta.field_classes
-            fields = ["evolution_amortissement"]
+            fields = ["transferts_de_capitaux", "cessions_fusions_acquisitions"]
 
     class BDESE11Form(BDESEForm):
         class Meta:
             model = BDESEForm.Meta.model
             field_classes = BDESEForm.Meta.field_classes
-            fields = ["evolution_amortissement"]
+            fields = [
+                "informations_environnementales",
+                "prevention_et_gestion_dechets",
+                "bilan_gaz_effet_de_serre",
+                "prise_en_compte_questions_environnementales",
+                "quantite_de_dechets_dangereux",
+                "consommation_eau",
+                "consommation_energie",
+                "postes_emissions_directes_gaz_effet_de_serre",
+                "bilan_gaz_effet_de_serre",
+            ]
 
     if step == 1:
         return BDESE1Form(fetched_data, instance=instance, *args, **kwargs)
@@ -338,4 +402,18 @@ def bdese_form_factory(
         return BDESE3Form(fetched_data, instance=instance, *args, **kwargs)
     elif step == 4:
         return BDESE4Form(fetched_data, instance=instance, *args, **kwargs)
+    elif step == 5:
+        return BDESE5Form(fetched_data, instance=instance, *args, **kwargs)
+    elif step == 6:
+        return BDESE6Form(fetched_data, instance=instance, *args, **kwargs)
+    elif step == 7:
+        return BDESE7Form(fetched_data, instance=instance, *args, **kwargs)
+    elif step == 8:
+        return BDESE8Form(fetched_data, instance=instance, *args, **kwargs)
+    elif step == 9:
+        return BDESE9Form(fetched_data, instance=instance, *args, **kwargs)
+    elif step == 10:
+        return BDESE10Form(fetched_data, instance=instance, *args, **kwargs)
+    elif step == 11:
+        return BDESE11Form(fetched_data, instance=instance, *args, **kwargs)
     return BDESEForm(fetched_data, instance=instance, *args, **kwargs)
