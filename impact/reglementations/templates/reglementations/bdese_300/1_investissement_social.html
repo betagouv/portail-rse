@@ -21,8 +21,8 @@
                 {% include 'snippets/category_field.html' with field=form.effectif_permanent %}
                 {% include 'snippets/category_field.html' with field=form.effectif_cdd %}
                 {% include 'snippets/category_field.html' with field=form.effectif_mensuel_moyen %}
-                {% include 'snippets/category_field.html' with field=form.effectif_sexe_homme %}
-                {% include 'snippets/category_field.html' with field=form.effectif_sexe_femme %}
+                {% include 'snippets/category_field.html' with field=form.effectif_homme %}
+                {% include 'snippets/category_field.html' with field=form.effectif_femme %}
                 {% include 'snippets/category_field.html' with field=form.effectif_age %}
                 {% include 'snippets/category_field.html' with field=form.effectif_anciennete %}
                 {% include 'snippets/category_field.html' with field=form.effectif_nationalite_francaise %}
@@ -118,8 +118,7 @@
                 {% include 'snippets/input_field.html' with field=form.taux_realisation_programme_securite %}
                 {% include 'snippets/input_field.html' with field=form.nombre_plans_specifiques_securite %}
                 <h5>Durée et aménagement du temps de travail</h5>
-                {% include 'snippets/category_field.html' with field=form.horaire_hebdomadaire_moyen_ouvriers_employes %}
-                {% include 'snippets/category_field.html' with field=form.somme_heures_travaillees_ouvriers_employes %}
+                {% include 'snippets/category_field.html' with field=form.horaire_hebdomadaire_moyen %}
                 {% include 'snippets/category_field.html' with field=form.nombre_salaries_repos_compensateur_code_travail %}
                 {% include 'snippets/category_field.html' with field=form.nombre_salaries_repos_compensateur_regime_conventionne %}
                 {% include 'snippets/category_field.html' with field=form.nombre_salaries_horaires_individualises %}
