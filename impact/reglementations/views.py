@@ -4,7 +4,7 @@ import requests
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import HttpResponse, render
+from django.shortcuts import HttpResponse, redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from weasyprint import HTML
@@ -249,20 +249,29 @@ def bdese(request, siren, step):
     bdese = _get_or_create_bdese(entreprise)
     categories_professionnelles = categories_default()
     if request.method == "POST":
-        form = bdese_form_factory(
-            step,
-            categories_professionnelles,
-            bdese,
-            data=request.POST,
-        )
-        if form.is_valid():
-            messages.success(request, "Étape enregistrée")
-            bdese = form.save()
+        if "mark_incomplete" in request.POST:
+            bdese.mark_step_as_incomplete(step)
+            bdese.save()
+            return redirect("bdese", siren=siren, step=step)
         else:
-            messages.error(
-                request,
-                "L'étape n'a pas été enregistrée car le formulaire contient des erreurs",
+            form = bdese_form_factory(
+                step,
+                categories_professionnelles,
+                bdese,
+                data=request.POST,
             )
+            if form.is_valid():
+                bdese = form.save()
+                messages.success(request, "Étape enregistrée")
+                if "save_complete" in request.POST:
+                    bdese.mark_step_as_complete(step)
+                    bdese.save()
+                    return redirect("bdese", siren=siren, step=step)
+            else:
+                messages.error(
+                    request,
+                    "L'étape n'a pas été enregistrée car le formulaire contient des erreurs",
+                )
     else:
         fetched_data = get_bdese_data_from_index_egapro(entreprise, 2021)
         form = bdese_form_factory(
@@ -283,9 +292,28 @@ def bdese(request, siren, step):
             11: "11_environnement.html",
         }
         template_path = f"reglementations/bdese_300/{templates[step]}"
+        steps = {
+            step: {
+                "name": bdese.STEPS[step],
+                "is_complete": bdese.step_is_complete(step),
+            }
+            for step in bdese.STEPS
+        }
+        step_is_complete = steps[step]["is_complete"]
     else:
         template_path = "reglementations/bdese_50_300.html"
-    return render(request, template_path, {"form": form, "siren": siren})
+        steps = {}
+        step_is_complete = False
+    return render(
+        request,
+        template_path,
+        {
+            "form": form,
+            "siren": siren,
+            "step_is_complete": step_is_complete,
+            "steps": steps,
+        },
+    )
 
 
 def _get_or_create_bdese(entreprise: Entreprise) -> BDESE_300 | BDESE_50_300:

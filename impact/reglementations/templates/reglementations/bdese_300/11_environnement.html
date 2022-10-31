@@ -44,7 +44,7 @@
                 <h5>ii-Bilan des émissions de gaz à effet de serre</h5>
                 {% include 'snippets/input_field.html' with field=form.bilan_gaz_effet_de_serre %}
 
-                <input type="submit" value="Enregistrer" class="fr-btn ">
+                {% include "snippets/bdese_submit.html" %}
             </form>
         </div>
     </div>

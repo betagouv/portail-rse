@@ -18,7 +18,7 @@
                 {% include 'snippets/input_field.html' with field=form.montant_depenses_recherche_developpement %}
                 {% include 'snippets/input_field.html' with field=form.evolution_productivite %}
 
-                <input type="submit" value="Enregistrer" class="fr-btn ">
+                {% include "snippets/bdese_submit.html" %}
             </form>
         </div>
     </div>

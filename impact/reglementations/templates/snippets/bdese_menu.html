@@ -4,39 +4,11 @@
             <button class="fr-sidemenu__btn" hidden aria-controls="fr-sidemenu-wrapper" aria-expanded="false">Dans cette rubrique</button>
             <div class="fr-collapse" id="fr-sidemenu-wrapper">
                 <ul class="fr-sidemenu__list">
-                    <li class="fr-sidemenu__item {% if active_item == 1 %}fr-sidemenu__item--active{% endif %}">
-                        <a class="fr-sidemenu__link" href="{% url 'bdese' siren 1 %}" target="_self" {% if active_item == 1 %}aria-current="page"{% endif %}>Investissement social</a>
+                    {% for step_number, step in steps.items %}
+                    <li class="fr-sidemenu__item {% if active_item == step_number %}fr-sidemenu__item--active{% endif %}">
+                        <a class="fr-sidemenu__link" href="{% url 'bdese' siren step_number %}" target="_self" {% if active_item == step_number %}aria-current="page"{% endif %}>{{ step.name }} {% if step.is_complete %}✅{% endif %}</a>
                     </li>
-                    <li class="fr-sidemenu__item {% if active_item == 2 %}fr-sidemenu__item--active{% endif %}">
-                        <a class="fr-sidemenu__link" href="{% url 'bdese' siren 2 %}" target="_self" {% if active_item == 2 %}aria-current="page"{% endif %}>Investissement matériel et immatériel</a>
-                    </li>
-                    <li class="fr-sidemenu__item {% if active_item == 3 %}fr-sidemenu__item--active{% endif %}">
-                        <a class="fr-sidemenu__link" href="{% url 'bdese' siren 3 %}" target="_self" {% if active_item == 3 %}aria-current="page"{% endif %}>Egalité professionnelle homme/femme</a>
-                    </li>
-                    <li class="fr-sidemenu__item {% if active_item == 4 %}fr-sidemenu__item--active{% endif %}">
-                        <a class="fr-sidemenu__link" href="{% url 'bdese' siren 4 %}" target="_self" {% if active_item == 4 %}aria-current="page"{% endif %}>Fonds propres, endettement et impôts</a>
-                    </li>
-                    <li class="fr-sidemenu__item {% if active_item == 5 %}fr-sidemenu__item--active{% endif %}">
-                        <a class="fr-sidemenu__link" href="{% url 'bdese' siren 5 %}" target="_self" {% if active_item == 5 %}aria-current="page"{% endif %}>Rémunération</a>
-                    </li>
-                    <li class="fr-sidemenu__item {% if active_item == 6 %}fr-sidemenu__item--active{% endif %}">
-                        <a class="fr-sidemenu__link" href="{% url 'bdese' siren 6 %}" target="_self" {% if active_item == 6 %}aria-current="page"{% endif %}>Représentation du personnel et Activités sociales et culturelles</a>
-                    </li>
-                    <li class="fr-sidemenu__item {% if active_item == 7 %}fr-sidemenu__item--active{% endif %}">
-                        <a class="fr-sidemenu__link" href="{% url 'bdese' siren 7 %}" target="_self" {% if active_item == 7 %}aria-current="page"{% endif %}>Rémunération des financeurs</a>
-                    </li>
-                    <li class="fr-sidemenu__item {% if active_item == 8 %}fr-sidemenu__item--active{% endif %}">
-                        <a class="fr-sidemenu__link" href="{% url 'bdese' siren 8 %}" target="_self" {% if active_item == 8 %}aria-current="page"{% endif %}>Flux financiers</a>
-                    </li>
-                    <li class="fr-sidemenu__item {% if active_item == 9 %}fr-sidemenu__item--active{% endif %}">
-                        <a class="fr-sidemenu__link" href="{% url 'bdese' siren 9 %}" target="_self" {% if active_item == 9 %}aria-current="page"{% endif %}>Partenariats</a>
-                    </li>
-                    <li class="fr-sidemenu__item {% if active_item == 10 %}fr-sidemenu__item--active{% endif %}">
-                        <a class="fr-sidemenu__link" href="{% url 'bdese' siren 10 %}" target="_self" {% if active_item == 10 %}aria-current="page"{% endif %}>Transferts commerciaux et financiers</a>
-                    </li>
-                    <li class="fr-sidemenu__item {% if active_item == 11 %}fr-sidemenu__item--active{% endif %}">
-                        <a class="fr-sidemenu__link" href="{% url 'bdese' siren 11 %}" target="_self" {% if active_item == 11 %}aria-current="page"{% endif %}>Environnement</a>
-                    </li>
+                    {% endfor %}
                 </ul>
             </div>
         </div>

@@ -43,7 +43,7 @@
                 {% include 'snippets/input_field.html' with field=form.cout_prestations_vieillesse %}
                 {% include 'snippets/input_field.html' with field=form.equipements_pour_conditions_de_vie %}
 
-                <input type="submit" value="Enregistrer" class="fr-btn ">
+                {% include "snippets/bdese_submit.html" %}
             </form>
         </div>
     </div>

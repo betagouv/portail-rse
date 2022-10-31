@@ -18,7 +18,7 @@
                 {% include 'snippets/input_field.html' with field=form.emprunts_et_dettes_financieres %}
                 {% include 'snippets/input_field.html' with field=form.impots_et_taxes %}
 
-                <input type="submit" value="Enregistrer" class="fr-btn ">
+                {% include "snippets/bdese_submit.html" %}
             </form>
         </div>
     </div>

@@ -62,13 +62,16 @@ def bdese_form_factory(
                 for category_field in instance.__class__.category_fields()
             }
 
-        def __init__(self, fetched_data=None, *args, **kwargs):
+        def __init__(self, instance, fetched_data=None, *args, **kwargs):
             if fetched_data:
                 if "initial" not in kwargs:
                     kwargs["initial"] = {}
                 kwargs["initial"].update(fetched_data)
-            super().__init__(*args, **kwargs)
-            if fetched_data:
+            super().__init__(instance=instance, *args, **kwargs)
+            if instance.step_is_complete(step):
+                for field in self.fields:
+                    self.fields[field].disabled = True
+            elif fetched_data:
                 for field in fetched_data:
                     if field in self.fields:
                         self.fields[
@@ -349,4 +352,4 @@ def bdese_form_factory(
         fields=fields[step] if bdese_model_class == BDESE_300 else "__all__",
         exclude=None if bdese_model_class == BDESE_300 else ["annee", "entreprise"],
     )
-    return Form(fetched_data, instance=instance, *args, **kwargs)
+    return Form(instance, fetched_data=fetched_data, *args, **kwargs)

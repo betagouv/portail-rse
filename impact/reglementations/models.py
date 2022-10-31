@@ -62,11 +62,44 @@ class AbstractBDESE(models.Model):
             and type(getattr(cls, attribute_name).field) == CategoryField
         ]
 
+    def mark_step_as_complete(self, step: int):
+        pass
+
+    def mark_step_as_incomplete(self, step: int):
+        pass
+
+    def step_is_complete(self, step: int):
+        return False
+
+
+def bdese_300_completion_steps_default():
+    return {step_name: False for step_name in BDESE_300.STEPS.values()}
+
 
 class BDESE_300(AbstractBDESE):
     class Meta:
         verbose_name = "BDESE plus de 300 salariés"
         verbose_name_plural = "BDESE plus de 300 salariés"
+
+    STEPS = {
+        1: "Investissement social",
+        2: "Investissement matériel et immatériel",
+        3: "Egalité professionnelle homme/femme",
+        4: "Fonds propres, endettement et impôts",
+        5: "Rémunérations",
+        6: "Représentation du personnel et Activités sociales et culturelles",
+        7: "Rémunération des financeurs",
+        8: "Flux financiers",
+        9: "Partenariats",
+        10: "Transferts commerciaux et financiers",
+        11: "Environnement",
+    }
+
+    completion_steps = CategoryField(
+        base_field=models.BooleanField,
+        categories=STEPS.values(),
+        default=bdese_300_completion_steps_default,
+    )
 
     # Décret no 2022-678 du 26 avril 2022
     # https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000045680845
@@ -1658,6 +1691,19 @@ class BDESE_300(AbstractBDESE):
         null=True,
         blank=True,
     )
+
+    def mark_step_as_complete(self, step: int):
+        completion_steps = self.completion_steps
+        completion_steps[self.STEPS[step]] = True
+        self.completion_steps = completion_steps
+
+    def mark_step_as_incomplete(self, step: int):
+        completion_steps = self.completion_steps
+        completion_steps[self.STEPS[step]] = False
+        self.completion_steps = completion_steps
+
+    def step_is_complete(self, step: int):
+        return self.completion_steps[self.STEPS[step]]
 
 
 class BDESE_50_300(AbstractBDESE):

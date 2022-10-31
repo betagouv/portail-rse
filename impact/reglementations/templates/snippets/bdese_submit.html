@@ -1,0 +1,8 @@
+<div class="fr-mt-4w">
+    {% if step_is_complete %}
+    <button type="submit" name="mark_incomplete" class="fr-btn">Modifier</button>
+    {% else %}
+    <button type="submit" name="save_complete" class="fr-btn">Enregistrer et marquer comme terminé</button>
+    <button type="submit" name="save_draft" class="fr-btn fr-btn--secondary">Enregistrer en brouillon</button>
+    {% endif %}
+</div>

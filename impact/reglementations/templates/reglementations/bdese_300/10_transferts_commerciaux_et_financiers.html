@@ -20,7 +20,7 @@
                 <h3>B-Cessions, fusions, et acquisitions réalisées</h3>
                 {% include 'snippets/input_field.html' with field=form.cessions_fusions_acquisitions %}
 
-                <input type="submit" value="Enregistrer" class="fr-btn ">
+                {% include "snippets/bdese_submit.html" %}
             </form>
         </div>
     </div>

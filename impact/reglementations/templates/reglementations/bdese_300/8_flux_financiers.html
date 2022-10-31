@@ -35,7 +35,7 @@
                 {% include 'snippets/category_field.html' with field=form.resultats_globaux %}
                 {% include 'snippets/input_field.html' with field=form.affectation_benefices %}
 
-                <input type="submit" value="Enregistrer" class="fr-btn ">
+                {% include "snippets/bdese_submit.html" %}
             </form>
         </div>
     </div>
