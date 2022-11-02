@@ -1,19 +1,17 @@
 {% extends "public/base.html" %}
 
 {% block content %}
-
-
-
 <div class="fr-container fr-my-8w">
+    <h1>BDESE</h1>
+
     <div class="fr-grid-row">
         {% include "snippets/bdese_menu.html" with active_item=11 %}
 
         <div class="fr-col">
-            <h1>BDESE</h1>
+            <h2>Environnement</h2>
 
             <form action="{% url 'bdese' siren 11 %}" method="post">
                 {% csrf_token %}
-                <h2>10° Environnement</h2>
                 <p>Lorsque les données et informations environnementales transmises dans le cadre de cette rubrique ne sont pas éditées au niveau de l'entreprise (i. e. par exemple, au niveau du groupe ou des établissements distincts, le cas échéant), elles doivent être accompagnées d'informations supplémentaires pertinentes pour être mises en perspective à ce niveau.</p>
                 <h3>I-Pour les entreprises soumises à la déclaration prévue à l'article R. 225-105 du code de commerce</h3>
                 <h4>A-Politique générale en matière environnementale</h4>

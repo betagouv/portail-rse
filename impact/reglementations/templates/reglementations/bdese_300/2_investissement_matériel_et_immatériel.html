@@ -1,19 +1,17 @@
 {% extends "public/base.html" %}
 
 {% block content %}
-
-
-
 <div class="fr-container fr-my-8w">
+    <h1>BDESE</h1>
+
     <div class="fr-grid-row">
         {% include "snippets/bdese_menu.html" with active_item=2 %}
 
         <div class="fr-col">
-            <h1>BDESE</h1>
+            <h2>Investissement matériel et immatériel</h2>
 
             <form action="{% url 'bdese' siren 2 %}" method="post">
                 {% csrf_token %}
-                <h3>Investissement matériel et immatériel</h3>
                 {% include 'snippets/input_field.html' with field=form.evolution_amortissement %}
                 {% include 'snippets/input_field.html' with field=form.montant_depenses_recherche_developpement %}
                 {% include 'snippets/input_field.html' with field=form.evolution_productivite %}
