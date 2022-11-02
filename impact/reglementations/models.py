@@ -71,6 +71,10 @@ class AbstractBDESE(models.Model):
     def step_is_complete(self, step: int):
         return False
 
+    @property
+    def is_complete(self):
+        return False
+
 
 def bdese_300_completion_steps_default():
     return {step_name: False for step_name in BDESE_300.STEPS.values()}
@@ -1704,6 +1708,10 @@ class BDESE_300(AbstractBDESE):
 
     def step_is_complete(self, step: int):
         return self.completion_steps[self.STEPS[step]]
+
+    @property
+    def is_complete(self):
+        return all(self.completion_steps.values())
 
 
 class BDESE_50_300(AbstractBDESE):
