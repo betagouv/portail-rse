@@ -1,8 +1,8 @@
 <div class="fr-mt-4w">
     {% if step_is_complete %}
-    <button type="submit" name="mark_incomplete" class="fr-btn">Modifier</button>
+    <button type="submit" name="mark_incomplete" class="fr-btn fr-btn--icon-left fr-icon-edit-line">Repasser en brouillon pour modifier</button>
     {% else %}
-    <button type="submit" name="save_complete" class="fr-btn">Enregistrer et marquer comme terminé</button>
-    <button type="submit" name="save_draft" class="fr-btn fr-btn--secondary">Enregistrer en brouillon</button>
+    <button type="submit" name="save_complete" class="fr-btn fr-btn--icon-left fr-icon-checkbox-circle-line">Enregistrer et marquer comme terminé</button>
+    <button type="submit" name="save_draft" class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-save-line">Enregistrer en brouillon</button>
     {% endif %}
 </div>
