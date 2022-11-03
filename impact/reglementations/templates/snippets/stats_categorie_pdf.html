@@ -1,6 +1,10 @@
 {{ titre }} :
-<ul>
-{% for categorie, qte in stats.items %}
-    <li>{{ categorie }} : {{ qte }}</li>
-{% endfor %}
-</ul>
+{% if stats %}
+    <ul>
+    {% for categorie, qte in stats.items %}
+        <li>{{ categorie }} : {{ qte }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>non rempli</p>
+{% endif %}
