@@ -83,7 +83,7 @@ class BDESEReglementation(Reglementation):
             secondary_actions = [
                 ReglementationAction(
                     reverse_lazy("bdese_result", args=[entreprise.siren]),
-                    "Télécharger le pdf",
+                    "Télécharger le pdf (brouillon)",
                 ),
             ]
 
