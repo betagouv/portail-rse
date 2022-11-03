@@ -23,9 +23,9 @@
         {% include "snippets/stats_category_pdf.html" with titre="Effectif ancienneté" stats=bdese.effectif_anciennete %}
         {% include "snippets/stats_category_pdf.html" with titre="Effectif de nationalité française" stats=bdese.effectif_nationalite_francaise %}
         {% include "snippets/stats_category_pdf.html" with titre="Effectif de nationalité étrangère" stats=bdese.effectif_nationalite_etrangere %}
-        {% include "snippets/stats_integer_pdf.html" with titre="Effectif de travailleurs extérieurs" stats=bdese.nombre_travailleurs_exterieurs %}
+        {% include "snippets/stats_scalar_pdf.html" with titre="Effectif de travailleurs extérieurs" stats=bdese.nombre_travailleurs_exterieurs %}
 
-        {% include "snippets/stats_integer_pdf.html" with titre="Nombre de départs volontaires en retraite et préretraite" stats=bdese.nombre_departs_volontaires_retraite_preretraite %}
+        {% include "snippets/stats_scalar_pdf.html" with titre="Nombre de départs volontaires en retraite et préretraite" stats=bdese.nombre_departs_volontaires_retraite_preretraite %}
 
     </body>
 </html>
