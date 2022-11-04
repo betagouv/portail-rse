@@ -130,7 +130,7 @@ class BDESEReglementation(Reglementation):
 
 @dataclass
 class IndexEgaproReglementation(Reglementation):
-    title = "Index de l'égalité professionnelle"
+    title = "Index de l’égalité professionnelle"
     description = "Afin de lutter contre les inégalités salariales entre les femmes et les hommes, certaines entreprises doivent calculer et transmettre un index mesurant l’égalité salariale au sein de leur structure."
     more_info_url = "https://www.economie.gouv.fr/entreprises/index-egalite-professionnelle-obligatoire"
     primary_action = ReglementationAction(
