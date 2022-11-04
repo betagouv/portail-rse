@@ -27,9 +27,8 @@ def test_default_index_egapro_reglementation():
     assert index.primary_action.external == True
 
 
-def test_calculate_less_than_50_employees(entreprise, mocker):
+def test_calculate_less_than_50_employees(entreprise, mock_index_egapro):
     entreprise.effectif = "petit"
-    mock_index_egapro = mocker.patch("reglementations.views.is_index_egapro_updated")
 
     index = IndexEgaproReglementation.calculate(entreprise)
 
@@ -39,10 +38,8 @@ def test_calculate_less_than_50_employees(entreprise, mocker):
 
 
 @pytest.mark.parametrize("effectif", ["moyen", "grand", "sup500"])
-def test_calculate_more_than_50_employees(effectif, entreprise, mocker):
+def test_calculate_more_than_50_employees(effectif, entreprise, mock_index_egapro):
     entreprise.effectif = effectif
-
-    mock_index_egapro = mocker.patch("reglementations.views.is_index_egapro_updated")
     mock_index_egapro.return_value = False
 
     index = IndexEgaproReglementation.calculate(entreprise)

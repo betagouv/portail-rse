@@ -12,3 +12,8 @@ def entreprise(db):
         raison_sociale="Entreprise SAS",
     )
     return entreprise
+
+
+@pytest.fixture(autouse=True)
+def mock_index_egapro(mocker):
+    return mocker.patch("reglementations.views.is_index_egapro_updated")
