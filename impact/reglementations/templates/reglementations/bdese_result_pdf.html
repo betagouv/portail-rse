@@ -2,6 +2,8 @@
 <html>
     <head>
         <style>
+            {% load filters %}
+            {{ "dsfr-1.7.2/dsfr/dsfr.min.css" | inline_static_file }}
             @page {
                 size: A4;
                 margin: 1cm;
@@ -16,11 +18,38 @@
         </style>
     </head>
     <body>
+        <header role="banner" class="fr-header">
+            <div class="fr-header__body">
+                <div class="fr-container">
+                    <div class="fr-header__body-row">
+                        <div class="fr-header__brand fr-enlarge-link">
+                            <div class="fr-header__brand-top">
+                                <div class="fr-header__logo">
+                                    <p class="fr-logo">
+                                        République
+                                        <br>Française
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="fr-header__service">
+                                <p class="fr-header__service-title">
+                                    Rapport BDESE {{ bdese.annee }} {{ entreprise.raison_sociale }} <span class="fr-badge fr-badge--sm fr-badge--green-emeraude">BETA</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="fr-header__menu-links">
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main>
         <h1>{{ entreprise.raison_sociale }}</h1>
 
         <p>Vous êtes soumis à la réglementation BDESE de type :<br>
             {{ bdese_result }}
         </p>
+
         <h2>Investissements</h2>
 
         {% include "snippets/stats_category_pdf.html" with titre="Effectif total" stats=bdese.effectif_total %}
@@ -36,6 +65,6 @@
         {% include "snippets/stats_scalar_pdf.html" with titre="Effectif de travailleurs extérieurs" stats=bdese.nombre_travailleurs_exterieurs %}
 
         {% include "snippets/stats_scalar_pdf.html" with titre="Nombre de départs volontaires en retraite et préretraite" stats=bdese.nombre_departs_volontaires_retraite_preretraite %}
-
+        </main>
     </body>
 </html>

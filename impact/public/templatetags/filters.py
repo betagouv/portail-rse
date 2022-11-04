@@ -1,5 +1,7 @@
 from django import template
 
+import impact.settings
+
 register = template.Library()
 
 
@@ -16,3 +18,11 @@ def translate_boolean(boolean):
 @register.filter
 def widget_type(field):
     return field.field.widget.__class__.__name__
+
+
+@register.filter
+def inline_static_file(path):
+    full_path = impact.settings.STATICFILES_DIRS[0] / path
+    with open(full_path) as f:
+        content = f.read()
+    return content

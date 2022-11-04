@@ -17,6 +17,7 @@ from .models import BDESE_300, BDESE_50_300, categories_default
 
 import impact.settings
 
+
 @dataclass
 class ReglementationAction:
     url: str
@@ -233,7 +234,8 @@ def bdese_result(request, siren):
     pdf_html = render_to_string("reglementations/bdese_result_pdf.html", context)
     font_config = FontConfiguration()
     html = HTML(string=pdf_html)
-    css = CSS(string="""
+    css = CSS(
+        string="""
         @font-face {
             font-family: 'Marianne';
             src: url('../../static/fonts/Marianne/fontes desktop/Marianne-Regular.otf');
@@ -244,7 +246,8 @@ def bdese_result(request, siren):
         body {
             font-family: 'Marianne';
         }
-    """)
+    """
+    )
     pdf_file = html.write_pdf(stylesheets=[css])
 
     response = HttpResponse(pdf_file, content_type="application/pdf")
