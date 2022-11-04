@@ -4,6 +4,11 @@ from entreprises.models import Entreprise
 from reglementations.views import BDESEReglementation, IndexEgaproReglementation
 
 
+@pytest.fixture
+def mock_index_egapro(mocker):
+    mocker.patch("reglementations.views.is_index_egapro_updated", return_value=False)
+
+
 def test_public_reglementations(client):
     response = client.get("/reglementations")
 
@@ -23,7 +28,7 @@ def test_public_reglementations(client):
 
 
 @pytest.mark.django_db
-def test_public_reglementations_with_entreprise_data(client):
+def test_public_reglementations_with_entreprise_data(client, mock_index_egapro):
     data = {
         "effectif": "petit",
         "bdese_accord": False,
@@ -68,7 +73,7 @@ def entreprise(db, django_user_model):
     return entreprise
 
 
-def test_reglementations_with_authenticated_user(client, entreprise):
+def test_reglementations_with_authenticated_user(client, mock_index_egapro, entreprise):
     client.force_login(entreprise.users.first())
 
     response = client.get("/reglementations")
@@ -88,7 +93,7 @@ def test_reglementations_with_authenticated_user(client, entreprise):
 
 
 def test_reglementations_with_authenticated_user_and_another_entreprise_data(
-    client, entreprise
+    client, mock_index_egapro, entreprise
 ):
     client.force_login(entreprise.users.first())
 
@@ -107,7 +112,7 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
 
 
 def test_entreprise_data_are_saved_only_when_entreprise_user_is_autenticated(
-    client, entreprise
+    client, mock_index_egapro, entreprise
 ):
     data = {
         "effectif": "grand",
