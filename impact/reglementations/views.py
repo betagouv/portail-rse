@@ -7,7 +7,8 @@ from django.core.exceptions import PermissionDenied
 from django.shortcuts import HttpResponse, redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from weasyprint import HTML
+from weasyprint import CSS, HTML
+from weasyprint.text.fonts import FontConfiguration
 
 from entreprises.models import Entreprise
 from public.forms import EligibiliteForm
@@ -229,7 +230,16 @@ def bdese_result(request, siren):
         "bdese": _get_or_create_bdese(entreprise),
     }
     pdf_html = render_to_string("reglementations/bdese_result_pdf.html", context)
-    pdf_file = HTML(string=pdf_html).write_pdf()
+    font_config = FontConfiguration()
+    html = HTML(string=pdf_html)
+    css = CSS(string="""
+          @font-face {
+          font-family: 'Marianne';
+          src: url('../../static/fonts/Marianne/fontes desktop/Marianne-Regular.otf') format('otf');
+          }
+          body {font-family: 'Marianne';}
+    """)
+    pdf_file = html.write_pdf(stylesheets=[css])
 
     response = HttpResponse(pdf_file, content_type="application/pdf")
     response["Content-Disposition"] = 'filename="bdese.pdf"'
