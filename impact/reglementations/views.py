@@ -234,11 +234,16 @@ def bdese_result(request, siren):
     font_config = FontConfiguration()
     html = HTML(string=pdf_html)
     css = CSS(string="""
-          @font-face {
-          font-family: 'Marianne';
-          src: url('../../static/fonts/Marianne/fontes desktop/Marianne-Regular.otf');
-          }
-          body {font-family: 'Marianne';}
+        @font-face {
+            font-family: 'Marianne';
+            src: url('../../static/fonts/Marianne/fontes desktop/Marianne-Regular.otf');
+        }
+        @page {
+            font-family: 'Marianne';
+        }
+        body {
+            font-family: 'Marianne';
+        }
     """)
     pdf_file = html.write_pdf(stylesheets=[css])
 
