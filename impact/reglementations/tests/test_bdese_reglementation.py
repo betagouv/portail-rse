@@ -1,20 +1,7 @@
 from django.urls import reverse
-import pytest
 
-from entreprises.models import Entreprise
 from reglementations.models import BDESE_300
 from reglementations.views import BDESEReglementation
-
-
-@pytest.fixture
-def entreprise(db):
-    entreprise = Entreprise.objects.create(
-        siren="000000001",
-        effectif="petit",
-        bdese_accord=False,
-        raison_sociale="Entreprise SAS",
-    )
-    return entreprise
 
 
 def test_default_bdese_reglementation():
