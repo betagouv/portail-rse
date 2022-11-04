@@ -1,4 +1,5 @@
 from django.urls import reverse
+import pytest
 
 from reglementations.models import BDESE_300
 from reglementations.views import BDESEReglementation
@@ -60,8 +61,9 @@ def test_calculate_bdese_reglementation_50_300_employees(entreprise):
     assert bdese.bdese_type is BDESEReglementation.TYPE_INFERIEUR_300
 
 
-def test_calculate_bdese_reglementation_more_than_300_employees(entreprise, mocker):
-    entreprise.effectif = "grand"
+@pytest.mark.parametrize("effectif", ["grand", "sup500"])
+def test_calculate_bdese_reglementation_more_than_300_employees(effectif, entreprise, mocker):
+    entreprise.effectif = effectif
 
     bdese = BDESEReglementation.calculate(entreprise)
 
@@ -77,7 +79,6 @@ def test_calculate_bdese_reglementation_more_than_300_employees(entreprise, mock
     assert bdese.secondary_actions[0].url == reverse(
         "bdese_result", args=[entreprise.siren]
     )
-    assert bdese.bdese_type is BDESEReglementation.TYPE_INFERIEUR_500
 
     BDESE_300.objects.create(entreprise=entreprise)
     bdese = BDESEReglementation.calculate(entreprise)
@@ -105,8 +106,9 @@ def test_calculate_bdese_reglementation_more_than_300_employees(entreprise, mock
     )
 
 
-def test_calculate_bdese_reglementation_with_bdese_accord(entreprise):
-    entreprise.effectif = "moyen"
+@pytest.mark.parametrize("effectif", ["moyen", "grand", "sup500"])
+def test_calculate_bdese_reglementation_with_bdese_accord(effectif, entreprise):
+    entreprise.effectif = effectif
     entreprise.bdese_accord = True
 
     bdese = BDESEReglementation.calculate(entreprise)
