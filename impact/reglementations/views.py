@@ -42,8 +42,8 @@ class BDESEReglementation(Reglementation):
 
     title = "Base de données économiques, sociales et environnementales (BDESE)"
     description = """L'employeur d'au moins 50 salariés doit mettre à disposition du comité économique et social (CSE) ou des représentants du personnel une base de données économiques, sociales et environnementales (BDESE).
-                    La BDESE rassemble les informations sur les grandes orientations économiques et sociales de l'entreprise.
-                    Elle comprend des mentions obligatoires qui varient selon l'effectif de l'entreprise."""
+        La BDESE rassemble les informations sur les grandes orientations économiques et sociales de l'entreprise.
+        Elle comprend des mentions obligatoires qui varient selon l'effectif de l'entreprise."""
     more_info_url = "https://entreprendre.service-public.fr/vosdroits/F32193"
 
     primary_action: ReglementationAction | None = None
