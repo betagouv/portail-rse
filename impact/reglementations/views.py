@@ -15,6 +15,7 @@ from public.forms import EligibiliteForm
 from .forms import bdese_form_factory
 from .models import BDESE_300, BDESE_50_300, categories_default
 
+import impact.settings
 
 @dataclass
 class ReglementationAction:
@@ -232,10 +233,11 @@ def bdese_result(request, siren):
     pdf_html = render_to_string("reglementations/bdese_result_pdf.html", context)
     font_config = FontConfiguration()
     html = HTML(string=pdf_html)
+    MARIANNE_PATH = f"'{impact.settings.STATICFILES_DIRS}/fonts/Marianne/fontes desktop/Marianne-Regular.otf'"
     css = CSS(string="""
           @font-face {
           font-family: 'Marianne';
-          src: url('../../static/fonts/Marianne/fontes desktop/Marianne-Regular.otf') format('otf');
+          src: url(""" + MARIANNE_PATH + """ format('otf');
           }
           body {font-family: 'Marianne';}
     """)
