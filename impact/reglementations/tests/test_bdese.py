@@ -4,8 +4,8 @@ import pytest
 from reglementations.models import BDESE_50_300, BDESE_300
 
 
-def test_bdese_is_not_public(client, django_user_model, entreprise):
-    url = f"/bdese/{entreprise.siren}/1"
+def test_bdese_is_not_public(client, django_user_model, grande_entreprise):
+    url = f"/bdese/{grande_entreprise.siren}/1"
     response = client.get(url)
 
     assert response.status_code == 302

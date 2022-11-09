@@ -31,10 +31,9 @@ def test_default_bdese_reglementation():
 
 @pytest.mark.parametrize("bdese_accord", [True, False])
 def test_calculate_bdese_reglementation_less_than_50_employees(
-    bdese_accord, entreprise
+    bdese_accord, entreprise_factory
 ):
-    entreprise.effectif = "petit"
-    entreprise.bdese_accord = bdese_accord
+    entreprise = entreprise_factory(effectif="petit", bdese_accord=bdese_accord)
 
     bdese = BDESEReglementation.calculate(entreprise)
 
@@ -45,9 +44,8 @@ def test_calculate_bdese_reglementation_less_than_50_employees(
     assert bdese.bdese_type is None
 
 
-def test_calculate_bdese_reglementation_50_300_employees(entreprise):
-    entreprise.effectif = "moyen"
-    entreprise.bdese_accord = False
+def test_calculate_bdese_reglementation_50_300_employees(entreprise_factory):
+    entreprise = entreprise_factory(effectif="moyen", bdese_accord=False)
 
     bdese = BDESEReglementation.calculate(entreprise)
 
@@ -64,10 +62,9 @@ def test_calculate_bdese_reglementation_50_300_employees(entreprise):
 
 @pytest.mark.parametrize("effectif", ["grand", "sup500"])
 def test_calculate_bdese_reglementation_more_than_300_employees(
-    effectif, entreprise, mocker
+    effectif, entreprise_factory, mocker
 ):
-    entreprise.effectif = effectif
-    entreprise.bdese_accord = False
+    entreprise = entreprise_factory(effectif=effectif, bdese_accord=False)
 
     bdese = BDESEReglementation.calculate(entreprise)
 
@@ -108,9 +105,8 @@ def test_calculate_bdese_reglementation_more_than_300_employees(
 
 
 @pytest.mark.parametrize("effectif", ["moyen", "grand", "sup500"])
-def test_calculate_bdese_reglementation_with_bdese_accord(effectif, entreprise):
-    entreprise.effectif = effectif
-    entreprise.bdese_accord = True
+def test_calculate_bdese_reglementation_with_bdese_accord(effectif, entreprise_factory):
+    entreprise = entreprise_factory(effectif=effectif, bdese_accord=True)
 
     bdese = BDESEReglementation.calculate(entreprise)
 

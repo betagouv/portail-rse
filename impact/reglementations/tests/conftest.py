@@ -23,8 +23,8 @@ def entreprise_factory(db):
 
 
 @pytest.fixture
-def entreprise(entreprise_factory):
-    return entreprise_factory()
+def grande_entreprise(entreprise_factory):
+    return entreprise_factory(effectif="grand")
 
 
 @pytest.fixture(autouse=True)
