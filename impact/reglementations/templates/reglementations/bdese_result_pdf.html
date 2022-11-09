@@ -46,10 +46,6 @@
         <main>
         <h1>{{ entreprise.raison_sociale }}</h1>
 
-        <p>Vous êtes soumis à la réglementation BDESE de type :<br>
-            {{ bdese_result }}
-        </p>
-
         <h2>Investissements</h2>
 
         {% include "snippets/stats_category_pdf.html" with titre="Effectif total" stats=bdese.effectif_total %}

@@ -217,18 +217,8 @@ def bdese_result(request, siren):
     entreprise = Entreprise.objects.get(siren=siren)
     if request.user not in entreprise.users.all():
         raise PermissionDenied
-    bdese_type = BDESEReglementation.calculate(entreprise).bdese_type
-    if bdese_type == BDESEReglementation.TYPE_AVEC_ACCORD:
-        bdese = "REGLEMENTATION AVEC ACCORD"
-    elif bdese_type == BDESEReglementation.TYPE_INFERIEUR_300:
-        bdese = "REGLEMENTATION MOINS DE 300 SALARIES"
-    elif bdese_type == BDESEReglementation.TYPE_INFERIEUR_500:
-        bdese = "REGLEMENTATION PLUS DE 300 SALARIES"
-    elif bdese_type == BDESEReglementation.TYPE_SUPERIEUR_500:
-        bdese = "REGLEMENTATION PLUS DE 500 SALARIES"
     context = {
         "entreprise": entreprise,
-        "bdese_result": bdese,
         "bdese": _get_or_create_bdese(entreprise),
     }
     pdf_html = render_to_string("reglementations/bdese_result_pdf.html", context)
