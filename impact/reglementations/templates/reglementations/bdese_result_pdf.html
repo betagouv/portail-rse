@@ -48,19 +48,19 @@
 
         <h2>Investissements</h2>
 
-        {% include "snippets/stats_category_pdf.html" with titre="Effectif total" stats=bdese.effectif_total %}
-        {% include "snippets/stats_category_pdf.html" with titre="Effectif permanent" stats=bdese.effectif_permanent %}
-        {% include "snippets/stats_category_pdf.html" with titre="Effectif CDD" stats=bdese.effectif_cdd %}
-        {% include "snippets/stats_category_pdf.html" with titre="Effectif mensuel_moyen" stats=bdese.effectif_mensuel_moyen %}
-        {% include "snippets/stats_category_pdf.html" with titre="Effectif homme" stats=bdese.effectif_homme %}
-        {% include "snippets/stats_category_pdf.html" with titre="Effectif femme" stats=bdese.effectif_femme %}
-        {% include "snippets/stats_category_pdf.html" with titre="Effectif age" stats=bdese.effectif_age %}
-        {% include "snippets/stats_category_pdf.html" with titre="Effectif ancienneté" stats=bdese.effectif_anciennete %}
-        {% include "snippets/stats_category_pdf.html" with titre="Effectif de nationalité française" stats=bdese.effectif_nationalite_francaise %}
-        {% include "snippets/stats_category_pdf.html" with titre="Effectif de nationalité étrangère" stats=bdese.effectif_nationalite_etrangere %}
-        {% include "snippets/stats_scalar_pdf.html" with titre="Effectif de travailleurs extérieurs" stats=bdese.nombre_travailleurs_exterieurs %}
+        {% include "snippets/stats_category_pdf.html" with field=bdese_form.effectif_total stats=bdese.effectif_total %}
+        {% include "snippets/stats_category_pdf.html" with field=bdese_form.effectif_permanent stats=bdese.effectif_permanent %}
+        {% include "snippets/stats_category_pdf.html" with field=bdese_form.effectif_mensuel_moyen stats=bdese.effectif_mensuel_moyen %}
+        {% include "snippets/stats_category_pdf.html" with field=bdese_form.effectif_homme stats=bdese.effectif_homme %}
+        {% include "snippets/stats_category_pdf.html" with field=bdese_form.effectif_femme stats=bdese.effectif_femme %}
+        {% include "snippets/stats_category_pdf.html" with field=bdese_form.effectif_cdd stats=bdese.effectif_cdd %}
+        {% include "snippets/stats_category_pdf.html" with field=bdese_form.effectif_age stats=bdese.effectif_age %}
+        {% include "snippets/stats_category_pdf.html" with field=bdese_form.effectif_anciennete stats=bdese.effectif_anciennete %}
+        {% include "snippets/stats_category_pdf.html" with field=bdese_form.effectif_nationalite_francaise stats=bdese.effectif_nationalite_francaise %}
+        {% include "snippets/stats_category_pdf.html" with field=bdese_form.effectif_nationalite_etrangere stats=bdese.effectif_nationalite_etrangere %}
+        {% include "snippets/stats_scalar_pdf.html" with field=bdese_form.nombre_travailleurs_exterieurs stats=bdese.nombre_travailleurs_exterieurs %}
 
-        {% include "snippets/stats_scalar_pdf.html" with titre="Nombre de départs volontaires en retraite et préretraite" stats=bdese.nombre_departs_volontaires_retraite_preretraite %}
+        {% include "snippets/stats_scalar_pdf.html" with field=bdese_form.nombre_departs_volontaires_retraite_preretraite stats=bdese.nombre_departs_volontaires_retraite_preretraite %}
         </main>
     </body>
 </html>

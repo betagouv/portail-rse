@@ -217,9 +217,13 @@ def bdese_result(request, siren):
     entreprise = Entreprise.objects.get(siren=siren)
     if request.user not in entreprise.users.all():
         raise PermissionDenied
+    bdese = _get_or_create_bdese(entreprise)
+    categories_professionnelles = categories_default()
+    bdese_form = bdese_form_factory(1, categories_professionnelles, bdese)
     context = {
         "entreprise": entreprise,
         "bdese": _get_or_create_bdese(entreprise),
+        "bdese_form": bdese_form,
     }
     pdf_html = render_to_string("reglementations/bdese_result_pdf.html", context)
     font_config = FontConfiguration()
