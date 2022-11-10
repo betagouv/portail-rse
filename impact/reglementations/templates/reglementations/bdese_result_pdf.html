@@ -44,6 +44,9 @@
         </header>
 
         <main>
+            <div class="fr-container fr-my-16w">
+                <div class="fr-grid-row fr-grid-row--center">
+                    <div class="fr-col">
         <h1>{{ entreprise.raison_sociale }}</h1>
 
         <h2>Investissements</h2>
@@ -61,6 +64,9 @@
         {% include "snippets/stats_scalar_pdf.html" with field=bdese_form.nombre_travailleurs_exterieurs stats=bdese.nombre_travailleurs_exterieurs %}
 
         {% include "snippets/stats_scalar_pdf.html" with field=bdese_form.nombre_departs_volontaires_retraite_preretraite stats=bdese.nombre_departs_volontaires_retraite_preretraite %}
+                    </div>
+                </div>
+            </div>
         </main>
     </body>
 </html>
