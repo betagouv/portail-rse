@@ -2,27 +2,22 @@ include .env
 export
 
 run:
-	./venv/bin/python3 impact/manage.py runserver
+	pipenv run python impact/manage.py runserver
 
 install:
-	python3 -m venv venv
-	./venv/bin/pip install pipenv
-	./venv/bin/pipenv install -d
+	pipenv install -d
 
 shell:
-	./venv/bin/python3 impact/manage.py shell
+	pipenv run python impact/manage.py shell
 
 migrate:
-	./venv/bin/python3 impact/manage.py migrate
+	pipenv run python impact/manage.py migrate
 
 migrations:
-	./venv/bin/python3 impact/manage.py makemigrations entreprises public reglementations users
+	pipenv run python impact/manage.py makemigrations entreprises public reglementations users
 
 createsuperuser:
-	./venv/bin/python3 impact/manage.py createsuperuser
-
-pytest:
-	./venv/bin/pytest
+	pipenv run python impact/manage.py createsuperuser
 
 test:
-	./venv/bin/python3 impact/manage.py test public
+	pipenv run pytest
