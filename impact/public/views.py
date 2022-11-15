@@ -1,3 +1,5 @@
+import time
+
 import requests
 from django.conf import settings
 from django.shortcuts import render
@@ -15,25 +17,23 @@ def siren(request):
     errors = []
     if form.is_valid():
         siren = form.cleaned_data["siren"]
-
-        url = f"https://entreprise.api.gouv.fr/v3/insee/sirene/unites_legales/{siren}"
-        headers = {"Authorization": f"Bearer {settings.API_ENTREPRISE_TOKEN}"}
-        params = {
-            "context": "Test de l'API",
-            "object": "Test de l'API",
-            "recipient": "10000001700010",
-        }
-
-        response = requests.get(url, headers=headers, params=params)
-        if response.status_code == 200:
-            data = response.json()["data"]
-            raison_sociale = data["personne_morale_attributs"]["raison_sociale"]
-            effectif = data["tranche_effectif_salarie"]["a"]
-            if effectif < 50:
+        # documentation api recherche d'entreprises 1.0.0 https://api.gouv.fr/documentation/api-recherche-entreprises
+        url = f"https://recherche-entreprises.api.gouv.fr/search?q={siren}&page=1&per_page=1"
+        response = requests.get(url)
+        if response.status_code == 200 and response.json()["total_results"]:
+            data = response.json()["results"][0]
+            raison_sociale = data["nom_raison_sociale"]
+            try:
+                # les tranches d'effectif correspondent à celles de l'API Sirene de l'Insee
+                # https://www.sirene.fr/sirene/public/variable/tefen
+                tranche_effectif = int(data["tranche_effectif_salarie"])
+            except ValueError:
+                tranche_effectif = 0
+            if tranche_effectif < 21:  # moins de 50 salariés
                 taille = "petit"
-            elif effectif < 300:
+            elif tranche_effectif < 32:  # moins de 250 salariés
                 taille = "moyen"
-            elif effectif < 500:
+            elif tranche_effectif < 41:  # moins de 500 salariés
                 taille = "grand"
             else:
                 taille = "sup500"
@@ -53,7 +53,9 @@ def siren(request):
                 },
             )
         else:
-            errors = response.json()["errors"]
+            errors = (
+                "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct."
+            )
     else:
         errors = form.errors
 

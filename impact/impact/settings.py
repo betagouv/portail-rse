@@ -124,9 +124,6 @@ EMAIL_BACKEND = (
 )
 DEFAULT_FROM_EMAIL = "ne-pas-repondre@impact.sega"
 
-# API Entreprise
-API_ENTREPRISE_TOKEN = os.environ["API_ENTREPRISE_TOKEN"]
-
 # Users
 AUTH_USER_MODEL = "users.User"
 LOGIN_URL = "/connexion"
