@@ -53,11 +53,7 @@ def test_calculate_bdese_reglementation_50_300_employees(entreprise):
     )
     assert bdese.primary_action.title == "Actualiser ma BDESE"
     assert bdese.primary_action.url == reverse("bdese", args=[entreprise.siren, 1])
-    assert len(bdese.secondary_actions) == 1
-    assert bdese.secondary_actions[0].title == "Télécharger le pdf (brouillon)"
-    assert bdese.secondary_actions[0].url == reverse(
-        "bdese_result", args=[entreprise.siren]
-    )
+    assert not bdese.secondary_actions
     assert bdese.bdese_type is BDESEReglementation.TYPE_INFERIEUR_300
 
 
@@ -74,11 +70,7 @@ def test_calculate_bdese_reglementation_more_than_300_employees(effectif, entrep
     )
     assert bdese.primary_action.title == "Actualiser ma BDESE"
     assert bdese.primary_action.url == reverse("bdese", args=[entreprise.siren, 1])
-    assert len(bdese.secondary_actions) == 1
-    assert bdese.secondary_actions[0].title == "Télécharger le pdf (brouillon)"
-    assert bdese.secondary_actions[0].url == reverse(
-        "bdese_result", args=[entreprise.siren]
-    )
+    assert not bdese.secondary_actions
 
     BDESE_300.objects.create(entreprise=entreprise)
     bdese = BDESEReglementation.calculate(entreprise)
@@ -88,6 +80,7 @@ def test_calculate_bdese_reglementation_more_than_300_employees(effectif, entrep
         bdese.status_detail
         == "Vous êtes soumis à cette réglementation. Vous avez démarré le remplissage de votre BDESE sur la plateforme."
     )
+    assert bdese.secondary_actions[0].title == "Télécharger le pdf (brouillon)"
 
     mocker.patch("reglementations.models.BDESE_300.is_complete", return_value=True)
     bdese = BDESEReglementation.calculate(entreprise)
