@@ -83,16 +83,10 @@ class BDESEReglementation(Reglementation):
                 bdese_type = cls.TYPE_SUPERIEUR_500
                 bdese_class = BDESE_300
 
-            secondary_actions = [
-                ReglementationAction(
-                    reverse_lazy("bdese_result", args=[entreprise.siren]),
-                    "Télécharger le pdf (brouillon)",
-                ),
-            ]
-
-            if bdese := bdese_class.objects.filter(
+            bdese = bdese_class.objects.filter(
                 entreprise__siren=entreprise.siren, annee=2022
-            ):
+            )
+            if bdese:
                 bdese = bdese[0]
                 if bdese.is_complete:
                     status = cls.STATUS_ACTUALISE
@@ -114,6 +108,12 @@ class BDESEReglementation(Reglementation):
                         reverse_lazy("bdese", args=[entreprise.siren, 1]),
                         "Reprendre l'actualisation de ma BDESE",
                     )
+                    secondary_actions = [
+                        ReglementationAction(
+                            reverse_lazy("bdese_result", args=[entreprise.siren]),
+                            "Télécharger le pdf (brouillon)",
+                        ),
+                    ]
             else:
                 status = cls.STATUS_A_ACTUALISER
                 status_detail = "Vous êtes soumis à cette réglementation. Nous allons vous aider à la remplir."
@@ -121,6 +121,7 @@ class BDESEReglementation(Reglementation):
                     reverse_lazy("bdese", args=[entreprise.siren, 1]),
                     "Actualiser ma BDESE",
                 )
+                secondary_actions = []
 
             return cls(
                 status,
