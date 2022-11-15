@@ -23,6 +23,13 @@ make migrations
 make migrate
 ```
 
+Exécuter les tests avec :
+
+```
+make test
+```
+
+
 ## migration en recette
 
 
