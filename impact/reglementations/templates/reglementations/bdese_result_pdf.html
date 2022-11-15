@@ -51,19 +51,19 @@
 
         <h2>Investissements</h2>
 
-        {% include "snippets/stats_category_pdf.html" with field=bdese_form.effectif_total %}
-        {% include "snippets/stats_category_pdf.html" with field=bdese_form.effectif_permanent %}
-        {% include "snippets/stats_category_pdf.html" with field=bdese_form.effectif_mensuel_moyen %}
-        {% include "snippets/stats_category_pdf.html" with field=bdese_form.effectif_homme %}
-        {% include "snippets/stats_category_pdf.html" with field=bdese_form.effectif_femme %}
-        {% include "snippets/stats_category_pdf.html" with field=bdese_form.effectif_cdd %}
-        {% include "snippets/stats_category_pdf.html" with field=bdese_form.effectif_age %}
-        {% include "snippets/stats_category_pdf.html" with field=bdese_form.effectif_anciennete %}
-        {% include "snippets/stats_category_pdf.html" with field=bdese_form.effectif_nationalite_francaise %}
-        {% include "snippets/stats_category_pdf.html" with field=bdese_form.effectif_nationalite_etrangere %}
-        {% include "snippets/stats_category_pdf.html" with field=bdese_form.nombre_travailleurs_exterieurs %}
+        {% include "snippets/field_pdf.html" with field=bdese_form.effectif_total %}
+        {% include "snippets/field_pdf.html" with field=bdese_form.effectif_permanent %}
+        {% include "snippets/field_pdf.html" with field=bdese_form.effectif_mensuel_moyen %}
+        {% include "snippets/field_pdf.html" with field=bdese_form.effectif_homme %}
+        {% include "snippets/field_pdf.html" with field=bdese_form.effectif_femme %}
+        {% include "snippets/field_pdf.html" with field=bdese_form.effectif_cdd %}
+        {% include "snippets/field_pdf.html" with field=bdese_form.effectif_age %}
+        {% include "snippets/field_pdf.html" with field=bdese_form.effectif_anciennete %}
+        {% include "snippets/field_pdf.html" with field=bdese_form.effectif_nationalite_francaise %}
+        {% include "snippets/field_pdf.html" with field=bdese_form.effectif_nationalite_etrangere %}
+        {% include "snippets/field_pdf.html" with field=bdese_form.nombre_travailleurs_exterieurs %}
 
-        {% include "snippets/stats_category_pdf.html" with field=bdese_form.nombre_departs_volontaires_retraite_preretraite %}
+        {% include "snippets/field_pdf.html" with field=bdese_form.nombre_departs_volontaires_retraite_preretraite %}
                     </div>
                 </div>
             </div>
