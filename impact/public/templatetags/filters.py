@@ -14,6 +14,7 @@ def index(indexable, i):
 def translate_boolean(boolean):
     return "oui" if boolean else "non"
 
+
 @register.filter
 def field_type(field):
     return field.field.__class__.__name__
