@@ -15,8 +15,6 @@ from public.forms import EligibiliteForm
 from .forms import bdese_form_factory
 from .models import BDESE_300, BDESE_50_300, categories_default
 
-import impact.settings
-
 
 @dataclass
 class ReglementationAction:
@@ -223,7 +221,6 @@ def bdese_result(request, siren):
     bdese_form = bdese_form_factory(1, categories_professionnelles, bdese)
     context = {
         "entreprise": entreprise,
-        "bdese": _get_or_create_bdese(entreprise),
         "bdese_form": bdese_form,
     }
     pdf_html = render_to_string("reglementations/bdese_result_pdf.html", context)

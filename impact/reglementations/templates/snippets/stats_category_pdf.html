@@ -1,7 +1,7 @@
 {{ field.label }} :
-{% if stats %}
+{% if field.value %}
     <ul>
-    {% for categorie, qte in stats.items %}
+    {% for categorie, qte in field.value.items %}
         <li>{{ categorie }} : {{ qte }}</li>
     {% endfor %}
     </ul>
