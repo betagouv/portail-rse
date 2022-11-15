@@ -1,10 +1,17 @@
+{% load filters %}
 {{ field.label }} :
-{% if field.value %}
-    <ul>
-    {% for categorie, qte in field.value.items %}
-        <li>{{ categorie }} : {{ qte }}</li>
-    {% endfor %}
-    </ul>
+{% if field.value or field.value == 0 %}
+    {% with field_type=field|field_type %}
+        {% if field_type == 'CategoryMultiValueField' %}
+            <ul>
+            {% for categorie, qte in field.value.items %}
+                <li>{{ categorie }} : {{ qte }}</li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>{{ field.value }}</p>
+        {% endif %}
+    {% endwith %}
 {% else %}
     <p>non rempli</p>
 {% endif %}
