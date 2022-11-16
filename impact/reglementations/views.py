@@ -222,7 +222,7 @@ def bdese_pdf(request, siren):
         "entreprise": entreprise,
         "bdese_form": bdese_form,
     }
-    pdf_html = render_to_string("reglementations/bdese_result_pdf.html", context)
+    pdf_html = render_to_string("reglementations/bdese_300_pdf.html", context)
     html = HTML(string=pdf_html)
     css = CSS(
         string="""
