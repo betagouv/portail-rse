@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+    <head>
+        <style>
+            {% load filters %}
+            {{ "dsfr-1.7.2/dsfr/dsfr.min.css" | inline_static_file }}
+            @page {
+                size: A4;
+                margin: 1cm;
+                @top-left {
+                    content: "BDESE {{ entreprise.raison_sociale }}";
+                    border-bottom: 1px solid;
+                }
+                @bottom-right {
+                    content: counter(page) " / " counter(pages);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <header role="banner" class="fr-header">
+            <div class="fr-header__body">
+                <div class="fr-container">
+                    <div class="fr-header__body-row">
+                        <div class="fr-header__brand fr-enlarge-link">
+                            <div class="fr-header__brand-top">
+                                <div class="fr-header__logo">
+                                    <p class="fr-logo">
+                                        République
+                                        <br>Française
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="fr-header__service">
+                                <p class="fr-header__service-title">
+                                    Rapport BDESE 2022 {{ entreprise.raison_sociale }} <span class="fr-badge fr-badge--sm fr-badge--green-emeraude">BETA</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="fr-header__menu-links">
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            Le rapport pour les entreprises de 50-300 salariés sera fait plus tard.
+            Actuellement, seul le 300+ est à consulter.
+        </main>
+    </body>
+</html>

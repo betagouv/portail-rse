@@ -222,7 +222,8 @@ def bdese_pdf(request, siren):
         "entreprise": entreprise,
         "bdese_form": bdese_form,
     }
-    pdf_html = render_to_string("reglementations/bdese_300_pdf.html", context)
+    template_path = _pdf_template_path_from_bdese(bdese)
+    pdf_html = render_to_string(template_path, context)
     html = HTML(string=pdf_html)
     css = CSS(
         string="""
@@ -243,6 +244,13 @@ def bdese_pdf(request, siren):
     response = HttpResponse(pdf_file, content_type="application/pdf")
     response["Content-Disposition"] = 'filename="bdese.pdf"'
     return response
+
+
+def _pdf_template_path_from_bdese(bdese):
+    if bdese.__class__ == BDESE_300:
+        return "reglementations/bdese_300_pdf.html"
+    else:
+        return "reglementations/bdese_50_300_pdf.html"
 
 
 def get_bdese_data_from_index_egapro(entreprise: Entreprise, year: int) -> dict:
