@@ -89,7 +89,7 @@ class BDESEReglementation(Reglementation):
                     status = cls.STATUS_ACTUALISE
                     status_detail = "Vous êtes soumis à cette réglementation. Vous avez actualisé votre BDESE sur la plateforme."
                     primary_action = ReglementationAction(
-                        reverse_lazy("bdese_result", args=[entreprise.siren]),
+                        reverse_lazy("bdese_pdf", args=[entreprise.siren]),
                         "Télécharger le pdf",
                     )
                     secondary_actions = [
@@ -107,7 +107,7 @@ class BDESEReglementation(Reglementation):
                     )
                     secondary_actions = [
                         ReglementationAction(
-                            reverse_lazy("bdese_result", args=[entreprise.siren]),
+                            reverse_lazy("bdese_pdf", args=[entreprise.siren]),
                             "Télécharger le pdf (brouillon)",
                         ),
                     ]
@@ -211,7 +211,7 @@ def reglementations(request):
 
 
 @login_required
-def bdese_result(request, siren):
+def bdese_pdf(request, siren):
     entreprise = Entreprise.objects.get(siren=siren)
     if request.user not in entreprise.users.all():
         raise PermissionDenied
