@@ -114,3 +114,19 @@ def test_mark_step_as_incomplete(authorized_user_client, grande_entreprise):
 
     bdese = BDESE_300.objects.get(entreprise=grande_entreprise)
     assert not bdese.step_is_complete(1)
+
+
+@pytest.mark.parametrize(
+    "effectif, bdese_class", [("moyen", BDESE_50_300), ("grand", BDESE_300)]
+)
+def test_get_pdf(effectif, bdese_class, client, django_user_model, entreprise_factory):
+    entreprise = entreprise_factory(effectif=effectif)
+    user = django_user_model.objects.create()
+    entreprise.users.add(user)
+    bdese = bdese_class.objects.create(entreprise=entreprise)
+    client.force_login(user)
+
+    url = f"/bdese/{entreprise.siren}/result"
+    response = client.get(url)
+
+    assert response.status_code == 200
