@@ -126,7 +126,7 @@ def test_get_pdf(effectif, bdese_class, client, django_user_model, entreprise_fa
     bdese = bdese_class.objects.create(entreprise=entreprise)
     client.force_login(user)
 
-    url = f"/bdese/{entreprise.siren}/result"
+    url = f"/bdese/{entreprise.siren}/pdf"
     response = client.get(url)
 
     assert response.status_code == 200
