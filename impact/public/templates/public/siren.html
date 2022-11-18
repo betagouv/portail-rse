@@ -1,19 +1,20 @@
 {% extends "public/base.html" %}
 
 {% block content %}
-<div class="fr-container fr-my-16w">
+<div class="fr-container fr-my-10w">
     <div class="fr-grid-row fr-grid-row--center">
         <div class="fr-col">
-            <h1>{{ raison_sociale }}</h1>
+            <h2>{{ raison_sociale }} </h2>
+            <p class="fr-tag">SIREN {{ siren }}</p>
 
-            <form action="{% url 'reglementations' %}" method="get">
+            <form class="fr-mt-10w" action="{% url 'reglementations' %}" method="get">
                 {% csrf_token %}
                 {{ form.siren.as_hidden }}
                 {{ form.raison_sociale.as_hidden }}
                 {% include 'snippets/select_field.html' with field=form.effectif %}
                 {% include 'snippets/radio_field.html' with field=form.bdese_accord %}
                 <input type="submit" value="Vérifier mes obligations" class="fr-btn ">
-                <a href="/" class="fr-btn fr-btn--secondary">Mon entreprise n'est pas {{ raison_sociale }}</a>
+                <a href="/" class="fr-btn fr-btn--secondary">Ce n'est pas mon entreprise</a>
             </form>
         </div>
     </div>

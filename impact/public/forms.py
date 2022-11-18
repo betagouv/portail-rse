@@ -28,5 +28,5 @@ class EligibiliteForm(DsfrForm, forms.ModelForm):
         model = Entreprise
         fields = ["effectif", "bdese_accord", "raison_sociale", "siren"]
         labels = {
-            "bdese_accord": "Avez-vous un accord collectif d'entreprise concernant la BDESE ?"
+            "bdese_accord": "Avez-vous un accord collectif d'entreprise concernant la Base de Données Économiques, Sociales et Environnementales (BDESE) ?"
         }
