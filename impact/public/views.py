@@ -27,7 +27,7 @@ def siren(request):
                 # les tranches d'effectif correspondent à celles de l'API Sirene de l'Insee
                 # https://www.sirene.fr/sirene/public/variable/tefen
                 tranche_effectif = int(data["tranche_effectif_salarie"])
-            except ValueError:
+            except (ValueError, TypeError):
                 tranche_effectif = 0
             if tranche_effectif < 21:  # moins de 50 salariés
                 taille = "petit"
