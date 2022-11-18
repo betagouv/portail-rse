@@ -1,17 +1,56 @@
 {% load filters %}
-{{ field.label }} :
 {% if field.value or field.value == 0 %}
     {% with field_type=field|field_type %}
         {% if field_type == 'CategoryMultiValueField' %}
-            <ul>
-            {% for categorie, qte in field.value.items %}
-                <li>{{ categorie }} : {{ qte }}</li>
-            {% endfor %}
-            </ul>
+            <h5>{{ field.label }} :</h5>
+            <div class="fr-table fr-table--bordered">
+                <table>
+                    <thead>
+                        <tr>
+                            {% for categorie, qte in field.value.items %}
+                            <th scope="col">{{ categorie }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            {% for categorie, qte in field.value.items %}
+                            <td>{{ qte }}</td>
+                            {% endfor %}
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         {% else %}
-            <p>{{ field.value }}</p>
+        <div class="fr-table fr-table--bordered">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">{{ field.label }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ field.value }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
         {% endif %}
     {% endwith %}
 {% else %}
-    <p>non rempli</p>
+    <div class="fr-table fr-table--bordered">
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">{{ field.label }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Non rempli</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 {% endif %}
