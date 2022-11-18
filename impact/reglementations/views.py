@@ -335,10 +335,12 @@ def bdese(request, siren, step):
             for step in bdese.STEPS
         }
         step_is_complete = steps[step]["is_complete"]
+        bdese_is_complete = bdese.is_complete
     else:
         template_path = "reglementations/bdese_50_300.html"
         steps = {}
         step_is_complete = False
+        bdese_is_complete = False
     return render(
         request,
         template_path,
@@ -347,6 +349,7 @@ def bdese(request, siren, step):
             "siren": siren,
             "step_is_complete": step_is_complete,
             "steps": steps,
+            "bdese_is_complete": bdese_is_complete,
         },
     )
 
