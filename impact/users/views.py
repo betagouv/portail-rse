@@ -16,6 +16,10 @@ def creation(request):
         if form.is_valid():
             form.save()
             login(request, User.objects.get(email=form.cleaned_data["email"]))
+            success_message = (
+                "Votre compte a bien été créé. Vous êtes maintenant connecté."
+            )
+            messages.success(request, success_message)
             return redirect("reglementations")
     else:
         siren = request.session.get("siren")
