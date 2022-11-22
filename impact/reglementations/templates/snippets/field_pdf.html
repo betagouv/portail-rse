@@ -33,7 +33,7 @@
                     <tr>
                         <td>
                             {% if field_type == 'BooleanField' %}
-                                {{ field.value | translate_boolean }}
+                                {{ field.value | translate_boolean | capfirst }}
                             {% else %}
                                 {{ field.value }}
                             {% endif %}
