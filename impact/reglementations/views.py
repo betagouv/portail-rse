@@ -217,7 +217,7 @@ def bdese_pdf(request, siren):
         raise PermissionDenied
     bdese = _get_or_create_bdese(entreprise)
     categories_professionnelles = categories_default()
-    bdese_form = bdese_form_factory(1, categories_professionnelles, bdese)
+    bdese_form = bdese_form_factory("all", categories_professionnelles, bdese)
     context = {
         "entreprise": entreprise,
         "bdese_form": bdese_form,

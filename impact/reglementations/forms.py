@@ -36,7 +36,7 @@ def bdese_form_factory(
             self.categories = categories or categories_professionnelles
             fields = [base_field() for category in self.categories]
             widgets = [
-                base_field.widget({"label": category}) for category in self.categories
+                base_field.widget({"label": category}) for category in self.categories if hasattr(base_field, "widget")
             ]
             super().__init__(
                 fields=fields,
@@ -68,7 +68,7 @@ def bdese_form_factory(
                     kwargs["initial"] = {}
                 kwargs["initial"].update(fetched_data)
             super().__init__(instance=instance, *args, **kwargs)
-            if instance.step_is_complete(step):
+            if step == "all" or instance.step_is_complete(step):
                 for field in self.fields:
                     self.fields[field].disabled = True
             elif fetched_data:
@@ -349,7 +349,7 @@ def bdese_form_factory(
     Form = forms.modelform_factory(
         bdese_model_class,
         form=BDESEForm,
-        fields=fields[step] if bdese_model_class == BDESE_300 else "__all__",
+        fields=fields[step] if bdese_model_class == BDESE_300 and step != "all" else "__all__",
         exclude=None if bdese_model_class == BDESE_300 else ["annee", "entreprise"],
     )
     return Form(instance, fetched_data=fetched_data, *args, **kwargs)
