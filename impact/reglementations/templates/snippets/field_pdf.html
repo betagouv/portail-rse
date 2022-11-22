@@ -1,5 +1,7 @@
 {% load filters %}
 <div class="fr-text-lead">{{ field.label }} :</div>
+<i>{{ field.help_text }}</i>
+
 {% if field.value or field.value == 0 %}
     {% with field_type=field|field_type %}
         {% if field_type == 'CategoryMultiValueField' %}
