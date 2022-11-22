@@ -3,7 +3,7 @@
         <h1>BDESE</h1>
     </div>
     <div class="fr-col" style="text-align: right;">
-        <a class="fr-btn" href="{% url 'bdese_pdf' siren %}">
+        <a class="fr-btn" href="{% url 'bdese_pdf' siren %}" target="_blank" rel="noopener">
             Télécharger ma BDESE{% if not bdese_is_complete %} (brouillon){% endif %}
         </a>
     </div>

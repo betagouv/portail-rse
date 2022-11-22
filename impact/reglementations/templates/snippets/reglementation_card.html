@@ -49,7 +49,7 @@
                 {% if reglementation.secondary_actions %}
                     {% for secondary_action in reglementation.secondary_actions %}
                     <li>
-                        <a class="fr-btn fr-btn--secondary" href="{{ secondary_action.url }}">
+                        <a class="fr-btn fr-btn--secondary" href="{{ secondary_action.url }}" {% if secondary_action.external %}target="_blank" rel="noopener"{% endif %}>
                             {{ secondary_action.title }}
                         </a>
                     </li>
