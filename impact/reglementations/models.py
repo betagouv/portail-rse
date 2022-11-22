@@ -1767,7 +1767,7 @@ class BDESE_50_300(AbstractBDESE):
         blank=True,
     )
     nombre_journees_salaries_temporaires = models.IntegerField(
-        verbose_name="Nombre de journées de travai réalisées au cours des douze derniers mois par les salariés temporaires",
+        verbose_name="Nombre de journées de travail réalisées au cours des douze derniers mois par les salariés temporaires",
         null=True,
         blank=True,
     )
