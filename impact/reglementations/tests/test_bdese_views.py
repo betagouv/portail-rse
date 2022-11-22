@@ -59,6 +59,21 @@ def authorized_user_client(client, django_user_model, grande_entreprise):
     return client
 
 
+def test_categories_professionnelles(authorized_user_client, grande_entreprise):
+    bdese = BDESE_300.objects.create(entreprise=grande_entreprise)
+    categories_professionnelles = ["catégorie 1", "catégorie 2","catégorie 3"]
+    bdese.categories_professionnelles = categories_professionnelles
+    bdese.save()
+
+    url = f"/bdese/{grande_entreprise.siren}/2022/1"
+    response = authorized_user_client.get(url)
+
+    assert response.status_code == 200
+    content = response.content.decode("utf-8")
+    for category in categories_professionnelles:
+        assert category in content
+
+
 def test_save_step_error(authorized_user_client, grande_entreprise):
     url = f"/bdese/{grande_entreprise.siren}/2022/1"
     response = authorized_user_client.post(url, {"unite_absenteisme": "yolo"})
@@ -112,6 +127,10 @@ def test_save_step_and_mark_as_complete_success(
 def test_mark_step_as_incomplete(authorized_user_client, grande_entreprise):
     bdese = BDESE_300.objects.create(entreprise=grande_entreprise)
     bdese.mark_step_as_complete(1)
+    bdese.save()
+
+    bdese.refresh_from_db()
+    assert bdese.step_is_complete(1)
 
     url = f"/bdese/{grande_entreprise.siren}/2022/1"
     response = authorized_user_client.post(url, {"mark_incomplete": ""}, follow=True)
