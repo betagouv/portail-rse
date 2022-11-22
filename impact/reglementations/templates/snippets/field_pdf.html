@@ -31,7 +31,13 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>{{ field.value }}</td>
+                        <td>
+                            {% if field_type == 'BooleanField' %}
+                                {{ field.value | translate_boolean }}
+                            {% else %}
+                                {{ field.value }}
+                            {% endif %}
+                        </td>
                     </tr>
                 </tbody>
             </table>
