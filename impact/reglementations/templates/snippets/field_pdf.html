@@ -1,8 +1,8 @@
 {% load filters %}
+<div class="fr-text-lead">{{ field.label }} :</div>
 {% if field.value or field.value == 0 %}
     {% with field_type=field|field_type %}
         {% if field_type == 'CategoryMultiValueField' %}
-            <div class="fr-text-lead">{{ field.label }} :</div>
             <div class="fr-table fr-table--bordered">
                 <table>
                     <thead>
@@ -22,7 +22,6 @@
                 </table>
             </div>
         {% else %}
-        <div class="fr-text-lead">{{ field.label }} :</div>
         <div class="fr-table fr-table--bordered">
             <table>
                 <thead>
@@ -40,7 +39,6 @@
         {% endif %}
     {% endwith %}
 {% else %}
-    <div class="fr-text-lead">{{ field.label }} :</div>
     <div class="fr-table fr-table--bordered">
         <table>
             <thead>
