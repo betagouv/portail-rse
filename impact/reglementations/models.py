@@ -53,6 +53,10 @@ def categories_default():
 class AbstractBDESE(models.Model):
     annee = models.IntegerField(default=2022)
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
+    categories_professionnelles = models.JSONField(
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         abstract = True
