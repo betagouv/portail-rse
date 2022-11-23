@@ -149,6 +149,7 @@ def test_mark_step_as_incomplete(authorized_user_client, grande_entreprise):
     assert not bdese.step_is_complete(1)
 
 
+@pytest.mark.slow
 @pytest.mark.parametrize("bdese_class", [BDESE_50_300, BDESE_300])
 def test_get_pdf(bdese_class, bdese_factory, client, django_user_model):
     bdese = bdese_factory(bdese_class=bdese_class)
