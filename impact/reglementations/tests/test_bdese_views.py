@@ -61,7 +61,7 @@ def authorized_user_client(client, django_user_model, grande_entreprise):
 
 def test_categories_professionnelles(authorized_user_client, grande_entreprise):
     bdese = BDESE_300.objects.create(entreprise=grande_entreprise)
-    categories_professionnelles = ["catégorie 1", "catégorie 2","catégorie 3"]
+    categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
     bdese.categories_professionnelles = categories_professionnelles
     bdese.save()
 

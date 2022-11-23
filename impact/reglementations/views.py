@@ -285,7 +285,9 @@ def bdese(request, siren, annee, step):
     if request.user not in entreprise.users.all():
         raise PermissionDenied
     bdese = _get_or_create_bdese(entreprise, annee)
-    categories_professionnelles = bdese.categories_professionnelles or categories_default()
+    categories_professionnelles = (
+        bdese.categories_professionnelles or categories_default()
+    )
     if request.method == "POST":
         if "mark_incomplete" in request.POST:
             bdese.mark_step_as_incomplete(step)

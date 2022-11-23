@@ -9,12 +9,13 @@ class CategoriesProfessionnellesForm(forms.ModelForm):
         fields = ["categories_professionnelles"]
 
 
-def categories_professionnelle_form_factory(bdese, *args, **kwargs):
+def categories_professionnelles_form_factory(bdese, *args, **kwargs):
     Form = forms.modelform_factory(
         bdese.__class__,
         form=CategoriesProfessionnellesForm,
     )
     return Form(*args, instance=bdese, **kwargs)
+
 
 class CategoryJSONWidget(forms.MultiWidget):
     template_name = "snippets/category_json_widget.html"
@@ -362,6 +363,8 @@ def bdese_form_factory(
         bdese_model_class,
         form=BDESEForm,
         fields=fields[step] if bdese_model_class == BDESE_300 and step != "all" else "__all__",
-        exclude=None if bdese_model_class == BDESE_300 else ["annee", "entreprise", "categories_professionnelles"],
+        exclude=None
+        if bdese_model_class == BDESE_300
+        else ["annee", "entreprise", "categories_professionnelles"],
     )
     return Form(instance, fetched_data=fetched_data, *args, **kwargs)
