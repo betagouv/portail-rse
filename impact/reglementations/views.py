@@ -12,7 +12,7 @@ from weasyprint import CSS, HTML
 from entreprises.models import Entreprise
 from public.forms import EligibiliteForm
 from .forms import bdese_form_factory
-from .models import BDESE_300, BDESE_50_300, categories_default
+from .models import annees_a_remplir_bdese, BDESE_300, BDESE_50_300, categories_default
 
 
 @dataclass
@@ -211,11 +211,13 @@ def reglementations(request):
         },
     )
 
+
 @login_required
 def bdese_annees(request, siren):
     return render(
         request,
         "reglementations/bdese_annees.html",
+        {"annees": annees_a_remplir_bdese()},
     )
 
 

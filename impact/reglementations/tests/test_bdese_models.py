@@ -1,7 +1,8 @@
 from django.db.utils import IntegrityError
 import pytest
+import freezegun
 
-from reglementations.models import BDESE_300, BDESE_50_300
+from reglementations.models import annees_a_remplir_bdese, BDESE_300, BDESE_50_300
 
 
 @pytest.mark.django_db(transaction=True)
@@ -46,3 +47,13 @@ def test_bdese_50_300(grande_entreprise):
     assert "effectif_cdi" not in bdese.category_fields()
     assert bdese.effectif_cdi is None
     assert not bdese.is_complete
+
+
+def test_annees_a_remplir_pour_bdese():
+    with freezegun.freeze_time("2022-11-23"):
+        annees = annees_a_remplir_bdese()
+        assert annees == [2019, 2020, 2021, 2022, 2023]
+
+    with freezegun.freeze_time("2023-11-23"):
+        annees = annees_a_remplir_bdese()
+        assert annees == [2020, 2021, 2022, 2023, 2024]

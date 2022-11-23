@@ -4,7 +4,12 @@
 <!-- page selection annee -->
 
 <div class="fr-container fr-my-8w">
-La réglementation BDESE doit être remplie pour les 3 années précédentes et 2 années suivantes.
+    La réglementation BDESE doit être remplie pour les 3 années précédentes et 2 années suivantes :
+    <ul>
+        {% for annee in annees %}
+        <li>{{ annee }}</li>
+        {% endfor %}
+    </ul>
 </div>
 
 {% endblock %}

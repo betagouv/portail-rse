@@ -1,7 +1,7 @@
 from django.urls import reverse
 import pytest
 
-from reglementations.models import BDESE_50_300, BDESE_300
+from reglementations.models import annees_a_remplir_bdese, BDESE_50_300, BDESE_300
 
 
 def test_select_year(authorized_user_client, grande_entreprise):
@@ -12,6 +12,8 @@ def test_select_year(authorized_user_client, grande_entreprise):
     assert response.status_code == 200
     content = response.content.decode("utf-8")
     assert "<!-- page selection annee -->" in content
+    for annee in annees_a_remplir_bdese():
+        assert str(annee) in content
 
 
 def test_bdese_is_not_public(client, django_user_model, grande_entreprise):
