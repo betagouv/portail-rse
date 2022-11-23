@@ -59,7 +59,9 @@ def authorized_user_client(client, django_user_model, grande_entreprise):
     return client
 
 
-def test_categories_professionnelles(authorized_user_client, grande_entreprise):
+def test_bdese_step_use_categories_professionnelles(
+    authorized_user_client, grande_entreprise
+):
     bdese = BDESE_300.objects.create(entreprise=grande_entreprise)
     categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
     bdese.categories_professionnelles = categories_professionnelles
@@ -147,14 +149,12 @@ def test_mark_step_as_incomplete(authorized_user_client, grande_entreprise):
     assert not bdese.step_is_complete(1)
 
 
-@pytest.mark.parametrize(
-    "effectif, bdese_class", [("moyen", BDESE_50_300), ("grand", BDESE_300)]
-)
-def test_get_pdf(effectif, bdese_class, client, django_user_model, entreprise_factory):
-    entreprise = entreprise_factory(effectif=effectif)
+@pytest.mark.parametrize("bdese_class", [BDESE_50_300, BDESE_300])
+def test_get_pdf(bdese_class, bdese_factory, client, django_user_model):
+    bdese = bdese_factory(bdese_class=bdese_class)
+    entreprise = bdese.entreprise
     user = django_user_model.objects.create()
     entreprise.users.add(user)
-    bdese = bdese_class.objects.create(entreprise=entreprise)
     client.force_login(user)
 
     url = f"/bdese/{entreprise.siren}/2022/pdf"

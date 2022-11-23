@@ -1,6 +1,7 @@
 import pytest
 
 from entreprises.models import Entreprise
+from reglementations.models import BDESE_50_300, BDESE_300
 
 
 @pytest.fixture
@@ -20,6 +21,22 @@ def entreprise_factory(db):
         return entreprise
 
     return create_entreprise
+
+
+@pytest.fixture
+def bdese_factory(entreprise_factory):
+    def create_bdese(
+        bdese_class=BDESE_300,
+        entreprise=None,
+    ):
+        if not entreprise:
+            entreprise = entreprise_factory(
+                effectif="moyen" if bdese_class == BDESE_50_300 else "grand"
+            )
+        bdese = bdese_class.objects.create(entreprise=entreprise)
+        return bdese
+
+    return create_bdese
 
 
 @pytest.fixture
