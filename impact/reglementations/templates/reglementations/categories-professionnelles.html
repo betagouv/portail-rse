@@ -1,1 +1,24 @@
 {% extends "public/base.html" %}
+
+{% block content %}
+<div class="fr-container fr-my-8w">
+    <h1>BDESE</h1>
+    <p>
+        Certains indicateurs de la BDESE sont à remplir par catégorie professionnelle.<br>
+        Une structure de qualification détaillée, en trois ou quatre postes minimum, est requise. Il est souhaitable de faire référence à la classification de la convention collective, de l'accord d'entreprise et aux pratiques habituellement retenues dans l'entreprise.<br>
+        A titre d'exemple la répartition suivante peut être retenue : cadres ; employés, techniciens et agents de maîtrise (ETAM) ; et ouvriers.
+    </p>
+    <h2>Définissez vos catégories professionnelles</h2>
+    <p>Commencez par définir les catégories professionnelles retenues pour votre entreprise qui seront utilisées dans votre BDESE</p>
+
+    <form action="{% url 'categories_professionnelles' siren %}" method="post">
+        {% csrf_token %}
+        {% include 'snippets/input_field.html' with field=form.categories_professionnelles %}
+
+        <button type="submit" class="fr-btn">Enregistrer</button>
+
+    </form>
+        
+
+</div>
+{% endblock %}

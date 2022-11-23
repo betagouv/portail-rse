@@ -178,3 +178,28 @@ def test_get_categories_professionnelles(
     response = client.get(url)
 
     assert response.status_code == 200
+
+
+@pytest.mark.parametrize("bdese_class", [BDESE_50_300, BDESE_300])
+def test_post_categories_professionnelles(
+    bdese_class, bdese_factory, client, django_user_model
+):
+    bdese = bdese_factory(bdese_class=bdese_class)
+    entreprise = bdese.entreprise
+    user = django_user_model.objects.create()
+    entreprise.users.add(user)
+    client.force_login(user)
+
+    categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
+    url = f"/bdese/{entreprise.siren}/2022/categories-professionnelles"
+    response = client.post(
+        url, data={"categories_professionnelles": categories_professionnelles}
+    )
+
+    assert response.status_code == 200
+
+    content = response.content.decode("utf-8")
+    assert "Catégories enregistrées" in content
+
+    bdese.refresh_from_db()
+    assert bdese.categories_professionnelles == categories_professionnelles

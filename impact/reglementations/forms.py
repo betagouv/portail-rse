@@ -1,18 +1,40 @@
 from django import forms
+import json
 
 from public.forms import DsfrForm
 from .models import BDESE_50_300, BDESE_300
 
 
-class CategoriesProfessionnellesForm(forms.ModelForm):
+class ListJSONWidget(forms.widgets.MultiWidget):
+    def decompress(self, value):
+        print(value)
+        if isinstance(value, list):
+            return value
+        elif isinstance(value, str) and value != "null":
+            values = json.loads(value)
+            value = [value for value in values if value is not None]
+            return value
+        return []
+
+    def value_from_datadict(self, data, files, name):
+        value = super().value_from_datadict(data, files, name)
+        # JSONField expects a single string that it can parse into json.
+        return json.dumps(value)
+
+
+class CategoriesProfessionnellesForm(forms.ModelForm, DsfrForm):
     class Meta:
         fields = ["categories_professionnelles"]
 
 
 def categories_professionnelles_form_factory(bdese, *args, **kwargs):
+    # number_categories = len(bdese.categories_professionnelles) if bdese.categories_professionnelles else 3
+    # widgets = [forms.widgets.TextInput(attrs={"class": "fr-input"}) for i in range(number_categories)]
+
     Form = forms.modelform_factory(
         bdese.__class__,
         form=CategoriesProfessionnellesForm,
+        # widgets={"categories_professionnelles": ListJSONWidget(widgets)}
     )
     return Form(*args, instance=bdese, **kwargs)
 
@@ -49,7 +71,9 @@ def bdese_form_factory(
             self.categories = categories or categories_professionnelles
             fields = [base_field() for category in self.categories]
             widgets = [
-                base_field.widget({"label": category}) for category in self.categories if hasattr(base_field, "widget")
+                base_field.widget({"label": category})
+                for category in self.categories
+                if hasattr(base_field, "widget")
             ]
             super().__init__(
                 fields=fields,
@@ -362,7 +386,9 @@ def bdese_form_factory(
     Form = forms.modelform_factory(
         bdese_model_class,
         form=BDESEForm,
-        fields=fields[step] if bdese_model_class == BDESE_300 and step != "all" else "__all__",
+        fields=fields[step]
+        if bdese_model_class == BDESE_300 and step != "all"
+        else "__all__",
         exclude=None
         if bdese_model_class == BDESE_300
         else ["annee", "entreprise", "categories_professionnelles"],

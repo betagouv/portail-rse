@@ -379,11 +379,25 @@ def categories_professionnelles(request, siren):
     if request.user not in entreprise.users.all():
         raise PermissionDenied
     bdese = _get_or_create_bdese(entreprise, 2022)
-    form = categories_professionnelles_form_factory(bdese)
+    if request.method == "POST":
+        form = categories_professionnelles_form_factory(bdese, data=request.POST)
+        if form.is_valid():
+            bdese = form.save()
+            messages.success(request, "Catégories enregistrées")
+        else:
+            print(request.POST)
+            messages.error(
+                request,
+                "Les catégories n'ont pas été enregistrées car le formulaire contient des erreurs",
+            )
+    else:
+        form = categories_professionnelles_form_factory(bdese)
+
     return render(
         request,
         "reglementations/categories-professionnelles.html",
         {
             "form": form,
+            "siren": siren,
         },
     )
