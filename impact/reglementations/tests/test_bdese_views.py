@@ -5,7 +5,7 @@ from reglementations.models import BDESE_50_300, BDESE_300
 
 
 def test_bdese_is_not_public(client, django_user_model, grande_entreprise):
-    url = f"/bdese/{grande_entreprise.siren}/1"
+    url = f"/bdese/{grande_entreprise.siren}/2022/1"
     response = client.get(url)
 
     assert response.status_code == 302
@@ -32,7 +32,7 @@ def test_bdese_is_created_at_first_authorized_request(
 
     assert not bdese_class.objects.filter(entreprise=entreprise)
 
-    url = f"/bdese/{entreprise.siren}/1"
+    url = f"/bdese/{entreprise.siren}/2022/1"
     response = client.get(url)
 
     assert response.status_code == 200
@@ -48,7 +48,7 @@ def authorized_user_client(client, django_user_model, grande_entreprise):
 
 
 def test_save_step_error(authorized_user_client, grande_entreprise):
-    url = f"/bdese/{grande_entreprise.siren}/1"
+    url = f"/bdese/{grande_entreprise.siren}/2022/1"
     response = authorized_user_client.post(url, {"unite_absenteisme": "yolo"})
 
     assert response.status_code == 200
@@ -62,7 +62,7 @@ def test_save_step_error(authorized_user_client, grande_entreprise):
 
 
 def test_save_step_as_draft_success(authorized_user_client, grande_entreprise):
-    url = f"/bdese/{grande_entreprise.siren}/1"
+    url = f"/bdese/{grande_entreprise.siren}/2022/1"
     response = authorized_user_client.post(url, {"unite_absenteisme": "H"})
 
     assert response.status_code == 200
@@ -80,7 +80,7 @@ def test_save_step_as_draft_success(authorized_user_client, grande_entreprise):
 def test_save_step_and_mark_as_complete_success(
     authorized_user_client, grande_entreprise
 ):
-    url = f"/bdese/{grande_entreprise.siren}/1"
+    url = f"/bdese/{grande_entreprise.siren}/2022/1"
     response = authorized_user_client.post(
         url, {"unite_absenteisme": "H", "save_complete": ""}, follow=True
     )
@@ -101,7 +101,7 @@ def test_mark_step_as_incomplete(authorized_user_client, grande_entreprise):
     bdese = BDESE_300.objects.create(entreprise=grande_entreprise)
     bdese.mark_step_as_complete(1)
 
-    url = f"/bdese/{grande_entreprise.siren}/1"
+    url = f"/bdese/{grande_entreprise.siren}/2022/1"
     response = authorized_user_client.post(url, {"mark_incomplete": ""}, follow=True)
 
     assert response.status_code == 200
