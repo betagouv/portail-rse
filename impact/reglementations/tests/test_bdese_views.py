@@ -161,3 +161,19 @@ def test_get_pdf(bdese_class, bdese_factory, client, django_user_model):
     response = client.get(url)
 
     assert response.status_code == 200
+
+
+@pytest.mark.parametrize("bdese_class", [BDESE_50_300, BDESE_300])
+def test_get_categories_professionnelles(
+    bdese_class, bdese_factory, client, django_user_model
+):
+    bdese = bdese_factory(bdese_class=bdese_class)
+    entreprise = bdese.entreprise
+    user = django_user_model.objects.create()
+    entreprise.users.add(user)
+    client.force_login(user)
+
+    url = f"/bdese/{entreprise.siren}/2022/categories-professionnelles"
+    response = client.get(url)
+
+    assert response.status_code == 200
