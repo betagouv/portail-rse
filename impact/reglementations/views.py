@@ -211,6 +211,13 @@ def reglementations(request):
         },
     )
 
+@login_required
+def bdese_annees(request, siren):
+    return render(
+        request,
+        "reglementations/bdese_annees.html",
+    )
+
 
 @login_required
 def bdese_pdf(request, siren):

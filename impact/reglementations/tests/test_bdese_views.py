@@ -4,6 +4,16 @@ import pytest
 from reglementations.models import BDESE_50_300, BDESE_300
 
 
+def test_select_year(authorized_user_client, grande_entreprise):
+
+    url = f"/bdese/{grande_entreprise.siren}/annees"
+    response = authorized_user_client.get(url)
+
+    assert response.status_code == 200
+    content = response.content.decode("utf-8")
+    assert "<!-- page selection annee -->" in content
+
+
 def test_bdese_is_not_public(client, django_user_model, grande_entreprise):
     url = f"/bdese/{grande_entreprise.siren}/2022/1"
     response = client.get(url)
