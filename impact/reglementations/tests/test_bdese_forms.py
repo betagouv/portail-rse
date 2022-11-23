@@ -1,7 +1,10 @@
 from django import forms
 import pytest
 
-from reglementations.forms import bdese_form_factory, categories_professionnelle_form_factory
+from reglementations.forms import (
+    bdese_form_factory,
+    categories_professionnelles_form_factory,
+)
 from reglementations.models import BDESE_300, BDESE_50_300
 
 
@@ -102,18 +105,20 @@ def test_categories_professionnelles_form(effectif, bdese_class, entreprise_fact
     entreprise = entreprise_factory(effectif=effectif)
     bdese = bdese_class.objects.create(entreprise=entreprise)
 
-    form = categories_professionnelle_form_factory(bdese)
+    form = categories_professionnelles_form_factory(bdese)
 
     assert len(form.fields) == 1
     assert "categories_professionnelles" in form.fields
 
-    bound_form = categories_professionnelle_form_factory(bdese, data={})
+    bound_form = categories_professionnelles_form_factory(bdese, data={})
     bdese = bound_form.save()
-    
+
     assert not bdese.categories_professionnelles
 
     categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
-    bound_form = categories_professionnelle_form_factory(bdese, data={"categories_professionnelles": categories_professionnelles})
+    bound_form = categories_professionnelles_form_factory(
+        bdese, data={"categories_professionnelles": categories_professionnelles}
+    )
     bdese = bound_form.save()
 
     assert bdese.categories_professionnelles == categories_professionnelles
