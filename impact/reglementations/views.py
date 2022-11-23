@@ -95,7 +95,7 @@ class BDESEReglementation(Reglementation):
                     )
                     secondary_actions = [
                         ReglementationAction(
-                            reverse_lazy("bdese", args=[entreprise.siren, 1]),
+                            reverse_lazy("bdese", args=[entreprise.siren, 2022, 1]),
                             "Modifier ma BDESE",
                         )
                     ]
@@ -103,7 +103,7 @@ class BDESEReglementation(Reglementation):
                     status = cls.STATUS_EN_COURS
                     status_detail = "Vous êtes soumis à cette réglementation. Vous avez démarré le remplissage de votre BDESE sur la plateforme."
                     primary_action = ReglementationAction(
-                        reverse_lazy("bdese", args=[entreprise.siren, 1]),
+                        reverse_lazy("bdese", args=[entreprise.siren, 2022, 1]),
                         "Reprendre l'actualisation de ma BDESE",
                     )
                     secondary_actions = [
@@ -117,7 +117,7 @@ class BDESEReglementation(Reglementation):
                 status = cls.STATUS_A_ACTUALISER
                 status_detail = "Vous êtes soumis à cette réglementation. Nous allons vous aider à la remplir."
                 primary_action = ReglementationAction(
-                    reverse_lazy("bdese", args=[entreprise.siren, 1]),
+                    reverse_lazy("bdese", args=[entreprise.siren, 2022, 1]),
                     "Actualiser ma BDESE",
                 )
                 secondary_actions = []
@@ -288,7 +288,7 @@ def get_bdese_data_from_index_egapro(entreprise: Entreprise, year: int) -> dict:
 
 
 @login_required
-def bdese(request, siren, step):
+def bdese(request, siren, annee, step):
     entreprise = Entreprise.objects.get(siren=siren)
     if request.user not in entreprise.users.all():
         raise PermissionDenied
@@ -298,7 +298,7 @@ def bdese(request, siren, step):
         if "mark_incomplete" in request.POST:
             bdese.mark_step_as_incomplete(step)
             bdese.save()
-            return redirect("bdese", siren=siren, step=step)
+            return redirect("bdese", siren=siren, annee=annee, step=step)
         else:
             form = bdese_form_factory(
                 step,
@@ -312,7 +312,7 @@ def bdese(request, siren, step):
                 if "save_complete" in request.POST:
                     bdese.mark_step_as_complete(step)
                     bdese.save()
-                    return redirect("bdese", siren=siren, step=step)
+                    return redirect("bdese", siren=siren, annee=annee, step=step)
             else:
                 messages.error(
                     request,
@@ -358,6 +358,7 @@ def bdese(request, siren, step):
         {
             "form": form,
             "siren": siren,
+            "annee": annee,
             "step_is_complete": step_is_complete,
             "steps": steps,
             "bdese_is_complete": bdese_is_complete,

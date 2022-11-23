@@ -10,7 +10,7 @@
         <div class="fr-col">
             <h2>Flux financiers à destination de l'entreprise</h2>
 
-            <form action="{% url 'bdese' siren 8 %}" method="post">
+            <form action="{% url 'bdese' siren annee 8 %}" method="post">
                 {% csrf_token %}
                 <h3>A-Aides publiques</h3>
                 {% include 'snippets/input_field.html' with field=form.aides_financieres %}

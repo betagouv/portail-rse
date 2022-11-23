@@ -10,7 +10,7 @@
         <div class="fr-col">
             <h2>Rémunération des salariés et dirigeants, dans l'ensemble de leurs éléments</h2>
 
-            <form action="{% url 'bdese' siren 5 %}" method="post">
+            <form action="{% url 'bdese' siren annee 5 %}" method="post">
                 {% csrf_token %}
 
                 <h3>A-Evolution des rémunérations salariales</h3>

@@ -10,7 +10,7 @@
         <div class="fr-col">
             <h2>Investissement social</h2>
 
-            <form action="{% url 'bdese' siren 1 %}" method="post">
+            <form action="{% url 'bdese' siren annee 1 %}" method="post">
                 {% csrf_token %}
 
                 <section class="fr-accordion">

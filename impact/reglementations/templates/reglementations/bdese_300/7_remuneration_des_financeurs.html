@@ -10,7 +10,7 @@
         <div class="fr-col">
             <h2>Rémunération des financeurs, en dehors des éléments mentionnés à l'étape "Rémunérations"</h2>
 
-            <form action="{% url 'bdese' siren 7 %}" method="post">
+            <form action="{% url 'bdese' siren annee 7 %}" method="post">
                 {% csrf_token %}
                 <h3>A-Rémunération des actionnaires (revenus distribués)</h3>
                 {% include 'snippets/input_field.html' with field=form.remuneration_actionnaires %}

@@ -10,7 +10,7 @@
         <div class="fr-col">
             <h2>Fonds propres, endettement et impôts</h2>
 
-            <form action="{% url 'bdese' siren 4 %}" method="post">
+            <form action="{% url 'bdese' siren annee 4 %}" method="post">
                 {% csrf_token %}
                 {% include 'snippets/input_field.html' with field=form.capitaux_propres %}
                 {% include 'snippets/input_field.html' with field=form.emprunts_et_dettes_financieres %}
