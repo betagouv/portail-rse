@@ -11,8 +11,8 @@ from weasyprint import CSS, HTML
 
 from entreprises.models import Entreprise
 from public.forms import EligibiliteForm
-from .forms import bdese_form_factory
 from .models import annees_a_remplir_bdese, BDESE_300, BDESE_50_300, categories_default
+from .forms import bdese_form_factory, categories_professionnelles_form_factory
 
 
 @dataclass
@@ -371,3 +371,19 @@ def _get_or_create_bdese(entreprise: Entreprise, annee: int) -> BDESE_300 | BDES
     else:
         bdese, _ = BDESE_50_300.objects.get_or_create(entreprise=entreprise, annee=annee)
     return bdese
+
+
+@login_required
+def categories_professionnelles(request, siren):
+    entreprise = Entreprise.objects.get(siren=siren)
+    if request.user not in entreprise.users.all():
+        raise PermissionDenied
+    bdese = _get_or_create_bdese(entreprise, 2022)
+    form = categories_professionnelles_form_factory(bdese)
+    return render(
+        request,
+        "reglementations/categories-professionnelles.html",
+        {
+            "form": form,
+        },
+    )
