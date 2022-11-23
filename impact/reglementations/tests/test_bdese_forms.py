@@ -9,15 +9,13 @@ from reglementations.models import BDESE_300, BDESE_50_300
 
 
 @pytest.fixture
-def bdese_300(entreprise_factory):
-    entreprise = entreprise_factory(effectif="grand")
-    return BDESE_300.objects.create(entreprise=entreprise)
+def bdese_300(bdese_factory):
+    return bdese_factory(BDESE_300)
 
 
 @pytest.fixture
-def bdese_50_300(entreprise_factory):
-    entreprise = entreprise_factory(effectif="moyen")
-    return BDESE_50_300.objects.create(entreprise=entreprise)
+def bdese_50_300(bdese_factory):
+    return bdese_factory(BDESE_50_300)
 
 
 def test_bdese_form_step_1_with_new_bdese_300_instance(bdese_300):
@@ -98,13 +96,9 @@ def test_bdese_form_with_new_bdese_50_300_instance(bdese_50_300):
     assert bound_form.is_valid()
 
 
-@pytest.mark.parametrize(
-    "effectif, bdese_class", [("moyen", BDESE_50_300), ("grand", BDESE_300)]
-)
-def test_categories_professionnelles_form(effectif, bdese_class, entreprise_factory):
-    entreprise = entreprise_factory(effectif=effectif)
-    bdese = bdese_class.objects.create(entreprise=entreprise)
-
+@pytest.mark.parametrize("bdese_class", [BDESE_50_300, BDESE_300])
+def test_categories_professionnelles_form(bdese_class, bdese_factory):
+    bdese = bdese_factory(bdese_class)
     form = categories_professionnelles_form_factory(bdese)
 
     assert len(form.fields) == 1
