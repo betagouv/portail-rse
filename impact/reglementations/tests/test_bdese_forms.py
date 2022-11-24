@@ -96,9 +96,7 @@ def test_bdese_form_with_new_bdese_50_300_instance(bdese_50_300):
     assert bound_form.is_valid()
 
 
-@pytest.mark.parametrize("bdese_class", [BDESE_50_300, BDESE_300])
-def test_categories_professionnelles_form(bdese_class, bdese_factory):
-    bdese = bdese_factory(bdese_class)
+def test_categories_professionnelles_form(bdese):
     form = categories_professionnelles_form_factory(bdese)
 
     assert len(form.fields) == 1
