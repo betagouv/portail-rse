@@ -35,7 +35,7 @@ class CategoriesProfessionnellesForm(forms.ModelForm, DsfrForm):
 
 
 def categories_professionnelles_form_factory(
-    bdese, *args, number_categories=3, **kwargs
+    bdese, *args, number_categories=6, **kwargs
 ):
     widgets = [
         forms.widgets.TextInput(attrs={"class": "fr-input"})
