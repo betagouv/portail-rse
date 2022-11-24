@@ -232,6 +232,7 @@ def bdese_pdf(request, siren, annee):
     context = {
         "entreprise": entreprise,
         "bdese_form": bdese_form,
+        "annee": annee,
     }
     template_path = _pdf_template_path_from_bdese(bdese)
     pdf_html = render_to_string(template_path, context)
