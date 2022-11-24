@@ -4,7 +4,7 @@
     </div>
     <div class="fr-col" style="text-align: right;">
         <a class="fr-btn" href="{% url 'bdese_pdf' siren annee %}" target="_blank" rel="noopener">
-            Télécharger ma BDESE{% if not bdese_is_complete %} (brouillon){% endif %}
+            Télécharger ma BDESE {{ annee }}{% if not bdese_is_complete %} (brouillon){% endif %}
         </a>
     </div>
 </div>
