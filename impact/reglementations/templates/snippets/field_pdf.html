@@ -1,6 +1,6 @@
 {% load filters %}
 <div class="fr-text-lead">{{ field.label }} :</div>
-<p class="fr-text--xs">{{ field.help_text }}</p>
+<p class="fr-text--sm">{{ field.help_text }}</p>
 
 {% if field.value or field.value == 0 %}
     {% with field_type=field|field_type %}
@@ -42,5 +42,15 @@
         {% endif %}
     {% endwith %}
 {% else %}
-    <p>Non rempli.</p>
+    <div class="fr-table fr-table--bordered">
+        <table>
+            <tbody>
+                <tr>
+                    <td>
+                        Non rempli.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 {% endif %}
