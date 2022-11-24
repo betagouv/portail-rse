@@ -363,6 +363,7 @@ def bdese(request, siren, annee, step):
             "step_is_complete": step_is_complete,
             "steps": steps,
             "bdese_is_complete": bdese_is_complete,
+            "annees": annees_a_remplir_bdese(),
         },
     )
 

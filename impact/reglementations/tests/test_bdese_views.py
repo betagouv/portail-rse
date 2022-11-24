@@ -31,7 +31,6 @@ def test_bdese_is_not_public(client, django_user_model, grande_entreprise):
     assert response.status_code == 403
 
 
-
 @pytest.mark.parametrize(
     "effectif, bdese_class", [("moyen", BDESE_50_300), ("grand", BDESE_300)]
 )
@@ -49,6 +48,10 @@ def test_bdese_is_created_at_first_authorized_request(
     response = client.get(url)
 
     assert response.status_code == 200
+    content = response.content.decode("utf-8")
+    print(content)
+    for annee in annees_a_remplir_bdese():
+        assert str(annee) in content
     bdese_2021 = bdese_class.objects.get(entreprise=entreprise, annee=2021)
 
     url = f"/bdese/{entreprise.siren}/2022/1"

@@ -4,7 +4,13 @@
 <div class="fr-container fr-my-16w">
     <div class="fr-grid-row">
         <div class="fr-col">
-            <h1>BDESE</h1>
+            <h1>BDESE {{ annee }}</h1>
+            <div>
+                Autres années :
+                {% for annee in annees %}
+                <a href="{% url 'bdese' siren annee 1 %}" title="Remplissez la BDESE et télécharger le rapport pour {{ annee }}">{{ annee }}</a>
+                {% endfor %}
+            </div>
 
             <form action="{% url 'bdese' siren annee 1 %}" method="post">
                 {% csrf_token %}
