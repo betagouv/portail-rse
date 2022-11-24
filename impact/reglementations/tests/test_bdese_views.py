@@ -193,7 +193,12 @@ def test_post_categories_professionnelles(
     categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
     url = f"/bdese/{entreprise.siren}/2022/categories-professionnelles"
     response = client.post(
-        url, data={"categories_professionnelles": categories_professionnelles}
+        url,
+        data={
+            "categories_professionnelles_0": categories_professionnelles[0],
+            "categories_professionnelles_1": categories_professionnelles[1],
+            "categories_professionnelles_2": categories_professionnelles[2],
+        },
     )
 
     assert response.status_code == 200
