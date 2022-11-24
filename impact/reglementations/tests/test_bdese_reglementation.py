@@ -96,7 +96,7 @@ def test_calculate_bdese_reglementation_more_than_300_employees(
         == "Vous êtes soumis à cette réglementation. Vous avez actualisé votre BDESE sur la plateforme."
     )
     assert bdese.primary_action.title == "Télécharger le pdf"
-    assert bdese.primary_action.url == reverse("bdese_pdf", args=[entreprise.siren])
+    assert bdese.primary_action.url == reverse("bdese_pdf", args=[entreprise.siren, 2022])
     assert len(bdese.secondary_actions) == 1
     assert bdese.secondary_actions[0].title == "Modifier ma BDESE"
     assert bdese.secondary_actions[0].url == reverse(
