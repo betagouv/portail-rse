@@ -7,7 +7,6 @@ from .models import BDESE_50_300, BDESE_300
 
 class ListJSONWidget(forms.widgets.MultiWidget):
     def decompress(self, value):
-        print(value)
         if isinstance(value, list):
             return value
         elif isinstance(value, str) and value != "null":
@@ -17,9 +16,10 @@ class ListJSONWidget(forms.widgets.MultiWidget):
         return []
 
     def value_from_datadict(self, data, files, name):
-        value = super().value_from_datadict(data, files, name)
+        values = super().value_from_datadict(data, files, name)
+        not_empty_values = [value for value in values if value]
         # JSONField expects a single string that it can parse into json.
-        return json.dumps(value)
+        return json.dumps(not_empty_values)
 
 
 class CategoriesProfessionnellesForm(forms.ModelForm, DsfrForm):
@@ -27,14 +27,18 @@ class CategoriesProfessionnellesForm(forms.ModelForm, DsfrForm):
         fields = ["categories_professionnelles"]
 
 
-def categories_professionnelles_form_factory(bdese, *args, **kwargs):
-    # number_categories = len(bdese.categories_professionnelles) if bdese.categories_professionnelles else 3
-    # widgets = [forms.widgets.TextInput(attrs={"class": "fr-input"}) for i in range(number_categories)]
+def categories_professionnelles_form_factory(
+    bdese, *args, number_categories=3, **kwargs
+):
+    widgets = [
+        forms.widgets.TextInput(attrs={"class": "fr-input"})
+        for i in range(number_categories)
+    ]
 
     Form = forms.modelform_factory(
         bdese.__class__,
         form=CategoriesProfessionnellesForm,
-        # widgets={"categories_professionnelles": ListJSONWidget(widgets)}
+        widgets={"categories_professionnelles": ListJSONWidget(widgets)},
     )
     return Form(*args, instance=bdese, **kwargs)
 

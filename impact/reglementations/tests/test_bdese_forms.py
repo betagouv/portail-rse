@@ -111,7 +111,12 @@ def test_categories_professionnelles_form(bdese_class, bdese_factory):
 
     categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
     bound_form = categories_professionnelles_form_factory(
-        bdese, data={"categories_professionnelles": categories_professionnelles}
+        bdese,
+        data={
+            "categories_professionnelles_0": categories_professionnelles[0],
+            "categories_professionnelles_1": categories_professionnelles[1],
+            "categories_professionnelles_2": categories_professionnelles[2],
+        },
     )
     bdese = bound_form.save()
 
