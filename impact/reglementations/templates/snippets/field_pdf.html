@@ -1,6 +1,10 @@
 {% load filters %}
 <div class="fr-text-lead">{{ field.label }} :</div>
+<<<<<<< HEAD
 {% if field.help_text %}<p class="fr-text--sm">{{ field.help_text }}</p>{% endif %}
+=======
+<p class="fr-text--xs">{{ field.help_text }}</p>
+>>>>>>> 77a1663 (modification du template pdf)
 
 {% if field.value or field.value == 0 %}
     {% with field_type=field|field_type %}
