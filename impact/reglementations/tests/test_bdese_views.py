@@ -167,49 +167,37 @@ def test_mark_step_as_incomplete(authorized_user_client, grande_entreprise):
     assert not bdese.step_is_complete(1)
 
 
+@pytest.fixture
+def authorized_user(bdese, django_user_model):
+    user = django_user_model.objects.create()
+    bdese.entreprise.users.add(user)
+    return user
+
+
 @pytest.mark.slow
-@pytest.mark.parametrize("bdese_class", [BDESE_50_300, BDESE_300])
-def test_get_pdf(bdese_class, bdese_factory, client, django_user_model):
-    bdese = bdese_factory(bdese_class=bdese_class)
-    entreprise = bdese.entreprise
-    user = django_user_model.objects.create()
-    entreprise.users.add(user)
-    client.force_login(user)
+def test_get_pdf(bdese, authorized_user, client):
+    client.force_login(authorized_user)
 
-    url = f"/bdese/{entreprise.siren}/2022/pdf"
+    url = f"/bdese/{bdese.entreprise.siren}/2022/pdf"
     response = client.get(url)
 
     assert response.status_code == 200
 
 
-@pytest.mark.parametrize("bdese_class", [BDESE_50_300, BDESE_300])
-def test_get_categories_professionnelles(
-    bdese_class, bdese_factory, client, django_user_model
-):
-    bdese = bdese_factory(bdese_class=bdese_class)
-    entreprise = bdese.entreprise
-    user = django_user_model.objects.create()
-    entreprise.users.add(user)
-    client.force_login(user)
+def test_get_categories_professionnelles(bdese, authorized_user, client):
+    client.force_login(authorized_user)
 
-    url = f"/bdese/{entreprise.siren}/2022/categories-professionnelles"
+    url = f"/bdese/{bdese.entreprise.siren}/2022/categories-professionnelles"
     response = client.get(url)
 
     assert response.status_code == 200
 
 
-@pytest.mark.parametrize("bdese_class", [BDESE_50_300, BDESE_300])
-def test_post_categories_professionnelles(
-    bdese_class, bdese_factory, client, django_user_model
-):
-    bdese = bdese_factory(bdese_class=bdese_class)
-    entreprise = bdese.entreprise
-    user = django_user_model.objects.create()
-    entreprise.users.add(user)
-    client.force_login(user)
+def test_post_categories_professionnelles(bdese, authorized_user, client):
+    client.force_login(authorized_user)
 
     categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
-    url = f"/bdese/{entreprise.siren}/2022/categories-professionnelles"
+    url = f"/bdese/{bdese.entreprise.siren}/2022/categories-professionnelles"
     response = client.post(
         url,
         data={
