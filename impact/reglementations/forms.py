@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 import json
 
 from public.forms import DsfrForm
@@ -25,6 +26,12 @@ class ListJSONWidget(forms.widgets.MultiWidget):
 class CategoriesProfessionnellesForm(forms.ModelForm, DsfrForm):
     class Meta:
         fields = ["categories_professionnelles"]
+
+    def clean_categories_professionnelles(self):
+        data = self.cleaned_data["categories_professionnelles"]
+        if len(data) < 3:
+            raise ValidationError("Au moins 3 catégories sont requises")
+        return data
 
 
 def categories_professionnelles_form_factory(
