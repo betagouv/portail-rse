@@ -226,7 +226,7 @@ def bdese_pdf(request, siren, annee):
     entreprise = Entreprise.objects.get(siren=siren)
     if request.user not in entreprise.users.all():
         raise PermissionDenied
-    bdese = _get_or_create_bdese(entreprise)
+    bdese = _get_or_create_bdese(entreprise, annee)
     categories_professionnelles = categories_default()
     bdese_form = bdese_form_factory("all", categories_professionnelles, bdese)
     context = {
@@ -292,7 +292,7 @@ def bdese(request, siren, annee, step):
     entreprise = Entreprise.objects.get(siren=siren)
     if request.user not in entreprise.users.all():
         raise PermissionDenied
-    bdese = _get_or_create_bdese(entreprise)
+    bdese = _get_or_create_bdese(entreprise, annee)
     categories_professionnelles = categories_default()
     if request.method == "POST":
         if "mark_incomplete" in request.POST:
@@ -366,13 +366,13 @@ def bdese(request, siren, annee, step):
     )
 
 
-def _get_or_create_bdese(entreprise: Entreprise) -> BDESE_300 | BDESE_50_300:
+def _get_or_create_bdese(entreprise: Entreprise, annee: int) -> BDESE_300 | BDESE_50_300:
     reglementation = BDESEReglementation.calculate(entreprise)
     if reglementation.bdese_type in (
         BDESEReglementation.TYPE_INFERIEUR_500,
         BDESEReglementation.TYPE_SUPERIEUR_500,
     ):
-        bdese, _ = BDESE_300.objects.get_or_create(entreprise=entreprise)
+        bdese, _ = BDESE_300.objects.get_or_create(entreprise=entreprise, annee=annee)
     else:
-        bdese, _ = BDESE_50_300.objects.get_or_create(entreprise=entreprise)
+        bdese, _ = BDESE_50_300.objects.get_or_create(entreprise=entreprise, annee=annee)
     return bdese

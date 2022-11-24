@@ -31,19 +31,6 @@ def test_bdese_is_not_public(client, django_user_model, grande_entreprise):
     assert response.status_code == 403
 
 
-@pytest.mark.parametrize("annee", [2021, 2022])
-def test_bdese_for_several_years(
-    annee, client, django_user_model, grande_entreprise
-):
-    user = django_user_model.objects.create(email=f"{annee}@domain.test")
-    grande_entreprise.users.add(user)
-    client.force_login(user)
-
-    url = f"/bdese/{grande_entreprise.siren}/{annee}/1"
-    response = client.get(url)
-
-    assert response.status_code == 200
-
 
 @pytest.mark.parametrize(
     "effectif, bdese_class", [("moyen", BDESE_50_300), ("grand", BDESE_300)]
@@ -58,11 +45,19 @@ def test_bdese_is_created_at_first_authorized_request(
 
     assert not bdese_class.objects.filter(entreprise=entreprise)
 
+    url = f"/bdese/{entreprise.siren}/2021/1"
+    response = client.get(url)
+
+    assert response.status_code == 200
+    bdese_2021 = bdese_class.objects.get(entreprise=entreprise, annee=2021)
+
     url = f"/bdese/{entreprise.siren}/2022/1"
     response = client.get(url)
 
     assert response.status_code == 200
-    bdese = bdese_class.objects.get(entreprise=entreprise)
+    bdese_2022 = bdese_class.objects.get(entreprise=entreprise, annee=2022)
+
+    assert bdese_2021 != bdese_2022
 
 
 @pytest.fixture
