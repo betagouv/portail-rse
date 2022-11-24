@@ -32,23 +32,11 @@ def test_bdese_is_created_at_first_authorized_request(
 
     assert not bdese_class.objects.filter(entreprise=entreprise)
 
-    url = f"/bdese/{entreprise.siren}/2021/1"
-    response = client.get(url)
-
-    assert response.status_code == 200
-    content = response.content.decode("utf-8")
-    print(content)
-    for annee in annees_a_remplir_bdese():
-        assert str(annee) in content
-    bdese_2021 = bdese_class.objects.get(entreprise=entreprise, annee=2021)
-
     url = f"/bdese/{entreprise.siren}/2022/1"
     response = client.get(url)
 
-    assert response.status_code == 200
+    assert response.status_code == 302
     bdese_2022 = bdese_class.objects.get(entreprise=entreprise, annee=2022)
-
-    assert bdese_2021 != bdese_2022
 
 
 @pytest.fixture
@@ -57,6 +45,18 @@ def authorized_user_client(client, django_user_model, grande_entreprise):
     grande_entreprise.users.add(user)
     client.force_login(user)
     return client
+
+
+def test_bdese_step_redirect_to_categories_professionnelles_if_not_filled(
+    authorized_user_client, grande_entreprise
+):
+    url = f"/bdese/{grande_entreprise.siren}/2022/1"
+    response = authorized_user_client.get(url)
+
+    assert response.status_code == 302
+    assert response.url == reverse(
+        "categories_professionnelles", args=[grande_entreprise.siren]
+    )
 
 
 def test_bdese_step_use_categories_professionnelles(
@@ -77,6 +77,11 @@ def test_bdese_step_use_categories_professionnelles(
 
 
 def test_save_step_error(authorized_user_client, grande_entreprise):
+    bdese = BDESE_300.objects.create(
+        entreprise=grande_entreprise,
+        categories_professionnelles=["catégorie 1", "catégorie 2", "catégorie 3"],
+    )
+
     url = f"/bdese/{grande_entreprise.siren}/2022/1"
     response = authorized_user_client.post(url, {"unite_absenteisme": "yolo"})
 
@@ -91,6 +96,11 @@ def test_save_step_error(authorized_user_client, grande_entreprise):
 
 
 def test_save_step_as_draft_success(authorized_user_client, grande_entreprise):
+    bdese = BDESE_300.objects.create(
+        entreprise=grande_entreprise,
+        categories_professionnelles=["catégorie 1", "catégorie 2", "catégorie 3"],
+    )
+
     url = f"/bdese/{grande_entreprise.siren}/2022/1"
     response = authorized_user_client.post(url, {"unite_absenteisme": "H"})
 
@@ -109,6 +119,11 @@ def test_save_step_as_draft_success(authorized_user_client, grande_entreprise):
 def test_save_step_and_mark_as_complete_success(
     authorized_user_client, grande_entreprise
 ):
+    bdese = BDESE_300.objects.create(
+        entreprise=grande_entreprise,
+        categories_professionnelles=["catégorie 1", "catégorie 2", "catégorie 3"],
+    )
+
     url = f"/bdese/{grande_entreprise.siren}/2022/1"
     response = authorized_user_client.post(
         url, {"unite_absenteisme": "H", "save_complete": ""}, follow=True
@@ -127,7 +142,10 @@ def test_save_step_and_mark_as_complete_success(
 
 
 def test_mark_step_as_incomplete(authorized_user_client, grande_entreprise):
-    bdese = BDESE_300.objects.create(entreprise=grande_entreprise)
+    bdese = BDESE_300.objects.create(
+        entreprise=grande_entreprise,
+        categories_professionnelles=["catégorie 1", "catégorie 2", "catégorie 3"],
+    )
     bdese.mark_step_as_complete(1)
     bdese.save()
 
