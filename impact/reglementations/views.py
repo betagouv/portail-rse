@@ -285,9 +285,9 @@ def bdese(request, siren, annee, step):
     if request.user not in entreprise.users.all():
         raise PermissionDenied
     bdese = _get_or_create_bdese(entreprise, annee)
-    categories_professionnelles = (
-        bdese.categories_professionnelles or categories_default()
-    )
+    categories_professionnelles = bdese.categories_professionnelles
+    if not categories_professionnelles:
+        return redirect("categories_professionnelles", siren=siren)
     if request.method == "POST":
         if "mark_incomplete" in request.POST:
             bdese.mark_step_as_incomplete(step)
@@ -385,7 +385,6 @@ def categories_professionnelles(request, siren):
             bdese = form.save()
             messages.success(request, "Catégories enregistrées")
         else:
-            print(request.POST)
             messages.error(
                 request,
                 "Les catégories n'ont pas été enregistrées car le formulaire contient des erreurs",
