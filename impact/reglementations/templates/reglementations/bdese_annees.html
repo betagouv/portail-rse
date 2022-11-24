@@ -7,7 +7,7 @@
     La réglementation BDESE doit être remplie pour les 3 années précédentes et 2 années suivantes :
     <ul>
         {% for annee in annees %}
-        <li>{{ annee }}</li>
+        <li><a href="{% url 'bdese' siren annee 1 %}">BDESE {{ annee }}</a></li>
         {% endfor %}
     </ul>
 </div>

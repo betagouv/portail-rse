@@ -217,7 +217,7 @@ def bdese_annees(request, siren):
     return render(
         request,
         "reglementations/bdese_annees.html",
-        {"annees": annees_a_remplir_bdese()},
+        {"siren": siren, "annees": annees_a_remplir_bdese()},
     )
 
 
