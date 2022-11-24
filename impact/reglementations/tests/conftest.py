@@ -39,6 +39,11 @@ def bdese_factory(entreprise_factory):
     return create_bdese
 
 
+@pytest.fixture(params=[BDESE_50_300, BDESE_300])
+def bdese(request, bdese_factory):
+    return bdese_factory(request.param)
+
+
 @pytest.fixture
 def grande_entreprise(entreprise_factory):
     return entreprise_factory(effectif="grand")
