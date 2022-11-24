@@ -40,35 +40,34 @@ def test_bdese_is_created_at_first_authorized_request(
 
 
 @pytest.fixture
-def authorized_user_client(client, django_user_model, grande_entreprise):
+def authorized_user(bdese, django_user_model):
     user = django_user_model.objects.create()
-    grande_entreprise.users.add(user)
-    client.force_login(user)
-    return client
+    bdese.entreprise.users.add(user)
+    return user
 
 
 def test_bdese_step_redirect_to_categories_professionnelles_if_not_filled(
-    authorized_user_client, grande_entreprise
+    bdese, authorized_user, client
 ):
-    url = f"/bdese/{grande_entreprise.siren}/2022/1"
-    response = authorized_user_client.get(url)
+    client.force_login(authorized_user)
+
+    url = f"/bdese/{bdese.entreprise.siren}/2022/1"
+    response = client.get(url)
 
     assert response.status_code == 302
     assert response.url == reverse(
-        "categories_professionnelles", args=[grande_entreprise.siren]
+        "categories_professionnelles", args=[bdese.entreprise.siren]
     )
 
 
-def test_bdese_step_use_categories_professionnelles(
-    authorized_user_client, grande_entreprise
-):
-    bdese = BDESE_300.objects.create(entreprise=grande_entreprise)
+def test_bdese_step_use_categories_professionnelles(bdese, authorized_user, client):
     categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
     bdese.categories_professionnelles = categories_professionnelles
     bdese.save()
+    client.force_login(authorized_user)
 
-    url = f"/bdese/{grande_entreprise.siren}/2022/1"
-    response = authorized_user_client.get(url)
+    url = f"/bdese/{bdese.entreprise.siren}/2022/1"
+    response = client.get(url)
 
     assert response.status_code == 200
     content = response.content.decode("utf-8")
@@ -76,14 +75,22 @@ def test_bdese_step_use_categories_professionnelles(
         assert category in content
 
 
-def test_save_step_error(authorized_user_client, grande_entreprise):
-    bdese = BDESE_300.objects.create(
-        entreprise=grande_entreprise,
-        categories_professionnelles=["catégorie 1", "catégorie 2", "catégorie 3"],
-    )
+@pytest.fixture
+def bdese_300_with_categories(bdese_factory):
+    bdese = bdese_factory(bdese_class=BDESE_300)
+    bdese.categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
+    bdese.save()
+    return bdese
 
-    url = f"/bdese/{grande_entreprise.siren}/2022/1"
-    response = authorized_user_client.post(url, {"unite_absenteisme": "yolo"})
+
+def test_save_step_error(bdese_300_with_categories, django_user_model, client):
+    bdese = bdese_300_with_categories
+    user = django_user_model.objects.create()
+    bdese.entreprise.users.add(user)
+    client.force_login(user)
+
+    url = f"/bdese/{bdese.entreprise.siren}/2022/1"
+    response = client.post(url, {"unite_absenteisme": "yolo"})
 
     assert response.status_code == 200
     assert (
@@ -91,18 +98,20 @@ def test_save_step_error(authorized_user_client, grande_entreprise):
         in response.content.decode("utf-8")
     )
 
-    bdese = BDESE_300.objects.get(entreprise=grande_entreprise)
+    bdese.refresh_from_db()
     assert bdese.unite_absenteisme != "yolo"
 
 
-def test_save_step_as_draft_success(authorized_user_client, grande_entreprise):
-    bdese = BDESE_300.objects.create(
-        entreprise=grande_entreprise,
-        categories_professionnelles=["catégorie 1", "catégorie 2", "catégorie 3"],
-    )
+def test_save_step_as_draft_success(
+    bdese_300_with_categories, django_user_model, client
+):
+    bdese = bdese_300_with_categories
+    user = django_user_model.objects.create()
+    bdese.entreprise.users.add(user)
+    client.force_login(user)
 
-    url = f"/bdese/{grande_entreprise.siren}/2022/1"
-    response = authorized_user_client.post(url, {"unite_absenteisme": "H"})
+    url = f"/bdese/{bdese.entreprise.siren}/2022/1"
+    response = client.post(url, {"unite_absenteisme": "H"})
 
     assert response.status_code == 200
 
@@ -111,21 +120,21 @@ def test_save_step_as_draft_success(authorized_user_client, grande_entreprise):
     assert "Enregistrer et marquer comme terminé" in content
     assert "Enregistrer en brouillon" in content
 
-    bdese = BDESE_300.objects.get(entreprise=grande_entreprise)
+    bdese.refresh_from_db()
     assert bdese.unite_absenteisme == "H"
     assert not bdese.step_is_complete(1)
 
 
 def test_save_step_and_mark_as_complete_success(
-    authorized_user_client, grande_entreprise
+    bdese_300_with_categories, django_user_model, client
 ):
-    bdese = BDESE_300.objects.create(
-        entreprise=grande_entreprise,
-        categories_professionnelles=["catégorie 1", "catégorie 2", "catégorie 3"],
-    )
+    bdese = bdese_300_with_categories
+    user = django_user_model.objects.create()
+    bdese.entreprise.users.add(user)
+    client.force_login(user)
 
-    url = f"/bdese/{grande_entreprise.siren}/2022/1"
-    response = authorized_user_client.post(
+    url = f"/bdese/{bdese.entreprise.siren}/2022/1"
+    response = client.post(
         url, {"unite_absenteisme": "H", "save_complete": ""}, follow=True
     )
 
@@ -136,24 +145,25 @@ def test_save_step_and_mark_as_complete_success(
     assert "Étape enregistrée" in content
     assert "Repasser en brouillon pour modifier" in content
 
-    bdese = BDESE_300.objects.get(entreprise=grande_entreprise)
+    bdese.refresh_from_db()
     assert bdese.unite_absenteisme == "H"
     assert bdese.step_is_complete(1)
 
 
-def test_mark_step_as_incomplete(authorized_user_client, grande_entreprise):
-    bdese = BDESE_300.objects.create(
-        entreprise=grande_entreprise,
-        categories_professionnelles=["catégorie 1", "catégorie 2", "catégorie 3"],
-    )
+def test_mark_step_as_incomplete(bdese_300_with_categories, django_user_model, client):
+    bdese = bdese_300_with_categories
     bdese.mark_step_as_complete(1)
     bdese.save()
 
     bdese.refresh_from_db()
     assert bdese.step_is_complete(1)
 
-    url = f"/bdese/{grande_entreprise.siren}/2022/1"
-    response = authorized_user_client.post(url, {"mark_incomplete": ""}, follow=True)
+    user = django_user_model.objects.create()
+    bdese.entreprise.users.add(user)
+    client.force_login(user)
+
+    url = f"/bdese/{bdese.entreprise.siren}/2022/1"
+    response = client.post(url, {"mark_incomplete": ""}, follow=True)
 
     assert response.status_code == 200
     assert response.redirect_chain == [(url, 302)]
@@ -163,15 +173,8 @@ def test_mark_step_as_incomplete(authorized_user_client, grande_entreprise):
     assert "Enregistrer et marquer comme terminé" in content
     assert "Enregistrer en brouillon" in content
 
-    bdese = BDESE_300.objects.get(entreprise=grande_entreprise)
+    bdese.refresh_from_db()
     assert not bdese.step_is_complete(1)
-
-
-@pytest.fixture
-def authorized_user(bdese, django_user_model):
-    user = django_user_model.objects.create()
-    bdese.entreprise.users.add(user)
-    return user
 
 
 @pytest.mark.slow
