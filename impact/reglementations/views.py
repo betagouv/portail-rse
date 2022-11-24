@@ -213,15 +213,6 @@ def reglementations(request):
 
 
 @login_required
-def bdese_annees(request, siren):
-    return render(
-        request,
-        "reglementations/bdese_annees.html",
-        {"siren": siren, "annees": annees_a_remplir_bdese()},
-    )
-
-
-@login_required
 def bdese_pdf(request, siren, annee):
     entreprise = Entreprise.objects.get(siren=siren)
     if request.user not in entreprise.users.all():
