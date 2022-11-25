@@ -196,7 +196,7 @@ def test_get_categories_professionnelles(bdese, authorized_user, client):
     assert response.status_code == 200
 
 
-def test_post_categories_professionnelles(bdese, authorized_user, client):
+def test_save_categories_professionnelles(bdese, authorized_user, client):
     client.force_login(authorized_user)
 
     categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
@@ -208,9 +208,13 @@ def test_post_categories_professionnelles(bdese, authorized_user, client):
             "categories_professionnelles_1": categories_professionnelles[1],
             "categories_professionnelles_2": categories_professionnelles[2],
         },
+        follow=True,
     )
 
     assert response.status_code == 200
+    assert response.redirect_chain == [
+        (reverse("bdese", args=[bdese.entreprise.siren, 2022, 1]), 302)
+    ]
 
     content = response.content.decode("utf-8")
     assert "Catégories enregistrées" in content
