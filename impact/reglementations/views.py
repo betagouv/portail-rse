@@ -287,7 +287,7 @@ def bdese(request, siren, annee, step):
     bdese = _get_or_create_bdese(entreprise, annee)
     categories_professionnelles = bdese.categories_professionnelles
     if not categories_professionnelles:
-        return redirect("categories_professionnelles", siren=siren)
+        return redirect("categories_professionnelles", siren=siren, annee=annee)
     if request.method == "POST":
         if "mark_incomplete" in request.POST:
             bdese.mark_step_as_incomplete(step)
@@ -378,17 +378,17 @@ def _get_or_create_bdese(
 
 
 @login_required
-def categories_professionnelles(request, siren):
+def categories_professionnelles(request, siren, annee):
     entreprise = Entreprise.objects.get(siren=siren)
     if request.user not in entreprise.users.all():
         raise PermissionDenied
-    bdese = _get_or_create_bdese(entreprise, 2022)
+    bdese = _get_or_create_bdese(entreprise, annee)
 
     form = categories_professionnelles_form_factory(bdese, data=request.POST or None)
     if form.is_valid():
         bdese = form.save()
         messages.success(request, "Catégories enregistrées")
-        return redirect("bdese", siren=siren, annee=2022, step=1)
+        return redirect("bdese", siren=siren, annee=annee, step=1)
 
     return render(
         request,
@@ -396,5 +396,6 @@ def categories_professionnelles(request, siren):
         {
             "form": form,
             "siren": siren,
+            "annee": annee,
         },
     )
