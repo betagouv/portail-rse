@@ -7,6 +7,8 @@ from .models import BDESE_50_300, BDESE_300
 
 
 class ListJSONWidget(forms.widgets.MultiWidget):
+    template_name = "snippets/list_json_widget.html"
+
     def decompress(self, value):
         if isinstance(value, list):
             return value
@@ -38,7 +40,7 @@ def categories_professionnelles_form_factory(
     bdese, *args, number_categories=6, **kwargs
 ):
     widgets = [
-        forms.widgets.TextInput(attrs={"class": "fr-input"})
+        forms.widgets.TextInput(attrs={"class": "fr-input", "label": "Catégorie"})
         for i in range(number_categories)
     ]
 
