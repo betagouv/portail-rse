@@ -384,7 +384,15 @@ def categories_professionnelles(request, siren, annee):
         raise PermissionDenied
     bdese = _get_or_create_bdese(entreprise, annee)
 
-    form = categories_professionnelles_form_factory(bdese, data=request.POST or None)
+    initial = None
+    if not bdese.categories_professionnelles and not request.POST:
+        bdeses = bdese.__class__.objects.filter(entreprise=bdese.entreprise).order_by("-annee")
+        for bdese in bdeses:
+            if bdese.categories_professionnelles:
+                initial={"catégories_professionnelles": bdese.categories_professionnelles}
+                break
+
+    form = categories_professionnelles_form_factory(bdese, data=request.POST or None, initial=initial)
     if form.is_valid():
         bdese = form.save()
         messages.success(request, "Catégories enregistrées")
