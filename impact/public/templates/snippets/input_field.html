@@ -4,7 +4,7 @@
     </label>
     {% load filters %}
     {% with widget_type=field|widget_type %}
-    <div class="fr-col-12 {% if widget_type == 'NumberInput' %}fr-col-sm-2{% endif %} fr-mx-2w">
+    <div class="fr-col-12 {% if widget_type == 'NumberInput' %}fr-col-sm-2{% endif %}">
     {% endwith %}
     {{ field }}
     </div>
