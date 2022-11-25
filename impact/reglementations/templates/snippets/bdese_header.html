@@ -10,7 +10,7 @@
 </div>
 
 <div class="fr-grid-row">
-    <div class="fr-col">
+    <div class="fr-col fr-pb-8v">
         Autres années :
         {% for annee in annees %}
         <a href="{% url 'bdese' siren annee 1 %}" title="Remplissez la BDESE et télécharger le rapport pour {{ annee }}">{{ annee }}</a>
