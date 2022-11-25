@@ -263,13 +263,20 @@ def test_save_categories_professionnelles_for_a_new_year(
     client.force_login(authorized_user)
 
     new_year = bdese.annee + 1
+
+    url = f"/bdese/{bdese.entreprise.siren}/{new_year}/categories-professionnelles"
+    response = client.get(url)
+
+    content = response.content.decode("utf-8")
+    for categorie in categories_professionnelles:
+        assert categorie in content
+
     new_categories_professionnelles = [
         "catégorie A",
         "catégorie B",
         "catégorie C",
         "catégorie D",
     ]
-    url = f"/bdese/{bdese.entreprise.siren}/{new_year}/categories-professionnelles"
     response = client.post(
         url,
         data={
