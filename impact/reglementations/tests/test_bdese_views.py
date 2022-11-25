@@ -57,12 +57,12 @@ def test_bdese_step_redirect_to_categories_professionnelles_if_not_filled(
 ):
     client.force_login(authorized_user)
 
-    url = f"/bdese/{bdese.entreprise.siren}/2022/1"
+    url = f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/1"
     response = client.get(url)
 
     assert response.status_code == 302
     assert response.url == reverse(
-        "categories_professionnelles", args=[bdese.entreprise.siren]
+        "categories_professionnelles", args=[bdese.entreprise.siren, bdese.annee]
     )
 
 
@@ -200,7 +200,7 @@ def test_get_pdf(bdese, authorized_user, client):
 def test_get_categories_professionnelles(bdese, authorized_user, client):
     client.force_login(authorized_user)
 
-    url = f"/bdese/{bdese.entreprise.siren}/2022/categories-professionnelles"
+    url = f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/categories-professionnelles"
     response = client.get(url)
 
     assert response.status_code == 200
@@ -210,7 +210,7 @@ def test_save_categories_professionnelles(bdese, authorized_user, client):
     client.force_login(authorized_user)
 
     categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
-    url = f"/bdese/{bdese.entreprise.siren}/2022/categories-professionnelles"
+    url = f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/categories-professionnelles"
     response = client.post(
         url,
         data={
@@ -223,7 +223,7 @@ def test_save_categories_professionnelles(bdese, authorized_user, client):
 
     assert response.status_code == 200
     assert response.redirect_chain == [
-        (reverse("bdese", args=[bdese.entreprise.siren, 2022, 1]), 302)
+        (reverse("bdese", args=[bdese.entreprise.siren, bdese.annee, 1]), 302)
     ]
 
     content = response.content.decode("utf-8")
@@ -236,7 +236,7 @@ def test_save_categories_professionnelles(bdese, authorized_user, client):
 def test_save_categories_professionnelles_error(bdese, authorized_user, client):
     client.force_login(authorized_user)
 
-    url = f"/bdese/{bdese.entreprise.siren}/2022/categories-professionnelles"
+    url = f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/categories-professionnelles"
     response = client.post(
         url,
         data={
@@ -252,3 +252,45 @@ def test_save_categories_professionnelles_error(bdese, authorized_user, client):
 
     bdese.refresh_from_db()
     assert not bdese.categories_professionnelles
+
+
+def test_save_categories_professionnelles_for_a_new_year(
+    bdese, authorized_user, client
+):
+    categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
+    bdese.categories_professionnelles = categories_professionnelles
+    bdese.save()
+    client.force_login(authorized_user)
+
+    new_year = bdese.annee + 1
+    new_categories_professionnelles = [
+        "catégorie A",
+        "catégorie B",
+        "catégorie C",
+        "catégorie D",
+    ]
+    url = f"/bdese/{bdese.entreprise.siren}/{new_year}/categories-professionnelles"
+    response = client.post(
+        url,
+        data={
+            "categories_professionnelles_0": new_categories_professionnelles[0],
+            "categories_professionnelles_1": new_categories_professionnelles[1],
+            "categories_professionnelles_2": new_categories_professionnelles[2],
+            "categories_professionnelles_3": new_categories_professionnelles[3],
+        },
+        follow=True,
+    )
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [
+        (reverse("bdese", args=[bdese.entreprise.siren, new_year, 1]), 302)
+    ]
+
+    content = response.content.decode("utf-8")
+    assert "Catégories enregistrées" in content
+
+    new_bdese = bdese.__class__.objects.get(entreprise=bdese.entreprise, annee=new_year)
+    assert new_bdese.categories_professionnelles == new_categories_professionnelles
+
+    bdese.refresh_from_db()
+    assert bdese.categories_professionnelles == categories_professionnelles
