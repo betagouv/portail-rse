@@ -55,7 +55,9 @@ def test_calculate_bdese_reglementation_50_300_employees(entreprise_factory):
         == "Vous êtes soumis à cette réglementation. Nous allons vous aider à la remplir."
     )
     assert bdese.primary_action.title == "Actualiser ma BDESE"
-    assert bdese.primary_action.url == reverse("bdese", args=[entreprise.siren, 2022, 1])
+    assert bdese.primary_action.url == reverse(
+        "bdese", args=[entreprise.siren, 2022, 1]
+    )
     assert not bdese.secondary_actions
     assert bdese.bdese_type is BDESEReglementation.TYPE_INFERIEUR_300
 
@@ -74,7 +76,9 @@ def test_calculate_bdese_reglementation_more_than_300_employees(
         == "Vous êtes soumis à cette réglementation. Nous allons vous aider à la remplir."
     )
     assert bdese.primary_action.title == "Actualiser ma BDESE"
-    assert bdese.primary_action.url == reverse("bdese", args=[entreprise.siren, 2022, 1])
+    assert bdese.primary_action.url == reverse(
+        "bdese", args=[entreprise.siren, 2022, 1]
+    )
     assert not bdese.secondary_actions
 
     BDESE_300.objects.create(entreprise=entreprise)
@@ -96,7 +100,9 @@ def test_calculate_bdese_reglementation_more_than_300_employees(
         == "Vous êtes soumis à cette réglementation. Vous avez actualisé votre BDESE sur la plateforme."
     )
     assert bdese.primary_action.title == "Télécharger le pdf"
-    assert bdese.primary_action.url == reverse("bdese_pdf", args=[entreprise.siren, 2022])
+    assert bdese.primary_action.url == reverse(
+        "bdese_pdf", args=[entreprise.siren, 2022]
+    )
     assert len(bdese.secondary_actions) == 1
     assert bdese.secondary_actions[0].title == "Modifier ma BDESE"
     assert bdese.secondary_actions[0].url == reverse(

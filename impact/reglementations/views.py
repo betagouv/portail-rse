@@ -361,7 +361,9 @@ def bdese(request, siren, annee, step):
     )
 
 
-def _get_or_create_bdese(entreprise: Entreprise, annee: int) -> BDESE_300 | BDESE_50_300:
+def _get_or_create_bdese(
+    entreprise: Entreprise, annee: int
+) -> BDESE_300 | BDESE_50_300:
     reglementation = BDESEReglementation.calculate(entreprise)
     if reglementation.bdese_type in (
         BDESEReglementation.TYPE_INFERIEUR_500,
@@ -369,7 +371,9 @@ def _get_or_create_bdese(entreprise: Entreprise, annee: int) -> BDESE_300 | BDES
     ):
         bdese, _ = BDESE_300.objects.get_or_create(entreprise=entreprise, annee=annee)
     else:
-        bdese, _ = BDESE_50_300.objects.get_or_create(entreprise=entreprise, annee=annee)
+        bdese, _ = BDESE_50_300.objects.get_or_create(
+            entreprise=entreprise, annee=annee
+        )
     return bdese
 
 
