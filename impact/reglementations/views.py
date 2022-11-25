@@ -11,7 +11,7 @@ from weasyprint import CSS, HTML
 
 from entreprises.models import Entreprise
 from public.forms import EligibiliteForm
-from .models import derniere_annee_a_remplir_bdese, annees_a_remplir_bdese, BDESE_300, BDESE_50_300, categories_default
+from .models import derniere_annee_a_remplir_bdese, annees_a_remplir_bdese, derniere_annee_a_remplir_index_egapro, BDESE_300, BDESE_50_300, categories_default
 from .forms import bdese_form_factory, categories_professionnelles_form_factory
 
 
@@ -313,7 +313,10 @@ def bdese(request, siren, annee, step):
                     "L'étape n'a pas été enregistrée car le formulaire contient des erreurs",
                 )
     else:
-        fetched_data = get_bdese_data_from_index_egapro(entreprise, 2021)
+        fetched_data = get_bdese_data_from_index_egapro(
+            entreprise,
+            derniere_annee_a_remplir_bdese()
+        )
         form = bdese_form_factory(
             step, categories_professionnelles, bdese, fetched_data=fetched_data
         )

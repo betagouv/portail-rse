@@ -6,6 +6,11 @@ from django.db import models
 from entreprises.models import Entreprise
 
 
+def derniere_annee_a_remplir_index_egapro():
+    annee = datetime.date.today().year
+    return annee - 1
+
+
 def derniere_annee_a_remplir_bdese():
     annee = datetime.date.today().year
     return annee - 1
