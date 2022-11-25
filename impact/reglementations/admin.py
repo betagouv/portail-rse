@@ -32,8 +32,10 @@ class BDESE_50_300Form(forms.ModelForm):
 @admin.register(BDESE_300)
 class BDESE_300Admin(admin.ModelAdmin):
     form = BDESE_300Form
+    list_display = ["entreprise", "annee"]
 
 
 @admin.register(BDESE_50_300)
 class BDESE_50_300Admin(admin.ModelAdmin):
     form = BDESE_50_300Form
+    list_display = ["entreprise", "annee"]
