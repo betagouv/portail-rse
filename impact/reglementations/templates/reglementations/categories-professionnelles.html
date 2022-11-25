@@ -13,7 +13,7 @@
 
     <form action="{% url 'categories_professionnelles' siren annee %}" method="post">
         {% csrf_token %}
-        {% include 'snippets/input_field.html' with field=form.categories_professionnelles %}
+        {% include 'snippets/category_field.html' with field=form.categories_professionnelles %}
 
         <button type="submit" class="fr-btn">Enregistrer</button>
 
