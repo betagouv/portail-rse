@@ -221,3 +221,24 @@ def test_save_categories_professionnelles(bdese, authorized_user, client):
 
     bdese.refresh_from_db()
     assert bdese.categories_professionnelles == categories_professionnelles
+
+
+def test_save_categories_professionnelles_error(bdese, authorized_user, client):
+    client.force_login(authorized_user)
+
+    url = f"/bdese/{bdese.entreprise.siren}/2022/categories-professionnelles"
+    response = client.post(
+        url,
+        data={
+            "categories_professionnelles_0": "catégorie 1",
+            "categories_professionnelles_1": "catégorie 2",
+        },
+    )
+
+    assert response.status_code == 200
+
+    content = response.content.decode("utf-8")
+    assert "Au moins 3 catégories sont requises" in content
+
+    bdese.refresh_from_db()
+    assert not bdese.categories_professionnelles
