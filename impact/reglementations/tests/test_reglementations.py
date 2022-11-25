@@ -48,7 +48,7 @@ def test_public_reglementations_with_entreprise_data(client):
     context_entreprise = context["entreprises"][0]
     assert context_entreprise["entreprise"] == entreprise
     assert context_entreprise["reglementations"][0] == BDESEReglementation.calculate(
-        entreprise
+        entreprise, 2022
     )
     assert context_entreprise["reglementations"][
         1
@@ -80,7 +80,7 @@ def test_reglementations_with_authenticated_user(client, entreprise):
     context_entreprise = context["entreprises"][0]
     assert context_entreprise["entreprise"] == entreprise
     assert context_entreprise["reglementations"][0] == BDESEReglementation.calculate(
-        entreprise
+        entreprise, 2022
     )
     assert context_entreprise["reglementations"][
         1

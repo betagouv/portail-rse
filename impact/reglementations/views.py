@@ -51,7 +51,7 @@ class BDESEReglementation(Reglementation):
     bdese_type: int | None = None
 
     @classmethod
-    def calculate(cls, entreprise: Entreprise) -> "BDESEReglementation":
+    def calculate(cls, entreprise: Entreprise, annee: int) -> "BDESEReglementation":
         if entreprise.effectif == "petit":
             status = cls.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
@@ -81,7 +81,7 @@ class BDESEReglementation(Reglementation):
                 bdese_class = BDESE_300
 
             bdese = bdese_class.objects.filter(
-                entreprise__siren=entreprise.siren, annee=2022
+                entreprise__siren=entreprise.siren, annee=annee
             )
             if bdese:
                 bdese = bdese[0]
@@ -89,13 +89,13 @@ class BDESEReglementation(Reglementation):
                     status = cls.STATUS_ACTUALISE
                     status_detail = "Vous êtes soumis à cette réglementation. Vous avez actualisé votre BDESE sur la plateforme."
                     primary_action = ReglementationAction(
-                        reverse_lazy("bdese_pdf", args=[entreprise.siren, 2022]),
+                        reverse_lazy("bdese_pdf", args=[entreprise.siren, annee]),
                         "Télécharger le pdf",
                         external=True,
                     )
                     secondary_actions = [
                         ReglementationAction(
-                            reverse_lazy("bdese", args=[entreprise.siren, 2022, 1]),
+                            reverse_lazy("bdese", args=[entreprise.siren, annee, 1]),
                             "Modifier ma BDESE",
                         )
                     ]
@@ -103,12 +103,12 @@ class BDESEReglementation(Reglementation):
                     status = cls.STATUS_EN_COURS
                     status_detail = "Vous êtes soumis à cette réglementation. Vous avez démarré le remplissage de votre BDESE sur la plateforme."
                     primary_action = ReglementationAction(
-                        reverse_lazy("bdese", args=[entreprise.siren, 2022, 1]),
+                        reverse_lazy("bdese", args=[entreprise.siren, annee, 1]),
                         "Reprendre l'actualisation de ma BDESE",
                     )
                     secondary_actions = [
                         ReglementationAction(
-                            reverse_lazy("bdese_pdf", args=[entreprise.siren, 2022]),
+                            reverse_lazy("bdese_pdf", args=[entreprise.siren, annee]),
                             "Télécharger le pdf (brouillon)",
                             external=True,
                         ),
@@ -117,7 +117,7 @@ class BDESEReglementation(Reglementation):
                 status = cls.STATUS_A_ACTUALISER
                 status_detail = "Vous êtes soumis à cette réglementation. Nous allons vous aider à la remplir."
                 primary_action = ReglementationAction(
-                    reverse_lazy("bdese", args=[entreprise.siren, 2022, 1]),
+                    reverse_lazy("bdese", args=[entreprise.siren, annee, 1]),
                     "Actualiser ma BDESE",
                 )
                 secondary_actions = []
@@ -198,7 +198,7 @@ def reglementations(request):
                 {
                     "entreprise": entreprise,
                     "reglementations": [
-                        BDESEReglementation.calculate(entreprise)
+                        BDESEReglementation.calculate(entreprise, 2022)
                         if entreprise
                         else BDESEReglementation(),
                         IndexEgaproReglementation.calculate(entreprise)
@@ -364,7 +364,7 @@ def bdese(request, siren, annee, step):
 def _get_or_create_bdese(
     entreprise: Entreprise, annee: int
 ) -> BDESE_300 | BDESE_50_300:
-    reglementation = BDESEReglementation.calculate(entreprise)
+    reglementation = BDESEReglementation.calculate(entreprise, annee)
     if reglementation.bdese_type in (
         BDESEReglementation.TYPE_INFERIEUR_500,
         BDESEReglementation.TYPE_SUPERIEUR_500,

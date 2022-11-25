@@ -35,7 +35,7 @@ def test_calculate_bdese_reglementation_less_than_50_employees(
 ):
     entreprise = entreprise_factory(effectif="petit", bdese_accord=bdese_accord)
 
-    bdese = BDESEReglementation.calculate(entreprise)
+    bdese = BDESEReglementation.calculate(entreprise, 2022)
 
     assert bdese.status == BDESEReglementation.STATUS_NON_SOUMIS
     assert bdese.status_detail == "Vous n'êtes pas soumis à cette réglementation"
@@ -47,7 +47,7 @@ def test_calculate_bdese_reglementation_less_than_50_employees(
 def test_calculate_bdese_reglementation_50_300_employees(entreprise_factory):
     entreprise = entreprise_factory(effectif="moyen", bdese_accord=False)
 
-    bdese = BDESEReglementation.calculate(entreprise)
+    bdese = BDESEReglementation.calculate(entreprise, 2022)
 
     assert bdese.status == BDESEReglementation.STATUS_A_ACTUALISER
     assert (
@@ -68,7 +68,7 @@ def test_calculate_bdese_reglementation_more_than_300_employees(
 ):
     entreprise = entreprise_factory(effectif=effectif, bdese_accord=False)
 
-    bdese = BDESEReglementation.calculate(entreprise)
+    bdese = BDESEReglementation.calculate(entreprise, 2022)
 
     assert bdese.status == BDESEReglementation.STATUS_A_ACTUALISER
     assert (
@@ -82,7 +82,7 @@ def test_calculate_bdese_reglementation_more_than_300_employees(
     assert not bdese.secondary_actions
 
     BDESE_300.objects.create(entreprise=entreprise)
-    bdese = BDESEReglementation.calculate(entreprise)
+    bdese = BDESEReglementation.calculate(entreprise, 2022)
 
     assert bdese.status == BDESEReglementation.STATUS_EN_COURS
     assert (
@@ -92,7 +92,7 @@ def test_calculate_bdese_reglementation_more_than_300_employees(
     assert bdese.secondary_actions[0].title == "Télécharger le pdf (brouillon)"
 
     mocker.patch("reglementations.models.BDESE_300.is_complete", return_value=True)
-    bdese = BDESEReglementation.calculate(entreprise)
+    bdese = BDESEReglementation.calculate(entreprise, 2022)
 
     assert bdese.status == BDESEReglementation.STATUS_ACTUALISE
     assert (
@@ -114,7 +114,7 @@ def test_calculate_bdese_reglementation_more_than_300_employees(
 def test_calculate_bdese_reglementation_with_bdese_accord(effectif, entreprise_factory):
     entreprise = entreprise_factory(effectif=effectif, bdese_accord=True)
 
-    bdese = BDESEReglementation.calculate(entreprise)
+    bdese = BDESEReglementation.calculate(entreprise, 2022)
 
     assert bdese.status == BDESEReglementation.STATUS_A_ACTUALISER
     assert (
