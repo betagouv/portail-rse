@@ -1,5 +1,6 @@
 import json
 
+import freezegun
 import pytest
 
 from reglementations.views import IndexEgaproReglementation, is_index_egapro_updated
@@ -81,7 +82,8 @@ def test_is_index_egapro_updated_with_up_to_date_entreprise(grande_entreprise, m
 
     mocker.patch("requests.get", return_value=MockedResponse(index_egapro_data))
 
-    assert is_index_egapro_updated(grande_entreprise)
+    with freezegun.freeze_time("2022-11-25"):
+        assert is_index_egapro_updated(grande_entreprise)
 
 
 def test_is_index_egapro_not_updated(grande_entreprise, mocker):

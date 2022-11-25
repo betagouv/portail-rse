@@ -12,6 +12,7 @@ from weasyprint import CSS, HTML
 from entreprises.models import Entreprise
 from public.forms import EligibiliteForm
 from .models import (
+    derniere_annee_a_remplir_index_egapro,
     derniere_annee_a_remplir_bdese,
     annees_a_remplir_bdese,
     BDESE_300,
@@ -167,7 +168,10 @@ def is_index_egapro_updated(entreprise: Entreprise) -> bool:
     response = requests.get(url)
     if response.status_code == 200:
         if index_egapro_data := response.json()["data"]:
-            if "2021" in index_egapro_data[0]["notes"]:
+            if (
+                str(derniere_annee_a_remplir_index_egapro())
+                in index_egapro_data[0]["notes"]
+            ):
                 return True
     return False
 
