@@ -22,7 +22,7 @@ def test_bdese_is_not_public(client, django_user_model, grande_entreprise):
 @pytest.mark.parametrize(
     "effectif, bdese_class", [("moyen", BDESE_50_300), ("grand", BDESE_300)]
 )
-def test_bdese_is_created_at_first_authorized_request(
+def test_yearly_bdese_is_created_at_first_authorized_request(
     effectif, bdese_class, client, django_user_model, entreprise_factory
 ):
     entreprise = entreprise_factory(effectif=effectif)
@@ -32,11 +32,17 @@ def test_bdese_is_created_at_first_authorized_request(
 
     assert not bdese_class.objects.filter(entreprise=entreprise)
 
-    url = f"/bdese/{entreprise.siren}/2022/1"
+    url = f"/bdese/{entreprise.siren}/2021/1"
     response = client.get(url)
 
     assert response.status_code == 302
+    bdese_2021 = bdese_class.objects.get(entreprise=entreprise, annee=2021)
+
+    url = f"/bdese/{entreprise.siren}/2022/1"
+    response = client.get(url)
+
     bdese_2022 = bdese_class.objects.get(entreprise=entreprise, annee=2022)
+    assert bdese_2021 != bdese_2022
 
 
 @pytest.fixture
@@ -60,7 +66,9 @@ def test_bdese_step_redirect_to_categories_professionnelles_if_not_filled(
     )
 
 
-def test_bdese_step_use_categories_professionnelles(bdese, authorized_user, client):
+def test_bdese_step_use_categories_professionnelles_and_annees_a_remplir(
+    bdese, authorized_user, client
+):
     categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
     bdese.categories_professionnelles = categories_professionnelles
     bdese.save()
@@ -73,6 +81,8 @@ def test_bdese_step_use_categories_professionnelles(bdese, authorized_user, clie
     content = response.content.decode("utf-8")
     for category in categories_professionnelles:
         assert category in content
+    for annee in annees_a_remplir_bdese():
+        assert str(annee) in content
 
 
 @pytest.fixture
