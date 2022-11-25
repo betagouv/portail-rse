@@ -2,7 +2,12 @@ from django.db.utils import IntegrityError
 import pytest
 import freezegun
 
-from reglementations.models import derniere_annee_a_remplir_bdese, annees_a_remplir_bdese, BDESE_300, BDESE_50_300
+from reglementations.models import (
+    derniere_annee_a_remplir_bdese,
+    annees_a_remplir_bdese,
+    BDESE_300,
+    BDESE_50_300,
+)
 
 
 @pytest.mark.django_db(transaction=True)

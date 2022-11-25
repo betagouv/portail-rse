@@ -11,7 +11,13 @@ from weasyprint import CSS, HTML
 
 from entreprises.models import Entreprise
 from public.forms import EligibiliteForm
-from .models import derniere_annee_a_remplir_bdese, annees_a_remplir_bdese, derniere_annee_a_remplir_index_egapro, BDESE_300, BDESE_50_300, categories_default
+from .models import (
+    derniere_annee_a_remplir_bdese,
+    annees_a_remplir_bdese,
+    BDESE_300,
+    BDESE_50_300,
+    categories_default,
+)
 from .forms import bdese_form_factory, categories_professionnelles_form_factory
 
 
@@ -198,7 +204,9 @@ def reglementations(request):
                 {
                     "entreprise": entreprise,
                     "reglementations": [
-                        BDESEReglementation.calculate(entreprise, derniere_annee_a_remplir_bdese())
+                        BDESEReglementation.calculate(
+                            entreprise, derniere_annee_a_remplir_bdese()
+                        )
                         if entreprise
                         else BDESEReglementation(),
                         IndexEgaproReglementation.calculate(entreprise)
@@ -314,8 +322,7 @@ def bdese(request, siren, annee, step):
                 )
     else:
         fetched_data = get_bdese_data_from_index_egapro(
-            entreprise,
-            derniere_annee_a_remplir_bdese()
+            entreprise, derniere_annee_a_remplir_bdese()
         )
         form = bdese_form_factory(
             step, categories_professionnelles, bdese, fetched_data=fetched_data
@@ -389,13 +396,19 @@ def categories_professionnelles(request, siren, annee):
 
     initial = None
     if not bdese.categories_professionnelles and not request.POST:
-        bdeses = bdese.__class__.objects.filter(entreprise=bdese.entreprise).order_by("-annee")
+        bdeses = bdese.__class__.objects.filter(entreprise=bdese.entreprise).order_by(
+            "-annee"
+        )
         for bdese in bdeses:
             if bdese.categories_professionnelles:
-                initial={"catégories_professionnelles": bdese.categories_professionnelles}
+                initial = {
+                    "catégories_professionnelles": bdese.categories_professionnelles
+                }
                 break
 
-    form = categories_professionnelles_form_factory(bdese, data=request.POST or None, initial=initial)
+    form = categories_professionnelles_form_factory(
+        bdese, data=request.POST or None, initial=initial
+    )
     if form.is_valid():
         bdese = form.save()
         messages.success(request, "Catégories enregistrées")
