@@ -99,7 +99,7 @@ def test_save_step_error(bdese_300_with_categories, django_user_model, client):
     bdese.entreprise.users.add(user)
     client.force_login(user)
 
-    url = f"/bdese/{bdese.entreprise.siren}/2022/1"
+    url = f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/1"
     response = client.post(url, {"unite_absenteisme": "yolo"})
 
     assert response.status_code == 200
@@ -120,7 +120,7 @@ def test_save_step_as_draft_success(
     bdese.entreprise.users.add(user)
     client.force_login(user)
 
-    url = f"/bdese/{bdese.entreprise.siren}/2022/1"
+    url = f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/1"
     response = client.post(url, {"unite_absenteisme": "H"})
 
     assert response.status_code == 200
@@ -143,7 +143,7 @@ def test_save_step_and_mark_as_complete_success(
     bdese.entreprise.users.add(user)
     client.force_login(user)
 
-    url = f"/bdese/{bdese.entreprise.siren}/2022/1"
+    url = f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/1"
     response = client.post(
         url, {"unite_absenteisme": "H", "save_complete": ""}, follow=True
     )
@@ -172,7 +172,7 @@ def test_mark_step_as_incomplete(bdese_300_with_categories, django_user_model, c
     bdese.entreprise.users.add(user)
     client.force_login(user)
 
-    url = f"/bdese/{bdese.entreprise.siren}/2022/1"
+    url = f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/1"
     response = client.post(url, {"mark_incomplete": ""}, follow=True)
 
     assert response.status_code == 200
@@ -191,7 +191,7 @@ def test_mark_step_as_incomplete(bdese_300_with_categories, django_user_model, c
 def test_get_pdf(bdese, authorized_user, client):
     client.force_login(authorized_user)
 
-    url = f"/bdese/{bdese.entreprise.siren}/2022/pdf"
+    url = f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/pdf"
     response = client.get(url)
 
     assert response.status_code == 200
