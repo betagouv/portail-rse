@@ -10,10 +10,13 @@
 </div>
 
 <div class="fr-grid-row">
-    <div class="fr-col fr-pb-8v">
-        Autres années :
-        {% for annee in annees %}
-        <a href="{% url 'bdese' siren annee 1 %}" title="Remplissez la BDESE et télécharger le rapport pour {{ annee }}">{{ annee }}</a>
-        {% endfor %}
+    <div class="fr-col">
+        <p>Les informations figurant dans la BDESE doivent porter sur les 3 dernières années achevées et 3 années suivantes (dont celle en cours), sous forme de perspectives.</p>
+        <p>
+            Années à remplir :
+            {% for annee in annees %}
+            <a href="{% url 'bdese' siren annee 1 %}" title="Remplissez la BDESE et télécharger le rapport pour {{ annee }}">{{ annee }}</a>
+            {% endfor %}
+        </p>
     </div>
 </div>
