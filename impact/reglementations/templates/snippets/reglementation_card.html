@@ -14,11 +14,11 @@
                         {% elif not user.is_authenticated %}
                         <p class="fr-badge">soumis</p>
                         {% elif reglementation.status == reglementation.STATUS_A_ACTUALISER %}
-                        <p class="fr-badge fr-badge--error">à actualiser</p>
+                        <p class="fr-badge fr-badge--error fr-badge--no-icon">à actualiser</p>
                         {% elif reglementation.status == reglementation.STATUS_ACTUALISE %}
-                        <p class="fr-badge fr-badge--success">actualisé</p>
+                        <p class="fr-badge fr-badge--success fr-badge--no-icon">actualisé</p>
                         {% elif reglementation.status == reglementation.STATUS_EN_COURS %}
-                        <p class="fr-badge fr-badge--warning">en cours</p>
+                        <p class="fr-badge fr-badge--warning fr-badge--no-icon">en cours</p>
                         {% endif %}
                     </li>
                 </ul>
