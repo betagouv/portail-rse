@@ -925,7 +925,7 @@ class BDESE_300(AbstractBDESE):
         blank=True,
     )
     departs_retraite_femme = CategoryField(
-        verbose_name="Nombre de femmes partis en retraite",
+        verbose_name="Nombre de femmes parties en retraite",
         null=True,
         blank=True,
     )
