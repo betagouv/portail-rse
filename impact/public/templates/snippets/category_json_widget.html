@@ -2,7 +2,7 @@
 <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--bottom">
 {% for widget in widget.subwidgets %}
     <div class="fr-col-12 fr-col-sm-2">
-        <label class="fr-label" for="{{ widget.attrs.id }}">{{ widget.attrs.label | capfirst }}</label>
+        <label class="fr-label" for="{{ widget.attrs.id }}" style="text-align: center;">{{ widget.attrs.label | capfirst }}</label>
         {% include widget.template_name %}
     </div>
 {% endfor %}
