@@ -2,6 +2,7 @@ import time
 
 import requests
 from django.conf import settings
+from django.contrib import messages
 from django.shortcuts import render
 
 from .forms import EligibiliteForm, SirenForm
@@ -14,7 +15,6 @@ def index(request):
 
 def siren(request):
     form = SirenForm(request.GET)
-    errors = []
     if form.is_valid():
         siren = form.cleaned_data["siren"]
         # documentation api recherche d'entreprises 1.0.0 https://api.gouv.fr/documentation/api-recherche-entreprises
@@ -54,10 +54,5 @@ def siren(request):
                 },
             )
         else:
-            errors = (
-                "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct."
-            )
-    else:
-        errors = form.errors
-
-    return render(request, "public/index.html", {"form": form, "errors": errors})
+            messages.error(request,  "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct.")
+    return render(request, "public/index.html", {"form": form})
