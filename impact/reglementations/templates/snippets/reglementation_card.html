@@ -26,7 +26,11 @@
                     {% if user.is_authenticated %}
                     {{ reglementation.status_detail }}
                     {% else %}
-                    <a href="{% url 'login' %}?next=/reglementations">Vous êtes soumis à cette règlementation. Connectez-vous pour en savoir plus.</a>
+                        {% if reglementation.status == reglementation.STATUS_NON_SOUMIS %}
+                        Vous n'êtes pas soumis à cette réglementation. 
+                        {% else %}
+                        <a href="{% url 'login' %}?next=/reglementations">Vous êtes soumis à cette réglementation. Connectez-vous pour en savoir plus.</a>
+                        {% endif %}
                     {% endif %}
                 </p>
             </div>
