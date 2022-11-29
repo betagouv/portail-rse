@@ -67,8 +67,8 @@ def test_derniere_annee_a_remplir_bdese():
 def test_annees_a_remplir_pour_bdese():
     with freezegun.freeze_time("2022-11-23"):
         annees = annees_a_remplir_bdese()
-        assert annees == [2019, 2020, 2021, 2022, 2023]
+        assert annees == [2019, 2020, 2021, 2022, 2023, 2024]
 
     with freezegun.freeze_time("2023-11-23"):
         annees = annees_a_remplir_bdese()
-        assert annees == [2020, 2021, 2022, 2023, 2024]
+        assert annees == [2020, 2021, 2022, 2023, 2024, 2025]

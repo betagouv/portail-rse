@@ -18,7 +18,7 @@ def derniere_annee_a_remplir_bdese():
 
 def annees_a_remplir_bdese():
     annee = datetime.date.today().year
-    return [annee - 3, annee - 2, annee - 1, annee, annee + 1]
+    return [annee - 3, annee - 2, annee - 1, annee, annee + 1, annee + 2]
 
 
 class CategoryField(models.JSONField):
