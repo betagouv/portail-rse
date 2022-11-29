@@ -7,9 +7,11 @@
 {% if not entreprises %}
     <p>Aucune réglementation à remplir car aucune entreprise n'est associée à votre compte.</p>
 {% else %}
-    <div class="fr-alert fr-alert--warning">
-        <h3 class="fr-alert__title">La liste des réglementations ci-dessous n'est pas exhaustive.</h3>
-        <p>La liste des réglementations actuellement prises en compte sur la plateforme est susceptible d'évoluer.</p>
+    <div class="fr-callout fr-fi-information-line">
+        <h3 class="fr-callout__title">La liste des réglementations ci-dessous n'est pas exhaustive.</h3>
+        <p class="fr-callout__text">
+            La liste des réglementations actuellement prises en compte sur la plateforme est susceptible d'évoluer
+        </p>
     </div>
 
     {% for elem in entreprises %}
