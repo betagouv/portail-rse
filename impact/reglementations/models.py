@@ -1047,12 +1047,12 @@ class BDESE_300(AbstractBDESE):
         blank=True,
     )
     action_adaptation_au_poste_homme = CategoryField(
-        verbose_name="Répartition des hommes pour l'adaptation au poste",
+        verbose_name="Nombre d'hommes ou répartition des hommes ayant suivi une formation d'adaptation au poste",
         null=True,
         blank=True,
     )
     action_adaptation_au_poste_femme = CategoryField(
-        verbose_name="Répartition des femmes pour l'adaptation au poste",
+        verbose_name="Nombre d'hommes ou répartition des femmes ayant suivi une formation d'adaptation au poste",
         null=True,
         blank=True,
     )
