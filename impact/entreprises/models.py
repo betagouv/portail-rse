@@ -15,7 +15,7 @@ class Entreprise(models.Model):
     effectif = models.CharField(
         max_length=9,
         choices=EFFECTIF_CHOICES,
-        help_text="Affinez le nombre de salariés détectés",
+        help_text="Vérifiez et confirmez le nombre de salariés",
     )
     bdese_accord = models.BooleanField(default=False)
     raison_sociale = models.CharField(max_length=50, default="")
