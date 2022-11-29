@@ -10,7 +10,7 @@
                     <thead>
                         <tr>
                             {% for categorie, qte in field.value.items %}
-                            <th scope="col">{{ categorie }}</th>
+                            <th scope="col">{{ categorie | capfirst }}</th>
                             {% endfor %}
                         </tr>
                     </thead>
