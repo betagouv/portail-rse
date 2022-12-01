@@ -231,6 +231,7 @@ def bdese_form_factory(
             "taux_realisation_programme_amelioration_conditions_travail",
             "nombre_visites_medicales",
             "nombre_examens_medicaux",
+            "nombre_examens_medicaux_complementaires",
             "pourcentage_temps_medecin_du_travail",
             "nombre_salaries_inaptes",
             "nombre_salaries_reclasses",

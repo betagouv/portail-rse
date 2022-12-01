@@ -734,15 +734,21 @@ class BDESE_300(AbstractBDESE):
     # 1° A - f) xi - Médecine du travail
     # Renseignements tirés du rapport du directeur du service de prévention et de santé au travail interentreprises.
     nombre_visites_medicales = CategoryField(
-        categories=["droit commun", "individuel renforcé"],
+        categories=["suivi de droit commun", "suivi individuel renforcé"],
         verbose_name="Nombre de visites d'information et de prévention des travailleurs",
         help_text="Selon le type de suivi",
         null=True,
         blank=True,
     )
     nombre_examens_medicaux = CategoryField(
-        categories=["soumis à surveillance", "autres"],
+        categories=["suivi de droit commun", "suivi individuel renforcé"],
         verbose_name="Nombre d'examens médicaux des travailleurs",
+        null=True,
+        blank=True,
+    )
+    nombre_examens_medicaux_complementaires = CategoryField(
+        categories=["soumis à surveillance", "autres"],
+        verbose_name="Nombre d'examens médicaux complémentaires des travailleurs",
         null=True,
         blank=True,
     )

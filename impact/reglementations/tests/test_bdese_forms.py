@@ -23,7 +23,7 @@ def test_bdese_form_step_1_with_new_bdese_300_instance(bdese_300):
     form = bdese_form_factory(1, categories_professionnelles, bdese_300)
 
     assert form.instance == bdese_300
-    assert len(form.fields) == 102
+    assert len(form.fields) == 104
     assert "annee" not in form.fields
     assert "entreprise" not in form.fields
     assert "effectif_total" in form.fields
