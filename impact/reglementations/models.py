@@ -122,7 +122,7 @@ class BDESE_300(AbstractBDESE):
 
     completion_steps = CategoryField(
         base_field=models.BooleanField,
-        categories=STEPS.values(),
+        categories=list(STEPS.values()),
         default=bdese_300_completion_steps_default,
     )
 
