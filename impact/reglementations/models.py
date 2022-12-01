@@ -1381,7 +1381,7 @@ class BDESE_300(AbstractBDESE):
         blank=True,
     )
     part_primes_non_mensuelle = CategoryField(
-        help_text="part des primes à périodicité non mensuelle dans la déclaration de salaire",
+        verbose_name="Part des primes à périodicité non mensuelle dans la déclaration de salaire",
         null=True,
         blank=True,
     )
