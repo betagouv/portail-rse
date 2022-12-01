@@ -1,3 +1,4 @@
+from django.db import models
 from django.db.utils import IntegrityError
 import pytest
 import freezegun
@@ -7,7 +8,25 @@ from reglementations.models import (
     annees_a_remplir_bdese,
     BDESE_300,
     BDESE_50_300,
+    CategoryField,
 )
+
+
+def test_category_field():
+    def category_field_default():
+        return {"catégorie 1": "yolo", "catégorie 2": "yolo2"}
+
+    category_field = CategoryField(
+        base_field=models.BooleanField,
+        categories=["catégorie 1", "catégorie 2"],
+        default=category_field_default,
+    )
+
+    name, path, args, kwargs = category_field.deconstruct()
+    new_category_field = CategoryField(*args, **kwargs)
+
+    assert new_category_field.base_field == category_field.base_field == models.BooleanField
+    assert new_category_field.categories == category_field.categories == ["catégorie 1", "catégorie 2"]
 
 
 @pytest.mark.django_db(transaction=True)
