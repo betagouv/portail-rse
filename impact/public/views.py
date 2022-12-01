@@ -54,5 +54,8 @@ def siren(request):
                 },
             )
         else:
-            messages.error(request,  "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct.")
+            messages.error(
+                request,
+                "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct.",
+            )
     return render(request, "public/index.html", {"form": form})

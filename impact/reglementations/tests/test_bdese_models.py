@@ -25,8 +25,16 @@ def test_category_field():
     name, path, args, kwargs = category_field.deconstruct()
     new_category_field = CategoryField(*args, **kwargs)
 
-    assert new_category_field.base_field == category_field.base_field == models.BooleanField
-    assert new_category_field.categories == category_field.categories == ["catégorie 1", "catégorie 2"]
+    assert (
+        new_category_field.base_field
+        == category_field.base_field
+        == models.BooleanField
+    )
+    assert (
+        new_category_field.categories
+        == category_field.categories
+        == ["catégorie 1", "catégorie 2"]
+    )
 
 
 @pytest.mark.django_db(transaction=True)
