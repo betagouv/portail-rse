@@ -213,6 +213,7 @@ def bdese_form_factory(
             "nombre_unites_absence",
             "nombre_unites_theoriques_travaillees",
             "nombre_unites_absence_maladie",
+            "nombre_unites_absence_maladie_par_duree",
             "nombre_unites_absence_accidents",
             "nombre_unites_absence_maternite",
             "nombre_unites_absence_conges_autorises",

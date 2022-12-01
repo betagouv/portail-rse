@@ -636,14 +636,9 @@ class BDESE_300(AbstractBDESE):
         null=True,
         blank=True,
     )
-    nombre_unites_absence_par_duree = CategoryField(
+    nombre_unites_absence_maladie_par_duree = CategoryField(
         categories=["< 3 jours", "de 3 à 90 jours", "> 90 jours"],
         verbose_name="Répartition des absences pour maladie selon leur durée",
-        null=True,
-        blank=True,
-    )
-    nombre_unites_absence_par_categorie_pro = CategoryField(
-        verbose_name="Répartition des absences pour maladie selon leur catégorie",
         null=True,
         blank=True,
     )
