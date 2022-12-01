@@ -408,6 +408,10 @@ def categories_professionnelles(request, siren, annee):
                 initial = {
                     "catégories_professionnelles": bdese.categories_professionnelles
                 }
+                if bdese.is_bdese_300:
+                    initial[
+                        "catégories_professionnelles_detaillees"
+                    ] = bdese.categories_professionnelles_detaillees
                 break
 
     form = categories_professionnelles_form_factory(

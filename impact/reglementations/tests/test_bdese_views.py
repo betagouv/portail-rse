@@ -209,14 +209,26 @@ def test_get_categories_professionnelles(bdese, authorized_user, client):
 def test_save_categories_professionnelles(bdese, authorized_user, client):
     client.force_login(authorized_user)
 
-    categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
+    categories_pro = ["catégorie 1", "catégorie 2", "catégorie 3"]
+    categories_pro_detaillees = [
+        "catégorie détaillée 1",
+        "catégorie détaillée 2",
+        "catégorie détaillée 3",
+        "catégorie détaillée 4",
+        "catégorie détaillée 5",
+    ]
     url = f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/categories-professionnelles"
     response = client.post(
         url,
         data={
-            "categories_professionnelles_0": categories_professionnelles[0],
-            "categories_professionnelles_1": categories_professionnelles[1],
-            "categories_professionnelles_2": categories_professionnelles[2],
+            "categories_professionnelles_0": categories_pro[0],
+            "categories_professionnelles_1": categories_pro[1],
+            "categories_professionnelles_2": categories_pro[2],
+            "categories_professionnelles_detaillees_0": categories_pro_detaillees[0],
+            "categories_professionnelles_detaillees_1": categories_pro_detaillees[1],
+            "categories_professionnelles_detaillees_2": categories_pro_detaillees[2],
+            "categories_professionnelles_detaillees_3": categories_pro_detaillees[3],
+            "categories_professionnelles_detaillees_4": categories_pro_detaillees[4],
         },
         follow=True,
     )
@@ -230,7 +242,9 @@ def test_save_categories_professionnelles(bdese, authorized_user, client):
     assert "Catégories enregistrées" in content
 
     bdese.refresh_from_db()
-    assert bdese.categories_professionnelles == categories_professionnelles
+    assert bdese.categories_professionnelles == categories_pro
+    if bdese.is_bdese_300:
+        assert bdese.categories_professionnelles_detaillees == categories_pro_detaillees
 
 
 def test_save_categories_professionnelles_error(bdese, authorized_user, client):
@@ -257,8 +271,17 @@ def test_save_categories_professionnelles_error(bdese, authorized_user, client):
 def test_save_categories_professionnelles_for_a_new_year(
     bdese, authorized_user, client
 ):
-    categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
-    bdese.categories_professionnelles = categories_professionnelles
+    categories_pro = ["catégorie 1", "catégorie 2", "catégorie 3"]
+    categories_pro_detaillees = [
+        "catégorie détaillée 1",
+        "catégorie détaillée 2",
+        "catégorie détaillée 3",
+        "catégorie détaillée 4",
+        "catégorie détaillée 5",
+    ]
+    bdese.categories_professionnelles = categories_pro
+    if bdese.is_bdese_300:
+        bdese.categories_professionnelles_detaillees = categories_pro_detaillees
     bdese.save()
     client.force_login(authorized_user)
 
@@ -268,22 +291,36 @@ def test_save_categories_professionnelles_for_a_new_year(
     response = client.get(url)
 
     content = response.content.decode("utf-8")
-    for categorie in categories_professionnelles:
+    for categorie in categories_pro:
         assert categorie in content
+    if bdese.is_bdese_300:
+        for categorie in categories_pro_detaillees:
+            assert categorie in content
 
-    new_categories_professionnelles = [
-        "catégorie A",
-        "catégorie B",
-        "catégorie C",
-        "catégorie D",
-    ]
+    new_categories_pro = ["A", "B", "C", "D"]
+    new_categories_pro_detaillees = ["E", "F", "G", "H", "I"]
     response = client.post(
         url,
         data={
-            "categories_professionnelles_0": new_categories_professionnelles[0],
-            "categories_professionnelles_1": new_categories_professionnelles[1],
-            "categories_professionnelles_2": new_categories_professionnelles[2],
-            "categories_professionnelles_3": new_categories_professionnelles[3],
+            "categories_professionnelles_0": new_categories_pro[0],
+            "categories_professionnelles_1": new_categories_pro[1],
+            "categories_professionnelles_2": new_categories_pro[2],
+            "categories_professionnelles_3": new_categories_pro[3],
+            "categories_professionnelles_detaillees_0": new_categories_pro_detaillees[
+                0
+            ],
+            "categories_professionnelles_detaillees_1": new_categories_pro_detaillees[
+                1
+            ],
+            "categories_professionnelles_detaillees_2": new_categories_pro_detaillees[
+                2
+            ],
+            "categories_professionnelles_detaillees_3": new_categories_pro_detaillees[
+                3
+            ],
+            "categories_professionnelles_detaillees_4": new_categories_pro_detaillees[
+                4
+            ],
         },
         follow=True,
     )
@@ -296,8 +333,13 @@ def test_save_categories_professionnelles_for_a_new_year(
     content = response.content.decode("utf-8")
     assert "Catégories enregistrées" in content
 
-    new_bdese = bdese.__class__.objects.get(entreprise=bdese.entreprise, annee=new_year)
-    assert new_bdese.categories_professionnelles == new_categories_professionnelles
-
     bdese.refresh_from_db()
-    assert bdese.categories_professionnelles == categories_professionnelles
+    new_bdese = bdese.__class__.objects.get(entreprise=bdese.entreprise, annee=new_year)
+    assert bdese.categories_professionnelles == categories_pro
+    assert new_bdese.categories_professionnelles == new_categories_pro
+    if bdese.is_bdese_300:
+        assert bdese.categories_professionnelles_detaillees == categories_pro_detaillees
+        assert (
+            new_bdese.categories_professionnelles_detaillees
+            == new_categories_pro_detaillees
+        )

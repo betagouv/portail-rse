@@ -35,6 +35,12 @@ class CategoriesProfessionnellesForm(forms.ModelForm, DsfrForm):
             raise ValidationError("Au moins 3 catégories sont requises")
         return data
 
+    def clean_categories_professionnelles_detaillees(self):
+        data = self.cleaned_data["categories_professionnelles_detaillees"]
+        if len(data) < 5:
+            raise ValidationError("Au moins 5 catégories sont requises")
+        return data
+
 
 def categories_professionnelles_form_factory(
     bdese, *args, number_categories=6, **kwargs
@@ -44,10 +50,15 @@ def categories_professionnelles_form_factory(
         for i in range(number_categories)
     ]
 
+    fields = ["categories_professionnelles"]
+    if bdese.is_bdese_300:
+        fields.append("categories_professionnelles_detaillees")
+
     Form = forms.modelform_factory(
         bdese.__class__,
         form=CategoriesProfessionnellesForm,
-        widgets={"categories_professionnelles": ListJSONWidget(widgets)},
+        fields=fields,
+        widgets={field_name: ListJSONWidget(widgets) for field_name in fields},
     )
     return Form(*args, instance=bdese, **kwargs)
 

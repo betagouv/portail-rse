@@ -64,6 +64,7 @@ class AbstractBDESE(models.Model):
     annee = models.IntegerField(default=2022)
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
     categories_professionnelles = models.JSONField(
+        help_text="Une structure de qualification détaillée en trois postes minimum",
         null=True,
         blank=True,
     )
@@ -96,6 +97,10 @@ class AbstractBDESE(models.Model):
     def is_complete(self):
         return False
 
+    @property
+    def is_bdese_300(self):
+        return isinstance(self, BDESE_300)
+
 
 def bdese_300_completion_steps_default():
     return {step_name: False for step_name in BDESE_300.STEPS.values()}
@@ -124,6 +129,12 @@ class BDESE_300(AbstractBDESE):
         base_field=models.BooleanField,
         categories=list(STEPS.values()),
         default=bdese_300_completion_steps_default,
+    )
+
+    categories_professionnelles_detaillees = models.JSONField(
+        help_text="Une structure de qualification détaillée en cinq postes minimum",
+        null=True,
+        blank=True,
     )
 
     # Décret no 2022-678 du 26 avril 2022
