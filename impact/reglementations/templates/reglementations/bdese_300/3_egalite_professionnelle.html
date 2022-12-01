@@ -64,10 +64,11 @@
                         {% include 'snippets/category_field.html' with field=form.age_moyen_homme %}
                         {% include 'snippets/category_field.html' with field=form.age_moyen_femme %}
                         <h5>d) Rémunérations</h5>
-                        {% include 'snippets/category_field.html' with field=form.remuneration_moyenne_homme %}
-                        {% include 'snippets/category_field.html' with field=form.remuneration_moyenne_femme %}
-                        {% include 'snippets/category_field.html' with field=form.remuneration_moyenne_par_age_homme %}
-                        {% include 'snippets/category_field.html' with field=form.remuneration_moyenne_par_age_femme %}
+                        {% include 'snippets/select_field.html' with field=form.remuneration_moyenne_ou_mediane %}
+                        {% include 'snippets/category_field.html' with field=form.remuneration_homme %}
+                        {% include 'snippets/category_field.html' with field=form.remuneration_femme %}
+                        {% include 'snippets/category_field.html' with field=form.remuneration_par_age_homme %}
+                        {% include 'snippets/category_field.html' with field=form.remuneration_par_age_femme %}
                         {% include 'snippets/input_field.html' with field=form.nombre_femmes_plus_hautes_remunerations %}
         
                         <h4>C - Formation</h4>

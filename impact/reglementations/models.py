@@ -1005,27 +1005,38 @@ class BDESE_300(AbstractBDESE):
     )
     # âge moyen par niveau ou coefficient hiérarchique : quels sont les niveaux/coeff ?
     #        d) Rémunérations
-    remuneration_moyenne_homme = CategoryField(
-        verbose_name="Rémunération moyenne mensuelle des hommes par catégorie professionnelle",
+    REMUNERATIONS_CHOICES = [
+        ("moyenne", "Rémunération moyenne"),
+        ("mediane", "Rémunération médiane"),
+    ]
+    remuneration_moyenne_ou_mediane = models.CharField(
+        verbose_name="Rémunération moyenne ou médiane",
+        help_text="Les indicateurs suivants peuvent être renseignés au choix en rémunération moyenne ou rémunération médiane",
+        max_length=10,
+        choices=REMUNERATIONS_CHOICES,
+        default="moyenne",
+    )
+    remuneration_homme = CategoryField(
+        verbose_name="Rémunération moyenne/médiane mensuelle des hommes par catégorie professionnelle",
         null=True,
         blank=True,
     )
-    remuneration_moyenne_femme = CategoryField(
-        verbose_name="Rémunération moyenne mensuelle des femmes par catégorie professionnelle",
+    remuneration_femme = CategoryField(
+        verbose_name="Rémunération moyenne/médiane mensuelle des femmes par catégorie professionnelle",
         null=True,
         blank=True,
     )
     # rémunération moyenne ou médiane mensuelle par niveau ou coefficient hiérarchique : quels sont les niveaux/coeff ?
     # Cet indicateur n'a pas à être renseigné lorsque sa mention est de nature à porter atteinte à la confidentialité des données correspondantes, compte tenu notamment du nombre réduit d'individus dans un niveau ou coefficient hiérarchique
-    remuneration_moyenne_par_age_homme = CategoryField(
+    remuneration_par_age_homme = CategoryField(
         categories=["moins de 30 ans", "30 à 39 ans", "40 à 49 ans", "50 ans et plus"],
-        verbose_name="Rémunération moyenne mensuelle des hommes par tranche d'âge",
+        verbose_name="Rémunération moyenne/mediane mensuelle des hommes par tranche d'âge",
         null=True,
         blank=True,
     )
-    remuneration_moyenne_par_age_femme = CategoryField(
+    remuneration_par_age_femme = CategoryField(
         categories=["moins de 30 ans", "30 à 39 ans", "40 à 49 ans", "50 ans et plus"],
-        verbose_name="Rémunération moyenne mensuelle des femmes par tranche d'âge",
+        verbose_name="Rémunération moyenne/médiane mensuelle des femmes par tranche d'âge",
         null=True,
         blank=True,
     )
