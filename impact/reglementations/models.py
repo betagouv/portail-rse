@@ -1233,9 +1233,10 @@ class BDESE_300(AbstractBDESE):
         blank=True,
     )
     #      B-Organisation du temps de travail dans l'entreprise
-    existence_orga_facilitant_vie_familiale_et_professionnelle = models.BooleanField(
+    existence_orga_facilitant_vie_familiale_et_professionnelle = models.TextField(
         verbose_name="Existence de formules d'organisation du travail facilitant l'articulation de la vie familiale et de la vie professionnelle",
-        default=False,
+        null=True,
+        blank=True,
     )
     nombre_salaries_temps_partiel_choisi_homme = CategoryField(
         verbose_name="Nombre de salariés homme ayant accédé au temps partiel choisi",
