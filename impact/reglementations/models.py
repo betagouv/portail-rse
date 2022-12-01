@@ -1211,9 +1211,19 @@ class BDESE_300(AbstractBDESE):
     )
     #   II. Indicateurs relatifs à l'articulation entre l'activité professionnelle et l'exercice de la responsabilité familiale
     #      A. Congés
-    complement_salaire_conge = models.BooleanField(
-        verbose_name="Complément de salaire versé par l'employeur",
-        help_text="Existence d'un complément de salaire versé par l'employeur pour le congé de paternité, le congé de maternité, le congé d'adoption",
+    complement_salaire_conge_paternite = models.BooleanField(
+        verbose_name="Complément de salaire pour le congé de paternité",
+        help_text="Existence d'un complément de salaire versé par l'employeur pour le congé de paternité",
+        default=False,
+    )
+    complement_salaire_conge_maternite = models.BooleanField(
+        verbose_name="Complément de salaire pour le congé de maternité",
+        help_text="Existence d'un complément de salaire versé par l'employeur pour le congé de maternité",
+        default=False,
+    )
+    complement_salaire_conge_adoption = models.BooleanField(
+        verbose_name="Complément de salaire pour le congé d'adoption",
+        help_text="Existence d'un complément de salaire versé par l'employeur pour le congé d'adoption",
         default=False,
     )
     nombre_jours_conges_paternite_pris = CategoryField(

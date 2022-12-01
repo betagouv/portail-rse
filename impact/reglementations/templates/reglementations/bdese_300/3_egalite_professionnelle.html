@@ -107,7 +107,9 @@
                     </h3>
                     <div class="fr-collapse" id="accordion-II">
                         <h4>Congés</h4>
-                        {% include 'snippets/radio_field.html' with field=form.complement_salaire_conge %}
+                        {% include 'snippets/radio_field.html' with field=form.complement_salaire_conge_paternite %}
+                        {% include 'snippets/radio_field.html' with field=form.complement_salaire_conge_maternite %}
+                        {% include 'snippets/radio_field.html' with field=form.complement_salaire_conge_adoption %}
                         {% include 'snippets/category_field.html' with field=form.nombre_jours_conges_paternite_pris %}
                         <h4>Organisation du temps de travail dans l'entreprise</h4>
                         {% include 'snippets/radio_field.html' with field=form.existence_orga_facilitant_vie_familiale_et_professionnelle %}
