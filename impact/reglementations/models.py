@@ -1047,32 +1047,32 @@ class BDESE_300(AbstractBDESE):
         blank=True,
     )
     action_adaptation_au_poste_homme = CategoryField(
-        verbose_name="Nombre d'hommes ou répartition des hommes ayant suivi une formation d'adaptation au poste",
+        verbose_name="Nombre d'hommes ayant suivi une formation d'adaptation au poste",
         null=True,
         blank=True,
     )
     action_adaptation_au_poste_femme = CategoryField(
-        verbose_name="Nombre d'hommes ou répartition des femmes ayant suivi une formation d'adaptation au poste",
+        verbose_name="Nombre de femmes ayant suivi une formation d'adaptation au poste",
         null=True,
         blank=True,
     )
     action_maintien_emploi_homme = CategoryField(
-        verbose_name="Répartition des hommes pour le maintien dans l'emploi",
+        verbose_name="Nombre d'hommes ayant suivi une formation pour le maintien dans l'emploi",
         null=True,
         blank=True,
     )
     action_maintien_emploi_femme = CategoryField(
-        verbose_name="Répartition des femmes pour le maintien dans l'emploi",
+        verbose_name="Nombre de femmes ayant suivi une formation pour le maintien dans l'emploi",
         null=True,
         blank=True,
     )
     action_developpement_competences_homme = CategoryField(
-        verbose_name="Répartition des hommes pour le développement des compétences",
+        verbose_name="Nombre d'hommes ayant suivi une formation pour le développement des compétences",
         null=True,
         blank=True,
     )
     action_developpement_competences_femme = CategoryField(
-        verbose_name="Répartition des femmes pour le développement des compétences",
+        verbose_name="Nombre de femmes ayant suivi une formation pour le développement des compétences",
         null=True,
         blank=True,
     )
