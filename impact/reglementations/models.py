@@ -288,7 +288,7 @@ class BDESE_300(AbstractBDESE):
         null=True,
         blank=True,
     )
-    nombre_departs_volontaires_retraite_preretraite = models.TextField(
+    nombre_departs_volontaires_retraite_preretraite = CategoryField(
         verbose_name="Nombre de départs volontaires en retraite et préretraite",
         help_text="Distinguer les différents systèmes légaux et conventionnels de toute nature",
         null=True,
