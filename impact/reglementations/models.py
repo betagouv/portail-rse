@@ -1151,13 +1151,13 @@ class BDESE_300(AbstractBDESE):
         null=True,
         blank=True,
     )
-    nombre_accidents_par_elements_materiels_homme = models.IntegerField(
+    nombre_accidents_par_elements_materiels_homme = models.TextField(
         verbose_name="Répartition des accidents par éléments matériels chez les hommes",
         help_text="Faire référence aux codes de classification des éléments matériels des accidents (arrêté du 10 octobre 1974).",
         null=True,
         blank=True,
     )
-    nombre_accidents_par_elements_materiels_femme = models.IntegerField(
+    nombre_accidents_par_elements_materiels_femme = models.TextField(
         verbose_name="Répartition des accidents par éléments matériels chez les hommes",
         help_text="Faire référence aux codes de classification des éléments matériels des accidents (arrêté du 10 octobre 1974).",
         null=True,
