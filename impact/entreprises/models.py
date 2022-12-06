@@ -18,7 +18,7 @@ class Entreprise(models.Model):
         help_text="Vérifiez et confirmez le nombre de salariés",
     )
     bdese_accord = models.BooleanField(default=False)
-    raison_sociale = models.CharField(max_length=50, default="")
+    raison_sociale = models.CharField(max_length=250, default="")
 
     def __str__(self):
         return f"{self.siren} {self.raison_sociale}"
