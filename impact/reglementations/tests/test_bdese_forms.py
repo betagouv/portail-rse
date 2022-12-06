@@ -63,23 +63,19 @@ def test_bdese_form_step_1_with_new_bdese_300_instance(bdese_300):
 def test_fields_of_complete_step_are_disabled(bdese_300):
     bdese_300.mark_step_as_complete(1)
 
-    categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
-    form = bdese_form_factory(bdese_300, 1, categories_professionnelles)
+    form = bdese_form_factory(bdese_300, 1)
 
     for field in form.fields:
         assert form.fields[field].disabled
 
 
 def test_form_is_initialized_with_fetched_data(bdese_300):
-    categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
-    form = bdese_form_factory(bdese_300, 3, categories_professionnelles)
+    form = bdese_form_factory(bdese_300, 3)
 
     assert not form["nombre_femmes_plus_hautes_remunerations"].value()
 
     fetched_data = {"nombre_femmes_plus_hautes_remunerations": 10}
-    form = bdese_form_factory(
-        bdese_300, 3, categories_professionnelles, fetched_data=fetched_data
-    )
+    form = bdese_form_factory(bdese_300, 3, fetched_data=fetched_data)
 
     assert form["nombre_femmes_plus_hautes_remunerations"].value() == 10
 
