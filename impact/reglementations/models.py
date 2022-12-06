@@ -75,6 +75,7 @@ class AbstractBDESE(models.Model):
     annee = models.IntegerField(default=2022)
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
     categories_professionnelles = models.JSONField(
+        verbose_name="Catégories professionnelles",
         help_text="Une structure de qualification détaillée en trois postes minimum",
         null=True,
         blank=True,
@@ -143,6 +144,7 @@ class BDESE_300(AbstractBDESE):
     )
 
     categories_professionnelles_detaillees = models.JSONField(
+        verbose_name="Catégories professionnelles détaillées",
         help_text="Une structure de qualification détaillée en cinq postes minimum",
         null=True,
         blank=True,

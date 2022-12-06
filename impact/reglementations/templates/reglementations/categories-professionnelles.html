@@ -3,14 +3,13 @@
 {% block content %}
 <div class="fr-container fr-my-8w">
     <h1>BDESE {{ annee }}</h1>
-    <p>Certains indicateurs de la BDESE sont à remplir par catégorie professionnelle.</p>
     <p>
         Une structure de qualification comprenant trois postes minimum est requise pour certains indicateurs. Il est souhaitable de faire référence à la classification de la convention collective, de l'accord d'entreprise et aux pratiques habituellement retenues dans l'entreprise.<br>
         A titre d'exemple la répartition suivante peut être retenue : cadres ; employés, techniciens et agents de maîtrise (ETAM) ; et ouvriers.
     </p>
     {% if form.categories_professionnelles_detaillees %}
     <p>
-        Une structure de qualification comprenant cinq postes minimum est requise pour d'autres indicateurs. Il est à nouveau souhaitable de faire référence à la classification de la convention collective, de l'accord d'entreprise et aux pratiques habituellement retenues dans l'entreprise.<br>
+        Une structure de qualification détaillée comprenant cinq postes minimum est requise pour d'autres indicateurs. Il est à nouveau souhaitable de faire référence à la classification de la convention collective, de l'accord d'entreprise et aux pratiques habituellement retenues dans l'entreprise.<br>
         A titre d'exemple, la répartition suivante des postes peut être retenue : cadres ; techniciens ; agents de maîtrise ; employés qualifiés ; employés non qualifiés ; ouvriers qualifiés ; ouvriers non qualifiés.
     </p>
     {% endif %}
