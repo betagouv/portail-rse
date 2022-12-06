@@ -96,7 +96,7 @@ def test_bdese_form_with_new_bdese_50_300_instance(bdese_50_300):
     assert bound_form.is_valid()
 
 
-def form_data(categories_pro, categories_pro_detaillees=None):
+def categories_form_data(categories_pro, categories_pro_detaillees=None):
     data = {
         f"categories_professionnelles_{i}": categories_pro[i]
         for i in range(len(categories_pro))
@@ -118,7 +118,7 @@ def test_categories_professionnelles_form(bdese_50_300):
     categories_pro = ["catégorie 1", "catégorie 2", "catégorie 3"]
     bound_form = categories_professionnelles_form_factory(
         bdese_50_300,
-        data=form_data(categories_pro),
+        data=categories_form_data(categories_pro),
     )
     bdese_50_300 = bound_form.save()
 
@@ -143,7 +143,7 @@ def test_categories_professionnelles_form(bdese_300):
 
     bound_form = categories_professionnelles_form_factory(
         bdese_300,
-        data=form_data(categories_pro, categories_pro_detaillees),
+        data=categories_form_data(categories_pro, categories_pro_detaillees),
     )
     bdese_300 = bound_form.save()
 
@@ -155,7 +155,7 @@ def test_at_least_3_categories_professionnelles(bdese):
     categories_pro = ["catégorie 1", "catégorie 2"]
     bound_form = categories_professionnelles_form_factory(
         bdese,
-        data=form_data(categories_pro),
+        data=categories_form_data(categories_pro),
     )
 
     assert not bound_form.is_valid()
@@ -171,7 +171,7 @@ def test_at_least_5_categories_professionnelles_detaillees(bdese_300):
     ]
     bound_form = categories_professionnelles_form_factory(
         bdese_300,
-        data=form_data(categories_pro, categories_pro_detaillees),
+        data=categories_form_data(categories_pro, categories_pro_detaillees),
     )
 
     assert not bound_form.is_valid()

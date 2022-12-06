@@ -2,6 +2,7 @@ from django.urls import reverse
 import pytest
 
 from reglementations.models import annees_a_remplir_bdese, BDESE_50_300, BDESE_300
+from reglementations.tests.test_bdese_forms import categories_form_data
 
 
 def test_bdese_is_not_public(client, django_user_model, grande_entreprise):
@@ -220,16 +221,7 @@ def test_save_categories_professionnelles(bdese, authorized_user, client):
     url = f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/categories-professionnelles"
     response = client.post(
         url,
-        data={
-            "categories_professionnelles_0": categories_pro[0],
-            "categories_professionnelles_1": categories_pro[1],
-            "categories_professionnelles_2": categories_pro[2],
-            "categories_professionnelles_detaillees_0": categories_pro_detaillees[0],
-            "categories_professionnelles_detaillees_1": categories_pro_detaillees[1],
-            "categories_professionnelles_detaillees_2": categories_pro_detaillees[2],
-            "categories_professionnelles_detaillees_3": categories_pro_detaillees[3],
-            "categories_professionnelles_detaillees_4": categories_pro_detaillees[4],
-        },
+        data=categories_form_data(categories_pro, categories_pro_detaillees),
         follow=True,
     )
 
@@ -248,16 +240,11 @@ def test_save_categories_professionnelles(bdese, authorized_user, client):
 
 
 def test_save_categories_professionnelles_error(bdese, authorized_user, client):
+    categories_pro = ["catégorie 1", "catégorie 2"]
     client.force_login(authorized_user)
 
     url = f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/categories-professionnelles"
-    response = client.post(
-        url,
-        data={
-            "categories_professionnelles_0": "catégorie 1",
-            "categories_professionnelles_1": "catégorie 2",
-        },
-    )
+    response = client.post(url, data=categories_form_data(categories_pro))
 
     assert response.status_code == 200
 
@@ -301,27 +288,7 @@ def test_save_categories_professionnelles_for_a_new_year(
     new_categories_pro_detaillees = ["E", "F", "G", "H", "I"]
     response = client.post(
         url,
-        data={
-            "categories_professionnelles_0": new_categories_pro[0],
-            "categories_professionnelles_1": new_categories_pro[1],
-            "categories_professionnelles_2": new_categories_pro[2],
-            "categories_professionnelles_3": new_categories_pro[3],
-            "categories_professionnelles_detaillees_0": new_categories_pro_detaillees[
-                0
-            ],
-            "categories_professionnelles_detaillees_1": new_categories_pro_detaillees[
-                1
-            ],
-            "categories_professionnelles_detaillees_2": new_categories_pro_detaillees[
-                2
-            ],
-            "categories_professionnelles_detaillees_3": new_categories_pro_detaillees[
-                3
-            ],
-            "categories_professionnelles_detaillees_4": new_categories_pro_detaillees[
-                4
-            ],
-        },
+        data=categories_form_data(new_categories_pro, new_categories_pro_detaillees),
         follow=True,
     )
 
