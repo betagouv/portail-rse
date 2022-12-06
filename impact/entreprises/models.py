@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.db import models
 
+RAISON_SOCIALE_MAX_LENGTH = 250
+
 
 class Entreprise(models.Model):
     EFFECTIF_CHOICES = [
@@ -18,7 +20,7 @@ class Entreprise(models.Model):
         help_text="Vérifiez et confirmez le nombre de salariés",
     )
     bdese_accord = models.BooleanField(default=False)
-    raison_sociale = models.CharField(max_length=250, default="")
+    raison_sociale = models.CharField(max_length=RAISON_SOCIALE_MAX_LENGTH, default="")
 
     def __str__(self):
         return f"{self.siren} {self.raison_sociale}"
