@@ -13,6 +13,14 @@ def index(request):
     return render(request, "public/index.html", {"form": SirenForm()})
 
 
+def cgu(request):
+    return render(request, "public/cgu.html")
+
+
+def contact(request):
+    return render(request, "public/contact.html")
+
+
 def siren(request):
     form = SirenForm(request.GET)
     if form.is_valid():
