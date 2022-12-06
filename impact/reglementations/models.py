@@ -71,15 +71,6 @@ class CategoryField(models.JSONField):
         return super().formfield(**defaults)
 
 
-def categories_default():
-    return [
-        "ouvriers",
-        "employés",
-        "techniciens et agents de maitrise",
-        "ingénieurs et cadres",
-    ]
-
-
 class AbstractBDESE(models.Model):
     annee = models.IntegerField(default=2022)
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)

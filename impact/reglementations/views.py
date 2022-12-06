@@ -17,7 +17,6 @@ from .models import (
     annees_a_remplir_bdese,
     BDESE_300,
     BDESE_50_300,
-    categories_default,
 )
 from .forms import bdese_form_factory, categories_professionnelles_form_factory
 
@@ -230,8 +229,7 @@ def bdese_pdf(request, siren, annee):
     if request.user not in entreprise.users.all():
         raise PermissionDenied
     bdese = _get_or_create_bdese(entreprise, annee)
-    categories_professionnelles = categories_default()
-    bdese_form = bdese_form_factory(bdese, "all", categories_professionnelles)
+    bdese_form = bdese_form_factory(bdese, "all")
     context = {
         "entreprise": entreprise,
         "bdese_form": bdese_form,
