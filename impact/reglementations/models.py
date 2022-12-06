@@ -435,12 +435,14 @@ class BDESE_300(AbstractBDESE):
         blank=True,
     )
     # Nombre de stagiaires (II)
-    nombre_heures_stage_remunerees = models.IntegerField(
+    nombre_heures_stage_remunerees = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE_DETAILLEE,
         verbose_name="Nombre d'heures de stage rémunérées",
         null=True,
         blank=True,
     )
-    nombre_heures_stage_non_remunerees = models.IntegerField(
+    nombre_heures_stage_non_remunerees = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE_DETAILLEE,
         verbose_name="Nombre d'heures de stage non rémunérées",
         null=True,
         blank=True,
@@ -1486,27 +1488,27 @@ class BDESE_300(AbstractBDESE):
 
     #       i. Montant des rémunérations
     rapport_masse_salariale_effectif_mensuel = CategoryField(
-        category_type=CategoryType.PROFESSIONNELLE,
+        category_type=CategoryType.PROFESSIONNELLE_DETAILLEE,
         verbose_name="Rapport entre la masse salariale annuelle et l'effectif mensuel moyen",
         help_text="Masse salariale annuelle totale, au sens de la déclaration annuelle de salaire",
         null=True,
         blank=True,
     )
     remuneration_moyenne_decembre = CategoryField(
-        category_type=CategoryType.PROFESSIONNELLE,
+        category_type=CategoryType.PROFESSIONNELLE_DETAILLEE,
         verbose_name="Rémunération moyenne du mois de décembre (effectif permanent) hors primes à périodicité non mensuelle",
         help_text="base 35 heures",
         null=True,
         blank=True,
     )
     remuneration_mensuelle_moyenne = CategoryField(
-        category_type=CategoryType.PROFESSIONNELLE,
+        category_type=CategoryType.PROFESSIONNELLE_DETAILLEE,
         verbose_name="Rémunération mensuelle moyenne",
         null=True,
         blank=True,
     )
     part_primes_non_mensuelle = CategoryField(
-        category_type=CategoryType.PROFESSIONNELLE,
+        category_type=CategoryType.PROFESSIONNELLE_DETAILLEE,
         verbose_name="Part des primes à périodicité non mensuelle dans la déclaration de salaire",
         null=True,
         blank=True,
