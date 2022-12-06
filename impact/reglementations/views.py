@@ -297,8 +297,7 @@ def bdese(request, siren, annee, step):
     if request.user not in entreprise.users.all():
         raise PermissionDenied
     bdese = _get_or_create_bdese(entreprise, annee)
-    categories_professionnelles = bdese.categories_professionnelles
-    if not categories_professionnelles:
+    if not bdese.categories_professionnelles:
         return redirect("categories_professionnelles", siren=siren, annee=annee)
     if request.method == "POST":
         if "mark_incomplete" in request.POST:
@@ -309,7 +308,6 @@ def bdese(request, siren, annee, step):
             form = bdese_form_factory(
                 bdese,
                 step,
-                categories_professionnelles,
                 data=request.POST,
             )
             if form.is_valid():
@@ -329,7 +327,9 @@ def bdese(request, siren, annee, step):
             entreprise, derniere_annee_a_remplir_bdese()
         )
         form = bdese_form_factory(
-            bdese, step, categories_professionnelles, fetched_data=fetched_data
+            bdese,
+            step,
+            fetched_data=fetched_data,
         )
     if bdese.__class__ == BDESE_300:
         templates = {

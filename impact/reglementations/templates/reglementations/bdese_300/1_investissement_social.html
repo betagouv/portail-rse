@@ -29,15 +29,8 @@
                         {% include 'snippets/category_field.html' with field=form.effectif_anciennete %}
                         {% include 'snippets/category_field.html' with field=form.effectif_nationalite_francaise %}
                         {% include 'snippets/category_field.html' with field=form.effectif_nationalite_etrangere %}
-        {% comment %}
-                        {% include 'snippets/input_field.html' with field=form.effectif_cadres %}
-                        {% include 'snippets/input_field.html' with field=form.effectif_techniciens %}
-                        {% include 'snippets/input_field.html' with field=form.effectif_agents_de_maitrise %}
-                        {% include 'snippets/input_field.html' with field=form.effectif_employes_qualifies %}
-                        {% include 'snippets/input_field.html' with field=form.effectif_employes_non_qualifies %}
-                        {% include 'snippets/input_field.html' with field=form.effectif_ouvriers_qualifies %}
-                        {% include 'snippets/input_field.html' with field=form.effectif_ouvriers_non_qualifies %}
-        {% endcomment %}
+                        {% include 'snippets/category_field.html' with field=form.effectif_qualification_detaillee_homme %}
+                        {% include 'snippets/category_field.html' with field=form.effectif_qualification_detaillee_femme %}
                         <h5>Travailleurs extérieurs</h5>
                         {% include 'snippets/input_field.html' with field=form.nombre_travailleurs_exterieurs %}
                         {% include 'snippets/input_field.html' with field=form.nombre_stagiaires %}

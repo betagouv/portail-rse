@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 import json
 
 from public.forms import DsfrForm
-from .models import BDESE_50_300, BDESE_300
+from reglementations.models import BDESE_50_300, BDESE_300, CategoryType
 
 
 class ListJSONWidget(forms.widgets.MultiWidget):
@@ -79,7 +79,7 @@ class CategoryJSONWidget(forms.MultiWidget):
 def bdese_form_factory(
     bdese,
     step,
-    categories_professionnelles,
+    categories_professionnelles=None,
     categories_professionnelles_detaillees=None,
     fetched_data=None,
     *args,
@@ -91,6 +91,7 @@ def bdese_form_factory(
         def __init__(
             self,
             base_field=forms.IntegerField,
+            category_type=CategoryType.HARD_CODED,
             categories=None,
             encoder=None,
             decoder=None,
@@ -98,7 +99,18 @@ def bdese_form_factory(
             **kwargs
         ):
             """https://docs.djangoproject.com/en/4.1/ref/forms/fields/#django.forms.MultiValueField.require_all_fields"""
-            self.categories = categories or categories_professionnelles
+            self.base_field = base_field
+            if category_type == CategoryType.PROFESSIONNELLE:
+                categories = (
+                    categories_professionnelles or bdese.categories_professionnelles
+                )
+            elif category_type == CategoryType.PROFESSIONNELLE_DETAILLEE:
+                categories = (
+                    categories_professionnelles_detaillees
+                    or bdese.categories_professionnelles_detaillees
+                )
+            self.categories = categories or []
+
             fields = [base_field() for category in self.categories]
             widgets = [
                 base_field.widget({"label": category})
@@ -158,6 +170,8 @@ def bdese_form_factory(
             "effectif_anciennete",
             "effectif_nationalite_francaise",
             "effectif_nationalite_etrangere",
+            "effectif_qualification_detaillee_homme",
+            "effectif_qualification_detaillee_femme",
             "nombre_travailleurs_exterieurs",
             "nombre_stagiaires",
             "nombre_moyen_mensuel_salaries_temporaires",

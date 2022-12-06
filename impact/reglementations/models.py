@@ -1,4 +1,5 @@
 import datetime
+from enum import Enum
 
 from django import forms
 from django.db import models
@@ -21,15 +22,32 @@ def annees_a_remplir_bdese():
     return [annee - 3, annee - 2, annee - 1, annee, annee + 1, annee + 2]
 
 
+class CategoryType(Enum):
+    HARD_CODED = 1
+    PROFESSIONNELLE = 2
+    PROFESSIONNELLE_DETAILLEE = 3
+
+
 class CategoryField(models.JSONField):
-    def __init__(self, base_field=forms.IntegerField, categories=None, *args, **kwargs):
+    def __init__(
+        self,
+        base_field=forms.IntegerField,
+        category_type=CategoryType.HARD_CODED,
+        categories=None,
+        *args,
+        **kwargs,
+    ):
         self.base_field = base_field
+        self.category_type = category_type
         self.categories = categories
         super().__init__(*args, **kwargs)
 
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()
-        kwargs["base_field"] = self.base_field
+        if self.base_field != forms.IntegerField:
+            kwargs["base_field"] = self.base_field
+        if self.category_type != CategoryType.HARD_CODED:
+            kwargs["category_type"] = self.category_type
         if self.categories:
             kwargs["categories"] = self.categories
         return name, path, args, kwargs
@@ -38,12 +56,14 @@ class CategoryField(models.JSONField):
     def non_db_attrs(self):
         return super().non_db_attrs + (
             "base_field",
+            "category_type",
             "categories",
         )
 
     def formfield(self, **kwargs):
         defaults = {
             "base_field": self.base_field,
+            "category_type": self.category_type,
         }
         if self.categories:
             defaults["categories"] = self.categories
@@ -144,31 +164,37 @@ class BDESE_300(AbstractBDESE):
     # 1° A - a) Evolution des effectifs par type de contrat, par âge, par ancienneté
     # 1° A - a) i - Effectif
     effectif_total = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         help_text="Tout salarié inscrit à l’effectif au 31/12 quelle que soit la nature de son contrat de travail",
         null=True,
         blank=True,
     )
     effectif_permanent = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         help_text="Les salariés à temps plein, inscrits à l’effectif pendant toute l’année considérée et titulaires d’un contrat de travail à durée indéterminée.",
         null=True,
         blank=True,
     )
     effectif_cdd = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Effectif CDD",
         help_text="Nombre de salariés titulaires d’un contrat de travail à durée déterminée au 31/12",
         blank=True,
         null=True,
     )
     effectif_mensuel_moyen = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         help_text="Somme des effectifs totaux mensuels divisée par 12 (on entend par effectif total tout salarié inscrit à l’effectif au dernier jour du mois considéré)",
         null=True,
         blank=True,
     )
     effectif_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         null=True,
         blank=True,
     )
     effectif_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         null=True,
         blank=True,
     )
@@ -190,12 +216,28 @@ class BDESE_300(AbstractBDESE):
         blank=True,
     )
     effectif_nationalite_francaise = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Effectif de nationalité française",
         null=True,
         blank=True,
     )
     effectif_nationalite_etrangere = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Effectif de nationalité étrangère",
+        null=True,
+        blank=True,
+    )
+    effectif_qualification_detaillee_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE_DETAILLEE,
+        verbose_name="Répartition des hommes",
+        help_text="Répartition de l'effectif total masculin au 31/12 selon une structure de qualification détaillée",
+        null=True,
+        blank=True,
+    )
+    effectif_qualification_detaillee_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE_DETAILLEE,
+        verbose_name="Répartition des femmes",
+        help_text="Répartition de l'effectif total féminin au 31/12 selon une structure de qualification détaillée",
         null=True,
         blank=True,
     )
@@ -251,6 +293,7 @@ class BDESE_300(AbstractBDESE):
         blank=True,
     )
     nombre_embauches_cdd = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre d'embauches par contrats de travail à durée déterminée",
         help_text="dont nombre de contrats de travailleurs saisonniers",
         null=True,
@@ -263,49 +306,58 @@ class BDESE_300(AbstractBDESE):
     )
     # 1° A - b) ii - Départs
     total_departs = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Total des départs",
         null=True,
         blank=True,
     )
     nombre_demissions = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de démissions",
         null=True,
         blank=True,
     )
     nombre_licenciements_economiques = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de licenciements pour motif économique",
         help_text="dont départs en retraite et préretraite",
         null=True,
         blank=True,
     )
     nombre_licenciements_autres = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de licenciements pour d’autres causes",
         null=True,
         blank=True,
     )
     nombre_fin_cdd = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de fins de contrats de travail à durée déterminée",
         null=True,
         blank=True,
     )
     nombre_fin_periode_essai = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de départs au cours de la période d’essai",
         help_text="à ne remplir que si ces départs sont comptabilisés dans le total des départs",
         null=True,
         blank=True,
     )
     nombre_mutations = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de mutations d’un établissement à un autre",
         null=True,
         blank=True,
     )
     nombre_departs_volontaires_retraite_preretraite = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de départs volontaires en retraite et préretraite",
         help_text="Distinguer les différents systèmes légaux et conventionnels de toute nature",
         null=True,
         blank=True,
     )
     nombre_deces = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de décès",
         null=True,
         blank=True,
@@ -319,32 +371,38 @@ class BDESE_300(AbstractBDESE):
     )
     # 1° A - b) iv - Chômage
     nombre_salaries_chomage_partiel = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de salariés mis en chômage partiel pendant l’année considérée",
         null=True,
         blank=True,
     )
     nombre_heures_chomage_partiel_indemnisees = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre total d'heures de chômage partiel indemnisées",
         help_text="Y compris les heures indemnisées au titre du chômage total en cas d’arrêt de plus de quatre semaines consécutives",
         null=True,
         blank=True,
     )
     nombre_heures_chomage_partiel_non_indemnisees = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre total d'heures de chômage partiel non indemnisées",
         null=True,
         blank=True,
     )
     nombre_salaries_chomage_intemperies = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de salariés mis en chômage intempéries",
         null=True,
         blank=True,
     )
     nombre_heures_chomage_intemperies_indemnisees = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre total d'heures de chômage intempéries indemnisées",
         null=True,
         blank=True,
     )
     nombre_heures_chomage_intemperies_non_indemnisees = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre total d'heures de chômage intempéries non indemnisées",
         null=True,
         blank=True,
@@ -570,51 +628,60 @@ class BDESE_300(AbstractBDESE):
     )
     # 1° A - f) v - Durée et aménagement du temps de travail
     horaire_hebdomadaire_moyen = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Horaire hebdomadaire moyen affiché des ouvriers et employés ou catégories assimilées",
         help_text="Il est possible de remplacer cet indicateur par la somme des heures travaillées durant l'année.",
         null=True,
         blank=True,
     )
     nombre_salaries_repos_compensateur_code_travail = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de salariés ayant bénéficié d'un repos compensateur au titre du code du travail",
         help_text="Au sens des dispositions du code du travail et du code rural et de la pêche maritime instituant un repos compensateur en matière d'heures supplémentaires.",
         null=True,
         blank=True,
     )
     nombre_salaries_repos_compensateur_regime_conventionne = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de salariés ayant bénéficié d'un repos compensateur au titre d'un régime conventionne",
         null=True,
         blank=True,
     )
     nombre_salaries_horaires_individualises = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de salariés bénéficiant d'un système d'horaires individualisés",
         help_text="Au sens de l'article L. 3121-48.",
         null=True,
         blank=True,
     )
     nombre_salaries_temps_partiel_20_30_heures = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de salariés employés à temps partiel entre 20 et 30 heures (33)",
         help_text="Au sens de l'article L. 3123-1.",
         null=True,
         blank=True,
     )
     nombre_salaries_temps_partiel_autres = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de salariés employés sous d'autres formes de temps partiel",
         null=True,
         blank=True,
     )
     nombre_salaries_2_jours_repos_hebdomadaire_consecutifs = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de salariés ayant bénéficié tout au long de l'année considérée de deux jours de repos hebdomadaire consécutifs",
         null=True,
         blank=True,
     )
     nombre_moyen_jours_conges_annuels = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre moyen de jours de congés annuels (non compris le repos compensateur)",
         help_text="Repos compensateur non compris. Cet indicateur peut être calculé sur la dernière période de référence.",
         null=True,
         blank=True,
     )
     nombre_jours_feries_payes = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de jours fériés payés",
         null=True,
         blank=True,
@@ -632,6 +699,7 @@ class BDESE_300(AbstractBDESE):
         default="J",
     )
     nombre_unites_absence = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de journées d'absence",
         help_text="Ne sont pas comptés parmi les absences : les diverses sortes de congés, les conflits et le service national.",
         null=True,
@@ -643,6 +711,7 @@ class BDESE_300(AbstractBDESE):
         blank=True,
     )
     nombre_unites_absence_maladie = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de journées d'absence pour maladie",
         null=True,
         blank=True,
@@ -654,22 +723,26 @@ class BDESE_300(AbstractBDESE):
         blank=True,
     )
     nombre_unites_absence_accidents = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de journées d'absence pour accidents du travail et de trajet ou maladies professionnelles",
         null=True,
         blank=True,
     )
     nombre_unites_absence_maternite = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de journées d'absence pour maternité",
         null=True,
         blank=True,
     )
     nombre_unites_absence_conges_autorises = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de journées d'absence pour congés autorisés",
         help_text="(événements familiaux, congés spéciaux pour les femmes …)",
         null=True,
         blank=True,
     )
     nombre_unites_absence_autres = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de journées d'absence imputables à d'autres causes",
         null=True,
         blank=True,
@@ -810,21 +883,25 @@ class BDESE_300(AbstractBDESE):
     #     A-Conditions générales d'emploi
     #       a) Effectifs : Données chiffrées par sexe
     nombre_CDI_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre d'hommes en CDI",
         null=True,
         blank=True,
     )
     nombre_CDI_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de femmes en CDI",
         null=True,
         blank=True,
     )
     nombre_CDD_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre d'hommes en CDD",
         null=True,
         blank=True,
     )
     nombre_CDD_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de femmes en CDD",
         null=True,
         blank=True,
@@ -874,11 +951,13 @@ class BDESE_300(AbstractBDESE):
     )
     #       c) Données sur les congés
     conges_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Répartition des congés des hommes",
         null=True,
         blank=True,
     )
     conges_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Répartition des congés des femmes",
         null=True,
         blank=True,
@@ -897,61 +976,73 @@ class BDESE_300(AbstractBDESE):
     )
     #      d) Données sur les embauches et les départs
     embauches_CDI_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Répartition des embauches hommes en CDI par catégorie professionnelle",
         null=True,
         blank=True,
     )
     embauches_CDI_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Répartition des embauches femmes en CDI par catégorie professionnelle",
         null=True,
         blank=True,
     )
     embauches_CDD_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Répartition des embauches hommes en CDD par catégorie professionnelle",
         null=True,
         blank=True,
     )
     embauches_CDD_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Répartition des embauches femmes en CDD par catégorie professionnelle",
         null=True,
         blank=True,
     )
     departs_retraite_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre d'hommes partis en retraite",
         null=True,
         blank=True,
     )
     departs_demission_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre d'hommes ayant démissionné",
         null=True,
         blank=True,
     )
     departs_fin_CDD_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre d'hommes en fin de CDD",
         null=True,
         blank=True,
     )
     departs_licenciement_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre d'hommes licenciés",
         null=True,
         blank=True,
     )
     departs_retraite_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de femmes parties en retraite",
         null=True,
         blank=True,
     )
     departs_demission_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de femmes ayant démissionné",
         null=True,
         blank=True,
     )
     departs_fin_CDD_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de femmes en fin de CDD",
         null=True,
         blank=True,
     )
     departs_licenciement_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de femmes licenciées",
         null=True,
         blank=True,
@@ -962,11 +1053,13 @@ class BDESE_300(AbstractBDESE):
     #     B - Rémunérations et déroulement de carrière
     #        a) Promotion
     nombre_promotions_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de promotions homme",
         null=True,
         blank=True,
     )
     nombre_promotions_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de promotions femme",
         null=True,
         blank=True,
@@ -983,21 +1076,25 @@ class BDESE_300(AbstractBDESE):
     )
     #        b) Ancienneté
     anciennete_moyenne_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Ancienneté moyenne des hommes par catégorie professionnelle",
         null=True,
         blank=True,
     )
     anciennete_moyenne_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Ancienneté moyenne des femmes par catégorie professionnelle",
         null=True,
         blank=True,
     )
     anciennete_moyenne_dans_categorie_profesionnelle_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Ancienneté moyenne des hommes dans chaque catégorie professionnelle",
         null=True,
         blank=True,
     )
     anciennete_moyenne_dans_categorie_profesionnelle_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Ancienneté moyenne des femmes dans chaque catégorie professionnelle",
         null=True,
         blank=True,
@@ -1005,11 +1102,13 @@ class BDESE_300(AbstractBDESE):
     # ancienneté moyenne par/dans niveau ou coefficient hiérarchique : quels sont les niveaux/coeff ?
     #        c) Age
     age_moyen_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Age moyen des hommes par catégorie professionnelle",
         null=True,
         blank=True,
     )
     age_moyen_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Age moyen des femmes par catégorie professionnelle",
         null=True,
         blank=True,
@@ -1028,11 +1127,13 @@ class BDESE_300(AbstractBDESE):
         default="moyenne",
     )
     remuneration_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Rémunération moyenne/médiane mensuelle des hommes par catégorie professionnelle",
         null=True,
         blank=True,
     )
     remuneration_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Rémunération moyenne/médiane mensuelle des femmes par catégorie professionnelle",
         null=True,
         blank=True,
@@ -1058,43 +1159,51 @@ class BDESE_300(AbstractBDESE):
     )
     #     C - Formation
     nombre_moyen_heures_formation_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre moyen d'heures d'actions de formation par salarié et par an",
         help_text="hommes",
         null=True,
         blank=True,
     )
     nombre_moyen_heures_formation_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre moyen d'heures d'actions de formation par salariée et par an",
         help_text="femmes",
         null=True,
         blank=True,
     )
     action_adaptation_au_poste_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre d'hommes ayant suivi une formation d'adaptation au poste",
         null=True,
         blank=True,
     )
     action_adaptation_au_poste_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de femmes ayant suivi une formation d'adaptation au poste",
         null=True,
         blank=True,
     )
     action_maintien_emploi_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre d'hommes ayant suivi une formation pour le maintien dans l'emploi",
         null=True,
         blank=True,
     )
     action_maintien_emploi_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de femmes ayant suivi une formation pour le maintien dans l'emploi",
         null=True,
         blank=True,
     )
     action_developpement_competences_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre d'hommes ayant suivi une formation pour le développement des compétences",
         null=True,
         blank=True,
     )
     action_developpement_competences_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de femmes ayant suivi une formation pour le développement des compétences",
         null=True,
         blank=True,
@@ -1250,6 +1359,7 @@ class BDESE_300(AbstractBDESE):
         default=False,
     )
     nombre_jours_conges_paternite_pris = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Jours de congés parternité",
         help_text="Nombre de jours de congés de paternité pris par le salarié par rapport au nombre de jours de congés théoriques",
         null=True,
@@ -1262,21 +1372,25 @@ class BDESE_300(AbstractBDESE):
         blank=True,
     )
     nombre_salaries_temps_partiel_choisi_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de salariés homme ayant accédé au temps partiel choisi",
         null=True,
         blank=True,
     )
     nombre_salaries_temps_partiel_choisi_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de salariées femme ayant accédé au temps partiel choisi",
         null=True,
         blank=True,
     )
     nombre_salaries_temps_partiel_choisi_vers_temps_plein_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de salariés homme à temps partiel choisi ayant repris un travail à temps plein",
         null=True,
         blank=True,
     )
     nombre_salaries_temps_partiel_choisi_vers_temps_plein_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Nombre de salariées femme à temps partiel choisi ayant repris un travail à temps plein",
         null=True,
         blank=True,
@@ -1332,6 +1446,7 @@ class BDESE_300(AbstractBDESE):
         blank=True,
     )
     evolution_salariale_par_categorie = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         null=True,
         blank=True,
     )
@@ -1341,17 +1456,19 @@ class BDESE_300(AbstractBDESE):
         blank=True,
     )
     salaire_base_minimum_par_categorie = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Salaire de base minimum par catégorie",
         null=True,
         blank=True,
     )
     salaire_base_minimum_par_sexe = CategoryField(
-        verbose_name="Salaire de base minimum par sexe",
         categories=["homme", "femme"],
+        verbose_name="Salaire de base minimum par sexe",
         null=True,
         blank=True,
     )
     salaire_moyen_par_categorie = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Salaire moyen par catégorie",
         null=True,
         blank=True,
@@ -1362,6 +1479,7 @@ class BDESE_300(AbstractBDESE):
         blank=True,
     )
     salaire_median_par_categorie = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Salaire médian par catégorie",
         null=True,
         blank=True,
@@ -1375,23 +1493,27 @@ class BDESE_300(AbstractBDESE):
 
     #       i. Montant des rémunérations
     rapport_masse_salariale_effectif_mensuel = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Rapport entre la masse salariale annuelle et l'effectif mensuel moyen",
         help_text="Masse salariale annuelle totale, au sens de la déclaration annuelle de salaire",
         null=True,
         blank=True,
     )
     remuneration_moyenne_decembre = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Rémunération moyenne du mois de décembre (effectif permanent) hors primes à périodicité non mensuelle",
         help_text="base 35 heures",
         null=True,
         blank=True,
     )
     remuneration_mensuelle_moyenne = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Rémunération mensuelle moyenne",
         null=True,
         blank=True,
     )
     part_primes_non_mensuelle = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Part des primes à périodicité non mensuelle dans la déclaration de salaire",
         null=True,
         blank=True,
@@ -1456,6 +1578,7 @@ class BDESE_300(AbstractBDESE):
         blank=True,
     )
     montant_moyen_participation = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Montant moyen de la participation et/ ou de l'intéressement par salarié bénéficiaire",
         help_text="La participation est envisagée ici au sens du titre II du livre III de la partie III.",
         null=True,
@@ -1839,10 +1962,12 @@ class BDESE_50_300(AbstractBDESE):
     )
     # 1° A - b) Evolution des emplois par catégorie professionnelle
     effectif_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         null=True,
         blank=True,
     )
     effectif_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         null=True,
         blank=True,
     )
@@ -1973,6 +2098,7 @@ class BDESE_50_300(AbstractBDESE):
         blank=True,
     )
     nombre_salaries_temps_partiel_par_qualification = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Qualification des salariés travaillant à temps partiel",
         null=True,
         blank=True,
@@ -2114,6 +2240,7 @@ class BDESE_50_300(AbstractBDESE):
         blank=True,
     )
     evolution_salariale_par_categorie = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         null=True,
         blank=True,
     )
@@ -2123,6 +2250,7 @@ class BDESE_50_300(AbstractBDESE):
         blank=True,
     )
     salaire_base_minimum_par_categorie = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Salaire de base minimum par catégorie",
         null=True,
         blank=True,
@@ -2134,6 +2262,7 @@ class BDESE_50_300(AbstractBDESE):
         blank=True,
     )
     salaire_moyen_par_categorie = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Salaire moyen par catégorie",
         null=True,
         blank=True,
@@ -2144,6 +2273,7 @@ class BDESE_50_300(AbstractBDESE):
         blank=True,
     )
     salaire_median_par_categorie = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE,
         verbose_name="Salaire médian par catégorie",
         null=True,
         blank=True,

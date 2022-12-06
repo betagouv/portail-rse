@@ -9,10 +9,11 @@ from reglementations.models import (
     BDESE_300,
     BDESE_50_300,
     CategoryField,
+    CategoryType,
 )
 
 
-def test_category_field():
+def test_category_field_with_hard_coded_categories():
     def category_field_default():
         return {"catégorie 1": "yolo", "catégorie 2": "yolo2"}
 
@@ -31,10 +32,37 @@ def test_category_field():
         == models.BooleanField
     )
     assert (
+        new_category_field.category_type
+        == category_field.category_type
+        == CategoryType.HARD_CODED
+    )
+    assert (
         new_category_field.categories
         == category_field.categories
         == ["catégorie 1", "catégorie 2"]
     )
+
+
+def test_category_field_with_category_type():
+    category_field = CategoryField(
+        base_field=models.BooleanField,
+        category_type=CategoryType.PROFESSIONNELLE,
+    )
+
+    name, path, args, kwargs = category_field.deconstruct()
+    new_category_field = CategoryField(*args, **kwargs)
+
+    assert (
+        new_category_field.base_field
+        == category_field.base_field
+        == models.BooleanField
+    )
+    assert (
+        new_category_field.category_type
+        == category_field.category_type
+        == CategoryType.PROFESSIONNELLE
+    )
+    assert new_category_field.categories == category_field.categories == None
 
 
 @pytest.mark.django_db(transaction=True)

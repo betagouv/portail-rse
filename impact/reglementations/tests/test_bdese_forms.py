@@ -20,10 +20,22 @@ def bdese_50_300(bdese_factory):
 
 def test_bdese_form_step_1_with_new_bdese_300_instance(bdese_300):
     categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
-    form = bdese_form_factory(bdese_300, 1, categories_professionnelles)
+    categories_professionnelles_detaillees = [
+        "catégorie détaillée 1",
+        "catégorie détaillée 2",
+        "catégorie détaillée 3",
+        "catégorie détaillée 4",
+        "catégorie détaillée 5",
+    ]
+    form = bdese_form_factory(
+        bdese_300,
+        1,
+        categories_professionnelles,
+        categories_professionnelles_detaillees,
+    )
 
     assert form.instance == bdese_300
-    assert len(form.fields) == 104
+    assert len(form.fields) == 106
     assert "annee" not in form.fields
     assert "entreprise" not in form.fields
     assert "effectif_total" in form.fields
@@ -33,6 +45,7 @@ def test_bdese_form_step_1_with_new_bdese_300_instance(bdese_300):
         field for field in form.fields if field in bdese_300.category_fields()
     ]:
         assert isinstance(form.fields[field], forms.MultiValueField)
+        assert form.fields[field].categories
 
     for field in form.fields:
         if field == "unite_absenteisme":

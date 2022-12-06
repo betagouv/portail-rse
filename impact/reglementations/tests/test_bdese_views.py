@@ -90,8 +90,32 @@ def test_bdese_step_use_categories_professionnelles_and_annees_a_remplir(
 def bdese_300_with_categories(bdese_factory):
     bdese = bdese_factory(bdese_class=BDESE_300)
     bdese.categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
+    bdese.categories_professionnelles_detaillees = [
+        "catégorie détaillée 1",
+        "catégorie détaillée 2",
+        "catégorie détaillée 3",
+        "catégorie détaillée 4",
+        "catégorie détaillée 5",
+    ]
     bdese.save()
     return bdese
+
+
+def test_bdese_300_step_use_categories_professionnelles_detaillees(
+    bdese_300_with_categories, django_user_model, client
+):
+    bdese = bdese_300_with_categories
+    user = django_user_model.objects.create()
+    bdese.entreprise.users.add(user)
+    client.force_login(user)
+
+    url = f"/bdese/{bdese.entreprise.siren}/2022/1"
+    response = client.get(url)
+
+    assert response.status_code == 200
+    content = response.content.decode("utf-8")
+    for category in bdese.categories_professionnelles_detaillees:
+        assert category in content
 
 
 def test_save_step_error(bdese_300_with_categories, django_user_model, client):

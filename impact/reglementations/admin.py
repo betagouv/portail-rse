@@ -1,11 +1,18 @@
 from django import forms
 from django.contrib import admin
 
-from .models import BDESE_300, BDESE_50_300
+from .models import BDESE_300, BDESE_50_300, CategoryType
 
 
 class CategoryJSONField(forms.JSONField):
-    def __init__(self, base_field=forms.IntegerField, categories=None, *args, **kwargs):
+    def __init__(
+        self,
+        base_field=forms.IntegerField,
+        category_type=CategoryType.HARD_CODED,
+        categories=None,
+        *args,
+        **kwargs
+    ):
         super().__init__(*args, **kwargs)
 
 
