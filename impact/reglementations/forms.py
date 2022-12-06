@@ -77,7 +77,13 @@ class CategoryJSONWidget(forms.MultiWidget):
 
 
 def bdese_form_factory(
-    step, categories_professionnelles, instance, fetched_data=None, *args, **kwargs
+    bdese,
+    step,
+    categories_professionnelles,
+    categories_professionnelles_detaillees=None,
+    fetched_data=None,
+    *args,
+    **kwargs
 ):
     class CategoryMultiValueField(forms.MultiValueField):
         widget = CategoryJSONWidget
@@ -116,11 +122,11 @@ def bdese_form_factory(
 
     class BDESEForm(forms.ModelForm, DsfrForm):
         class Meta:
-            model = instance.__class__
+            model = bdese.__class__
             fields = []
             field_classes = {
                 category_field: CategoryMultiValueField
-                for category_field in instance.__class__.category_fields()
+                for category_field in bdese.__class__.category_fields()
             }
 
         def __init__(self, instance, fetched_data=None, *args, **kwargs):
@@ -411,7 +417,7 @@ def bdese_form_factory(
         ],
     }
 
-    bdese_model_class = instance.__class__
+    bdese_model_class = bdese.__class__
     Form = forms.modelform_factory(
         bdese_model_class,
         form=BDESEForm,
@@ -422,4 +428,4 @@ def bdese_form_factory(
         if bdese_model_class == BDESE_300
         else ["annee", "entreprise", "categories_professionnelles"],
     )
-    return Form(instance, fetched_data=fetched_data, *args, **kwargs)
+    return Form(bdese, fetched_data=fetched_data, *args, **kwargs)

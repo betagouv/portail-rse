@@ -231,7 +231,7 @@ def bdese_pdf(request, siren, annee):
         raise PermissionDenied
     bdese = _get_or_create_bdese(entreprise, annee)
     categories_professionnelles = categories_default()
-    bdese_form = bdese_form_factory("all", categories_professionnelles, bdese)
+    bdese_form = bdese_form_factory(bdese, "all", categories_professionnelles)
     context = {
         "entreprise": entreprise,
         "bdese_form": bdese_form,
@@ -307,9 +307,9 @@ def bdese(request, siren, annee, step):
             return redirect("bdese", siren=siren, annee=annee, step=step)
         else:
             form = bdese_form_factory(
+                bdese,
                 step,
                 categories_professionnelles,
-                bdese,
                 data=request.POST,
             )
             if form.is_valid():
@@ -329,7 +329,7 @@ def bdese(request, siren, annee, step):
             entreprise, derniere_annee_a_remplir_bdese()
         )
         form = bdese_form_factory(
-            step, categories_professionnelles, bdese, fetched_data=fetched_data
+            bdese, step, categories_professionnelles, fetched_data=fetched_data
         )
     if bdese.__class__ == BDESE_300:
         templates = {
