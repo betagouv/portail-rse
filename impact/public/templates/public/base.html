@@ -47,6 +47,7 @@
                             <div class="fr-header__tools-links">
                                 <ul class="fr-btns-group">
                                     <li>
+                                        <a class="fr-btn fr-icon-chat-2-line" href="{% url 'contact' %}">Contactez-nous</a>
                                         {% if user.is_authenticated %}
                                         <a class="fr-btn fr-icon-file-text-line" href="{% url 'reglementations' %}">Mes réglementations</a>
                                         <a class="fr-btn fr-icon-lock-unlock-line" href="{% url 'logout' %}">
@@ -134,7 +135,7 @@
                         <a class="fr-footer__bottom-link" href="#">Données personnelles</a>
                     </li>
                     <li class="fr-footer__bottom-item">
-                        <a class="fr-footer__bottom-link" href="#">Gestion des cookies</a>
+                        <a class="fr-footer__bottom-link" href="{% url 'cgu' %}">CGU</a>
                     </li>
                 </ul>
                 <div class="fr-footer__bottom-copy">
