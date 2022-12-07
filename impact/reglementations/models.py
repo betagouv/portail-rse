@@ -434,21 +434,39 @@ class BDESE_300(AbstractBDESE):
         null=True,
         blank=True,
     )
-    nombre_stagiaires_formation_continue = CategoryField(
+    nombre_stagiaires_formation_continue_homme = CategoryField(
         category_type=CategoryType.PROFESSIONNELLE_DETAILLEE,
-        verbose_name="Nombre de stagiaires",
+        verbose_name="Nombre de stagiaires hommes",
         null=True,
         blank=True,
     )
-    nombre_heures_stage_remunerees = CategoryField(
+    nombre_stagiaires_formation_continue_femme = CategoryField(
         category_type=CategoryType.PROFESSIONNELLE_DETAILLEE,
-        verbose_name="Nombre d'heures de stage rémunérées",
+        verbose_name="Nombre de stagiaires femmes",
         null=True,
         blank=True,
     )
-    nombre_heures_stage_non_remunerees = CategoryField(
+    nombre_heures_stage_remunerees_homme = CategoryField(
         category_type=CategoryType.PROFESSIONNELLE_DETAILLEE,
-        verbose_name="Nombre d'heures de stage non rémunérées",
+        verbose_name="Nombre d'heures de stage rémunérées pour les hommes",
+        null=True,
+        blank=True,
+    )
+    nombre_heures_stage_remunerees_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE_DETAILLEE,
+        verbose_name="Nombre d'heures de stage rémunérées pour les femmes",
+        null=True,
+        blank=True,
+    )
+    nombre_heures_stage_non_remunerees_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE_DETAILLEE,
+        verbose_name="Nombre d'heures de stage non rémunérées pour les hommes",
+        null=True,
+        blank=True,
+    )
+    nombre_heures_stage_non_remunerees_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE_DETAILLEE,
+        verbose_name="Nombre d'heures de stage non rémunérées pour les femmes",
         null=True,
         blank=True,
     )
