@@ -18,7 +18,7 @@
                         <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-I">I. Indicateurs sur la situation comparée des femmes et des hommes dans l'entreprise</button>
                     </h3>
                     <div class="fr-collapse" id="accordion-I">
-                        <h4>A-Conditions générales d'emploi</h4>
+                        <h4>A - Conditions générales d'emploi</h4>
                         <h5>a) Effectifs : Données chiffrées par sexe</h5>
                         {% include 'snippets/category_field.html' with field=form.nombre_CDI_homme %}
                         {% include 'snippets/category_field.html' with field=form.nombre_CDI_femme %}
@@ -102,6 +102,7 @@
                         {% include 'snippets/category_field.html' with field=form.maladies_avec_examen_de_reprise_femme %}
                     </div>
                 </section>
+
                 <section class="fr-accordion">
                     <h3 class="fr-accordion__title">
                         <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-II">II. Indicateurs relatifs à l'articulation entre l'activité professionnelle et l'exercice de la responsabilité familiale</button>
@@ -112,6 +113,7 @@
                         {% include 'snippets/radio_field.html' with field=form.complement_salaire_conge_maternite %}
                         {% include 'snippets/radio_field.html' with field=form.complement_salaire_conge_adoption %}
                         {% include 'snippets/category_field.html' with field=form.nombre_jours_conges_paternite_pris %}
+
                         <h4>Organisation du temps de travail dans l'entreprise</h4>
                         {% include 'snippets/input_field.html' with field=form.existence_orga_facilitant_vie_familiale_et_professionnelle %}
                         {% include 'snippets/category_field.html' with field=form.nombre_salaries_temps_partiel_choisi_homme %}

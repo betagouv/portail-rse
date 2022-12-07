@@ -1510,29 +1510,55 @@ class BDESE_300(AbstractBDESE):
     )
 
     #       i. Montant des rémunérations
-    rapport_masse_salariale_effectif_mensuel = CategoryField(
+    rapport_masse_salariale_effectif_mensuel_homme = CategoryField(
         category_type=CategoryType.PROFESSIONNELLE_DETAILLEE,
-        verbose_name="Rapport entre la masse salariale annuelle et l'effectif mensuel moyen",
+        verbose_name="Rapport entre la masse salariale annuelle et l'effectif mensuel moyen (hommes)",
         help_text="Masse salariale annuelle totale, au sens de la déclaration annuelle de salaire",
         null=True,
         blank=True,
     )
-    remuneration_moyenne_decembre = CategoryField(
+    rapport_masse_salariale_effectif_mensuel_femme = CategoryField(
         category_type=CategoryType.PROFESSIONNELLE_DETAILLEE,
-        verbose_name="Rémunération moyenne du mois de décembre (effectif permanent) hors primes à périodicité non mensuelle",
+        verbose_name="Rapport entre la masse salariale annuelle et l'effectif mensuel moyen (femmes)",
+        help_text="Masse salariale annuelle totale, au sens de la déclaration annuelle de salaire",
+        null=True,
+        blank=True,
+    )
+    remuneration_moyenne_decembre_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE_DETAILLEE,
+        verbose_name="Rémunération moyenne du mois de décembre (effectif permanent) hors primes à périodicité non mensuelle (hommes)",
         help_text="base 35 heures",
         null=True,
         blank=True,
     )
-    remuneration_mensuelle_moyenne = CategoryField(
+    remuneration_moyenne_decembre_femme = CategoryField(
         category_type=CategoryType.PROFESSIONNELLE_DETAILLEE,
-        verbose_name="Rémunération mensuelle moyenne",
+        verbose_name="Rémunération moyenne du mois de décembre (effectif permanent) hors primes à périodicité non mensuelle (femmes)",
+        help_text="base 35 heures",
         null=True,
         blank=True,
     )
-    part_primes_non_mensuelle = CategoryField(
+    remuneration_mensuelle_moyenne_homme = CategoryField(
         category_type=CategoryType.PROFESSIONNELLE_DETAILLEE,
-        verbose_name="Part des primes à périodicité non mensuelle dans la déclaration de salaire",
+        verbose_name="Rémunération mensuelle moyenne (hommes)",
+        null=True,
+        blank=True,
+    )
+    remuneration_mensuelle_moyenne_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE_DETAILLEE,
+        verbose_name="Rémunération mensuelle moyenne (femmes)",
+        null=True,
+        blank=True,
+    )
+    part_primes_non_mensuelle_homme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE_DETAILLEE,
+        verbose_name="Part des primes à périodicité non mensuelle dans la déclaration de salaire (hommes)",
+        null=True,
+        blank=True,
+    )
+    part_primes_non_mensuelle_femme = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE_DETAILLEE,
+        verbose_name="Part des primes à périodicité non mensuelle dans la déclaration de salaire (femmes)",
         null=True,
         blank=True,
     )
