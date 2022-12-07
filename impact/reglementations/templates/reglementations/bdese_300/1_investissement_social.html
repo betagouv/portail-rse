@@ -99,8 +99,9 @@
                         <p>Conformément aux données relatives aux contributions de formation professionnelle de la déclaration sociale nominative.</p>
                         {% include 'snippets/input_field.html' with field=form.pourcentage_masse_salariale_formation_continue %}
                         {% include 'snippets/category_field.html' with field=form.montant_formation_continue %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_heures_stage_remunerees %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_heures_stage_non_remunerees %}
+                        {% include 'snippets/category_field.html' with field=form.nombre_stagiaires_formation_continue %}
+                        {% include 'snippets/category_field.html' with field=form.nombre_heures_stage_remunerees %}
+                        {% include 'snippets/category_field.html' with field=form.nombre_heures_stage_non_remunerees %}
                         {% include 'snippets/input_field.html' with field=form.type_stages %}
                         <h5>Congés formation</h5>
                         {% include 'snippets/input_field.html' with field=form.nombre_salaries_conge_formation_remunere %}

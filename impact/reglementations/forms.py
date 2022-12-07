@@ -201,6 +201,7 @@ def bdese_form_factory(
             "nombre_travailleurs_handicapes_accidents_du_travail",
             "pourcentage_masse_salariale_formation_continue",
             "montant_formation_continue",
+            "nombre_stagiaires_formation_continue",
             "nombre_heures_stage_remunerees",
             "nombre_heures_stage_non_remunerees",
             "type_stages",

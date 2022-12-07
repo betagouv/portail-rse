@@ -434,7 +434,12 @@ class BDESE_300(AbstractBDESE):
         null=True,
         blank=True,
     )
-    # Nombre de stagiaires (II)
+    nombre_stagiaires_formation_continue = CategoryField(
+        category_type=CategoryType.PROFESSIONNELLE_DETAILLEE,
+        verbose_name="Nombre de stagiaires",
+        null=True,
+        blank=True,
+    )
     nombre_heures_stage_remunerees = CategoryField(
         category_type=CategoryType.PROFESSIONNELLE_DETAILLEE,
         verbose_name="Nombre d'heures de stage rémunérées",
