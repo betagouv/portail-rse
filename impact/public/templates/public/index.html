@@ -1,4 +1,5 @@
 {% extends "public/base.html" %}
+{% load static %}
 
 {% block content %}
 <div class="fr-container fr-my-16w">
@@ -15,25 +16,13 @@
                     <li>Établir leur document base de données économiques, sociales et environnementales (BDESE)</li>
                 </ul>
             </p>
-            <a href="#" class="fr-btn">Commencer avec mon entreprise</a>
+            <a href="{% url 'entreprise' %}" class="fr-btn">Commencer avec mon entreprise</a>
         </div>
         <div class="fr-col-4">
-            <img src="/static/img/illustration-ESG.png" class="fr-responsive-img" alt="" />
+            <img src="{% static 'img/illustration-ESG.png' %}" class="fr-responsive-img" alt="" />
         </div>
     </div>
-    <!--
-    <div class="fr-grid-row fr-grid-row--center">
-        <div class="fr-col-8">
-            <h1>Recherchez votre entreprise</h1>
-            <p>Recherchez votre entreprise pour démarrer la simulation et savoir à quelles réglementations extra-financières votre entreprise est soumise</p>
-            <form action="{% url 'siren' %}" method="get">
-                {% csrf_token %}
-                {% include 'snippets/input_field.html' with field=form.siren %}
-                <button type="submit" class="fr-btn">Rechercher</button>
-            </form>
-        </div>
-    </div>
-    -->
+
 </div>
 <!-- page index -->
 {% endblock %}

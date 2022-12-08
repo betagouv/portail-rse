@@ -1,0 +1,19 @@
+{% extends "public/base.html" %}
+
+{% block content %}
+<div class="fr-container fr-my-16w">
+    <div class="fr-grid-row fr-grid-row--center">
+        <div class="fr-col-8">
+            <h1>Recherchez votre entreprise</h1>
+            <p>Recherchez votre entreprise pour démarrer la simulation et savoir à quelles réglementations extra-financières votre entreprise est soumise</p>
+            <form action="{% url 'siren' %}" method="get">
+                {% csrf_token %}
+                {% include 'snippets/input_field.html' with field=form.siren %}
+                <button type="submit" class="fr-btn">Rechercher</button>
+            </form>
+        </div>
+    </div>
+   
+</div>
+<!-- page entreprise -->
+{% endblock %}

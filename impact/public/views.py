@@ -10,7 +10,11 @@ from entreprises.models import Entreprise
 
 
 def index(request):
-    return render(request, "public/index.html", {"form": SirenForm()})
+    return render(request, "public/index.html")
+
+
+def entreprise(request):
+    return render(request, "public/entreprise.html", {"form": SirenForm()})
 
 
 def cgu(request):

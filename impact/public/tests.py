@@ -8,6 +8,13 @@ def test_page_index(client):
     assert "<!-- page index -->" in str(response.content)
 
 
+def test_page_entreprise(client):
+    response = client.get("/entreprise")
+
+    assert response.status_code == 200
+    assert "<!-- page entreprise -->" in str(response.content)
+
+
 def test_page_contact(client):
     response = client.get("/contact")
 
