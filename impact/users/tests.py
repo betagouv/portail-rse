@@ -1,3 +1,5 @@
-from django.test import TestCase
+def test_page_creation(client):
+    response = client.get("/creation")
 
-# Create your tests here.
+    assert response.status_code == 200
+    assert "<!-- page creation compte -->" in str(response.content)
