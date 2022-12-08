@@ -4,7 +4,7 @@ __pycache__
 
 .env
 
-impact/impact/static_collected/
+impact/static_collected/
 *.sqlite3
 
 .vscode

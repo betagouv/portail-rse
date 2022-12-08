@@ -12,9 +12,10 @@ requests = "==2.28"
 django-weasyprint = "==2.2"
 psycopg2 = "*"
 dj-database-url = "*"
+whitenoise = "==6.2.*"
 
 [dev-packages]
-pytest-django = "==4.5.2"
+pytest-django = "*"
 pytest-mock = "*"
 freezegun = "*"
 
