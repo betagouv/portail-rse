@@ -13,6 +13,7 @@
                     <a href="{% url 'bdese' siren annee 1 %}" title="Remplissez la BDESE et télécharger le rapport pour {{ annee }}">{{ annee }}</a>
                     {% endfor %}
                 </p>
+                <p><a href="{% url 'categories_professionnelles' siren annee %}">Modifier les catégories professionnelles</a></p>
             </div>
 
             <form action="{% url 'bdese' siren annee 1 %}" method="post">
