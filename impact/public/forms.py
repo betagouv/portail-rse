@@ -35,4 +35,4 @@ class EligibiliteForm(DsfrForm, forms.ModelForm):
 
     def clean_raison_sociale(self):
         raison_sociale = self.cleaned_data.get("raison_sociale")
-        return raison_sociale[: RAISON_SOCIALE_MAX_LENGTH - 1]
+        return raison_sociale[:RAISON_SOCIALE_MAX_LENGTH]

@@ -29,7 +29,7 @@ def test_page_cgu(client):
     assert "<!-- page cgu -->" in str(response.content)
 
 
-def test_eligibilite_form(db):
+def test_eligibilite_form_truncate_raison_social_when_too_long(db):
     form = EligibiliteForm(
         data={
             "effectif": "grand",
@@ -40,3 +40,7 @@ def test_eligibilite_form(db):
     )
 
     assert form.is_valid()
+
+    entreprise = form.save()
+
+    assert entreprise.raison_sociale == "a" * RAISON_SOCIALE_MAX_LENGTH
