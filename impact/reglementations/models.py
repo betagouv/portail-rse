@@ -124,6 +124,7 @@ class BDESE_300(AbstractBDESE):
         verbose_name_plural = "BDESE plus de 300 salariés"
 
     STEPS = {
+        0: "Catégories professionnelles",
         1: "Investissement social",
         2: "Investissement matériel et immatériel",
         3: "Egalité professionnelle homme/femme",
@@ -1929,7 +1930,7 @@ class BDESE_300(AbstractBDESE):
         self.completion_steps = completion_steps
 
     def step_is_complete(self, step: int):
-        return self.completion_steps[self.STEPS[step]]
+        return self.completion_steps.get(self.STEPS[step], False)
 
     @property
     def is_complete(self):

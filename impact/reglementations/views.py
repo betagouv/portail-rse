@@ -331,6 +331,7 @@ def bdese(request, siren, annee, step):
         )
     if bdese.__class__ == BDESE_300:
         templates = {
+            0: "0_categories_professionnelles.html",
             1: "1_investissement_social.html",
             2: "2_investissement_matériel_et_immatériel.html",
             3: "3_egalite_professionnelle.html",
@@ -420,12 +421,48 @@ def categories_professionnelles(request, siren, annee):
         messages.success(request, "Catégories enregistrées")
         return redirect("bdese", siren=siren, annee=annee, step=1)
 
+    if bdese.__class__ == BDESE_300:
+        step = 0
+        templates = {
+            0: "0_categories_professionnelles.html",
+            1: "1_investissement_social.html",
+            2: "2_investissement_matériel_et_immatériel.html",
+            3: "3_egalite_professionnelle.html",
+            4: "4_fonds_propres_endettement_impots.html",
+            5: "5_remuneration.html",
+            6: "6_representation_du_personnel_et_activites_sociales_et_culturelles.html",
+            7: "7_remuneration_des_financeurs.html",
+            8: "8_flux_financiers.html",
+            9: "9_partenariats.html",
+            10: "10_transferts_commerciaux_et_financiers.html",
+            11: "11_environnement.html",
+        }
+        template_path = f"reglementations/bdese_300/{templates[step]}"
+        steps = {
+            step: {
+                "name": bdese.STEPS[step],
+                "is_complete": bdese.step_is_complete(step),
+            }
+            for step in bdese.STEPS
+        }
+        step_is_complete = steps[step]["is_complete"]
+        bdese_is_complete = bdese.is_complete
+    else:
+        template_path = "reglementations/categories-professionnelles.html"
+        steps = {}
+        step_is_complete = False
+        bdese_is_complete = False
+
     return render(
         request,
-        "reglementations/categories-professionnelles.html",
+        template_path,
         {
             "form": form,
             "siren": siren,
             "annee": annee,
+            "step_is_complete": step_is_complete,
+            "steps": steps,
+            "bdese_is_complete": bdese_is_complete,
+            "annees": annees_a_remplir_bdese(),
         },
     )
