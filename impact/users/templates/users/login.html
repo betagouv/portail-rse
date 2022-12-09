@@ -1,10 +1,18 @@
 {% extends "public/base.html" %}
 
 {% block content %}
-
-<div class="fr-container fr-my-16w">
+<div class="fr-container fr-my-12w">
     <div class="fr-grid-row fr-grid-row--center">
         <div class="fr-col-8">
+            {% if form.non_field_errors %}
+            <div class="fr-alert fr-alert--error fr-mb-5w">
+                <h3 class="fr-alert__title">Erreur</h3>
+                {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+           {% endif %}
+
             <form action="{% url 'login' %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="next" value="{{ next }}">
