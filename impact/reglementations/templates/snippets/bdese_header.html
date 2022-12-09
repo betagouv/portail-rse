@@ -15,7 +15,7 @@
         <p>
             Années à remplir :
             {% for annee in annees %}
-            <a href="{% url 'bdese' siren annee 1 %}" title="Remplissez la BDESE et télécharger le rapport pour {{ annee }}">{{ annee }}</a>
+            <a href="{% url 'bdese' siren annee 0 %}" title="Remplissez la BDESE et télécharger le rapport pour {{ annee }}">{{ annee }}</a>
             {% endfor %}
         </p>
     </div>
