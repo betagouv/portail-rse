@@ -231,7 +231,8 @@ def test_get_categories_professionnelles(bdese, authorized_user, client):
     assert response.status_code == 200
 
 
-def test_save_categories_professionnelles(bdese, authorized_user, client):
+@pytest.mark.parametrize("submit_button", [("save_complete", True), ("mark_incomplete", False)])
+def test_save_categories_professionnelles(submit_button, bdese, authorized_user, client):
     client.force_login(authorized_user)
 
     categories_pro = ["catégorie 1", "catégorie 2", "catégorie 3"]
@@ -243,6 +244,9 @@ def test_save_categories_professionnelles(bdese, authorized_user, client):
         "catégorie détaillée 5",
     ]
     url = f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/0"
+    data = categories_form_data(categories_pro, categories_pro_detaillees)
+    data.update({submit_button[0]: ""})
+
     response = client.post(
         url,
         data=categories_form_data(categories_pro, categories_pro_detaillees),
@@ -250,9 +254,14 @@ def test_save_categories_professionnelles(bdese, authorized_user, client):
     )
 
     assert response.status_code == 200
-    assert response.redirect_chain == [
-        (reverse("bdese", args=[bdese.entreprise.siren, bdese.annee, 1]), 302)
-    ]
+    if bdese.is_bdese_300:
+        assert response.redirect_chain == [
+            (reverse("bdese", args=[bdese.entreprise.siren, bdese.annee, 0]), 302)
+        ]
+    else:
+        assert response.redirect_chain == [
+            (reverse("bdese", args=[bdese.entreprise.siren, bdese.annee, 1]), 302)
+        ]
 
     content = response.content.decode("utf-8")
     assert "Catégories enregistrées" in content
@@ -317,9 +326,14 @@ def test_save_categories_professionnelles_for_a_new_year(
     )
 
     assert response.status_code == 200
-    assert response.redirect_chain == [
-        (reverse("bdese", args=[bdese.entreprise.siren, new_year, 1]), 302)
-    ]
+    if bdese.is_bdese_300:
+        assert response.redirect_chain == [
+            (reverse("bdese", args=[bdese.entreprise.siren, new_year, 0]), 302)
+        ]
+    else:
+        assert response.redirect_chain == [
+            (reverse("bdese", args=[bdese.entreprise.siren, new_year, 1]), 302)
+        ]
 
     content = response.content.decode("utf-8")
     assert "Catégories enregistrées" in content

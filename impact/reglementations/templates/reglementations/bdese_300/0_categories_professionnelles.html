@@ -31,7 +31,7 @@
                 {% include 'snippets/category_field.html' with field=form.categories_professionnelles_detaillees %}
                 {% endif %}
 
-                <button type="submit" class="fr-btn">Enregistrer</button>
+                {% include "snippets/bdese_submit.html" %}
             </form>
         </div>
     </div>
