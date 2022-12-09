@@ -225,7 +225,7 @@ def test_get_pdf(bdese, authorized_user, client):
 def test_get_categories_professionnelles(bdese, authorized_user, client):
     client.force_login(authorized_user)
 
-    url = f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/categories-professionnelles"
+    url = f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/0"
     response = client.get(url)
 
     assert response.status_code == 200
@@ -242,7 +242,7 @@ def test_save_categories_professionnelles(bdese, authorized_user, client):
         "catégorie détaillée 4",
         "catégorie détaillée 5",
     ]
-    url = f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/categories-professionnelles"
+    url = f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/0"
     response = client.post(
         url,
         data=categories_form_data(categories_pro, categories_pro_detaillees),
@@ -267,7 +267,7 @@ def test_save_categories_professionnelles_error(bdese, authorized_user, client):
     categories_pro = ["catégorie 1", "catégorie 2"]
     client.force_login(authorized_user)
 
-    url = f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/categories-professionnelles"
+    url = f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/0"
     response = client.post(url, data=categories_form_data(categories_pro))
 
     assert response.status_code == 200
@@ -298,7 +298,7 @@ def test_save_categories_professionnelles_for_a_new_year(
 
     new_year = bdese.annee + 1
 
-    url = f"/bdese/{bdese.entreprise.siren}/{new_year}/categories-professionnelles"
+    url = f"/bdese/{bdese.entreprise.siren}/{new_year}/0"
     response = client.get(url)
 
     content = response.content.decode("utf-8")
