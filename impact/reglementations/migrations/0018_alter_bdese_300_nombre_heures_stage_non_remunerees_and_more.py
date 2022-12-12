@@ -4,6 +4,20 @@ from django.db import migrations
 import reglementations.models
 
 
+
+def erase_fields(apps, schema_editor):
+    BDESE_300 = apps.get_model("reglementations", "BDESE_300")
+    for bdese in BDESE_300.objects.all():
+        bdese.nombre_heures_stage_non_remunerees = None
+        bdese.nombre_heures_stage_remunerees = None
+        bdese.part_primes_non_mensuelle = None
+        bdese.rapport_masse_salariale_effectif_mensuel = None
+        bdese.remuneration_mensuelle_moyenne = None
+        bdese.remuneration_moyenne_decembre = None
+        bdese.save()
+
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -14,6 +28,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(erase_fields),
         migrations.AlterField(
             model_name="bdese_300",
             name="nombre_heures_stage_non_remunerees",
