@@ -249,7 +249,7 @@ def test_save_categories_professionnelles(submit_button, bdese, authorized_user,
 
     response = client.post(
         url,
-        data=categories_form_data(categories_pro, categories_pro_detaillees),
+        data=data,
         follow=True,
     )
 
@@ -258,6 +258,8 @@ def test_save_categories_professionnelles(submit_button, bdese, authorized_user,
         assert response.redirect_chain == [
             (reverse("bdese", args=[bdese.entreprise.siren, bdese.annee, 0]), 302)
         ]
+        bdese.refresh_from_db()
+        assert bdese.step_is_complete(0) == submit_button[1]
     else:
         assert response.redirect_chain == [
             (reverse("bdese", args=[bdese.entreprise.siren, bdese.annee, 1]), 302)
