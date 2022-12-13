@@ -231,8 +231,12 @@ def test_get_categories_professionnelles(bdese, authorized_user, client):
     assert response.status_code == 200
 
 
-@pytest.mark.parametrize("submit_button", [("save_complete", True), ("mark_incomplete", False)])
-def test_save_categories_professionnelles(submit_button, bdese, authorized_user, client):
+@pytest.mark.parametrize(
+    "submit_button", [("save_complete", True), ("mark_incomplete", False)]
+)
+def test_save_categories_professionnelles(
+    submit_button, bdese, authorized_user, client
+):
     client.force_login(authorized_user)
 
     categories_pro = ["catégorie 1", "catégorie 2", "catégorie 3"]

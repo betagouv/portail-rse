@@ -17,6 +17,14 @@ def entreprise(request):
     return render(request, "public/entreprise.html", {"form": SirenForm()})
 
 
+def mentions_legales(request):
+    return render(request, "public/mentions-legales.html")
+
+
+def donnees_personnelles(request):
+    return render(request, "public/donnees-personnelles.html")
+
+
 def cgu(request):
     return render(request, "public/cgu.html")
 

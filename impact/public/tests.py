@@ -22,6 +22,20 @@ def test_page_contact(client):
     assert "<!-- page contact -->" in str(response.content)
 
 
+def test_page_mentions_legales(client):
+    response = client.get("/mentions-legales")
+
+    assert response.status_code == 200
+    assert "<!-- page mentions legales -->" in str(response.content)
+
+
+def test_page_donnees_personnelles(client):
+    response = client.get("/donnees-personnelles")
+
+    assert response.status_code == 200
+    assert "<!-- page donnees personnelles -->" in str(response.content)
+
+
 def test_page_cgu(client):
     response = client.get("/cgu")
 
