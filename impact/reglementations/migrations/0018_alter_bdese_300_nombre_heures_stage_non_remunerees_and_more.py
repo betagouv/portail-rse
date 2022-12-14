@@ -4,7 +4,6 @@ from django.db import migrations
 import reglementations.models
 
 
-
 def erase_fields(apps, schema_editor):
     BDESE_300 = apps.get_model("reglementations", "BDESE_300")
     for bdese in BDESE_300.objects.all():
@@ -15,7 +14,6 @@ def erase_fields(apps, schema_editor):
         bdese.remuneration_mensuelle_moyenne = None
         bdese.remuneration_moyenne_decembre = None
         bdese.save()
-
 
 
 class Migration(migrations.Migration):
