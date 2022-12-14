@@ -123,7 +123,7 @@ class BDESEReglementation(Reglementation):
                 status = cls.STATUS_A_ACTUALISER
                 status_detail = "Vous êtes soumis à cette réglementation. Nous allons vous aider à la remplir."
                 primary_action = ReglementationAction(
-                    reverse_lazy("bdese", args=[entreprise.siren, annee, 1]),
+                    reverse_lazy("bdese", args=[entreprise.siren, annee, 0]),
                     "Actualiser ma BDESE",
                 )
                 secondary_actions = []
@@ -296,6 +296,7 @@ def bdese(request, siren, annee, step):
         raise PermissionDenied
     bdese = _get_or_create_bdese(entreprise, annee)
     if not bdese.categories_professionnelles:
+        messages.warning(request, "Commencez par renseigner vos catégories professionnelles")
         return redirect("categories_professionnelles", siren=siren, annee=annee)
     if request.method == "POST":
         if "mark_incomplete" in request.POST:

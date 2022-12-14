@@ -59,13 +59,19 @@ def test_bdese_step_redirect_to_categories_professionnelles_if_not_filled(
     client.force_login(authorized_user)
 
     url = f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/1"
-    response = client.get(url)
+    response = client.get(url, follow=True)
 
-    assert response.status_code == 302
-    assert response.url == reverse(
-        "categories_professionnelles", args=[bdese.entreprise.siren, bdese.annee]
-    )
-
+    assert response.status_code == 200
+    assert response.redirect_chain == [
+        (
+            reverse(
+                "categories_professionnelles",
+                args=[bdese.entreprise.siren, bdese.annee],
+            ),
+            302,
+        )
+    ]
+    assert "Commencez par renseigner vos catégories professionnelles" in response.content.decode("utf-8")
 
 def test_bdese_step_use_categories_professionnelles_and_annees_a_remplir(
     bdese, authorized_user, client

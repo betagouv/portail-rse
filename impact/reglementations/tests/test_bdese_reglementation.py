@@ -56,7 +56,7 @@ def test_calculate_bdese_reglementation_50_300_employees(entreprise_factory):
     )
     assert bdese.primary_action.title == "Actualiser ma BDESE"
     assert bdese.primary_action.url == reverse(
-        "bdese", args=[entreprise.siren, 2022, 1]
+        "bdese", args=[entreprise.siren, 2022, 0]
     )
     assert not bdese.secondary_actions
     assert bdese.bdese_type is BDESEReglementation.TYPE_INFERIEUR_300
@@ -77,7 +77,7 @@ def test_calculate_bdese_reglementation_more_than_300_employees(
     )
     assert bdese.primary_action.title == "Actualiser ma BDESE"
     assert bdese.primary_action.url == reverse(
-        "bdese", args=[entreprise.siren, 2022, 1]
+        "bdese", args=[entreprise.siren, 2022, 0]
     )
     assert not bdese.secondary_actions
 
@@ -85,6 +85,9 @@ def test_calculate_bdese_reglementation_more_than_300_employees(
     bdese = BDESEReglementation.calculate(entreprise, 2022)
 
     assert bdese.status == BDESEReglementation.STATUS_EN_COURS
+    assert bdese.primary_action.url == reverse(
+        "bdese", args=[entreprise.siren, 2022, 1]
+    )
     assert (
         bdese.status_detail
         == "Vous êtes soumis à cette réglementation. Vous avez démarré le remplissage de votre BDESE sur la plateforme."
