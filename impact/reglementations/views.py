@@ -30,7 +30,7 @@ class ReglementationAction:
 
 @dataclass
 class Reglementation:
-    STATUS_ACTUALISE = "actualisé"
+    STATUS_A_JOUR = "à jour"
     STATUS_A_ACTUALISER = "à actualiser"
     STATUS_EN_COURS = "en cours"
     STATUS_NON_SOUMIS = "non soumis"
@@ -92,7 +92,7 @@ class BDESEReglementation(Reglementation):
             if bdese:
                 bdese = bdese[0]
                 if bdese.is_complete:
-                    status = cls.STATUS_ACTUALISE
+                    status = cls.STATUS_A_JOUR
                     status_detail = "Vous êtes soumis à cette réglementation. Vous avez actualisé votre BDESE sur la plateforme."
                     primary_action = ReglementationAction(
                         reverse_lazy("bdese_pdf", args=[entreprise.siren, annee]),
@@ -154,7 +154,7 @@ class IndexEgaproReglementation(Reglementation):
             status = cls.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
         elif is_index_egapro_updated(entreprise):
-            status = cls.STATUS_ACTUALISE
+            status = cls.STATUS_A_JOUR
             status_detail = "Vous êtes soumis à cette réglementation. Vous avez rempli vos obligations d'après les données disponibles sur Index Egapro."
         else:
             status = cls.STATUS_A_ACTUALISER

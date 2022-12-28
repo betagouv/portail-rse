@@ -58,7 +58,7 @@ def test_calculate_more_than_50_employees(
 
     index = IndexEgaproReglementation.calculate(entreprise)
 
-    assert index.status == IndexEgaproReglementation.STATUS_ACTUALISE
+    assert index.status == IndexEgaproReglementation.STATUS_A_JOUR
     assert (
         index.status_detail
         == "Vous êtes soumis à cette réglementation. Vous avez rempli vos obligations d'après les données disponibles sur Index Egapro."

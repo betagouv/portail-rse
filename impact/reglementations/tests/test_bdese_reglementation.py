@@ -97,7 +97,7 @@ def test_calculate_bdese_reglementation_more_than_300_employees(
     mocker.patch("reglementations.models.BDESE_300.is_complete", return_value=True)
     bdese = BDESEReglementation.calculate(entreprise, 2022)
 
-    assert bdese.status == BDESEReglementation.STATUS_ACTUALISE
+    assert bdese.status == BDESEReglementation.STATUS_A_JOUR
     assert (
         bdese.status_detail
         == "Vous êtes soumis à cette réglementation. Vous avez actualisé votre BDESE sur la plateforme."
