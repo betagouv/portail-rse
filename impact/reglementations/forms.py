@@ -153,9 +153,7 @@ def bdese_form_factory(
             elif fetched_data:
                 for field in fetched_data:
                     if field in self.fields:
-                        self.fields[
-                            field
-                        ].help_text += " (valeur extraite de Index EgaPro)"
+                        self.fields[field].help_text += " (valeur extraite de EgaPro)"
                         self.fields[field].disabled = True
 
     fields = {
