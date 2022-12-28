@@ -18,7 +18,7 @@
         {% with entreprise=elem.entreprise %}
             {% if entreprise.raison_sociale %}<h2 class="fr-mt-4w">{{ entreprise.raison_sociale }}</h2>{% endif %}
             {% for reglementation in elem.reglementations %}
-                {% include "snippets/reglementation_card.html" with reglementation=reglementation %}
+                {% include "snippets/reglementation_card.html" with reglementation=reglementation user_manage_entreprise=elem.user_manage_entreprise %}
             {% endfor %}
         {% endwith %}
     {% endfor %}

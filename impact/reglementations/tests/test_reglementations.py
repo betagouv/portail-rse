@@ -22,8 +22,9 @@ def test_public_reglementations(client):
     assert entreprise["reglementations"][1] == IndexEgaproReglementation()
 
 
+@pytest.mark.parametrize("status_is_soumis", [True, False])
 @pytest.mark.django_db
-def test_public_reglementations_with_entreprise_data(client):
+def test_public_reglementations_with_entreprise_data(status_is_soumis, client, mocker):
     data = {
         "effectif": "petit",
         "bdese_accord": False,
@@ -31,6 +32,11 @@ def test_public_reglementations_with_entreprise_data(client):
         "siren": "000000001",
     }
 
+    mocker.patch(
+        "reglementations.views.Reglementation.status_is_soumis",
+        return_value=status_is_soumis,
+        new_callable=mocker.PropertyMock,
+    )
     response = client.get("/reglementations", data=data)
 
     content = response.content.decode("utf-8")
@@ -42,17 +48,23 @@ def test_public_reglementations_with_entreprise_data(client):
     assert not entreprise.bdese_accord
     assert entreprise.effectif == "petit"
 
-    # reglementations for this entreprise are displayed
+    # reglementations for this entreprise are anonymously displayed
     context = response.context
     assert len(context["entreprises"]) == 1
     context_entreprise = context["entreprises"][0]
     assert context_entreprise["entreprise"] == entreprise
-    assert context_entreprise["reglementations"][0] == BDESEReglementation.calculate(
-        entreprise, 2022
-    )
-    assert context_entreprise["reglementations"][
-        1
-    ] == IndexEgaproReglementation.calculate(entreprise)
+    reglementations = context_entreprise["reglementations"]
+    assert reglementations[0] == BDESEReglementation.calculate(entreprise, 2022)
+    assert reglementations[1] == IndexEgaproReglementation.calculate(entreprise)
+
+    if status_is_soumis:
+        assert '<p class="fr-badge">soumis</p>' in content
+        anonymous_status_detail = "Vous êtes soumis à cette réglementation. Connectez-vous pour en savoir plus."
+        assert anonymous_status_detail in content
+    else:
+        assert '<p class="fr-badge">non soumis</p>' in content
+        anonymous_status_detail = "Vous n'êtes pas soumis à cette réglementation."
+        assert anonymous_status_detail in content
 
 
 @pytest.fixture
@@ -75,20 +87,22 @@ def test_reglementations_with_authenticated_user(client, entreprise):
 
     assert response.status_code == 200
 
+    content = response.content.decode("utf-8")
+    assert "Entreprise SAS" in content
     context = response.context
     assert len(context["entreprises"]) == 1
     context_entreprise = context["entreprises"][0]
     assert context_entreprise["entreprise"] == entreprise
-    assert context_entreprise["reglementations"][0] == BDESEReglementation.calculate(
-        entreprise, 2022
-    )
-    assert context_entreprise["reglementations"][
-        1
-    ] == IndexEgaproReglementation.calculate(entreprise)
+    reglementations = context_entreprise["reglementations"]
+    assert reglementations[0] == BDESEReglementation.calculate(entreprise, 2022)
+    assert reglementations[1] == IndexEgaproReglementation.calculate(entreprise)
+    for reglementation in reglementations:
+        assert reglementation.status_detail in content
 
 
+@pytest.mark.parametrize("status_is_soumis", [True, False])
 def test_reglementations_with_authenticated_user_and_another_entreprise_data(
-    client, entreprise
+    status_is_soumis, client, entreprise, mocker
 ):
     client.force_login(entreprise.users.first())
 
@@ -99,11 +113,30 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
         "siren": "000000002",
     }
 
+    mocker.patch(
+        "reglementations.views.Reglementation.status_is_soumis",
+        return_value=status_is_soumis,
+        new_callable=mocker.PropertyMock,
+    )
     response = client.get("/reglementations", data=data)
 
     content = response.content.decode("utf-8")
     assert "Une autre entreprise SAS" in content
     assert not "Entreprise SAS" in content
+
+    reglementations = response.context["entreprises"][0]["reglementations"]
+    for reglementation in reglementations:
+        assert not reglementation.status_detail in content
+    if status_is_soumis:
+        assert '<p class="fr-badge">soumis</p>' in content
+        anonymous_status_detail = "L'entreprise est soumise à cette réglementation."
+        assert anonymous_status_detail in content
+    else:
+        assert '<p class="fr-badge">non soumis</p>' in content
+        anonymous_status_detail = (
+            "L'entreprise n'est pas soumise à cette réglementation."
+        )
+        assert anonymous_status_detail in content
 
 
 def test_entreprise_data_are_saved_only_when_entreprise_user_is_autenticated(

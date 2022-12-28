@@ -40,6 +40,10 @@ class Reglementation:
     primary_action: ReglementationAction | None = None
     secondary_actions: list[ReglementationAction] = field(default_factory=list)
 
+    @property
+    def status_is_soumis(self):
+        return self.status and self.status != self.STATUS_NON_SOUMIS
+
 
 @dataclass
 class BDESEReglementation(Reglementation):
@@ -217,6 +221,9 @@ def reglementations(request):
                         if entreprise
                         else IndexEgaproReglementation(),
                     ],
+                    "user_manage_entreprise": request.user in entreprise.users.all()
+                    if request.user.is_authenticated
+                    else False,
                 }
                 for entreprise in entreprises
             ]
