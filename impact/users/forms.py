@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth import password_validation
 from django.contrib.auth.forms import AuthenticationForm, ReadOnlyPasswordHashField
 from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm
 from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
@@ -20,7 +21,11 @@ class LoginForm(DsfrForm, AuthenticationForm):
 
 
 class UserCreationForm(DsfrForm, forms.ModelForm):
-    password1 = forms.CharField(label="Mot de passe", widget=forms.PasswordInput)
+    password1 = forms.CharField(
+        label="Mot de passe",
+        widget=forms.PasswordInput,
+        help_text=password_validation.password_validators_help_text_html(),
+    )
     password2 = forms.CharField(
         label="Confirmation du mot de passe", widget=forms.PasswordInput
     )
@@ -60,6 +65,17 @@ class UserCreationForm(DsfrForm, forms.ModelForm):
             raise ValidationError("Le siren est incorrect")
         return cleaned_data
 
+    def _post_clean(self):
+        super()._post_clean()
+        # Validate the password after self.instance is updated with form data
+        # by super().
+        password = self.cleaned_data.get("password2")
+        if password:
+            try:
+                password_validation.validate_password(password, self.instance)
+            except forms.ValidationError as error:
+                self.add_error("password1", error)
+
     def save(self, commit=True):
         # Save the provided password in hashed format
         user = super().save(commit=False)
@@ -91,10 +107,4 @@ class PasswordResetForm(DsfrForm, BasePasswordResetForm):
 
 
 class SetPasswordForm(DsfrForm, BaseSetPasswordForm):
-    new_password1 = forms.CharField(label="Mot de passe", widget=forms.PasswordInput)
-    new_password2 = forms.CharField(
-        label="Confirmation du mot de passe", widget=forms.PasswordInput
-    )
-
-    def __init__(self, *args, **kwargs):
-        super(SetPasswordForm, self).__init__(*args, **kwargs)
+    pass
