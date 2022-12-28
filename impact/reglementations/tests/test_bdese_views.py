@@ -71,7 +71,11 @@ def test_bdese_step_redirect_to_categories_professionnelles_if_not_filled(
             302,
         )
     ]
-    assert "Commencez par renseigner vos catégories professionnelles" in response.content.decode("utf-8")
+    assert (
+        "Commencez par renseigner vos catégories professionnelles"
+        in response.content.decode("utf-8")
+    )
+
 
 def test_bdese_step_use_categories_professionnelles_and_annees_a_remplir(
     bdese, authorized_user, client

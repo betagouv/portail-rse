@@ -296,7 +296,9 @@ def bdese(request, siren, annee, step):
         raise PermissionDenied
     bdese = _get_or_create_bdese(entreprise, annee)
     if not bdese.categories_professionnelles:
-        messages.warning(request, "Commencez par renseigner vos catégories professionnelles")
+        messages.warning(
+            request, "Commencez par renseigner vos catégories professionnelles"
+        )
         return redirect("categories_professionnelles", siren=siren, annee=annee)
     if request.method == "POST":
         if "mark_incomplete" in request.POST:
