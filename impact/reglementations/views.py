@@ -302,12 +302,15 @@ def bdese(request, siren, annee, step):
     entreprise = Entreprise.objects.get(siren=siren)
     if request.user not in entreprise.users.all():
         raise PermissionDenied
+
     bdese = _get_or_create_bdese(entreprise, annee)
+
     if not bdese.categories_professionnelles:
         messages.warning(
             request, "Commencez par renseigner vos catégories professionnelles"
         )
         return redirect("categories_professionnelles", siren=siren, annee=annee)
+
     if request.method == "POST":
         if "mark_incomplete" in request.POST:
             bdese.mark_step_as_incomplete(step)
@@ -331,6 +334,7 @@ def bdese(request, siren, annee, step):
                     request,
                     "L'étape n'a pas été enregistrée car le formulaire contient des erreurs",
                 )
+
     else:
         fetched_data = get_bdese_data_from_index_egapro(
             entreprise, derniere_annee_a_remplir_bdese()
@@ -340,6 +344,38 @@ def bdese(request, siren, annee, step):
             step,
             fetched_data=fetched_data,
         )
+
+    if bdese.__class__ == BDESE_300:
+        steps = {
+            step: {
+                "name": bdese.STEPS[step],
+                "is_complete": bdese.step_is_complete(step),
+            }
+            for step in bdese.STEPS
+        }
+        step_is_complete = steps[step]["is_complete"]
+        bdese_is_complete = bdese.is_complete
+    else:
+        steps = {}
+        step_is_complete = False
+        bdese_is_complete = False
+
+    return render(
+        request,
+        _bdese_step_template_path(bdese, step),
+        {
+            "form": form,
+            "siren": siren,
+            "annee": annee,
+            "step_is_complete": step_is_complete,
+            "steps": steps,
+            "bdese_is_complete": bdese_is_complete,
+            "annees": annees_a_remplir_bdese(),
+        },
+    )
+
+
+def _bdese_step_template_path(bdese: BDESE_300 | BDESE_50_300, step: int) -> str:
     if bdese.__class__ == BDESE_300:
         templates = {
             0: "0_categories_professionnelles.html",
@@ -355,34 +391,12 @@ def bdese(request, siren, annee, step):
             10: "10_transferts_commerciaux_et_financiers.html",
             11: "11_environnement.html",
         }
-        template_path = f"reglementations/bdese_300/{templates[step]}"
-        steps = {
-            step: {
-                "name": bdese.STEPS[step],
-                "is_complete": bdese.step_is_complete(step),
-            }
-            for step in bdese.STEPS
-        }
-        step_is_complete = steps[step]["is_complete"]
-        bdese_is_complete = bdese.is_complete
+        return f"reglementations/bdese_300/{templates[step]}"
     else:
-        template_path = "reglementations/bdese_50_300.html"
-        steps = {}
-        step_is_complete = False
-        bdese_is_complete = False
-    return render(
-        request,
-        template_path,
-        {
-            "form": form,
-            "siren": siren,
-            "annee": annee,
-            "step_is_complete": step_is_complete,
-            "steps": steps,
-            "bdese_is_complete": bdese_is_complete,
-            "annees": annees_a_remplir_bdese(),
-        },
-    )
+        if step == 0:
+            return "reglementations/categories-professionnelles.html"
+        else:
+            return "reglementations/bdese_50_300.html"
 
 
 def _get_or_create_bdese(
@@ -406,6 +420,7 @@ def categories_professionnelles(request, siren, annee):
     entreprise = Entreprise.objects.get(siren=siren)
     if request.user not in entreprise.users.all():
         raise PermissionDenied
+
     bdese = _get_or_create_bdese(entreprise, annee)
 
     initial = None
@@ -440,21 +455,6 @@ def categories_professionnelles(request, siren, annee):
 
     if bdese.__class__ == BDESE_300:
         step = 0
-        templates = {
-            0: "0_categories_professionnelles.html",
-            1: "1_investissement_social.html",
-            2: "2_investissement_matériel_et_immatériel.html",
-            3: "3_egalite_professionnelle.html",
-            4: "4_fonds_propres_endettement_impots.html",
-            5: "5_remuneration.html",
-            6: "6_representation_du_personnel_et_activites_sociales_et_culturelles.html",
-            7: "7_remuneration_des_financeurs.html",
-            8: "8_flux_financiers.html",
-            9: "9_partenariats.html",
-            10: "10_transferts_commerciaux_et_financiers.html",
-            11: "11_environnement.html",
-        }
-        template_path = f"reglementations/bdese_300/{templates[step]}"
         steps = {
             step: {
                 "name": bdese.STEPS[step],
@@ -465,14 +465,13 @@ def categories_professionnelles(request, siren, annee):
         step_is_complete = steps[step]["is_complete"]
         bdese_is_complete = bdese.is_complete
     else:
-        template_path = "reglementations/categories-professionnelles.html"
         steps = {}
         step_is_complete = False
         bdese_is_complete = False
 
     return render(
         request,
-        template_path,
+        _bdese_step_template_path(bdese, 0),
         {
             "form": form,
             "siren": siren,
