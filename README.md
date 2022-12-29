@@ -29,6 +29,7 @@ Exécuter les tests avec :
 make test
 ```
 
+Pour activer l'intégration avec Sentry, il est nécessaire de renseigner la variable d'environnement SENTRY_DSN
 
 ## migration en recette
 
