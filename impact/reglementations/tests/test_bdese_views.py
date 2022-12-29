@@ -317,7 +317,7 @@ def test_save_and_complete_categories_professionnelles(
     )
 
     assert response.status_code == 200
-    assert response.redirect_chain == [(bdese_step_url(bdese, 0), 302)]
+    assert response.redirect_chain == [(bdese_step_url(bdese, 1), 302)]
 
     content = response.content.decode("utf-8")
     assert "Catégories enregistrées" in content

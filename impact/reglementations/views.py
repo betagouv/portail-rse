@@ -455,6 +455,7 @@ def categories_professionnelles(request, siren, annee):
         if "save_complete" in request.POST:
             bdese.mark_step_as_complete(0)
             bdese.save()
+            next_step = 1
         return redirect("bdese", siren=siren, annee=annee, step=next_step)
 
     if bdese.__class__ == BDESE_300:
