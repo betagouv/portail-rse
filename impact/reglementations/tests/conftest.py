@@ -51,5 +51,5 @@ def grande_entreprise(entreprise_factory):
 
 @pytest.fixture(autouse=True)
 def mock_index_egapro(mocker):
-    mocker.patch("reglementations.views.get_bdese_data_from_index_egapro")
+    mocker.patch("reglementations.views.get_bdese_data_from_egapro")
     return mocker.patch("reglementations.views.is_index_egapro_updated")

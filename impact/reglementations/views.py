@@ -271,27 +271,23 @@ def _pdf_template_path_from_bdese(bdese):
         return "reglementations/bdese_50_300_pdf.html"
 
 
-def get_bdese_data_from_index_egapro(entreprise: Entreprise, year: int) -> dict:
-    bdese_data_from_index_egapro = {}
-    url = f"https://index-egapro.travail.gouv.fr/api/declarations/{entreprise.siren}"
+def get_bdese_data_from_egapro(entreprise: Entreprise, year: int) -> dict:
+    bdese_data_from_egapro = {}
+    url = f"https://egapro.travail.gouv.fr/api/public/declaration/{entreprise.siren}/{year}"
     response = requests.get(url)
     if response.status_code == 200:
-        for declaration in response.json():
-            if declaration["year"] == year:
-                index_egapro_data = declaration["data"]
-                if indicateur_hautes_remunerations := index_egapro_data.get(
-                    "indicateurs", {}
-                ).get("hautes_rémunérations"):
-                    bdese_data_from_index_egapro = {
-                        "nombre_femmes_plus_hautes_remunerations": int(
-                            indicateur_hautes_remunerations["résultat"]
-                        )
-                        if indicateur_hautes_remunerations["population_favorable"]
-                        == "hommes"
-                        else 10 - int(indicateur_hautes_remunerations["résultat"])
-                    }
-                break
-    return bdese_data_from_index_egapro
+        egapro_data = response.json()
+        if indicateur_hautes_remunerations := egapro_data.get("indicateurs", {}).get(
+            "hautes_rémunérations"
+        ):
+            bdese_data_from_egapro = {
+                "nombre_femmes_plus_hautes_remunerations": int(
+                    indicateur_hautes_remunerations["résultat"]
+                )
+                if indicateur_hautes_remunerations["population_favorable"] == "hommes"
+                else 10 - int(indicateur_hautes_remunerations["résultat"])
+            }
+    return bdese_data_from_egapro
 
 
 @login_required
@@ -333,7 +329,7 @@ def bdese(request, siren, annee, step):
                 )
 
     else:
-        fetched_data = get_bdese_data_from_index_egapro(
+        fetched_data = get_bdese_data_from_egapro(
             entreprise, derniere_annee_a_remplir_bdese()
         )
         form = bdese_form_factory(

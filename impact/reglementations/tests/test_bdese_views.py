@@ -1,8 +1,11 @@
+import json
+
 from django.urls import reverse
 import pytest
 
 from reglementations.models import annees_a_remplir_bdese, BDESE_50_300, BDESE_300
 from reglementations.tests.test_bdese_forms import categories_form_data
+from reglementations.views import get_bdese_data_from_egapro
 
 
 def test_bdese_is_not_public(client, django_user_model, grande_entreprise):
@@ -435,3 +438,28 @@ def test_save_categories_professionnelles_for_a_new_year(
             new_bdese.categories_professionnelles_detaillees
             == new_categories_pro_detaillees
         )
+
+
+class MockedResponse:
+    def __init__(self, content, status_code):
+        self.content = content
+        self.status_code = status_code
+
+    def json(self):
+        return json.loads(self.content)
+
+
+def test_get_bdese_data_from_egapro(grande_entreprise, mocker):
+    # Example response from https://egapro.travail.gouv.fr/api/public/declaration/552032534/2021
+    index_egapro_data = """{"entreprise":{"siren":"552032534","r\u00e9gion":"\u00cele-de-France","code_naf":"70.10Z","effectif":{"total":867,"tranche":"251:999"},"d\u00e9partement":"Paris","raison_sociale":"DANONE"},"indicateurs":{"promotions":{"non_calculable":null,"note":15,"objectif_de_progression":null},"augmentations_et_promotions":{"non_calculable":null,"note":null,"objectif_de_progression":null},"r\u00e9mun\u00e9rations":{"non_calculable":null,"note":29,"objectif_de_progression":null},"cong\u00e9s_maternit\u00e9":{"non_calculable":null,"note":15,"objectif_de_progression":null},"hautes_r\u00e9mun\u00e9rations":{"non_calculable":null,"note":0,"objectif_de_progression":null,"r\u00e9sultat":1,"population_favorable":"femmes"}},"d\u00e9claration":{"index":79,"ann\u00e9e_indicateurs":2021,"mesures_correctives":null}}"""
+
+    egapro_request = mocker.patch(
+        "requests.get", return_value=MockedResponse(index_egapro_data, 200)
+    )
+
+    bdese_data_from_egapro = get_bdese_data_from_egapro(grande_entreprise, 2021)
+
+    assert bdese_data_from_egapro == {"nombre_femmes_plus_hautes_remunerations": 9}
+    egapro_request.assert_called_once_with(
+        f"https://egapro.travail.gouv.fr/api/public/declaration/{grande_entreprise.siren}/2021"
+    )
