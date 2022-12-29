@@ -168,16 +168,13 @@ class IndexEgaproReglementation(Reglementation):
 
 
 def is_index_egapro_updated(entreprise: Entreprise) -> bool:
-    url = f"https://index-egapro.travail.gouv.fr/api/search?q={entreprise.siren}"
+    year = derniere_annee_a_remplir_index_egapro()
+    url = f"https://egapro.travail.gouv.fr/api/public/declaration/{entreprise.siren}/{year}"
     response = requests.get(url)
-    if response.status_code == 200:
-        if index_egapro_data := response.json()["data"]:
-            if (
-                str(derniere_annee_a_remplir_index_egapro())
-                in index_egapro_data[0]["notes"]
-            ):
-                return True
-    return False
+    if response.status_code == 200 and "déclaration" in response.json():
+        return True
+    else:
+        return False
 
 
 def reglementations(request):

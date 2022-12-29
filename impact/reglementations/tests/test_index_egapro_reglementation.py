@@ -51,8 +51,9 @@ def test_calculate_more_than_50_employees(
         == "Vous êtes soumis à cette réglementation. Vous n'avez pas encore déclaré votre index sur la plateforme Egapro."
     )
     assert index.primary_action
-    assert mock_index_egapro.called_once_with(entreprise)
+    mock_index_egapro.assert_called_once_with(entreprise)
 
+    mock_index_egapro.reset_mock()
     mock_index_egapro.return_value = True
     index = IndexEgaproReglementation.calculate(entreprise)
 
@@ -62,33 +63,35 @@ def test_calculate_more_than_50_employees(
         == "Vous êtes soumis à cette réglementation. Vous avez rempli vos obligations d'après les données disponibles sur la plateforme Egapro."
     )
     assert index.primary_action
-    assert mock_index_egapro.called_once_with(entreprise)
+    mock_index_egapro.assert_called_once_with(entreprise)
 
 
 class MockedResponse:
-    status_code = 200
-
-    def __init__(self, content):
+    def __init__(self, content, status_code):
         self.content = content
+        self.status_code = status_code
 
     def json(self):
         return json.loads(self.content)
 
 
 def test_is_index_egapro_updated_with_up_to_date_entreprise(grande_entreprise, mocker):
-    # Example response from https://egapro.travail.gouv.fr/api/search?q=552032534
-    index_egapro_data = """{"data":[{"entreprise":{"raison_sociale":"DANONE","siren":"552032534","r\u00e9gion":"11","d\u00e9partement":"75","code_naf":"70.10Z","ues":null,"effectif":{"tranche":"251:999"}},"notes":{"2018":80,"2019":78,"2020":84,"2021":79},"notes_remunerations":{"2018":35,"2019":23,"2020":29,"2021":29},"notes_augmentations":{"2018":10,"2019":20,"2020":20,"2021":20},"notes_promotions":{"2018":15,"2019":15,"2020":15,"2021":15},"notes_augmentations_et_promotions":{"2018":null,"2019":null,"2020":null,"2021":null},"notes_conges_maternite":{"2018":15,"2019":15,"2020":15,"2021":15},"notes_hautes_r\u00e9mun\u00e9rations":{"2018":5,"2019":5,"2020":5,"2021":0},"label":"DANONE"}],"count":1}"""
+    # Example response from https://egapro.travail.gouv.fr/api/public/declaration/552032534/2021
+    index_egapro_data = """{"entreprise":{"siren":"552032534","r\u00e9gion":"\u00cele-de-France","code_naf":"70.10Z","effectif":{"total":867,"tranche":"251:999"},"d\u00e9partement":"Paris","raison_sociale":"DANONE"},"indicateurs":{"promotions":{"non_calculable":null,"note":15,"objectif_de_progression":null},"augmentations_et_promotions":{"non_calculable":null,"note":null,"objectif_de_progression":null},"r\u00e9mun\u00e9rations":{"non_calculable":null,"note":29,"objectif_de_progression":null},"cong\u00e9s_maternit\u00e9":{"non_calculable":null,"note":15,"objectif_de_progression":null},"hautes_r\u00e9mun\u00e9rations":{"non_calculable":null,"note":0,"objectif_de_progression":null,"r\u00e9sultat":1,"population_favorable":"femmes"}},"d\u00e9claration":{"index":79,"ann\u00e9e_indicateurs":2021,"mesures_correctives":null}}"""
 
-    mocker.patch("requests.get", return_value=MockedResponse(index_egapro_data))
+    egapro_request = mocker.patch("requests.get", return_value=MockedResponse(index_egapro_data, 200))
 
     with freezegun.freeze_time("2022-11-25"):
         assert is_index_egapro_updated(grande_entreprise)
+    egapro_request.assert_called_once_with(f"https://egapro.travail.gouv.fr/api/public/declaration/{grande_entreprise.siren}/2021")
 
 
 def test_is_index_egapro_not_updated(grande_entreprise, mocker):
-    # Example response from https://egapro.travail.gouv.fr/api/search?q=889297453
-    index_egapro_data = """{"data":[],"count":0}"""
+    # Example response from https://egapro.travail.gouv.fr/api/public/declaration/889297453/2020
+    index_egapro_data = """{"error":"No declaration with siren 889297453 and year 2020"}"""
 
-    mocker.patch("requests.get", return_value=MockedResponse(index_egapro_data))
+    egapro_request = mocker.patch("requests.get", return_value=MockedResponse(index_egapro_data, 404))
 
-    assert not is_index_egapro_updated(grande_entreprise)
+    with freezegun.freeze_time("2021-11-25"):
+        assert not is_index_egapro_updated(grande_entreprise)
+    egapro_request.assert_called_once_with(f"https://egapro.travail.gouv.fr/api/public/declaration/{grande_entreprise.siren}/2020")
