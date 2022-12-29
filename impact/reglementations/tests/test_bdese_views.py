@@ -53,6 +53,10 @@ def authorized_user(bdese, django_user_model):
     return user
 
 
+def bdese_step_url(bdese, step):
+    return f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/{step}"
+
+
 def test_bdese_step_redirect_to_categories_professionnelles_if_not_filled(
     bdese, authorized_user, client
 ):
@@ -97,18 +101,28 @@ def test_bdese_step_use_categories_professionnelles_and_annees_a_remplir(
 
 
 @pytest.fixture
-def bdese_300_with_categories(bdese_factory):
+def bdese_300(bdese_factory):
     bdese = bdese_factory(bdese_class=BDESE_300)
-    bdese.categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
-    bdese.categories_professionnelles_detaillees = [
+    return bdese
+
+
+@pytest.fixture
+def bdese_300_with_categories(bdese_300):
+    bdese_300.categories_professionnelles = [
+        "catégorie 1",
+        "catégorie 2",
+        "catégorie 3",
+    ]
+    bdese_300.categories_professionnelles_detaillees = [
         "catégorie détaillée 1",
         "catégorie détaillée 2",
         "catégorie détaillée 3",
         "catégorie détaillée 4",
         "catégorie détaillée 5",
     ]
-    bdese.save()
-    return bdese
+    bdese_300.mark_step_as_complete(0)
+    bdese_300.save()
+    return bdese_300
 
 
 def test_bdese_300_step_use_categories_professionnelles_detaillees(
@@ -241,12 +255,7 @@ def test_get_categories_professionnelles(bdese, authorized_user, client):
     assert response.status_code == 200
 
 
-@pytest.mark.parametrize(
-    "submit_button", [("save_complete", True), ("mark_incomplete", False)]
-)
-def test_save_categories_professionnelles(
-    submit_button, bdese, authorized_user, client
-):
+def test_save_categories_professionnelles(bdese, authorized_user, client):
     client.force_login(authorized_user)
 
     categories_pro = ["catégorie 1", "catégorie 2", "catégorie 3"]
@@ -257,27 +266,20 @@ def test_save_categories_professionnelles(
         "catégorie détaillée 4",
         "catégorie détaillée 5",
     ]
-    url = f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/0"
     data = categories_form_data(categories_pro, categories_pro_detaillees)
-    data.update({submit_button[0]: ""})
 
     response = client.post(
-        url,
+        bdese_step_url(bdese, 0),
         data=data,
         follow=True,
     )
 
     assert response.status_code == 200
     if bdese.is_bdese_300:
-        assert response.redirect_chain == [
-            (reverse("bdese", args=[bdese.entreprise.siren, bdese.annee, 0]), 302)
-        ]
-        bdese.refresh_from_db()
-        assert bdese.step_is_complete(0) == submit_button[1]
+        next_step_url = bdese_step_url(bdese, 0)
     else:
-        assert response.redirect_chain == [
-            (reverse("bdese", args=[bdese.entreprise.siren, bdese.annee, 1]), 302)
-        ]
+        next_step_url = bdese_step_url(bdese, 1)
+    assert response.redirect_chain == [(next_step_url, 302)]
 
     content = response.content.decode("utf-8")
     assert "Catégories enregistrées" in content
@@ -286,6 +288,73 @@ def test_save_categories_professionnelles(
     assert bdese.categories_professionnelles == categories_pro
     if bdese.is_bdese_300:
         assert bdese.categories_professionnelles_detaillees == categories_pro_detaillees
+        assert not bdese.step_is_complete(0)
+
+
+def test_save_and_complete_categories_professionnelles(
+    bdese_300, django_user_model, client
+):
+    bdese = bdese_300
+    user = django_user_model.objects.create()
+    bdese.entreprise.users.add(user)
+    client.force_login(user)
+
+    categories_pro = ["catégorie 1", "catégorie 2", "catégorie 3"]
+    categories_pro_detaillees = [
+        "catégorie détaillée 1",
+        "catégorie détaillée 2",
+        "catégorie détaillée 3",
+        "catégorie détaillée 4",
+        "catégorie détaillée 5",
+    ]
+    data = categories_form_data(categories_pro, categories_pro_detaillees)
+    data.update({"save_complete": ""})
+
+    response = client.post(
+        bdese_step_url(bdese, 0),
+        data=data,
+        follow=True,
+    )
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [(bdese_step_url(bdese, 0), 302)]
+
+    content = response.content.decode("utf-8")
+    assert "Catégories enregistrées" in content
+
+    bdese.refresh_from_db()
+    assert bdese.categories_professionnelles == categories_pro
+    assert bdese.categories_professionnelles_detaillees == categories_pro_detaillees
+    assert bdese.step_is_complete(0)
+
+
+def test_mark_as_incomplete_categories_professionnelles(
+    bdese_300_with_categories, django_user_model, client
+):
+    bdese = bdese_300_with_categories
+    categories_pro = bdese.categories_professionnelles
+    categories_pro_detaillees = bdese.categories_professionnelles_detaillees
+    user = django_user_model.objects.create()
+    bdese.entreprise.users.add(user)
+    client.force_login(user)
+
+    url = f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/0"
+    response = client.post(
+        bdese_step_url(bdese, 0),
+        data={"mark_incomplete": ""},
+        follow=True,
+    )
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [(bdese_step_url(bdese, 0), 302)]
+
+    content = response.content.decode("utf-8")
+    assert "Catégories enregistrées" not in content
+
+    bdese.refresh_from_db()
+    assert bdese.categories_professionnelles == categories_pro
+    assert bdese.categories_professionnelles_detaillees == categories_pro_detaillees
+    assert not bdese.step_is_complete(0)
 
 
 def test_save_categories_professionnelles_error(bdese, authorized_user, client):

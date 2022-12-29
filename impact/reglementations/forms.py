@@ -60,7 +60,14 @@ def categories_professionnelles_form_factory(
         fields=fields,
         widgets={field_name: ListJSONWidget(widgets) for field_name in fields},
     )
-    return Form(*args, instance=bdese, **kwargs)
+
+    form = Form(*args, instance=bdese, **kwargs)
+
+    if bdese.is_bdese_300 and bdese.step_is_complete(0):
+        for field in form.fields:
+            form.fields[field].disabled = True
+
+    return form
 
 
 class CategoryJSONWidget(forms.MultiWidget):

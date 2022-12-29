@@ -442,15 +442,19 @@ def categories_professionnelles(request, siren, annee):
     form = categories_professionnelles_form_factory(
         bdese, data=request.POST or None, initial=initial
     )
+
+    if "mark_incomplete" in request.POST:
+        bdese.mark_step_as_incomplete(0)
+        bdese.save()
+        return redirect("bdese", siren=siren, annee=annee, step=0)
+
     if form.is_valid():
         bdese = form.save()
-        if "save_complete" in request.POST:
-            bdese.mark_step_as_complete(0)
-        elif "mark_incomplete" in request.POST:
-            bdese.mark_step_as_incomplete(0)
-        bdese.save()
         messages.success(request, "Catégories enregistrées")
         next_step = 0 if bdese.is_bdese_300 else 1
+        if "save_complete" in request.POST:
+            bdese.mark_step_as_complete(0)
+            bdese.save()
         return redirect("bdese", siren=siren, annee=annee, step=next_step)
 
     if bdese.__class__ == BDESE_300:
