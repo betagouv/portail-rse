@@ -37,6 +37,8 @@ class Reglementation:
 
     status: str | None = None
     status_detail: str | None = None
+    primary_action: ReglementationAction | None = None
+    secondary_actions: list[ReglementationAction] = field(default_factory=list)
 
 
 @dataclass
@@ -52,8 +54,6 @@ class BDESEReglementation(Reglementation):
         Elle comprend des mentions obligatoires qui varient selon l'effectif de l'entreprise."""
     more_info_url = "https://entreprendre.service-public.fr/vosdroits/F32193"
 
-    primary_action: ReglementationAction | None = None
-    secondary_actions: list[ReglementationAction] = field(default_factory=list)
     bdese_type: int | None = None
 
     @classmethod
@@ -142,7 +142,8 @@ class IndexEgaproReglementation(Reglementation):
     title = "Index de l’égalité professionnelle"
     description = "Afin de lutter contre les inégalités salariales entre les femmes et les hommes, certaines entreprises doivent calculer et transmettre un index mesurant l’égalité salariale au sein de leur structure."
     more_info_url = "https://www.economie.gouv.fr/entreprises/index-egalite-professionnelle-obligatoire"
-    primary_action = ReglementationAction(
+
+    primary_action: ReglementationAction = ReglementationAction(
         "https://egapro.travail.gouv.fr/",
         "Calculer et déclarer mon index sur Egapro",
         external=True,

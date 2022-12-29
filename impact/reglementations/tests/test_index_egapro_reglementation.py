@@ -41,8 +41,8 @@ def test_calculate_more_than_50_employees(
     effectif, entreprise_factory, mock_index_egapro
 ):
     entreprise = entreprise_factory(effectif=effectif)
-    mock_index_egapro.return_value = False
 
+    mock_index_egapro.return_value = False
     index = IndexEgaproReglementation.calculate(entreprise)
 
     assert index.status == IndexEgaproReglementation.STATUS_A_ACTUALISER
@@ -50,10 +50,10 @@ def test_calculate_more_than_50_employees(
         index.status_detail
         == "Vous êtes soumis à cette réglementation. Vous n'avez pas encore déclaré votre index sur la plateforme Egapro."
     )
+    assert index.primary_action
     assert mock_index_egapro.called_once_with(entreprise)
 
     mock_index_egapro.return_value = True
-
     index = IndexEgaproReglementation.calculate(entreprise)
 
     assert index.status == IndexEgaproReglementation.STATUS_A_JOUR
@@ -61,6 +61,7 @@ def test_calculate_more_than_50_employees(
         index.status_detail
         == "Vous êtes soumis à cette réglementation. Vous avez rempli vos obligations d'après les données disponibles sur la plateforme Egapro."
     )
+    assert index.primary_action
     assert mock_index_egapro.called_once_with(entreprise)
 
 
