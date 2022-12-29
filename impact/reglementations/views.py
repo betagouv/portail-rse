@@ -338,33 +338,10 @@ def bdese(request, siren, annee, step):
             fetched_data=fetched_data,
         )
 
-    if bdese.__class__ == BDESE_300:
-        steps = {
-            step: {
-                "name": bdese.STEPS[step],
-                "is_complete": bdese.step_is_complete(step),
-            }
-            for step in bdese.STEPS
-        }
-        step_is_complete = steps[step]["is_complete"]
-        bdese_is_complete = bdese.is_complete
-    else:
-        steps = {}
-        step_is_complete = False
-        bdese_is_complete = False
-
     return render(
         request,
         _bdese_step_template_path(bdese, step),
-        {
-            "form": form,
-            "siren": siren,
-            "annee": annee,
-            "step_is_complete": step_is_complete,
-            "steps": steps,
-            "bdese_is_complete": bdese_is_complete,
-            "annees": annees_a_remplir_bdese(),
-        },
+        _bdese_step_context(form, siren, annee, bdese, step),
     )
 
 
@@ -390,6 +367,32 @@ def _bdese_step_template_path(bdese: BDESE_300 | BDESE_50_300, step: int) -> str
             return "reglementations/categories-professionnelles.html"
         else:
             return "reglementations/bdese_50_300.html"
+
+
+def _bdese_step_context(form, siren, annee, bdese, step):
+    if bdese.__class__ == BDESE_300:
+        steps = {
+            step: {
+                "name": bdese.STEPS[step],
+                "is_complete": bdese.step_is_complete(step),
+            }
+            for step in bdese.STEPS
+        }
+        step_is_complete = steps[step]["is_complete"]
+        bdese_is_complete = bdese.is_complete
+    else:
+        steps = {}
+        step_is_complete = False
+        bdese_is_complete = False
+    return {
+        "form": form,
+        "siren": siren,
+        "annee": annee,
+        "step_is_complete": step_is_complete,
+        "steps": steps,
+        "bdese_is_complete": bdese_is_complete,
+        "annees": annees_a_remplir_bdese(),
+    }
 
 
 def _get_or_create_bdese(
@@ -451,32 +454,8 @@ def categories_professionnelles(request, siren, annee):
             next_step = 1
         return redirect("bdese", siren=siren, annee=annee, step=next_step)
 
-    if bdese.__class__ == BDESE_300:
-        step = 0
-        steps = {
-            step: {
-                "name": bdese.STEPS[step],
-                "is_complete": bdese.step_is_complete(step),
-            }
-            for step in bdese.STEPS
-        }
-        step_is_complete = steps[step]["is_complete"]
-        bdese_is_complete = bdese.is_complete
-    else:
-        steps = {}
-        step_is_complete = False
-        bdese_is_complete = False
-
     return render(
         request,
         _bdese_step_template_path(bdese, 0),
-        {
-            "form": form,
-            "siren": siren,
-            "annee": annee,
-            "step_is_complete": step_is_complete,
-            "steps": steps,
-            "bdese_is_complete": bdese_is_complete,
-            "annees": annees_a_remplir_bdese(),
-        },
+        _bdese_step_context(form, siren, annee, bdese, 0),
     )
