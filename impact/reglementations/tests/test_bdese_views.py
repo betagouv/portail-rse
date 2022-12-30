@@ -406,6 +406,8 @@ def test_save_categories_professionnelles_for_a_new_year(
     if bdese.is_bdese_300:
         for categorie in categories_pro_detaillees:
             assert categorie in content
+        assert "Enregistrer et marquer comme terminé" in content, content
+        assert "Enregistrer en brouillon" in content
 
     new_categories_pro = ["A", "B", "C", "D"]
     new_categories_pro_detaillees = ["E", "F", "G", "H", "I"]

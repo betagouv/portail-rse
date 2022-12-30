@@ -424,15 +424,15 @@ def categories_professionnelles(request, siren, annee):
         bdeses = bdese.__class__.objects.filter(entreprise=bdese.entreprise).order_by(
             "-annee"
         )
-        for bdese in bdeses:
-            if bdese.categories_professionnelles:
+        for _bdese in bdeses:
+            if _bdese.categories_professionnelles:
                 initial = {
-                    "catégories_professionnelles": bdese.categories_professionnelles
+                    "categories_professionnelles": _bdese.categories_professionnelles
                 }
-                if bdese.is_bdese_300:
+                if _bdese.is_bdese_300:
                     initial[
-                        "catégories_professionnelles_detaillees"
-                    ] = bdese.categories_professionnelles_detaillees
+                        "categories_professionnelles_detaillees"
+                    ] = _bdese.categories_professionnelles_detaillees
                 break
 
     form = categories_professionnelles_form_factory(

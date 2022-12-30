@@ -90,7 +90,7 @@ def bdese_form_factory(
     categories_professionnelles_detaillees=None,
     fetched_data=None,
     *args,
-    **kwargs
+    **kwargs,
 ):
     class CategoryMultiValueField(forms.MultiValueField):
         widget = CategoryJSONWidget
@@ -103,7 +103,7 @@ def bdese_form_factory(
             encoder=None,
             decoder=None,
             *args,
-            **kwargs
+            **kwargs,
         ):
             """https://docs.djangoproject.com/en/4.1/ref/forms/fields/#django.forms.MultiValueField.require_all_fields"""
             self.base_field = base_field
@@ -131,7 +131,7 @@ def bdese_form_factory(
                 ),
                 require_all_fields=False,
                 *args,
-                **kwargs
+                **kwargs,
             )
 
         def compress(self, data_list):
