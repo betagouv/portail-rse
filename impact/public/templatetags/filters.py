@@ -1,4 +1,5 @@
 from django import template
+from django.utils.text import slugify
 
 import impact.settings
 
@@ -23,6 +24,11 @@ def field_type(field):
 @register.filter
 def widget_type(field):
     return field.field.widget.__class__.__name__
+
+
+@register.filter
+def toggle_id(field):
+    return field.id_for_label if field.id_for_label else slugify(field.label)
 
 
 @register.filter
