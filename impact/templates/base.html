@@ -62,7 +62,7 @@
                                         <a class="fr-btn fr-icon-file-text-line" href="{% url 'reglementations' %}">Réglementations</a>
                                     </li>
                                     <li>
-                                        <a class="fr-btn fr-icon-lock-line" href="{% url 'login' %}">Se connecter</a>
+                                        <a class="fr-btn fr-icon-lock-line" href="{% url 'login' %}?next={{ request.path }}">Se connecter</a>
                                     </li>
                                     {% endif %}
                                 </ul>
