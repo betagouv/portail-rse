@@ -1,7 +1,9 @@
 <div class="fr-input-group{% if field.errors %} fr-input-group--error {% endif %}">
+    {% block field_label %}
     <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label }}
         <span class="fr-hint-text">{{ field.help_text }}</span>
     </label>
+    {% endblock %}
     {% load filters %}
     {% with widget_type=field|widget_type %}
     <div class="fr-col-12 {% if widget_type == 'NumberInput' %}fr-col-sm-2{% endif %}">

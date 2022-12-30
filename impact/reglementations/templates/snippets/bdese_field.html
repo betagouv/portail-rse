@@ -1,0 +1,17 @@
+{% extends "snippets/input_field.html" %}
+
+{% block field_label %}
+<div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
+    <div class="fr-col">
+        <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label }}
+            <span class="fr-hint-text">{{ field.help_text }}</span>
+        </label>
+    </div>
+    <div class="fr-col-3">
+        <div class="fr-toggle">
+            <input type="checkbox" class="fr-toggle__input" aria-describedby="toggle-{{ field.label | slugify }}-hint-text" id="toggle-{{ field.label | slugify }}">
+            <label class="fr-toggle__label" for="toggle-{{ field.label | slugify }}" data-fr-checked-label="Activé" data-fr-unchecked-label="Désactivé">Indicateur externe</label>
+        </div>
+    </div>        
+</div>
+{% endblock %}
