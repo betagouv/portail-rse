@@ -37,10 +37,13 @@ def contact(request):
             from_email = form.cleaned_data["from_email"]
             subject = form.cleaned_data["subject"]
             message = form.cleaned_data["message"]
-            send_mail(subject, message, from_email, [settings.CONTACT_EMAIL])
-            success_message = "Votre message a bien été envoyé"
-            messages.success(request, success_message)
-            return redirect("contact")
+            if send_mail(subject, message, from_email, [settings.CONTACT_EMAIL]):
+                success_message = "Votre message a bien été envoyé"
+                messages.success(request, success_message)
+                return redirect("contact")
+            else:
+                error_message = "L'envoi du message a échoué"
+                messages.error(request, error_message)
     else:
         if request.user.is_authenticated:
             initial = {"from_email": request.user.email}
