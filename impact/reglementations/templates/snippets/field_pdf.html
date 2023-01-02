@@ -1,56 +1,58 @@
 {% load filters %}
-<div class="fr-text-lead">{{ field.label }} :</div>
-{% if field.help_text %}<p class="fr-text--sm">{{ field.help_text }}</p>{% endif %}
-
-{% if field.value or field.value == 0 %}
-    {% with field_type=field|field_type %}
-        {% if field_type == 'CategoryMultiValueField' %}
+<div class="field-block">
+    <div class="fr-text-lead">{{ field.label }} :</div>
+    {% if field.help_text %}<p class="fr-text--sm">{{ field.help_text }}</p>{% endif %}
+    
+    {% if field.value or field.value == 0 %}
+        {% with field_type=field|field_type %}
+            {% if field_type == 'CategoryMultiValueField' %}
+                <div class="fr-table fr-table--bordered">
+                    <table>
+                        <thead>
+                            <tr>
+                                {% for categorie, qte in field.value.items %}
+                                <th scope="col">{{ categorie | capfirst }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                {% for categorie, qte in field.value.items %}
+                                <td>{{ qte }}</td>
+                                {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
             <div class="fr-table fr-table--bordered">
                 <table>
-                    <thead>
-                        <tr>
-                            {% for categorie, qte in field.value.items %}
-                            <th scope="col">{{ categorie | capfirst }}</th>
-                            {% endfor %}
-                        </tr>
-                    </thead>
                     <tbody>
                         <tr>
-                            {% for categorie, qte in field.value.items %}
-                            <td>{{ qte }}</td>
-                            {% endfor %}
+                            <td>
+                                {% if field_type == 'BooleanField' %}
+                                    {{ field.value | translate_boolean | capfirst }}
+                                {% else %}
+                                    {{ field.value }}
+                                {% endif %}
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-        {% else %}
+            {% endif %}
+        {% endwith %}
+    {% else %}
         <div class="fr-table fr-table--bordered">
             <table>
                 <tbody>
                     <tr>
                         <td>
-                            {% if field_type == 'BooleanField' %}
-                                {{ field.value | translate_boolean | capfirst }}
-                            {% else %}
-                                {{ field.value }}
-                            {% endif %}
+                            Non rempli.
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        {% endif %}
-    {% endwith %}
-{% else %}
-    <div class="fr-table fr-table--bordered">
-        <table>
-            <tbody>
-                <tr>
-                    <td>
-                        Non rempli.
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-{% endif %}
+    {% endif %}
+</div>

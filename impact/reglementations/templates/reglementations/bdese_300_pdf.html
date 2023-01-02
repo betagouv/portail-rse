@@ -7,6 +7,7 @@
             @page {
                 size: A4;
                 margin: 1cm;
+                margin-bottom: 2.5cm;
                 @top-left {
                     content: "BDESE {{ entreprise.raison_sociale }}";
                     border-bottom: 1px solid rgb(58, 58, 58);
@@ -20,6 +21,22 @@
                     font-weight: bold;
                     color: rgb(58, 58, 58);
                 }
+                @bottom-left {
+                    content: "Le présent document a été généré à l’aide du service impact.beta.gouv.fr, prototype de plateforme d’aide aux entreprises pour le renseignement des réglementations extra-financières. \a Ce document n’engage pas l’Etat, ni la Direction Générale des Entreprises (DGE), mais uniquement l’utilisateur ayant renseigné les données, qui n’ont fait l’objet d’aucune procédure de contrôle par l’administration. ";
+                    font-size: .6em;
+                    font-style: italic;
+                    color: rgb(58, 58, 58);
+                    opacity: .8;
+                    width: 85%;
+                    padding-bottom: 40px;
+                    white-space: pre-wrap;
+                    height: fit-content;
+                }
+
+                
+            }
+            .field-block {
+                break-inside: avoid;
             }
             .fr-header {
                 display: flex;
@@ -62,6 +79,7 @@
                 margin-bottom: .25rem;
                 width: 2.0625rem;
             }
+
         </style>
     </head>
     <body>
