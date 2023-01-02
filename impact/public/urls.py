@@ -8,7 +8,9 @@ urlpatterns = [
     path("siren", views.siren, name="siren"),
     path("mentions-legales", views.mentions_legales, name="mentions_legales"),
     path(
-        "donnees-personnelles", views.donnees_personnelles, name="donnees_personnelles"
+        "politique-confidentialite",
+        views.politique_confidentialite,
+        name="politique_confidentialite",
     ),
     path("cgu", views.cgu, name="cgu"),
     path("contact", views.contact, name="contact"),

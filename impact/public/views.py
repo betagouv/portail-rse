@@ -22,8 +22,8 @@ def mentions_legales(request):
     return render(request, "public/mentions-legales.html")
 
 
-def donnees_personnelles(request):
-    return render(request, "public/donnees-personnelles.html")
+def politique_confidentialite(request):
+    return render(request, "public/politique-confidentialite.html")
 
 
 def cgu(request):

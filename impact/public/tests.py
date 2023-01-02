@@ -52,11 +52,11 @@ def test_page_mentions_legales(client):
     assert "<!-- page mentions legales -->" in str(response.content)
 
 
-def test_page_donnees_personnelles(client):
-    response = client.get("/donnees-personnelles")
+def test_page_politique_confidentialite(client):
+    response = client.get("/politique-confidentialite")
 
     assert response.status_code == 200
-    assert "<!-- page donnees personnelles -->" in str(response.content)
+    assert "<!-- page politique de confidentialite -->" in str(response.content)
 
 
 def test_page_cgu(client):
