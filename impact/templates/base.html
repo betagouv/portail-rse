@@ -14,6 +14,23 @@
         <link rel="manifest" href="{% static 'dsfr-1.7.2/favicon/manifest.webmanifest' %}" crossorigin="use-credentials">
 
         <title>Impact</title>
+
+        <!-- Matomo -->
+        <script>
+            var _paq = window._paq = window._paq || [];
+            /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+            _paq.push(["setExcludedQueryParams", ["simulationId","_csrf"]]);
+            _paq.push(['trackPageView']);
+            _paq.push(['enableLinkTracking']);
+            (function() {
+            var u="https://stats.data.gouv.fr/";
+            _paq.push(['setTrackerUrl', u+'matomo.php']);
+            _paq.push(['setSiteId', '274']);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+            })();
+        </script>
+        <!-- End Matomo Code -->
     </head>
     <body>
         {% block header %}
