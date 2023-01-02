@@ -3,9 +3,10 @@ import time
 import requests
 from django.conf import settings
 from django.contrib import messages
-from django.shortcuts import render
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect
 
-from .forms import EligibiliteForm, SirenForm
+from .forms import EligibiliteForm, SirenForm, ContactForm
 from entreprises.models import Entreprise
 
 
@@ -30,7 +31,24 @@ def cgu(request):
 
 
 def contact(request):
-    return render(request, "public/contact.html")
+    if request.method == "POST":
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            from_email = form.cleaned_data["from_email"]
+            subject = form.cleaned_data["subject"]
+            message = form.cleaned_data["message"]
+            send_mail(subject, message, from_email, [settings.CONTACT_EMAIL])
+            success_message = "Votre message a bien été envoyé"
+            messages.success(request, success_message)
+            return redirect("contact")
+    else:
+        if request.user.is_authenticated:
+            initial = {"from_email": request.user.email}
+        else:
+            initial = None
+        form = ContactForm(initial=initial)
+
+    return render(request, "public/contact.html", {"form": form})
 
 
 def siren(request):

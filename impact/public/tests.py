@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from public.forms import EligibiliteForm, RAISON_SOCIALE_MAX_LENGTH
 
 
@@ -20,6 +22,28 @@ def test_page_contact(client):
 
     assert response.status_code == 200
     assert "<!-- page contact -->" in str(response.content)
+
+
+def test_send_contact_mail(client, mailoutbox):
+    subject = "Bonjour"
+    message = "Bonjour Impact"
+    from_email = "user@example.com"
+
+    response = client.post(
+        "/contact",
+        data={"subject": subject, "message": message, "from_email": from_email},
+        follow=True,
+    )
+
+    assert response.status_code == 200
+    content = response.content.decode("utf-8")
+    assert "Votre message a bien été envoyé" in content
+    assert len(mailoutbox) == 1
+    mail = mailoutbox[0]
+    assert mail.subject == subject
+    assert mail.body == message
+    assert mail.from_email == from_email
+    assert list(mail.to) == [settings.CONTACT_EMAIL]
 
 
 def test_page_mentions_legales(client):

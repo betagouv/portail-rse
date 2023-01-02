@@ -36,3 +36,12 @@ class EligibiliteForm(DsfrForm, forms.ModelForm):
     def clean_raison_sociale(self):
         raison_sociale = self.cleaned_data.get("raison_sociale")
         return raison_sociale[:RAISON_SOCIALE_MAX_LENGTH]
+
+
+class ContactForm(DsfrForm):
+    from_email = forms.EmailField(label="Votre email")
+    subject = forms.CharField(
+        label="Sujet",
+        max_length=255,
+    )
+    message = forms.CharField(widget=forms.Textarea())

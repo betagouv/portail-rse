@@ -1,7 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-Contact
+<div class="fr-container fr-my-8w">
+    <h1>Contact</h1>
+    <p>
+        Une remarque, un avis à partager, ou une demande d’informations supplémentaires ?
+        Nous vous invitons à compléter le formulaire ci-dessous.
+    </p>
+    <form class="fr-mt-6w" action="{% url 'contact' %}" method="post">
+        {% csrf_token %}
+        {% include 'snippets/input_field.html' with field=form.from_email %}
+        {% include 'snippets/input_field.html' with field=form.subject %}
+        {% include 'snippets/input_field.html' with field=form.message %}
+        <input type="submit" value="Envoyer le message" class="fr-btn">
+    </form>
+</div>
 
 <!-- page contact -->
 {% endblock %}

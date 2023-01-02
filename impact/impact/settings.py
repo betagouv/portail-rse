@@ -122,6 +122,7 @@ EMAIL_BACKEND = (
     else "django.core.mail.backends.console.EmailBackend"
 )
 DEFAULT_FROM_EMAIL = "ne-pas-repondre@impact.sega"
+CONTACT_EMAIL = os.getenv("CONTACT_EMAIL")
 
 # Users
 AUTH_USER_MODEL = "users.User"
