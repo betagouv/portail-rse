@@ -34,10 +34,16 @@ def contact(request):
     if request.method == "POST":
         form = ContactForm(request.POST)
         if form.is_valid():
-            from_email = form.cleaned_data["from_email"]
+            email = form.cleaned_data["email"]
             subject = form.cleaned_data["subject"]
             message = form.cleaned_data["message"]
-            if send_mail(subject, message, from_email, [settings.CONTACT_EMAIL]):
+            full_message = f"Ce message a été envoyé par {email} depuis {request.build_absolute_uri()} :\n\n{message}"
+            if send_mail(
+                subject,
+                full_message,
+                settings.DEFAULT_FROM_EMAIL,
+                [settings.CONTACT_EMAIL],
+            ):
                 success_message = "Votre message a bien été envoyé"
                 messages.success(request, success_message)
                 return redirect("contact")
@@ -46,7 +52,7 @@ def contact(request):
                 messages.error(request, error_message)
     else:
         if request.user.is_authenticated:
-            initial = {"from_email": request.user.email}
+            initial = {"email": request.user.email}
         else:
             initial = None
         form = ContactForm(initial=initial)

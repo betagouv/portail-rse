@@ -9,7 +9,7 @@
     </p>
     <form class="fr-mt-6w" action="{% url 'contact' %}" method="post">
         {% csrf_token %}
-        {% include 'snippets/input_field.html' with field=form.from_email %}
+        {% include 'snippets/input_field.html' with field=form.email %}
         {% include 'snippets/input_field.html' with field=form.subject %}
         {% include 'snippets/input_field.html' with field=form.message %}
         <input type="submit" value="Envoyer le message" class="fr-btn">

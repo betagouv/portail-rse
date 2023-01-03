@@ -24,13 +24,14 @@ def test_page_contact(client):
 
 def test_send_contact_mail(client, mailoutbox, settings):
     settings.CONTACT_EMAIL = "impact@example.com"
+    settings.DEFAULT_FROM_EMAIL = "boite-aux-lettres@example.com"
     subject = "Bonjour"
     message = "Bonjour Impact"
-    from_email = "user@example.com"
+    email = "user@example.com"
 
     response = client.post(
         "/contact",
-        data={"subject": subject, "message": message, "from_email": from_email},
+        data={"subject": subject, "message": message, "email": email},
         follow=True,
     )
 
@@ -39,10 +40,13 @@ def test_send_contact_mail(client, mailoutbox, settings):
     assert "Votre message a bien été envoyé" in content
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
-    assert mail.subject == subject
-    assert mail.body == message
-    assert mail.from_email == from_email
+    assert mail.from_email == "boite-aux-lettres@example.com"
     assert list(mail.to) == ["impact@example.com"]
+    assert mail.subject == subject
+    assert (
+        mail.body
+        == f"Ce message a été envoyé par {email} depuis http://testserver/contact :\n\n{message}"
+    )
 
 
 def test_page_mentions_legales(client):
