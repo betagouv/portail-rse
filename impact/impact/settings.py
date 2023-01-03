@@ -121,7 +121,7 @@ EMAIL_BACKEND = (
     if EMAIL_HOST
     else "django.core.mail.backends.console.EmailBackend"
 )
-DEFAULT_FROM_EMAIL = "ne-pas-repondre@impact.sega"
+DEFAULT_FROM_EMAIL = "ne-pas-repondre@impact.beta.gouv.fr"
 CONTACT_EMAIL = os.getenv("CONTACT_EMAIL")
 
 # Users
