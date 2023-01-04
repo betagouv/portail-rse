@@ -26,17 +26,31 @@ def test_create_user(client, db):
     assert user
 
 
-def test_create_user_with_entreprise(client, db):
+def test_create_user_with_real_siren(client, db):
     data = {
         "email": "user@example.com",
         "password1": "password",
         "password2": "password",
-        "siren": "123456789",
+        "siren": "130025265",  #  Dinum
     }
 
     response = client.post("/creation", data=data, follow=True)
 
     user = User.objects.get(email="user@example.com")
-    entreprise = Entreprise.objects.get(siren="123456789")
+    entreprise = Entreprise.objects.get(siren="130025265")
 
     assert user in entreprise.users.all()
+
+
+def test_create_user_with_invalid_siren(client, db):
+    data = {
+        "email": "user@example.com",
+        "password1": "password",
+        "password2": "password",
+        "siren": "123456abc",
+    }
+
+    response = client.post("/creation", data=data, follow=True)
+
+    assert User.objects.count() == 0
+    assert Entreprise.objects.count() == 0

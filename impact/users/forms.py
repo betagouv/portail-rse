@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, ReadOnlyPasswordHashField
 from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm
 from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
+from django.core.exceptions import ValidationError
 
 from public.forms import DsfrForm
 from entreprises.models import Entreprise
@@ -42,6 +43,16 @@ class UserCreationForm(DsfrForm, forms.ModelForm):
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError("Les mots de passe sont différents")
         return password2
+
+    def clean_siren(self):
+        cleaned_data = self.cleaned_data.get("siren")
+        if not cleaned_data:
+            return cleaned_data
+        try:
+            int(cleaned_data)
+        except ValueError:
+            raise ValidationError("Le siren est incorrect")
+        return cleaned_data
 
     def save(self, commit=True):
         # Save the provided password in hashed format
