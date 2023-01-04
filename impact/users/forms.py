@@ -46,8 +46,6 @@ class UserCreationForm(DsfrForm, forms.ModelForm):
 
     def clean_siren(self):
         cleaned_data = self.cleaned_data.get("siren")
-        if not cleaned_data:
-            return cleaned_data
         try:
             int(cleaned_data)
         except ValueError:
