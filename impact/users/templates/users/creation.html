@@ -11,8 +11,8 @@
                 {% include 'snippets/input_field.html' with field=form.email %}
                 {% include 'snippets/input_field.html' with field=form.password1 %}
                 {% include 'snippets/input_field.html' with field=form.password2 %}
-                {% include 'snippets/input_field.html' with field=form.acceptation_cgu %}
-                {% include 'snippets/input_field.html' with field=form.reception_actualites %}
+                {% include 'snippets/radio_field.html' with field=form.acceptation_cgu %}
+                {% include 'snippets/radio_field.html' with field=form.reception_actualites %}
                 <button type="submit" class="fr-btn">Créer mon compte</button>
             </form>
             <p class="fr-my-4w">
