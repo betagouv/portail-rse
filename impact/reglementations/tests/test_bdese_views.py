@@ -103,6 +103,20 @@ def test_bdese_step_use_categories_professionnelles_and_annees_a_remplir(
         assert str(annee) in content
 
 
+def test_bdese_step_fetch_data(bdese, authorized_user, client, mocker):
+    categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
+    bdese.categories_professionnelles = categories_professionnelles
+    bdese.save()
+    client.force_login(authorized_user)
+
+    fetch_data = mocker.patch("reglementations.views.get_bdese_data_from_egapro")
+
+    url = bdese_step_url(bdese, 1)
+    response = client.get(url)
+
+    fetch_data.assert_called_once_with(bdese.entreprise, bdese.annee)
+
+
 @pytest.fixture
 def bdese_300(bdese_factory):
     bdese = bdese_factory(bdese_class=BDESE_300)

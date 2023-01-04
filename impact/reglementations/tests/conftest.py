@@ -33,7 +33,7 @@ def bdese_factory(entreprise_factory):
             entreprise = entreprise_factory(
                 effectif="moyen" if bdese_class == BDESE_50_300 else "grand"
             )
-        bdese = bdese_class.objects.create(entreprise=entreprise)
+        bdese = bdese_class.objects.create(entreprise=entreprise, annee=2021)
         return bdese
 
     return create_bdese

@@ -329,9 +329,7 @@ def bdese(request, siren, annee, step):
                 )
 
     else:
-        fetched_data = get_bdese_data_from_egapro(
-            entreprise, derniere_annee_a_remplir_bdese()
-        )
+        fetched_data = get_bdese_data_from_egapro(entreprise, annee)
         form = bdese_form_factory(
             bdese,
             step,
