@@ -23,8 +23,9 @@ def test_page_contact(client):
 
 
 def test_send_contact_mail(client, mailoutbox, settings):
-    settings.CONTACT_EMAIL = "impact@example.com"
-    settings.DEFAULT_FROM_EMAIL = "boite-aux-lettres@example.com"
+    settings.DEFAULT_FROM_EMAIL = "impact@example.com"
+    settings.CONTACT_EMAIL = "contact@example.com"
+
     subject = "Bonjour"
     message = "Bonjour Impact"
     email = "user@example.com"
@@ -38,10 +39,12 @@ def test_send_contact_mail(client, mailoutbox, settings):
     assert response.status_code == 200
     content = response.content.decode("utf-8")
     assert "Votre message a bien été envoyé" in content
+
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
-    assert mail.from_email == "boite-aux-lettres@example.com"
-    assert list(mail.to) == ["impact@example.com"]
+    assert mail.from_email == "impact@example.com"
+    assert list(mail.to) == ["contact@example.com"]
+    assert list(mail.reply_to) == [email]
     assert mail.subject == subject
     assert (
         mail.body

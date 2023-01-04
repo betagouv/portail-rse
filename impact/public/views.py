@@ -3,7 +3,7 @@ import time
 import requests
 from django.conf import settings
 from django.contrib import messages
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 from django.shortcuts import render, redirect
 
 from .forms import EligibiliteForm, SirenForm, ContactForm
@@ -34,16 +34,17 @@ def contact(request):
     if request.method == "POST":
         form = ContactForm(request.POST)
         if form.is_valid():
-            email = form.cleaned_data["email"]
+            reply_to = form.cleaned_data["email"]
             subject = form.cleaned_data["subject"]
             message = form.cleaned_data["message"]
-            full_message = f"Ce message a été envoyé par {email} depuis {request.build_absolute_uri()} :\n\n{message}"
-            if send_mail(
+            full_message = f"Ce message a été envoyé par {reply_to} depuis {request.build_absolute_uri()} :\n\n{message}"
+            email = EmailMessage(
                 subject,
                 full_message,
-                settings.DEFAULT_FROM_EMAIL,
-                [settings.CONTACT_EMAIL],
-            ):
+                to=[settings.CONTACT_EMAIL],
+                reply_to=[reply_to],
+            )
+            if email.send():
                 success_message = "Votre message a bien été envoyé"
                 messages.success(request, success_message)
                 return redirect("contact")
