@@ -19,6 +19,8 @@ class UserAdmin(BaseUserAdmin):
                 "fields": (
                     "email",
                     "password",
+                    "prenom",
+                    "nom",
                     "acceptation_cgu",
                     "reception_actualites",
                 )
