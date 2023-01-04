@@ -27,7 +27,6 @@ class UserCreationForm(DsfrForm, forms.ModelForm):
     siren = forms.CharField(
         label="Votre numéro SIREN",
         help_text="Saisissez un numéro SIREN valide, disponible sur le Kbis de votre organisation",
-        required=False,
         min_length=9,
         max_length=9,
     )
@@ -65,13 +64,13 @@ class UserCreationForm(DsfrForm, forms.ModelForm):
         user.set_password(self.cleaned_data["password1"])
         user.acceptation_cgu = self.cleaned_data["acceptation_cgu"]
         user.reception_actualites = self.cleaned_data["reception_actualites"]
-        if siren := self.cleaned_data.get("siren"):
-            entreprise, _ = Entreprise.objects.get_or_create(siren=siren)
+        entreprise, _ = Entreprise.objects.get_or_create(
+            siren=self.cleaned_data.get("siren")
+        )
         if commit:
             user.save()
-            if siren:
-                entreprise.users.add(user)
-                entreprise.save()
+            entreprise.users.add(user)
+            entreprise.save()
         return user
 
 
