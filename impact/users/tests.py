@@ -1,3 +1,4 @@
+import pytest
 from django.urls import reverse
 
 from entreprises.models import Entreprise
@@ -11,14 +12,15 @@ def test_page_creation(client):
     assert "<!-- page creation compte -->" in str(response.content)
 
 
-def test_create_user_with_real_siren(client, db):
+@pytest.mark.parametrize("reception_actualites", ["checked", ""])
+def test_create_user_with_real_siren(reception_actualites, client, db):
     data = {
         "email": "user@example.com",
         "password1": "password",
         "password2": "password",
         "siren": "130025265",  #  Dinum
         "acceptation_cgu": "checked",
-        "reception_actualites": "checked",
+        "reception_actualites": reception_actualites,
     }
 
     response = client.post("/creation", data=data, follow=True)
@@ -30,11 +32,26 @@ def test_create_user_with_real_siren(client, db):
     entreprise = Entreprise.objects.get(siren="130025265")
     assert user.email == "user@example.com"
     assert user.acceptation_cgu == True
-    assert user.reception_actualites == True
+    assert user.reception_actualites == (reception_actualites == "checked")
     assert user in entreprise.users.all()
 
 
-def test_create_user_with_invalid_siren(client, db):
+def test_fail_to_create_user_without_cgu(client, db):
+    data = {
+        "email": "user@example.com",
+        "password1": "password",
+        "password2": "password",
+        "siren": "123456789",
+        "acceptation_cgu": "",
+    }
+
+    response = client.post("/creation", data=data, follow=True)
+
+    assert User.objects.count() == 0
+    assert Entreprise.objects.count() == 0
+
+
+def test_fail_to_create_user_with_invalid_siren(client, db):
     data = {
         "email": "user@example.com",
         "password1": "password",
