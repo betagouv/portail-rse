@@ -25,6 +25,9 @@ class UserManager(BaseUserManager):
         return user
 
 
+SURNAME_MAX_LENGTH = NAME_MAX_LENGTH = 50
+
+
 class User(AbstractBaseUser):
     email = models.EmailField(
         verbose_name="Email",
@@ -35,6 +38,8 @@ class User(AbstractBaseUser):
     is_staff = models.BooleanField(default=False)
     acceptation_cgu = models.BooleanField(default=False)
     reception_actualites = models.BooleanField(default=False)
+    prenom = models.CharField(max_length=SURNAME_MAX_LENGTH, default="")
+    nom = models.CharField(max_length=NAME_MAX_LENGTH, default="")
 
     objects = UserManager()
 

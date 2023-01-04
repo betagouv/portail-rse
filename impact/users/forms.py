@@ -37,6 +37,8 @@ class UserCreationForm(DsfrForm, forms.ModelForm):
         label="Je souhaite recevoir les actualités du projet Impact",
         required=False,
     )
+    prenom = forms.CharField(label="Prénom")
+    nom = forms.CharField(label="Nom")
 
     class Meta:
         model = User
@@ -62,6 +64,8 @@ class UserCreationForm(DsfrForm, forms.ModelForm):
         # Save the provided password in hashed format
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password1"])
+        user.prenom = self.cleaned_data["prenom"]
+        user.nom = self.cleaned_data["nom"]
         user.acceptation_cgu = self.cleaned_data["acceptation_cgu"]
         user.reception_actualites = self.cleaned_data["reception_actualites"]
         entreprise, _ = Entreprise.objects.get_or_create(
