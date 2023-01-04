@@ -13,7 +13,7 @@ class UserAdmin(BaseUserAdmin):
     list_display = ("email", "is_staff")
     list_filter = ("is_staff",)
     fieldsets = (
-        (None, {"fields": ("email", "password")}),
+        (None, {"fields": ("email", "password", "acceptation_cgu", "reception_actualites")}),
         ("Permissions", {"fields": ("is_staff",)}),
     )
     add_fieldsets = (

@@ -31,6 +31,13 @@ class UserCreationForm(DsfrForm, forms.ModelForm):
         min_length=9,
         max_length=9,
     )
+    acceptation_cgu = forms.BooleanField(
+        label="J’ai lu et j’accepte la politique de confidentialité et les CGUs"
+    )
+    reception_actualites = forms.BooleanField(
+        label="Je souhaite recevoir les actualités du projet Impact",
+        required=False,
+    )
 
     class Meta:
         model = User
@@ -56,6 +63,8 @@ class UserCreationForm(DsfrForm, forms.ModelForm):
         # Save the provided password in hashed format
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password1"])
+        user.acceptation_cgu = self.cleaned_data["acceptation_cgu"]
+        user.reception_actualites = self.cleaned_data["reception_actualites"]
         if siren := self.cleaned_data.get("siren"):
             entreprise, _ = Entreprise.objects.get_or_create(siren=siren)
         if commit:

@@ -17,6 +17,8 @@ def test_create_user_with_real_siren(client, db):
         "password1": "password",
         "password2": "password",
         "siren": "130025265",  #  Dinum
+        "acceptation_cgu": "checked",
+        "reception_actualites": "checked",
     }
 
     response = client.post("/creation", data=data, follow=True)
@@ -27,6 +29,8 @@ def test_create_user_with_real_siren(client, db):
     user = User.objects.get(email="user@example.com")
     entreprise = Entreprise.objects.get(siren="130025265")
     assert user.email == "user@example.com"
+    assert user.acceptation_cgu == True
+    assert user.reception_actualites == True
     assert user in entreprise.users.all()
 
 
