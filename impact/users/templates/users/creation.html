@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div class="fr-container fr-my-16w">
+<div class="fr-container fr-my-12w">
     <div class="fr-grid-row fr-grid-row--center">
         <div class="fr-col-8">
             <form action="{% url 'creation' %}" method="post">
@@ -13,7 +13,7 @@
                 {% include 'snippets/input_field.html' with field=form.password2 %}
                 <button type="submit" class="fr-btn">Créer mon compte</button>
             </form>
-            <p>
+            <p class="fr-my-4w">
                 En utilisant le présent formulaire, vous pouvez être amené à transmettre des données à caractère personnel,
                 notamment par les informations pouvant nous être transmises via l’identifiant SIREN que vous pourriez
                 renseigner.
