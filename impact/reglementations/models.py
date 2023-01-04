@@ -72,7 +72,7 @@ class CategoryField(models.JSONField):
 
 
 class AbstractBDESE(models.Model):
-    annee = models.IntegerField(default=2022)
+    annee = models.IntegerField()
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
     categories_professionnelles = models.JSONField(
         verbose_name="Catégories professionnelles",

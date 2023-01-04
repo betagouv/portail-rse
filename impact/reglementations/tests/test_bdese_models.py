@@ -70,7 +70,7 @@ def test_bdese_300(grande_entreprise):
     with pytest.raises(IntegrityError):
         BDESE_300.objects.create()
 
-    bdese = BDESE_300.objects.create(entreprise=grande_entreprise)
+    bdese = BDESE_300.objects.create(entreprise=grande_entreprise, annee=2022)
 
     assert bdese.annee == 2022
     assert bdese.entreprise == grande_entreprise
@@ -98,7 +98,7 @@ def test_bdese_50_300(grande_entreprise):
     with pytest.raises(IntegrityError):
         BDESE_50_300.objects.create()
 
-    bdese = BDESE_50_300.objects.create(entreprise=grande_entreprise)
+    bdese = BDESE_50_300.objects.create(entreprise=grande_entreprise, annee=2022)
 
     assert bdese.annee == 2022
     assert bdese.entreprise == grande_entreprise

@@ -81,7 +81,7 @@ def test_calculate_bdese_reglementation_more_than_300_employees(
     )
     assert not bdese.secondary_actions
 
-    BDESE_300.objects.create(entreprise=entreprise)
+    BDESE_300.objects.create(entreprise=entreprise, annee=2022)
     bdese = BDESEReglementation.calculate(entreprise, 2022)
 
     assert bdese.status == BDESEReglementation.STATUS_EN_COURS
