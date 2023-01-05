@@ -11,6 +11,16 @@
                 {% include 'snippets/input_field.html' with field=form.siren %}
                 <button type="submit" class="fr-btn">Rechercher</button>
             </form>
+            <p class="fr-my-4w">
+                En utilisant le présent formulaire, vous pouvez être amené à transmettre des données à caractère personnel,
+                notamment par les informations pouvant nous être transmises via l’identifiant SIREN que vous pourriez
+                renseigner.
+                <br>
+                Ces informations sont nécessaires à l’exercice de la mission d’intérêt public que le service Impact met en œuvre.
+                Dans le cadre du traitement de vos données à caractère personnel, vous trouverez l’identité du responsable
+                de traitement, ses finalités et les modalités d’exercice de vos droits sur la page
+                <a href="{% url 'politique_confidentialite' %}">Politique de confidentialité</a>.
+            </p>
         </div>
     </div>
    
