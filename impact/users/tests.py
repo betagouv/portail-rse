@@ -2,6 +2,7 @@ import pytest
 from django.urls import reverse
 
 from entreprises.models import Entreprise
+from users.forms import UserCreationForm
 from users.models import User
 
 
@@ -30,6 +31,11 @@ def test_create_user_with_real_siren(reception_actualites, client, db):
     assert response.status_code == 200
     assert response.redirect_chain == [(reverse("reglementations"), 302)]
 
+    assert (
+        "Votre compte a bien été créé. Vous êtes maintenant connecté."
+        in response.content.decode("utf-8")
+    )
+
     user = User.objects.get(email="user@example.com")
     entreprise = Entreprise.objects.get(siren="130025265")
     assert user.email == "user@example.com"
@@ -40,8 +46,10 @@ def test_create_user_with_real_siren(reception_actualites, client, db):
     assert user in entreprise.users.all()
 
 
-def test_fail_to_create_user_without_cgu(client, db):
+def test_fail_to_create_user_without_cgu(db):
     data = {
+        "prenom": "Alice",
+        "nom": "User",
         "email": "user@example.com",
         "password1": "password",
         "password2": "password",
@@ -49,21 +57,24 @@ def test_fail_to_create_user_without_cgu(client, db):
         "acceptation_cgu": "",
     }
 
-    response = client.post("/creation", data=data, follow=True)
+    bound_form = UserCreationForm(data)
 
-    assert User.objects.count() == 0
-    assert Entreprise.objects.count() == 0
+    assert not bound_form.is_valid()
+    assert bound_form.errors["acceptation_cgu"] == ["Ce champ est obligatoire."]
 
 
-def test_fail_to_create_user_with_invalid_siren(client, db):
+def test_fail_to_create_user_with_invalid_siren(db):
     data = {
+        "prenom": "Alice",
+        "nom": "User",
         "email": "user@example.com",
         "password1": "password",
         "password2": "password",
         "siren": "123456abc",
+        "acceptation_cgu": "checked",
     }
 
-    response = client.post("/creation", data=data, follow=True)
+    bound_form = UserCreationForm(data)
 
-    assert User.objects.count() == 0
-    assert Entreprise.objects.count() == 0
+    assert not bound_form.is_valid()
+    assert bound_form.errors["siren"] == ["Le siren est incorrect"]

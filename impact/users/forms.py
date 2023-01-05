@@ -31,18 +31,16 @@ class UserCreationForm(DsfrForm, forms.ModelForm):
         max_length=9,
     )
     acceptation_cgu = forms.BooleanField(
-        label="J’ai lu et j’accepte la politique de confidentialité et les CGUs"
+        label="J’ai lu et j’accepte la politique de confidentialité et les CGUs",
+        required=True,
     )
-    reception_actualites = forms.BooleanField(
-        label="Je souhaite recevoir les actualités du projet Impact",
-        required=False,
-    )
-    prenom = forms.CharField(label="Prénom")
-    nom = forms.CharField(label="Nom")
 
     class Meta:
         model = User
-        fields = ("email",)
+        fields = ("email", "acceptation_cgu", "reception_actualites", "prenom", "nom")
+        labels = {
+            "reception_actualites": "Je souhaite recevoir les actualités du projet Impact",
+        }
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -64,10 +62,6 @@ class UserCreationForm(DsfrForm, forms.ModelForm):
         # Save the provided password in hashed format
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password1"])
-        user.prenom = self.cleaned_data["prenom"]
-        user.nom = self.cleaned_data["nom"]
-        user.acceptation_cgu = self.cleaned_data["acceptation_cgu"]
-        user.reception_actualites = self.cleaned_data["reception_actualites"]
         entreprise, _ = Entreprise.objects.get_or_create(
             siren=self.cleaned_data.get("siren")
         )
