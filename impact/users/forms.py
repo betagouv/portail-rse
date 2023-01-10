@@ -5,7 +5,7 @@ from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
 from django.core.exceptions import ValidationError
 
 from public.forms import DsfrForm
-from entreprises.models import Entreprise
+from entreprises.models import Entreprise, Habilitation
 from .models import User
 
 
@@ -34,6 +34,7 @@ class UserCreationForm(DsfrForm, forms.ModelForm):
         label="J’ai lu et j’accepte la politique de confidentialité et les CGUs",
         required=True,
     )
+    fonctions = forms.CharField(label="Fonction(s) dans la société")
 
     class Meta:
         model = User
@@ -68,7 +69,11 @@ class UserCreationForm(DsfrForm, forms.ModelForm):
         )
         if commit:
             user.save()
-            entreprise.users.add(user)
+            Habilitation.objects.create(
+                user=user,
+                entreprise=entreprise,
+                fonctions=self.cleaned_data["fonctions"],
+            )
             entreprise.save()
         return user
 

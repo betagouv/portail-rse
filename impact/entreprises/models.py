@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 
 RAISON_SOCIALE_MAX_LENGTH = 250
+FONCTIONS_MAX_LENGTH = 250
 
 
 class Entreprise(models.Model):
@@ -13,7 +14,7 @@ class Entreprise(models.Model):
     ]
 
     siren = models.CharField(max_length=9, unique=True)
-    users = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL, through="Habilitation")
     effectif = models.CharField(
         max_length=9,
         choices=EFFECTIF_CHOICES,
@@ -24,3 +25,14 @@ class Entreprise(models.Model):
 
     def __str__(self):
         return f"{self.siren} {self.raison_sociale}"
+
+
+class Habilitation(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
+    fonctions = models.CharField(
+        verbose_name="Fonction(s) dans la société",
+        max_length=FONCTIONS_MAX_LENGTH,
+        null=True,
+        blank=True,
+    )

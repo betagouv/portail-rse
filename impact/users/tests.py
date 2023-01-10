@@ -1,7 +1,7 @@
 import pytest
 from django.urls import reverse
 
-from entreprises.models import Entreprise
+from entreprises.models import Entreprise, Habilitation
 from users.forms import UserCreationForm
 from users.models import User
 
@@ -24,6 +24,7 @@ def test_create_user_with_real_siren(reception_actualites, client, db):
         "siren": "130025265",  #  Dinum
         "acceptation_cgu": "checked",
         "reception_actualites": reception_actualites,
+        "fonctions": "Présidente",
     }
 
     response = client.post("/creation", data=data, follow=True)
@@ -44,6 +45,10 @@ def test_create_user_with_real_siren(reception_actualites, client, db):
     assert user.acceptation_cgu == True
     assert user.reception_actualites == (reception_actualites == "checked")
     assert user in entreprise.users.all()
+    assert (
+        Habilitation.objects.get(user=user, entreprise=entreprise).fonctions
+        == "Présidente"
+    )
 
 
 def test_fail_to_create_user_without_cgu(db):
@@ -55,6 +60,7 @@ def test_fail_to_create_user_without_cgu(db):
         "password2": "password",
         "siren": "123456789",
         "acceptation_cgu": "",
+        "fonctions": "Présidente",
     }
 
     bound_form = UserCreationForm(data)
@@ -72,6 +78,7 @@ def test_fail_to_create_user_with_invalid_siren(db):
         "password2": "password",
         "siren": "123456abc",
         "acceptation_cgu": "checked",
+        "fonctions": "Présidente",
     }
 
     bound_form = UserCreationForm(data)

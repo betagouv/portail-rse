@@ -21,6 +21,10 @@ def creation(request):
             )
             messages.success(request, success_message)
             return redirect("reglementations")
+        else:
+            messages.error(
+                request, "La création a échoué car le formulaire contient des erreurs."
+            )
     else:
         siren = request.session.get("siren")
         form = UserCreationForm(initial={"siren": siren})
