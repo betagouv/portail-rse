@@ -28,7 +28,7 @@ def widget_type(field):
 
 @register.filter
 def toggle_id(field):
-    return field.id_for_label if field.id_for_label else slugify(field.label)
+    return f"toggle-{field.id_for_label}"
 
 
 @register.filter

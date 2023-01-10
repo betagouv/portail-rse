@@ -11,13 +11,13 @@
     <div class="fr-col-3">
         <div class="fr-toggle">
             {% with toggle_id=field|toggle_id %}
-            <input type="checkbox" class="fr-toggle__input" aria-describedby="toggle-{{ toggle_id }}-hint-text" id="toggle-{{ toggle_id }}">
-            <label class="fr-toggle__label" for="toggle-{{ toggle_id }}" data-fr-checked-label="Activé" data-fr-unchecked-label="Désactivé">Indicateur externe</label>
+            <input type="checkbox" class="fr-toggle__input" aria-describedby="{{ toggle_id }}-hint-text" id="{{ toggle_id }}">
+            <label class="fr-toggle__label" for="{{ toggle_id }}" data-fr-checked-label="Activé" data-fr-unchecked-label="Désactivé">Indicateur externe</label>
 
             <script>
-                document.getElementById("toggle-{{ toggle_id }}").addEventListener("change", () => {
+                document.getElementById("{{ toggle_id }}").addEventListener("change", () => {
 
-                    if (document.getElementById("toggle-{{ toggle_id }}").checked) {
+                    if (document.getElementById("{{ toggle_id }}").checked) {
                         console.log("Checkbox is checked..");
                         document.getElementById("{{ field.id_for_label }}").disabled = true;
                     } else {
