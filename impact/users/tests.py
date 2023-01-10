@@ -19,8 +19,8 @@ def test_create_user_with_real_siren(reception_actualites, client, db):
         "prenom": "Alice",
         "nom": "User",
         "email": "user@example.com",
-        "password1": "f2c5aed2-2173-4ad3-80d1-6f421a551222",
-        "password2": "f2c5aed2-2173-4ad3-80d1-6f421a551222",
+        "password1": "Passw0rd!123",
+        "password2": "Passw0rd!123",
         "siren": "130025265",  #  Dinum
         "acceptation_cgu": "checked",
         "reception_actualites": reception_actualites,
@@ -56,8 +56,8 @@ def test_fail_to_create_user_without_cgu(db):
         "prenom": "Alice",
         "nom": "User",
         "email": "user@example.com",
-        "password1": "f2c5aed2-2173-4ad3-80d1-6f421a551222",
-        "password2": "f2c5aed2-2173-4ad3-80d1-6f421a551222",
+        "password1": "Passw0rd!123",
+        "password2": "Passw0rd!123",
         "siren": "123456789",
         "acceptation_cgu": "",
         "fonctions": "Présidente",
@@ -74,8 +74,8 @@ def test_fail_to_create_user_with_invalid_siren(db):
         "prenom": "Alice",
         "nom": "User",
         "email": "user@example.com",
-        "password1": "f2c5aed2-2173-4ad3-80d1-6f421a551222",
-        "password2": "f2c5aed2-2173-4ad3-80d1-6f421a551222",
+        "password1": "Passw0rd!123",
+        "password2": "Passw0rd!123",
         "siren": "123456abc",
         "acceptation_cgu": "checked",
         "fonctions": "Présidente",
@@ -85,3 +85,25 @@ def test_fail_to_create_user_with_invalid_siren(db):
 
     assert not bound_form.is_valid()
     assert bound_form.errors["siren"] == ["Le siren est incorrect"]
+
+
+def test_fail_to_create_user_with_weak_password(db):
+    data = {
+        "prenom": "Alice",
+        "nom": "User",
+        "email": "user@example.com",
+        "password1": "password",
+        "password2": "password",
+        "siren": "123456789",
+        "acceptation_cgu": "checked",
+        "fonctions": "Présidente",
+    }
+
+    bound_form = UserCreationForm(data)
+
+    assert not bound_form.is_valid()
+    assert bound_form.errors["password1"] == [
+        "Ce mot de passe est trop court. Il doit contenir au minimum 12 caractères.",
+        "Ce mot de passe est trop courant.",
+        "Le mot de passe doit contenir au moins une minuscule, une majuscule, un chiffre et un caractère spécial",
+    ]
