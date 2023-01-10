@@ -2,8 +2,14 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 
+from entreprises.models import Habilitation
 from .models import User
 from .forms import UserChangeForm, UserCreationForm
+
+
+class HabilitationInline(admin.TabularInline):
+    model = Habilitation
+    extra = 1
 
 
 class UserAdmin(BaseUserAdmin):
@@ -40,6 +46,7 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ("email",)
     ordering = ("email",)
     filter_horizontal = ()
+    inlines = (HabilitationInline,)
 
 
 admin.site.register(User, UserAdmin)
