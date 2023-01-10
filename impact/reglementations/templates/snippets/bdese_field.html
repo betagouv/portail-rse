@@ -13,8 +13,24 @@
             {% with toggle_id=field|toggle_id %}
             <input type="checkbox" class="fr-toggle__input" aria-describedby="toggle-{{ toggle_id }}-hint-text" id="toggle-{{ toggle_id }}">
             <label class="fr-toggle__label" for="toggle-{{ toggle_id }}" data-fr-checked-label="Activé" data-fr-unchecked-label="Désactivé">Indicateur externe</label>
+
+            <script>
+                document.getElementById("toggle-{{ toggle_id }}").addEventListener("change", () => {
+
+                    if (document.getElementById("toggle-{{ toggle_id }}").checked) {
+                        console.log("Checkbox is checked..");
+                        document.getElementById("{{ field.id_for_label }}").disabled = true;
+                    } else {
+                        console.log("Checkbox is not checked..");
+                        document.getElementById("{{ field.id_for_label }}").disabled = false;
+                    }
+
+                })
+            </script>
             {% endwith %}
         </div>
     </div>        
 </div>
+
+
 {% endblock %}
