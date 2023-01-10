@@ -25,7 +25,7 @@ class UserCreationForm(DsfrForm, forms.ModelForm):
         label="Confirmation du mot de passe", widget=forms.PasswordInput
     )
     siren = forms.CharField(
-        label="Votre numéro SIREN",
+        label="Numéro SIREN",
         help_text="Saisissez un numéro SIREN valide, disponible sur le Kbis de votre organisation",
         min_length=9,
         max_length=9,
@@ -39,7 +39,8 @@ class UserCreationForm(DsfrForm, forms.ModelForm):
         model = User
         fields = ("email", "acceptation_cgu", "reception_actualites", "prenom", "nom")
         labels = {
-            "reception_actualites": "Je souhaite recevoir les actualités du projet Impact",
+            "prenom": "Prénom",
+            "reception_actualites": "Je souhaite recevoir les actualités du projet Impact (optionnel)",
         }
 
     def clean_password2(self):

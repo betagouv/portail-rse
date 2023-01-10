@@ -4,7 +4,9 @@
 
 <div class="fr-container fr-my-12w">
     <div class="fr-grid-row fr-grid-row--center">
-        <div class="fr-col-8">
+        <div class="fr-col-12 fr-col-md-10 fr-col-lg-8">
+            <h1>Création de compte sur Projet Impact</h1>
+            <p>Sauf mention contraire “(optionnel)” dans le label, tous les champs sont obligatoires.</p>
             <form action="{% url 'creation' %}" method="post">
                 {% csrf_token %}
                 {% include 'snippets/input_field.html' with field=form.siren %}
@@ -15,7 +17,7 @@
                 {% include 'snippets/input_field.html' with field=form.nom %}
                 {% include 'snippets/radio_field.html' with field=form.acceptation_cgu %}
                 {% include 'snippets/radio_field.html' with field=form.reception_actualites %}
-                <button type="submit" class="fr-btn">Créer mon compte</button>
+                <button type="submit" class="fr-btn fr-mt-2w">Créer mon compte</button>
             </form>
             <p class="fr-my-4w">
                 En utilisant le présent formulaire, vous pouvez être amené à transmettre des données à caractère personnel,
