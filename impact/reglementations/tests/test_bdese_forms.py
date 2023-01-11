@@ -4,6 +4,7 @@ import pytest
 from reglementations.forms import (
     bdese_form_factory,
     categories_professionnelles_form_factory,
+    BDESE_300_FIELDS,
 )
 from reglementations.models import BDESE_300, BDESE_50_300
 
@@ -18,7 +19,8 @@ def bdese_50_300(bdese_factory):
     return bdese_factory(BDESE_50_300)
 
 
-def test_bdese_form_step_1_with_new_bdese_300_instance(bdese_300):
+@pytest.mark.parametrize("step", range(1, 11))
+def test_bdese_form_step_with_new_bdese_300_instance(step, bdese_300):
     categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
     categories_professionnelles_detaillees = [
         "catégorie détaillée 1",
@@ -29,17 +31,17 @@ def test_bdese_form_step_1_with_new_bdese_300_instance(bdese_300):
     ]
     form = bdese_form_factory(
         bdese_300,
-        1,
+        step,
         categories_professionnelles,
         categories_professionnelles_detaillees,
     )
 
     assert form.instance == bdese_300
-    assert len(form.fields) == 110
+    assert len(form.fields) == len(BDESE_300_FIELDS[step])
     assert "annee" not in form.fields
     assert "entreprise" not in form.fields
-    assert "effectif_total" in form.fields
-    assert "evolution_amortissement" not in form.fields
+    for field in BDESE_300_FIELDS[step]:
+        assert field in form.fields
 
     for field in [
         field for field in form.fields if field in bdese_300.category_fields()
@@ -50,11 +52,16 @@ def test_bdese_form_step_1_with_new_bdese_300_instance(bdese_300):
     for field in form.fields:
         if field == "unite_absenteisme":
             assert form[field].value() == "J"
+        elif field == "remuneration_moyenne_ou_mediane":
+            assert form[field].value() == "moyenne"
         else:
             assert not form[field].value()
 
     bound_form = bdese_form_factory(
-        bdese_300, 1, categories_professionnelles, data={"unite_absenteisme": "J"}
+        bdese_300,
+        step,
+        categories_professionnelles,
+        data={"unite_absenteisme": "J", "remuneration_moyenne_ou_mediane": "moyenne"},
     )
 
     assert bound_form.is_valid()
