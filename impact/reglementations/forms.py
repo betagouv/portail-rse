@@ -157,13 +157,13 @@ def bdese_form_factory(
                 for category_field in bdese.__class__.category_fields()
             }
 
-        def __init__(self, instance, fetched_data=None, *args, **kwargs):
+        def __init__(self, bdese, fetched_data=None, *args, **kwargs):
             if fetched_data:
                 if "initial" not in kwargs:
                     kwargs["initial"] = {}
                 kwargs["initial"].update(fetched_data)
-            super().__init__(instance=instance, *args, **kwargs)
-            if step == "all" or instance.step_is_complete(step):
+            super().__init__(*args, instance=bdese, **kwargs)
+            if step == "all" or bdese.step_is_complete(step):
                 for field in self.fields:
                     self.fields[field].disabled = True
             elif fetched_data:
@@ -173,7 +173,7 @@ def bdese_form_factory(
                         self.fields[field].disabled = True
             self.fields["indicateurs_externes_in_step"].initial = [
                 indicateur
-                for indicateur in instance.indicateurs_externes
+                for indicateur in bdese.indicateurs_externes
                 if indicateur in self.fields
             ]
 
