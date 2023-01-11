@@ -1,3 +1,5 @@
+import json
+
 from django import forms
 import pytest
 
@@ -38,11 +40,12 @@ def test_bdese_form_step_with_new_bdese_300_instance(step, bdese_300):
     )
 
     assert form.instance == bdese_300
-    assert len(form.fields) == len(BDESE_300_FIELDS[step])
+    assert len(form.fields) == len(BDESE_300_FIELDS[step]) + 1
     assert "annee" not in form.fields
     assert "entreprise" not in form.fields
     for field in BDESE_300_FIELDS[step]:
         assert field in form.fields
+    assert "indicateurs_externes_in_step" in form.fields
 
     for field in [
         field for field in form.fields if field in bdese_300.category_fields()
@@ -55,6 +58,8 @@ def test_bdese_form_step_with_new_bdese_300_instance(step, bdese_300):
             assert form[field].value() == "J"
         elif field == "remuneration_moyenne_ou_mediane":
             assert form[field].value() == "moyenne"
+        elif field == "indicateurs_externes_in_step":
+            assert form[field].value() == json.dumps([])
         else:
             assert not form[field].value()
 
@@ -65,7 +70,7 @@ def test_bdese_form_step_with_new_bdese_300_instance(step, bdese_300):
         data={"unite_absenteisme": "J", "remuneration_moyenne_ou_mediane": "moyenne"},
     )
 
-    assert bound_form.is_valid()
+    assert bound_form.is_valid(), bound_form.errors
 
 
 def test_fields_of_complete_step_are_disabled(bdese):
@@ -88,16 +93,63 @@ def test_form_is_initialized_with_fetched_data(bdese_300):
     assert form["nombre_femmes_plus_hautes_remunerations"].value() == 10
 
 
+@pytest.mark.parametrize("step", range(1, 11))
+def test_indicateurs_externes_in_step_field(step, bdese_300):
+    # tente d'ajouter un champ de l'étape en cours dans les indicateurs externes
+    # et un champ d'une autre étape qui est ignoré
+    field_in_step = BDESE_300_FIELDS[step][0]
+    another_step = (step + 1) % len(bdese_300.STEPS)
+    field_in_another_step = BDESE_300_FIELDS[another_step][0]
+
+    form = bdese_form_factory(
+        bdese_300,
+        step,
+        data={
+            "unite_absenteisme": "J",
+            "remuneration_moyenne_ou_mediane": "moyenne",
+            "indicateurs_externes_in_step": [field_in_step, field_in_another_step],
+        },
+    )
+    form.save()
+
+    bdese_300.refresh_from_db()
+    assert bdese_300.indicateurs_externes == [field_in_step]
+
+    # les indicateurs externes de l'étape sont correctement inialisés
+    bdese_300.indicateurs_externes = [field_in_step, field_in_another_step]
+    bdese_300.save()
+
+    form = bdese_form_factory(bdese_300, step)
+
+    assert form["indicateurs_externes_in_step"].value() == json.dumps([field_in_step])
+
+    # supprime l'indicateur externe de l'étape
+    form = bdese_form_factory(
+        bdese_300,
+        step,
+        data={
+            "unite_absenteisme": "J",
+            "remuneration_moyenne_ou_mediane": "moyenne",
+            "indicateurs_externes_in_step": [],
+        },
+    )
+    form.save()
+
+    bdese_300.refresh_from_db()
+    assert bdese_300.indicateurs_externes == [field_in_another_step]
+
+
 @pytest.mark.parametrize("step", [1])
 def test_bdese_form_with_new_bdese_50_300_instance(step, bdese_50_300):
     categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
     form = bdese_form_factory(bdese_50_300, step, categories_professionnelles)
 
     assert form.instance == bdese_50_300
-    assert len(form.fields) == len(BDESE_50_300_FIELDS[step])
+    assert len(form.fields) == len(BDESE_50_300_FIELDS[step]) + 1
     assert "annee" not in form.fields
     assert "entreprise" not in form.fields
     assert "effectif_mensuel" in form.fields
+    assert "indicateurs_externes_in_step" in form.fields
 
     for field in [
         field for field in form.fields if field in bdese_50_300.category_fields()
@@ -105,13 +157,16 @@ def test_bdese_form_with_new_bdese_50_300_instance(step, bdese_50_300):
         assert isinstance(form.fields[field], forms.MultiValueField)
 
     for field in form.fields:
-        assert not form[field].value()
+        if field == "indicateurs_externes_in_step":
+            assert form[field].value() == json.dumps([])
+        else:
+            assert not form[field].value()
 
     bound_form = bdese_form_factory(
         bdese_50_300, step, categories_professionnelles, data={}
     )
 
-    assert bound_form.is_valid()
+    assert bound_form.is_valid(), bound_form.errors
 
 
 def categories_form_data(categories_pro, categories_pro_detaillees=None):

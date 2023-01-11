@@ -147,6 +147,8 @@ def bdese_form_factory(
             return None
 
     class BDESEForm(forms.ModelForm, DsfrForm):
+        indicateurs_externes_in_step = forms.JSONField(required=False)
+
         class Meta:
             model = bdese.__class__
             fields = []
@@ -169,6 +171,41 @@ def bdese_form_factory(
                     if field in self.fields:
                         self.fields[field].help_text += " (valeur extraite de EgaPro)"
                         self.fields[field].disabled = True
+            self.fields["indicateurs_externes_in_step"].initial = [
+                indicateur
+                for indicateur in instance.indicateurs_externes
+                if indicateur in self.fields
+            ]
+
+        def save(self, commit=True):
+            bdese = super().save(commit=False)
+            if "indicateurs_externes_in_step" in self.changed_data:
+                old_indicateurs_externes = bdese.indicateurs_externes
+                new_indicateurs_externes = self.update_indicateurs_externes(
+                    self.cleaned_data["indicateurs_externes_in_step"] or [],
+                    old_indicateurs_externes,
+                )
+                bdese.indicateurs_externes = new_indicateurs_externes
+            if commit:
+                bdese.save()
+            return bdese
+
+        def update_indicateurs_externes(
+            self, indicateurs_externes_in_step: list, old_indicateurs_externes: list
+        ) -> list:
+            new_indicateurs_externes = old_indicateurs_externes
+            for field in self.fields:
+                if (
+                    field in indicateurs_externes_in_step
+                    and field not in old_indicateurs_externes
+                ):
+                    new_indicateurs_externes.append(field)
+                elif (
+                    field in old_indicateurs_externes
+                    and field not in indicateurs_externes_in_step
+                ):
+                    new_indicateurs_externes.remove(field)
+            return new_indicateurs_externes
 
     bdese_model_class = bdese.__class__
     Form = forms.modelform_factory(
