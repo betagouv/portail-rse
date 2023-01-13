@@ -10,7 +10,7 @@ export default defineConfig({
     manifest: true,
     emptyOutDir: true,
     rollupOptions: {
-      input: "src/main.js"
+      input: "front/src/main.js"
     }
   }
 })

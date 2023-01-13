@@ -9,3 +9,5 @@ impact/static/svelte
 *.sqlite3
 
 .vscode
+
+node_modules
