@@ -188,9 +188,10 @@ def test_save_step_as_draft_success(bdese_with_categories, authorized_user, clie
     )
 
     url = bdese_step_url(bdese, 1)
-    response = client.post(url, correct_data)
+    response = client.post(url, correct_data, follow=True)
 
     assert response.status_code == 200
+    assert response.redirect_chain == [(url, 302)]
 
     content = response.content.decode("utf-8")
     assert "Étape enregistrée" in content

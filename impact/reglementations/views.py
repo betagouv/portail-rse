@@ -321,7 +321,7 @@ def bdese(request, siren, annee, step):
                 if "save_complete" in request.POST:
                     bdese.mark_step_as_complete(step)
                     bdese.save()
-                    return redirect("bdese", siren=siren, annee=annee, step=step)
+                return redirect("bdese", siren=siren, annee=annee, step=step)
             else:
                 messages.error(
                     request,
