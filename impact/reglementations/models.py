@@ -2378,7 +2378,7 @@ class BDESE_50_300(AbstractBDESE):
         blank=True,
     )
     mecenat_verse = models.IntegerField(
-        verbose_name="Mécénat",
+        verbose_name="Mécénat versé",
         null=True,
         blank=True,
     )
@@ -2430,7 +2430,7 @@ class BDESE_50_300(AbstractBDESE):
 
     # 7° E - Mécénat
     mecenat_recu = models.IntegerField(
-        verbose_name="Mécénat",
+        verbose_name="Mécénat reçu",
         null=True,
         blank=True,
     )

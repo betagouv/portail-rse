@@ -8,6 +8,7 @@ from reglementations.forms import (
     categories_professionnelles_form_factory,
     BDESE_50_300_FIELDS,
     BDESE_300_FIELDS,
+    BDESE_50_300_FIELDS,
 )
 from reglementations.models import BDESE_300, BDESE_50_300
 
@@ -146,10 +147,9 @@ def test_bdese_form_with_new_bdese_50_300_instance(step, bdese_50_300):
 
     assert form.instance == bdese_50_300
     assert len(form.fields) == len(BDESE_50_300_FIELDS[step]) + 1
-    assert "annee" not in form.fields
-    assert "entreprise" not in form.fields
-    assert "effectif_mensuel" in form.fields
     assert "indicateurs_externes_in_step" in form.fields
+    for field in BDESE_50_300_FIELDS[step]:
+        assert field in form.fields
 
     for field in [
         field for field in form.fields if field in bdese_50_300.category_fields()
