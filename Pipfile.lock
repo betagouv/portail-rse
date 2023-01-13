@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "00edb1b42530025b2a598bbc26af5f2831d30b894e659bf1963988fde9233027"
+            "sha256": "e147fbb903b215699658d21492a9eba9b9ada0ab4f6ef6e57cf15f1ac875ad85"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -279,7 +279,6 @@
                 "sha256:f9d0c5c045a3ca9bedfc35dca8526798eb91a07aa7a2c0fee134c6c6f321cbd7",
                 "sha256:ff6f3db31555657f3163b15a6b7c6938d08df7adbfc9dd13d9d19edad678f1e8"
             ],
-            "markers": "python_full_version >= '3.6.0'",
             "version": "==3.0.1"
         },
         "cssselect2": {
@@ -305,6 +304,14 @@
             ],
             "index": "pypi",
             "version": "==4.1.6"
+        },
+        "django-vite": {
+            "hashes": [
+                "sha256:5a2e11a9f08a2a0a69c9a7c637a3254ad0c8dd01e07cb40de09a3a180ed99791",
+                "sha256:f11f4747183b884ee4e6c2ea12f0aa96a846574ee7344c05ac96b4fa89309535"
+            ],
+            "index": "pypi",
+            "version": "==2.0.2"
         },
         "django-weasyprint": {
             "hashes": [

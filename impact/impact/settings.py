@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.postgres",
+    "django_vite",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -102,6 +103,14 @@ LANGUAGE_CODE = "fr-FR"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
+
+# Django-vite configuration for static files build with vite
+# https://github.com/MrBin99/django-vite
+DJANGO_VITE_ASSETS_PATH = Path(BASE_DIR, "static", "svelte")
+DJANGO_VITE_DEV_MODE = DEBUG
+DJANGO_VITE_MANIFEST_PATH = Path(DJANGO_VITE_ASSETS_PATH, "manifest.json")
+DJANGO_VITE_DEV_SERVER_PORT = 5173
+DJANGO_VITE_STATIC_URL_PREFIX = "svelte"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/

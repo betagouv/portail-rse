@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="fr" data-fr-scheme="system">
     {% load static %}
+    {% load django_vite %}
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -14,6 +15,9 @@
         <link rel="manifest" href="{% static 'dsfr-1.7.2/favicon/manifest.webmanifest' %}" crossorigin="use-credentials">
 
         <title>Impact</title>
+
+        {% vite_hmr_client %}
+        {% vite_asset 'src/main.js' %}
 
         <!-- Matomo -->
         <script>
