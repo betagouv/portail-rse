@@ -2659,7 +2659,7 @@ class ToggleInput extends api.core.Instance {
   }
 
   get isChecked () {
-    return this.hasAttribute('checked');
+    return this.node.checked;
   }
 }
 
