@@ -1,8 +1,7 @@
-import './app.css'
-import App from './App.svelte'
+import Counter from './lib/Counter.svelte'
 
-const app = new App({
-  target: document.getElementById('app'),
+const counter = new Counter({
+  target: document.getElementById('counter'),
 })
 
-export default app
+export default counter
