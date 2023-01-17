@@ -12,5 +12,8 @@ export default defineConfig({
     rollupOptions: {
       input: "front/src/main.js"
     }
+  },
+  server: {
+    origin: "http://localhost:5173"
   }
 })
