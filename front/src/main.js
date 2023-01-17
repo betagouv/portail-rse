@@ -1,9 +1,4 @@
-import Counter from './lib/Counter.svelte'
 import IndicateurExterne from './lib/IndicateurExterne.svelte'
-
-const counter = new Counter({
-  target: document.getElementById('counter'),
-})
 
 for (var indicateurExterne of document.getElementsByClassName("svelte-indicateur-externe")) {
   new IndicateurExterne({
@@ -14,5 +9,3 @@ for (var indicateurExterne of document.getElementsByClassName("svelte-indicateur
     }
   })
 }
-
-export default counter
