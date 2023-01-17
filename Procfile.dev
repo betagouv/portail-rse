@@ -1,0 +1,2 @@
+web: python impact/manage.py runserver
+front: npm run dev

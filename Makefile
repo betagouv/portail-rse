@@ -2,7 +2,7 @@ include .env
 export
 
 run:
-	pipenv run python impact/manage.py runserver
+	honcho --procfile Procfile.dev start
 
 install:
 	pipenv install -d

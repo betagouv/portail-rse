@@ -19,6 +19,7 @@ pytest-django = "*"
 pytest-mock = "*"
 freezegun = "*"
 pre-commit = "*"
+honcho = "*"
 
 [requires]
 python_version = "3.10"
