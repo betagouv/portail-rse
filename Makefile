@@ -6,6 +6,7 @@ run:
 
 install:
 	pipenv install -d
+	npm install
 	pipenv run pre-commit install
 
 shell:
