@@ -12,6 +12,7 @@
 
             <form action="{% url 'bdese' siren annee 1 %}" method="post">
                 {% csrf_token %}
+                {{ form.indicateurs_externes_in_step.as_hidden }}
 
                 <section class="fr-accordion">
                     <h3 class="fr-accordion__title">
@@ -19,25 +20,25 @@
                     </h3>
                     <div class="fr-collapse" id="accordion-a">
                         <h4>Effectif</h4>
-                        {% include 'snippets/category_field.html' with field=form.effectif_total %}
-                        {% include 'snippets/category_field.html' with field=form.effectif_permanent %}
-                        {% include 'snippets/category_field.html' with field=form.effectif_cdd %}
-                        {% include 'snippets/category_field.html' with field=form.effectif_mensuel_moyen %}
-                        {% include 'snippets/category_field.html' with field=form.effectif_homme %}
-                        {% include 'snippets/category_field.html' with field=form.effectif_femme %}
-                        {% include 'snippets/category_field.html' with field=form.effectif_age %}
-                        {% include 'snippets/category_field.html' with field=form.effectif_anciennete %}
-                        {% include 'snippets/category_field.html' with field=form.effectif_nationalite_francaise %}
-                        {% include 'snippets/category_field.html' with field=form.effectif_nationalite_etrangere %}
-                        {% include 'snippets/category_field.html' with field=form.effectif_qualification_detaillee_homme %}
-                        {% include 'snippets/category_field.html' with field=form.effectif_qualification_detaillee_femme %}
+                        {% include 'snippets/bdese_field.html' with field=form.effectif_total %}
+                        {% include 'snippets/bdese_field.html' with field=form.effectif_permanent %}
+                        {% include 'snippets/bdese_field.html' with field=form.effectif_cdd %}
+                        {% include 'snippets/bdese_field.html' with field=form.effectif_mensuel_moyen %}
+                        {% include 'snippets/bdese_field.html' with field=form.effectif_homme %}
+                        {% include 'snippets/bdese_field.html' with field=form.effectif_femme %}
+                        {% include 'snippets/bdese_field.html' with field=form.effectif_age %}
+                        {% include 'snippets/bdese_field.html' with field=form.effectif_anciennete %}
+                        {% include 'snippets/bdese_field.html' with field=form.effectif_nationalite_francaise %}
+                        {% include 'snippets/bdese_field.html' with field=form.effectif_nationalite_etrangere %}
+                        {% include 'snippets/bdese_field.html' with field=form.effectif_qualification_detaillee_homme %}
+                        {% include 'snippets/bdese_field.html' with field=form.effectif_qualification_detaillee_femme %}
                         <h4>Travailleurs extérieurs</h4>
-                        {% include 'snippets/input_field.html' with field=form.nombre_travailleurs_exterieurs %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_stagiaires %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_moyen_mensuel_salaries_temporaires %}
-                        {% include 'snippets/input_field.html' with field=form.duree_moyenne_contrat_de_travail_temporaire %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_salaries_de_l_entreprise_detaches %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_salaries_detaches_accueillis %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_travailleurs_exterieurs %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_stagiaires %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_moyen_mensuel_salaries_temporaires %}
+                        {% include 'snippets/bdese_field.html' with field=form.duree_moyenne_contrat_de_travail_temporaire %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_salaries_de_l_entreprise_detaches %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_salaries_detaches_accueillis %}
                     </div>
                 </section>
 
@@ -47,28 +48,28 @@
                     </h3>
                     <div class="fr-collapse" id="accordion-b">
                         <h4>Embauches</h4>
-                        {% include 'snippets/input_field.html' with field=form.nombre_embauches_cdi %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_embauches_cdd %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_embauches_jeunes %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_embauches_cdi %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_embauches_cdd %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_embauches_jeunes %}
                         <h4>Départs</h4>
-                        {% include 'snippets/category_field.html' with field=form.total_departs %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_demissions %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_licenciements_economiques %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_licenciements_autres %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_fin_cdd %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_fin_periode_essai %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_mutations %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_departs_volontaires_retraite_preretraite %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_deces %}
+                        {% include 'snippets/bdese_field.html' with field=form.total_departs %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_demissions %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_licenciements_economiques %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_licenciements_autres %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_fin_cdd %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_fin_periode_essai %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_mutations %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_departs_volontaires_retraite_preretraite %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_deces %}
                         <h4>Promotions</h4>
-                        {% include 'snippets/input_field.html' with field=form.nombre_promotions %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_promotions %}
                         <h4>Chômage</h4>
-                        {% include 'snippets/category_field.html' with field=form.nombre_salaries_chomage_partiel %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_heures_chomage_partiel_indemnisees %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_heures_chomage_partiel_non_indemnisees %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_salaries_chomage_intemperies %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_heures_chomage_intemperies_indemnisees %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_heures_chomage_intemperies_non_indemnisees %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_salaries_chomage_partiel %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_heures_chomage_partiel_indemnisees %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_heures_chomage_partiel_non_indemnisees %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_salaries_chomage_intemperies %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_heures_chomage_intemperies_indemnisees %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_heures_chomage_intemperies_non_indemnisees %}
                     </div>
                 </section>
 
@@ -77,8 +78,8 @@
                         <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-c">c) Evolution de l’emploi des personnes handicapées et mesures prises pour le développer</button>
                     </h3>
                     <div class="fr-collapse" id="accordion-c">
-                        {% include 'snippets/input_field.html' with field=form.nombre_travailleurs_handicapés %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_travailleurs_handicapes_accidents_du_travail %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_travailleurs_handicapés %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_travailleurs_handicapes_accidents_du_travail %}
                     </div>
                 </section>
 
@@ -87,7 +88,7 @@
                         <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-d">d) Evolution du nombre de stagiaires</button>
                     </h3>
                     <div class="fr-collapse" id="accordion-d">
-                        {% include 'snippets/input_field.html' with field=form.evolution_nombre_stagiaires %}
+                        {% include 'snippets/bdese_field.html' with field=form.evolution_nombre_stagiaires %}
                     </div>
                 </section>
 
@@ -98,21 +99,21 @@
                     <div class="fr-collapse" id="accordion-e">
                         <h4>Formation professionnelle continue</h4>
                         <p>Conformément aux données relatives aux contributions de formation professionnelle de la déclaration sociale nominative.</p>
-                        {% include 'snippets/input_field.html' with field=form.pourcentage_masse_salariale_formation_continue %}
-                        {% include 'snippets/category_field.html' with field=form.montant_formation_continue %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_stagiaires_formation_continue_homme %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_stagiaires_formation_continue_femme %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_heures_stage_remunerees_homme %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_heures_stage_remunerees_femme %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_heures_stage_non_remunerees_homme %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_heures_stage_non_remunerees_femme %}
-                        {% include 'snippets/input_field.html' with field=form.type_stages %}
+                        {% include 'snippets/bdese_field.html' with field=form.pourcentage_masse_salariale_formation_continue %}
+                        {% include 'snippets/bdese_field.html' with field=form.montant_formation_continue %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_stagiaires_formation_continue_homme %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_stagiaires_formation_continue_femme %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_heures_stage_remunerees_homme %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_heures_stage_remunerees_femme %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_heures_stage_non_remunerees_homme %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_heures_stage_non_remunerees_femme %}
+                        {% include 'snippets/bdese_field.html' with field=form.type_stages %}
                         <h4>Congés formation</h4>
-                        {% include 'snippets/input_field.html' with field=form.nombre_salaries_conge_formation_remunere %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_salaries_conge_formation_non_remunere %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_salaries_conge_formation_refuse %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_salaries_conge_formation_remunere %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_salaries_conge_formation_non_remunere %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_salaries_conge_formation_refuse %}
                         <h4>Apprentissage</h4>
-                        {% include 'snippets/input_field.html' with field=form.nombre_contrats_apprentissage %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_contrats_apprentissage %}
                     </div>
                 </section>
 
@@ -126,76 +127,76 @@
                             (accidents du travail, maladies professionnelles, absentéisme, dépenses en matière de sécurité)
                         </p>
                         <h4>Accidents du travail et de trajet</h4>
-                        {% include 'snippets/category_field.html' with field=form.nombre_incapacites_permanentes_partielles %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_incapacites_permanentes_totales %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_accidents_travail_mortels %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_accidents_trajet_mortels %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_accidents_trajet_avec_arret_travail %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_accidents_salaries_temporaires_ou_prestataires %}
-                        {% include 'snippets/input_field.html' with field=form.taux_cotisation_securite_sociale_accidents_travail %}
-                        {% include 'snippets/input_field.html' with field=form.montant_cotisation_securite_sociale_accidents_travail %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_incapacites_permanentes_partielles %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_incapacites_permanentes_totales %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_accidents_travail_mortels %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_accidents_trajet_mortels %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_accidents_trajet_avec_arret_travail %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_accidents_salaries_temporaires_ou_prestataires %}
+                        {% include 'snippets/bdese_field.html' with field=form.taux_cotisation_securite_sociale_accidents_travail %}
+                        {% include 'snippets/bdese_field.html' with field=form.montant_cotisation_securite_sociale_accidents_travail %}
                         <h4>Répartition des accidents par éléments matériels</h4>
-                        {% include 'snippets/input_field.html' with field=form.nombre_accidents_existence_risques_graves %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_accidents_chutes_dénivellation %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_accidents_machines %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_accidents_circulation_manutention_stockage %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_accidents_objets_en_mouvement %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_accidents_autres %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_accidents_existence_risques_graves %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_accidents_chutes_dénivellation %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_accidents_machines %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_accidents_circulation_manutention_stockage %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_accidents_objets_en_mouvement %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_accidents_autres %}
                         <h4>Maladies professionnelles</h4>
-                        {% include 'snippets/input_field.html' with field=form.nombre_maladies_professionnelles %}
-                        {% include 'snippets/input_field.html' with field=form.denomination_maladies_professionnelles %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_salaries_affections_pathologiques %}
-                        {% include 'snippets/input_field.html' with field=form.caracterisation_affections_pathologiques %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_declaration_procedes_travail_dangereux %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_maladies_professionnelles %}
+                        {% include 'snippets/bdese_field.html' with field=form.denomination_maladies_professionnelles %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_salaries_affections_pathologiques %}
+                        {% include 'snippets/bdese_field.html' with field=form.caracterisation_affections_pathologiques %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_declaration_procedes_travail_dangereux %}
                         <h4>Dépenses en matière de sécurité</h4>
-                        {% include 'snippets/input_field.html' with field=form.effectif_forme_securite %}
-                        {% include 'snippets/input_field.html' with field=form.montant_depenses_formation_securite %}
-                        {% include 'snippets/input_field.html' with field=form.taux_realisation_programme_securite %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_plans_specifiques_securite %}
+                        {% include 'snippets/bdese_field.html' with field=form.effectif_forme_securite %}
+                        {% include 'snippets/bdese_field.html' with field=form.montant_depenses_formation_securite %}
+                        {% include 'snippets/bdese_field.html' with field=form.taux_realisation_programme_securite %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_plans_specifiques_securite %}
                         <h4>Durée et aménagement du temps de travail</h4>
-                        {% include 'snippets/category_field.html' with field=form.horaire_hebdomadaire_moyen %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_salaries_repos_compensateur_code_travail %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_salaries_repos_compensateur_regime_conventionne %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_salaries_horaires_individualises %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_salaries_temps_partiel_20_30_heures %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_salaries_temps_partiel_autres %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_salaries_2_jours_repos_hebdomadaire_consecutifs %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_moyen_jours_conges_annuels %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_jours_feries_payes %}
+                        {% include 'snippets/bdese_field.html' with field=form.horaire_hebdomadaire_moyen %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_salaries_repos_compensateur_code_travail %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_salaries_repos_compensateur_regime_conventionne %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_salaries_horaires_individualises %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_salaries_temps_partiel_20_30_heures %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_salaries_temps_partiel_autres %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_salaries_2_jours_repos_hebdomadaire_consecutifs %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_moyen_jours_conges_annuels %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_jours_feries_payes %}
                         <h4>Absentéisme</h4>
                         {% include 'snippets/select_field.html' with field=form.unite_absenteisme %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_unites_absence %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_unites_theoriques_travaillees %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_unites_absence_maladie %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_unites_absence_maladie_par_duree %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_unites_absence_accidents %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_unites_absence_maternite %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_unites_absence_conges_autorises %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_unites_absence_autres %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_unites_absence %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_unites_theoriques_travaillees %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_unites_absence_maladie %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_unites_absence_maladie_par_duree %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_unites_absence_accidents %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_unites_absence_maternite %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_unites_absence_conges_autorises %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_unites_absence_autres %}
                         <h4>Organisation et contenu du travail</h4>
-                        {% include 'snippets/input_field.html' with field=form.nombre_personnes_horaires_alternant_ou_nuit %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_personnes_horaires_alternant_ou_nuit_50_ans %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_taches_repetitives %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_personnes_horaires_alternant_ou_nuit %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_personnes_horaires_alternant_ou_nuit_50_ans %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_taches_repetitives %}
                         <h4>Conditions physiques de travail</h4>
-                        {% include 'snippets/input_field.html' with field=form.nombre_personnes_exposees_bruit %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_salaries_exposes_temperatures %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_salaries_exposes_temperatures_extremes %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_salaries_exposes_intemperies %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_analyses_produits_toxiques %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_personnes_exposees_bruit %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_salaries_exposes_temperatures %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_salaries_exposes_temperatures_extremes %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_salaries_exposes_intemperies %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_analyses_produits_toxiques %}
                         <h4>Transformation de l’organisation du travail</h4>
-                        {% include 'snippets/input_field.html' with field=form.experiences_transformation_organisation_travail %}
+                        {% include 'snippets/bdese_field.html' with field=form.experiences_transformation_organisation_travail %}
                         <h4>Dépenses d’amélioration de conditions de travail</h4>
-                        {% include 'snippets/input_field.html' with field=form.montant_depenses_amelioration_conditions_travail %}
-                        {% include 'snippets/input_field.html' with field=form.taux_realisation_programme_amelioration_conditions_travail %}
+                        {% include 'snippets/bdese_field.html' with field=form.montant_depenses_amelioration_conditions_travail %}
+                        {% include 'snippets/bdese_field.html' with field=form.taux_realisation_programme_amelioration_conditions_travail %}
                         <h4>Médecine du travail</h4>
                         <p>Renseignements tirés du rapport du directeur du service de prévention et de santé au travail interentreprises.</p>
-                        {% include 'snippets/category_field.html' with field=form.nombre_visites_medicales %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_examens_medicaux %}
-                        {% include 'snippets/category_field.html' with field=form.nombre_examens_medicaux_complementaires %}
-                        {% include 'snippets/category_field.html' with field=form.pourcentage_temps_medecin_du_travail %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_visites_medicales %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_examens_medicaux %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_examens_medicaux_complementaires %}
+                        {% include 'snippets/bdese_field.html' with field=form.pourcentage_temps_medecin_du_travail %}
                         <h4>Travailleurs inaptes</h4>
-                        {% include 'snippets/input_field.html' with field=form.nombre_salaries_inaptes %}
-                        {% include 'snippets/input_field.html' with field=form.nombre_salaries_reclasses %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_salaries_inaptes %}
+                        {% include 'snippets/bdese_field.html' with field=form.nombre_salaries_reclasses %}
                     </div>
                 </section>
 

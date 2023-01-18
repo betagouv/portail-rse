@@ -3,6 +3,7 @@
 
     export let toggleId = undefined
     export let fieldId = undefined
+    export let fieldName = undefined
     export let indicateursExternesFieldId = undefined
 
     let field = document.getElementById(fieldId)
@@ -12,18 +13,20 @@
 
     $indicateursExternes = JSON.parse(indicateursExternesField.value)
 
-    let checked = $indicateursExternes.includes(field.name)
+    let checked = $indicateursExternes.includes(fieldName)
     if (checked) {
-        field.disabled = true
+        field.getElementsByClassName("svelte-deja-fourni")[0].style.display = checked ? "block" : "none"
+        field.getElementsByClassName("svelte-a-remplir")[0].style.display = checked ? "none" : "block"
     }
 
     const handleChange = () => {
         if (checked) {
-            $indicateursExternes = [...$indicateursExternes, field.name]
+            $indicateursExternes = [...$indicateursExternes, fieldName]
         } else {
-            $indicateursExternes = $indicateursExternes.filter(fieldName => fieldName != field.name)
+            $indicateursExternes = $indicateursExternes.filter(name => name != fieldName)
         }
-        field.disabled = checked
+        field.getElementsByClassName("svelte-deja-fourni")[0].style.display = checked ? "block" : "none"
+        field.getElementsByClassName("svelte-a-remplir")[0].style.display = checked ? "none" : "block"
     }
 </script>
 

@@ -10,10 +10,17 @@
     </div>
     <div class="fr-col-3">
         {% with toggle_id=field|toggle_id %}
-        <div class="svelte-indicateur-externe-toggle" data-toggle-id="{{ toggle_id }}" data-field-id="{{ field.id_for_label }}" data-indicateurs-externes-field-id="{{ form.indicateurs_externes_in_step.id_for_label }}"></div>
+            <div class="svelte-indicateur-externe-toggle" data-toggle-id="{{ toggle_id }}" data-field-id="svelte-{{ field.id_for_label }}" data-field-name="{{ field.name }}" data-indicateurs-externes-field-id="{{ form.indicateurs_externes_in_step.id_for_label }}"></div>
         {% endwith %}
     </div>        
 </div>
+{% endblock %}
 
-
+{% block field %}
+{% with widget_type=field|widget_type %}
+    <div class="fr-col-12 {% if widget_type == 'NumberInput' %}fr-col-sm-2{% endif %}" id="svelte-{{ field.id_for_label }}">
+{% endwith %}
+    <div class="svelte-deja-fourni" style="display: none">Cette donnée est rempli dans un autre document déjà fourni.</div>
+    <div class="svelte-a-remplir">{{ field }}</div>
+</div>
 {% endblock %}
