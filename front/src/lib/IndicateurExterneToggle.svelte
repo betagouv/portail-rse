@@ -14,7 +14,8 @@
     $indicateursExternes = JSON.parse(indicateursExternesField.value)
 
     let checked = $indicateursExternes.includes(fieldName)
-    if (checked) {
+
+    const displayIndicateur = () => {
         fieldContainer.getElementsByClassName("svelte-indicateur-externe")[0].style.display = checked ? "block" : "none"
         fieldContainer.getElementsByClassName("svelte-indicateur-interne")[0].style.display = checked ? "none" : "block"
     }
@@ -25,9 +26,10 @@
         } else {
             $indicateursExternes = $indicateursExternes.filter(name => name != fieldName)
         }
-        fieldContainer.getElementsByClassName("svelte-indicateur-externe")[0].style.display = checked ? "block" : "none"
-        fieldContainer.getElementsByClassName("svelte-indicateur-interne")[0].style.display = checked ? "none" : "block"
+        displayIndicateur()
     }
+
+    displayIndicateur()
 </script>
 
 <div class="fr-toggle">
