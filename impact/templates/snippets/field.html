@@ -1,18 +1,12 @@
 {% load filters %}
-{% with field_type=field|field_type %}
+{% with fr_group_class=field|fr_group_class field_type=field|field_type widget_type=field|widget_type %}
+    <div class="{{ fr_group_class }}{% if field.errors %} fr-input-group--error {% endif %}">
     {% if field_type == 'BooleanField' %}
-        <div class="fr-checkbox-group{% if field.errors %} fr-input-group--error {% endif %}">
-            {{ field }}
-            <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label }}
-                <span class="fr-hint-text">{{ field.help_text }}</span>
-            </label>
+        {{ field }}
+        <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label }}
+            <span class="fr-hint-text">{{ field.help_text }}</span>
+        </label>
     {% else %}
-        {% if field_type == 'ChoiceField'%}
-            <div class="fr-select-group{% if field.errors %} fr-input-group--error {% endif %}">
-        {% else %}
-            <div class="fr-input-group{% if field.errors %} fr-input-group--error {% endif %}">
-        {% endif %}
-
         {% block field_label %}
             <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label }}
                 <span class="fr-hint-text">{{ field.help_text }}</span>
@@ -20,14 +14,11 @@
         {% endblock %}
 
         {% block field %}
-            {% with widget_type=field|widget_type %}
-                <div class="fr-col-12 {% if widget_type == 'NumberInput' %}fr-col-sm-2{% endif %}">
-                    {{ field }}
-                </div>
-            {% endwith %}
+            <div class="fr-col-12 {% if widget_type == 'NumberInput' %}fr-col-sm-2{% endif %}">
+                {{ field }}
+            </div>
         {% endblock %}
     {% endif %}
-
     {% if field.errors %}
         <p id="text-input-error-desc-error" class="fr-error-text">
             {% for error in field.errors %}
@@ -35,6 +26,5 @@
             {% endfor %}
         </p>
     {% endif %}
-
-        </div>
+    </div>
 {% endwith %}

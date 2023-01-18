@@ -22,11 +22,9 @@
             <div class="svelte-indicateur-externe" style="display: none">
                 Cette donnée est remplie dans un autre document.
             </div>
-            {% with widget_type=field|widget_type %}
-                <div class="svelte-indicateur-interne fr-col-12 {% if widget_type == 'NumberInput' %}fr-col-sm-2{% endif %}">
-                    {{ field }}
-                </div>
-            {% endwith %}
+            <div class="svelte-indicateur-interne fr-col-12 {% if widget_type == 'NumberInput' %}fr-col-sm-2{% endif %}">
+                {{ field }}
+            </div>
         </div>
     {% endwith %}
 {% endblock %}

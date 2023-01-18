@@ -1,5 +1,5 @@
 from django import template
-from django.utils.text import slugify
+from django.forms import BooleanField, ChoiceField
 
 import impact.settings
 
@@ -30,9 +30,20 @@ def widget_type(field):
 def svelte_toggle_id(field):
     return f"svelte-toggle-{field.id_for_label}"
 
+
 @register.filter
 def svelte_container_id(field):
     return f"svelte-container-{field.id_for_label}"
+
+
+@register.filter
+def fr_group_class(field):
+    if isinstance(field.field, BooleanField):
+        return "fr-checkbox-group"
+    elif isinstance(field.field, ChoiceField):
+        return "fr-select-group"
+    else:
+        return "fr-input-group"
 
 
 @register.filter
