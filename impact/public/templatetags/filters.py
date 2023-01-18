@@ -27,8 +27,12 @@ def widget_type(field):
 
 
 @register.filter
-def toggle_id(field):
-    return f"toggle-{field.id_for_label}"
+def svelte_toggle_id(field):
+    return f"svelte-toggle-{field.id_for_label}"
+
+@register.filter
+def svelte_container_id(field):
+    return f"svelte-container-{field.id_for_label}"
 
 
 @register.filter

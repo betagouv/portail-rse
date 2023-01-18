@@ -9,20 +9,24 @@
         </label>
     </div>
     <div class="fr-col-3">
-        {% with toggle_id=field|toggle_id %}
-            <div class="svelte-indicateur-externe-toggle" data-toggle-id="{{ toggle_id }}" data-field-name="{{ field.name }}" data-field-container-id="svelte-{{ field.id_for_label }}" data-indicateurs-externes-field-id="{{ form.indicateurs_externes_in_step.id_for_label }}"></div>
+        {% with toggle_id=field|svelte_toggle_id container_id=field|svelte_container_id%}
+            <div class="svelte-indicateur-externe-toggle" data-toggle-id="{{ toggle_id }}" data-field-name="{{ field.name }}" data-field-container-id="{{ container_id }}" data-indicateurs-externes-field-id="{{ form.indicateurs_externes_in_step.id_for_label }}"></div>
         {% endwith %}
     </div>        
 </div>
 {% endblock %}
 
 {% block field %}
-<div id="svelte-{{ field.id_for_label }}">
-    <div class="svelte-indicateur-externe" style="display: none">Cette donnée est remplie dans un autre document.</div>
-    {% with widget_type=field|widget_type %}
-        <div class="svelte-indicateur-interne fr-col-12 {% if widget_type == 'NumberInput' %}fr-col-sm-2{% endif %}">
-            {{ field }}
+    {% with container_id=field|svelte_container_id %}
+        <div id="{{ container_id }}">
+            <div class="svelte-indicateur-externe" style="display: none">
+                Cette donnée est remplie dans un autre document.
+            </div>
+            {% with widget_type=field|widget_type %}
+                <div class="svelte-indicateur-interne fr-col-12 {% if widget_type == 'NumberInput' %}fr-col-sm-2{% endif %}">
+                    {{ field }}
+                </div>
+            {% endwith %}
         </div>
     {% endwith %}
-</div>
 {% endblock %}
