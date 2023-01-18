@@ -13,15 +13,12 @@
     const handleToggle = () => {
         const oldIndicateursExternes = JSON.parse(indicateursExternesField.value)
         if (checked) {
-            field.disabled = true
             indicateursExternesField.value = JSON.stringify([...oldIndicateursExternes, field.name])
-
         } else {
-            field.disabled = false
             const newIndicateursExternes = oldIndicateursExternes.filter(fieldName => fieldName != field.name)
             indicateursExternesField.value = JSON.stringify(newIndicateursExternes)
-
         }
+        field.disabled = checked
     }
 </script>
 
