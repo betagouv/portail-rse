@@ -15,8 +15,8 @@
 
     let checked = $indicateursExternes.includes(fieldName)
     if (checked) {
-        field.getElementsByClassName("svelte-deja-fourni")[0].style.display = checked ? "block" : "none"
-        field.getElementsByClassName("svelte-a-remplir")[0].style.display = checked ? "none" : "block"
+        field.getElementsByClassName("svelte-indicateur-externe")[0].style.display = checked ? "block" : "none"
+        field.getElementsByClassName("svelte-indicateur-interne")[0].style.display = checked ? "none" : "block"
     }
 
     const handleChange = () => {
@@ -25,8 +25,8 @@
         } else {
             $indicateursExternes = $indicateursExternes.filter(name => name != fieldName)
         }
-        field.getElementsByClassName("svelte-deja-fourni")[0].style.display = checked ? "block" : "none"
-        field.getElementsByClassName("svelte-a-remplir")[0].style.display = checked ? "none" : "block"
+        field.getElementsByClassName("svelte-indicateur-externe")[0].style.display = checked ? "block" : "none"
+        field.getElementsByClassName("svelte-indicateur-interne")[0].style.display = checked ? "none" : "block"
     }
 </script>
 

@@ -17,10 +17,12 @@
 {% endblock %}
 
 {% block field %}
-{% with widget_type=field|widget_type %}
-    <div class="fr-col-12 {% if widget_type == 'NumberInput' %}fr-col-sm-2{% endif %}" id="svelte-{{ field.id_for_label }}">
-{% endwith %}
-    <div class="svelte-deja-fourni" style="display: none">Cette donnée est rempli dans un autre document déjà fourni.</div>
-    <div class="svelte-a-remplir">{{ field }}</div>
+<div id="svelte-{{ field.id_for_label }}">
+    <div class="svelte-indicateur-externe" style="display: none">Cette donnée est remplie dans un autre document.</div>
+    {% with widget_type=field|widget_type %}
+        <div class="svelte-indicateur-interne fr-col-12 {% if widget_type == 'NumberInput' %}fr-col-sm-2{% endif %}">
+            {{ field }}
+        </div>
+    {% endwith %}
 </div>
 {% endblock %}

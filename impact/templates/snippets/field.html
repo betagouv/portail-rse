@@ -20,13 +20,14 @@
         {% endblock %}
 
         {% block field %}
-        {% with widget_type=field|widget_type %}
-            <div class="fr-col-12 {% if widget_type == 'NumberInput' %}fr-col-sm-2{% endif %}">
-        {% endwith %}
-        {{ field }}
-        </div>
+            {% with widget_type=field|widget_type %}
+                <div class="fr-col-12 {% if widget_type == 'NumberInput' %}fr-col-sm-2{% endif %}">
+                    {{ field }}
+                </div>
+            {% endwith %}
         {% endblock %}
     {% endif %}
+
     {% if field.errors %}
         <p id="text-input-error-desc-error" class="fr-error-text">
             {% for error in field.errors %}
@@ -34,5 +35,6 @@
             {% endfor %}
         </p>
     {% endif %}
+
         </div>
 {% endwith %}
