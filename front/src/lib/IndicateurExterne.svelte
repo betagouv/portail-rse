@@ -1,22 +1,24 @@
 <script>
+    import { indicateursExternes } from './stores.js';
+
     export let toggleId = undefined
     export let fieldId = undefined
 
     let field = document.getElementById(fieldId)
     let indicateursExternesField = document.getElementById("id_indicateurs_externes_in_step")
 
-    let checked = JSON.parse(indicateursExternesField.value).includes(field.name)
+    let checked = $indicateursExternes.includes(field.name)
     if (checked) {
         field.disabled = true
     }
 
     const handleToggle = () => {
-        const oldIndicateursExternes = JSON.parse(indicateursExternesField.value)
         if (checked) {
-            indicateursExternesField.value = JSON.stringify([...oldIndicateursExternes, field.name])
+            $indicateursExternes = [...$indicateursExternes, field.name]
+            indicateursExternesField.value = JSON.stringify($indicateursExternes)
         } else {
-            const newIndicateursExternes = oldIndicateursExternes.filter(fieldName => fieldName != field.name)
-            indicateursExternesField.value = JSON.stringify(newIndicateursExternes)
+            $indicateursExternes = $indicateursExternes.filter(fieldName => fieldName != field.name)
+            indicateursExternesField.value = JSON.stringify($indicateursExternes)
         }
         field.disabled = checked
     }
