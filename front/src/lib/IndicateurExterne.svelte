@@ -3,11 +3,14 @@
 
     export let toggleId = undefined
     export let fieldId = undefined
+    export let indicateursExternesFieldId = undefined
 
     let field = document.getElementById(fieldId)
-    let indicateursExternesField = document.getElementById("id_indicateurs_externes_in_step")
+    let indicateursExternesField = document.getElementById(indicateursExternesFieldId)
 
     $: indicateursExternesField.value = JSON.stringify($indicateursExternes)
+
+    $indicateursExternes = JSON.parse(indicateursExternesField.value)
 
     let checked = $indicateursExternes.includes(field.name)
     if (checked) {

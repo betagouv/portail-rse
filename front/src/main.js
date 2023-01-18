@@ -5,7 +5,8 @@ for (var indicateurExterne of document.getElementsByClassName("svelte-indicateur
     target: indicateurExterne,
     props: {
       toggleId: indicateurExterne.dataset.toggleId,
-      fieldId: indicateurExterne.dataset.fieldId
+      fieldId: indicateurExterne.dataset.fieldId,
+      indicateursExternesFieldId: indicateurExterne.dataset.indicateursExternesFieldId
     }
   })
 }
