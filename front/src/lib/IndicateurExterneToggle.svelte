@@ -2,11 +2,11 @@
     import { indicateursExternes } from './stores.js';
 
     export let toggleId = undefined
-    export let fieldId = undefined
     export let fieldName = undefined
+    export let fieldContainerId = undefined
     export let indicateursExternesFieldId = undefined
 
-    let field = document.getElementById(fieldId)
+    let fieldContainer = document.getElementById(fieldContainerId)
     let indicateursExternesField = document.getElementById(indicateursExternesFieldId)
 
     $: indicateursExternesField.value = JSON.stringify($indicateursExternes)
@@ -15,8 +15,8 @@
 
     let checked = $indicateursExternes.includes(fieldName)
     if (checked) {
-        field.getElementsByClassName("svelte-indicateur-externe")[0].style.display = checked ? "block" : "none"
-        field.getElementsByClassName("svelte-indicateur-interne")[0].style.display = checked ? "none" : "block"
+        fieldContainer.getElementsByClassName("svelte-indicateur-externe")[0].style.display = checked ? "block" : "none"
+        fieldContainer.getElementsByClassName("svelte-indicateur-interne")[0].style.display = checked ? "none" : "block"
     }
 
     const handleChange = () => {
@@ -25,8 +25,8 @@
         } else {
             $indicateursExternes = $indicateursExternes.filter(name => name != fieldName)
         }
-        field.getElementsByClassName("svelte-indicateur-externe")[0].style.display = checked ? "block" : "none"
-        field.getElementsByClassName("svelte-indicateur-interne")[0].style.display = checked ? "none" : "block"
+        fieldContainer.getElementsByClassName("svelte-indicateur-externe")[0].style.display = checked ? "block" : "none"
+        fieldContainer.getElementsByClassName("svelte-indicateur-interne")[0].style.display = checked ? "none" : "block"
     }
 </script>
 

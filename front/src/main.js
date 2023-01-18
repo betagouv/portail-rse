@@ -5,8 +5,8 @@ for (let indicateurExterneToggle of document.getElementsByClassName("svelte-indi
     target: indicateurExterneToggle,
     props: {
       toggleId: indicateurExterneToggle.dataset.toggleId,
-      fieldId: indicateurExterneToggle.dataset.fieldId,
       fieldName: indicateurExterneToggle.dataset.fieldName,
+      fieldContainerId: indicateurExterneToggle.dataset.fieldContainerId,
       indicateursExternesFieldId: indicateurExterneToggle.dataset.indicateursExternesFieldId
     }
   })
