@@ -17,7 +17,7 @@
         field.disabled = true
     }
 
-    const handleToggle = () => {
+    const handleChange = () => {
         if (checked) {
             $indicateursExternes = [...$indicateursExternes, field.name]
         } else {
@@ -28,6 +28,6 @@
 </script>
 
 <div class="fr-toggle">
-    <input type="checkbox" class="fr-toggle__input" id="{toggleId}" bind:checked on:change={handleToggle}>
+    <input type="checkbox" class="fr-toggle__input" id="{toggleId}" bind:checked on:change={handleChange}>
     <label class="fr-toggle__label" for="{toggleId}" data-fr-checked-label="Activé" data-fr-unchecked-label="Désactivé">Indicateur externe</label> 
 </div>
