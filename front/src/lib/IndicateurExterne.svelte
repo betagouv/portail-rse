@@ -7,6 +7,8 @@
     let field = document.getElementById(fieldId)
     let indicateursExternesField = document.getElementById("id_indicateurs_externes_in_step")
 
+    $: indicateursExternesField.value = JSON.stringify($indicateursExternes)
+
     let checked = $indicateursExternes.includes(field.name)
     if (checked) {
         field.disabled = true
@@ -15,10 +17,8 @@
     const handleToggle = () => {
         if (checked) {
             $indicateursExternes = [...$indicateursExternes, field.name]
-            indicateursExternesField.value = JSON.stringify($indicateursExternes)
         } else {
             $indicateursExternes = $indicateursExternes.filter(fieldName => fieldName != field.name)
-            indicateursExternesField.value = JSON.stringify($indicateursExternes)
         }
         field.disabled = checked
     }
