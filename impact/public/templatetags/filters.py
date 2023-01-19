@@ -52,3 +52,18 @@ def inline_static_file(path):
     with open(full_path) as f:
         content = f.read()
     return content
+
+
+@register.filter
+def model_field(instance, field_name):
+    return instance.__class__._meta.get_field(field_name)
+
+
+@register.filter
+def field_value(instance, field_name):
+    return getattr(instance, field_name)
+
+
+@register.filter
+def model_field_type(model_field):
+    return model_field.__class__.__name__

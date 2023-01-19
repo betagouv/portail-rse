@@ -228,19 +228,6 @@ def reglementations(request):
     )
 
 
-def render_bdese_pdf_html(bdese):
-    bdese_form = bdese_form_factory(bdese, "all")
-    context = {
-        "entreprise": bdese.entreprise,
-        "bdese_form": bdese_form,
-        "annee": bdese.annee,
-        "indicateurs_externes": bdese.indicateurs_externes,
-    }
-    template_path = _pdf_template_path_from_bdese(bdese)
-    pdf_html = render_to_string(template_path, context)
-    return pdf_html
-
-
 @login_required
 def bdese_pdf(request, siren, annee):
     entreprise = Entreprise.objects.get(siren=siren)
@@ -268,6 +255,13 @@ def bdese_pdf(request, siren, annee):
     response = HttpResponse(pdf_file, content_type="application/pdf")
     response["Content-Disposition"] = 'filename="bdese.pdf"'
     return response
+
+
+def render_bdese_pdf_html(bdese):
+    context = {"bdese": bdese}
+    template_path = _pdf_template_path_from_bdese(bdese)
+    pdf_html = render_to_string(template_path, context)
+    return pdf_html
 
 
 def _pdf_template_path_from_bdese(bdese):

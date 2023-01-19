@@ -287,6 +287,8 @@ def test_render_bdese_pdf_html(bdese_with_categories):
 
     pdf_html = render_bdese_pdf_html(bdese)
 
+    assert bdese.entreprise.raison_sociale in pdf_html
+    assert str(bdese.annee) in pdf_html
     for category in bdese.categories_professionnelles:
         assert category.capitalize() in pdf_html
     assert "Cette donnée est remplie dans un autre document." in pdf_html

@@ -1,28 +1,29 @@
 {% load filters %}
+{% with field=bdese|model_field:field_name value=bdese|field_value:field_name %}
 <div class="field-block">
-    <div class="fr-text-lead">{{ field.label }} :</div>
+    <div class="fr-text-lead">{{ field.verbose_name }} :</div>
     {% if field.help_text %}<p class="fr-text--sm">{{ field.help_text }}</p>{% endif %}
     <div class="fr-table fr-table--bordered">
         <table>
-            {% if field.name in indicateurs_externes %}
+            {% if field.name in bdese.indicateurs_externes %}
             <tbody>
                 <tr>
                     <td>Cette donnée est remplie dans un autre document.</td>
                 </tr>
             </tbody>
-            {% elif field.value or field.value == 0 %}
-                {% with field_type=field|field_type %}
-                    {% if field_type == 'CategoryMultiValueField' %}
+            {% elif value or value == 0 %}
+                {% with field_type=field|model_field_type %}
+                    {% if field_type == 'CategoryField' %}
                     <thead>
                         <tr>
-                            {% for categorie, qte in field.value.items %}
+                            {% for categorie, qte in value.items %}
                             <th scope="col">{{ categorie | capfirst }}</th>
                             {% endfor %}
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            {% for categorie, qte in field.value.items %}
+                            {% for categorie, qte in value.items %}
                             <td>{{ qte }}</td>
                             {% endfor %}
                         </tr>
@@ -32,9 +33,9 @@
                         <tr>
                             <td>
                                 {% if field_type == 'BooleanField' %}
-                                    {{ field.value | translate_boolean | capfirst }}
+                                    {{ value | translate_boolean | capfirst }}
                                 {% else %}
-                                    {{ field.value }}
+                                    {{ value }}
                                 {% endif %}
                             </td>
                         </tr>
@@ -53,3 +54,4 @@
         </table>
     </div>
 </div>
+{% endwith %}
