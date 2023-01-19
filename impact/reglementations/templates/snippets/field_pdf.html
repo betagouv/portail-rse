@@ -2,31 +2,32 @@
 <div class="field-block">
     <div class="fr-text-lead">{{ field.label }} :</div>
     {% if field.help_text %}<p class="fr-text--sm">{{ field.help_text }}</p>{% endif %}
-
-    {% if field.value or field.value == 0 %}
-        {% with field_type=field|field_type %}
-            {% if field_type == 'CategoryMultiValueField' %}
-                <div class="fr-table fr-table--bordered">
-                    <table>
-                        <thead>
-                            <tr>
-                                {% for categorie, qte in field.value.items %}
-                                <th scope="col">{{ categorie | capfirst }}</th>
-                                {% endfor %}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                {% for categorie, qte in field.value.items %}
-                                <td>{{ qte }}</td>
-                                {% endfor %}
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            {% else %}
-            <div class="fr-table fr-table--bordered">
-                <table>
+    <div class="fr-table fr-table--bordered">
+        <table>
+            {% if field.name in indicateurs_externes %}
+            <tbody>
+                <tr>
+                    <td>Cette donnée est remplie dans un autre document.</td>
+                </tr>
+            </tbody>
+            {% elif field.value or field.value == 0 %}
+                {% with field_type=field|field_type %}
+                    {% if field_type == 'CategoryMultiValueField' %}
+                    <thead>
+                        <tr>
+                            {% for categorie, qte in field.value.items %}
+                            <th scope="col">{{ categorie | capfirst }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            {% for categorie, qte in field.value.items %}
+                            <td>{{ qte }}</td>
+                            {% endfor %}
+                        </tr>
+                    </tbody>
+                    {% else %}
                     <tbody>
                         <tr>
                             <td>
@@ -38,21 +39,17 @@
                             </td>
                         </tr>
                     </tbody>
-                </table>
-            </div>
+                    {% endif %}
+                {% endwith %}
+            {% else %}
+            <tbody>
+                <tr>
+                    <td>
+                        Donnée non remplie.
+                    </td>
+                </tr>
+            </tbody>
             {% endif %}
-        {% endwith %}
-    {% else %}
-        <div class="fr-table fr-table--bordered">
-            <table>
-                <tbody>
-                    <tr>
-                        <td>
-                            Non rempli.
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    {% endif %}
+        </table>
+    </div>
 </div>
