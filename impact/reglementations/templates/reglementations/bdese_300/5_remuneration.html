@@ -12,20 +12,21 @@
 
             <form action="{% url 'bdese' siren annee 5 %}" method="post">
                 {% csrf_token %}
+                {{ form.indicateurs_externes_in_step.as_hidden }}
 
                 <h3>A - Evolution des rémunérations salariales</h3>
                 <h4>a) Frais de personnel</h4>
                 <p>Ils représentent l'ensemble des rémunérations et des cotisations sociales mises légalement ou conventionnellement à la charge de l'entreprise.</p>
-                {% include 'snippets/input_field.html' with field=form.frais_personnel %}
-                {% include 'snippets/category_field.html' with field=form.evolution_salariale_par_categorie %}
-                {% include 'snippets/category_field.html' with field=form.evolution_salariale_par_sexe %}
-                {% include 'snippets/category_field.html' with field=form.salaire_base_minimum_par_categorie %}
-                {% include 'snippets/category_field.html' with field=form.salaire_base_minimum_par_sexe %}
+                {% include 'snippets/bdese_field.html' with field=form.frais_personnel %}
+                {% include 'snippets/bdese_field.html' with field=form.evolution_salariale_par_categorie %}
+                {% include 'snippets/bdese_field.html' with field=form.evolution_salariale_par_sexe %}
+                {% include 'snippets/bdese_field.html' with field=form.salaire_base_minimum_par_categorie %}
+                {% include 'snippets/bdese_field.html' with field=form.salaire_base_minimum_par_sexe %}
                 <p>Remplir au choix le salaire moyen ou median :</p>
-                {% include 'snippets/category_field.html' with field=form.salaire_moyen_par_categorie %}
-                {% include 'snippets/category_field.html' with field=form.salaire_moyen_par_sexe %}
-                {% include 'snippets/category_field.html' with field=form.salaire_median_par_categorie %}
-                {% include 'snippets/category_field.html' with field=form.salaire_median_par_sexe %}
+                {% include 'snippets/bdese_field.html' with field=form.salaire_moyen_par_categorie %}
+                {% include 'snippets/bdese_field.html' with field=form.salaire_moyen_par_sexe %}
+                {% include 'snippets/bdese_field.html' with field=form.salaire_median_par_categorie %}
+                {% include 'snippets/bdese_field.html' with field=form.salaire_median_par_sexe %}
 
                 <h5>i. Montant des rémunérations</h5>
                 <p>On entend par rémunération la somme des salaires effectivement perçus pendant l'année par le salarié (au sens de la déclaration sociale nominative).</p>
@@ -35,51 +36,51 @@
                     <li>Rapport entre la masse salariale annuelle et l'effectif moyen mensuel</li>
                     <li>Rémunération moyenne du mois de décembre</li>
                 </ul>
-                {% include 'snippets/category_field.html' with field=form.rapport_masse_salariale_effectif_mensuel_homme %}
-                {% include 'snippets/category_field.html' with field=form.rapport_masse_salariale_effectif_mensuel_femme %}
-                {% include 'snippets/category_field.html' with field=form.remuneration_moyenne_decembre_homme %}
-                {% include 'snippets/category_field.html' with field=form.remuneration_moyenne_decembre_femme %}
+                {% include 'snippets/bdese_field.html' with field=form.rapport_masse_salariale_effectif_mensuel_homme %}
+                {% include 'snippets/bdese_field.html' with field=form.rapport_masse_salariale_effectif_mensuel_femme %}
+                {% include 'snippets/bdese_field.html' with field=form.remuneration_moyenne_decembre_homme %}
+                {% include 'snippets/bdese_field.html' with field=form.remuneration_moyenne_decembre_femme %}
                 <h6>Groupe 2</h6>
                 <ul>
                     <li>Rémunération mensuelle moyenne</li>
                     <li>Part des primes</li>
                     <li>Grille des rémunérations</li>
                 </ul>
-                {% include 'snippets/category_field.html' with field=form.remuneration_mensuelle_moyenne_homme %}
-                {% include 'snippets/category_field.html' with field=form.remuneration_mensuelle_moyenne_femme %}
-                {% include 'snippets/category_field.html' with field=form.part_primes_non_mensuelle_homme %}
-                {% include 'snippets/category_field.html' with field=form.part_primes_non_mensuelle_femme %}
-                {% include 'snippets/category_field.html' with field=form.remunerations %}
+                {% include 'snippets/bdese_field.html' with field=form.remuneration_mensuelle_moyenne_homme %}
+                {% include 'snippets/bdese_field.html' with field=form.remuneration_mensuelle_moyenne_femme %}
+                {% include 'snippets/bdese_field.html' with field=form.part_primes_non_mensuelle_homme %}
+                {% include 'snippets/bdese_field.html' with field=form.part_primes_non_mensuelle_femme %}
+                {% include 'snippets/bdese_field.html' with field=form.remunerations %}
 
                 <h5>ii. Hiérarchie des rémunérations</h5>
                 <p>Choix d'un des deux indicateurs suivants :</p>
-                {% include 'snippets/input_field.html' with field=form.rapport_moyenne_deciles %}
+                {% include 'snippets/bdese_field.html' with field=form.rapport_moyenne_deciles %}
                 <p>OU</p>
-                {% include 'snippets/input_field.html' with field=form.rapport_moyenne_cadres_ouvriers %}
-                {% include 'snippets/input_field.html' with field=form.montant_10_remunerations_les_plus_eleves %}
+                {% include 'snippets/bdese_field.html' with field=form.rapport_moyenne_cadres_ouvriers %}
+                {% include 'snippets/bdese_field.html' with field=form.montant_10_remunerations_les_plus_eleves %}
 
                 <h5>iii. Mode de calcul des rémunérations</h5>
-                {% include 'snippets/category_field.html' with field=form.pourcentage_salaries_primes_de_rendement %}
-                {% include 'snippets/input_field.html' with field=form.pourcentage_ouvriers_employes_payes_au_mois %}
+                {% include 'snippets/bdese_field.html' with field=form.pourcentage_salaries_primes_de_rendement %}
+                {% include 'snippets/bdese_field.html' with field=form.pourcentage_ouvriers_employes_payes_au_mois %}
 
                 <h5>iv. Charge salariale globale</h5>
-                {% include 'snippets/input_field.html' with field=form.charge_salariale_globale %}
+                {% include 'snippets/bdese_field.html' with field=form.charge_salariale_globale %}
 
                 <h4>b) Montant global des rémunérations</h4>
-                {% include 'snippets/input_field.html' with field=form.montant_global_hautes_remunerations %}
+                {% include 'snippets/bdese_field.html' with field=form.montant_global_hautes_remunerations %}
 
                 <h3>B - Epargne salariale : intéressement, participation</h3>
-                {% include 'snippets/input_field.html' with field=form.montant_global_reserve_de_participation %}
-                {% include 'snippets/category_field.html' with field=form.montant_moyen_participation %}
-                {% include 'snippets/input_field.html' with field=form.part_capital_detenu_par_salaries %}
+                {% include 'snippets/bdese_field.html' with field=form.montant_global_reserve_de_participation %}
+                {% include 'snippets/bdese_field.html' with field=form.montant_moyen_participation %}
+                {% include 'snippets/bdese_field.html' with field=form.part_capital_detenu_par_salaries %}
 
                 <h3>C - Rémunérations accessoires : primes par sexe et par catégorie professionnelle, avantages en nature, régimes de prévoyance et de retraite complémentaire</h3>
-                {% include 'snippets/input_field.html' with field=form.avantages_sociaux %}
+                {% include 'snippets/bdese_field.html' with field=form.avantages_sociaux %}
 
                 <h3>D - Rémunération des dirigeants mandataires sociaux</h3>
                 <p>telles que présentées dans le rapport de gestion en application des trois premiers alinéas de l'article L. 225-102-1 du code de commerce, pour les entreprises soumises à l'obligation de présenter le rapport visé à l'article L. 225-102 du même code</p>
 
-                {% include 'snippets/input_field.html' with field=form.remuneration_dirigeants_mandataires_sociaux %}
+                {% include 'snippets/bdese_field.html' with field=form.remuneration_dirigeants_mandataires_sociaux %}
 
                 {% include "snippets/bdese_submit.html" %}
             </form>

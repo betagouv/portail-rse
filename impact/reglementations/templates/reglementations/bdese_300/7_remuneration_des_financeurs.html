@@ -12,11 +12,13 @@
 
             <form action="{% url 'bdese' siren annee 7 %}" method="post">
                 {% csrf_token %}
-                <h3>A-Rémunération des actionnaires (revenus distribués)</h3>
-                {% include 'snippets/input_field.html' with field=form.remuneration_actionnaires %}
+                {{ form.indicateurs_externes_in_step.as_hidden }}
 
-                <h3>B-Rémunération de l'actionnariat salarié</h3>
-                {% include 'snippets/input_field.html' with field=form.remuneration_actionnariat_salarie %}
+                <h3>A - Rémunération des actionnaires (revenus distribués)</h3>
+                {% include 'snippets/bdese_field.html' with field=form.remuneration_actionnaires %}
+
+                <h3>B - Rémunération de l'actionnariat salarié</h3>
+                {% include 'snippets/bdese_field.html' with field=form.remuneration_actionnariat_salarie %}
 
                 {% include "snippets/bdese_submit.html" %}
             </form>

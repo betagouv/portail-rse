@@ -12,26 +12,28 @@
 
             <form action="{% url 'bdese' siren annee 8 %}" method="post">
                 {% csrf_token %}
-                <h3>A-Aides publiques</h3>
-                {% include 'snippets/input_field.html' with field=form.aides_financieres %}
+                {{ form.indicateurs_externes_in_step.as_hidden }}
 
-                <h3>B-Réductions d'impôts</h3>
-                {% include 'snippets/input_field.html' with field=form.reductions_impots %}
+                <h3>A - Aides publiques</h3>
+                {% include 'snippets/bdese_field.html' with field=form.aides_financieres %}
 
-                <h3>C-Exonérations et réductions de cotisations sociales</h3>
-                {% include 'snippets/input_field.html' with field=form.exonerations_cotisations_sociales %}
+                <h3>B - Réductions d'impôts</h3>
+                {% include 'snippets/bdese_field.html' with field=form.reductions_impots %}
 
-                <h3>D-Crédits d'impôts</h3>
-                {% include 'snippets/input_field.html' with field=form.credits_impots %}
+                <h3>C - Exonérations et réductions de cotisations sociales</h3>
+                {% include 'snippets/bdese_field.html' with field=form.exonerations_cotisations_sociales %}
 
-                <h3>E-Mécénat</h3>
-                {% include 'snippets/input_field.html' with field=form.mecenat %}
+                <h3>D - Crédits d'impôts</h3>
+                {% include 'snippets/bdese_field.html' with field=form.credits_impots %}
 
-                <h3>F-Résultats financiers</h3>
-                {% include 'snippets/input_field.html' with field=form.chiffre_affaires %}
-                {% include 'snippets/input_field.html' with field=form.benefices_ou_pertes %}
-                {% include 'snippets/category_field.html' with field=form.resultats_globaux %}
-                {% include 'snippets/input_field.html' with field=form.affectation_benefices %}
+                <h3>E - Mécénat</h3>
+                {% include 'snippets/bdese_field.html' with field=form.mecenat %}
+
+                <h3>F - Résultats financiers</h3>
+                {% include 'snippets/bdese_field.html' with field=form.chiffre_affaires %}
+                {% include 'snippets/bdese_field.html' with field=form.benefices_ou_pertes %}
+                {% include 'snippets/bdese_field.html' with field=form.resultats_globaux %}
+                {% include 'snippets/bdese_field.html' with field=form.affectation_benefices %}
 
                 {% include "snippets/bdese_submit.html" %}
             </form>

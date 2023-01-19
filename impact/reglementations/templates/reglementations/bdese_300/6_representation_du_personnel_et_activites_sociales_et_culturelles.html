@@ -12,34 +12,35 @@
 
             <form action="{% url 'bdese' siren annee 6 %}" method="post">
                 {% csrf_token %}
+                {{ form.indicateurs_externes_in_step.as_hidden }}
 
-                <h3>A-Représentation du personnel</h3>
+                <h3>A - Représentation du personnel</h3>
                 <h4>a) Représentants du personnel et délégués syndicaux</h4>
-                {% include 'snippets/input_field.html' with field=form.composition_CSE_etablissement %}
-                {% include 'snippets/input_field.html' with field=form.participation_elections %}
-                {% include 'snippets/input_field.html' with field=form.volume_credit_heures %}
-                {% include 'snippets/input_field.html' with field=form.nombre_reunion_representants_personnel %}
-                {% include 'snippets/input_field.html' with field=form.accords_conclus %}
-                {% include 'snippets/input_field.html' with field=form.nombre_personnes_conge_education_ouvriere %}
+                {% include 'snippets/bdese_field.html' with field=form.composition_CSE_etablissement %}
+                {% include 'snippets/bdese_field.html' with field=form.participation_elections %}
+                {% include 'snippets/bdese_field.html' with field=form.volume_credit_heures %}
+                {% include 'snippets/bdese_field.html' with field=form.nombre_reunion_representants_personnel %}
+                {% include 'snippets/bdese_field.html' with field=form.accords_conclus %}
+                {% include 'snippets/bdese_field.html' with field=form.nombre_personnes_conge_education_ouvriere %}
 
                 <h4>b) Information et communication</h4>
-                {% include 'snippets/input_field.html' with field=form.nombre_heures_reunion_personnel %}
-                {% include 'snippets/input_field.html' with field=form.elements_systeme_accueil %}
-                {% include 'snippets/input_field.html' with field=form.elements_systeme_information %}
-                {% include 'snippets/input_field.html' with field=form.elements_systeme_entretiens_individuels %}
+                {% include 'snippets/bdese_field.html' with field=form.nombre_heures_reunion_personnel %}
+                {% include 'snippets/bdese_field.html' with field=form.elements_systeme_accueil %}
+                {% include 'snippets/bdese_field.html' with field=form.elements_systeme_information %}
+                {% include 'snippets/bdese_field.html' with field=form.elements_systeme_entretiens_individuels %}
 
                 <h4>c) Différends concernant l'application du droit du travail</h4>
-                {% include 'snippets/input_field.html' with field=form.differends_application_droit_du_travail %}
+                {% include 'snippets/bdese_field.html' with field=form.differends_application_droit_du_travail %}
 
-                <h3>B-Activités sociales et culturelles</h3>
+                <h3>B - Activités sociales et culturelles</h3>
                 <h4>a) Activités sociales</h4>
-                {% include 'snippets/input_field.html' with field=form.contributions_financement_CSE_CSEE %}
-                {% include 'snippets/category_field.html' with field=form.contributions_autres_depenses %}
+                {% include 'snippets/bdese_field.html' with field=form.contributions_financement_CSE_CSEE %}
+                {% include 'snippets/bdese_field.html' with field=form.contributions_autres_depenses %}
 
                 <h4>b) Autres charges sociales</h4>
-                {% include 'snippets/input_field.html' with field=form.cout_prestations_maladie_deces %}
-                {% include 'snippets/input_field.html' with field=form.cout_prestations_vieillesse %}
-                {% include 'snippets/input_field.html' with field=form.equipements_pour_conditions_de_vie %}
+                {% include 'snippets/bdese_field.html' with field=form.cout_prestations_maladie_deces %}
+                {% include 'snippets/bdese_field.html' with field=form.cout_prestations_vieillesse %}
+                {% include 'snippets/bdese_field.html' with field=form.equipements_pour_conditions_de_vie %}
 
                 {% include "snippets/bdese_submit.html" %}
             </form>
