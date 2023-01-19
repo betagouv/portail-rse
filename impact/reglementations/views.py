@@ -228,21 +228,26 @@ def reglementations(request):
     )
 
 
+def render_bdese_pdf_html(bdese):
+    bdese_form = bdese_form_factory(bdese, "all")
+    context = {
+        "entreprise": bdese.entreprise,
+        "bdese_form": bdese_form,
+        "annee": bdese.annee,
+        "indicateurs_externes": bdese.indicateurs_externes,
+    }
+    template_path = _pdf_template_path_from_bdese(bdese)
+    pdf_html = render_to_string(template_path, context)
+    return pdf_html
+
+
 @login_required
 def bdese_pdf(request, siren, annee):
     entreprise = Entreprise.objects.get(siren=siren)
     if request.user not in entreprise.users.all():
         raise PermissionDenied
     bdese = _get_or_create_bdese(entreprise, annee)
-    bdese_form = bdese_form_factory(bdese, "all")
-    context = {
-        "entreprise": entreprise,
-        "bdese_form": bdese_form,
-        "annee": annee,
-        "indicateurs_externes": bdese.indicateurs_externes,
-    }
-    template_path = _pdf_template_path_from_bdese(bdese)
-    pdf_html = render_to_string(template_path, context)
+    pdf_html = render_bdese_pdf_html(bdese)
     html = HTML(string=pdf_html)
     css = CSS(
         string="""

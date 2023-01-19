@@ -5,7 +5,7 @@ import pytest
 
 from reglementations.models import annees_a_remplir_bdese, BDESE_50_300, BDESE_300
 from reglementations.tests.test_bdese_forms import categories_form_data
-from reglementations.views import get_bdese_data_from_egapro
+from reglementations.views import get_bdese_data_from_egapro, render_bdese_pdf_html
 
 
 def test_bdese_is_not_public(client, django_user_model, grande_entreprise):
@@ -270,6 +270,27 @@ def test_get_pdf(bdese, authorized_user, client):
     response = client.get(url)
 
     assert response.status_code == 200
+
+
+def test_render_bdese_pdf_html(bdese_with_categories):
+    bdese = bdese_with_categories
+    if bdese.is_bdese_300:
+        bdese.indicateurs_externes = ["effectif_total"]
+        bdese.effectif_permanent = {
+            category: 10 for category in bdese.categories_professionnelles
+        }
+    else:
+        bdese.indicateurs_externes = ["effectif_mensuel"]
+        bdese.effectif_homme = {
+            category: 10 for category in bdese.categories_professionnelles
+        }
+
+    pdf_html = render_bdese_pdf_html(bdese)
+
+    for category in bdese.categories_professionnelles:
+        assert category.capitalize() in pdf_html
+    assert "Cette donnée est remplie dans un autre document." in pdf_html
+    assert "Donnée non remplie." in pdf_html
 
 
 def test_get_categories_professionnelles(bdese, authorized_user, client):
