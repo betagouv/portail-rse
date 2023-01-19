@@ -102,8 +102,9 @@ def siren(request):
                 },
             )
         else:
+            form.add_error("siren", "SIREN introuvable")
             messages.error(
                 request,
                 "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct.",
             )
-    return render(request, "public/index.html", {"form": form})
+    return render(request, "public/entreprise.html", {"form": form})
