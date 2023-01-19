@@ -4,7 +4,7 @@
         <span class="fr-hint-text">{{ field.help_text }}</span>
     </label>
     {% if field.errors %}
-    <p id="text-input-error-desc-error" class="fr-error-text">
+    <p id="{{ field.name }}-error-desc-error" class="fr-error-text">
         {% for error in field.errors %}
             {{ error|escape }}
         {% endfor %}

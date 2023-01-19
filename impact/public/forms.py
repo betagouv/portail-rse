@@ -8,9 +8,17 @@ class DsfrForm(forms.Form):
         super().__init__(*args, **kwargs)
         for name, field in self.fields.items():
             if type(field.widget) == forms.widgets.Select:
-                field.widget.attrs.update({"class": "fr-select"})
+                fr_name = "fr-select"
             else:
-                field.widget.attrs.update({"class": "fr-input"})
+                fr_name = "fr-input"
+            field.widget.attrs.update({"class": f"{fr_name}"})
+            if name in self.errors:
+                field.widget.attrs.update(
+                    {
+                        "class": f"{fr_name} {fr_name}-error",
+                        "aria-describedby": f"{name}-error-desc-error",
+                    }
+                )
 
 
 class SirenForm(DsfrForm):
