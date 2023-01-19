@@ -12,25 +12,26 @@
 
             <form action="{% url 'bdese' siren annee 3 %}" method="post">
                 {% csrf_token %}
+                {{ form.indicateurs_externes_in_step.as_hidden }}
 
                 <h4>A - Analyse des données chiffrées</h4>
                 <p>Analyse des données chiffrées par catégorie professionnelle de la situation respective des femmes et des hommes</p>
-                {% include 'snippets/input_field.html' with field=form.analyse_egalite_embauche %}
-                {% include 'snippets/input_field.html' with field=form.analyse_egalite_formation %}
-                {% include 'snippets/input_field.html' with field=form.analyse_egalite_promotion_professionnelle %}
-                {% include 'snippets/input_field.html' with field=form.analyse_egalite_qualification %}
-                {% include 'snippets/input_field.html' with field=form.analyse_egalite_classification %}
-                {% include 'snippets/input_field.html' with field=form.analyse_egalite_conditions_de_travail %}
-                {% include 'snippets/input_field.html' with field=form.analyse_egalite_sante_et_sécurite %}
-                {% include 'snippets/input_field.html' with field=form.analyse_egalite_remuneration %}
-                {% include 'snippets/input_field.html' with field=form.analyse_egalite_articulation_activite_pro_perso %}
-                {% include 'snippets/input_field.html' with field=form.analyse_ecarts_salaires %}
-                {% include 'snippets/input_field.html' with field=form.evolution_taux_promotion %}
+                {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_embauche %}
+                {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_formation %}
+                {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_promotion_professionnelle %}
+                {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_qualification %}
+                {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_classification %}
+                {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_conditions_de_travail %}
+                {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_sante_et_sécurite %}
+                {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_remuneration %}
+                {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_articulation_activite_pro_perso %}
+                {% include 'snippets/bdese_field.html' with field=form.analyse_ecarts_salaires %}
+                {% include 'snippets/bdese_field.html' with field=form.evolution_taux_promotion %}
 
                 <h4>B - Stratégie d'action</h4>
                 <p>A partir de l'analyse des données chiffrées mentionnées au A du 2°, la stratégie comprend les éléments suivants :</p>
-                {% include 'snippets/input_field.html' with field=form.mesures_prises_egalite %}
-                {% include 'snippets/input_field.html' with field=form.objectifs_progression %}
+                {% include 'snippets/bdese_field.html' with field=form.mesures_prises_egalite %}
+                {% include 'snippets/bdese_field.html' with field=form.objectifs_progression %}
 
                 {% include "snippets/bdese_submit.html" %}
             </form>

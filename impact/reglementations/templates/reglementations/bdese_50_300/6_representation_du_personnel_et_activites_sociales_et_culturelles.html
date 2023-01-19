@@ -12,9 +12,10 @@
 
             <form action="{% url 'bdese' siren annee 6 %}" method="post">
                 {% csrf_token %}
+                {{ form.indicateurs_externes_in_step.as_hidden }}
 
-                {% include 'snippets/input_field.html' with field=form.montant_contribution_activites_sociales_culturelles %}
-                {% include 'snippets/input_field.html' with field=form.mecenat_verse %}
+                {% include 'snippets/bdese_field.html' with field=form.montant_contribution_activites_sociales_culturelles %}
+                {% include 'snippets/bdese_field.html' with field=form.mecenat_verse %}
 
                 {% include "snippets/bdese_submit.html" %}
             </form>

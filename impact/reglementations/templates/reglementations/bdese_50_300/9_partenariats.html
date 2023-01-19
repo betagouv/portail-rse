@@ -12,11 +12,13 @@
 
             <form action="{% url 'bdese' siren annee 9 %}" method="post">
                 {% csrf_token %}
+                {{ form.indicateurs_externes_in_step.as_hidden }}
+
                 <h3>A - Partenariats conclus pour produire des services ou des produits pour une autre entreprise</h3>
-                {% include 'snippets/input_field.html' with field=form.partenariats_pour_produire %}
+                {% include 'snippets/bdese_field.html' with field=form.partenariats_pour_produire %}
 
                 <h3>B - Partenariats conclus pour bénéficier des services ou des produits d'une autre entreprise</h3>
-                {% include 'snippets/input_field.html' with field=form.partenariats_pour_beneficier %}
+                {% include 'snippets/bdese_field.html' with field=form.partenariats_pour_beneficier %}
 
                 {% include "snippets/bdese_submit.html" %}
             </form>
