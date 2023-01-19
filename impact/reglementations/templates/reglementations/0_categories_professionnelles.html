@@ -19,9 +19,9 @@
 
             <form action="{% url 'categories_professionnelles' siren annee %}" method="post">
                 {% csrf_token %}
-                {% include 'snippets/category_field.html' with field=form.categories_professionnelles %}
+                {% include 'snippets/field.html' with field=form.categories_professionnelles %}
                 {% if form.categories_professionnelles_detaillees %}
-                {% include 'snippets/category_field.html' with field=form.categories_professionnelles_detaillees %}
+                {% include 'snippets/field.html' with field=form.categories_professionnelles_detaillees %}
                 {% endif %}
 
                 {% include "snippets/bdese_submit.html" %}

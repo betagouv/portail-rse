@@ -9,7 +9,7 @@
     {% else %}
         {% block field_label %}
             <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label }}
-                <span class="fr-hint-text">{{ field.help_text }}</span>
+                <span class="fr-hint-text">{{ field.help_text|safe }}</span>
             </label>
         {% endblock %}
 

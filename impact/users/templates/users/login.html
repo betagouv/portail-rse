@@ -16,8 +16,8 @@
             <form action="{% url 'login' %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="next" value="{{ next }}">
-                {% include 'snippets/input_field.html' with field=form.username %}
-                {% include 'snippets/input_field.html' with field=form.password %}
+                {% include 'snippets/field.html' with field=form.username %}
+                {% include 'snippets/field.html' with field=form.password %}
                 <button type="submit" class="fr-btn">Se connecter</button>
             </form>
         </div>
