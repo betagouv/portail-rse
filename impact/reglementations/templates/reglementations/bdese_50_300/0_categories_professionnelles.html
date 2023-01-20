@@ -9,20 +9,21 @@
 
         <div class="fr-col">
             <h2>Catégories professionnelles</h2>
-    <p>
-        Certains indicateurs de la BDESE sont à remplir par catégorie professionnelle, suivant une structure de qualification propre à votre entreprise. 
-        Commencez par définir les catégories professionnelles retenues qui seront utilisées dans votre BDESE {{ annee }}.
-    </p>
-    <div class="fr-highlight">
-        <p>Si vous modifiez les catégories après avoir renseigné des indicateurs, les données concernant les catégories modifiées seront perdues.</p>
-    </div>
+            <p>
+                Une structure de qualification comprenant trois postes minimum est requise pour certains indicateurs. Il est souhaitable de faire référence à la classification de la convention collective, de l'accord d'entreprise et aux pratiques habituellement retenues dans l'entreprise.<br>
+                A titre d'exemple la répartition suivante peut être retenue : cadres ; employés, techniciens et agents de maîtrise (ETAM) ; et ouvriers.
+            </p>
 
-    <form action="{% url 'categories_professionnelles' siren annee %}" method="post">
-        {% csrf_token %}
-        {% include 'snippets/category_field.html' with field=form.categories_professionnelles %}
-        {% if form.categories_professionnelles_detaillees %}
-        {% include 'snippets/category_field.html' with field=form.categories_professionnelles_detaillees %}
-        {% endif %}
+            <h2>Définissez vos catégories professionnelles</h2>
+            <p>Commencez par définir les catégories professionnelles retenues pour votre entreprise qui seront utilisées dans votre BDESE.</p>
+            <p>Si vous modifiez les catégories après avoir renseigné des indicateurs, les données concernant les catégories modifiées seront perdues.</p>
+
+            <form action="{% url 'categories_professionnelles' siren annee %}" method="post">
+                {% csrf_token %}
+                {% include 'snippets/category_field.html' with field=form.categories_professionnelles %}
+                {% if form.categories_professionnelles_detaillees %}
+                {% include 'snippets/category_field.html' with field=form.categories_professionnelles_detaillees %}
+                {% endif %}
 
         {% include "snippets/bdese_submit.html" %}
     </form>
