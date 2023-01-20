@@ -5,16 +5,31 @@ https://beta.gouv.fr/startups/plateforme.impact.html
 
 ## développement local
 
-Installer [`pipenv`](https://pypi.org/project/pipenv/)
+### installation
 
-Créer le fichier de variable d'environnement `.env` à partir du fichier d'exemple `.env.example`
+Installer [`pipenv`](https://pypi.org/project/pipenv/) puis le projet avec
 
 ```
 make install
-make run
 ```
 
 Il est nécessaire d'installer le paquet système `libpq-dev` pour avoir `pg_config`.
+
+### lancement
+
+
+Créer le fichier de variable d'environnement `.env` à partir du fichier d'exemple `.env.example`
+Pour activer l'intégration avec Sentry, il est nécessaire de renseigner la variable d'environnement SENTRY_DSN
+
+
+```
+make migrate
+make run
+```
+
+Le service est disponible sur http://127.0.0.1:8000
+
+### migration
 
 Pour générer les nouvelles migrations éventuelles et les appliquer :
 
@@ -23,13 +38,13 @@ make migrations
 make migrate
 ```
 
+### test
+
 Exécuter les tests avec :
 
 ```
 make test
 ```
-
-Pour activer l'intégration avec Sentry, il est nécessaire de renseigner la variable d'environnement SENTRY_DSN
 
 ### pre-commit
 
