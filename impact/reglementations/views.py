@@ -18,7 +18,11 @@ from .models import (
     BDESE_300,
     BDESE_50_300,
 )
-from .forms import bdese_form_factory, categories_professionnelles_form_factory
+from .forms import (
+    bdese_form_factory,
+    categories_professionnelles_form_factory,
+    IntroductionDemoForm,
+)
 
 
 @dataclass
@@ -379,7 +383,7 @@ def _bdese_step_context(form, siren, annee, bdese, step):
     }
     step_is_complete = steps[step]["is_complete"]
     bdese_is_complete = bdese.is_complete
-    return {
+    context = {
         "form": form,
         "siren": siren,
         "annee": annee,
@@ -388,6 +392,9 @@ def _bdese_step_context(form, siren, annee, bdese, step):
         "bdese_is_complete": bdese_is_complete,
         "annees": annees_a_remplir_bdese(),
     }
+    if step == 0:
+        context["demo_form"] = IntroductionDemoForm()
+    return context
 
 
 def _get_or_create_bdese(

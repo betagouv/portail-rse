@@ -6,6 +6,15 @@ from public.forms import DsfrForm
 from reglementations.models import BDESE_50_300, BDESE_300, CategoryType
 
 
+class IntroductionDemoForm(DsfrForm):
+    indicateurs_externes_in_step = forms.JSONField(required=False, initial=[])
+    example_field = forms.CharField(
+        label="Exemple de champ",
+        help_text="Exemple de donnée obligatoire à renseigner dans la BDESE",
+        required=False,
+    )
+
+
 class ListJSONWidget(forms.widgets.MultiWidget):
     template_name = "snippets/list_json_widget.html"
 

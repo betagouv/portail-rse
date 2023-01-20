@@ -8,7 +8,46 @@
         {% include "snippets/bdese_menu.html" with active_item=0 %}
 
         <div class="fr-col">
-            <h2>Catégories professionnelles</h2>
+            <h2>Introduction</h2>
+            <p>
+                L'employeur d'au moins 50 salariés doit mettre à disposition du comité économique et social (CSE) ou des représentants du personnel une base de données économiques, sociales et environnementales (BDESE).<br>
+                La BDESE rassemble les informations sur les grandes orientations économiques et sociales de l'entreprise.<br>
+                En l'absence d'accord d'entreprise fixant le contenu de la BDESE, celui-ci est imposé par le code du travail.<br> 
+                Il varie selon que l’entreprise compte plus ou moins 300 salariés. <a href="https://entreprendre.service-public.fr/vosdroits/F32193" target="_blank" rel="noopener">En savoir plus</a>
+            </p>
+            <p>
+                Le Projet Impact permet de saisir les données obligatoires adaptées à sa catégorie d'entreprise via un formulaire et de générer un document pdf à télécharger et transmettre au CSE ou aux représentants du personnel. 
+            </p>
+            <div class="fr-highlight">
+                <p>
+                    Ce document n’engage pas l’Etat, ni la Direction Générale des Entreprises (DGE), mais uniquement l’utilisateur ayant renseigné les données, qui ne font l’objet d’aucune procédure de contrôle par l’administration.
+                </p>
+            </div>
+            <p>
+                Chaque formulaire correspondant aux données d'une année civile est composé de {{ steps|length }} étapes, accessibles via le menu latéral à gauche, dès que la première étape de configuration est terminée.
+            </p>
+            <p>
+                Chaque étape peut être enregistrée à tout moment en cliquant sur le bouton "Enregister en brouillon" en bas du formulaire pour être reprise plus tard. <br>
+                Une étape peut également être marquée comme terminée en cliquant sur le bouton "Enregistrer et marquer comme terminé". Lorsqu'une étape est terminée, elle peut être à nouveau modifée en cliquant sur le bouton "Repasser en brouillon pour modifier".
+            </p>
+            <div class="fr-mb-3w">
+                {% include "snippets/bdese_submit.html" %}
+            </div>
+            <p>
+                Au niveau de chaque champ du formulaire, un interrupteur permet de marquer une donnée comme déjà remplie par ailleurs dans un autre document mis à disposition du CSE ou des représentants du personnel (voir l'exemple interactif ci-dessous). 
+                Celle-ci sera alors signalée comme telle dans le document pdf généré.
+            </p>
+            <div class="fr-my-3w">
+                <form>
+                    <fieldset>
+                        {{ demo_form.indicateurs_externes_in_step.as_hidden }}
+                        {% include 'snippets/bdese_field.html' with field=demo_form.example_field %}
+                    </fieldset>
+                </form>
+            </div>
+
+            <h2>Configuration</h2>
+            <h3>Catégories professionnelles</h3>
             <p>
                 Certains indicateurs de la BDESE sont à remplir par catégorie professionnelle, suivant une structure de qualification propre à votre entreprise.
                 Commencez par définir les catégories professionnelles retenues qui seront utilisées dans votre BDESE {{ annee }}.
