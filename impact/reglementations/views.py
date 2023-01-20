@@ -370,24 +370,17 @@ def _bdese_step_template_path(bdese: BDESE_300 | BDESE_50_300, step: int) -> str
 
 
 def _bdese_step_context(form, siren, annee, bdese, step):
-    if bdese.__class__ == BDESE_300:
-        steps = {
-            step: {
-                "name": bdese.STEPS[step],
-                "is_complete": bdese.step_is_complete(step),
-            }
-            for step in bdese.STEPS
+    steps = {
+        step: {
+            "name": bdese.STEPS[step],
+            "is_complete": bdese.step_is_complete(step),
         }
+        for step in bdese.STEPS
+    }
+    if bdese.__class__ == BDESE_300:
         step_is_complete = steps[step]["is_complete"]
         bdese_is_complete = bdese.is_complete
     else:
-        steps = {
-            step: {
-                "name": bdese.STEPS[step],
-                "is_complete": bdese.step_is_complete(step),
-            }
-            for step in bdese.STEPS
-        }
         step_is_complete = False
         bdese_is_complete = False
     return {
