@@ -2,8 +2,13 @@
 
 {% block content %}
 <div class="fr-container fr-my-8w">
-    <h1>BDESE {{ annee }}</h1>
-    <h2>Catégories professionnelles</h2>
+    {% include "snippets/bdese_header.html" %}
+
+    <div class="fr-grid-row">
+        {% include "snippets/bdese_menu.html" with active_item=0 %}
+
+        <div class="fr-col">
+            <h2>Catégories professionnelles</h2>
     <p>
         Certains indicateurs de la BDESE sont à remplir par catégorie professionnelle, suivant une structure de qualification propre à votre entreprise. 
         Commencez par définir les catégories professionnelles retenues qui seront utilisées dans votre BDESE {{ annee }}.
@@ -21,5 +26,7 @@
 
         {% include "snippets/bdese_submit.html" %}
     </form>
+        </div>
+    </div>
 </div>
 {% endblock %}
