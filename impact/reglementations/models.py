@@ -97,13 +97,17 @@ class AbstractBDESE(models.Model):
         ]
 
     def mark_step_as_complete(self, step: int):
-        pass
+        completion_steps = self.completion_steps
+        completion_steps[self.STEPS[step]] = True
+        self.completion_steps = completion_steps
 
     def mark_step_as_incomplete(self, step: int):
-        pass
+        completion_steps = self.completion_steps
+        completion_steps[self.STEPS[step]] = False
+        self.completion_steps = completion_steps
 
     def step_is_complete(self, step: int):
-        return False
+        return self.completion_steps.get(self.STEPS[step], False)
 
     @property
     def is_complete(self):
@@ -1921,22 +1925,13 @@ class BDESE_300(AbstractBDESE):
         blank=True,
     )
 
-    def mark_step_as_complete(self, step: int):
-        completion_steps = self.completion_steps
-        completion_steps[self.STEPS[step]] = True
-        self.completion_steps = completion_steps
-
-    def mark_step_as_incomplete(self, step: int):
-        completion_steps = self.completion_steps
-        completion_steps[self.STEPS[step]] = False
-        self.completion_steps = completion_steps
-
-    def step_is_complete(self, step: int):
-        return self.completion_steps.get(self.STEPS[step], False)
-
     @property
     def is_complete(self):
         return all(self.completion_steps.values())
+
+
+def bdese_50_300_completion_steps_default():
+    return {step_name: False for step_name in BDESE_50_300.STEPS.values()}
 
 
 class BDESE_50_300(AbstractBDESE):
@@ -1948,6 +1943,12 @@ class BDESE_50_300(AbstractBDESE):
         0: "Catégories professionnelles",
         1: "Données",
     }
+
+    completion_steps = CategoryField(
+        base_field=models.BooleanField,
+        categories=list(STEPS.values()),
+        default=bdese_50_300_completion_steps_default,
+    )
 
     # Décret no 2022-678 du 26 avril 2022
     # https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000045680861

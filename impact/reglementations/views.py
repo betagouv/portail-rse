@@ -381,8 +381,8 @@ def _bdese_step_context(form, siren, annee, bdese, step):
         step_is_complete = steps[step]["is_complete"]
         bdese_is_complete = bdese.is_complete
     else:
-        step_is_complete = False
-        bdese_is_complete = False
+        step_is_complete = steps[step]["is_complete"]
+        bdese_is_complete = bdese.is_complete
     return {
         "form": form,
         "siren": siren,

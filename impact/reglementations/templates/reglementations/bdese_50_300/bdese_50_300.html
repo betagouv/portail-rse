@@ -183,7 +183,7 @@
                 {% include 'snippets/input_field.html' with field=form.postes_emissions_directes_gaz_effet_de_serre %}
                 {% include 'snippets/input_field.html' with field=form.bilan_gaz_effet_de_serre %}
                 
-                <input type="submit" value="Enregistrer" class="fr-btn ">
+                {% include "snippets/bdese_submit.html" %}
             </form>
         </div>
     </div>
