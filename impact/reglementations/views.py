@@ -361,10 +361,11 @@ def _bdese_step_template_path(bdese: BDESE_300 | BDESE_50_300, step: int) -> str
         }
         return f"reglementations/bdese_300/{templates[step]}"
     else:
-        if step == 0:
-            return "reglementations/bdese_50_300/0_categories_professionnelles.html"
-        else:
-            return "reglementations/bdese_50_300/bdese_50_300.html"
+        templates = {
+            0: "0_categories_professionnelles.html",
+            1: "bdese_50_300.html",
+        }
+        return f"reglementations/bdese_50_300/{templates[step]}"
 
 
 def _bdese_step_context(form, siren, annee, bdese, step):

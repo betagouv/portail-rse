@@ -1944,6 +1944,11 @@ class BDESE_50_300(AbstractBDESE):
         verbose_name = "BDESE 50 à 300 salariés"
         verbose_name_plural = "BDESE 50 à 300 salariés"
 
+    STEPS = {
+        0: "Catégories professionnelles",
+        1: "Données",
+    }
+
     # Décret no 2022-678 du 26 avril 2022
     # https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000045680861
     # 1° Investissements
