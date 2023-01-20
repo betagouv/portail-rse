@@ -345,6 +345,7 @@ def bdese(request, siren, annee, step):
 
 def _bdese_step_template_path(bdese: BDESE_300 | BDESE_50_300, step: int) -> str:
     if bdese.__class__ == BDESE_300:
+        directory = "bdese_300"
         templates = {
             0: "0_categories_professionnelles.html",
             1: "1_investissement_social.html",
@@ -359,13 +360,13 @@ def _bdese_step_template_path(bdese: BDESE_300 | BDESE_50_300, step: int) -> str
             10: "10_transferts_commerciaux_et_financiers.html",
             11: "11_environnement.html",
         }
-        return f"reglementations/bdese_300/{templates[step]}"
     else:
+        directory = "bdese_50_300"
         templates = {
             0: "0_categories_professionnelles.html",
             1: "bdese_50_300.html",
         }
-        return f"reglementations/bdese_50_300/{templates[step]}"
+    return f"reglementations/{directory}/{templates[step]}"
 
 
 def _bdese_step_context(form, siren, annee, bdese, step):
