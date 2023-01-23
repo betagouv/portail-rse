@@ -4,6 +4,7 @@ import pytest
 from reglementations.forms import (
     bdese_form_factory,
     categories_professionnelles_form_factory,
+    BDESE_50_300_FIELDS,
     BDESE_300_FIELDS,
 )
 from reglementations.models import BDESE_300, BDESE_50_300
@@ -86,13 +87,13 @@ def test_form_is_initialized_with_fetched_data(bdese_300):
 
     assert form["nombre_femmes_plus_hautes_remunerations"].value() == 10
 
-
-def test_bdese_form_with_new_bdese_50_300_instance(bdese_50_300):
+@pytest.mark.parametrize("step", [1])
+def test_bdese_form_with_new_bdese_50_300_instance(step, bdese_50_300):
     categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
-    form = bdese_form_factory(bdese_50_300, 1, categories_professionnelles)
+    form = bdese_form_factory(bdese_50_300, step, categories_professionnelles)
 
     assert form.instance == bdese_50_300
-    assert len(form.fields) == 85
+    assert len(form.fields) == len(BDESE_50_300_FIELDS[step])
     assert "annee" not in form.fields
     assert "entreprise" not in form.fields
     assert "effectif_mensuel" in form.fields
@@ -106,7 +107,7 @@ def test_bdese_form_with_new_bdese_50_300_instance(bdese_50_300):
         assert not form[field].value()
 
     bound_form = bdese_form_factory(
-        bdese_50_300, 1, categories_professionnelles, data={}
+        bdese_50_300, step, categories_professionnelles, data={}
     )
 
     assert bound_form.is_valid()
