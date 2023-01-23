@@ -1,51 +1,111 @@
-<!doctype html>
-<html>
-    <head>
-        <style>
-            {% load filters %}
-            {{ "dsfr-1.7.2/dsfr/dsfr.min.css" | inline_static_file }}
-            @page {
-                size: A4;
-                margin: 1cm;
-                @top-left {
-                    content: "BDESE {{ entreprise.raison_sociale }}";
-                    border-bottom: 1px solid;
-                }
-                @bottom-right {
-                    content: counter(page) " / " counter(pages);
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <header role="banner" class="fr-header">
-            <div class="fr-header__body">
-                <div class="fr-container">
-                    <div class="fr-header__body-row">
-                        <div class="fr-header__brand fr-enlarge-link">
-                            <div class="fr-header__brand-top">
-                                <div class="fr-header__logo">
-                                    <p class="fr-logo">
-                                        République
-                                        <br>Française
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="fr-header__service">
-                                <p class="fr-header__service-title">
-                                    Rapport BDESE {{ annee }} {{ entreprise.raison_sociale }} <span class="fr-badge fr-badge--sm fr-badge--green-emeraude">BETA</span>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="fr-header__menu-links">
-                    </div>
-                </div>
-            </div>
-        </header>
+{% extends "./base_bdese_pdf.html" %}
 
-        <main>
-            Le rapport pour les entreprises de 50-300 salariés sera fait plus tard.
-            Actuellement, seul le 300+ est à consulter.
-        </main>
-    </body>
-</html>
+{% block content %}
+    <h2>Investissements</h2>
+    {% include "snippets/field_pdf.html" with field=bdese_form.effectif_mensuel %}
+    {% include "snippets/field_pdf.html" with field=effectif_mensuel %}
+    {% include "snippets/field_pdf.html" with field=effectif_cdi %}
+    {% include "snippets/field_pdf.html" with field=effectif_cdd %}
+    {% include "snippets/field_pdf.html" with field=nombre_salaries_temporaires %}
+    {% include "snippets/field_pdf.html" with field=nombre_travailleurs_exterieurs %}
+    {% include "snippets/field_pdf.html" with field=nombre_journees_salaries_temporaires %}
+    {% include "snippets/field_pdf.html" with field=nombre_contrats_insertion_formation_jeunes %}
+    {% include "snippets/field_pdf.html" with field=motifs_contrats_cdd_temporaire_temps_partiel_exterieurs %}
+    {% include "snippets/field_pdf.html" with field=effectif_homme %}
+    {% include "snippets/field_pdf.html" with field=effectif_femme %}
+    {% include "snippets/field_pdf.html" with field=actions_prevention_formation %}
+    {% include "snippets/field_pdf.html" with field=actions_emploi_personnes_handicapees %}
+    {% include "snippets/field_pdf.html" with field=doeth %}
+    {% include "snippets/field_pdf.html" with field=nombre_stagiaires %}
+    {% include "snippets/field_pdf.html" with field=orientations_formation_professionnelle %}
+    {% include "snippets/field_pdf.html" with field=resultat_negociations_L_2241_6 %}
+    {% include "snippets/field_pdf.html" with field=conclusions_verifications_L_6361_1_L_6323_13_L_6362_4 %}
+    {% include "snippets/field_pdf.html" with field=bilan_actions_plan_formation %}
+    {% include "snippets/field_pdf.html" with field=informations_conges_formation %}
+    {% include "snippets/field_pdf.html" with field=nombre_salaries_beneficaires_abondement %}
+    {% include "snippets/field_pdf.html" with field=somme_abondement %}
+    {% include "snippets/field_pdf.html" with field=nombre_salaries_beneficiaires_entretien_professionnel %}
+    {% include "snippets/field_pdf.html" with field=bilan_contrats_alternance %}
+    {% include "snippets/field_pdf.html" with field=emplois_periode_professionnalisation %}
+    {% include "snippets/field_pdf.html" with field=effectif_periode_professionnalisation_par_age %}
+    {% include "snippets/field_pdf.html" with field=effectif_periode_professionnalisation_par_sexe %}
+    {% include "snippets/field_pdf.html" with field=effectif_periode_professionnalisation_par_niveau_initial %}
+    {% include "snippets/field_pdf.html" with field=resultats_periode_professionnalisation %}
+    {% include "snippets/field_pdf.html" with field=bilan_cpf %}
+    {% include "snippets/field_pdf.html" with field=nombre_salaries_temps_partiel_par_sexe %}
+    {% include "snippets/field_pdf.html" with field=nombre_salaries_temps_partiel_par_qualification %}
+    {% include "snippets/field_pdf.html" with field=horaires_temps_partiel %}
+    {% include "snippets/field_pdf.html" with field=programme_prevention_risques_pro %}
+    {% include "snippets/field_pdf.html" with field=evolution_amortissement %}
+    {% include "snippets/field_pdf.html" with field=montant_depenses_recherche_developpement %}
+    {% include "snippets/field_pdf.html" with field=mesures_methodes_production_exploitation %}
+
+    <h2>Egalité professionnelle entre les femmes et les hommes au sein de l'entreprise</h2>
+    {% include "snippets/field_pdf.html" with field=analyse_egalite_embauche %}
+    {% include "snippets/field_pdf.html" with field=analyse_egalite_formation %}
+    {% include "snippets/field_pdf.html" with field=analyse_egalite_promotion_professionnelle %}
+    {% include "snippets/field_pdf.html" with field=analyse_egalite_qualification %}
+    {% include "snippets/field_pdf.html" with field=analyse_egalite_classification %}
+    {% include "snippets/field_pdf.html" with field=analyse_egalite_conditions_de_travail %}
+    {% include "snippets/field_pdf.html" with field=analyse_egalite_sante_et_sécurite %}
+    {% include "snippets/field_pdf.html" with field=analyse_egalite_remuneration %}
+    {% include "snippets/field_pdf.html" with field=analyse_egalite_articulation_activite_pro_perso %}
+    {% include "snippets/field_pdf.html" with field=analyse_ecarts_salaires %}
+    {% include "snippets/field_pdf.html" with field=evolution_taux_promotion %}
+    {% include "snippets/field_pdf.html" with field=mesures_prises_egalite %}
+    {% include "snippets/field_pdf.html" with field=objectifs_progression %}
+
+    <h2>Fonds propres, endettement et impôts</h2>
+    {% include "snippets/field_pdf.html" with field=capitaux_propres %}
+    {% include "snippets/field_pdf.html" with field=emprunts_et_dettes_financieres %}
+    {% include "snippets/field_pdf.html" with field=impots_et_taxes %}
+
+    <h2>Rémunération des salariés et dirigeants, dans l'ensemble de leurs éléments</h2>
+    {% include "snippets/field_pdf.html" with field=frais_personnel %}
+    {% include "snippets/field_pdf.html" with field=evolution_salariale_par_categorie %}
+    {% include "snippets/field_pdf.html" with field=evolution_salariale_par_sexe %}
+    {% include "snippets/field_pdf.html" with field=salaire_base_minimum_par_categorie %}
+    {% include "snippets/field_pdf.html" with field=salaire_base_minimum_par_sexe %}
+    {% include "snippets/field_pdf.html" with field=salaire_moyen_par_categorie %}
+    {% include "snippets/field_pdf.html" with field=salaire_moyen_par_sexe %}
+    {% include "snippets/field_pdf.html" with field=salaire_median_par_categorie %}
+    {% include "snippets/field_pdf.html" with field=salaire_median_par_sexe %}
+    {% include "snippets/field_pdf.html" with field=montant_global_hautes_remunerations %}
+    {% include "snippets/field_pdf.html" with field=epargne_salariale %}
+
+    <h2>Activités sociales et culturelles</h2>
+    {% include "snippets/field_pdf.html" with field=montant_contribution_activites_sociales_culturelles %}
+    {% include "snippets/field_pdf.html" with field=mecenat_verse %}
+
+    <h2>Rémunération des financeurs, en dehors des éléments mentionnés au 4°</h2>
+    {% include "snippets/field_pdf.html" with field=remuneration_actionnaires %}
+    {% include "snippets/field_pdf.html" with field=remuneration_actionnariat_salarie %}
+
+    <h2>Flux financiers à destination de l'entreprise</h2>
+    {% include "snippets/field_pdf.html" with field=aides_financieres %}
+    {% include "snippets/field_pdf.html" with field=reductions_impots %}
+    {% include "snippets/field_pdf.html" with field=exonerations_cotisations_sociales %}
+    {% include "snippets/field_pdf.html" with field=credits_impots %}
+    {% include "snippets/field_pdf.html" with field=mecenat_recu %}
+    {% include "snippets/field_pdf.html" with field=chiffre_affaires %}
+    {% include "snippets/field_pdf.html" with field=benefices_ou_pertes %}
+    {% include "snippets/field_pdf.html" with field=resultats_globaux %}
+    {% include "snippets/field_pdf.html" with field=affectation_benefices %}
+
+    <h2>Partenariats</h2>
+    {% include "snippets/field_pdf.html" with field=partenariats_pour_produire %}
+    {% include "snippets/field_pdf.html" with field=partenariats_pour_beneficier %}
+
+    <h2>Pour les entreprises appartenant à un groupe, transferts commerciaux et financiers entre les entités du groupe</h2>
+    {% include "snippets/field_pdf.html" with field=transferts_de_capitaux %}
+    {% include "snippets/field_pdf.html" with field=cessions_fusions_acquisitions %}
+
+    <h2>Environnement</h2>
+    {% include "snippets/field_pdf.html" with field=prise_en_compte_questions_environnementales %}
+    {% include "snippets/field_pdf.html" with field=quantite_de_dechets_dangereux %}
+    {% include "snippets/field_pdf.html" with field=consommation_eau %}
+    {% include "snippets/field_pdf.html" with field=consommation_energie %}
+    {% include "snippets/field_pdf.html" with field=postes_emissions_directes_gaz_effet_de_serre %}
+    {% include "snippets/field_pdf.html" with field=bilan_gaz_effet_de_serre %}
+
+{% endblock %}
