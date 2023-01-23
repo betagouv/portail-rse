@@ -8,17 +8,6 @@
         {% include "snippets/bdese_menu.html" with active_item=1 %}
 
         <div class="fr-col">
-            <h1>BDESE {{ annee }}</h1>
-            <div>
-                <p>Les informations figurant dans la BDESE doivent porter sur les 3 dernières années achevées et 3 années suivantes (dont celle en cours), sous forme de perspectives.</p>
-                <p>
-                    Années à remplir :
-                    {% for annee in annees %}
-                    <a href="{% url 'bdese' siren annee 1 %}" title="Remplissez la BDESE et télécharger le rapport pour {{ annee }}">{{ annee }}</a>
-                    {% endfor %}
-                </p>
-                <p><a href="{% url 'categories_professionnelles' siren annee %}">Modifier les catégories professionnelles</a></p>
-            </div>
 
             <form action="{% url 'bdese' siren annee 1 %}" method="post">
                 {% csrf_token %}
