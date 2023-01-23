@@ -442,7 +442,7 @@ def categories_professionnelles(request, siren, annee):
     if form.is_valid():
         bdese = form.save()
         messages.success(request, "Catégories enregistrées")
-        next_step = 0 if bdese.is_bdese_300 else 1
+        next_step = 0
         if "save_complete" in request.POST:
             bdese.mark_step_as_complete(0)
             bdese.save()

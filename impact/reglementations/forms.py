@@ -171,12 +171,19 @@ def bdese_form_factory(
     Form = forms.modelform_factory(
         bdese_model_class,
         form=BDESEForm,
-        fields=BDESE_300_FIELDS[step]
-        if bdese_model_class == BDESE_300 and step != "all"
-        else BDESE_50_300_FIELDS[step],
+        fields=_select_fields(bdese_model_class, step),
         exclude=None,
     )
     return Form(bdese, fetched_data=fetched_data, *args, **kwargs)
+
+
+def _select_fields(BDESEClass, step):
+    if step == "all":
+        return "__all__"
+    return {
+        BDESE_300: BDESE_300_FIELDS,
+        BDESE_50_300: BDESE_50_300_FIELDS,
+    }[BDESEClass][step]
 
 
 BDESE_50_300_FIELDS = {

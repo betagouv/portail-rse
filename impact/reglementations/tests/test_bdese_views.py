@@ -293,11 +293,7 @@ def test_save_categories_professionnelles(bdese, authorized_user, client):
     )
 
     assert response.status_code == 200
-    if bdese.is_bdese_300:
-        next_step_url = url
-    else:
-        next_step_url = bdese_step_url(bdese, 1)
-    assert response.redirect_chain == [(next_step_url, 302)]
+    assert response.redirect_chain == [(url, 302)]
 
     content = response.content.decode("utf-8")
     assert "Catégories enregistrées" in content
@@ -432,14 +428,9 @@ def test_save_categories_professionnelles_for_a_new_year(
     )
 
     assert response.status_code == 200
-    if bdese.is_bdese_300:
-        assert response.redirect_chain == [
-            (reverse("bdese", args=[bdese.entreprise.siren, new_year, 0]), 302)
-        ]
-    else:
-        assert response.redirect_chain == [
-            (reverse("bdese", args=[bdese.entreprise.siren, new_year, 1]), 302)
-        ]
+    assert response.redirect_chain == [
+        (reverse("bdese", args=[bdese.entreprise.siren, new_year, 0]), 302)
+    ]
 
     content = response.content.decode("utf-8")
     assert "Catégories enregistrées" in content
