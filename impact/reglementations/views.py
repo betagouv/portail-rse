@@ -265,7 +265,7 @@ def bdese_pdf(request, siren, annee):
 
 
 def _pdf_template_path_from_bdese(bdese):
-    if bdese.__class__ == BDESE_300:
+    if bdese.is_bdese_300:
         return "reglementations/bdese_300_pdf.html"
     else:
         return "reglementations/bdese_50_300_pdf.html"
@@ -377,12 +377,8 @@ def _bdese_step_context(form, siren, annee, bdese, step):
         }
         for step in bdese.STEPS
     }
-    if bdese.__class__ == BDESE_300:
-        step_is_complete = steps[step]["is_complete"]
-        bdese_is_complete = bdese.is_complete
-    else:
-        step_is_complete = steps[step]["is_complete"]
-        bdese_is_complete = bdese.is_complete
+    step_is_complete = steps[step]["is_complete"]
+    bdese_is_complete = bdese.is_complete
     return {
         "form": form,
         "siren": siren,
