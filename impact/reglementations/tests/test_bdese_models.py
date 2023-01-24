@@ -107,6 +107,18 @@ def test_bdese_50_300(grande_entreprise):
     assert "effectif_cdi" not in bdese.category_fields()
     assert bdese.effectif_cdi is None
     assert not bdese.is_complete
+    for step in range(1, len(bdese.STEPS)):
+        assert not bdese.step_is_complete(step)
+
+    with pytest.raises(KeyError):
+        assert not bdese.step_is_complete(len(bdese.STEPS) + 1)
+
+    for step in bdese.STEPS:
+        bdese.mark_step_as_complete(step)
+        assert bdese.step_is_complete(step)
+
+        bdese.mark_step_as_incomplete(step)
+        assert not bdese.step_is_complete(step)
 
 
 def test_derniere_annee_a_remplir_bdese():

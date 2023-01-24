@@ -68,10 +68,10 @@ def test_bdese_form_step_with_new_bdese_300_instance(step, bdese_300):
     assert bound_form.is_valid()
 
 
-def test_fields_of_complete_step_are_disabled(bdese_300):
-    bdese_300.mark_step_as_complete(1)
+def test_fields_of_complete_step_are_disabled(bdese):
+    bdese.mark_step_as_complete(1)
 
-    form = bdese_form_factory(bdese_300, 1)
+    form = bdese_form_factory(bdese, 1)
 
     for field in form.fields:
         assert form.fields[field].disabled
@@ -126,20 +126,20 @@ def categories_form_data(categories_pro, categories_pro_detaillees=None):
     return data
 
 
-def test_categories_professionnelles_form(bdese_50_300):
-    form = categories_professionnelles_form_factory(bdese_50_300)
+def test_categories_professionnelles_form(bdese):
+    form = categories_professionnelles_form_factory(bdese)
 
     assert len(form.fields) == 1
     assert "categories_professionnelles" in form.fields
 
     categories_pro = ["catégorie 1", "catégorie 2", "catégorie 3"]
     bound_form = categories_professionnelles_form_factory(
-        bdese_50_300,
+        bdese,
         data=categories_form_data(categories_pro),
     )
-    bdese_50_300 = bound_form.save()
+    bdese = bound_form.save()
 
-    assert bdese_50_300.categories_professionnelles == categories_pro
+    assert bdese.categories_professionnelles == categories_pro
 
 
 def test_categories_professionnelles_form(bdese_300):
