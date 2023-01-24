@@ -3,20 +3,14 @@
 {% block content %}
 <div class="fr-container fr-my-8w">
     <h1>BDESE {{ annee }}</h1>
+    <h2>Catégories professionnelles</h2>
     <p>
-        Une structure de qualification comprenant trois postes minimum est requise pour certains indicateurs. Il est souhaitable de faire référence à la classification de la convention collective, de l'accord d'entreprise et aux pratiques habituellement retenues dans l'entreprise.<br>
-        A titre d'exemple la répartition suivante peut être retenue : cadres ; employés, techniciens et agents de maîtrise (ETAM) ; et ouvriers.
+        Certains indicateurs de la BDESE sont à remplir par catégorie professionnelle, suivant une structure de qualification propre à votre entreprise. 
+        Commencez par définir les catégories professionnelles retenues qui seront utilisées dans votre BDESE {{ annee }}.
     </p>
-    {% if form.categories_professionnelles_detaillees %}
-    <p>
-        Une structure de qualification détaillée comprenant cinq postes minimum est requise pour d'autres indicateurs. Il est à nouveau souhaitable de faire référence à la classification de la convention collective, de l'accord d'entreprise et aux pratiques habituellement retenues dans l'entreprise.<br>
-        A titre d'exemple, la répartition suivante des postes peut être retenue : cadres ; techniciens ; agents de maîtrise ; employés qualifiés ; employés non qualifiés ; ouvriers qualifiés ; ouvriers non qualifiés.
-    </p>
-    {% endif %}
-
-    <h2>Définissez vos catégories professionnelles</h2>
-    <p>Commencez par définir les catégories professionnelles retenues pour votre entreprise qui seront utilisées dans votre BDESE.</p>
-    <p>Si vous modifiez les catégories après avoir renseigné des indicateurs, les données concernant les catégories modifiées seront perdues.</p>
+    <div class="fr-highlight">
+        <p>Si vous modifiez les catégories après avoir renseigné des indicateurs, les données concernant les catégories modifiées seront perdues.</p>
+    </div>
 
     <form action="{% url 'categories_professionnelles' siren annee %}" method="post">
         {% csrf_token %}
@@ -25,9 +19,7 @@
         {% include 'snippets/category_field.html' with field=form.categories_professionnelles_detaillees %}
         {% endif %}
 
-        <button type="submit" class="fr-btn">Enregistrer</button>
-
+        {% include "snippets/bdese_submit.html" %}
     </form>
-
 </div>
 {% endblock %}
