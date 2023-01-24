@@ -22,8 +22,6 @@ def field_type(field):
 
 @register.filter
 def widget_type(field):
-    if type(field) == str:
-        return field
     return field.field.widget.__class__.__name__
 
 

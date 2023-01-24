@@ -110,7 +110,7 @@
 
                 <h2>5° Activités sociales et culturelles</h2>
                 {% include 'snippets/input_field.html' with field=form.montant_contribution_activites_sociales_culturelles %}
-                {% include 'snippets/input_field.html' with field=form.mecenat %}
+                {% include 'snippets/input_field.html' with field=form.mecenat_verse %}
                 
                 <h2>6° Rémunération des financeurs, en dehors des éléments mentionnés au 4°</h2>
                 <h3>A-Rémunération des actionnaires (revenus distribués)</h3>
@@ -133,7 +133,7 @@
                 {% include 'snippets/input_field.html' with field=form.credits_impots %}
 
                 <h3>E-Mécénat</h3>
-                {% include 'snippets/input_field.html' with field=form.mecenat %}
+                {% include 'snippets/input_field.html' with field=form.mecenat_recu %}
 
                 <h3>F-Résultats financiers</h3>
                 {% include 'snippets/input_field.html' with field=form.chiffre_affaires %}
