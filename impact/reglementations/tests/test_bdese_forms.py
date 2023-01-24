@@ -140,7 +140,7 @@ def test_indicateurs_externes_in_step_field(step, bdese_300):
     assert bdese_300.indicateurs_externes == [field_in_another_step]
 
 
-@pytest.mark.parametrize("step", [1])
+@pytest.mark.parametrize("step", range(1, 11))
 def test_bdese_form_with_new_bdese_50_300_instance(step, bdese_50_300):
     categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
     form = bdese_form_factory(bdese_50_300, step, categories_professionnelles)
