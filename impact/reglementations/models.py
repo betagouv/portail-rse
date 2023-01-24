@@ -713,25 +713,27 @@ class BDESE_300(AbstractBDESE):
         ("H", "Heures"),
     ]
     unite_absenteisme = models.CharField(
+        verbose_name="Unité choisie pour la catégorie absentéisme",
+        help_text="Possibilité de comptabiliser tous les indicateurs de la rubrique absentéisme, au choix, en journées, 1/2 journées ou heures.",
         max_length=10,
         choices=UNITE_ABSENTEISME_CHOICES,
         default="J",
     )
     nombre_unites_absence = CategoryField(
         category_type=CategoryType.PROFESSIONNELLE,
-        verbose_name="Nombre de journées d'absence",
+        verbose_name="Nombre d'unités d'absence",
         help_text="Ne sont pas comptés parmi les absences : les diverses sortes de congés, les conflits et le service national.",
         null=True,
         blank=True,
     )
     nombre_unites_theoriques_travaillees = models.IntegerField(
-        verbose_name="Nombre de journées théoriques travaillées",
+        verbose_name="Nombre d'unités théoriques travaillées",
         null=True,
         blank=True,
     )
     nombre_unites_absence_maladie = CategoryField(
         category_type=CategoryType.PROFESSIONNELLE,
-        verbose_name="Nombre de journées d'absence pour maladie",
+        verbose_name="Nombre d'unités d'absence pour maladie",
         null=True,
         blank=True,
     )
@@ -743,26 +745,26 @@ class BDESE_300(AbstractBDESE):
     )
     nombre_unites_absence_accidents = CategoryField(
         category_type=CategoryType.PROFESSIONNELLE,
-        verbose_name="Nombre de journées d'absence pour accidents du travail et de trajet ou maladies professionnelles",
+        verbose_name="Nombre d'unités d'absence pour accidents du travail et de trajet ou maladies professionnelles",
         null=True,
         blank=True,
     )
     nombre_unites_absence_maternite = CategoryField(
         category_type=CategoryType.PROFESSIONNELLE,
-        verbose_name="Nombre de journées d'absence pour maternité",
+        verbose_name="Nombre d'unités d'absence pour maternité",
         null=True,
         blank=True,
     )
     nombre_unites_absence_conges_autorises = CategoryField(
         category_type=CategoryType.PROFESSIONNELLE,
-        verbose_name="Nombre de journées d'absence pour congés autorisés",
+        verbose_name="Nombre d'unités d'absence pour congés autorisés",
         help_text="(événements familiaux, congés spéciaux pour les femmes …)",
         null=True,
         blank=True,
     )
     nombre_unites_absence_autres = CategoryField(
         category_type=CategoryType.PROFESSIONNELLE,
-        verbose_name="Nombre de journées d'absence imputables à d'autres causes",
+        verbose_name="Nombre d'unités d'absence imputables à d'autres causes",
         null=True,
         blank=True,
     )
