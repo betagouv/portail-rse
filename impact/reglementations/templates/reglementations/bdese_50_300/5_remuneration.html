@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="fr-container fr-my-8w">
+    {% include "snippets/bdese_header.html" %}
+
+    <div class="fr-grid-row">
+        {% include "snippets/bdese_menu.html" with active_item=5 %}
+
+        <div class="fr-col">
+            <h2>Rémunération des salariés et dirigeants, dans l'ensemble de leurs éléments</h2>
+
+            <form action="{% url 'bdese' siren annee 5 %}" method="post">
+                {% csrf_token %}
+
+                <h3>A - Evolution des rémunérations salariales</h3>
+                <h4>a) Frais de personnel</h4>
+                <p>Ils représentent l'ensemble des rémunérations et des cotisations sociales mises légalement ou conventionnellement à la charge de l'entreprise.</p>
+                {% include 'snippets/input_field.html' with field=form.frais_personnel %}
+                {% include 'snippets/category_field.html' with field=form.evolution_salariale_par_categorie %}
+                {% include 'snippets/category_field.html' with field=form.evolution_salariale_par_sexe %}
+                {% include 'snippets/category_field.html' with field=form.salaire_base_minimum_par_categorie %}
+                {% include 'snippets/category_field.html' with field=form.salaire_base_minimum_par_sexe %}
+                <p>Remplir au choix le salaire moyen ou median :</p>
+                {% include 'snippets/category_field.html' with field=form.salaire_moyen_par_categorie %}
+                {% include 'snippets/category_field.html' with field=form.salaire_moyen_par_sexe %}
+                {% include 'snippets/category_field.html' with field=form.salaire_median_par_categorie %}
+                {% include 'snippets/category_field.html' with field=form.salaire_median_par_sexe %}
+
+                <h4>b) Montant global des hautes rémunérations</h4>
+                {% include 'snippets/input_field.html' with field=form.montant_global_hautes_remunerations %}
+
+                <h4>c) Epargne salariale : intéressement, participation</h4>
+                {% include 'snippets/input_field.html' with field=form.epargne_salariale %}
+
+                {% include "snippets/bdese_submit.html" %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

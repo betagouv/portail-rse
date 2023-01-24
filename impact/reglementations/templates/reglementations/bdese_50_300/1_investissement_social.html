@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="fr-container fr-my-8w">
+    {% include "snippets/bdese_header.html" %}
+
+    <div class="fr-grid-row">
+        {% include "snippets/bdese_menu.html" with active_item=1 %}
+
+        <div class="fr-col">
+            <h2>Investissement social</h2>
+
+            <form action="{% url 'bdese' siren annee 1 %}" method="post">
+                {% csrf_token %}
+
+                <section class="fr-accordion">
+                    <h3 class="fr-accordion__title">
+                        <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-a" data-fr-js-collapse-button="true">a) Evolution des effectifs par type de contrat, par âge, par ancienneté</button>
+                    </h3>
+                    <div class="fr-collapse" id="accordion-a">
+                        {% include 'snippets/category_field.html' with field=form.effectif_mensuel %}
+                        {% include 'snippets/input_field.html' with field=form.effectif_cdi %}
+                        {% include 'snippets/input_field.html' with field=form.effectif_cdd %}
+                        {% include 'snippets/input_field.html' with field=form.nombre_salaries_temporaires %}
+                        {% include 'snippets/input_field.html' with field=form.nombre_travailleurs_exterieurs %}
+                        {% include 'snippets/input_field.html' with field=form.nombre_journees_salaries_temporaires %}
+                        {% include 'snippets/input_field.html' with field=form.nombre_contrats_insertion_formation_jeunes %}
+                        {% include 'snippets/input_field.html' with field=form.motifs_contrats_cdd_temporaire_temps_partiel_exterieurs %}
+                    </div>
+                </section>
+
+                <section class="fr-accordion">
+                    <h3 class="fr-accordion__title">
+                        <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-b">b) Evolution des emplois par catégorie professionnelle</button>
+                    </h3>
+                    <div class="fr-collapse" id="accordion-b">
+                        {% include 'snippets/category_field.html' with field=form.effectif_homme %}
+                        {% include 'snippets/category_field.html' with field=form.effectif_femme %}
+                        {% include 'snippets/input_field.html' with field=form.actions_prevention_formation %}
+                    </div>
+                </section>
+
+                <section class="fr-accordion">
+                    <h3 class="fr-accordion__title">
+                        <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-c">c) Evolution de l’emploi des personnes handicapées et mesures prises pour le développer</button>
+                    </h3>
+                    <div class="fr-collapse" id="accordion-c">
+                        {% include 'snippets/input_field.html' with field=form.actions_emploi_personnes_handicapees %}
+                        {% include 'snippets/input_field.html' with field=form.doeth %}
+                    </div>
+                </section>
+
+                <section class="fr-accordion">
+                    <h3 class="fr-accordion__title">
+                        <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-d">d) Evolution du nombre de stagiaires</button>
+                    </h3>
+                    <div class="fr-collapse" id="accordion-d">
+                        {% include 'snippets/input_field.html' with field=form.nombre_stagiaires %}
+                    </div>
+                </section>
+
+                <section class="fr-accordion">
+                    <h3 class="fr-accordion__title">
+                        <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-e">e) Formation professionnelle : investissements en formation, publics concernés</button>
+                    </h3>
+                    <div class="fr-collapse" id="accordion-e">
+                        {% include 'snippets/input_field.html' with field=form.orientations_formation_professionnelle %}
+                        {% include 'snippets/input_field.html' with field=form.resultat_negociations_L_2241_6 %}
+                        {% include 'snippets/input_field.html' with field=form.conclusions_verifications_L_6361_1_L_6323_13_L_6362_4 %}
+                        {% include 'snippets/input_field.html' with field=form.bilan_actions_plan_formation %}
+                        {% include 'snippets/input_field.html' with field=form.informations_conges_formation %}
+                        {% include 'snippets/input_field.html' with field=form.nombre_salaries_beneficaires_abondement %}
+                        {% include 'snippets/input_field.html' with field=form.somme_abondement %}
+                        {% include 'snippets/input_field.html' with field=form.nombre_salaries_beneficiaires_entretien_professionnel %}
+                        {% include 'snippets/input_field.html' with field=form.bilan_contrats_alternance %}
+                        {% include 'snippets/input_field.html' with field=form.emplois_periode_professionnalisation %}
+                        {% include 'snippets/category_field.html' with field=form.effectif_periode_professionnalisation_par_age %}
+                        {% include 'snippets/category_field.html' with field=form.effectif_periode_professionnalisation_par_sexe %}
+                        {% include 'snippets/category_field.html' with field=form.effectif_periode_professionnalisation_par_niveau_initial %}
+                        {% include 'snippets/input_field.html' with field=form.resultats_periode_professionnalisation %}
+                        {% include 'snippets/input_field.html' with field=form.bilan_cpf %}
+                    </div>
+                </section>
+
+                <section class="fr-accordion">
+                    <h3 class="fr-accordion__title">
+                        <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-f">f) Conditions de travail : durée du travail dont travail à temps partiel et aménagement du temps de travail</button>
+                    </h3>
+                    <div class="fr-collapse" id="accordion-f">
+                        {% include 'snippets/category_field.html' with field=form.nombre_salaries_temps_partiel_par_sexe %}
+                        {% include 'snippets/category_field.html' with field=form.nombre_salaries_temps_partiel_par_qualification %}
+                        {% include 'snippets/input_field.html' with field=form.horaires_temps_partiel %}
+                        {% include 'snippets/input_field.html' with field=form.programme_prevention_risques_pro %}
+                    </div>
+                </section>
+
+                {% include "snippets/bdese_submit.html" %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

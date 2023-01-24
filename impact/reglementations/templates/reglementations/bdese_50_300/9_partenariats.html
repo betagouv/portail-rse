@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="fr-container fr-my-8w">
+    {% include "snippets/bdese_header.html" %}
+
+    <div class="fr-grid-row">
+        {% include "snippets/bdese_menu.html" with active_item=9 %}
+
+        <div class="fr-col">
+            <h2>Partenariats</h2>
+
+            <form action="{% url 'bdese' siren annee 9 %}" method="post">
+                {% csrf_token %}
+                <h3>A - Partenariats conclus pour produire des services ou des produits pour une autre entreprise</h3>
+                {% include 'snippets/input_field.html' with field=form.partenariats_pour_produire %}
+
+                <h3>B - Partenariats conclus pour bénéficier des services ou des produits d'une autre entreprise</h3>
+                {% include 'snippets/input_field.html' with field=form.partenariats_pour_beneficier %}
+
+                {% include "snippets/bdese_submit.html" %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

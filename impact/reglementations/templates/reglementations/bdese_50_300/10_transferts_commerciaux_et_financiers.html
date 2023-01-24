@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="fr-container fr-my-8w">
+    {% include "snippets/bdese_header.html" %}
+
+    <div class="fr-grid-row">
+        {% include "snippets/bdese_menu.html" with active_item=10 %}
+
+        <div class="fr-col">
+            <h2>Pour les entreprises appartenant à un groupe, transferts commerciaux et financiers entre les entités du groupe</h2>
+
+            <form action="{% url 'bdese' siren annee 10 %}" method="post">
+                {% csrf_token %}
+                <h3>A - Transferts de capitaux tels qu'ils figurent dans les comptes individuels des sociétés du groupe lorsqu'ils présentent une importance significative</h3>
+                {% include 'snippets/input_field.html' with field=form.transferts_de_capitaux %}
+
+                <h3>B - Cessions, fusions, et acquisitions réalisées</h3>
+                {% include 'snippets/input_field.html' with field=form.cessions_fusions_acquisitions %}
+
+                {% include "snippets/bdese_submit.html" %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

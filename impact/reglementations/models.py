@@ -1941,7 +1941,17 @@ class BDESE_50_300(AbstractBDESE):
 
     STEPS = {
         0: "Catégories professionnelles",
-        1: "Données",
+        1: "Investissement social",
+        2: "Investissement matériel et immatériel",
+        3: "Egalité professionnelle homme/femme",
+        4: "Fonds propres, endettement et impôts",
+        5: "Rémunérations",
+        6: "Représentation du personnel et Activités sociales et culturelles",
+        7: "Rémunération des financeurs",
+        8: "Flux financiers",
+        9: "Partenariats",
+        10: "Transferts commerciaux et financiers",
+        11: "Environnement",
     }
 
     completion_steps = CategoryField(

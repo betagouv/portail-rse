@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('reglementations', '0004_bdese_50_300_completion_steps'),
+        ('reglementations', '0005_alter_bdese_50_300_completion_steps'),
     ]
 
     operations = [

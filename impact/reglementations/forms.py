@@ -221,9 +221,13 @@ BDESE_50_300_FIELDS = {
         "nombre_salaries_temps_partiel_par_qualification",
         "horaires_temps_partiel",
         "programme_prevention_risques_pro",
+    ],
+    2: [
         "evolution_amortissement",
         "montant_depenses_recherche_developpement",
         "mesures_methodes_production_exploitation",
+    ],
+    3: [
         "analyse_egalite_embauche",
         "analyse_egalite_formation",
         "analyse_egalite_promotion_professionnelle",
@@ -237,9 +241,13 @@ BDESE_50_300_FIELDS = {
         "evolution_taux_promotion",
         "mesures_prises_egalite",
         "objectifs_progression",
+    ],
+    4: [
         "capitaux_propres",
         "emprunts_et_dettes_financieres",
         "impots_et_taxes",
+    ],
+    5: [
         "frais_personnel",
         "evolution_salariale_par_categorie",
         "evolution_salariale_par_sexe",
@@ -251,10 +259,16 @@ BDESE_50_300_FIELDS = {
         "salaire_median_par_sexe",
         "montant_global_hautes_remunerations",
         "epargne_salariale",
+    ],
+    6: [
         "montant_contribution_activites_sociales_culturelles",
         "mecenat_verse",
+    ],
+    7: [
         "remuneration_actionnaires",
         "remuneration_actionnariat_salarie",
+    ],
+    8: [
         "aides_financieres",
         "reductions_impots",
         "exonerations_cotisations_sociales",
@@ -264,10 +278,16 @@ BDESE_50_300_FIELDS = {
         "benefices_ou_pertes",
         "resultats_globaux",
         "affectation_benefices",
+    ],
+    9: [
         "partenariats_pour_produire",
         "partenariats_pour_beneficier",
+    ],
+    10: [
         "transferts_de_capitaux",
         "cessions_fusions_acquisitions",
+    ],
+    11: [
         "prise_en_compte_questions_environnementales",
         "quantite_de_dechets_dangereux",
         "consommation_eau",

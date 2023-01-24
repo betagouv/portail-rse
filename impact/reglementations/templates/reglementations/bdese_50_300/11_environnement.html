@@ -5,32 +5,29 @@
     {% include "snippets/bdese_header.html" %}
 
     <div class="fr-grid-row">
-        {% include "snippets/bdese_menu.html" with active_item=1 %}
+        {% include "snippets/bdese_menu.html" with active_item=11 %}
 
         <div class="fr-col">
+            <h2>Environnement</h2>
 
-            <form action="{% url 'bdese' siren annee 1 %}" method="post">
+            <form action="{% url 'bdese' siren annee 11 %}" method="post">
                 {% csrf_token %}
-
-
-
-                <h2>10° Environnement</h2>
                 <p>Lorsque les données et informations environnementales transmises dans le cadre de cette rubrique ne sont pas éditées au niveau de l'entreprise (i. e. par exemple, au niveau du groupe ou des établissements distincts, le cas échéant), elles doivent être accompagnées d'informations supplémentaires pertinentes pour être mises en perspective à ce niveau.</p>
-                <h3>A-Politique générale en matière environnementale</h3>
+                <h4>A - Politique générale en matière environnementale</h4>
                 {% include 'snippets/input_field.html' with field=form.prise_en_compte_questions_environnementales %}
-                
-                <h3>B-Economie circulaire</h3>
-                <h4>a) Prévention et gestion de la production de déchets</h4>
+
+                <h4>B - Economie circulaire</h4>
+                <h5>a) Prévention et gestion de la production de déchets</h5>
                 {% include 'snippets/input_field.html' with field=form.quantite_de_dechets_dangereux %}
 
-                <h4>b) Utilisation durable des ressources</h4>
+                <h5>b) Utilisation durable des ressources</h5>
                 {% include 'snippets/input_field.html' with field=form.consommation_eau %}
                 {% include 'snippets/input_field.html' with field=form.consommation_energie %}
 
-                <h3>C-Changement climatique</h3>
+                <h4>C - Changement climatique</h4>
                 {% include 'snippets/input_field.html' with field=form.postes_emissions_directes_gaz_effet_de_serre %}
                 {% include 'snippets/input_field.html' with field=form.bilan_gaz_effet_de_serre %}
-                
+
                 {% include "snippets/bdese_submit.html" %}
             </form>
         </div>
