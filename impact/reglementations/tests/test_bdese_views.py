@@ -119,8 +119,7 @@ def test_bdese_step_fetch_data(bdese, authorized_user, client, mocker):
 
 @pytest.fixture
 def bdese_300(bdese_factory):
-    bdese = bdese_factory(bdese_class=BDESE_300)
-    return bdese
+    return bdese_factory(bdese_class=BDESE_300)
 
 
 @pytest.fixture
