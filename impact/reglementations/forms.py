@@ -180,10 +180,9 @@ def bdese_form_factory(
 def _select_fields(BDESEClass, step):
     if step == "all":
         return "__all__"
-    return {
-        BDESE_300: BDESE_300_FIELDS,
-        BDESE_50_300: BDESE_50_300_FIELDS,
-    }[BDESEClass][step]
+    return {BDESE_300: BDESE_300_FIELDS, BDESE_50_300: BDESE_50_300_FIELDS,}[
+        BDESEClass
+    ][step]
 
 
 BDESE_50_300_FIELDS = {

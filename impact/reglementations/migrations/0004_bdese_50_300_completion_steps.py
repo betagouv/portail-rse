@@ -8,13 +8,17 @@ import reglementations.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('reglementations', '0003_alter_bdese_300_nombre_unites_absence_and_more'),
+        ("reglementations", "0003_alter_bdese_300_nombre_unites_absence_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='bdese_50_300',
-            name='completion_steps',
-            field=reglementations.models.CategoryField(base_field=django.db.models.fields.BooleanField, categories=['Catégories professionnelles', 'Données'], default=reglementations.models.bdese_50_300_completion_steps_default),
+            model_name="bdese_50_300",
+            name="completion_steps",
+            field=reglementations.models.CategoryField(
+                base_field=django.db.models.fields.BooleanField,
+                categories=["Catégories professionnelles", "Données"],
+                default=reglementations.models.bdese_50_300_completion_steps_default,
+            ),
         ),
     ]

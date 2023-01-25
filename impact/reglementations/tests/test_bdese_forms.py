@@ -87,6 +87,7 @@ def test_form_is_initialized_with_fetched_data(bdese_300):
 
     assert form["nombre_femmes_plus_hautes_remunerations"].value() == 10
 
+
 @pytest.mark.parametrize("step", [1])
 def test_bdese_form_with_new_bdese_50_300_instance(step, bdese_50_300):
     categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
