@@ -89,6 +89,17 @@ def test_bdese_step_use_categories_professionnelles_and_annees_a_remplir(
 ):
     categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
     bdese.categories_professionnelles = categories_professionnelles
+    if bdese.is_bdese_300:
+        categories_professionnelles_detaillees = [
+            "catégorie détaillée 1",
+            "catégorie détaillée 2",
+            "catégorie détaillée 3",
+            "catégorie détaillée 4",
+            "catégorie détaillée 5",
+        ]
+        bdese.categories_professionnelles_detaillees = (
+            categories_professionnelles_detaillees
+        )
     bdese.save()
     client.force_login(authorized_user)
 
@@ -99,6 +110,9 @@ def test_bdese_step_use_categories_professionnelles_and_annees_a_remplir(
     content = response.content.decode("utf-8")
     for category in categories_professionnelles:
         assert category in content
+    if bdese.is_bdese_300:
+        for category in bdese.categories_professionnelles_detaillees:
+            assert category in content
     for annee in annees_a_remplir_bdese():
         assert str(annee) in content
 
@@ -118,54 +132,37 @@ def test_bdese_step_fetch_data(bdese, authorized_user, client, mocker):
 
 
 @pytest.fixture
-def bdese_300(bdese_factory):
-    return bdese_factory(bdese_class=BDESE_300)
-
-
-@pytest.fixture
-def bdese_300_with_categories(bdese_300):
-    bdese_300.categories_professionnelles = [
+def bdese_with_categories(bdese):
+    bdese.categories_professionnelles = [
         "catégorie 1",
         "catégorie 2",
         "catégorie 3",
     ]
-    bdese_300.categories_professionnelles_detaillees = [
-        "catégorie détaillée 1",
-        "catégorie détaillée 2",
-        "catégorie détaillée 3",
-        "catégorie détaillée 4",
-        "catégorie détaillée 5",
-    ]
-    bdese_300.mark_step_as_complete(0)
-    bdese_300.save()
-    return bdese_300
+    if bdese.is_bdese_300:
+        bdese.categories_professionnelles_detaillees = [
+            "catégorie détaillée 1",
+            "catégorie détaillée 2",
+            "catégorie détaillée 3",
+            "catégorie détaillée 4",
+            "catégorie détaillée 5",
+        ]
+    bdese.mark_step_as_complete(0)
+    bdese.save()
+    return bdese
 
 
-def test_bdese_300_step_use_categories_professionnelles_detaillees(
-    bdese_300_with_categories, django_user_model, client
-):
-    bdese = bdese_300_with_categories
-    user = django_user_model.objects.create()
-    bdese.entreprise.users.add(user)
-    client.force_login(user)
+def test_save_step_error(bdese_with_categories, authorized_user, client):
+    bdese = bdese_with_categories
+    client.force_login(authorized_user)
 
-    url = bdese_step_url(bdese, 1)
-    response = client.get(url)
-
-    assert response.status_code == 200
-    content = response.content.decode("utf-8")
-    for category in bdese.categories_professionnelles_detaillees:
-        assert category in content
-
-
-def test_save_step_error(bdese_300_with_categories, django_user_model, client):
-    bdese = bdese_300_with_categories
-    user = django_user_model.objects.create()
-    bdese.entreprise.users.add(user)
-    client.force_login(user)
+    incorrect_data_bdese_300 = {"unite_absenteisme": "yolo"}
+    incorrect_data_bdese_50_300 = {"effectif_cdi": "yolo"}
+    incorrect_data = (
+        incorrect_data_bdese_300 if bdese.is_bdese_300 else incorrect_data_bdese_50_300
+    )
 
     url = bdese_step_url(bdese, 1)
-    response = client.post(url, {"unite_absenteisme": "yolo"})
+    response = client.post(url, incorrect_data)
 
     assert response.status_code == 200
     assert (
@@ -174,19 +171,24 @@ def test_save_step_error(bdese_300_with_categories, django_user_model, client):
     )
 
     bdese.refresh_from_db()
-    assert bdese.unite_absenteisme != "yolo"
+    if bdese.is_bdese_300:
+        assert bdese.unite_absenteisme != "yolo"
+    else:
+        assert bdese.effectif_cdi != "yolo"
 
 
-def test_save_step_as_draft_success(
-    bdese_300_with_categories, django_user_model, client
-):
-    bdese = bdese_300_with_categories
-    user = django_user_model.objects.create()
-    bdese.entreprise.users.add(user)
-    client.force_login(user)
+def test_save_step_as_draft_success(bdese_with_categories, authorized_user, client):
+    bdese = bdese_with_categories
+    client.force_login(authorized_user)
+
+    correct_data_bdese_300 = {"unite_absenteisme": "H"}
+    correct_data_bdese_50_300 = {"effectif_cdi": "50"}
+    correct_data = (
+        correct_data_bdese_300 if bdese.is_bdese_300 else correct_data_bdese_50_300
+    )
 
     url = bdese_step_url(bdese, 1)
-    response = client.post(url, {"unite_absenteisme": "H"})
+    response = client.post(url, correct_data)
 
     assert response.status_code == 200
 
@@ -196,22 +198,28 @@ def test_save_step_as_draft_success(
     assert "Enregistrer en brouillon" in content
 
     bdese.refresh_from_db()
-    assert bdese.unite_absenteisme == "H"
+    if bdese.is_bdese_300:
+        assert bdese.unite_absenteisme == "H"
+    else:
+        assert bdese.effectif_cdi == 50
     assert not bdese.step_is_complete(1)
 
 
 def test_save_step_and_mark_as_complete_success(
-    bdese_300_with_categories, django_user_model, client
+    bdese_with_categories, authorized_user, client
 ):
-    bdese = bdese_300_with_categories
-    user = django_user_model.objects.create()
-    bdese.entreprise.users.add(user)
-    client.force_login(user)
+    bdese = bdese_with_categories
+    client.force_login(authorized_user)
+
+    correct_data_bdese_300 = {"unite_absenteisme": "H"}
+    correct_data_bdese_50_300 = {"effectif_cdi": "50"}
+    correct_data = (
+        correct_data_bdese_300 if bdese.is_bdese_300 else correct_data_bdese_50_300
+    )
+    correct_data.update({"save_complete": ""})
 
     url = bdese_step_url(bdese, 1)
-    response = client.post(
-        url, {"unite_absenteisme": "H", "save_complete": ""}, follow=True
-    )
+    response = client.post(url, correct_data, follow=True)
 
     assert response.status_code == 200
     assert response.redirect_chain == [(url, 302)]
@@ -221,21 +229,22 @@ def test_save_step_and_mark_as_complete_success(
     assert "Repasser en brouillon pour modifier" in content
 
     bdese.refresh_from_db()
-    assert bdese.unite_absenteisme == "H"
+    if bdese.is_bdese_300:
+        assert bdese.unite_absenteisme == "H"
+    else:
+        assert bdese.effectif_cdi == 50
     assert bdese.step_is_complete(1)
 
 
-def test_mark_step_as_incomplete(bdese_300_with_categories, django_user_model, client):
-    bdese = bdese_300_with_categories
+def test_mark_step_as_incomplete(bdese_with_categories, authorized_user, client):
+    bdese = bdese_with_categories
     bdese.mark_step_as_complete(1)
     bdese.save()
 
     bdese.refresh_from_db()
     assert bdese.step_is_complete(1)
 
-    user = django_user_model.objects.create()
-    bdese.entreprise.users.add(user)
-    client.force_login(user)
+    client.force_login(authorized_user)
 
     url = bdese_step_url(bdese, 1)
     response = client.post(url, {"mark_incomplete": ""}, follow=True)
@@ -301,16 +310,11 @@ def test_save_categories_professionnelles(bdese, authorized_user, client):
     assert bdese.categories_professionnelles == categories_pro
     if bdese.is_bdese_300:
         assert bdese.categories_professionnelles_detaillees == categories_pro_detaillees
-        assert not bdese.step_is_complete(0)
+    assert not bdese.step_is_complete(0)
 
 
-def test_save_and_complete_categories_professionnelles(
-    bdese_300, django_user_model, client
-):
-    bdese = bdese_300
-    user = django_user_model.objects.create()
-    bdese.entreprise.users.add(user)
-    client.force_login(user)
+def test_save_and_complete_categories_professionnelles(bdese, authorized_user, client):
+    client.force_login(authorized_user)
 
     categories_pro = ["catégorie 1", "catégorie 2", "catégorie 3"]
     categories_pro_detaillees = [
@@ -338,19 +342,19 @@ def test_save_and_complete_categories_professionnelles(
 
     bdese.refresh_from_db()
     assert bdese.categories_professionnelles == categories_pro
-    assert bdese.categories_professionnelles_detaillees == categories_pro_detaillees
+    if bdese.is_bdese_300:
+        assert bdese.categories_professionnelles_detaillees == categories_pro_detaillees
     assert bdese.step_is_complete(0)
 
 
 def test_mark_as_incomplete_categories_professionnelles(
-    bdese_300_with_categories, django_user_model, client
+    bdese_with_categories, authorized_user, client
 ):
-    bdese = bdese_300_with_categories
+    bdese = bdese_with_categories
     categories_pro = bdese.categories_professionnelles
-    categories_pro_detaillees = bdese.categories_professionnelles_detaillees
-    user = django_user_model.objects.create()
-    bdese.entreprise.users.add(user)
-    client.force_login(user)
+    if bdese.is_bdese_300:
+        categories_pro_detaillees = bdese.categories_professionnelles_detaillees
+    client.force_login(authorized_user)
 
     url = bdese_step_url(bdese, 0)
     response = client.post(
@@ -367,7 +371,8 @@ def test_mark_as_incomplete_categories_professionnelles(
 
     bdese.refresh_from_db()
     assert bdese.categories_professionnelles == categories_pro
-    assert bdese.categories_professionnelles_detaillees == categories_pro_detaillees
+    if bdese.is_bdese_300:
+        assert bdese.categories_professionnelles_detaillees == categories_pro_detaillees
     assert not bdese.step_is_complete(0)
 
 
@@ -415,8 +420,8 @@ def test_save_categories_professionnelles_for_a_new_year(
     if bdese.is_bdese_300:
         for categorie in categories_pro_detaillees:
             assert categorie in content
-        assert "Enregistrer et marquer comme terminé" in content, content
-        assert "Enregistrer en brouillon" in content
+    assert "Enregistrer et marquer comme terminé" in content, content
+    assert "Enregistrer en brouillon" in content
 
     new_categories_pro = ["A", "B", "C", "D"]
     new_categories_pro_detaillees = ["E", "F", "G", "H", "I"]
