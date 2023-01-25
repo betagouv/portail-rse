@@ -344,25 +344,29 @@ def bdese(request, siren, annee, step):
 
 
 def _bdese_step_template_path(bdese: BDESE_300 | BDESE_50_300, step: int) -> str:
-    templates = {
-        0: "0_categories_professionnelles.html",
-        1: "1_investissement_social.html",
-        2: "2_investissement_matériel_et_immatériel.html",
-        3: "3_egalite_professionnelle.html",
-        4: "4_fonds_propres_endettement_impots.html",
-        5: "5_remuneration.html",
-        6: "6_representation_du_personnel_et_activites_sociales_et_culturelles.html",
-        7: "7_remuneration_des_financeurs.html",
-        8: "8_flux_financiers.html",
-        9: "9_partenariats.html",
-        10: "10_transferts_commerciaux_et_financiers.html",
-        11: "11_environnement.html",
-    }
-    if bdese.__class__ == BDESE_300:
-        directory = "bdese_300"
+    if step == 0:
+        directory = ""
+        template_file = "0_categories_professionnelles.html"
     else:
-        directory = "bdese_50_300"
-    return f"reglementations/{directory}/{templates[step]}"
+        templates = {
+            1: "1_investissement_social.html",
+            2: "2_investissement_matériel_et_immatériel.html",
+            3: "3_egalite_professionnelle.html",
+            4: "4_fonds_propres_endettement_impots.html",
+            5: "5_remuneration.html",
+            6: "6_representation_du_personnel_et_activites_sociales_et_culturelles.html",
+            7: "7_remuneration_des_financeurs.html",
+            8: "8_flux_financiers.html",
+            9: "9_partenariats.html",
+            10: "10_transferts_commerciaux_et_financiers.html",
+            11: "11_environnement.html",
+        }
+        if bdese.__class__ == BDESE_300:
+            directory = "bdese_300/"
+        else:
+            directory = "bdese_50_300/"
+        template_file = templates[step]
+    return f"reglementations/{directory}{template_file}"
 
 
 def _bdese_step_context(form, siren, annee, bdese, step):
