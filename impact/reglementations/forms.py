@@ -220,7 +220,9 @@ def bdese_form_factory(
     Form = forms.modelform_factory(
         bdese_model_class,
         form=BDESEForm,
-        fields=BDESE_300_FIELDS[step] if bdese.is_bdese_300 else BDESE_50_300_FIELDS[step],
+        fields=BDESE_300_FIELDS[step]
+        if bdese.is_bdese_300
+        else BDESE_50_300_FIELDS[step],
     )
     return Form(bdese, fetched_data=fetched_data, *args, **kwargs)
 

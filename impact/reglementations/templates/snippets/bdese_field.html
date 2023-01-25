@@ -12,7 +12,7 @@
         {% with toggle_id=field|svelte_toggle_id container_id=field|svelte_container_id%}
             <div class="svelte-indicateur-externe-toggle" data-toggle-id="{{ toggle_id }}" data-field-name="{{ field.name }}" data-field-container-id="{{ container_id }}" data-indicateurs-externes-field-id="{{ field.form.indicateurs_externes_in_step.id_for_label }}"></div>
         {% endwith %}
-    </div>        
+    </div>
 </div>
 {% endblock %}
 

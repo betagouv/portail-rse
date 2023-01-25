@@ -34,5 +34,5 @@
 
 <div class="fr-toggle fr-toggle--label-left fr-toggle--border-bottom">
     <input type="checkbox" class="fr-toggle__input" id="{toggleId}" bind:checked on:change={handleChange}>
-    <label class="fr-toggle__label fr-text--sm" for="{toggleId}" data-fr-checked-label="Activé" data-fr-unchecked-label="Désactivé">Indicateur externe</label> 
+    <label class="fr-toggle__label fr-text--sm" for="{toggleId}" data-fr-checked-label="Activé" data-fr-unchecked-label="Désactivé">Indicateur externe</label>
 </div>
