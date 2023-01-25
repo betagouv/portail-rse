@@ -126,23 +126,23 @@ def categories_form_data(categories_pro, categories_pro_detaillees=None):
     return data
 
 
-def test_categories_professionnelles_form(bdese):
-    form = categories_professionnelles_form_factory(bdese)
+def test_categories_professionnelles_form_for_bdese_50_300(bdese_50_300):
+    form = categories_professionnelles_form_factory(bdese_50_300)
 
     assert len(form.fields) == 1
     assert "categories_professionnelles" in form.fields
 
     categories_pro = ["catégorie 1", "catégorie 2", "catégorie 3"]
     bound_form = categories_professionnelles_form_factory(
-        bdese,
+        bdese_50_300,
         data=categories_form_data(categories_pro),
     )
-    bdese = bound_form.save()
+    bdese_50_300 = bound_form.save()
 
-    assert bdese.categories_professionnelles == categories_pro
+    assert bdese_50_300.categories_professionnelles == categories_pro
 
 
-def test_categories_professionnelles_form(bdese_300):
+def test_categories_professionnelles_form_for_bdese_300(bdese_300):
     form = categories_professionnelles_form_factory(bdese_300)
 
     assert len(form.fields) == 2
