@@ -5,7 +5,7 @@
 De nombreux indicateurs obligatoires pour la BDESE sont à renseigner par catégorie professionnelle.
 
 https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000045680845
-> I.-Une structure de qualification détaillée, en trois ou quatre postes minimum, est requise. 
+> I.-Une structure de qualification détaillée, en trois ou quatre postes minimum, est requise.
 > Il est souhaitable de faire référence à la classification de la convention collective, de l’accord d’entreprise et aux pratiques habituellement retenues dans l’entreprise
 > A titre d’exemple la répartition suivante peut être retenue : cadres ; employés, techniciens et agents de maîtrise (ETAM) ; et ouvriers.
 

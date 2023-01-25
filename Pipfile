@@ -19,6 +19,7 @@ sentry-sdk = "~=1.12.1"
 pytest-django = "*"
 pytest-mock = "*"
 freezegun = "*"
+pre-commit = "*"
 
 [requires]
 python_version = "3.10"

@@ -2,7 +2,7 @@
 <div class="field-block">
     <div class="fr-text-lead">{{ field.label }} :</div>
     {% if field.help_text %}<p class="fr-text--sm">{{ field.help_text }}</p>{% endif %}
-    
+
     {% if field.value or field.value == 0 %}
         {% with field_type=field|field_type %}
             {% if field_type == 'CategoryMultiValueField' %}

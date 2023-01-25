@@ -31,4 +31,3 @@ jobs:
       run: pipenv install -d
     - name: Run tests
       run: pipenv run pytest
-

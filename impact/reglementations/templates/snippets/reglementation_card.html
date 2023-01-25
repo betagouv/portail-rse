@@ -27,7 +27,7 @@
                         {% if reglementation.status_is_soumis %}
                         <a href="{% url 'login' %}?next=/reglementations">Vous êtes soumis à cette réglementation. Connectez-vous pour en savoir plus.</a>
                         {% else %}
-                        Vous n'êtes pas soumis à cette réglementation. 
+                        Vous n'êtes pas soumis à cette réglementation.
                         {% endif %}
                     {% elif user_manage_entreprise %}
                         {{ reglementation.status_detail|safe }}

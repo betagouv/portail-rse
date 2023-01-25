@@ -9,7 +9,7 @@
 
         <div class="fr-col">
             <h2>Egalité professionnelle entre les femmes et les hommes au sein de l'entreprise</h2>
-            
+
             <form action="{% url 'bdese' siren annee 3 %}" method="post">
                 {% csrf_token %}
 
@@ -48,7 +48,7 @@
                         {% include 'snippets/category_field.html' with field=form.departs_fin_CDD_femme %}
                         {% include 'snippets/category_field.html' with field=form.departs_licenciement_femme %}
                         <h5>e) Positionnement dans l'entreprise</h5>
-        
+
                         <h4>B - Rémunérations et déroulement de carrière</h4>
                         <h5>a) Promotion</h5>
                         {% include 'snippets/category_field.html' with field=form.nombre_promotions_homme %}
@@ -70,7 +70,7 @@
                         {% include 'snippets/category_field.html' with field=form.remuneration_par_age_homme %}
                         {% include 'snippets/category_field.html' with field=form.remuneration_par_age_femme %}
                         {% include 'snippets/input_field.html' with field=form.nombre_femmes_plus_hautes_remunerations %}
-        
+
                         <h4>C - Formation</h4>
                         {% include 'snippets/category_field.html' with field=form.nombre_moyen_heures_formation_homme %}
                         {% include 'snippets/category_field.html' with field=form.nombre_moyen_heures_formation_femme %}
@@ -80,7 +80,7 @@
                         {% include 'snippets/category_field.html' with field=form.action_maintien_emploi_femme %}
                         {% include 'snippets/category_field.html' with field=form.action_developpement_competences_homme %}
                         {% include 'snippets/category_field.html' with field=form.action_developpement_competences_femme %}
-                        
+
                         <h4>D - Conditions de travail, santé et sécurité au travail</h4>
                         {% include 'snippets/category_field.html' with field=form.exposition_risques_pro_homme %}
                         {% include 'snippets/category_field.html' with field=form.exposition_risques_pro_femme %}
