@@ -31,6 +31,12 @@ make test
 
 Pour activer l'intégration avec Sentry, il est nécessaire de renseigner la variable d'environnement SENTRY_DSN
 
+### pre-commit
+
+Le projet utilise [pre-commit](https://pre-commit.com/) pour vérifier le formattage du code automatiquement à chaque commit.
+La cible `make install` l'installe directement.
+
+
 ## migration en recette
 
 

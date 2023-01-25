@@ -6,6 +6,7 @@ run:
 
 install:
 	pipenv install -d
+	pipenv run pre-commit install
 
 shell:
 	pipenv run python impact/manage.py shell
