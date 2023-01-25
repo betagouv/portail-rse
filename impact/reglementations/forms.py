@@ -67,7 +67,7 @@ def categories_professionnelles_form_factory(
 
     form = Form(*args, instance=bdese, **kwargs)
 
-    if bdese.is_bdese_300 and bdese.step_is_complete(0):
+    if bdese.step_is_complete(0):
         for field in form.fields:
             form.fields[field].disabled = True
 

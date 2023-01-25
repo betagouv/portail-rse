@@ -192,3 +192,12 @@ def test_at_least_5_categories_professionnelles_detaillees(bdese_300):
     )
 
     assert not bound_form.is_valid()
+
+
+def test_categories_professionnelles_of_complete_step_are_disabled(bdese):
+    bdese.mark_step_as_complete(0)
+
+    form = categories_professionnelles_form_factory(bdese)
+
+    for field in form.fields:
+        assert form.fields[field].disabled
