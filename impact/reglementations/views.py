@@ -348,6 +348,10 @@ def _bdese_step_template_path(bdese: BDESE_300 | BDESE_50_300, step: int) -> str
         directory = ""
         template_file = "0_categories_professionnelles.html"
     else:
+        if bdese.is_bdese_300:
+            directory = "bdese_300/"
+        else:
+            directory = "bdese_50_300/"
         templates = {
             1: "1_investissement_social.html",
             2: "2_investissement_matériel_et_immatériel.html",
@@ -361,10 +365,6 @@ def _bdese_step_template_path(bdese: BDESE_300 | BDESE_50_300, step: int) -> str
             10: "10_transferts_commerciaux_et_financiers.html",
             11: "11_environnement.html",
         }
-        if bdese.__class__ == BDESE_300:
-            directory = "bdese_300/"
-        else:
-            directory = "bdese_50_300/"
         template_file = templates[step]
     return f"reglementations/{directory}{template_file}"
 
