@@ -1,2 +1,2 @@
-web: python impact/manage.py runserver
+web: PYTHONUNBUFFERED=true python impact/manage.py runserver
 front: npm run dev
