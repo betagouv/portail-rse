@@ -14,6 +14,7 @@ shell:
 
 migrate:
 	pipenv run python impact/manage.py migrate
+	pipenv run python impact/manage.py migrate --database=metabase
 
 migrations:
 	pipenv run python impact/manage.py makemigrations entreprises metabase public reglementations users
