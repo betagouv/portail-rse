@@ -16,7 +16,10 @@ migrate:
 	pipenv run python impact/manage.py migrate
 
 migrations:
-	pipenv run python impact/manage.py makemigrations entreprises public reglementations users
+	pipenv run python impact/manage.py makemigrations entreprises metabase public reglementations users
+
+sync_metabase:
+	pipenv run impact/manage.py sync_db
 
 createsuperuser:
 	pipenv run python impact/manage.py createsuperuser

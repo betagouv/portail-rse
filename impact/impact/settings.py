@@ -31,8 +31,9 @@ ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "0.0.0.0,127.0.0.1").split(",")
 
 # Application definition
 INSTALLED_APPS = [
-    "public",
     "entreprises",
+    "metabase",
+    "public",
     "reglementations",
     "users",
     "utils",
@@ -75,7 +76,12 @@ WSGI_APPLICATION = "impact.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-DATABASES = {"default": dj_database_url.config()}
+DATABASES = {
+    "default": dj_database_url.config(),
+    "metabase": dj_database_url.config("METABASE_DATABASE_URL"),
+}
+
+DATABASE_ROUTERS = ["impact.db_routers.MetabaseRouter"]
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
