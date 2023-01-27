@@ -1,11 +1,13 @@
 from django.conf import settings
 from django.db import models
 
+from utils.models import TimestampedModel
+
 RAISON_SOCIALE_MAX_LENGTH = 250
 FONCTIONS_MAX_LENGTH = 250
 
 
-class Entreprise(models.Model):
+class Entreprise(TimestampedModel):
     EFFECTIF_CHOICES = [
         ("petit", "moins de 50"),
         ("moyen", "entre 50 et 300"),

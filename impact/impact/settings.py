@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "entreprises",
     "reglementations",
     "users",
+    "utils",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
