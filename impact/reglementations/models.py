@@ -5,6 +5,7 @@ from django import forms
 from django.db import models
 
 from entreprises.models import Entreprise
+from utils.models import TimestampedModel
 
 
 def derniere_annee_a_remplir_index_egapro():
@@ -71,7 +72,7 @@ class CategoryField(models.JSONField):
         return super().formfield(**defaults)
 
 
-class AbstractBDESE(models.Model):
+class AbstractBDESE(TimestampedModel):
     annee = models.IntegerField()
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
     categories_professionnelles = models.JSONField(

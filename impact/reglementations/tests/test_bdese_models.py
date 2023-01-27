@@ -72,6 +72,8 @@ def test_bdese_300(grande_entreprise):
 
     bdese = BDESE_300.objects.create(entreprise=grande_entreprise, annee=2022)
 
+    assert bdese.created_at
+    assert bdese.updated_at
     assert bdese.annee == 2022
     assert bdese.entreprise == grande_entreprise
     assert "effectif_total" in bdese.category_fields()
@@ -100,6 +102,8 @@ def test_bdese_50_300(grande_entreprise):
 
     bdese = BDESE_50_300.objects.create(entreprise=grande_entreprise, annee=2022)
 
+    assert bdese.created_at
+    assert bdese.updated_at
     assert bdese.annee == 2022
     assert bdese.entreprise == grande_entreprise
     assert "effectif_mensuel" in bdese.category_fields()

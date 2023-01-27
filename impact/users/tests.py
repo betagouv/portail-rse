@@ -39,6 +39,8 @@ def test_create_user_with_real_siren(reception_actualites, client, db):
 
     user = User.objects.get(email="user@example.com")
     entreprise = Entreprise.objects.get(siren="130025265")
+    assert user.created_at
+    assert user.updated_at
     assert user.email == "user@example.com"
     assert user.prenom == "Alice"
     assert user.nom == "User"

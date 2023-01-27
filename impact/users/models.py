@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 
+from utils.models import TimestampedModel
+
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None):
@@ -28,7 +30,7 @@ class UserManager(BaseUserManager):
 SURNAME_MAX_LENGTH = NAME_MAX_LENGTH = 50
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, TimestampedModel):
     email = models.EmailField(
         verbose_name="Email",
         max_length=255,
