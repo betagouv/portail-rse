@@ -90,10 +90,9 @@ class AbstractBDESE(models.Model):
     @classmethod
     def category_fields(cls):
         return [
-            attribute_name
-            for attribute_name in cls.__dict__.keys()
-            if hasattr(getattr(cls, attribute_name), "field")
-            and type(getattr(cls, attribute_name).field) == CategoryField
+            field.name
+            for field in cls._meta.get_fields()
+            if type(field) == CategoryField
         ]
 
     def mark_step_as_complete(self, step: int):
