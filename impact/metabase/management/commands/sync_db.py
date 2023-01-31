@@ -14,7 +14,7 @@ class Command(BaseCommand):
 
     def _insert_entreprises(self):
         for entreprise in ImpactEntreprise.objects.all():
-            meta_e = MetabaseEntreprise.objects.using("metabase").create(
+            meta_e = MetabaseEntreprise.objects.create(
                 siren=entreprise.siren,
                 raison_sociale=entreprise.raison_sociale,
                 bdese_accord=entreprise.bdese_accord,
