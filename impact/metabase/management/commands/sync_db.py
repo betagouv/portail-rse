@@ -5,10 +5,14 @@ from metabase.models import Entreprise as MetabaseEntreprise
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
+        self._drop_entreprises()
+        self._insert_entreprises()
+
+    def _drop_entreprises(self):
         MetabaseEntreprise.objects.all().delete()
-        self.stdout.write(
-            self.style.SUCCESS("Suppression des entreprises de Metabase: OK")
-        )
+        self._success("Suppression des entreprises de Metabase: OK")
+
+    def _insert_entreprises(self):
         for entreprise in ImpactEntreprise.objects.all():
             meta_e = MetabaseEntreprise.objects.using("metabase").create(
                 siren=entreprise.siren,
@@ -17,4 +21,7 @@ class Command(BaseCommand):
                 effectif=entreprise.effectif,
             )
             meta_e.save()
-            self.stdout.write(self.style.SUCCESS(str(entreprise)))
+            self._success(str(entreprise))
+
+    def _success(self, message):
+        self.stdout.write(self.style.SUCCESS(message))
