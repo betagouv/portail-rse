@@ -7,7 +7,7 @@ from metabase.management.commands.sync_db import Command
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", "metabase"])
-def test_sync_db():
+def test_synchronise_metabase_once():
     ImpactEntreprise.objects.create(
         siren="000000001",
         effectif="petit",
@@ -15,6 +15,25 @@ def test_sync_db():
         raison_sociale="A",
     )
 
+    Command().handle()
+
+    metabase_entreprise = MetabaseEntreprise.objects.all()[0]
+    assert metabase_entreprise.raison_sociale == "A"
+    assert metabase_entreprise.siren == "000000001"
+    assert metabase_entreprise.effectif == "petit"
+    assert metabase_entreprise.bdese_accord == True
+
+
+@pytest.mark.django_db(transaction=True, databases=["default", "metabase"])
+def test_synchronise_several_times():
+    ImpactEntreprise.objects.create(
+        siren="000000001",
+        effectif="petit",
+        bdese_accord=True,
+        raison_sociale="A",
+    )
+
+    Command().handle()
     Command().handle()
 
     metabase_entreprise = MetabaseEntreprise.objects.all()[0]
