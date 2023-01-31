@@ -13,4 +13,4 @@ class Command(BaseCommand):
                 effectif=entreprise.effectif,
             )
             meta_e.save()
-            self.stdout.write(self.style.SUCCESS(entreprise))
+            self.stdout.write(self.style.SUCCESS(str(entreprise)))
