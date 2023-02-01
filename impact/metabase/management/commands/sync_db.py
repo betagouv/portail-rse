@@ -19,6 +19,8 @@ class Command(BaseCommand):
                 raison_sociale=entreprise.raison_sociale,
                 bdese_accord=entreprise.bdese_accord,
                 effectif=entreprise.effectif,
+                created_at=entreprise.created_at,
+                updated_at=entreprise.updated_at,
             )
             meta_e.save()
             self._success(str(entreprise))
