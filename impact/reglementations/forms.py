@@ -10,7 +10,7 @@ class IntroductionDemoForm(DsfrForm):
     indicateurs_externes_in_step = forms.JSONField(required=False, initial=[])
     example_field = forms.CharField(
         label="Exemple de champ",
-        help_text="Exemple de donnée obligatoire à renseigner dans la BDESE",
+        help_text="Exemple d'information obligatoire à renseigner dans la BDESE",
         required=False,
     )
 
@@ -38,8 +38,8 @@ class CategoriesProfessionnellesForm(forms.ModelForm, DsfrForm):
     class Meta:
         fields = ["categories_professionnelles"]
         help_texts = {
-            "categories_professionnelles": "Une structure de qualification comprenant trois postes minimum est requise pour certains indicateurs. Il est souhaitable de faire référence à la classification de la convention collective, de l'accord d'entreprise et aux pratiques habituellement retenues dans l'entreprise.<br> A titre d'exemple la répartition suivante peut être retenue : cadres ; employés, techniciens et agents de maîtrise (ETAM) ; et ouvriers.",
-            "categories_professionnelles_detaillees": "Une structure de qualification détaillée comprenant cinq postes minimum est requise pour d'autres indicateurs. Il est à nouveau souhaitable de faire référence à la classification de la convention collective, de l'accord d'entreprise et aux pratiques habituellement retenues dans l'entreprise.<br> A titre d'exemple, la répartition suivante des postes peut être retenue : cadres ; techniciens ; agents de maîtrise ; employés qualifiés ; employés non qualifiés ; ouvriers qualifiés ; ouvriers non qualifiés.",
+            "categories_professionnelles": "Une structure de qualification comprenant <strong>trois postes minimum</strong> est requise pour certains indicateurs. Il est souhaitable de faire référence à la classification de la convention collective, de l'accord d'entreprise et aux pratiques habituellement retenues dans l'entreprise.<br> A titre d'exemple la répartition suivante peut être retenue : cadres ; employés, techniciens et agents de maîtrise (ETAM) ; et ouvriers.",
+            "categories_professionnelles_detaillees": "Une structure de qualification détaillée comprenant <strong>cinq postes minimum</strong> est requise pour d'autres indicateurs. Il est à nouveau souhaitable de faire référence à la classification de la convention collective, de l'accord d'entreprise et aux pratiques habituellement retenues dans l'entreprise.<br> A titre d'exemple, la répartition suivante des postes peut être retenue : cadres ; techniciens ; agents de maîtrise ; employés qualifiés ; employés non qualifiés ; ouvriers qualifiés ; ouvriers non qualifiés.",
         }
 
     def clean_categories_professionnelles(self):
