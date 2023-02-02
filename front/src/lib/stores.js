@@ -1,3 +1,3 @@
 import { writable } from 'svelte/store';
 
-export const indicateursExternes = writable();
+export const externalFields = writable();

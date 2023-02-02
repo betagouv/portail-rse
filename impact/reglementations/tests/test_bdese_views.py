@@ -275,12 +275,12 @@ def test_get_pdf(bdese, authorized_user, client):
 def test_render_bdese_pdf_html(bdese_with_categories):
     bdese = bdese_with_categories
     if bdese.is_bdese_300:
-        bdese.indicateurs_externes = ["effectif_total"]
+        bdese.external_fields = ["effectif_total"]
         bdese.effectif_permanent = {
             category: 10 for category in bdese.categories_professionnelles
         }
     else:
-        bdese.indicateurs_externes = ["effectif_mensuel"]
+        bdese.external_fields = ["effectif_mensuel"]
         bdese.effectif_homme = {
             category: 10 for category in bdese.categories_professionnelles
         }

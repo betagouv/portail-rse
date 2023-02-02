@@ -12,7 +12,7 @@
 
             <form action="{% url 'bdese' siren annee 11 %}" method="post">
                 {% csrf_token %}
-                {{ form.indicateurs_externes_in_step.as_hidden }}
+                {{ form.external_fields_in_step.as_hidden }}
 
                 <p>Lorsque les données et informations environnementales transmises dans le cadre de cette rubrique ne sont pas éditées au niveau de l'entreprise (i. e. par exemple, au niveau du groupe ou des établissements distincts, le cas échéant), elles doivent être accompagnées d'informations supplémentaires pertinentes pour être mises en perspective à ce niveau.</p>
                 <h4>A - Politique générale en matière environnementale</h4>

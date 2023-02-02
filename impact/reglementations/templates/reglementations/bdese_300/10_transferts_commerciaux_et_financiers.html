@@ -13,7 +13,7 @@
 
             <form action="{% url 'bdese' siren annee 10 %}" method="post">
                 {% csrf_token %}
-                {{ form.indicateurs_externes_in_step.as_hidden }}
+                {{ form.external_fields_in_step.as_hidden }}
 
                 <h3>A - Transferts de capitaux tels qu'ils figurent dans les comptes individuels des sociétés du groupe lorsqu'ils présentent une importance significative</h3>
                 {% include 'snippets/bdese_field.html' with field=form.transferts_de_capitaux %}

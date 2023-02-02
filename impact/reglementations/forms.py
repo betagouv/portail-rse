@@ -7,7 +7,7 @@ from reglementations.models import BDESE_50_300, BDESE_300, CategoryType
 
 
 class IntroductionDemoForm(DsfrForm):
-    indicateurs_externes_in_step = forms.JSONField(required=False, initial=[])
+    external_fields_in_step = forms.JSONField(required=False, initial=[])
     example_field = forms.CharField(
         label="Exemple de champ",
         help_text="Exemple d'information obligatoire à renseigner dans la BDESE",
@@ -156,7 +156,7 @@ def bdese_form_factory(
             return None
 
     class BDESEForm(forms.ModelForm, DsfrForm):
-        indicateurs_externes_in_step = forms.JSONField(required=False)
+        external_fields_in_step = forms.JSONField(required=False)
 
         class Meta:
             model = bdese.__class__
@@ -180,41 +180,41 @@ def bdese_form_factory(
                     if field in self.fields:
                         self.fields[field].help_text += " (valeur extraite de EgaPro)"
                         self.fields[field].disabled = True
-            self.fields["indicateurs_externes_in_step"].initial = [
-                indicateur
-                for indicateur in bdese.indicateurs_externes
-                if indicateur in self.fields
+            self.fields["external_fields_in_step"].initial = [
+                field_name
+                for field_name in bdese.external_fields
+                if field_name in self.fields
             ]
 
         def save(self, commit=True):
             bdese = super().save(commit=False)
-            if "indicateurs_externes_in_step" in self.changed_data:
-                old_indicateurs_externes = bdese.indicateurs_externes
-                new_indicateurs_externes = self.update_indicateurs_externes(
-                    self.cleaned_data["indicateurs_externes_in_step"] or [],
-                    old_indicateurs_externes,
+            if "external_fields_in_step" in self.changed_data:
+                old_external_fields = bdese.external_fields
+                new_external_fields = self.update_external_fields(
+                    self.cleaned_data["external_fields_in_step"] or [],
+                    old_external_fields,
                 )
-                bdese.indicateurs_externes = new_indicateurs_externes
+                bdese.external_fields = new_external_fields
             if commit:
                 bdese.save()
             return bdese
 
-        def update_indicateurs_externes(
-            self, indicateurs_externes_in_step: list, old_indicateurs_externes: list
+        def update_external_fields(
+            self, external_fields_in_step: list, old_external_fields: list
         ) -> list:
-            new_indicateurs_externes = old_indicateurs_externes
-            for field in self.fields:
+            new_external_fields = old_external_fields
+            for field_name in self.fields:
                 if (
-                    field in indicateurs_externes_in_step
-                    and field not in old_indicateurs_externes
+                    field_name in external_fields_in_step
+                    and field_name not in old_external_fields
                 ):
-                    new_indicateurs_externes.append(field)
+                    new_external_fields.append(field_name)
                 elif (
-                    field in old_indicateurs_externes
-                    and field not in indicateurs_externes_in_step
+                    field_name in old_external_fields
+                    and field_name not in external_fields_in_step
                 ):
-                    new_indicateurs_externes.remove(field)
-            return new_indicateurs_externes
+                    new_external_fields.remove(field_name)
+            return new_external_fields
 
     bdese_model_class = bdese.__class__
     Form = forms.modelform_factory(

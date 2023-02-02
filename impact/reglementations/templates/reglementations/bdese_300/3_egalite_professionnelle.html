@@ -12,7 +12,7 @@
 
             <form action="{% url 'bdese' siren annee 3 %}" method="post">
                 {% csrf_token %}
-                {{ form.indicateurs_externes_in_step.as_hidden }}
+                {{ form.external_fields_in_step.as_hidden }}
 
                 <section class="fr-accordion">
                     <h3 class="fr-accordion__title">

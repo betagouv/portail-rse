@@ -12,7 +12,7 @@
 
             <form action="{% url 'bdese' siren annee 3 %}" method="post">
                 {% csrf_token %}
-                {{ form.indicateurs_externes_in_step.as_hidden }}
+                {{ form.external_fields_in_step.as_hidden }}
 
                 <h4>A - Analyse des données chiffrées</h4>
                 <p>Analyse des données chiffrées par catégorie professionnelle de la situation respective des femmes et des hommes</p>

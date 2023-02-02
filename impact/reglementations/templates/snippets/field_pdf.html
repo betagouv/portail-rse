@@ -5,7 +5,7 @@
     {% if field.help_text %}<p class="fr-text--sm">{{ field.help_text }}</p>{% endif %}
     <div class="fr-table fr-table--bordered">
         <table>
-            {% if field.name in bdese.indicateurs_externes %}
+            {% if field.name in bdese.external_fields %}
             <tbody>
                 <tr>
                     <td>Cette donnée est remplie dans un autre document.</td>

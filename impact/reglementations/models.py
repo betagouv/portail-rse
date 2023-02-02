@@ -81,7 +81,7 @@ class AbstractBDESE(TimestampedModel):
         null=True,
         blank=True,
     )
-    indicateurs_externes = models.JSONField(
+    external_fields = models.JSONField(
         default=list,
     )
 

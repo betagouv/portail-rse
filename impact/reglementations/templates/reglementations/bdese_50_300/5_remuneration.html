@@ -12,7 +12,7 @@
 
             <form action="{% url 'bdese' siren annee 5 %}" method="post">
                 {% csrf_token %}
-                {{ form.indicateurs_externes_in_step.as_hidden }}
+                {{ form.external_fields_in_step.as_hidden }}
 
                 <h3>A - Evolution des rémunérations salariales</h3>
                 <h4>a) Frais de personnel</h4>

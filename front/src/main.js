@@ -1,13 +1,13 @@
-import IndicateurExterneToggle from './lib/IndicateurExterneToggle.svelte'
+import ExternalFieldToggle from './lib/ExternalFieldToggle.svelte'
 
-for (let indicateurExterneToggle of document.getElementsByClassName("svelte-indicateur-externe-toggle")) {
-  new IndicateurExterneToggle({
-    target: indicateurExterneToggle,
+for (let externalFieldToggle of document.getElementsByClassName("svelte-external-field-toggle")) {
+  new ExternalFieldToggle({
+    target: externalFieldToggle,
     props: {
-      toggleId: indicateurExterneToggle.dataset.toggleId,
-      fieldName: indicateurExterneToggle.dataset.fieldName,
-      fieldContainerId: indicateurExterneToggle.dataset.fieldContainerId,
-      indicateursExternesFieldId: indicateurExterneToggle.dataset.indicateursExternesFieldId
+      toggleId: externalFieldToggle.dataset.toggleId,
+      fieldName: externalFieldToggle.dataset.fieldName,
+      fieldContainerId: externalFieldToggle.dataset.fieldContainerId,
+      externalFieldsInStepFieldId: externalFieldToggle.dataset.externalFieldsInStepFieldId
     }
   })
 }

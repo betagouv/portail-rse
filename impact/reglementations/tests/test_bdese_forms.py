@@ -44,7 +44,7 @@ def test_bdese_form_step_with_new_bdese_300_instance(step, bdese_300):
     assert len(form.fields) == len(BDESE_300_FIELDS[step]) + 1
     for field in BDESE_300_FIELDS[step]:
         assert field in form.fields
-    assert "indicateurs_externes_in_step" in form.fields
+    assert "external_fields_in_step" in form.fields
 
     for field in [
         field for field in form.fields if field in bdese_300.category_fields()
@@ -57,7 +57,7 @@ def test_bdese_form_step_with_new_bdese_300_instance(step, bdese_300):
             assert form[field].value() == "J"
         elif field == "remuneration_moyenne_ou_mediane":
             assert form[field].value() == "moyenne"
-        elif field == "indicateurs_externes_in_step":
+        elif field == "external_fields_in_step":
             assert form[field].value() == json.dumps([])
         else:
             assert not form[field].value()
@@ -79,7 +79,7 @@ def test_bdese_form_with_new_bdese_50_300_instance(step, bdese_50_300):
 
     assert form.instance == bdese_50_300
     assert len(form.fields) == len(BDESE_50_300_FIELDS[step]) + 1
-    assert "indicateurs_externes_in_step" in form.fields
+    assert "external_fields_in_step" in form.fields
     for field in BDESE_50_300_FIELDS[step]:
         assert field in form.fields
 
@@ -89,7 +89,7 @@ def test_bdese_form_with_new_bdese_50_300_instance(step, bdese_50_300):
         assert isinstance(form.fields[field], forms.MultiValueField)
 
     for field in form.fields:
-        if field == "indicateurs_externes_in_step":
+        if field == "external_fields_in_step":
             assert form[field].value() == json.dumps([])
         else:
             assert not form[field].value()
@@ -122,8 +122,8 @@ def test_fields_of_complete_step_are_disabled(bdese):
 
 
 @pytest.mark.parametrize("step", range(1, 11))
-def test_indicateurs_externes_in_step_field(step, bdese):
-    # tente d'ajouter un champ de l'étape en cours dans les indicateurs externes
+def test_external_fields_in_step_field(step, bdese):
+    # tente d'ajouter un champ de l'étape en cours dans les champs externes
     # et un champ d'une autre étape qui est ignoré
     FIELDS = BDESE_300_FIELDS if bdese.is_bdese_300 else BDESE_50_300_FIELDS
     field_in_step = FIELDS[step][0]
@@ -136,36 +136,36 @@ def test_indicateurs_externes_in_step_field(step, bdese):
         data={
             "unite_absenteisme": "J",
             "remuneration_moyenne_ou_mediane": "moyenne",
-            "indicateurs_externes_in_step": [field_in_step, field_in_another_step],
+            "external_fields_in_step": [field_in_step, field_in_another_step],
         },
     )
     form.save()
 
     bdese.refresh_from_db()
-    assert bdese.indicateurs_externes == [field_in_step]
+    assert bdese.external_fields == [field_in_step]
 
-    # les indicateurs externes de l'étape sont correctement inialisés
-    bdese.indicateurs_externes = [field_in_step, field_in_another_step]
+    # les champs externes de l'étape sont correctement inialisés
+    bdese.external_fields = [field_in_step, field_in_another_step]
     bdese.save()
 
     form = bdese_form_factory(bdese, step)
 
-    assert form["indicateurs_externes_in_step"].value() == json.dumps([field_in_step])
+    assert form["external_fields_in_step"].value() == json.dumps([field_in_step])
 
-    # supprime l'indicateur externe de l'étape
+    # supprime le champ externe de l'étape
     form = bdese_form_factory(
         bdese,
         step,
         data={
             "unite_absenteisme": "J",
             "remuneration_moyenne_ou_mediane": "moyenne",
-            "indicateurs_externes_in_step": [],
+            "external_fields_in_step": [],
         },
     )
     form.save()
 
     bdese.refresh_from_db()
-    assert bdese.indicateurs_externes == [field_in_another_step]
+    assert bdese.external_fields == [field_in_another_step]
 
 
 def categories_form_data(categories_pro, categories_pro_detaillees=None):
