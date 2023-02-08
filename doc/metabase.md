@@ -4,7 +4,7 @@ Le projet Impact utilise deux aplications associées chacune à une base de donn
  - une application Django, déployée via Scalingo à partir de ce repo
  - et une application Metabase, déployée via Scalingo à partir de https://github.com/Scalingo/metabase-scalingo
 
-Metabase n'a pas d'accès à la base de données de l'application Django.
+Metabase n'a pas d'accès à la base de données de l'application Django (cf l'ADR [ADR/2023-02-08 Metabase](ADR/"2023-02-08 Metabase")).
 C'est l'application Django qui alimente la base de données de Metabase dans un schéma postgreSQL `impact` dédié.
 
 
@@ -49,9 +49,9 @@ L'alimentation des données peut être réalisée manuellement depuis l'applicat
 scalingo --app {DJANGO_APP} run python3 impact/manage.py sync_metabase
 ```
 
-Elle est programmée via un cron toutes les nuits à minuit.
+Elle est programmée pour se lancer automatiquement via un cron toutes les nuits à minuit.
 
-## Suppression manuelle
+## Suppression manuelle des données
 
 ```
 $ scalingo --app {METABASE_APP} pgsql-console
