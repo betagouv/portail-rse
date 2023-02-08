@@ -2,11 +2,12 @@ import pytest
 
 from django.urls import reverse
 from entreprises.models import Entreprise as ImpactEntreprise
+from impact.settings import METABASE_DATABASE_NAME
 from metabase.models import Entreprise as MetabaseEntreprise
 from metabase.management.commands.sync_metabase import Command
 
 
-@pytest.mark.django_db(transaction=True, databases=["default", "metabase"])
+@pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_metabase_once():
     entreprise_A = ImpactEntreprise.objects.create(
         siren="000000001",
@@ -28,7 +29,7 @@ def test_synchronise_metabase_once():
     assert metabase_entreprise.updated_at == entreprise_A.updated_at
 
 
-@pytest.mark.django_db(transaction=True, databases=["default", "metabase"])
+@pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_several_times():
     ImpactEntreprise.objects.create(
         siren="000000001",

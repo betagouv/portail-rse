@@ -76,11 +76,12 @@ WSGI_APPLICATION = "impact.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-METABASE = os.getenv("METABASE_DATABASE_URL", False)
+METABASE = os.getenv("METABASE_DATABASE_URL")
+METABASE_DATABASE_NAME = "metabase"
 
 DATABASES = {
     "default": dj_database_url.config("DATABASE_URL"),
-    "metabase": dj_database_url.config(
+    METABASE_DATABASE_NAME: dj_database_url.config(
         "METABASE_DATABASE_URL" if METABASE else "DATABASE_URL"
     ),
 }
