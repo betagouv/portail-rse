@@ -419,6 +419,11 @@ class BDESE_300(AbstractBDESE):
         blank=True,
     )
     # 1° A - d) Evolution du nombre de stagiaires
+    evolution_nombre_stagiaires = models.TextField(
+        verbose_name="Évolution du nombre de stagiaires",
+        null=True,
+        blank=True,
+    )
     # 1° A - e) Formation professionnelle : investissements en formation, publics concernés
     # 1° A - e) i - Formation professionnelle continue
     # Conformément aux données relatives aux contributions de formation professionnelle de la déclaration sociale nominative.
@@ -2056,8 +2061,8 @@ class BDESE_50_300(AbstractBDESE):
         blank=True,
     )
     # 1° A - d) Evolution du nombre de stagiaires de plus de 16 ans
-    nombre_stagiaires = models.IntegerField(
-        verbose_name="Nombre de stagiaires de plus de 16 ans",
+    evolution_nombre_stagiaires = models.TextField(
+        verbose_name="Évolution du nombre de stagiaires de plus de 16 ans",
         null=True,
         blank=True,
     )
