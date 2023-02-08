@@ -43,10 +43,10 @@ Dans l'application Metabase :
 
 ## Alimentation des données
 
-L'alimentation des données est réalisée depuis l'application Django avec la commande sync_db :
+L'alimentation des données est réalisée depuis l'application Django avec la commande sync_metabase :
 
 ```
-scalingo --app {DJANGO_APP} run python3 impact/manage.py sync_db
+scalingo --app {DJANGO_APP} run python3 impact/manage.py sync_metabase
 ```
 
 
