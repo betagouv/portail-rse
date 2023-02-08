@@ -43,12 +43,13 @@ Dans l'application Metabase :
 
 ## Alimentation des données
 
-L'alimentation des données est réalisée depuis l'application Django avec la commande sync_metabase :
+L'alimentation des données peut être réalisée manuellement depuis l'application Django avec la commande sync_metabase :
 
 ```
 scalingo --app {DJANGO_APP} run python3 impact/manage.py sync_metabase
 ```
 
+Elle est programmée via un cron toutes les nuits à minuit.
 
 ## Suppression manuelle
 

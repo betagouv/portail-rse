@@ -1,0 +1,7 @@
+{
+    "jobs": [
+      {
+        "command": "0 0 * * * python3 impact/manage.py sync_metabase"
+      }
+    ]
+}
