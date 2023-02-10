@@ -25,7 +25,11 @@
             <div class="svelte-internal-field fr-col-12 {% if widget_type == 'NumberInput' %}fr-col-sm-2{% endif %}">
                 {{ field }}
             </div>
-            {% if field.field.fetched_data %}La valeur déjà renseignée dans <a href="https://egapro.travail.gouv.fr/" target="_blank">EgaPro</a> est {{ field.field.fetched_data }}.{% endif %}
+            {% if field.field.fetched_data %}
+                La valeur déjà renseignée dans <a href="https://egapro.travail.gouv.fr/" target="_blank">EgaPro</a> est {{ field.field.fetched_data }}.
+            {% elif field.field|has_attribute:"fetched_data" %}
+                Cette information pourrait être renseignée dans <a href="https://egapro.travail.gouv.fr/" target="_blank">EgaPro</a> et récupérée automatiquement.
+            {% endif %}
         </div>
     {% endwith %}
 {% endblock %}
