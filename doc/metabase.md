@@ -20,6 +20,12 @@ $ scalingo --app {METABASE_APP} pgsql-console
 \c {METABASE_DATABASE} impact
 CREATE SCHEMA impact AUTHORIZATION impact;
 ```
+  - définition des droits d'accès en lecture de l'utilisateur `metabase` sur les tables du schéma `impact` :
+
+```
+GRANT USAGE ON SCHEMA impact TO metabase;
+ALTER DEFAULT PRIVILEGES IN SCHEMA impact GRANT SELECT ON TABLES TO metabase;
+```
 
 Dans l'application Django :
   - présence de la variable d'environnement `METABASE_DATABASE_URL` contenant les informations de connexion à la base de données de Metabase avec l'option `currentSchema=impact`
@@ -27,14 +33,6 @@ Dans l'application Django :
 
 ```
 scalingo --app {DJANGO_APP} run python3 impact/manage.py migrate metabase --database metabase
-```
-
-Dans la base de données de Metabase :
-  - définition des droits d'accès en lecture de l'utilisateur `metabase` sur les tables du schéma `impact` :
-
-```
-GRANT USAGE ON SCHEMA impact TO metabase;
-GRANT SELECT ON ALL TABLES IN SCHEMA impact TO metabase;
 ```
 
 Dans l'application Metabase :
