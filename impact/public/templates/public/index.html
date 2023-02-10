@@ -24,7 +24,11 @@
                     <li>Établir leur document base de données économiques, sociales et environnementales (BDESE)</li>
                 </ul>
             </p>
+            {% if user.is_authenticated %}
+            <a href="{% url 'reglementations' %}" class="fr-btn">Remplir mes réglementations</a>
+            {% else %}
             <a href="{% url 'entreprise' %}" class="fr-btn">Commencer avec mon entreprise</a>
+            {% endif %}
         </div>
         <div class="fr-col-4">
             <img src="{% static 'img/illustration-ESG.png' %}" class="fr-responsive-img" alt="" />
