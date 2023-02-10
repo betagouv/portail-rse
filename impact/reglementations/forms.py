@@ -190,8 +190,7 @@ def bdese_form_factory(
             elif fetched_data:
                 for field in fetched_data:
                     if field in self.fields:
-                        self.fields[field].help_text += " (valeur extraite de EgaPro)"
-                        self.fields[field].disabled = True
+                        self.fields[field].fetched_data = fetched_data[field]
             self.fields["external_fields_in_step"].initial = [
                 field_name
                 for field_name in bdese.external_fields
