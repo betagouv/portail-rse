@@ -5,7 +5,7 @@ import pytest
 
 from reglementations.forms import (
     bdese_form_factory,
-    categories_professionnelles_form_factory,
+    bdese_configuration_form_factory,
     BDESE_50_300_FIELDS,
     BDESE_300_FIELDS,
     BDESE_50_300_FIELDS,
@@ -167,7 +167,7 @@ def test_external_fields_in_step_field(step, bdese):
     assert bdese.external_fields == [field_in_another_step]
 
 
-def categories_form_data(
+def configuration_form_data(
     categories_pro, categories_pro_detaillees=None, niveaux_hierarchiques=None
 ):
     data = {
@@ -185,24 +185,24 @@ def categories_form_data(
     return data
 
 
-def test_categories_professionnelles_form_for_bdese_50_300(bdese_50_300):
-    form = categories_professionnelles_form_factory(bdese_50_300)
+def test_bdese_configuration_form_for_bdese_50_300(bdese_50_300):
+    form = bdese_configuration_form_factory(bdese_50_300)
 
     assert len(form.fields) == 1
     assert "categories_professionnelles" in form.fields
 
     categories_pro = ["catégorie 1", "catégorie 2", "catégorie 3"]
-    bound_form = categories_professionnelles_form_factory(
+    bound_form = bdese_configuration_form_factory(
         bdese_50_300,
-        data=categories_form_data(categories_pro),
+        data=configuration_form_data(categories_pro),
     )
     bdese_50_300 = bound_form.save()
 
     assert bdese_50_300.categories_professionnelles == categories_pro
 
 
-def test_categories_professionnelles_form_for_bdese_300(bdese_300):
-    form = categories_professionnelles_form_factory(bdese_300)
+def test_bdese_configuration_form_for_bdese_300(bdese_300):
+    form = bdese_configuration_form_factory(bdese_300)
 
     assert len(form.fields) == 3
     assert "categories_professionnelles" in form.fields
@@ -219,9 +219,9 @@ def test_categories_professionnelles_form_for_bdese_300(bdese_300):
     ]
     niveaux_hierarchiques = ["niveau 1", "niveau 2"]
 
-    bound_form = categories_professionnelles_form_factory(
+    bound_form = bdese_configuration_form_factory(
         bdese_300,
-        data=categories_form_data(
+        data=configuration_form_data(
             categories_pro, categories_pro_detaillees, niveaux_hierarchiques
         ),
     )
@@ -234,9 +234,9 @@ def test_categories_professionnelles_form_for_bdese_300(bdese_300):
 
 def test_at_least_3_categories_professionnelles(bdese):
     categories_pro = ["catégorie 1", "catégorie 2"]
-    bound_form = categories_professionnelles_form_factory(
+    bound_form = bdese_configuration_form_factory(
         bdese,
-        data=categories_form_data(categories_pro),
+        data=configuration_form_data(categories_pro),
     )
 
     assert not bound_form.is_valid()
@@ -250,9 +250,9 @@ def test_at_least_5_categories_professionnelles_detaillees(bdese_300):
         "catégorie détaillée 3",
         "catégorie détaillée 4",
     ]
-    bound_form = categories_professionnelles_form_factory(
+    bound_form = bdese_configuration_form_factory(
         bdese_300,
-        data=categories_form_data(categories_pro, categories_pro_detaillees),
+        data=configuration_form_data(categories_pro, categories_pro_detaillees),
     )
 
     assert not bound_form.is_valid()
@@ -268,9 +268,9 @@ def test_at_least_2_niveaux_hierarchiques(bdese_300):
     ]
     niveaux_hierarchiques = ["niveau 1"]
 
-    bound_form = categories_professionnelles_form_factory(
+    bound_form = bdese_configuration_form_factory(
         bdese_300,
-        data=categories_form_data(
+        data=configuration_form_data(
             categories_pro, categories_pro_detaillees, niveaux_hierarchiques
         ),
     )
@@ -278,10 +278,10 @@ def test_at_least_2_niveaux_hierarchiques(bdese_300):
     assert not bound_form.is_valid()
 
 
-def test_categories_professionnelles_of_complete_step_are_disabled(bdese):
+def test_fields_of_complete_configuration_are_disabled(bdese):
     bdese.mark_step_as_complete(0)
 
-    form = categories_professionnelles_form_factory(bdese)
+    form = bdese_configuration_form_factory(bdese)
 
     for field in form.fields:
         assert form.fields[field].disabled

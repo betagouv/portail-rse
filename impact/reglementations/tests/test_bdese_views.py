@@ -4,7 +4,7 @@ from django.urls import reverse
 import pytest
 
 from reglementations.models import annees_a_remplir_bdese, BDESE_50_300, BDESE_300
-from reglementations.tests.test_bdese_forms import categories_form_data
+from reglementations.tests.test_bdese_forms import configuration_form_data
 from reglementations.views import get_bdese_data_from_egapro, render_bdese_pdf_html
 
 
@@ -328,7 +328,7 @@ def test_save_bdese_configuration(bdese, authorized_user, client):
         "catégorie détaillée 5",
     ]
     niveaux_hierarchiques = ["niveau 1", "niveau 2"]
-    data = categories_form_data(
+    data = configuration_form_data(
         categories_pro, categories_pro_detaillees, niveaux_hierarchiques
     )
 
@@ -365,7 +365,7 @@ def test_save_and_complete_bdese_configuration(bdese, authorized_user, client):
         "catégorie détaillée 5",
     ]
     niveaux_hierarchiques = ["niveau 1", "niveau 2"]
-    data = categories_form_data(
+    data = configuration_form_data(
         categories_pro, categories_pro_detaillees, niveaux_hierarchiques
     )
     data.update({"save_complete": ""})
@@ -427,7 +427,7 @@ def test_save_bdese_configuration_error(bdese, authorized_user, client):
     client.force_login(authorized_user)
 
     url = bdese_step_url(bdese, 0)
-    response = client.post(url, data=categories_form_data(categories_pro))
+    response = client.post(url, data=configuration_form_data(categories_pro))
 
     assert response.status_code == 200
 
@@ -476,7 +476,7 @@ def test_save_bdese_configuration_for_a_new_year(bdese, authorized_user, client)
     new_niveaux_hierarchiques = ["Y", "Z"]
     response = client.post(
         url,
-        data=categories_form_data(
+        data=configuration_form_data(
             new_categories_pro, new_categories_pro_detaillees, new_niveaux_hierarchiques
         ),
         follow=True,

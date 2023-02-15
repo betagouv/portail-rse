@@ -20,7 +20,7 @@ from .models import (
 )
 from .forms import (
     bdese_form_factory,
-    categories_professionnelles_form_factory,
+    bdese_configuration_form_factory,
     IntroductionDemoForm,
 )
 
@@ -438,7 +438,7 @@ def bdese_configuration(request, siren, annee):
                     initial["niveaux_hierarchiques"] = _bdese.niveaux_hierarchiques
                 break
 
-    form = categories_professionnelles_form_factory(
+    form = bdese_configuration_form_factory(
         bdese, data=request.POST or None, initial=initial
     )
 
