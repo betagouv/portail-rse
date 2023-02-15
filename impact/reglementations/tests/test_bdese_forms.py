@@ -168,7 +168,9 @@ def test_external_fields_in_step_field(step, bdese):
     assert bdese.external_fields == [field_in_another_step]
 
 
-def categories_form_data(categories_pro, categories_pro_detaillees=None):
+def categories_form_data(
+    categories_pro, categories_pro_detaillees=None, niveaux_hierarchiques=None
+):
     data = {
         f"categories_professionnelles_{i}": categories_pro[i]
         for i in range(len(categories_pro))
@@ -178,6 +180,9 @@ def categories_form_data(categories_pro, categories_pro_detaillees=None):
             data[
                 f"categories_professionnelles_detaillees_{i}"
             ] = categories_pro_detaillees[i]
+    if niveaux_hierarchiques:
+        for i in range(len(niveaux_hierarchiques)):
+            data[f"niveaux_hierarchiques_{i}"] = niveaux_hierarchiques[i]
     return data
 
 
@@ -200,9 +205,10 @@ def test_categories_professionnelles_form_for_bdese_50_300(bdese_50_300):
 def test_categories_professionnelles_form_for_bdese_300(bdese_300):
     form = categories_professionnelles_form_factory(bdese_300)
 
-    assert len(form.fields) == 2
+    assert len(form.fields) == 3
     assert "categories_professionnelles" in form.fields
     assert "categories_professionnelles_detaillees" in form.fields
+    assert "niveaux_hierarchiques" in form.fields
 
     categories_pro = ["catégorie 1", "catégorie 2", "catégorie 3"]
     categories_pro_detaillees = [
@@ -212,15 +218,19 @@ def test_categories_professionnelles_form_for_bdese_300(bdese_300):
         "catégorie détaillée 4",
         "catégorie détaillée 5",
     ]
+    niveaux_hierarchiques = ["niveau 1", "niveau 2"]
 
     bound_form = categories_professionnelles_form_factory(
         bdese_300,
-        data=categories_form_data(categories_pro, categories_pro_detaillees),
+        data=categories_form_data(
+            categories_pro, categories_pro_detaillees, niveaux_hierarchiques
+        ),
     )
     bdese_300 = bound_form.save()
 
     assert bdese_300.categories_professionnelles == categories_pro
     assert bdese_300.categories_professionnelles_detaillees == categories_pro_detaillees
+    assert bdese_300.niveaux_hierarchiques == niveaux_hierarchiques
 
 
 def test_at_least_3_categories_professionnelles(bdese):
@@ -244,6 +254,26 @@ def test_at_least_5_categories_professionnelles_detaillees(bdese_300):
     bound_form = categories_professionnelles_form_factory(
         bdese_300,
         data=categories_form_data(categories_pro, categories_pro_detaillees),
+    )
+
+    assert not bound_form.is_valid()
+
+
+def test_at_least_2_niveaux_hierarchiques(bdese_300):
+    categories_pro = ["catégorie 1", "catégorie 2", "catégorie 3"]
+    categories_pro_detaillees = [
+        "catégorie détaillée 1",
+        "catégorie détaillée 2",
+        "catégorie détaillée 3",
+        "catégorie détaillée 4",
+    ]
+    niveaux_hierarchiques = ["niveau 1"]
+
+    bound_form = categories_professionnelles_form_factory(
+        bdese_300,
+        data=categories_form_data(
+            categories_pro, categories_pro_detaillees, niveaux_hierarchiques
+        ),
     )
 
     assert not bound_form.is_valid()

@@ -435,6 +435,7 @@ def categories_professionnelles(request, siren, annee):
                     initial[
                         "categories_professionnelles_detaillees"
                     ] = _bdese.categories_professionnelles_detaillees
+                    initial["niveaux_hierarchiques"] = _bdese.niveaux_hierarchiques
                 break
 
     form = categories_professionnelles_form_factory(

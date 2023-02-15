@@ -40,38 +40,56 @@ class CategoriesProfessionnellesForm(forms.ModelForm, DsfrForm):
         help_texts = {
             "categories_professionnelles": "Une structure de qualification comprenant <strong>trois postes minimum</strong> est requise pour certains indicateurs. Il est souhaitable de faire référence à la classification de la convention collective, de l'accord d'entreprise et aux pratiques habituellement retenues dans l'entreprise.<br> A titre d'exemple la répartition suivante peut être retenue : cadres ; employés, techniciens et agents de maîtrise (ETAM) ; et ouvriers.",
             "categories_professionnelles_detaillees": "Une structure de qualification détaillée comprenant <strong>cinq postes minimum</strong> est requise pour d'autres indicateurs. Il est à nouveau souhaitable de faire référence à la classification de la convention collective, de l'accord d'entreprise et aux pratiques habituellement retenues dans l'entreprise.<br> A titre d'exemple, la répartition suivante des postes peut être retenue : cadres ; techniciens ; agents de maîtrise ; employés qualifiés ; employés non qualifiés ; ouvriers qualifiés ; ouvriers non qualifiés.",
+            "niveaux_hierarchiques": "Une classification selon le niveau ou coefficient hiérarchique pertinente au sein de l'entreprise comprenant <strong>deux niveaux minimum</strong>. Libre à l'employeur d'apprécier quelle est la catégorie la plus pertinente : classification conventionnelle ou niveau managérial.",
         }
 
     def clean_categories_professionnelles(self):
         data = self.cleaned_data["categories_professionnelles"]
         if len(data) < 3:
-            raise ValidationError("Au moins 3 catégories sont requises")
+            raise ValidationError("Au moins 3 postes sont requis")
         return data
 
     def clean_categories_professionnelles_detaillees(self):
         data = self.cleaned_data["categories_professionnelles_detaillees"]
         if len(data) < 5:
-            raise ValidationError("Au moins 5 catégories sont requises")
+            raise ValidationError("Au moins 5 postes sont requis")
+        return data
+
+    def clean_niveaux_hierarchiques(self):
+        data = self.cleaned_data["niveaux_hierarchiques"]
+        if len(data) < 2:
+            raise ValidationError("Au moins 2 niveaux sont requis")
         return data
 
 
 def categories_professionnelles_form_factory(
     bdese, *args, number_categories=6, **kwargs
 ):
-    widgets = [
-        forms.widgets.TextInput(attrs={"class": "fr-input", "label": "Catégorie"})
-        for i in range(number_categories)
-    ]
+    def widget_for_field(field_name):
+        labels = {
+            "categories_professionnelles": "Poste",
+            "categories_professionnelles_detaillees": "Poste",
+            "niveaux_hierarchiques": "Niveau",
+        }
+        subwidgets = [
+            forms.widgets.TextInput(
+                attrs={"class": "fr-input", "label": labels[field_name]}
+            )
+            for i in range(number_categories)
+        ]
+        return ListJSONWidget(subwidgets)
 
     fields = ["categories_professionnelles"]
     if bdese.is_bdese_300:
-        fields.append("categories_professionnelles_detaillees")
+        fields.extend(
+            ["categories_professionnelles_detaillees", "niveaux_hierarchiques"]
+        )
 
     Form = forms.modelform_factory(
         bdese.__class__,
         form=CategoriesProfessionnellesForm,
         fields=fields,
-        widgets={field_name: ListJSONWidget(widgets) for field_name in fields},
+        widgets={field_name: widget_for_field(field_name) for field_name in fields},
     )
 
     form = Form(*args, instance=bdese, **kwargs)

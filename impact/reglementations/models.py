@@ -157,6 +157,11 @@ class BDESE_300(AbstractBDESE):
         null=True,
         blank=True,
     )
+    niveaux_hierarchiques = models.JSONField(
+        verbose_name="Niveaux ou coefficients hiérachiques",
+        null=True,
+        blank=True,
+    )
 
     # Décret no 2022-678 du 26 avril 2022
     # https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000045680845
