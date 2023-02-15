@@ -118,8 +118,6 @@ class CategoryJSONWidget(forms.MultiWidget):
 def bdese_form_factory(
     bdese,
     step,
-    categories_professionnelles=None,
-    categories_professionnelles_detaillees=None,
     fetched_data=None,
     *args,
     **kwargs,
@@ -140,14 +138,9 @@ def bdese_form_factory(
             """https://docs.djangoproject.com/en/4.1/ref/forms/fields/#django.forms.MultiValueField.require_all_fields"""
             self.base_field = base_field
             if category_type == CategoryType.PROFESSIONNELLE:
-                categories = (
-                    categories_professionnelles or bdese.categories_professionnelles
-                )
+                categories = bdese.categories_professionnelles
             elif category_type == CategoryType.PROFESSIONNELLE_DETAILLEE:
-                categories = (
-                    categories_professionnelles_detaillees
-                    or bdese.categories_professionnelles_detaillees
-                )
+                categories = bdese.categories_professionnelles_detaillees
             elif category_type == CategoryType.HIERARCHIQUE:
                 categories = bdese.niveaux_hierarchiques
             self.categories = categories or []

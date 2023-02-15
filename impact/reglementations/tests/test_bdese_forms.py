@@ -25,20 +25,7 @@ def bdese_50_300(bdese_factory):
 
 @pytest.mark.parametrize("step", range(1, 11))
 def test_bdese_form_step_with_new_bdese_300_instance(step, bdese_300):
-    categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
-    categories_professionnelles_detaillees = [
-        "catégorie détaillée 1",
-        "catégorie détaillée 2",
-        "catégorie détaillée 3",
-        "catégorie détaillée 4",
-        "catégorie détaillée 5",
-    ]
-    form = bdese_form_factory(
-        bdese_300,
-        step,
-        categories_professionnelles,
-        categories_professionnelles_detaillees,
-    )
+    form = bdese_form_factory(bdese_300, step)
 
     assert form.instance == bdese_300
     assert len(form.fields) == len(BDESE_300_FIELDS[step]) + 1
@@ -64,7 +51,6 @@ def test_bdese_form_step_with_new_bdese_300_instance(step, bdese_300):
     bound_form = bdese_form_factory(
         bdese_300,
         step,
-        categories_professionnelles,
         data={"unite_absenteisme": "J", "remuneration_moyenne_ou_mediane": "moyenne"},
     )
 
@@ -73,8 +59,7 @@ def test_bdese_form_step_with_new_bdese_300_instance(step, bdese_300):
 
 @pytest.mark.parametrize("step", range(1, 11))
 def test_bdese_form_with_new_bdese_50_300_instance(step, bdese_50_300):
-    categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
-    form = bdese_form_factory(bdese_50_300, step, categories_professionnelles)
+    form = bdese_form_factory(bdese_50_300, step)
 
     assert form.instance == bdese_50_300
     assert len(form.fields) == len(BDESE_50_300_FIELDS[step]) + 1
@@ -93,9 +78,7 @@ def test_bdese_form_with_new_bdese_50_300_instance(step, bdese_50_300):
         else:
             assert not form[field].value()
 
-    bound_form = bdese_form_factory(
-        bdese_50_300, step, categories_professionnelles, data={}
-    )
+    bound_form = bdese_form_factory(bdese_50_300, step, data={})
 
     assert bound_form.is_valid(), bound_form.errors
 
