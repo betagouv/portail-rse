@@ -34,7 +34,7 @@ class ListJSONWidget(forms.widgets.MultiWidget):
         return json.dumps(not_empty_values)
 
 
-class CategoriesProfessionnellesForm(forms.ModelForm, DsfrForm):
+class BDESEConfigurationForm(forms.ModelForm, DsfrForm):
     class Meta:
         fields = ["categories_professionnelles"]
         help_texts = {
@@ -62,9 +62,7 @@ class CategoriesProfessionnellesForm(forms.ModelForm, DsfrForm):
         return data
 
 
-def categories_professionnelles_form_factory(
-    bdese, *args, number_categories=6, **kwargs
-):
+def bdese_configuration_form_factory(bdese, *args, number_categories=6, **kwargs):
     def widget_for_field(field_name):
         labels = {
             "categories_professionnelles": "Poste",
@@ -87,7 +85,7 @@ def categories_professionnelles_form_factory(
 
     Form = forms.modelform_factory(
         bdese.__class__,
-        form=CategoriesProfessionnellesForm,
+        form=BDESEConfigurationForm,
         fields=fields,
         widgets={field_name: widget_for_field(field_name) for field_name in fields},
     )
