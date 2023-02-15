@@ -84,64 +84,6 @@ def test_bdese_step_redirect_to_configuration_if_categories_professionnelles_not
     )
 
 
-def test_bdese_step_use_configured_categories_and_annees_a_remplir(
-    bdese, authorized_user, client
-):
-    categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
-    bdese.categories_professionnelles = categories_professionnelles
-    if bdese.is_bdese_300:
-        categories_professionnelles_detaillees = [
-            "catégorie détaillée 1",
-            "catégorie détaillée 2",
-            "catégorie détaillée 3",
-            "catégorie détaillée 4",
-            "catégorie détaillée 5",
-        ]
-        bdese.categories_professionnelles_detaillees = (
-            categories_professionnelles_detaillees
-        )
-        bdese.niveaux_hierarchiques = ["niveau 1", "niveau 2"]
-    bdese.save()
-    client.force_login(authorized_user)
-
-    url = bdese_step_url(bdese, 1)
-    response = client.get(url)
-
-    assert response.status_code == 200
-    content = response.content.decode("utf-8")
-    for category in categories_professionnelles:
-        assert category in content
-    if bdese.is_bdese_300:
-        for category in bdese.categories_professionnelles_detaillees:
-            assert category in content
-    for annee in annees_a_remplir_bdese():
-        assert str(annee) in content
-
-    if bdese.is_bdese_300:
-        url = bdese_step_url(
-            bdese, 3
-        )  # L'étape 3 de la BDESE 300 utilise les niveaux hiérarchiques configurées par l'entreprise
-        response = client.get(url)
-
-        content = response.content.decode("utf-8")
-        for niveau in bdese.niveaux_hierarchiques:
-            assert niveau in content
-
-
-def test_bdese_step_fetch_data(bdese, authorized_user, client, mocker):
-    categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
-    bdese.categories_professionnelles = categories_professionnelles
-    bdese.save()
-    client.force_login(authorized_user)
-
-    fetch_data = mocker.patch("reglementations.views.get_bdese_data_from_egapro")
-
-    url = bdese_step_url(bdese, 1)
-    response = client.get(url)
-
-    fetch_data.assert_called_once_with(bdese.entreprise, bdese.annee)
-
-
 @pytest.fixture
 def configured_bdese(bdese):
     bdese.categories_professionnelles = [
@@ -161,6 +103,48 @@ def configured_bdese(bdese):
     bdese.mark_step_as_complete(0)
     bdese.save()
     return bdese
+
+
+def test_bdese_step_use_configured_categories_and_annees_a_remplir(
+    configured_bdese, authorized_user, client
+):
+    bdese = configured_bdese
+    client.force_login(authorized_user)
+
+    url = bdese_step_url(bdese, 1)
+    response = client.get(url)
+
+    assert response.status_code == 200
+    content = response.content.decode("utf-8")
+    for category in bdese.categories_professionnelles:
+        assert category in content
+    if bdese.is_bdese_300:
+        for category in bdese.categories_professionnelles_detaillees:
+            assert category in content
+    for annee in annees_a_remplir_bdese():
+        assert str(annee) in content
+
+    if bdese.is_bdese_300:
+        url = bdese_step_url(
+            bdese, 3
+        )  # L'étape 3 de la BDESE 300 utilise les niveaux hiérarchiques configurées par l'entreprise
+        response = client.get(url)
+
+        content = response.content.decode("utf-8")
+        for niveau in bdese.niveaux_hierarchiques:
+            assert niveau in content
+
+
+def test_bdese_step_fetch_data(configured_bdese, authorized_user, client, mocker):
+    bdese = configured_bdese
+    client.force_login(authorized_user)
+
+    fetch_data = mocker.patch("reglementations.views.get_bdese_data_from_egapro")
+
+    url = bdese_step_url(bdese, 1)
+    response = client.get(url)
+
+    fetch_data.assert_called_once_with(bdese.entreprise, bdese.annee)
 
 
 def test_save_step_error(configured_bdese, authorized_user, client):
@@ -442,32 +426,26 @@ def test_save_bdese_configuration_error(bdese, authorized_user, client):
     assert not bdese.categories_professionnelles
 
 
-def test_save_bdese_configuration_for_a_new_year(bdese, authorized_user, client):
-    categories_pro = ["catégorie 1", "catégorie 2", "catégorie 3"]
-    categories_pro_detaillees = [
-        "catégorie détaillée 1",
-        "catégorie détaillée 2",
-        "catégorie détaillée 3",
-        "catégorie détaillée 4",
-        "catégorie détaillée 5",
-    ]
-    niveaux_hierarchiques = ["niveau 1", "niveau 2"]
-    bdese.categories_professionnelles = categories_pro
-    if bdese.is_bdese_300:
-        bdese.categories_professionnelles_detaillees = categories_pro_detaillees
-        bdese.niveaux_hierarchiques = niveaux_hierarchiques
-    bdese.save()
+def test_save_bdese_configuration_for_a_new_year(
+    configured_bdese, authorized_user, client
+):
+    categories_pro = configured_bdese.categories_professionnelles
+    if configured_bdese.is_bdese_300:
+        categories_pro_detaillees = (
+            configured_bdese.categories_professionnelles_detaillees
+        )
+        niveaux_hierarchiques = configured_bdese.niveaux_hierarchiques
     client.force_login(authorized_user)
 
-    new_year = bdese.annee + 1
+    new_year = configured_bdese.annee + 1
 
-    url = f"/bdese/{bdese.entreprise.siren}/{new_year}/0"
+    url = f"/bdese/{configured_bdese.entreprise.siren}/{new_year}/0"
     response = client.get(url)
 
     content = response.content.decode("utf-8")
     for categorie in categories_pro:
         assert categorie in content
-    if bdese.is_bdese_300:
+    if configured_bdese.is_bdese_300:
         for categorie in categories_pro_detaillees:
             assert categorie in content
         for niveau in niveaux_hierarchiques:
@@ -488,23 +466,28 @@ def test_save_bdese_configuration_for_a_new_year(bdese, authorized_user, client)
 
     assert response.status_code == 200
     assert response.redirect_chain == [
-        (reverse("bdese", args=[bdese.entreprise.siren, new_year, 0]), 302)
+        (reverse("bdese", args=[configured_bdese.entreprise.siren, new_year, 0]), 302)
     ]
 
     content = response.content.decode("utf-8")
     assert "Catégories enregistrées" in content
 
-    bdese.refresh_from_db()
-    new_bdese = bdese.__class__.objects.get(entreprise=bdese.entreprise, annee=new_year)
-    assert bdese.categories_professionnelles == categories_pro
+    configured_bdese.refresh_from_db()
+    new_bdese = configured_bdese.__class__.objects.get(
+        entreprise=configured_bdese.entreprise, annee=new_year
+    )
+    assert configured_bdese.categories_professionnelles == categories_pro
     assert new_bdese.categories_professionnelles == new_categories_pro
-    if bdese.is_bdese_300:
-        assert bdese.categories_professionnelles_detaillees == categories_pro_detaillees
+    if configured_bdese.is_bdese_300:
+        assert (
+            configured_bdese.categories_professionnelles_detaillees
+            == categories_pro_detaillees
+        )
         assert (
             new_bdese.categories_professionnelles_detaillees
             == new_categories_pro_detaillees
         )
-        assert bdese.niveaux_hierarchiques == niveaux_hierarchiques
+        assert configured_bdese.niveaux_hierarchiques == niveaux_hierarchiques
         assert new_bdese.niveaux_hierarchiques == new_niveaux_hierarchiques
 
 
