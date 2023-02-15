@@ -1,16 +1,17 @@
 # Metabase
 
-Le projet Impact utilise deux aplications associées chacune à une base de données PostgreSQL :
+Le projet Impact utilise trois aplications Scalingo associées chacune à une base de données PostgreSQL :
  - une application Django, déployée via Scalingo à partir de ce repo
- - et une application Metabase, déployée via Scalingo à partir de https://github.com/Scalingo/metabase-scalingo
+ - une application Metabase, déployée via Scalingo à partir de https://github.com/Scalingo/metabase-scalingo
+ - une application vide Metabase-data servant uniquement pour sa base de données PostgreSQL associée (Scalingo ne permet pas d'avoir plusieurs bdd associées à une seule application)
 
-Metabase n'a pas d'accès à la base de données de l'application Django (cf l'ADR [ADR/2023-02-08 Metabase](ADR/"2023-02-08 Metabase")).
-C'est l'application Django qui alimente la base de données de Metabase dans un schéma postgreSQL `impact` dédié.
+Metabase n'a pas d'accès à la base de données de l'application Django (cf l'ADR [2023-02-08 Metabase](ADR/2023-02-08%20Metabase)).
+C'est l'application Django elle-même qui alimente la base de données séparée Metabase-data dans un schéma postgreSQL `impact` dédié.
 
 
 ## Pré-requis
 
-Dans la base de données de Metabase :
+Dans la base de données de Metabase-data :
   - création manuelle de l'utilisateur `metabase` depuis l'interface de scalingo avec des droits de lecture (read only)
   - création manuelle de l'utilisateur `impact` depuis l'interface de scalingo avec des droits d'écriture
   - création manuelle du schéma `impact` depuis une console pgsql :
@@ -24,11 +25,12 @@ CREATE SCHEMA impact AUTHORIZATION impact;
 
 ```
 GRANT USAGE ON SCHEMA impact TO metabase;
+GRANT SELECT ON ALL TABLES IN SCHEMA impact TO metabase;
 ALTER DEFAULT PRIVILEGES IN SCHEMA impact GRANT SELECT ON TABLES TO metabase;
 ```
 
 Dans l'application Django :
-  - présence de la variable d'environnement `METABASE_DATABASE_URL` contenant les informations de connexion à la base de données de Metabase avec l'option `currentSchema=impact`
+  - présence de la variable d'environnement `METABASE_DATABASE_URL` contenant les informations de connexion à la base de données de Metabase-data avec l'option `currentSchema=impact`
   - création automatique des tables dans la base de données de Metabase via la commande de migration de django :
 
 ```
@@ -51,10 +53,12 @@ Elle est programmée pour se lancer automatiquement via un cron toutes les nuits
 
 ## Suppression manuelle des données
 
+En cas de besoin :
+
 ```
 $ scalingo --app {METABASE_APP} pgsql-console
 \c {METABASE_DATABASE} impact
 DROP SCHEMA impact CASCADE;
-CREATE SCHEMA impact AUTHORIZATION impact;
-quit
 ```
+
+Cela supprime le schéma, il faut donc le recréer ensuite et attribuer à nouveau les droits d'accès à l'utilisateur `metabase`.
