@@ -60,7 +60,7 @@ def bdese_step_url(bdese, step):
     return f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/{step}"
 
 
-def test_bdese_step_redirect_to_categories_professionnelles_if_not_filled(
+def test_bdese_step_redirect_to_configuration_if_categories_professionnelles_not_filled(
     bdese, authorized_user, client
 ):
     client.force_login(authorized_user)
@@ -72,7 +72,7 @@ def test_bdese_step_redirect_to_categories_professionnelles_if_not_filled(
     assert response.redirect_chain == [
         (
             reverse(
-                "categories_professionnelles",
+                "bdese_configuration",
                 args=[bdese.entreprise.siren, bdese.annee],
             ),
             302,
@@ -307,7 +307,7 @@ def test_render_bdese_pdf_html(configured_bdese):
     assert "Information non remplie." in pdf_html
 
 
-def test_get_categories_professionnelles(bdese, authorized_user, client):
+def test_get_bdese_configuration(bdese, authorized_user, client):
     client.force_login(authorized_user)
 
     url = bdese_step_url(bdese, 0)
@@ -316,7 +316,7 @@ def test_get_categories_professionnelles(bdese, authorized_user, client):
     assert response.status_code == 200
 
 
-def test_save_categories_professionnelles(bdese, authorized_user, client):
+def test_save_bdese_configuration(bdese, authorized_user, client):
     client.force_login(authorized_user)
 
     categories_pro = ["catégorie 1", "catégorie 2", "catégorie 3"]
@@ -353,7 +353,7 @@ def test_save_categories_professionnelles(bdese, authorized_user, client):
     assert not bdese.step_is_complete(0)
 
 
-def test_save_and_complete_categories_professionnelles(bdese, authorized_user, client):
+def test_save_and_complete_bdese_configuration(bdese, authorized_user, client):
     client.force_login(authorized_user)
 
     categories_pro = ["catégorie 1", "catégorie 2", "catégorie 3"]
@@ -391,7 +391,7 @@ def test_save_and_complete_categories_professionnelles(bdese, authorized_user, c
     assert bdese.step_is_complete(0)
 
 
-def test_mark_as_incomplete_categories_professionnelles(
+def test_mark_as_incomplete_bdese_configuration(
     configured_bdese, authorized_user, client
 ):
     bdese = configured_bdese
@@ -422,7 +422,7 @@ def test_mark_as_incomplete_categories_professionnelles(
     assert not bdese.step_is_complete(0)
 
 
-def test_save_categories_professionnelles_error(bdese, authorized_user, client):
+def test_save_bdese_configuration_error(bdese, authorized_user, client):
     categories_pro = ["catégorie 1", "catégorie 2"]
     client.force_login(authorized_user)
 
@@ -438,9 +438,7 @@ def test_save_categories_professionnelles_error(bdese, authorized_user, client):
     assert not bdese.categories_professionnelles
 
 
-def test_save_categories_professionnelles_for_a_new_year(
-    bdese, authorized_user, client
-):
+def test_save_bdese_configuration_for_a_new_year(bdese, authorized_user, client):
     categories_pro = ["catégorie 1", "catégorie 2", "catégorie 3"]
     categories_pro_detaillees = [
         "catégorie détaillée 1",
