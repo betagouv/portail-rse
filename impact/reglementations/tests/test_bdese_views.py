@@ -516,12 +516,18 @@ def test_get_bdese_data_from_egapro__rempli(grande_entreprise, mocker):
 
     bdese_data_from_egapro = get_bdese_data_from_egapro(grande_entreprise, 2021)
 
-    assert bdese_data_from_egapro == {"nombre_femmes_plus_hautes_remunerations": 9, "objectifs_progression": "plus dans le futur"}
+    assert bdese_data_from_egapro == {
+        "nombre_femmes_plus_hautes_remunerations": 9,
+        "objectifs_progression": "plus dans le futur",
+    }
     egapro_request.assert_called_once_with(
         f"https://egapro.travail.gouv.fr/api/public/declaration/{grande_entreprise.siren}/2021"
     )
 
-def test_get_bdese_data_from_egapro__aucun_objectif_de_progression_rempli(grande_entreprise, mocker):
+
+def test_get_bdese_data_from_egapro__aucun_objectif_de_progression_rempli(
+    grande_entreprise, mocker
+):
     # Example response from https://egapro.travail.gouv.fr/api/public/declaration/552032534/2021
     index_egapro_data = """{"entreprise":{"siren":"552032534","r\u00e9gion":"\u00cele-de-France","code_naf":"70.10Z","effectif":{"total":867,"tranche":"251:999"},"d\u00e9partement":"Paris","raison_sociale":"DANONE"},"indicateurs":{"promotions":{"non_calculable":null,"note":15,"objectif_de_progression":null},"augmentations_et_promotions":{"non_calculable":null,"note":null,"objectif_de_progression":null},"r\u00e9mun\u00e9rations":{"non_calculable":null,"note":29,"objectif_de_progression":null},"cong\u00e9s_maternit\u00e9":{"non_calculable":null,"note":15,"objectif_de_progression":null},"hautes_r\u00e9mun\u00e9rations":{"non_calculable":null,"note":0,"objectif_de_progression":null,"r\u00e9sultat":1,"population_favorable":"femmes"}},"d\u00e9claration":{"index":79,"ann\u00e9e_indicateurs":2021,"mesures_correctives":null}}"""
 
@@ -531,7 +537,25 @@ def test_get_bdese_data_from_egapro__aucun_objectif_de_progression_rempli(grande
 
     bdese_data_from_egapro = get_bdese_data_from_egapro(grande_entreprise, 2021)
 
-    assert bdese_data_from_egapro["objectifs_progression"] == None
+    assert bdese_data_from_egapro["objectifs_progression"] == ""
+    egapro_request.assert_called_once_with(
+        f"https://egapro.travail.gouv.fr/api/public/declaration/{grande_entreprise.siren}/2021"
+    )
+
+
+def test_get_bdese_data_from_egapro__tous_les_objectifs_de_progression_remplis(
+    grande_entreprise, mocker
+):
+    # Example response from https://egapro.travail.gouv.fr/api/public/declaration/552032534/2021
+    index_egapro_data = """{"entreprise":{"siren":"552032534","r\u00e9gion":"\u00cele-de-France","code_naf":"70.10Z","effectif":{"total":867,"tranche":"251:999"},"d\u00e9partement":"Paris","raison_sociale":"DANONE"},"indicateurs":{"promotions":{"non_calculable":null,"note":15,"objectif_de_progression":"P1"},"augmentations_et_promotions":{"non_calculable":null,"note":null,"objectif_de_progression":"P2"},"r\u00e9mun\u00e9rations":{"non_calculable":null,"note":29,"objectif_de_progression":"P3"},"cong\u00e9s_maternit\u00e9":{"non_calculable":null,"note":15,"objectif_de_progression":"P4"},"hautes_r\u00e9mun\u00e9rations":{"non_calculable":null,"note":0,"objectif_de_progression":"P5","r\u00e9sultat":1,"population_favorable":"femmes"}},"d\u00e9claration":{"index":79,"ann\u00e9e_indicateurs":2021,"mesures_correctives":null}}"""
+
+    egapro_request = mocker.patch(
+        "requests.get", return_value=MockedResponse(index_egapro_data, 200)
+    )
+
+    bdese_data_from_egapro = get_bdese_data_from_egapro(grande_entreprise, 2021)
+
+    assert bdese_data_from_egapro["objectifs_progression"] == "P1\nP2\nP3\nP4\nP5"
     egapro_request.assert_called_once_with(
         f"https://egapro.travail.gouv.fr/api/public/declaration/{grande_entreprise.siren}/2021"
     )
