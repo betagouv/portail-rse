@@ -143,7 +143,7 @@ def test_bdese_step_fetch_data(bdese, authorized_user, client, mocker):
 
 
 @pytest.fixture
-def bdese_with_categories(bdese):
+def configured_bdese(bdese):
     bdese.categories_professionnelles = [
         "catégorie 1",
         "catégorie 2",
@@ -163,8 +163,8 @@ def bdese_with_categories(bdese):
     return bdese
 
 
-def test_save_step_error(bdese_with_categories, authorized_user, client):
-    bdese = bdese_with_categories
+def test_save_step_error(configured_bdese, authorized_user, client):
+    bdese = configured_bdese
     client.force_login(authorized_user)
 
     incorrect_data_bdese_300 = {"unite_absenteisme": "yolo"}
@@ -189,8 +189,8 @@ def test_save_step_error(bdese_with_categories, authorized_user, client):
         assert bdese.effectif_cdi != "yolo"
 
 
-def test_save_step_as_draft_success(bdese_with_categories, authorized_user, client):
-    bdese = bdese_with_categories
+def test_save_step_as_draft_success(configured_bdese, authorized_user, client):
+    bdese = configured_bdese
     client.force_login(authorized_user)
 
     correct_data_bdese_300 = {"unite_absenteisme": "H"}
@@ -219,9 +219,9 @@ def test_save_step_as_draft_success(bdese_with_categories, authorized_user, clie
 
 
 def test_save_step_and_mark_as_complete_success(
-    bdese_with_categories, authorized_user, client
+    configured_bdese, authorized_user, client
 ):
-    bdese = bdese_with_categories
+    bdese = configured_bdese
     client.force_login(authorized_user)
 
     correct_data_bdese_300 = {"unite_absenteisme": "H"}
@@ -249,8 +249,8 @@ def test_save_step_and_mark_as_complete_success(
     assert bdese.step_is_complete(1)
 
 
-def test_mark_step_as_incomplete(bdese_with_categories, authorized_user, client):
-    bdese = bdese_with_categories
+def test_mark_step_as_incomplete(configured_bdese, authorized_user, client):
+    bdese = configured_bdese
     bdese.mark_step_as_complete(1)
     bdese.save()
 
@@ -284,8 +284,8 @@ def test_get_pdf(bdese, authorized_user, client):
     assert response.status_code == 200
 
 
-def test_render_bdese_pdf_html(bdese_with_categories):
-    bdese = bdese_with_categories
+def test_render_bdese_pdf_html(configured_bdese):
+    bdese = configured_bdese
     if bdese.is_bdese_300:
         bdese.external_fields = ["effectif_total"]
         bdese.effectif_permanent = {
@@ -392,9 +392,9 @@ def test_save_and_complete_categories_professionnelles(bdese, authorized_user, c
 
 
 def test_mark_as_incomplete_categories_professionnelles(
-    bdese_with_categories, authorized_user, client
+    configured_bdese, authorized_user, client
 ):
-    bdese = bdese_with_categories
+    bdese = configured_bdese
     categories_pro = bdese.categories_professionnelles
     if bdese.is_bdese_300:
         categories_pro_detaillees = bdese.categories_professionnelles_detaillees
