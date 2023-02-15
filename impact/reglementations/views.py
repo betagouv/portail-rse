@@ -306,7 +306,7 @@ def bdese(request, siren, annee, step):
         messages.warning(
             request, "Commencez par renseigner vos catégories professionnelles"
         )
-        return redirect("categories_professionnelles", siren=siren, annee=annee)
+        return redirect("bdese_configuration", siren=siren, annee=annee)
 
     if request.method == "POST":
         if "mark_incomplete" in request.POST:
@@ -414,7 +414,7 @@ def _get_or_create_bdese(
 
 
 @login_required
-def categories_professionnelles(request, siren, annee):
+def bdese_configuration(request, siren, annee):
     entreprise = Entreprise.objects.get(siren=siren)
     if request.user not in entreprise.users.all():
         raise PermissionDenied
