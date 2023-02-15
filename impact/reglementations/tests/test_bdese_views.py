@@ -79,7 +79,7 @@ def test_bdese_step_redirect_to_configuration_if_categories_professionnelles_not
         )
     ]
     assert (
-        "Commencez par renseigner vos catégories professionnelles"
+        f"Commencez par configurer votre BDESE {bdese.annee}"
         in response.content.decode("utf-8")
     )
 
@@ -432,6 +432,10 @@ def test_save_bdese_configuration_error(bdese, authorized_user, client):
     assert response.status_code == 200
 
     content = response.content.decode("utf-8")
+    assert (
+        "Les catégories n&#x27;ont pas été enregistrées car le formulaire contient des erreurs"
+        in content
+    )
     assert "Au moins 3 postes sont requis" in content
 
     bdese.refresh_from_db()

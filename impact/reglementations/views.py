@@ -303,9 +303,7 @@ def bdese(request, siren, annee, step):
     bdese = _get_or_create_bdese(entreprise, annee)
 
     if not bdese.categories_professionnelles:
-        messages.warning(
-            request, "Commencez par renseigner vos catégories professionnelles"
-        )
+        messages.warning(request, f"Commencez par configurer votre BDESE {annee}")
         return redirect("bdese_configuration", siren=siren, annee=annee)
 
     if request.method == "POST":
@@ -456,6 +454,11 @@ def bdese_configuration(request, siren, annee):
             bdese.save()
             next_step = 1
         return redirect("bdese", siren=siren, annee=annee, step=next_step)
+    elif request.POST:
+        messages.error(
+            request,
+            "Les catégories n'ont pas été enregistrées car le formulaire contient des erreurs",
+        )
 
     return render(
         request,
