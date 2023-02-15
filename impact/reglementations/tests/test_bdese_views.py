@@ -146,6 +146,7 @@ def bdese_with_categories(bdese):
             "catégorie détaillée 4",
             "catégorie détaillée 5",
         ]
+        bdese.niveaux_hierarchiques = ["niveau 1", "niveau 2"]
     bdese.mark_step_as_complete(0)
     bdese.save()
     return bdese
@@ -315,7 +316,10 @@ def test_save_categories_professionnelles(bdese, authorized_user, client):
         "catégorie détaillée 4",
         "catégorie détaillée 5",
     ]
-    data = categories_form_data(categories_pro, categories_pro_detaillees)
+    niveaux_hierarchiques = ["niveau 1", "niveau 2"]
+    data = categories_form_data(
+        categories_pro, categories_pro_detaillees, niveaux_hierarchiques
+    )
 
     url = bdese_step_url(bdese, 0)
     response = client.post(
@@ -334,6 +338,7 @@ def test_save_categories_professionnelles(bdese, authorized_user, client):
     assert bdese.categories_professionnelles == categories_pro
     if bdese.is_bdese_300:
         assert bdese.categories_professionnelles_detaillees == categories_pro_detaillees
+        assert bdese.niveaux_hierarchiques == niveaux_hierarchiques
     assert not bdese.step_is_complete(0)
 
 
@@ -348,7 +353,10 @@ def test_save_and_complete_categories_professionnelles(bdese, authorized_user, c
         "catégorie détaillée 4",
         "catégorie détaillée 5",
     ]
-    data = categories_form_data(categories_pro, categories_pro_detaillees)
+    niveaux_hierarchiques = ["niveau 1", "niveau 2"]
+    data = categories_form_data(
+        categories_pro, categories_pro_detaillees, niveaux_hierarchiques
+    )
     data.update({"save_complete": ""})
 
     url = bdese_step_url(bdese, 0)
@@ -368,6 +376,7 @@ def test_save_and_complete_categories_professionnelles(bdese, authorized_user, c
     assert bdese.categories_professionnelles == categories_pro
     if bdese.is_bdese_300:
         assert bdese.categories_professionnelles_detaillees == categories_pro_detaillees
+        assert bdese.niveaux_hierarchiques == niveaux_hierarchiques
     assert bdese.step_is_complete(0)
 
 
@@ -378,6 +387,7 @@ def test_mark_as_incomplete_categories_professionnelles(
     categories_pro = bdese.categories_professionnelles
     if bdese.is_bdese_300:
         categories_pro_detaillees = bdese.categories_professionnelles_detaillees
+        niveaux_hierarchiques = bdese.niveaux_hierarchiques
     client.force_login(authorized_user)
 
     url = bdese_step_url(bdese, 0)
@@ -397,6 +407,7 @@ def test_mark_as_incomplete_categories_professionnelles(
     assert bdese.categories_professionnelles == categories_pro
     if bdese.is_bdese_300:
         assert bdese.categories_professionnelles_detaillees == categories_pro_detaillees
+        assert bdese.niveaux_hierarchiques == niveaux_hierarchiques
     assert not bdese.step_is_complete(0)
 
 
@@ -410,7 +421,7 @@ def test_save_categories_professionnelles_error(bdese, authorized_user, client):
     assert response.status_code == 200
 
     content = response.content.decode("utf-8")
-    assert "Au moins 3 catégories sont requises" in content
+    assert "Au moins 3 postes sont requis" in content
 
     bdese.refresh_from_db()
     assert not bdese.categories_professionnelles
@@ -427,9 +438,11 @@ def test_save_categories_professionnelles_for_a_new_year(
         "catégorie détaillée 4",
         "catégorie détaillée 5",
     ]
+    niveaux_hierarchiques = ["niveau 1", "niveau 2"]
     bdese.categories_professionnelles = categories_pro
     if bdese.is_bdese_300:
         bdese.categories_professionnelles_detaillees = categories_pro_detaillees
+        bdese.niveaux_hierarchiques = niveaux_hierarchiques
     bdese.save()
     client.force_login(authorized_user)
 
@@ -444,14 +457,19 @@ def test_save_categories_professionnelles_for_a_new_year(
     if bdese.is_bdese_300:
         for categorie in categories_pro_detaillees:
             assert categorie in content
+        for niveau in niveaux_hierarchiques:
+            assert niveau in niveaux_hierarchiques
     assert "Enregistrer et marquer comme terminé" in content, content
     assert "Enregistrer en brouillon" in content
 
     new_categories_pro = ["A", "B", "C", "D"]
     new_categories_pro_detaillees = ["E", "F", "G", "H", "I"]
+    new_niveaux_hierarchiques = ["Y", "Z"]
     response = client.post(
         url,
-        data=categories_form_data(new_categories_pro, new_categories_pro_detaillees),
+        data=categories_form_data(
+            new_categories_pro, new_categories_pro_detaillees, new_niveaux_hierarchiques
+        ),
         follow=True,
     )
 
@@ -473,6 +491,8 @@ def test_save_categories_professionnelles_for_a_new_year(
             new_bdese.categories_professionnelles_detaillees
             == new_categories_pro_detaillees
         )
+        assert bdese.niveaux_hierarchiques == niveaux_hierarchiques
+        assert new_bdese.niveaux_hierarchiques == new_niveaux_hierarchiques
 
 
 class MockedResponse:

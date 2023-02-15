@@ -65,7 +65,10 @@
                 {% csrf_token %}
                 {% include 'snippets/field.html' with field=form.categories_professionnelles %}
                 {% if form.categories_professionnelles_detaillees %}
-                {% include 'snippets/field.html' with field=form.categories_professionnelles_detaillees %}
+                    {% include 'snippets/field.html' with field=form.categories_professionnelles_detaillees %}
+                {% endif %}
+                {% if form.niveaux_hierarchiques %}
+                    {% include 'snippets/field.html' with field=form.niveaux_hierarchiques %}
                 {% endif %}
 
                 {% include "snippets/bdese_submit.html" %}
