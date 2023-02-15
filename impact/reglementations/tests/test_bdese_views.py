@@ -84,7 +84,7 @@ def test_bdese_step_redirect_to_categories_professionnelles_if_not_filled(
     )
 
 
-def test_bdese_step_use_categories_professionnelles_and_annees_a_remplir(
+def test_bdese_step_use_configured_categories_and_annees_a_remplir(
     bdese, authorized_user, client
 ):
     categories_professionnelles = ["catégorie 1", "catégorie 2", "catégorie 3"]
@@ -100,6 +100,7 @@ def test_bdese_step_use_categories_professionnelles_and_annees_a_remplir(
         bdese.categories_professionnelles_detaillees = (
             categories_professionnelles_detaillees
         )
+        bdese.niveaux_hierarchiques = ["niveau 1", "niveau 2"]
     bdese.save()
     client.force_login(authorized_user)
 
@@ -115,6 +116,16 @@ def test_bdese_step_use_categories_professionnelles_and_annees_a_remplir(
             assert category in content
     for annee in annees_a_remplir_bdese():
         assert str(annee) in content
+
+    if bdese.is_bdese_300:
+        url = bdese_step_url(
+            bdese, 3
+        )  # L'étape 3 de la BDESE 300 utilise les niveaux hiérarchiques configurées par l'entreprise
+        response = client.get(url)
+
+        content = response.content.decode("utf-8")
+        for niveau in bdese.niveaux_hierarchiques:
+            assert niveau in content
 
 
 def test_bdese_step_fetch_data(bdese, authorized_user, client, mocker):

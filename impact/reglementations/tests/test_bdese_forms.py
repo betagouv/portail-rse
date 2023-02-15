@@ -50,7 +50,6 @@ def test_bdese_form_step_with_new_bdese_300_instance(step, bdese_300):
         field for field in form.fields if field in bdese_300.category_fields()
     ]:
         assert isinstance(form.fields[field], forms.MultiValueField)
-        assert form.fields[field].categories
 
     for field in form.fields:
         if field == "unite_absenteisme":

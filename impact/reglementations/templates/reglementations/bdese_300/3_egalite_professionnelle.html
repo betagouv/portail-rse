@@ -49,6 +49,8 @@
                         {% include 'snippets/bdese_field.html' with field=form.departs_fin_CDD_femme %}
                         {% include 'snippets/bdese_field.html' with field=form.departs_licenciement_femme %}
                         <h5>e) Positionnement dans l'entreprise</h5>
+                        {% include 'snippets/bdese_field.html' with field=form.effectif_par_niveau_hierarchique_homme %}
+                        {% include 'snippets/bdese_field.html' with field=form.effectif_par_niveau_hierarchique_femme %}
 
                         <h4>B - Rémunérations et déroulement de carrière</h4>
                         <h5>a) Promotion</h5>
@@ -61,13 +63,21 @@
                         {% include 'snippets/bdese_field.html' with field=form.anciennete_moyenne_femme %}
                         {% include 'snippets/bdese_field.html' with field=form.anciennete_moyenne_dans_categorie_profesionnelle_homme %}
                         {% include 'snippets/bdese_field.html' with field=form.anciennete_moyenne_dans_categorie_profesionnelle_femme %}
+                        {% include 'snippets/bdese_field.html' with field=form.anciennete_moyenne_par_niveau_hierarchique_homme %}
+                        {% include 'snippets/bdese_field.html' with field=form.anciennete_moyenne_par_niveau_hierarchique_femme %}
+                        {% include 'snippets/bdese_field.html' with field=form.anciennete_moyenne_dans_niveau_hierarchique_homme %}
+                        {% include 'snippets/bdese_field.html' with field=form.anciennete_moyenne_dans_niveau_hierarchique_femme %}
                         <h5>c) Age</h5>
                         {% include 'snippets/bdese_field.html' with field=form.age_moyen_homme %}
                         {% include 'snippets/bdese_field.html' with field=form.age_moyen_femme %}
+                        {% include 'snippets/bdese_field.html' with field=form.age_moyen_par_niveau_hierarchique_homme %}
+                        {% include 'snippets/bdese_field.html' with field=form.age_moyen_par_niveau_hierarchique_femme %}
                         <h5>d) Rémunérations</h5>
                         {% include 'snippets/bdese_field.html' with field=form.remuneration_moyenne_ou_mediane %}
                         {% include 'snippets/bdese_field.html' with field=form.remuneration_homme %}
                         {% include 'snippets/bdese_field.html' with field=form.remuneration_femme %}
+                        {% include 'snippets/bdese_field.html' with field=form.remuneration_par_niveau_hierarchique_homme %}
+                        {% include 'snippets/bdese_field.html' with field=form.remuneration_par_niveau_hierarchique_femme %}
                         {% include 'snippets/bdese_field.html' with field=form.remuneration_par_age_homme %}
                         {% include 'snippets/bdese_field.html' with field=form.remuneration_par_age_femme %}
                         {% include 'snippets/bdese_field.html' with field=form.nombre_femmes_plus_hautes_remunerations %}
