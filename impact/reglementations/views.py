@@ -290,8 +290,15 @@ def get_bdese_data_from_egapro(entreprise: Entreprise, year: int) -> dict:
                 )
                 if indicateur_hautes_remunerations["population_favorable"] == "hommes"
                 else 10 - int(indicateur_hautes_remunerations["résultat"]),
-                "objectifs_progression": indicateur_hautes_remunerations["objectif_de_progression"],
             }
+        objectifs_progression = []
+        for clef, indicateurs in egapro_data.get("indicateurs", {}).items():
+            if objectif := indicateurs["objectif_de_progression"]:
+                objectifs_progression.append(objectif)
+
+        bdese_data_from_egapro["objectifs_progression"] = "\n".join(
+            objectifs_progression
+        )
     return bdese_data_from_egapro
 
 
