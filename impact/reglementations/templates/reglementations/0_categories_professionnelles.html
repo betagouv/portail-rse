@@ -52,13 +52,12 @@
             </div>
 
             <h2>Configuration</h2>
-            <h3>Catégories professionnelles</h3>
             <p>
-                Certains indicateurs de la BDESE sont à remplir par catégorie professionnelle, suivant une structure de qualification propre à votre entreprise.
-                Commencez par définir les catégories professionnelles retenues qui seront utilisées dans votre BDESE {{ annee }}.
+                Certains indicateurs de la BDESE sont à remplir par catégorie, suivant une classification propre à votre entreprise.
+                Commencez par définir les catégories retenues qui seront utilisées dans votre BDESE {{ annee }}.
             </p>
             <div class="fr-highlight">
-                <p>Si vous modifiez les catégories après avoir renseigné des indicateurs, les données concernant les catégories modifiées seront perdues.</p>
+                <p>Si vous modifiez ces catégories après avoir renseigné des indicateurs, les données concernant les catégories modifiées seront perdues.</p>
             </div>
 
             <form action="{% url 'bdese_configuration' siren annee %}" method="post">
