@@ -132,7 +132,7 @@ class BDESE_300(AbstractBDESE):
         verbose_name_plural = "BDESE plus de 300 salariés"
 
     STEPS = {
-        0: "Catégories professionnelles",
+        0: "Configuration",
         1: "Investissement social",
         2: "Investissement matériel et immatériel",
         3: "Egalité professionnelle homme/femme",
@@ -2007,7 +2007,7 @@ class BDESE_50_300(AbstractBDESE):
         verbose_name_plural = "BDESE 50 à 300 salariés"
 
     STEPS = {
-        0: "Catégories professionnelles",
+        0: "Configuration",
         1: "Investissement social",
         2: "Investissement matériel et immatériel",
         3: "Egalité professionnelle homme/femme",
