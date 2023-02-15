@@ -27,6 +27,7 @@ class CategoryType(Enum):
     HARD_CODED = 1
     PROFESSIONNELLE = 2
     PROFESSIONNELLE_DETAILLEE = 3
+    HIERARCHIQUE = 4
 
 
 class CategoryField(models.JSONField):
@@ -1087,7 +1088,18 @@ class BDESE_300(AbstractBDESE):
     )
     #      e) Positionnement dans l'entreprise
     # répartition des effectifs par catégorie professionnelle : déduisible de a)
-    # répartition des effectifs par niveau ou coefficient hiérarchique : quels sont les niveaux/coeff ?
+    effectif_par_niveau_hierarchique_homme = CategoryField(
+        category_type=CategoryType.HIERARCHIQUE,
+        verbose_name="Répartition des effectifs hommes par niveau ou coefficient hiérarchique",
+        null=True,
+        blank=True,
+    )
+    effectif_par_niveau_hierarchique_femme = CategoryField(
+        category_type=CategoryType.HIERARCHIQUE,
+        verbose_name="Répartition des effectifs femmes par niveau ou coefficient hiérarchique",
+        null=True,
+        blank=True,
+    )
     #     B - Rémunérations et déroulement de carrière
     #        a) Promotion
     nombre_promotions_homme = CategoryField(
@@ -1137,7 +1149,30 @@ class BDESE_300(AbstractBDESE):
         null=True,
         blank=True,
     )
-    # ancienneté moyenne par/dans niveau ou coefficient hiérarchique : quels sont les niveaux/coeff ?
+    anciennete_moyenne_par_niveau_hierarchique_homme = CategoryField(
+        category_type=CategoryType.HIERARCHIQUE,
+        verbose_name="Ancienneté moyenne des hommes par niveau ou coefficient hiérarchique",
+        null=True,
+        blank=True,
+    )
+    anciennete_moyenne_par_niveau_hierarchique_femme = CategoryField(
+        category_type=CategoryType.HIERARCHIQUE,
+        verbose_name="Ancienneté moyenne des femmes par niveau ou coefficient hiérarchique",
+        null=True,
+        blank=True,
+    )
+    anciennete_moyenne_dans_niveau_hierarchique_homme = CategoryField(
+        category_type=CategoryType.HIERARCHIQUE,
+        verbose_name="Ancienneté moyenne des hommes dans chaque niveau ou coefficient hiérarchique",
+        null=True,
+        blank=True,
+    )
+    anciennete_moyenne_dans_niveau_hierarchique_femme = CategoryField(
+        category_type=CategoryType.HIERARCHIQUE,
+        verbose_name="Ancienneté moyenne des femmes dans chaque niveau ou coefficient hiérarchique",
+        null=True,
+        blank=True,
+    )
     #        c) Age
     age_moyen_homme = CategoryField(
         category_type=CategoryType.PROFESSIONNELLE,
@@ -1151,7 +1186,18 @@ class BDESE_300(AbstractBDESE):
         null=True,
         blank=True,
     )
-    # âge moyen par niveau ou coefficient hiérarchique : quels sont les niveaux/coeff ?
+    age_moyen_par_niveau_hierarchique_homme = CategoryField(
+        category_type=CategoryType.HIERARCHIQUE,
+        verbose_name="Age moyen des hommes par niveau ou coefficient hiérarchique",
+        null=True,
+        blank=True,
+    )
+    age_moyen_par_niveau_hierarchique_femme = CategoryField(
+        category_type=CategoryType.HIERARCHIQUE,
+        verbose_name="Age moyen des femmes par niveau ou coefficient hiérarchique",
+        null=True,
+        blank=True,
+    )
     #        d) Rémunérations
     REMUNERATIONS_CHOICES = [
         ("moyenne", "Rémunération moyenne"),
@@ -1176,8 +1222,20 @@ class BDESE_300(AbstractBDESE):
         null=True,
         blank=True,
     )
-    # rémunération moyenne ou médiane mensuelle par niveau ou coefficient hiérarchique : quels sont les niveaux/coeff ?
-    # Cet indicateur n'a pas à être renseigné lorsque sa mention est de nature à porter atteinte à la confidentialité des données correspondantes, compte tenu notamment du nombre réduit d'individus dans un niveau ou coefficient hiérarchique
+    remuneration_par_niveau_hierarchique_homme = CategoryField(
+        category_type=CategoryType.HIERARCHIQUE,
+        verbose_name="Rémunération moyenne/médiane mensuelle des hommes par niveau ou coefficient hiérarchique",
+        help_text="Cet indicateur n'a pas à être renseigné lorsque sa mention est de nature à porter atteinte à la confidentialité des données correspondantes, compte tenu notamment du nombre réduit d'individus dans un niveau ou coefficient hiérarchique",
+        null=True,
+        blank=True,
+    )
+    remuneration_par_niveau_hierarchique_femme = CategoryField(
+        category_type=CategoryType.HIERARCHIQUE,
+        verbose_name="Rémunération moyenne/médiane mensuelle des femmes par niveau ou coefficient hiérarchique",
+        help_text="Cet indicateur n'a pas à être renseigné lorsque sa mention est de nature à porter atteinte à la confidentialité des données correspondantes, compte tenu notamment du nombre réduit d'individus dans un niveau ou coefficient hiérarchique",
+        null=True,
+        blank=True,
+    )
     remuneration_par_age_homme = CategoryField(
         categories=["moins de 30 ans", "30 à 39 ans", "40 à 49 ans", "50 ans et plus"],
         verbose_name="Rémunération moyenne/mediane mensuelle des hommes par tranche d'âge",

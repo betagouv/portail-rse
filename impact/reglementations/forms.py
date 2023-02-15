@@ -150,6 +150,8 @@ def bdese_form_factory(
                     categories_professionnelles_detaillees
                     or bdese.categories_professionnelles_detaillees
                 )
+            elif category_type == CategoryType.HIERARCHIQUE:
+                categories = bdese.niveaux_hierarchiques
             self.categories = categories or []
 
             fields = [base_field() for category in self.categories]
@@ -500,6 +502,8 @@ BDESE_300_FIELDS = {
         "departs_demission_femme",
         "departs_fin_CDD_femme",
         "departs_licenciement_femme",
+        "effectif_par_niveau_hierarchique_homme",
+        "effectif_par_niveau_hierarchique_femme",
         "nombre_promotions_homme",
         "nombre_promotions_femme",
         "duree_moyenne_entre_deux_promotions_homme",
@@ -508,11 +512,19 @@ BDESE_300_FIELDS = {
         "anciennete_moyenne_femme",
         "anciennete_moyenne_dans_categorie_profesionnelle_homme",
         "anciennete_moyenne_dans_categorie_profesionnelle_femme",
+        "anciennete_moyenne_par_niveau_hierarchique_homme",
+        "anciennete_moyenne_par_niveau_hierarchique_femme",
+        "anciennete_moyenne_dans_niveau_hierarchique_homme",
+        "anciennete_moyenne_dans_niveau_hierarchique_femme",
         "age_moyen_homme",
         "age_moyen_femme",
+        "age_moyen_par_niveau_hierarchique_homme",
+        "age_moyen_par_niveau_hierarchique_femme",
         "remuneration_moyenne_ou_mediane",
         "remuneration_homme",
         "remuneration_femme",
+        "remuneration_par_niveau_hierarchique_homme",
+        "remuneration_par_niveau_hierarchique_femme",
         "remuneration_par_age_homme",
         "remuneration_par_age_femme",
         "nombre_femmes_plus_hautes_remunerations",
