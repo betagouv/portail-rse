@@ -81,6 +81,7 @@ def test_bdese_300(grande_entreprise):
     assert "nombre_travailleurs_exterieurs" not in bdese.category_fields()
     assert bdese.nombre_travailleurs_exterieurs is None
 
+    assert not bdese.is_configured
     assert not bdese.is_complete
     for step in bdese.STEPS:
         assert not bdese.step_is_complete(step)
@@ -96,6 +97,17 @@ def test_bdese_300(grande_entreprise):
 
         bdese.mark_step_as_complete(step)
     assert bdese.is_complete
+
+    bdese.categories_professionnelles = ["categorie 1", "categorie 2", "categorie 3"]
+    bdese.categories_professionnelles_detaillees = [
+        "categorie 1",
+        "categorie 2",
+        "categorie 3",
+        "categorie 4",
+        "categorie 5",
+    ]
+    bdese.niveaux_hierarchiques = ["niveau 1", "niveau 2"]
+    assert bdese.is_configured
 
 
 @pytest.mark.django_db(transaction=True)
@@ -114,6 +126,7 @@ def test_bdese_50_300(grande_entreprise):
     assert "effectif_cdi" not in bdese.category_fields()
     assert bdese.effectif_cdi is None
 
+    assert not bdese.is_configured
     assert not bdese.is_complete
     for step in bdese.STEPS:
         assert not bdese.step_is_complete(step)
@@ -129,6 +142,9 @@ def test_bdese_50_300(grande_entreprise):
 
         bdese.mark_step_as_complete(step)
     assert bdese.is_complete
+
+    bdese.categories_professionnelles = ["categorie 1", "categorie 2", "categorie 3"]
+    assert bdese.is_configured
 
 
 def test_derniere_annee_a_remplir_bdese():
