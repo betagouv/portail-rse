@@ -114,7 +114,7 @@ class AbstractBDESE(TimestampedModel):
 
     @property
     def is_complete(self):
-        return False
+        return all(self.completion_steps.values())
 
     @property
     def is_bdese_300(self):
@@ -1932,10 +1932,6 @@ class BDESE_300(AbstractBDESE):
         null=True,
         blank=True,
     )
-
-    @property
-    def is_complete(self):
-        return all(self.completion_steps.values())
 
 
 def bdese_50_300_completion_steps_default():

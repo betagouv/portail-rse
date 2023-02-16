@@ -80,10 +80,10 @@ def test_bdese_300(grande_entreprise):
     assert bdese.effectif_total is None
     assert "nombre_travailleurs_exterieurs" not in bdese.category_fields()
     assert bdese.nombre_travailleurs_exterieurs is None
-    assert not bdese.is_complete
-    for step in range(1, len(bdese.STEPS)):
-        assert not bdese.step_is_complete(step)
 
+    assert not bdese.is_complete
+    for step in bdese.STEPS:
+        assert not bdese.step_is_complete(step)
     with pytest.raises(KeyError):
         assert not bdese.step_is_complete(len(bdese.STEPS) + 1)
 
@@ -93,6 +93,9 @@ def test_bdese_300(grande_entreprise):
 
         bdese.mark_step_as_incomplete(step)
         assert not bdese.step_is_complete(step)
+
+        bdese.mark_step_as_complete(step)
+    assert bdese.is_complete
 
 
 @pytest.mark.django_db(transaction=True)
@@ -110,10 +113,10 @@ def test_bdese_50_300(grande_entreprise):
     assert bdese.effectif_mensuel is None
     assert "effectif_cdi" not in bdese.category_fields()
     assert bdese.effectif_cdi is None
-    assert not bdese.is_complete
-    for step in range(1, len(bdese.STEPS)):
-        assert not bdese.step_is_complete(step)
 
+    assert not bdese.is_complete
+    for step in bdese.STEPS:
+        assert not bdese.step_is_complete(step)
     with pytest.raises(KeyError):
         assert not bdese.step_is_complete(len(bdese.STEPS) + 1)
 
@@ -123,6 +126,9 @@ def test_bdese_50_300(grande_entreprise):
 
         bdese.mark_step_as_incomplete(step)
         assert not bdese.step_is_complete(step)
+
+        bdese.mark_step_as_complete(step)
+    assert bdese.is_complete
 
 
 def test_derniere_annee_a_remplir_bdese():

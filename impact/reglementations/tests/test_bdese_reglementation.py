@@ -1,7 +1,7 @@
 from django.urls import reverse
 import pytest
 
-from reglementations.models import BDESE_300
+from reglementations.models import BDESE_50_300, BDESE_300
 from reglementations.views import BDESEReglementation
 
 
@@ -44,27 +44,12 @@ def test_calculate_bdese_reglementation_less_than_50_employees(
     assert bdese.bdese_type is None
 
 
-def test_calculate_bdese_reglementation_50_300_employees(entreprise_factory):
-    entreprise = entreprise_factory(effectif="moyen", bdese_accord=False)
-
-    bdese = BDESEReglementation.calculate(entreprise, 2022)
-
-    assert bdese.status == BDESEReglementation.STATUS_A_ACTUALISER
-    assert (
-        bdese.status_detail
-        == "Vous êtes soumis à cette réglementation. Nous allons vous aider à la remplir."
-    )
-    assert bdese.primary_action.title == "Actualiser ma BDESE"
-    assert bdese.primary_action.url == reverse(
-        "bdese", args=[entreprise.siren, 2022, 0]
-    )
-    assert not bdese.secondary_actions
-    assert bdese.bdese_type is BDESEReglementation.TYPE_INFERIEUR_300
-
-
-@pytest.mark.parametrize("effectif", ["grand", "sup500"])
-def test_calculate_bdese_reglementation_more_than_300_employees(
-    effectif, entreprise_factory, mocker
+@pytest.mark.parametrize(
+    "effectif, bdese_class",
+    [("moyen", BDESE_50_300), ("grand", BDESE_300), ("sup500", BDESE_300)],
+)
+def test_calculate_bdese_reglementation_more_than_50_employees(
+    effectif, bdese_class, entreprise_factory, mocker
 ):
     entreprise = entreprise_factory(effectif=effectif, bdese_accord=False)
 
@@ -81,7 +66,7 @@ def test_calculate_bdese_reglementation_more_than_300_employees(
     )
     assert not bdese.secondary_actions
 
-    BDESE_300.objects.create(entreprise=entreprise, annee=2022)
+    bdese_class.objects.create(entreprise=entreprise, annee=2022)
     bdese = BDESEReglementation.calculate(entreprise, 2022)
 
     assert bdese.status == BDESEReglementation.STATUS_EN_COURS
@@ -94,7 +79,7 @@ def test_calculate_bdese_reglementation_more_than_300_employees(
     )
     assert bdese.secondary_actions[0].title == "Télécharger le pdf (brouillon)"
 
-    mocker.patch("reglementations.models.BDESE_300.is_complete", return_value=True)
+    mocker.patch("reglementations.models.AbstractBDESE.is_complete", return_value=True)
     bdese = BDESEReglementation.calculate(entreprise, 2022)
 
     assert bdese.status == BDESEReglementation.STATUS_A_JOUR
