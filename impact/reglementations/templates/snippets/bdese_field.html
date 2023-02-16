@@ -22,14 +22,22 @@
             <div class="svelte-external-field" style="display: none">
                 <span class="fr-hint-text">Cette information est remplie dans un autre document.</span>
             </div>
-            <div class="svelte-internal-field fr-col-12 {% if widget_type == 'NumberInput' %}fr-col-sm-2{% endif %}">
-                {{ field }}
+
+            <div class="svelte-internal-field">
+                <div class="fr-col-12 {% if widget_type == 'NumberInput' %}fr-col-sm-2{% endif %}">
+                    {{ field }}
+                </div>
+
+                {% if field.field.fetched_data %}
+                    <div class="fr-pt-1w">
+                        <p class="fr-text--xs">La valeur issue d'<a href="https://egapro.travail.gouv.fr/" target="_blank">EgaPro</a> est {{ field.field.fetched_data }}</p>
+                    </div>
+                {% elif field.field|has_attribute:"fetched_data" %}
+                    <div class="fr-pt-1w">
+                        <p class="fr-text--xs">Cette information pourrait être renseignée dans <a href="https://egapro.travail.gouv.fr/" target="_blank">EgaPro</a> et pré-remplie automatiquement</p>
+                    </div>
+                {% endif %}
             </div>
-            {% if field.field.fetched_data %}
-                La valeur déjà renseignée dans <a href="https://egapro.travail.gouv.fr/" target="_blank">EgaPro</a> est {{ field.field.fetched_data }}.
-            {% elif field.field|has_attribute:"fetched_data" %}
-                Cette information pourrait être renseignée dans <a href="https://egapro.travail.gouv.fr/" target="_blank">EgaPro</a> et récupérée automatiquement.
-            {% endif %}
         </div>
     {% endwith %}
 {% endblock %}
