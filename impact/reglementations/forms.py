@@ -62,18 +62,19 @@ class BDESEConfigurationForm(forms.ModelForm, DsfrForm):
         return data
 
 
-def bdese_configuration_form_factory(bdese, *args, number_categories=6, **kwargs):
+def bdese_configuration_form_factory(bdese, *args, **kwargs):
     def widget_for_field(field_name):
         labels = {
             "categories_professionnelles": "Poste",
             "categories_professionnelles_detaillees": "Poste",
             "niveaux_hierarchiques": "Niveau",
         }
+        number_subwidgets = 6
         subwidgets = [
             forms.widgets.TextInput(
                 attrs={"class": "fr-input", "label": labels[field_name]}
             )
-            for i in range(number_categories)
+            for i in range(number_subwidgets)
         ]
         return ListJSONWidget(subwidgets)
 
