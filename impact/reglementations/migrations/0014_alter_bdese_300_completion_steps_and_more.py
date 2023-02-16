@@ -14,9 +14,10 @@ def rename_categories_professionnelles_step_to_configuration(apps, schema_editor
         bdese.save()
     BDESE_300 = apps.get_model("reglementations", "BDESE_300")
     for bdese in BDESE_300.objects.all():
-        bdese.completion_steps["Configuration"] = bdese.completion_steps.pop(
-            "Catégories professionnelles", False
-        )
+        # La configuration n'est jamais terminée même si les catégories professionnelles l'étaient
+        # car les niveaux ou coefficients hiérarchiques y ont été ajoutés
+        bdese.completion_steps["Configuration"] = False
+        bdese.completion_steps.pop("Catégories professionnelles", None)
         bdese.save()
 
 
