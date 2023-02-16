@@ -164,6 +164,14 @@ class BDESE_300(AbstractBDESE):
         blank=True,
     )
 
+    @property
+    def is_configured(self) -> bool:
+        return bool(
+            self.categories_professionnelles
+            and self.categories_professionnelles_detaillees
+            and self.niveaux_hierarchiques
+        )
+
     # Décret no 2022-678 du 26 avril 2022
     # https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000045680845
     # 1° Investissements
@@ -2026,6 +2034,10 @@ class BDESE_50_300(AbstractBDESE):
         categories=list(STEPS.values()),
         default=bdese_50_300_completion_steps_default,
     )
+
+    @property
+    def is_configured(self) -> bool:
+        return bool(self.categories_professionnelles)
 
     # Décret no 2022-678 du 26 avril 2022
     # https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000045680861

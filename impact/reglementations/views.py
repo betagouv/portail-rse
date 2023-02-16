@@ -302,7 +302,7 @@ def bdese(request, siren, annee, step):
 
     bdese = _get_or_create_bdese(entreprise, annee)
 
-    if not bdese.categories_professionnelles:
+    if not bdese.is_configured:
         messages.warning(request, f"Commencez par configurer votre BDESE {annee}")
         return redirect("bdese_configuration", siren=siren, annee=annee)
 
@@ -420,21 +420,8 @@ def bdese_configuration(request, siren, annee):
     bdese = _get_or_create_bdese(entreprise, annee)
 
     initial = None
-    if not bdese.categories_professionnelles and not request.POST:
-        bdeses = bdese.__class__.objects.filter(entreprise=bdese.entreprise).order_by(
-            "-annee"
-        )
-        for _bdese in bdeses:
-            if _bdese.categories_professionnelles:
-                initial = {
-                    "categories_professionnelles": _bdese.categories_professionnelles
-                }
-                if _bdese.is_bdese_300:
-                    initial[
-                        "categories_professionnelles_detaillees"
-                    ] = _bdese.categories_professionnelles_detaillees
-                    initial["niveaux_hierarchiques"] = _bdese.niveaux_hierarchiques
-                break
+    if not bdese.is_configured and not request.POST:
+        initial = initialize_bdese_configuration(bdese)
 
     form = bdese_configuration_form_factory(
         bdese, data=request.POST or None, initial=initial
@@ -465,3 +452,20 @@ def bdese_configuration(request, siren, annee):
         _bdese_step_template_path(bdese, 0),
         _bdese_step_context(form, siren, annee, bdese, 0),
     )
+
+
+def initialize_bdese_configuration(bdese: BDESE_300 | BDESE_50_300) -> dict:
+    bdeses = bdese.__class__.objects.filter(entreprise=bdese.entreprise).order_by(
+        "-annee"
+    )
+    for _bdese in bdeses:
+        if _bdese.categories_professionnelles:
+            initial = {
+                "categories_professionnelles": _bdese.categories_professionnelles
+            }
+            if _bdese.is_bdese_300:
+                initial[
+                    "categories_professionnelles_detaillees"
+                ] = _bdese.categories_professionnelles_detaillees
+                initial["niveaux_hierarchiques"] = _bdese.niveaux_hierarchiques
+            return initial

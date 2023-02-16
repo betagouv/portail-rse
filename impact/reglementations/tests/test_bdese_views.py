@@ -60,7 +60,7 @@ def bdese_step_url(bdese, step):
     return f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/{step}"
 
 
-def test_bdese_step_redirect_to_configuration_if_categories_professionnelles_not_filled(
+def test_bdese_step_redirect_to_configuration_if_bdese_not_configured(
     bdese, authorized_user, client
 ):
     client.force_login(authorized_user)
@@ -334,6 +334,7 @@ def test_save_bdese_configuration(bdese, authorized_user, client):
     if bdese.is_bdese_300:
         assert bdese.categories_professionnelles_detaillees == categories_pro_detaillees
         assert bdese.niveaux_hierarchiques == niveaux_hierarchiques
+    assert bdese.is_configured
     assert not bdese.step_is_complete(0)
 
 
@@ -372,6 +373,7 @@ def test_save_and_complete_bdese_configuration(bdese, authorized_user, client):
     if bdese.is_bdese_300:
         assert bdese.categories_professionnelles_detaillees == categories_pro_detaillees
         assert bdese.niveaux_hierarchiques == niveaux_hierarchiques
+    assert bdese.is_configured
     assert bdese.step_is_complete(0)
 
 
@@ -403,6 +405,7 @@ def test_mark_as_incomplete_bdese_configuration(
     if bdese.is_bdese_300:
         assert bdese.categories_professionnelles_detaillees == categories_pro_detaillees
         assert bdese.niveaux_hierarchiques == niveaux_hierarchiques
+    assert bdese.is_configured
     assert not bdese.step_is_complete(0)
 
 
@@ -424,6 +427,7 @@ def test_save_bdese_configuration_error(bdese, authorized_user, client):
 
     bdese.refresh_from_db()
     assert not bdese.categories_professionnelles
+    assert not bdese.is_configured
 
 
 def test_save_bdese_configuration_for_a_new_year(
@@ -442,6 +446,7 @@ def test_save_bdese_configuration_for_a_new_year(
     url = f"/bdese/{configured_bdese.entreprise.siren}/{new_year}/0"
     response = client.get(url)
 
+    # le formulaire est initialisé avec la configuration de la dernière bdese configurée
     content = response.content.decode("utf-8")
     for categorie in categories_pro:
         assert categorie in content
@@ -489,6 +494,7 @@ def test_save_bdese_configuration_for_a_new_year(
         )
         assert configured_bdese.niveaux_hierarchiques == niveaux_hierarchiques
         assert new_bdese.niveaux_hierarchiques == new_niveaux_hierarchiques
+    assert new_bdese.is_configured
 
 
 class MockedResponse:
