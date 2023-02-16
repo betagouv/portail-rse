@@ -17,8 +17,8 @@ Dans la base de données de Metabase-data :
   - création manuelle du schéma `impact` depuis une console pgsql :
 
 ```
-$ scalingo --app {METABASE_APP} pgsql-console
-\c {METABASE_DATABASE} impact
+$ scalingo --app {METABASE_DATA_APP} pgsql-console
+\c {METABASE_DATA_DATABASE} impact
 CREATE SCHEMA impact AUTHORIZATION impact;
 ```
   - définition des droits d'accès en lecture de l'utilisateur `metabase` sur les tables du schéma `impact` :
@@ -30,7 +30,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA impact GRANT SELECT ON TABLES TO metabase;
 ```
 
 Dans l'application Django :
-  - présence de la variable d'environnement `METABASE_DATABASE_URL` contenant les informations de connexion à la base de données de Metabase-data avec l'option `currentSchema=impact`
+  - présence de la variable d'environnement `METABASE_DATABASE_URL` contenant les informations de connexion à la base de données de Metabase-data avec l'utilisateur `impact` et l'option `currentSchema=impact`
   - création automatique des tables dans la base de données de Metabase via la commande de migration de django :
 
 ```
