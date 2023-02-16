@@ -1,21 +1,25 @@
-<div class="fr-grid-row">
-    <div class="fr-col">
-        <h1>BDESE {{ annee }}</h1>
+<div class="fr-container fr-mt-8w">
+    <div class="fr-grid-row">
+        <div class="fr-col-12 fr-col-md-6">
+            <h1>BDESE {{ annee }}</h1>
+        </div>
+        <div class="fr-col" style="text-align: right;">
+            <p>
+                <a class="fr-btn" href="{% url 'bdese_pdf' siren annee %}" target="_blank" rel="noopener">
+                    Télécharger ma BDESE {{ annee }}{% if not bdese_is_complete %} (brouillon){% endif %}
+                </a>
+            </p>
+        </div>
     </div>
-    <div class="fr-col" style="text-align: right;">
-        <a class="fr-btn" href="{% url 'bdese_pdf' siren annee %}" target="_blank" rel="noopener">
-            Télécharger ma BDESE {{ annee }}{% if not bdese_is_complete %} (brouillon){% endif %}
-        </a>
-    </div>
-</div>
 
-<div class="fr-grid-row">
-    <div class="fr-col">
-        <p>
-            Années à remplir :
-            {% for annee in annees %}
-            <a href="{% url 'bdese' siren annee 0 %}" title="Remplissez la BDESE et télécharger le rapport pour {{ annee }}">{{ annee }}</a>
-            {% endfor %}
-        </p>
+    <div class="fr-grid-row">
+        <div class="fr-col">
+            <p>
+                Années à remplir :
+                {% for annee in annees %}
+                <a href="{% url 'bdese' siren annee 0 %}" title="Remplissez la BDESE et télécharger le rapport pour {{ annee }}">{{ annee }}</a>
+                {% endfor %}
+            </p>
+        </div>
     </div>
 </div>
