@@ -28,15 +28,20 @@
                     {{ field }}
                 </div>
 
-                {% if field.field.fetched_data %}
-                    <div class="fr-pt-1w">
-                        <p class="fr-text--xs">La valeur issue d'<a href="https://egapro.travail.gouv.fr/" target="_blank">EgaPro</a> est {{ field.field.fetched_data }}</p>
-                    </div>
-                {% elif field.field|has_attribute:"fetched_data" %}
-                    <div class="fr-pt-1w">
-                        <p class="fr-text--xs">Cette information pourrait être renseignée dans <a href="https://egapro.travail.gouv.fr/" target="_blank">EgaPro</a> et pré-remplie automatiquement</p>
-                    </div>
-                {% endif %}
+                {% with fetched_data=field.field.fetched_data %}
+                    {% if fetched_data %}
+                        <div class="fr-pt-1w">
+                            <p class="fr-text--xs">
+                                La valeur issue d'<a href="https://egapro.travail.gouv.fr/" target="_blank">EgaPro</a> est : {% if fetched_data|length > 15 %}<br>{% endif %}
+                                {{ fetched_data|linebreaksbr }}
+                            </p>
+                        </div>
+                    {% elif fetched_data is None %}
+                        <div class="fr-pt-1w">
+                            <p class="fr-text--xs">Cette information pourrait être renseignée dans <a href="https://egapro.travail.gouv.fr/" target="_blank">EgaPro</a> et pré-remplie automatiquement</p>
+                        </div>
+                    {% endif %}
+                {% endwith %}
             </div>
         </div>
     {% endwith %}

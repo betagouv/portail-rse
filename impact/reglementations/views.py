@@ -276,29 +276,41 @@ def _pdf_template_path_from_bdese(bdese):
 
 
 def get_bdese_data_from_egapro(entreprise: Entreprise, year: int) -> dict:
-    bdese_data_from_egapro = {}
+    EGAPRO_INDICATEURS = {
+        "promotions": "Écart taux promotion",
+        "augmentations_et_promotions": "Écart taux d'augmentation",
+        "rémunérations": "Écart rémunérations",
+        "congés_maternité": "Retour congé maternité",
+        "hautes_rémunérations": "Hautes rémunérations",
+    }
+
+    bdese_data_from_egapro = {
+        "nombre_femmes_plus_hautes_remunerations": None,
+        "objectifs_progression": None,
+    }
     url = f"https://egapro.travail.gouv.fr/api/public/declaration/{entreprise.siren}/{year}"
     response = requests.get(url)
+
     if response.status_code == 200:
-        egapro_data = response.json()
-        if indicateur_hautes_remunerations := egapro_data.get("indicateurs", {}).get(
+        egapro_data_indicateurs = response.json().get("indicateurs", {})
+        if indicateur_hautes_remunerations := egapro_data_indicateurs.get(
             "hautes_rémunérations"
         ):
-            bdese_data_from_egapro = {
-                "nombre_femmes_plus_hautes_remunerations": int(
-                    indicateur_hautes_remunerations["résultat"]
-                )
+            bdese_data_from_egapro["nombre_femmes_plus_hautes_remunerations"] = (
+                int(indicateur_hautes_remunerations["résultat"])
                 if indicateur_hautes_remunerations["population_favorable"] == "hommes"
-                else 10 - int(indicateur_hautes_remunerations["résultat"]),
-            }
-        objectifs_progression = []
-        for clef, indicateurs in egapro_data.get("indicateurs", {}).items():
-            if objectif := indicateurs["objectif_de_progression"]:
-                objectifs_progression.append(objectif)
+                else 10 - int(indicateur_hautes_remunerations["résultat"])
+            )
 
-        bdese_data_from_egapro["objectifs_progression"] = "\n".join(
-            objectifs_progression
-        )
+        objectifs_progression = {}
+        for egapro_indicateur, data in egapro_data_indicateurs.items():
+            if objectif := data["objectif_de_progression"]:
+                objectifs_progression[EGAPRO_INDICATEURS[egapro_indicateur]] = objectif
+        if objectifs_progression:
+            bdese_data_from_egapro["objectifs_progression"] = "\n".join(
+                f"{egapro_indicateur} : {objectif}"
+                for egapro_indicateur, objectif in objectifs_progression.items()
+            )
     return bdese_data_from_egapro
 
 
