@@ -225,6 +225,8 @@ def reglementation(request, siren):
     if request.user not in entreprise.users.all():
         raise PermissionDenied
 
+    request.session["entreprise"] = entreprise.siren
+
     return render(
         request,
         "reglementations/reglementations.html",

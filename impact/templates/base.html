@@ -67,8 +67,6 @@
                         </div>
                         <div class="fr-header__tools">
                             <div class="fr-header__tools-links">
-
-
                                 <ul class="fr-btns-group">
                                     <li>
                                         <a class="fr-btn fr-icon-mail-line" href="{% url 'contact' %}">Contactez-nous</a>
@@ -98,22 +96,32 @@
                     </button>
                     <div class="fr-header__menu-links">
                     </div>
-                    <nav class="fr-nav" id="navigation-494" role="navigation" aria-label="Menu principal">
-                        <ul class="fr-nav__list">
-                            <li class="fr-nav__item">
-                                <button class="fr-nav__btn" aria-expanded="false" aria-controls="menu-776" aria-current="true">{{ user.entreprises.0 }}</button>
-                                <div class="fr-collapse fr-menu" id="menu-776">
-                                    <ul class="fr-menu__list">
+                    {% if user.is_authenticated %}
+                        <nav class="fr-nav" id="navigation-494" role="navigation" aria-label="Menu principal">
+                            <ul class="fr-nav__list">
+                                <li class="fr-nav__item">
+                                    {% if request.session.entreprise %}
                                         {% for entreprise in user.entreprises %}
-                                            <li>
-                                                <a class="fr-nav__link" href="{% url 'reglementation' entreprise.siren %}" target="_self">{{ entreprise }}</a>
-                                            </li>
+                                            {% if entreprise.siren == request.session.entreprise %}
+                                                <button class="fr-nav__btn" aria-expanded="false" aria-controls="menu-776" aria-current="true">{{ entreprise }}</button>
+                                            {% endif %}
                                         {% endfor %}
-                                    </ul>
-                                </div>
-                            </li>
-                        </ul>
-                    </nav>
+                                    {% else %}
+                                        <button class="fr-nav__btn" aria-expanded="false" aria-controls="menu-776" aria-current="true">{{ user.entreprises.0 }}</button>
+                                    {% endif %}
+                                    <div class="fr-collapse fr-menu" id="menu-776">
+                                        <ul class="fr-menu__list">
+                                            {% for entreprise in user.entreprises %}
+                                                <li>
+                                                    <a class="fr-nav__link" href="{% url 'reglementation' entreprise.siren %}" target="_self">{{ entreprise }}</a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </nav>
+                    {% endif %}
                 </div>
             </div>
         </header>
