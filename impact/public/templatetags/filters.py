@@ -67,8 +67,3 @@ def field_value(instance, field_name):
 @register.filter
 def model_field_type(model_field):
     return model_field.__class__.__name__
-
-
-@register.filter
-def has_attribute(element, attribute_name):
-    return hasattr(element, attribute_name)
