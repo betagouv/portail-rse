@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     path("reglementations", views.reglementations, name="reglementations"),
+    path("reglementation/<str:siren>", views.reglementation, name="reglementation"),
     path(
         "bdese/<str:siren>/<int:annee>/0",
         views.bdese_configuration,

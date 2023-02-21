@@ -4,7 +4,7 @@ import requests
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import HttpResponse, redirect, render
+from django.shortcuts import get_object_or_404, HttpResponse, redirect, render
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from weasyprint import CSS, HTML
@@ -183,6 +183,7 @@ def is_index_egapro_updated(entreprise: Entreprise) -> bool:
 
 def reglementations(request):
     form = EligibiliteForm(request.GET)
+    entreprise = None
     if "siren" in form.data:
         if entreprises := Entreprise.objects.filter(siren=form.data["siren"]):
             entreprise = entreprises[0]
@@ -196,38 +197,52 @@ def reglementations(request):
         if form.is_valid():
             request.session["siren"] = form.cleaned_data["siren"]
             entreprise = form.save(commit=commit)
-            entreprises = [entreprise]
-
-    else:
-        entreprises = (
-            request.user.entreprise_set.all()
-            if request.user.is_authenticated
-            else [None]
-        )
 
     return render(
         request,
         "reglementations/reglementations.html",
         {
-            "entreprises": [
-                {
-                    "entreprise": entreprise,
-                    "reglementations": [
-                        BDESEReglementation.calculate(
-                            entreprise, derniere_annee_a_remplir_bdese()
-                        )
-                        if entreprise
-                        else BDESEReglementation(),
-                        IndexEgaproReglementation.calculate(entreprise)
-                        if entreprise
-                        else IndexEgaproReglementation(),
-                    ],
-                    "user_manage_entreprise": request.user in entreprise.users.all()
-                    if request.user.is_authenticated
-                    else False,
-                }
-                for entreprise in entreprises
-            ]
+            "entreprise": entreprise,
+            "reglementations": [
+                BDESEReglementation.calculate(
+                    entreprise, derniere_annee_a_remplir_bdese()
+                )
+                if entreprise
+                else BDESEReglementation(),
+                IndexEgaproReglementation.calculate(entreprise)
+                if entreprise
+                else IndexEgaproReglementation(),
+            ],
+            "user_manage_entreprise": request.user in entreprise.users.all()
+            if request.user.is_authenticated and entreprise
+            else False,
+        },
+    )
+
+
+def reglementation(request, siren):
+    entreprise = get_object_or_404(Entreprise, siren=siren)
+    if request.user not in entreprise.users.all():
+        raise PermissionDenied
+
+    return render(
+        request,
+        "reglementations/reglementations.html",
+        {
+            "entreprise": entreprise,
+            "reglementations": [
+                BDESEReglementation.calculate(
+                    entreprise, derniere_annee_a_remplir_bdese()
+                )
+                if entreprise
+                else BDESEReglementation(),
+                IndexEgaproReglementation.calculate(entreprise)
+                if entreprise
+                else IndexEgaproReglementation(),
+            ],
+            "user_manage_entreprise": request.user in entreprise.users.all()
+            if request.user.is_authenticated
+            else False,
         },
     )
 
