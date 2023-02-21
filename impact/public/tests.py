@@ -5,21 +5,24 @@ def test_page_index(client):
     response = client.get("/")
 
     assert response.status_code == 200
-    assert "<!-- page index -->" in str(response.content)
+    content = response.content.decode("utf-8")
+    assert "<!-- page index -->" in content
 
 
 def test_page_entreprise(client):
     response = client.get("/entreprise")
 
     assert response.status_code == 200
-    assert "<!-- page entreprise -->" in str(response.content)
+    content = response.content.decode("utf-8")
+    assert "<!-- page entreprise -->" in content
 
 
 def test_page_contact(client):
     response = client.get("/contact")
 
     assert response.status_code == 200
-    assert "<!-- page contact -->" in str(response.content)
+    content = response.content.decode("utf-8")
+    assert "<!-- page contact -->" in content
 
 
 def test_send_contact_mail(client, mailoutbox, settings):
@@ -56,21 +59,24 @@ def test_page_mentions_legales(client):
     response = client.get("/mentions-legales")
 
     assert response.status_code == 200
-    assert "<!-- page mentions legales -->" in str(response.content)
+    content = response.content.decode("utf-8")
+    assert "<!-- page mentions legales -->" in content
 
 
 def test_page_politique_confidentialite(client):
     response = client.get("/politique-confidentialite")
 
     assert response.status_code == 200
-    assert "<!-- page politique de confidentialite -->" in str(response.content)
+    content = response.content.decode("utf-8")
+    assert "<!-- page politique de confidentialite -->" in content
 
 
 def test_page_cgu(client):
     response = client.get("/cgu")
 
     assert response.status_code == 200
-    assert "<!-- page cgu -->" in str(response.content)
+    content = response.content.decode("utf-8")
+    assert "<!-- page cgu -->" in content
 
 
 def test_eligibilite_form_truncate_raison_social_when_too_long(db):

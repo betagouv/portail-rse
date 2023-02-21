@@ -10,7 +10,8 @@ def test_page_creation(client):
     response = client.get("/creation")
 
     assert response.status_code == 200
-    assert "<!-- page creation compte -->" in str(response.content)
+    content = response.content.decode("utf-8")
+    assert "<!-- page creation compte -->" in content
 
 
 @pytest.mark.parametrize("reception_actualites", ["checked", ""])
