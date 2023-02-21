@@ -15,11 +15,9 @@ def test_public_reglementations(client):
     assert "Index de l’égalité professionnelle" in content
 
     context = response.context
-    assert len(context["entreprises"]) == 1
-    entreprise = context["entreprises"][0]
-    assert entreprise["entreprise"] is None
-    assert entreprise["reglementations"][0] == BDESEReglementation()
-    assert entreprise["reglementations"][1] == IndexEgaproReglementation()
+    assert context["entreprise"] is None
+    assert context["reglementations"][0] == BDESEReglementation()
+    assert context["reglementations"][1] == IndexEgaproReglementation()
 
 
 @pytest.mark.parametrize("status_is_soumis", [True, False])
@@ -50,10 +48,8 @@ def test_public_reglementations_with_entreprise_data(status_is_soumis, client, m
 
     # reglementations for this entreprise are anonymously displayed
     context = response.context
-    assert len(context["entreprises"]) == 1
-    context_entreprise = context["entreprises"][0]
-    assert context_entreprise["entreprise"] == entreprise
-    reglementations = context_entreprise["reglementations"]
+    assert context["entreprise"] == entreprise
+    reglementations = context["reglementations"]
     assert reglementations[0] == BDESEReglementation.calculate(entreprise, 2022)
     assert reglementations[1] == IndexEgaproReglementation.calculate(entreprise)
 
@@ -87,23 +83,19 @@ def test_reglementations_with_authenticated_user(client, entreprise):
 
     assert response.status_code == 200
 
-    content = response.content.decode("utf-8")
-    assert "Entreprise SAS" in content
     context = response.context
-    assert len(context["entreprises"]) == 1
-    context_entreprise = context["entreprises"][0]
-    assert context_entreprise["entreprise"] == entreprise
-    reglementations = context_entreprise["reglementations"]
-    assert reglementations[0] == BDESEReglementation.calculate(entreprise, 2022)
-    assert reglementations[1] == IndexEgaproReglementation.calculate(entreprise)
-    for reglementation in reglementations:
-        assert reglementation.status_detail in content
+    assert context["entreprise"] is None
+    assert context["reglementations"][0] == BDESEReglementation()
+    assert context["reglementations"][1] == IndexEgaproReglementation()
 
 
 @pytest.mark.parametrize("status_is_soumis", [True, False])
 def test_reglementations_with_authenticated_user_and_another_entreprise_data(
     status_is_soumis, client, entreprise, mocker
 ):
+    """
+    Ce cas est encore accessible mais ne correspond pas à un parcours utilisateur normal
+    """
     client.force_login(entreprise.users.first())
 
     data = {
@@ -122,9 +114,8 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
 
     content = response.content.decode("utf-8")
     assert "Une autre entreprise SAS" in content
-    assert not "Entreprise SAS" in content
 
-    reglementations = response.context["entreprises"][0]["reglementations"]
+    reglementations = response.context["reglementations"]
     for reglementation in reglementations:
         assert not reglementation.status_detail in content
     if status_is_soumis:
@@ -142,6 +133,9 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
 def test_entreprise_data_are_saved_only_when_entreprise_user_is_autenticated(
     client, entreprise
 ):
+    """
+    Ce cas est encore accessible mais ne correspond pas à un parcours utilisateur normal
+    """
     data = {
         "effectif": "grand",
         "bdese_accord": False,
@@ -159,3 +153,57 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_autenticated(
 
     entreprise = Entreprise.objects.get(siren="000000001")
     assert entreprise.effectif == "grand"
+
+
+def test_reglementation_with_authenticated_user(client, entreprise):
+    client.force_login(entreprise.users.first())
+
+    response = client.get(f"/reglementation/{entreprise.siren}")
+
+    assert response.status_code == 200
+
+    content = response.content.decode("utf-8")
+    context = response.context
+    assert context["entreprise"] == entreprise
+    reglementations = context["reglementations"]
+    assert reglementations[0] == BDESEReglementation.calculate(entreprise, 2022)
+    assert reglementations[1] == IndexEgaproReglementation.calculate(entreprise)
+    for reglementation in reglementations:
+        assert reglementation.status_detail in content
+
+
+def test_reglementation_with_authenticated_user_and_multiple_entreprises(
+    client, entreprise_factory, django_user_model
+):
+    user = django_user_model.objects.create()
+    entreprise1 = entreprise_factory(siren="000000001")
+    entreprise2 = entreprise_factory(siren="000000002")
+    entreprise1.users.add(user)
+    entreprise2.users.add(user)
+    client.force_login(user)
+
+    response = client.get(f"/reglementation/{entreprise1.siren}")
+
+    assert response.status_code == 200
+
+    content = response.content.decode("utf-8")
+    context = response.context
+    assert context["entreprise"] == entreprise1
+    reglementations = context["reglementations"]
+    assert reglementations[0] == BDESEReglementation.calculate(entreprise1, 2022)
+    assert reglementations[1] == IndexEgaproReglementation.calculate(entreprise1)
+    for reglementation in reglementations:
+        assert reglementation.status_detail in content
+
+    response = client.get(f"/reglementation/{entreprise2.siren}")
+
+    assert response.status_code == 200
+
+    content = response.content.decode("utf-8")
+    context = response.context
+    assert context["entreprise"] == entreprise2
+    reglementations = context["reglementations"]
+    assert reglementations[0] == BDESEReglementation.calculate(entreprise2, 2022)
+    assert reglementations[1] == IndexEgaproReglementation.calculate(entreprise2)
+    for reglementation in reglementations:
+        assert reglementation.status_detail in content

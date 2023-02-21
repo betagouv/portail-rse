@@ -55,3 +55,7 @@ class User(AbstractBaseUser, TimestampedModel):
 
     def has_module_perms(self, app_label):
         return True
+
+    @property
+    def entreprises(self):
+        return self.entreprise_set.all()
