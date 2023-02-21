@@ -1,4 +1,5 @@
 from django import forms
+from django.db import models
 from django.core.exceptions import ValidationError
 import json
 
@@ -176,6 +177,11 @@ def bdese_form_factory(
             field_classes = {
                 category_field: CategoryMultiValueField
                 for category_field in bdese.__class__.category_fields()
+            }
+            widgets = {
+                boolean_field.name: forms.CheckboxInput
+                for boolean_field in bdese._meta.get_fields()
+                if type(boolean_field) == models.BooleanField
             }
 
         def __init__(self, bdese, fetched_data=None, *args, **kwargs):

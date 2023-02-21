@@ -1450,17 +1450,17 @@ class BDESE_300(AbstractBDESE):
     complement_salaire_conge_paternite = models.BooleanField(
         verbose_name="Complément de salaire pour le congé de paternité",
         help_text="Existence d'un complément de salaire versé par l'employeur pour le congé de paternité",
-        default=False,
+        null=True,
     )
     complement_salaire_conge_maternite = models.BooleanField(
         verbose_name="Complément de salaire pour le congé de maternité",
         help_text="Existence d'un complément de salaire versé par l'employeur pour le congé de maternité",
-        default=False,
+        null=True,
     )
     complement_salaire_conge_adoption = models.BooleanField(
         verbose_name="Complément de salaire pour le congé d'adoption",
         help_text="Existence d'un complément de salaire versé par l'employeur pour le congé d'adoption",
-        default=False,
+        null=True,
     )
     nombre_jours_conges_paternite_pris = CategoryField(
         category_type=CategoryType.PROFESSIONNELLE,
@@ -1501,7 +1501,7 @@ class BDESE_300(AbstractBDESE):
     )
     participation_accueil_petite_enfance = models.BooleanField(
         verbose_name="Participation de l'entreprise et du comité social et économique aux modes d'accueil de la petite enfance",
-        default=False,
+        null=True,
     )
     evolution_depenses_credit_impot_famille = models.TextField(
         verbose_name="Evolution des dépenses éligibles au crédit d'impôt famille",
