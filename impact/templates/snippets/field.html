@@ -1,30 +1,41 @@
 {% load filters %}
 {% with fr_group_class=field|fr_group_class field_type=field|field_type widget_type=field|widget_type %}
-    <div class="{{ fr_group_class }}{% if field.errors %} {{ fr_group_class }}--error {% endif %}">
     {% if widget_type == 'CheckboxInput' %}
-        {{ field }}
-        <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label }}
-            <span class="fr-hint-text">{{ field.help_text }}</span>
-        </label>
+        {% block boolean_field %}
+            <div class="{{ fr_group_class }}{% if field.errors %} {{ fr_group_class }}--error {% endif %}">
+                {{ field }}
+                <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label }}
+                    <span class="fr-hint-text">{{ field.help_text }}</span>
+                </label>
+                {% if field.errors %}
+                    <p id="{{ field.name }}-error-desc-error" class="fr-error-text">
+                        {% for error in field.errors %}
+                            {{ error|escape }}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+            </div>
+        {% endblock %}
+
     {% else %}
-        {% block field_label %}
+        <div class="{{ fr_group_class }}{% if field.errors %} {{ fr_group_class }}--error {% endif %}">
+
+        {% block field %}
             <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label }}
                 <span class="fr-hint-text">{{ field.help_text|safe }}</span>
             </label>
-        {% endblock %}
-
-        {% block field %}
             <div class="fr-col-12 {% if widget_type == 'NumberInput' %}fr-col-sm-2{% endif %}">
                 {{ field }}
             </div>
         {% endblock %}
+
+        {% if field.errors %}
+            <p id="{{ field.name }}-error-desc-error" class="fr-error-text">
+                {% for error in field.errors %}
+                    {{ error|escape }}
+                {% endfor %}
+            </p>
+        {% endif %}
+        </div>
     {% endif %}
-    {% if field.errors %}
-        <p id="{{ field.name }}-error-desc-error" class="fr-error-text">
-            {% for error in field.errors %}
-                {{ error|escape }}
-            {% endfor %}
-        </p>
-    {% endif %}
-    </div>
 {% endwith %}
