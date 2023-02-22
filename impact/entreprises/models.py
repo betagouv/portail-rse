@@ -12,7 +12,7 @@ class Entreprise(TimestampedModel):
         ("petit", "moins de 50"),
         ("moyen", "entre 50 et 300"),
         ("grand", "entre 301 et 499"),
-        ("sup500", "500 et plus"),
+        ("sup500", "plus de 500"),
     ]
 
     siren = models.CharField(max_length=9, unique=True)
