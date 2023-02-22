@@ -14,7 +14,7 @@
         <h2>{{ entreprise.raison_sociale }}</h2>
         <ul>
             <li>SIREN : {{ entreprise.siren }}</li>
-            <li>effectif : {{ entreprise.effectif }}</li>
+            <li>effectif : {{ entreprise.get_effectif_display }} salariés</li>
             <li>accord d'entreprise : {{ entreprise.bdese_accord | translate_boolean }}</li>
         </ul>
         {% endfor %}
