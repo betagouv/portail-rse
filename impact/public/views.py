@@ -12,6 +12,7 @@ import api.recherche_entreprises
 from .forms import EligibiliteForm, SirenForm, ContactForm
 from entreprises.models import Entreprise
 
+
 def index(request):
     return render(request, "public/index.html")
 
@@ -69,9 +70,7 @@ def siren(request):
         siren = form.cleaned_data["siren"]
         try:
             infos_entreprise = api.recherche_entreprises.recherche(siren)
-            form = EligibiliteForm(
-                initial=infos_entreprise
-            )
+            form = EligibiliteForm(initial=infos_entreprise)
             return render(
                 request,
                 "public/siren.html",
