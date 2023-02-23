@@ -38,3 +38,19 @@ class Habilitation(models.Model):
         null=True,
         blank=True,
     )
+
+
+def add_user_in_entreprise(user, entreprise, fonctions):
+    Habilitation.objects.create(
+        user=user,
+        entreprise=entreprise,
+        fonctions=fonctions,
+    )
+
+
+def select_habilitation(user, entreprise):
+    habilitations = Habilitation.objects.filter(
+        user=user,
+        entreprise=entreprise,
+    )
+    return habilitations[0] if habilitations else None
