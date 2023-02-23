@@ -10,6 +10,9 @@
     {% else %}
         {% for entreprise in user.entreprise_set.all %}
         <h2>{{ entreprise.raison_sociale }}</h2>
+        {% with habilitation=user|habilitation:entreprise %}
+            {% if habilitation and habilitation.fonctions %}<p>en tant que {{ habilitation.fonctions }}</p>{% endif %}
+        {% endwith %}
         <ul>
             <li>SIREN : {{ entreprise.siren }}</li>
             <li>effectif : {{ entreprise.get_effectif_display }} salariés</li>
