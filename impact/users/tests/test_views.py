@@ -51,3 +51,20 @@ def test_create_user_with_real_siren(reception_actualites, client, db):
         Habilitation.objects.get(user=user, entreprise=entreprise).fonctions
         == "Présidente"
     )
+
+
+def test_account_page_is_not_public(client):
+    response = client.get("/mon-compte")
+
+    assert response.status_code == 302
+
+
+def test_account_page_when_logged_in(client, django_user_model):
+    user = django_user_model.objects.create()
+    client.force_login(user)
+
+    response = client.get("/mon-compte")
+
+    assert response.status_code == 200
+    content = response.content.decode("utf-8")
+    assert "<!-- page mon compte -->" in content, content

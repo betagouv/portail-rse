@@ -2,7 +2,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import path, reverse_lazy
 
 from .forms import LoginForm, PasswordResetForm, SetPasswordForm
-from .views import creation, PasswordResetView, PasswordResetConfirmView
+from .views import creation, account, PasswordResetView, PasswordResetConfirmView
 
 urlpatterns = [
     path(
@@ -34,4 +34,5 @@ urlpatterns = [
         ),
         name="password_reset_confirm",
     ),
+    path("mon-compte", account, name="account"),
 ]

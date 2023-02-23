@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordResetView as BasePasswordResetView
 from django.contrib.auth.views import (
     PasswordResetConfirmView as BasePasswordResetConfirmView,
@@ -29,6 +30,11 @@ def creation(request):
         siren = request.session.get("siren")
         form = UserCreationForm(initial={"siren": siren})
     return render(request, "users/creation.html", {"form": form})
+
+
+@login_required()
+def account(request):
+    return render(request, "users/account.html")
 
 
 class PasswordResetView(BasePasswordResetView):
