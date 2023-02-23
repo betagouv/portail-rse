@@ -99,6 +99,7 @@
                     {% if user.is_authenticated %}
                         <nav class="fr-nav" id="navigation-494" role="navigation" aria-label="Menu principal">
                             <ul class="fr-nav__list">
+                                {% if user.entreprise_set.all %}
                                 <li class="fr-nav__item">
                                     {% if user.entreprises|length == 1%}
                                     <li class="fr-nav__item">
@@ -123,8 +124,9 @@
                                                 {% endfor %}
                                             </ul>
                                         </div>
-                                    {% endif %}
+                                    {%  endif %}
                                 </li>
+                                {% endif %}
                                 <li class="fr-nav__item">
                                     <button class="fr-nav__btn" aria-expanded="false" aria-controls="menu-2" aria-current="true">Mon compte</button>
                                     <div class="fr-collapse fr-menu" id="menu-2">
