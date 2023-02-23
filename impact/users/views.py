@@ -7,7 +7,7 @@ from django.contrib.auth.views import (
 )
 from django.shortcuts import redirect, render
 
-from .forms import UserCreationForm
+from .forms import UserCreationForm, UserEditionForm
 from .models import User
 
 
@@ -34,7 +34,23 @@ def creation(request):
 
 @login_required()
 def account(request):
-    return render(request, "users/account.html")
+    form = UserEditionForm(request.POST or None, instance=request.user)
+    if form.is_valid():
+        form.save()
+        if "password1" in form.changed_data:
+            success_message = (
+                "Votre mot de passe a bien été modifié. Veuillez vous reconnecter."
+            )
+        else:
+            success_message = "Votre compte a bien été modifié."
+        messages.success(request, success_message)
+        return redirect("account")
+    elif request.POST:
+        error_message = (
+            "La modification a échoué car le formulaire contient des erreurs."
+        )
+        messages.error(request, error_message)
+    return render(request, "users/account.html", {"form": form})
 
 
 class PasswordResetView(BasePasswordResetView):
