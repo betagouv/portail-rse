@@ -15,33 +15,40 @@ def index(request):
     return render(request, "entreprises/index.html", {"form": form})
 
 
+class _InvalidRequest(Exception):
+    pass
+
+
 @login_required()
 def add(request):
     form = EntrepriseCreationForm(request.POST)
-    if form.is_valid():
-        siren = form.cleaned_data["siren"]
-        if entreprises := Entreprise.objects.filter(siren=siren):
-            entreprise = entreprises[0]
+    try:
+        if form.is_valid():
+            siren = form.cleaned_data["siren"]
+            if entreprises := Entreprise.objects.filter(siren=siren):
+                entreprise = entreprises[0]
+            else:
+                try:
+                    infos_entreprise = api.recherche_entreprises.recherche(siren)
+                except APIError:
+                    raise _InvalidRequest(
+                        "Impossible de créer l'entreprise car le SIREN n'est pas trouvé."
+                    )
+                entreprise = Entreprise.objects.create(**infos_entreprise)
+            Habilitation.objects.create(
+                user=request.user,
+                entreprise=entreprise,
+            )
         else:
-            try:
-                infos_entreprise = api.recherche_entreprises.recherche(siren)
-            except APIError:
-                messages.error(
-                    request,
-                    "Impossible de créer l'entreprise car le SIREN n'est pas trouvé.",
-                )
-                return render(request, "entreprises/index.html", {"form": form})
-            entreprise = Entreprise.objects.create(**infos_entreprise)
-        Habilitation.objects.create(
-            user=request.user,
-            entreprise=entreprise,
-        )
-        success_message = "L'entreprise a été ajoutée."
-        messages.success(request, success_message)
-        return redirect("entreprises")
-    else:
+            raise _InvalidRequest(
+                "Impossible de créer l'entreprise car les données sont incorrectes."
+            )
+    except _InvalidRequest as exception:
         messages.error(
             request,
-            "Impossible de créer l'entreprise car les données sont incorrectes.",
+            exception,
         )
         return render(request, "entreprises/index.html", {"form": form})
+
+    messages.success(request, "L'entreprise a été ajoutée.")
+    return redirect("entreprises")
