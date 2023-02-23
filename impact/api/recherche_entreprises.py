@@ -2,9 +2,12 @@ import requests
 
 from .exceptions import APIError
 
+
 def recherche(siren):
     # documentation api recherche d'entreprises 1.0.0 https://api.gouv.fr/documentation/api-recherche-entreprises
-    url = f"https://recherche-entreprises.api.gouv.fr/search?q={siren}&page=1&per_page=1"
+    url = (
+        f"https://recherche-entreprises.api.gouv.fr/search?q={siren}&page=1&per_page=1"
+    )
     response = requests.get(url)
     if response.status_code == 200 and response.json()["total_results"]:
         data = response.json()["results"][0]
