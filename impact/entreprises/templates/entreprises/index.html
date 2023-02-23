@@ -18,6 +18,15 @@
         {% endfor %}
     {% endif %}
 
+    <h2>Ajouter une entreprise</h2>
+
+    <form action="{% url 'add_entreprise' %}" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <div class="fr-mt-4w">
+            <button type="submit" name="mark_incomplete" class="fr-btn fr-btn--icon-left">Ajouter</button>
+        </div>
+    </form>
 </div>
 
 <!-- page entreprises -->
