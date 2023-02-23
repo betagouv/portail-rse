@@ -4,6 +4,9 @@ from django.shortcuts import redirect, render
 
 from .forms import EntrepriseCreationForm
 from .models import Entreprise, Habilitation
+from api.exceptions import APIError
+
+import api.recherche_entreprises
 
 
 @login_required()
@@ -20,7 +23,15 @@ def add(request):
         if entreprises := Entreprise.objects.filter(siren=siren):
             entreprise = entreprises[0]
         else:
-            entreprise = Entreprise.objects.create(siren=siren)
+            try:
+                infos_entreprise = api.recherche_entreprises.recherche(siren)
+            except APIError:
+                messages.error(
+                    request,
+                    "Impossible de créer l'entreprise car le SIREN n'est pas trouvé.",
+                )
+                return render(request, "entreprises/index.html", {"form": form})
+            entreprise = Entreprise.objects.create(**infos_entreprise)
         Habilitation.objects.create(
             user=request.user,
             entreprise=entreprise,
