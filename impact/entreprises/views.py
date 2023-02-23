@@ -5,10 +5,12 @@ from django.shortcuts import redirect, render
 from .forms import EntrepriseCreationForm
 from .models import Entreprise, Habilitation
 
+
 @login_required()
 def index(request):
     form = EntrepriseCreationForm()
     return render(request, "entreprises/index.html", {"form": form})
+
 
 @login_required()
 def add(request):
@@ -27,5 +29,8 @@ def add(request):
         messages.success(request, success_message)
         return redirect("entreprises")
     else:
-        messages.error(request, "Impossible de créer l'entreprise car les données sont incorrectes.")
+        messages.error(
+            request,
+            "Impossible de créer l'entreprise car les données sont incorrectes.",
+        )
         return render(request, "entreprises/index.html", {"form": form})

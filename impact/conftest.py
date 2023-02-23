@@ -2,10 +2,12 @@ import pytest
 
 from entreprises.models import Entreprise
 
+
 @pytest.fixture
 def alice(django_user_model):
     alice = django_user_model.objects.create(email="alice@impact.test")
     return alice
+
 
 @pytest.fixture
 def entreprise_factory(db):
