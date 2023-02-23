@@ -46,3 +46,13 @@ def test_attach_to_an_existing_entreprise(client, alice, entreprise_factory):
     assert response.status_code == 200
     assert response.redirect_chain == [(reverse("entreprises"), 302)]
     assert entreprise in alice.entreprises
+
+
+def test_fail_to_add_entreprise(client, alice):
+    client.force_login(alice)
+    data = {"siren": ""}
+
+    response = client.post("/entreprises/add", data=data, follow=True)
+
+    assert response.status_code == 200
+    assert Entreprise.objects.count() == 0
