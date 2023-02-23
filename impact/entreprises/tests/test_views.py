@@ -36,3 +36,15 @@ def test_add_and_attach_to_entreprise(client, alice, db):
     alice = User.objects.get(email="alice@impact.test")
     entreprise = Entreprise.objects.get(siren="130025265")
     assert entreprise in alice.entreprises
+
+
+def test_attach_to_an_existing_entreprise(client, alice, entreprise_factory, db):
+    entreprise = entreprise_factory()
+    client.force_login(alice)
+    data = {"siren": entreprise.siren}
+
+    response = client.post("/entreprises/add", data=data, follow=True)
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [(reverse("entreprises"), 302)]
+    assert entreprise in alice.entreprises
