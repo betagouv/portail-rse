@@ -1,3 +1,4 @@
+import html
 import pytest
 from django.urls import reverse
 
@@ -43,6 +44,8 @@ def test_add_and_attach_to_entreprise(client, mocker, alice):
 
     assert response.status_code == 200
     assert response.redirect_chain == [(reverse("entreprises"), 302)]
+    content = response.content.decode("utf-8")
+    assert "L'entreprise a été ajoutée." in html.unescape(content)
     entreprise = Entreprise.objects.get(siren="130025265")
     assert entreprise.effectif == "moyen"
     assert entreprise.raison_sociale == RAISON_SOCIALE
@@ -68,14 +71,17 @@ def test_fail_to_add_entreprise(client, alice):
     response = client.post("/entreprises/add", data=data, follow=True)
 
     assert response.status_code == 200
+    content = response.content.decode("utf-8")
+    assert (
+        "Impossible de créer l'entreprise car les données sont incorrectes."
+        in html.unescape(content)
+    )
     assert Entreprise.objects.count() == 0
 
 
 def test_fail_to_find_entreprise_in_API(client, mocker, alice):
     client.force_login(alice)
-    SIREN = "130025265"
-    RAISON_SOCIALE = "ENTREPRISE_TEST"
-    data = {"siren": SIREN}
+    data = {"siren": "130025265"}
 
     mocker.patch(
         "api.recherche_entreprises.recherche", side_effect=api.exceptions.APIError
@@ -83,4 +89,9 @@ def test_fail_to_find_entreprise_in_API(client, mocker, alice):
     response = client.post("/entreprises/add", data=data, follow=True)
 
     assert response.status_code == 200
+    content = response.content.decode("utf-8")
+    assert (
+        "Impossible de créer l'entreprise car le SIREN n'est pas trouvé."
+        in html.unescape(content)
+    )
     assert Entreprise.objects.count() == 0
