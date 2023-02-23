@@ -4,23 +4,7 @@ from entreprises.models import Entreprise
 from reglementations.models import BDESE_50_300, BDESE_300
 
 
-@pytest.fixture
-def entreprise_factory(db):
-    def create_entreprise(
-        siren="000000001",
-        effectif="petit",
-        bdese_accord=False,
-        raison_sociale="Entreprise SAS",
-    ):
-        entreprise = Entreprise.objects.create(
-            siren=siren,
-            effectif=effectif,
-            bdese_accord=bdese_accord,
-            raison_sociale=raison_sociale,
-        )
-        return entreprise
 
-    return create_entreprise
 
 
 @pytest.fixture
