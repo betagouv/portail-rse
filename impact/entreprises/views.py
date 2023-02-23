@@ -38,6 +38,7 @@ def add(request):
             Habilitation.objects.create(
                 user=request.user,
                 entreprise=entreprise,
+                fonctions=form.cleaned_data["fonctions"],
             )
         else:
             raise _InvalidRequest(
