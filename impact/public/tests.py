@@ -1,3 +1,4 @@
+import api.exceptions
 from public.forms import EligibiliteForm, RAISON_SOCIALE_MAX_LENGTH
 
 
@@ -94,3 +95,25 @@ def test_eligibilite_form_truncate_raison_social_when_too_long(db):
     entreprise = form.save()
 
     assert entreprise.raison_sociale == "a" * RAISON_SOCIALE_MAX_LENGTH
+
+
+def test_succes_recherche_siren(client, mocker):
+    SIREN = "123456789"
+    RAISON_SOCIALE = "ENTREPRISE_TEST"
+    with mocker.patch("api.recherche_entreprises.recherche", return_value={"siren": SIREN, "effectif": "moyen", "raison_sociale": RAISON_SOCIALE}):
+        response = client.get("/siren", {"siren": SIREN})
+
+    assert response.status_code == 200
+    content = response.content.decode("utf-8")
+    assert SIREN in content
+    assert RAISON_SOCIALE in content
+    assert "<!-- page resultat recherche entreprise -->" in content
+
+def test_erreur_recherche_siren(client, mocker):
+    SIREN = "123456789"
+    with mocker.patch("api.recherche_entreprises.recherche", side_effect=api.exceptions.APIError):
+        response = client.get("/siren", {"siren": SIREN})
+
+    assert response.status_code == 200
+    content = response.content.decode("utf-8")
+    assert "<!-- page entreprise -->" in content
