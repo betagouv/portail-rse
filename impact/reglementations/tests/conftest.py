@@ -4,9 +4,6 @@ from entreprises.models import Entreprise
 from reglementations.models import BDESE_50_300, BDESE_300
 
 
-
-
-
 @pytest.fixture
 def bdese_factory(entreprise_factory):
     def create_bdese(
