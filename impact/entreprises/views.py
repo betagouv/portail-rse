@@ -13,7 +13,11 @@ def index(request):
 @login_required()
 def add(request):
     form = EntrepriseCreationForm(request.POST)
-    entreprise = form.save()
+    siren = form.data["siren"]
+    if entreprises := Entreprise.objects.filter(siren=form.data["siren"]):
+        entreprise = entreprises[0]
+    else:
+        entreprise = form.save()
     Habilitation.objects.create(
         user=request.user,
         entreprise=entreprise,
