@@ -59,9 +59,8 @@ def test_account_page_is_not_public(client):
     assert response.status_code == 302
 
 
-def test_account_page_when_logged_in(client, django_user_model):
-    user = django_user_model.objects.create()
-    client.force_login(user)
+def test_account_page_when_logged_in(client, alice):
+    client.force_login(alice)
 
     response = client.get("/mon-compte")
 

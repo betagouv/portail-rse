@@ -64,15 +64,14 @@ def test_public_reglementations_with_entreprise_data(status_is_soumis, client, m
 
 
 @pytest.fixture
-def entreprise(db, django_user_model):
-    user = django_user_model.objects.create()
+def entreprise(db, alice):
     entreprise = Entreprise.objects.create(
         siren="000000001",
         effectif="petit",
         bdese_accord=False,
         raison_sociale="Entreprise SAS",
     )
-    entreprise.users.add(user)
+    entreprise.users.add(alice)
     return entreprise
 
 
@@ -173,14 +172,13 @@ def test_reglementation_with_authenticated_user(client, entreprise):
 
 
 def test_reglementation_with_authenticated_user_and_multiple_entreprises(
-    client, entreprise_factory, django_user_model
+    client, entreprise_factory, alice
 ):
-    user = django_user_model.objects.create()
     entreprise1 = entreprise_factory(siren="000000001")
     entreprise2 = entreprise_factory(siren="000000002")
-    entreprise1.users.add(user)
-    entreprise2.users.add(user)
-    client.force_login(user)
+    entreprise1.users.add(alice)
+    entreprise2.users.add(alice)
+    client.force_login(alice)
 
     response = client.get(f"/reglementation/{entreprise1.siren}")
 

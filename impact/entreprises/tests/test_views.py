@@ -12,11 +12,10 @@ def test_entreprises_page_requires_login(client):
     assert response.status_code == 302
 
 
-def test_entreprises_page_for_logged_user(client, django_user_model):
+def test_entreprises_page_for_logged_user(client, alice):
     entreprise = Entreprise.objects.create(siren="123456789")
-    user = django_user_model.objects.create()
-    entreprise.users.add(user)
-    client.force_login(user)
+    entreprise.users.add(alice)
+    client.force_login(alice)
 
     response = client.get("/entreprises")
 
