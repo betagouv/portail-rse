@@ -6,9 +6,7 @@
 <div class="fr-container fr-my-8w">
     <h1>Entreprises</h1>
     {% if not user.entreprise_set.all %}
-    <div class="fr-container fr-my-8w">
         Aucune entreprise n'est associée à votre compte.
-    </div>
     {% else %}
         {% for entreprise in user.entreprise_set.all %}
         <h2>{{ entreprise.raison_sociale }}</h2>
