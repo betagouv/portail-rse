@@ -25,7 +25,7 @@ def test_entreprises_page_for_logged_user(client, django_user_model):
     assert "<!-- page entreprises -->" in content
 
 
-def test_add_and_attach_to_entreprise(client, alice, db):
+def test_add_and_attach_to_entreprise(client, alice):
     client.force_login(alice)
     data = {"siren": "130025265"}
 
@@ -33,12 +33,11 @@ def test_add_and_attach_to_entreprise(client, alice, db):
 
     assert response.status_code == 200
     assert response.redirect_chain == [(reverse("entreprises"), 302)]
-    alice = User.objects.get(email="alice@impact.test")
     entreprise = Entreprise.objects.get(siren="130025265")
     assert entreprise in alice.entreprises
 
 
-def test_attach_to_an_existing_entreprise(client, alice, entreprise_factory, db):
+def test_attach_to_an_existing_entreprise(client, alice, entreprise_factory):
     entreprise = entreprise_factory()
     client.force_login(alice)
     data = {"siren": entreprise.siren}
