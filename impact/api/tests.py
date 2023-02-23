@@ -4,7 +4,7 @@ from api.exceptions import APIError
 from api.recherche_entreprises import recherche
 
 
-def test_succes_recherche(client, mocker):
+def test_succes_recherche(mocker):
     SIREN = "123456789"
 
     class FakeResponse:
@@ -21,8 +21,8 @@ def test_succes_recherche(client, mocker):
                 ],
             }
 
-    with mocker.patch("requests.get", return_value=FakeResponse()):
-        infos = recherche(SIREN)
+    mocker.patch("requests.get", return_value=FakeResponse())
+    infos = recherche(SIREN)
 
     assert infos == {
         "siren": SIREN,
@@ -31,13 +31,12 @@ def test_succes_recherche(client, mocker):
     }
 
 
-def test_echec_recherche(client, mocker):
+def test_echec_recherche(mocker):
     SIREN = "123456789"
 
     class FakeResponse:
         status_code = 400
 
-    with mocker.patch("requests.get", return_value=FakeResponse()), pytest.raises(
-        APIError
-    ):
+    mocker.patch("requests.get", return_value=FakeResponse())
+    with pytest.raises(APIError):
         infos = recherche(SIREN)
