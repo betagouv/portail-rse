@@ -11,3 +11,4 @@ class EntrepriseCreationForm(DsfrForm):
         min_length=9,
         max_length=9,
     )
+    fonctions = forms.CharField(label="Fonction(s) dans la société")

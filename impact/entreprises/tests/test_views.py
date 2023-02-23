@@ -30,7 +30,7 @@ def test_add_and_attach_to_entreprise(client, mocker, alice):
     client.force_login(alice)
     SIREN = "130025265"
     RAISON_SOCIALE = "ENTREPRISE_TEST"
-    data = {"siren": SIREN}
+    data = {"siren": SIREN, "fonctions": "Présidente"}
 
     mocker.patch(
         "api.recherche_entreprises.recherche",
@@ -50,23 +50,31 @@ def test_add_and_attach_to_entreprise(client, mocker, alice):
     assert entreprise.effectif == "moyen"
     assert entreprise.raison_sociale == RAISON_SOCIALE
     assert entreprise in alice.entreprises
+    assert (
+        Habilitation.objects.get(user=alice, entreprise=entreprise).fonctions
+        == "Présidente"
+    )
 
 
 def test_attach_to_an_existing_entreprise(client, alice, entreprise_factory):
     entreprise = entreprise_factory()
     client.force_login(alice)
-    data = {"siren": entreprise.siren}
+    data = {"siren": entreprise.siren, "fonctions": "Présidente"}
 
     response = client.post("/entreprises/add", data=data, follow=True)
 
     assert response.status_code == 200
     assert response.redirect_chain == [(reverse("entreprises"), 302)]
     assert entreprise in alice.entreprises
+    assert (
+        Habilitation.objects.get(user=alice, entreprise=entreprise).fonctions
+        == "Présidente"
+    )
 
 
 def test_fail_to_add_entreprise(client, alice):
     client.force_login(alice)
-    data = {"siren": ""}
+    data = {"siren": "", "fonctions": "Présidente"}
 
     response = client.post("/entreprises/add", data=data, follow=True)
 
@@ -81,7 +89,7 @@ def test_fail_to_add_entreprise(client, alice):
 
 def test_fail_to_find_entreprise_in_API(client, mocker, alice):
     client.force_login(alice)
-    data = {"siren": "130025265"}
+    data = {"siren": "130025265", "fonctions": "Présidente"}
 
     mocker.patch(
         "api.recherche_entreprises.recherche", side_effect=api.exceptions.APIError
