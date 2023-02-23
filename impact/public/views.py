@@ -6,9 +6,11 @@ from django.contrib import messages
 from django.core.mail import EmailMessage
 from django.shortcuts import render, redirect
 
+import api.exceptions
+import api.recherche_entreprises
+
 from .forms import EligibiliteForm, SirenForm, ContactForm
 from entreprises.models import Entreprise
-
 
 def index(request):
     return render(request, "public/index.html")
@@ -65,43 +67,21 @@ def siren(request):
     form = SirenForm(request.GET)
     if form.is_valid():
         siren = form.cleaned_data["siren"]
-        # documentation api recherche d'entreprises 1.0.0 https://api.gouv.fr/documentation/api-recherche-entreprises
-        url = f"https://recherche-entreprises.api.gouv.fr/search?q={siren}&page=1&per_page=1"
-        response = requests.get(url)
-        if response.status_code == 200 and response.json()["total_results"]:
-            data = response.json()["results"][0]
-            raison_sociale = data["nom_raison_sociale"]
-            try:
-                # les tranches d'effectif correspondent à celles de l'API Sirene de l'Insee
-                # https://www.sirene.fr/sirene/public/variable/tefen
-                tranche_effectif = int(data["tranche_effectif_salarie"])
-            except (ValueError, TypeError):
-                tranche_effectif = 0
-            if tranche_effectif < 21:  # moins de 50 salariés
-                taille = "petit"
-            elif tranche_effectif < 32:  # moins de 250 salariés
-                taille = "moyen"
-            elif tranche_effectif < 41:  # moins de 500 salariés
-                taille = "grand"
-            else:
-                taille = "sup500"
+        try:
+            infos_entreprise = api.recherche_entreprises.recherche(siren)
             form = EligibiliteForm(
-                initial={
-                    "siren": siren,
-                    "effectif": taille,
-                    "raison_sociale": raison_sociale,
-                }
+                initial=infos_entreprise
             )
             return render(
                 request,
                 "public/siren.html",
                 {
-                    "raison_sociale": raison_sociale,
+                    "raison_sociale": infos_entreprise["raison_sociale"],
                     "siren": siren,
                     "form": form,
                 },
             )
-        else:
+        except api.exceptions.APIError:
             form.add_error("siren", "SIREN introuvable")
             messages.error(
                 request,
