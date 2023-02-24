@@ -23,8 +23,6 @@
 </script>
 
 
-<form action="/entreprises/add" method="post">
-    <input type="hidden" name="csrfmiddlewaretoken" value="{csrfToken}">
     <div class="fr-input-group">
         <label class="fr-label" for="id_siren">Votre numéro SIREN
             <span class="fr-hint-text">Saisissez un numéro SIREN valide, disponible sur le Kbis de votre organisation</span>
@@ -52,4 +50,3 @@
             <p>{error.message}</p>
         {/await}
     {/if}
-</form>
