@@ -42,11 +42,18 @@ def add(request):
                 except APIError:
                     raise _InvalidRequest(SIREN_NOT_FOUND_ERROR)
                 entreprise = Entreprise.objects.create(**infos_entreprise)
-            Habilitation.objects.create(
-                user=request.user,
-                entreprise=entreprise,
-                fonctions=form.cleaned_data["fonctions"],
-            )
+            if habilitations := Habilitation.objects.filter(
+                user=request.user, entreprise=entreprise
+            ):
+                raise _InvalidRequest(
+                    "Impossible d'ajouter ces fonctions. Vous êtes déjà inclus dans cette entreprise car le SIREN n'est pas trouvé."
+                )
+            else:
+                Habilitation.objects.create(
+                    user=request.user,
+                    entreprise=entreprise,
+                    fonctions=form.cleaned_data["fonctions"],
+                )
         else:
             raise _InvalidRequest(
                 "Impossible de créer l'entreprise car les données sont incorrectes."
