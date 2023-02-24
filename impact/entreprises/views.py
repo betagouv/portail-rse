@@ -1,5 +1,9 @@
+import json
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.middleware.csrf import get_token
 from django.shortcuts import redirect, render
 
 from .forms import EntrepriseCreationForm
@@ -11,8 +15,8 @@ import api.recherche_entreprises
 
 @login_required()
 def index(request):
-    form = EntrepriseCreationForm()
-    return render(request, "entreprises/index.html", {"form": form})
+    csrf_token = get_token(request)
+    return render(request, "entreprises/index.html", {"csrf_token": csrf_token})
 
 
 class _InvalidRequest(Exception):
@@ -53,3 +57,15 @@ def add(request):
 
     messages.success(request, "L'entreprise a été ajoutée.")
     return redirect("entreprises")
+
+
+def search_entreprise(request, siren):
+    try:
+        return JsonResponse(api.recherche_entreprises.recherche(siren))
+    except APIError:
+        return JsonResponse(
+            {
+                "error": "Impossible de créer l'entreprise car le SIREN n'est pas trouvé."
+            },
+            status=400,
+        )
