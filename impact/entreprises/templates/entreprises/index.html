@@ -22,8 +22,10 @@
     {% endif %}
 
     <h2>Ajouter une entreprise</h2>
-
-    <div id="svelte-search-entreprise" data-csrf-token="{{ csrf_token }}"></div>
+    <form action="/entreprises/add" method="post">
+        {% csrf_token %}
+        <div id="svelte-search-entreprise"></div>
+    </form>
 
 </div>
 
