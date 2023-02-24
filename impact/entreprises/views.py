@@ -23,6 +23,11 @@ class _InvalidRequest(Exception):
     pass
 
 
+SIREN_NOT_FOUND_ERROR = (
+    "Impossible de créer l'entreprise car le SIREN n'est pas trouvé."
+)
+
+
 @login_required()
 def add(request):
     form = EntrepriseCreationForm(request.POST)
@@ -35,9 +40,7 @@ def add(request):
                 try:
                     infos_entreprise = api.recherche_entreprises.recherche(siren)
                 except APIError:
-                    raise _InvalidRequest(
-                        "Impossible de créer l'entreprise car le SIREN n'est pas trouvé."
-                    )
+                    raise _InvalidRequest(SIREN_NOT_FOUND_ERROR)
                 entreprise = Entreprise.objects.create(**infos_entreprise)
             Habilitation.objects.create(
                 user=request.user,
@@ -64,8 +67,6 @@ def search_entreprise(request, siren):
         return JsonResponse(api.recherche_entreprises.recherche(siren))
     except APIError:
         return JsonResponse(
-            {
-                "error": "Impossible de créer l'entreprise car le SIREN n'est pas trouvé."
-            },
+            {"error": SIREN_NOT_FOUND_ERROR},
             status=400,
         )
