@@ -14,24 +14,35 @@
                 {% csrf_token %}
                 {{ form.external_fields_in_step.as_hidden }}
 
-                <h4>A - Analyse des données chiffrées</h4>
-                <p>Analyse des données chiffrées par catégorie professionnelle de la situation respective des femmes et des hommes</p>
-                {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_embauche %}
-                {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_formation %}
-                {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_promotion_professionnelle %}
-                {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_qualification %}
-                {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_classification %}
-                {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_conditions_de_travail %}
-                {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_sante_et_sécurite %}
-                {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_remuneration %}
-                {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_articulation_activite_pro_perso %}
-                {% include 'snippets/bdese_field.html' with field=form.analyse_ecarts_salaires %}
-                {% include 'snippets/bdese_field.html' with field=form.evolution_taux_promotion %}
+                <section class="fr-accordion">
+                    <h3 class="fr-accordion__title">
+                        <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-A" data-fr-js-collapse-button="true">A - Analyse des données chiffrées</button>
+                    </h3>
+                    <div class="fr-collapse" id="accordion-A">
+                        <p>Chaque analyse de cette section doit fournir une analyse des données chiffrées par catégorie professionnelle de la situation respective des femmes et des hommes.</p>
+                        {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_embauche %}
+                        {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_formation %}
+                        {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_promotion_professionnelle %}
+                        {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_qualification %}
+                        {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_classification %}
+                        {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_conditions_de_travail %}
+                        {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_sante_et_sécurite %}
+                        {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_remuneration %}
+                        {% include 'snippets/bdese_field.html' with field=form.analyse_egalite_articulation_activite_pro_perso %}
+                        {% include 'snippets/bdese_field.html' with field=form.analyse_ecarts_salaires %}
+                        {% include 'snippets/bdese_field.html' with field=form.evolution_taux_promotion %}
+                    </div>
+                </section>
 
-                <h4>B - Stratégie d'action</h4>
-                <p>A partir de l'analyse des données chiffrées mentionnées au A du 2°, la stratégie comprend les éléments suivants :</p>
-                {% include 'snippets/bdese_field.html' with field=form.mesures_prises_egalite %}
-                {% include 'snippets/bdese_field.html' with field=form.objectifs_progression %}
+                <section class="fr-accordion">
+                    <h3 class="fr-accordion__title">
+                        <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-B" data-fr-js-collapse-button="true">B - Stratégie d'action</button>
+                    </h3>
+                    <div class="fr-collapse" id="accordion-B">
+                        <p>À partir de l'analyse des données chiffrées mentionnées au A, la stratégie comprend les éléments suivants :</p>
+                        {% include 'snippets/bdese_field.html' with field=form.mesures_prises_egalite %}
+                        {% include 'snippets/bdese_field.html' with field=form.objectifs_progression %}
+                    </div>
 
                 {% include "snippets/bdese_submit.html" %}
             </form>
