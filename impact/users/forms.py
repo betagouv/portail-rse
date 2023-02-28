@@ -3,10 +3,10 @@ from django.contrib.auth import password_validation
 from django.contrib.auth.forms import AuthenticationForm, ReadOnlyPasswordHashField
 from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm
 from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
-from django.core.exceptions import ValidationError
 
-from public.forms import DsfrForm
+from utils.forms import DsfrForm
 from entreprises.models import Entreprise, Habilitation
+from entreprises.forms import SirenField
 from .models import User
 
 
@@ -65,11 +65,9 @@ class UserPasswordForm(forms.ModelForm):
 
 
 class UserCreationForm(DsfrForm, UserPasswordForm):
-    siren = forms.CharField(
+    siren = SirenField(
         label="Numéro SIREN",
         help_text="Saisissez un numéro SIREN valide, disponible sur le Kbis de votre organisation ou sur l'Annuaire des Entreprises",
-        min_length=9,
-        max_length=9,
     )
     acceptation_cgu = forms.BooleanField(
         label="J’ai lu et j’accepte la politique de confidentialité et les CGUs",
@@ -84,14 +82,6 @@ class UserCreationForm(DsfrForm, UserPasswordForm):
             "prenom": "Prénom",
             "reception_actualites": "Je souhaite recevoir les actualités du projet Impact (optionnel)",
         }
-
-    def clean_siren(self):
-        cleaned_data = self.cleaned_data.get("siren")
-        try:
-            int(cleaned_data)
-        except ValueError:
-            raise ValidationError("Le siren est incorrect")
-        return cleaned_data
 
     def save(self, commit=True):
         user = super().save(commit=False)

@@ -1,33 +1,15 @@
 from django import forms
 
+from entreprises.forms import SirenField
 from entreprises.models import Entreprise, RAISON_SOCIALE_MAX_LENGTH
-
-
-class DsfrForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for name, field in self.fields.items():
-            if type(field.widget) == forms.widgets.Select:
-                fr_name = "fr-select"
-            else:
-                fr_name = "fr-input"
-            field.widget.attrs.update({"class": f"{fr_name}"})
-            if name in self.errors:
-                field.widget.attrs.update(
-                    {
-                        "class": f"{fr_name} {fr_name}-error",
-                        "aria-describedby": f"{name}-error-desc-error",
-                    }
-                )
+from utils.forms import DsfrForm
 
 
 class SirenForm(DsfrForm):
-    siren = forms.CharField(
+    siren = SirenField(
         label="Votre numéro SIREN",
         help_text="Saisissez un numéro SIREN valide, disponible sur le Kbis de votre organisation ou sur l'Annuaire des Entreprises",
         required=True,
-        min_length=9,
-        max_length=9,
     )
 
 
