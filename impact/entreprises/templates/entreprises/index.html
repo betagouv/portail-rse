@@ -4,24 +4,34 @@
 
 {% block content %}
 <div class="fr-container fr-my-8w">
-    <h1>Entreprises</h1>
+    <h1>Mes entreprises</h1>
     {% if not user.entreprise_set.all %}
         Aucune entreprise n'est associée à votre compte.
     {% else %}
         {% for entreprise in user.entreprise_set.all %}
-        <h2>{{ entreprise.raison_sociale }}</h2>
-        {% with habilitation=user|habilitation:entreprise %}
-            {% if habilitation and habilitation.fonctions %}<p>en tant que {{ habilitation.fonctions }}</p>{% endif %}
-        {% endwith %}
-        <ul>
-            <li>SIREN : {{ entreprise.siren }}</li>
-            <li>effectif : {{ entreprise.get_effectif_display }} salariés</li>
-            <li>accord d'entreprise concernant la BDESE : {{ entreprise.bdese_accord | translate_boolean }}</li>
-        </ul>
+            <div class="fr-card fr-card--horizontal fr-mt-2w">
+                <div class="fr-card__body">
+                    <div class="fr-card__content">
+                        <h3 class="fr-card__title">
+                            {{ entreprise.raison_sociale }}
+                        </h3>
+                        <p class="fr-card__desc">
+                            {% with habilitation=user|habilitation:entreprise %}
+                                {% if habilitation and habilitation.fonctions %}en tant que {{ habilitation.fonctions }}{% endif %}
+                            {% endwith %}
+                            <ul class="fr-card__desc">
+                                <li>SIREN : {{ entreprise.siren }}</li>
+                                <li>effectif : {{ entreprise.get_effectif_display }} salariés</li>
+                                <li>accord d'entreprise concernant la BDESE : {{ entreprise.bdese_accord | translate_boolean }}</li>
+                            </ul>
+                        </p>
+                    </div>
+                </div>
+            </div>
         {% endfor %}
     {% endif %}
 
-    <h2>Ajouter une entreprise</h2>
+    <h2 class="fr-mt-4w">Ajouter une entreprise</h2>
     <form action="/entreprises/add" method="post">
         {% csrf_token %}
         <div id="svelte-search-entreprise"></div>
