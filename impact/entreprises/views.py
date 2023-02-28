@@ -46,7 +46,7 @@ def add(request):
                 user=request.user, entreprise=entreprise
             ):
                 raise _InvalidRequest(
-                    "Impossible d'ajouter ces fonctions. Vous êtes déjà inclus dans cette entreprise car le SIREN n'est pas trouvé."
+                    "Impossible d'ajouter cette entreprise. Vous y êtes déjà rattaché·e."
                 )
             else:
                 Habilitation.objects.create(

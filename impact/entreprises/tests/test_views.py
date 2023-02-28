@@ -117,6 +117,6 @@ def test_fail_because_already_existing_habilitation(client, alice, entreprise_fa
     assert response.status_code == 200
     content = response.content.decode("utf-8")
     assert (
-        "Impossible d'ajouter ces fonctions. Vous êtes déjà inclus dans cette entreprise car le SIREN n'est pas trouvé."
+        "Impossible d'ajouter cette entreprise. Vous y êtes déjà rattaché·e."
         in html.unescape(content)
     )
