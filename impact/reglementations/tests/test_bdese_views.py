@@ -1,3 +1,4 @@
+import html
 import json
 
 from django.urls import reverse
@@ -161,9 +162,10 @@ def test_save_step_error(configured_bdese, authorized_user, client):
     response = client.post(url, incorrect_data)
 
     assert response.status_code == 200
+    content = response.content.decode("utf-8")
     assert (
-        "L&#x27;étape n&#x27;a pas été enregistrée car le formulaire contient des erreurs"
-        in response.content.decode("utf-8")
+        "L'étape n'a pas été enregistrée car le formulaire contient des erreurs"
+        in html.unescape(content)
     )
 
     bdese.refresh_from_db()
@@ -420,8 +422,8 @@ def test_save_bdese_configuration_error(bdese, authorized_user, client):
 
     content = response.content.decode("utf-8")
     assert (
-        "Les catégories n&#x27;ont pas été enregistrées car le formulaire contient des erreurs"
-        in content
+        "Les catégories n'ont pas été enregistrées car le formulaire contient des erreurs"
+        in html.unescape(content)
     )
     assert "Au moins 3 postes sont requis" in content
 
