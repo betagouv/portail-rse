@@ -31,7 +31,7 @@ class UserCreationForm(DsfrForm, forms.ModelForm):
     )
     siren = forms.CharField(
         label="Numéro SIREN",
-        help_text="Saisissez un numéro SIREN valide, disponible sur le Kbis de votre organisation",
+        help_text="Saisissez un numéro SIREN valide, disponible sur le Kbis de votre organisation ou sur l'Annuaire des Entreprises",
         min_length=9,
         max_length=9,
     )
