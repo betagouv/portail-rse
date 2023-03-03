@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
 from utils.models import TimestampedModel
@@ -48,9 +49,11 @@ def add_user_in_entreprise(user, entreprise, fonctions):
     )
 
 
-def select_habilitation(user, entreprise):
-    habilitations = Habilitation.objects.filter(
-        user=user,
-        entreprise=entreprise,
-    )
-    return habilitations[0] if habilitations else None
+def get_habilitation(user, entreprise):
+    try:
+        return Habilitation.objects.get(
+            user=user,
+            entreprise=entreprise,
+        )
+    except ObjectDoesNotExist:
+        return
