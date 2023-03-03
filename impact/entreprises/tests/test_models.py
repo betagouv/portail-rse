@@ -4,7 +4,7 @@ from django.db import IntegrityError
 from freezegun import freeze_time
 import pytest
 
-from entreprises.models import add_user_in_entreprise, get_habilitation, Entreprise
+from entreprises.models import add_entreprise_to_user, get_habilitation, Entreprise
 
 
 @pytest.mark.django_db(transaction=True)
@@ -34,12 +34,12 @@ def test_entreprise():
 
 def test_habilitation(alice, entreprise_factory):
     entreprise = entreprise_factory()
-    assert get_habilitation(alice, entreprise) == None
+    assert get_habilitation(entreprise, alice) == None
 
-    add_user_in_entreprise(alice, entreprise, "présidente")
+    add_entreprise_to_user(entreprise, alice, "présidente")
 
     assert entreprise in alice.entreprises.all()
-    habilitation = get_habilitation(alice, entreprise)
+    habilitation = get_habilitation(entreprise, alice)
     assert habilitation.fonctions == "présidente"
 
     now = datetime(2023, 1, 27, 16, 1, tzinfo=timezone.utc)

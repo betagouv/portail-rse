@@ -51,7 +51,7 @@ class Habilitation(models.Model):
         return bool(self.confirmed_at)
 
 
-def add_user_in_entreprise(user, entreprise, fonctions):
+def add_entreprise_to_user(entreprise, user, fonctions):
     Habilitation.objects.create(
         user=user,
         entreprise=entreprise,
@@ -59,7 +59,7 @@ def add_user_in_entreprise(user, entreprise, fonctions):
     )
 
 
-def get_habilitation(user, entreprise):
+def get_habilitation(entreprise, user):
     try:
         return Habilitation.objects.get(
             user=user,
