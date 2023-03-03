@@ -10,7 +10,8 @@ from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from weasyprint import CSS, HTML
 
-from entreprises.models import Entreprise, get_habilitation
+from entreprises.models import Entreprise
+from habilitations.models import get_habilitation
 from public.forms import EligibiliteForm
 from .models import (
     derniere_annee_a_remplir_index_egapro,

@@ -49,21 +49,3 @@ class Habilitation(models.Model):
     @property
     def is_confirmed(self):
         return bool(self.confirmed_at)
-
-
-def add_entreprise_to_user(entreprise, user, fonctions):
-    Habilitation.objects.create(
-        user=user,
-        entreprise=entreprise,
-        fonctions=fonctions,
-    )
-
-
-def get_habilitation(entreprise, user):
-    try:
-        return Habilitation.objects.get(
-            user=user,
-            entreprise=entreprise,
-        )
-    except ObjectDoesNotExist:
-        return

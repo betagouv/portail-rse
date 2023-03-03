@@ -2,7 +2,7 @@ from django import template
 from django.forms import BooleanField, ChoiceField
 
 import impact.settings
-import entreprises.models
+import habilitations.models
 
 register = template.Library()
 
@@ -72,4 +72,4 @@ def model_field_type(model_field):
 
 @register.filter
 def habilitation(entreprise, user):
-    return entreprises.models.get_habilitation(entreprise, user)
+    return habilitations.models.get_habilitation(entreprise, user)
