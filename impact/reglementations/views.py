@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 
 import requests
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -9,7 +10,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from weasyprint import CSS, HTML
 
-from entreprises.models import Entreprise
+from entreprises.models import Entreprise, get_habilitation
 from public.forms import EligibiliteForm
 from .models import (
     derniere_annee_a_remplir_index_egapro,
@@ -254,7 +255,7 @@ def bdese_pdf(request, siren, annee):
     entreprise = Entreprise.objects.get(siren=siren)
     if request.user not in entreprise.users.all():
         raise PermissionDenied
-    bdese = _get_or_create_bdese(entreprise, annee)
+    bdese = _get_or_create_bdese(entreprise, annee, request.user)
     pdf_html = render_bdese_pdf_html(bdese)
     html = HTML(string=pdf_html)
     css = CSS(
@@ -337,7 +338,7 @@ def bdese(request, siren, annee, step):
     if request.user not in entreprise.users.all():
         raise PermissionDenied
 
-    bdese = _get_or_create_bdese(entreprise, annee)
+    bdese = _get_or_create_bdese(entreprise, annee, request.user)
 
     if not bdese.is_configured:
         messages.warning(request, f"Commencez par configurer votre BDESE {annee}")
@@ -433,18 +434,29 @@ def _bdese_step_context(form, siren, annee, bdese, step):
 
 
 def _get_or_create_bdese(
-    entreprise: Entreprise, annee: int
+    entreprise: Entreprise,
+    annee: int,
+    user: settings.AUTH_USER_MODEL,
 ) -> BDESE_300 | BDESE_50_300:
     reglementation = BDESEReglementation.calculate(entreprise, annee)
+    habilitation = get_habilitation(user, entreprise)
     if reglementation.bdese_type in (
         BDESEReglementation.TYPE_INFERIEUR_500,
         BDESEReglementation.TYPE_SUPERIEUR_500,
     ):
-        bdese, _ = BDESE_300.objects.get_or_create(entreprise=entreprise, annee=annee)
+        bdese_class = BDESE_300
     else:
-        bdese, _ = BDESE_50_300.objects.get_or_create(
+        bdese_class = BDESE_50_300
+
+    if habilitation.is_confirmed:
+        bdese, _ = bdese_class.officials.get_or_create(
             entreprise=entreprise, annee=annee
         )
+    else:
+        bdese, _ = bdese_class.personals.get_or_create(
+            entreprise=entreprise, annee=annee, user=user
+        )
+
     return bdese
 
 
@@ -454,7 +466,7 @@ def bdese_configuration(request, siren, annee):
     if request.user not in entreprise.users.all():
         raise PermissionDenied
 
-    bdese = _get_or_create_bdese(entreprise, annee)
+    bdese = _get_or_create_bdese(entreprise, annee, request.user)
 
     initial = None
     if not bdese.is_configured and not request.POST:
