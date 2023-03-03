@@ -27,3 +27,6 @@ createsuperuser:
 
 test:
 	pipenv run pytest
+
+test-fast:
+	pipenv run pytest --no-migrations -m "not slow"
