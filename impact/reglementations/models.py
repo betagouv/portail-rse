@@ -2,6 +2,7 @@ import datetime
 from enum import Enum
 
 from django import forms
+from django.conf import settings
 from django.db import models
 
 from entreprises.models import Entreprise
@@ -73,9 +74,26 @@ class CategoryField(models.JSONField):
         return super().formfield(**defaults)
 
 
+class PersonalManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(user__isnull=False)
+
+
+class OfficialManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(user__isnull=True)
+
+
 class AbstractBDESE(TimestampedModel):
+    objects = models.Manager()  # The default manager.
+    personals = PersonalManager()
+    officials = OfficialManager()
+
     annee = models.IntegerField()
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True
+    )
     categories_professionnelles = models.JSONField(
         verbose_name="Catégories professionnelles",
         help_text="Une structure de qualification détaillée en trois postes minimum",
