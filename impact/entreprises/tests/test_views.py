@@ -2,7 +2,8 @@ import html
 import pytest
 from django.urls import reverse
 
-from entreprises.models import add_entreprise_to_user, Entreprise, Habilitation
+from entreprises.models import Entreprise, Habilitation
+from habilitations.models import add_entreprise_to_user
 from users.forms import UserCreationForm
 from users.models import User
 import api.exceptions

@@ -4,7 +4,7 @@ import json
 from django.urls import reverse
 import pytest
 
-from entreprises.models import add_entreprise_to_user, get_habilitation
+from habilitations.models import add_entreprise_to_user, get_habilitation
 from reglementations.models import annees_a_remplir_bdese, BDESE_50_300, BDESE_300
 from reglementations.tests.test_bdese_forms import configuration_form_data
 from reglementations.views import get_bdese_data_from_egapro, render_bdese_pdf_html
