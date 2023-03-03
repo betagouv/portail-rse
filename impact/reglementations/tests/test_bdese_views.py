@@ -4,6 +4,7 @@ import json
 from django.urls import reverse
 import pytest
 
+from entreprises.models import get_habilitation
 from reglementations.models import annees_a_remplir_bdese, BDESE_50_300, BDESE_300
 from reglementations.tests.test_bdese_forms import configuration_form_data
 from reglementations.views import get_bdese_data_from_egapro, render_bdese_pdf_html
@@ -51,9 +52,10 @@ def test_yearly_bdese_is_created_at_first_authorized_request(
 
 
 @pytest.fixture
-def authorized_user(bdese, django_user_model):
+def habilitated_user(bdese, django_user_model):
     user = django_user_model.objects.create()
     bdese.entreprise.users.add(user)
+    get_habilitation(user, bdese.entreprise).confirm()
     return user
 
 
@@ -62,9 +64,9 @@ def bdese_step_url(bdese, step):
 
 
 def test_bdese_step_redirect_to_configuration_if_bdese_not_configured(
-    bdese, authorized_user, client
+    bdese, habilitated_user, client
 ):
-    client.force_login(authorized_user)
+    client.force_login(habilitated_user)
 
     url = bdese_step_url(bdese, 1)
     response = client.get(url, follow=True)
@@ -107,10 +109,10 @@ def configured_bdese(bdese):
 
 
 def test_bdese_step_use_configured_categories_and_annees_a_remplir(
-    configured_bdese, authorized_user, client
+    configured_bdese, habilitated_user, client
 ):
     bdese = configured_bdese
-    client.force_login(authorized_user)
+    client.force_login(habilitated_user)
 
     url = bdese_step_url(bdese, 1)
     response = client.get(url)
@@ -136,9 +138,9 @@ def test_bdese_step_use_configured_categories_and_annees_a_remplir(
             assert niveau in content
 
 
-def test_bdese_step_fetch_data(configured_bdese, authorized_user, client, mocker):
+def test_bdese_step_fetch_data(configured_bdese, habilitated_user, client, mocker):
     bdese = configured_bdese
-    client.force_login(authorized_user)
+    client.force_login(habilitated_user)
 
     fetch_data = mocker.patch("reglementations.views.get_bdese_data_from_egapro")
 
@@ -148,9 +150,9 @@ def test_bdese_step_fetch_data(configured_bdese, authorized_user, client, mocker
     fetch_data.assert_called_once_with(bdese.entreprise, bdese.annee)
 
 
-def test_save_step_error(configured_bdese, authorized_user, client):
+def test_save_step_error(configured_bdese, habilitated_user, client):
     bdese = configured_bdese
-    client.force_login(authorized_user)
+    client.force_login(habilitated_user)
 
     incorrect_data_bdese_300 = {"unite_absenteisme": "yolo"}
     incorrect_data_bdese_50_300 = {"effectif_cdi": "yolo"}
@@ -175,9 +177,9 @@ def test_save_step_error(configured_bdese, authorized_user, client):
         assert bdese.effectif_cdi != "yolo"
 
 
-def test_save_step_as_draft_success(configured_bdese, authorized_user, client):
+def test_save_step_as_draft_success(configured_bdese, habilitated_user, client):
     bdese = configured_bdese
-    client.force_login(authorized_user)
+    client.force_login(habilitated_user)
 
     correct_data_bdese_300 = {"unite_absenteisme": "H"}
     correct_data_bdese_50_300 = {"effectif_cdi": "50"}
@@ -205,10 +207,10 @@ def test_save_step_as_draft_success(configured_bdese, authorized_user, client):
 
 
 def test_save_step_and_mark_as_complete_success(
-    configured_bdese, authorized_user, client
+    configured_bdese, habilitated_user, client
 ):
     bdese = configured_bdese
-    client.force_login(authorized_user)
+    client.force_login(habilitated_user)
 
     correct_data_bdese_300 = {"unite_absenteisme": "H"}
     correct_data_bdese_50_300 = {"effectif_cdi": "50"}
@@ -235,7 +237,7 @@ def test_save_step_and_mark_as_complete_success(
     assert bdese.step_is_complete(1)
 
 
-def test_mark_step_as_incomplete(configured_bdese, authorized_user, client):
+def test_mark_step_as_incomplete(configured_bdese, habilitated_user, client):
     bdese = configured_bdese
     bdese.mark_step_as_complete(1)
     bdese.save()
@@ -243,7 +245,7 @@ def test_mark_step_as_incomplete(configured_bdese, authorized_user, client):
     bdese.refresh_from_db()
     assert bdese.step_is_complete(1)
 
-    client.force_login(authorized_user)
+    client.force_login(habilitated_user)
 
     url = bdese_step_url(bdese, 1)
     response = client.post(url, {"mark_incomplete": ""}, follow=True)
@@ -261,8 +263,8 @@ def test_mark_step_as_incomplete(configured_bdese, authorized_user, client):
 
 
 @pytest.mark.slow
-def test_get_pdf(bdese, authorized_user, client):
-    client.force_login(authorized_user)
+def test_get_pdf(bdese, habilitated_user, client):
+    client.force_login(habilitated_user)
 
     url = f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/pdf"
     response = client.get(url)
@@ -293,8 +295,8 @@ def test_render_bdese_pdf_html(configured_bdese):
     assert "Information non remplie." in pdf_html
 
 
-def test_get_bdese_configuration(bdese, authorized_user, client):
-    client.force_login(authorized_user)
+def test_get_bdese_configuration(bdese, habilitated_user, client):
+    client.force_login(habilitated_user)
 
     url = bdese_step_url(bdese, 0)
     response = client.get(url)
@@ -302,8 +304,8 @@ def test_get_bdese_configuration(bdese, authorized_user, client):
     assert response.status_code == 200
 
 
-def test_save_bdese_configuration(bdese, authorized_user, client):
-    client.force_login(authorized_user)
+def test_save_bdese_configuration(bdese, habilitated_user, client):
+    client.force_login(habilitated_user)
 
     categories_pro = ["catégorie 1", "catégorie 2", "catégorie 3"]
     categories_pro_detaillees = [
@@ -340,8 +342,8 @@ def test_save_bdese_configuration(bdese, authorized_user, client):
     assert not bdese.step_is_complete(0)
 
 
-def test_save_and_complete_bdese_configuration(bdese, authorized_user, client):
-    client.force_login(authorized_user)
+def test_save_and_complete_bdese_configuration(bdese, habilitated_user, client):
+    client.force_login(habilitated_user)
 
     categories_pro = ["catégorie 1", "catégorie 2", "catégorie 3"]
     categories_pro_detaillees = [
@@ -380,14 +382,14 @@ def test_save_and_complete_bdese_configuration(bdese, authorized_user, client):
 
 
 def test_mark_as_incomplete_bdese_configuration(
-    configured_bdese, authorized_user, client
+    configured_bdese, habilitated_user, client
 ):
     bdese = configured_bdese
     categories_pro = bdese.categories_professionnelles
     if bdese.is_bdese_300:
         categories_pro_detaillees = bdese.categories_professionnelles_detaillees
         niveaux_hierarchiques = bdese.niveaux_hierarchiques
-    client.force_login(authorized_user)
+    client.force_login(habilitated_user)
 
     url = bdese_step_url(bdese, 0)
     response = client.post(
@@ -411,9 +413,9 @@ def test_mark_as_incomplete_bdese_configuration(
     assert not bdese.step_is_complete(0)
 
 
-def test_save_bdese_configuration_error(bdese, authorized_user, client):
+def test_save_bdese_configuration_error(bdese, habilitated_user, client):
     categories_pro = ["catégorie 1", "catégorie 2"]
-    client.force_login(authorized_user)
+    client.force_login(habilitated_user)
 
     url = bdese_step_url(bdese, 0)
     response = client.post(url, data=configuration_form_data(categories_pro))
@@ -433,7 +435,7 @@ def test_save_bdese_configuration_error(bdese, authorized_user, client):
 
 
 def test_save_bdese_configuration_for_a_new_year(
-    configured_bdese, authorized_user, client
+    configured_bdese, habilitated_user, client
 ):
     categories_pro = configured_bdese.categories_professionnelles
     if configured_bdese.is_bdese_300:
@@ -441,7 +443,7 @@ def test_save_bdese_configuration_for_a_new_year(
             configured_bdese.categories_professionnelles_detaillees
         )
         niveaux_hierarchiques = configured_bdese.niveaux_hierarchiques
-    client.force_login(authorized_user)
+    client.force_login(habilitated_user)
 
     new_year = configured_bdese.annee + 1
 
