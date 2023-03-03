@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
@@ -39,6 +41,14 @@ class Habilitation(models.Model):
         null=True,
         blank=True,
     )
+    confirmed_at = models.DateTimeField(null=True)
+
+    def confirm(self):
+        self.confirmed_at = datetime.now(timezone.utc)
+
+    @property
+    def is_confirmed(self):
+        return bool(self.confirmed_at)
 
 
 def add_user_in_entreprise(user, entreprise, fonctions):
