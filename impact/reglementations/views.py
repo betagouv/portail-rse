@@ -439,7 +439,7 @@ def _get_or_create_bdese(
     user: settings.AUTH_USER_MODEL,
 ) -> BDESE_300 | BDESE_50_300:
     reglementation = BDESEReglementation.calculate(entreprise, annee)
-    habilitation = get_habilitation(user, entreprise)
+    habilitation = get_habilitation(entreprise, user)
     if reglementation.bdese_type in (
         BDESEReglementation.TYPE_INFERIEUR_500,
         BDESEReglementation.TYPE_SUPERIEUR_500,
