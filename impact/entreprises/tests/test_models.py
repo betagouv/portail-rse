@@ -32,11 +32,19 @@ def test_entreprise():
     assert entreprise.updated_at == now + timedelta(1)
 
 
-def test_relation_user_entreprise(alice, entreprise_factory):
+def test_habilitation(alice, entreprise_factory):
     entreprise = entreprise_factory()
     assert get_habilitation(alice, entreprise) == None
 
     add_user_in_entreprise(alice, entreprise, "présidente")
 
     assert entreprise in alice.entreprises.all()
-    assert get_habilitation(alice, entreprise).fonctions == "présidente"
+    habilitation = get_habilitation(alice, entreprise)
+    assert habilitation.fonctions == "présidente"
+
+    now = datetime(2023, 1, 27, 16, 1, tzinfo=timezone.utc)
+    with freeze_time(now):
+        habilitation.confirm()
+
+    assert habilitation.is_confirmed
+    assert habilitation.confirmed_at == now
