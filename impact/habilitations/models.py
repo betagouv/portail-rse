@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 
 from django.conf import settings
+from django.contrib import admin
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
@@ -34,6 +35,10 @@ class Habilitation(models.Model):
                 bdese.officialize()
 
     @property
+    @admin.display(
+        boolean=True,
+        description="Confirmé",
+    )
     def is_confirmed(self):
         return bool(self.confirmed_at)
 
