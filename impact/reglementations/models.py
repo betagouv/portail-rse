@@ -1,4 +1,5 @@
 import datetime
+from itertools import chain
 from enum import Enum
 
 from django import forms
@@ -2618,3 +2619,23 @@ class BDESE_50_300(AbstractBDESE):
         null=True,
         blank=True,
     )
+
+
+def get_all_official_bdese(entreprise):
+    bdese_50_300 = BDESE_50_300.officials.filter(entreprise=entreprise)
+    bdese_300 = BDESE_300.officials.filter(entreprise=entreprise)
+    return chain(bdese_50_300, bdese_300)
+
+
+def get_all_personal_bdese(entreprise, user):
+    bdese_50_300 = BDESE_50_300.personals.filter(entreprise=entreprise, user=user)
+    bdese_300 = BDESE_300.personals.filter(entreprise=entreprise, user=user)
+    return chain(bdese_50_300, bdese_300)
+
+
+def has_official_bdese(entreprise: Entreprise) -> bool:
+    try:
+        next(get_all_official_bdese(entreprise))
+        return True
+    except StopIteration:
+        return False

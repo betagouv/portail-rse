@@ -5,6 +5,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
 from entreprises.models import Entreprise
+from reglementations.models import (
+    has_official_bdese,
+    get_all_official_bdese,
+    get_all_personal_bdese,
+)
 from utils.models import TimestampedModel
 
 
@@ -24,6 +29,12 @@ class Habilitation(models.Model):
 
     def confirm(self):
         self.confirmed_at = datetime.now(timezone.utc)
+        if not has_official_bdese(self.entreprise):
+            for bdese in get_all_personal_bdese(self.entreprise, self.user):
+                bdese.pk = None
+                bdese._state.adding = True
+                bdese.user = None
+                bdese.save()
 
     @property
     def is_confirmed(self):
