@@ -19,7 +19,9 @@ class Entreprise(TimestampedModel):
     ]
 
     siren = models.CharField(max_length=9, unique=True)
-    users = models.ManyToManyField(settings.AUTH_USER_MODEL, through="Habilitation")
+    users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, through="habilitations.Habilitation"
+    )
     effectif = models.CharField(
         max_length=9,
         choices=EFFECTIF_CHOICES,
@@ -30,22 +32,3 @@ class Entreprise(TimestampedModel):
 
     def __str__(self):
         return f"{self.siren} {self.raison_sociale}"
-
-
-class Habilitation(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
-    fonctions = models.CharField(
-        verbose_name="Fonction(s) dans la société",
-        max_length=FONCTIONS_MAX_LENGTH,
-        null=True,
-        blank=True,
-    )
-    confirmed_at = models.DateTimeField(null=True)
-
-    def confirm(self):
-        self.confirmed_at = datetime.now(timezone.utc)
-
-    @property
-    def is_confirmed(self):
-        return bool(self.confirmed_at)

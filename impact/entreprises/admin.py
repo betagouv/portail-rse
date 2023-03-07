@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django import forms
 
-from .models import Entreprise, Habilitation
+from .models import Entreprise
+from habilitations.models import Habilitation
 
 
 class HabilitationInline(admin.TabularInline):
