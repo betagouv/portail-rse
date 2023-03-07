@@ -85,6 +85,10 @@ class OfficialManager(models.Manager):
         return super().get_queryset().filter(user__isnull=True)
 
 
+class AlreadyOfficialError(Exception):
+    pass
+
+
 class AbstractBDESE(TimestampedModel):
     objects = models.Manager()  # The default manager.
     personals = PersonalManager()
@@ -139,6 +143,16 @@ class AbstractBDESE(TimestampedModel):
     @property
     def is_bdese_300(self):
         return isinstance(self, BDESE_300)
+
+    def officialize(self):
+        if not self.user:
+            raise AlreadyOfficialError()
+        else:
+            # https://docs.djangoproject.com/en/4.1/topics/db/queries/#copying-model-instances
+            self.pk = None
+            self._state.adding = True
+            self.user = None
+            self.save()
 
 
 def bdese_300_completion_steps_default():

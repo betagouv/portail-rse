@@ -31,10 +31,7 @@ class Habilitation(models.Model):
         self.confirmed_at = datetime.now(timezone.utc)
         if not has_official_bdese(self.entreprise):
             for bdese in get_all_personal_bdese(self.entreprise, self.user):
-                bdese.pk = None
-                bdese._state.adding = True
-                bdese.user = None
-                bdese.save()
+                bdese.officialize()
 
     @property
     def is_confirmed(self):
