@@ -8,10 +8,8 @@ from django.db import models
 from entreprises.models import Entreprise
 from reglementations.models import (
     has_official_bdese,
-    get_all_official_bdese,
     get_all_personal_bdese,
 )
-from utils.models import TimestampedModel
 
 
 FONCTIONS_MAX_LENGTH = 250
