@@ -5,8 +5,9 @@ from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm
 from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
 
 from utils.forms import DsfrForm
-from entreprises.models import Entreprise, Habilitation
+from entreprises.models import Entreprise
 from entreprises.forms import SirenField
+from habilitations.models import Habilitation
 from .models import User
 
 

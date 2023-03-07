@@ -7,8 +7,9 @@ from django.middleware.csrf import get_token
 from django.shortcuts import redirect, render
 
 from .forms import EntrepriseCreationForm
-from .models import Entreprise, Habilitation
+from .models import Entreprise
 from api.exceptions import APIError
+from habilitations.models import Habilitation
 
 import api.recherche_entreprises
 

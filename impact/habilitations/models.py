@@ -1,6 +1,33 @@
-from django.core.exceptions import ObjectDoesNotExist
+from datetime import datetime, timezone
 
-from entreprises.models import Habilitation
+from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
+
+from entreprises.models import Entreprise
+from utils.models import TimestampedModel
+
+
+FONCTIONS_MAX_LENGTH = 250
+
+
+class Habilitation(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
+    fonctions = models.CharField(
+        verbose_name="Fonction(s) dans la société",
+        max_length=FONCTIONS_MAX_LENGTH,
+        null=True,
+        blank=True,
+    )
+    confirmed_at = models.DateTimeField(null=True)
+
+    def confirm(self):
+        self.confirmed_at = datetime.now(timezone.utc)
+
+    @property
+    def is_confirmed(self):
+        return bool(self.confirmed_at)
 
 
 def add_entreprise_to_user(entreprise, user, fonctions):

@@ -33,6 +33,7 @@ ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "0.0.0.0,127.0.0.1").split(",")
 INSTALLED_APPS = [
     "api",
     "entreprises",
+    "habilitations",
     "metabase",
     "public",
     "reglementations",

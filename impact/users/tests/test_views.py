@@ -1,7 +1,8 @@
 import pytest
 from django.urls import reverse
 
-from entreprises.models import Entreprise, Habilitation
+from entreprises.models import Entreprise
+from habilitations.models import Habilitation
 from users.models import User
 
 
