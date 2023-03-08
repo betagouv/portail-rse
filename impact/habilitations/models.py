@@ -36,10 +36,6 @@ class Habilitation(models.Model):
         self.confirmed_at = None
 
     @property
-    @admin.display(
-        boolean=True,
-        description="Confirmé",
-    )
     def is_confirmed(self):
         return bool(self.confirmed_at)
 
