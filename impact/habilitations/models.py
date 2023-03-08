@@ -32,6 +32,9 @@ class Habilitation(models.Model):
             for bdese in get_all_personal_bdese(self.entreprise, self.user):
                 bdese.officialize()
 
+    def unconfirm(self):
+        self.confirmed_at = None
+
     @property
     @admin.display(
         boolean=True,
