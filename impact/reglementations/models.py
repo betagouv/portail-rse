@@ -2635,6 +2635,42 @@ class BDESE_50_300(AbstractBDESE):
     )
 
 
+class PersonalBDESE_300(BDESE_300):
+    class Meta:
+        proxy = True
+        verbose_name = "BDESE personnelle plus de 300 salariés"
+        verbose_name_plural = "BDESE personnelles plus de 300 salariés"
+
+    objects = PersonalManager()
+
+
+class OfficialBDESE_300(BDESE_300):
+    class Meta:
+        proxy = True
+        verbose_name = "BDESE officielle plus de 300 salariés"
+        verbose_name_plural = "BDESE officielles plus de 300 salariés"
+
+    objects = OfficialManager()
+
+
+class PersonalBDESE_50_300(BDESE_50_300):
+    class Meta:
+        proxy = True
+        verbose_name = "BDESE personnelle 50 à 300 salariés"
+        verbose_name_plural = "BDESE personnelles 50 à 300 salariés"
+
+    objects = PersonalManager()
+
+
+class OfficialBDESE_50_300(BDESE_50_300):
+    class Meta:
+        proxy = True
+        verbose_name = "BDESE officielle 50 à 300 salariés"
+        verbose_name_plural = "BDESE officielles 50 à 300 salariés"
+
+    objects = OfficialManager()
+
+
 def get_all_official_bdese(entreprise):
     bdese_50_300 = BDESE_50_300.officials.filter(entreprise=entreprise)
     bdese_300 = BDESE_300.officials.filter(entreprise=entreprise)
