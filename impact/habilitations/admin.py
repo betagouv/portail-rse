@@ -1,23 +1,29 @@
+from django import forms
 from django.contrib import admin
 
-from .models import Habilitation
+from habilitations.models import Habilitation
 
 
-from django.contrib import admin
+class HabilitationAdminForm(forms.ModelForm):
+    should_be_confirmed = forms.BooleanField(required=False, label="Confirmer ?")
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance.confirmed_at:
+            self.initial["should_be_confirmed"] = True
 
-@admin.action(description="Confirmer les habilitations")
-def confirm_habilitations(modeladmin, request, queryset):
-    for habilitation in queryset:
-        if not habilitation.is_confirmed:
-            habilitation.confirm()
+    def save(self, *args, **kwargs):
+        habilitation = super().save(*args, **kwargs)
+        if "should_be_confirmed" in self.changed_data:
+            if self.cleaned_data["should_be_confirmed"]:
+                habilitation.confirm()
+            else:
+                habilitation.unconfirm()
             habilitation.save()
 
 
-class HabilitationAdmin(admin.ModelAdmin):
-    list_display = ["user", "entreprise", "is_confirmed"]
-    readonly_fields = ["confirmed_at"]
-    actions = [confirm_habilitations]
-
-
-admin.site.register(Habilitation, HabilitationAdmin)
+class HabilitationInline(admin.TabularInline):
+    model = Habilitation
+    form = HabilitationAdminForm
+    readonly_fields = ("confirmed_at",)
+    extra = 0
