@@ -9,7 +9,7 @@ from django.shortcuts import redirect, render
 from .forms import EntrepriseCreationForm
 from .models import Entreprise
 from api.exceptions import APIError
-from habilitations.models import Habilitation
+from habilitations.models import add_entreprise_to_user, get_habilitation
 
 import api.recherche_entreprises
 
@@ -43,17 +43,15 @@ def add(request):
                 except APIError:
                     raise _InvalidRequest(SIREN_NOT_FOUND_ERROR)
                 entreprise = Entreprise.objects.create(**infos_entreprise)
-            if habilitations := Habilitation.objects.filter(
-                user=request.user, entreprise=entreprise
-            ):
+            if get_habilitation(entreprise, request.user):
                 raise _InvalidRequest(
                     "Impossible d'ajouter cette entreprise. Vous y êtes déjà rattaché·e."
                 )
             else:
-                Habilitation.objects.create(
-                    user=request.user,
-                    entreprise=entreprise,
-                    fonctions=form.cleaned_data["fonctions"],
+                add_entreprise_to_user(
+                    entreprise,
+                    request.user,
+                    form.cleaned_data["fonctions"],
                 )
         else:
             raise _InvalidRequest(

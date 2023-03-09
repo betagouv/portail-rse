@@ -7,7 +7,7 @@ from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
 from utils.forms import DsfrForm
 from entreprises.models import Entreprise
 from entreprises.forms import SirenField
-from habilitations.models import Habilitation
+from habilitations.models import add_entreprise_to_user
 from .models import User
 
 
@@ -93,10 +93,10 @@ class UserCreationForm(DsfrForm, UserPasswordForm):
         )
         if commit:
             user.save()
-            Habilitation.objects.create(
-                user=user,
-                entreprise=entreprise,
-                fonctions=self.cleaned_data["fonctions"],
+            add_entreprise_to_user(
+                entreprise,
+                user,
+                self.cleaned_data["fonctions"],
             )
             entreprise.save()
         return user
