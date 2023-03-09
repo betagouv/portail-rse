@@ -134,7 +134,6 @@ def test_edit_account_info_and_password(client, alice):
         "Votre mot de passe a bien été modifié. Veuillez vous reconnecter." in content
     )
 
-    user = User.objects.get(email="bob@example.com")
     alice.refresh_from_db()
     assert alice.prenom == "Bob"
     assert alice.nom == "Dylan"
