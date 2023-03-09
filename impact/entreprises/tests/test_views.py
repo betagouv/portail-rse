@@ -3,9 +3,7 @@ import pytest
 from django.urls import reverse
 
 from entreprises.models import Entreprise
-from habilitations.models import add_entreprise_to_user, Habilitation
-from users.forms import UserCreationForm
-from users.models import User
+from habilitations.models import add_entreprise_to_user, get_habilitation, Habilitation
 import api.exceptions
 
 
@@ -51,10 +49,7 @@ def test_add_and_attach_to_entreprise(client, mocker, alice):
     assert entreprise.effectif == "moyen"
     assert entreprise.raison_sociale == RAISON_SOCIALE
     assert entreprise in alice.entreprises
-    assert (
-        Habilitation.objects.get(user=alice, entreprise=entreprise).fonctions
-        == "Présidente"
-    )
+    assert get_habilitation(entreprise, alice).fonctions == "Présidente"
 
 
 def test_attach_to_an_existing_entreprise(client, alice, entreprise_factory):
@@ -67,10 +62,7 @@ def test_attach_to_an_existing_entreprise(client, alice, entreprise_factory):
     assert response.status_code == 200
     assert response.redirect_chain == [(reverse("entreprises"), 302)]
     assert entreprise in alice.entreprises
-    assert (
-        Habilitation.objects.get(user=alice, entreprise=entreprise).fonctions
-        == "Présidente"
-    )
+    assert get_habilitation(entreprise, alice).fonctions == "Présidente"
 
 
 def test_fail_to_add_entreprise(client, alice):
