@@ -72,19 +72,14 @@ def test_account_page_when_logged_in(client, alice):
 
 
 @pytest.fixture
-def alice(django_user_model):
-    alice = django_user_model.objects.create(
-        prenom="Alice",
-        nom="Cooper",
-        email="alice@example.com",
-        reception_actualites=False,
-    )
+def alice_with_password(alice):
     alice.set_password("Passw0rd!123")
     alice.save()  # il faut save après set_password
     return alice
 
 
-def test_edit_account_info(client, alice):
+def test_edit_account_info(client, alice_with_password):
+    alice = alice_with_password
     client.force_login(alice)
 
     data = {

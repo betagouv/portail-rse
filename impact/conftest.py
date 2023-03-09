@@ -5,7 +5,12 @@ from entreprises.models import Entreprise
 
 @pytest.fixture
 def alice(django_user_model):
-    alice = django_user_model.objects.create(email="alice@impact.test")
+    alice = django_user_model.objects.create(
+        prenom="Alice",
+        nom="Cooper",
+        email="alice@impact.test",
+        reception_actualites=False,
+    )
     return alice
 
 
