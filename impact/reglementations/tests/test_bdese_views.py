@@ -10,7 +10,7 @@ from reglementations.tests.test_bdese_forms import configuration_form_data
 from reglementations.views import get_bdese_data_from_egapro, render_bdese_pdf_html
 
 
-def test_bdese_is_not_public(client, django_user_model, grande_entreprise):
+def test_bdese_is_not_public(client, alice, grande_entreprise):
     url = f"/bdese/{grande_entreprise.siren}/2022/1"
     response = client.get(url)
 
@@ -18,8 +18,7 @@ def test_bdese_is_not_public(client, django_user_model, grande_entreprise):
     connexion_url = reverse("login")
     assert response.url == f"{connexion_url}?next={url}"
 
-    user = django_user_model.objects.create()
-    client.force_login(user)
+    client.force_login(alice)
     response = client.get(url)
 
     assert response.status_code == 403
@@ -29,12 +28,11 @@ def test_bdese_is_not_public(client, django_user_model, grande_entreprise):
     "effectif, bdese_class", [("moyen", BDESE_50_300), ("grand", BDESE_300)]
 )
 def test_yearly_personal_bdese_is_created_at_first_authorized_request(
-    effectif, bdese_class, client, django_user_model, entreprise_factory
+    effectif, bdese_class, client, alice, entreprise_factory
 ):
     entreprise = entreprise_factory(effectif=effectif)
-    user = django_user_model.objects.create()
-    entreprise.users.add(user)
-    client.force_login(user)
+    entreprise.users.add(alice)
+    client.force_login(alice)
 
     assert not bdese_class.objects.filter(entreprise=entreprise)
 
@@ -43,24 +41,23 @@ def test_yearly_personal_bdese_is_created_at_first_authorized_request(
 
     assert response.status_code == 302
     bdese_2021 = bdese_class.personals.get(entreprise=entreprise, annee=2021)
-    assert bdese_2021.user == user
+    assert bdese_2021.user == alice
 
     url = f"/bdese/{entreprise.siren}/2022/1"
     response = client.get(url)
 
     bdese_2022 = bdese_class.personals.get(entreprise=entreprise, annee=2022)
-    assert bdese_2022.user == user
+    assert bdese_2022.user == alice
     assert bdese_2021 != bdese_2022
 
 
 @pytest.fixture
-def habilitated_user(bdese, django_user_model):
-    user = django_user_model.objects.create()
-    add_entreprise_to_user(bdese.entreprise, user, "Testeur")
-    habilitation = get_habilitation(bdese.entreprise, user)
+def habilitated_user(bdese, alice):
+    add_entreprise_to_user(bdese.entreprise, alice, "Testeur")
+    habilitation = get_habilitation(bdese.entreprise, alice)
     habilitation.confirm()
     habilitation.save()
-    return user
+    return alice
 
 
 def bdese_step_url(bdese, step):
