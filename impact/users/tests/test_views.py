@@ -2,7 +2,7 @@ import pytest
 from django.urls import reverse
 
 from entreprises.models import Entreprise
-from habilitations.models import Habilitation
+from habilitations.models import get_habilitation
 from users.models import User
 
 
@@ -48,10 +48,7 @@ def test_create_user_with_real_siren(reception_actualites, client, db):
     assert user.acceptation_cgu == True
     assert user.reception_actualites == (reception_actualites == "checked")
     assert user in entreprise.users.all()
-    assert (
-        Habilitation.objects.get(user=user, entreprise=entreprise).fonctions
-        == "Présidente"
-    )
+    assert get_habilitation(entreprise, user).fonctions == "Présidente"
     assert user.check_password("Passw0rd!123")
 
 
