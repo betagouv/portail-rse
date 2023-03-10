@@ -239,35 +239,12 @@ def reglementations(request):
             request.session["siren"] = form.cleaned_data["siren"]
             entreprise = form.save(commit=commit)
 
-    reglementations = [
-        {
-            "info": BDESEReglementation.info(),
-            "status": BDESEReglementation.calculate_status(
-                entreprise, derniere_annee_a_remplir_bdese()
-            )
-            if entreprise
-            else None,
-        },
-        {
-            "info": IndexEgaproReglementation.info(),
-            "status": IndexEgaproReglementation.calculate_status(
-                entreprise, derniere_annee_a_remplir_index_egapro()
-            )
-            if entreprise
-            else None,
-        },
-    ]
-
     return render(
         request,
         "reglementations/reglementations.html",
-        {
-            "entreprise": entreprise,
-            "reglementations": reglementations,
-            "user_manage_entreprise": request.user in entreprise.users.all()
-            if request.user.is_authenticated and entreprise
-            else False,
-        },
+        _reglementations_context(
+            entreprise, request.user if request.user.is_authenticated else None
+        ),
     )
 
 
@@ -279,11 +256,19 @@ def reglementation(request, siren):
 
     request.session["entreprise"] = entreprise.siren
 
+    return render(
+        request,
+        "reglementations/reglementations.html",
+        _reglementations_context(entreprise, request.user),
+    )
+
+
+def _reglementations_context(entreprise, user):
     reglementations = [
         {
             "info": BDESEReglementation.info(),
             "status": BDESEReglementation.calculate_status(
-                entreprise, derniere_annee_a_remplir_bdese(), request.user
+                entreprise, derniere_annee_a_remplir_bdese(), user
             )
             if entreprise
             else None,
@@ -297,18 +282,13 @@ def reglementation(request, siren):
             else None,
         },
     ]
-
-    return render(
-        request,
-        "reglementations/reglementations.html",
-        {
-            "entreprise": entreprise,
-            "reglementations": reglementations,
-            "user_manage_entreprise": request.user in entreprise.users.all()
-            if request.user.is_authenticated
-            else False,
-        },
-    )
+    return {
+        "entreprise": entreprise,
+        "reglementations": reglementations,
+        "user_manage_entreprise": user in entreprise.users.all()
+        if user and entreprise
+        else False,
+    }
 
 
 @login_required
