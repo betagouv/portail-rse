@@ -128,7 +128,6 @@ class BDESEReglementation(Reglementation):
             else:
                 bdese_class = BDESE_300
 
-            bdese = bdese_class.officials.filter(entreprise=entreprise, annee=annee)
             if (
                 user
                 and (habilitation := get_habilitation(entreprise, user))
@@ -137,6 +136,9 @@ class BDESEReglementation(Reglementation):
                 bdese = bdese_class.personals.filter(
                     entreprise=entreprise, annee=annee, user=user
                 )
+            else:
+                bdese = bdese_class.officials.filter(entreprise=entreprise, annee=annee)
+
             if bdese:
                 bdese = bdese[0]
                 if bdese.is_complete:
