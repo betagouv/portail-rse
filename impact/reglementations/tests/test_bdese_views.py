@@ -4,7 +4,6 @@ import json
 from django.urls import reverse
 import pytest
 
-from habilitations.models import add_entreprise_to_user, get_habilitation
 from reglementations.models import annees_a_remplir_bdese, BDESE_50_300, BDESE_300
 from reglementations.tests.test_bdese_forms import configuration_form_data
 from reglementations.views import get_bdese_data_from_egapro, render_bdese_pdf_html
@@ -49,15 +48,6 @@ def test_yearly_personal_bdese_is_created_at_first_authorized_request(
     bdese_2022 = bdese_class.personals.get(entreprise=entreprise, annee=2022)
     assert bdese_2022.user == alice
     assert bdese_2021 != bdese_2022
-
-
-@pytest.fixture
-def habilitated_user(bdese, alice):
-    add_entreprise_to_user(bdese.entreprise, alice, "Testeur")
-    habilitation = get_habilitation(bdese.entreprise, alice)
-    habilitation.confirm()
-    habilitation.save()
-    return alice
 
 
 def bdese_step_url(bdese, step):

@@ -60,7 +60,10 @@ class Reglementation(ABC):
     @classmethod
     @abstractmethod
     def calculate_status(
-        cls, entreprise: Entreprise, annee: int
+        cls,
+        entreprise: Entreprise,
+        annee: int,
+        user: settings.AUTH_USER_MODEL = None,
     ) -> ReglementationStatus:
         pass
 
@@ -102,7 +105,7 @@ class BDESEReglementation(Reglementation):
 
     @classmethod
     def calculate_status(
-        cls, entreprise: Entreprise, annee: int
+        cls, entreprise: Entreprise, annee: int, user: settings.AUTH_USER_MODEL = None
     ) -> ReglementationStatus:
         if entreprise.effectif == "petit":
             status = ReglementationStatus.STATUS_NON_SOUMIS
@@ -125,9 +128,15 @@ class BDESEReglementation(Reglementation):
             else:
                 bdese_class = BDESE_300
 
-            bdese = bdese_class.objects.filter(
-                entreprise__siren=entreprise.siren, annee=annee
-            )
+            bdese = bdese_class.officials.filter(entreprise=entreprise, annee=annee)
+            if (
+                user
+                and (habilitation := get_habilitation(entreprise, user))
+                and not habilitation.is_confirmed
+            ):
+                bdese = bdese_class.personals.filter(
+                    entreprise=entreprise, annee=annee, user=user
+                )
             if bdese:
                 bdese = bdese[0]
                 if bdese.is_complete:
@@ -182,7 +191,7 @@ class IndexEgaproReglementation(Reglementation):
 
     @classmethod
     def calculate_status(
-        cls, entreprise: Entreprise, annee: int
+        cls, entreprise: Entreprise, annee: int, user: settings.AUTH_USER_MODEL = None
     ) -> ReglementationStatus:
         PRIMARY_ACTION = ReglementationAction(
             "https://egapro.travail.gouv.fr/",
@@ -262,6 +271,7 @@ def reglementations(request):
     )
 
 
+@login_required
 def reglementation(request, siren):
     entreprise = get_object_or_404(Entreprise, siren=siren)
     if request.user not in entreprise.users.all():
@@ -273,7 +283,7 @@ def reglementation(request, siren):
         {
             "info": BDESEReglementation.info(),
             "status": BDESEReglementation.calculate_status(
-                entreprise, derniere_annee_a_remplir_bdese()
+                entreprise, derniere_annee_a_remplir_bdese(), request.user
             )
             if entreprise
             else None,
