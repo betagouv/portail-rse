@@ -2,60 +2,55 @@ from django.urls import reverse
 import pytest
 
 from reglementations.models import BDESE_50_300, BDESE_300
-from reglementations.views import BDESEReglementation
+from reglementations.views import BDESEReglementation, ReglementationStatus
 
 
-def test_default_bdese_reglementation():
-    bdese = BDESEReglementation()
+def test_bdese_reglementation_info():
+    info = BDESEReglementation.info()
 
     assert (
-        bdese.title
+        info["title"]
         == "Base de données économiques, sociales et environnementales (BDESE)"
     )
     assert (
-        bdese.description
+        info["description"]
         == """L'employeur d'au moins 50 salariés doit mettre à disposition du comité économique et social (CSE) ou des représentants du personnel une base de données économiques, sociales et environnementales (BDESE).
         La BDESE rassemble les informations sur les grandes orientations économiques et sociales de l'entreprise.
         Elle comprend des mentions obligatoires qui varient selon l'effectif de l'entreprise."""
     )
     assert (
-        bdese.more_info_url == "https://entreprendre.service-public.fr/vosdroits/F32193"
+        info["more_info_url"]
+        == "https://entreprendre.service-public.fr/vosdroits/F32193"
     )
-
-    assert bdese.status is None
-    assert bdese.status_detail is None
-    assert bdese.primary_action is None
-    assert bdese.secondary_actions == []
-    assert bdese.bdese_type is None
 
 
 @pytest.mark.parametrize("bdese_accord", [True, False])
-def test_calculate_bdese_reglementation_less_than_50_employees(
-    bdese_accord, entreprise_factory
-):
+def test_calculate_status_less_than_50_employees(bdese_accord, entreprise_factory):
     entreprise = entreprise_factory(effectif="petit", bdese_accord=bdese_accord)
 
-    bdese = BDESEReglementation.calculate(entreprise, 2022)
+    bdese = BDESEReglementation.calculate_status(entreprise, 2022)
 
-    assert bdese.status == BDESEReglementation.STATUS_NON_SOUMIS
+    assert bdese.status == ReglementationStatus.STATUS_NON_SOUMIS
     assert bdese.status_detail == "Vous n'êtes pas soumis à cette réglementation"
     assert bdese.primary_action is None
     assert bdese.secondary_actions == []
-    assert bdese.bdese_type is None
+
+    bdese_type = BDESEReglementation.bdese_type(entreprise)
+    assert bdese_type == BDESEReglementation.TYPE_NON_SOUMIS
 
 
 @pytest.mark.parametrize(
     "effectif, bdese_class",
     [("moyen", BDESE_50_300), ("grand", BDESE_300), ("sup500", BDESE_300)],
 )
-def test_calculate_bdese_reglementation_more_than_50_employees(
+def test_calculate_status_more_than_50_employees(
     effectif, bdese_class, entreprise_factory, mocker
 ):
     entreprise = entreprise_factory(effectif=effectif, bdese_accord=False)
 
-    bdese = BDESEReglementation.calculate(entreprise, 2022)
+    bdese = BDESEReglementation.calculate_status(entreprise, 2022)
 
-    assert bdese.status == BDESEReglementation.STATUS_A_ACTUALISER
+    assert bdese.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
         bdese.status_detail
         == "Vous êtes soumis à cette réglementation. Nous allons vous aider à la remplir."
@@ -67,9 +62,9 @@ def test_calculate_bdese_reglementation_more_than_50_employees(
     assert not bdese.secondary_actions
 
     bdese_class.objects.create(entreprise=entreprise, annee=2022)
-    bdese = BDESEReglementation.calculate(entreprise, 2022)
+    bdese = BDESEReglementation.calculate_status(entreprise, 2022)
 
-    assert bdese.status == BDESEReglementation.STATUS_EN_COURS
+    assert bdese.status == ReglementationStatus.STATUS_EN_COURS
     assert bdese.primary_action.url == reverse(
         "bdese", args=[entreprise.siren, 2022, 1]
     )
@@ -80,9 +75,9 @@ def test_calculate_bdese_reglementation_more_than_50_employees(
     assert bdese.secondary_actions[0].title == "Télécharger le pdf (brouillon)"
 
     mocker.patch("reglementations.models.AbstractBDESE.is_complete", return_value=True)
-    bdese = BDESEReglementation.calculate(entreprise, 2022)
+    bdese = BDESEReglementation.calculate_status(entreprise, 2022)
 
-    assert bdese.status == BDESEReglementation.STATUS_A_JOUR
+    assert bdese.status == ReglementationStatus.STATUS_A_JOUR
     assert (
         bdese.status_detail
         == "Vous êtes soumis à cette réglementation. Vous avez actualisé votre BDESE sur la plateforme."
@@ -99,12 +94,12 @@ def test_calculate_bdese_reglementation_more_than_50_employees(
 
 
 @pytest.mark.parametrize("effectif", ["moyen", "grand", "sup500"])
-def test_calculate_bdese_reglementation_with_bdese_accord(effectif, entreprise_factory):
+def test_calculate_status_with_bdese_accord(effectif, entreprise_factory):
     entreprise = entreprise_factory(effectif=effectif, bdese_accord=True)
 
-    bdese = BDESEReglementation.calculate(entreprise, 2022)
+    bdese = BDESEReglementation.calculate_status(entreprise, 2022)
 
-    assert bdese.status == BDESEReglementation.STATUS_A_ACTUALISER
+    assert bdese.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
         bdese.status_detail
         == "Vous êtes soumis à cette réglementation. Vous avez un accord d'entreprise spécifique. Veuillez vous y référer."
@@ -112,4 +107,6 @@ def test_calculate_bdese_reglementation_with_bdese_accord(effectif, entreprise_f
     assert bdese.primary_action.title == "Marquer ma BDESE comme actualisée"
     assert bdese.primary_action.url == "#"
     assert bdese.secondary_actions == []
-    assert bdese.bdese_type is BDESEReglementation.TYPE_AVEC_ACCORD
+
+    bdese_type = BDESEReglementation.bdese_type(entreprise)
+    assert bdese_type == BDESEReglementation.TYPE_AVEC_ACCORD
