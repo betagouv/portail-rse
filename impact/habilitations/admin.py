@@ -20,6 +20,7 @@ class HabilitationAdminForm(forms.ModelForm):
             else:
                 habilitation.unconfirm()
             habilitation.save()
+        return habilitation
 
 
 class HabilitationInline(admin.TabularInline):
