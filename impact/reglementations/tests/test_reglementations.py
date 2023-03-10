@@ -16,8 +16,10 @@ def test_public_reglementations(client):
 
     context = response.context
     assert context["entreprise"] is None
-    assert context["reglementations"][0] == BDESEReglementation()
-    assert context["reglementations"][1] == IndexEgaproReglementation()
+    assert context["reglementations"][0]["info"] == BDESEReglementation.info()
+    assert context["reglementations"][0]["status"] is None
+    assert context["reglementations"][1]["info"] == IndexEgaproReglementation.info()
+    assert context["reglementations"][1]["status"] is None
 
 
 @pytest.mark.parametrize("status_is_soumis", [True, False])
@@ -31,7 +33,7 @@ def test_public_reglementations_with_entreprise_data(status_is_soumis, client, m
     }
 
     mocker.patch(
-        "reglementations.views.Reglementation.status_is_soumis",
+        "reglementations.views.ReglementationStatus.is_soumis",
         return_value=status_is_soumis,
         new_callable=mocker.PropertyMock,
     )
@@ -50,8 +52,12 @@ def test_public_reglementations_with_entreprise_data(status_is_soumis, client, m
     context = response.context
     assert context["entreprise"] == entreprise
     reglementations = context["reglementations"]
-    assert reglementations[0] == BDESEReglementation.calculate(entreprise, 2022)
-    assert reglementations[1] == IndexEgaproReglementation.calculate(entreprise)
+    assert reglementations[0]["status"] == BDESEReglementation.calculate_status(
+        entreprise, 2022
+    )
+    assert reglementations[1]["status"] == IndexEgaproReglementation.calculate_status(
+        entreprise, 2022
+    )
 
     if status_is_soumis:
         assert '<p class="fr-badge">soumis</p>' in content
@@ -84,8 +90,8 @@ def test_reglementations_with_authenticated_user(client, entreprise):
 
     context = response.context
     assert context["entreprise"] is None
-    assert context["reglementations"][0] == BDESEReglementation()
-    assert context["reglementations"][1] == IndexEgaproReglementation()
+    assert context["reglementations"][0]["status"] is None
+    assert context["reglementations"][1]["status"] is None
 
 
 @pytest.mark.parametrize("status_is_soumis", [True, False])
@@ -105,7 +111,7 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
     }
 
     mocker.patch(
-        "reglementations.views.Reglementation.status_is_soumis",
+        "reglementations.views.ReglementationStatus.is_soumis",
         return_value=status_is_soumis,
         new_callable=mocker.PropertyMock,
     )
@@ -116,7 +122,7 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
 
     reglementations = response.context["reglementations"]
     for reglementation in reglementations:
-        assert not reglementation.status_detail in content
+        assert not reglementation["status"].status_detail in content
     if status_is_soumis:
         assert '<p class="fr-badge">soumis</p>' in content
         anonymous_status_detail = "L'entreprise est soumise à cette réglementation."
@@ -165,10 +171,14 @@ def test_reglementation_with_authenticated_user(client, entreprise):
     context = response.context
     assert context["entreprise"] == entreprise
     reglementations = context["reglementations"]
-    assert reglementations[0] == BDESEReglementation.calculate(entreprise, 2022)
-    assert reglementations[1] == IndexEgaproReglementation.calculate(entreprise)
+    assert reglementations[0]["status"] == BDESEReglementation.calculate_status(
+        entreprise, 2022
+    )
+    assert reglementations[1]["status"] == IndexEgaproReglementation.calculate_status(
+        entreprise, 2022
+    )
     for reglementation in reglementations:
-        assert reglementation.status_detail in content
+        assert reglementation["status"].status_detail in content
 
 
 def test_reglementation_with_authenticated_user_and_multiple_entreprises(
@@ -188,10 +198,14 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
     context = response.context
     assert context["entreprise"] == entreprise1
     reglementations = context["reglementations"]
-    assert reglementations[0] == BDESEReglementation.calculate(entreprise1, 2022)
-    assert reglementations[1] == IndexEgaproReglementation.calculate(entreprise1)
+    assert reglementations[0]["status"] == BDESEReglementation.calculate_status(
+        entreprise1, 2022
+    )
+    assert reglementations[1]["status"] == IndexEgaproReglementation.calculate_status(
+        entreprise1, 2022
+    )
     for reglementation in reglementations:
-        assert reglementation.status_detail in content
+        assert reglementation["status"].status_detail in content
 
     response = client.get(f"/reglementation/{entreprise2.siren}")
 
@@ -201,7 +215,11 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
     context = response.context
     assert context["entreprise"] == entreprise2
     reglementations = context["reglementations"]
-    assert reglementations[0] == BDESEReglementation.calculate(entreprise2, 2022)
-    assert reglementations[1] == IndexEgaproReglementation.calculate(entreprise2)
+    assert reglementations[0]["status"] == BDESEReglementation.calculate_status(
+        entreprise1, 2022
+    )
+    assert reglementations[1]["status"] == IndexEgaproReglementation.calculate_status(
+        entreprise1, 2022
+    )
     for reglementation in reglementations:
-        assert reglementation.status_detail in content
+        assert reglementation["status"].status_detail in content

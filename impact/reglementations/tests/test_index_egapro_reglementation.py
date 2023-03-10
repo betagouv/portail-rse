@@ -3,49 +3,47 @@ import json
 import freezegun
 import pytest
 
-from reglementations.views import IndexEgaproReglementation, is_index_egapro_updated
+from reglementations.views import (
+    IndexEgaproReglementation,
+    ReglementationStatus,
+    is_index_egapro_updated,
+)
 
 
-def test_default_index_egapro_reglementation():
-    index = IndexEgaproReglementation()
+def test_index_egapro_reglementation_info():
+    info = IndexEgaproReglementation.info()
 
-    assert index.title == "Index de l’égalité professionnelle"
+    assert info["title"] == "Index de l’égalité professionnelle"
     assert (
-        index.description
+        info["description"]
         == "Afin de lutter contre les inégalités salariales entre les femmes et les hommes, certaines entreprises doivent calculer et transmettre un index mesurant l’égalité salariale au sein de leur structure."
     )
     assert (
-        index.more_info_url
+        info["more_info_url"]
         == "https://www.economie.gouv.fr/entreprises/index-egalite-professionnelle-obligatoire"
     )
 
-    assert index.status is None
-    assert index.status_detail is None
-    assert index.primary_action.url == "https://egapro.travail.gouv.fr/"
-    assert index.primary_action.title == "Calculer et déclarer mon index sur Egapro"
-    assert index.primary_action.external == True
 
-
-def test_calculate_less_than_50_employees(entreprise_factory, mock_index_egapro):
+def test_calculate_status_less_than_50_employees(entreprise_factory, mock_index_egapro):
     entreprise = entreprise_factory(effectif="petit")
 
-    index = IndexEgaproReglementation.calculate(entreprise)
+    index = IndexEgaproReglementation.calculate_status(entreprise, 2022)
 
-    assert index.status == IndexEgaproReglementation.STATUS_NON_SOUMIS
+    assert index.status == ReglementationStatus.STATUS_NON_SOUMIS
     assert index.status_detail == "Vous n'êtes pas soumis à cette réglementation"
     assert not mock_index_egapro.called
 
 
 @pytest.mark.parametrize("effectif", ["moyen", "grand", "sup500"])
-def test_calculate_more_than_50_employees(
+def test_calculate_status_more_than_50_employees(
     effectif, entreprise_factory, mock_index_egapro
 ):
     entreprise = entreprise_factory(effectif=effectif)
 
     mock_index_egapro.return_value = False
-    index = IndexEgaproReglementation.calculate(entreprise)
+    index = IndexEgaproReglementation.calculate_status(entreprise, 2022)
 
-    assert index.status == IndexEgaproReglementation.STATUS_A_ACTUALISER
+    assert index.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
         index.status_detail
         == "Vous êtes soumis à cette réglementation. Vous n'avez pas encore déclaré votre index sur la plateforme Egapro."
@@ -55,9 +53,9 @@ def test_calculate_more_than_50_employees(
 
     mock_index_egapro.reset_mock()
     mock_index_egapro.return_value = True
-    index = IndexEgaproReglementation.calculate(entreprise)
+    index = IndexEgaproReglementation.calculate_status(entreprise, 2022)
 
-    assert index.status == IndexEgaproReglementation.STATUS_A_JOUR
+    assert index.status == ReglementationStatus.STATUS_A_JOUR
     assert (
         index.status_detail
         == "Vous êtes soumis à cette réglementation. Vous avez rempli vos obligations d'après les données disponibles sur la plateforme Egapro."
