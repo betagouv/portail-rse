@@ -1,7 +1,7 @@
 import pytest
 
 from entreprises.models import Entreprise
-from habilitations.models import add_entreprise_to_user
+from habilitations.models import add_entreprise_to_user, get_habilitation
 from reglementations.models import BDESE_50_300, BDESE_300
 
 
@@ -42,3 +42,18 @@ def grande_entreprise(entreprise_factory):
 def mock_index_egapro(mocker):
     mocker.patch("reglementations.views.get_bdese_data_from_egapro")
     return mocker.patch("reglementations.views.is_index_egapro_updated")
+
+
+@pytest.fixture
+def habilitated_user(bdese, alice):
+    add_entreprise_to_user(bdese.entreprise, alice, "Présidente")
+    habilitation = get_habilitation(bdese.entreprise, alice)
+    habilitation.confirm()
+    habilitation.save()
+    return alice
+
+
+@pytest.fixture
+def not_habilitated_user(bdese, bob):
+    add_entreprise_to_user(bdese.entreprise, bob, "Testeur")
+    return bob

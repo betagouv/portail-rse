@@ -1,6 +1,7 @@
 from django.urls import reverse
 import pytest
 
+from habilitations.models import add_entreprise_to_user
 from reglementations.models import BDESE_50_300, BDESE_300
 from reglementations.views import BDESEReglementation, ReglementationStatus
 
@@ -110,3 +111,29 @@ def test_calculate_status_with_bdese_accord(effectif, entreprise_factory):
 
     bdese_type = BDESEReglementation.bdese_type(entreprise)
     assert bdese_type == BDESEReglementation.TYPE_AVEC_ACCORD
+
+
+def test_calculate_status_for_user(
+    bdese, habilitated_user, not_habilitated_user, mocker
+):
+    status = BDESEReglementation.calculate_status(
+        bdese.entreprise, bdese.annee, habilitated_user
+    )
+
+    assert status.status == ReglementationStatus.STATUS_EN_COURS
+
+    status = BDESEReglementation.calculate_status(
+        bdese.entreprise, bdese.annee, not_habilitated_user
+    )
+
+    assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
+
+    personal_bdese = bdese.__class__.personals.create(
+        entreprise=bdese.entreprise, annee=bdese.annee, user=not_habilitated_user
+    )
+
+    status = BDESEReglementation.calculate_status(
+        bdese.entreprise, bdese.annee, not_habilitated_user
+    )
+
+    assert status.status == ReglementationStatus.STATUS_EN_COURS

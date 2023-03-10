@@ -15,6 +15,17 @@ def alice(django_user_model):
 
 
 @pytest.fixture
+def bob(django_user_model):
+    bob = django_user_model.objects.create(
+        prenom="Bob",
+        nom="Dylan",
+        email="bob@impact.test",
+        reception_actualites=False,
+    )
+    return bob
+
+
+@pytest.fixture
 def entreprise_factory(db):
     def create_entreprise(
         siren="000000001",
