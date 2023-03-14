@@ -56,3 +56,7 @@ def get_habilitation(entreprise, user):
         )
     except ObjectDoesNotExist:
         return
+
+
+def is_user_habilited_on_entreprise(user, entreprise):
+    return get_habilitation(entreprise, user).is_confirmed
