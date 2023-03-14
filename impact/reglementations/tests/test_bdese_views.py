@@ -4,6 +4,7 @@ import json
 from django.urls import reverse
 import pytest
 
+from habilitations.models import add_entreprise_to_user
 from reglementations.models import annees_a_remplir_bdese, BDESE_50_300, BDESE_300
 from reglementations.tests.test_bdese_forms import configuration_form_data
 from reglementations.views import get_bdese_data_from_egapro, render_bdese_pdf_html
@@ -66,8 +67,8 @@ def test_bdese_step_redirect_to_configuration_if_bdese_not_configured(
     assert response.redirect_chain == [
         (
             reverse(
-                "bdese_configuration",
-                args=[bdese.entreprise.siren, bdese.annee],
+                "bdese",
+                args=[bdese.entreprise.siren, bdese.annee, 0],
             ),
             302,
         )
@@ -97,6 +98,35 @@ def configured_bdese(bdese):
     bdese.mark_step_as_complete(0)
     bdese.save()
     return bdese
+
+
+def test_check_if_several_users_are_on_the_same_BDESE(
+    configured_bdese, habilitated_user, client, bob
+):
+    bdese = configured_bdese
+    add_entreprise_to_user(bdese.entreprise, bob, "Vice-président")
+    client.force_login(bob)
+
+    url = bdese_step_url(bdese, 0)
+    response = client.get(url)
+
+    assert response.status_code == 200
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        "Plusieurs utilisateurs sont liés à cette entreprise. Les informations que vous remplissez ne sont pas partagés avec les autres utilisateurs tant que vous n'êtes pas habilités."
+        in content
+    )
+
+    client.force_login(habilitated_user)
+
+    response = client.get(url)
+
+    assert response.status_code == 200
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        "Plusieurs utilisateurs sont liés à cette entreprise. Les informations que vous remplissez ne sont pas partagés avec les autres utilisateurs tant que vous n'êtes pas habilités."
+        not in content
+    )
 
 
 def test_bdese_step_use_configured_categories_and_annees_a_remplir(
@@ -214,11 +244,10 @@ def test_save_step_and_mark_as_complete_success(
     response = client.post(url, correct_data, follow=True)
 
     assert response.status_code == 200
-    assert response.redirect_chain == [(url, 302)]
+    assert response.redirect_chain == [(bdese_step_url(bdese, 2), 302)]
 
     content = response.content.decode("utf-8")
     assert "Étape enregistrée" in content
-    assert "Repasser en brouillon pour modifier" in content
 
     bdese.refresh_from_db()
     if bdese.is_bdese_300:
@@ -322,7 +351,7 @@ def test_save_bdese_configuration(bdese, habilitated_user, client):
     assert response.redirect_chain == [(url, 302)]
 
     content = response.content.decode("utf-8")
-    assert "Catégories enregistrées" in content
+    assert "Étape enregistrée" in content
 
     bdese.refresh_from_db()
     assert bdese.categories_professionnelles == categories_pro
@@ -361,7 +390,7 @@ def test_save_and_complete_bdese_configuration(bdese, habilitated_user, client):
     assert response.redirect_chain == [(bdese_step_url(bdese, 1), 302)]
 
     content = response.content.decode("utf-8")
-    assert "Catégories enregistrées" in content
+    assert "Étape enregistrée" in content
 
     bdese.refresh_from_db()
     assert bdese.categories_professionnelles == categories_pro
@@ -393,7 +422,7 @@ def test_mark_as_incomplete_bdese_configuration(
     assert response.redirect_chain == [(url, 302)]
 
     content = response.content.decode("utf-8")
-    assert "Catégories enregistrées" not in content
+    assert "Étape enregistrée" not in content
 
     bdese.refresh_from_db()
     assert bdese.categories_professionnelles == categories_pro
@@ -415,7 +444,7 @@ def test_save_bdese_configuration_error(bdese, habilitated_user, client):
 
     content = response.content.decode("utf-8")
     assert (
-        "Les catégories n'ont pas été enregistrées car le formulaire contient des erreurs"
+        "L'étape n'a pas été enregistrée car le formulaire contient des erreurs"
         in html.unescape(content)
     )
     assert "Au moins 3 postes sont requis" in content
@@ -470,7 +499,7 @@ def test_save_bdese_configuration_for_a_new_year(
     ]
 
     content = response.content.decode("utf-8")
-    assert "Catégories enregistrées" in content
+    assert "Étape enregistrée" in content
 
     configured_bdese.refresh_from_db()
     new_bdese = configured_bdese.__class__.objects.get(

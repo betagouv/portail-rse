@@ -396,20 +396,11 @@ def bdese(request, siren, annee, step):
     if request.user not in entreprise.users.all():
         raise PermissionDenied
 
-    if (
-        not is_user_habilited_on_entreprise(request.user, entreprise)
-        and entreprise.users.count() >= 2
-    ):
-        messages.info(
-            request,
-            "Plusieurs utilisateurs sont liés à cette entreprise. Les informations que vous remplissez ne sont pas partagés avec les autres utilisateurs tant que vous n'êtes pas habilités.",
-        )
-
     bdese = _get_or_create_bdese(entreprise, annee, request.user)
 
-    if not bdese.is_configured:
+    if not bdese.is_configured and step != 0:
         messages.warning(request, f"Commencez par configurer votre BDESE {annee}")
-        return redirect("bdese_configuration", siren=siren, annee=annee)
+        return redirect("bdese", siren=siren, annee=annee, step=0)
 
     if request.method == "POST":
         if "mark_incomplete" in request.POST:
@@ -417,17 +408,22 @@ def bdese(request, siren, annee, step):
             bdese.save()
             return redirect("bdese", siren=siren, annee=annee, step=step)
         else:
-            form = bdese_form_factory(
-                bdese,
-                step,
-                data=request.POST,
-            )
+            if step == 0:
+                form = bdese_configuration_form_factory(bdese, data=request.POST)
+            else:
+                form = bdese_form_factory(
+                    bdese,
+                    step,
+                    data=request.POST,
+                )
             if form.is_valid():
                 bdese = form.save()
                 messages.success(request, "Étape enregistrée")
                 if "save_complete" in request.POST:
                     bdese.mark_step_as_complete(step)
                     bdese.save()
+                    if step < len(bdese.STEPS) - 1:
+                        step += 1
                 return redirect("bdese", siren=siren, annee=annee, step=step)
             else:
                 messages.error(
@@ -436,11 +432,29 @@ def bdese(request, siren, annee, step):
                 )
 
     else:
-        fetched_data = get_bdese_data_from_egapro(entreprise, annee)
-        form = bdese_form_factory(
-            bdese,
-            step,
-            fetched_data=fetched_data,
+        if step == 0:
+            initial = None
+            if not bdese.is_configured:
+                initial = initialize_bdese_configuration(bdese)
+            form = bdese_configuration_form_factory(
+                bdese,
+                initial=initial,
+            )
+        else:
+            fetched_data = get_bdese_data_from_egapro(entreprise, annee)
+            form = bdese_form_factory(
+                bdese,
+                step,
+                fetched_data=fetched_data,
+            )
+
+    if (
+        not is_user_habilited_on_entreprise(request.user, entreprise)
+        and entreprise.users.count() >= 2
+    ):
+        messages.info(
+            request,
+            "Plusieurs utilisateurs sont liés à cette entreprise. Les informations que vous remplissez ne sont pas partagés avec les autres utilisateurs tant que vous n'êtes pas habilités.",
         )
 
     return render(
@@ -525,58 +539,6 @@ def _get_or_create_bdese(
         )
 
     return bdese
-
-
-@login_required
-def bdese_configuration(request, siren, annee):
-    entreprise = Entreprise.objects.get(siren=siren)
-    if request.user not in entreprise.users.all():
-        raise PermissionDenied
-
-    if (
-        not is_user_habilited_on_entreprise(request.user, entreprise)
-        and entreprise.users.count() >= 2
-    ):
-        messages.info(
-            request,
-            "Plusieurs utilisateurs sont liés à cette entreprise. Les informations que vous remplissez ne sont pas partagés avec les autres utilisateurs tant que vous n'êtes pas habilités.",
-        )
-
-    bdese = _get_or_create_bdese(entreprise, annee, request.user)
-
-    initial = None
-    if not bdese.is_configured and not request.POST:
-        initial = initialize_bdese_configuration(bdese)
-
-    form = bdese_configuration_form_factory(
-        bdese, data=request.POST or None, initial=initial
-    )
-
-    if "mark_incomplete" in request.POST:
-        bdese.mark_step_as_incomplete(0)
-        bdese.save()
-        return redirect("bdese", siren=siren, annee=annee, step=0)
-
-    if form.is_valid():
-        bdese = form.save()
-        messages.success(request, "Catégories enregistrées")
-        next_step = 0
-        if "save_complete" in request.POST:
-            bdese.mark_step_as_complete(0)
-            bdese.save()
-            next_step = 1
-        return redirect("bdese", siren=siren, annee=annee, step=next_step)
-    elif request.POST:
-        messages.error(
-            request,
-            "Les catégories n'ont pas été enregistrées car le formulaire contient des erreurs",
-        )
-
-    return render(
-        request,
-        _bdese_step_template_path(bdese, 0),
-        _bdese_step_context(form, siren, annee, bdese, 0),
-    )
 
 
 def initialize_bdese_configuration(bdese: BDESE_300 | BDESE_50_300) -> dict:
