@@ -31,7 +31,9 @@ def test_create_user_with_real_siren(reception_actualites, client, db):
     response = client.post("/creation", data=data, follow=True)
 
     assert response.status_code == 200
-    assert response.redirect_chain == [(reverse("reglementations"), 302)]
+    assert response.redirect_chain == [
+        (reverse("reglementation", kwargs={"siren": "130025265"}), 302)
+    ]
 
     assert (
         "Votre compte a bien été créé. Vous êtes maintenant connecté."

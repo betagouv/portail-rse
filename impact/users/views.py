@@ -21,7 +21,8 @@ def creation(request):
                 "Votre compte a bien été créé. Vous êtes maintenant connecté."
             )
             messages.success(request, success_message)
-            return redirect("reglementations")
+            siren = form.cleaned_data["siren"]
+            return redirect("reglementation", siren)
         else:
             messages.error(
                 request, "La création a échoué car le formulaire contient des erreurs."
