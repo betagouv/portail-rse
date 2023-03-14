@@ -16,7 +16,7 @@
                             {% if entreprise.raison_sociale %}{{ entreprise.raison_sociale }}{% else %}{{ entreprise.siren}}{% endif %}
                         </h3>
                         {% with habilitation=entreprise|habilitation:user %}
-                        <div class="fr-card__end">
+                        <div class="fr-card__start">
                             {% if habilitation and habilitation.is_confirmed %}
                             <ul class="fr-badges-group">
                                 <li>
