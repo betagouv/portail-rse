@@ -12,7 +12,7 @@ from django.urls import reverse_lazy
 from weasyprint import CSS, HTML
 
 from entreprises.models import Entreprise
-from habilitations.models import get_habilitation
+from habilitations.models import get_habilitation, is_user_habilited_on_entreprise
 from public.forms import EligibiliteForm
 from .models import (
     derniere_annee_a_remplir_index_egapro,
@@ -396,6 +396,15 @@ def bdese(request, siren, annee, step):
     if request.user not in entreprise.users.all():
         raise PermissionDenied
 
+    if (
+        not is_user_habilited_on_entreprise(request.user, entreprise)
+        and entreprise.users.count() >= 2
+    ):
+        messages.info(
+            request,
+            "Plusieurs utilisateurs sont liés à cette entreprise. Les informations que vous remplissez ne sont pas partagés avec les autres utilisateurs tant que vous n'êtes pas habilités.",
+        )
+
     bdese = _get_or_create_bdese(entreprise, annee, request.user)
 
     if not bdese.is_configured:
@@ -523,6 +532,15 @@ def bdese_configuration(request, siren, annee):
     entreprise = Entreprise.objects.get(siren=siren)
     if request.user not in entreprise.users.all():
         raise PermissionDenied
+
+    if (
+        not is_user_habilited_on_entreprise(request.user, entreprise)
+        and entreprise.users.count() >= 2
+    ):
+        messages.info(
+            request,
+            "Plusieurs utilisateurs sont liés à cette entreprise. Les informations que vous remplissez ne sont pas partagés avec les autres utilisateurs tant que vous n'êtes pas habilités.",
+        )
 
     bdese = _get_or_create_bdese(entreprise, annee, request.user)
 
