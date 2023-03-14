@@ -15,16 +15,25 @@
                         <h3 class="fr-card__title">
                             {% if entreprise.raison_sociale %}{{ entreprise.raison_sociale }}{% else %}{{ entreprise.siren}}{% endif %}
                         </h3>
+                        {% with habilitation=entreprise|habilitation:user %}
+                        <div class="fr-card__end">
+                            {% if habilitation and habilitation.is_confirmed %}
+                            <ul class="fr-badges-group">
+                                <li>
+                                    <p class="fr-badge fr-badge--success">Habilité</p>
+                                </li>
+                            </ul>
+                            {% endif %}
+                        </div>
                         <p class="fr-card__desc">
-                            {% with habilitation=entreprise|habilitation:user %}
-                                {% if habilitation and habilitation.fonctions %}en tant que {{ habilitation.fonctions }}{% endif %}
-                            {% endwith %}
+                            {% if habilitation and habilitation.fonctions %}en tant que {{ habilitation.fonctions }}{% endif %}
                             <ul class="fr-card__desc">
                                 <li>SIREN : {{ entreprise.siren }}</li>
                                 <li>effectif : {% if entreprise.effectif %}{{ entreprise.get_effectif_display }} salariés{% else %}non renseigné{% endif %}</li>
                                 <li>accord d'entreprise concernant la BDESE : {{ entreprise.bdese_accord | translate_boolean }}</li>
                             </ul>
                         </p>
+                        {% endwith %}
                     </div>
                 </div>
             </div>
