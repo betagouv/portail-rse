@@ -1,6 +1,7 @@
 import pytest
 
 from entreprises.models import Entreprise
+from habilitations.models import add_entreprise_to_user
 from reglementations.views import BDESEReglementation, IndexEgaproReglementation
 
 
@@ -77,7 +78,7 @@ def entreprise(db, alice):
         bdese_accord=False,
         raison_sociale="Entreprise SAS",
     )
-    entreprise.users.add(alice)
+    add_entreprise_to_user(entreprise, alice, "Présidente")
     return entreprise
 
 
@@ -223,3 +224,17 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
     )
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
+
+
+def test_reglementations_with_authenticated_user_and_unqualified_entreprise(
+    client, alice
+):
+    entreprise = Entreprise.objects.create(siren="123456789")
+    add_entreprise_to_user(entreprise, alice, "Présidente")
+    client.force_login(alice)
+
+    response = client.get(f"/reglementation/{entreprise.siren}", follow=True)
+
+    assert response.status_code == 200
+    url = f"/entreprises/{entreprise.siren}"
+    assert response.redirect_chain == [(url, 302)]

@@ -32,3 +32,7 @@ class Entreprise(TimestampedModel):
 
     def __str__(self):
         return f"{self.siren} {self.raison_sociale}"
+
+    @property
+    def is_qualified(self):
+        return self.raison_sociale and self.effectif
