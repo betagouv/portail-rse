@@ -19,9 +19,6 @@ class EligibiliteForm(DsfrForm, forms.ModelForm):
     class Meta:
         model = Entreprise
         fields = ["effectif", "bdese_accord", "raison_sociale", "siren"]
-        labels = {
-            "bdese_accord": "L'entreprise a un accord collectif d'entreprise concernant la Base de Données Économiques, Sociales et Environnementales (BDESE)"
-        }
 
     def clean_raison_sociale(self):
         raison_sociale = self.cleaned_data.get("raison_sociale")

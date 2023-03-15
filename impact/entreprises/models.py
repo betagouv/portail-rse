@@ -27,7 +27,10 @@ class Entreprise(TimestampedModel):
         choices=EFFECTIF_CHOICES,
         help_text="Vérifiez et confirmez le nombre de salariés",
     )
-    bdese_accord = models.BooleanField(default=False)
+    bdese_accord = models.BooleanField(
+        verbose_name="L'entreprise a un accord collectif d'entreprise concernant la Base de Données Économiques, Sociales et Environnementales (BDESE)",
+        default=False,
+    )
     raison_sociale = models.CharField(max_length=RAISON_SOCIALE_MAX_LENGTH, default="")
 
     def __str__(self):
