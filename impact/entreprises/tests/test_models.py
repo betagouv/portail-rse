@@ -21,6 +21,7 @@ def test_entreprise():
     assert entreprise.bdese_accord is False
     assert entreprise.effectif == ""
     assert not entreprise.users.all()
+    assert not entreprise.is_qualified
 
     with pytest.raises(IntegrityError):
         Entreprise.objects.create(siren="123456789")
@@ -30,3 +31,12 @@ def test_entreprise():
         entreprise.save()
 
     assert entreprise.updated_at == now + timedelta(1)
+
+
+@pytest.mark.django_db(transaction=True)
+def test_entreprise_is_qualified():
+    entreprise = Entreprise.objects.create(
+        siren="123456789", raison_sociale="Entreprise SAS", effectif="moyen"
+    )
+
+    assert entreprise.is_qualified

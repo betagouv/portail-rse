@@ -68,6 +68,10 @@ def add(request):
     return redirect("entreprises")
 
 
+def detail_entreprise(request, siren):
+    return render(request, "entreprises/detail_entreprise.html")
+
+
 def search_entreprise(request, siren):
     try:
         return JsonResponse(api.recherche_entreprises.recherche(siren))

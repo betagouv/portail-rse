@@ -113,3 +113,15 @@ def test_fail_because_already_existing_habilitation(client, alice, entreprise_fa
         "Impossible d'ajouter cette entreprise. Vous y êtes déjà rattaché·e."
         in html.unescape(content)
     )
+
+
+def test_detail_entreprise_page(client, alice):
+    entreprise = Entreprise.objects.create(siren="123456789")
+    entreprise.users.add(alice)
+    client.force_login(alice)
+
+    response = client.get(f"/entreprises/{entreprise.siren}")
+
+    assert response.status_code == 200
+    content = response.content.decode("utf-8")
+    assert "<!-- page details entreprise -->" in content

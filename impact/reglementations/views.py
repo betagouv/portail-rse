@@ -272,6 +272,8 @@ def reglementation(request, siren):
         raise PermissionDenied
 
     request.session["entreprise"] = entreprise.siren
+    if not entreprise.is_qualified:
+        return redirect("detail_entreprise", siren=entreprise.siren)
 
     return render(
         request,
