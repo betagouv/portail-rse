@@ -74,8 +74,8 @@ def add(request):
 def detail_entreprise(request, siren):
     entreprise = get_object_or_404(Entreprise, siren=siren)
 
-    form = EntrepriseQualificationForm(data=request.POST or None, instance=entreprise)
     if request.POST:
+        form = EntrepriseQualificationForm(data=request.POST, instance=entreprise)
         if form.is_valid():
             entreprise = form.save()
             messages.success(request, "Entreprise enregistrée")
@@ -85,6 +85,10 @@ def detail_entreprise(request, siren):
                 request,
                 "L'entreprise n'a pas été enregistrée car le formulaire contient des erreurs",
             )
+    else:
+        initial = api.recherche_entreprises.recherche(entreprise.siren)
+        form = EntrepriseQualificationForm(instance=entreprise, initial=initial)
+
     return render(
         request,
         "entreprises/detail_entreprise.html",
