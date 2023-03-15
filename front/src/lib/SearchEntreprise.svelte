@@ -1,4 +1,5 @@
 <script>
+    import spinner from './assets/spinner.svg';
     let siren = ""
     let recherche = false
     let promise = async () => {}
@@ -39,7 +40,7 @@
                 </button>
                 {:else}
                 <input type="text" name="siren" maxlength="9" minlength="9" class="fr-input" id="id_siren" value="{siren}" readonly>
-                <img src="/static/img/spinner.svg" width="40" alt="Spinner d'attente">
+                <img src="{spinner}" width="40" alt="Spinner d'attente">
                 {/if}
             </div>
         </div>
