@@ -1,5 +1,6 @@
 import pytest
 
+from api.tests.fixtures import mock_api_recherche_entreprise
 from entreprises.models import Entreprise
 from habilitations.models import add_entreprise_to_user
 from reglementations.views import BDESEReglementation, IndexEgaproReglementation
@@ -226,8 +227,8 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
         assert reglementation["status"].status_detail in content
 
 
-def test_reglementations_with_authenticated_user_and_unqualified_entreprise(
-    client, alice
+def test_reglementation_with_unqualified_entreprise_redirect_to_qualification_page(
+    client, alice, mock_api_recherche_entreprise
 ):
     entreprise = Entreprise.objects.create(siren="123456789")
     add_entreprise_to_user(entreprise, alice, "Présidente")

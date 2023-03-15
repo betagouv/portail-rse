@@ -122,6 +122,7 @@ def test_detail_entreprise_page(
     assert response.status_code == 200
     content = response.content.decode("utf-8")
     assert "<!-- page details entreprise -->" in content
+    mock_api_recherche_entreprise.assert_called_once_with(unqualified_entreprise.siren)
 
 
 def test_qualify_entreprise(
