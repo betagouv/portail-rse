@@ -17,8 +17,5 @@ if (document.getElementById("svelte-search-entreprise")) {
   let target = document.getElementById("svelte-search-entreprise")
   new SearchEntreprise({
     target: target,
-    props: {
-      csrfToken: target.dataset.csrfToken
-    }
   })
 }
