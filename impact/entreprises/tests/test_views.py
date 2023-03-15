@@ -45,11 +45,11 @@ def test_add_and_attach_to_entreprise(client, mocker, alice):
     assert response.redirect_chain == [(reverse("entreprises"), 302)]
     content = response.content.decode("utf-8")
     assert "L'entreprise a été ajoutée." in html.unescape(content)
+
     entreprise = Entreprise.objects.get(siren="130025265")
-    assert entreprise.effectif == "moyen"
-    assert entreprise.raison_sociale == RAISON_SOCIALE
-    assert entreprise in alice.entreprises
     assert get_habilitation(entreprise, alice).fonctions == "Présidente"
+    assert entreprise.raison_sociale == RAISON_SOCIALE
+    assert not entreprise.is_qualified
 
 
 def test_attach_to_an_existing_entreprise(client, alice, entreprise_factory):

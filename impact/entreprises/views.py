@@ -42,7 +42,10 @@ def add(request):
                     infos_entreprise = api.recherche_entreprises.recherche(siren)
                 except APIError:
                     raise _InvalidRequest(SIREN_NOT_FOUND_ERROR)
-                entreprise = Entreprise.objects.create(**infos_entreprise)
+                entreprise = Entreprise.objects.create(
+                    siren=infos_entreprise["siren"],
+                    raison_sociale=infos_entreprise["raison_sociale"],
+                )
             if get_habilitation(entreprise, request.user):
                 raise _InvalidRequest(
                     "Impossible d'ajouter cette entreprise. Vous y êtes déjà rattaché·e."
