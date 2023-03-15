@@ -2,9 +2,10 @@ import html
 import pytest
 from django.urls import reverse
 
+import api.exceptions
+from api.tests.fixtures import mock_api_recherche_entreprise
 from entreprises.models import Entreprise
 from habilitations.models import add_entreprise_to_user, get_habilitation, Habilitation
-import api.exceptions
 
 
 def test_entreprises_page_requires_login(client):
@@ -14,7 +15,7 @@ def test_entreprises_page_requires_login(client):
 
 
 def test_entreprises_page_for_logged_user(client, alice):
-    entreprise = Entreprise.objects.create(siren="123456789")
+    entreprise = Entreprise.objects.create(siren="00000001")
     entreprise.users.add(alice)
     client.force_login(alice)
 
@@ -25,30 +26,21 @@ def test_entreprises_page_for_logged_user(client, alice):
     assert "<!-- page entreprises -->" in content
 
 
-def test_add_and_attach_to_entreprise(client, mocker, alice):
+def test_add_and_attach_to_entreprise(client, alice, mock_api_recherche_entreprise):
     client.force_login(alice)
-    SIREN = "130025265"
-    RAISON_SOCIALE = "ENTREPRISE_TEST"
-    data = {"siren": SIREN, "fonctions": "Présidente"}
+    data = {"siren": "000000001", "fonctions": "Présidente"}
 
-    mocker.patch(
-        "api.recherche_entreprises.recherche",
-        return_value={
-            "siren": SIREN,
-            "effectif": "moyen",
-            "raison_sociale": RAISON_SOCIALE,
-        },
-    )
     response = client.post("/entreprises/add", data=data, follow=True)
 
     assert response.status_code == 200
     assert response.redirect_chain == [(reverse("entreprises"), 302)]
+
     content = response.content.decode("utf-8")
     assert "L'entreprise a été ajoutée." in html.unescape(content)
 
-    entreprise = Entreprise.objects.get(siren="130025265")
+    entreprise = Entreprise.objects.get(siren="000000001")
     assert get_habilitation(entreprise, alice).fonctions == "Présidente"
-    assert entreprise.raison_sociale == RAISON_SOCIALE
+    assert entreprise.raison_sociale == "Entreprise SAS"
     assert not entreprise.is_qualified
 
 
@@ -67,7 +59,7 @@ def test_attach_to_an_existing_entreprise(client, alice, entreprise_factory):
 
 def test_fail_to_add_entreprise(client, alice):
     client.force_login(alice)
-    data = {"siren": "", "fonctions": "Présidente"}
+    data = {"siren": "unvalid", "fonctions": "Présidente"}
 
     response = client.post("/entreprises/add", data=data, follow=True)
 
@@ -80,13 +72,11 @@ def test_fail_to_add_entreprise(client, alice):
     assert Entreprise.objects.count() == 0
 
 
-def test_fail_to_find_entreprise_in_API(client, mocker, alice):
+def test_fail_to_find_entreprise_in_API(client, alice, mock_api_recherche_entreprise):
     client.force_login(alice)
-    data = {"siren": "130025265", "fonctions": "Présidente"}
+    mock_api_recherche_entreprise.side_effect = api.exceptions.APIError
+    data = {"siren": "000000001", "fonctions": "Présidente"}
 
-    mocker.patch(
-        "api.recherche_entreprises.recherche", side_effect=api.exceptions.APIError
-    )
     response = client.post("/entreprises/add", data=data, follow=True)
 
     assert response.status_code == 200
@@ -117,12 +107,14 @@ def test_fail_because_already_existing_habilitation(client, alice, entreprise_fa
 
 @pytest.fixture
 def unqualified_entreprise(alice):
-    entreprise = Entreprise.objects.create(siren="123456789")
-    add_entreprise_to_user(entreprise, alice, "DG")
+    entreprise = Entreprise.objects.create(siren="00000001")
+    add_entreprise_to_user(entreprise, alice, "Présidente")
     return entreprise
 
 
-def test_detail_entreprise_page(client, alice, unqualified_entreprise):
+def test_detail_entreprise_page(
+    client, alice, unqualified_entreprise, mock_api_recherche_entreprise
+):
     client.force_login(alice)
 
     response = client.get(f"/entreprises/{unqualified_entreprise.siren}")
@@ -132,7 +124,9 @@ def test_detail_entreprise_page(client, alice, unqualified_entreprise):
     assert "<!-- page details entreprise -->" in content
 
 
-def test_qualify_entreprise(client, alice, unqualified_entreprise):
+def test_qualify_entreprise(
+    client, alice, unqualified_entreprise, mock_api_recherche_entreprise
+):
     client.force_login(alice)
     data = {
         "raison_sociale": "Entreprise SAS",
