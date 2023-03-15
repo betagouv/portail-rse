@@ -18,9 +18,14 @@ class SirenField(forms.CharField):
 
 
 class EntrepriseCreationForm(DsfrForm):
-
     siren = SirenField(
         label="Numéro SIREN",
         help_text="Saisissez un numéro SIREN valide, disponible sur le Kbis de votre organisation",
     )
     fonctions = forms.CharField(label="Fonction(s) dans la société")
+
+
+class EntrepriseQualificationForm(forms.ModelForm, DsfrForm):
+    class Meta:
+        model = Entreprise
+        fields = ["effectif", "bdese_accord", "raison_sociale"]

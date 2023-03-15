@@ -4,9 +4,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import EntrepriseCreationForm
+from .forms import EntrepriseCreationForm, EntrepriseQualificationForm
 from .models import Entreprise
 from api.exceptions import APIError
 from habilitations.models import add_entreprise_to_user, get_habilitation
@@ -72,7 +72,24 @@ def add(request):
 
 
 def detail_entreprise(request, siren):
-    return render(request, "entreprises/detail_entreprise.html")
+    entreprise = get_object_or_404(Entreprise, siren=siren)
+
+    form = EntrepriseQualificationForm(data=request.POST or None, instance=entreprise)
+    if request.POST:
+        if form.is_valid():
+            entreprise = form.save()
+            messages.success(request, "Entreprise enregistrée")
+            return redirect("reglementation", siren=siren)
+        else:
+            messages.error(
+                request,
+                "L'entreprise n'a pas été enregistrée car le formulaire contient des erreurs",
+            )
+    return render(
+        request,
+        "entreprises/detail_entreprise.html",
+        context={"entreprise": entreprise, "form": form},
+    )
 
 
 def search_entreprise(request, siren):

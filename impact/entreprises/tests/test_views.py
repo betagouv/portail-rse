@@ -115,13 +115,35 @@ def test_fail_because_already_existing_habilitation(client, alice, entreprise_fa
     )
 
 
-def test_detail_entreprise_page(client, alice):
+@pytest.fixture
+def unqualified_entreprise(alice):
     entreprise = Entreprise.objects.create(siren="123456789")
-    entreprise.users.add(alice)
+    add_entreprise_to_user(entreprise, alice, "DG")
+    return entreprise
+
+
+def test_detail_entreprise_page(client, alice, unqualified_entreprise):
     client.force_login(alice)
 
-    response = client.get(f"/entreprises/{entreprise.siren}")
+    response = client.get(f"/entreprises/{unqualified_entreprise.siren}")
 
     assert response.status_code == 200
     content = response.content.decode("utf-8")
     assert "<!-- page details entreprise -->" in content
+
+
+def test_qualify_entreprise(client, alice, unqualified_entreprise):
+    client.force_login(alice)
+    data = {
+        "raison_sociale": "Entreprise SAS",
+        "effectif": "moyen",
+        "bdese_accord": True,
+    }
+
+    reponse = client.post(f"/entreprises/{unqualified_entreprise.siren}", data=data)
+
+    unqualified_entreprise.refresh_from_db()
+    assert unqualified_entreprise.raison_sociale == "Entreprise SAS"
+    assert unqualified_entreprise.effectif == "moyen"
+    assert unqualified_entreprise.bdese_accord
+    assert unqualified_entreprise.is_qualified
