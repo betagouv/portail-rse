@@ -74,7 +74,9 @@ def test_fail_to_add_entreprise(client, alice):
 
 def test_fail_to_find_entreprise_in_API(client, alice, mock_api_recherche_entreprise):
     client.force_login(alice)
-    mock_api_recherche_entreprise.side_effect = api.exceptions.APIError
+    mock_api_recherche_entreprise.side_effect = api.exceptions.APIError(
+        "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct."
+    )
     data = {"siren": "000000001", "fonctions": "Présidente"}
 
     response = client.post("/entreprises/add", data=data, follow=True)
@@ -82,7 +84,7 @@ def test_fail_to_find_entreprise_in_API(client, alice, mock_api_recherche_entrep
     assert response.status_code == 200
     content = response.content.decode("utf-8")
     assert (
-        "Impossible de créer l'entreprise car le SIREN n'est pas trouvé."
+        "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct."
         in html.unescape(content)
     )
     assert Entreprise.objects.count() == 0

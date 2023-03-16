@@ -70,11 +70,11 @@ class UserCreationForm(DsfrForm, UserPasswordForm):
         label="Numéro SIREN",
         help_text="Saisissez un numéro SIREN valide, disponible sur le Kbis de votre organisation ou sur l'Annuaire des Entreprises",
     )
+    fonctions = forms.CharField(label="Fonction(s) dans la société")
     acceptation_cgu = forms.BooleanField(
         label="J’ai lu et j’accepte la politique de confidentialité et les CGUs",
         required=True,
     )
-    fonctions = forms.CharField(label="Fonction(s) dans la société")
 
     class Meta:
         model = User
@@ -83,23 +83,6 @@ class UserCreationForm(DsfrForm, UserPasswordForm):
             "prenom": "Prénom",
             "reception_actualites": "Je souhaite recevoir les actualités du projet Impact (optionnel)",
         }
-
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        # Save the provided password in hashed format
-        user.set_password(self.cleaned_data["password1"])
-        entreprise, _ = Entreprise.objects.get_or_create(
-            siren=self.cleaned_data.get("siren")
-        )
-        if commit:
-            user.save()
-            add_entreprise_to_user(
-                entreprise,
-                user,
-                self.cleaned_data["fonctions"],
-            )
-            entreprise.save()
-        return user
 
 
 class UserEditionForm(DsfrForm, UserPasswordForm):

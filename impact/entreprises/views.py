@@ -16,16 +16,22 @@ from habilitations.models import add_entreprise_to_user, get_habilitation
 
 @login_required()
 def index(request):
-    return render(request, "entreprises/index.html")
+    return render(request, "entreprises/index.html", {"form": EntrepriseAddForm()})
 
 
 class _InvalidRequest(Exception):
     pass
 
 
-SIREN_NOT_FOUND_ERROR = (
-    "Impossible de créer l'entreprise car le SIREN n'est pas trouvé."
-)
+def search_and_create_entreprise(siren):
+    try:
+        infos_entreprise = api.recherche_entreprises.recherche(siren)
+    except APIError as exception:
+        raise exception
+    return Entreprise.objects.create(
+        siren=infos_entreprise["siren"],
+        raison_sociale=infos_entreprise["raison_sociale"],
+    )
 
 
 @login_required()
@@ -37,14 +43,7 @@ def add(request):
             if entreprises := Entreprise.objects.filter(siren=siren):
                 entreprise = entreprises[0]
             else:
-                try:
-                    infos_entreprise = api.recherche_entreprises.recherche(siren)
-                except APIError:
-                    raise _InvalidRequest(SIREN_NOT_FOUND_ERROR)
-                entreprise = Entreprise.objects.create(
-                    siren=infos_entreprise["siren"],
-                    raison_sociale=infos_entreprise["raison_sociale"],
-                )
+                entreprise = search_and_create_entreprise(siren)
             if get_habilitation(entreprise, request.user):
                 raise _InvalidRequest(
                     "Impossible d'ajouter cette entreprise. Vous y êtes déjà rattaché·e."
@@ -59,7 +58,7 @@ def add(request):
             raise _InvalidRequest(
                 "Impossible de créer l'entreprise car les données sont incorrectes."
             )
-    except _InvalidRequest as exception:
+    except (_InvalidRequest, APIError) as exception:
         messages.error(
             request,
             exception,
@@ -108,8 +107,8 @@ def qualification(request, siren):
 def search_entreprise(request, siren):
     try:
         return JsonResponse(api.recherche_entreprises.recherche(siren))
-    except APIError:
+    except APIError as exception:
         return JsonResponse(
-            {"error": SIREN_NOT_FOUND_ERROR},
+            {"error": str(exception)},
             status=400,
         )
