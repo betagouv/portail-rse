@@ -28,4 +28,4 @@ class EntrepriseCreationForm(DsfrForm):
 class EntrepriseQualificationForm(forms.ModelForm, DsfrForm):
     class Meta:
         model = Entreprise
-        fields = ["effectif", "bdese_accord", "raison_sociale"]
+        fields = ["effectif", "bdese_accord"]

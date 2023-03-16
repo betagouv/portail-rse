@@ -124,18 +124,23 @@ def test_detail_entreprise_page(
     assert "<!-- page details entreprise -->" in content
     mock_api_recherche_entreprise.assert_called_once_with(unqualified_entreprise.siren)
 
+    unqualified_entreprise.refresh_from_db()
+    assert unqualified_entreprise.raison_sociale == "Entreprise SAS"
+    assert not unqualified_entreprise.is_qualified
+
 
 def test_qualify_entreprise(
     client, alice, unqualified_entreprise, mock_api_recherche_entreprise
 ):
     client.force_login(alice)
     data = {
-        "raison_sociale": "Entreprise SAS",
         "effectif": "moyen",
         "bdese_accord": True,
     }
 
-    reponse = client.post(f"/entreprises/{unqualified_entreprise.siren}", data=data)
+    url = f"/entreprises/{unqualified_entreprise.siren}"
+    response = client.get(url)
+    reponse = client.post(url, data=data)
 
     unqualified_entreprise.refresh_from_db()
     assert unqualified_entreprise.raison_sociale == "Entreprise SAS"
