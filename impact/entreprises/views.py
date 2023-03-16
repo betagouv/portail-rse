@@ -86,8 +86,14 @@ def detail_entreprise(request, siren):
                 "L'entreprise n'a pas été enregistrée car le formulaire contient des erreurs",
             )
     else:
-        initial = api.recherche_entreprises.recherche(entreprise.siren)
-        form = EntrepriseQualificationForm(instance=entreprise, initial=initial)
+        infos_entreprise = api.recherche_entreprises.recherche(entreprise.siren)
+        if not entreprise.raison_sociale:
+            # some entreprises may have been created without raison sociale through user creation page
+            entreprise.raison_sociale = infos_entreprise["raison_sociale"]
+            entreprise.save()
+        form = EntrepriseQualificationForm(
+            instance=entreprise, initial=infos_entreprise
+        )
 
     return render(
         request,
