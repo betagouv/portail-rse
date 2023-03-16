@@ -8,7 +8,7 @@ from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, redirect, render
 
 import api.recherche_entreprises
-from .forms import EntrepriseCreationForm, EntrepriseQualificationForm
+from .forms import EntrepriseAddForm, EntrepriseQualificationForm
 from .models import Entreprise
 from api.exceptions import APIError
 from habilitations.models import add_entreprise_to_user, get_habilitation
@@ -30,7 +30,7 @@ SIREN_NOT_FOUND_ERROR = (
 
 @login_required()
 def add(request):
-    form = EntrepriseCreationForm(request.POST)
+    form = EntrepriseAddForm(request.POST)
     try:
         if form.is_valid():
             siren = form.cleaned_data["siren"]
