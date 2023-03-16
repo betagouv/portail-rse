@@ -185,10 +185,10 @@ def test_save_step_error(configured_bdese, habilitated_user, client):
     response = client.post(url, incorrect_data)
 
     assert response.status_code == 200
-    content = response.content.decode("utf-8")
+    content = html.unescape(response.content.decode("utf-8"))
     assert (
         "L'étape n'a pas été enregistrée car le formulaire contient des erreurs"
-        in html.unescape(content)
+        in content
     )
 
     bdese.refresh_from_db()
@@ -442,10 +442,10 @@ def test_save_bdese_configuration_error(bdese, habilitated_user, client):
 
     assert response.status_code == 200
 
-    content = response.content.decode("utf-8")
+    content = html.unescape(response.content.decode("utf-8"))
     assert (
         "L'étape n'a pas été enregistrée car le formulaire contient des erreurs"
-        in html.unescape(content)
+        in content
     )
     assert "Au moins 3 postes sont requis" in content
 

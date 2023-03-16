@@ -35,8 +35,8 @@ def test_add_and_attach_to_entreprise(client, alice, mock_api_recherche_entrepri
     assert response.status_code == 200
     assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
 
-    content = response.content.decode("utf-8")
-    assert "L'entreprise a été ajoutée." in html.unescape(content)
+    content = html.unescape(response.content.decode("utf-8"))
+    assert "L'entreprise a été ajoutée." in content
 
     entreprise = Entreprise.objects.get(siren="000000001")
     assert get_habilitation(entreprise, alice).fonctions == "Présidente"
@@ -65,9 +65,9 @@ def test_fail_to_add_entreprise(client, alice):
 
     assert response.status_code == 200
     content = response.content.decode("utf-8")
+    content = html.unescape(response.content.decode("utf-8"))
     assert (
-        "Impossible de créer l'entreprise car les données sont incorrectes."
-        in html.unescape(content)
+        "Impossible de créer l'entreprise car les données sont incorrectes." in content
     )
     assert Entreprise.objects.count() == 0
 
@@ -82,10 +82,10 @@ def test_fail_to_find_entreprise_in_API(client, alice, mock_api_recherche_entrep
     response = client.post("/entreprises/add", data=data, follow=True)
 
     assert response.status_code == 200
-    content = response.content.decode("utf-8")
+    content = html.unescape(response.content.decode("utf-8"))
     assert (
         "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct."
-        in html.unescape(content)
+        in content
     )
     assert Entreprise.objects.count() == 0
 
@@ -100,10 +100,9 @@ def test_fail_because_already_existing_habilitation(client, alice, entreprise_fa
 
     assert Habilitation.objects.count() == 1
     assert response.status_code == 200
-    content = response.content.decode("utf-8")
+    content = html.unescape(response.content.decode("utf-8"))
     assert (
-        "Impossible d'ajouter cette entreprise. Vous y êtes déjà rattaché·e."
-        in html.unescape(content)
+        "Impossible d'ajouter cette entreprise. Vous y êtes déjà rattaché·e." in content
     )
 
 
