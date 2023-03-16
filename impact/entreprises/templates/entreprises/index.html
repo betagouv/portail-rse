@@ -35,9 +35,11 @@
     {% endif %}
 
     <h2 class="fr-mt-4w">Ajouter une entreprise</h2>
-    <form action="/entreprises/add" method="post">
+    <form action="{% url 'entreprises:add' %}" method="post">
         {% csrf_token %}
         <div id="svelte-search-entreprise"></div>
+        {% include 'snippets/field.html' with field=form.fonctions %}
+        <input type="submit" value="Ajouter cette entreprise" class="fr-btn">
     </form>
 
 </div>

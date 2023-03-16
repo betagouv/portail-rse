@@ -3,6 +3,11 @@ import requests
 from .exceptions import APIError
 
 
+SIREN_NOT_FOUND_ERROR = (
+    "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct."
+)
+
+
 def recherche(siren):
     # documentation api recherche d'entreprises 1.0.0 https://api.gouv.fr/documentation/api-recherche-entreprises
     url = (
@@ -32,4 +37,4 @@ def recherche(siren):
             "raison_sociale": raison_sociale,
         }
     else:
-        raise APIError()
+        raise APIError(SIREN_NOT_FOUND_ERROR)

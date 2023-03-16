@@ -7,6 +7,10 @@ from django.contrib.auth.views import (
 )
 from django.shortcuts import redirect, render
 
+from api.exceptions import APIError
+from entreprises.models import Entreprise
+from entreprises.views import search_and_create_entreprise
+from habilitations.models import add_entreprise_to_user
 from .forms import UserCreationForm, UserEditionForm
 from .models import User
 
@@ -15,14 +19,26 @@ def creation(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            login(request, User.objects.get(email=form.cleaned_data["email"]))
-            success_message = (
-                "Votre compte a bien été créé. Vous êtes maintenant connecté."
-            )
-            messages.success(request, success_message)
-            siren = form.cleaned_data["siren"]
-            return redirect("reglementation", siren)
+            try:
+                siren = form.cleaned_data["siren"]
+                if entreprises := Entreprise.objects.filter(siren=siren):
+                    entreprise = entreprises[0]
+                else:
+                    entreprise = search_and_create_entreprise(siren)
+                user = form.save()
+                add_entreprise_to_user(
+                    entreprise,
+                    user,
+                    form.cleaned_data["fonctions"],
+                )
+                login(request, User.objects.get(email=form.cleaned_data["email"]))
+                success_message = (
+                    "Votre compte a bien été créé. Vous êtes maintenant connecté."
+                )
+                messages.success(request, success_message)
+                return redirect("reglementation", siren)
+            except APIError as exception:
+                messages.error(request, exception)
         else:
             messages.error(
                 request, "La création a échoué car le formulaire contient des erreurs."

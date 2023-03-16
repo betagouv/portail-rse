@@ -1,3 +1,5 @@
+import html
+
 import pytest
 from django.urls import reverse
 
@@ -43,6 +45,7 @@ def test_create_user_with_real_siren(reception_actualites, client, db):
 
     user = User.objects.get(email="user@example.com")
     entreprise = Entreprise.objects.get(siren="130025265")
+    assert entreprise.raison_sociale == "DIRECTION INTERMINISTERIELLE DU NUMERIQUE"
     assert user.created_at
     assert user.updated_at
     assert user.email == "user@example.com"
@@ -50,9 +53,34 @@ def test_create_user_with_real_siren(reception_actualites, client, db):
     assert user.nom == "User"
     assert user.acceptation_cgu == True
     assert user.reception_actualites == (reception_actualites == "checked")
+    assert user.check_password("Passw0rd!123")
     assert user in entreprise.users.all()
     assert get_habilitation(entreprise, user).fonctions == "Présidente"
-    assert user.check_password("Passw0rd!123")
+
+
+def test_create_user_with_invalid_siren(client, db):
+    data = {
+        "prenom": "Alice",
+        "nom": "User",
+        "email": "user@example.com",
+        "password1": "Passw0rd!123",
+        "password2": "Passw0rd!123",
+        "siren": "123456789",  # Invalid
+        "acceptation_cgu": "checked",
+        "fonctions": "Présidente",
+    }
+
+    response = client.post("/creation", data=data)
+
+    assert response.status_code == 200
+
+    assert (
+        "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct."
+        in html.unescape(response.content.decode("utf-8"))
+    )
+
+    assert not User.objects.filter(email="user@example.com")
+    assert not Entreprise.objects.filter(siren="123456789")
 
 
 def test_account_page_is_not_public(client):
