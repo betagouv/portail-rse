@@ -2,16 +2,16 @@ import json
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404, redirect, render
 
+import api.recherche_entreprises
 from .forms import EntrepriseCreationForm, EntrepriseQualificationForm
 from .models import Entreprise
 from api.exceptions import APIError
 from habilitations.models import add_entreprise_to_user, get_habilitation
-
-import api.recherche_entreprises
 
 
 @login_required()
@@ -71,8 +71,11 @@ def add(request):
     return redirect("entreprises:entreprises")
 
 
+@login_required
 def qualification(request, siren):
     entreprise = get_object_or_404(Entreprise, siren=siren)
+    if request.user not in entreprise.users.all():
+        raise PermissionDenied
 
     if request.POST:
         form = EntrepriseQualificationForm(data=request.POST, instance=entreprise)
