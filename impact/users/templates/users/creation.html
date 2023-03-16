@@ -18,8 +18,14 @@
                     {% include 'snippets/siren_field.html' %}
                 </div>
                 {% include 'snippets/field.html' with field=form.fonctions %}
-                {% include 'snippets/field.html' with field=form.acceptation_cgu %}
-                {% include 'snippets/field.html' with field=form.reception_actualites %}
+                <div class="fr-form-group">
+                   <fieldset class="fr-fieldset">
+                        <div class="fr-fieldset__content">
+                            {% include 'snippets/field.html' with field=form.acceptation_cgu %}
+                            {% include 'snippets/field.html' with field=form.reception_actualites %}
+                        </div>
+                    </fieldset>
+                </div>
                 <button type="submit" class="fr-btn fr-mt-2w">Créer mon compte</button>
             </form>
             <p class="fr-my-4w">
