@@ -74,9 +74,10 @@ def test_create_user_with_invalid_siren(client, db):
 
     assert response.status_code == 200
 
+    content = html.unescape(response.content.decode("utf-8"))
     assert (
         "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct."
-        in html.unescape(response.content.decode("utf-8"))
+        in content
     )
 
     assert not User.objects.filter(email="user@example.com")
