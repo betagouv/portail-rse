@@ -33,7 +33,7 @@ def test_add_and_attach_to_entreprise(client, alice, mock_api_recherche_entrepri
     response = client.post("/entreprises/add", data=data, follow=True)
 
     assert response.status_code == 200
-    assert response.redirect_chain == [(reverse("entreprises"), 302)]
+    assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
 
     content = response.content.decode("utf-8")
     assert "L'entreprise a été ajoutée." in html.unescape(content)
@@ -52,7 +52,7 @@ def test_attach_to_an_existing_entreprise(client, alice, entreprise_factory):
     response = client.post("/entreprises/add", data=data, follow=True)
 
     assert response.status_code == 200
-    assert response.redirect_chain == [(reverse("entreprises"), 302)]
+    assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
     assert entreprise in alice.entreprises
     assert get_habilitation(entreprise, alice).fonctions == "Présidente"
 
