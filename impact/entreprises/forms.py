@@ -17,7 +17,7 @@ class SirenField(forms.CharField):
             raise ValidationError("Le siren est incorrect")
 
 
-class EntrepriseCreationForm(DsfrForm):
+class EntrepriseAddForm(DsfrForm):
     siren = SirenField(
         label="Numéro SIREN",
         help_text="Saisissez un numéro SIREN valide, disponible sur le Kbis de votre organisation",
