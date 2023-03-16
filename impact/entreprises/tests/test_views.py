@@ -155,10 +155,35 @@ def test_qualify_entreprise(
 
     url = f"/entreprises/{unqualified_entreprise.siren}"
     response = client.get(url)
-    reponse = client.post(url, data=data)
+    response = client.post(url, data=data)
 
     unqualified_entreprise.refresh_from_db()
     assert unqualified_entreprise.raison_sociale == "Entreprise SAS"
     assert unqualified_entreprise.effectif == "moyen"
     assert unqualified_entreprise.bdese_accord
     assert unqualified_entreprise.is_qualified
+
+
+def test_qualify_entreprise_error(
+    client, alice, unqualified_entreprise, mock_api_recherche_entreprise
+):
+    add_entreprise_to_user(unqualified_entreprise, alice, "Présidente")
+    client.force_login(alice)
+    data = {
+        "effectif": "yolo",
+        "bdese_accord": True,
+    }
+
+    url = f"/entreprises/{unqualified_entreprise.siren}"
+    response = client.get(url)
+    response = client.post(url, data=data)
+
+    assert response.status_code == 200
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        "L'entreprise n'a pas été enregistrée car le formulaire contient des erreurs"
+        in content
+    )
+
+    unqualified_entreprise.refresh_from_db()
+    assert not unqualified_entreprise.is_qualified
