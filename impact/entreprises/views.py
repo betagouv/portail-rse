@@ -16,8 +16,7 @@ from habilitations.models import add_entreprise_to_user, get_habilitation
 
 @login_required()
 def index(request):
-    csrf_token = get_token(request)
-    return render(request, "entreprises/index.html", {"csrf_token": csrf_token})
+    return render(request, "entreprises/index.html")
 
 
 class _InvalidRequest(Exception):
