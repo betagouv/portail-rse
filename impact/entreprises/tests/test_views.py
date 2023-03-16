@@ -112,7 +112,7 @@ def unqualified_entreprise(alice):
     return entreprise
 
 
-def test_detail_entreprise_page(
+def test_qualification_page(
     client, alice, unqualified_entreprise, mock_api_recherche_entreprise
 ):
     client.force_login(alice)
@@ -121,7 +121,7 @@ def test_detail_entreprise_page(
 
     assert response.status_code == 200
     content = response.content.decode("utf-8")
-    assert "<!-- page details entreprise -->" in content
+    assert "<!-- page qualification entreprise -->" in content
     mock_api_recherche_entreprise.assert_called_once_with(unqualified_entreprise.siren)
 
     unqualified_entreprise.refresh_from_db()

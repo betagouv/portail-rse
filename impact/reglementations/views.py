@@ -273,7 +273,7 @@ def reglementation(request, siren):
 
     request.session["entreprise"] = entreprise.siren
     if not entreprise.is_qualified:
-        return redirect("detail_entreprise", siren=entreprise.siren)
+        return redirect("qualification", siren=entreprise.siren)
 
     return render(
         request,

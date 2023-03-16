@@ -71,7 +71,7 @@ def add(request):
     return redirect("entreprises")
 
 
-def detail_entreprise(request, siren):
+def qualification(request, siren):
     entreprise = get_object_or_404(Entreprise, siren=siren)
 
     if request.POST:
@@ -97,7 +97,7 @@ def detail_entreprise(request, siren):
 
     return render(
         request,
-        "entreprises/detail_entreprise.html",
+        "entreprises/qualification.html",
         context={"entreprise": entreprise, "form": form},
     )
 
