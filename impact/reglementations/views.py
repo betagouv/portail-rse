@@ -272,7 +272,12 @@ def reglementation(request, siren):
         raise PermissionDenied
 
     request.session["entreprise"] = entreprise.siren
+
     if not entreprise.is_qualified:
+        messages.warning(
+            request,
+            "Veuillez renseigner les informations suivantes pour connaître les réglementations auxquelles est soumise cette entreprise",
+        )
         return redirect("entreprises:qualification", siren=entreprise.siren)
 
     return render(
