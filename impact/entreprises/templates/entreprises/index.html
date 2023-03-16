@@ -12,19 +12,13 @@
             <div class="fr-card fr-card--horizontal fr-mt-2w">
                 <div class="fr-card__body">
                     <div class="fr-card__content">
+                        {% with habilitation=entreprise|habilitation:user %}
                         <h3 class="fr-card__title">
                             {% if entreprise.raison_sociale %}{{ entreprise.raison_sociale }}{% else %}{{ entreprise.siren}}{% endif %}
-                        </h3>
-                        {% with habilitation=entreprise|habilitation:user %}
-                        <div class="fr-card__start">
                             {% if habilitation and habilitation.is_confirmed %}
-                            <ul class="fr-badges-group">
-                                <li>
-                                    <p class="fr-badge fr-badge--success">Habilité</p>
-                                </li>
-                            </ul>
+                                    <span class="fr-badge fr-badge--success">Habilité</span>
                             {% endif %}
-                        </div>
+                        </h3>
                         <p class="fr-card__desc">
                             {% if habilitation and habilitation.fonctions %}en tant que {{ habilitation.fonctions }}{% endif %}
                             <ul class="fr-card__desc">
