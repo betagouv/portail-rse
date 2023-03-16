@@ -33,7 +33,7 @@ def test_create_user_with_real_siren(reception_actualites, client, db):
     assert response.status_code == 200
     assert response.redirect_chain == [
         (reverse("reglementation", kwargs={"siren": "130025265"}), 302),
-        (reverse("qualification", kwargs={"siren": "130025265"}), 302),
+        (reverse("entreprises:qualification", kwargs={"siren": "130025265"}), 302),
     ]
 
     assert (

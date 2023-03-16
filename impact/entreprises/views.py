@@ -68,7 +68,7 @@ def add(request):
         return render(request, "entreprises/index.html", {"form": form})
 
     messages.success(request, "L'entreprise a été ajoutée.")
-    return redirect("entreprises")
+    return redirect("entreprises:entreprises")
 
 
 def qualification(request, siren):

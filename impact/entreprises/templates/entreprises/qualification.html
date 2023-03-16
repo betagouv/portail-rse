@@ -4,7 +4,7 @@
 <div class="fr-container fr-my-10w">
     <div class="fr-grid-row fr-grid-row--center">
         <div class="fr-col">
-            <form class="fr-mt-6w" action="{% url 'qualification' entreprise.siren %}" method="post">
+            <form class="fr-mt-6w" action="{% url 'entreprises:qualification' entreprise.siren %}" method="post">
                 {% csrf_token %}
                 {% include 'snippets/field.html' with field=form.effectif %}
                 {% include 'snippets/field.html' with field=form.bdese_accord %}
