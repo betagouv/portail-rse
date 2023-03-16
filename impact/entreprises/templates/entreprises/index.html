@@ -21,7 +21,7 @@
                             {% endwith %}
                             <ul class="fr-card__desc">
                                 <li>SIREN : {{ entreprise.siren }}</li>
-                                <li>effectif : {{ entreprise.get_effectif_display }} salariés</li>
+                                <li>effectif : {% if entreprise.effectif %}{{ entreprise.get_effectif_display }} salariés{% else %}non renseigné{% endif %}</li>
                                 <li>accord d'entreprise concernant la BDESE : {{ entreprise.bdese_accord | translate_boolean }}</li>
                             </ul>
                         </p>
