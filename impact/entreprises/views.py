@@ -88,7 +88,8 @@ def qualification(request, siren):
     else:
         infos_entreprise = api.recherche_entreprises.recherche(entreprise.siren)
         if not entreprise.raison_sociale:
-            # some entreprises may have been created without raison sociale through user creation page
+            # Certaines entreprises peuvent avoir été créées sans raison sociale depuis le formulaire de création utilisateur
+            # TODO: supprimer ce bloc conditionnel quand toutes les entreprises auront une raison sociale et qu'une entreprise ne pourra pas être créée sans
             entreprise.raison_sociale = infos_entreprise["raison_sociale"]
             entreprise.save()
         form = EntrepriseQualificationForm(
