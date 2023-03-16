@@ -108,13 +108,27 @@ def test_fail_because_already_existing_habilitation(client, alice, entreprise_fa
 @pytest.fixture
 def unqualified_entreprise(alice):
     entreprise = Entreprise.objects.create(siren="00000001")
-    add_entreprise_to_user(entreprise, alice, "Présidente")
     return entreprise
+
+
+def test_qualification_page_is_not_public(client, alice, unqualified_entreprise):
+    url = f"/entreprises/{unqualified_entreprise.siren}"
+    response = client.get(url)
+
+    assert response.status_code == 302
+    connexion_url = reverse("login")
+    assert response.url == f"{connexion_url}?next={url}"
+
+    client.force_login(alice)
+    response = client.get(url)
+
+    assert response.status_code == 403
 
 
 def test_qualification_page(
     client, alice, unqualified_entreprise, mock_api_recherche_entreprise
 ):
+    add_entreprise_to_user(unqualified_entreprise, alice, "Présidente")
     client.force_login(alice)
 
     response = client.get(f"/entreprises/{unqualified_entreprise.siren}")
@@ -132,6 +146,7 @@ def test_qualification_page(
 def test_qualify_entreprise(
     client, alice, unqualified_entreprise, mock_api_recherche_entreprise
 ):
+    add_entreprise_to_user(unqualified_entreprise, alice, "Présidente")
     client.force_login(alice)
     data = {
         "effectif": "moyen",
