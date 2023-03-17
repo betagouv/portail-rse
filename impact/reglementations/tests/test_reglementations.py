@@ -2,6 +2,7 @@ import pytest
 
 from api.tests.fixtures import mock_api_recherche_entreprise
 from entreprises.models import Entreprise
+from entreprises.tests.conftest import unqualified_entreprise
 from habilitations.models import add_entreprise_to_user
 from reglementations.views import BDESEReglementation, IndexEgaproReglementation
 
@@ -228,14 +229,15 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
 
 
 def test_reglementation_with_unqualified_entreprise_redirect_to_qualification_page(
-    client, alice, mock_api_recherche_entreprise
+    client, alice, unqualified_entreprise, mock_api_recherche_entreprise
 ):
-    entreprise = Entreprise.objects.create(siren="123456789")
-    add_entreprise_to_user(entreprise, alice, "Présidente")
+    add_entreprise_to_user(unqualified_entreprise, alice, "Présidente")
     client.force_login(alice)
 
-    response = client.get(f"/reglementation/{entreprise.siren}", follow=True)
+    response = client.get(
+        f"/reglementation/{unqualified_entreprise.siren}", follow=True
+    )
 
     assert response.status_code == 200
-    url = f"/entreprises/{entreprise.siren}"
+    url = f"/entreprises/{unqualified_entreprise.siren}"
     assert response.redirect_chain == [(url, 302)]

@@ -14,8 +14,8 @@ def test_entreprises_page_requires_login(client):
     assert response.status_code == 302
 
 
-def test_entreprises_page_for_logged_user(client, alice):
-    entreprise = Entreprise.objects.create(siren="00000001")
+def test_entreprises_page_for_logged_user(client, alice, entreprise_factory):
+    entreprise = entreprise_factory()
     entreprise.users.add(alice)
     client.force_login(alice)
 
@@ -104,12 +104,6 @@ def test_fail_because_already_existing_habilitation(client, alice, entreprise_fa
     assert (
         "Impossible d'ajouter cette entreprise. Vous y êtes déjà rattaché·e." in content
     )
-
-
-@pytest.fixture
-def unqualified_entreprise(alice):
-    entreprise = Entreprise.objects.create(siren="00000001")
-    return entreprise
 
 
 def test_qualification_page_is_not_public(client, alice, unqualified_entreprise):
