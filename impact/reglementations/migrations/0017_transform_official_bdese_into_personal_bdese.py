@@ -7,17 +7,29 @@ def transform_official_bdese_into_personal_bdese(apps, schema_editor):
     BDESE_50_300 = apps.get_model("reglementations", "BDESE_50_300")
     for bdese in BDESE_50_300.objects.all():
         try:
-            bdese.user = bdese.entreprise.users.all()[0]
+            users = bdese.entreprise.users.all()
+            bdese.user = users[0]
+            bdese.save()
+            bdese.pk = None
+            bdese._state.adding = True
+            for user in users[1:]:
+                bdese.user = user
+                bdese.save()
         except IndexError:
             print(str(bdese.entreprise))
-        bdese.save()
     BDESE_300 = apps.get_model("reglementations", "BDESE_300")
     for bdese in BDESE_300.objects.all():
         try:
-            bdese.user = bdese.entreprise.users.all()[0]
+            users = bdese.entreprise.users.all()
+            bdese.user = users[0]
+            bdese.save()
+            bdese.pk = None
+            bdese._state.adding = True
+            for user in users[1:]:
+                bdese.user = user
+                bdese.save()
         except IndexError:
             print(str(bdese.entreprise))
-        bdese.save()
 
 
 class Migration(migrations.Migration):
