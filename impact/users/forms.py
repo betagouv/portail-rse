@@ -66,10 +66,7 @@ class UserPasswordForm(forms.ModelForm):
 
 
 class UserCreationForm(DsfrForm, UserPasswordForm):
-    siren = SirenField(
-        label="Numéro SIREN",
-        help_text="Saisissez un numéro SIREN valide, disponible sur le Kbis de votre organisation ou sur l'Annuaire des Entreprises",
-    )
+    siren = SirenField()
     fonctions = forms.CharField(label="Fonction(s) dans la société")
     acceptation_cgu = forms.BooleanField(
         label="J’ai lu et j’accepte la politique de confidentialité et les CGUs",
