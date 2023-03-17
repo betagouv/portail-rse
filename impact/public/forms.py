@@ -6,11 +6,7 @@ from utils.forms import DsfrForm
 
 
 class SirenForm(DsfrForm):
-    siren = SirenField(
-        label="Votre numéro SIREN",
-        help_text="Saisissez un numéro SIREN valide, disponible sur le Kbis de votre organisation ou sur l'Annuaire des Entreprises",
-        required=True,
-    )
+    siren = SirenField()
 
 
 class EligibiliteForm(DsfrForm, forms.ModelForm):

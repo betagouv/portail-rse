@@ -7,10 +7,19 @@ from .models import Entreprise
 
 
 class SirenField(forms.CharField):
+    def __init__(self, *args, **kwargs):
+        if not kwargs.get("label"):
+            kwargs["label"] = "Votre numéro SIREN"
+        if not kwargs.get("help_text"):
+            kwargs[
+                "help_text"
+            ] = "Saisissez un numéro SIREN valide, disponible sur le Kbis de votre organisation ou sur l'Annuaire des Entreprises"
+        kwargs["min_length"] = 9
+        kwargs["max_length"] = 9
+        super().__init__(*args, **kwargs)
+
     def validate(self, value):
         super().validate(value)
-        MinLengthValidator(9)(value)
-        MaxLengthValidator(9)(value)
         try:
             int(value)
         except ValueError:
@@ -18,10 +27,7 @@ class SirenField(forms.CharField):
 
 
 class EntrepriseAddForm(DsfrForm):
-    siren = SirenField(
-        label="Numéro SIREN",
-        help_text="Saisissez un numéro SIREN valide, disponible sur le Kbis de votre organisation",
-    )
+    siren = SirenField()
     fonctions = forms.CharField(label="Fonction(s) dans la société")
 
 
