@@ -286,12 +286,15 @@
     {% include "snippets/field_pdf.html" with field_name="cessions_fusions_acquisitions" %}
 
     <h2>Environnement</h2>
+    <h3>Pour les entreprises soumises à la déclaration prévue à l'article R. 225-105 du code de commerce</h3>
     {% include "snippets/field_pdf.html" with field_name="informations_environnementales" %}
-    {% include "snippets/field_pdf.html" with field_name="prevention_et_gestion_dechets" %}
-    {% include "snippets/field_pdf.html" with field_name="bilan_gaz_effet_de_serre" %}
+    {% include "snippets/field_pdf.html" with field_name="quantite_de_dechets_dangereux_soumis_DPEF" %}
+    {% include "snippets/field_pdf.html" with field_name="bilan_gaz_effet_de_serre_soumis_DPEF" %}
+    <h3>Pour les entreprises non soumises à la déclaration prévue à l'article R. 225-105 du code de commerce</h3>
     {% include "snippets/field_pdf.html" with field_name="prise_en_compte_questions_environnementales" %}
-    {% include "snippets/field_pdf.html" with field_name="quantite_de_dechets_dangereux" %}
+    {% include "snippets/field_pdf.html" with field_name="quantite_de_dechets_dangereux_non_soumis_DPEF" %}
     {% include "snippets/field_pdf.html" with field_name="consommation_eau" %}
     {% include "snippets/field_pdf.html" with field_name="consommation_energie" %}
     {% include "snippets/field_pdf.html" with field_name="postes_emissions_directes_gaz_effet_de_serre" %}
+    {% include "snippets/field_pdf.html" with field_name="bilan_gaz_effet_de_serre_non_soumis_DPEF" %}
 {% endblock %}
