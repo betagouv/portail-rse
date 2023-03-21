@@ -1989,14 +1989,14 @@ class BDESE_300(AbstractBDESE):
     )
 
     #       B-Economie circulaire
-    prevention_et_gestion_dechets = models.TextField(
+    quantite_de_dechets_dangereux_soumis_DPEF = models.TextField(
         verbose_name="Prévention et gestion de la production de déchets : évaluation de la quantité de déchets dangereux définis à l'article R. 541-8 du code de l'environnement et faisant l'objet d'une émission du bordereau mentionné à l'article R. 541-45 du même code",
         null=True,
         blank=True,
     )
 
     #     C-Changement climatique
-    bilan_gaz_effet_de_serre = models.TextField(
+    bilan_gaz_effet_de_serre_soumis_DPEF = models.TextField(
         verbose_name="Bilan des émissions de gaz à effet de serre prévu par l'article L. 229-25 du code de l'environnement ou bilan simplifié prévu par l'article 244 de la loi n° 2020-1721 du 29 décembre 2020 de finances pour 2021 pour les entreprises tenues d'établir ces différents bilans",
         null=True,
         blank=True,
@@ -2012,8 +2012,8 @@ class BDESE_300(AbstractBDESE):
 
     #       B-Economie circulaire
     #          i-Prévention et gestion de la production de déchets
-    quantite_de_dechets_dangereux = models.TextField(
-        verbose_name="évaluation de la quantité de déchets dangereux définis à l'article R. 541-8 du code de l'environnement et faisant l'objet d'une émission du bordereau mentionné à l'article R. 541-45 du même code",
+    quantite_de_dechets_dangereux_non_soumis_DPEF = models.TextField(
+        verbose_name="Évaluation de la quantité de déchets dangereux définis à l'article R. 541-8 du code de l'environnement et faisant l'objet d'une émission du bordereau mentionné à l'article R. 541-45 du même code",
         null=True,
         blank=True,
     )
@@ -2032,6 +2032,13 @@ class BDESE_300(AbstractBDESE):
     #     C-Changement climatique
     #        i-Identification des postes d'émissions directes de gaz à effet de serre
     postes_emissions_directes_gaz_effet_de_serre = models.TextField(
+        verbose_name="Identification des postes d'émissions directes de gaz à effet de serre",
+        help_text="produites par les sources fixes et mobiles nécessaires aux activités de l'entreprise (communément appelées \"émissions du scope 1\") et, lorsque l'entreprise dispose de cette information, évaluation du volume de ces émissions de gaz à effet de serre ",
+        null=True,
+        blank=True,
+    )
+
+    bilan_gaz_effet_de_serre_non_soumis_DPEF = models.TextField(
         verbose_name="Bilan des émissions de gaz à effet de serre prévu par l'article L. 229-25 du code de l'environnement ou bilan simplifié prévu par l'article 244 de la loi n° 2020-1721 du 29 décembre 2020 de finances pour 2021 pour les entreprises tenues d'établir ces différents bilans",
         null=True,
         blank=True,

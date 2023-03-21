@@ -636,13 +636,13 @@ BDESE_300_FIELDS = {
     10: ["transferts_de_capitaux", "cessions_fusions_acquisitions"],
     11: [
         "informations_environnementales",
-        "prevention_et_gestion_dechets",
-        "bilan_gaz_effet_de_serre",
+        "quantite_de_dechets_dangereux_soumis_DPEF",
+        "bilan_gaz_effet_de_serre_soumis_DPEF",
         "prise_en_compte_questions_environnementales",
-        "quantite_de_dechets_dangereux",
+        "quantite_de_dechets_dangereux_non_soumis_DPEF",
         "consommation_eau",
         "consommation_energie",
         "postes_emissions_directes_gaz_effet_de_serre",
-        "bilan_gaz_effet_de_serre",
+        "bilan_gaz_effet_de_serre_non_soumis_DPEF",
     ],
 }
