@@ -171,6 +171,7 @@ def test_bdese_configuration_form_for_bdese_50_300(bdese_50_300):
 
     assert len(form.fields) == 1
     assert "categories_professionnelles" in form.fields
+    assert len(form.fields["categories_professionnelles"].widget.widgets) == 6
 
     categories_pro = ["catégorie 1", "catégorie 2", "catégorie 3"]
     bound_form = bdese_configuration_form_factory(
@@ -189,6 +190,11 @@ def test_bdese_configuration_form_for_bdese_300(bdese_300):
     assert "categories_professionnelles" in form.fields
     assert "categories_professionnelles_detaillees" in form.fields
     assert "niveaux_hierarchiques" in form.fields
+    assert len(form.fields["categories_professionnelles"].widget.widgets) == 6
+    assert (
+        len(form.fields["categories_professionnelles_detaillees"].widget.widgets) == 8
+    )
+    assert len(form.fields["niveaux_hierarchiques"].widget.widgets) == 6
 
     categories_pro = ["catégorie 1", "catégorie 2", "catégorie 3"]
     categories_pro_detaillees = [

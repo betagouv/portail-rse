@@ -22,6 +22,15 @@ class IntroductionDemoForm(DsfrForm):
 class ListJSONWidget(forms.widgets.MultiWidget):
     template_name = "snippets/list_json_widget.html"
 
+    def __init__(self, subwidgets_label, subwidgets_number):
+        subwidgets = [
+            forms.widgets.TextInput(
+                attrs={"class": "fr-input", "label": subwidgets_label}
+            )
+            for i in range(subwidgets_number)
+        ]
+        super().__init__(subwidgets)
+
     def decompress(self, value):
         if isinstance(value, list):
             return value
@@ -46,6 +55,11 @@ class BDESEConfigurationForm(forms.ModelForm, DsfrForm):
             "categories_professionnelles_detaillees": "Une structure de qualification détaillée comprenant <strong>cinq postes minimum</strong> est requise pour d'autres indicateurs. Il est à nouveau souhaitable de faire référence à la classification de la convention collective, de l'accord d'entreprise et aux pratiques habituellement retenues dans l'entreprise.<br> A titre d'exemple, la répartition suivante des postes peut être retenue : cadres ; techniciens ; agents de maîtrise ; employés qualifiés ; employés non qualifiés ; ouvriers qualifiés ; ouvriers non qualifiés.",
             "niveaux_hierarchiques": "Une classification selon le niveau ou coefficient hiérarchique pertinente au sein de l'entreprise comprenant <strong>deux niveaux minimum</strong>. Libre à l'employeur d'apprécier quelle est la catégorie la plus pertinente : classification conventionnelle ou niveau managérial.",
         }
+        widgets = {
+            "categories_professionnelles": ListJSONWidget("Poste", 6),
+            "categories_professionnelles_detaillees": ListJSONWidget("Poste", 8),
+            "niveaux_hierarchiques": ListJSONWidget("Niveau", 6),
+        }
 
     def clean_categories_professionnelles(self):
         data = self.cleaned_data["categories_professionnelles"]
@@ -67,21 +81,6 @@ class BDESEConfigurationForm(forms.ModelForm, DsfrForm):
 
 
 def bdese_configuration_form_factory(bdese, *args, **kwargs):
-    def widget_for_field(field_name):
-        labels = {
-            "categories_professionnelles": "Poste",
-            "categories_professionnelles_detaillees": "Poste",
-            "niveaux_hierarchiques": "Niveau",
-        }
-        number_subwidgets = 6
-        subwidgets = [
-            forms.widgets.TextInput(
-                attrs={"class": "fr-input", "label": labels[field_name]}
-            )
-            for i in range(number_subwidgets)
-        ]
-        return ListJSONWidget(subwidgets)
-
     fields = ["categories_professionnelles"]
     if bdese.is_bdese_300:
         fields.extend(
@@ -92,7 +91,6 @@ def bdese_configuration_form_factory(bdese, *args, **kwargs):
         bdese.__class__,
         form=BDESEConfigurationForm,
         fields=fields,
-        widgets={field_name: widget_for_field(field_name) for field_name in fields},
     )
 
     form = Form(*args, instance=bdese, **kwargs)
