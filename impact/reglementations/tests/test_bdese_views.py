@@ -7,7 +7,11 @@ import pytest
 from habilitations.models import add_entreprise_to_user
 from reglementations.models import annees_a_remplir_bdese, BDESE_50_300, BDESE_300
 from reglementations.tests.test_bdese_forms import configuration_form_data
-from reglementations.views import get_bdese_data_from_egapro, render_bdese_pdf_html
+from reglementations.views import (
+    get_bdese_data_from_egapro,
+    initialize_bdese_configuration,
+    render_bdese_pdf_html,
+)
 
 
 def test_bdese_is_not_public(client, alice, grande_entreprise):
@@ -519,6 +523,115 @@ def test_save_bdese_configuration_for_a_new_year(
         assert configured_bdese.niveaux_hierarchiques == niveaux_hierarchiques
         assert new_bdese.niveaux_hierarchiques == new_niveaux_hierarchiques
     assert new_bdese.is_configured
+
+
+@pytest.mark.parametrize("bdese_class", [BDESE_50_300, BDESE_300])
+def test_initialize_personal_bdese_configuration_only_with_other_personal_bdeses(
+    bdese_class, bdese_factory, alice
+):
+    official_bdese = bdese_factory(bdese_class=bdese_class, annee=2021)
+    official_bdese.categories_professionnelles = ["A", "B", "C"]
+    if official_bdese.is_bdese_300:
+        official_bdese.categories_professionnelles_detaillees = [
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+        ]
+        official_bdese.niveaux_hierarchiques = ["Y", "Z"]
+    official_bdese.save()
+
+    new_bdese = bdese_factory(
+        bdese_class, entreprise=official_bdese.entreprise, user=alice, annee=2022
+    )
+    initial = initialize_bdese_configuration(new_bdese)
+
+    assert not initial
+
+    personal_bdese = bdese_factory(
+        bdese_class=bdese_class,
+        entreprise=official_bdese.entreprise,
+        user=alice,
+        annee=2021,
+    )
+    personal_bdese.categories_professionnelles = ["A", "B", "C"]
+    if personal_bdese.is_bdese_300:
+        personal_bdese.categories_professionnelles_detaillees = [
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+        ]
+        personal_bdese.niveaux_hierarchiques = ["Y", "Z"]
+    personal_bdese.save()
+
+    initial = initialize_bdese_configuration(new_bdese)
+
+    assert initial["categories_professionnelles"] == ["A", "B", "C"]
+    if personal_bdese.is_bdese_300:
+        assert initial["categories_professionnelles_detaillees"] == [
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+        ]
+        assert initial["niveaux_hierarchiques"] == ["Y", "Z"]
+
+
+@pytest.mark.parametrize("bdese_class", [BDESE_50_300, BDESE_300])
+def test_initialize_official_bdese_configuration_only_with_other_official_bdeses(
+    bdese_class, bdese_factory, alice
+):
+    personal_bdese = bdese_factory(bdese_class=bdese_class, user=alice, annee=2021)
+    personal_bdese.categories_professionnelles = ["A", "B", "C"]
+    if personal_bdese.is_bdese_300:
+        personal_bdese.categories_professionnelles_detaillees = [
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+        ]
+        personal_bdese.niveaux_hierarchiques = ["Y", "Z"]
+    personal_bdese.save()
+
+    new_bdese = bdese_factory(
+        bdese_class, entreprise=personal_bdese.entreprise, annee=2022
+    )
+    initial = initialize_bdese_configuration(new_bdese)
+
+    assert not initial
+
+    official_bdese = bdese_factory(
+        bdese_class=bdese_class, entreprise=personal_bdese.entreprise, annee=2021
+    )
+    official_bdese.categories_professionnelles = ["A", "B", "C"]
+    if official_bdese.is_bdese_300:
+        official_bdese.categories_professionnelles_detaillees = [
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+        ]
+        official_bdese.niveaux_hierarchiques = ["Y", "Z"]
+    official_bdese.save()
+
+    initial = initialize_bdese_configuration(new_bdese)
+
+    assert initial["categories_professionnelles"] == ["A", "B", "C"]
+    if personal_bdese.is_bdese_300:
+        assert initial["categories_professionnelles_detaillees"] == [
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+        ]
+        assert initial["niveaux_hierarchiques"] == ["Y", "Z"]
 
 
 class MockedResponse:
