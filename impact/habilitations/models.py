@@ -47,6 +47,10 @@ def attach_entreprise_to_user(entreprise, user, fonctions):
     )
 
 
+def detach_entreprise_from_user(entreprise, user):
+    get_habilitation(entreprise, user).delete()
+
+
 def get_habilitation(entreprise, user):
     try:
         return Habilitation.objects.get(
