@@ -14,7 +14,7 @@ from .models import User
 from api.exceptions import APIError
 from entreprises.models import Entreprise
 from entreprises.views import search_and_create_entreprise
-from habilitations.models import attach_entreprise_to_user
+from habilitations.models import attach_user_to_entreprise
 
 
 def creation(request):
@@ -28,9 +28,9 @@ def creation(request):
                 else:
                     entreprise = search_and_create_entreprise(siren)
                 user = form.save()
-                attach_entreprise_to_user(
-                    entreprise,
+                attach_user_to_entreprise(
                     user,
+                    entreprise,
                     form.cleaned_data["fonctions"],
                 )
                 login(request, User.objects.get(email=form.cleaned_data["email"]))
