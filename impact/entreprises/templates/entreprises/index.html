@@ -12,7 +12,7 @@
             <div class="fr-card fr-card--horizontal fr-mt-2w">
                 <div class="fr-card__body">
                     <div class="fr-card__content">
-                        {% with habilitation=entreprise|habilitation:user %}
+                        {% with habilitation=user|habilitation:entreprise %}
                         <h3 class="fr-card__title">
                             {% if entreprise.denomination %}{{ entreprise.denomination }}{% else %}{{ entreprise.siren}}{% endif %}
                             {% if habilitation and habilitation.is_confirmed %}
