@@ -18,6 +18,8 @@ from habilitations.models import get_habilitation
 
 @login_required()
 def index(request):
+    if request.POST:
+        return attach(request)
     return render(request, "entreprises/index.html", {"form": EntrepriseAttachForm()})
 
 
@@ -36,7 +38,6 @@ def search_and_create_entreprise(siren):
     )
 
 
-@login_required()
 def attach(request):
     form = EntrepriseAttachForm(request.POST)
     try:

@@ -33,7 +33,7 @@ def test_create_and_attach_to_entreprise(client, alice, mock_api_recherche_entre
     client.force_login(alice)
     data = {"siren": "000000001", "fonctions": "Présidente"}
 
-    response = client.post("/entreprises/add", data=data, follow=True)
+    response = client.post("/entreprises", data=data, follow=True)
 
     assert response.status_code == 200
     assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
@@ -52,7 +52,7 @@ def test_attach_to_an_existing_entreprise(client, alice, entreprise_factory):
     client.force_login(alice)
     data = {"siren": entreprise.siren, "fonctions": "Présidente"}
 
-    response = client.post("/entreprises/add", data=data, follow=True)
+    response = client.post("/entreprises", data=data, follow=True)
 
     assert response.status_code == 200
     assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
@@ -64,7 +64,7 @@ def test_fail_to_create_entreprise(client, alice):
     client.force_login(alice)
     data = {"siren": "unvalid", "fonctions": "Présidente"}
 
-    response = client.post("/entreprises/add", data=data, follow=True)
+    response = client.post("/entreprises", data=data, follow=True)
 
     assert response.status_code == 200
     content = response.content.decode("utf-8")
@@ -82,7 +82,7 @@ def test_fail_to_find_entreprise_in_API(client, alice, mock_api_recherche_entrep
     )
     data = {"siren": "000000001", "fonctions": "Présidente"}
 
-    response = client.post("/entreprises/add", data=data, follow=True)
+    response = client.post("/entreprises", data=data, follow=True)
 
     assert response.status_code == 200
     content = html.unescape(response.content.decode("utf-8"))
@@ -99,7 +99,7 @@ def test_fail_because_already_existing_habilitation(client, alice, entreprise_fa
     client.force_login(alice)
     data = {"siren": entreprise.siren, "fonctions": "Présidente"}
 
-    response = client.post("/entreprises/add", data=data, follow=True)
+    response = client.post("/entreprises", data=data, follow=True)
 
     assert Habilitation.objects.count() == 1
     assert response.status_code == 200
