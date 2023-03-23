@@ -19,6 +19,7 @@ from weasyprint import HTML
 
 from entreprises.models import Entreprise
 from habilitations.models import get_habilitation
+from habilitations.models import is_user_attached_to_entreprise
 from habilitations.models import is_user_habilited_on_entreprise
 from public.forms import EligibiliteForm
 from reglementations.forms import bdese_configuration_form_factory
@@ -172,8 +173,8 @@ class BDESEReglementation(Reglementation):
 
         if (
             user
-            and (habilitation := get_habilitation(entreprise, user))
-            and not habilitation.is_confirmed
+            and is_user_attached_to_entreprise(user, entreprise)
+            and not is_user_habilited_on_entreprise(user, entreprise)
         ):
             bdese = bdese_class.personals.filter(
                 entreprise=entreprise, annee=annee, user=user

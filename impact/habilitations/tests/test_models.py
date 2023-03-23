@@ -5,11 +5,12 @@ from freezegun import freeze_time
 
 from habilitations.models import attach_entreprise_to_user
 from habilitations.models import get_habilitation
+from habilitations.models import is_user_attached_to_entreprise
 
 
 def test_habilitation(alice, entreprise_factory):
     entreprise = entreprise_factory()
-    assert get_habilitation(entreprise, alice) == None
+    assert not is_user_attached_to_entreprise(alice, entreprise)
 
     attach_entreprise_to_user(entreprise, alice, "présidente")
 
