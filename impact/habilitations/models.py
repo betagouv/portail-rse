@@ -48,10 +48,10 @@ def attach_user_to_entreprise(user, entreprise, fonctions):
 
 
 def detach_user_from_entreprise(user, entreprise):
-    get_habilitation(entreprise, user).delete()
+    get_habilitation(user, entreprise).delete()
 
 
-def get_habilitation(entreprise, user):
+def get_habilitation(user, entreprise):
     return Habilitation.objects.get(
         user=user,
         entreprise=entreprise,
@@ -60,7 +60,7 @@ def get_habilitation(entreprise, user):
 
 def is_user_attached_to_entreprise(user, entreprise):
     try:
-        get_habilitation(entreprise, user)
+        get_habilitation(user, entreprise)
         return True
     except ObjectDoesNotExist:
         return False
@@ -69,5 +69,5 @@ def is_user_attached_to_entreprise(user, entreprise):
 def is_user_habilited_on_entreprise(user, entreprise):
     return (
         is_user_attached_to_entreprise(user, entreprise)
-        and get_habilitation(entreprise, user).is_confirmed
+        and get_habilitation(user, entreprise).is_confirmed
     )

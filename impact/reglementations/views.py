@@ -577,7 +577,7 @@ def _get_or_create_bdese(
     user: settings.AUTH_USER_MODEL,
 ) -> BDESE_300 | BDESE_50_300 | BDESEAvecAccord:
     bdese_type = BDESEReglementation.bdese_type(entreprise)
-    habilitation = get_habilitation(entreprise, user)
+    habilitation = get_habilitation(user, entreprise)
     if bdese_type == BDESEReglementation.TYPE_AVEC_ACCORD:
         bdese_class = BDESEAvecAccord
     elif bdese_type in (

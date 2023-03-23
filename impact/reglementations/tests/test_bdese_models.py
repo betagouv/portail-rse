@@ -213,7 +213,7 @@ def test_personal_bdese_is_copied_to_official_bdese_when_habilitation_is_confirm
     with pytest.raises(ObjectDoesNotExist):
         assert bdese.__class__.officials.get(entreprise=bdese.entreprise)
 
-    habilitation = get_habilitation(bdese.entreprise, alice)
+    habilitation = get_habilitation(alice, bdese.entreprise)
     habilitation.confirm()
 
     assert bdese.__class__.personals.get(entreprise=bdese.entreprise)
@@ -235,7 +235,7 @@ def test_personal_bdese_is_not_copied_to_official_bdese_if_already_exists(
     personal_bdese.categories_professionnelles = CATEGORIES_PROFESSIONNELLES
     personal_bdese.save()
 
-    habilitation = get_habilitation(grande_entreprise, alice)
+    habilitation = get_habilitation(alice, grande_entreprise)
     habilitation.confirm()
 
     official_bdese = official_bdese.__class__.officials.get(
