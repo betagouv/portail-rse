@@ -134,7 +134,7 @@ class BDESEReglementation(Reglementation):
             bdese_class = BDESEAvecAccord
             if (
                 user
-                and (habilitation := get_habilitation(entreprise, user))
+                and (habilitation := get_habilitation(user, entreprise))
                 and not habilitation.is_confirmed
             ):
                 bdese = bdese_class.personals.filter(

@@ -12,8 +12,8 @@ from .forms import EntrepriseAttachForm
 from .forms import EntrepriseQualificationForm
 from .models import Entreprise
 from api.exceptions import APIError
-from habilitations.models import attach_entreprise_to_user
-from habilitations.models import detach_entreprise_from_user
+from habilitations.models import attach_user_to_entreprise
+from habilitations.models import detach_user_from_entreprise
 from habilitations.models import get_habilitation
 from habilitations.models import is_user_attached_to_entreprise
 
@@ -54,9 +54,9 @@ def attach(request):
                     "Impossible d'ajouter cette entreprise. Vous y êtes déjà rattaché·e."
                 )
             else:
-                attach_entreprise_to_user(
-                    entreprise,
+                attach_user_to_entreprise(
                     request.user,
+                    entreprise,
                     form.cleaned_data["fonctions"],
                 )
         else:
@@ -92,7 +92,7 @@ def qualification(request, siren):
                 "L'entreprise n'a pas été enregistrée car le formulaire contient des erreurs",
             )
     elif request.method == "DELETE":
-        detach_entreprise_from_user(entreprise, request.user)
+        detach_user_from_entreprise(request.user, entreprise)
         messages.success(request, "Vous n'êtes plus rattaché à cette entreprise")
         return redirect("entreprises:entreprises")
 

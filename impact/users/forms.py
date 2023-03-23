@@ -8,7 +8,6 @@ from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
 from .models import User
 from entreprises.forms import SirenField
 from entreprises.models import Entreprise
-from habilitations.models import attach_entreprise_to_user
 from utils.forms import DsfrForm
 
 
