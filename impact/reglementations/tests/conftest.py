@@ -7,21 +7,17 @@ from reglementations.models import BDESE_50_300, BDESE_300
 
 @pytest.fixture
 def bdese_factory(entreprise_factory):
-    def create_bdese(
-        bdese_class=BDESE_300,
-        entreprise=None,
-        user=None,
-    ):
+    def create_bdese(bdese_class=BDESE_300, entreprise=None, user=None, annee=2021):
         if not entreprise:
             entreprise = entreprise_factory(
                 effectif="moyen" if bdese_class == BDESE_50_300 else "grand"
             )
         if not user:
-            bdese = bdese_class.officials.create(entreprise=entreprise, annee=2021)
+            bdese = bdese_class.officials.create(entreprise=entreprise, annee=annee)
         else:
             add_entreprise_to_user(entreprise, user, "Président·e")
             bdese = bdese_class.personals.create(
-                entreprise=entreprise, annee=2021, user=user
+                entreprise=entreprise, annee=annee, user=user
             )
         return bdese
 

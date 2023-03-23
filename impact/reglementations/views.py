@@ -549,9 +549,9 @@ def _get_or_create_bdese(
 
 
 def initialize_bdese_configuration(bdese: BDESE_300 | BDESE_50_300) -> dict:
-    bdeses = bdese.__class__.objects.filter(entreprise=bdese.entreprise).order_by(
-        "-annee"
-    )
+    bdeses = bdese.__class__.objects.filter(
+        entreprise=bdese.entreprise, user=bdese.user
+    ).order_by("-annee")
     for _bdese in bdeses:
         if _bdese.categories_professionnelles:
             initial = {
