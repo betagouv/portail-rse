@@ -109,6 +109,19 @@ def test_fail_because_already_existing_habilitation(client, alice, entreprise_fa
     )
 
 
+def test_detach_from_an_entreprise(client, alice, entreprise_factory):
+    entreprise = entreprise_factory()
+    attach_entreprise_to_user(entreprise, alice, "Présidente")
+    client.force_login(alice)
+
+    response = client.delete(f"/entreprises/{entreprise.siren}", follow=True)
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
+    assert entreprise not in alice.entreprises
+    assert not get_habilitation(entreprise, alice)
+
+
 def test_qualification_page_is_not_public(client, alice, unqualified_entreprise):
     url = f"/entreprises/{unqualified_entreprise.siren}"
     response = client.get(url)

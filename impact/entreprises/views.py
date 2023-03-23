@@ -13,6 +13,7 @@ from .forms import EntrepriseQualificationForm
 from .models import Entreprise
 from api.exceptions import APIError
 from habilitations.models import attach_entreprise_to_user
+from habilitations.models import detach_entreprise_from_user
 from habilitations.models import get_habilitation
 
 
@@ -89,6 +90,11 @@ def qualification(request, siren):
                 request,
                 "L'entreprise n'a pas été enregistrée car le formulaire contient des erreurs",
             )
+    elif request.method == "DELETE":
+        detach_entreprise_from_user(entreprise, request.user)
+        messages.success(request, "Vous n'êtes plus rattaché à cette entreprise")
+        return redirect("entreprises:entreprises")
+
     else:
         infos_entreprise = api.recherche_entreprises.recherche(entreprise.siren)
         if not entreprise.denomination:
