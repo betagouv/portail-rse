@@ -43,7 +43,7 @@ def test_create_and_attach_to_entreprise(client, alice, mock_api_recherche_entre
     assert "L'entreprise a été ajoutée." in content
 
     entreprise = Entreprise.objects.get(siren="000000001")
-    assert get_habilitation(entreprise, alice).fonctions == "Présidente"
+    assert get_habilitation(alice, entreprise).fonctions == "Présidente"
     assert entreprise.denomination == "Entreprise SAS"
     assert not entreprise.is_qualified
 
@@ -58,7 +58,7 @@ def test_attach_to_an_existing_entreprise(client, alice, entreprise_factory):
     assert response.status_code == 200
     assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
     assert entreprise in alice.entreprises
-    assert get_habilitation(entreprise, alice).fonctions == "Présidente"
+    assert get_habilitation(alice, entreprise).fonctions == "Présidente"
 
 
 def test_fail_to_create_entreprise(client, alice):

@@ -55,7 +55,7 @@ def test_create_user_with_real_siren(reception_actualites, client, db):
     assert user.reception_actualites == (reception_actualites == "checked")
     assert user.check_password("Passw0rd!123")
     assert user in entreprise.users.all()
-    assert get_habilitation(entreprise, user).fonctions == "Présidente"
+    assert get_habilitation(user, entreprise).fonctions == "Présidente"
 
 
 def test_create_user_with_invalid_siren(client, db):

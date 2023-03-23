@@ -52,7 +52,7 @@ def mock_index_egapro(mocker):
 @pytest.fixture
 def habilitated_user(bdese, alice):
     attach_user_to_entreprise(alice, bdese.entreprise, "Présidente")
-    habilitation = get_habilitation(bdese.entreprise, alice)
+    habilitation = get_habilitation(alice, bdese.entreprise)
     habilitation.confirm()
     habilitation.save()
     return alice

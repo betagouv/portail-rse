@@ -15,7 +15,7 @@ def test_habilitation(alice, entreprise_factory):
     attach_user_to_entreprise(alice, entreprise, "présidente")
 
     assert entreprise in alice.entreprises.all()
-    habilitation = get_habilitation(entreprise, alice)
+    habilitation = get_habilitation(alice, entreprise)
     assert habilitation.fonctions == "présidente"
 
     now = datetime(2023, 1, 27, 16, 1, tzinfo=timezone.utc)
