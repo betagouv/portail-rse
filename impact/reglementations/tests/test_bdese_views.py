@@ -4,7 +4,7 @@ import json
 import pytest
 from django.urls import reverse
 
-from habilitations.models import add_entreprise_to_user
+from habilitations.models import attach_entreprise_to_user
 from reglementations.models import annees_a_remplir_bdese
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
@@ -108,7 +108,7 @@ def test_check_if_several_users_are_on_the_same_BDESE(
     configured_bdese, habilitated_user, client, bob
 ):
     bdese = configured_bdese
-    add_entreprise_to_user(bdese.entreprise, bob, "Vice-président")
+    attach_entreprise_to_user(bdese.entreprise, bob, "Vice-président")
     client.force_login(bob)
 
     url = bdese_step_url(bdese, 0)

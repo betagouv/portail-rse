@@ -1,7 +1,7 @@
 import pytest
 
 from entreprises.models import Entreprise
-from habilitations.models import add_entreprise_to_user
+from habilitations.models import attach_entreprise_to_user
 from habilitations.models import get_habilitation
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
@@ -18,7 +18,7 @@ def bdese_factory(entreprise_factory):
         if not user:
             bdese = bdese_class.officials.create(entreprise=entreprise, annee=annee)
         else:
-            add_entreprise_to_user(entreprise, user, "Président·e")
+            attach_entreprise_to_user(entreprise, user, "Président·e")
             bdese = bdese_class.personals.create(
                 entreprise=entreprise, annee=annee, user=user
             )
@@ -51,7 +51,7 @@ def mock_index_egapro(mocker):
 
 @pytest.fixture
 def habilitated_user(bdese, alice):
-    add_entreprise_to_user(bdese.entreprise, alice, "Présidente")
+    attach_entreprise_to_user(bdese.entreprise, alice, "Présidente")
     habilitation = get_habilitation(bdese.entreprise, alice)
     habilitation.confirm()
     habilitation.save()
@@ -60,5 +60,5 @@ def habilitated_user(bdese, alice):
 
 @pytest.fixture
 def not_habilitated_user(bdese, bob):
-    add_entreprise_to_user(bdese.entreprise, bob, "Testeur")
+    attach_entreprise_to_user(bdese.entreprise, bob, "Testeur")
     return bob

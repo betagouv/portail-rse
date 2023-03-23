@@ -39,7 +39,7 @@ class Habilitation(models.Model):
         return bool(self.confirmed_at)
 
 
-def add_entreprise_to_user(entreprise, user, fonctions):
+def attach_entreprise_to_user(entreprise, user, fonctions):
     Habilitation.objects.create(
         user=user,
         entreprise=entreprise,

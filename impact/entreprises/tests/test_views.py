@@ -6,7 +6,7 @@ from django.urls import reverse
 import api.exceptions
 from api.tests.fixtures import mock_api_recherche_entreprises
 from entreprises.models import Entreprise
-from habilitations.models import add_entreprise_to_user
+from habilitations.models import attach_entreprise_to_user
 from habilitations.models import get_habilitation
 from habilitations.models import Habilitation
 
@@ -19,7 +19,7 @@ def test_entreprises_page_requires_login(client):
 
 def test_entreprises_page_for_logged_user(client, alice, entreprise_factory):
     entreprise = entreprise_factory()
-    entreprise.users.add(alice)
+    attach_entreprise_to_user(entreprise, alice, "Présidente")
     client.force_login(alice)
 
     response = client.get("/entreprises")
@@ -29,7 +29,7 @@ def test_entreprises_page_for_logged_user(client, alice, entreprise_factory):
     assert "<!-- page entreprises -->" in content
 
 
-def test_add_and_attach_to_entreprise(client, alice, mock_api_recherche_entreprises):
+def test_create_and_attach_to_entreprise(client, alice, mock_api_recherche_entreprises):
     client.force_login(alice)
     data = {"siren": "000000001", "fonctions": "Présidente"}
 
@@ -60,7 +60,7 @@ def test_attach_to_an_existing_entreprise(client, alice, entreprise_factory):
     assert get_habilitation(entreprise, alice).fonctions == "Présidente"
 
 
-def test_fail_to_add_entreprise(client, alice):
+def test_fail_to_create_entreprise(client, alice):
     client.force_login(alice)
     data = {"siren": "unvalid", "fonctions": "Présidente"}
 
@@ -95,7 +95,7 @@ def test_fail_to_find_entreprise_in_API(client, alice, mock_api_recherche_entrep
 
 def test_fail_because_already_existing_habilitation(client, alice, entreprise_factory):
     entreprise = entreprise_factory()
-    add_entreprise_to_user(entreprise, alice, "DG")
+    attach_entreprise_to_user(entreprise, alice, "DG")
     client.force_login(alice)
     data = {"siren": entreprise.siren, "fonctions": "Présidente"}
 
@@ -126,7 +126,7 @@ def test_qualification_page_is_not_public(client, alice, unqualified_entreprise)
 def test_qualification_page(
     client, alice, unqualified_entreprise, mock_api_recherche_entreprises
 ):
-    add_entreprise_to_user(unqualified_entreprise, alice, "Présidente")
+    attach_entreprise_to_user(unqualified_entreprise, alice, "Présidente")
     client.force_login(alice)
 
     response = client.get(f"/entreprises/{unqualified_entreprise.siren}")
@@ -144,7 +144,7 @@ def test_qualification_page(
 def test_qualify_entreprise(
     client, alice, unqualified_entreprise, mock_api_recherche_entreprises
 ):
-    add_entreprise_to_user(unqualified_entreprise, alice, "Présidente")
+    attach_entreprise_to_user(unqualified_entreprise, alice, "Présidente")
     client.force_login(alice)
     data = {
         "effectif": "moyen",
@@ -165,7 +165,7 @@ def test_qualify_entreprise(
 def test_qualify_entreprise_error(
     client, alice, unqualified_entreprise, mock_api_recherche_entreprises
 ):
-    add_entreprise_to_user(unqualified_entreprise, alice, "Présidente")
+    attach_entreprise_to_user(unqualified_entreprise, alice, "Présidente")
     client.force_login(alice)
     data = {
         "effectif": "yolo",
