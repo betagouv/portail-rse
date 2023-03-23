@@ -8,17 +8,17 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 
 import api.recherche_entreprises
-from .forms import EntrepriseAddForm
+from .forms import EntrepriseAttachForm
 from .forms import EntrepriseQualificationForm
 from .models import Entreprise
 from api.exceptions import APIError
-from habilitations.models import add_entreprise_to_user
+from habilitations.models import attach_entreprise_to_user
 from habilitations.models import get_habilitation
 
 
 @login_required()
 def index(request):
-    return render(request, "entreprises/index.html", {"form": EntrepriseAddForm()})
+    return render(request, "entreprises/index.html", {"form": EntrepriseAttachForm()})
 
 
 class _InvalidRequest(Exception):
@@ -37,8 +37,8 @@ def search_and_create_entreprise(siren):
 
 
 @login_required()
-def add(request):
-    form = EntrepriseAddForm(request.POST)
+def attach(request):
+    form = EntrepriseAttachForm(request.POST)
     try:
         if form.is_valid():
             siren = form.cleaned_data["siren"]
@@ -51,7 +51,7 @@ def add(request):
                     "Impossible d'ajouter cette entreprise. Vous y êtes déjà rattaché·e."
                 )
             else:
-                add_entreprise_to_user(
+                attach_entreprise_to_user(
                     entreprise,
                     request.user,
                     form.cleaned_data["fonctions"],

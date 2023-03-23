@@ -3,7 +3,7 @@ from datetime import timezone
 
 from freezegun import freeze_time
 
-from habilitations.models import add_entreprise_to_user
+from habilitations.models import attach_entreprise_to_user
 from habilitations.models import get_habilitation
 
 
@@ -11,7 +11,7 @@ def test_habilitation(alice, entreprise_factory):
     entreprise = entreprise_factory()
     assert get_habilitation(entreprise, alice) == None
 
-    add_entreprise_to_user(entreprise, alice, "présidente")
+    attach_entreprise_to_user(entreprise, alice, "présidente")
 
     assert entreprise in alice.entreprises.all()
     habilitation = get_habilitation(entreprise, alice)

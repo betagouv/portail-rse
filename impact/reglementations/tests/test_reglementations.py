@@ -3,7 +3,7 @@ import pytest
 from api.tests.fixtures import mock_api_recherche_entreprises
 from entreprises.models import Entreprise
 from entreprises.tests.conftest import unqualified_entreprise
-from habilitations.models import add_entreprise_to_user
+from habilitations.models import attach_entreprise_to_user
 from reglementations.views import BDESEReglementation
 from reglementations.views import IndexEgaproReglementation
 
@@ -81,7 +81,7 @@ def entreprise(db, alice):
         bdese_accord=False,
         denomination="Entreprise SAS",
     )
-    add_entreprise_to_user(entreprise, alice, "Présidente")
+    attach_entreprise_to_user(entreprise, alice, "Présidente")
     return entreprise
 
 
@@ -232,7 +232,7 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
 def test_reglementation_with_unqualified_entreprise_redirect_to_qualification_page(
     client, alice, unqualified_entreprise, mock_api_recherche_entreprises
 ):
-    add_entreprise_to_user(unqualified_entreprise, alice, "Présidente")
+    attach_entreprise_to_user(unqualified_entreprise, alice, "Présidente")
     client.force_login(alice)
 
     response = client.get(

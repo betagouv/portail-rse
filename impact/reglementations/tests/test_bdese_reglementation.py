@@ -1,7 +1,7 @@
 import pytest
 from django.urls import reverse
 
-from habilitations.models import add_entreprise_to_user
+from habilitations.models import attach_entreprise_to_user
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
 from reglementations.models import BDESEAvecAccord

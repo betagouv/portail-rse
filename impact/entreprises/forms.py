@@ -27,7 +27,7 @@ class SirenField(forms.CharField):
             raise ValidationError("Le siren est incorrect")
 
 
-class EntrepriseAddForm(DsfrForm):
+class EntrepriseAttachForm(DsfrForm):
     siren = SirenField()
     fonctions = forms.CharField(label="Fonction(s) dans la société")
 
