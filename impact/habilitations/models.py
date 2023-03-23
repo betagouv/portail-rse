@@ -52,14 +52,22 @@ def detach_entreprise_from_user(entreprise, user):
 
 
 def get_habilitation(entreprise, user):
+    return Habilitation.objects.get(
+        user=user,
+        entreprise=entreprise,
+    )
+
+
+def is_user_attached_to_entreprise(user, entreprise):
     try:
-        return Habilitation.objects.get(
-            user=user,
-            entreprise=entreprise,
-        )
+        get_habilitation(entreprise, user)
+        return True
     except ObjectDoesNotExist:
-        return
+        return False
 
 
 def is_user_habilited_on_entreprise(user, entreprise):
-    return get_habilitation(entreprise, user).is_confirmed
+    return (
+        is_user_attached_to_entreprise(user, entreprise)
+        and get_habilitation(entreprise, user).is_confirmed
+    )

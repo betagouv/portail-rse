@@ -9,6 +9,7 @@ from entreprises.models import Entreprise
 from habilitations.models import attach_entreprise_to_user
 from habilitations.models import get_habilitation
 from habilitations.models import Habilitation
+from habilitations.models import is_user_attached_to_entreprise
 
 
 def test_entreprises_page_requires_login(client):
@@ -119,7 +120,7 @@ def test_detach_from_an_entreprise(client, alice, entreprise_factory):
     assert response.status_code == 200
     assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
     assert entreprise not in alice.entreprises
-    assert not get_habilitation(entreprise, alice)
+    assert not is_user_attached_to_entreprise(alice, entreprise)
 
 
 def test_qualification_page_is_not_public(client, alice, unqualified_entreprise):

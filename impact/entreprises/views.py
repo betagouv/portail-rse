@@ -15,6 +15,7 @@ from api.exceptions import APIError
 from habilitations.models import attach_entreprise_to_user
 from habilitations.models import detach_entreprise_from_user
 from habilitations.models import get_habilitation
+from habilitations.models import is_user_attached_to_entreprise
 
 
 @login_required()
@@ -48,7 +49,7 @@ def attach(request):
                 entreprise = entreprises[0]
             else:
                 entreprise = search_and_create_entreprise(siren)
-            if get_habilitation(entreprise, request.user):
+            if is_user_attached_to_entreprise(request.user, entreprise):
                 raise _InvalidRequest(
                     "Impossible d'ajouter cette entreprise. Vous y êtes déjà rattaché·e."
                 )
