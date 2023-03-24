@@ -39,4 +39,4 @@ def test_echec_recherche(mocker):
 
     mocker.patch("requests.get", return_value=FakeResponse())
     with pytest.raises(APIError):
-        infos = recherche(SIREN)
+        recherche(SIREN)

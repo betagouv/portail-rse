@@ -170,7 +170,7 @@ def test_bdese_step_fetch_data(configured_bdese, habilitated_user, client, mocke
     fetch_data = mocker.patch("reglementations.views.get_bdese_data_from_egapro")
 
     url = bdese_step_url(bdese, 1)
-    response = client.get(url)
+    client.get(url)
 
     fetch_data.assert_called_once_with(bdese.entreprise, bdese.annee)
 
