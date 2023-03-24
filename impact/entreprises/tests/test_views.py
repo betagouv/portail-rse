@@ -1,6 +1,4 @@
 import html
-
-import pytest
 from django.urls import reverse
 
 import api.exceptions
