@@ -27,6 +27,14 @@
                                 <li>accord d'entreprise concernant la BDESE : {{ entreprise.bdese_accord | translate_boolean }}</li>
                             </ul>
                         </p>
+                        <p class="fr-card__desc">
+                           <a href="{% url 'reglementation' entreprise.siren %}" class="fr-btn fr-icon-checkbox-line fr-btn--icon-left">Voir les réglementations</a>
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="siren" value="{{ entreprise.siren }}">
+                                <button type="submit" name="action" value="detach" class="fr-btn fr-btn--secondary fr-icon-delete-line fr-btn--icon-left">Se retirer</button>
+                            </form>
+                        </p>
                         {% endwith %}
                     </div>
                 </div>
@@ -41,7 +49,7 @@
             {% include 'snippets/siren_field.html' %}
         </div>
         {% include 'snippets/field.html' with field=form.fonctions %}
-        <input type="submit" value="Ajouter cette entreprise" class="fr-btn">
+        <button type="submit" name="action" value="attach" class="fr-btn">Ajouter cette entreprise</button>
     </form>
 
 </div>

@@ -12,6 +12,10 @@ from habilitations.models import Habilitation
 from habilitations.models import is_user_attached_to_entreprise
 
 
+def _attach_data(siren):
+    return {"siren": siren, "fonctions": "Présidente", "action": "attach"}
+
+
 def test_entreprises_page_requires_login(client):
     response = client.get("/entreprises")
 
@@ -32,7 +36,7 @@ def test_entreprises_page_for_logged_user(client, alice, entreprise_factory):
 
 def test_create_and_attach_to_entreprise(client, alice, mock_api_recherche_entreprises):
     client.force_login(alice)
-    data = {"siren": "000000001", "fonctions": "Présidente"}
+    data = _attach_data("000000001")
 
     response = client.post("/entreprises", data=data, follow=True)
 
@@ -51,7 +55,7 @@ def test_create_and_attach_to_entreprise(client, alice, mock_api_recherche_entre
 def test_attach_to_an_existing_entreprise(client, alice, entreprise_factory):
     entreprise = entreprise_factory()
     client.force_login(alice)
-    data = {"siren": entreprise.siren, "fonctions": "Présidente"}
+    data = _attach_data(entreprise.siren)
 
     response = client.post("/entreprises", data=data, follow=True)
 
@@ -63,7 +67,7 @@ def test_attach_to_an_existing_entreprise(client, alice, entreprise_factory):
 
 def test_fail_to_create_entreprise(client, alice):
     client.force_login(alice)
-    data = {"siren": "unvalid", "fonctions": "Présidente"}
+    data = _attach_data("unvalid")
 
     response = client.post("/entreprises", data=data, follow=True)
 
@@ -81,7 +85,7 @@ def test_fail_to_find_entreprise_in_API(client, alice, mock_api_recherche_entrep
     mock_api_recherche_entreprises.side_effect = api.exceptions.APIError(
         "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct."
     )
-    data = {"siren": "000000001", "fonctions": "Présidente"}
+    data = _attach_data("000000001")
 
     response = client.post("/entreprises", data=data, follow=True)
 
@@ -98,7 +102,7 @@ def test_fail_because_already_existing_habilitation(client, alice, entreprise_fa
     entreprise = entreprise_factory()
     attach_user_to_entreprise(alice, entreprise, "DG")
     client.force_login(alice)
-    data = {"siren": entreprise.siren, "fonctions": "Présidente"}
+    data = _attach_data(entreprise.siren)
 
     response = client.post("/entreprises", data=data, follow=True)
 
@@ -114,8 +118,9 @@ def test_detach_from_an_entreprise(client, alice, entreprise_factory):
     entreprise = entreprise_factory()
     attach_user_to_entreprise(alice, entreprise, "Présidente")
     client.force_login(alice)
+    data = {"siren": entreprise.siren, "action": "detach"}
 
-    response = client.delete(f"/entreprises/{entreprise.siren}", follow=True)
+    response = client.post(f"/entreprises", data=data, follow=True)
 
     assert response.status_code == 200
     assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
