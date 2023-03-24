@@ -9,6 +9,7 @@ from django.shortcuts import render
 
 import api.recherche_entreprises
 from .forms import EntrepriseAttachForm
+from .forms import EntrepriseDetachForm
 from .forms import EntrepriseQualificationForm
 from .models import Entreprise
 from api.exceptions import APIError
@@ -21,7 +22,19 @@ from habilitations.models import is_user_attached_to_entreprise
 @login_required()
 def index(request):
     if request.POST:
-        return attach(request)
+        if request.POST["action"] == "attach":
+            return attach(request)
+        else:
+            form = EntrepriseDetachForm(request.POST)
+            if form.is_valid():
+                siren = form.cleaned_data["siren"]
+                entreprise = Entreprise.objects.get(siren=siren)
+                detach_user_from_entreprise(request.user, entreprise)
+                messages.success(
+                    request, "Vous n'êtes plus rattaché à cette entreprise"
+                )
+            return redirect("entreprises:entreprises")
+
     return render(request, "entreprises/index.html", {"form": EntrepriseAttachForm()})
 
 
@@ -91,10 +104,6 @@ def qualification(request, siren):
                 request,
                 "L'entreprise n'a pas été enregistrée car le formulaire contient des erreurs",
             )
-    elif request.method == "DELETE":
-        detach_user_from_entreprise(request.user, entreprise)
-        messages.success(request, "Vous n'êtes plus rattaché à cette entreprise")
-        return redirect("entreprises:entreprises")
 
     else:
         infos_entreprise = api.recherche_entreprises.recherche(entreprise.siren)

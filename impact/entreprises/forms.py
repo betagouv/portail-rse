@@ -32,6 +32,10 @@ class EntrepriseAttachForm(DsfrForm):
     fonctions = forms.CharField(label="Fonction(s) dans la société")
 
 
+class EntrepriseDetachForm(DsfrForm):
+    siren = SirenField()
+
+
 class EntrepriseQualificationForm(forms.ModelForm, DsfrForm):
     class Meta:
         model = Entreprise
