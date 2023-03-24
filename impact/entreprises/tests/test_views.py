@@ -126,6 +126,29 @@ def test_detach_from_an_entreprise(client, alice, entreprise_factory):
     assert not is_user_attached_to_entreprise(alice, entreprise)
 
 
+def test_fail_to_detach_whithout_relation_to_an_entreprise(
+    client, alice, entreprise_factory
+):
+    entreprise = entreprise_factory()
+    client.force_login(alice)
+    data = {"siren": entreprise.siren, "action": "detach"}
+
+    response = client.post(f"/entreprises", data=data, follow=True)
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
+
+
+def test_fail_to_detach_to_an_entreprise_which_does_not_exist(client, alice):
+    client.force_login(alice)
+    data = {"siren": "000000001", "action": "detach"}
+
+    response = client.post(f"/entreprises", data=data, follow=True)
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
+
+
 def test_qualification_page_is_not_public(client, alice, unqualified_entreprise):
     url = f"/entreprises/{unqualified_entreprise.siren}"
     response = client.get(url)
