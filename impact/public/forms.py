@@ -1,7 +1,8 @@
 from django import forms
 
 from entreprises.forms import SirenField
-from entreprises.models import Entreprise, RAISON_SOCIALE_MAX_LENGTH
+from entreprises.models import Entreprise
+from entreprises.models import RAISON_SOCIALE_MAX_LENGTH
 from utils.forms import DsfrForm
 
 

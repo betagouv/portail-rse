@@ -3,8 +3,9 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 
 from habilitations.admin import HabilitationInline
+from users.forms import UserChangeForm
+from users.forms import UserCreationForm
 from users.models import User
-from users.forms import UserChangeForm, UserCreationForm
 
 
 class UserAdmin(BaseUserAdmin):

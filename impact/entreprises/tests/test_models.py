@@ -1,8 +1,10 @@
-from datetime import datetime, timezone, timedelta
+from datetime import datetime
+from datetime import timedelta
+from datetime import timezone
 
+import pytest
 from django.db import IntegrityError
 from freezegun import freeze_time
-import pytest
 
 from entreprises.models import Entreprise
 

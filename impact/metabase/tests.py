@@ -1,10 +1,10 @@
 import pytest
-
 from django.urls import reverse
+
 from entreprises.models import Entreprise as ImpactEntreprise
 from impact.settings import METABASE_DATABASE_NAME
-from metabase.models import Entreprise as MetabaseEntreprise
 from metabase.management.commands.sync_metabase import Command
+from metabase.models import Entreprise as MetabaseEntreprise
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])

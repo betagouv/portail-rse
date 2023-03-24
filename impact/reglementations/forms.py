@@ -1,10 +1,13 @@
-from django import forms
-from django.db import models
-from django.core.exceptions import ValidationError
 import json
 
+from django import forms
+from django.core.exceptions import ValidationError
+from django.db import models
+
+from reglementations.models import BDESE_300
+from reglementations.models import BDESE_50_300
+from reglementations.models import CategoryType
 from utils.forms import DsfrForm
-from reglementations.models import BDESE_50_300, BDESE_300, CategoryType
 
 
 class IntroductionDemoForm(DsfrForm):

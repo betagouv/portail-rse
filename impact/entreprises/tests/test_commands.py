@@ -1,10 +1,9 @@
 import pytest
-
 from django.core.management import call_command
 
 import api.exceptions
-from entreprises.models import Entreprise as Entreprise
 from entreprises.management.commands.force_raison_sociale import Command
+from entreprises.models import Entreprise as Entreprise
 
 
 @pytest.mark.django_db(transaction=True)

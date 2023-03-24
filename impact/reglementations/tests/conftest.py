@@ -1,8 +1,10 @@
 import pytest
 
 from entreprises.models import Entreprise
-from habilitations.models import add_entreprise_to_user, get_habilitation
-from reglementations.models import BDESE_50_300, BDESE_300
+from habilitations.models import add_entreprise_to_user
+from habilitations.models import get_habilitation
+from reglementations.models import BDESE_300
+from reglementations.models import BDESE_50_300
 
 
 @pytest.fixture

@@ -1,15 +1,13 @@
 from django import forms
 from django.contrib import admin
 
-from reglementations.models import (
-    BDESE_300,
-    BDESE_50_300,
-    CategoryType,
-    OfficialBDESE_300,
-    OfficialBDESE_50_300,
-    PersonalBDESE_300,
-    PersonalBDESE_50_300,
-)
+from reglementations.models import BDESE_300
+from reglementations.models import BDESE_50_300
+from reglementations.models import CategoryType
+from reglementations.models import OfficialBDESE_300
+from reglementations.models import OfficialBDESE_50_300
+from reglementations.models import PersonalBDESE_300
+from reglementations.models import PersonalBDESE_50_300
 
 
 class CategoryJSONField(forms.JSONField):

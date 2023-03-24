@@ -1,16 +1,14 @@
 import json
 
-from django import forms
 import pytest
+from django import forms
 
-from reglementations.forms import (
-    bdese_form_factory,
-    bdese_configuration_form_factory,
-    BDESE_50_300_FIELDS,
-    BDESE_300_FIELDS,
-    BDESE_50_300_FIELDS,
-)
-from reglementations.models import BDESE_300, BDESE_50_300
+from reglementations.forms import BDESE_300_FIELDS
+from reglementations.forms import BDESE_50_300_FIELDS
+from reglementations.forms import bdese_configuration_form_factory
+from reglementations.forms import bdese_form_factory
+from reglementations.models import BDESE_300
+from reglementations.models import BDESE_50_300
 
 
 @pytest.fixture

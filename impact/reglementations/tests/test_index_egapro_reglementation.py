@@ -3,11 +3,9 @@ import json
 import freezegun
 import pytest
 
-from reglementations.views import (
-    IndexEgaproReglementation,
-    ReglementationStatus,
-    is_index_egapro_updated,
-)
+from reglementations.views import IndexEgaproReglementation
+from reglementations.views import is_index_egapro_updated
+from reglementations.views import ReglementationStatus
 
 
 def test_index_egapro_reglementation_info():

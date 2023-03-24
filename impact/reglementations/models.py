@@ -1,6 +1,6 @@
 import datetime
-from itertools import chain
 from enum import Enum
+from itertools import chain
 
 from django import forms
 from django.conf import settings

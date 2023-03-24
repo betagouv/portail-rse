@@ -1,18 +1,20 @@
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import PasswordResetView as BasePasswordResetView
 from django.contrib.auth.views import (
     PasswordResetConfirmView as BasePasswordResetConfirmView,
 )
-from django.shortcuts import redirect, render
+from django.contrib.auth.views import PasswordResetView as BasePasswordResetView
+from django.shortcuts import redirect
+from django.shortcuts import render
 
+from .forms import UserCreationForm
+from .forms import UserEditionForm
+from .models import User
 from api.exceptions import APIError
 from entreprises.models import Entreprise
 from entreprises.views import search_and_create_entreprise
 from habilitations.models import add_entreprise_to_user
-from .forms import UserCreationForm, UserEditionForm
-from .models import User
 
 
 def creation(request):

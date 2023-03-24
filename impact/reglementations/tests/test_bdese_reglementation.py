@@ -1,9 +1,11 @@
-from django.urls import reverse
 import pytest
+from django.urls import reverse
 
 from habilitations.models import add_entreprise_to_user
-from reglementations.models import BDESE_50_300, BDESE_300
-from reglementations.views import BDESEReglementation, ReglementationStatus
+from reglementations.models import BDESE_300
+from reglementations.models import BDESE_50_300
+from reglementations.views import BDESEReglementation
+from reglementations.views import ReglementationStatus
 
 
 def test_bdese_reglementation_info():

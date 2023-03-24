@@ -2,12 +2,14 @@ import requests
 from django.conf import settings
 from django.contrib import messages
 from django.core.mail import EmailMessage
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
+from django.shortcuts import render
 
 import api.exceptions
 import api.recherche_entreprises
-
-from .forms import EligibiliteForm, SirenForm, ContactForm
+from .forms import ContactForm
+from .forms import EligibiliteForm
+from .forms import SirenForm
 from entreprises.models import Entreprise
 
 

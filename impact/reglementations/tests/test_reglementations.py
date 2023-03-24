@@ -4,7 +4,8 @@ from api.tests.fixtures import mock_api_recherche_entreprise
 from entreprises.models import Entreprise
 from entreprises.tests.conftest import unqualified_entreprise
 from habilitations.models import add_entreprise_to_user
-from reglementations.views import BDESEReglementation, IndexEgaproReglementation
+from reglementations.views import BDESEReglementation
+from reglementations.views import IndexEgaproReglementation
 
 
 def test_public_reglementations(client):

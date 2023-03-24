@@ -1,31 +1,34 @@
-from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+from abc import ABC
+from abc import abstractmethod
+from dataclasses import dataclass
+from dataclasses import field
 
 import requests
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import get_object_or_404, HttpResponse, redirect, render
+from django.shortcuts import get_object_or_404
+from django.shortcuts import HttpResponse
+from django.shortcuts import redirect
+from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
-from weasyprint import CSS, HTML
+from weasyprint import CSS
+from weasyprint import HTML
 
+from .forms import bdese_configuration_form_factory
+from .forms import bdese_form_factory
+from .forms import IntroductionDemoForm
+from .models import annees_a_remplir_bdese
+from .models import BDESE_300
+from .models import BDESE_50_300
+from .models import derniere_annee_a_remplir_bdese
+from .models import derniere_annee_a_remplir_index_egapro
 from entreprises.models import Entreprise
-from habilitations.models import get_habilitation, is_user_habilited_on_entreprise
+from habilitations.models import get_habilitation
+from habilitations.models import is_user_habilited_on_entreprise
 from public.forms import EligibiliteForm
-from .models import (
-    derniere_annee_a_remplir_index_egapro,
-    derniere_annee_a_remplir_bdese,
-    annees_a_remplir_bdese,
-    BDESE_300,
-    BDESE_50_300,
-)
-from .forms import (
-    bdese_form_factory,
-    bdese_configuration_form_factory,
-    IntroductionDemoForm,
-)
 
 
 @dataclass

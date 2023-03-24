@@ -1,14 +1,15 @@
 from django import forms
 from django.contrib.auth import password_validation
-from django.contrib.auth.forms import AuthenticationForm, ReadOnlyPasswordHashField
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm
+from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
 
-from utils.forms import DsfrForm
-from entreprises.models import Entreprise
-from entreprises.forms import SirenField
-from habilitations.models import add_entreprise_to_user
 from .models import User
+from entreprises.forms import SirenField
+from entreprises.models import Entreprise
+from habilitations.models import add_entreprise_to_user
+from utils.forms import DsfrForm
 
 
 class LoginForm(DsfrForm, AuthenticationForm):

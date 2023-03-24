@@ -1,4 +1,5 @@
-from datetime import datetime, timezone
+from datetime import datetime
+from datetime import timezone
 
 from django.conf import settings
 from django.contrib import admin
@@ -6,10 +7,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
 from entreprises.models import Entreprise
-from reglementations.models import (
-    has_official_bdese,
-    get_all_personal_bdese,
-)
+from reglementations.models import get_all_personal_bdese
+from reglementations.models import has_official_bdese
 
 
 FONCTIONS_MAX_LENGTH = 250

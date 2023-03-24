@@ -1,4 +1,5 @@
 from django.db import models
+
 from entreprises.models import RAISON_SOCIALE_MAX_LENGTH
 
 

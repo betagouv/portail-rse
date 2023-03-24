@@ -3,13 +3,17 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404
+from django.shortcuts import redirect
+from django.shortcuts import render
 
 import api.recherche_entreprises
-from .forms import EntrepriseAddForm, EntrepriseQualificationForm
+from .forms import EntrepriseAddForm
+from .forms import EntrepriseQualificationForm
 from .models import Entreprise
 from api.exceptions import APIError
-from habilitations.models import add_entreprise_to_user, get_habilitation
+from habilitations.models import add_entreprise_to_user
+from habilitations.models import get_habilitation
 
 
 @login_required()

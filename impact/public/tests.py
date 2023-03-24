@@ -1,5 +1,6 @@
 import api.exceptions
-from public.forms import EligibiliteForm, RAISON_SOCIALE_MAX_LENGTH
+from public.forms import EligibiliteForm
+from public.forms import RAISON_SOCIALE_MAX_LENGTH
 
 
 def test_page_index(client):

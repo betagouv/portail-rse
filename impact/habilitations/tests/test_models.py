@@ -1,8 +1,10 @@
-from datetime import datetime, timezone
+from datetime import datetime
+from datetime import timezone
 
 from freezegun import freeze_time
 
-from habilitations.models import add_entreprise_to_user, get_habilitation
+from habilitations.models import add_entreprise_to_user
+from habilitations.models import get_habilitation
 
 
 def test_habilitation(alice, entreprise_factory):

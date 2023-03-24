@@ -1,8 +1,9 @@
 from django import template
-from django.forms import BooleanField, ChoiceField
+from django.forms import BooleanField
+from django.forms import ChoiceField
 
-import impact.settings
 import habilitations.models
+import impact.settings
 
 register = template.Library()
 

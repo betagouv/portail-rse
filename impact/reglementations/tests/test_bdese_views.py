@@ -1,17 +1,17 @@
 import html
 import json
 
-from django.urls import reverse
 import pytest
+from django.urls import reverse
 
 from habilitations.models import add_entreprise_to_user
-from reglementations.models import annees_a_remplir_bdese, BDESE_50_300, BDESE_300
+from reglementations.models import annees_a_remplir_bdese
+from reglementations.models import BDESE_300
+from reglementations.models import BDESE_50_300
 from reglementations.tests.test_bdese_forms import configuration_form_data
-from reglementations.views import (
-    get_bdese_data_from_egapro,
-    initialize_bdese_configuration,
-    render_bdese_pdf_html,
-)
+from reglementations.views import get_bdese_data_from_egapro
+from reglementations.views import initialize_bdese_configuration
+from reglementations.views import render_bdese_pdf_html
 
 
 def test_bdese_is_not_public(client, alice, grande_entreprise):

@@ -1,18 +1,16 @@
+import freezegun
+import pytest
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.utils import IntegrityError
-import pytest
-import freezegun
 
 from habilitations.models import get_habilitation
-from reglementations.models import (
-    derniere_annee_a_remplir_bdese,
-    annees_a_remplir_bdese,
-    BDESE_300,
-    BDESE_50_300,
-    CategoryField,
-    CategoryType,
-)
+from reglementations.models import annees_a_remplir_bdese
+from reglementations.models import BDESE_300
+from reglementations.models import BDESE_50_300
+from reglementations.models import CategoryField
+from reglementations.models import CategoryType
+from reglementations.models import derniere_annee_a_remplir_bdese
 
 
 def test_category_field_with_hard_coded_categories():

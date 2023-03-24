@@ -1,8 +1,14 @@
 from django.contrib.auth import views as auth_views
-from django.urls import path, reverse_lazy
+from django.urls import path
+from django.urls import reverse_lazy
 
-from .forms import LoginForm, PasswordResetForm, SetPasswordForm
-from .views import creation, account, PasswordResetView, PasswordResetConfirmView
+from .forms import LoginForm
+from .forms import PasswordResetForm
+from .forms import SetPasswordForm
+from .views import account
+from .views import creation
+from .views import PasswordResetConfirmView
+from .views import PasswordResetView
 
 urlpatterns = [
     path(

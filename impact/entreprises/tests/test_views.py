@@ -1,11 +1,14 @@
 import html
+
 import pytest
 from django.urls import reverse
 
 import api.exceptions
 from api.tests.fixtures import mock_api_recherche_entreprise
 from entreprises.models import Entreprise
-from habilitations.models import add_entreprise_to_user, get_habilitation, Habilitation
+from habilitations.models import add_entreprise_to_user
+from habilitations.models import get_habilitation
+from habilitations.models import Habilitation
 
 
 def test_entreprises_page_requires_login(client):
