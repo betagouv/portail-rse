@@ -69,7 +69,7 @@ class UserCreationForm(DsfrForm, UserPasswordForm):
     siren = SirenField()
     fonctions = forms.CharField(label="Fonction(s) dans la société")
     acceptation_cgu = forms.BooleanField(
-        label="J’ai lu et j’accepte la politique de confidentialité et les CGUs",
+        label=f"J’ai lu et j’accepte les CGU (Conditions Générales d'utilisation)",
         required=True,
     )
 
