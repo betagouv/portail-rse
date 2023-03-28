@@ -16,7 +16,7 @@ def recherche(siren):
     response = requests.get(url)
     if response.status_code == 200 and response.json()["total_results"]:
         data = response.json()["results"][0]
-        denomination = data["nom_raison_sociale"]
+        denomination = data["nom_raison_sociale"] or data["nom_complet"]
         try:
             # les tranches d'effectif correspondent à celles de l'API Sirene de l'Insee
             # https://www.sirene.fr/sirene/public/variable/tefen
