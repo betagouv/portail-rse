@@ -311,7 +311,7 @@ def test_render_bdese_pdf_html(configured_bdese):
 
     pdf_html = render_bdese_pdf_html(bdese)
 
-    assert bdese.entreprise.raison_sociale in pdf_html
+    assert bdese.entreprise.denomination in pdf_html
     assert str(bdese.annee) in pdf_html
     for category in bdese.categories_professionnelles:
         assert category.capitalize() in pdf_html

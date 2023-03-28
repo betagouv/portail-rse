@@ -8,15 +8,15 @@ from entreprises.models import Entreprise
 class Command(BaseCommand):
     def handle(self, *args, **options):
         for entreprise in Entreprise.objects.all():
-            if entreprise.raison_sociale:
-                print(f"IGNORE: {entreprise.siren} {entreprise.raison_sociale}")
+            if entreprise.denomination:
+                print(f"IGNORE: {entreprise.siren} {entreprise.denomination}")
             else:
                 try:
                     infos_entreprise = api.recherche_entreprises.recherche(
                         entreprise.siren
                     )
-                    entreprise.raison_sociale = infos_entreprise["raison_sociale"]
+                    entreprise.denomination = infos_entreprise["denomination"]
                     entreprise.save()
-                    print(f"OK: {entreprise.siren} {entreprise.raison_sociale}")
+                    print(f"OK: {entreprise.siren} {entreprise.denomination}")
                 except api.exceptions.APIError as e:
                     print(f"ERREUR {e}: {entreprise.siren}")

@@ -31,13 +31,13 @@ def entreprise_factory(db):
         siren="000000001",
         effectif="petit",
         bdese_accord=False,
-        raison_sociale="Entreprise SAS",
+        denomination="Entreprise SAS",
     ):
         entreprise = Entreprise.objects.create(
             siren=siren,
             effectif=effectif,
             bdese_accord=bdese_accord,
-            raison_sociale=raison_sociale,
+            denomination=denomination,
         )
         return entreprise
 

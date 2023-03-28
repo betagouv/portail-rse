@@ -18,7 +18,7 @@ class Command(BaseCommand):
         for entreprise in ImpactEntreprise.objects.all():
             meta_e = MetabaseEntreprise.objects.create(
                 siren=entreprise.siren,
-                raison_sociale=entreprise.raison_sociale,
+                denomination=entreprise.denomination,
                 bdese_accord=entreprise.bdese_accord,
                 effectif=entreprise.effectif,
                 created_at=entreprise.created_at,

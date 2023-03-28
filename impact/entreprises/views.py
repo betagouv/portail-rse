@@ -32,7 +32,7 @@ def search_and_create_entreprise(siren):
         raise exception
     return Entreprise.objects.create(
         siren=infos_entreprise["siren"],
-        raison_sociale=infos_entreprise["raison_sociale"],
+        denomination=infos_entreprise["denomination"],
     )
 
 
@@ -90,10 +90,10 @@ def qualification(request, siren):
             )
     else:
         infos_entreprise = api.recherche_entreprises.recherche(entreprise.siren)
-        if not entreprise.raison_sociale:
+        if not entreprise.denomination:
             # Certaines entreprises peuvent avoir été créées sans raison sociale depuis le formulaire de création utilisateur
             # TODO: supprimer ce bloc conditionnel quand toutes les entreprises auront une raison sociale et qu'une entreprise ne pourra pas être créée sans
-            entreprise.raison_sociale = infos_entreprise["raison_sociale"]
+            entreprise.denomination = infos_entreprise["denomination"]
             entreprise.save()
         form = EntrepriseQualificationForm(
             instance=entreprise, initial=infos_entreprise

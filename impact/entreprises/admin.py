@@ -12,7 +12,7 @@ class EntrepriseAdminForm(forms.ModelForm):
 
 
 class EntrepriseAdmin(admin.ModelAdmin):
-    list_display = ["siren", "raison_sociale"]
+    list_display = ["siren", "denomination"]
     inlines = (HabilitationInline,)
     model = Entreprise
     form = EntrepriseAdminForm

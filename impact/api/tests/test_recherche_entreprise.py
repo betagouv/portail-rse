@@ -27,7 +27,7 @@ def test_succes_recherche(mocker):
     assert infos == {
         "siren": SIREN,
         "effectif": "petit",
-        "raison_sociale": "ENTREPRISE",
+        "denomination": "ENTREPRISE",
     }
 
 

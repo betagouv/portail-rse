@@ -1,6 +1,6 @@
 import api.exceptions
+from public.forms import DENOMINATION_MAX_LENGTH
 from public.forms import EligibiliteForm
-from public.forms import RAISON_SOCIALE_MAX_LENGTH
 
 
 def test_page_index(client):
@@ -86,7 +86,7 @@ def test_eligibilite_form_truncate_raison_social_when_too_long(db):
         data={
             "effectif": "grand",
             "bdese_accord": False,
-            "raison_sociale": "a" * (RAISON_SOCIALE_MAX_LENGTH + 1),
+            "denomination": "a" * (DENOMINATION_MAX_LENGTH + 1),
             "siren": "123456789",
         }
     )
@@ -95,7 +95,7 @@ def test_eligibilite_form_truncate_raison_social_when_too_long(db):
 
     entreprise = form.save()
 
-    assert entreprise.raison_sociale == "a" * RAISON_SOCIALE_MAX_LENGTH
+    assert entreprise.denomination == "a" * DENOMINATION_MAX_LENGTH
 
 
 def test_succes_recherche_siren(client, mocker):
@@ -106,7 +106,7 @@ def test_succes_recherche_siren(client, mocker):
         return_value={
             "siren": SIREN,
             "effectif": "moyen",
-            "raison_sociale": RAISON_SOCIALE,
+            "denomination": RAISON_SOCIALE,
         },
     )
     response = client.get("/siren", {"siren": SIREN})

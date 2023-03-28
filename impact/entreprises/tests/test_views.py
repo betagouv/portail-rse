@@ -43,7 +43,7 @@ def test_add_and_attach_to_entreprise(client, alice, mock_api_recherche_entrepri
 
     entreprise = Entreprise.objects.get(siren="000000001")
     assert get_habilitation(entreprise, alice).fonctions == "Présidente"
-    assert entreprise.raison_sociale == "Entreprise SAS"
+    assert entreprise.denomination == "Entreprise SAS"
     assert not entreprise.is_qualified
 
 
@@ -137,7 +137,7 @@ def test_qualification_page(
     mock_api_recherche_entreprise.assert_called_once_with(unqualified_entreprise.siren)
 
     unqualified_entreprise.refresh_from_db()
-    assert unqualified_entreprise.raison_sociale == "Entreprise SAS"
+    assert unqualified_entreprise.denomination == "Entreprise SAS"
     assert not unqualified_entreprise.is_qualified
 
 
@@ -156,7 +156,7 @@ def test_qualify_entreprise(
     response = client.post(url, data=data)
 
     unqualified_entreprise.refresh_from_db()
-    assert unqualified_entreprise.raison_sociale == "Entreprise SAS"
+    assert unqualified_entreprise.denomination == "Entreprise SAS"
     assert unqualified_entreprise.effectif == "moyen"
     assert unqualified_entreprise.bdese_accord
     assert unqualified_entreprise.is_qualified

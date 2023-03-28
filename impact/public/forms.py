@@ -1,8 +1,8 @@
 from django import forms
 
 from entreprises.forms import SirenField
+from entreprises.models import DENOMINATION_MAX_LENGTH
 from entreprises.models import Entreprise
-from entreprises.models import RAISON_SOCIALE_MAX_LENGTH
 from utils.forms import DsfrForm
 
 
@@ -11,15 +11,15 @@ class SirenForm(DsfrForm):
 
 
 class EligibiliteForm(DsfrForm, forms.ModelForm):
-    raison_sociale = forms.CharField()
+    denomination = forms.CharField()
 
     class Meta:
         model = Entreprise
-        fields = ["effectif", "bdese_accord", "raison_sociale", "siren"]
+        fields = ["effectif", "bdese_accord", "denomination", "siren"]
 
-    def clean_raison_sociale(self):
-        raison_sociale = self.cleaned_data.get("raison_sociale")
-        return raison_sociale[:RAISON_SOCIALE_MAX_LENGTH]
+    def clean_denomination(self):
+        denomination = self.cleaned_data.get("denomination")
+        return denomination[:DENOMINATION_MAX_LENGTH]
 
 
 class ContactForm(DsfrForm):

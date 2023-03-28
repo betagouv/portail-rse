@@ -16,7 +16,7 @@ def recherche(siren):
     response = requests.get(url)
     if response.status_code == 200 and response.json()["total_results"]:
         data = response.json()["results"][0]
-        raison_sociale = data["nom_raison_sociale"]
+        denomination = data["nom_raison_sociale"]
         try:
             # les tranches d'effectif correspondent à celles de l'API Sirene de l'Insee
             # https://www.sirene.fr/sirene/public/variable/tefen
@@ -34,7 +34,7 @@ def recherche(siren):
         return {
             "siren": siren,
             "effectif": taille,
-            "raison_sociale": raison_sociale,
+            "denomination": denomination,
         }
     else:
         raise APIError(SIREN_NOT_FOUND_ERROR)

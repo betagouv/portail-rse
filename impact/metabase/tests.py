@@ -13,7 +13,7 @@ def test_synchronise_metabase_once():
         siren="000000001",
         effectif="petit",
         bdese_accord=True,
-        raison_sociale="A",
+        denomination="A",
     )
     entreprise_A.effectif = "grand"
     entreprise_A.save()
@@ -21,7 +21,7 @@ def test_synchronise_metabase_once():
     Command().handle()
 
     metabase_entreprise = MetabaseEntreprise.objects.all()[0]
-    assert metabase_entreprise.raison_sociale == "A"
+    assert metabase_entreprise.denomination == "A"
     assert metabase_entreprise.siren == "000000001"
     assert metabase_entreprise.effectif == "grand"
     assert metabase_entreprise.bdese_accord == True
@@ -35,14 +35,14 @@ def test_synchronise_several_times():
         siren="000000001",
         effectif="petit",
         bdese_accord=True,
-        raison_sociale="A",
+        denomination="A",
     )
 
     Command().handle()
     Command().handle()
 
     metabase_entreprise = MetabaseEntreprise.objects.all()[0]
-    assert metabase_entreprise.raison_sociale == "A"
+    assert metabase_entreprise.denomination == "A"
     assert metabase_entreprise.siren == "000000001"
     assert metabase_entreprise.effectif == "petit"
     assert metabase_entreprise.bdese_accord == True

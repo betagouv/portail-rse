@@ -32,7 +32,7 @@ def test_public_reglementations_with_entreprise_data(status_is_soumis, client, m
     data = {
         "effectif": "petit",
         "bdese_accord": False,
-        "raison_sociale": "Entreprise SAS",
+        "denomination": "Entreprise SAS",
         "siren": "000000001",
     }
 
@@ -48,7 +48,7 @@ def test_public_reglementations_with_entreprise_data(status_is_soumis, client, m
 
     # entreprise has been created
     entreprise = Entreprise.objects.get(siren="000000001")
-    assert entreprise.raison_sociale == "Entreprise SAS"
+    assert entreprise.denomination == "Entreprise SAS"
     assert not entreprise.bdese_accord
     assert entreprise.effectif == "petit"
 
@@ -79,7 +79,7 @@ def entreprise(db, alice):
         siren="000000001",
         effectif="petit",
         bdese_accord=False,
-        raison_sociale="Entreprise SAS",
+        denomination="Entreprise SAS",
     )
     add_entreprise_to_user(entreprise, alice, "Présidente")
     return entreprise
@@ -110,7 +110,7 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
     data = {
         "effectif": "grand",
         "bdese_accord": False,
-        "raison_sociale": "Une autre entreprise SAS",
+        "denomination": "Une autre entreprise SAS",
         "siren": "000000002",
     }
 
@@ -148,7 +148,7 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_autenticated(
     data = {
         "effectif": "grand",
         "bdese_accord": False,
-        "raison_sociale": "Entreprise SAS",
+        "denomination": "Entreprise SAS",
         "siren": "000000001",
     }
 

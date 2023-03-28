@@ -4,7 +4,7 @@ from django.db import models
 
 from utils.models import TimestampedModel
 
-RAISON_SOCIALE_MAX_LENGTH = 250
+DENOMINATION_MAX_LENGTH = 250
 FONCTIONS_MAX_LENGTH = 250
 
 
@@ -17,7 +17,7 @@ class Entreprise(TimestampedModel):
     ]
 
     siren = models.CharField(max_length=9, unique=True)
-    raison_sociale = models.CharField(max_length=RAISON_SOCIALE_MAX_LENGTH)
+    denomination = models.CharField(max_length=DENOMINATION_MAX_LENGTH)
     users = models.ManyToManyField(
         settings.AUTH_USER_MODEL, through="habilitations.Habilitation"
     )
@@ -33,8 +33,8 @@ class Entreprise(TimestampedModel):
     )
 
     def __str__(self):
-        return f"{self.siren} {self.raison_sociale}"
+        return f"{self.siren} {self.denomination}"
 
     @property
     def is_qualified(self):
-        return self.raison_sociale and self.effectif
+        return self.denomination and self.effectif

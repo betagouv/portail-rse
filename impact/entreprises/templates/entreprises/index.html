@@ -14,7 +14,7 @@
                     <div class="fr-card__content">
                         {% with habilitation=entreprise|habilitation:user %}
                         <h3 class="fr-card__title">
-                            {% if entreprise.raison_sociale %}{{ entreprise.raison_sociale }}{% else %}{{ entreprise.siren}}{% endif %}
+                            {% if entreprise.denomination %}{{ entreprise.denomination }}{% else %}{{ entreprise.siren}}{% endif %}
                             {% if habilitation and habilitation.is_confirmed %}
                                     <span class="fr-badge fr-badge--success">Habilité</span>
                             {% endif %}

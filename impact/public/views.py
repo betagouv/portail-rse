@@ -75,7 +75,7 @@ def siren(request):
                 request,
                 "public/siren.html",
                 {
-                    "raison_sociale": infos_entreprise["raison_sociale"],
+                    "denomination": infos_entreprise["denomination"],
                     "siren": siren,
                     "form": form,
                 },

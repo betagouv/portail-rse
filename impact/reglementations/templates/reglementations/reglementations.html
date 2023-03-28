@@ -11,7 +11,7 @@
         </p>
     </div>
 
-    {% if entreprise.raison_sociale %}<h2 class="fr-mt-4w">{{ entreprise.raison_sociale }}</h2>{% endif %}
+    {% if entreprise.denomination %}<h2 class="fr-mt-4w">{{ entreprise.denomination }}</h2>{% endif %}
     {% for reglementation in reglementations %}
         {% include "snippets/reglementation_card.html" with reglementation=reglementation user_manage_entreprise=user_manage_entreprise %}
     {% endfor %}

@@ -15,13 +15,13 @@ def test_entreprise():
 
     with freeze_time(now):
         entreprise = Entreprise.objects.create(
-            siren="123456789", raison_sociale="Entreprise SAS"
+            siren="123456789", denomination="Entreprise SAS"
         )
 
     assert entreprise.created_at == now
     assert entreprise.updated_at == now
     assert entreprise.siren == "123456789"
-    assert entreprise.raison_sociale == "Entreprise SAS"
+    assert entreprise.denomination == "Entreprise SAS"
     assert entreprise.bdese_accord is False
     assert entreprise.effectif is None
     assert not entreprise.users.all()
@@ -29,7 +29,7 @@ def test_entreprise():
 
     with pytest.raises(IntegrityError):
         Entreprise.objects.create(
-            siren="123456789", raison_sociale="Autre Entreprise SAS"
+            siren="123456789", denomination="Autre Entreprise SAS"
         )
 
     with freeze_time(now + timedelta(1)):

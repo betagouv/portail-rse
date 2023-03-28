@@ -47,8 +47,8 @@
                 </div>
             </div>
             {#await promise then json}
-                {#if json.raison_sociale}
-                    <p>Entreprise : {json.raison_sociale}</p>
+                {#if json.denomination}
+                    <p>Entreprise : {json.denomination}</p>
                 {/if}
             {:catch error}
                 <p class="fr-error-text">{error.message}</p>

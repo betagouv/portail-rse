@@ -9,7 +9,7 @@
                 margin: 1cm;
                 margin-bottom: 2.5cm;
                 @top-left {
-                    content: "BDESE {{ entreprise.raison_sociale }}";
+                    content: "BDESE {{ entreprise.denomination }}";
                     border-bottom: 1px solid rgb(58, 58, 58);
                     font-size: .75em;
                     font-weight: bold;
@@ -88,7 +88,7 @@
                 <br>Française
             </p>
             <p class="fr-header__service-title">
-                Rapport BDESE {{ bdese.annee }} {{ bdese.entreprise.raison_sociale }} <br><span class="fr-badge fr-badge--sm fr-badge--green-emeraude">BETA</span>
+                Rapport BDESE {{ bdese.annee }} {{ bdese.entreprise.denomination }} <br><span class="fr-badge fr-badge--sm fr-badge--green-emeraude">BETA</span>
             </p>
         </header>
         <div class="fr-container">

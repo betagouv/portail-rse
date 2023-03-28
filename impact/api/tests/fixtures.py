@@ -7,7 +7,7 @@ def mock_api_recherche_entreprise(mocker):
         "api.recherche_entreprises.recherche",
         return_value={
             "siren": "000000001",
-            "raison_sociale": "Entreprise SAS",
+            "denomination": "Entreprise SAS",
             "effectif": "petit",
         },
     )
