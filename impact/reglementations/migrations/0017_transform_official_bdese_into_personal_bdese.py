@@ -41,6 +41,5 @@ class Migration(migrations.Migration):
         migrations.RunPython(
             transform_official_bdese_into_personal_bdese,
             reverse_code=migrations.RunPython.noop,
-            hints={"db_migration": "default"},
         )
     ]

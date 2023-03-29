@@ -34,7 +34,6 @@ class Migration(migrations.Migration):
         migrations.RunPython(
             rename_categories_professionnelles_step_to_configuration,
             reverse_code=migrations.RunPython.noop,
-            hints={"db_migration": "default"},
         ),
         migrations.AlterField(
             model_name="bdese_300",

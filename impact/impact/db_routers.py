@@ -23,8 +23,7 @@ class MetabaseRouter:
         return None
 
     def allow_migrate(self, db, app_label, model_name=None, **hints):
-        if app_label in self.route_app_labels:
+        if db == METABASE_DATABASE_NAME:
+            return app_label in self.route_app_labels
+        elif app_label in self.route_app_labels:
             return db == METABASE_DATABASE_NAME
-        elif "db_migration" in hints:
-            return db == hints["db_migration"]
-        return None

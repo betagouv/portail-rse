@@ -23,6 +23,5 @@ class Migration(migrations.Migration):
         migrations.RunPython(
             create_through_relations,
             reverse_code=migrations.RunPython.noop,
-            hints={"db_migration": "default"},
         ),
     ]
