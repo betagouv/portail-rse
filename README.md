@@ -1,3 +1,5 @@
+[![test](https://github.com/betagouv/impact/actions/workflows/test.yml/badge.svg)](https://github.com/betagouv/impact/actions/workflows/test.yml)
+
 # Plateforme Impact
 
 https://beta.gouv.fr/startups/plateforme.impact.html
