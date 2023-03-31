@@ -113,7 +113,8 @@ class BDESEReglementation(Reglementation):
         for match in [
             cls._match_petit_effectif,
             cls._match_accord_bdese,
-            cls._match_else,
+            cls._match_bdese_preexistante,
+            cls._match_sans_bdese,
         ]:
             if reglementation_status := match(entreprise, annee, user):
                 return reglementation_status
@@ -140,7 +141,7 @@ class BDESEReglementation(Reglementation):
             )
 
     @classmethod
-    def _match_else(cls, entreprise, annee, user):
+    def _match_bdese_preexistante(cls, entreprise, annee, user):
         if entreprise.effectif == "moyen":
             bdese_class = BDESE_50_300
         else:
@@ -157,6 +158,8 @@ class BDESEReglementation(Reglementation):
         else:
             bdese = bdese_class.officials.filter(entreprise=entreprise, annee=annee)
 
+        if not bdese:
+            return
         if bdese:
             bdese = bdese[0]
             if bdese.is_complete:
@@ -187,14 +190,23 @@ class BDESEReglementation(Reglementation):
                         external=True,
                     ),
                 ]
-        else:
-            status = ReglementationStatus.STATUS_A_ACTUALISER
-            status_detail = "Vous êtes soumis à cette réglementation. Nous allons vous aider à la remplir."
-            primary_action = ReglementationAction(
-                reverse_lazy("bdese", args=[entreprise.siren, annee, 0]),
-                "Actualiser ma BDESE",
-            )
-            secondary_actions = []
+
+        return ReglementationStatus(
+            status,
+            status_detail,
+            primary_action=primary_action,
+            secondary_actions=secondary_actions,
+        )
+
+    @classmethod
+    def _match_sans_bdese(cls, entreprise, annee, user):
+        status = ReglementationStatus.STATUS_A_ACTUALISER
+        status_detail = "Vous êtes soumis à cette réglementation. Nous allons vous aider à la remplir."
+        primary_action = ReglementationAction(
+            reverse_lazy("bdese", args=[entreprise.siren, annee, 0]),
+            "Actualiser ma BDESE",
+        )
+        secondary_actions = []
 
         return ReglementationStatus(
             status,
