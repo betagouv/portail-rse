@@ -160,36 +160,36 @@ class BDESEReglementation(Reglementation):
 
         if not bdese:
             return
-        if bdese:
-            bdese = bdese[0]
-            if bdese.is_complete:
-                status = ReglementationStatus.STATUS_A_JOUR
-                status_detail = "Vous êtes soumis à cette réglementation. Vous avez actualisé votre BDESE sur la plateforme."
-                primary_action = ReglementationAction(
-                    reverse_lazy("bdese_pdf", args=[entreprise.siren, annee]),
-                    "Télécharger le pdf",
-                    external=True,
-                )
-                secondary_actions = [
-                    ReglementationAction(
-                        reverse_lazy("bdese", args=[entreprise.siren, annee, 1]),
-                        "Modifier ma BDESE",
-                    )
-                ]
-            else:
-                status = ReglementationStatus.STATUS_EN_COURS
-                status_detail = "Vous êtes soumis à cette réglementation. Vous avez démarré le remplissage de votre BDESE sur la plateforme."
-                primary_action = ReglementationAction(
+
+        bdese = bdese[0]
+        if bdese.is_complete:
+            status = ReglementationStatus.STATUS_A_JOUR
+            status_detail = "Vous êtes soumis à cette réglementation. Vous avez actualisé votre BDESE sur la plateforme."
+            primary_action = ReglementationAction(
+                reverse_lazy("bdese_pdf", args=[entreprise.siren, annee]),
+                "Télécharger le pdf",
+                external=True,
+            )
+            secondary_actions = [
+                ReglementationAction(
                     reverse_lazy("bdese", args=[entreprise.siren, annee, 1]),
-                    "Reprendre l'actualisation de ma BDESE",
+                    "Modifier ma BDESE",
                 )
-                secondary_actions = [
-                    ReglementationAction(
-                        reverse_lazy("bdese_pdf", args=[entreprise.siren, annee]),
-                        "Télécharger le pdf (brouillon)",
-                        external=True,
-                    ),
-                ]
+            ]
+        else:
+            status = ReglementationStatus.STATUS_EN_COURS
+            status_detail = "Vous êtes soumis à cette réglementation. Vous avez démarré le remplissage de votre BDESE sur la plateforme."
+            primary_action = ReglementationAction(
+                reverse_lazy("bdese", args=[entreprise.siren, annee, 1]),
+                "Reprendre l'actualisation de ma BDESE",
+            )
+            secondary_actions = [
+                ReglementationAction(
+                    reverse_lazy("bdese_pdf", args=[entreprise.siren, annee]),
+                    "Télécharger le pdf (brouillon)",
+                    external=True,
+                ),
+            ]
 
         return ReglementationStatus(
             status,
@@ -207,7 +207,6 @@ class BDESEReglementation(Reglementation):
             "Actualiser ma BDESE",
         )
         secondary_actions = []
-
         return ReglementationStatus(
             status,
             status_detail,
