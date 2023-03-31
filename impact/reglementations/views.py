@@ -17,18 +17,19 @@ from django.urls import reverse_lazy
 from weasyprint import CSS
 from weasyprint import HTML
 
-from .forms import bdese_configuration_form_factory
-from .forms import bdese_form_factory
-from .forms import IntroductionDemoForm
-from .models import annees_a_remplir_bdese
-from .models import BDESE_300
-from .models import BDESE_50_300
-from .models import derniere_annee_a_remplir_bdese
-from .models import derniere_annee_a_remplir_index_egapro
 from entreprises.models import Entreprise
 from habilitations.models import get_habilitation
 from habilitations.models import is_user_habilited_on_entreprise
 from public.forms import EligibiliteForm
+from reglementations.forms import bdese_configuration_form_factory
+from reglementations.forms import bdese_form_factory
+from reglementations.forms import IntroductionDemoForm
+from reglementations.models import annees_a_remplir_bdese
+from reglementations.models import BDESE_300
+from reglementations.models import BDESE_50_300
+from reglementations.models import BDESEAvecAccord
+from reglementations.models import derniere_annee_a_remplir_bdese
+from reglementations.models import derniere_annee_a_remplir_index_egapro
 
 
 @dataclass
@@ -129,10 +130,29 @@ class BDESEReglementation(Reglementation):
     @classmethod
     def _match_accord_bdese(cls, entreprise, annee, user):
         if entreprise.bdese_accord:
-            status = ReglementationStatus.STATUS_A_ACTUALISER
+            bdese_class = BDESEAvecAccord
+            if (
+                user
+                and (habilitation := get_habilitation(entreprise, user))
+                and not habilitation.is_confirmed
+            ):
+                bdese = bdese_class.personals.filter(
+                    entreprise=entreprise, annee=annee, user=user
+                )
+            else:
+                bdese = bdese_class.officials.filter(entreprise=entreprise, annee=annee)
+
+            if bdese and bdese[0].is_complete:
+                status = ReglementationStatus.STATUS_A_JOUR
+                primary_action_title = "Marquer ma BDESE comme non actualisée"
+            else:
+                status = ReglementationStatus.STATUS_A_ACTUALISER
+                primary_action_title = "Marquer ma BDESE comme actualisée"
+
             status_detail = "Vous êtes soumis à cette réglementation. Vous avez un accord d'entreprise spécifique. Veuillez vous y référer."
             primary_action = ReglementationAction(
-                "#", "Marquer ma BDESE comme actualisée"
+                reverse_lazy("bdese", args=[entreprise.siren, annee, 0]),
+                primary_action_title,
             )
             return ReglementationStatus(
                 status,
@@ -419,6 +439,9 @@ def bdese(request, siren, annee, step):
 
     bdese = _get_or_create_bdese(entreprise, annee, request.user)
 
+    if bdese.is_bdese_avec_accord:
+        return toggle_completion(request, bdese)
+
     if not bdese.is_configured and step != 0:
         messages.warning(request, f"Commencez par configurer votre BDESE {annee}")
         return redirect("bdese", siren=siren, annee=annee, step=0)
@@ -539,10 +562,12 @@ def _get_or_create_bdese(
     entreprise: Entreprise,
     annee: int,
     user: settings.AUTH_USER_MODEL,
-) -> BDESE_300 | BDESE_50_300:
+) -> BDESE_300 | BDESE_50_300 | BDESEAvecAccord:
     bdese_type = BDESEReglementation.bdese_type(entreprise)
     habilitation = get_habilitation(entreprise, user)
-    if bdese_type in (
+    if bdese_type == BDESEReglementation.TYPE_AVEC_ACCORD:
+        bdese_class = BDESEAvecAccord
+    elif bdese_type in (
         BDESEReglementation.TYPE_INFERIEUR_500,
         BDESEReglementation.TYPE_SUPERIEUR_500,
     ):
@@ -577,3 +602,15 @@ def initialize_bdese_configuration(bdese: BDESE_300 | BDESE_50_300) -> dict:
                 ] = _bdese.categories_professionnelles_detaillees
                 initial["niveaux_hierarchiques"] = _bdese.niveaux_hierarchiques
             return initial
+
+
+def toggle_completion(request, bdese):
+    if bdese.is_complete:
+        bdese.mark_step_as_incomplete(0)
+        success_message = "La BDESE a été marquée comme non actualisée"
+    else:
+        bdese.mark_step_as_complete(0)
+        success_message = "La BDESE a été marquée comme actualisée"
+    bdese.save()
+    messages.success(request, success_message)
+    return redirect("reglementation", siren=bdese.entreprise.siren)

@@ -1,5 +1,6 @@
 import datetime
 from enum import Enum
+from functools import partial
 from itertools import chain
 
 from django import forms
@@ -144,6 +145,10 @@ class AbstractBDESE(TimestampedModel):
     def is_bdese_300(self):
         return isinstance(self, BDESE_300)
 
+    @property
+    def is_bdese_avec_accord(self):
+        return isinstance(self, BDESEAvecAccord)
+
     def officialize(self):
         if not self.user:
             raise AlreadyOfficialError()
@@ -153,6 +158,24 @@ class AbstractBDESE(TimestampedModel):
             self._state.adding = True
             self.user = None
             self.save()
+
+
+def bdese_completion_steps_default(steps):
+    return partial(dict, [(step_name, False) for step_name in steps.values()])
+
+
+class BDESEAvecAccord(AbstractBDESE):
+    class Meta:
+        verbose_name = "BDESE avec accord d'entreprise"
+        verbose_name_plural = "BDESE avec accord d'entreprise"
+
+    STEPS = {0: "unique étape"}
+
+    completion_steps = CategoryField(
+        base_field=models.BooleanField,
+        categories=list(STEPS.values()),
+        default=bdese_completion_steps_default(STEPS),
+    )
 
 
 def bdese_300_completion_steps_default():
@@ -2681,13 +2704,17 @@ class OfficialBDESE_50_300(BDESE_50_300):
 def get_all_official_bdese(entreprise):
     bdese_50_300 = BDESE_50_300.officials.filter(entreprise=entreprise)
     bdese_300 = BDESE_300.officials.filter(entreprise=entreprise)
-    return chain(bdese_50_300, bdese_300)
+    bdese_avec_accord = BDESEAvecAccord.officials.filter(entreprise=entreprise)
+    return chain(bdese_50_300, bdese_300, bdese_avec_accord)
 
 
 def get_all_personal_bdese(entreprise, user):
     bdese_50_300 = BDESE_50_300.personals.filter(entreprise=entreprise, user=user)
     bdese_300 = BDESE_300.personals.filter(entreprise=entreprise, user=user)
-    return chain(bdese_50_300, bdese_300)
+    bdese_avec_accord = BDESEAvecAccord.personals.filter(
+        entreprise=entreprise, user=user
+    )
+    return chain(bdese_50_300, bdese_300, bdese_avec_accord)
 
 
 def has_official_bdese(entreprise: Entreprise) -> bool:

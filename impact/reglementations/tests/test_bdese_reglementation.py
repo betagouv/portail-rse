@@ -4,6 +4,7 @@ from django.urls import reverse
 from habilitations.models import add_entreprise_to_user
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
+from reglementations.models import BDESEAvecAccord
 from reglementations.views import BDESEReglementation
 from reglementations.views import ReglementationStatus
 
@@ -97,7 +98,7 @@ def test_calculate_status_more_than_50_employees(
 
 
 @pytest.mark.parametrize("effectif", ["moyen", "grand", "sup500"])
-def test_calculate_status_with_bdese_accord(effectif, entreprise_factory):
+def test_calculate_status_with_bdese_accord(effectif, entreprise_factory, mocker):
     entreprise = entreprise_factory(effectif=effectif, bdese_accord=True)
 
     bdese = BDESEReglementation.calculate_status(entreprise, 2022)
@@ -108,8 +109,17 @@ def test_calculate_status_with_bdese_accord(effectif, entreprise_factory):
         == "Vous êtes soumis à cette réglementation. Vous avez un accord d'entreprise spécifique. Veuillez vous y référer."
     )
     assert bdese.primary_action.title == "Marquer ma BDESE comme actualisée"
-    assert bdese.primary_action.url == "#"
+    assert bdese.primary_action.url == reverse(
+        "bdese", args=[entreprise.siren, 2022, 0]
+    )
     assert bdese.secondary_actions == []
+
+    bdese = BDESEAvecAccord.objects.create(entreprise=entreprise, annee=2022)
+    mocker.patch("reglementations.models.AbstractBDESE.is_complete", return_value=True)
+    bdese = BDESEReglementation.calculate_status(entreprise, 2022)
+
+    assert bdese.status == ReglementationStatus.STATUS_A_JOUR
+    assert bdese.primary_action.title == "Marquer ma BDESE comme non actualisée"
 
     bdese_type = BDESEReglementation.bdese_type(entreprise)
     assert bdese_type == BDESEReglementation.TYPE_AVEC_ACCORD
