@@ -624,12 +624,11 @@ def toggle_bdese_completion(request, siren, annee):
     bdese = _get_or_create_bdese(entreprise, annee, request.user)
 
     if bdese.is_bdese_avec_accord:
-        if bdese.is_complete:
-            bdese.mark_step_as_incomplete(0)
-            success_message = "La BDESE a été marquée comme non actualisée"
-        else:
-            bdese.mark_step_as_complete(0)
-            success_message = "La BDESE a été marquée comme actualisée"
+        bdese.toggle_completion()
         bdese.save()
+        if bdese.is_complete:
+            success_message = "La BDESE a été marquée comme actualisée"
+        else:
+            success_message = "La BDESE a été marquée comme non actualisée"
         messages.success(request, success_message)
     return redirect("reglementations:reglementation", siren=bdese.entreprise.siren)

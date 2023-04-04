@@ -115,7 +115,8 @@ def test_calculate_status_with_bdese_accord(effectif, entreprise_factory, mocker
     assert bdese.secondary_actions == []
 
     bdese = BDESEAvecAccord.objects.create(entreprise=entreprise, annee=2022)
-    mocker.patch("reglementations.models.AbstractBDESE.is_complete", return_value=True)
+    bdese.is_complete = True
+    bdese.save()
     bdese = BDESEReglementation.calculate_status(entreprise, 2022)
 
     assert bdese.status == ReglementationStatus.STATUS_A_JOUR

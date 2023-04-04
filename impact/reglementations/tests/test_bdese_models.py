@@ -8,6 +8,7 @@ from habilitations.models import get_habilitation
 from reglementations.models import annees_a_remplir_bdese
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
+from reglementations.models import BDESEAvecAccord
 from reglementations.models import CategoryField
 from reglementations.models import CategoryType
 from reglementations.models import derniere_annee_a_remplir_bdese
@@ -145,6 +146,27 @@ def test_bdese_50_300(grande_entreprise):
 
     bdese.categories_professionnelles = ["categorie 1", "categorie 2", "categorie 3"]
     assert bdese.is_configured
+
+
+@pytest.mark.django_db(transaction=True)
+def test_bdese_avec_accord(grande_entreprise):
+    with pytest.raises(IntegrityError):
+        BDESEAvecAccord.objects.create()
+
+    bdese = BDESEAvecAccord.objects.create(entreprise=grande_entreprise, annee=2022)
+
+    assert bdese.created_at
+    assert bdese.updated_at
+    assert bdese.annee == 2022
+    assert bdese.entreprise == grande_entreprise
+    assert not bdese.is_complete
+
+    assert not bdese.is_complete
+    bdese.toggle_completion()
+    assert bdese.is_complete
+
+    bdese.toggle_completion()
+    assert not bdese.is_complete
 
 
 def test_derniere_annee_a_remplir_bdese():

@@ -176,6 +176,10 @@ class BDESEAvecAccord(AbstractBDESE):
         categories=list(STEPS.values()),
         default=bdese_completion_steps_default(STEPS),
     )
+    is_complete = models.BooleanField(default=False)
+
+    def toggle_completion(self):
+        self.is_complete = not self.is_complete
 
 
 def bdese_300_completion_steps_default():
