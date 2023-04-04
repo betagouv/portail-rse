@@ -169,13 +169,6 @@ class BDESEAvecAccord(AbstractBDESE):
         verbose_name = "BDESE avec accord d'entreprise"
         verbose_name_plural = "BDESE avec accord d'entreprise"
 
-    STEPS = {0: "unique étape"}
-
-    completion_steps = CategoryField(
-        base_field=models.BooleanField,
-        categories=list(STEPS.values()),
-        default=bdese_completion_steps_default(STEPS),
-    )
     is_complete = models.BooleanField(default=False)
 
     def toggle_completion(self):
