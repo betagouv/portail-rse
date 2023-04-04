@@ -2675,6 +2675,24 @@ class BDESE_50_300(AbstractBDESE):
     )
 
 
+class PersonalBDESEAvecAccord(BDESEAvecAccord):
+    class Meta:
+        proxy = True
+        verbose_name = "BDESE personnelle avec accord d'entreprise"
+        verbose_name_plural = "BDESE personnelles avec accord d'entreprise"
+
+    objects = PersonalManager()
+
+
+class OfficialBDESEAvecAccord(BDESEAvecAccord):
+    class Meta:
+        proxy = True
+        verbose_name = "BDESE officielle avec accord d'entreprise"
+        verbose_name_plural = "BDESE officielles avec accord d'entreprise"
+
+    objects = OfficialManager()
+
+
 class PersonalBDESE_300(BDESE_300):
     class Meta:
         proxy = True

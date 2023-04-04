@@ -6,8 +6,10 @@ from reglementations.models import BDESE_50_300
 from reglementations.models import CategoryType
 from reglementations.models import OfficialBDESE_300
 from reglementations.models import OfficialBDESE_50_300
+from reglementations.models import OfficialBDESEAvecAccord
 from reglementations.models import PersonalBDESE_300
 from reglementations.models import PersonalBDESE_50_300
+from reglementations.models import PersonalBDESEAvecAccord
 
 
 class CategoryJSONField(forms.JSONField):
@@ -32,14 +34,14 @@ class BDESEAdminForm(forms.ModelForm):
         }
 
 
-@admin.register(PersonalBDESE_300, PersonalBDESE_50_300)
+@admin.register(PersonalBDESE_300, PersonalBDESE_50_300, PersonalBDESEAvecAccord)
 class PersonalBDESE_Admin(admin.ModelAdmin):
     form = BDESEAdminForm
     list_display = ["entreprise", "annee", "user"]
     list_filter = (("user", admin.RelatedOnlyFieldListFilter),)
 
 
-@admin.register(OfficialBDESE_300, OfficialBDESE_50_300)
+@admin.register(OfficialBDESE_300, OfficialBDESE_50_300, OfficialBDESEAvecAccord)
 class OfficialBDESE_Admin(admin.ModelAdmin):
     form = BDESEAdminForm
     list_display = ["entreprise", "annee"]
