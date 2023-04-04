@@ -151,7 +151,9 @@ class BDESEReglementation(Reglementation):
 
             status_detail = "Vous êtes soumis à cette réglementation. Vous avez un accord d'entreprise spécifique. Veuillez vous y référer."
             primary_action = ReglementationAction(
-                reverse_lazy("bdese", args=[entreprise.siren, annee, 0]),
+                reverse_lazy(
+                    "reglementations:bdese", args=[entreprise.siren, annee, 0]
+                ),
                 primary_action_title,
             )
             return ReglementationStatus(
@@ -186,13 +188,17 @@ class BDESEReglementation(Reglementation):
             status = ReglementationStatus.STATUS_A_JOUR
             status_detail = "Vous êtes soumis à cette réglementation. Vous avez actualisé votre BDESE sur la plateforme."
             primary_action = ReglementationAction(
-                reverse_lazy("bdese_pdf", args=[entreprise.siren, annee]),
+                reverse_lazy(
+                    "reglementations:bdese_pdf", args=[entreprise.siren, annee]
+                ),
                 "Télécharger le pdf",
                 external=True,
             )
             secondary_actions = [
                 ReglementationAction(
-                    reverse_lazy("bdese", args=[entreprise.siren, annee, 1]),
+                    reverse_lazy(
+                        "reglementations:bdese", args=[entreprise.siren, annee, 1]
+                    ),
                     "Modifier ma BDESE",
                 )
             ]
@@ -200,12 +206,16 @@ class BDESEReglementation(Reglementation):
             status = ReglementationStatus.STATUS_EN_COURS
             status_detail = "Vous êtes soumis à cette réglementation. Vous avez démarré le remplissage de votre BDESE sur la plateforme."
             primary_action = ReglementationAction(
-                reverse_lazy("bdese", args=[entreprise.siren, annee, 1]),
+                reverse_lazy(
+                    "reglementations:bdese", args=[entreprise.siren, annee, 1]
+                ),
                 "Reprendre l'actualisation de ma BDESE",
             )
             secondary_actions = [
                 ReglementationAction(
-                    reverse_lazy("bdese_pdf", args=[entreprise.siren, annee]),
+                    reverse_lazy(
+                        "reglementations:bdese_pdf", args=[entreprise.siren, annee]
+                    ),
                     "Télécharger le pdf (brouillon)",
                     external=True,
                 ),
@@ -223,7 +233,7 @@ class BDESEReglementation(Reglementation):
         status = ReglementationStatus.STATUS_A_ACTUALISER
         status_detail = "Vous êtes soumis à cette réglementation. Nous allons vous aider à la remplir."
         primary_action = ReglementationAction(
-            reverse_lazy("bdese", args=[entreprise.siren, annee, 0]),
+            reverse_lazy("reglementations:bdese", args=[entreprise.siren, annee, 0]),
             "Actualiser ma BDESE",
         )
         secondary_actions = []
@@ -444,13 +454,15 @@ def bdese(request, siren, annee, step):
 
     if not bdese.is_configured and step != 0:
         messages.warning(request, f"Commencez par configurer votre BDESE {annee}")
-        return redirect("bdese", siren=siren, annee=annee, step=0)
+        return redirect("reglementations:bdese", siren=siren, annee=annee, step=0)
 
     if request.method == "POST":
         if "mark_incomplete" in request.POST:
             bdese.mark_step_as_incomplete(step)
             bdese.save()
-            return redirect("bdese", siren=siren, annee=annee, step=step)
+            return redirect(
+                "reglementations:bdese", siren=siren, annee=annee, step=step
+            )
         else:
             if step == 0:
                 form = bdese_configuration_form_factory(bdese, data=request.POST)
@@ -468,7 +480,9 @@ def bdese(request, siren, annee, step):
                     bdese.save()
                     if step < len(bdese.STEPS) - 1:
                         step += 1
-                return redirect("bdese", siren=siren, annee=annee, step=step)
+                return redirect(
+                    "reglementations:bdese", siren=siren, annee=annee, step=step
+                )
             else:
                 messages.error(
                     request,
@@ -613,4 +627,4 @@ def toggle_completion(request, bdese):
         success_message = "La BDESE a été marquée comme actualisée"
     bdese.save()
     messages.success(request, success_message)
-    return redirect("reglementation", siren=bdese.entreprise.siren)
+    return redirect("reglementations:reglementation", siren=bdese.entreprise.siren)

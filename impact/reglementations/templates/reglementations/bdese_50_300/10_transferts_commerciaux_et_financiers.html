@@ -10,7 +10,7 @@
         <div class="fr-col">
             <h2>Pour les entreprises appartenant à un groupe, transferts commerciaux et financiers entre les entités du groupe</h2>
 
-            <form action="{% url 'bdese' siren annee 10 %}" method="post">
+            <form action="{% url 'reglementations:bdese' siren annee 10 %}" method="post">
                 {% csrf_token %}
                 {{ form.external_fields_in_step.as_hidden }}
 

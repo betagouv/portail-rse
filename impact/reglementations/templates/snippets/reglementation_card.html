@@ -51,7 +51,7 @@
                 </li>
                 {% if not user.is_authenticated and reglementation.status.is_soumis %}
                 <li>
-                    <a class="fr-btn" href="{% url 'login' %}?next={% url 'reglementations' %}">
+                    <a class="fr-btn" href="{% url 'login' %}?next={% url 'reglementations:reglementations' %}">
                         Se connecter
                     </a>
                 </li>

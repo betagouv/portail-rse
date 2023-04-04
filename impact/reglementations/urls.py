@@ -2,6 +2,7 @@ from django.urls import path
 
 from . import views
 
+app_name = "reglementations"
 urlpatterns = [
     path("reglementations", views.reglementations, name="reglementations"),
     path("reglementation/<str:siren>", views.reglementation, name="reglementation"),

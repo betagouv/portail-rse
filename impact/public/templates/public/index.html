@@ -28,7 +28,7 @@
                 </ul>
             </p>
             {% if user.is_authenticated and current_entreprise %}
-            <a href="{% url 'reglementation' current_entreprise.siren %}" class="fr-btn">Remplir mes réglementations</a>
+            <a href="{% url 'reglementations:reglementation' current_entreprise.siren %}" class="fr-btn">Remplir mes réglementations</a>
             {% else %}
             <a href="{% url 'entreprise' %}" class="fr-btn">Commencer avec mon entreprise</a>
             {% endif %}

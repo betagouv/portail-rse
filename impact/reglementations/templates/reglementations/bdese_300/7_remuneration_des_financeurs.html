@@ -10,7 +10,7 @@
         <div class="fr-col">
             <h2>Rémunération des financeurs, en dehors des éléments mentionnés à l'étape "Rémunérations"</h2>
 
-            <form action="{% url 'bdese' siren annee 7 %}" method="post">
+            <form action="{% url 'reglementations:bdese' siren annee 7 %}" method="post">
                 {% csrf_token %}
                 {{ form.external_fields_in_step.as_hidden }}
 

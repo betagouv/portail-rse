@@ -71,7 +71,7 @@ def test_bdese_step_redirect_to_configuration_if_bdese_not_configured(
     assert response.redirect_chain == [
         (
             reverse(
-                "bdese",
+                "reglementations:bdese",
                 args=[bdese.entreprise.siren, bdese.annee, 0],
             ),
             302,
@@ -499,7 +499,13 @@ def test_save_bdese_configuration_for_a_new_year(
 
     assert response.status_code == 200
     assert response.redirect_chain == [
-        (reverse("bdese", args=[configured_bdese.entreprise.siren, new_year, 0]), 302)
+        (
+            reverse(
+                "reglementations:bdese",
+                args=[configured_bdese.entreprise.siren, new_year, 0],
+            ),
+            302,
+        )
     ]
 
     content = response.content.decode("utf-8")

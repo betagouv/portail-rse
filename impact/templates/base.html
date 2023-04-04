@@ -70,9 +70,9 @@
                                 <ul class="fr-btns-group">
                                     <li><a class="fr-btn fr-icon-mail-line" href="{% url 'contact' %}">Contactez-nous</a></li>
                                     {% if user.is_authenticated and current_entreprise %}
-                                        <li><a class="fr-btn fr-icon-file-text-line" href="{% url 'reglementation' current_entreprise.siren %}">Mes réglementations</a></li>
+                                        <li><a class="fr-btn fr-icon-file-text-line" href="{% url 'reglementations:reglementation' current_entreprise.siren %}">Mes réglementations</a></li>
                                     {% else %}
-                                        <li><a class="fr-btn fr-icon-file-text-line" href="{% url 'reglementations' %}">Réglementations</a></li>
+                                        <li><a class="fr-btn fr-icon-file-text-line" href="{% url 'reglementations:reglementations' %}">Réglementations</a></li>
                                     {% endif %}
                                     {% if user.is_authenticated %}
                                         <li><a class="fr-btn fr-icon-lock-unlock-line" href="{% url 'logout' %}">Se déconnecter</a></li>
@@ -97,7 +97,7 @@
                             <ul class="fr-nav__list">
                                 {% if user.entreprises|length == 1%}
                                     <li class="fr-nav__item">
-                                        <a class="fr-nav__link" href="{% url 'reglementation' user.entreprises.0.siren %}" target="_self">
+                                        <a class="fr-nav__link" href="{% url 'reglementations:reglementation' user.entreprises.0.siren %}" target="_self">
                                             <span class="fr-icon-bank-fill fr-mr-1w" aria-hidden="true"></span>
                                             {{ user.entreprises.0.denomination }}
                                         </a>
@@ -111,7 +111,7 @@
                                         <div class="fr-collapse fr-menu" id="menu-1">
                                             <ul class="fr-menu__list">
                                                 {% for entreprise in user.entreprises %}
-                                                    <li><a class="fr-nav__link" href="{% url 'reglementation' entreprise.siren %}" target="_self">{{ entreprise.denomination }}</a></li>
+                                                    <li><a class="fr-nav__link" href="{% url 'reglementations:reglementation' entreprise.siren %}" target="_self">{{ entreprise.denomination }}</a></li>
                                                 {% endfor %}
                                             </ul>
                                         </div>

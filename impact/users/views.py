@@ -38,7 +38,7 @@ def creation(request):
                     "Votre compte a bien été créé. Vous êtes maintenant connecté."
                 )
                 messages.success(request, success_message)
-                return redirect("reglementation", siren)
+                return redirect("reglementations:reglementation", siren)
             except APIError as exception:
                 messages.error(request, exception)
         else:

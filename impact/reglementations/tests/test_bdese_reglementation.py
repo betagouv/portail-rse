@@ -61,7 +61,7 @@ def test_calculate_status_more_than_50_employees(
     )
     assert bdese.primary_action.title == "Actualiser ma BDESE"
     assert bdese.primary_action.url == reverse(
-        "bdese", args=[entreprise.siren, 2022, 0]
+        "reglementations:bdese", args=[entreprise.siren, 2022, 0]
     )
     assert not bdese.secondary_actions
 
@@ -70,7 +70,7 @@ def test_calculate_status_more_than_50_employees(
 
     assert bdese.status == ReglementationStatus.STATUS_EN_COURS
     assert bdese.primary_action.url == reverse(
-        "bdese", args=[entreprise.siren, 2022, 1]
+        "reglementations:bdese", args=[entreprise.siren, 2022, 1]
     )
     assert (
         bdese.status_detail
@@ -88,12 +88,12 @@ def test_calculate_status_more_than_50_employees(
     )
     assert bdese.primary_action.title == "Télécharger le pdf"
     assert bdese.primary_action.url == reverse(
-        "bdese_pdf", args=[entreprise.siren, 2022]
+        "reglementations:bdese_pdf", args=[entreprise.siren, 2022]
     )
     assert len(bdese.secondary_actions) == 1
     assert bdese.secondary_actions[0].title == "Modifier ma BDESE"
     assert bdese.secondary_actions[0].url == reverse(
-        "bdese", args=[entreprise.siren, 2022, 1]
+        "reglementations:bdese", args=[entreprise.siren, 2022, 1]
     )
 
 
@@ -110,7 +110,7 @@ def test_calculate_status_with_bdese_accord(effectif, entreprise_factory, mocker
     )
     assert bdese.primary_action.title == "Marquer ma BDESE comme actualisée"
     assert bdese.primary_action.url == reverse(
-        "bdese", args=[entreprise.siren, 2022, 0]
+        "reglementations:bdese", args=[entreprise.siren, 2022, 0]
     )
     assert bdese.secondary_actions == []
 

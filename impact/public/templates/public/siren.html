@@ -10,7 +10,7 @@
                 <a href="/">Ce n'est pas mon entreprise</a>
             </p>
 
-            <form class="fr-mt-6w" action="{% url 'reglementations' %}" method="get">
+            <form class="fr-mt-6w" action="{% url 'reglementations:reglementations' %}" method="get">
                 {% csrf_token %}
                 {{ form.siren.as_hidden }}
                 {{ form.denomination.as_hidden }}
