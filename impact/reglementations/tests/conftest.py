@@ -5,6 +5,7 @@ from habilitations.models import add_entreprise_to_user
 from habilitations.models import get_habilitation
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
+from reglementations.models import BDESEAvecAccord
 
 
 @pytest.fixture
@@ -29,6 +30,12 @@ def bdese_factory(entreprise_factory):
 @pytest.fixture(params=[BDESE_50_300, BDESE_300])
 def bdese(request, bdese_factory):
     return bdese_factory(request.param)
+
+
+@pytest.fixture
+def bdese_avec_accord(bdese_factory, entreprise_factory, alice):
+    entreprise = entreprise_factory(effectif="grand", bdese_accord=True)
+    return bdese_factory(bdese_class=BDESEAvecAccord, entreprise=entreprise, user=alice)
 
 
 @pytest.fixture

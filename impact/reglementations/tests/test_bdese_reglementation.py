@@ -110,7 +110,7 @@ def test_calculate_status_with_bdese_accord(effectif, entreprise_factory, mocker
     )
     assert bdese.primary_action.title == "Marquer ma BDESE comme actualisée"
     assert bdese.primary_action.url == reverse(
-        "reglementations:bdese", args=[entreprise.siren, 2022, 0]
+        "reglementations:toggle_bdese_completion", args=[entreprise.siren, 2022]
     )
     assert bdese.secondary_actions == []
 

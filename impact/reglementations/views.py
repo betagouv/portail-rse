@@ -152,7 +152,8 @@ class BDESEReglementation(Reglementation):
             status_detail = "Vous êtes soumis à cette réglementation. Vous avez un accord d'entreprise spécifique. Veuillez vous y référer."
             primary_action = ReglementationAction(
                 reverse_lazy(
-                    "reglementations:bdese", args=[entreprise.siren, annee, 0]
+                    "reglementations:toggle_bdese_completion",
+                    args=[entreprise.siren, annee],
                 ),
                 primary_action_title,
             )
@@ -449,9 +450,6 @@ def bdese(request, siren, annee, step):
 
     bdese = _get_or_create_bdese(entreprise, annee, request.user)
 
-    if bdese.is_bdese_avec_accord:
-        return toggle_completion(request, bdese)
-
     if not bdese.is_configured and step != 0:
         messages.warning(request, f"Commencez par configurer votre BDESE {annee}")
         return redirect("reglementations:bdese", siren=siren, annee=annee, step=0)
@@ -618,13 +616,20 @@ def initialize_bdese_configuration(bdese: BDESE_300 | BDESE_50_300) -> dict:
             return initial
 
 
-def toggle_completion(request, bdese):
-    if bdese.is_complete:
-        bdese.mark_step_as_incomplete(0)
-        success_message = "La BDESE a été marquée comme non actualisée"
-    else:
-        bdese.mark_step_as_complete(0)
-        success_message = "La BDESE a été marquée comme actualisée"
-    bdese.save()
-    messages.success(request, success_message)
+def toggle_bdese_completion(request, siren, annee):
+    entreprise = Entreprise.objects.get(siren=siren)
+    if request.user not in entreprise.users.all():
+        raise PermissionDenied
+
+    bdese = _get_or_create_bdese(entreprise, annee, request.user)
+
+    if bdese.is_bdese_avec_accord:
+        if bdese.is_complete:
+            bdese.mark_step_as_incomplete(0)
+            success_message = "La BDESE a été marquée comme non actualisée"
+        else:
+            bdese.mark_step_as_complete(0)
+            success_message = "La BDESE a été marquée comme actualisée"
+        bdese.save()
+        messages.success(request, success_message)
     return redirect("reglementations:reglementation", siren=bdese.entreprise.siren)

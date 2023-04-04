@@ -719,3 +719,25 @@ def test_get_bdese_data_from_egapro_with_no_result(grande_entreprise, mocker):
         "nombre_femmes_plus_hautes_remunerations": None,
         "objectifs_progression": None,
     }
+
+
+def test_toggle_bdese_completion(client, bdese_avec_accord, alice):
+    client.force_login(alice)
+    entreprise = bdese_avec_accord.entreprise
+    url = (
+        f"/bdese/{entreprise.siren}/{bdese_avec_accord.annee}/actualiser-desactualiser"
+    )
+
+    response = client.get(url, follow=True)
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [
+        (reverse("reglementations:reglementation", args=[entreprise.siren]), 302)
+    ]
+    bdese_avec_accord.refresh_from_db()
+    assert bdese_avec_accord.is_complete
+
+    response = client.get(url, follow=True)
+
+    bdese_avec_accord.refresh_from_db()
+    assert not bdese_avec_accord.is_complete
