@@ -90,6 +90,10 @@ class AlreadyOfficialError(Exception):
     pass
 
 
+class BDESEError(Exception):
+    pass
+
+
 class AbstractBDESE(TimestampedModel):
     objects = models.Manager()  # The default manager.
     personals = PersonalManager()
@@ -173,6 +177,15 @@ class BDESEAvecAccord(AbstractBDESE):
 
     def toggle_completion(self):
         self.is_complete = not self.is_complete
+
+    def mark_step_as_complete(self, step: int):
+        raise BDESEError(f"La BDESE n'a pas d'étape {step}")
+
+    def mark_step_as_incomplete(self, step: int):
+        raise BDESEError(f"La BDESE n'a pas d'étape {step}")
+
+    def step_is_complete(self, step: int):
+        raise BDESEError(f"La BDESE n'a pas d'étape {step}")
 
 
 def bdese_300_completion_steps_default():

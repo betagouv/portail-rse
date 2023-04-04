@@ -9,6 +9,7 @@ from reglementations.models import annees_a_remplir_bdese
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
 from reglementations.models import BDESEAvecAccord
+from reglementations.models import BDESEError
 from reglementations.models import CategoryField
 from reglementations.models import CategoryType
 from reglementations.models import derniere_annee_a_remplir_bdese
@@ -167,6 +168,13 @@ def test_bdese_avec_accord(grande_entreprise):
 
     bdese.toggle_completion()
     assert not bdese.is_complete
+
+    with pytest.raises(BDESEError):
+        bdese.mark_step_as_complete(0)
+    with pytest.raises(BDESEError):
+        bdese.mark_step_as_incomplete(0)
+    with pytest.raises(BDESEError):
+        bdese.step_is_complete(0)
 
 
 def test_derniere_annee_a_remplir_bdese():
