@@ -12,18 +12,30 @@
             <form action="{% url 'account' %}" method="post">
                 <p>Sauf mention contraire “(optionnel)” dans le label, tous les champs sont obligatoires.</p>
                 {% csrf_token %}
+                <h2 class="fr-h6">Informations personnelles</h2>
                 <fieldset class="fr-fieldset" aria-label="Modification des informations personnelles">
-                    <h2 class="fr-h6">Informations personnelles</h2>
+                    <div class="fr-fieldset__element">
                     {% include 'snippets/field.html' with field=form.prenom %}
+                    </div>
+                    <div class="fr-fieldset__element">
                     {% include 'snippets/field.html' with field=form.nom %}
+                    </div>
+                    <div class="fr-fieldset__element">
                     {% include 'snippets/field.html' with field=form.email %}
+                    </div>
+                    <div class="fr-fieldset__element">
                     {% include 'snippets/field.html' with field=form.reception_actualites %}
+                    </div>
                 </fieldset>
+                <h2 class="fr-h6">Mot de passe</h2>
                 <fieldset class="fr-fieldset fr-mt-3w" aria-label="Modification du mot de passe">
-                    <h2 class="fr-h6">Mot de passe</h2>
                     <p>Laissez vide pour conserver le mot de passe actuel.</p>
+                    <div class="fr-fieldset__element">
                     {% include 'snippets/field.html' with field=form.password1 %}
+                    </div>
+                    <div class="fr-fieldset__element">
                     {% include 'snippets/field.html' with field=form.password2 %}
+                    </div>
                 </fieldset>
                 <button type="submit" class="fr-btn fr-mt-4w">Modifier mon compte</button>
             </form>
