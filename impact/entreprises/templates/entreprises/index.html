@@ -39,7 +39,7 @@
                         <h3 class="fr-card__title">
                             {% if entreprise.denomination %}{{ entreprise.denomination }}{% else %}{{ entreprise.siren}}{% endif %}
                             {% if habilitation and habilitation.is_confirmed %}
-                                    <span class="fr-badge fr-badge--success">Habilité</span>
+                                <span class="fr-badge fr-badge--success">Habilité</span>
                             {% endif %}
                         </h3>
                         <p class="fr-card__desc">
@@ -48,15 +48,6 @@
                             Effectif :<b> {% if entreprise.effectif %}{{ entreprise.get_effectif_display }} salariés{% else %}non renseigné{% endif %} </b></br>
                             Accord d'entreprise concernant la BDESE :<b> {{ entreprise.bdese_accord | translate_boolean }} </b></br>
                         </p>
-                        <div class="fr-card__start">
-                            <ul class="fr-tags-group">
-                                <li>
-                                    {% if habilitation and habilitation.is_confirmed %}
-                                        <p class="fr-badge fr-badge--success">Habilité</p>
-                                    {% endif %}
-                                </li>
-                            </ul>
-                        </div>
                     </div>
                     <div class="fr-card__footer">
                         <ul class="fr-btns-group--md fr-btns-group--inline-reverse fr-btns-group--inline-lg">
