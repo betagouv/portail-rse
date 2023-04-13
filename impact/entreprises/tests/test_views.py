@@ -1,4 +1,5 @@
 import html
+
 from django.urls import reverse
 
 import api.exceptions
@@ -116,10 +117,16 @@ def test_detach_from_an_entreprise(client, alice, entreprise_factory):
     entreprise = entreprise_factory()
     attach_user_to_entreprise(alice, entreprise, "Présidente")
     client.force_login(alice)
+    session = client.session
+    session["entreprise"] = entreprise.siren
+    session.save()
+
     data = {"siren": entreprise.siren, "action": "detach"}
 
     response = client.post(f"/entreprises", data=data, follow=True)
 
+    session = client.session
+    assert "entreprise" not in session
     assert response.status_code == 200
     assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
     assert entreprise not in alice.entreprises

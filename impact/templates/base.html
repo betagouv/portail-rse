@@ -103,14 +103,7 @@
                     {% if user.is_authenticated %}
                         <nav class="fr-nav" id="navigation-494" role="navigation" aria-label="Menu principal">
                             <ul class="fr-nav__list">
-                                {% if user.entreprises|length == 1%}
-                                    <li class="fr-nav__item">
-                                        <a class="fr-nav__link" href="{% url 'reglementations:reglementation' user.entreprises.0.siren %}" target="_self">
-                                            <span class="fr-icon-bank-fill fr-mr-1w" aria-hidden="true"></span>
-                                            {{ user.entreprises.0.denomination }}
-                                        </a>
-                                    </li>
-                                {% elif current_entreprise %}
+                                {% if user.entreprises|length >= 2 %}
                                     <li class="fr-nav__item">
                                         <button class="fr-nav__btn" aria-expanded="false" aria-controls="menu-1">
                                             <span class="fr-icon-bank-fill fr-mr-1w" aria-hidden="true"></span>
