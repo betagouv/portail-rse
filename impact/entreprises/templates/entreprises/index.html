@@ -4,9 +4,29 @@
 
 {% block content %}
 <div class="fr-container fr-my-8w">
-    <h1>Mes entreprises</h1>
+    {% if user.entreprise_set.count >= 2 %}
+        <h1>Mes entreprises</h1>
+    {% else %}
+        <h1>Mon entreprise</h1>
+    {% endif %}
+
+
     {% if not user.entreprise_set.all %}
         Aucune entreprise n'est associée à votre compte.
+
+        {% comment %}
+            Limitation de l'ajout d'entreprise pour n'en avoir qu'une seule car il n'est pas certain que l'on puisse avoir une authentification forte d'un seul compte sur plusieurs entreprises.
+            Actuellement, deux utilisateurs réels sont dans cette situation.
+        {% endcomment %}
+        <h2 class="fr-mt-4w">Ajouter une entreprise</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div id="svelte-search-entreprise">
+                {% include 'snippets/siren_field.html' %}
+            </div>
+            {% include 'snippets/field.html' with field=form.fonctions %}
+            <button type="submit" name="action" value="attach" class="fr-btn">Ajouter cette entreprise</button>
+        </form>
     {% else %}
     <div class="fr-grid-row fr-mb-1w fr-grid-row--gutters">
 
@@ -91,18 +111,6 @@
         {% endfor %}
     {% endif %}
     </div>
-
-
-    <h2 class="fr-mt-4w">Ajouter une entreprise</h2>
-    <form method="post">
-        {% csrf_token %}
-        <div id="svelte-search-entreprise">
-            {% include 'snippets/siren_field.html' %}
-        </div>
-        {% include 'snippets/field.html' with field=form.fonctions %}
-        <button type="submit" name="action" value="attach" class="fr-btn">Ajouter cette entreprise</button>
-    </form>
-
 </div>
 
 <!-- page entreprises -->
