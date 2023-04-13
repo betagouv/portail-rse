@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404
@@ -31,6 +32,7 @@ def index(request):
                 try:
                     entreprise = Entreprise.objects.get(siren=siren)
                     detach_user_from_entreprise(request.user, entreprise)
+                    del request.session["entreprise"]
                     messages.success(
                         request, "Vous n'êtes plus rattaché à cette entreprise"
                     )
