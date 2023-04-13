@@ -510,7 +510,7 @@ def bdese(request, siren, annee, step):
     ):
         messages.info(
             request,
-            "Plusieurs utilisateurs sont liés à cette entreprise. Les informations que vous remplissez ne sont pas partagés avec les autres utilisateurs tant que vous n'êtes pas habilités.",
+            "Plusieurs utilisateurs sont liés à cette entreprise. Les informations que vous remplissez ne sont pas partagées avec les autres utilisateurs tant que vous n'êtes pas habilités.",
         )
 
     return render(

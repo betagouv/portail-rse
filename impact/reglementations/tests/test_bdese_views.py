@@ -117,7 +117,7 @@ def test_check_if_several_users_are_on_the_same_BDESE(
     assert response.status_code == 200
     content = html.unescape(response.content.decode("utf-8"))
     assert (
-        "Plusieurs utilisateurs sont liés à cette entreprise. Les informations que vous remplissez ne sont pas partagés avec les autres utilisateurs tant que vous n'êtes pas habilités."
+        "Plusieurs utilisateurs sont liés à cette entreprise. Les informations que vous remplissez ne sont pas partagées avec les autres utilisateurs tant que vous n'êtes pas habilités."
         in content
     )
 
@@ -128,7 +128,7 @@ def test_check_if_several_users_are_on_the_same_BDESE(
     assert response.status_code == 200
     content = html.unescape(response.content.decode("utf-8"))
     assert (
-        "Plusieurs utilisateurs sont liés à cette entreprise. Les informations que vous remplissez ne sont pas partagés avec les autres utilisateurs tant que vous n'êtes pas habilités."
+        "Plusieurs utilisateurs sont liés à cette entreprise. Les informations que vous remplissez ne sont pas partagées avec les autres utilisateurs tant que vous n'êtes pas habilités."
         not in content
     )
 
