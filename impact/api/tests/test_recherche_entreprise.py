@@ -1,6 +1,9 @@
 import pytest
 
 from api.exceptions import APIError
+from api.exceptions import ServerError
+from api.exceptions import SirenError
+from api.exceptions import TooManyRequestError
 from api.recherche_entreprises import recherche
 
 
@@ -60,6 +63,31 @@ def test_succes_recherche_sans_la_raison_sociale(mocker):
     }
 
 
+def test_succes_pas_de_resultat(mocker):
+    SIREN = "123456789"
+
+    class FakeResponse:
+        status_code = 200
+
+        def json(self):
+            return {
+                "results": [],
+                "total_results": 0,
+                "page": 1,
+                "per_page": 1,
+                "total_pages": 0,
+            }
+
+    mocker.patch("requests.get", return_value=FakeResponse())
+    with pytest.raises(SirenError) as e:
+        recherche(SIREN)
+
+    assert (
+        str(e.value)
+        == "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct."
+    )
+
+
 def test_echec_recherche(mocker):
     SIREN = "123456789"
 
@@ -67,5 +95,41 @@ def test_echec_recherche(mocker):
         status_code = 400
 
     mocker.patch("requests.get", return_value=FakeResponse())
-    with pytest.raises(APIError):
+    with pytest.raises(APIError) as e:
         recherche(SIREN)
+
+    assert (
+        str(e.value)
+        == "Le service est actuellement indisponible. Merci de réessayer plus tard."
+    )
+
+
+def test_echec_trop_de_requetes(mocker):
+    SIREN = "123456789"
+
+    class FakeResponse:
+        status_code = 429
+
+    mocker.patch("requests.get", return_value=FakeResponse())
+    with pytest.raises(TooManyRequestError) as e:
+        recherche(SIREN)
+
+    assert (
+        str(e.value) == "Le service est temporairement surchargé. Merci de réessayer."
+    )
+
+
+def test_echec_erreur_de_l_API(mocker):
+    SIREN = "123456789"
+
+    class FakeResponse:
+        status_code = 500
+
+    mocker.patch("requests.get", return_value=FakeResponse())
+    with pytest.raises(ServerError) as e:
+        recherche(SIREN)
+
+    assert (
+        str(e.value)
+        == "Le service est actuellement indisponible. Merci de réessayer plus tard."
+    )

@@ -1,11 +1,19 @@
+from http.client import TOO_MANY_REQUESTS
+from xmlrpc.client import SERVER_ERROR
+
 import requests
 
 from .exceptions import APIError
+from .exceptions import ServerError
+from .exceptions import SirenError
+from .exceptions import TooManyRequestError
 
 
 SIREN_NOT_FOUND_ERROR = (
     "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct."
 )
+TOO_MANY_REQUESTS_ERROR = "Le service est temporairement surchargé. Merci de réessayer."
+SERVER_ERROR = "Le service est actuellement indisponible. Merci de réessayer plus tard."
 
 
 def recherche(siren):
@@ -14,7 +22,10 @@ def recherche(siren):
         f"https://recherche-entreprises.api.gouv.fr/search?q={siren}&page=1&per_page=1"
     )
     response = requests.get(url)
-    if response.status_code == 200 and response.json()["total_results"]:
+    if response.status_code == 200:
+        if not response.json()["total_results"]:
+            raise SirenError(SIREN_NOT_FOUND_ERROR)
+
         data = response.json()["results"][0]
         denomination = data["nom_raison_sociale"] or data["nom_complet"]
         try:
@@ -36,5 +47,9 @@ def recherche(siren):
             "effectif": taille,
             "denomination": denomination,
         }
+    elif response.status_code == 429:
+        raise TooManyRequestError(TOO_MANY_REQUESTS_ERROR)
+    elif response.status_code == 400:
+        raise APIError(SERVER_ERROR)
     else:
-        raise APIError(SIREN_NOT_FOUND_ERROR)
+        raise ServerError(SERVER_ERROR)
