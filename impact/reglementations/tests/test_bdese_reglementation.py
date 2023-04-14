@@ -20,7 +20,7 @@ def test_bdese_reglementation_info():
         info["description"]
         == """L'employeur d'au moins 50 salariés doit mettre à disposition du comité économique et social (CSE) ou des représentants du personnel une base de données économiques, sociales et environnementales (BDESE).
         La BDESE rassemble les informations sur les grandes orientations économiques et sociales de l'entreprise.
-        Elle comprend des mentions obligatoires qui varient selon l'effectif de l'entreprise."""
+        En l'absence d'accord d'entreprise spécifique, elle comprend des mentions obligatoires qui varient selon l'effectif de l'entreprise."""
     )
     assert (
         info["more_info_url"]
@@ -74,9 +74,9 @@ def test_calculate_status_more_than_50_employees(
     )
     assert (
         bdese.status_detail
-        == "Vous êtes soumis à cette réglementation. Vous avez démarré le remplissage de votre BDESE sur la plateforme."
+        == "Vous êtes soumis à cette réglementation. Vous avez démarré le remplissage de votre BDESE 2022 sur la plateforme."
     )
-    assert bdese.secondary_actions[0].title == "Télécharger le pdf (brouillon)"
+    assert bdese.secondary_actions[0].title == "Télécharger le pdf 2022 (brouillon)"
 
     mocker.patch("reglementations.models.AbstractBDESE.is_complete", return_value=True)
     bdese = BDESEReglementation.calculate_status(entreprise, 2022)
@@ -84,9 +84,9 @@ def test_calculate_status_more_than_50_employees(
     assert bdese.status == ReglementationStatus.STATUS_A_JOUR
     assert (
         bdese.status_detail
-        == "Vous êtes soumis à cette réglementation. Vous avez actualisé votre BDESE sur la plateforme."
+        == "Vous êtes soumis à cette réglementation. Vous avez actualisé votre BDESE 2022 sur la plateforme."
     )
-    assert bdese.primary_action.title == "Télécharger le pdf"
+    assert bdese.primary_action.title == "Télécharger le pdf 2022"
     assert bdese.primary_action.url == reverse(
         "reglementations:bdese_pdf", args=[entreprise.siren, 2022]
     )
@@ -108,7 +108,7 @@ def test_calculate_status_with_bdese_accord(effectif, entreprise_factory, mocker
         bdese.status_detail
         == "Vous êtes soumis à cette réglementation. Vous avez un accord d'entreprise spécifique. Veuillez vous y référer."
     )
-    assert bdese.primary_action.title == "Marquer ma BDESE comme actualisée"
+    assert bdese.primary_action.title == "Marquer ma BDESE 2022 comme actualisée"
     assert bdese.primary_action.url == reverse(
         "reglementations:toggle_bdese_completion", args=[entreprise.siren, 2022]
     )
@@ -120,7 +120,7 @@ def test_calculate_status_with_bdese_accord(effectif, entreprise_factory, mocker
     bdese = BDESEReglementation.calculate_status(entreprise, 2022)
 
     assert bdese.status == ReglementationStatus.STATUS_A_JOUR
-    assert bdese.primary_action.title == "Marquer ma BDESE comme non actualisée"
+    assert bdese.primary_action.title == "Marquer ma BDESE 2022 comme non actualisée"
 
     bdese_type = BDESEReglementation.bdese_type(entreprise)
     assert bdese_type == BDESEReglementation.TYPE_AVEC_ACCORD

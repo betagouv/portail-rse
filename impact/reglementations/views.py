@@ -91,7 +91,7 @@ class BDESEReglementation(Reglementation):
     title = "Base de données économiques, sociales et environnementales (BDESE)"
     description = """L'employeur d'au moins 50 salariés doit mettre à disposition du comité économique et social (CSE) ou des représentants du personnel une base de données économiques, sociales et environnementales (BDESE).
         La BDESE rassemble les informations sur les grandes orientations économiques et sociales de l'entreprise.
-        Elle comprend des mentions obligatoires qui varient selon l'effectif de l'entreprise."""
+        En l'absence d'accord d'entreprise spécifique, elle comprend des mentions obligatoires qui varient selon l'effectif de l'entreprise."""
     more_info_url = "https://entreprendre.service-public.fr/vosdroits/F32193"
 
     @classmethod
@@ -144,10 +144,10 @@ class BDESEReglementation(Reglementation):
 
             if bdese and bdese[0].is_complete:
                 status = ReglementationStatus.STATUS_A_JOUR
-                primary_action_title = "Marquer ma BDESE comme non actualisée"
+                primary_action_title = f"Marquer ma BDESE {annee} comme non actualisée"
             else:
                 status = ReglementationStatus.STATUS_A_ACTUALISER
-                primary_action_title = "Marquer ma BDESE comme actualisée"
+                primary_action_title = f"Marquer ma BDESE {annee} comme actualisée"
 
             status_detail = "Vous êtes soumis à cette réglementation. Vous avez un accord d'entreprise spécifique. Veuillez vous y référer."
             primary_action = ReglementationAction(
@@ -187,12 +187,12 @@ class BDESEReglementation(Reglementation):
         bdese = bdese[0]
         if bdese.is_complete:
             status = ReglementationStatus.STATUS_A_JOUR
-            status_detail = "Vous êtes soumis à cette réglementation. Vous avez actualisé votre BDESE sur la plateforme."
+            status_detail = f"Vous êtes soumis à cette réglementation. Vous avez actualisé votre BDESE {annee} sur la plateforme."
             primary_action = ReglementationAction(
                 reverse_lazy(
                     "reglementations:bdese_pdf", args=[entreprise.siren, annee]
                 ),
-                "Télécharger le pdf",
+                f"Télécharger le pdf {annee}",
                 external=True,
             )
             secondary_actions = [
@@ -205,7 +205,7 @@ class BDESEReglementation(Reglementation):
             ]
         else:
             status = ReglementationStatus.STATUS_EN_COURS
-            status_detail = "Vous êtes soumis à cette réglementation. Vous avez démarré le remplissage de votre BDESE sur la plateforme."
+            status_detail = f"Vous êtes soumis à cette réglementation. Vous avez démarré le remplissage de votre BDESE {annee} sur la plateforme."
             primary_action = ReglementationAction(
                 reverse_lazy(
                     "reglementations:bdese", args=[entreprise.siren, annee, 1]
@@ -217,7 +217,7 @@ class BDESEReglementation(Reglementation):
                     reverse_lazy(
                         "reglementations:bdese_pdf", args=[entreprise.siren, annee]
                     ),
-                    "Télécharger le pdf (brouillon)",
+                    f"Télécharger le pdf {annee} (brouillon)",
                     external=True,
                 ),
             ]
