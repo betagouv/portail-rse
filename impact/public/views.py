@@ -80,10 +80,15 @@ def siren(request):
                     "form": form,
                 },
             )
-        except api.exceptions.APIError:
+        except api.exceptions.SirenError as e:
             form.add_error("siren", "SIREN introuvable")
             messages.error(
                 request,
-                "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct.",
+                str(e),
+            )
+        except api.exceptions.APIError as e:
+            messages.error(
+                request,
+                str(e),
             )
     return render(request, "public/entreprise.html", {"form": form})

@@ -118,13 +118,31 @@ def test_succes_recherche_siren(client, mocker):
     assert "<!-- page resultat recherche entreprise -->" in content
 
 
-def test_erreur_recherche_siren(client, mocker):
+def test_erreur_recherche_siren__siren_incorrect(client, mocker):
     SIREN = "123456789"
     mocker.patch(
-        "api.recherche_entreprises.recherche", side_effect=api.exceptions.APIError
+        "api.recherche_entreprises.recherche",
+        side_effect=api.exceptions.SirenError("MESSAGE"),
     )
     response = client.get("/siren", {"siren": SIREN})
 
     assert response.status_code == 200
     content = response.content.decode("utf-8")
+    assert "MESSAGE" in content
+    assert "SIREN introuvable" in content
+    assert "<!-- page entreprise -->" in content
+
+
+def test_erreur_recherche_siren__erreur_api(client, mocker):
+    SIREN = "123456789"
+    mocker.patch(
+        "api.recherche_entreprises.recherche",
+        side_effect=api.exceptions.APIError("MESSAGE"),
+    )
+    response = client.get("/siren", {"siren": SIREN})
+
+    assert response.status_code == 200
+    content = response.content.decode("utf-8")
+    assert "MESSAGE" in content
+    assert "SIREN introuvable" not in content
     assert "<!-- page entreprise -->" in content
