@@ -2,6 +2,7 @@ from http.client import TOO_MANY_REQUESTS
 from xmlrpc.client import SERVER_ERROR
 
 import requests
+import sentry_sdk
 
 from .exceptions import APIError
 from .exceptions import ServerError
@@ -50,6 +51,7 @@ def recherche(siren):
     elif response.status_code == 429:
         raise TooManyRequestError(TOO_MANY_REQUESTS_ERROR)
     elif response.status_code == 400:
+        sentry_sdk.capture_message("Requête invalide sur l'API recherche entreprise")
         raise APIError(SERVER_ERROR)
     else:
         raise ServerError(SERVER_ERROR)

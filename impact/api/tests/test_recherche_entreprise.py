@@ -95,9 +95,13 @@ def test_echec_recherche(mocker):
         status_code = 400
 
     mocker.patch("requests.get", return_value=FakeResponse())
+    capture_message_mock = mocker.patch("sentry_sdk.capture_message")
     with pytest.raises(APIError) as e:
         recherche(SIREN)
 
+    capture_message_mock.assert_called_once_with(
+        "Requête invalide sur l'API recherche entreprise"
+    )
     assert (
         str(e.value)
         == "Le service est actuellement indisponible. Merci de réessayer plus tard."
