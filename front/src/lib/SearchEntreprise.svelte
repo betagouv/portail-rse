@@ -40,10 +40,10 @@
                     <button class="fr-btn" title="Rechercher" on:click|preventDefault={handleChange}>
                         Rechercher
                     </button>
-                    {:else}
+                {:else}
                     <input type="text" name="siren" maxlength="9" minlength="9" class="fr-input" id="id_siren" value="{siren}" readonly>
                     <img src="{spinner}" width="40" alt="Spinner d'attente">
-                    {/if}
+                {/if}
                 </div>
             </div>
             {#await promise then json}
