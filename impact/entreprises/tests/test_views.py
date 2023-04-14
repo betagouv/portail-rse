@@ -4,7 +4,7 @@ import pytest
 from django.urls import reverse
 
 import api.exceptions
-from api.tests.fixtures import mock_api_recherche_entreprise
+from api.tests.fixtures import mock_api_recherche_entreprises
 from entreprises.models import Entreprise
 from habilitations.models import add_entreprise_to_user
 from habilitations.models import get_habilitation
@@ -29,7 +29,7 @@ def test_entreprises_page_for_logged_user(client, alice, entreprise_factory):
     assert "<!-- page entreprises -->" in content
 
 
-def test_add_and_attach_to_entreprise(client, alice, mock_api_recherche_entreprise):
+def test_add_and_attach_to_entreprise(client, alice, mock_api_recherche_entreprises):
     client.force_login(alice)
     data = {"siren": "000000001", "fonctions": "Présidente"}
 
@@ -75,9 +75,9 @@ def test_fail_to_add_entreprise(client, alice):
     assert Entreprise.objects.count() == 0
 
 
-def test_fail_to_find_entreprise_in_API(client, alice, mock_api_recherche_entreprise):
+def test_fail_to_find_entreprise_in_API(client, alice, mock_api_recherche_entreprises):
     client.force_login(alice)
-    mock_api_recherche_entreprise.side_effect = api.exceptions.APIError(
+    mock_api_recherche_entreprises.side_effect = api.exceptions.APIError(
         "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct."
     )
     data = {"siren": "000000001", "fonctions": "Présidente"}
@@ -124,7 +124,7 @@ def test_qualification_page_is_not_public(client, alice, unqualified_entreprise)
 
 
 def test_qualification_page(
-    client, alice, unqualified_entreprise, mock_api_recherche_entreprise
+    client, alice, unqualified_entreprise, mock_api_recherche_entreprises
 ):
     add_entreprise_to_user(unqualified_entreprise, alice, "Présidente")
     client.force_login(alice)
@@ -134,7 +134,7 @@ def test_qualification_page(
     assert response.status_code == 200
     content = response.content.decode("utf-8")
     assert "<!-- page qualification entreprise -->" in content
-    mock_api_recherche_entreprise.assert_called_once_with(unqualified_entreprise.siren)
+    mock_api_recherche_entreprises.assert_called_once_with(unqualified_entreprise.siren)
 
     unqualified_entreprise.refresh_from_db()
     assert unqualified_entreprise.denomination == "Entreprise SAS"
@@ -142,7 +142,7 @@ def test_qualification_page(
 
 
 def test_qualify_entreprise(
-    client, alice, unqualified_entreprise, mock_api_recherche_entreprise
+    client, alice, unqualified_entreprise, mock_api_recherche_entreprises
 ):
     add_entreprise_to_user(unqualified_entreprise, alice, "Présidente")
     client.force_login(alice)
@@ -163,7 +163,7 @@ def test_qualify_entreprise(
 
 
 def test_qualify_entreprise_error(
-    client, alice, unqualified_entreprise, mock_api_recherche_entreprise
+    client, alice, unqualified_entreprise, mock_api_recherche_entreprises
 ):
     add_entreprise_to_user(unqualified_entreprise, alice, "Présidente")
     client.force_login(alice)
