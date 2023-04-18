@@ -131,19 +131,8 @@ class BDESEReglementation(Reglementation):
     @classmethod
     def _match_accord_bdese(cls, entreprise, annee, user):
         if entreprise.bdese_accord:
-            bdese_class = BDESEAvecAccord
-            if (
-                user
-                and is_user_attached_to_entreprise(user, entreprise)
-                and not is_user_habilited_on_entreprise(user, entreprise)
-            ):
-                bdese = bdese_class.personals.filter(
-                    entreprise=entreprise, annee=annee, user=user
-                )
-            else:
-                bdese = bdese_class.officials.filter(entreprise=entreprise, annee=annee)
-
-            if bdese and bdese[0].is_complete:
+            bdese = cls._select_bdese(BDESEAvecAccord, entreprise, annee, user)
+            if bdese and bdese.is_complete:
                 status = ReglementationStatus.STATUS_A_JOUR
                 primary_action_title = f"Marquer ma BDESE {annee} comme non actualisée"
             else:
@@ -171,21 +160,10 @@ class BDESEReglementation(Reglementation):
         else:
             bdese_class = BDESE_300
 
-        if (
-            user
-            and is_user_attached_to_entreprise(user, entreprise)
-            and not is_user_habilited_on_entreprise(user, entreprise)
-        ):
-            bdese = bdese_class.personals.filter(
-                entreprise=entreprise, annee=annee, user=user
-            )
-        else:
-            bdese = bdese_class.officials.filter(entreprise=entreprise, annee=annee)
-
+        bdese = cls._select_bdese(bdese_class, entreprise, annee, user)
         if not bdese:
             return
 
-        bdese = bdese[0]
         if bdese.is_complete:
             status = ReglementationStatus.STATUS_A_JOUR
             status_detail = f"Vous êtes soumis à cette réglementation. Vous avez actualisé votre BDESE {annee} sur la plateforme."
@@ -245,6 +223,21 @@ class BDESEReglementation(Reglementation):
             primary_action=primary_action,
             secondary_actions=secondary_actions,
         )
+
+    @classmethod
+    def _select_bdese(cls, bdese_class, entreprise, annee, user):
+        if (
+            user
+            and is_user_attached_to_entreprise(user, entreprise)
+            and not is_user_habilited_on_entreprise(user, entreprise)
+        ):
+            bdese = bdese_class.personals.filter(
+                entreprise=entreprise, annee=annee, user=user
+            )
+        else:
+            bdese = bdese_class.officials.filter(entreprise=entreprise, annee=annee)
+
+        return bdese[0] if bdese else None
 
 
 class IndexEgaproReglementation(Reglementation):
