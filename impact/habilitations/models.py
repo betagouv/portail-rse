@@ -40,7 +40,7 @@ class Habilitation(models.Model):
 
 
 def attach_user_to_entreprise(user, entreprise, fonctions):
-    Habilitation.objects.create(
+    return Habilitation.objects.create(
         user=user,
         entreprise=entreprise,
         fonctions=fonctions,

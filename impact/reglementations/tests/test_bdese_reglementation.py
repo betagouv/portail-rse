@@ -114,7 +114,7 @@ def test_calculate_status_with_bdese_accord(effectif, entreprise_factory, mocker
     )
     assert bdese.secondary_actions == []
 
-    bdese = BDESEAvecAccord.objects.create(entreprise=entreprise, annee=2022)
+    bdese = BDESEAvecAccord.officials.create(entreprise=entreprise, annee=2022)
     bdese.is_complete = True
     bdese.save()
     bdese = BDESEReglementation.calculate_status(entreprise, 2022)
@@ -124,6 +124,103 @@ def test_calculate_status_with_bdese_accord(effectif, entreprise_factory, mocker
 
     bdese_type = BDESEReglementation.bdese_type(entreprise)
     assert bdese_type == BDESEReglementation.TYPE_AVEC_ACCORD
+
+
+@pytest.mark.parametrize("effectif", ["moyen", "grand", "sup500"])
+def test_calculate_status_with_bdese_accord_with_not_attached_user(
+    effectif, alice, entreprise_factory, mocker
+):
+    entreprise = entreprise_factory(effectif=effectif, bdese_accord=True)
+
+    bdese = BDESEReglementation.calculate_status(entreprise, 2022, alice)
+
+    assert bdese.status == ReglementationStatus.STATUS_A_ACTUALISER
+    assert (
+        bdese.status_detail
+        == "Vous êtes soumis à cette réglementation. Vous avez un accord d'entreprise spécifique. Veuillez vous y référer."
+    )
+    assert bdese.primary_action.title == "Marquer ma BDESE 2022 comme actualisée"
+    assert bdese.primary_action.url == reverse(
+        "reglementations:toggle_bdese_completion", args=[entreprise.siren, 2022]
+    )
+    assert bdese.secondary_actions == []
+
+    bdese = BDESEAvecAccord.officials.create(entreprise=entreprise, annee=2022)
+    bdese.is_complete = True
+    bdese.save()
+    bdese = BDESEReglementation.calculate_status(entreprise, 2022, alice)
+
+    assert bdese.status == ReglementationStatus.STATUS_A_JOUR
+    assert bdese.primary_action.title == "Marquer ma BDESE 2022 comme non actualisée"
+
+
+@pytest.mark.parametrize("effectif", ["moyen", "grand", "sup500"])
+def test_calculate_status_with_bdese_accord_with_not_habilited_user(
+    effectif, alice, entreprise_factory, mocker
+):
+    entreprise = entreprise_factory(effectif=effectif, bdese_accord=True)
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    bdese = BDESEReglementation.calculate_status(entreprise, 2022, alice)
+
+    assert bdese.status == ReglementationStatus.STATUS_A_ACTUALISER
+    assert (
+        bdese.status_detail
+        == "Vous êtes soumis à cette réglementation. Vous avez un accord d'entreprise spécifique. Veuillez vous y référer."
+    )
+    assert bdese.primary_action.title == "Marquer ma BDESE 2022 comme actualisée"
+    assert bdese.primary_action.url == reverse(
+        "reglementations:toggle_bdese_completion", args=[entreprise.siren, 2022]
+    )
+    assert bdese.secondary_actions == []
+
+    bdese = BDESEAvecAccord.officials.create(entreprise=entreprise, annee=2022)
+    bdese.is_complete = True
+    bdese.save()
+    bdese = BDESEReglementation.calculate_status(entreprise, 2022, alice)
+
+    assert bdese.status == ReglementationStatus.STATUS_A_ACTUALISER
+
+    bdese = BDESEAvecAccord.personals.create(
+        entreprise=entreprise, annee=2022, user=alice
+    )
+    bdese.is_complete = True
+    bdese.save()
+    bdese = BDESEReglementation.calculate_status(entreprise, 2022, alice)
+
+    assert bdese.status == ReglementationStatus.STATUS_A_JOUR
+    assert bdese.primary_action.title == "Marquer ma BDESE 2022 comme non actualisée"
+
+
+@pytest.mark.parametrize("effectif", ["moyen", "grand", "sup500"])
+def test_calculate_status_with_bdese_accord_with_habilited_user(
+    effectif, alice, entreprise_factory, mocker
+):
+    entreprise = entreprise_factory(effectif=effectif, bdese_accord=True)
+    habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
+    habilitation.confirm()
+    habilitation.save()
+
+    bdese = BDESEReglementation.calculate_status(entreprise, 2022, alice)
+
+    assert bdese.status == ReglementationStatus.STATUS_A_ACTUALISER
+    assert (
+        bdese.status_detail
+        == "Vous êtes soumis à cette réglementation. Vous avez un accord d'entreprise spécifique. Veuillez vous y référer."
+    )
+    assert bdese.primary_action.title == "Marquer ma BDESE 2022 comme actualisée"
+    assert bdese.primary_action.url == reverse(
+        "reglementations:toggle_bdese_completion", args=[entreprise.siren, 2022]
+    )
+    assert bdese.secondary_actions == []
+
+    bdese = BDESEAvecAccord.officials.create(entreprise=entreprise, annee=2022)
+    bdese.is_complete = True
+    bdese.save()
+    bdese = BDESEReglementation.calculate_status(entreprise, 2022, alice)
+
+    assert bdese.status == ReglementationStatus.STATUS_A_JOUR
+    assert bdese.primary_action.title == "Marquer ma BDESE 2022 comme non actualisée"
 
 
 def test_calculate_status_for_user(
