@@ -204,7 +204,7 @@ def test_qualify_entreprise(
     attach_user_to_entreprise(alice, unqualified_entreprise, "Présidente")
     client.force_login(alice)
     data = {
-        "effectif": "moyen",
+        "effectif": Entreprise.EFFECTIF_ENTRE_50_ET_299,
         "bdese_accord": True,
     }
 
@@ -214,7 +214,7 @@ def test_qualify_entreprise(
 
     unqualified_entreprise.refresh_from_db()
     assert unqualified_entreprise.denomination == "Entreprise SAS"
-    assert unqualified_entreprise.effectif == "moyen"
+    assert unqualified_entreprise.effectif == Entreprise.EFFECTIF_ENTRE_50_ET_299
     assert unqualified_entreprise.bdese_accord
     assert unqualified_entreprise.is_qualified
 

@@ -1,6 +1,7 @@
 import pytest
 from django.urls import reverse
 
+from entreprises.models import Entreprise
 from habilitations.models import attach_user_to_entreprise
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
@@ -30,7 +31,9 @@ def test_bdese_reglementation_info():
 
 @pytest.mark.parametrize("bdese_accord", [True, False])
 def test_calculate_status_less_than_50_employees(bdese_accord, entreprise_factory):
-    entreprise = entreprise_factory(effectif="petit", bdese_accord=bdese_accord)
+    entreprise = entreprise_factory(
+        effectif=Entreprise.EFFECTIF_MOINS_DE_50, bdese_accord=bdese_accord
+    )
 
     bdese = BDESEReglementation.calculate_status(entreprise, 2022)
 
@@ -45,7 +48,11 @@ def test_calculate_status_less_than_50_employees(bdese_accord, entreprise_factor
 
 @pytest.mark.parametrize(
     "effectif, bdese_class",
-    [("moyen", BDESE_50_300), ("grand", BDESE_300), ("sup500", BDESE_300)],
+    [
+        (Entreprise.EFFECTIF_ENTRE_50_ET_299, BDESE_50_300),
+        (Entreprise.EFFECTIF_ENTRE_300_ET_499, BDESE_300),
+        (Entreprise.EFFECTIF_PLUS_DE_500, BDESE_300),
+    ],
 )
 def test_calculate_status_more_than_50_employees(
     effectif, bdese_class, entreprise_factory, mocker
@@ -97,7 +104,14 @@ def test_calculate_status_more_than_50_employees(
     )
 
 
-@pytest.mark.parametrize("effectif", ["moyen", "grand", "sup500"])
+@pytest.mark.parametrize(
+    "effectif",
+    [
+        Entreprise.EFFECTIF_ENTRE_50_ET_299,
+        Entreprise.EFFECTIF_ENTRE_300_ET_499,
+        Entreprise.EFFECTIF_PLUS_DE_500,
+    ],
+)
 def test_calculate_status_with_bdese_accord(effectif, entreprise_factory, mocker):
     entreprise = entreprise_factory(effectif=effectif, bdese_accord=True)
 
@@ -126,7 +140,14 @@ def test_calculate_status_with_bdese_accord(effectif, entreprise_factory, mocker
     assert bdese_type == BDESEReglementation.TYPE_AVEC_ACCORD
 
 
-@pytest.mark.parametrize("effectif", ["moyen", "grand", "sup500"])
+@pytest.mark.parametrize(
+    "effectif",
+    [
+        Entreprise.EFFECTIF_ENTRE_50_ET_299,
+        Entreprise.EFFECTIF_ENTRE_300_ET_499,
+        Entreprise.EFFECTIF_PLUS_DE_500,
+    ],
+)
 def test_calculate_status_with_bdese_accord_with_not_attached_user(
     effectif, alice, entreprise_factory, mocker
 ):
@@ -154,7 +175,14 @@ def test_calculate_status_with_bdese_accord_with_not_attached_user(
     assert bdese.primary_action.title == "Marquer ma BDESE 2022 comme non actualisée"
 
 
-@pytest.mark.parametrize("effectif", ["moyen", "grand", "sup500"])
+@pytest.mark.parametrize(
+    "effectif",
+    [
+        Entreprise.EFFECTIF_ENTRE_50_ET_299,
+        Entreprise.EFFECTIF_ENTRE_300_ET_499,
+        Entreprise.EFFECTIF_PLUS_DE_500,
+    ],
+)
 def test_calculate_status_with_bdese_accord_with_not_habilited_user(
     effectif, alice, entreprise_factory, mocker
 ):
@@ -192,7 +220,14 @@ def test_calculate_status_with_bdese_accord_with_not_habilited_user(
     assert bdese.primary_action.title == "Marquer ma BDESE 2022 comme non actualisée"
 
 
-@pytest.mark.parametrize("effectif", ["moyen", "grand", "sup500"])
+@pytest.mark.parametrize(
+    "effectif",
+    [
+        Entreprise.EFFECTIF_ENTRE_50_ET_299,
+        Entreprise.EFFECTIF_ENTRE_300_ET_499,
+        Entreprise.EFFECTIF_PLUS_DE_500,
+    ],
+)
 def test_calculate_status_with_bdese_accord_with_habilited_user(
     effectif, alice, entreprise_factory, mocker
 ):

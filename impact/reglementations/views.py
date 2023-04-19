@@ -97,13 +97,13 @@ class BDESEReglementation(Reglementation):
 
     @classmethod
     def bdese_type(cls, entreprise: Entreprise) -> int:
-        if entreprise.effectif == "petit":
+        if entreprise.effectif == Entreprise.EFFECTIF_MOINS_DE_50:
             return cls.TYPE_NON_SOUMIS
         elif entreprise.bdese_accord:
             return cls.TYPE_AVEC_ACCORD
-        elif entreprise.effectif == "moyen":
+        elif entreprise.effectif == Entreprise.EFFECTIF_ENTRE_50_ET_299:
             return cls.TYPE_INFERIEUR_300
-        elif entreprise.effectif == "grand":
+        elif entreprise.effectif == Entreprise.EFFECTIF_ENTRE_300_ET_499:
             return cls.TYPE_INFERIEUR_500
         else:
             return cls.TYPE_SUPERIEUR_500
@@ -123,7 +123,7 @@ class BDESEReglementation(Reglementation):
 
     @classmethod
     def _match_petit_effectif(cls, entreprise, annee, user):
-        if entreprise.effectif == "petit":
+        if entreprise.effectif == Entreprise.EFFECTIF_MOINS_DE_50:
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
             return ReglementationStatus(status, status_detail)
@@ -155,7 +155,7 @@ class BDESEReglementation(Reglementation):
 
     @classmethod
     def _match_bdese_preexistante(cls, entreprise, annee, user):
-        if entreprise.effectif == "moyen":
+        if entreprise.effectif == Entreprise.EFFECTIF_ENTRE_50_ET_299:
             bdese_class = BDESE_50_300
         else:
             bdese_class = BDESE_300
@@ -254,7 +254,7 @@ class IndexEgaproReglementation(Reglementation):
             "Calculer et déclarer mon index sur Egapro",
             external=True,
         )
-        if entreprise.effectif == "petit":
+        if entreprise.effectif == Entreprise.EFFECTIF_MOINS_DE_50:
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
         elif is_index_egapro_updated(entreprise):

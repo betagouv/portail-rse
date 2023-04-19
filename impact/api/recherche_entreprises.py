@@ -8,7 +8,7 @@ from .exceptions import APIError
 from .exceptions import ServerError
 from .exceptions import SirenError
 from .exceptions import TooManyRequestError
-
+from entreprises.models import Entreprise
 
 SIREN_NOT_FOUND_ERROR = (
     "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct."
@@ -36,16 +36,16 @@ def recherche(siren):
         except (ValueError, TypeError):
             tranche_effectif = 0
         if tranche_effectif < 21:  # moins de 50 salariés
-            taille = "petit"
+            effectif = Entreprise.EFFECTIF_MOINS_DE_50
         elif tranche_effectif < 32:  # moins de 250 salariés
-            taille = "moyen"
+            effectif = Entreprise.EFFECTIF_ENTRE_50_ET_299
         elif tranche_effectif < 41:  # moins de 500 salariés
-            taille = "grand"
+            effectif = Entreprise.EFFECTIF_ENTRE_300_ET_499
         else:
-            taille = "sup500"
+            effectif = Entreprise.EFFECTIF_PLUS_DE_500
         return {
             "siren": siren,
-            "effectif": taille,
+            "effectif": effectif,
             "denomination": denomination,
         }
     elif response.status_code == 429:

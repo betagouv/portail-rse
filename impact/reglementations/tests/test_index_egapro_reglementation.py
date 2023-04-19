@@ -3,6 +3,7 @@ import json
 import freezegun
 import pytest
 
+from entreprises.models import Entreprise
 from reglementations.views import IndexEgaproReglementation
 from reglementations.views import is_index_egapro_updated
 from reglementations.views import ReglementationStatus
@@ -23,7 +24,7 @@ def test_index_egapro_reglementation_info():
 
 
 def test_calculate_status_less_than_50_employees(entreprise_factory, mock_index_egapro):
-    entreprise = entreprise_factory(effectif="petit")
+    entreprise = entreprise_factory(effectif=Entreprise.EFFECTIF_MOINS_DE_50)
 
     index = IndexEgaproReglementation.calculate_status(entreprise, 2022)
 
@@ -32,7 +33,14 @@ def test_calculate_status_less_than_50_employees(entreprise_factory, mock_index_
     assert not mock_index_egapro.called
 
 
-@pytest.mark.parametrize("effectif", ["moyen", "grand", "sup500"])
+@pytest.mark.parametrize(
+    "effectif",
+    [
+        Entreprise.EFFECTIF_ENTRE_50_ET_299,
+        Entreprise.EFFECTIF_ENTRE_300_ET_499,
+        Entreprise.EFFECTIF_PLUS_DE_500,
+    ],
+)
 def test_calculate_status_more_than_50_employees(
     effectif, entreprise_factory, mock_index_egapro
 ):
