@@ -33,7 +33,7 @@ def test_entreprise():
         )
 
     with freeze_time(now + timedelta(1)):
-        entreprise.effectif = "moyen"
+        entreprise.effectif = Entreprise.EFFECTIF_ENTRE_50_ET_299
         entreprise.save()
 
     assert entreprise.updated_at == now + timedelta(1)
@@ -43,6 +43,6 @@ def test_entreprise():
 def test_entreprise_is_qualified(unqualified_entreprise):
     assert not unqualified_entreprise.is_qualified
 
-    unqualified_entreprise.effectif = "moyen"
+    unqualified_entreprise.effectif = Entreprise.EFFECTIF_ENTRE_50_ET_299
 
     assert unqualified_entreprise.is_qualified

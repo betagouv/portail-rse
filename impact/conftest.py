@@ -29,7 +29,7 @@ def bob(django_user_model):
 def entreprise_factory(db):
     def create_entreprise(
         siren="000000001",
-        effectif="petit",
+        effectif=Entreprise.EFFECTIF_MOINS_DE_50,
         bdese_accord=False,
         denomination="Entreprise SAS",
     ):

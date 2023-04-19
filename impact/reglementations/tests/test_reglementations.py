@@ -30,7 +30,7 @@ def test_public_reglementations(client):
 @pytest.mark.django_db
 def test_public_reglementations_with_entreprise_data(status_is_soumis, client, mocker):
     data = {
-        "effectif": "petit",
+        "effectif": Entreprise.EFFECTIF_MOINS_DE_50,
         "bdese_accord": False,
         "denomination": "Entreprise SAS",
         "siren": "000000001",
@@ -50,7 +50,7 @@ def test_public_reglementations_with_entreprise_data(status_is_soumis, client, m
     entreprise = Entreprise.objects.get(siren="000000001")
     assert entreprise.denomination == "Entreprise SAS"
     assert not entreprise.bdese_accord
-    assert entreprise.effectif == "petit"
+    assert entreprise.effectif == Entreprise.EFFECTIF_MOINS_DE_50
 
     # reglementations for this entreprise are anonymously displayed
     context = response.context
@@ -77,7 +77,7 @@ def test_public_reglementations_with_entreprise_data(status_is_soumis, client, m
 def entreprise(db, alice):
     entreprise = Entreprise.objects.create(
         siren="000000001",
-        effectif="petit",
+        effectif=Entreprise.EFFECTIF_MOINS_DE_50,
         bdese_accord=False,
         denomination="Entreprise SAS",
     )
@@ -108,7 +108,7 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
     client.force_login(entreprise.users.first())
 
     data = {
-        "effectif": "grand",
+        "effectif": Entreprise.EFFECTIF_ENTRE_300_ET_499,
         "bdese_accord": False,
         "denomination": "Une autre entreprise SAS",
         "siren": "000000002",
@@ -146,7 +146,7 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_autenticated(
     Ce cas est encore accessible mais ne correspond pas à un parcours utilisateur normal
     """
     data = {
-        "effectif": "grand",
+        "effectif": Entreprise.EFFECTIF_ENTRE_300_ET_499,
         "bdese_accord": False,
         "denomination": "Entreprise SAS",
         "siren": "000000001",
@@ -155,13 +155,13 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_autenticated(
     client.get("/reglementations", data=data)
 
     entreprise = Entreprise.objects.get(siren="000000001")
-    assert entreprise.effectif == "petit"
+    assert entreprise.effectif == Entreprise.EFFECTIF_MOINS_DE_50
 
     client.force_login(entreprise.users.first())
     client.get("/reglementations", data=data)
 
     entreprise = Entreprise.objects.get(siren="000000001")
-    assert entreprise.effectif == "grand"
+    assert entreprise.effectif == Entreprise.EFFECTIF_ENTRE_300_ET_499
 
 
 def test_reglementation_with_authenticated_user(client, entreprise):

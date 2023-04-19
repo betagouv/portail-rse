@@ -13,7 +13,9 @@ def bdese_factory(entreprise_factory):
     def create_bdese(bdese_class=BDESE_300, entreprise=None, user=None, annee=2021):
         if not entreprise:
             entreprise = entreprise_factory(
-                effectif="moyen" if bdese_class == BDESE_50_300 else "grand"
+                effectif=Entreprise.EFFECTIF_ENTRE_50_ET_299
+                if bdese_class == BDESE_50_300
+                else Entreprise.EFFECTIF_ENTRE_300_ET_499
             )
         if not user:
             bdese = bdese_class.officials.create(entreprise=entreprise, annee=annee)
@@ -34,13 +36,15 @@ def bdese(request, bdese_factory):
 
 @pytest.fixture
 def bdese_avec_accord(bdese_factory, entreprise_factory, alice):
-    entreprise = entreprise_factory(effectif="grand", bdese_accord=True)
+    entreprise = entreprise_factory(
+        effectif=Entreprise.EFFECTIF_ENTRE_300_ET_499, bdese_accord=True
+    )
     return bdese_factory(bdese_class=BDESEAvecAccord, entreprise=entreprise, user=alice)
 
 
 @pytest.fixture
 def grande_entreprise(entreprise_factory):
-    return entreprise_factory(effectif="grand")
+    return entreprise_factory(effectif=Entreprise.EFFECTIF_ENTRE_300_ET_499)
 
 
 @pytest.fixture(autouse=True)

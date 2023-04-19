@@ -9,11 +9,15 @@ FONCTIONS_MAX_LENGTH = 250
 
 
 class Entreprise(TimestampedModel):
+    EFFECTIF_MOINS_DE_50 = "0-49"
+    EFFECTIF_ENTRE_50_ET_299 = "50-299"
+    EFFECTIF_ENTRE_300_ET_499 = "300-499"
+    EFFECTIF_PLUS_DE_500 = "500+"
     EFFECTIF_CHOICES = [
-        ("petit", "moins de 50"),
-        ("moyen", "entre 50 et 300"),
-        ("grand", "entre 301 et 499"),
-        ("sup500", "plus de 500"),
+        (EFFECTIF_MOINS_DE_50, "moins de 50"),
+        (EFFECTIF_ENTRE_50_ET_299, "entre 50 et 299"),
+        (EFFECTIF_ENTRE_300_ET_499, "entre 300 et 499"),
+        (EFFECTIF_PLUS_DE_500, "plus de 500"),
     ]
 
     siren = models.CharField(max_length=9, unique=True)
