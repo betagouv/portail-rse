@@ -32,7 +32,9 @@ def index(request):
                 try:
                     entreprise = Entreprise.objects.get(siren=siren)
                     detach_user_from_entreprise(request.user, entreprise)
-                    del request.session["entreprise"]
+                    entreprise_in_session = request.session.get("entreprise")
+                    if entreprise_in_session == entreprise.siren:
+                        del request.session["entreprise"]
                     messages.success(
                         request, "Vous n'êtes plus rattaché à cette entreprise"
                     )

@@ -1,5 +1,6 @@
 import html
 
+import pytest
 from django.urls import reverse
 
 import api.exceptions
@@ -113,13 +114,17 @@ def test_fail_because_already_existing_habilitation(client, alice, entreprise_fa
     )
 
 
-def test_detach_from_an_entreprise(client, alice, entreprise_factory):
+@pytest.mark.parametrize("is_entreprise_in_session", [True, False])
+def test_detach_from_an_entreprise(
+    is_entreprise_in_session, client, alice, entreprise_factory
+):
     entreprise = entreprise_factory()
     attach_user_to_entreprise(alice, entreprise, "Présidente")
     client.force_login(alice)
     session = client.session
-    session["entreprise"] = entreprise.siren
-    session.save()
+    if is_entreprise_in_session:
+        session["entreprise"] = entreprise.siren
+        session.save()
 
     data = {"siren": entreprise.siren, "action": "detach"}
 
