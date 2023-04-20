@@ -33,10 +33,10 @@ class Migration(migrations.Migration):
             name="effectif",
             field=models.CharField(
                 choices=[
-                    ("0-49", "moins de 50"),
-                    ("50-299", "entre 50 et 299"),
-                    ("300-499", "entre 300 et 499"),
-                    ("500+", "plus de 500"),
+                    ("0-49", "moins de 50 salariés"),
+                    ("50-299", "entre 50 et 299 salariés"),
+                    ("300-499", "entre 300 et 499 salariés"),
+                    ("500+", "500 salariés ou plus"),
                 ],
                 help_text="Vérifiez et confirmez le nombre de salariés",
                 max_length=9,

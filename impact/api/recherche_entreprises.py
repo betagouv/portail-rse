@@ -42,7 +42,7 @@ def recherche(siren):
         elif tranche_effectif < 41:  # moins de 500 salariés
             effectif = Entreprise.EFFECTIF_ENTRE_300_ET_499
         else:
-            effectif = Entreprise.EFFECTIF_PLUS_DE_500
+            effectif = Entreprise.EFFECTIF_500_ET_PLUS
         return {
             "siren": siren,
             "effectif": effectif,

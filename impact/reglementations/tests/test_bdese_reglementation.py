@@ -51,7 +51,7 @@ def test_calculate_status_less_than_50_employees(bdese_accord, entreprise_factor
     [
         (Entreprise.EFFECTIF_ENTRE_50_ET_299, BDESE_50_300),
         (Entreprise.EFFECTIF_ENTRE_300_ET_499, BDESE_300),
-        (Entreprise.EFFECTIF_PLUS_DE_500, BDESE_300),
+        (Entreprise.EFFECTIF_500_ET_PLUS, BDESE_300),
     ],
 )
 def test_calculate_status_more_than_50_employees(
@@ -109,7 +109,7 @@ def test_calculate_status_more_than_50_employees(
     [
         Entreprise.EFFECTIF_ENTRE_50_ET_299,
         Entreprise.EFFECTIF_ENTRE_300_ET_499,
-        Entreprise.EFFECTIF_PLUS_DE_500,
+        Entreprise.EFFECTIF_500_ET_PLUS,
     ],
 )
 def test_calculate_status_with_bdese_accord(effectif, entreprise_factory, mocker):
@@ -145,7 +145,7 @@ def test_calculate_status_with_bdese_accord(effectif, entreprise_factory, mocker
     [
         Entreprise.EFFECTIF_ENTRE_50_ET_299,
         Entreprise.EFFECTIF_ENTRE_300_ET_499,
-        Entreprise.EFFECTIF_PLUS_DE_500,
+        Entreprise.EFFECTIF_500_ET_PLUS,
     ],
 )
 def test_calculate_status_with_bdese_accord_with_not_attached_user(
@@ -180,7 +180,7 @@ def test_calculate_status_with_bdese_accord_with_not_attached_user(
     [
         Entreprise.EFFECTIF_ENTRE_50_ET_299,
         Entreprise.EFFECTIF_ENTRE_300_ET_499,
-        Entreprise.EFFECTIF_PLUS_DE_500,
+        Entreprise.EFFECTIF_500_ET_PLUS,
     ],
 )
 def test_calculate_status_with_bdese_accord_with_not_habilited_user(
@@ -225,7 +225,7 @@ def test_calculate_status_with_bdese_accord_with_not_habilited_user(
     [
         Entreprise.EFFECTIF_ENTRE_50_ET_299,
         Entreprise.EFFECTIF_ENTRE_300_ET_499,
-        Entreprise.EFFECTIF_PLUS_DE_500,
+        Entreprise.EFFECTIF_500_ET_PLUS,
     ],
 )
 def test_calculate_status_with_bdese_accord_with_habilited_user(

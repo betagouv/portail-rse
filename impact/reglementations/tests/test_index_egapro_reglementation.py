@@ -38,7 +38,7 @@ def test_calculate_status_less_than_50_employees(entreprise_factory, mock_index_
     [
         Entreprise.EFFECTIF_ENTRE_50_ET_299,
         Entreprise.EFFECTIF_ENTRE_300_ET_499,
-        Entreprise.EFFECTIF_PLUS_DE_500,
+        Entreprise.EFFECTIF_500_ET_PLUS,
     ],
 )
 def test_calculate_status_more_than_50_employees(
