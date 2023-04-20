@@ -12,12 +12,12 @@ class Entreprise(TimestampedModel):
     EFFECTIF_MOINS_DE_50 = "0-49"
     EFFECTIF_ENTRE_50_ET_299 = "50-299"
     EFFECTIF_ENTRE_300_ET_499 = "300-499"
-    EFFECTIF_PLUS_DE_500 = "500+"
+    EFFECTIF_500_ET_PLUS = "500+"
     EFFECTIF_CHOICES = [
-        (EFFECTIF_MOINS_DE_50, "moins de 50"),
-        (EFFECTIF_ENTRE_50_ET_299, "entre 50 et 299"),
-        (EFFECTIF_ENTRE_300_ET_499, "entre 300 et 499"),
-        (EFFECTIF_PLUS_DE_500, "plus de 500"),
+        (EFFECTIF_MOINS_DE_50, "moins de 50 salariés"),
+        (EFFECTIF_ENTRE_50_ET_299, "entre 50 et 299 salariés"),
+        (EFFECTIF_ENTRE_300_ET_499, "entre 300 et 499 salariés"),
+        (EFFECTIF_500_ET_PLUS, "500 salariés ou plus"),
     ]
 
     siren = models.CharField(max_length=9, unique=True)

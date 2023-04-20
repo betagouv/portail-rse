@@ -45,7 +45,7 @@
                         <p class="fr-card__desc">
                             {% if habilitation and habilitation.fonctions %}en tant que {{ habilitation.fonctions }}{% endif %} </br>
                             SIREN :<b> {{ entreprise.siren }} </b></br>
-                            Effectif :<b> {% if entreprise.effectif %}{{ entreprise.get_effectif_display }} salariés{% else %}non renseigné{% endif %} </b></br>
+                            Effectif :<b> {% if entreprise.effectif %}{{ entreprise.get_effectif_display }}{% else %}non renseigné{% endif %} </b></br>
                             Accord d'entreprise concernant la BDESE :<b> {{ entreprise.bdese_accord | translate_boolean }} </b></br>
                         </p>
                     </div>
