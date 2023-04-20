@@ -12,6 +12,7 @@ class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
+    readonly_fields = ("last_login",)
     list_display = ("email", "is_staff")
     list_filter = ("is_staff",)
     fieldsets = (
@@ -25,6 +26,7 @@ class UserAdmin(BaseUserAdmin):
                     "nom",
                     "acceptation_cgu",
                     "reception_actualites",
+                    "last_login",
                 )
             },
         ),

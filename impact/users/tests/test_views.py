@@ -1,7 +1,10 @@
 import html
+from datetime import datetime
+from datetime import timezone
 
 import pytest
 from django.urls import reverse
+from freezegun import freeze_time
 
 from entreprises.models import Entreprise
 from habilitations.models import get_habilitation
@@ -172,3 +175,18 @@ def test_edit_account_info_and_password(client, alice):
     assert alice.email == "bob@example.com"
     assert alice.reception_actualites
     assert alice.check_password("Yol0!1234567")
+
+
+def test_update_last_connection_date(client, alice_with_password):
+    now = datetime(2023, 1, 27, 16, 1, tzinfo=timezone.utc)
+    with freeze_time(now):
+        response = client.post(
+            "/connexion",
+            {"username": "alice@impact.test", "password": "Passw0rd!123"},
+            follow=True,
+        )
+
+    assert response.status_code == 200
+    assert response.context["user"].email == "alice@impact.test"
+    alice_with_password.refresh_from_db()
+    assert alice_with_password.last_login == now
