@@ -1,3 +1,4 @@
+import django.utils.http
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -49,6 +50,24 @@ def creation(request):
         siren = request.session.get("siren")
         form = UserCreationForm(initial={"siren": siren})
     return render(request, "users/creation.html", {"form": form})
+
+
+def confirm_email(request, uidb64, token):
+    # basé sur PasswordResetConfirmView.get_user()
+    try:
+        uid = django.utils.http.urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(pk=uid)
+    except (
+        TypeError,
+        ValueError,
+        OverflowError,
+        User.DoesNotExist,
+        ValidationError,
+    ):
+        pass
+    user.is_email_confirmed = True
+    user.save()
+    return redirect("/")
 
 
 @login_required()

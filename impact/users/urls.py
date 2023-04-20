@@ -9,6 +9,7 @@ from .views import account
 from .views import creation
 from .views import PasswordResetConfirmView
 from .views import PasswordResetView
+from users.views import confirm_email
 
 urlpatterns = [
     path(
@@ -41,4 +42,9 @@ urlpatterns = [
         name="password_reset_confirm",
     ),
     path("mon-compte", account, name="account"),
+    path(
+        "confirme-email/<uidb64>/<token>/",
+        confirm_email,
+        name="confirm_email",
+    ),
 ]

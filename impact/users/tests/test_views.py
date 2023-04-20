@@ -2,6 +2,8 @@ import html
 from datetime import datetime
 from datetime import timezone
 
+import django.utils.encoding
+import django.utils.http
 import pytest
 from django.urls import reverse
 from freezegun import freeze_time
@@ -57,6 +59,7 @@ def test_create_user_with_real_siren(reception_actualites, client, db):
     assert user.acceptation_cgu == True
     assert user.reception_actualites == (reception_actualites == "checked")
     assert user.check_password("Passw0rd!123")
+    assert user.is_email_confirmed == False
     assert user in entreprise.users.all()
     assert get_habilitation(user, entreprise).fonctions == "Présidente"
 
@@ -85,6 +88,22 @@ def test_create_user_with_invalid_siren(client, db):
 
     assert not User.objects.filter(email="user@example.com")
     assert not Entreprise.objects.filter(siren="123456789")
+
+
+def test_confirm_email(client, alice):
+    assert not alice.is_email_confirmed
+
+    uidb64 = django.utils.http.urlsafe_base64_encode(
+        django.utils.encoding.force_bytes(alice.pk)
+    )
+    token = "token"
+
+    url = f"/confirme-email/{uidb64}/{token}/"
+    response = client.get(url, follow=True)
+
+    assert response.status_code == 200
+    alice.refresh_from_db()
+    assert alice.is_email_confirmed
 
 
 def test_account_page_is_not_public(client):

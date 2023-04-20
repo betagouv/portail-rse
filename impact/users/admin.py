@@ -21,6 +21,7 @@ class UserAdmin(BaseUserAdmin):
             {
                 "fields": (
                     "email",
+                    "is_email_confirmed",
                     "password",
                     "prenom",
                     "nom",

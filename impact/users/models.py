@@ -43,6 +43,7 @@ class User(AbstractBaseUser, TimestampedModel):
     reception_actualites = models.BooleanField(default=False)
     prenom = models.CharField(max_length=SURNAME_MAX_LENGTH, default="")
     nom = models.CharField(max_length=NAME_MAX_LENGTH, default="")
+    is_email_confirmed = models.BooleanField(default=False)
 
     objects = UserManager()
 
