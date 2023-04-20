@@ -65,9 +65,18 @@ def confirm_email(request, uidb64, token):
         ValidationError,
     ):
         pass
-    user.is_email_confirmed = True
-    user.save()
+    if check_token(user, token):
+        user.is_email_confirmed = True
+        user.save()
     return redirect("/")
+
+
+def get_token(user):
+    return user.email
+
+
+def check_token(user, token):
+    return user.email == token
 
 
 @login_required()
