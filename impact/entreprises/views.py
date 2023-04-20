@@ -36,12 +36,11 @@ def index(request):
                     if entreprise_in_session == entreprise.siren:
                         del request.session["entreprise"]
                     messages.success(
-                        request, "Vous n'êtes plus rattaché à cette entreprise"
+                        request,
+                        f"Votre compte n'êtes plus rattaché à l'entreprise {entreprise.denomination}",
                     )
                 except ObjectDoesNotExist:
-                    messages.error(
-                        request, "Impossible de se retirer de cette entreprise"
-                    )
+                    messages.error(request, "Impossible de quitter cette entreprise")
             return redirect("entreprises:entreprises")
 
     return render(request, "entreprises/index.html", {"form": EntrepriseAttachForm()})

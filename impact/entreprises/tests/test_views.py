@@ -136,6 +136,11 @@ def test_detach_from_an_entreprise(
     assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
     assert entreprise not in alice.entreprises
     assert not is_user_attached_to_entreprise(alice, entreprise)
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        f"Votre compte n'êtes plus rattaché à l'entreprise {entreprise.denomination}"
+        in content
+    )
 
 
 def test_fail_to_detach_whithout_relation_to_an_entreprise(
