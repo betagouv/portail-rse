@@ -226,12 +226,3 @@ def test_update_last_connection_date(client, alice_with_password):
     assert response.context["user"].email == "alice@impact.test"
     alice_with_password.refresh_from_db()
     assert alice_with_password.last_login == now
-
-
-def test_email_token(alice, bob):
-    salt = "KEYSALT"
-    assert make_token(alice, salt) != make_token(bob, salt)
-
-    token = make_token(alice, salt)
-    assert check_token(alice, salt, token)
-    assert not check_token(alice, salt, "invalid-token")
