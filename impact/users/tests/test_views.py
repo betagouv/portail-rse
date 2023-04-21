@@ -230,6 +230,8 @@ def test_update_last_connection_date(client, alice_with_password):
 
 def test_email_token(alice, bob):
     assert get_token(alice) != get_token(bob)
+    assert alice.email not in get_token(alice)
+    assert str(alice.pk) != get_token(alice)
 
     token = get_token(alice)
     assert check_token(alice, token)
