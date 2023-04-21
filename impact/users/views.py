@@ -6,9 +6,12 @@ from django.contrib.auth.views import (
     PasswordResetConfirmView as BasePasswordResetConfirmView,
 )
 from django.contrib.auth.views import PasswordResetView as BasePasswordResetView
+from django.core import mail
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.template.loader import render_to_string
 
+import impact.settings
 from .forms import UserCreationForm
 from .forms import UserEditionForm
 from .models import User
@@ -18,6 +21,7 @@ from entreprises.views import search_and_create_entreprise
 from habilitations.models import attach_user_to_entreprise
 from utils.tokens import check_token
 from utils.tokens import make_token
+from utils.tokens import uidb64
 
 
 def creation(request):
@@ -37,6 +41,21 @@ def creation(request):
                     form.cleaned_data["fonctions"],
                 )
                 login(request, User.objects.get(email=form.cleaned_data["email"]))
+                html_message = render_to_string(
+                    "users/email/confirm_email.html",
+                    {
+                        "uidb64": uidb64(user),
+                        "token": make_token(user, "confirm_email"),
+                    },
+                )
+                message = html_message
+                mail.send_mail(
+                    "Confirmation de votre e-mail sur le projet Impact",
+                    message=message,
+                    from_email=impact.settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                    html_message=html_message,
+                )
                 success_message = (
                     "Votre compte a bien été créé. Vous êtes maintenant connecté."
                 )

@@ -3,6 +3,8 @@ La génération de token est une version simplifiée de django.contrib.auth.toke
 """
 from django.utils.crypto import constant_time_compare
 from django.utils.crypto import salted_hmac
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 
 import impact.settings
 
@@ -19,3 +21,7 @@ def make_token(user, key_salt):
 
 def check_token(user, key_salt, token):
     return constant_time_compare(make_token(user, key_salt), token)
+
+
+def uidb64(user):
+    return urlsafe_base64_encode(force_bytes(user.pk))

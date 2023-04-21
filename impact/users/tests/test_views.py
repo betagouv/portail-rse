@@ -8,11 +8,13 @@ import pytest
 from django.urls import reverse
 from freezegun import freeze_time
 
+import impact.settings
 from entreprises.models import Entreprise
 from habilitations.models import get_habilitation
 from users.models import User
 from utils.tokens import check_token
 from utils.tokens import make_token
+from utils.tokens import uidb64
 
 
 def test_page_creation(client):
@@ -24,7 +26,7 @@ def test_page_creation(client):
 
 
 @pytest.mark.parametrize("reception_actualites", ["checked", ""])
-def test_create_user_with_real_siren(reception_actualites, client, db):
+def test_create_user_with_real_siren(reception_actualites, client, db, mailoutbox):
     data = {
         "prenom": "Alice",
         "nom": "User",
@@ -64,6 +66,12 @@ def test_create_user_with_real_siren(reception_actualites, client, db):
     assert user.is_email_confirmed == False
     assert user in entreprise.users.all()
     assert get_habilitation(user, entreprise).fonctions == "Présidente"
+    assert len(mailoutbox) == 1
+    mail = mailoutbox[0]
+    assert mail.from_email == impact.settings.DEFAULT_FROM_EMAIL
+    assert list(mail.to) == ["user@example.com"]
+    assert mail.subject == "Confirmation de votre e-mail sur le projet Impact"
+    assert make_token(user, "confirm_email") in mail.body
 
 
 def test_create_user_with_invalid_siren(client, db):
@@ -95,12 +103,10 @@ def test_create_user_with_invalid_siren(client, db):
 def test_confirm_email(client, alice):
     assert not alice.is_email_confirmed
 
-    uidb64 = django.utils.http.urlsafe_base64_encode(
-        django.utils.encoding.force_bytes(alice.pk)
-    )
+    uid = uidb64(alice)
     token = make_token(alice, "confirm_email")
 
-    url = f"/confirme-email/{uidb64}/{token}/"
+    url = f"/confirme-email/{uid}/{token}/"
     response = client.get(url, follow=True)
 
     assert response.status_code == 200
