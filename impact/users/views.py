@@ -17,7 +17,7 @@ from entreprises.models import Entreprise
 from entreprises.views import search_and_create_entreprise
 from habilitations.models import attach_user_to_entreprise
 from utils.tokens import check_token
-from utils.tokens import get_token
+from utils.tokens import make_token
 
 
 def creation(request):

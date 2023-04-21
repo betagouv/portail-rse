@@ -12,7 +12,7 @@ from entreprises.models import Entreprise
 from habilitations.models import get_habilitation
 from users.models import User
 from utils.tokens import check_token
-from utils.tokens import get_token
+from utils.tokens import make_token
 
 
 def test_page_creation(client):
@@ -98,7 +98,7 @@ def test_confirm_email(client, alice):
     uidb64 = django.utils.http.urlsafe_base64_encode(
         django.utils.encoding.force_bytes(alice.pk)
     )
-    token = get_token(alice)
+    token = make_token(alice)
 
     url = f"/confirme-email/{uidb64}/{token}/"
     response = client.get(url, follow=True)
@@ -229,10 +229,10 @@ def test_update_last_connection_date(client, alice_with_password):
 
 
 def test_email_token(alice, bob):
-    assert get_token(alice) != get_token(bob)
-    assert alice.email not in get_token(alice)
-    assert str(alice.pk) != get_token(alice)
+    assert make_token(alice) != make_token(bob)
+    assert alice.email not in make_token(alice)
+    assert str(alice.pk) != make_token(alice)
 
-    token = get_token(alice)
+    token = make_token(alice)
     assert check_token(alice, token)
     assert not check_token(alice, "invalid-token")
