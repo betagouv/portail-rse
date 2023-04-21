@@ -40,7 +40,6 @@ def creation(request):
                     entreprise,
                     form.cleaned_data["fonctions"],
                 )
-                login(request, User.objects.get(email=form.cleaned_data["email"]))
                 html_message = render_to_string(
                     "users/email/confirm_email.html",
                     {
@@ -56,9 +55,7 @@ def creation(request):
                     recipient_list=[user.email],
                     html_message=html_message,
                 )
-                success_message = (
-                    "Votre compte a bien été créé. Vous êtes maintenant connecté."
-                )
+                success_message = f"Votre compte a bien été créé. Un e-mail de confirmation a été envoyé à {user.email}. Confirmez votre e-mail avant de vous connecter."
                 messages.success(request, success_message)
                 return redirect("reglementations:reglementation", siren)
             except APIError as exception:

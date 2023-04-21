@@ -42,13 +42,16 @@ def test_create_user_with_real_siren(reception_actualites, client, db, mailoutbo
     response = client.post("/creation", data=data, follow=True)
 
     assert response.status_code == 200
+    reglementation_url = reverse(
+        "reglementations:reglementation", kwargs={"siren": "130025265"}
+    )
     assert response.redirect_chain == [
-        (reverse("reglementations:reglementation", kwargs={"siren": "130025265"}), 302),
-        (reverse("entreprises:qualification", kwargs={"siren": "130025265"}), 302),
+        (reglementation_url, 302),
+        (f"{reverse('login')}?next={reglementation_url}", 302),
     ]
 
     assert (
-        "Votre compte a bien été créé. Vous êtes maintenant connecté."
+        "Votre compte a bien été créé. Un e-mail de confirmation a été envoyé à user@example.com. Confirmez votre e-mail avant de vous connecter."
         in response.content.decode("utf-8")
     )
 
