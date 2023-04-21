@@ -27,17 +27,20 @@
                     {% include 'snippets/field.html' with field=form.reception_actualites %}
                     </div>
                 </fieldset>
+                <button type="submit" class="fr-btn" value="update-account">Modifier mon compte</button>
+            </form>
+            <form action="{% url 'account' %}" method="post" class="fr-mt-4w">
+                {% csrf_token %}
                 <h2 class="fr-h6">Mot de passe</h2>
                 <fieldset class="fr-fieldset fr-mt-3w" aria-label="Modification du mot de passe">
-                    <p>Laissez vide pour conserver le mot de passe actuel.</p>
                     <div class="fr-fieldset__element">
-                    {% include 'snippets/field.html' with field=form.password1 %}
+                    {% include 'snippets/field.html' with field=password_form.password1 %}
                     </div>
                     <div class="fr-fieldset__element">
-                    {% include 'snippets/field.html' with field=form.password2 %}
+                    {% include 'snippets/field.html' with field=password_form.password2 %}
                     </div>
                 </fieldset>
-                <button type="submit" class="fr-btn fr-mt-4w">Modifier mon compte</button>
+                <button type="submit" class="fr-btn" name="action" value="update-password">Modifier mon mot de passe</button>
             </form>
         </div>
     </div>

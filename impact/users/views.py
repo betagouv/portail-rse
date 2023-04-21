@@ -14,6 +14,7 @@ from django.template.loader import render_to_string
 import impact.settings
 from .forms import UserCreationForm
 from .forms import UserEditionForm
+from .forms import UserPasswordForm
 from .models import User
 from api.exceptions import APIError
 from entreprises.models import Entreprise
@@ -95,29 +96,44 @@ def confirm_email(request, uidb64, token):
 
 @login_required()
 def account(request):
-    form = UserEditionForm(request.POST or None, instance=request.user)
-    if form.is_valid():
-        form.save()
-        if "password1" in form.changed_data:
-            success_message = (
-                "Votre mot de passe a bien été modifié. Veuillez vous reconnecter."
+    form = UserEditionForm(None, instance=request.user)
+    password_form = UserPasswordForm(request.POST or None, instance=request.user)
+    if request.POST:
+        if "action" in request.POST:
+            form = UserEditionForm(None, instance=request.user)
+            password_form = UserPasswordForm(
+                request.POST or None, instance=request.user
             )
-        elif "email" in form.changed_data:
-            success_message = f"Votre e-mail a bien été modifié. Un e-mail de confirmation a été envoyé à {form.cleaned_data['email']}. Confirmez votre e-mail avant de vous connecter."
-            request.user.is_email_confirmed = False
-            request.user.save()
-            _send_confirm_email(request.user)
-            logout(request)
+            if password_form.is_valid():
+                password_form.save()
+                success_message = (
+                    "Votre mot de passe a bien été modifié. Veuillez vous reconnecter."
+                )
+                messages.success(request, success_message)
+            return redirect("account")
         else:
-            success_message = "Votre compte a bien été modifié."
-        messages.success(request, success_message)
-        return redirect("account")
-    elif request.POST:
+            form = UserEditionForm(request.POST or None, instance=request.user)
+            password_form = UserPasswordForm(None, instance=request.user)
+            if form.is_valid():
+                form.save()
+
+                if "email" in form.changed_data:
+                    success_message = f"Votre e-mail a bien été modifié. Un e-mail de confirmation a été envoyé à {form.cleaned_data['email']}. Confirmez votre e-mail avant de vous connecter."
+                    request.user.is_email_confirmed = False
+                    request.user.save()
+                    _send_confirm_email(request.user)
+                    logout(request)
+                else:
+                    success_message = "Votre compte a bien été modifié."
+                messages.success(request, success_message)
+                return redirect("account")
         error_message = (
             "La modification a échoué car le formulaire contient des erreurs."
         )
         messages.error(request, error_message)
-    return render(request, "users/account.html", {"form": form})
+    return render(
+        request, "users/account.html", {"form": form, "password_form": password_form}
+    )
 
 
 class PasswordResetView(BasePasswordResetView):

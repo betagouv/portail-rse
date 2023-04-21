@@ -222,7 +222,7 @@ def test_edit_email(client, alice_with_password, mailoutbox):
     assert make_token(alice, "confirm_email") in mail.body
 
 
-def test_edit_account_info_and_password(client, alice):
+def test_edit_password(client, alice):
     client.force_login(alice)
 
     response = client.get("/mon-compte")
@@ -230,12 +230,9 @@ def test_edit_account_info_and_password(client, alice):
     assert response.status_code == 200
 
     data = {
-        "prenom": "Bob",
-        "nom": "Dylan",
-        "email": "bob@example.com",
-        "reception_actualites": "checked",
         "password1": "Yol0!1234567",
         "password2": "Yol0!1234567",
+        "action": "update-password",
     }
 
     response = client.post("/mon-compte", data=data, follow=True)
@@ -255,11 +252,31 @@ def test_edit_account_info_and_password(client, alice):
     )
 
     alice.refresh_from_db()
-    assert alice.prenom == "Bob"
-    assert alice.nom == "Dylan"
-    assert alice.email == "bob@example.com"
-    assert alice.reception_actualites
     assert alice.check_password("Yol0!1234567")
+
+
+def test_edit_different_password(client, alice_with_password):
+    client.force_login(alice_with_password)
+
+    response = client.get("/mon-compte")
+
+    assert response.status_code == 200
+
+    data = {
+        "password1": "Yol0!123456789",
+        "password2": "y0Lo?9876543",
+        "action": "update-password",
+    }
+
+    response = client.post("/mon-compte", data=data, follow=True)
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [
+        (reverse("account"), 302),
+    ]
+
+    alice_with_password.refresh_from_db()
+    assert alice_with_password.check_password("Passw0rd!123")
 
 
 def test_update_last_connection_date(client, alice_with_password):
