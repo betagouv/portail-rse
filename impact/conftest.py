@@ -10,6 +10,7 @@ def alice(django_user_model):
         nom="Cooper",
         email="alice@impact.test",
         reception_actualites=False,
+        is_email_confirmed=True,
     )
     return alice
 
@@ -21,6 +22,7 @@ def bob(django_user_model):
         nom="Dylan",
         email="bob@impact.test",
         reception_actualites=False,
+        is_email_confirmed=True,
     )
     return bob
 

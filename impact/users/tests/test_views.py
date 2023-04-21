@@ -104,8 +104,8 @@ def test_create_user_with_invalid_siren(client, db):
 
 
 def test_confirm_email(client, alice):
-    assert not alice.is_email_confirmed
-
+    alice.is_email_confirmed = False
+    alice.save()
     uid = uidb64(alice)
     token = make_token(alice, "confirm_email")
 
@@ -118,13 +118,11 @@ def test_confirm_email(client, alice):
 
 
 def test_fail_to_confirm_email_due_to_invalid_token(client, alice):
-    assert not alice.is_email_confirmed
+    alice.is_email_confirmed = False
+    alice.save()
+    uid = uidb64(alice)
 
-    uidb64 = django.utils.http.urlsafe_base64_encode(
-        django.utils.encoding.force_bytes(alice.pk)
-    )
-
-    url = f"/confirme-email/{uidb64}/invalid-token/"
+    url = f"/confirme-email/{uid}/invalid-token/"
     response = client.get(url, follow=True)
 
     assert response.status_code == 200
@@ -235,3 +233,22 @@ def test_update_last_connection_date(client, alice_with_password):
     assert response.context["user"].email == "alice@impact.test"
     alice_with_password.refresh_from_db()
     assert alice_with_password.last_login == now
+
+
+def test_can_not_login_if_email_is_not_confirmed(client, alice_with_password):
+    alice_with_password.is_email_confirmed = False
+    alice_with_password.save()
+
+    response = client.post(
+        "/connexion",
+        {"username": "alice@impact.test", "password": "Passw0rd!123"},
+        follow=True,
+    )
+
+    assert response.status_code == 200
+    content = response.content.decode("utf-8")
+    assert not response.context["user"].is_authenticated
+    assert (
+        "Merci de confirmer votre e-mail en cliquant sur le lien reçu avant de vous connecter."
+        in content
+    ), content

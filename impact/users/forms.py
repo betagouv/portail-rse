@@ -4,6 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
+from django.core.exceptions import ValidationError
 
 from .models import User
 from entreprises.forms import SirenField
@@ -19,6 +20,13 @@ class LoginForm(DsfrForm, AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(LoginForm, self).__init__(*args, **kwargs)
         self.fields["password"].label = "Mot de passe"
+
+    def confirm_login_allowed(self, user):
+        super().confirm_login_allowed(user)
+        if not user.is_email_confirmed:
+            raise ValidationError(
+                "Merci de confirmer votre e-mail en cliquant sur le lien reçu avant de vous connecter.",
+            )
 
 
 class UserPasswordForm(forms.ModelForm):
