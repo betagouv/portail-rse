@@ -160,7 +160,7 @@ def test_edit_account_info(client, alice_with_password):
     data = {
         "prenom": "Bob",
         "nom": "Dylan",
-        "email": "bob@example.com",
+        "email": alice.email,
         "reception_actualites": "checked",
     }
 
@@ -175,9 +175,51 @@ def test_edit_account_info(client, alice_with_password):
     alice.refresh_from_db()
     assert alice.prenom == "Bob"
     assert alice.nom == "Dylan"
-    assert alice.email == "bob@example.com"
     assert alice.reception_actualites
     assert alice.check_password("Passw0rd!123")
+
+
+def test_edit_email(client, alice_with_password, mailoutbox):
+    alice = alice_with_password
+    client.force_login(alice)
+
+    data = {
+        "prenom": "Bob",
+        "nom": "Dylan",
+        "email": "bob@example.com",
+        "reception_actualites": "checked",
+    }
+
+    response = client.post("/mon-compte", data=data, follow=True)
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [
+        (reverse("account"), 302),
+        (
+            f"{reverse('login')}?next=/mon-compte",
+            302,
+        ),  # l'utilisateur doit se reconnecter
+    ]
+    assert not response.context["user"].is_authenticated
+
+    content = response.content.decode("utf-8")
+    assert (
+        "Votre e-mail a bien été modifié. Un e-mail de confirmation a été envoyé à bob@example.com. Confirmez votre e-mail avant de vous connecter."
+        in content
+    )
+
+    alice.refresh_from_db()
+    assert alice.prenom == "Bob"
+    assert alice.nom == "Dylan"
+    assert alice.email == "bob@example.com"
+    assert not alice.is_email_confirmed
+
+    assert len(mailoutbox) == 1
+    mail = mailoutbox[0]
+    assert mail.from_email == impact.settings.DEFAULT_FROM_EMAIL
+    assert list(mail.to) == ["bob@example.com"]
+    assert mail.subject == "Confirmation de votre e-mail sur le projet Impact"
+    assert make_token(alice, "confirm_email") in mail.body
 
 
 def test_edit_account_info_and_password(client, alice):

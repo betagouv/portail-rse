@@ -1,6 +1,6 @@
 import django.utils.http
 from django.contrib import messages
-from django.contrib.auth import login
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import (
     PasswordResetConfirmView as BasePasswordResetConfirmView,
@@ -40,21 +40,7 @@ def creation(request):
                     entreprise,
                     form.cleaned_data["fonctions"],
                 )
-                html_message = render_to_string(
-                    "users/email/confirm_email.html",
-                    {
-                        "uidb64": uidb64(user),
-                        "token": make_token(user, "confirm_email"),
-                    },
-                )
-                message = html_message
-                mail.send_mail(
-                    "Confirmation de votre e-mail sur le projet Impact",
-                    message=message,
-                    from_email=impact.settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[user.email],
-                    html_message=html_message,
-                )
+                _send_confirm_email(user)
                 success_message = f"Votre compte a bien été créé. Un e-mail de confirmation a été envoyé à {user.email}. Confirmez votre e-mail avant de vous connecter."
                 messages.success(request, success_message)
                 return redirect("reglementations:reglementation", siren)
@@ -68,6 +54,24 @@ def creation(request):
         siren = request.session.get("siren")
         form = UserCreationForm(initial={"siren": siren})
     return render(request, "users/creation.html", {"form": form})
+
+
+def _send_confirm_email(user):
+    html_message = render_to_string(
+        "users/email/confirm_email.html",
+        {
+            "uidb64": uidb64(user),
+            "token": make_token(user, "confirm_email"),
+        },
+    )
+    message = html_message
+    mail.send_mail(
+        "Confirmation de votre e-mail sur le projet Impact",
+        message=message,
+        from_email=impact.settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[user.email],
+        html_message=html_message,
+    )
 
 
 def confirm_email(request, uidb64, token):
@@ -98,6 +102,12 @@ def account(request):
             success_message = (
                 "Votre mot de passe a bien été modifié. Veuillez vous reconnecter."
             )
+        elif "email" in form.changed_data:
+            success_message = f"Votre e-mail a bien été modifié. Un e-mail de confirmation a été envoyé à {form.cleaned_data['email']}. Confirmez votre e-mail avant de vous connecter."
+            request.user.is_email_confirmed = False
+            request.user.save()
+            _send_confirm_email(request.user)
+            logout(request)
         else:
             success_message = "Votre compte a bien été modifié."
         messages.success(request, success_message)
