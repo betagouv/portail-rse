@@ -11,7 +11,8 @@ from freezegun import freeze_time
 from entreprises.models import Entreprise
 from habilitations.models import get_habilitation
 from users.models import User
-from users.views import get_token
+from utils.tokens import check_token
+from utils.tokens import get_token
 
 
 def test_page_creation(client):
@@ -225,3 +226,11 @@ def test_update_last_connection_date(client, alice_with_password):
     assert response.context["user"].email == "alice@impact.test"
     alice_with_password.refresh_from_db()
     assert alice_with_password.last_login == now
+
+
+def test_email_token(alice, bob):
+    assert get_token(alice) != get_token(bob)
+
+    token = get_token(alice)
+    assert check_token(alice, token)
+    assert not check_token(alice, "invalid-token")

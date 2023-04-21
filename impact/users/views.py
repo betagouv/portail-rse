@@ -16,6 +16,8 @@ from api.exceptions import APIError
 from entreprises.models import Entreprise
 from entreprises.views import search_and_create_entreprise
 from habilitations.models import attach_user_to_entreprise
+from utils.tokens import check_token
+from utils.tokens import get_token
 
 
 def creation(request):
@@ -69,14 +71,6 @@ def confirm_email(request, uidb64, token):
         user.is_email_confirmed = True
         user.save()
     return redirect("/")
-
-
-def get_token(user):
-    return user.email
-
-
-def check_token(user, token):
-    return user.email == token
 
 
 @login_required()
