@@ -7,9 +7,9 @@ from django.utils.crypto import salted_hmac
 import impact.settings
 
 
-def make_token(user):
+def make_token(user, key_salt):
     hash_string = salted_hmac(
-        "key_salt",
+        key_salt,
         f"{user.pk}{user.email}",
         secret=impact.settings.SECRET_KEY,
         algorithm="sha256",
@@ -17,5 +17,5 @@ def make_token(user):
     return hash_string
 
 
-def check_token(user, token):
-    return constant_time_compare(make_token(user), token)
+def check_token(user, key_salt, token):
+    return constant_time_compare(make_token(user, key_salt), token)

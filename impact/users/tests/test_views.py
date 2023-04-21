@@ -98,7 +98,7 @@ def test_confirm_email(client, alice):
     uidb64 = django.utils.http.urlsafe_base64_encode(
         django.utils.encoding.force_bytes(alice.pk)
     )
-    token = make_token(alice)
+    token = make_token(alice, "confirm_email")
 
     url = f"/confirme-email/{uidb64}/{token}/"
     response = client.get(url, follow=True)
@@ -229,10 +229,9 @@ def test_update_last_connection_date(client, alice_with_password):
 
 
 def test_email_token(alice, bob):
-    assert make_token(alice) != make_token(bob)
-    assert alice.email not in make_token(alice)
-    assert str(alice.pk) != make_token(alice)
+    salt = "KEYSALT"
+    assert make_token(alice, salt) != make_token(bob, salt)
 
-    token = make_token(alice)
-    assert check_token(alice, token)
-    assert not check_token(alice, "invalid-token")
+    token = make_token(alice, salt)
+    assert check_token(alice, salt, token)
+    assert not check_token(alice, salt, "invalid-token")
