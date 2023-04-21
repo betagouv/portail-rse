@@ -96,8 +96,6 @@ def confirm_email(request, uidb64, token):
 
 @login_required()
 def account(request):
-    form = UserEditionForm(None, instance=request.user)
-    password_form = UserPasswordForm(request.POST or None, instance=request.user)
     if request.POST:
         if request.POST["action"] == "update-password":
             form = UserEditionForm(None, instance=request.user)
@@ -131,6 +129,8 @@ def account(request):
             "La modification a échoué car le formulaire contient des erreurs."
         )
         messages.error(request, error_message)
+    form = UserEditionForm(None, instance=request.user)
+    password_form = UserPasswordForm(None, instance=request.user)
     return render(
         request, "users/account.html", {"form": form, "password_form": password_form}
     )
