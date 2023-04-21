@@ -162,6 +162,7 @@ def test_edit_account_info(client, alice_with_password):
         "nom": "Dylan",
         "email": alice.email,
         "reception_actualites": "checked",
+        "action": "update-account",
     }
 
     response = client.post("/mon-compte", data=data, follow=True)
@@ -188,6 +189,7 @@ def test_edit_email(client, alice_with_password, mailoutbox):
         "nom": "Dylan",
         "email": "bob@example.com",
         "reception_actualites": "checked",
+        "action": "update-account",
     }
 
     response = client.post("/mon-compte", data=data, follow=True)

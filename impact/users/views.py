@@ -99,7 +99,7 @@ def account(request):
     form = UserEditionForm(None, instance=request.user)
     password_form = UserPasswordForm(request.POST or None, instance=request.user)
     if request.POST:
-        if "action" in request.POST:
+        if request.POST["action"] == "update-password":
             form = UserEditionForm(None, instance=request.user)
             password_form = UserPasswordForm(
                 request.POST or None, instance=request.user
