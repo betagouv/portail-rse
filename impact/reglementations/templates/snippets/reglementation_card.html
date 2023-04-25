@@ -25,7 +25,7 @@
                 <p class="fr-card__detail fr-icon-info-fill">
                     {% if not user.is_authenticated %}
                         {% if reglementation.status.is_soumis %}
-                        <a href="{% url 'login' %}?next=/reglementations">Vous êtes soumis à cette réglementation. Connectez-vous pour en savoir plus.</a>
+                        <a href="{% url 'users:login' %}?next=/reglementations">Vous êtes soumis à cette réglementation. Connectez-vous pour en savoir plus.</a>
                         {% else %}
                         Vous n'êtes pas soumis à cette réglementation.
                         {% endif %}
@@ -51,7 +51,7 @@
                 </li>
                 {% if not user.is_authenticated and reglementation.status.is_soumis %}
                 <li>
-                    <a class="fr-btn" href="{% url 'login' %}?next={% url 'reglementations:reglementations' %}">
+                    <a class="fr-btn" href="{% url 'users:login' %}?next={% url 'reglementations:reglementations' %}">
                         Se connecter
                     </a>
                 </li>

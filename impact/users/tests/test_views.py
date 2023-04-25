@@ -47,7 +47,7 @@ def test_create_user_with_real_siren(reception_actualites, client, db, mailoutbo
     )
     assert response.redirect_chain == [
         (reglementation_url, 302),
-        (f"{reverse('login')}?next={reglementation_url}", 302),
+        (f"{reverse('users:login')}?next={reglementation_url}", 302),
     ]
 
     assert (
@@ -168,7 +168,7 @@ def test_edit_account_info(client, alice_with_password):
     response = client.post("/mon-compte", data=data, follow=True)
 
     assert response.status_code == 200
-    assert response.redirect_chain == [(reverse("account"), 302)]
+    assert response.redirect_chain == [(reverse("users:account"), 302)]
 
     content = response.content.decode("utf-8")
     assert "Votre compte a bien été modifié." in content
@@ -196,9 +196,9 @@ def test_edit_email(client, alice_with_password, mailoutbox):
 
     assert response.status_code == 200
     assert response.redirect_chain == [
-        (reverse("account"), 302),
+        (reverse("users:account"), 302),
         (
-            f"{reverse('login')}?next=/mon-compte",
+            f"{reverse('users:login')}?next=/mon-compte",
             302,
         ),  # l'utilisateur doit se reconnecter
     ]
@@ -241,9 +241,9 @@ def test_edit_password(client, alice):
 
     assert response.status_code == 200
     assert response.redirect_chain == [
-        (reverse("account"), 302),
+        (reverse("users:account"), 302),
         (
-            f"{reverse('login')}?next=/mon-compte",
+            f"{reverse('users:login')}?next=/mon-compte",
             302,
         ),  # l'utilisateur doit se reconnecter
     ]
@@ -274,7 +274,7 @@ def test_edit_different_password(client, alice_with_password):
 
     assert response.status_code == 200
     assert response.redirect_chain == [
-        (reverse("account"), 302),
+        (reverse("users:account"), 302),
     ]
 
     alice_with_password.refresh_from_db()

@@ -7,7 +7,7 @@
         <div class="fr-col-12 fr-col-md-10 fr-col-lg-8">
             <h1>Création de compte sur Projet Impact</h1>
             <p>Sauf mention contraire “(optionnel)” dans le label, tous les champs sont obligatoires.</p>
-            <form action="{% url 'creation' %}" method="post">
+            <form action="{% url 'users:creation' %}" method="post">
                 {% csrf_token %}
                 {% include 'snippets/field.html' with field=form.email %}
                 {% include 'snippets/field.html' with field=form.password1 %}

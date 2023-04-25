@@ -83,9 +83,9 @@
                                         <li><a class="fr-btn fr-icon-file-text-line" href="{% url 'reglementations:reglementations' %}">Réglementations</a></li>
                                     {% endif %}
                                     {% if user.is_authenticated %}
-                                        <li><a class="fr-btn fr-icon-lock-unlock-line" href="{% url 'logout' %}">Se déconnecter</a></li>
+                                        <li><a class="fr-btn fr-icon-lock-unlock-line" href="{% url 'users:logout' %}">Se déconnecter</a></li>
                                     {% else %}
-                                        <li><a class="fr-btn fr-icon-lock-line" href="{% url 'login' %}?next={{ request.path }}">Se connecter</a></li>
+                                        <li><a class="fr-btn fr-icon-lock-line" href="{% url 'users:login' %}?next={{ request.path }}">Se connecter</a></li>
                                     {% endif %}
                                 </ul>
                             </div>
@@ -125,7 +125,7 @@
                                     </button>
                                     <div class="fr-collapse fr-menu" id="menu-2">
                                         <ul class="fr-menu__list">
-                                            <li><a class="fr-nav__link" href="{% url 'account' %}" target="_self">Mon compte</a></li>
+                                            <li><a class="fr-nav__link" href="{% url 'users:account' %}" target="_self">Mon compte</a></li>
                                             <li><a class="fr-nav__link" href="{% url 'entreprises:entreprises' %}" target="_self">{% if user.entreprise_set.count >= 2 %}Mes entreprises{% else %}Mon entreprise{% endif %}</a></li>
                                         </ul>
                                     </div>

@@ -11,6 +11,7 @@ from .views import PasswordResetConfirmView
 from .views import PasswordResetView
 from users.views import confirm_email
 
+app_name = "users"
 urlpatterns = [
     path(
         "connexion",

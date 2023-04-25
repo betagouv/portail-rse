@@ -108,7 +108,7 @@ def account(request):
                     "Votre mot de passe a bien été modifié. Veuillez vous reconnecter."
                 )
                 messages.success(request, success_message)
-            return redirect("account")
+            return redirect("users:account")
         else:
             form = UserEditionForm(request.POST or None, instance=request.user)
             password_form = UserPasswordForm(None, instance=request.user)
@@ -124,7 +124,7 @@ def account(request):
                 else:
                     success_message = "Votre compte a bien été modifié."
                 messages.success(request, success_message)
-                return redirect("account")
+                return redirect("users:account")
         error_message = (
             "La modification a échoué car le formulaire contient des erreurs."
         )

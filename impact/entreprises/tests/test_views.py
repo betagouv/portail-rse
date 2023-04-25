@@ -171,7 +171,7 @@ def test_qualification_page_is_not_public(client, alice, unqualified_entreprise)
     response = client.get(url)
 
     assert response.status_code == 302
-    connexion_url = reverse("login")
+    connexion_url = reverse("users:login")
     assert response.url == f"{connexion_url}?next={url}"
 
     client.force_login(alice)
