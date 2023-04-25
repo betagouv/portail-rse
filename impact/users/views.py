@@ -8,9 +8,11 @@ from django.contrib.auth.views import (
 from django.contrib.auth.views import PasswordResetView as BasePasswordResetView
 from django.core import mail
 from django.core.exceptions import ValidationError
+from django.core.mail import EmailMessage
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.template.loader import render_to_string
+from django.urls import reverse
 
 import impact.settings
 from .forms import UserCreationForm
@@ -21,6 +23,7 @@ from api.exceptions import APIError
 from entreprises.models import Entreprise
 from entreprises.views import search_and_create_entreprise
 from habilitations.models import attach_user_to_entreprise
+from impact.settings import SENDINBLUE_CONFIRM_EMAIL_TEMPLATE
 from utils.tokens import check_token
 from utils.tokens import make_token
 from utils.tokens import uidb64
@@ -42,9 +45,12 @@ def creation(request):
                     entreprise,
                     form.cleaned_data["fonctions"],
                 )
-                _send_confirm_email(user)
-                success_message = f"Votre compte a bien été créé. Un e-mail de confirmation a été envoyé à {user.email}. Confirmez votre e-mail avant de vous connecter."
-                messages.success(request, success_message)
+                if _send_confirm_email(user):
+                    success_message = f"Votre compte a bien été créé. Un e-mail de confirmation a été envoyé à {user.email}. Confirmez votre e-mail avant de vous connecter."
+                    messages.success(request, success_message)
+                else:
+                    error_message = f"L'e-mail de confirmation n'a pas pu être envoyé à {user.email}. Contactez-nous si cette adresse est légitime."
+                    messages.error(request, error_message)
                 return redirect("reglementations:reglementation", siren)
             except APIError as exception:
                 messages.error(request, exception)
@@ -59,21 +65,18 @@ def creation(request):
 
 
 def _send_confirm_email(user):
-    html_message = render_to_string(
-        "users/email/confirm_email.html",
-        {
-            "uidb64": uidb64(user),
-            "token": make_token(user, "confirm_email"),
-        },
-    )
-    message = html_message
-    mail.send_mail(
-        "Confirmation de votre e-mail sur le projet Impact",
-        message=message,
+    email = EmailMessage(
+        to=[user.email],
         from_email=impact.settings.DEFAULT_FROM_EMAIL,
-        recipient_list=[user.email],
-        html_message=html_message,
     )
+    email.template_id = SENDINBLUE_CONFIRM_EMAIL_TEMPLATE
+    email.merge_global_data = {
+        "confirm_email_url": reverse(
+            "users:confirm_email",
+            kwargs={"uidb64": uidb64(user), "token": make_token(user, "confirm_email")},
+        ),
+    }
+    return email.send()
 
 
 def confirm_email(request, uidb64, token):

@@ -13,6 +13,7 @@ dj-database-url = "~=1.0.0"
 whitenoise = "~=6.2.0"
 sentry-sdk = "~=1.14.0"
 django-vite = "~=2.0.2"
+django-anymail = {extras = ["sendinblue"], version = "~=9.1"}
 
 [dev-packages]
 pytest-django = "*"

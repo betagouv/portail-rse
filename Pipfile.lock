@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "4decbfa8edbe3daff84fd79bda2e30097f5140fc91ef3e2ce26d43a901d8183b"
+            "sha256": "df04720174b9f7ab166201e59c490b1f0cffa9179199e43d57f34af04933da3d"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -293,6 +293,18 @@
             "index": "pypi",
             "version": "==4.2"
         },
+        "django-anymail": {
+            "extras": [
+                "sendinblue"
+            ],
+            "hashes": [
+                "sha256:339d0ada34fde4e7e8b655dd496f780a5db0e2782b1b10794f534e22c4829dc7",
+                "sha256:5f18eb6b368e11ed1ec1e3e02f5b80e6d6406b4a37493ac1c1d18b83ca4f3c57"
+            ],
+            "index": "pypi",
+            "markers": null,
+            "version": "==9.1"
+        },
         "django-vite": {
             "hashes": [
                 "sha256:5a2e11a9f08a2a0a69c9a7c637a3254ad0c8dd01e07cb40de09a3a180ed99791",
@@ -476,11 +488,11 @@
         },
         "setuptools": {
             "hashes": [
-                "sha256:257de92a9d50a60b8e22abfcbb771571fde0dbf3ec234463212027a4eeecbe9a",
-                "sha256:e728ca814a823bf7bf60162daf9db95b93d532948c4c0bea762ce62f60189078"
+                "sha256:23aaf86b85ca52ceb801d32703f12d77517b2556af839621c641fca11287952b",
+                "sha256:f104fa03692a2602fa0fec6c6a9e63b6c8a968de13e17c026957dd1f53d80990"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==67.6.1"
+            "version": "==67.7.2"
         },
         "six": {
             "hashes": [
@@ -631,11 +643,11 @@
         },
         "filelock": {
             "hashes": [
-                "sha256:3618c0da67adcc0506b015fd11ef7faf1b493f0b40d87728e19986b536890c37",
-                "sha256:f08a52314748335c6460fc8fe40cd5638b85001225db78c2aa01c8c0db83b318"
+                "sha256:ad98852315c2ab702aeb628412cbf7e95b7ce8c3bf9565670b4eaecf1db370a9",
+                "sha256:fc03ae43288c013d2ea83c8597001b1129db351aad9c57fe2409327916b8e718"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==3.11.0"
+            "version": "==3.12.0"
         },
         "freezegun": {
             "hashes": [
@@ -789,11 +801,11 @@
         },
         "setuptools": {
             "hashes": [
-                "sha256:257de92a9d50a60b8e22abfcbb771571fde0dbf3ec234463212027a4eeecbe9a",
-                "sha256:e728ca814a823bf7bf60162daf9db95b93d532948c4c0bea762ce62f60189078"
+                "sha256:23aaf86b85ca52ceb801d32703f12d77517b2556af839621c641fca11287952b",
+                "sha256:f104fa03692a2602fa0fec6c6a9e63b6c8a968de13e17c026957dd1f53d80990"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==67.6.1"
+            "version": "==67.7.2"
         },
         "six": {
             "hashes": [
@@ -813,11 +825,11 @@
         },
         "virtualenv": {
             "hashes": [
-                "sha256:31712f8f2a17bd06234fa97fdf19609e789dd4e3e4bf108c3da71d710651adbc",
-                "sha256:f50e3e60f990a0757c9b68333c9fdaa72d7188caa417f96af9e52407831a3b68"
+                "sha256:278753c47aaef1a0f14e6db8a4c5e1e040e90aea654d0fc1dc7e0d8a42616cc3",
+                "sha256:48fd3b907b5149c5aab7c23d9790bea4cac6bc6b150af8635febc4cfeab1275a"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==20.21.0"
+            "version": "==20.22.0"
         }
     }
 }

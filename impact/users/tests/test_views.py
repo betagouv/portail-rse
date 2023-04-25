@@ -73,8 +73,13 @@ def test_create_user_with_real_siren(reception_actualites, client, db, mailoutbo
     mail = mailoutbox[0]
     assert mail.from_email == impact.settings.DEFAULT_FROM_EMAIL
     assert list(mail.to) == ["user@example.com"]
-    assert mail.subject == "Confirmation de votre e-mail sur le projet Impact"
-    assert make_token(user, "confirm_email") in mail.body
+    assert mail.template_id == impact.settings.SENDINBLUE_CONFIRM_EMAIL_TEMPLATE
+    assert mail.merge_global_data == {
+        "confirm_email_url": reverse(
+            "users:confirm_email",
+            kwargs={"uidb64": uidb64(user), "token": make_token(user, "confirm_email")},
+        )
+    }
 
 
 def test_create_user_with_invalid_siren(client, db):
@@ -101,6 +106,36 @@ def test_create_user_with_invalid_siren(client, db):
 
     assert not User.objects.filter(email="user@example.com")
     assert not Entreprise.objects.filter(siren="123456789")
+
+
+def test_create_user_but_cant_send_confirm_email(client, db, mailoutbox, mocker):
+    mock_send_confirm_email = mocker.patch(
+        "users.views._send_confirm_email", return_value=False
+    )
+
+    data = {
+        "prenom": "Alice",
+        "nom": "User",
+        "email": "user@example.com",
+        "password1": "Passw0rd!123",
+        "password2": "Passw0rd!123",
+        "siren": "130025265",  #  Dinum
+        "acceptation_cgu": "checked",
+        "reception_actualites": "",
+        "fonctions": "Présidente",
+    }
+
+    response = client.post("/creation", data=data, follow=True)
+
+    assert response.status_code == 200
+    user = User.objects.get(email="user@example.com")
+    mock_send_confirm_email.assert_called_once_with(user)
+
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        "L'e-mail de confirmation n'a pas pu être envoyé à user@example.com. Contactez-nous si cette adresse est légitime."
+        in content
+    )
 
 
 def test_confirm_email(client, alice):
@@ -248,8 +283,16 @@ def test_edit_email(client, alice_with_password, mailoutbox):
     mail = mailoutbox[0]
     assert mail.from_email == impact.settings.DEFAULT_FROM_EMAIL
     assert list(mail.to) == ["bob@example.com"]
-    assert mail.subject == "Confirmation de votre e-mail sur le projet Impact"
-    assert make_token(alice, "confirm_email") in mail.body
+    assert mail.template_id == impact.settings.SENDINBLUE_CONFIRM_EMAIL_TEMPLATE
+    assert mail.merge_global_data == {
+        "confirm_email_url": reverse(
+            "users:confirm_email",
+            kwargs={
+                "uidb64": uidb64(alice),
+                "token": make_token(alice, "confirm_email"),
+            },
+        )
+    }
 
 
 def test_edit_password(client, alice):

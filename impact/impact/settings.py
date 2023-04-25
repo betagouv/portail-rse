@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.postgres",
     "django_vite",
+    "anymail",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -138,18 +139,16 @@ STATICFILES_DIRS = (Path(BASE_DIR, "static"),)
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Email
-EMAIL_HOST = os.getenv("EMAIL_HOST")
-EMAIL_PORT = os.getenv("EMAIL_PORT")
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS")
+SENDINBLUE_API_KEY = os.getenv("SENDINBLUE_API_KEY")
 EMAIL_BACKEND = (
-    "django.core.mail.backends.smtp.EmailBackend"
-    if EMAIL_HOST
+    "anymail.backends.sendinblue.EmailBackend"
+    if SENDINBLUE_API_KEY
     else "django.core.mail.backends.console.EmailBackend"
 )
+ANYMAIL = {"SENDINBLUE_API_KEY": SENDINBLUE_API_KEY}
 DEFAULT_FROM_EMAIL = "ne-pas-repondre@impact.beta.gouv.fr"
 CONTACT_EMAIL = os.getenv("CONTACT_EMAIL")
+SENDINBLUE_CONFIRM_EMAIL_TEMPLATE = 1
 
 # Users
 AUTH_USER_MODEL = "users.User"
