@@ -45,7 +45,7 @@ def creation(request):
                     entreprise,
                     form.cleaned_data["fonctions"],
                 )
-                if _send_confirm_email(user):
+                if _send_confirm_email(request, user):
                     success_message = f"Votre compte a bien été créé. Un e-mail de confirmation a été envoyé à {user.email}. Confirmez votre e-mail avant de vous connecter."
                     messages.success(request, success_message)
                 else:
@@ -64,17 +64,18 @@ def creation(request):
     return render(request, "users/creation.html", {"form": form})
 
 
-def _send_confirm_email(user):
+def _send_confirm_email(request, user):
     email = EmailMessage(
         to=[user.email],
         from_email=impact.settings.DEFAULT_FROM_EMAIL,
     )
     email.template_id = SENDINBLUE_CONFIRM_EMAIL_TEMPLATE
+    path = reverse(
+        "users:confirm_email",
+        kwargs={"uidb64": uidb64(user), "token": make_token(user, "confirm_email")},
+    )
     email.merge_global_data = {
-        "confirm_email_url": reverse(
-            "users:confirm_email",
-            kwargs={"uidb64": uidb64(user), "token": make_token(user, "confirm_email")},
-        ),
+        "confirm_email_url": request.build_absolute_uri(path),
     }
     return email.send()
 
@@ -130,7 +131,7 @@ def account(request):
                     success_message = f"Votre e-mail a bien été modifié. Un e-mail de confirmation a été envoyé à {form.cleaned_data['email']}. Confirmez votre e-mail avant de vous connecter."
                     request.user.is_email_confirmed = False
                     request.user.save()
-                    _send_confirm_email(request.user)
+                    _send_confirm_email(request, request.user)
                     logout(request)
                 else:
                     success_message = "Votre compte a bien été modifié."

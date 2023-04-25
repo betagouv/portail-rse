@@ -1,6 +1,7 @@
 import html
 from datetime import datetime
 from datetime import timezone
+from unittest import mock
 
 import django.utils.encoding
 import django.utils.http
@@ -75,9 +76,14 @@ def test_create_user_with_real_siren(reception_actualites, client, db, mailoutbo
     assert list(mail.to) == ["user@example.com"]
     assert mail.template_id == impact.settings.SENDINBLUE_CONFIRM_EMAIL_TEMPLATE
     assert mail.merge_global_data == {
-        "confirm_email_url": reverse(
-            "users:confirm_email",
-            kwargs={"uidb64": uidb64(user), "token": make_token(user, "confirm_email")},
+        "confirm_email_url": response.wsgi_request.build_absolute_uri(
+            reverse(
+                "users:confirm_email",
+                kwargs={
+                    "uidb64": uidb64(user),
+                    "token": make_token(user, "confirm_email"),
+                },
+            )
         )
     }
 
@@ -129,7 +135,7 @@ def test_create_user_but_cant_send_confirm_email(client, db, mailoutbox, mocker)
 
     assert response.status_code == 200
     user = User.objects.get(email="user@example.com")
-    mock_send_confirm_email.assert_called_once_with(user)
+    mock_send_confirm_email.assert_called_once_with(mock.ANY, user)
 
     content = html.unescape(response.content.decode("utf-8"))
     assert (
@@ -285,12 +291,14 @@ def test_edit_email(client, alice_with_password, mailoutbox):
     assert list(mail.to) == ["bob@example.com"]
     assert mail.template_id == impact.settings.SENDINBLUE_CONFIRM_EMAIL_TEMPLATE
     assert mail.merge_global_data == {
-        "confirm_email_url": reverse(
-            "users:confirm_email",
-            kwargs={
-                "uidb64": uidb64(alice),
-                "token": make_token(alice, "confirm_email"),
-            },
+        "confirm_email_url": response.wsgi_request.build_absolute_uri(
+            reverse(
+                "users:confirm_email",
+                kwargs={
+                    "uidb64": uidb64(alice),
+                    "token": make_token(alice, "confirm_email"),
+                },
+            )
         )
     }
 
