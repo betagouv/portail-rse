@@ -141,6 +141,23 @@ def test_fail_to_confirm_email_due_to_invalid_token(client, alice):
     assert not alice.is_email_confirmed
 
 
+def test_fail_to_confirm_email_due_to_invalid_user(client, alice):
+    alice.is_email_confirmed = False
+    alice.save()
+    token = make_token(alice, "confirm_email")
+
+    url = f"/confirme-email/invalid-user/{token}/"
+    response = client.get(url, follow=True)
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [("/", 302)]
+    content = html.unescape(response.content.decode("utf-8"))
+    assert "Le lien de confirmation est invalide." in content
+
+    alice.refresh_from_db()
+    assert not alice.is_email_confirmed
+
+
 def test_account_page_is_not_public(client):
     response = client.get("/mon-compte")
 

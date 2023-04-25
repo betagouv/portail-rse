@@ -7,6 +7,7 @@ from django.contrib.auth.views import (
 )
 from django.contrib.auth.views import PasswordResetView as BasePasswordResetView
 from django.core import mail
+from django.core.exceptions import ValidationError
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.template.loader import render_to_string
@@ -87,8 +88,8 @@ def confirm_email(request, uidb64, token):
         User.DoesNotExist,
         ValidationError,
     ):
-        pass
-    if check_token(user, "confirm_email", token):
+        user = None
+    if user and check_token(user, "confirm_email", token):
         user.is_email_confirmed = True
         user.save()
         success_message = (
