@@ -91,6 +91,13 @@ def confirm_email(request, uidb64, token):
     if check_token(user, "confirm_email", token):
         user.is_email_confirmed = True
         user.save()
+        success_message = (
+            "Votre e-mail a bien été confirmé. Vous pouvez à présent vous connecter."
+        )
+        messages.success(request, success_message)
+        return redirect("users:login")
+    fail_message = "Le lien de confirmation est invalide."
+    messages.error(request, fail_message)
     return redirect("/")
 
 

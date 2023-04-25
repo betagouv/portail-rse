@@ -113,6 +113,13 @@ def test_confirm_email(client, alice):
     response = client.get(url, follow=True)
 
     assert response.status_code == 200
+    assert response.redirect_chain == [(reverse("users:login"), 302)]
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        "Votre e-mail a bien été confirmé. Vous pouvez à présent vous connecter."
+        in content
+    )
+
     alice.refresh_from_db()
     assert alice.is_email_confirmed
 
@@ -126,6 +133,10 @@ def test_fail_to_confirm_email_due_to_invalid_token(client, alice):
     response = client.get(url, follow=True)
 
     assert response.status_code == 200
+    assert response.redirect_chain == [("/", 302)]
+    content = html.unescape(response.content.decode("utf-8"))
+    assert "Le lien de confirmation est invalide." in content
+
     alice.refresh_from_db()
     assert not alice.is_email_confirmed
 
