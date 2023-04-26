@@ -4,7 +4,7 @@ import pytest
 from django.urls import reverse
 
 import api.exceptions
-from api.tests.fixtures import mock_api_recherche_entreprises
+from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
 from entreprises.models import Entreprise
 from habilitations.models import attach_user_to_entreprise
 from habilitations.models import get_habilitation

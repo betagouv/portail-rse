@@ -1,4 +1,3 @@
-from http.client import TOO_MANY_REQUESTS
 from xmlrpc.client import SERVER_ERROR
 
 import requests

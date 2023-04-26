@@ -1,7 +1,5 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.core.validators import MaxLengthValidator
-from django.core.validators import MinLengthValidator
 
 from .models import Entreprise
 from utils.forms import DsfrForm

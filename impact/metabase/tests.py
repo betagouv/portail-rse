@@ -1,5 +1,4 @@
 import pytest
-from django.urls import reverse
 
 from entreprises.models import Entreprise as ImpactEntreprise
 from impact.settings import METABASE_DATABASE_NAME

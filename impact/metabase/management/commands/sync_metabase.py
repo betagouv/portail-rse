@@ -1,5 +1,4 @@
 from django.core.management.base import BaseCommand
-from django.core.management.base import CommandError
 
 from entreprises.models import Entreprise as ImpactEntreprise
 from metabase.models import Entreprise as MetabaseEntreprise

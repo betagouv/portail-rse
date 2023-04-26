@@ -6,12 +6,10 @@ from django.contrib.auth.views import (
     PasswordResetConfirmView as BasePasswordResetConfirmView,
 )
 from django.contrib.auth.views import PasswordResetView as BasePasswordResetView
-from django.core import mail
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailMessage
 from django.shortcuts import redirect
 from django.shortcuts import render
-from django.template.loader import render_to_string
 from django.urls import reverse
 
 import impact.settings

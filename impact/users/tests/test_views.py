@@ -3,8 +3,6 @@ from datetime import datetime
 from datetime import timezone
 from unittest import mock
 
-import django.utils.encoding
-import django.utils.http
 import pytest
 from django.urls import reverse
 from freezegun import freeze_time
@@ -13,7 +11,6 @@ import impact.settings
 from entreprises.models import Entreprise
 from habilitations.models import get_habilitation
 from users.models import User
-from utils.tokens import check_token
 from utils.tokens import make_token
 from utils.tokens import uidb64
 

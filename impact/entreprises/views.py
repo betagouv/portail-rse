@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
-from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -16,7 +15,6 @@ from .models import Entreprise
 from api.exceptions import APIError
 from habilitations.models import attach_user_to_entreprise
 from habilitations.models import detach_user_from_entreprise
-from habilitations.models import get_habilitation
 from habilitations.models import is_user_attached_to_entreprise
 
 

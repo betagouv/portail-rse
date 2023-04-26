@@ -8,7 +8,6 @@ from django.core.exceptions import ValidationError
 
 from .models import User
 from entreprises.forms import SirenField
-from entreprises.models import Entreprise
 from utils.forms import DsfrForm
 
 

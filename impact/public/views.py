@@ -1,4 +1,3 @@
-import requests
 from django.conf import settings
 from django.contrib import messages
 from django.core.mail import EmailMessage
@@ -10,7 +9,6 @@ import api.recherche_entreprises
 from .forms import ContactForm
 from .forms import EligibiliteForm
 from .forms import SirenForm
-from entreprises.models import Entreprise
 
 
 def index(request):
