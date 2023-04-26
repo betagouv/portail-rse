@@ -32,18 +32,40 @@ SURNAME_MAX_LENGTH = NAME_MAX_LENGTH = 50
 
 
 class User(AbstractBaseUser, TimestampedModel):
+    class Meta:
+        verbose_name = "Utilisateur"
+
     email = models.EmailField(
-        verbose_name="Email",
+        verbose_name="Adresse e-mail",
         max_length=255,
         unique=True,
     )
     is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-    acceptation_cgu = models.BooleanField(default=False)
-    reception_actualites = models.BooleanField(default=False)
-    prenom = models.CharField(max_length=SURNAME_MAX_LENGTH, default="")
-    nom = models.CharField(max_length=NAME_MAX_LENGTH, default="")
-    is_email_confirmed = models.BooleanField(default=False)
+    is_staff = models.BooleanField(
+        verbose_name="Accès admin",
+        default=False,
+    )
+    acceptation_cgu = models.BooleanField(
+        verbose_name="CGU acceptées",
+        default=False,
+    )
+    reception_actualites = models.BooleanField(
+        verbose_name="Réception des actualités acceptée",
+        default=False,
+    )
+    prenom = models.CharField(
+        verbose_name="Prénom",
+        max_length=SURNAME_MAX_LENGTH,
+        default="",
+    )
+    nom = models.CharField(
+        max_length=NAME_MAX_LENGTH,
+        default="",
+    )
+    is_email_confirmed = models.BooleanField(
+        verbose_name="Adresse e-mail confirmée",
+        default=False,
+    )
 
     objects = UserManager()
 

@@ -23,7 +23,10 @@ class Habilitation(models.Model):
         null=True,
         blank=True,
     )
-    confirmed_at = models.DateTimeField(null=True)
+    confirmed_at = models.DateTimeField(
+        verbose_name="Confirmée le",
+        null=True,
+    )
 
     def confirm(self):
         self.confirmed_at = datetime.now(timezone.utc)
