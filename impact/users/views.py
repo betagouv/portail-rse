@@ -46,7 +46,7 @@ def creation(request):
                     form.cleaned_data["fonctions"],
                 )
                 if _send_confirm_email(request, user):
-                    success_message = f"Votre compte a bien été créé. Un e-mail de confirmation a été envoyé à {user.email}. Confirmez votre e-mail avant de vous connecter."
+                    success_message = f"Votre compte a bien été créé. Un e-mail de confirmation a été envoyé à {user.email}. Confirmez votre adresse e-mail en cliquant sur le lien reçu avant de vous connecter."
                     messages.success(request, success_message)
                 else:
                     error_message = f"L'e-mail de confirmation n'a pas pu être envoyé à {user.email}. Contactez-nous si cette adresse est légitime."
@@ -96,9 +96,7 @@ def confirm_email(request, uidb64, token):
     if user and check_token(user, "confirm_email", token):
         user.is_email_confirmed = True
         user.save()
-        success_message = (
-            "Votre e-mail a bien été confirmé. Vous pouvez à présent vous connecter."
-        )
+        success_message = "Votre adresse e-mail a bien été confirmée. Vous pouvez à présent vous connecter."
         messages.success(request, success_message)
         return redirect("users:login")
     fail_message = "Le lien de confirmation est invalide."
@@ -128,7 +126,7 @@ def account(request):
                 form.save()
 
                 if "email" in form.changed_data:
-                    success_message = f"Votre e-mail a bien été modifié. Un e-mail de confirmation a été envoyé à {form.cleaned_data['email']}. Confirmez votre e-mail avant de vous connecter."
+                    success_message = f"Votre adresse e-mail a bien été modifiée. Un e-mail de confirmation a été envoyé à {form.cleaned_data['email']}. Confirmez votre adresse e-mail en cliquant sur le lien reçu avant de vous reconnecter."
                     request.user.is_email_confirmed = False
                     request.user.save()
                     _send_confirm_email(request, request.user)
@@ -151,7 +149,7 @@ def account(request):
 class PasswordResetView(BasePasswordResetView):
     def form_valid(self, form):
         response = super(PasswordResetView, self).form_valid(form)
-        success_message = "Un lien de ré-initialisation de votre mot de passe vous a été envoyé par mail. Vous devriez le recevoir d'ici quelques minutes."
+        success_message = "Un lien de ré-initialisation de votre mot de passe vous a été envoyé par e-mail. Vous devriez le recevoir d'ici quelques minutes."
         messages.success(self.request, success_message)
         return response
 

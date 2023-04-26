@@ -52,7 +52,7 @@ def test_create_user_with_real_siren(reception_actualites, client, db, mailoutbo
     ]
 
     assert (
-        "Votre compte a bien été créé. Un e-mail de confirmation a été envoyé à user@example.com. Confirmez votre e-mail avant de vous connecter."
+        "Votre compte a bien été créé. Un e-mail de confirmation a été envoyé à user@example.com. Confirmez votre adresse e-mail en cliquant sur le lien reçu avant de vous connecter."
         in response.content.decode("utf-8")
     )
 
@@ -157,7 +157,7 @@ def test_confirm_email(client, alice):
     assert response.redirect_chain == [(reverse("users:login"), 302)]
     content = html.unescape(response.content.decode("utf-8"))
     assert (
-        "Votre e-mail a bien été confirmé. Vous pouvez à présent vous connecter."
+        "Votre adresse e-mail a bien été confirmée. Vous pouvez à présent vous connecter."
         in content
     )
 
@@ -275,7 +275,7 @@ def test_edit_email(client, alice_with_password, mailoutbox):
 
     content = response.content.decode("utf-8")
     assert (
-        "Votre e-mail a bien été modifié. Un e-mail de confirmation a été envoyé à bob@example.com. Confirmez votre e-mail avant de vous connecter."
+        "Votre adresse e-mail a bien été modifiée. Un e-mail de confirmation a été envoyé à bob@example.com. Confirmez votre adresse e-mail en cliquant sur le lien reçu avant de vous reconnecter."
         in content
     )
 
@@ -389,6 +389,6 @@ def test_can_not_login_if_email_is_not_confirmed(client, alice_with_password):
     content = response.content.decode("utf-8")
     assert not response.context["user"].is_authenticated
     assert (
-        "Merci de confirmer votre e-mail en cliquant sur le lien reçu avant de vous connecter."
+        "Merci de confirmer votre adresse e-mail en cliquant sur le lien reçu avant de vous connecter."
         in content
     ), content

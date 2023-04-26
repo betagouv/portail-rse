@@ -14,7 +14,7 @@ from utils.forms import DsfrForm
 
 class LoginForm(DsfrForm, AuthenticationForm):
     username = forms.EmailField(
-        label="Email", widget=forms.TextInput(attrs={"autofocus": True})
+        label="Adresse e-mail", widget=forms.TextInput(attrs={"autofocus": True})
     )
 
     def __init__(self, *args, **kwargs):
@@ -25,7 +25,7 @@ class LoginForm(DsfrForm, AuthenticationForm):
         super().confirm_login_allowed(user)
         if not user.is_email_confirmed:
             raise ValidationError(
-                "Merci de confirmer votre e-mail en cliquant sur le lien reçu avant de vous connecter.",
+                "Merci de confirmer votre adresse e-mail en cliquant sur le lien reçu avant de vous connecter.",
             )
 
 
@@ -85,7 +85,6 @@ class UserCreationForm(UserPasswordForm):
         model = User
         fields = ("email", "acceptation_cgu", "reception_actualites", "prenom", "nom")
         labels = {
-            "prenom": "Prénom",
             "reception_actualites": "Je souhaite recevoir les actualités du projet Impact (optionnel)",
         }
 
@@ -95,7 +94,6 @@ class UserEditionForm(DsfrForm, forms.ModelForm):
         model = User
         fields = ("prenom", "nom", "email", "reception_actualites")
         labels = {
-            "prenom": "Prénom",
             "reception_actualites": "Je souhaite recevoir les actualités du projet Impact (optionnel)",
         }
 

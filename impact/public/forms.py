@@ -23,7 +23,7 @@ class EligibiliteForm(DsfrForm, forms.ModelForm):
 
 
 class ContactForm(DsfrForm):
-    email = forms.EmailField(label="Votre email")
+    email = forms.EmailField(label="Votre adresse e-mail")
     subject = forms.CharField(
         label="Sujet",
         max_length=255,
