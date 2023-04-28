@@ -1,4 +1,5 @@
 import requests
+import sentry_sdk
 
 
 def indicateurs(siren, year):
@@ -36,6 +37,10 @@ def indicateurs(siren, year):
                 f"{egapro_indicateur} : {objectif}"
                 for egapro_indicateur, objectif in objectifs_progression.items()
             )
+    elif response.status_code == 400:
+        sentry_sdk.capture_message(
+            "Requête invalide sur l'API index EgaPro (indicateurs)"
+        )
     return bdese_data_from_egapro
 
 
@@ -45,4 +50,8 @@ def is_index_egapro_updated(siren, year):
     if response.status_code == 200 and "déclaration" in response.json():
         return True
     else:
+        if response.status_code == 400:
+            sentry_sdk.capture_message(
+                "Requête invalide sur l'API index EgaPro (is_index_egapro_updated)"
+            )
         return False
