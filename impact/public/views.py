@@ -52,6 +52,10 @@ def contact(request):
             else:
                 error_message = "L'envoi du message a échoué"
                 messages.error(request, error_message)
+        else:
+            error_message = "L'envoi du message a échoué"
+            messages.error(request, error_message)
+
     else:
         if request.user.is_authenticated:
             initial = {"email": request.user.email}

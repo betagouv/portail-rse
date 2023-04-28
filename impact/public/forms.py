@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 
 from entreprises.forms import SirenField
 from entreprises.models import DENOMINATION_MAX_LENGTH
@@ -22,6 +23,13 @@ class EligibiliteForm(DsfrForm, forms.ModelForm):
         return denomination[:DENOMINATION_MAX_LENGTH]
 
 
+class NaiveCaptchaField(forms.CharField):
+    def validate(self, value):
+        super().validate(value)
+        if value != "trois":
+            raise ValidationError("La somme est incorrecte")
+
+
 class ContactForm(DsfrForm):
     email = forms.EmailField(label="Votre adresse e-mail")
     subject = forms.CharField(
@@ -29,3 +37,7 @@ class ContactForm(DsfrForm):
         max_length=255,
     )
     message = forms.CharField(widget=forms.Textarea())
+    sum = NaiveCaptchaField(
+        label="Vérification : 1 + 2 (en toute lettres)",
+        max_length=255,
+    )
