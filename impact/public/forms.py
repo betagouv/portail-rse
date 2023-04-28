@@ -26,7 +26,7 @@ class EligibiliteForm(DsfrForm, forms.ModelForm):
 class NaiveCaptchaField(forms.CharField):
     def validate(self, value):
         super().validate(value)
-        if value != "trois":
+        if value.lower() != "trois":
             raise ValidationError("La somme est incorrecte")
 
 
@@ -39,5 +39,5 @@ class ContactForm(DsfrForm):
     message = forms.CharField(widget=forms.Textarea())
     sum = NaiveCaptchaField(
         label="Vérification : 1 + 2 (en toute lettres)",
-        max_length=255,
+        max_length=10,
     )

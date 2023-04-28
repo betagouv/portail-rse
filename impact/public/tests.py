@@ -1,5 +1,7 @@
 import html
 
+import pytest
+
 import api.exceptions
 from entreprises.models import Entreprise
 from public.forms import DENOMINATION_MAX_LENGTH
@@ -30,18 +32,21 @@ def test_page_contact(client):
     assert "<!-- page contact -->" in content
 
 
-def test_send_contact_mail__valid_captcha(client, mailoutbox, settings):
+@pytest.mark.parametrize(
+    "captcha",
+    ["trois", "TROIS", " trois "],
+)
+def test_send_contact_mail__valid_captcha(client, captcha, mailoutbox, settings):
     settings.DEFAULT_FROM_EMAIL = "impact@example.com"
     settings.CONTACT_EMAIL = "contact@example.com"
 
     subject = "Bonjour"
     message = "Bonjour Impact"
     email = "user@example.com"
-    sum = "trois"
 
     response = client.post(
         "/contact",
-        data={"subject": subject, "message": message, "email": email, "sum": sum},
+        data={"subject": subject, "message": message, "email": email, "sum": captcha},
         follow=True,
     )
 
