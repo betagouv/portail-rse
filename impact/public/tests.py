@@ -1,3 +1,5 @@
+import html
+
 import api.exceptions
 from entreprises.models import Entreprise
 from public.forms import DENOMINATION_MAX_LENGTH
@@ -28,17 +30,18 @@ def test_page_contact(client):
     assert "<!-- page contact -->" in content
 
 
-def test_send_contact_mail(client, mailoutbox, settings):
+def test_send_contact_mail__valid_captcha(client, mailoutbox, settings):
     settings.DEFAULT_FROM_EMAIL = "impact@example.com"
     settings.CONTACT_EMAIL = "contact@example.com"
 
     subject = "Bonjour"
     message = "Bonjour Impact"
     email = "user@example.com"
+    sum = "trois"
 
     response = client.post(
         "/contact",
-        data={"subject": subject, "message": message, "email": email},
+        data={"subject": subject, "message": message, "email": email, "sum": sum},
         follow=True,
     )
 
@@ -56,6 +59,27 @@ def test_send_contact_mail(client, mailoutbox, settings):
         mail.body
         == f"Ce message a été envoyé par {email} depuis http://testserver/contact :\n\n{message}"
     )
+
+
+def test_send_contact_mail__invalid_captcha(client, mailoutbox, settings):
+    settings.DEFAULT_FROM_EMAIL = "impact@example.com"
+    settings.CONTACT_EMAIL = "contact@example.com"
+
+    subject = "Bonjour"
+    message = "Bonjour Impact"
+    email = "user@example.com"
+    sum = "mauvaise réponse"
+
+    response = client.post(
+        "/contact",
+        data={"subject": subject, "message": message, "email": email, "sum": sum},
+        follow=True,
+    )
+
+    assert response.status_code == 200
+    content = html.unescape(response.content.decode("utf-8"))
+    assert "L'envoi du message a échoué" in content
+    assert len(mailoutbox) == 0
 
 
 def test_page_mentions_legales(client):
