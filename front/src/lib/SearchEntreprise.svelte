@@ -48,14 +48,14 @@
             </div>
             {#await promise then json}
                 {#if json.denomination}
-                    <p>Entreprise : {json.denomination}</p>
+                    <p class="fr-mt-1w fr-mb-n1v">Entreprise : {json.denomination}</p>
                 {/if}
             {:catch error}
                 <p class="fr-error-text">{error.message}</p>
             {/await}
         </div>
     </div>
-    <div class="fr-mt-n1v fr-fieldset__element">
+    <div class="fr-fieldset__element">
         <a class="fr-link" target="_blank" rel="noopener noreferrer" href="https://annuaire-entreprises.data.gouv.fr/">
             Trouvez votre SIREN sur l'Annuaire des entreprises
         </a>
