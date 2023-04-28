@@ -17,6 +17,7 @@ from django.urls import reverse_lazy
 from weasyprint import CSS
 from weasyprint import HTML
 
+from api import egapro
 from entreprises.models import Entreprise
 from habilitations.models import get_habilitation
 from habilitations.models import is_user_attached_to_entreprise
@@ -270,12 +271,7 @@ class IndexEgaproReglementation(Reglementation):
 
 def is_index_egapro_updated(entreprise: Entreprise) -> bool:
     year = derniere_annee_a_remplir_index_egapro()
-    url = f"https://egapro.travail.gouv.fr/api/public/declaration/{entreprise.siren}/{year}"
-    response = requests.get(url)
-    if response.status_code == 200 and "déclaration" in response.json():
-        return True
-    else:
-        return False
+    return egapro.is_index_egapro_updated(entreprise.siren, year)
 
 
 def reglementations(request):
@@ -398,42 +394,7 @@ def _pdf_template_path_from_bdese(bdese):
 
 
 def get_bdese_data_from_egapro(entreprise: Entreprise, year: int) -> dict:
-    EGAPRO_INDICATEURS = {
-        "promotions": "Écart taux promotion",
-        "augmentations_et_promotions": "Écart taux d'augmentation",
-        "rémunérations": "Écart rémunérations",
-        "congés_maternité": "Retour congé maternité",
-        "hautes_rémunérations": "Hautes rémunérations",
-    }
-
-    bdese_data_from_egapro = {
-        "nombre_femmes_plus_hautes_remunerations": None,
-        "objectifs_progression": None,
-    }
-    url = f"https://egapro.travail.gouv.fr/api/public/declaration/{entreprise.siren}/{year}"
-    response = requests.get(url)
-
-    if response.status_code == 200:
-        egapro_data_indicateurs = response.json().get("indicateurs", {})
-        if indicateur_hautes_remunerations := egapro_data_indicateurs.get(
-            "hautes_rémunérations"
-        ):
-            bdese_data_from_egapro["nombre_femmes_plus_hautes_remunerations"] = (
-                int(indicateur_hautes_remunerations["résultat"])
-                if indicateur_hautes_remunerations["population_favorable"] == "hommes"
-                else 10 - int(indicateur_hautes_remunerations["résultat"])
-            )
-
-        objectifs_progression = {}
-        for egapro_indicateur, data in egapro_data_indicateurs.items():
-            if objectif := data["objectif_de_progression"]:
-                objectifs_progression[EGAPRO_INDICATEURS[egapro_indicateur]] = objectif
-        if objectifs_progression:
-            bdese_data_from_egapro["objectifs_progression"] = "\n".join(
-                f"{egapro_indicateur} : {objectif}"
-                for egapro_indicateur, objectif in objectifs_progression.items()
-            )
-    return bdese_data_from_egapro
+    return egapro.indicateurs(entreprise.siren, year)
 
 
 @login_required
