@@ -11,3 +11,5 @@ impact/static/svelte
 .vscode
 
 node_modules
+
+doc/dat/
