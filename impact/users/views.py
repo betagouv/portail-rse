@@ -116,7 +116,15 @@ def account(request):
                     "Votre mot de passe a bien été modifié. Veuillez vous reconnecter."
                 )
                 messages.success(request, success_message)
-            return redirect("users:account")
+                return redirect("users:account")
+            else:
+                error_message = "Votre mot de passe n'a pas été modifié."
+                messages.error(request, error_message)
+                return render(
+                    request,
+                    "users/account.html",
+                    {"form": form, "password_form": password_form},
+                )
         else:
             form = UserEditionForm(request.POST or None, instance=request.user)
             password_form = UserPasswordForm(None, instance=request.user)

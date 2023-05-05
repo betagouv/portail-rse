@@ -349,9 +349,8 @@ def test_edit_different_password(client, alice_with_password):
     response = client.post("/mon-compte", data=data, follow=True)
 
     assert response.status_code == 200
-    assert response.redirect_chain == [
-        (reverse("users:account"), 302),
-    ]
+    content = html.unescape(response.content.decode("utf-8"))
+    assert "Votre mot de passe n'a pas été modifié." in content
 
     alice_with_password.refresh_from_db()
     assert alice_with_password.check_password("Passw0rd!123")
