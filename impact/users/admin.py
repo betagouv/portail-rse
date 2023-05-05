@@ -13,7 +13,7 @@ class UserAdmin(BaseUserAdmin):
     add_form = UserCreationForm
 
     readonly_fields = ("last_login",)
-    list_display = ("email", "is_staff")
+    list_display = ("email", "is_staff", "uidb64")
     list_filter = ("is_staff",)
     fieldsets = (
         (

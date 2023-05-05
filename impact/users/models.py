@@ -3,6 +3,7 @@ from django.contrib.auth.models import BaseUserManager
 from django.db import models
 
 from utils.models import TimestampedModel
+from utils.tokens import uidb64
 
 
 class UserManager(BaseUserManager):
@@ -83,3 +84,7 @@ class User(AbstractBaseUser, TimestampedModel):
     @property
     def entreprises(self):
         return self.entreprise_set.all()
+
+    @property
+    def uidb64(self):
+        return uidb64(self)

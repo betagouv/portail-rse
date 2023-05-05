@@ -66,6 +66,7 @@ def test_create_user_with_real_siren(reception_actualites, client, db, mailoutbo
     assert user.check_password("Passw0rd!123")
     assert user.is_email_confirmed == False
     assert user in entreprise.users.all()
+    assert user.uidb64
     assert get_habilitation(user, entreprise).fonctions == "Présidente"
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
