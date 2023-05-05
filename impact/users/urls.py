@@ -38,7 +38,7 @@ urlpatterns = [
         PasswordResetConfirmView.as_view(
             template_name="users/password_reset_confirm.html",
             form_class=SetPasswordForm,
-            success_url=reverse_lazy("login"),
+            success_url=reverse_lazy("users:login"),
         ),
         name="password_reset_confirm",
     ),
