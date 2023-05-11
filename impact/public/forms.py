@@ -38,6 +38,6 @@ class ContactForm(DsfrForm):
     )
     message = forms.CharField(widget=forms.Textarea())
     sum = NaiveCaptchaField(
-        label="Vérification : 1 + 2 (en toute lettres)",
+        label="Pour vérifier que vous n'êtes pas un robot, remplissez 1 + 2 (en toute lettres)",
         max_length=10,
     )
