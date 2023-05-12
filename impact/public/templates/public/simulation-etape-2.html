@@ -7,7 +7,7 @@
             <h2>{{ denomination }}</h2>
             <p>
                 <span class="fr-tag">SIREN : {{ siren }}</span>
-                <a href="/">Ce n'est pas mon entreprise</a>
+                <a href="{% url 'simulation' %}">Ce n'est pas mon entreprise</a>
             </p>
 
             <form class="fr-mt-6w" action="{% url 'reglementations:reglementations' %}" method="get">
