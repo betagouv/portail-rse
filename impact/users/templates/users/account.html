@@ -15,16 +15,16 @@
                 <h2 class="fr-h6">Informations personnelles</h2>
                 <fieldset class="fr-fieldset" aria-label="Modification des informations personnelles">
                     <div class="fr-fieldset__element">
-                    {% include 'snippets/field.html' with field=form.prenom %}
+                    {% include 'snippets/field.html' with field=account_form.prenom %}
                     </div>
                     <div class="fr-fieldset__element">
-                    {% include 'snippets/field.html' with field=form.nom %}
+                    {% include 'snippets/field.html' with field=account_form.nom %}
                     </div>
                     <div class="fr-fieldset__element">
-                    {% include 'snippets/field.html' with field=form.email %}
+                    {% include 'snippets/field.html' with field=account_form.email %}
                     </div>
                     <div class="fr-fieldset__element">
-                    {% include 'snippets/field.html' with field=form.reception_actualites %}
+                    {% include 'snippets/field.html' with field=account_form.reception_actualites %}
                     </div>
                 </fieldset>
                 <button type="submit" class="fr-btn" name="action" value="update-account">Modifier mon compte</button>

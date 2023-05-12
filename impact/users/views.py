@@ -104,12 +104,11 @@ def confirm_email(request, uidb64, token):
 
 @login_required()
 def account(request):
+    account_form = UserEditionForm(instance=request.user)
+    password_form = UserPasswordForm(instance=request.user)
     if request.POST:
         if request.POST["action"] == "update-password":
-            form = UserEditionForm(None, instance=request.user)
-            password_form = UserPasswordForm(
-                request.POST or None, instance=request.user
-            )
+            password_form = UserPasswordForm(request.POST, instance=request.user)
             if password_form.is_valid():
                 password_form.save()
                 success_message = (
@@ -120,19 +119,12 @@ def account(request):
             else:
                 error_message = "Votre mot de passe n'a pas été modifié."
                 messages.error(request, error_message)
-                return render(
-                    request,
-                    "users/account.html",
-                    {"form": form, "password_form": password_form},
-                )
         else:
-            form = UserEditionForm(request.POST or None, instance=request.user)
-            password_form = UserPasswordForm(None, instance=request.user)
-            if form.is_valid():
-                form.save()
-
-                if "email" in form.changed_data:
-                    success_message = f"Votre adresse e-mail a bien été modifiée. Un e-mail de confirmation a été envoyé à {form.cleaned_data['email']}. Confirmez votre adresse e-mail en cliquant sur le lien reçu avant de vous reconnecter."
+            account_form = UserEditionForm(request.POST, instance=request.user)
+            if account_form.is_valid():
+                account_form.save()
+                if "email" in account_form.changed_data:
+                    success_message = f"Votre adresse e-mail a bien été modifiée. Un e-mail de confirmation a été envoyé à {account_form.cleaned_data['email']}. Confirmez votre adresse e-mail en cliquant sur le lien reçu avant de vous reconnecter."
                     request.user.is_email_confirmed = False
                     request.user.save()
                     _send_confirm_email(request, request.user)
@@ -141,14 +133,15 @@ def account(request):
                     success_message = "Votre compte a bien été modifié."
                 messages.success(request, success_message)
                 return redirect("users:account")
-        error_message = (
-            "La modification a échoué car le formulaire contient des erreurs."
-        )
-        messages.error(request, error_message)
-    form = UserEditionForm(None, instance=request.user)
-    password_form = UserPasswordForm(None, instance=request.user)
+            else:
+                error_message = (
+                    "La modification a échoué car le formulaire contient des erreurs."
+                )
+                messages.error(request, error_message)
     return render(
-        request, "users/account.html", {"form": form, "password_form": password_form}
+        request,
+        "users/account.html",
+        {"account_form": account_form, "password_form": password_form},
     )
 
 
