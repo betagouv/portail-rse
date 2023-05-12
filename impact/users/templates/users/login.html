@@ -1,6 +1,60 @@
 {% extends "base.html" %}
 
+{% load static %}
+{% load filters %}
+
+{% block head %}
+    <script type="text/javascript">
+        var widget_MAG = {};
+        widget_MAG['urlOK'] = '{{ request | build_absolute_uri }}success.html';
+        widget_MAG['urlKO'] = '{{ request | build_absolute_uri }}errorAuthent.html';
+        widget_MAG['nomJeton'] = 'jtd';
+        widget_MAG['parametrePOST'] = 'post1=value1;post2=value2';
+        widget_MAG['destinataireNotificationConnexion'] = 1;
+        widget_MAG['templateNotificationConnexion'] = 'NOTIF_KLESIA';
+    </script>
+    <script id="widget_MAG" type="text/javascript" src="https://portail.net-entreprises.fr/auth/MAG/widget?idWidget=widget_MAG"></script>
+
+    <style>
+    .widget_gip {
+		background-color:#FBFBFB;
+		color: #a0a0a0;
+		width:300px;
+		font-family:Arial, sans-serif;
+		font-size:13px;
+	}
+    .widget_gip input {
+		display:block;
+		width:200px;
+		height:20px;
+		border-radius:4px;
+		margin-top:1px;
+		padding:2px;
+	}
+	.widget_gip input[type~=submit] {
+		background-color: #015696;
+		color:transparent;
+		background:url({% static "mag/submit-button.png" %}) no-repeat;
+		width:200px;
+		height:40px;
+		margin-top:10px;
+	}
+    .widget_gip input[type~=submit]:hover {
+		background-color: #0173c9;
+		background:url({% static "mag/submit-button-hover.png" %}) no-repeat;
+		cursor: pointer;
+	}
+    </style>
+{% endblock %}
+
+
 {% block content %}
+<div class="fr-container fr-my-12w">
+    <div class="fr-grid-row fr-grid-row--center">
+        <div id="widget_MAG_container" class="widget_gip"></div>
+    </div>
+</div>
+
 <div class="fr-container fr-my-12w">
     <div class="fr-grid-row fr-grid-row--center">
         <div class="fr-col-8">

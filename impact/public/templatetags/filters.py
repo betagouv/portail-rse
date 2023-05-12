@@ -9,6 +9,11 @@ register = template.Library()
 
 
 @register.filter
+def build_absolute_uri(request):
+    return request.build_absolute_uri("/")
+
+
+@register.filter
 def index(indexable, i):
     return indexable[i]
 

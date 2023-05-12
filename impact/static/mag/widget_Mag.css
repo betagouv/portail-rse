@@ -1,0 +1,56 @@
+.widget_gip {
+	background-color: #FBFBFB;
+	color: #a0a0a0;
+	width: 300px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 13px;
+}
+
+.widget_gip div {
+	padding-top: 5px;
+}
+
+.widget_gip input {
+	display: block;
+	width: 200px;
+	height: 20px;
+	border-radius: 4px;
+	margin-top: 1px;
+	padding: 2px;
+}
+
+.widget_gip label {
+	
+}
+
+.widget_gip label::after {
+	content: '\00a0*';
+}
+
+.widget_gip input[type~=text], .widget_gip input[type~=password] {
+	border: 2px solid #d4d4d4;
+}
+/* 
+	 * Button "submit": On peut mettre une image de "background" ou montrer le libelle:
+	 * 
+	 * image:
+	 *   color:transparet;
+	 *   background:url(/test-MAG-widget/submit-button.png) no-repeat;
+	 * 
+	 * libelle:
+	 *   color:white;
+	 */
+.widget_gip input[type~=submit] {
+	background-color: #015696;
+	color: transparent;
+	background: url(submit-button.png) no-repeat;
+	width: 200px;
+	height: 40px;
+	margin-top: 10px;
+}
+
+.widget_gip input[type~=submit]:hover {
+	background-color: #0173c9;
+	background: url(submit-button-hover.png) no-repeat;
+	cursor: pointer;
+}
