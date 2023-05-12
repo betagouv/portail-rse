@@ -15,10 +15,6 @@ def index(request):
     return render(request, "public/index.html")
 
 
-def entreprise(request):
-    return render(request, "public/entreprise.html", {"form": SirenForm()})
-
-
 def mentions_legales(request):
     return render(request, "public/mentions-legales.html")
 
@@ -66,31 +62,32 @@ def contact(request):
     return render(request, "public/contact.html", {"form": form})
 
 
-def siren(request):
-    form = SirenForm(request.GET)
-    if form.is_valid():
-        siren = form.cleaned_data["siren"]
-        try:
-            infos_entreprise = api.recherche_entreprises.recherche(siren)
-            form = EligibiliteForm(initial=infos_entreprise)
-            return render(
-                request,
-                "public/siren.html",
-                {
-                    "denomination": infos_entreprise["denomination"],
-                    "siren": siren,
-                    "form": form,
-                },
-            )
-        except api.exceptions.SirenError as e:
-            form.add_error("siren", "SIREN introuvable")
-            messages.error(
-                request,
-                str(e),
-            )
-        except api.exceptions.APIError as e:
-            messages.error(
-                request,
-                str(e),
-            )
-    return render(request, "public/entreprise.html", {"form": form})
+def simulation(request):
+    form = SirenForm(request.GET or None)
+    if request.GET:
+        if form.is_valid():
+            siren = form.cleaned_data["siren"]
+            try:
+                infos_entreprise = api.recherche_entreprises.recherche(siren)
+                form = EligibiliteForm(initial=infos_entreprise)
+                return render(
+                    request,
+                    "public/simulation-etape-2.html",
+                    {
+                        "denomination": infos_entreprise["denomination"],
+                        "siren": siren,
+                        "form": form,
+                    },
+                )
+            except api.exceptions.SirenError as e:
+                form.add_error("siren", "SIREN introuvable")
+                messages.error(
+                    request,
+                    str(e),
+                )
+            except api.exceptions.APIError as e:
+                messages.error(
+                    request,
+                    str(e),
+                )
+    return render(request, "public/simulation-etape-1.html", {"form": form})

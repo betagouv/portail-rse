@@ -30,7 +30,7 @@
             {% if user.is_authenticated and current_entreprise %}
             <a href="{% url 'reglementations:reglementation' current_entreprise.siren %}" class="fr-btn">Remplir mes réglementations</a>
             {% else %}
-            <a href="{% url 'entreprise' %}" class="fr-btn">Commencer avec mon entreprise</a>
+            <a href="{% url 'simulation' %}" class="fr-btn">Commencer avec mon entreprise</a>
             {% endif %}
         </div>
         <div class="fr-col-4">

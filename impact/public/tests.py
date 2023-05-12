@@ -16,12 +16,12 @@ def test_page_index(client):
     assert "<!-- page index -->" in content
 
 
-def test_page_entreprise(client):
-    response = client.get("/entreprise")
+def test_page_simulation(client):
+    response = client.get("/simulation")
 
     assert response.status_code == 200
     content = response.content.decode("utf-8")
-    assert "<!-- page entreprise -->" in content
+    assert "<!-- page simulation étape 1 -->" in content
 
 
 def test_page_contact(client):
@@ -161,13 +161,13 @@ def test_succes_recherche_siren(client, mocker):
             "denomination": RAISON_SOCIALE,
         },
     )
-    response = client.get("/siren", {"siren": SIREN})
+    response = client.get("/simulation", {"siren": SIREN})
 
     assert response.status_code == 200
     content = response.content.decode("utf-8")
     assert SIREN in content
     assert RAISON_SOCIALE in content
-    assert "<!-- page resultat recherche entreprise -->" in content
+    assert "<!-- page simulation étape 2 -->" in content
 
 
 def test_erreur_recherche_siren__siren_incorrect(client, mocker):
@@ -176,13 +176,13 @@ def test_erreur_recherche_siren__siren_incorrect(client, mocker):
         "api.recherche_entreprises.recherche",
         side_effect=api.exceptions.SirenError("MESSAGE"),
     )
-    response = client.get("/siren", {"siren": SIREN})
+    response = client.get("/simulation", {"siren": SIREN})
 
     assert response.status_code == 200
     content = response.content.decode("utf-8")
     assert "MESSAGE" in content
     assert "SIREN introuvable" in content
-    assert "<!-- page entreprise -->" in content
+    assert "<!-- page simulation étape 1 -->" in content
 
 
 def test_erreur_recherche_siren__erreur_api(client, mocker):
@@ -191,10 +191,10 @@ def test_erreur_recherche_siren__erreur_api(client, mocker):
         "api.recherche_entreprises.recherche",
         side_effect=api.exceptions.APIError("MESSAGE"),
     )
-    response = client.get("/siren", {"siren": SIREN})
+    response = client.get("/simulation", {"siren": SIREN})
 
     assert response.status_code == 200
     content = response.content.decode("utf-8")
     assert "MESSAGE" in content
     assert "SIREN introuvable" not in content
-    assert "<!-- page entreprise -->" in content
+    assert "<!-- page simulation étape 1 -->" in content
