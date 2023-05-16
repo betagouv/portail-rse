@@ -28,6 +28,7 @@
     }
 
     const handleChange = () => {
+        submitButton.disabled = true
         promise = searchEntreprise(siren)
     }
 </script>
