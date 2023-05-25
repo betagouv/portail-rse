@@ -36,7 +36,7 @@ def test_page_contact(client):
     "captcha",
     ["trois", "TROIS", " trois "],
 )
-def test_send_contact_mail__valid_captcha(client, captcha, mailoutbox, settings):
+def test_send_contact_mail_with_valid_captcha(client, captcha, mailoutbox, settings):
     settings.DEFAULT_FROM_EMAIL = "impact@example.com"
     settings.CONTACT_EMAIL = "contact@example.com"
 
@@ -66,7 +66,7 @@ def test_send_contact_mail__valid_captcha(client, captcha, mailoutbox, settings)
     )
 
 
-def test_send_contact_mail__invalid_captcha(client, mailoutbox, settings):
+def test_send_contact_mail_with_invalid_captcha(client, mailoutbox, settings):
     settings.DEFAULT_FROM_EMAIL = "impact@example.com"
     settings.CONTACT_EMAIL = "contact@example.com"
 
@@ -84,6 +84,28 @@ def test_send_contact_mail__invalid_captcha(client, mailoutbox, settings):
     assert response.status_code == 200
     content = html.unescape(response.content.decode("utf-8"))
     assert "L'envoi du message a échoué" in content
+    assert len(mailoutbox) == 0
+
+
+def test_send_contact_mail_with_numerical_captcha(client, mailoutbox, settings):
+    settings.DEFAULT_FROM_EMAIL = "impact@example.com"
+    settings.CONTACT_EMAIL = "contact@example.com"
+
+    subject = "Bonjour"
+    message = "Bonjour Impact"
+    email = "user@example.com"
+    sum = "3"
+
+    response = client.post(
+        "/contact",
+        data={"subject": subject, "message": message, "email": email, "sum": sum},
+        follow=True,
+    )
+
+    assert response.status_code == 200
+    content = html.unescape(response.content.decode("utf-8"))
+    assert "L'envoi du message a échoué" in content
+    assert "La réponse doit être écrite en toutes lettres"
     assert len(mailoutbox) == 0
 
 
