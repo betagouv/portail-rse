@@ -35,8 +35,7 @@ def test_calculate_status_less_than_50_employees(bdese_accord, entreprise_factor
         effectif=Entreprise.EFFECTIF_MOINS_DE_50, bdese_accord=bdese_accord
     )
 
-    bdese = BDESEReglementation(entreprise)
-    status = bdese.calculate_status(2022)
+    status = BDESEReglementation(entreprise).calculate_status(2022)
 
     assert status.status == ReglementationStatus.STATUS_NON_SOUMIS
     assert status.status_detail == "Vous n'êtes pas soumis à cette réglementation"
@@ -60,8 +59,7 @@ def test_calculate_status_more_than_50_employees(
 ):
     entreprise = entreprise_factory(effectif=effectif, bdese_accord=False)
 
-    bdese = BDESEReglementation(entreprise)
-    status = bdese.calculate_status(2022)
+    status = BDESEReglementation(entreprise).calculate_status(2022)
 
     assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
@@ -75,8 +73,7 @@ def test_calculate_status_more_than_50_employees(
     assert not status.secondary_actions
 
     bdese_class.objects.create(entreprise=entreprise, annee=2022)
-    bdese = BDESEReglementation(entreprise)
-    status = bdese.calculate_status(2022)
+    status = BDESEReglementation(entreprise).calculate_status(2022)
 
     assert status.status == ReglementationStatus.STATUS_EN_COURS
     assert status.primary_action.url == reverse(
@@ -89,8 +86,7 @@ def test_calculate_status_more_than_50_employees(
     assert status.secondary_actions[0].title == "Télécharger le pdf 2022 (brouillon)"
 
     mocker.patch("reglementations.models.AbstractBDESE.is_complete", return_value=True)
-    bdese = BDESEReglementation(entreprise)
-    status = bdese.calculate_status(2022)
+    status = BDESEReglementation(entreprise).calculate_status(2022)
 
     assert status.status == ReglementationStatus.STATUS_A_JOUR
     assert (
@@ -119,8 +115,7 @@ def test_calculate_status_more_than_50_employees(
 def test_calculate_status_with_bdese_accord(effectif, entreprise_factory, mocker):
     entreprise = entreprise_factory(effectif=effectif, bdese_accord=True)
 
-    bdese = BDESEReglementation(entreprise)
-    status = bdese.calculate_status(2022)
+    status = BDESEReglementation(entreprise).calculate_status(2022)
 
     assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
@@ -137,13 +132,12 @@ def test_calculate_status_with_bdese_accord(effectif, entreprise_factory, mocker
     bdese.is_complete = True
     bdese.save()
 
-    bdese = BDESEReglementation(entreprise)
-    status = bdese.calculate_status(2022)
+    status = BDESEReglementation(entreprise).calculate_status(2022)
 
     assert status.status == ReglementationStatus.STATUS_A_JOUR
     assert status.primary_action.title == "Marquer ma BDESE 2022 comme non actualisée"
 
-    bdese_type = bdese.bdese_type()
+    bdese_type = BDESEReglementation(entreprise).bdese_type()
     assert bdese_type == BDESEReglementation.TYPE_AVEC_ACCORD
 
 
@@ -160,8 +154,7 @@ def test_calculate_status_with_bdese_accord_with_not_attached_user(
 ):
     entreprise = entreprise_factory(effectif=effectif, bdese_accord=True)
 
-    bdese = BDESEReglementation(entreprise)
-    status = bdese.calculate_status(2022, alice)
+    status = BDESEReglementation(entreprise).calculate_status(2022, alice)
 
     assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
@@ -178,8 +171,7 @@ def test_calculate_status_with_bdese_accord_with_not_attached_user(
     bdese.is_complete = True
     bdese.save()
 
-    bdese = BDESEReglementation(entreprise)
-    status = bdese.calculate_status(2022, alice)
+    status = BDESEReglementation(entreprise).calculate_status(2022, alice)
 
     assert status.status == ReglementationStatus.STATUS_A_JOUR
     assert status.primary_action.title == "Marquer ma BDESE 2022 comme non actualisée"
@@ -199,8 +191,7 @@ def test_calculate_status_with_bdese_accord_with_not_habilited_user(
     entreprise = entreprise_factory(effectif=effectif, bdese_accord=True)
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
-    bdese = BDESEReglementation(entreprise)
-    status = bdese.calculate_status(2022, alice)
+    status = BDESEReglementation(entreprise).calculate_status(2022, alice)
 
     assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
@@ -216,8 +207,7 @@ def test_calculate_status_with_bdese_accord_with_not_habilited_user(
     bdese = BDESEAvecAccord.officials.create(entreprise=entreprise, annee=2022)
     bdese.is_complete = True
     bdese.save()
-    bdese = BDESEReglementation(entreprise)
-    status = bdese.calculate_status(2022, alice)
+    status = BDESEReglementation(entreprise).calculate_status(2022, alice)
 
     assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
 
@@ -227,8 +217,7 @@ def test_calculate_status_with_bdese_accord_with_not_habilited_user(
     bdese.is_complete = True
     bdese.save()
 
-    bdese = BDESEReglementation(entreprise)
-    status = bdese.calculate_status(2022, alice)
+    status = BDESEReglementation(entreprise).calculate_status(2022, alice)
 
     assert status.status == ReglementationStatus.STATUS_A_JOUR
     assert status.primary_action.title == "Marquer ma BDESE 2022 comme non actualisée"
@@ -250,8 +239,7 @@ def test_calculate_status_with_bdese_accord_with_habilited_user(
     habilitation.confirm()
     habilitation.save()
 
-    bdese = BDESEReglementation(entreprise)
-    status = bdese.calculate_status(2022, alice)
+    status = BDESEReglementation(entreprise).calculate_status(2022, alice)
 
     assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
@@ -267,8 +255,7 @@ def test_calculate_status_with_bdese_accord_with_habilited_user(
     bdese = BDESEAvecAccord.officials.create(entreprise=entreprise, annee=2022)
     bdese.is_complete = True
     bdese.save()
-    bdese = BDESEReglementation(entreprise)
-    status = bdese.calculate_status(2022, alice)
+    status = BDESEReglementation(entreprise).calculate_status(2022, alice)
 
     assert status.status == ReglementationStatus.STATUS_A_JOUR
     assert status.primary_action.title == "Marquer ma BDESE 2022 comme non actualisée"
