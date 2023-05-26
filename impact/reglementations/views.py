@@ -62,11 +62,9 @@ class Reglementation(ABC):
     description: str
     more_info_url: str
 
-    @classmethod
     @abstractmethod
     def calculate_status(
         cls,
-        entreprise: Entreprise,
         annee: int,
         user: settings.AUTH_USER_MODEL = None,
     ) -> ReglementationStatus:
