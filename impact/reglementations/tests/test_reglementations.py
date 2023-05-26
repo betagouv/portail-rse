@@ -56,12 +56,12 @@ def test_public_reglementations_with_entreprise_data(status_is_soumis, client, m
     context = response.context
     assert context["entreprise"] == entreprise
     reglementations = context["reglementations"]
-    assert reglementations[0]["status"] == BDESEReglementation.calculate_status(
-        entreprise, 2022
-    )
-    assert reglementations[1]["status"] == IndexEgaproReglementation.calculate_status(
-        entreprise, 2022
-    )
+    assert reglementations[0]["status"] == BDESEReglementation(
+        entreprise
+    ).calculate_status(2022)
+    assert reglementations[1]["status"] == IndexEgaproReglementation(
+        entreprise
+    ).calculate_status(2022)
 
     if status_is_soumis:
         assert '<p class="fr-badge">soumis</p>' in content
@@ -175,12 +175,12 @@ def test_reglementation_with_authenticated_user(client, entreprise):
     context = response.context
     assert context["entreprise"] == entreprise
     reglementations = context["reglementations"]
-    assert reglementations[0]["status"] == BDESEReglementation.calculate_status(
-        entreprise, 2022
-    )
-    assert reglementations[1]["status"] == IndexEgaproReglementation.calculate_status(
-        entreprise, 2022
-    )
+    assert reglementations[0]["status"] == BDESEReglementation(
+        entreprise
+    ).calculate_status(2022)
+    assert reglementations[1]["status"] == IndexEgaproReglementation(
+        entreprise
+    ).calculate_status(2022)
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
 
@@ -202,12 +202,12 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
     context = response.context
     assert context["entreprise"] == entreprise1
     reglementations = context["reglementations"]
-    assert reglementations[0]["status"] == BDESEReglementation.calculate_status(
-        entreprise1, 2022
-    )
-    assert reglementations[1]["status"] == IndexEgaproReglementation.calculate_status(
-        entreprise1, 2022
-    )
+    assert reglementations[0]["status"] == BDESEReglementation(
+        entreprise1
+    ).calculate_status(2022)
+    assert reglementations[1]["status"] == IndexEgaproReglementation(
+        entreprise1
+    ).calculate_status(2022)
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
 
@@ -219,12 +219,12 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
     context = response.context
     assert context["entreprise"] == entreprise2
     reglementations = context["reglementations"]
-    assert reglementations[0]["status"] == BDESEReglementation.calculate_status(
-        entreprise1, 2022
-    )
-    assert reglementations[1]["status"] == IndexEgaproReglementation.calculate_status(
-        entreprise1, 2022
-    )
+    assert reglementations[0]["status"] == BDESEReglementation(
+        entreprise1
+    ).calculate_status(2022)
+    assert reglementations[1]["status"] == IndexEgaproReglementation(
+        entreprise1
+    ).calculate_status(2022)
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
 

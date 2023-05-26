@@ -26,7 +26,7 @@ def test_index_egapro_reglementation_info():
 def test_calculate_status_less_than_50_employees(entreprise_factory, mock_index_egapro):
     entreprise = entreprise_factory(effectif=Entreprise.EFFECTIF_MOINS_DE_50)
 
-    index = IndexEgaproReglementation.calculate_status(entreprise, 2022)
+    index = IndexEgaproReglementation(entreprise).calculate_status(2022)
 
     assert index.status == ReglementationStatus.STATUS_NON_SOUMIS
     assert index.status_detail == "Vous n'êtes pas soumis à cette réglementation"
@@ -47,7 +47,7 @@ def test_calculate_status_more_than_50_employees(
     entreprise = entreprise_factory(effectif=effectif)
 
     mock_index_egapro.return_value = False
-    index = IndexEgaproReglementation.calculate_status(entreprise, 2022)
+    index = IndexEgaproReglementation(entreprise).calculate_status(2022)
 
     assert index.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
@@ -59,7 +59,7 @@ def test_calculate_status_more_than_50_employees(
 
     mock_index_egapro.reset_mock()
     mock_index_egapro.return_value = True
-    index = IndexEgaproReglementation.calculate_status(entreprise, 2022)
+    index = IndexEgaproReglementation(entreprise).calculate_status(2022)
 
     assert index.status == ReglementationStatus.STATUS_A_JOUR
     assert (
