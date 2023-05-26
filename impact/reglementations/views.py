@@ -124,14 +124,14 @@ class BDESEReglementation(Reglementation):
 
     @classmethod
     def _match_petit_effectif(cls, entreprise, annee, user):
-        if entreprise.effectif == Entreprise.EFFECTIF_MOINS_DE_50:
+        if cls.bdese_type(entreprise) == cls.TYPE_NON_SOUMIS:
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
             return ReglementationStatus(status, status_detail)
 
     @classmethod
     def _match_accord_bdese(cls, entreprise, annee, user):
-        if entreprise.bdese_accord:
+        if cls.bdese_type(entreprise) == cls.TYPE_AVEC_ACCORD:
             bdese = cls._select_bdese(BDESEAvecAccord, entreprise, annee, user)
             if bdese and bdese.is_complete:
                 status = ReglementationStatus.STATUS_A_JOUR
@@ -156,7 +156,7 @@ class BDESEReglementation(Reglementation):
 
     @classmethod
     def _match_bdese_preexistante(cls, entreprise, annee, user):
-        if entreprise.effectif == Entreprise.EFFECTIF_ENTRE_50_ET_299:
+        if cls.bdese_type(entreprise) == cls.TYPE_INFERIEUR_300:
             bdese_class = BDESE_50_300
         else:
             bdese_class = BDESE_300
