@@ -45,9 +45,6 @@ def test_calculate_status_less_than_50_employees(
     assert status.primary_action is None
     assert status.secondary_actions == []
 
-    bdese_type = BDESEReglementation(entreprise).bdese_type()
-    assert bdese_type == BDESEReglementation.TYPE_NON_SOUMIS
-
 
 @pytest.mark.parametrize(
     "effectif, bdese_class",

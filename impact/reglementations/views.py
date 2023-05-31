@@ -106,7 +106,6 @@ class Reglementation(ABC):
 
 
 class BDESEReglementation(Reglementation):
-    TYPE_NON_SOUMIS = 0
     TYPE_AVEC_ACCORD = 1
     TYPE_INFERIEUR_300 = 2
     TYPE_INFERIEUR_500 = 3
@@ -119,15 +118,13 @@ class BDESEReglementation(Reglementation):
     more_info_url = "https://entreprendre.service-public.fr/vosdroits/F32193"
 
     def bdese_type(self) -> int:
-        if self.entreprise.effectif == Entreprise.EFFECTIF_MOINS_DE_50:
-            return self.TYPE_NON_SOUMIS
-        elif self.entreprise.bdese_accord:
+        if self.entreprise.bdese_accord:
             return self.TYPE_AVEC_ACCORD
         elif self.entreprise.effectif == Entreprise.EFFECTIF_ENTRE_50_ET_299:
             return self.TYPE_INFERIEUR_300
         elif self.entreprise.effectif == Entreprise.EFFECTIF_ENTRE_300_ET_499:
             return self.TYPE_INFERIEUR_500
-        else:
+        elif self.entreprise.effectif == Entreprise.EFFECTIF_500_ET_PLUS:
             return self.TYPE_SUPERIEUR_500
 
     @property
@@ -150,7 +147,7 @@ class BDESEReglementation(Reglementation):
                 return reglementation_status
 
     def _match_non_soumis(self, annee, user):
-        if self.bdese_type() == self.TYPE_NON_SOUMIS:
+        if not self.is_soumis:
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
             return ReglementationStatus(status, status_detail)
