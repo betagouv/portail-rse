@@ -58,6 +58,10 @@ class Reglementation(ABC):
     description: str
     more_info_url: str
 
+    def __init__(self, entreprise) -> None:
+        super().__init__()
+        self.entreprise = entreprise
+
     @abstractmethod
     def calculate_status(
         cls,
@@ -73,10 +77,6 @@ class Reglementation(ABC):
             "description": cls.description,
             "more_info_url": cls.more_info_url,
         }
-
-    def __init__(self, entreprise) -> None:
-        super().__init__()
-        self.entreprise = entreprise
 
     @property
     @abstractmethod
