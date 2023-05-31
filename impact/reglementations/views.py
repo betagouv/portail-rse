@@ -63,6 +63,19 @@ class Reglementation(ABC):
         super().__init__()
         self.entreprise = entreprise
 
+    @classmethod
+    def info(cls):
+        return {
+            "title": cls.title,
+            "description": cls.description,
+            "more_info_url": cls.more_info_url,
+        }
+
+    @property
+    @abstractmethod
+    def is_soumis(self):
+        pass
+
     @abstractmethod
     def calculate_status(
         self,
@@ -90,19 +103,6 @@ class Reglementation(ABC):
                 status = ReglementationStatus.STATUS_NON_SOUMIS
                 status_detail = "L'entreprise n'est pas soumise à cette réglementation."
             return ReglementationStatus(status, status_detail)
-
-    @classmethod
-    def info(cls):
-        return {
-            "title": cls.title,
-            "description": cls.description,
-            "more_info_url": cls.more_info_url,
-        }
-
-    @property
-    @abstractmethod
-    def is_soumis(self):
-        pass
 
 
 class BDESEReglementation(Reglementation):
