@@ -356,9 +356,6 @@ def _reglementations_context(entreprise, user):
     reglementations = [
         {
             "info": BDESEReglementation.info(),
-            "is_soumis": BDESEReglementation(entreprise).is_soumis
-            if entreprise
-            else None,
             "status": BDESEReglementation(entreprise).calculate_status(
                 derniere_annee_a_remplir_bdese(), user
             )
@@ -367,9 +364,6 @@ def _reglementations_context(entreprise, user):
         },
         {
             "info": IndexEgaproReglementation.info(),
-            "is_soumis": IndexEgaproReglementation(entreprise).is_soumis
-            if entreprise
-            else None,
             "status": IndexEgaproReglementation(entreprise).calculate_status(
                 derniere_annee_a_remplir_index_egapro(), user
             )
@@ -380,9 +374,6 @@ def _reglementations_context(entreprise, user):
     return {
         "entreprise": entreprise,
         "reglementations": reglementations,
-        "user_manage_entreprise": user in entreprise.users.all()
-        if user and entreprise
-        else False,
     }
 
 

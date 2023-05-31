@@ -13,7 +13,7 @@
 
     {% if entreprise.denomination %}<h2 class="fr-mt-4w">{{ entreprise.denomination }}</h2>{% endif %}
     {% for reglementation in reglementations %}
-        {% include "snippets/reglementation_card.html" with reglementation=reglementation user_manage_entreprise=user_manage_entreprise %}
+        {% include "snippets/reglementation_card.html" with reglementation=reglementation %}
     {% endfor %}
 </div>
 
