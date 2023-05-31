@@ -52,10 +52,6 @@ class ReglementationStatus:
     primary_action: ReglementationAction | None = None
     secondary_actions: list[ReglementationAction] = field(default_factory=list)
 
-    @property
-    def is_soumis(self):
-        return self.status and self.status != self.STATUS_NON_SOUMIS
-
 
 class Reglementation(ABC):
     title: str
@@ -82,6 +78,11 @@ class Reglementation(ABC):
         super().__init__()
         self.entreprise = entreprise
 
+    @property
+    @abstractmethod
+    def is_soumis(self):
+        pass
+
 
 class BDESEReglementation(Reglementation):
     TYPE_NON_SOUMIS = 0
@@ -107,6 +108,10 @@ class BDESEReglementation(Reglementation):
             return self.TYPE_INFERIEUR_500
         else:
             return self.TYPE_SUPERIEUR_500
+
+    @property
+    def is_soumis(self):
+        return self.entreprise.effectif != Entreprise.EFFECTIF_MOINS_DE_50
 
     def calculate_status(
         self, annee: int, user: settings.AUTH_USER_MODEL = None
@@ -243,6 +248,10 @@ class IndexEgaproReglementation(Reglementation):
     description = "Afin de lutter contre les inégalités salariales entre les femmes et les hommes, certaines entreprises doivent calculer et transmettre un index mesurant l’égalité salariale au sein de leur structure."
     more_info_url = "https://www.economie.gouv.fr/entreprises/index-egalite-professionnelle-obligatoire"
 
+    @property
+    def is_soumis(self):
+        return self.entreprise.effectif != Entreprise.EFFECTIF_MOINS_DE_50
+
     def calculate_status(
         self, annee: int, user: settings.AUTH_USER_MODEL = None
     ) -> ReglementationStatus:
@@ -322,6 +331,9 @@ def _reglementations_context(entreprise, user):
     reglementations = [
         {
             "info": BDESEReglementation.info(),
+            "is_soumis": BDESEReglementation(entreprise).is_soumis
+            if entreprise
+            else None,
             "status": BDESEReglementation(entreprise).calculate_status(
                 derniere_annee_a_remplir_bdese(), user
             )
@@ -330,6 +342,9 @@ def _reglementations_context(entreprise, user):
         },
         {
             "info": IndexEgaproReglementation.info(),
+            "is_soumis": IndexEgaproReglementation(entreprise).is_soumis
+            if entreprise
+            else None,
             "status": IndexEgaproReglementation(entreprise).calculate_status(
                 derniere_annee_a_remplir_index_egapro()
             )

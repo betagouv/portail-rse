@@ -37,7 +37,12 @@ def test_public_reglementations_with_entreprise_data(status_is_soumis, client, m
     }
 
     mocker.patch(
-        "reglementations.views.ReglementationStatus.is_soumis",
+        "reglementations.views.BDESEReglementation.is_soumis",
+        return_value=status_is_soumis,
+        new_callable=mocker.PropertyMock,
+    )
+    mocker.patch(
+        "reglementations.views.IndexEgaproReglementation.is_soumis",
         return_value=status_is_soumis,
         new_callable=mocker.PropertyMock,
     )
@@ -115,7 +120,12 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
     }
 
     mocker.patch(
-        "reglementations.views.ReglementationStatus.is_soumis",
+        "reglementations.views.BDESEReglementation.is_soumis",
+        return_value=status_is_soumis,
+        new_callable=mocker.PropertyMock,
+    )
+    mocker.patch(
+        "reglementations.views.IndexEgaproReglementation.is_soumis",
         return_value=status_is_soumis,
         new_callable=mocker.PropertyMock,
     )
@@ -130,13 +140,13 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
     if status_is_soumis:
         assert '<p class="fr-badge">soumis</p>' in content
         anonymous_status_detail = "L'entreprise est soumise à cette réglementation."
-        assert anonymous_status_detail in content
+        assert anonymous_status_detail in content, content
     else:
         assert '<p class="fr-badge">non soumis</p>' in content
         anonymous_status_detail = (
             "L'entreprise n'est pas soumise à cette réglementation."
         )
-        assert anonymous_status_detail in content
+        assert anonymous_status_detail in content, content
 
 
 def test_entreprise_data_are_saved_only_when_entreprise_user_is_autenticated(

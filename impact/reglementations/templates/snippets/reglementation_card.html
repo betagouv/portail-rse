@@ -9,7 +9,7 @@
             <div class="fr-card__start">
                 <ul class="fr-badges-group">
                     <li>
-                        {% if not reglementation.status.is_soumis %}
+                        {% if not reglementation.is_soumis %}
                         <p class="fr-badge">non soumis</p>
                         {% elif not user.is_authenticated or not user_manage_entreprise %}
                         <p class="fr-badge">soumis</p>
@@ -24,7 +24,7 @@
                 </ul>
                 <p class="fr-card__detail fr-icon-info-fill">
                     {% if not user.is_authenticated %}
-                        {% if reglementation.status.is_soumis %}
+                        {% if reglementation.is_soumis %}
                         <a href="{% url 'users:login' %}?next=/reglementations">Vous êtes soumis à cette réglementation. Connectez-vous pour en savoir plus.</a>
                         {% else %}
                         Vous n'êtes pas soumis à cette réglementation.
@@ -32,7 +32,7 @@
                     {% elif user_manage_entreprise %}
                         {{ reglementation.status.status_detail|safe }}
                     {% else %}
-                        {% if reglementation.status.is_soumis %}
+                        {% if reglementation.is_soumis %}
                         L'entreprise est soumise à cette réglementation.
                         {% else %}
                         L'entreprise n'est pas soumise à cette réglementation.
