@@ -1,4 +1,5 @@
 import pytest
+from django.contrib.auth.models import AnonymousUser
 
 from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
 from entreprises.models import Entreprise
@@ -63,19 +64,19 @@ def test_public_reglementations_with_entreprise_data(status_is_soumis, client, m
     reglementations = context["reglementations"]
     assert reglementations[0]["status"] == BDESEReglementation(
         entreprise
-    ).calculate_status(2022)
+    ).calculate_status(2022, AnonymousUser())
     assert reglementations[1]["status"] == IndexEgaproReglementation(
         entreprise
-    ).calculate_status(2022)
+    ).calculate_status(2022, AnonymousUser())
 
     if status_is_soumis:
-        assert '<p class="fr-badge">soumis</p>' in content
+        assert '<p class="fr-badge">soumis</p>' in content, content
         anonymous_status_detail = "Vous êtes soumis à cette réglementation. Connectez-vous pour en savoir plus."
-        assert anonymous_status_detail in content
+        assert anonymous_status_detail in content, content
     else:
-        assert '<p class="fr-badge">non soumis</p>' in content
+        assert '<p class="fr-badge">non soumis</p>' in content, content
         anonymous_status_detail = "Vous n'êtes pas soumis à cette réglementation."
-        assert anonymous_status_detail in content
+        assert anonymous_status_detail in content, content
 
 
 @pytest.fixture
@@ -135,8 +136,6 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
     assert "Une autre entreprise SAS" in content
 
     reglementations = response.context["reglementations"]
-    for reglementation in reglementations:
-        assert not reglementation["status"].status_detail in content
     if status_is_soumis:
         assert '<p class="fr-badge">soumis</p>' in content
         anonymous_status_detail = "L'entreprise est soumise à cette réglementation."
@@ -187,10 +186,10 @@ def test_reglementation_with_authenticated_user(client, entreprise):
     reglementations = context["reglementations"]
     assert reglementations[0]["status"] == BDESEReglementation(
         entreprise
-    ).calculate_status(2022)
+    ).calculate_status(2022, entreprise.users.first())
     assert reglementations[1]["status"] == IndexEgaproReglementation(
         entreprise
-    ).calculate_status(2022)
+    ).calculate_status(2022, entreprise.users.first())
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
 
@@ -214,10 +213,10 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
     reglementations = context["reglementations"]
     assert reglementations[0]["status"] == BDESEReglementation(
         entreprise1
-    ).calculate_status(2022)
+    ).calculate_status(2022, alice)
     assert reglementations[1]["status"] == IndexEgaproReglementation(
         entreprise1
-    ).calculate_status(2022)
+    ).calculate_status(2022, alice)
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
 
@@ -230,11 +229,11 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
     assert context["entreprise"] == entreprise2
     reglementations = context["reglementations"]
     assert reglementations[0]["status"] == BDESEReglementation(
-        entreprise1
-    ).calculate_status(2022)
+        entreprise2
+    ).calculate_status(2022, alice)
     assert reglementations[1]["status"] == IndexEgaproReglementation(
-        entreprise1
-    ).calculate_status(2022)
+        entreprise2
+    ).calculate_status(2022, alice)
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
 

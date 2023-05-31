@@ -9,9 +9,9 @@
             <div class="fr-card__start">
                 <ul class="fr-badges-group">
                     <li>
-                        {% if not reglementation.is_soumis %}
+                        {% if reglementation.status.status == reglementation.status.STATUS_NON_SOUMIS %}
                         <p class="fr-badge">non soumis</p>
-                        {% elif not user.is_authenticated or not user_manage_entreprise %}
+                        {% elif reglementation.status.status == reglementation.status.STATUS_SOUMIS %}
                         <p class="fr-badge">soumis</p>
                         {% elif reglementation.status.status == reglementation.status.STATUS_A_ACTUALISER %}
                         <p class="fr-badge fr-badge--error fr-badge--no-icon">à actualiser</p>
@@ -23,21 +23,7 @@
                     </li>
                 </ul>
                 <p class="fr-card__detail fr-icon-info-fill">
-                    {% if not user.is_authenticated %}
-                        {% if reglementation.is_soumis %}
-                        <a href="{% url 'users:login' %}?next=/reglementations">Vous êtes soumis à cette réglementation. Connectez-vous pour en savoir plus.</a>
-                        {% else %}
-                        Vous n'êtes pas soumis à cette réglementation.
-                        {% endif %}
-                    {% elif user_manage_entreprise %}
-                        {{ reglementation.status.status_detail|safe }}
-                    {% else %}
-                        {% if reglementation.is_soumis %}
-                        L'entreprise est soumise à cette réglementation.
-                        {% else %}
-                        L'entreprise n'est pas soumise à cette réglementation.
-                        {% endif %}
-                    {% endif %}
+                    {{ reglementation.status.status_detail|safe }}
                 </p>
             </div>
             {% endif %}
@@ -49,29 +35,21 @@
                         En savoir plus
                     </a>
                 </li>
-                {% if not user.is_authenticated and reglementation.status.is_soumis %}
-                <li>
-                    <a class="fr-btn" href="{% url 'users:login' %}?next={% url 'reglementations:reglementations' %}">
-                        Se connecter
-                    </a>
-                </li>
-                {% elif user_manage_entreprise %}
-                    {% if reglementation.status.primary_action %}
+                {% if reglementation.status and reglementation.status.primary_action %}
                     <li>
                         <a class="fr-btn" href="{{ reglementation.status.primary_action.url }}" {% if reglementation.status.primary_action.external %}target="_blank" rel="noopener"{% endif %}>
                             {{ reglementation.status.primary_action.title }}
                         </a>
                     </li>
-                    {% endif %}
-                    {% if reglementation.status.secondary_actions %}
-                        {% for secondary_action in reglementation.status.secondary_actions %}
+                {% endif %}
+                {% if reglementation.status and reglementation.status.secondary_actions %}
+                    {% for secondary_action in reglementation.status.secondary_actions %}
                         <li>
                             <a class="fr-btn fr-btn--secondary" href="{{ secondary_action.url }}" {% if secondary_action.external %}target="_blank" rel="noopener"{% endif %}>
                                 {{ secondary_action.title }}
                             </a>
                         </li>
-                        {% endfor %}
-                    {% endif %}
+                    {% endfor %}
                 {% endif %}
             </ul>
         </div>

@@ -64,7 +64,7 @@ def is_user_attached_to_entreprise(user, entreprise):
     try:
         get_habilitation(user, entreprise)
         return True
-    except ObjectDoesNotExist:
+    except (ObjectDoesNotExist, TypeError):
         return False
 
 

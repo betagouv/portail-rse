@@ -4,6 +4,7 @@ import freezegun
 import pytest
 
 from entreprises.models import Entreprise
+from habilitations.models import attach_user_to_entreprise
 from reglementations.views import IndexEgaproReglementation
 from reglementations.views import is_index_egapro_updated
 from reglementations.views import ReglementationStatus
@@ -23,10 +24,13 @@ def test_index_egapro_reglementation_info():
     )
 
 
-def test_calculate_status_less_than_50_employees(entreprise_factory, mock_index_egapro):
+def test_calculate_status_less_than_50_employees(
+    entreprise_factory, alice, mock_index_egapro
+):
     entreprise = entreprise_factory(effectif=Entreprise.EFFECTIF_MOINS_DE_50)
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
 
-    index = IndexEgaproReglementation(entreprise).calculate_status(2022)
+    index = IndexEgaproReglementation(entreprise).calculate_status(2022, alice)
 
     assert index.status == ReglementationStatus.STATUS_NON_SOUMIS
     assert index.status_detail == "Vous n'êtes pas soumis à cette réglementation"
@@ -42,12 +46,13 @@ def test_calculate_status_less_than_50_employees(entreprise_factory, mock_index_
     ],
 )
 def test_calculate_status_more_than_50_employees(
-    effectif, entreprise_factory, mock_index_egapro
+    effectif, entreprise_factory, alice, mock_index_egapro
 ):
     entreprise = entreprise_factory(effectif=effectif)
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
 
     mock_index_egapro.return_value = False
-    index = IndexEgaproReglementation(entreprise).calculate_status(2022)
+    index = IndexEgaproReglementation(entreprise).calculate_status(2022, alice)
 
     assert index.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
@@ -59,7 +64,7 @@ def test_calculate_status_more_than_50_employees(
 
     mock_index_egapro.reset_mock()
     mock_index_egapro.return_value = True
-    index = IndexEgaproReglementation(entreprise).calculate_status(2022)
+    index = IndexEgaproReglementation(entreprise).calculate_status(2022, alice)
 
     assert index.status == ReglementationStatus.STATUS_A_JOUR
     assert (

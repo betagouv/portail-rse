@@ -42,10 +42,11 @@ class ReglementationAction:
 
 @dataclass
 class ReglementationStatus:
+    STATUS_NON_SOUMIS = "non soumis"
+    STATUS_SOUMIS = "soumis"
     STATUS_A_JOUR = "à jour"
     STATUS_A_ACTUALISER = "à actualiser"
     STATUS_EN_COURS = "en cours"
-    STATUS_NON_SOUMIS = "non soumis"
 
     status: str
     status_detail: str
@@ -64,11 +65,31 @@ class Reglementation(ABC):
 
     @abstractmethod
     def calculate_status(
-        cls,
+        self,
         annee: int,
-        user: settings.AUTH_USER_MODEL = None,
+        user: settings.AUTH_USER_MODEL,
     ) -> ReglementationStatus:
-        pass
+        if not user.is_authenticated:
+            if self.is_soumis:
+                status = ReglementationStatus.STATUS_SOUMIS
+                login_url = f"{reverse_lazy('users:login')}?next={reverse_lazy('reglementations:reglementations')}"
+                status_detail = f'<a href="{login_url}">Vous êtes soumis à cette réglementation. Connectez-vous pour en savoir plus.</a>'
+                primary_action = ReglementationAction(login_url, f"Se connecter")
+            else:
+                status = ReglementationStatus.STATUS_NON_SOUMIS
+                status_detail = "Vous n'êtes pas soumis à cette réglementation."
+                primary_action = None
+            return ReglementationStatus(
+                status, status_detail, primary_action=primary_action
+            )
+        elif not is_user_attached_to_entreprise(user, self.entreprise):
+            if self.is_soumis:
+                status = ReglementationStatus.STATUS_SOUMIS
+                status_detail = "L'entreprise est soumise à cette réglementation."
+            else:
+                status = ReglementationStatus.STATUS_NON_SOUMIS
+                status_detail = "L'entreprise n'est pas soumise à cette réglementation."
+            return ReglementationStatus(status, status_detail)
 
     @classmethod
     def info(cls):
@@ -114,8 +135,11 @@ class BDESEReglementation(Reglementation):
         return self.entreprise.effectif != Entreprise.EFFECTIF_MOINS_DE_50
 
     def calculate_status(
-        self, annee: int, user: settings.AUTH_USER_MODEL = None
+        self, annee: int, user: settings.AUTH_USER_MODEL
     ) -> ReglementationStatus:
+        if reglementation_status := super().calculate_status(annee, user):
+            return reglementation_status
+
         for match in [
             self._match_non_soumis,
             self._match_avec_accord,
@@ -253,8 +277,11 @@ class IndexEgaproReglementation(Reglementation):
         return self.entreprise.effectif != Entreprise.EFFECTIF_MOINS_DE_50
 
     def calculate_status(
-        self, annee: int, user: settings.AUTH_USER_MODEL = None
+        self, annee: int, user: settings.AUTH_USER_MODEL
     ) -> ReglementationStatus:
+        if reglementation_status := super().calculate_status(annee, user):
+            return reglementation_status
+
         PRIMARY_ACTION = ReglementationAction(
             "https://egapro.travail.gouv.fr/",
             "Calculer et déclarer mon index sur Egapro",
@@ -299,9 +326,7 @@ def reglementations(request):
     return render(
         request,
         "reglementations/reglementations.html",
-        _reglementations_context(
-            entreprise, request.user if request.user.is_authenticated else None
-        ),
+        _reglementations_context(entreprise, request.user),
     )
 
 
@@ -346,7 +371,7 @@ def _reglementations_context(entreprise, user):
             if entreprise
             else None,
             "status": IndexEgaproReglementation(entreprise).calculate_status(
-                derniere_annee_a_remplir_index_egapro()
+                derniere_annee_a_remplir_index_egapro(), user
             )
             if entreprise
             else None,
