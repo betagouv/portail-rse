@@ -117,21 +117,21 @@ class BDESEReglementation(Reglementation):
         self, annee: int, user: settings.AUTH_USER_MODEL = None
     ) -> ReglementationStatus:
         for match in [
-            self._match_petit_effectif,
-            self._match_accord_bdese,
-            self._match_bdese_preexistante,
+            self._match_non_soumis,
+            self._match_avec_accord,
+            self._match_bdese_existante,
             self._match_sans_bdese,
         ]:
             if reglementation_status := match(annee, user):
                 return reglementation_status
 
-    def _match_petit_effectif(self, annee, user):
+    def _match_non_soumis(self, annee, user):
         if self.bdese_type() == self.TYPE_NON_SOUMIS:
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
             return ReglementationStatus(status, status_detail)
 
-    def _match_accord_bdese(self, annee, user):
+    def _match_avec_accord(self, annee, user):
         if self.bdese_type() == self.TYPE_AVEC_ACCORD:
             bdese = self._select_bdese(BDESEAvecAccord, annee, user)
             if bdese and bdese.is_complete:
@@ -155,7 +155,7 @@ class BDESEReglementation(Reglementation):
                 primary_action=primary_action,
             )
 
-    def _match_bdese_preexistante(self, annee, user):
+    def _match_bdese_existante(self, annee, user):
         if self.bdese_type() == self.TYPE_INFERIEUR_300:
             bdese_class = BDESE_50_300
         else:
