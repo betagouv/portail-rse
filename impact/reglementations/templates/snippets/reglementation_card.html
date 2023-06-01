@@ -35,14 +35,14 @@
                         En savoir plus
                     </a>
                 </li>
-                {% if reglementation.status and reglementation.status.primary_action %}
+                {% if reglementation.status %}
+                    {% if reglementation.status.primary_action %}
                     <li>
                         <a class="fr-btn" href="{{ reglementation.status.primary_action.url }}" {% if reglementation.status.primary_action.external %}target="_blank" rel="noopener"{% endif %}>
                             {{ reglementation.status.primary_action.title }}
                         </a>
                     </li>
-                {% endif %}
-                {% if reglementation.status and reglementation.status.secondary_actions %}
+                    {% endif %}
                     {% for secondary_action in reglementation.status.secondary_actions %}
                         <li>
                             <a class="fr-btn fr-btn--secondary" href="{{ secondary_action.url }}" {% if secondary_action.external %}target="_blank" rel="noopener"{% endif %}>
