@@ -1,4 +1,5 @@
 import pytest
+from django.contrib.auth.models import AnonymousUser
 from django.urls import reverse
 
 from entreprises.models import Entreprise
@@ -27,6 +28,70 @@ def test_bdese_reglementation_info():
         info["more_info_url"]
         == "https://entreprendre.service-public.fr/vosdroits/F32193"
     )
+
+
+def test_calculate_status_with_not_authenticated_user(entreprise_factory, mocker):
+    entreprise = entreprise_factory()
+
+    mocker.patch(
+        "reglementations.views.BDESEReglementation.is_soumis",
+        return_value=False,
+        new_callable=mocker.PropertyMock,
+    )
+    status = BDESEReglementation(entreprise).calculate_status(2022, AnonymousUser())
+
+    assert status.status == ReglementationStatus.STATUS_NON_SOUMIS
+    assert status.status_detail == "Vous n'êtes pas soumis à cette réglementation."
+    assert status.primary_action is None
+    assert status.secondary_actions == []
+
+    mocker.patch(
+        "reglementations.views.BDESEReglementation.is_soumis",
+        return_value=True,
+        new_callable=mocker.PropertyMock,
+    )
+    status = BDESEReglementation(entreprise).calculate_status(2022, AnonymousUser())
+
+    assert status.status == ReglementationStatus.STATUS_SOUMIS
+    login_url = f"{reverse('users:login')}?next={reverse('reglementations:reglementation', args=[entreprise.siren])}"
+
+    assert (
+        status.status_detail
+        == f'<a href="{login_url}">Vous êtes soumis à cette réglementation. Connectez-vous pour en savoir plus.</a>'
+    )
+    assert status.primary_action.title == "Se connecter"
+    assert status.primary_action.url == login_url
+    assert status.secondary_actions == []
+
+
+def test_calculate_status_with_not_attached_user(entreprise_factory, alice, mocker):
+    entreprise = entreprise_factory()
+
+    mocker.patch(
+        "reglementations.views.BDESEReglementation.is_soumis",
+        return_value=False,
+        new_callable=mocker.PropertyMock,
+    )
+    status = BDESEReglementation(entreprise).calculate_status(2022, alice)
+
+    assert status.status == ReglementationStatus.STATUS_NON_SOUMIS
+    assert (
+        status.status_detail == "L'entreprise n'est pas soumise à cette réglementation."
+    )
+    assert status.primary_action is None
+    assert status.secondary_actions == []
+
+    mocker.patch(
+        "reglementations.views.BDESEReglementation.is_soumis",
+        return_value=True,
+        new_callable=mocker.PropertyMock,
+    )
+    status = BDESEReglementation(entreprise).calculate_status(2022, alice)
+
+    assert status.status == ReglementationStatus.STATUS_SOUMIS
+    assert status.status_detail == "L'entreprise est soumise à cette réglementation."
+    assert status.primary_action is None
+    assert status.secondary_actions == []
 
 
 @pytest.mark.parametrize("bdese_accord", [True, False])
@@ -146,27 +211,6 @@ def test_calculate_status_more_than_50_employees_with_not_habilited_user(
         Entreprise.EFFECTIF_500_ET_PLUS,
     ],
 )
-def test_calculate_status_with_bdese_accord_with_not_attached_user(
-    effectif, alice, entreprise_factory, mocker
-):
-    entreprise = entreprise_factory(effectif=effectif, bdese_accord=True)
-
-    status = BDESEReglementation(entreprise).calculate_status(2022, alice)
-
-    assert status.status == ReglementationStatus.STATUS_SOUMIS
-    assert status.status_detail == "L'entreprise est soumise à cette réglementation."
-    assert not status.primary_action
-    assert status.secondary_actions == []
-
-
-@pytest.mark.parametrize(
-    "effectif",
-    [
-        Entreprise.EFFECTIF_ENTRE_50_ET_299,
-        Entreprise.EFFECTIF_ENTRE_300_ET_499,
-        Entreprise.EFFECTIF_500_ET_PLUS,
-    ],
-)
 def test_calculate_status_with_bdese_accord_with_not_habilited_user(
     effectif, alice, entreprise_factory, mocker
 ):
@@ -191,6 +235,7 @@ def test_calculate_status_with_bdese_accord_with_not_habilited_user(
     bdese.save()
     status = BDESEReglementation(entreprise).calculate_status(2022, alice)
 
+    # L'utilisateur dont l'habilitation n'est pas confirmée voit le statut de sa BDESE personnelle, pas de celle officielle
     assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
 
     bdese = BDESEAvecAccord.personals.create(
