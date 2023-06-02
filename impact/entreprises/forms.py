@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from .models import Entreprise
+from .models import Evolution
 from utils.forms import DsfrForm
 
 
@@ -34,7 +34,9 @@ class EntrepriseDetachForm(DsfrForm):
     siren = SirenField()
 
 
-class EntrepriseQualificationForm(forms.ModelForm, DsfrForm):
-    class Meta:
-        model = Entreprise
-        fields = ["effectif", "bdese_accord"]
+class EntrepriseQualificationForm(DsfrForm):
+    bdese_accord = forms.BooleanField(
+        label="L'entreprise a un accord collectif d'entreprise concernant la Base de Données Économiques, Sociales et Environnementales (BDESE)",
+        required=False,
+    )
+    effectif = forms.ChoiceField(choices=Evolution.EFFECTIF_CHOICES)

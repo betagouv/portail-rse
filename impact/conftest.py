@@ -1,6 +1,7 @@
 import pytest
 
 from entreprises.models import Entreprise
+from entreprises.models import Evolution
 
 
 @pytest.fixture
@@ -37,9 +38,13 @@ def entreprise_factory(db):
     ):
         entreprise = Entreprise.objects.create(
             siren=siren,
+            denomination=denomination,
+        )
+        Evolution.objects.create(
+            annee=2023,
+            entreprise=entreprise,
             effectif=effectif,
             bdese_accord=bdese_accord,
-            denomination=denomination,
         )
         return entreprise
 

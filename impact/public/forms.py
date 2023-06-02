@@ -3,7 +3,6 @@ from django.core.exceptions import ValidationError
 
 from entreprises.forms import SirenField
 from entreprises.models import DENOMINATION_MAX_LENGTH
-from entreprises.models import Entreprise
 from utils.forms import DsfrForm
 
 
@@ -11,12 +10,11 @@ class SirenForm(DsfrForm):
     siren = SirenField()
 
 
-class EligibiliteForm(DsfrForm, forms.ModelForm):
-    denomination = forms.CharField()
-
-    class Meta:
-        model = Entreprise
-        fields = ["effectif", "bdese_accord", "denomination", "siren"]
+class EligibiliteForm(DsfrForm):
+    denomination = forms.CharField(max_length=DENOMINATION_MAX_LENGTH)
+    effectif = forms.CharField()
+    bdese_accord = forms.BooleanField(required=False)
+    siren = SirenField()
 
     def clean_denomination(self):
         denomination = self.cleaned_data.get("denomination")

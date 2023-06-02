@@ -19,6 +19,9 @@ from weasyprint import HTML
 from api import egapro
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
+from entreprises.models import get_current_evolution
+from entreprises.models import has_current_evolution
+from entreprises.models import set_current_evolution
 from habilitations.models import get_habilitation
 from habilitations.models import is_user_attached_to_entreprise
 from habilitations.models import is_user_habilited_on_entreprise
@@ -119,8 +122,9 @@ class BDESEReglementation(Reglementation):
     more_info_url = "https://entreprendre.service-public.fr/vosdroits/F32193"
 
     def bdese_type(self) -> int:
-        effectif = self.entreprise.effectif
-        if self.entreprise.bdese_accord:
+        evolution = get_current_evolution(self.entreprise)
+        effectif = evolution.effectif
+        if evolution.bdese_accord:
             return self.TYPE_AVEC_ACCORD
         elif effectif == Entreprise.EFFECTIF_ENTRE_50_ET_299:
             return self.TYPE_INFERIEUR_300
@@ -131,7 +135,13 @@ class BDESEReglementation(Reglementation):
 
     @property
     def is_soumis(self):
-        return self.entreprise.effectif != Entreprise.EFFECTIF_MOINS_DE_50
+        if has_current_evolution(self.entreprise):
+            return (
+                get_current_evolution(self.entreprise).effectif
+                != Entreprise.EFFECTIF_MOINS_DE_50
+            )
+        else:
+            return False
 
     def calculate_status(
         self, annee: int, user: settings.AUTH_USER_MODEL
@@ -273,7 +283,13 @@ class IndexEgaproReglementation(Reglementation):
 
     @property
     def is_soumis(self):
-        return self.entreprise.effectif != Entreprise.EFFECTIF_MOINS_DE_50
+        if has_current_evolution(self.entreprise):
+            return (
+                get_current_evolution(self.entreprise).effectif
+                != Entreprise.EFFECTIF_MOINS_DE_50
+            )
+        else:
+            return False
 
     def calculate_status(
         self, annee: int, user: settings.AUTH_USER_MODEL
@@ -286,7 +302,11 @@ class IndexEgaproReglementation(Reglementation):
             "Calculer et déclarer mon index sur Egapro",
             external=True,
         )
-        if self.entreprise.effectif == Entreprise.EFFECTIF_MOINS_DE_50:
+        if (
+            has_current_evolution(self.entreprise)
+            and get_current_evolution(self.entreprise).effectif
+            == Entreprise.EFFECTIF_MOINS_DE_50
+        ):
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
         elif is_index_egapro_updated(self.entreprise):
@@ -307,13 +327,12 @@ def is_index_egapro_updated(entreprise: Entreprise) -> bool:
 
 def reglementations(request):
     entreprise = None
-
     if request.GET:
         form = EligibiliteForm(request.GET)
         if "siren" in form.data:
             if entreprises := Entreprise.objects.filter(siren=form.data["siren"]):
                 entreprise = entreprises[0]
-                form = EligibiliteForm(request.GET, instance=entreprise)
+                form = EligibiliteForm(request.GET)
                 commit = (
                     request.user.is_authenticated
                     and request.user in entreprise.users.all()
@@ -323,7 +342,24 @@ def reglementations(request):
 
             if form.is_valid():
                 request.session["siren"] = form.cleaned_data["siren"]
-                entreprise = form.save(commit=commit)
+                if not entreprise:
+                    entreprise = Entreprise.objects.create(
+                        siren=form.cleaned_data["siren"]
+                    )
+                entreprise.denomination = form.data["denomination"]
+                if has_current_evolution(entreprise):
+                    evolution = get_current_evolution(entreprise)
+                    evolution.effectif = form.data["effectif"]
+                    evolution.bdese_accord = form.data["bdese_accord"]
+                else:
+                    evolution = set_current_evolution(
+                        entreprise,
+                        form.data["effectif"],
+                        form.data["bdese_accord"],
+                    )
+                if commit:
+                    entreprise.save()
+                    evolution.save()
 
     elif entreprise := get_current_entreprise(request):
         return redirect("reglementations:reglementations", siren=entreprise.siren)
