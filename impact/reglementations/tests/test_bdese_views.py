@@ -737,7 +737,7 @@ def test_toggle_bdese_completion(client, bdese_avec_accord, alice):
 
     assert response.status_code == 200
     assert response.redirect_chain == [
-        (reverse("reglementations:reglementation", args=[entreprise.siren]), 302)
+        (reverse("reglementations:reglementations", args=[entreprise.siren]), 302)
     ]
     bdese_avec_accord.refresh_from_db()
     assert bdese_avec_accord.is_complete

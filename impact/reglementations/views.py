@@ -86,7 +86,7 @@ class Reglementation(ABC):
         if not user.is_authenticated:
             if self.is_soumis:
                 status = ReglementationStatus.STATUS_SOUMIS
-                login_url = f"{reverse_lazy('users:login')}?next={reverse_lazy('reglementations:reglementation', args=[self.entreprise.siren])}"
+                login_url = f"{reverse_lazy('users:login')}?next={reverse_lazy('reglementations:reglementations', args=[self.entreprise.siren])}"
                 status_detail = f'<a href="{login_url}">Vous êtes soumis à cette réglementation. Connectez-vous pour en savoir plus.</a>'
                 primary_action = ReglementationAction(login_url, f"Se connecter")
             else:
@@ -325,7 +325,7 @@ def reglementations(request):
                 entreprise = form.save(commit=commit)
 
     elif entreprise := get_current_entreprise(request):
-        return redirect("reglementations:reglementation", siren=entreprise.siren)
+        return redirect("reglementations:reglementations", siren=entreprise.siren)
 
     return render(
         request,
@@ -335,7 +335,7 @@ def reglementations(request):
 
 
 @login_required
-def reglementation(request, siren):
+def reglementations_for_entreprise(request, siren):
     entreprise = get_object_or_404(Entreprise, siren=siren)
     if request.user not in entreprise.users.all():
         raise PermissionDenied
@@ -617,4 +617,4 @@ def toggle_bdese_completion(request, siren, annee):
         else:
             success_message = "La BDESE a été marquée comme non actualisée"
         messages.success(request, success_message)
-    return redirect("reglementations:reglementation", siren=bdese.entreprise.siren)
+    return redirect("reglementations:reglementations", siren=bdese.entreprise.siren)

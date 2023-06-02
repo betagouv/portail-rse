@@ -42,7 +42,7 @@ def test_create_user_with_real_siren(client, db, mailoutbox):
 
     assert response.status_code == 200
     reglementation_url = reverse(
-        "reglementations:reglementation", kwargs={"siren": "130025265"}
+        "reglementations:reglementations", kwargs={"siren": "130025265"}
     )
     assert response.redirect_chain == [
         (reglementation_url, 302),

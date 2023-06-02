@@ -53,7 +53,7 @@ def test_calculate_status_with_not_authenticated_user(entreprise_factory, mocker
     status = BDESEReglementation(entreprise).calculate_status(2022, AnonymousUser())
 
     assert status.status == ReglementationStatus.STATUS_SOUMIS
-    login_url = f"{reverse('users:login')}?next={reverse('reglementations:reglementation', args=[entreprise.siren])}"
+    login_url = f"{reverse('users:login')}?next={reverse('reglementations:reglementations', args=[entreprise.siren])}"
 
     assert (
         status.status_detail

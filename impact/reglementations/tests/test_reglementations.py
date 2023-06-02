@@ -98,7 +98,7 @@ def test_reglementations_with_authenticated_user(client, entreprise):
 
     assert response.status_code == 200
 
-    url = f"/reglementation/{entreprise.siren}"
+    url = f"/reglementations/{entreprise.siren}"
     assert response.redirect_chain == [(url, 302)]
 
 
@@ -174,7 +174,7 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_autenticated(
 def test_reglementation_with_authenticated_user(client, entreprise):
     client.force_login(entreprise.users.first())
 
-    response = client.get(f"/reglementation/{entreprise.siren}")
+    response = client.get(f"/reglementations/{entreprise.siren}")
 
     assert response.status_code == 200
 
@@ -201,7 +201,7 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
     entreprise2.users.add(alice)
     client.force_login(alice)
 
-    response = client.get(f"/reglementation/{entreprise1.siren}")
+    response = client.get(f"/reglementations/{entreprise1.siren}")
 
     assert response.status_code == 200
 
@@ -218,7 +218,7 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
 
-    response = client.get(f"/reglementation/{entreprise2.siren}")
+    response = client.get(f"/reglementations/{entreprise2.siren}")
 
     assert response.status_code == 200
 
@@ -243,7 +243,7 @@ def test_reglementation_with_unqualified_entreprise_redirect_to_qualification_pa
     client.force_login(alice)
 
     response = client.get(
-        f"/reglementation/{unqualified_entreprise.siren}", follow=True
+        f"/reglementations/{unqualified_entreprise.siren}", follow=True
     )
 
     assert response.status_code == 200
