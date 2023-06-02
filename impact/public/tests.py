@@ -142,12 +142,8 @@ def test_eligibilite_form_truncate_raison_social_when_too_long(db):
             "siren": "123456789",
         }
     )
-
-    assert form.is_valid()
-
-    entreprise = form.save()
-
-    assert entreprise.denomination == "a" * DENOMINATION_MAX_LENGTH
+    assert not form.is_valid()
+    assert "denomination" in form.errors
 
 
 def test_succes_recherche_siren(client, mocker):

@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 
 from entreprises.models import Entreprise as ImpactEntreprise
+from entreprises.models import get_current_evolution
 from metabase.models import Entreprise as MetabaseEntreprise
 
 
@@ -15,11 +16,12 @@ class Command(BaseCommand):
 
     def _insert_entreprises(self):
         for entreprise in ImpactEntreprise.objects.all():
+            evolution = get_current_evolution(entreprise)
             meta_e = MetabaseEntreprise.objects.create(
                 siren=entreprise.siren,
                 denomination=entreprise.denomination,
-                bdese_accord=entreprise.bdese_accord,
-                effectif=entreprise.effectif,
+                bdese_accord=evolution.bdese_accord,
+                effectif=evolution.effectif,
                 created_at=entreprise.created_at,
                 updated_at=entreprise.updated_at,
             )

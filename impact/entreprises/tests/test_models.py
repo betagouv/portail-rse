@@ -7,6 +7,7 @@ from django.db import IntegrityError
 from freezegun import freeze_time
 
 from entreprises.models import Entreprise
+from entreprises.models import set_current_evolution
 
 
 @pytest.mark.django_db(transaction=True)
@@ -22,8 +23,6 @@ def test_entreprise():
     assert entreprise.updated_at == now
     assert entreprise.siren == "123456789"
     assert entreprise.denomination == "Entreprise SAS"
-    assert entreprise.bdese_accord is False
-    assert entreprise.effectif is None
     assert not entreprise.users.all()
     assert not entreprise.is_qualified
 
@@ -33,7 +32,7 @@ def test_entreprise():
         )
 
     with freeze_time(now + timedelta(1)):
-        entreprise.effectif = Entreprise.EFFECTIF_ENTRE_50_ET_299
+        entreprise.denomination = "Nouveau nom SAS"
         entreprise.save()
 
     assert entreprise.updated_at == now + timedelta(1)
@@ -43,6 +42,10 @@ def test_entreprise():
 def test_entreprise_is_qualified(unqualified_entreprise):
     assert not unqualified_entreprise.is_qualified
 
-    unqualified_entreprise.effectif = Entreprise.EFFECTIF_ENTRE_50_ET_299
+    set_current_evolution(
+        entreprise=unqualified_entreprise,
+        effectif=Entreprise.EFFECTIF_MOINS_DE_50,
+        bdese_accord=True,
+    )
 
     assert unqualified_entreprise.is_qualified
