@@ -116,7 +116,7 @@ def qualification(request, siren):
         if form.is_valid():
             entreprise = form.save()
             messages.success(request, "Entreprise enregistrée")
-            return redirect("reglementations:reglementation", siren=siren)
+            return redirect("reglementations:reglementations", siren=siren)
         else:
             messages.error(
                 request,
