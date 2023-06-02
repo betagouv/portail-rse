@@ -94,14 +94,12 @@ def entreprise(db, alice):
 def test_reglementations_with_authenticated_user(client, entreprise):
     client.force_login(entreprise.users.first())
 
-    response = client.get("/reglementations")
+    response = client.get("/reglementations", follow=True)
 
     assert response.status_code == 200
 
-    context = response.context
-    assert context["entreprise"] is None
-    assert context["reglementations"][0]["status"] is None
-    assert context["reglementations"][1]["status"] is None
+    url = f"/reglementation/{entreprise.siren}"
+    assert response.redirect_chain == [(url, 302)]
 
 
 @pytest.mark.parametrize("status_is_soumis", [True, False])

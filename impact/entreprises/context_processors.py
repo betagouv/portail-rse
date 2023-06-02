@@ -1,13 +1,5 @@
-from entreprises.models import Entreprise
+from entreprises.views import get_current_entreprise
 
 
 def current_entreprise(request):
-    if siren := request.session.get("entreprise"):
-        entreprise = Entreprise.objects.get(siren=siren)
-    elif request.user.is_authenticated and (
-        entreprises := request.user.entreprise_set.all()
-    ):
-        entreprise = entreprises[0]
-    else:
-        entreprise = None
-    return {"current_entreprise": entreprise}
+    return {"current_entreprise": get_current_entreprise(request)}

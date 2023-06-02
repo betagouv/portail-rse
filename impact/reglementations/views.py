@@ -18,6 +18,7 @@ from weasyprint import HTML
 
 from api import egapro
 from entreprises.models import Entreprise
+from entreprises.views import get_current_entreprise
 from habilitations.models import get_habilitation
 from habilitations.models import is_user_attached_to_entreprise
 from habilitations.models import is_user_habilited_on_entreprise
@@ -304,21 +305,27 @@ def is_index_egapro_updated(entreprise: Entreprise) -> bool:
 
 
 def reglementations(request):
-    form = EligibiliteForm(request.GET)
     entreprise = None
-    if "siren" in form.data:
-        if entreprises := Entreprise.objects.filter(siren=form.data["siren"]):
-            entreprise = entreprises[0]
-            form = EligibiliteForm(request.GET, instance=entreprise)
-            commit = (
-                request.user.is_authenticated and request.user in entreprise.users.all()
-            )
-        else:
-            commit = True
 
-        if form.is_valid():
-            request.session["siren"] = form.cleaned_data["siren"]
-            entreprise = form.save(commit=commit)
+    if request.GET:
+        form = EligibiliteForm(request.GET)
+        if "siren" in form.data:
+            if entreprises := Entreprise.objects.filter(siren=form.data["siren"]):
+                entreprise = entreprises[0]
+                form = EligibiliteForm(request.GET, instance=entreprise)
+                commit = (
+                    request.user.is_authenticated
+                    and request.user in entreprise.users.all()
+                )
+            else:
+                commit = True
+
+            if form.is_valid():
+                request.session["siren"] = form.cleaned_data["siren"]
+                entreprise = form.save(commit=commit)
+
+    elif entreprise := get_current_entreprise(request):
+        return redirect("reglementations:reglementation", siren=entreprise.siren)
 
     return render(
         request,
