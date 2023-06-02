@@ -18,6 +18,18 @@ from habilitations.models import detach_user_from_entreprise
 from habilitations.models import is_user_attached_to_entreprise
 
 
+def get_current_entreprise(request):
+    if siren := request.session.get("entreprise"):
+        entreprise = Entreprise.objects.get(siren=siren)
+    elif request.user.is_authenticated and (
+        entreprises := request.user.entreprise_set.all()
+    ):
+        entreprise = entreprises[0]
+    else:
+        entreprise = None
+    return entreprise
+
+
 @login_required()
 def index(request):
     if request.POST:
