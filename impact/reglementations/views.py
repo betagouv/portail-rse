@@ -119,13 +119,14 @@ class BDESEReglementation(Reglementation):
     more_info_url = "https://entreprendre.service-public.fr/vosdroits/F32193"
 
     def bdese_type(self) -> int:
+        effectif = self.entreprise.effectif
         if self.entreprise.bdese_accord:
             return self.TYPE_AVEC_ACCORD
-        elif self.entreprise.effectif == Entreprise.EFFECTIF_ENTRE_50_ET_299:
+        elif effectif == Entreprise.EFFECTIF_ENTRE_50_ET_299:
             return self.TYPE_INFERIEUR_300
-        elif self.entreprise.effectif == Entreprise.EFFECTIF_ENTRE_300_ET_499:
+        elif effectif == Entreprise.EFFECTIF_ENTRE_300_ET_499:
             return self.TYPE_INFERIEUR_500
-        elif self.entreprise.effectif == Entreprise.EFFECTIF_500_ET_PLUS:
+        elif effectif == Entreprise.EFFECTIF_500_ET_PLUS:
             return self.TYPE_SUPERIEUR_500
 
     @property
