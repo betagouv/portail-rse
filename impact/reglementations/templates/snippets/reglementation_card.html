@@ -1,4 +1,4 @@
-<div class="fr-card fr-card--horizontal {% if reglementation.status == reglementation.STATUS_NON_SOUMIS %}fr-card--grey{% endif %} fr-mt-2w">
+<div class="fr-card fr-card--horizontal {% if reglementation.status and reglementation.status.status == reglementation.status.STATUS_NON_SOUMIS %}fr-card--grey{% endif %} fr-mt-2w">
     <div class="fr-card__body">
         <div class="fr-card__content">
             <h3 class="fr-card__title">
