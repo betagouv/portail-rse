@@ -46,167 +46,167 @@
     </head>
     <body>
         {% block header %}
-        <header role="banner" class="fr-header">
-            <div class="fr-header__body">
-                <div class="fr-container">
-                    <div class="fr-header__body-row">
-                        <div class="fr-header__brand fr-enlarge-link">
-                            <div class="fr-header__brand-top">
-                                <div class="fr-header__logo">
-                                    <p class="fr-logo">
-                                        République
-                                        <br>Française
-                                    </p>
+            <header role="banner" class="fr-header">
+                <div class="fr-header__body">
+                    <div class="fr-container">
+                        <div class="fr-header__body-row">
+                            <div class="fr-header__brand fr-enlarge-link">
+                                <div class="fr-header__brand-top">
+                                    <div class="fr-header__logo">
+                                        <p class="fr-logo">
+                                            République
+                                            <br>Française
+                                        </p>
+                                    </div>
+                                    <div class="fr-header__navbar">
+                                        <button class="fr-btn--menu fr-btn" data-fr-opened="false" aria-controls="modal-499" aria-haspopup="menu" id="button-500" title="Menu">
+                                            Menu
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="fr-header__navbar">
-                                    <button class="fr-btn--menu fr-btn" data-fr-opened="false" aria-controls="modal-499" aria-haspopup="menu" id="button-500" title="Menu">
-                                        Menu
-                                    </button>
+                                <div class="fr-header__service">
+                                    <a href="/" title="Accueil - Projet IMPACT">
+                                        <p class="fr-header__service-title">
+                                            Projet IMPACT <span class="fr-badge fr-badge--sm fr-badge--green-emeraude">BETA</span>
+                                        </p>
+                                    </a>
+                                    <p class="fr-header__service-tagline">Le meilleur moyen pour les entreprises de déclarer leur performance extra-financière </p>
                                 </div>
                             </div>
-                            <div class="fr-header__service">
-                                <a href="/" title="Accueil - Projet IMPACT">
-                                    <p class="fr-header__service-title">
-                                        Projet IMPACT <span class="fr-badge fr-badge--sm fr-badge--green-emeraude">BETA</span>
-                                    </p>
-                                </a>
-                                <p class="fr-header__service-tagline">Le meilleur moyen pour les entreprises de déclarer leur performance extra-financière </p>
-                            </div>
-                        </div>
-                        <div class="fr-header__tools">
-                            <div class="fr-header__tools-links">
-                                <ul class="fr-btns-group">
-                                    <li><a class="fr-btn fr-icon-mail-line" href="{% url 'contact' %}">Contactez-nous</a></li>
-                                    {% if user.is_authenticated and current_entreprise %}
-                                        <li><a class="fr-btn fr-icon-file-text-line" href="{% url 'reglementations:reglementation' current_entreprise.siren %}">Mes réglementations</a></li>
-                                    {% else %}
-                                        <li><a class="fr-btn fr-icon-file-text-line" href="{% url 'reglementations:reglementations' %}">Réglementations</a></li>
-                                    {% endif %}
-                                    {% if user.is_authenticated %}
-                                        <li><a class="fr-btn fr-icon-lock-unlock-line" href="{% url 'users:logout' %}">Se déconnecter</a></li>
-                                    {% else %}
-                                        <li><a class="fr-btn fr-icon-lock-line" href="{% url 'users:login' %}?next={{ request.path }}">Se connecter</a></li>
-                                    {% endif %}
-                                </ul>
+                            <div class="fr-header__tools">
+                                <div class="fr-header__tools-links">
+                                    <ul class="fr-btns-group">
+                                        <li><a class="fr-btn fr-icon-mail-line" href="{% url 'contact' %}">Contactez-nous</a></li>
+                                        {% if user.is_authenticated and current_entreprise %}
+                                            <li><a class="fr-btn fr-icon-file-text-line" href="{% url 'reglementations:reglementation' current_entreprise.siren %}">Mes réglementations</a></li>
+                                        {% else %}
+                                            <li><a class="fr-btn fr-icon-file-text-line" href="{% url 'reglementations:reglementations' %}">Réglementations</a></li>
+                                        {% endif %}
+                                        {% if user.is_authenticated %}
+                                            <li><a class="fr-btn fr-icon-lock-unlock-line" href="{% url 'users:logout' %}">Se déconnecter</a></li>
+                                        {% else %}
+                                            <li><a class="fr-btn fr-icon-lock-line" href="{% url 'users:login' %}?next={{ request.path }}">Se connecter</a></li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="fr-header__menu fr-modal" id="modal-499" aria-labelledby="button-500">
-                <div class="fr-container">
-                    <button class="fr-btn--close fr-btn" aria-controls="modal-499" title="Fermer">
-                        Fermer
-                    </button>
-                    <div class="fr-header__menu-links">
-                    </div>
-                    {% if user.is_authenticated %}
-                        <nav class="fr-nav" id="navigation-494" role="navigation" aria-label="Menu principal">
-                            <ul class="fr-nav__list">
-                                {% if user.entreprises|length >= 2 %}
+                <div class="fr-header__menu fr-modal" id="modal-499" aria-labelledby="button-500">
+                    <div class="fr-container">
+                        <button class="fr-btn--close fr-btn" aria-controls="modal-499" title="Fermer">
+                            Fermer
+                        </button>
+                        <div class="fr-header__menu-links">
+                        </div>
+                        {% if user.is_authenticated %}
+                            <nav class="fr-nav" id="navigation-494" role="navigation" aria-label="Menu principal">
+                                <ul class="fr-nav__list">
+                                    {% if user.entreprises|length >= 2 %}
+                                        <li class="fr-nav__item">
+                                            <button class="fr-nav__btn" aria-expanded="false" aria-controls="menu-1">
+                                                <span class="fr-icon-bank-fill fr-mr-1w" aria-hidden="true"></span>
+                                                {{ current_entreprise.denomination }}
+                                            </button>
+                                            <div class="fr-collapse fr-menu" id="menu-1">
+                                                <ul class="fr-menu__list">
+                                                    {% for entreprise in user.entreprises %}
+                                                        <li><a class="fr-nav__link" href="{% url 'reglementations:reglementation' entreprise.siren %}" target="_self">{{ entreprise.denomination }}</a></li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </li>
+                                    {% endif %}
                                     <li class="fr-nav__item">
-                                        <button class="fr-nav__btn" aria-expanded="false" aria-controls="menu-1">
-                                            <span class="fr-icon-bank-fill fr-mr-1w" aria-hidden="true"></span>
-                                            {{ current_entreprise.denomination }}
+                                        <button class="fr-nav__btn" aria-expanded="false" aria-controls="menu-2">
+                                            <span class="fr-icon-account-circle-fill fr-mr-1w" aria-hidden="true"></span>
+                                            {{ user.prenom|title }} {{ user.nom|title|first }}.
                                         </button>
-                                        <div class="fr-collapse fr-menu" id="menu-1">
+                                        <div class="fr-collapse fr-menu" id="menu-2">
                                             <ul class="fr-menu__list">
-                                                {% for entreprise in user.entreprises %}
-                                                    <li><a class="fr-nav__link" href="{% url 'reglementations:reglementation' entreprise.siren %}" target="_self">{{ entreprise.denomination }}</a></li>
-                                                {% endfor %}
+                                                <li><a class="fr-nav__link" href="{% url 'users:account' %}" target="_self">Mon compte</a></li>
+                                                <li><a class="fr-nav__link" href="{% url 'entreprises:entreprises' %}" target="_self">{% if user.entreprise_set.count >= 2 %}Mes entreprises{% else %}Mon entreprise{% endif %}</a></li>
                                             </ul>
                                         </div>
                                     </li>
-                                {% endif %}
-                                <li class="fr-nav__item">
-                                    <button class="fr-nav__btn" aria-expanded="false" aria-controls="menu-2">
-                                        <span class="fr-icon-account-circle-fill fr-mr-1w" aria-hidden="true"></span>
-                                        {{ user.prenom|title }} {{ user.nom|title|first }}.
-                                    </button>
-                                    <div class="fr-collapse fr-menu" id="menu-2">
-                                        <ul class="fr-menu__list">
-                                            <li><a class="fr-nav__link" href="{% url 'users:account' %}" target="_self">Mon compte</a></li>
-                                            <li><a class="fr-nav__link" href="{% url 'entreprises:entreprises' %}" target="_self">{% if user.entreprise_set.count >= 2 %}Mes entreprises{% else %}Mon entreprise{% endif %}</a></li>
-                                        </ul>
-                                    </div>
-                                </li>
-                            </ul>
-                        </nav>
-                    {% endif %}
+                                </ul>
+                            </nav>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
-        </header>
+            </header>
         {% endblock %}
 
         <main>
             {% if messages %}
-            <div class="fr-container fr-mt-4w">
-                {% for message in messages %}
-                <div class="fr-alert fr-alert--{{ message.tags }}">
-                    <p>{{ message }}</p>
+                <div class="fr-container fr-mt-4w">
+                    {% for message in messages %}
+                        <div class="fr-alert fr-alert--{{ message.tags }}">
+                            <p>{{ message }}</p>
+                        </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
             {% endif %}
             {% block content %}{% endblock %}
         </main>
 
         {% block footer %}
-        <footer class="fr-footer" role="contentinfo" id="footer">
-        <div class="fr-container">
-            <div class="fr-footer__body">
-                <div class="fr-footer__brand fr-enlarge-link">
-                    <a href="/" title="Retour à l’accueil du site - Projet IMPACT">
-                        <p class="fr-logo">
-                            République
-                            <br>Française
-                        </p>
-                    </a>
-                </div>
-                <div class="fr-footer__content">
-                    <p>
+            <footer class="fr-footer" role="contentinfo" id="footer">
+                <div class="fr-container">
+                    <div class="fr-footer__body">
+                        <div class="fr-footer__brand fr-enlarge-link">
+                            <a href="/" title="Retour à l’accueil du site - Projet IMPACT">
+                                <p class="fr-logo">
+                                    République
+                                    <br>Française
+                                </p>
+                            </a>
+                        </div>
+                        <div class="fr-footer__content">
+                            <p>
 
-                    </p>
-                    <ul class="fr-footer__content-list">
-                        Le projet Impact aide les entreprises à satisfaire leurs obligations réglementaires en matière de performance extra-financière. <br>
-                        Il est développé par la <a href="https://www.entreprises.gouv.fr/fr/la-direction-generale-des-entreprises-dge" target="_blank" rel="noopener">Direction Générale des Entreprises (DGE)</a> en lien avec BetaGouv et la Direction Interministérielle du Numérique (DINUM).
-                        <li class="fr-footer__content-item">
-                            <a class="fr-footer__content-link" target="_blank" href="https://legifrance.gouv.fr">legifrance.gouv.fr</a>
-                        </li>
-                        <li class="fr-footer__content-item">
-                            <a class="fr-footer__content-link" target="_blank" href="https://gouvernement.fr">gouvernement.fr</a>
-                        </li>
-                        <li class="fr-footer__content-item">
-                            <a class="fr-footer__content-link" target="_blank" href="https://service-public.fr">service-public.fr</a>
-                        </li>
-                        <li class="fr-footer__content-item">
-                            <a class="fr-footer__content-link" target="_blank" href="https://data.gouv.fr">data.gouv.fr</a>
-                        </li>
-                    </ul>
+                            </p>
+                            <ul class="fr-footer__content-list">
+                                Le projet Impact aide les entreprises à satisfaire leurs obligations réglementaires en matière de performance extra-financière. <br>
+                                Il est développé par la <a href="https://www.entreprises.gouv.fr/fr/la-direction-generale-des-entreprises-dge" target="_blank" rel="noopener">Direction Générale des Entreprises (DGE)</a> en lien avec BetaGouv et la Direction Interministérielle du Numérique (DINUM).
+                                <li class="fr-footer__content-item">
+                                    <a class="fr-footer__content-link" target="_blank" href="https://legifrance.gouv.fr">legifrance.gouv.fr</a>
+                                </li>
+                                <li class="fr-footer__content-item">
+                                    <a class="fr-footer__content-link" target="_blank" href="https://gouvernement.fr">gouvernement.fr</a>
+                                </li>
+                                <li class="fr-footer__content-item">
+                                    <a class="fr-footer__content-link" target="_blank" href="https://service-public.fr">service-public.fr</a>
+                                </li>
+                                <li class="fr-footer__content-item">
+                                    <a class="fr-footer__content-link" target="_blank" href="https://data.gouv.fr">data.gouv.fr</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="fr-footer__bottom">
+                        <ul class="fr-footer__bottom-list">
+                            <li class="fr-footer__bottom-item">
+                                <span class="fr-footer__bottom-link">Accessibilité : non conforme</span>
+                            </li>
+                            <li class="fr-footer__bottom-item">
+                                <a class="fr-footer__bottom-link" href="{% url 'mentions_legales' %}">Mentions légales</a>
+                            </li>
+                            <li class="fr-footer__bottom-item">
+                                <a class="fr-footer__bottom-link" href="{% url 'politique_confidentialite' %}">Politique de confidentialité</a>
+                            </li>
+                            <li class="fr-footer__bottom-item">
+                                <a class="fr-footer__bottom-link" href="{% url 'cgu' %}">CGU</a>
+                            </li>
+                        </ul>
+                        <div class="fr-footer__bottom-copy">
+                            <p>Sauf mention contraire, tous les contenus de ce site sont sous licence Affero GPL.
+                            </p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="fr-footer__bottom">
-                <ul class="fr-footer__bottom-list">
-                    <li class="fr-footer__bottom-item">
-                        <span class="fr-footer__bottom-link">Accessibilité : non conforme</span>
-                    </li>
-                    <li class="fr-footer__bottom-item">
-                        <a class="fr-footer__bottom-link" href="{% url 'mentions_legales' %}">Mentions légales</a>
-                    </li>
-                    <li class="fr-footer__bottom-item">
-                        <a class="fr-footer__bottom-link" href="{% url 'politique_confidentialite' %}">Politique de confidentialité</a>
-                    </li>
-                    <li class="fr-footer__bottom-item">
-                        <a class="fr-footer__bottom-link" href="{% url 'cgu' %}">CGU</a>
-                    </li>
-                </ul>
-                <div class="fr-footer__bottom-copy">
-                    <p>Sauf mention contraire, tous les contenus de ce site sont sous licence Affero GPL.
-                    </p>
-                </div>
-            </div>
-        </div>
-        </footer>
+            </footer>
         {% endblock %}
 
         <!-- Script en version es6 module et nomodule pour les navigateurs le ne supportant pas -->

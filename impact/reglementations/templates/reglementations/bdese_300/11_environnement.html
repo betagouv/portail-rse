@@ -1,52 +1,52 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% include "snippets/bdese_header.html" %}
+    {% include "snippets/bdese_header.html" %}
 
-<div class="fr-container fr-mb-8w">
-    <div class="fr-grid-row">
-        {% include "snippets/bdese_menu.html" with active_item=11 %}
+    <div class="fr-container fr-mb-8w">
+        <div class="fr-grid-row">
+            {% include "snippets/bdese_menu.html" with active_item=11 %}
 
-        <div class="fr-col">
-            <h2>Environnement</h2>
+            <div class="fr-col">
+                <h2>Environnement</h2>
 
-            <form action="{% url 'reglementations:bdese' siren annee 11 %}" method="post">
-                {% csrf_token %}
-                {{ form.external_fields_in_step.as_hidden }}
+                <form action="{% url 'reglementations:bdese' siren annee 11 %}" method="post">
+                    {% csrf_token %}
+                    {{ form.external_fields_in_step.as_hidden }}
 
-                <p>Lorsque les données et informations environnementales transmises dans le cadre de cette rubrique ne sont pas éditées au niveau de l'entreprise (i. e. par exemple, au niveau du groupe ou des établissements distincts, le cas échéant), elles doivent être accompagnées d'informations supplémentaires pertinentes pour être mises en perspective à ce niveau.</p>
-                <h3>I - Pour les entreprises soumises à la déclaration prévue à l'article R. 225-105 du code de commerce</h3>
-                <h4>A - Politique générale en matière environnementale</h4>
-                {% include 'snippets/bdese_field.html' with field=form.informations_environnementales %}
+                    <p>Lorsque les données et informations environnementales transmises dans le cadre de cette rubrique ne sont pas éditées au niveau de l'entreprise (i. e. par exemple, au niveau du groupe ou des établissements distincts, le cas échéant), elles doivent être accompagnées d'informations supplémentaires pertinentes pour être mises en perspective à ce niveau.</p>
+                    <h3>I - Pour les entreprises soumises à la déclaration prévue à l'article R. 225-105 du code de commerce</h3>
+                    <h4>A - Politique générale en matière environnementale</h4>
+                    {% include 'snippets/bdese_field.html' with field=form.informations_environnementales %}
 
-                <h4>B - Economie circulaire</h4>
-                {% include 'snippets/bdese_field.html' with field=form.quantite_de_dechets_dangereux_soumis_DPEF %}
+                    <h4>B - Economie circulaire</h4>
+                    {% include 'snippets/bdese_field.html' with field=form.quantite_de_dechets_dangereux_soumis_DPEF %}
 
-                <h4>C - Changement climatique</h4>
-                {% include 'snippets/bdese_field.html' with field=form.bilan_gaz_effet_de_serre_soumis_DPEF %}
+                    <h4>C - Changement climatique</h4>
+                    {% include 'snippets/bdese_field.html' with field=form.bilan_gaz_effet_de_serre_soumis_DPEF %}
 
-                <h3>II - Pour les entreprises non soumises à la déclaration prévue à l'article R. 225-105 du code de commerce</h3>
-                <h4>A - Politique générale en matière environnementale</h4>
-                {% include 'snippets/bdese_field.html' with field=form.prise_en_compte_questions_environnementales %}
+                    <h3>II - Pour les entreprises non soumises à la déclaration prévue à l'article R. 225-105 du code de commerce</h3>
+                    <h4>A - Politique générale en matière environnementale</h4>
+                    {% include 'snippets/bdese_field.html' with field=form.prise_en_compte_questions_environnementales %}
 
-                <h4>B - Economie circulaire</h4>
-                <h5>i - Prévention et gestion de la production de déchets</h5>
-                {% include 'snippets/bdese_field.html' with field=form.quantite_de_dechets_dangereux_non_soumis_DPEF %}
+                    <h4>B - Economie circulaire</h4>
+                    <h5>i - Prévention et gestion de la production de déchets</h5>
+                    {% include 'snippets/bdese_field.html' with field=form.quantite_de_dechets_dangereux_non_soumis_DPEF %}
 
-                <h5>ii - Utilisation durable des ressources</h5>
-                {% include 'snippets/bdese_field.html' with field=form.consommation_eau %}
-                {% include 'snippets/bdese_field.html' with field=form.consommation_energie %}
+                    <h5>ii - Utilisation durable des ressources</h5>
+                    {% include 'snippets/bdese_field.html' with field=form.consommation_eau %}
+                    {% include 'snippets/bdese_field.html' with field=form.consommation_energie %}
 
-                <h4>C - Changement climatique</h4>
-                <h5>i - Identification des postes d'émissions directes de gaz à effet de serre</h5>
-                {% include 'snippets/bdese_field.html' with field=form.postes_emissions_directes_gaz_effet_de_serre %}
+                    <h4>C - Changement climatique</h4>
+                    <h5>i - Identification des postes d'émissions directes de gaz à effet de serre</h5>
+                    {% include 'snippets/bdese_field.html' with field=form.postes_emissions_directes_gaz_effet_de_serre %}
 
-                <h5>ii - Bilan des émissions de gaz à effet de serre</h5>
-                {% include 'snippets/bdese_field.html' with field=form.bilan_gaz_effet_de_serre_non_soumis_DPEF %}
+                    <h5>ii - Bilan des émissions de gaz à effet de serre</h5>
+                    {% include 'snippets/bdese_field.html' with field=form.bilan_gaz_effet_de_serre_non_soumis_DPEF %}
 
-                {% include "snippets/bdese_submit.html" %}
-            </form>
+                    {% include "snippets/bdese_submit.html" %}
+                </form>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}

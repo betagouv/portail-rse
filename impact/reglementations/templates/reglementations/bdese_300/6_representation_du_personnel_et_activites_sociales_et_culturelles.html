@@ -1,50 +1,50 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% include "snippets/bdese_header.html" %}
+    {% include "snippets/bdese_header.html" %}
 
-<div class="fr-container fr-mb-8w">
-    <div class="fr-grid-row">
-        {% include "snippets/bdese_menu.html" with active_item=6 %}
+    <div class="fr-container fr-mb-8w">
+        <div class="fr-grid-row">
+            {% include "snippets/bdese_menu.html" with active_item=6 %}
 
-        <div class="fr-col">
-            <h2>Représentation du personnel et Activités sociales et culturelles : montant de la contribution aux activités sociales et culturelles du comité social et économique, mécénat</h2>
+            <div class="fr-col">
+                <h2>Représentation du personnel et Activités sociales et culturelles : montant de la contribution aux activités sociales et culturelles du comité social et économique, mécénat</h2>
 
-            <form action="{% url 'reglementations:bdese' siren annee 6 %}" method="post">
-                {% csrf_token %}
-                {{ form.external_fields_in_step.as_hidden }}
+                <form action="{% url 'reglementations:bdese' siren annee 6 %}" method="post">
+                    {% csrf_token %}
+                    {{ form.external_fields_in_step.as_hidden }}
 
-                <h3>A - Représentation du personnel</h3>
-                <h4>a) Représentants du personnel et délégués syndicaux</h4>
-                {% include 'snippets/bdese_field.html' with field=form.composition_CSE_etablissement %}
-                {% include 'snippets/bdese_field.html' with field=form.participation_elections %}
-                {% include 'snippets/bdese_field.html' with field=form.volume_credit_heures %}
-                {% include 'snippets/bdese_field.html' with field=form.nombre_reunion_representants_personnel %}
-                {% include 'snippets/bdese_field.html' with field=form.accords_conclus %}
-                {% include 'snippets/bdese_field.html' with field=form.nombre_personnes_conge_education_ouvriere %}
+                    <h3>A - Représentation du personnel</h3>
+                    <h4>a) Représentants du personnel et délégués syndicaux</h4>
+                    {% include 'snippets/bdese_field.html' with field=form.composition_CSE_etablissement %}
+                    {% include 'snippets/bdese_field.html' with field=form.participation_elections %}
+                    {% include 'snippets/bdese_field.html' with field=form.volume_credit_heures %}
+                    {% include 'snippets/bdese_field.html' with field=form.nombre_reunion_representants_personnel %}
+                    {% include 'snippets/bdese_field.html' with field=form.accords_conclus %}
+                    {% include 'snippets/bdese_field.html' with field=form.nombre_personnes_conge_education_ouvriere %}
 
-                <h4>b) Information et communication</h4>
-                {% include 'snippets/bdese_field.html' with field=form.nombre_heures_reunion_personnel %}
-                {% include 'snippets/bdese_field.html' with field=form.elements_systeme_accueil %}
-                {% include 'snippets/bdese_field.html' with field=form.elements_systeme_information %}
-                {% include 'snippets/bdese_field.html' with field=form.elements_systeme_entretiens_individuels %}
+                    <h4>b) Information et communication</h4>
+                    {% include 'snippets/bdese_field.html' with field=form.nombre_heures_reunion_personnel %}
+                    {% include 'snippets/bdese_field.html' with field=form.elements_systeme_accueil %}
+                    {% include 'snippets/bdese_field.html' with field=form.elements_systeme_information %}
+                    {% include 'snippets/bdese_field.html' with field=form.elements_systeme_entretiens_individuels %}
 
-                <h4>c) Différends concernant l'application du droit du travail</h4>
-                {% include 'snippets/bdese_field.html' with field=form.differends_application_droit_du_travail %}
+                    <h4>c) Différends concernant l'application du droit du travail</h4>
+                    {% include 'snippets/bdese_field.html' with field=form.differends_application_droit_du_travail %}
 
-                <h3>B - Activités sociales et culturelles</h3>
-                <h4>a) Activités sociales</h4>
-                {% include 'snippets/bdese_field.html' with field=form.contributions_financement_CSE_CSEE %}
-                {% include 'snippets/bdese_field.html' with field=form.contributions_autres_depenses %}
+                    <h3>B - Activités sociales et culturelles</h3>
+                    <h4>a) Activités sociales</h4>
+                    {% include 'snippets/bdese_field.html' with field=form.contributions_financement_CSE_CSEE %}
+                    {% include 'snippets/bdese_field.html' with field=form.contributions_autres_depenses %}
 
-                <h4>b) Autres charges sociales</h4>
-                {% include 'snippets/bdese_field.html' with field=form.cout_prestations_maladie_deces %}
-                {% include 'snippets/bdese_field.html' with field=form.cout_prestations_vieillesse %}
-                {% include 'snippets/bdese_field.html' with field=form.equipements_pour_conditions_de_vie %}
+                    <h4>b) Autres charges sociales</h4>
+                    {% include 'snippets/bdese_field.html' with field=form.cout_prestations_maladie_deces %}
+                    {% include 'snippets/bdese_field.html' with field=form.cout_prestations_vieillesse %}
+                    {% include 'snippets/bdese_field.html' with field=form.equipements_pour_conditions_de_vie %}
 
-                {% include "snippets/bdese_submit.html" %}
-            </form>
+                    {% include "snippets/bdese_submit.html" %}
+                </form>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}

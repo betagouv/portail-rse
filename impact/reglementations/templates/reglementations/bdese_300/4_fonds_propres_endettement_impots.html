@@ -1,25 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% include "snippets/bdese_header.html" %}
+    {% include "snippets/bdese_header.html" %}
 
-<div class="fr-container fr-mb-8w">
-    <div class="fr-grid-row">
-        {% include "snippets/bdese_menu.html" with active_item=4 %}
+    <div class="fr-container fr-mb-8w">
+        <div class="fr-grid-row">
+            {% include "snippets/bdese_menu.html" with active_item=4 %}
 
-        <div class="fr-col">
-            <h2>Fonds propres, endettement et impôts</h2>
+            <div class="fr-col">
+                <h2>Fonds propres, endettement et impôts</h2>
 
-            <form action="{% url 'reglementations:bdese' siren annee 4 %}" method="post">
-                {% csrf_token %}
-                {{ form.external_fields_in_step.as_hidden }}
-                {% include 'snippets/bdese_field.html' with field=form.capitaux_propres %}
-                {% include 'snippets/bdese_field.html' with field=form.emprunts_et_dettes_financieres %}
-                {% include 'snippets/bdese_field.html' with field=form.impots_et_taxes %}
+                <form action="{% url 'reglementations:bdese' siren annee 4 %}" method="post">
+                    {% csrf_token %}
+                    {{ form.external_fields_in_step.as_hidden }}
+                    {% include 'snippets/bdese_field.html' with field=form.capitaux_propres %}
+                    {% include 'snippets/bdese_field.html' with field=form.emprunts_et_dettes_financieres %}
+                    {% include 'snippets/bdese_field.html' with field=form.impots_et_taxes %}
 
-                {% include "snippets/bdese_submit.html" %}
-            </form>
+                    {% include "snippets/bdese_submit.html" %}
+                </form>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}

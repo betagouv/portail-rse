@@ -20,22 +20,22 @@
     {% else %}
         <div class="{{ fr_group_class }}{% if field.errors %} {{ fr_group_class }}--error {% endif %}">
 
-        {% block field %}
-            <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label }}
-                <span class="fr-hint-text">{{ field.help_text|safe }}</span>
-            </label>
-            <div class="fr-col-12 {% if widget_type == 'NumberInput' %}fr-col-sm-2{% endif %}">
-                {{ field }}
-            </div>
-        {% endblock %}
+            {% block field %}
+                <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label }}
+                    <span class="fr-hint-text">{{ field.help_text|safe }}</span>
+                </label>
+                <div class="fr-col-12 {% if widget_type == 'NumberInput' %}fr-col-sm-2{% endif %}">
+                    {{ field }}
+                </div>
+            {% endblock %}
 
-        {% if field.errors %}
-            <p id="{{ field.name }}-error-desc-error" class="fr-error-text">
-                {% for error in field.errors %}
-                    {{ error|escape }}
-                {% endfor %}
-            </p>
-        {% endif %}
+            {% if field.errors %}
+                <p id="{{ field.name }}-error-desc-error" class="fr-error-text">
+                    {% for error in field.errors %}
+                        {{ error|escape }}
+                    {% endfor %}
+                </p>
+            {% endif %}
         </div>
     {% endif %}
 {% endwith %}

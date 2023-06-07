@@ -1,34 +1,34 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="fr-container fr-my-12w">
-    <div class="fr-grid-row fr-grid-row--center">
-        <div class="fr-col-8">
-            {% if form.non_field_errors %}
-            <div class="fr-alert fr-alert--error fr-mb-5w">
-                <h3 class="fr-alert__title">Erreur</h3>
-                {% for error in form.non_field_errors %}
-                <p>{{ error }}</p>
-                {% endfor %}
-            </div>
-           {% endif %}
+    <div class="fr-container fr-my-12w">
+        <div class="fr-grid-row fr-grid-row--center">
+            <div class="fr-col-8">
+                {% if form.non_field_errors %}
+                    <div class="fr-alert fr-alert--error fr-mb-5w">
+                        <h3 class="fr-alert__title">Erreur</h3>
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
 
-            <form action="{% url 'users:login' %}" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="next" value="{{ next }}">
-                {% include 'snippets/field.html' with field=form.username %}
-                {% include 'snippets/field.html' with field=form.password %}
-                <button type="submit" class="fr-btn">Se connecter</button>
-            </form>
+                <form action="{% url 'users:login' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ next }}">
+                    {% include 'snippets/field.html' with field=form.username %}
+                    {% include 'snippets/field.html' with field=form.password %}
+                    <button type="submit" class="fr-btn">Se connecter</button>
+                </form>
+            </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--center fr-mt-4w">
+            <div class="fr-col-8">
+                <p>
+                    Vous n'avez pas encore de compte ? <a href="{% url 'users:creation'%}">Créez votre compte</a><br>
+                    Vous avez oublié votre mot de passe ? <a href="{% url 'users:password_reset'%}">Réinitialisez votre mot de passe</a>
+                </p>
+            </div>
         </div>
     </div>
-    <div class="fr-grid-row fr-grid-row--center fr-mt-4w">
-        <div class="fr-col-8">
-            <p>
-                Vous n'avez pas encore de compte ? <a href="{% url 'users:creation'%}">Créez votre compte</a><br>
-                Vous avez oublié votre mot de passe ? <a href="{% url 'users:password_reset'%}">Réinitialisez votre mot de passe</a>
-            </p>
-        </div>
-    </div>
-</div>
 {% endblock %}

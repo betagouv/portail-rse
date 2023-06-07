@@ -1,57 +1,57 @@
 {% load filters %}
 {% with field=bdese|model_field:field_name value=bdese|field_value:field_name %}
-<div class="field-block">
-    <div class="fr-text-lead">{{ field.verbose_name }} :</div>
-    {% if field.help_text %}<p class="fr-text--sm">{{ field.help_text }}</p>{% endif %}
-    <div class="fr-table fr-table--bordered">
-        <table>
-            {% if field.name in bdese.external_fields %}
-            <tbody>
-                <tr>
-                    <td>Cette information est remplie dans un autre document.</td>
-                </tr>
-            </tbody>
-            {% elif value or value == 0 %}
-                {% with field_type=field|model_field_type %}
-                    {% if field_type == 'CategoryField' %}
-                    <thead>
-                        <tr>
-                            {% for categorie, qte in value.items %}
-                            <th scope="col">{{ categorie | capfirst }}</th>
-                            {% endfor %}
-                        </tr>
-                    </thead>
+    <div class="field-block">
+        <div class="fr-text-lead">{{ field.verbose_name }} :</div>
+        {% if field.help_text %}<p class="fr-text--sm">{{ field.help_text }}</p>{% endif %}
+        <div class="fr-table fr-table--bordered">
+            <table>
+                {% if field.name in bdese.external_fields %}
                     <tbody>
                         <tr>
-                            {% for categorie, qte in value.items %}
-                            <td>{{ qte }}</td>
-                            {% endfor %}
+                            <td>Cette information est remplie dans un autre document.</td>
                         </tr>
                     </tbody>
-                    {% else %}
+                {% elif value or value == 0 %}
+                    {% with field_type=field|model_field_type %}
+                        {% if field_type == 'CategoryField' %}
+                            <thead>
+                                <tr>
+                                    {% for categorie, qte in value.items %}
+                                        <th scope="col">{{ categorie | capfirst }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    {% for categorie, qte in value.items %}
+                                        <td>{{ qte }}</td>
+                                    {% endfor %}
+                                </tr>
+                            </tbody>
+                        {% else %}
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        {% if field_type == 'BooleanField' %}
+                                            {{ value | translate_boolean | capfirst }}
+                                        {% else %}
+                                            {{ value }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        {% endif %}
+                    {% endwith %}
+                {% else %}
                     <tbody>
                         <tr>
                             <td>
-                                {% if field_type == 'BooleanField' %}
-                                    {{ value | translate_boolean | capfirst }}
-                                {% else %}
-                                    {{ value }}
-                                {% endif %}
+                                Information non remplie.
                             </td>
                         </tr>
                     </tbody>
-                    {% endif %}
-                {% endwith %}
-            {% else %}
-            <tbody>
-                <tr>
-                    <td>
-                        Information non remplie.
-                    </td>
-                </tr>
-            </tbody>
-            {% endif %}
-        </table>
+                {% endif %}
+            </table>
+        </div>
     </div>
-</div>
 {% endwith %}

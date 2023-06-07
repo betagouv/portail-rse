@@ -1,5 +1,3 @@
-import pytest
-
 from api.egapro import indicateurs
 from api.egapro import is_index_egapro_updated
 

@@ -1,28 +1,28 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% include "snippets/bdese_header.html" %}
+    {% include "snippets/bdese_header.html" %}
 
-<div class="fr-container fr-mb-8w">
-    <div class="fr-grid-row">
-        {% include "snippets/bdese_menu.html" with active_item=10 %}
+    <div class="fr-container fr-mb-8w">
+        <div class="fr-grid-row">
+            {% include "snippets/bdese_menu.html" with active_item=10 %}
 
-        <div class="fr-col">
-            <h2>Pour les entreprises appartenant à un groupe, transferts commerciaux et financiers entre les entités du groupe</h2>
+            <div class="fr-col">
+                <h2>Pour les entreprises appartenant à un groupe, transferts commerciaux et financiers entre les entités du groupe</h2>
 
-            <form action="{% url 'reglementations:bdese' siren annee 10 %}" method="post">
-                {% csrf_token %}
-                {{ form.external_fields_in_step.as_hidden }}
+                <form action="{% url 'reglementations:bdese' siren annee 10 %}" method="post">
+                    {% csrf_token %}
+                    {{ form.external_fields_in_step.as_hidden }}
 
-                <h3>A - Transferts de capitaux tels qu'ils figurent dans les comptes individuels des sociétés du groupe lorsqu'ils présentent une importance significative</h3>
-                {% include 'snippets/bdese_field.html' with field=form.transferts_de_capitaux %}
+                    <h3>A - Transferts de capitaux tels qu'ils figurent dans les comptes individuels des sociétés du groupe lorsqu'ils présentent une importance significative</h3>
+                    {% include 'snippets/bdese_field.html' with field=form.transferts_de_capitaux %}
 
-                <h3>B - Cessions, fusions, et acquisitions réalisées</h3>
-                {% include 'snippets/bdese_field.html' with field=form.cessions_fusions_acquisitions %}
+                    <h3>B - Cessions, fusions, et acquisitions réalisées</h3>
+                    {% include 'snippets/bdese_field.html' with field=form.cessions_fusions_acquisitions %}
 
-                {% include "snippets/bdese_submit.html" %}
-            </form>
+                    {% include "snippets/bdese_submit.html" %}
+                </form>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}

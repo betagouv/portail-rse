@@ -1,25 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% include "snippets/bdese_header.html" %}
+    {% include "snippets/bdese_header.html" %}
 
-<div class="fr-container fr-mb-8w">
-    <div class="fr-grid-row">
-        {% include "snippets/bdese_menu.html" with active_item=2 %}
+    <div class="fr-container fr-mb-8w">
+        <div class="fr-grid-row">
+            {% include "snippets/bdese_menu.html" with active_item=2 %}
 
-        <div class="fr-col">
-            <h2>Investissement matériel et immatériel</h2>
+            <div class="fr-col">
+                <h2>Investissement matériel et immatériel</h2>
 
-            <form action="{% url 'reglementations:bdese' siren annee 2 %}" method="post">
-                {% csrf_token %}
-                {{ form.external_fields_in_step.as_hidden }}
-                {% include 'snippets/bdese_field.html' with field=form.evolution_amortissement %}
-                {% include 'snippets/bdese_field.html' with field=form.montant_depenses_recherche_developpement %}
-                {% include 'snippets/bdese_field.html' with field=form.evolution_productivite %}
+                <form action="{% url 'reglementations:bdese' siren annee 2 %}" method="post">
+                    {% csrf_token %}
+                    {{ form.external_fields_in_step.as_hidden }}
+                    {% include 'snippets/bdese_field.html' with field=form.evolution_amortissement %}
+                    {% include 'snippets/bdese_field.html' with field=form.montant_depenses_recherche_developpement %}
+                    {% include 'snippets/bdese_field.html' with field=form.evolution_productivite %}
 
-                {% include "snippets/bdese_submit.html" %}
-            </form>
+                    {% include "snippets/bdese_submit.html" %}
+                </form>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}

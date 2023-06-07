@@ -3,106 +3,106 @@
 {% load filters %}
 
 {% block content %}
-<div class="fr-container fr-my-8w">
-    {% if user.entreprise_set.count >= 2 %}
-        <h1>Mes entreprises</h1>
-    {% else %}
-        <h1>Mon entreprise</h1>
-    {% endif %}
+    <div class="fr-container fr-my-8w">
+        {% if user.entreprise_set.count >= 2 %}
+            <h1>Mes entreprises</h1>
+        {% else %}
+            <h1>Mon entreprise</h1>
+        {% endif %}
 
 
-    {% if not user.entreprise_set.all %}
-        Aucune entreprise n'est associée à votre compte.
+        {% if not user.entreprise_set.all %}
+            Aucune entreprise n'est associée à votre compte.
 
         {% comment %}
             Limitation de l'ajout d'entreprise pour n'en avoir qu'une seule car il n'est pas certain que l'on puisse avoir une authentification forte d'un seul compte sur plusieurs entreprises.
             Actuellement, deux utilisateurs réels sont dans cette situation.
         {% endcomment %}
-        <h2 class="fr-mt-4w">Ajouter une entreprise</h2>
-        <form method="post">
-            {% csrf_token %}
-            <div id="svelte-search-entreprise">
-                {% include 'snippets/siren_field.html' %}
-            </div>
-            {% include 'snippets/field.html' with field=form.fonctions %}
-            <button type="submit" name="action" value="attach" class="fr-btn">Ajouter cette entreprise</button>
-        </form>
-    {% else %}
-    <div class="fr-grid-row fr-mb-1w fr-grid-row--gutters">
-
-        {% for entreprise in user.entreprise_set.all %}
-        {% with habilitation=user|habilitation:entreprise %}
-        <div class="fr-col fr-col-md-12">
-            <div class="fr-card fr-card--md fr-card--shadow">
-                <div class="fr-card__body">
-                    <div class="fr-card__content">
-                        <h3 class="fr-card__title">
-                            {% if entreprise.denomination %}{{ entreprise.denomination }}{% else %}{{ entreprise.siren}}{% endif %}
-                            {% if habilitation and habilitation.is_confirmed %}
-                                <span class="fr-badge fr-badge--success">Habilité</span>
-                            {% endif %}
-                        </h3>
-                        <p class="fr-card__desc">
-                            {% if habilitation and habilitation.fonctions %}en tant que {{ habilitation.fonctions }}{% endif %} </br>
-                            SIREN :<b> {{ entreprise.siren }} </b></br>
-                            Effectif :<b> {% if entreprise.effectif %}{{ entreprise.get_effectif_display }}{% else %}non renseigné{% endif %} </b></br>
-                            Accord d'entreprise concernant la BDESE :<b> {{ entreprise.bdese_accord | translate_boolean }} </b></br>
-                        </p>
-                    </div>
-                    <div class="fr-card__footer">
-                        <ul class="fr-btns-group--md fr-btns-group--inline-reverse fr-btns-group--inline-lg">
-                            <li>
-                                <a href="{% url 'reglementations:reglementation' entreprise.siren %}" class="fr-btn fr-btn--icon-left fr-icon-file-text-line">Voir les réglementations</a>
-                            </li>
-                            <li>
-                                <button class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-close-circle-line" data-fr-opened="false" aria-controls="modal-detach-{{ entreprise.siren }}">
-                                    Quitter cette entreprise
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
+            <h2 class="fr-mt-4w">Ajouter une entreprise</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div id="svelte-search-entreprise">
+                    {% include 'snippets/siren_field.html' %}
                 </div>
-            </div>
-        </div>
-        <dialog aria-labelledby="modal-detach-{{ entreprise.siren }}-title" id="modal-detach-{{ entreprise.siren }}" class="fr-modal" role="dialog" >
-            <div class="fr-container fr-container--fluid fr-container-md">
-                <div class="fr-grid-row fr-grid-row--center">
-                    <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
-                        <div class="fr-modal__body">
-                            <div class="fr-modal__header">
-                                <button class="fr-link--close fr-link" aria-controls="modal-detach-{{ entreprise.siren }}">Fermer</button>
-                            </div>
-                            <div class="fr-modal__content">
-                                <h1 id="modal-detach-{{ entreprise.siren }}-title" class="fr-modal__title">
-                                    <span class="fr-fi-arrow-right-line fr-fi--lg"></span>
-                                    Quitter cette entreprise
-                                </h1>
-                                <p>Êtes-vous sûr de vouloir retirer votre compte de l'entreprise {{ entreprise.denomination }} ?</p>
-                                <p>L'entreprise et ses données éventuelles ne seront pas supprimées mais votre compte utilisateur n'y sera plus rattaché.</p>
-                            </div>
-                            <div class="fr-modal__footer">
-                                <form method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="siren" value="{{ entreprise.siren }}">
-                                    <ul class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
-                                        <li>
-                                            <button type="submit" name="action" value="detach" class="fr-btn fr-btn--icon-left fr-icon-close-circle-line">Quitter cette entreprise</button>
-                                        </li>
-                                        <li>
-                                            <button type="button" class="fr-btn fr-btn--secondary" aria-controls="modal-detach-{{ entreprise.siren }}">Annuler</button>
-                                        </li>
-                                </form>
+                {% include 'snippets/field.html' with field=form.fonctions %}
+                <button type="submit" name="action" value="attach" class="fr-btn">Ajouter cette entreprise</button>
+            </form>
+        {% else %}
+            <div class="fr-grid-row fr-mb-1w fr-grid-row--gutters">
+
+                {% for entreprise in user.entreprise_set.all %}
+                    {% with habilitation=user|habilitation:entreprise %}
+                        <div class="fr-col fr-col-md-12">
+                            <div class="fr-card fr-card--md fr-card--shadow">
+                                <div class="fr-card__body">
+                                    <div class="fr-card__content">
+                                        <h3 class="fr-card__title">
+                                            {% if entreprise.denomination %}{{ entreprise.denomination }}{% else %}{{ entreprise.siren}}{% endif %}
+                                            {% if habilitation and habilitation.is_confirmed %}
+                                                <span class="fr-badge fr-badge--success">Habilité</span>
+                                            {% endif %}
+                                        </h3>
+                                        <p class="fr-card__desc">
+                                            {% if habilitation and habilitation.fonctions %}en tant que {{ habilitation.fonctions }}{% endif %} </br>
+                                            SIREN :<b> {{ entreprise.siren }} </b></br>
+                                            Effectif :<b> {% if entreprise.effectif %}{{ entreprise.get_effectif_display }}{% else %}non renseigné{% endif %} </b></br>
+                                            Accord d'entreprise concernant la BDESE :<b> {{ entreprise.bdese_accord | translate_boolean }} </b></br>
+                                        </p>
+                                    </div>
+                                    <div class="fr-card__footer">
+                                        <ul class="fr-btns-group--md fr-btns-group--inline-reverse fr-btns-group--inline-lg">
+                                            <li>
+                                                <a href="{% url 'reglementations:reglementation' entreprise.siren %}" class="fr-btn fr-btn--icon-left fr-icon-file-text-line">Voir les réglementations</a>
+                                            </li>
+                                            <li>
+                                                <button class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-close-circle-line" data-fr-opened="false" aria-controls="modal-detach-{{ entreprise.siren }}">
+                                                    Quitter cette entreprise
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </dialog>
-        {% endwith %}
-        {% endfor %}
-    {% endif %}
+                        <dialog aria-labelledby="modal-detach-{{ entreprise.siren }}-title" id="modal-detach-{{ entreprise.siren }}" class="fr-modal" role="dialog" >
+                            <div class="fr-container fr-container--fluid fr-container-md">
+                                <div class="fr-grid-row fr-grid-row--center">
+                                    <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
+                                        <div class="fr-modal__body">
+                                            <div class="fr-modal__header">
+                                                <button class="fr-link--close fr-link" aria-controls="modal-detach-{{ entreprise.siren }}">Fermer</button>
+                                            </div>
+                                            <div class="fr-modal__content">
+                                                <h1 id="modal-detach-{{ entreprise.siren }}-title" class="fr-modal__title">
+                                                    <span class="fr-fi-arrow-right-line fr-fi--lg"></span>
+                                                    Quitter cette entreprise
+                                                </h1>
+                                                <p>Êtes-vous sûr de vouloir retirer votre compte de l'entreprise {{ entreprise.denomination }} ?</p>
+                                                <p>L'entreprise et ses données éventuelles ne seront pas supprimées mais votre compte utilisateur n'y sera plus rattaché.</p>
+                                            </div>
+                                            <div class="fr-modal__footer">
+                                                <form method="post">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="siren" value="{{ entreprise.siren }}">
+                                                    <ul class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
+                                                        <li>
+                                                            <button type="submit" name="action" value="detach" class="fr-btn fr-btn--icon-left fr-icon-close-circle-line">Quitter cette entreprise</button>
+                                                        </li>
+                                                        <li>
+                                                            <button type="button" class="fr-btn fr-btn--secondary" aria-controls="modal-detach-{{ entreprise.siren }}">Annuler</button>
+                                                        </li>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </dialog>
+                    {% endwith %}
+                {% endfor %}
+        {% endif %}
     </div>
-</div>
+    </div>
 
 <!-- page entreprises -->
 {% endblock %}

@@ -1,31 +1,31 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="fr-container fr-my-16w">
-    <div class="fr-grid-row fr-grid-row--center">
-        <div class="fr-col-8">
-            <h1>Recherchez votre entreprise</h1>
-            <p>Recherchez votre entreprise pour démarrer la simulation et savoir à quelles réglementations extra-financières votre entreprise est soumise</p>
-            <form action="{% url 'simulation' %}" method="get">
-                {% csrf_token %}
-                <div id="svelte-search-entreprise">
-                {% include 'snippets/siren_field.html' with field=form.siren %}
-                </div>
-                <button type="submit" class="fr-btn fr-mt-1w">Démarrer la simulation</button>
-            </form>
-            <p class="fr-my-4w">
-                En utilisant le présent formulaire, vous pouvez être amené à transmettre des données à caractère personnel,
-                notamment par les informations pouvant nous être transmises via l’identifiant SIREN que vous pourriez
-                renseigner.
-                <br>
-                Ces informations sont nécessaires à l’exercice de la mission d’intérêt public que le service Impact met en œuvre.
-                Dans le cadre du traitement de vos données à caractère personnel, vous trouverez l’identité du responsable
-                de traitement, ses finalités et les modalités d’exercice de vos droits sur la page
-                <a href="{% url 'politique_confidentialite' %}">Politique de confidentialité</a>.
-            </p>
+    <div class="fr-container fr-my-16w">
+        <div class="fr-grid-row fr-grid-row--center">
+            <div class="fr-col-8">
+                <h1>Recherchez votre entreprise</h1>
+                <p>Recherchez votre entreprise pour démarrer la simulation et savoir à quelles réglementations extra-financières votre entreprise est soumise</p>
+                <form action="{% url 'simulation' %}" method="get">
+                    {% csrf_token %}
+                    <div id="svelte-search-entreprise">
+                        {% include 'snippets/siren_field.html' with field=form.siren %}
+                    </div>
+                    <button type="submit" class="fr-btn fr-mt-1w">Démarrer la simulation</button>
+                </form>
+                <p class="fr-my-4w">
+                    En utilisant le présent formulaire, vous pouvez être amené à transmettre des données à caractère personnel,
+                    notamment par les informations pouvant nous être transmises via l’identifiant SIREN que vous pourriez
+                    renseigner.
+                    <br>
+                    Ces informations sont nécessaires à l’exercice de la mission d’intérêt public que le service Impact met en œuvre.
+                    Dans le cadre du traitement de vos données à caractère personnel, vous trouverez l’identité du responsable
+                    de traitement, ses finalités et les modalités d’exercice de vos droits sur la page
+                    <a href="{% url 'politique_confidentialite' %}">Politique de confidentialité</a>.
+                </p>
+            </div>
         </div>
-    </div>
 
-</div>
+    </div>
 <!-- page simulation étape 1 -->
 {% endblock %}

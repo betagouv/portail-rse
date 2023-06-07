@@ -1,28 +1,28 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% include "snippets/bdese_header.html" %}
+    {% include "snippets/bdese_header.html" %}
 
-<div class="fr-container fr-mb-8w">
-    <div class="fr-grid-row">
-        {% include "snippets/bdese_menu.html" with active_item=7 %}
+    <div class="fr-container fr-mb-8w">
+        <div class="fr-grid-row">
+            {% include "snippets/bdese_menu.html" with active_item=7 %}
 
-        <div class="fr-col">
-            <h2>Rémunération des financeurs, en dehors des éléments mentionnés à l'étape "Rémunérations"</h2>
+            <div class="fr-col">
+                <h2>Rémunération des financeurs, en dehors des éléments mentionnés à l'étape "Rémunérations"</h2>
 
-            <form action="{% url 'reglementations:bdese' siren annee 7 %}" method="post">
-                {% csrf_token %}
-                {{ form.external_fields_in_step.as_hidden }}
+                <form action="{% url 'reglementations:bdese' siren annee 7 %}" method="post">
+                    {% csrf_token %}
+                    {{ form.external_fields_in_step.as_hidden }}
 
-                <h3>A - Rémunération des actionnaires (revenus distribués)</h3>
-                {% include 'snippets/bdese_field.html' with field=form.remuneration_actionnaires %}
+                    <h3>A - Rémunération des actionnaires (revenus distribués)</h3>
+                    {% include 'snippets/bdese_field.html' with field=form.remuneration_actionnaires %}
 
-                <h3>B - Rémunération de l'actionnariat salarié</h3>
-                {% include 'snippets/bdese_field.html' with field=form.remuneration_actionnariat_salarie %}
+                    <h3>B - Rémunération de l'actionnariat salarié</h3>
+                    {% include 'snippets/bdese_field.html' with field=form.remuneration_actionnariat_salarie %}
 
-                {% include "snippets/bdese_submit.html" %}
-            </form>
+                    {% include "snippets/bdese_submit.html" %}
+                </form>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}

@@ -1,43 +1,43 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% include "snippets/bdese_header.html" %}
+    {% include "snippets/bdese_header.html" %}
 
-<div class="fr-container fr-mb-8w">
-    <div class="fr-grid-row">
-        {% include "snippets/bdese_menu.html" with active_item=8 %}
+    <div class="fr-container fr-mb-8w">
+        <div class="fr-grid-row">
+            {% include "snippets/bdese_menu.html" with active_item=8 %}
 
-        <div class="fr-col">
-            <h2>Flux financiers à destination de l'entreprise</h2>
+            <div class="fr-col">
+                <h2>Flux financiers à destination de l'entreprise</h2>
 
-            <form action="{% url 'reglementations:bdese' siren annee 8 %}" method="post">
-                {% csrf_token %}
-                {{ form.external_fields_in_step.as_hidden }}
+                <form action="{% url 'reglementations:bdese' siren annee 8 %}" method="post">
+                    {% csrf_token %}
+                    {{ form.external_fields_in_step.as_hidden }}
 
-                <h3>A - Aides publiques</h3>
-                {% include 'snippets/bdese_field.html' with field=form.aides_financieres %}
+                    <h3>A - Aides publiques</h3>
+                    {% include 'snippets/bdese_field.html' with field=form.aides_financieres %}
 
-                <h3>B - Réductions d'impôts</h3>
-                {% include 'snippets/bdese_field.html' with field=form.reductions_impots %}
+                    <h3>B - Réductions d'impôts</h3>
+                    {% include 'snippets/bdese_field.html' with field=form.reductions_impots %}
 
-                <h3>C - Exonérations et réductions de cotisations sociales</h3>
-                {% include 'snippets/bdese_field.html' with field=form.exonerations_cotisations_sociales %}
+                    <h3>C - Exonérations et réductions de cotisations sociales</h3>
+                    {% include 'snippets/bdese_field.html' with field=form.exonerations_cotisations_sociales %}
 
-                <h3>D - Crédits d'impôts</h3>
-                {% include 'snippets/bdese_field.html' with field=form.credits_impots %}
+                    <h3>D - Crédits d'impôts</h3>
+                    {% include 'snippets/bdese_field.html' with field=form.credits_impots %}
 
-                <h3>E - Mécénat</h3>
-                {% include 'snippets/bdese_field.html' with field=form.mecenat_recu %}
+                    <h3>E - Mécénat</h3>
+                    {% include 'snippets/bdese_field.html' with field=form.mecenat_recu %}
 
-                <h3>F - Résultats financiers</h3>
-                {% include 'snippets/bdese_field.html' with field=form.chiffre_affaires %}
-                {% include 'snippets/bdese_field.html' with field=form.benefices_ou_pertes %}
-                {% include 'snippets/bdese_field.html' with field=form.resultats_globaux %}
-                {% include 'snippets/bdese_field.html' with field=form.affectation_benefices %}
+                    <h3>F - Résultats financiers</h3>
+                    {% include 'snippets/bdese_field.html' with field=form.chiffre_affaires %}
+                    {% include 'snippets/bdese_field.html' with field=form.benefices_ou_pertes %}
+                    {% include 'snippets/bdese_field.html' with field=form.resultats_globaux %}
+                    {% include 'snippets/bdese_field.html' with field=form.affectation_benefices %}
 
-                {% include "snippets/bdese_submit.html" %}
-            </form>
+                    {% include "snippets/bdese_submit.html" %}
+                </form>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}

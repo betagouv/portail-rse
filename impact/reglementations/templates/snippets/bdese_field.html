@@ -27,16 +27,16 @@
 
 {% block field %}
     {% with toggle_id=field|svelte_toggle_id container_id=field|svelte_container_id%}
-    <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
-        <div class="fr-col">
-            <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label }}
-                <span class="fr-hint-text">{{ field.help_text }}</span>
-            </label>
+        <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
+            <div class="fr-col">
+                <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label }}
+                    <span class="fr-hint-text">{{ field.help_text }}</span>
+                </label>
+            </div>
+            <div class="fr-col-3">
+                <div class="svelte-external-field-toggle" data-toggle-id="{{ toggle_id }}" data-field-name="{{ field.name }}" data-field-container-id="{{ container_id }}" data-external-fields-in-step-field-id="{{ field.form.external_fields_in_step.id_for_label }}"></div>
+            </div>
         </div>
-        <div class="fr-col-3">
-            <div class="svelte-external-field-toggle" data-toggle-id="{{ toggle_id }}" data-field-name="{{ field.name }}" data-field-container-id="{{ container_id }}" data-external-fields-in-step-field-id="{{ field.form.external_fields_in_step.id_for_label }}"></div>
-        </div>
-    </div>
         <div id="{{ container_id }}">
             <div class="svelte-external-field" style="display: none">
                 <span class="fr-hint-text">Cette information est remplie dans un autre document.</span>

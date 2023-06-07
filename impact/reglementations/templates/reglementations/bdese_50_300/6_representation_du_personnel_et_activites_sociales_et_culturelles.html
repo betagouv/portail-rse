@@ -1,25 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% include "snippets/bdese_header.html" %}
+    {% include "snippets/bdese_header.html" %}
 
-<div class="fr-container fr-mb-8w">
-    <div class="fr-grid-row">
-        {% include "snippets/bdese_menu.html" with active_item=6 %}
+    <div class="fr-container fr-mb-8w">
+        <div class="fr-grid-row">
+            {% include "snippets/bdese_menu.html" with active_item=6 %}
 
-        <div class="fr-col">
-            <h2>Activités sociales et culturelles</h2>
+            <div class="fr-col">
+                <h2>Activités sociales et culturelles</h2>
 
-            <form action="{% url 'reglementations:bdese' siren annee 6 %}" method="post">
-                {% csrf_token %}
-                {{ form.external_fields_in_step.as_hidden }}
+                <form action="{% url 'reglementations:bdese' siren annee 6 %}" method="post">
+                    {% csrf_token %}
+                    {{ form.external_fields_in_step.as_hidden }}
 
-                {% include 'snippets/bdese_field.html' with field=form.montant_contribution_activites_sociales_culturelles %}
-                {% include 'snippets/bdese_field.html' with field=form.mecenat_verse %}
+                    {% include 'snippets/bdese_field.html' with field=form.montant_contribution_activites_sociales_culturelles %}
+                    {% include 'snippets/bdese_field.html' with field=form.mecenat_verse %}
 
-                {% include "snippets/bdese_submit.html" %}
-            </form>
+                    {% include "snippets/bdese_submit.html" %}
+                </form>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}

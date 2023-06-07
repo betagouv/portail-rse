@@ -1,27 +1,27 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="fr-container">
-    <div class="fr-my-7w fr-mt-md-12w fr-mb-md-10w fr-grid-row fr-grid-row--gutters fr-grid-row--middle fr-grid-row--center">
-        <div class="fr-py-0 fr-col-12 fr-col-md-6">
-            <h1>Accès non autorisé</h1>
-            <p class="fr-text--lead fr-mb-3w">Retournez à la liste de vos réglementations</p>
-            <p class="fr-text--sm fr-mb-5w">
-                Vous tentez d'accéder aux ressources d'une entreprise qui n'est pas rattachée à votre compte. Contactez-nous si vous pensez qu'il s'agit d'une erreur.
-            </p>
-            <ul class="fr-btns-group fr-btns-group--inline-md">
-                <li>
-                    <a class="fr-btn" href="{% url 'reglementations:reglementations' %}">
-                        Accédez à vos réglementations
-                    </a>
-                </li>
-                <li>
-                    <a class="fr-btn fr-btn--secondary" href="{% url 'contact' %}">
-                        Contactez-nous
-                    </a>
-                </li>
-            </ul>
+    <div class="fr-container">
+        <div class="fr-my-7w fr-mt-md-12w fr-mb-md-10w fr-grid-row fr-grid-row--gutters fr-grid-row--middle fr-grid-row--center">
+            <div class="fr-py-0 fr-col-12 fr-col-md-6">
+                <h1>Accès non autorisé</h1>
+                <p class="fr-text--lead fr-mb-3w">Retournez à la liste de vos réglementations</p>
+                <p class="fr-text--sm fr-mb-5w">
+                    Vous tentez d'accéder aux ressources d'une entreprise qui n'est pas rattachée à votre compte. Contactez-nous si vous pensez qu'il s'agit d'une erreur.
+                </p>
+                <ul class="fr-btns-group fr-btns-group--inline-md">
+                    <li>
+                        <a class="fr-btn" href="{% url 'reglementations:reglementations' %}">
+                            Accédez à vos réglementations
+                        </a>
+                    </li>
+                    <li>
+                        <a class="fr-btn fr-btn--secondary" href="{% url 'contact' %}">
+                            Contactez-nous
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}
