@@ -2,6 +2,7 @@ from abc import ABC
 from abc import abstractmethod
 from dataclasses import dataclass
 from dataclasses import field
+from datetime import date
 
 from django.conf import settings
 from django.contrib import messages
@@ -22,11 +23,11 @@ from entreprises.views import get_current_entreprise
 from entreprises.models import Evolution
 from entreprises.models import get_current_evolution
 from entreprises.models import has_current_evolution
-from entreprises.models import set_current_evolution
 from habilitations.models import get_habilitation
 from habilitations.models import is_user_attached_to_entreprise
 from habilitations.models import is_user_habilited_on_entreprise
-from public.forms import SimulationForm
+from public.forms import EntrepriseForm
+from public.forms import EvolutionForm
 from reglementations.forms import bdese_configuration_form_factory
 from reglementations.forms import bdese_form_factory
 from reglementations.forms import IntroductionDemoForm
@@ -329,38 +330,33 @@ def is_index_egapro_updated(entreprise: Entreprise) -> bool:
 def reglementations(request):
     entreprise = None
     if request.GET:
-        form = SimulationForm(request.GET)
-        if "siren" in form.data:
-            if entreprises := Entreprise.objects.filter(siren=form.data["siren"]):
+        entreprise_form = EntrepriseForm(request.GET)
+        evolution_form = EvolutionForm(request.GET)
+        if "siren" in request.GET:
+            if entreprises := Entreprise.objects.filter(
+                siren=entreprise_form.data["siren"]
+            ):
                 entreprise = entreprises[0]
-                form = SimulationForm(request.GET)
+                entreprise_form = EntrepriseForm(request.GET, instance=entreprise)
                 commit = (
-                    request.user.is_authenticated
-                    and request.user in entreprise.users.all()
+                    request.user.is_authenticated and request.user in entreprise.users.all()
                 )
             else:
                 commit = True
 
-            if form.is_valid():
-                request.session["siren"] = form.cleaned_data["siren"]
-                if not entreprise:
-                    entreprise = Entreprise.objects.create(
-                        siren=form.cleaned_data["siren"]
-                    )
-                entreprise.denomination = form.data["denomination"]
-                if has_current_evolution(entreprise):
-                    evolution = get_current_evolution(entreprise)
-                    evolution.effectif = form.data["effectif"]
-                    evolution.bdese_accord = form.data["bdese_accord"]
+            if entreprise_form.is_valid() and evolution_form.is_valid():
+                request.session["siren"] = entreprise_form.cleaned_data["siren"]
+                entreprise = entreprise_form.save(commit=commit)
+                current_annee = date.today().year
+                if evolutions := Evolution.objects.filter(
+                    entreprise=entreprise, annee=current_annee
+                ):
+                    evolution = evolutions[0]
+                    evolution_form = EvolutionForm(request.GET, instance=evolution)
                 else:
-                    evolution = set_current_evolution(
-                        entreprise,
-                        form.data["effectif"],
-                        form.data["bdese_accord"],
-                    )
-                if commit:
-                    entreprise.save()
-                    evolution.save()
+                    evolution_form.instance.entreprise = entreprise
+                    evolution_form.instance.annee = current_annee
+                evolution = evolution_form.save(commit=commit)
 
     elif entreprise := get_current_entreprise(request):
         return redirect("reglementations:reglementations", siren=entreprise.siren)
