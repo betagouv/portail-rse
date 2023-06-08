@@ -26,7 +26,7 @@ from entreprises.models import set_current_evolution
 from habilitations.models import get_habilitation
 from habilitations.models import is_user_attached_to_entreprise
 from habilitations.models import is_user_habilited_on_entreprise
-from public.forms import EligibiliteForm
+from public.forms import SimulationForm
 from reglementations.forms import bdese_configuration_form_factory
 from reglementations.forms import bdese_form_factory
 from reglementations.forms import IntroductionDemoForm
@@ -329,11 +329,11 @@ def is_index_egapro_updated(entreprise: Entreprise) -> bool:
 def reglementations(request):
     entreprise = None
     if request.GET:
-        form = EligibiliteForm(request.GET)
+        form = SimulationForm(request.GET)
         if "siren" in form.data:
             if entreprises := Entreprise.objects.filter(siren=form.data["siren"]):
                 entreprise = entreprises[0]
-                form = EligibiliteForm(request.GET)
+                form = SimulationForm(request.GET)
                 commit = (
                     request.user.is_authenticated
                     and request.user in entreprise.users.all()

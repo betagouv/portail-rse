@@ -7,7 +7,7 @@ from django.shortcuts import render
 import api.exceptions
 import api.recherche_entreprises
 from .forms import ContactForm
-from .forms import EligibiliteForm
+from .forms import SimulationForm
 from .forms import SirenForm
 
 
@@ -69,7 +69,7 @@ def simulation(request):
             siren = form.cleaned_data["siren"]
             try:
                 infos_entreprise = api.recherche_entreprises.recherche(siren)
-                form = EligibiliteForm(initial=infos_entreprise)
+                form = SimulationForm(initial=infos_entreprise)
                 return render(
                     request,
                     "public/simulation-etape-2.html",

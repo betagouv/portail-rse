@@ -5,7 +5,7 @@ import pytest
 import api.exceptions
 from entreprises.models import Evolution
 from public.forms import DENOMINATION_MAX_LENGTH
-from public.forms import EligibiliteForm
+from public.forms import SimulationForm
 
 
 def test_page_index(client):
@@ -134,7 +134,7 @@ def test_page_cgu(client):
 
 
 def test_eligibilite_form_truncate_raison_social_when_too_long(db):
-    form = EligibiliteForm(
+    form = SimulationForm(
         data={
             "effectif": Evolution.EFFECTIF_ENTRE_300_ET_499,
             "bdese_accord": False,

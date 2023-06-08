@@ -10,7 +10,7 @@ class SirenForm(DsfrForm):
     siren = SirenField()
 
 
-class EligibiliteForm(DsfrForm):
+class SimulationForm(DsfrForm):
     denomination = forms.CharField(max_length=DENOMINATION_MAX_LENGTH)
     effectif = forms.CharField()
     bdese_accord = forms.BooleanField(required=False)
