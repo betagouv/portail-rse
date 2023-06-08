@@ -19,6 +19,7 @@ from weasyprint import HTML
 from api import egapro
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
+from entreprises.models import Evolution
 from entreprises.models import get_current_evolution
 from entreprises.models import has_current_evolution
 from entreprises.models import set_current_evolution
@@ -126,11 +127,11 @@ class BDESEReglementation(Reglementation):
         effectif = evolution.effectif
         if evolution.bdese_accord:
             return self.TYPE_AVEC_ACCORD
-        elif effectif == Entreprise.EFFECTIF_ENTRE_50_ET_299:
+        elif effectif == Evolution.EFFECTIF_ENTRE_50_ET_299:
             return self.TYPE_INFERIEUR_300
-        elif effectif == Entreprise.EFFECTIF_ENTRE_300_ET_499:
+        elif effectif == Evolution.EFFECTIF_ENTRE_300_ET_499:
             return self.TYPE_INFERIEUR_500
-        elif effectif == Entreprise.EFFECTIF_500_ET_PLUS:
+        elif effectif == Evolution.EFFECTIF_500_ET_PLUS:
             return self.TYPE_SUPERIEUR_500
 
     @property
@@ -138,7 +139,7 @@ class BDESEReglementation(Reglementation):
         if has_current_evolution(self.entreprise):
             return (
                 get_current_evolution(self.entreprise).effectif
-                != Entreprise.EFFECTIF_MOINS_DE_50
+                != Evolution.EFFECTIF_MOINS_DE_50
             )
         else:
             return False
@@ -286,7 +287,7 @@ class IndexEgaproReglementation(Reglementation):
         if has_current_evolution(self.entreprise):
             return (
                 get_current_evolution(self.entreprise).effectif
-                != Entreprise.EFFECTIF_MOINS_DE_50
+                != Evolution.EFFECTIF_MOINS_DE_50
             )
         else:
             return False
@@ -305,7 +306,7 @@ class IndexEgaproReglementation(Reglementation):
         if (
             has_current_evolution(self.entreprise)
             and get_current_evolution(self.entreprise).effectif
-            == Entreprise.EFFECTIF_MOINS_DE_50
+            == Evolution.EFFECTIF_MOINS_DE_50
         ):
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"

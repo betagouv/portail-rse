@@ -3,7 +3,7 @@ from django.core.management import call_command
 
 import api.exceptions
 from entreprises.management.commands.force_denomination import Command
-from entreprises.models import Entreprise as Entreprise
+from entreprises.models import Evolution
 
 
 @pytest.mark.django_db(transaction=True)
@@ -16,7 +16,7 @@ def test_remplit_la_denomination(db, mocker, unqualified_entreprise):
         "api.recherche_entreprises.recherche",
         return_value={
             "siren": unqualified_entreprise.siren,
-            "effectif": Entreprise.EFFECTIF_ENTRE_50_ET_299,
+            "effectif": Evolution.EFFECTIF_ENTRE_50_ET_299,
             "denomination": RAISON_SOCIALE,
         },
     )
@@ -36,7 +36,7 @@ def test_ne_modifie_pas_la_denomination_si_deja_remplie(
         "api.recherche_entreprises.recherche",
         return_value={
             "siren": unqualified_entreprise.siren,
-            "effectif": Entreprise.EFFECTIF_ENTRE_50_ET_299,
+            "effectif": Evolution.EFFECTIF_ENTRE_50_ET_299,
             "denomination": "RAISON SOCIALE",
         },
     )
