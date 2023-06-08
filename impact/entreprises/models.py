@@ -28,6 +28,9 @@ class Entreprise(TimestampedModel):
             effectif = None
         return self.denomination and effectif
 
+    def get_current_evolution(self):
+        return get_evolution(self, date.today().year)
+
 
 class Evolution(models.Model):
     EFFECTIF_MOINS_DE_50 = "0-49"
