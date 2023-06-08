@@ -64,10 +64,10 @@ def contact(request):
 
 
 def simulation(request):
-    form = SirenForm(request.GET or None)
+    siren_form = SirenForm(request.GET or None)
     if request.GET:
-        if form.is_valid():
-            siren = form.cleaned_data["siren"]
+        if siren_form.is_valid():
+            siren = siren_form.cleaned_data["siren"]
             try:
                 infos_entreprise = api.recherche_entreprises.recherche(siren)
                 entreprise_form = EntrepriseForm(initial=infos_entreprise)
@@ -83,7 +83,7 @@ def simulation(request):
                     },
                 )
             except api.exceptions.SirenError as e:
-                form.add_error("siren", "SIREN introuvable")
+                siren_form.add_error("siren", "SIREN introuvable")
                 messages.error(
                     request,
                     str(e),
@@ -93,4 +93,4 @@ def simulation(request):
                     request,
                     str(e),
                 )
-    return render(request, "public/simulation-etape-1.html", {"form": form})
+    return render(request, "public/simulation-etape-1.html", {"form": siren_form})
