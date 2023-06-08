@@ -7,6 +7,7 @@ from django.db import IntegrityError
 from freezegun import freeze_time
 
 from entreprises.models import Entreprise
+from entreprises.models import Evolution
 from entreprises.models import set_current_evolution
 
 
@@ -44,7 +45,7 @@ def test_entreprise_is_qualified(unqualified_entreprise):
 
     set_current_evolution(
         entreprise=unqualified_entreprise,
-        effectif=Entreprise.EFFECTIF_MOINS_DE_50,
+        effectif=Evolution.EFFECTIF_MOINS_DE_50,
         bdese_accord=True,
     )
 

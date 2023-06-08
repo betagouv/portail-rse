@@ -2,7 +2,7 @@ import pytest
 from django.contrib.auth.models import AnonymousUser
 from django.urls import reverse
 
-from entreprises.models import Entreprise
+from entreprises.models import Evolution
 from habilitations.models import attach_user_to_entreprise
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
@@ -99,7 +99,7 @@ def test_calculate_status_less_than_50_employees(
     bdese_accord, entreprise_factory, alice
 ):
     entreprise = entreprise_factory(
-        effectif=Entreprise.EFFECTIF_MOINS_DE_50, bdese_accord=bdese_accord
+        effectif=Evolution.EFFECTIF_MOINS_DE_50, bdese_accord=bdese_accord
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
@@ -114,9 +114,9 @@ def test_calculate_status_less_than_50_employees(
 @pytest.mark.parametrize(
     "effectif, bdese_class",
     [
-        (Entreprise.EFFECTIF_ENTRE_50_ET_299, BDESE_50_300),
-        (Entreprise.EFFECTIF_ENTRE_300_ET_499, BDESE_300),
-        (Entreprise.EFFECTIF_500_ET_PLUS, BDESE_300),
+        (Evolution.EFFECTIF_ENTRE_50_ET_299, BDESE_50_300),
+        (Evolution.EFFECTIF_ENTRE_300_ET_499, BDESE_300),
+        (Evolution.EFFECTIF_500_ET_PLUS, BDESE_300),
     ],
 )
 def test_calculate_status_more_than_50_employees_with_habilited_user(
@@ -176,9 +176,9 @@ def test_calculate_status_more_than_50_employees_with_habilited_user(
 @pytest.mark.parametrize(
     "effectif, bdese_class",
     [
-        (Entreprise.EFFECTIF_ENTRE_50_ET_299, BDESE_50_300),
-        (Entreprise.EFFECTIF_ENTRE_300_ET_499, BDESE_300),
-        (Entreprise.EFFECTIF_500_ET_PLUS, BDESE_300),
+        (Evolution.EFFECTIF_ENTRE_50_ET_299, BDESE_50_300),
+        (Evolution.EFFECTIF_ENTRE_300_ET_499, BDESE_300),
+        (Evolution.EFFECTIF_500_ET_PLUS, BDESE_300),
     ],
 )
 def test_calculate_status_more_than_50_employees_with_not_habilited_user(
@@ -206,9 +206,9 @@ def test_calculate_status_more_than_50_employees_with_not_habilited_user(
 @pytest.mark.parametrize(
     "effectif",
     [
-        Entreprise.EFFECTIF_ENTRE_50_ET_299,
-        Entreprise.EFFECTIF_ENTRE_300_ET_499,
-        Entreprise.EFFECTIF_500_ET_PLUS,
+        Evolution.EFFECTIF_ENTRE_50_ET_299,
+        Evolution.EFFECTIF_ENTRE_300_ET_499,
+        Evolution.EFFECTIF_500_ET_PLUS,
     ],
 )
 def test_calculate_status_with_bdese_accord_with_not_habilited_user(
@@ -253,9 +253,9 @@ def test_calculate_status_with_bdese_accord_with_not_habilited_user(
 @pytest.mark.parametrize(
     "effectif",
     [
-        Entreprise.EFFECTIF_ENTRE_50_ET_299,
-        Entreprise.EFFECTIF_ENTRE_300_ET_499,
-        Entreprise.EFFECTIF_500_ET_PLUS,
+        Evolution.EFFECTIF_ENTRE_50_ET_299,
+        Evolution.EFFECTIF_ENTRE_300_ET_499,
+        Evolution.EFFECTIF_500_ET_PLUS,
     ],
 )
 def test_calculate_status_with_bdese_accord_with_habilited_user(

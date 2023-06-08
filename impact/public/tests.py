@@ -3,7 +3,7 @@ import html
 import pytest
 
 import api.exceptions
-from entreprises.models import Entreprise
+from entreprises.models import Evolution
 from public.forms import DENOMINATION_MAX_LENGTH
 from public.forms import EligibiliteForm
 
@@ -136,7 +136,7 @@ def test_page_cgu(client):
 def test_eligibilite_form_truncate_raison_social_when_too_long(db):
     form = EligibiliteForm(
         data={
-            "effectif": Entreprise.EFFECTIF_ENTRE_300_ET_499,
+            "effectif": Evolution.EFFECTIF_ENTRE_300_ET_499,
             "bdese_accord": False,
             "denomination": "a" * (DENOMINATION_MAX_LENGTH + 1),
             "siren": "123456789",
@@ -153,7 +153,7 @@ def test_succes_recherche_siren(client, mocker):
         "api.recherche_entreprises.recherche",
         return_value={
             "siren": SIREN,
-            "effectif": Entreprise.EFFECTIF_ENTRE_50_ET_299,
+            "effectif": Evolution.EFFECTIF_ENTRE_50_ET_299,
             "denomination": RAISON_SOCIALE,
         },
     )
