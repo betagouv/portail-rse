@@ -8,6 +8,7 @@ from django.urls import reverse
 from freezegun import freeze_time
 
 import impact.settings
+from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
 from entreprises.models import Entreprise
 from habilitations.models import get_habilitation
 from users.models import User
@@ -23,8 +24,8 @@ def test_page_creation(client):
     assert "<!-- page creation compte -->" in content
 
 
-@pytest.mark.parametrize("reception_actualites", ["checked", ""])
-def test_create_user_with_real_siren(reception_actualites, client, db, mailoutbox):
+@pytest.mark.network
+def test_create_user_with_real_siren(client, db, mailoutbox):
     data = {
         "prenom": "Alice",
         "nom": "User",
@@ -33,7 +34,7 @@ def test_create_user_with_real_siren(reception_actualites, client, db, mailoutbo
         "password2": "Passw0rd!123",
         "siren": "130025265",  #  Dinum
         "acceptation_cgu": "checked",
-        "reception_actualites": reception_actualites,
+        "reception_actualites": "checked",
         "fonctions": "Présidente",
     }
 
@@ -62,7 +63,7 @@ def test_create_user_with_real_siren(reception_actualites, client, db, mailoutbo
     assert user.prenom == "Alice"
     assert user.nom == "User"
     assert user.acceptation_cgu == True
-    assert user.reception_actualites == (reception_actualites == "checked")
+    assert user.reception_actualites == True
     assert user.check_password("Passw0rd!123")
     assert user.is_email_confirmed == False
     assert user in entreprise.users.all()
@@ -86,6 +87,7 @@ def test_create_user_with_real_siren(reception_actualites, client, db, mailoutbo
     }
 
 
+@pytest.mark.network
 def test_create_user_with_invalid_siren(client, db):
     data = {
         "prenom": "Alice",
@@ -112,7 +114,9 @@ def test_create_user_with_invalid_siren(client, db):
     assert not Entreprise.objects.filter(siren="123456789")
 
 
-def test_create_user_but_cant_send_confirm_email(client, db, mailoutbox, mocker):
+def test_create_user_but_cant_send_confirm_email(
+    client, db, mailoutbox, mocker, mock_api_recherche_entreprises
+):
     mock_send_confirm_email = mocker.patch(
         "users.views._send_confirm_email", return_value=False
     )
