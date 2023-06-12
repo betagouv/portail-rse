@@ -34,9 +34,7 @@ class EntrepriseDetachForm(DsfrForm):
     siren = SirenField()
 
 
-class EntrepriseQualificationForm(DsfrForm):
-    bdese_accord = forms.BooleanField(
-        label="L'entreprise a un accord collectif d'entreprise concernant la Base de Données Économiques, Sociales et Environnementales (BDESE)",
-        required=False,
-    )
-    effectif = forms.ChoiceField(choices=Evolution.EFFECTIF_CHOICES)
+class EntrepriseQualificationForm(DsfrForm, forms.ModelForm):
+    class Meta:
+        model = Evolution
+        fields = ["effectif", "bdese_accord"]
