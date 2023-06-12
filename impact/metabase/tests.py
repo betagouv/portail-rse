@@ -1,3 +1,6 @@
+import datetime
+
+import freezegun
 import pytest
 
 from entreprises.models import Evolution
@@ -8,12 +11,33 @@ from metabase.models import Entreprise as MetabaseEntreprise
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_metabase_once(entreprise_factory):
-    entreprise_A = entreprise_factory(
-        siren="000000001",
-        denomination="A",
-        effectif=Evolution.EFFECTIF_ENTRE_300_ET_499,
-        bdese_accord=True,
+    with freezegun.freeze_time("2023-06-12 12:00"):
+        entreprise_A = entreprise_factory(
+            siren="000000001",
+            denomination="A",
+            effectif=Evolution.EFFECTIF_ENTRE_300_ET_499,
+            bdese_accord=True,
+        )
+    date_deuxieme_evolution = datetime.datetime(
+        2024, 7, 13, tzinfo=datetime.timezone.utc
     )
+    date_troisieme_evolution = datetime.datetime(
+        2025, 8, 14, tzinfo=datetime.timezone.utc
+    )
+    with freezegun.freeze_time(date_deuxieme_evolution) as frozen_datetime:
+        Evolution.objects.create(
+            entreprise=entreprise_A,
+            annee=2024,
+            effectif=Evolution.EFFECTIF_ENTRE_300_ET_499,
+            bdese_accord=True,
+        )
+        frozen_datetime.move_to(date_troisieme_evolution)
+        Evolution.objects.create(
+            entreprise=entreprise_A,
+            annee=2025,
+            effectif=Evolution.EFFECTIF_ENTRE_300_ET_499,
+            bdese_accord=True,
+        )
 
     Command().handle()
 
@@ -23,7 +47,7 @@ def test_synchronise_metabase_once(entreprise_factory):
     assert metabase_entreprise.effectif == "300-499"
     assert metabase_entreprise.bdese_accord == True
     assert metabase_entreprise.created_at == entreprise_A.created_at
-    assert metabase_entreprise.updated_at == entreprise_A.updated_at
+    assert metabase_entreprise.updated_at == date_troisieme_evolution
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
