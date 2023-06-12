@@ -32,7 +32,7 @@ class Entreprise(TimestampedModel):
         return get_evolution(self, date.today().year)
 
 
-class Evolution(models.Model):
+class Evolution(TimestampedModel):
     EFFECTIF_MOINS_DE_50 = "0-49"
     EFFECTIF_ENTRE_50_ET_299 = "50-299"
     EFFECTIF_ENTRE_300_ET_499 = "300-499"

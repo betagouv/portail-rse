@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 
 from entreprises.models import Entreprise as ImpactEntreprise
+from entreprises.models import Evolution
 from entreprises.models import get_current_evolution
 from metabase.models import Entreprise as MetabaseEntreprise
 
@@ -23,10 +24,18 @@ class Command(BaseCommand):
                 bdese_accord=evolution.bdese_accord,
                 effectif=evolution.effectif,
                 created_at=entreprise.created_at,
-                updated_at=entreprise.updated_at,
+                updated_at=_last_update(entreprise),
             )
             meta_e.save()
             self._success(str(entreprise))
 
     def _success(self, message):
         self.stdout.write(self.style.SUCCESS(message))
+
+
+def _last_update(entreprise):
+    last_update = entreprise.updated_at
+    for evolution in Evolution.objects.filter(entreprise=entreprise):
+        if evolution.updated_at > last_update:
+            last_update = evolution.updated_at
+    return last_update
