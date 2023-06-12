@@ -11,17 +11,15 @@ class EntrepriseAdminForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
 
+class EvolutionInline(admin.TabularInline):
+    model = Evolution
+
+
 class EntrepriseAdmin(admin.ModelAdmin):
     list_display = ["siren", "denomination"]
-    inlines = (HabilitationInline,)
+    inlines = (HabilitationInline, EvolutionInline)
     model = Entreprise
     form = EntrepriseAdminForm
 
 
-class EvolutionAdmin(admin.ModelAdmin):
-    list_display = ["entreprise", "annee"]
-    model = Evolution
-
-
 admin.site.register(Entreprise, EntrepriseAdmin)
-admin.site.register(Evolution, EvolutionAdmin)
