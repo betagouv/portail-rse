@@ -34,12 +34,12 @@ class Entreprise(TimestampedModel):
             return None
 
     def get_current_evolution(self):
-        return self.get_evolution(date.today().year)
+        return self.get_evolution(date.today().year - 1)
 
     def set_current_evolution(entreprise, effectif, bdese_accord):
         return Evolution.objects.create(
             entreprise=entreprise,
-            annee=date.today().year,
+            annee=date.today().year - 1,
             effectif=effectif,
             bdese_accord=bdese_accord,
         )
