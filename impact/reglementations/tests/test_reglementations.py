@@ -28,9 +28,9 @@ def test_public_reglementations(client):
     assert context["reglementations"][1]["status"] is None
 
 
-@pytest.mark.parametrize("status_is_soumis", [True, False])
+@pytest.mark.parametrize("status_est_soumis", [True, False])
 @pytest.mark.django_db
-def test_public_reglementations_with_entreprise_data(status_is_soumis, client, mocker):
+def test_public_reglementations_with_entreprise_data(status_est_soumis, client, mocker):
     data = {
         "effectif": Evolution.EFFECTIF_MOINS_DE_50,
         "bdese_accord": False,
@@ -39,12 +39,12 @@ def test_public_reglementations_with_entreprise_data(status_is_soumis, client, m
     }
 
     mocker.patch(
-        "reglementations.views.BDESEReglementation.is_soumis",
-        return_value=status_is_soumis,
+        "reglementations.views.BDESEReglementation.est_soumis",
+        return_value=status_est_soumis,
     )
     mocker.patch(
-        "reglementations.views.IndexEgaproReglementation.is_soumis",
-        return_value=status_is_soumis,
+        "reglementations.views.IndexEgaproReglementation.est_soumis",
+        return_value=status_est_soumis,
     )
     response = client.get("/reglementations", data=data)
 
@@ -69,7 +69,7 @@ def test_public_reglementations_with_entreprise_data(status_is_soumis, client, m
         entreprise
     ).calculate_status(2022, AnonymousUser())
 
-    if status_is_soumis:
+    if status_est_soumis:
         assert '<p class="fr-badge">soumis</p>' in content, content
         anonymous_status_detail = "Vous êtes soumis à cette réglementation. Connectez-vous pour en savoir plus."
         assert anonymous_status_detail in content, content
@@ -102,9 +102,9 @@ def test_reglementations_with_authenticated_user(client, entreprise):
     assert response.redirect_chain == [(url, 302)]
 
 
-@pytest.mark.parametrize("status_is_soumis", [True, False])
+@pytest.mark.parametrize("status_est_soumis", [True, False])
 def test_reglementations_with_authenticated_user_and_another_entreprise_data(
-    status_is_soumis, client, entreprise, mocker
+    status_est_soumis, client, entreprise, mocker
 ):
     """
     Ce cas est encore accessible mais ne correspond pas à un parcours utilisateur normal
@@ -119,12 +119,12 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
     }
 
     mocker.patch(
-        "reglementations.views.BDESEReglementation.is_soumis",
-        return_value=status_is_soumis,
+        "reglementations.views.BDESEReglementation.est_soumis",
+        return_value=status_est_soumis,
     )
     mocker.patch(
-        "reglementations.views.IndexEgaproReglementation.is_soumis",
-        return_value=status_is_soumis,
+        "reglementations.views.IndexEgaproReglementation.est_soumis",
+        return_value=status_est_soumis,
     )
     response = client.get("/reglementations", data=data)
 
@@ -132,7 +132,7 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
     assert "Une autre entreprise SAS" in content
 
     reglementations = response.context["reglementations"]
-    if status_is_soumis:
+    if status_est_soumis:
         assert '<p class="fr-badge">soumis</p>' in content
         anonymous_status_detail = "L'entreprise est soumise à cette réglementation."
         assert anonymous_status_detail in content, content

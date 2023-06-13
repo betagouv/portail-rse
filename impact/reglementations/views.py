@@ -76,7 +76,7 @@ class Reglementation(ABC):
         }
 
     @abstractmethod
-    def is_soumis(self, annee):
+    def est_soumis(self, annee):
         pass
 
     @abstractmethod
@@ -86,7 +86,7 @@ class Reglementation(ABC):
         user: settings.AUTH_USER_MODEL,
     ) -> ReglementationStatus:
         if not user.is_authenticated:
-            if self.is_soumis(annee):
+            if self.est_soumis(annee):
                 status = ReglementationStatus.STATUS_SOUMIS
                 login_url = f"{reverse_lazy('users:login')}?next={reverse_lazy('reglementations:reglementations', args=[self.entreprise.siren])}"
                 status_detail = f'<a href="{login_url}">Vous êtes soumis à cette réglementation. Connectez-vous pour en savoir plus.</a>'
@@ -99,7 +99,7 @@ class Reglementation(ABC):
                 status, status_detail, primary_action=primary_action
             )
         elif not is_user_attached_to_entreprise(user, self.entreprise):
-            if self.is_soumis(annee):
+            if self.est_soumis(annee):
                 status = ReglementationStatus.STATUS_SOUMIS
                 status_detail = "L'entreprise est soumise à cette réglementation."
             else:
@@ -132,7 +132,7 @@ class BDESEReglementation(Reglementation):
         elif effectif == Evolution.EFFECTIF_500_ET_PLUS:
             return self.TYPE_SUPERIEUR_500
 
-    def is_soumis(self, annee):
+    def est_soumis(self, annee):
         effectif = self.entreprise.get_evolution(annee).effectif
         return effectif != Evolution.EFFECTIF_MOINS_DE_50
 
@@ -152,7 +152,7 @@ class BDESEReglementation(Reglementation):
                 return reglementation_status
 
     def _match_non_soumis(self, annee, user):
-        if not self.is_soumis(annee):
+        if not self.est_soumis(annee):
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
             return ReglementationStatus(status, status_detail)
@@ -274,7 +274,7 @@ class IndexEgaproReglementation(Reglementation):
     description = "Afin de lutter contre les inégalités salariales entre les femmes et les hommes, certaines entreprises doivent calculer et transmettre un index mesurant l’égalité salariale au sein de leur structure."
     more_info_url = "https://www.economie.gouv.fr/entreprises/index-egalite-professionnelle-obligatoire"
 
-    def is_soumis(self, annee):
+    def est_soumis(self, annee):
         effectif = self.entreprise.get_evolution(annee).effectif
         return effectif != Evolution.EFFECTIF_MOINS_DE_50
 
@@ -289,7 +289,7 @@ class IndexEgaproReglementation(Reglementation):
             "Calculer et déclarer mon index sur Egapro",
             external=True,
         )
-        if not self.is_soumis(annee):
+        if not self.est_soumis(annee):
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
         elif is_index_egapro_updated(self.entreprise):
