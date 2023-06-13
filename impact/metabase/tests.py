@@ -1,7 +1,8 @@
-import datetime
+from datetime import datetime
+from datetime import timezone
 
-import freezegun
 import pytest
+from freezegun import freeze_time
 
 from entreprises.models import Evolution
 from impact.settings import METABASE_DATABASE_NAME
@@ -11,20 +12,16 @@ from metabase.models import Entreprise as MetabaseEntreprise
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_metabase_once(entreprise_factory):
-    with freezegun.freeze_time("2023-06-12 12:00"):
+    with freeze_time("2023-06-12 12:00"):
         entreprise_A = entreprise_factory(
             siren="000000001",
             denomination="A",
             effectif=Evolution.EFFECTIF_ENTRE_300_ET_499,
             bdese_accord=True,
         )
-    date_deuxieme_evolution = datetime.datetime(
-        2024, 7, 13, tzinfo=datetime.timezone.utc
-    )
-    date_troisieme_evolution = datetime.datetime(
-        2025, 8, 14, tzinfo=datetime.timezone.utc
-    )
-    with freezegun.freeze_time(date_deuxieme_evolution) as frozen_datetime:
+    date_deuxieme_evolution = datetime(2024, 7, 13, tzinfo=timezone.utc)
+    date_troisieme_evolution = datetime(2025, 8, 14, tzinfo=timezone.utc)
+    with freeze_time(date_deuxieme_evolution) as frozen_datetime:
         Evolution.objects.create(
             entreprise=entreprise_A,
             annee=2024,
