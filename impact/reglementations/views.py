@@ -21,8 +21,6 @@ from api import egapro
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
 from entreprises.models import Evolution
-from entreprises.models import get_current_evolution
-from entreprises.models import has_current_evolution
 from habilitations.models import get_habilitation
 from habilitations.models import is_user_attached_to_entreprise
 from habilitations.models import is_user_habilited_on_entreprise
@@ -124,7 +122,7 @@ class BDESEReglementation(Reglementation):
     more_info_url = "https://entreprendre.service-public.fr/vosdroits/F32193"
 
     def bdese_type(self) -> int:
-        evolution = get_current_evolution(self.entreprise)
+        evolution = self.entreprise.get_current_evolution()
         effectif = evolution.effectif
         if evolution.bdese_accord:
             return self.TYPE_AVEC_ACCORD
@@ -137,13 +135,10 @@ class BDESEReglementation(Reglementation):
 
     @property
     def is_soumis(self):
-        if has_current_evolution(self.entreprise):
-            return (
-                get_current_evolution(self.entreprise).effectif
-                != Evolution.EFFECTIF_MOINS_DE_50
-            )
-        else:
-            return False
+        return (
+            self.entreprise.get_current_evolution().effectif
+            != Evolution.EFFECTIF_MOINS_DE_50
+        )
 
     def calculate_status(
         self, annee: int, user: settings.AUTH_USER_MODEL
@@ -285,13 +280,10 @@ class IndexEgaproReglementation(Reglementation):
 
     @property
     def is_soumis(self):
-        if has_current_evolution(self.entreprise):
-            return (
-                get_current_evolution(self.entreprise).effectif
-                != Evolution.EFFECTIF_MOINS_DE_50
-            )
-        else:
-            return False
+        return (
+            self.entreprise.get_current_evolution().effectif
+            != Evolution.EFFECTIF_MOINS_DE_50
+        )
 
     def calculate_status(
         self, annee: int, user: settings.AUTH_USER_MODEL
@@ -304,11 +296,7 @@ class IndexEgaproReglementation(Reglementation):
             "Calculer et déclarer mon index sur Egapro",
             external=True,
         )
-        if (
-            has_current_evolution(self.entreprise)
-            and get_current_evolution(self.entreprise).effectif
-            == Evolution.EFFECTIF_MOINS_DE_50
-        ):
+        if not self.is_soumis:
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
         elif is_index_egapro_updated(self.entreprise):

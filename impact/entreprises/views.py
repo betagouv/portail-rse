@@ -12,7 +12,6 @@ from .forms import EntrepriseAttachForm
 from .forms import EntrepriseDetachForm
 from .forms import EntrepriseQualificationForm
 from .models import Entreprise
-from .models import set_current_evolution
 from api.exceptions import APIError
 from habilitations.models import attach_user_to_entreprise
 from habilitations.models import detach_user_from_entreprise
@@ -115,8 +114,7 @@ def qualification(request, siren):
     if request.POST:
         form = EntrepriseQualificationForm(data=request.POST)
         if form.is_valid():
-            set_current_evolution(
-                entreprise,
+            entreprise.set_current_evolution(
                 form.cleaned_data["effectif"],
                 form.cleaned_data["bdese_accord"],
             )

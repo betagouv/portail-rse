@@ -8,7 +8,6 @@ from freezegun import freeze_time
 
 from entreprises.models import Entreprise
 from entreprises.models import Evolution
-from entreprises.models import set_current_evolution
 
 
 @pytest.mark.django_db(transaction=True)
@@ -43,8 +42,7 @@ def test_entreprise():
 def test_entreprise_is_qualified(unqualified_entreprise):
     assert not unqualified_entreprise.is_qualified
 
-    set_current_evolution(
-        entreprise=unqualified_entreprise,
+    unqualified_entreprise.set_current_evolution(
         effectif=Evolution.EFFECTIF_MOINS_DE_50,
         bdese_accord=True,
     )

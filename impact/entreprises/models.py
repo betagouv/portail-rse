@@ -22,14 +22,27 @@ class Entreprise(TimestampedModel):
 
     @property
     def is_qualified(self):
-        if has_current_evolution(self):
-            effectif = get_current_evolution(self).effectif
-        else:
-            effectif = None
-        return self.denomination and effectif
+        return bool(self.get_current_evolution())
+
+    def get_evolution(self, annee):
+        try:
+            return Evolution.objects.get(
+                entreprise=self,
+                annee=annee,
+            )
+        except ObjectDoesNotExist:
+            return None
 
     def get_current_evolution(self):
-        return get_evolution(self, date.today().year)
+        return self.get_evolution(date.today().year)
+
+    def set_current_evolution(entreprise, effectif, bdese_accord):
+        return Evolution.objects.create(
+            entreprise=entreprise,
+            annee=date.today().year,
+            effectif=effectif,
+            bdese_accord=bdese_accord,
+        )
 
 
 class Evolution(TimestampedModel):
@@ -55,32 +68,4 @@ class Evolution(TimestampedModel):
     bdese_accord = models.BooleanField(
         verbose_name="L'entreprise a un accord collectif d'entreprise concernant la Base de Données Économiques, Sociales et Environnementales (BDESE)",
         default=False,
-    )
-
-
-def get_evolution(entreprise, annee):
-    return Evolution.objects.get(entreprise=entreprise, annee=annee)
-
-
-def get_current_evolution(entreprise):
-    return get_evolution(entreprise, date.today().year)
-
-
-def has_current_evolution(entreprise):
-    try:
-        Evolution.objects.get(
-            entreprise=entreprise,
-            annee=date.today().year,
-        )
-        return True
-    except ObjectDoesNotExist:
-        return False
-
-
-def set_current_evolution(entreprise, effectif, bdese_accord):
-    return Evolution.objects.create(
-        entreprise=entreprise,
-        annee=date.today().year,
-        effectif=effectif,
-        bdese_accord=bdese_accord,
     )
