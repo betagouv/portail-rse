@@ -4,7 +4,6 @@ from django.contrib.auth.models import AnonymousUser
 from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
 from entreprises.models import Entreprise
 from entreprises.models import Evolution
-from entreprises.models import get_current_evolution
 from entreprises.tests.conftest import unqualified_entreprise  # noqa
 from habilitations.models import attach_user_to_entreprise
 from reglementations.views import BDESEReglementation
@@ -57,7 +56,7 @@ def test_public_reglementations_with_entreprise_data(status_is_soumis, client, m
     # entreprise has been created
     entreprise = Entreprise.objects.get(siren="000000001")
     assert entreprise.denomination == "Entreprise SAS"
-    evolution = get_current_evolution(entreprise)
+    evolution = entreprise.get_current_evolution()
     assert not evolution.bdese_accord
     assert evolution.effectif == Evolution.EFFECTIF_MOINS_DE_50
 
@@ -170,14 +169,14 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_autenticated(
 
     entreprise = Entreprise.objects.get(siren="000000001")
 
-    assert get_current_evolution(entreprise).effectif == Evolution.EFFECTIF_MOINS_DE_50
+    assert entreprise.get_current_evolution().effectif == Evolution.EFFECTIF_MOINS_DE_50
 
     client.force_login(entreprise.users.first())
     client.get("/reglementations", data=data)
 
     entreprise = Entreprise.objects.get(siren="000000001")
     assert (
-        get_current_evolution(entreprise).effectif
+        entreprise.get_current_evolution().effectif
         == Evolution.EFFECTIF_ENTRE_300_ET_499
     )
 
