@@ -41,7 +41,7 @@ def entreprise_factory(db):
             denomination=denomination,
         )
         Evolution.objects.create(
-            annee=2023,
+            annee=2022,
             entreprise=entreprise,
             effectif=effectif,
             bdese_accord=bdese_accord,

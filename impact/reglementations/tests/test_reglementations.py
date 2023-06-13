@@ -41,12 +41,10 @@ def test_public_reglementations_with_entreprise_data(status_is_soumis, client, m
     mocker.patch(
         "reglementations.views.BDESEReglementation.is_soumis",
         return_value=status_is_soumis,
-        new_callable=mocker.PropertyMock,
     )
     mocker.patch(
         "reglementations.views.IndexEgaproReglementation.is_soumis",
         return_value=status_is_soumis,
-        new_callable=mocker.PropertyMock,
     )
     response = client.get("/reglementations", data=data)
 
@@ -82,14 +80,10 @@ def test_public_reglementations_with_entreprise_data(status_is_soumis, client, m
 
 
 @pytest.fixture
-def entreprise(db, alice):
-    entreprise = Entreprise.objects.create(
+def entreprise(db, alice, entreprise_factory):
+    entreprise = entreprise_factory(
         siren="000000001",
         denomination="Entreprise SAS",
-    )
-    Evolution.objects.create(
-        annee=2023,
-        entreprise=entreprise,
         effectif=Evolution.EFFECTIF_MOINS_DE_50,
         bdese_accord=False,
     )
@@ -127,12 +121,10 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
     mocker.patch(
         "reglementations.views.BDESEReglementation.is_soumis",
         return_value=status_is_soumis,
-        new_callable=mocker.PropertyMock,
     )
     mocker.patch(
         "reglementations.views.IndexEgaproReglementation.is_soumis",
         return_value=status_is_soumis,
-        new_callable=mocker.PropertyMock,
     )
     response = client.get("/reglementations", data=data)
 

@@ -36,7 +36,6 @@ def test_calculate_status_with_not_authenticated_user(entreprise_factory, mocker
     mocker.patch(
         "reglementations.views.BDESEReglementation.is_soumis",
         return_value=False,
-        new_callable=mocker.PropertyMock,
     )
     status = BDESEReglementation(entreprise).calculate_status(2022, AnonymousUser())
 
@@ -48,7 +47,6 @@ def test_calculate_status_with_not_authenticated_user(entreprise_factory, mocker
     mocker.patch(
         "reglementations.views.BDESEReglementation.is_soumis",
         return_value=True,
-        new_callable=mocker.PropertyMock,
     )
     status = BDESEReglementation(entreprise).calculate_status(2022, AnonymousUser())
 
@@ -70,7 +68,6 @@ def test_calculate_status_with_not_attached_user(entreprise_factory, alice, mock
     mocker.patch(
         "reglementations.views.BDESEReglementation.is_soumis",
         return_value=False,
-        new_callable=mocker.PropertyMock,
     )
     status = BDESEReglementation(entreprise).calculate_status(2022, alice)
 
@@ -84,7 +81,6 @@ def test_calculate_status_with_not_attached_user(entreprise_factory, alice, mock
     mocker.patch(
         "reglementations.views.BDESEReglementation.is_soumis",
         return_value=True,
-        new_callable=mocker.PropertyMock,
     )
     status = BDESEReglementation(entreprise).calculate_status(2022, alice)
 
