@@ -2,7 +2,7 @@ import requests
 import sentry_sdk
 
 
-def indicateurs(siren, year):
+def indicateurs(siren, annee):
     EGAPRO_INDICATEURS = {
         "promotions": "Écart taux promotion",
         "augmentations_et_promotions": "Écart taux d'augmentation",
@@ -14,7 +14,7 @@ def indicateurs(siren, year):
         "nombre_femmes_plus_hautes_remunerations": None,
         "objectifs_progression": None,
     }
-    url = f"https://egapro.travail.gouv.fr/api/public/declaration/{siren}/{year}"
+    url = f"https://egapro.travail.gouv.fr/api/public/declaration/{siren}/{annee}"
     response = requests.get(url)
 
     if response.status_code == 200:
@@ -44,14 +44,14 @@ def indicateurs(siren, year):
     return bdese_data_from_egapro
 
 
-def is_index_egapro_updated(siren, year):
-    url = f"https://egapro.travail.gouv.fr/api/public/declaration/{siren}/{year}"
+def is_index_egapro_published(siren, annee):
+    url = f"https://egapro.travail.gouv.fr/api/public/declaration/{siren}/{annee}"
     response = requests.get(url)
     if response.status_code == 200 and "déclaration" in response.json():
         return True
     else:
         if response.status_code == 400:
             sentry_sdk.capture_message(
-                "Requête invalide sur l'API index EgaPro (is_index_egapro_updated)"
+                "Requête invalide sur l'API index EgaPro (is_index_egapro_published)"
             )
         return False
