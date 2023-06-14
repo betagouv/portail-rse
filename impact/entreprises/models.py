@@ -7,7 +7,6 @@ from django.db import models
 from utils.models import TimestampedModel
 
 DENOMINATION_MAX_LENGTH = 250
-FONCTIONS_MAX_LENGTH = 250
 
 
 class Entreprise(TimestampedModel):
