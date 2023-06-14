@@ -114,10 +114,11 @@ def qualification(request, siren):
     if request.POST:
         form = EntrepriseQualificationForm(data=request.POST)
         if form.is_valid():
-            entreprise.set_current_evolution(
+            evolution = entreprise.set_current_evolution(
                 form.cleaned_data["effectif"],
                 form.cleaned_data["bdese_accord"],
             )
+            evolution.save()
             messages.success(request, "Entreprise enregistrée")
             return redirect("reglementations:reglementations", siren=siren)
         else:

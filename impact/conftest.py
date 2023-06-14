@@ -40,10 +40,11 @@ def entreprise_factory(db):
             siren=siren,
             denomination=denomination,
         )
-        entreprise.set_current_evolution(
+        evolution = entreprise.set_current_evolution(
             effectif=effectif,
             bdese_accord=bdese_accord,
         )
+        evolution.save()
         return entreprise
 
     return create_entreprise
