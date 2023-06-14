@@ -42,9 +42,38 @@ def test_entreprise():
 def test_entreprise_is_qualified(unqualified_entreprise):
     assert not unqualified_entreprise.is_qualified
 
-    unqualified_entreprise.set_current_evolution(
+    evolution = unqualified_entreprise.set_current_evolution(
         effectif=Evolution.EFFECTIF_MOINS_DE_50,
         bdese_accord=True,
     )
+    evolution.save()
 
     assert unqualified_entreprise.is_qualified
+
+
+def test_get_and_set_current_evolution(unqualified_entreprise):
+    assert unqualified_entreprise.get_current_evolution() is None
+
+    effectif = Evolution.EFFECTIF_ENTRE_300_ET_499
+    bdese_accord = False
+
+    evolution = unqualified_entreprise.set_current_evolution(effectif, bdese_accord)
+    evolution.save()
+
+    assert evolution.effectif == effectif
+    assert evolution.bdese_accord == bdese_accord
+    unqualified_entreprise.refresh_from_db()
+    assert unqualified_entreprise.get_current_evolution() == evolution
+
+    effectif_corrige = Evolution.EFFECTIF_500_ET_PLUS
+    bdese_accord_corrige = True
+
+    evolution_corrigee = unqualified_entreprise.set_current_evolution(
+        effectif_corrige, bdese_accord_corrige
+    )
+    evolution_corrigee.save()
+
+    assert evolution_corrigee.effectif == effectif_corrige
+    assert evolution_corrigee.bdese_accord == bdese_accord_corrige
+    unqualified_entreprise.refresh_from_db()
+    assert unqualified_entreprise.get_current_evolution() == evolution_corrigee
