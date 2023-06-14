@@ -108,7 +108,7 @@ def attach(request):
 @login_required
 def qualification(request, siren):
     entreprise = get_object_or_404(Entreprise, siren=siren)
-    if request.user not in entreprise.users.all():
+    if not is_user_attached_to_entreprise(request.user, entreprise):
         raise PermissionDenied
 
     if request.POST:

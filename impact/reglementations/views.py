@@ -357,7 +357,7 @@ def reglementations(request):
 @login_required
 def reglementations_for_entreprise(request, siren):
     entreprise = get_object_or_404(Entreprise, siren=siren)
-    if request.user not in entreprise.users.all():
+    if not is_user_attached_to_entreprise(request.user, entreprise):
         raise PermissionDenied
 
     request.session["entreprise"] = entreprise.siren
@@ -404,7 +404,7 @@ def _reglementations_context(entreprise, evolution, user):
 @login_required
 def bdese_pdf(request, siren, annee):
     entreprise = Entreprise.objects.get(siren=siren)
-    if request.user not in entreprise.users.all():
+    if not is_user_attached_to_entreprise(request.user, entreprise):
         raise PermissionDenied
     bdese = _get_or_create_bdese(entreprise, annee, request.user)
     pdf_html = render_bdese_pdf_html(bdese)
@@ -451,7 +451,7 @@ def get_bdese_data_from_egapro(entreprise: Entreprise, year: int) -> dict:
 @login_required
 def bdese(request, siren, annee, step):
     entreprise = Entreprise.objects.get(siren=siren)
-    if request.user not in entreprise.users.all():
+    if not is_user_attached_to_entreprise(request.user, entreprise):
         raise PermissionDenied
 
     bdese = _get_or_create_bdese(entreprise, annee, request.user)
@@ -626,7 +626,7 @@ def initialize_bdese_configuration(bdese: BDESE_300 | BDESE_50_300) -> dict:
 
 def toggle_bdese_completion(request, siren, annee):
     entreprise = Entreprise.objects.get(siren=siren)
-    if request.user not in entreprise.users.all():
+    if not is_user_attached_to_entreprise(request.user, entreprise):
         raise PermissionDenied
 
     bdese = _get_or_create_bdese(entreprise, annee, request.user)
