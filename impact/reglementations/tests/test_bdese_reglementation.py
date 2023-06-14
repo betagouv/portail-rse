@@ -37,7 +37,9 @@ def test_calculate_status_with_not_authenticated_user(entreprise_factory, mocker
         "reglementations.views.BDESEReglementation.est_soumis",
         return_value=False,
     )
-    status = BDESEReglementation(entreprise).calculate_status(2022, AnonymousUser())
+    status = BDESEReglementation(entreprise).calculate_status(
+        entreprise.get_current_evolution(), AnonymousUser()
+    )
 
     assert status.status == ReglementationStatus.STATUS_NON_SOUMIS
     assert status.status_detail == "Vous n'êtes pas soumis à cette réglementation."
@@ -48,7 +50,9 @@ def test_calculate_status_with_not_authenticated_user(entreprise_factory, mocker
         "reglementations.views.BDESEReglementation.est_soumis",
         return_value=True,
     )
-    status = BDESEReglementation(entreprise).calculate_status(2022, AnonymousUser())
+    status = BDESEReglementation(entreprise).calculate_status(
+        entreprise.get_current_evolution(), AnonymousUser()
+    )
 
     assert status.status == ReglementationStatus.STATUS_SOUMIS
     login_url = f"{reverse('users:login')}?next={reverse('reglementations:reglementations', args=[entreprise.siren])}"
@@ -69,7 +73,9 @@ def test_calculate_status_with_not_attached_user(entreprise_factory, alice, mock
         "reglementations.views.BDESEReglementation.est_soumis",
         return_value=False,
     )
-    status = BDESEReglementation(entreprise).calculate_status(2022, alice)
+    status = BDESEReglementation(entreprise).calculate_status(
+        entreprise.get_current_evolution(), alice
+    )
 
     assert status.status == ReglementationStatus.STATUS_NON_SOUMIS
     assert (
@@ -82,7 +88,9 @@ def test_calculate_status_with_not_attached_user(entreprise_factory, alice, mock
         "reglementations.views.BDESEReglementation.est_soumis",
         return_value=True,
     )
-    status = BDESEReglementation(entreprise).calculate_status(2022, alice)
+    status = BDESEReglementation(entreprise).calculate_status(
+        entreprise.get_current_evolution(), alice
+    )
 
     assert status.status == ReglementationStatus.STATUS_SOUMIS
     assert status.status_detail == "L'entreprise est soumise à cette réglementation."
@@ -99,7 +107,9 @@ def test_calculate_status_less_than_50_employees(
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
-    status = BDESEReglementation(entreprise).calculate_status(2022, alice)
+    status = BDESEReglementation(entreprise).calculate_status(
+        entreprise.get_current_evolution(), alice
+    )
 
     assert status.status == ReglementationStatus.STATUS_NON_SOUMIS
     assert status.status_detail == "Vous n'êtes pas soumis à cette réglementation"
@@ -123,7 +133,9 @@ def test_calculate_status_more_than_50_employees_with_habilited_user(
     habilitation.confirm()
     habilitation.save()
 
-    status = BDESEReglementation(entreprise).calculate_status(2022, alice)
+    status = BDESEReglementation(entreprise).calculate_status(
+        entreprise.get_current_evolution(), alice
+    )
 
     assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
@@ -137,7 +149,9 @@ def test_calculate_status_more_than_50_employees_with_habilited_user(
     assert not status.secondary_actions
 
     bdese_class.objects.create(entreprise=entreprise, annee=2022)
-    status = BDESEReglementation(entreprise).calculate_status(2022, alice)
+    status = BDESEReglementation(entreprise).calculate_status(
+        entreprise.get_current_evolution(), alice
+    )
 
     assert status.status == ReglementationStatus.STATUS_EN_COURS
     assert (
@@ -151,7 +165,9 @@ def test_calculate_status_more_than_50_employees_with_habilited_user(
     assert status.secondary_actions[0].title == "Télécharger le pdf 2022 (brouillon)"
 
     mocker.patch("reglementations.models.AbstractBDESE.is_complete", return_value=True)
-    status = BDESEReglementation(entreprise).calculate_status(2022, alice)
+    status = BDESEReglementation(entreprise).calculate_status(
+        entreprise.get_current_evolution(), alice
+    )
 
     assert status.status == ReglementationStatus.STATUS_A_JOUR
     assert (
@@ -183,18 +199,24 @@ def test_calculate_status_more_than_50_employees_with_not_habilited_user(
     entreprise = entreprise_factory(effectif=effectif, bdese_accord=False)
     habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
 
-    status = BDESEReglementation(entreprise).calculate_status(2022, alice)
+    status = BDESEReglementation(entreprise).calculate_status(
+        entreprise.get_current_evolution(), alice
+    )
 
     assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
 
     bdese_class.officials.create(entreprise=entreprise, annee=2022)
-    status = BDESEReglementation(entreprise).calculate_status(2022, alice)
+    status = BDESEReglementation(entreprise).calculate_status(
+        entreprise.get_current_evolution(), alice
+    )
 
     # L'utilisateur dont l'habilitation n'est pas confirmée voit le statut de sa BDESE personnelle, pas de celle officielle
     assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
 
     bdese_class.personals.create(entreprise=entreprise, annee=2022, user=alice)
-    status = BDESEReglementation(entreprise).calculate_status(2022, alice)
+    status = BDESEReglementation(entreprise).calculate_status(
+        entreprise.get_current_evolution(), alice
+    )
 
     assert status.status == ReglementationStatus.STATUS_EN_COURS
 
@@ -213,7 +235,9 @@ def test_calculate_status_with_bdese_accord_with_not_habilited_user(
     entreprise = entreprise_factory(effectif=effectif, bdese_accord=True)
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
-    status = BDESEReglementation(entreprise).calculate_status(2022, alice)
+    status = BDESEReglementation(entreprise).calculate_status(
+        entreprise.get_current_evolution(), alice
+    )
 
     assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
@@ -229,7 +253,9 @@ def test_calculate_status_with_bdese_accord_with_not_habilited_user(
     bdese = BDESEAvecAccord.officials.create(entreprise=entreprise, annee=2022)
     bdese.is_complete = True
     bdese.save()
-    status = BDESEReglementation(entreprise).calculate_status(2022, alice)
+    status = BDESEReglementation(entreprise).calculate_status(
+        entreprise.get_current_evolution(), alice
+    )
 
     # L'utilisateur dont l'habilitation n'est pas confirmée voit le statut de sa BDESE personnelle, pas de celle officielle
     assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
@@ -240,7 +266,9 @@ def test_calculate_status_with_bdese_accord_with_not_habilited_user(
     bdese.is_complete = True
     bdese.save()
 
-    status = BDESEReglementation(entreprise).calculate_status(2022, alice)
+    status = BDESEReglementation(entreprise).calculate_status(
+        entreprise.get_current_evolution(), alice
+    )
 
     assert status.status == ReglementationStatus.STATUS_A_JOUR
     assert status.primary_action.title == "Marquer ma BDESE 2022 comme non actualisée"
@@ -262,7 +290,9 @@ def test_calculate_status_with_bdese_accord_with_habilited_user(
     habilitation.confirm()
     habilitation.save()
 
-    status = BDESEReglementation(entreprise).calculate_status(2022, alice)
+    status = BDESEReglementation(entreprise).calculate_status(
+        entreprise.get_current_evolution(), alice
+    )
 
     assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
@@ -278,7 +308,9 @@ def test_calculate_status_with_bdese_accord_with_habilited_user(
     bdese = BDESEAvecAccord.officials.create(entreprise=entreprise, annee=2022)
     bdese.is_complete = True
     bdese.save()
-    status = BDESEReglementation(entreprise).calculate_status(2022, alice)
+    status = BDESEReglementation(entreprise).calculate_status(
+        entreprise.get_current_evolution(), alice
+    )
 
     assert status.status == ReglementationStatus.STATUS_A_JOUR
     assert status.primary_action.title == "Marquer ma BDESE 2022 comme non actualisée"

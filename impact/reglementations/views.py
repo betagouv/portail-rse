@@ -19,8 +19,8 @@ from weasyprint import HTML
 
 from api import egapro
 from entreprises.models import Entreprise
-from entreprises.views import get_current_entreprise
 from entreprises.models import Evolution
+from entreprises.views import get_current_entreprise
 from habilitations.models import get_habilitation
 from habilitations.models import is_user_attached_to_entreprise
 from habilitations.models import is_user_habilited_on_entreprise
@@ -33,8 +33,6 @@ from reglementations.models import annees_a_remplir_bdese
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
 from reglementations.models import BDESEAvecAccord
-from reglementations.models import derniere_annee_a_remplir_bdese
-from reglementations.models import derniere_annee_a_remplir_index_egapro
 
 
 @dataclass
@@ -76,17 +74,17 @@ class Reglementation(ABC):
         }
 
     @abstractmethod
-    def est_soumis(self, annee):
+    def est_soumis(self, evolution: Evolution) -> bool:
         pass
 
     @abstractmethod
     def calculate_status(
         self,
-        annee: int,
+        evolution: Evolution,
         user: settings.AUTH_USER_MODEL,
     ) -> ReglementationStatus:
         if not user.is_authenticated:
-            if self.est_soumis(annee):
+            if self.est_soumis(evolution):
                 status = ReglementationStatus.STATUS_SOUMIS
                 login_url = f"{reverse_lazy('users:login')}?next={reverse_lazy('reglementations:reglementations', args=[self.entreprise.siren])}"
                 status_detail = f'<a href="{login_url}">Vous êtes soumis à cette réglementation. Connectez-vous pour en savoir plus.</a>'
@@ -99,7 +97,7 @@ class Reglementation(ABC):
                 status, status_detail, primary_action=primary_action
             )
         elif not is_user_attached_to_entreprise(user, self.entreprise):
-            if self.est_soumis(annee):
+            if self.est_soumis(evolution):
                 status = ReglementationStatus.STATUS_SOUMIS
                 status_detail = "L'entreprise est soumise à cette réglementation."
             else:
@@ -120,8 +118,7 @@ class BDESEReglementation(Reglementation):
         En l'absence d'accord d'entreprise spécifique, elle comprend des mentions obligatoires qui varient selon l'effectif de l'entreprise."""
     more_info_url = "https://entreprendre.service-public.fr/vosdroits/F32193"
 
-    def bdese_type(self) -> int:
-        evolution = self.entreprise.get_current_evolution()
+    def bdese_type(self, evolution: Evolution) -> int:
         effectif = evolution.effectif
         if evolution.bdese_accord:
             return self.TYPE_AVEC_ACCORD
@@ -132,14 +129,13 @@ class BDESEReglementation(Reglementation):
         elif effectif == Evolution.EFFECTIF_500_ET_PLUS:
             return self.TYPE_SUPERIEUR_500
 
-    def est_soumis(self, annee):
-        effectif = self.entreprise.get_evolution(annee).effectif
-        return effectif != Evolution.EFFECTIF_MOINS_DE_50
+    def est_soumis(self, evolution):
+        return evolution.effectif != Evolution.EFFECTIF_MOINS_DE_50
 
     def calculate_status(
-        self, annee: int, user: settings.AUTH_USER_MODEL
+        self, evolution: Evolution, user: settings.AUTH_USER_MODEL
     ) -> ReglementationStatus:
-        if reglementation_status := super().calculate_status(annee, user):
+        if reglementation_status := super().calculate_status(evolution, user):
             return reglementation_status
 
         for match in [
@@ -148,30 +144,34 @@ class BDESEReglementation(Reglementation):
             self._match_bdese_existante,
             self._match_sans_bdese,
         ]:
-            if reglementation_status := match(annee, user):
+            if reglementation_status := match(evolution, user):
                 return reglementation_status
 
-    def _match_non_soumis(self, annee, user):
-        if not self.est_soumis(annee):
+    def _match_non_soumis(self, evolution, user):
+        if not self.est_soumis(evolution):
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
             return ReglementationStatus(status, status_detail)
 
-    def _match_avec_accord(self, annee, user):
-        if self.bdese_type() == self.TYPE_AVEC_ACCORD:
-            bdese = self._select_bdese(BDESEAvecAccord, annee, user)
+    def _match_avec_accord(self, evolution, user):
+        if self.bdese_type(evolution) == self.TYPE_AVEC_ACCORD:
+            bdese = self._select_bdese(BDESEAvecAccord, evolution.annee, user)
             if bdese and bdese.is_complete:
                 status = ReglementationStatus.STATUS_A_JOUR
-                primary_action_title = f"Marquer ma BDESE {annee} comme non actualisée"
+                primary_action_title = (
+                    f"Marquer ma BDESE {evolution.annee} comme non actualisée"
+                )
             else:
                 status = ReglementationStatus.STATUS_A_ACTUALISER
-                primary_action_title = f"Marquer ma BDESE {annee} comme actualisée"
+                primary_action_title = (
+                    f"Marquer ma BDESE {evolution.annee} comme actualisée"
+                )
 
             status_detail = "Vous êtes soumis à cette réglementation. Vous avez un accord d'entreprise spécifique. Veuillez vous y référer."
             primary_action = ReglementationAction(
                 reverse_lazy(
                     "reglementations:toggle_bdese_completion",
-                    args=[self.entreprise.siren, annee],
+                    args=[self.entreprise.siren, evolution.annee],
                 ),
                 primary_action_title,
             )
@@ -181,49 +181,53 @@ class BDESEReglementation(Reglementation):
                 primary_action=primary_action,
             )
 
-    def _match_bdese_existante(self, annee, user):
-        if self.bdese_type() == self.TYPE_INFERIEUR_300:
+    def _match_bdese_existante(self, evolution, user):
+        if self.bdese_type(evolution) == self.TYPE_INFERIEUR_300:
             bdese_class = BDESE_50_300
         else:
             bdese_class = BDESE_300
 
-        bdese = self._select_bdese(bdese_class, annee, user)
+        bdese = self._select_bdese(bdese_class, evolution.annee, user)
         if not bdese:
             return
 
         if bdese.is_complete:
             status = ReglementationStatus.STATUS_A_JOUR
-            status_detail = f"Vous êtes soumis à cette réglementation. Vous avez actualisé votre BDESE {annee} sur la plateforme."
+            status_detail = f"Vous êtes soumis à cette réglementation. Vous avez actualisé votre BDESE {evolution.annee} sur la plateforme."
             primary_action = ReglementationAction(
                 reverse_lazy(
-                    "reglementations:bdese_pdf", args=[self.entreprise.siren, annee]
+                    "reglementations:bdese_pdf",
+                    args=[self.entreprise.siren, evolution.annee],
                 ),
-                f"Télécharger le pdf {annee}",
+                f"Télécharger le pdf {evolution.annee}",
                 external=True,
             )
             secondary_actions = [
                 ReglementationAction(
                     reverse_lazy(
-                        "reglementations:bdese", args=[self.entreprise.siren, annee, 1]
+                        "reglementations:bdese",
+                        args=[self.entreprise.siren, evolution.annee, 1],
                     ),
                     "Modifier ma BDESE",
                 )
             ]
         else:
             status = ReglementationStatus.STATUS_EN_COURS
-            status_detail = f"Vous êtes soumis à cette réglementation. Vous avez démarré le remplissage de votre BDESE {annee} sur la plateforme."
+            status_detail = f"Vous êtes soumis à cette réglementation. Vous avez démarré le remplissage de votre BDESE {evolution.annee} sur la plateforme."
             primary_action = ReglementationAction(
                 reverse_lazy(
-                    "reglementations:bdese", args=[self.entreprise.siren, annee, 1]
+                    "reglementations:bdese",
+                    args=[self.entreprise.siren, evolution.annee, 1],
                 ),
                 "Reprendre l'actualisation de ma BDESE",
             )
             secondary_actions = [
                 ReglementationAction(
                     reverse_lazy(
-                        "reglementations:bdese_pdf", args=[self.entreprise.siren, annee]
+                        "reglementations:bdese_pdf",
+                        args=[self.entreprise.siren, evolution.annee],
                     ),
-                    f"Télécharger le pdf {annee} (brouillon)",
+                    f"Télécharger le pdf {evolution.annee} (brouillon)",
                     external=True,
                 ),
             ]
@@ -235,12 +239,13 @@ class BDESEReglementation(Reglementation):
             secondary_actions=secondary_actions,
         )
 
-    def _match_sans_bdese(self, annee, user):
+    def _match_sans_bdese(self, evolution, user):
         status = ReglementationStatus.STATUS_A_ACTUALISER
         status_detail = "Vous êtes soumis à cette réglementation. Nous allons vous aider à la remplir."
         primary_action = ReglementationAction(
             reverse_lazy(
-                "reglementations:bdese", args=[self.entreprise.siren, annee, 0]
+                "reglementations:bdese",
+                args=[self.entreprise.siren, evolution.annee, 0],
             ),
             "Actualiser ma BDESE",
         )
@@ -274,14 +279,13 @@ class IndexEgaproReglementation(Reglementation):
     description = "Afin de lutter contre les inégalités salariales entre les femmes et les hommes, certaines entreprises doivent calculer et transmettre un index mesurant l’égalité salariale au sein de leur structure."
     more_info_url = "https://www.economie.gouv.fr/entreprises/index-egalite-professionnelle-obligatoire"
 
-    def est_soumis(self, annee):
-        effectif = self.entreprise.get_evolution(annee).effectif
-        return effectif != Evolution.EFFECTIF_MOINS_DE_50
+    def est_soumis(self, evolution):
+        return evolution.effectif != Evolution.EFFECTIF_MOINS_DE_50
 
     def calculate_status(
-        self, annee: int, user: settings.AUTH_USER_MODEL
+        self, evolution: Evolution, user: settings.AUTH_USER_MODEL
     ) -> ReglementationStatus:
-        if reglementation_status := super().calculate_status(annee, user):
+        if reglementation_status := super().calculate_status(evolution, user):
             return reglementation_status
 
         PRIMARY_ACTION = ReglementationAction(
@@ -289,10 +293,10 @@ class IndexEgaproReglementation(Reglementation):
             "Calculer et déclarer mon index sur Egapro",
             external=True,
         )
-        if not self.est_soumis(annee):
+        if not self.est_soumis(evolution):
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
-        elif is_index_egapro_published(self.entreprise, annee):
+        elif is_index_egapro_published(self.entreprise, evolution.annee):
             status = ReglementationStatus.STATUS_A_JOUR
             status_detail = "Vous êtes soumis à cette réglementation. Vous avez rempli vos obligations d'après les données disponibles sur la plateforme Egapro."
         else:
@@ -309,6 +313,7 @@ def is_index_egapro_published(entreprise: Entreprise, annee: int) -> bool:
 
 def reglementations(request):
     entreprise = None
+    evolution = None
     if request.GET:
         entreprise_form = EntrepriseForm(request.GET)
         evolution_form = EvolutionForm(request.GET)
@@ -319,7 +324,8 @@ def reglementations(request):
                 entreprise = entreprises[0]
                 entreprise_form = EntrepriseForm(request.GET, instance=entreprise)
                 commit = (
-                    request.user.is_authenticated and request.user in entreprise.users.all()
+                    request.user.is_authenticated
+                    and request.user in entreprise.users.all()
                 )
             else:
                 commit = True
@@ -344,7 +350,7 @@ def reglementations(request):
     return render(
         request,
         "reglementations/reglementations.html",
-        _reglementations_context(entreprise, request.user),
+        _reglementations_context(entreprise, evolution, request.user),
     )
 
 
@@ -366,24 +372,24 @@ def reglementations_for_entreprise(request, siren):
     return render(
         request,
         "reglementations/reglementations.html",
-        _reglementations_context(entreprise, request.user),
+        _reglementations_context(
+            entreprise, entreprise.get_current_evolution(), request.user
+        ),
     )
 
 
-def _reglementations_context(entreprise, user):
+def _reglementations_context(entreprise, evolution, user):
     reglementations = [
         {
             "info": BDESEReglementation.info(),
-            "status": BDESEReglementation(entreprise).calculate_status(
-                derniere_annee_a_remplir_bdese(), user
-            )
+            "status": BDESEReglementation(entreprise).calculate_status(evolution, user)
             if entreprise
             else None,
         },
         {
             "info": IndexEgaproReglementation.info(),
             "status": IndexEgaproReglementation(entreprise).calculate_status(
-                derniere_annee_a_remplir_index_egapro(), user
+                evolution, user
             )
             if entreprise
             else None,
@@ -575,7 +581,9 @@ def _get_or_create_bdese(
     annee: int,
     user: settings.AUTH_USER_MODEL,
 ) -> BDESE_300 | BDESE_50_300 | BDESEAvecAccord:
-    bdese_type = BDESEReglementation(entreprise).bdese_type()
+    bdese_type = BDESEReglementation(entreprise).bdese_type(
+        entreprise.get_current_evolution()
+    )
     habilitation = get_habilitation(user, entreprise)
     if bdese_type == BDESEReglementation.TYPE_AVEC_ACCORD:
         bdese_class = BDESEAvecAccord
