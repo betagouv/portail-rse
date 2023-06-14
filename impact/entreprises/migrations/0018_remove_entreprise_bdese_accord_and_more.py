@@ -12,7 +12,7 @@ def migrate_entreprise_yearly_data_to_dedicated_class(apps, schema_editor):
     Evolution = apps.get_model("entreprises", "Evolution")
     for entreprise in Entreprise.objects.all():
         evolution = Evolution.objects.create(
-            annee=annee,
+            annee=annee - 1,
             entreprise=entreprise,
             effectif=entreprise.effectif,
             bdese_accord=entreprise.bdese_accord,
