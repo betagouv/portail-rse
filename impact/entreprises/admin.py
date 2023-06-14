@@ -13,6 +13,7 @@ class EntrepriseAdminForm(forms.ModelForm):
 
 class EvolutionInline(admin.TabularInline):
     model = Evolution
+    extra = 0
 
 
 class EntrepriseAdmin(admin.ModelAdmin):
