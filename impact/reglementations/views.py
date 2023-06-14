@@ -292,7 +292,7 @@ class IndexEgaproReglementation(Reglementation):
         if not self.est_soumis(annee):
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
-        elif is_index_egapro_updated(self.entreprise):
+        elif is_index_egapro_published(self.entreprise, annee):
             status = ReglementationStatus.STATUS_A_JOUR
             status_detail = "Vous êtes soumis à cette réglementation. Vous avez rempli vos obligations d'après les données disponibles sur la plateforme Egapro."
         else:
@@ -303,9 +303,8 @@ class IndexEgaproReglementation(Reglementation):
         )
 
 
-def is_index_egapro_updated(entreprise: Entreprise) -> bool:
-    year = derniere_annee_a_remplir_index_egapro()
-    return egapro.is_index_egapro_updated(entreprise.siren, year)
+def is_index_egapro_published(entreprise: Entreprise, annee: int) -> bool:
+    return egapro.is_index_egapro_published(entreprise.siren, annee)
 
 
 def reglementations(request):
