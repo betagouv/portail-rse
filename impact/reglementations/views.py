@@ -333,15 +333,15 @@ def reglementations(request):
             if entreprise_form.is_valid() and evolution_form.is_valid():
                 request.session["siren"] = entreprise_form.cleaned_data["siren"]
                 entreprise = entreprise_form.save(commit=commit)
-                current_annee = date.today().year
+                last_year = date.today().year - 1
                 if evolutions := Evolution.objects.filter(
-                    entreprise=entreprise, annee=current_annee - 1
+                    entreprise=entreprise, annee=last_year
                 ):
                     evolution = evolutions[0]
                     evolution_form = EvolutionForm(request.GET, instance=evolution)
                 else:
                     evolution_form.instance.entreprise = entreprise
-                    evolution_form.instance.annee = current_annee - 1
+                    evolution_form.instance.annee = last_year
                 evolution = evolution_form.save(commit=commit)
 
     elif entreprise := get_current_entreprise(request):
