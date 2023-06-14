@@ -64,10 +64,10 @@ def test_public_reglementations_with_entreprise_data(status_est_soumis, client, 
     reglementations = context["reglementations"]
     assert reglementations[0]["status"] == BDESEReglementation(
         entreprise
-    ).calculate_status(2022, AnonymousUser())
+    ).calculate_status(evolution, AnonymousUser())
     assert reglementations[1]["status"] == IndexEgaproReglementation(
         entreprise
-    ).calculate_status(2022, AnonymousUser())
+    ).calculate_status(evolution, AnonymousUser())
 
     if status_est_soumis:
         assert '<p class="fr-badge">soumis</p>' in content, content
@@ -145,28 +145,46 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
 
 
 def test_entreprise_data_are_saved_only_when_entreprise_user_is_autenticated(
-    client, entreprise
+    client, entreprise, entreprise_factory
 ):
     """
-    Ce cas est encore accessible mais ne correspond pas à un parcours utilisateur normal
+    La simulation par un utilisateur anonyme sur une entreprise déjà enregistrée en base ne modifie pas en base son évolution
+    mais affiche quand même à l'utilisateur anonyme les statuts correspondant aux données utilisées lors de la simulation
     """
+    effectif = Evolution.EFFECTIF_ENTRE_300_ET_499
     data = {
-        "effectif": Evolution.EFFECTIF_ENTRE_300_ET_499,
+        "effectif": effectif,
         "bdese_accord": False,
-        "denomination": "Entreprise SAS",
-        "siren": "000000001",
+        "denomination": entreprise.denomination,
+        "siren": entreprise.siren,
     }
 
-    client.get("/reglementations", data=data)
+    response = client.get("/reglementations", data=data)
 
-    entreprise = Entreprise.objects.get(siren="000000001")
-
+    entreprise.refresh_from_db()
     assert entreprise.get_current_evolution().effectif == Evolution.EFFECTIF_MOINS_DE_50
 
+    context = response.context
+    assert context["entreprise"] == entreprise
+    bdese_status = context["reglementations"][0]["status"]
+    index_egapro_status = context["reglementations"][0]["status"]
+    evolution = Evolution(
+        annee=2022, entreprise=entreprise, effectif=effectif, bdese_accord=False
+    )
+    assert bdese_status == BDESEReglementation(entreprise).calculate_status(
+        evolution, AnonymousUser()
+    )
+    assert index_egapro_status == IndexEgaproReglementation(
+        entreprise
+    ).calculate_status(evolution, AnonymousUser())
+
+    # si c'est un utilisateur rattaché à l'entreprise qui fait la simulation en changeant les données d'évolution
+    # on enregistre ces nouvelles données en base
+    # ce cas est encore accessible mais ne correspond pas à un parcours utilisateur normal
     client.force_login(entreprise.users.first())
     client.get("/reglementations", data=data)
 
-    entreprise = Entreprise.objects.get(siren="000000001")
+    entreprise.refresh_from_db()
     assert (
         entreprise.get_current_evolution().effectif
         == Evolution.EFFECTIF_ENTRE_300_ET_499
@@ -186,10 +204,10 @@ def test_reglementation_with_authenticated_user(client, entreprise):
     reglementations = context["reglementations"]
     assert reglementations[0]["status"] == BDESEReglementation(
         entreprise
-    ).calculate_status(2022, entreprise.users.first())
+    ).calculate_status(entreprise.get_current_evolution(), entreprise.users.first())
     assert reglementations[1]["status"] == IndexEgaproReglementation(
         entreprise
-    ).calculate_status(2022, entreprise.users.first())
+    ).calculate_status(entreprise.get_current_evolution(), entreprise.users.first())
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
 
@@ -199,8 +217,8 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
 ):
     entreprise1 = entreprise_factory(siren="000000001")
     entreprise2 = entreprise_factory(siren="000000002")
-    entreprise1.users.add(alice)
-    entreprise2.users.add(alice)
+    attach_user_to_entreprise(alice, entreprise1, "Présidente")
+    attach_user_to_entreprise(alice, entreprise2, "Présidente")
     client.force_login(alice)
 
     response = client.get(f"/reglementations/{entreprise1.siren}")
@@ -213,10 +231,10 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
     reglementations = context["reglementations"]
     assert reglementations[0]["status"] == BDESEReglementation(
         entreprise1
-    ).calculate_status(2022, alice)
+    ).calculate_status(entreprise1.get_current_evolution(), alice)
     assert reglementations[1]["status"] == IndexEgaproReglementation(
         entreprise1
-    ).calculate_status(2022, alice)
+    ).calculate_status(entreprise1.get_current_evolution(), alice)
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
 
@@ -230,10 +248,10 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
     reglementations = context["reglementations"]
     assert reglementations[0]["status"] == BDESEReglementation(
         entreprise2
-    ).calculate_status(2022, alice)
+    ).calculate_status(entreprise2.get_current_evolution(), alice)
     assert reglementations[1]["status"] == IndexEgaproReglementation(
         entreprise2
-    ).calculate_status(2022, alice)
+    ).calculate_status(entreprise2.get_current_evolution(), alice)
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
 
