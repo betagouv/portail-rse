@@ -133,7 +133,7 @@ def test_page_cgu(client):
     assert "<!-- page cgu -->" in content
 
 
-def test_eligibilite_form_truncate_raison_social_when_too_long(db):
+def test_entreprise_form_truncate_raison_social_when_too_long(db):
     form = EntrepriseForm(
         data={
             "denomination": "a" * (DENOMINATION_MAX_LENGTH + 1),
