@@ -4,6 +4,7 @@ import pytest
 
 from entreprises.models import Evolution
 from habilitations.models import attach_user_to_entreprise
+from reglementations.models import derniere_annee_a_remplir_index_egapro
 from reglementations.views import IndexEgaproReglementation
 from reglementations.views import is_index_egapro_published
 from reglementations.views import ReglementationStatus
@@ -51,6 +52,7 @@ def test_calculate_status_more_than_50_employees(
 ):
     entreprise = entreprise_factory(effectif=effectif)
     attach_user_to_entreprise(alice, entreprise, "Présidente")
+    annee = derniere_annee_a_remplir_index_egapro()
 
     mock_index_egapro.return_value = False
     index = IndexEgaproReglementation(entreprise).calculate_status(
@@ -63,7 +65,7 @@ def test_calculate_status_more_than_50_employees(
         == "Vous êtes soumis à cette réglementation. Vous n'avez pas encore déclaré votre index sur la plateforme Egapro."
     )
     assert index.primary_action
-    mock_index_egapro.assert_called_once_with(entreprise, 2022)
+    mock_index_egapro.assert_called_once_with(entreprise, annee)
 
     mock_index_egapro.reset_mock()
     mock_index_egapro.return_value = True
@@ -77,7 +79,7 @@ def test_calculate_status_more_than_50_employees(
         == "Vous êtes soumis à cette réglementation. Vous avez rempli vos obligations d'après les données disponibles sur la plateforme Egapro."
     )
     assert index.primary_action
-    mock_index_egapro.assert_called_once_with(entreprise, 2022)
+    mock_index_egapro.assert_called_once_with(entreprise, annee)
 
 
 class MockedResponse:

@@ -32,17 +32,15 @@ def bob(django_user_model):
 def entreprise_factory(db):
     def create_entreprise(
         siren="000000001",
+        denomination="Entreprise SAS",
         effectif=Evolution.EFFECTIF_MOINS_DE_50,
         bdese_accord=False,
-        denomination="Entreprise SAS",
     ):
         entreprise = Entreprise.objects.create(
             siren=siren,
             denomination=denomination,
         )
-        Evolution.objects.create(
-            annee=2022,
-            entreprise=entreprise,
+        entreprise.set_current_evolution(
             effectif=effectif,
             bdese_accord=bdese_accord,
         )
