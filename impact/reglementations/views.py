@@ -342,6 +342,10 @@ def reglementations(request):
             if entreprise_form.is_valid() and caracteristiques_form.is_valid():
                 request.session["siren"] = entreprise_form.cleaned_data["siren"]
                 entreprise = entreprise_form.save(commit=commit)
+                if request.user.is_authenticated and is_user_attached_to_entreprise(
+                    request.user, entreprise
+                ):
+                    request.session["entreprise"] = entreprise.siren
                 last_year = date.today().year - 1
                 try:
                     caracteristiques = CaracteristiquesAnnuelles.objects.get(
