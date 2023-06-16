@@ -50,7 +50,7 @@ def test_create_and_attach_to_entreprise(client, alice, mock_api_recherche_entre
     entreprise = Entreprise.objects.get(siren="000000001")
     assert get_habilitation(alice, entreprise).fonctions == "Présidente"
     assert entreprise.denomination == "Entreprise SAS"
-    assert not entreprise.is_qualified
+    assert not entreprise.est_qualifiee
 
 
 def test_attach_to_an_existing_entreprise(client, alice, entreprise_factory):
@@ -167,8 +167,8 @@ def test_fail_to_detach_to_an_entreprise_which_does_not_exist(client, alice):
     assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
 
 
-def test_qualification_page_is_not_public(client, alice, unqualified_entreprise):
-    url = f"/entreprises/{unqualified_entreprise.siren}"
+def test_qualification_page_is_not_public(client, alice, entreprise_non_qualifiee):
+    url = f"/entreprises/{entreprise_non_qualifiee.siren}"
     response = client.get(url)
 
     assert response.status_code == 302
@@ -182,58 +182,60 @@ def test_qualification_page_is_not_public(client, alice, unqualified_entreprise)
 
 
 def test_qualification_page(
-    client, alice, unqualified_entreprise, mock_api_recherche_entreprises
+    client, alice, entreprise_non_qualifiee, mock_api_recherche_entreprises
 ):
-    attach_user_to_entreprise(alice, unqualified_entreprise, "Présidente")
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
     client.force_login(alice)
 
-    response = client.get(f"/entreprises/{unqualified_entreprise.siren}")
+    response = client.get(f"/entreprises/{entreprise_non_qualifiee.siren}")
 
     assert response.status_code == 200
     content = response.content.decode("utf-8")
     assert "<!-- page qualification entreprise -->" in content
-    mock_api_recherche_entreprises.assert_called_once_with(unqualified_entreprise.siren)
+    mock_api_recherche_entreprises.assert_called_once_with(
+        entreprise_non_qualifiee.siren
+    )
 
-    unqualified_entreprise.refresh_from_db()
-    assert unqualified_entreprise.denomination == "Entreprise SAS"
-    assert not unqualified_entreprise.is_qualified
+    entreprise_non_qualifiee.refresh_from_db()
+    assert entreprise_non_qualifiee.denomination == "Entreprise SAS"
+    assert not entreprise_non_qualifiee.est_qualifiee
 
 
 def test_qualify_entreprise(
-    client, alice, unqualified_entreprise, mock_api_recherche_entreprises
+    client, alice, entreprise_non_qualifiee, mock_api_recherche_entreprises
 ):
-    attach_user_to_entreprise(alice, unqualified_entreprise, "Présidente")
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
     client.force_login(alice)
     data = {
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299,
         "bdese_accord": True,
     }
 
-    url = f"/entreprises/{unqualified_entreprise.siren}"
+    url = f"/entreprises/{entreprise_non_qualifiee.siren}"
     response = client.get(url)
     response = client.post(url, data=data)
 
-    unqualified_entreprise.refresh_from_db()
-    assert unqualified_entreprise.denomination == "Entreprise SAS"
-    caracteristiques = unqualified_entreprise.caracteristiques_actuelles()
+    entreprise_non_qualifiee.refresh_from_db()
+    assert entreprise_non_qualifiee.denomination == "Entreprise SAS"
+    caracteristiques = entreprise_non_qualifiee.caracteristiques_actuelles()
     assert (
         caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299
     )
     assert caracteristiques.bdese_accord
-    assert unqualified_entreprise.is_qualified
+    assert entreprise_non_qualifiee.est_qualifiee
 
 
 def test_qualify_entreprise_error(
-    client, alice, unqualified_entreprise, mock_api_recherche_entreprises
+    client, alice, entreprise_non_qualifiee, mock_api_recherche_entreprises
 ):
-    attach_user_to_entreprise(alice, unqualified_entreprise, "Présidente")
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
     client.force_login(alice)
     data = {
         "effectif": "yolo",
         "bdese_accord": True,
     }
 
-    url = f"/entreprises/{unqualified_entreprise.siren}"
+    url = f"/entreprises/{entreprise_non_qualifiee.siren}"
     response = client.get(url)
     response = client.post(url, data=data)
 
@@ -244,5 +246,5 @@ def test_qualify_entreprise_error(
         in content
     )
 
-    unqualified_entreprise.refresh_from_db()
-    assert not unqualified_entreprise.is_qualified
+    entreprise_non_qualifiee.refresh_from_db()
+    assert not entreprise_non_qualifiee.est_qualifiee

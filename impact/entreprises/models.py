@@ -20,7 +20,7 @@ class Entreprise(TimestampedModel):
         return f"{self.siren} {self.denomination}"
 
     @property
-    def is_qualified(self):
+    def est_qualifiee(self):
         return bool(self.caracteristiques_actuelles())
 
     def caracteristiques_annuelles(self, annee):

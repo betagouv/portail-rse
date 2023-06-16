@@ -4,7 +4,7 @@ from entreprises.models import Entreprise
 
 
 @pytest.fixture
-def unqualified_entreprise(alice):
+def entreprise_non_qualifiee(alice):
     entreprise = Entreprise.objects.create(
         siren="00000001", denomination="Entreprise SAS"
     )

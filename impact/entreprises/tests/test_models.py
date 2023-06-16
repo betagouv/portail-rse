@@ -24,7 +24,7 @@ def test_entreprise():
     assert entreprise.siren == "123456789"
     assert entreprise.denomination == "Entreprise SAS"
     assert not entreprise.users.all()
-    assert not entreprise.is_qualified
+    assert not entreprise.est_qualifiee
 
     with pytest.raises(IntegrityError):
         Entreprise.objects.create(
@@ -39,68 +39,69 @@ def test_entreprise():
 
 
 @pytest.mark.django_db(transaction=True)
-def test_entreprise_is_qualified(unqualified_entreprise):
-    assert not unqualified_entreprise.is_qualified
+def test_entreprise_est_qualifiee(entreprise_non_qualifiee):
+    assert not entreprise_non_qualifiee.est_qualifiee
 
-    caracteristiques = unqualified_entreprise.actualise_caracteristiques(
+    caracteristiques = entreprise_non_qualifiee.actualise_caracteristiques(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         bdese_accord=True,
     )
     caracteristiques.save()
 
-    assert unqualified_entreprise.is_qualified
+    assert entreprise_non_qualifiee.est_qualifiee
 
 
-def test_get_and_actualise_caracteristiques(unqualified_entreprise):
-    assert unqualified_entreprise.caracteristiques_actuelles() is None
+def test_actualise_caracteristiques(entreprise_non_qualifiee):
+    assert entreprise_non_qualifiee.caracteristiques_actuelles() is None
 
     effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
     bdese_accord = False
 
-    caracteristiques = unqualified_entreprise.actualise_caracteristiques(
+    caracteristiques = entreprise_non_qualifiee.actualise_caracteristiques(
         effectif, bdese_accord
     )
     caracteristiques.save()
 
     assert caracteristiques.effectif == effectif
     assert caracteristiques.bdese_accord == bdese_accord
-    unqualified_entreprise.refresh_from_db()
-    assert unqualified_entreprise.caracteristiques_actuelles() == caracteristiques
+    entreprise_non_qualifiee.refresh_from_db()
+    assert entreprise_non_qualifiee.caracteristiques_actuelles() == caracteristiques
 
-    effectif_corrige = CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS
-    bdese_accord_corrige = True
+    nouvel_effectif = CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS
+    nouveau_bdese_accord = True
 
-    caracteristiques_corrigee = unqualified_entreprise.actualise_caracteristiques(
-        effectif_corrige, bdese_accord_corrige
+    nouvelles_caracteristiques = entreprise_non_qualifiee.actualise_caracteristiques(
+        nouvel_effectif, nouveau_bdese_accord
     )
-    caracteristiques_corrigee.save()
+    nouvelles_caracteristiques.save()
 
-    assert caracteristiques_corrigee.effectif == effectif_corrige
-    assert caracteristiques_corrigee.bdese_accord == bdese_accord_corrige
-    unqualified_entreprise.refresh_from_db()
+    assert nouvelles_caracteristiques.effectif == nouvel_effectif
+    assert nouvelles_caracteristiques.bdese_accord == nouveau_bdese_accord
+    entreprise_non_qualifiee.refresh_from_db()
     assert (
-        unqualified_entreprise.caracteristiques_actuelles() == caracteristiques_corrigee
+        entreprise_non_qualifiee.caracteristiques_actuelles()
+        == nouvelles_caracteristiques
     )
 
 
 @pytest.mark.django_db(transaction=True)
-def test_caracteristiques_annuelles(unqualified_entreprise):
+def test_caracteristiques_annuelles(entreprise_non_qualifiee):
     with pytest.raises(IntegrityError):
         CaracteristiquesAnnuelles.objects.create(annee=2023)
 
     CaracteristiquesAnnuelles.objects.create(
-        entreprise=unqualified_entreprise, annee=2023
+        entreprise=entreprise_non_qualifiee, annee=2023
     )
 
 
-def test_uniques_caracteristiques_annuelles(unqualified_entreprise):
+def test_uniques_caracteristiques_annuelles(entreprise_non_qualifiee):
     caracteristiques = CaracteristiquesAnnuelles(
-        entreprise=unqualified_entreprise, annee=2023
+        entreprise=entreprise_non_qualifiee, annee=2023
     )
     caracteristiques.save()
 
     with pytest.raises(IntegrityError):
         caracteristiques_bis = CaracteristiquesAnnuelles(
-            entreprise=unqualified_entreprise, annee=2023
+            entreprise=entreprise_non_qualifiee, annee=2023
         )
         caracteristiques_bis.save()
