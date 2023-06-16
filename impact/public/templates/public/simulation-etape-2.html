@@ -14,8 +14,8 @@
                     {% csrf_token %}
                     {{ entreprise_form.siren.as_hidden }}
                     {{ entreprise_form.denomination.as_hidden }}
-                    {% include 'snippets/field.html' with field=evolution_form.effectif %}
-                    {% include 'snippets/field.html' with field=evolution_form.bdese_accord %}
+                    {% include 'snippets/field.html' with field=caracteristiques_form.effectif %}
+                    {% include 'snippets/field.html' with field=caracteristiques_form.bdese_accord %}
                     <div class="fr-pt-3w">
                         <input type="submit" value="Vérifier mes obligations" class="fr-btn">
                     </div>

@@ -6,8 +6,8 @@ import pytest
 from django.db import IntegrityError
 from freezegun import freeze_time
 
+from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
-from entreprises.models import Evolution
 
 
 @pytest.mark.django_db(transaction=True)
@@ -42,47 +42,55 @@ def test_entreprise():
 def test_entreprise_is_qualified(unqualified_entreprise):
     assert not unqualified_entreprise.is_qualified
 
-    evolution = unqualified_entreprise.set_current_evolution(
-        effectif=Evolution.EFFECTIF_MOINS_DE_50,
+    caracteristiques = unqualified_entreprise.actualise_caracteristiques(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         bdese_accord=True,
     )
-    evolution.save()
+    caracteristiques.save()
 
     assert unqualified_entreprise.is_qualified
 
 
-def test_get_and_set_current_evolution(unqualified_entreprise):
-    assert unqualified_entreprise.get_current_evolution() is None
+def test_get_and_actualise_caracteristiques(unqualified_entreprise):
+    assert unqualified_entreprise.caracteristiques_actuelles() is None
 
-    effectif = Evolution.EFFECTIF_ENTRE_300_ET_499
+    effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
     bdese_accord = False
 
-    evolution = unqualified_entreprise.set_current_evolution(effectif, bdese_accord)
-    evolution.save()
+    caracteristiques = unqualified_entreprise.actualise_caracteristiques(
+        effectif, bdese_accord
+    )
+    caracteristiques.save()
 
-    assert evolution.effectif == effectif
-    assert evolution.bdese_accord == bdese_accord
+    assert caracteristiques.effectif == effectif
+    assert caracteristiques.bdese_accord == bdese_accord
     unqualified_entreprise.refresh_from_db()
-    assert unqualified_entreprise.get_current_evolution() == evolution
+    assert unqualified_entreprise.caracteristiques_actuelles() == caracteristiques
 
-    effectif_corrige = Evolution.EFFECTIF_500_ET_PLUS
+    effectif_corrige = CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS
     bdese_accord_corrige = True
 
-    evolution_corrigee = unqualified_entreprise.set_current_evolution(
+    caracteristiques_corrigee = unqualified_entreprise.actualise_caracteristiques(
         effectif_corrige, bdese_accord_corrige
     )
-    evolution_corrigee.save()
+    caracteristiques_corrigee.save()
 
-    assert evolution_corrigee.effectif == effectif_corrige
-    assert evolution_corrigee.bdese_accord == bdese_accord_corrige
+    assert caracteristiques_corrigee.effectif == effectif_corrige
+    assert caracteristiques_corrigee.bdese_accord == bdese_accord_corrige
     unqualified_entreprise.refresh_from_db()
-    assert unqualified_entreprise.get_current_evolution() == evolution_corrigee
+    assert (
+        unqualified_entreprise.caracteristiques_actuelles() == caracteristiques_corrigee
+    )
 
 
 def test_uniques_caracteristiques_annuelles(unqualified_entreprise):
-    evolution = Evolution(entreprise=unqualified_entreprise, annee=2023)
-    evolution.save()
+    caracteristiques = CaracteristiquesAnnuelles(
+        entreprise=unqualified_entreprise, annee=2023
+    )
+    caracteristiques.save()
 
     with pytest.raises(IntegrityError):
-        evolution_bis = Evolution(entreprise=unqualified_entreprise, annee=2023)
-        evolution_bis.save()
+        caracteristiques_bis = CaracteristiquesAnnuelles(
+            entreprise=unqualified_entreprise, annee=2023
+        )
+        caracteristiques_bis.save()

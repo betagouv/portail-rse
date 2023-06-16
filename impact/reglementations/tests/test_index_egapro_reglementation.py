@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from entreprises.models import Evolution
+from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
 from reglementations.models import derniere_annee_a_remplir_index_egapro
 from reglementations.views import IndexEgaproReglementation
@@ -27,11 +27,13 @@ def test_index_egapro_reglementation_info():
 def test_calculate_status_less_than_50_employees(
     entreprise_factory, alice, mock_index_egapro
 ):
-    entreprise = entreprise_factory(effectif=Evolution.EFFECTIF_MOINS_DE_50)
+    entreprise = entreprise_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+    )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
     index = IndexEgaproReglementation(entreprise).calculate_status(
-        entreprise.get_current_evolution(), alice
+        entreprise.caracteristiques_actuelles(), alice
     )
 
     assert index.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -42,9 +44,9 @@ def test_calculate_status_less_than_50_employees(
 @pytest.mark.parametrize(
     "effectif",
     [
-        Evolution.EFFECTIF_ENTRE_50_ET_299,
-        Evolution.EFFECTIF_ENTRE_300_ET_499,
-        Evolution.EFFECTIF_500_ET_PLUS,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+        CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS,
     ],
 )
 def test_calculate_status_more_than_50_employees(
@@ -56,7 +58,7 @@ def test_calculate_status_more_than_50_employees(
 
     mock_index_egapro.return_value = False
     index = IndexEgaproReglementation(entreprise).calculate_status(
-        entreprise.get_current_evolution(), alice
+        entreprise.caracteristiques_actuelles(), alice
     )
 
     assert index.status == ReglementationStatus.STATUS_A_ACTUALISER
@@ -70,7 +72,7 @@ def test_calculate_status_more_than_50_employees(
     mock_index_egapro.reset_mock()
     mock_index_egapro.return_value = True
     index = IndexEgaproReglementation(entreprise).calculate_status(
-        entreprise.get_current_evolution(), alice
+        entreprise.caracteristiques_actuelles(), alice
     )
 
     assert index.status == ReglementationStatus.STATUS_A_JOUR

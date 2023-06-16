@@ -5,8 +5,8 @@ from django.urls import reverse
 
 import api.exceptions
 from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
+from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
-from entreprises.models import Evolution
 from habilitations.models import attach_user_to_entreprise
 from habilitations.models import get_habilitation
 from habilitations.models import Habilitation
@@ -205,7 +205,7 @@ def test_qualify_entreprise(
     attach_user_to_entreprise(alice, unqualified_entreprise, "Présidente")
     client.force_login(alice)
     data = {
-        "effectif": Evolution.EFFECTIF_ENTRE_50_ET_299,
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299,
         "bdese_accord": True,
     }
 
@@ -215,9 +215,11 @@ def test_qualify_entreprise(
 
     unqualified_entreprise.refresh_from_db()
     assert unqualified_entreprise.denomination == "Entreprise SAS"
-    evolution = unqualified_entreprise.get_current_evolution()
-    assert evolution.effectif == Evolution.EFFECTIF_ENTRE_50_ET_299
-    assert evolution.bdese_accord
+    caracteristiques = unqualified_entreprise.caracteristiques_actuelles()
+    assert (
+        caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299
+    )
+    assert caracteristiques.bdese_accord
     assert unqualified_entreprise.is_qualified
 
 

@@ -3,7 +3,7 @@ import html
 import pytest
 
 import api.exceptions
-from entreprises.models import Evolution
+from entreprises.models import CaracteristiquesAnnuelles
 from public.forms import DENOMINATION_MAX_LENGTH
 from public.forms import EntrepriseForm
 
@@ -151,7 +151,7 @@ def test_succes_recherche_siren(client, mocker):
         "api.recherche_entreprises.recherche",
         return_value={
             "siren": SIREN,
-            "effectif": Evolution.EFFECTIF_ENTRE_50_ET_299,
+            "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299,
             "denomination": RAISON_SOCIALE,
         },
     )

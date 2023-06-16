@@ -1,7 +1,7 @@
 import pytest
 
+from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
-from entreprises.models import Evolution
 
 
 @pytest.fixture
@@ -33,18 +33,18 @@ def entreprise_factory(db):
     def create_entreprise(
         siren="000000001",
         denomination="Entreprise SAS",
-        effectif=Evolution.EFFECTIF_MOINS_DE_50,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         bdese_accord=False,
     ):
         entreprise = Entreprise.objects.create(
             siren=siren,
             denomination=denomination,
         )
-        evolution = entreprise.set_current_evolution(
+        caracteristiques = entreprise.actualise_caracteristiques(
             effectif=effectif,
             bdese_accord=bdese_accord,
         )
-        evolution.save()
+        caracteristiques.save()
         return entreprise
 
     return create_entreprise

@@ -7,7 +7,7 @@ from .exceptions import APIError
 from .exceptions import ServerError
 from .exceptions import SirenError
 from .exceptions import TooManyRequestError
-from entreprises.models import Evolution
+from entreprises.models import CaracteristiquesAnnuelles
 
 SIREN_NOT_FOUND_ERROR = (
     "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct."
@@ -35,13 +35,13 @@ def recherche(siren):
         except (ValueError, TypeError):
             tranche_effectif = 0
         if tranche_effectif < 21:  # moins de 50 salariés
-            effectif = Evolution.EFFECTIF_MOINS_DE_50
+            effectif = CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
         elif tranche_effectif < 32:  # moins de 250 salariés
-            effectif = Evolution.EFFECTIF_ENTRE_50_ET_299
+            effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299
         elif tranche_effectif < 41:  # moins de 500 salariés
-            effectif = Evolution.EFFECTIF_ENTRE_300_ET_499
+            effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
         else:
-            effectif = Evolution.EFFECTIF_500_ET_PLUS
+            effectif = CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS
         return {
             "siren": siren,
             "effectif": effectif,

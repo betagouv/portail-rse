@@ -2,8 +2,8 @@ import pytest
 from django.contrib.auth.models import AnonymousUser
 
 from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
+from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
-from entreprises.models import Evolution
 from entreprises.tests.conftest import unqualified_entreprise  # noqa
 from habilitations.models import attach_user_to_entreprise
 from reglementations.views import BDESEReglementation
@@ -32,7 +32,7 @@ def test_public_reglementations(client):
 @pytest.mark.django_db
 def test_public_reglementations_with_entreprise_data(status_est_soumis, client, mocker):
     data = {
-        "effectif": Evolution.EFFECTIF_MOINS_DE_50,
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         "bdese_accord": False,
         "denomination": "Entreprise SAS",
         "siren": "000000001",
@@ -54,9 +54,9 @@ def test_public_reglementations_with_entreprise_data(status_est_soumis, client, 
     # entreprise has been created
     entreprise = Entreprise.objects.get(siren="000000001")
     assert entreprise.denomination == "Entreprise SAS"
-    evolution = entreprise.get_current_evolution()
-    assert not evolution.bdese_accord
-    assert evolution.effectif == Evolution.EFFECTIF_MOINS_DE_50
+    caracteristiques = entreprise.caracteristiques_actuelles()
+    assert not caracteristiques.bdese_accord
+    assert caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
 
     # reglementations for this entreprise are anonymously displayed
     context = response.context
@@ -64,10 +64,10 @@ def test_public_reglementations_with_entreprise_data(status_est_soumis, client, 
     reglementations = context["reglementations"]
     assert reglementations[0]["status"] == BDESEReglementation(
         entreprise
-    ).calculate_status(evolution, AnonymousUser())
+    ).calculate_status(caracteristiques, AnonymousUser())
     assert reglementations[1]["status"] == IndexEgaproReglementation(
         entreprise
-    ).calculate_status(evolution, AnonymousUser())
+    ).calculate_status(caracteristiques, AnonymousUser())
 
     if status_est_soumis:
         assert '<p class="fr-badge">soumis</p>' in content, content
@@ -84,7 +84,7 @@ def entreprise(db, alice, entreprise_factory):
     entreprise = entreprise_factory(
         siren="000000001",
         denomination="Entreprise SAS",
-        effectif=Evolution.EFFECTIF_MOINS_DE_50,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         bdese_accord=False,
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
@@ -112,7 +112,7 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
     client.force_login(entreprise.users.first())
 
     data = {
-        "effectif": Evolution.EFFECTIF_ENTRE_300_ET_499,
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
         "bdese_accord": False,
         "denomination": "Une autre entreprise SAS",
         "siren": "000000002",
@@ -151,7 +151,7 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_autenticated(
     La simulation par un utilisateur anonyme sur une entreprise déjà enregistrée en base ne modifie pas en base son évolution
     mais affiche quand même à l'utilisateur anonyme les statuts correspondant aux données utilisées lors de la simulation
     """
-    effectif = Evolution.EFFECTIF_ENTRE_300_ET_499
+    effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
     data = {
         "effectif": effectif,
         "bdese_accord": False,
@@ -162,21 +162,24 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_autenticated(
     response = client.get("/reglementations", data=data)
 
     entreprise.refresh_from_db()
-    assert entreprise.get_current_evolution().effectif == Evolution.EFFECTIF_MOINS_DE_50
+    assert (
+        entreprise.caracteristiques_actuelles().effectif
+        == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+    )
 
     context = response.context
     assert context["entreprise"] == entreprise
     bdese_status = context["reglementations"][0]["status"]
     index_egapro_status = context["reglementations"][0]["status"]
-    evolution = Evolution(
+    caracteristiques = CaracteristiquesAnnuelles(
         annee=2022, entreprise=entreprise, effectif=effectif, bdese_accord=False
     )
     assert bdese_status == BDESEReglementation(entreprise).calculate_status(
-        evolution, AnonymousUser()
+        caracteristiques, AnonymousUser()
     )
     assert index_egapro_status == IndexEgaproReglementation(
         entreprise
-    ).calculate_status(evolution, AnonymousUser())
+    ).calculate_status(caracteristiques, AnonymousUser())
 
     # si c'est un utilisateur rattaché à l'entreprise qui fait la simulation en changeant les données d'évolution
     # on enregistre ces nouvelles données en base
@@ -186,8 +189,8 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_autenticated(
 
     entreprise.refresh_from_db()
     assert (
-        entreprise.get_current_evolution().effectif
-        == Evolution.EFFECTIF_ENTRE_300_ET_499
+        entreprise.caracteristiques_actuelles().effectif
+        == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
     )
 
 
@@ -204,10 +207,14 @@ def test_reglementation_with_authenticated_user(client, entreprise):
     reglementations = context["reglementations"]
     assert reglementations[0]["status"] == BDESEReglementation(
         entreprise
-    ).calculate_status(entreprise.get_current_evolution(), entreprise.users.first())
+    ).calculate_status(
+        entreprise.caracteristiques_actuelles(), entreprise.users.first()
+    )
     assert reglementations[1]["status"] == IndexEgaproReglementation(
         entreprise
-    ).calculate_status(entreprise.get_current_evolution(), entreprise.users.first())
+    ).calculate_status(
+        entreprise.caracteristiques_actuelles(), entreprise.users.first()
+    )
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
 
@@ -231,10 +238,10 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
     reglementations = context["reglementations"]
     assert reglementations[0]["status"] == BDESEReglementation(
         entreprise1
-    ).calculate_status(entreprise1.get_current_evolution(), alice)
+    ).calculate_status(entreprise1.caracteristiques_actuelles(), alice)
     assert reglementations[1]["status"] == IndexEgaproReglementation(
         entreprise1
-    ).calculate_status(entreprise1.get_current_evolution(), alice)
+    ).calculate_status(entreprise1.caracteristiques_actuelles(), alice)
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
 
@@ -248,10 +255,10 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
     reglementations = context["reglementations"]
     assert reglementations[0]["status"] == BDESEReglementation(
         entreprise2
-    ).calculate_status(entreprise2.get_current_evolution(), alice)
+    ).calculate_status(entreprise2.caracteristiques_actuelles(), alice)
     assert reglementations[1]["status"] == IndexEgaproReglementation(
         entreprise2
-    ).calculate_status(entreprise2.get_current_evolution(), alice)
+    ).calculate_status(entreprise2.caracteristiques_actuelles(), alice)
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
 

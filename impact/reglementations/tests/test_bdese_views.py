@@ -4,7 +4,7 @@ import json
 import pytest
 from django.urls import reverse
 
-from entreprises.models import Evolution
+from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
 from reglementations.models import annees_a_remplir_bdese
 from reglementations.models import BDESE_300
@@ -32,8 +32,8 @@ def test_bdese_is_not_public(client, alice, grande_entreprise):
 @pytest.mark.parametrize(
     "effectif, bdese_class",
     [
-        (Evolution.EFFECTIF_ENTRE_50_ET_299, BDESE_50_300),
-        (Evolution.EFFECTIF_ENTRE_300_ET_499, BDESE_300),
+        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299, BDESE_50_300),
+        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499, BDESE_300),
     ],
 )
 def test_yearly_personal_bdese_is_created_at_first_authorized_request(

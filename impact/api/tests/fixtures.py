@@ -1,6 +1,6 @@
 import pytest
 
-from entreprises.models import Evolution
+from entreprises.models import CaracteristiquesAnnuelles
 
 
 @pytest.fixture
@@ -10,6 +10,6 @@ def mock_api_recherche_entreprises(mocker):
         return_value={
             "siren": "000000001",
             "denomination": "Entreprise SAS",
-            "effectif": Evolution.EFFECTIF_MOINS_DE_50,
+            "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         },
     )
