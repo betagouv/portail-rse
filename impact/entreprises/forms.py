@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from .models import Evolution
+from .models import CaracteristiquesAnnuelles
 from utils.forms import DsfrForm
 
 
@@ -36,5 +36,5 @@ class EntrepriseDetachForm(DsfrForm):
 
 class EntrepriseQualificationForm(DsfrForm, forms.ModelForm):
     class Meta:
-        model = Evolution
+        model = CaracteristiquesAnnuelles
         fields = ["effectif", "bdese_accord"]

@@ -2,7 +2,7 @@ import pytest
 from django.contrib.auth.models import AnonymousUser
 from django.urls import reverse
 
-from entreprises.models import Evolution
+from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
@@ -39,7 +39,7 @@ def test_calculate_status_with_not_authenticated_user(entreprise_factory, mocker
         return_value=False,
     )
     status = BDESEReglementation(entreprise).calculate_status(
-        entreprise.get_current_evolution(), AnonymousUser()
+        entreprise.caracteristiques_actuelles(), AnonymousUser()
     )
 
     assert status.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -52,7 +52,7 @@ def test_calculate_status_with_not_authenticated_user(entreprise_factory, mocker
         return_value=True,
     )
     status = BDESEReglementation(entreprise).calculate_status(
-        entreprise.get_current_evolution(), AnonymousUser()
+        entreprise.caracteristiques_actuelles(), AnonymousUser()
     )
 
     assert status.status == ReglementationStatus.STATUS_SOUMIS
@@ -75,7 +75,7 @@ def test_calculate_status_with_not_attached_user(entreprise_factory, alice, mock
         return_value=False,
     )
     status = BDESEReglementation(entreprise).calculate_status(
-        entreprise.get_current_evolution(), alice
+        entreprise.caracteristiques_actuelles(), alice
     )
 
     assert status.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -90,7 +90,7 @@ def test_calculate_status_with_not_attached_user(entreprise_factory, alice, mock
         return_value=True,
     )
     status = BDESEReglementation(entreprise).calculate_status(
-        entreprise.get_current_evolution(), alice
+        entreprise.caracteristiques_actuelles(), alice
     )
 
     assert status.status == ReglementationStatus.STATUS_SOUMIS
@@ -104,12 +104,13 @@ def test_calculate_status_less_than_50_employees(
     bdese_accord, entreprise_factory, alice
 ):
     entreprise = entreprise_factory(
-        effectif=Evolution.EFFECTIF_MOINS_DE_50, bdese_accord=bdese_accord
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        bdese_accord=bdese_accord,
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
     status = BDESEReglementation(entreprise).calculate_status(
-        entreprise.get_current_evolution(), alice
+        entreprise.caracteristiques_actuelles(), alice
     )
 
     assert status.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -121,9 +122,9 @@ def test_calculate_status_less_than_50_employees(
 @pytest.mark.parametrize(
     "effectif, bdese_class",
     [
-        (Evolution.EFFECTIF_ENTRE_50_ET_299, BDESE_50_300),
-        (Evolution.EFFECTIF_ENTRE_300_ET_499, BDESE_300),
-        (Evolution.EFFECTIF_500_ET_PLUS, BDESE_300),
+        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299, BDESE_50_300),
+        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499, BDESE_300),
+        (CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS, BDESE_300),
     ],
 )
 def test_calculate_status_more_than_50_employees_with_habilited_user(
@@ -136,7 +137,7 @@ def test_calculate_status_more_than_50_employees_with_habilited_user(
     annee = derniere_annee_a_remplir_bdese()
 
     status = BDESEReglementation(entreprise).calculate_status(
-        entreprise.get_current_evolution(), alice
+        entreprise.caracteristiques_actuelles(), alice
     )
 
     assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
@@ -152,7 +153,7 @@ def test_calculate_status_more_than_50_employees_with_habilited_user(
 
     bdese_class.objects.create(entreprise=entreprise, annee=annee)
     status = BDESEReglementation(entreprise).calculate_status(
-        entreprise.get_current_evolution(), alice
+        entreprise.caracteristiques_actuelles(), alice
     )
 
     assert status.status == ReglementationStatus.STATUS_EN_COURS
@@ -170,7 +171,7 @@ def test_calculate_status_more_than_50_employees_with_habilited_user(
 
     mocker.patch("reglementations.models.AbstractBDESE.is_complete", return_value=True)
     status = BDESEReglementation(entreprise).calculate_status(
-        entreprise.get_current_evolution(), alice
+        entreprise.caracteristiques_actuelles(), alice
     )
 
     assert status.status == ReglementationStatus.STATUS_A_JOUR
@@ -192,9 +193,9 @@ def test_calculate_status_more_than_50_employees_with_habilited_user(
 @pytest.mark.parametrize(
     "effectif, bdese_class",
     [
-        (Evolution.EFFECTIF_ENTRE_50_ET_299, BDESE_50_300),
-        (Evolution.EFFECTIF_ENTRE_300_ET_499, BDESE_300),
-        (Evolution.EFFECTIF_500_ET_PLUS, BDESE_300),
+        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299, BDESE_50_300),
+        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499, BDESE_300),
+        (CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS, BDESE_300),
     ],
 )
 def test_calculate_status_more_than_50_employees_with_not_habilited_user(
@@ -205,14 +206,14 @@ def test_calculate_status_more_than_50_employees_with_not_habilited_user(
     annee = derniere_annee_a_remplir_bdese()
 
     status = BDESEReglementation(entreprise).calculate_status(
-        entreprise.get_current_evolution(), alice
+        entreprise.caracteristiques_actuelles(), alice
     )
 
     assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
 
     bdese_class.officials.create(entreprise=entreprise, annee=annee)
     status = BDESEReglementation(entreprise).calculate_status(
-        entreprise.get_current_evolution(), alice
+        entreprise.caracteristiques_actuelles(), alice
     )
 
     # L'utilisateur dont l'habilitation n'est pas confirmée voit le statut de sa BDESE personnelle, pas de celle officielle
@@ -220,7 +221,7 @@ def test_calculate_status_more_than_50_employees_with_not_habilited_user(
 
     bdese_class.personals.create(entreprise=entreprise, annee=annee, user=alice)
     status = BDESEReglementation(entreprise).calculate_status(
-        entreprise.get_current_evolution(), alice
+        entreprise.caracteristiques_actuelles(), alice
     )
 
     assert status.status == ReglementationStatus.STATUS_EN_COURS
@@ -229,9 +230,9 @@ def test_calculate_status_more_than_50_employees_with_not_habilited_user(
 @pytest.mark.parametrize(
     "effectif",
     [
-        Evolution.EFFECTIF_ENTRE_50_ET_299,
-        Evolution.EFFECTIF_ENTRE_300_ET_499,
-        Evolution.EFFECTIF_500_ET_PLUS,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+        CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS,
     ],
 )
 def test_calculate_status_with_bdese_accord_with_not_habilited_user(
@@ -242,7 +243,7 @@ def test_calculate_status_with_bdese_accord_with_not_habilited_user(
     annee = derniere_annee_a_remplir_bdese()
 
     status = BDESEReglementation(entreprise).calculate_status(
-        entreprise.get_current_evolution(), alice
+        entreprise.caracteristiques_actuelles(), alice
     )
 
     assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
@@ -260,7 +261,7 @@ def test_calculate_status_with_bdese_accord_with_not_habilited_user(
     bdese.is_complete = True
     bdese.save()
     status = BDESEReglementation(entreprise).calculate_status(
-        entreprise.get_current_evolution(), alice
+        entreprise.caracteristiques_actuelles(), alice
     )
 
     # L'utilisateur dont l'habilitation n'est pas confirmée voit le statut de sa BDESE personnelle, pas de celle officielle
@@ -273,7 +274,7 @@ def test_calculate_status_with_bdese_accord_with_not_habilited_user(
     bdese.save()
 
     status = BDESEReglementation(entreprise).calculate_status(
-        entreprise.get_current_evolution(), alice
+        entreprise.caracteristiques_actuelles(), alice
     )
 
     assert status.status == ReglementationStatus.STATUS_A_JOUR
@@ -285,9 +286,9 @@ def test_calculate_status_with_bdese_accord_with_not_habilited_user(
 @pytest.mark.parametrize(
     "effectif",
     [
-        Evolution.EFFECTIF_ENTRE_50_ET_299,
-        Evolution.EFFECTIF_ENTRE_300_ET_499,
-        Evolution.EFFECTIF_500_ET_PLUS,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+        CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS,
     ],
 )
 def test_calculate_status_with_bdese_accord_with_habilited_user(
@@ -300,7 +301,7 @@ def test_calculate_status_with_bdese_accord_with_habilited_user(
     annee = derniere_annee_a_remplir_bdese()
 
     status = BDESEReglementation(entreprise).calculate_status(
-        entreprise.get_current_evolution(), alice
+        entreprise.caracteristiques_actuelles(), alice
     )
 
     assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
@@ -318,7 +319,7 @@ def test_calculate_status_with_bdese_accord_with_habilited_user(
     bdese.is_complete = True
     bdese.save()
     status = BDESEReglementation(entreprise).calculate_status(
-        entreprise.get_current_evolution(), alice
+        entreprise.caracteristiques_actuelles(), alice
     )
 
     assert status.status == ReglementationStatus.STATUS_A_JOUR

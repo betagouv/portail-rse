@@ -2,9 +2,9 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 from entreprises.forms import SirenField
+from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import DENOMINATION_MAX_LENGTH
 from entreprises.models import Entreprise
-from entreprises.models import Evolution
 from utils.forms import DsfrForm
 
 
@@ -22,9 +22,9 @@ class EntrepriseForm(DsfrForm, forms.ModelForm):
         return denomination[:DENOMINATION_MAX_LENGTH]
 
 
-class EvolutionForm(DsfrForm, forms.ModelForm):
+class CaracteristiquesForm(DsfrForm, forms.ModelForm):
     class Meta:
-        model = Evolution
+        model = CaracteristiquesAnnuelles
         fields = ["effectif", "bdese_accord"]
 
 

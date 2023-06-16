@@ -5,7 +5,7 @@ from api.exceptions import ServerError
 from api.exceptions import SirenError
 from api.exceptions import TooManyRequestError
 from api.recherche_entreprises import recherche
-from entreprises.models import Evolution
+from entreprises.models import CaracteristiquesAnnuelles
 
 
 def test_succes_recherche_comportant_la_raison_sociale(mocker):
@@ -31,7 +31,7 @@ def test_succes_recherche_comportant_la_raison_sociale(mocker):
 
     assert infos == {
         "siren": SIREN,
-        "effectif": Evolution.EFFECTIF_MOINS_DE_50,
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         "denomination": "ENTREPRISE",
     }
 
@@ -59,7 +59,7 @@ def test_succes_recherche_sans_la_raison_sociale(mocker):
 
     assert infos == {
         "siren": SIREN,
-        "effectif": Evolution.EFFECTIF_MOINS_DE_50,
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         "denomination": "ENTREPRISE",
     }
 

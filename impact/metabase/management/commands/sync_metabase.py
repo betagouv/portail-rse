@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 
+from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise as ImpactEntreprise
-from entreprises.models import Evolution
 from metabase.models import Entreprise as MetabaseEntreprise
 
 
@@ -16,12 +16,12 @@ class Command(BaseCommand):
 
     def _insert_entreprises(self):
         for entreprise in ImpactEntreprise.objects.all():
-            evolution = entreprise.get_current_evolution()
+            caracteristiques = entreprise.caracteristiques_actuelles()
             meta_e = MetabaseEntreprise.objects.create(
                 siren=entreprise.siren,
                 denomination=entreprise.denomination,
-                bdese_accord=evolution.bdese_accord,
-                effectif=evolution.effectif,
+                bdese_accord=caracteristiques.bdese_accord,
+                effectif=caracteristiques.effectif,
                 created_at=entreprise.created_at,
                 updated_at=_last_update(entreprise),
             )
@@ -34,7 +34,9 @@ class Command(BaseCommand):
 
 def _last_update(entreprise):
     last_update = entreprise.updated_at
-    for evolution in Evolution.objects.filter(entreprise=entreprise):
-        if evolution.updated_at > last_update:
-            last_update = evolution.updated_at
+    for caracteristiques in CaracteristiquesAnnuelles.objects.filter(
+        entreprise=entreprise
+    ):
+        if caracteristiques.updated_at > last_update:
+            last_update = caracteristiques.updated_at
     return last_update

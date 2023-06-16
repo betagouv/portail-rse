@@ -21,30 +21,31 @@ class Entreprise(TimestampedModel):
 
     @property
     def is_qualified(self):
-        return bool(self.get_current_evolution())
+        return bool(self.caracteristiques_actuelles())
 
-    def get_evolution(self, annee):
+    def caracteristiques_annuelles(self, annee):
         try:
-            return Evolution.objects.get(
+            return CaracteristiquesAnnuelles.objects.get(
                 entreprise=self,
                 annee=annee,
             )
         except ObjectDoesNotExist:
             return None
 
-    def get_current_evolution(self):
-        return self.get_evolution(date.today().year - 1)
+    def caracteristiques_actuelles(self):
+        return self.caracteristiques_annuelles(date.today().year - 1)
 
-    def set_current_evolution(self, effectif, bdese_accord):
-        evolution = self.get_current_evolution() or Evolution(
-            entreprise=self, annee=date.today().year - 1
+    def actualise_caracteristiques(self, effectif, bdese_accord):
+        caracteristiques = (
+            self.caracteristiques_actuelles()
+            or CaracteristiquesAnnuelles(entreprise=self, annee=date.today().year - 1)
         )
-        evolution.effectif = effectif
-        evolution.bdese_accord = bdese_accord
-        return evolution
+        caracteristiques.effectif = effectif
+        caracteristiques.bdese_accord = bdese_accord
+        return caracteristiques
 
 
-class Evolution(TimestampedModel):
+class CaracteristiquesAnnuelles(TimestampedModel):
     EFFECTIF_MOINS_DE_50 = "0-49"
     EFFECTIF_ENTRE_50_ET_299 = "50-299"
     EFFECTIF_ENTRE_300_ET_499 = "300-499"
