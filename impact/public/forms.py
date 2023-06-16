@@ -13,6 +13,8 @@ class SirenForm(DsfrForm):
 
 
 class EntrepriseForm(DsfrForm, forms.ModelForm):
+    denomination = forms.CharField()
+
     class Meta:
         model = Entreprise
         fields = ["denomination", "siren"]
