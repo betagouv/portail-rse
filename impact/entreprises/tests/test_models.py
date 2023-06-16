@@ -83,6 +83,16 @@ def test_get_and_actualise_caracteristiques(unqualified_entreprise):
     )
 
 
+@pytest.mark.django_db(transaction=True)
+def test_caracteristiques_annuelles(unqualified_entreprise):
+    with pytest.raises(IntegrityError):
+        CaracteristiquesAnnuelles.objects.create(annee=2023)
+
+    CaracteristiquesAnnuelles.objects.create(
+        entreprise=unqualified_entreprise, annee=2023
+    )
+
+
 def test_uniques_caracteristiques_annuelles(unqualified_entreprise):
     caracteristiques = CaracteristiquesAnnuelles(
         entreprise=unqualified_entreprise, annee=2023

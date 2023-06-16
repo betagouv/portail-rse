@@ -57,7 +57,7 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         (EFFECTIF_500_ET_PLUS, "500 salariés ou plus"),
     ]
 
-    entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE, default=None)
+    entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
     annee = models.IntegerField()
     effectif = models.CharField(
         max_length=9,
