@@ -373,7 +373,7 @@ def reglementations_for_entreprise(request, siren):
 
     request.session["entreprise"] = entreprise.siren
 
-    if not entreprise.is_qualified:
+    if not entreprise.est_qualifiee:
         messages.warning(
             request,
             "Veuillez renseigner les informations suivantes pour connaître les réglementations auxquelles est soumise cette entreprise",

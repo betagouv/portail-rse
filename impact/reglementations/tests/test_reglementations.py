@@ -4,7 +4,7 @@ from django.contrib.auth.models import AnonymousUser
 from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
-from entreprises.tests.conftest import unqualified_entreprise  # noqa
+from entreprises.tests.conftest import entreprise_non_qualifiee  # noqa
 from habilitations.models import attach_user_to_entreprise
 from reglementations.views import BDESEReglementation
 from reglementations.views import IndexEgaproReglementation
@@ -263,16 +263,16 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
         assert reglementation["status"].status_detail in content
 
 
-def test_reglementation_with_unqualified_entreprise_redirect_to_qualification_page(
-    client, alice, unqualified_entreprise, mock_api_recherche_entreprises
+def test_reglementation_with_entreprise_non_qualifiee_redirect_to_qualification_page(
+    client, alice, entreprise_non_qualifiee, mock_api_recherche_entreprises
 ):
-    attach_user_to_entreprise(alice, unqualified_entreprise, "Présidente")
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
     client.force_login(alice)
 
     response = client.get(
-        f"/reglementations/{unqualified_entreprise.siren}", follow=True
+        f"/reglementations/{entreprise_non_qualifiee.siren}", follow=True
     )
 
     assert response.status_code == 200
-    url = f"/entreprises/{unqualified_entreprise.siren}"
+    url = f"/entreprises/{entreprise_non_qualifiee.siren}"
     assert response.redirect_chain == [(url, 302)]
