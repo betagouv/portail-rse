@@ -77,3 +77,5 @@ class CaracteristiquesAnnuelles(TimestampedModel):
                 name="uniques_caracteristiques_annuelles",
             )
         ]
+        verbose_name = "Caractéristiques annuelles"
+        verbose_name_plural = "Caractéristiques annuelles"
