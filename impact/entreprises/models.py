@@ -68,3 +68,11 @@ class Evolution(TimestampedModel):
         verbose_name="L'entreprise a un accord collectif d'entreprise concernant la Base de Données Économiques, Sociales et Environnementales (BDESE)",
         default=False,
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["entreprise", "annee"],
+                name="uniques_caracteristiques_annuelles",
+            )
+        ]

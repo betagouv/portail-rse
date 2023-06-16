@@ -77,3 +77,12 @@ def test_get_and_set_current_evolution(unqualified_entreprise):
     assert evolution_corrigee.bdese_accord == bdese_accord_corrige
     unqualified_entreprise.refresh_from_db()
     assert unqualified_entreprise.get_current_evolution() == evolution_corrigee
+
+
+def test_uniques_caracteristiques_annuelles(unqualified_entreprise):
+    evolution = Evolution(entreprise=unqualified_entreprise, annee=2023)
+    evolution.save()
+
+    with pytest.raises(IntegrityError):
+        evolution_bis = Evolution(entreprise=unqualified_entreprise, annee=2023)
+        evolution_bis.save()
