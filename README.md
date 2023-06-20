@@ -1,37 +1,39 @@
 [![test](https://github.com/betagouv/impact/actions/workflows/test.yml/badge.svg)](https://github.com/betagouv/impact/actions/workflows/test.yml)
 
-# Plateforme Impact
+# Projet Impact
 
 https://beta.gouv.fr/startups/plateforme.impact.html
 
 
-## développement local
+## Développement local
 
-### installation
+### Installation du projet
 
-Installer [`pipenv`](https://pypi.org/project/pipenv/) puis le projet avec
+- Installer [`pipenv`](https://pypi.org/project/pipenv/)
+- Installer le projet avec :
 
 ```
 make install
 ```
 
-Il est nécessaire d'installer le paquet système `libpq-dev` pour avoir `pg_config`.
-
-### lancement
+ℹ️ Il est nécessaire d'installer le paquet système `libpq-dev` pour avoir `pg_config`.
 
 
-Créer le fichier de variable d'environnement `.env` à partir du fichier d'exemple `.env.example`
-Pour activer l'intégration avec Sentry, il est nécessaire de renseigner la variable d'environnement SENTRY_DSN
+### Lancement en local
 
+- Créer le fichier de variable d'environnement `.env` à partir du fichier d'exemple `.env.example`. Si nécessaire, il est possible d'activer l'intégration avec Sentry en local en renseignant la variable d'environnement `SENTRY_DSN`.
+
+- Lancer le projet avec :
 
 ```
 make migrate
 make run
 ```
 
-Le service est disponible sur http://127.0.0.1:8000
+- Le service est disponible sur http://127.0.0.1:8000
 
-### migration
+
+### Migration des données
 
 Pour générer les nouvelles migrations éventuelles et les appliquer :
 
@@ -40,22 +42,20 @@ make migrations
 make migrate
 ```
 
-### test
 
-Exécuter les tests avec :
+### Test et CI
+
+- Exécuter les tests en local avec :
 
 ```
 make test
 ```
 
-### pre-commit
-
-Le projet utilise [pre-commit](https://pre-commit.com/) pour vérifier le formattage du code automatiquement à chaque commit.
+- Formater le code. Le projet utilise [pre-commit](https://pre-commit.com/) pour vérifier le formattage du code automatiquement à chaque commit.
 La cible `make install` l'installe directement.
 
 
-## migration en recette
-
+## Migrations en recette
 
 ```
 scalingo --app ${PROJET} run python3 impact/manage.py migrate
@@ -77,17 +77,27 @@ scalingo --app ${PROJET} run python3 impact/manage.py migrate NOM_DE_L_APP_DJANG
 ```
 
 
-### suppression des données
+### Suppression des données
 
 Pour supprimer toutes les données en recette :
 
 ```
 scalingo --app ${PROJET} pgsql-console
-drop owned by ${PROJET}_3273;
+drop owned by ${PROJET_USER};
 ```
 
 Penser à créer à nouveau le super utilisateur une fois l'application redéployée/les migrations rejouées avec :
 
 ```
 scalingo --app ${PROJET} run python3 impact/manage.py createsuperuser
+```
+
+
+## Consommation et mémoire en recette et production
+
+Il est possible de connaître en temps réel la consommation CPU et mémoire avec la commande :
+
+```
+scalingo --app ${PROJET} stats
+
 ```
