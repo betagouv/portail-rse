@@ -242,3 +242,23 @@ def test_personal_bdese_is_not_copied_to_official_bdese_if_already_exists(
         entreprise=grande_entreprise
     )
     assert official_bdese.categories_professionnelles != CATEGORIES_PROFESSIONNELLES
+
+
+@pytest.mark.django_db(transaction=True)
+@pytest.mark.parametrize("bdese_class", [BDESEAvecAccord, BDESE_50_300, BDESE_300])
+def test_unique_yearly_bdese_with_user(bdese_class, alice, grande_entreprise):
+    bdese_class.objects.create(entreprise=grande_entreprise, user=alice, annee=2022)
+    bdese_class.objects.create(entreprise=grande_entreprise, annee=2022)
+
+    with pytest.raises(IntegrityError):
+        bdese_class.objects.create(entreprise=grande_entreprise, user=alice, annee=2022)
+
+
+@pytest.mark.django_db(transaction=True)
+@pytest.mark.parametrize("bdese_class", [BDESEAvecAccord, BDESE_50_300, BDESE_300])
+def test_unique_yearly_bdese_without_user(bdese_class, alice, grande_entreprise):
+    bdese_class.objects.create(entreprise=grande_entreprise, annee=2022)
+    bdese_class.objects.create(entreprise=grande_entreprise, user=alice, annee=2022)
+
+    with pytest.raises(IntegrityError):
+        bdese_class.objects.create(entreprise=grande_entreprise, annee=2022)

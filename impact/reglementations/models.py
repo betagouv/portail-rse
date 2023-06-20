@@ -170,6 +170,17 @@ def bdese_completion_steps_default(steps):
 
 class BDESEAvecAccord(AbstractBDESE):
     class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["entreprise", "user", "annee"],
+                name="uniques_PersonalBDESEAvecAccord",
+            ),
+            models.UniqueConstraint(
+                fields=["entreprise", "annee"],
+                name="uniques_OfficialBDESEAvecAccord",
+                condition=models.Q(user=None),
+            ),
+        ]
         verbose_name = "BDESE avec accord d'entreprise"
         verbose_name_plural = "BDESE avec accord d'entreprise"
 
@@ -194,6 +205,17 @@ def bdese_300_completion_steps_default():
 
 class BDESE_300(AbstractBDESE):
     class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["entreprise", "user", "annee"],
+                name="uniques_PersonalBDESE_300",
+            ),
+            models.UniqueConstraint(
+                fields=["entreprise", "annee"],
+                name="uniques_OfficialBDESE_300",
+                condition=models.Q(user=None),
+            ),
+        ]
         verbose_name = "BDESE plus de 300 salariés"
         verbose_name_plural = "BDESE plus de 300 salariés"
 
@@ -2084,6 +2106,17 @@ def bdese_50_300_completion_steps_default():
 
 class BDESE_50_300(AbstractBDESE):
     class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["entreprise", "user", "annee"],
+                name="uniques_PersonalBDESE_50_300",
+            ),
+            models.UniqueConstraint(
+                fields=["entreprise", "annee"],
+                name="uniques_OfficialBDESE_50_300",
+                condition=models.Q(user=None),
+            ),
+        ]
         verbose_name = "BDESE 50 à 300 salariés"
         verbose_name_plural = "BDESE 50 à 300 salariés"
 
