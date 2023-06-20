@@ -2,7 +2,6 @@ from django import forms
 from django.contrib.auth import password_validation
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.forms import PasswordResetForm as BasePasswordResetForm
-from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
 from django.core.exceptions import ValidationError
 
@@ -95,14 +94,6 @@ class UserEditionForm(DsfrForm, forms.ModelForm):
         labels = {
             "reception_actualites": "Je souhaite recevoir les actualités du projet Impact (optionnel)",
         }
-
-
-class UserChangeForm(forms.ModelForm):
-    password = ReadOnlyPasswordHashField()
-
-    class Meta:
-        model = User
-        fields = ("email", "password", "is_active", "is_staff")
 
 
 class PasswordResetForm(DsfrForm, BasePasswordResetForm):

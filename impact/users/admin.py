@@ -1,16 +1,31 @@
+from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.models import Group
 
 from habilitations.admin import HabilitationInline
-from users.forms import UserChangeForm
-from users.forms import UserCreationForm
+from users.forms import UserPasswordForm
 from users.models import User
 
 
+class UserAdminChangeForm(forms.ModelForm):
+    password = ReadOnlyPasswordHashField()
+
+    class Meta:
+        model = User
+        fields = "__all__"
+
+
+class UserAdminCreationForm(UserPasswordForm):
+    class Meta:
+        model = User
+        fields = ("email",)
+
+
 class UserAdmin(BaseUserAdmin):
-    form = UserChangeForm
-    add_form = UserCreationForm
+    form = UserAdminChangeForm
+    add_form = UserAdminCreationForm
 
     readonly_fields = ("last_login",)
     list_display = ("email", "is_staff", "uidb64")
