@@ -20,8 +20,10 @@ class Command(BaseCommand):
             meta_e = MetabaseEntreprise.objects.create(
                 siren=entreprise.siren,
                 denomination=entreprise.denomination,
-                bdese_accord=caracteristiques.bdese_accord,
-                effectif=caracteristiques.effectif,
+                bdese_accord=caracteristiques.bdese_accord
+                if caracteristiques
+                else None,
+                effectif=caracteristiques.effectif if caracteristiques else None,
                 created_at=entreprise.created_at,
                 updated_at=_last_update(entreprise),
             )

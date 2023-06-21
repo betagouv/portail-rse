@@ -5,6 +5,7 @@ import pytest
 from freezegun import freeze_time
 
 from entreprises.models import CaracteristiquesAnnuelles
+from entreprises.models import Entreprise
 from impact.settings import METABASE_DATABASE_NAME
 from metabase.management.commands.sync_metabase import Command
 from metabase.models import Entreprise as MetabaseEntreprise
@@ -64,3 +65,18 @@ def test_synchronise_several_times(entreprise_factory):
     assert metabase_entreprise.siren == "000000001"
     assert metabase_entreprise.effectif == "0-49"
     assert metabase_entreprise.bdese_accord == True
+
+
+@pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
+def test_synchronise_une_entreprise_sans_caracteristiques_actuelles():
+    entreprise = Entreprise.objects.create(
+        siren="000000001", denomination="Entreprise SAS"
+    )
+
+    Command().handle()
+
+    metabase_entreprise = MetabaseEntreprise.objects.all()[0]
+    assert metabase_entreprise.denomination == "Entreprise SAS"
+    assert metabase_entreprise.siren == "000000001"
+    assert metabase_entreprise.effectif is None
+    assert metabase_entreprise.bdese_accord is None
