@@ -6,13 +6,16 @@ from freezegun import freeze_time
 
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
+from habilitations.models import attach_user_to_entreprise
 from impact.settings import METABASE_DATABASE_NAME
 from metabase.management.commands.sync_metabase import Command
 from metabase.models import Entreprise as MetabaseEntreprise
+from metabase.models import Habilitation as MetabaseHabilitation
+from metabase.models import Utilisateur as MetabaseUtilisateur
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
-def test_synchronise_metabase_once(entreprise_factory):
+def test_synchronise_une_entreprise(entreprise_factory):
     with freeze_time("2023-06-12 12:00"):
         entreprise_A = entreprise_factory(
             siren="000000001",
@@ -39,17 +42,19 @@ def test_synchronise_metabase_once(entreprise_factory):
 
     Command().handle()
 
-    metabase_entreprise = MetabaseEntreprise.objects.all()[0]
+    assert MetabaseEntreprise.objects.count() == 1
+    metabase_entreprise = MetabaseEntreprise.objects.first()
     assert metabase_entreprise.denomination == "A"
     assert metabase_entreprise.siren == "000000001"
     assert metabase_entreprise.effectif == "300-499"
     assert metabase_entreprise.bdese_accord == True
     assert metabase_entreprise.created_at == entreprise_A.created_at
     assert metabase_entreprise.updated_at == date_troisieme_evolution
+    assert metabase_entreprise.nombre_utilisateurs == 0
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
-def test_synchronise_several_times(entreprise_factory):
+def test_synchronise_une_entreprise_plusieurs_fois(entreprise_factory):
     entreprise_A = entreprise_factory(
         siren="000000001",
         denomination="A",
@@ -60,11 +65,13 @@ def test_synchronise_several_times(entreprise_factory):
     Command().handle()
     Command().handle()
 
-    metabase_entreprise = MetabaseEntreprise.objects.all()[0]
+    assert MetabaseEntreprise.objects.count() == 1
+    metabase_entreprise = MetabaseEntreprise.objects.first()
     assert metabase_entreprise.denomination == "A"
     assert metabase_entreprise.siren == "000000001"
     assert metabase_entreprise.effectif == "0-49"
     assert metabase_entreprise.bdese_accord == True
+    assert metabase_entreprise.nombre_utilisateurs == 0
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
@@ -75,8 +82,41 @@ def test_synchronise_une_entreprise_sans_caracteristiques_actuelles():
 
     Command().handle()
 
-    metabase_entreprise = MetabaseEntreprise.objects.all()[0]
+    metabase_entreprise = MetabaseEntreprise.objects.first()
     assert metabase_entreprise.denomination == "Entreprise SAS"
     assert metabase_entreprise.siren == "000000001"
     assert metabase_entreprise.effectif is None
     assert metabase_entreprise.bdese_accord is None
+
+
+@pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
+def test_synchronise_une_entreprise_avec_un_utilisateur(
+    entreprise_factory, django_user_model
+):
+    entreprise = entreprise_factory()
+    utilisateur = django_user_model.objects.create(
+        prenom="Alice",
+        nom="Cooper",
+        email="alice@impact.test",
+        reception_actualites=False,
+        is_email_confirmed=True,
+    )
+    attach_user_to_entreprise(utilisateur, entreprise, "Présidente")
+
+    Command().handle()
+
+    metabase_entreprise = MetabaseEntreprise.objects.first()
+    assert metabase_entreprise.nombre_utilisateurs == 1
+
+    assert MetabaseUtilisateur.objects.count() == 1
+    metabase_utilisateur = MetabaseUtilisateur.objects.first()
+    assert metabase_utilisateur.impact_id == utilisateur.pk
+    assert metabase_utilisateur.reception_actualites is False
+    assert metabase_utilisateur.email_valide is True
+
+    assert MetabaseHabilitation.objects.count() == 1
+    metabase_habilitation = MetabaseHabilitation.objects.first()
+    assert metabase_habilitation.utilisateur == metabase_utilisateur
+    assert metabase_habilitation.entreprise == metabase_entreprise
+    assert metabase_habilitation.fonctions == "Présidente"
+    assert not metabase_habilitation.confirmee_le
