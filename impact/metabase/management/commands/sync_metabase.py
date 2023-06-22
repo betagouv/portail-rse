@@ -67,6 +67,8 @@ class Command(BaseCommand):
             # https://docs.djangoproject.com/fr/4.2/topics/db/optimization/#use-foreign-key-values-directly
             meta_h = MetabaseHabilitation.objects.create(
                 impact_id=habilitation.pk,
+                ajoutee_le=habilitation.created_at,
+                modifiee_le=habilitation.updated_at,
                 utilisateur=MetabaseUtilisateur.objects.get(
                     impact_id=habilitation.user_id
                 ),

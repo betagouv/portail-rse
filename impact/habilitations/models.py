@@ -8,12 +8,12 @@ from django.db import models
 from entreprises.models import Entreprise
 from reglementations.models import get_all_personal_bdese
 from reglementations.models import has_official_bdese
-
+from utils.models import TimestampedModel
 
 FONCTIONS_MAX_LENGTH = 250
 
 
-class Habilitation(models.Model):
+class Habilitation(TimestampedModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
     fonctions = models.CharField(

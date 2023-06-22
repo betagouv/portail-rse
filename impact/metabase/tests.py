@@ -123,6 +123,8 @@ def test_synchronise_une_entreprise_avec_un_utilisateur(
     assert (
         metabase_habilitation.pk == metabase_habilitation.impact_id == habilitation.pk
     )
+    assert metabase_habilitation.ajoutee_le == habilitation.created_at
+    assert metabase_habilitation.modifiee_le == habilitation.updated_at
     assert metabase_habilitation.utilisateur == metabase_utilisateur
     assert metabase_habilitation.entreprise == metabase_entreprise
     assert metabase_habilitation.fonctions == "Présidente"

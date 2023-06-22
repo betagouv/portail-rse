@@ -31,6 +31,8 @@ class Entreprise(models.Model):
 
 class Habilitation(models.Model):
     impact_id = models.BigIntegerField(primary_key=True)
+    ajoutee_le = models.DateTimeField()
+    modifiee_le = models.DateTimeField()
     utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
     fonctions = models.CharField(max_length=FONCTIONS_MAX_LENGTH, null=True)
