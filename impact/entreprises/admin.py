@@ -16,11 +16,27 @@ class CaracteristiquesInline(admin.TabularInline):
     extra = 0
 
 
+class UsersFilter(admin.SimpleListFilter):
+    title = "Avec utilisateur"
+    parameter_name = "avec_utilisateur"
+
+    def lookups(self, request, model_admin):
+        return [("1", "Oui"), ("0", "Non")]
+
+    def queryset(self, request, queryset):
+        if self.value() == "1":
+            return queryset.filter(habilitation__isnull=False).distinct()
+        if self.value() == "0":
+            return queryset.filter(habilitation__isnull=True).distinct()
+
+
 class EntrepriseAdmin(admin.ModelAdmin):
     list_display = ["siren", "denomination"]
     inlines = (HabilitationInline, CaracteristiquesInline)
     model = Entreprise
     form = EntrepriseAdminForm
+    search_fields = ("denomination", "siren")
+    list_filter = (UsersFilter,)
 
 
 admin.site.register(Entreprise, EntrepriseAdmin)

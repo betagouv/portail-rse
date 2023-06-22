@@ -57,7 +57,7 @@ class UserAdmin(BaseUserAdmin):
             },
         ),
     )
-    search_fields = ("email",)
+    search_fields = ("email", "entreprise__denomination")
     ordering = ("email",)
     filter_horizontal = ()
     inlines = (HabilitationInline,)
