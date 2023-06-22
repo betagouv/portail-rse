@@ -48,8 +48,8 @@ def test_synchronise_une_entreprise(entreprise_factory):
     assert metabase_entreprise.siren == "000000001"
     assert metabase_entreprise.effectif == "300-499"
     assert metabase_entreprise.bdese_accord == True
-    assert metabase_entreprise.created_at == entreprise_A.created_at
-    assert metabase_entreprise.updated_at == date_troisieme_evolution
+    assert metabase_entreprise.ajoutee_le == entreprise_A.created_at
+    assert metabase_entreprise.modifiee_le == date_troisieme_evolution
     assert metabase_entreprise.nombre_utilisateurs == 0
 
 
@@ -112,7 +112,7 @@ def test_synchronise_une_entreprise_avec_un_utilisateur(
     metabase_utilisateur = MetabaseUtilisateur.objects.first()
     assert metabase_utilisateur.impact_id == utilisateur.pk
     assert metabase_utilisateur.reception_actualites is False
-    assert metabase_utilisateur.email_valide is True
+    assert metabase_utilisateur.email_confirme is True
 
     assert MetabaseHabilitation.objects.count() == 1
     metabase_habilitation = MetabaseHabilitation.objects.first()
