@@ -39,8 +39,8 @@ class Command(BaseCommand):
                 if caracteristiques
                 else None,
                 effectif=caracteristiques.effectif if caracteristiques else None,
-                created_at=entreprise.created_at,
-                updated_at=_last_update(entreprise),
+                ajoutee_le=entreprise.created_at,
+                modifiee_le=_last_update(entreprise),
                 nombre_utilisateurs=entreprise.nombre_utilisateurs,
             )
             meta_e.save()
@@ -52,10 +52,10 @@ class Command(BaseCommand):
         for utilisateur in ImpactUtilisateur.objects.all():
             meta_u = MetabaseUtilisateur.objects.create(
                 impact_id=utilisateur.pk,
-                cree_le=utilisateur.created_at,
+                ajoute_le=utilisateur.created_at,
                 modifie_le=utilisateur.updated_at,
                 reception_actualites=utilisateur.reception_actualites,
-                email_valide=utilisateur.is_email_confirmed,
+                email_confirme=utilisateur.is_email_confirmed,
             )
             meta_u.save()
             self._success(str(utilisateur.pk))
