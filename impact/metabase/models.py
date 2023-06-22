@@ -5,7 +5,7 @@ from habilitations.models import FONCTIONS_MAX_LENGTH
 
 
 class Utilisateur(models.Model):
-    impact_id = models.BigIntegerField(unique=True)
+    impact_id = models.BigIntegerField(primary_key=True)
     ajoute_le = models.DateTimeField()
     modifie_le = models.DateTimeField()
     reception_actualites = models.BooleanField()
@@ -13,9 +13,7 @@ class Utilisateur(models.Model):
 
 
 class Entreprise(models.Model):
-    impact_id = models.BigIntegerField(
-        unique=True, null=True
-    )  # null=True peut être temporaire mais nécessaire pour ajouter le champ sur le modèle existant
+    impact_id = models.BigIntegerField(primary_key=True)
     ajoutee_le = models.DateTimeField()
     modifiee_le = models.DateTimeField()
     siren = models.CharField(max_length=9, unique=True)
@@ -23,9 +21,7 @@ class Entreprise(models.Model):
 
     effectif = models.CharField(max_length=9, null=True)
     bdese_accord = models.BooleanField(null=True)
-    nombre_utilisateurs = models.IntegerField(
-        null=True
-    )  # null=True peut être temporaire mais nécessaire pour ajouter le champ sur le modèle existant
+    nombre_utilisateurs = models.IntegerField()
 
     utilisateurs = models.ManyToManyField(Utilisateur, through="Habilitation")
 
@@ -34,6 +30,7 @@ class Entreprise(models.Model):
 
 
 class Habilitation(models.Model):
+    impact_id = models.BigIntegerField(primary_key=True)
     utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
     fonctions = models.CharField(max_length=FONCTIONS_MAX_LENGTH, null=True)

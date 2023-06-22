@@ -44,12 +44,13 @@ def test_synchronise_une_entreprise(entreprise_factory):
 
     assert MetabaseEntreprise.objects.count() == 1
     metabase_entreprise = MetabaseEntreprise.objects.first()
-    assert metabase_entreprise.denomination == "A"
-    assert metabase_entreprise.siren == "000000001"
-    assert metabase_entreprise.effectif == "300-499"
-    assert metabase_entreprise.bdese_accord == True
+    assert metabase_entreprise.pk == metabase_entreprise.impact_id == entreprise_A.pk
     assert metabase_entreprise.ajoutee_le == entreprise_A.created_at
     assert metabase_entreprise.modifiee_le == date_troisieme_evolution
+    assert metabase_entreprise.siren == "000000001"
+    assert metabase_entreprise.denomination == "A"
+    assert metabase_entreprise.effectif == "300-499"
+    assert metabase_entreprise.bdese_accord == True
     assert metabase_entreprise.nombre_utilisateurs == 0
 
 
@@ -67,8 +68,9 @@ def test_synchronise_une_entreprise_plusieurs_fois(entreprise_factory):
 
     assert MetabaseEntreprise.objects.count() == 1
     metabase_entreprise = MetabaseEntreprise.objects.first()
-    assert metabase_entreprise.denomination == "A"
+    assert metabase_entreprise.impact_id == entreprise_A.pk
     assert metabase_entreprise.siren == "000000001"
+    assert metabase_entreprise.denomination == "A"
     assert metabase_entreprise.effectif == "0-49"
     assert metabase_entreprise.bdese_accord == True
     assert metabase_entreprise.nombre_utilisateurs == 0
@@ -101,7 +103,7 @@ def test_synchronise_une_entreprise_avec_un_utilisateur(
         reception_actualites=False,
         is_email_confirmed=True,
     )
-    attach_user_to_entreprise(utilisateur, entreprise, "Présidente")
+    habilitation = attach_user_to_entreprise(utilisateur, entreprise, "Présidente")
 
     Command().handle()
 
@@ -110,12 +112,17 @@ def test_synchronise_une_entreprise_avec_un_utilisateur(
 
     assert MetabaseUtilisateur.objects.count() == 1
     metabase_utilisateur = MetabaseUtilisateur.objects.first()
-    assert metabase_utilisateur.impact_id == utilisateur.pk
+    assert metabase_utilisateur.pk == metabase_utilisateur.impact_id == utilisateur.pk
+    assert metabase_utilisateur.ajoute_le == utilisateur.created_at
+    assert metabase_utilisateur.modifie_le == utilisateur.updated_at
     assert metabase_utilisateur.reception_actualites is False
     assert metabase_utilisateur.email_confirme is True
 
     assert MetabaseHabilitation.objects.count() == 1
     metabase_habilitation = MetabaseHabilitation.objects.first()
+    assert (
+        metabase_habilitation.pk == metabase_habilitation.impact_id == habilitation.pk
+    )
     assert metabase_habilitation.utilisateur == metabase_utilisateur
     assert metabase_habilitation.entreprise == metabase_entreprise
     assert metabase_habilitation.fonctions == "Présidente"
