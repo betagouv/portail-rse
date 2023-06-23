@@ -57,7 +57,7 @@ En cas de besoin :
 
 ```
 $ scalingo --app {METABASE_DATA_APP} pgsql-console
-\c {METABASE_DATA_APP} impact
+\c {METABASE_DATA_DATABASE} impact
 DROP SCHEMA impact CASCADE;
 ```
 
