@@ -56,8 +56,8 @@ Elle est programmée pour se lancer automatiquement via un cron toutes les nuits
 En cas de besoin :
 
 ```
-$ scalingo --app {METABASE_APP} pgsql-console
-\c {METABASE_DATABASE} impact
+$ scalingo --app {METABASE_DATA_APP} pgsql-console
+\c {METABASE_DATA_APP} impact
 DROP SCHEMA impact CASCADE;
 ```
 
