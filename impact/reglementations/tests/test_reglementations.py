@@ -7,6 +7,7 @@ from entreprises.models import Entreprise
 from entreprises.tests.conftest import entreprise_non_qualifiee  # noqa
 from habilitations.models import attach_user_to_entreprise
 from reglementations.views.bdese import BDESEReglementation
+from reglementations.views.dispositif_alerte import DispositifAlerteReglementation
 from reglementations.views.index_egapro import IndexEgaproReglementation
 
 
@@ -26,6 +27,10 @@ def test_public_reglementations(client):
     assert context["reglementations"][0]["status"] is None
     assert context["reglementations"][1]["info"] == IndexEgaproReglementation.info()
     assert context["reglementations"][1]["status"] is None
+    assert (
+        context["reglementations"][2]["info"] == DispositifAlerteReglementation.info()
+    )
+    assert context["reglementations"][2]["status"] is None
 
 
 @pytest.mark.parametrize("status_est_soumis", [True, False])
@@ -44,6 +49,10 @@ def test_public_reglementations_with_entreprise_data(status_est_soumis, client, 
     )
     mocker.patch(
         "reglementations.views.index_egapro.IndexEgaproReglementation.est_soumis",
+        return_value=status_est_soumis,
+    )
+    mocker.patch(
+        "reglementations.views.dispositif_alerte.DispositifAlerteReglementation.est_soumis",
         return_value=status_est_soumis,
     )
     response = client.get("/reglementations", data=data)
@@ -66,6 +75,9 @@ def test_public_reglementations_with_entreprise_data(status_est_soumis, client, 
         entreprise
     ).calculate_status(caracteristiques, AnonymousUser())
     assert reglementations[1]["status"] == IndexEgaproReglementation(
+        entreprise
+    ).calculate_status(caracteristiques, AnonymousUser())
+    assert reglementations[2]["status"] == DispositifAlerteReglementation(
         entreprise
     ).calculate_status(caracteristiques, AnonymousUser())
 
@@ -128,6 +140,10 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
         "reglementations.views.index_egapro.IndexEgaproReglementation.est_soumis",
         return_value=status_est_soumis,
     )
+    mocker.patch(
+        "reglementations.views.dispositif_alerte.DispositifAlerteReglementation.est_soumis",
+        return_value=status_est_soumis,
+    )
     response = client.get("/reglementations", data=data)
 
     content = response.content.decode("utf-8")
@@ -172,7 +188,8 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
     context = response.context
     assert context["entreprise"] == entreprise
     bdese_status = context["reglementations"][0]["status"]
-    index_egapro_status = context["reglementations"][0]["status"]
+    index_egapro_status = context["reglementations"][1]["status"]
+    dispositif_alerte_status = context["reglementations"][2]["status"]
     caracteristiques = CaracteristiquesAnnuelles(
         annee=2022, entreprise=entreprise, effectif=effectif, bdese_accord=False
     )
@@ -180,6 +197,9 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
         caracteristiques, AnonymousUser()
     )
     assert index_egapro_status == IndexEgaproReglementation(
+        entreprise
+    ).calculate_status(caracteristiques, AnonymousUser())
+    assert dispositif_alerte_status == DispositifAlerteReglementation(
         entreprise
     ).calculate_status(caracteristiques, AnonymousUser())
 
@@ -217,6 +237,11 @@ def test_reglementation_with_authenticated_user(client, entreprise):
     ).calculate_status(
         entreprise.caracteristiques_actuelles(), entreprise.users.first()
     )
+    assert reglementations[2]["status"] == DispositifAlerteReglementation(
+        entreprise
+    ).calculate_status(
+        entreprise.caracteristiques_actuelles(), entreprise.users.first()
+    )
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
 
@@ -244,6 +269,9 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
     assert reglementations[1]["status"] == IndexEgaproReglementation(
         entreprise1
     ).calculate_status(entreprise1.caracteristiques_actuelles(), alice)
+    assert reglementations[2]["status"] == DispositifAlerteReglementation(
+        entreprise1
+    ).calculate_status(entreprise1.caracteristiques_actuelles(), alice)
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
 
@@ -259,6 +287,9 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
         entreprise2
     ).calculate_status(entreprise2.caracteristiques_actuelles(), alice)
     assert reglementations[1]["status"] == IndexEgaproReglementation(
+        entreprise2
+    ).calculate_status(entreprise2.caracteristiques_actuelles(), alice)
+    assert reglementations[2]["status"] == DispositifAlerteReglementation(
         entreprise2
     ).calculate_status(entreprise2.caracteristiques_actuelles(), alice)
     for reglementation in reglementations:
