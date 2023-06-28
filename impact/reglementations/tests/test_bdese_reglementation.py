@@ -8,8 +8,8 @@ from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
 from reglementations.models import BDESEAvecAccord
 from reglementations.models import derniere_annee_a_remplir_bdese
-from reglementations.views import BDESEReglementation
-from reglementations.views import ReglementationStatus
+from reglementations.views.base import ReglementationStatus
+from reglementations.views.bdese import BDESEReglementation
 
 
 def test_bdese_reglementation_info():
@@ -35,7 +35,7 @@ def test_calculate_status_with_not_authenticated_user(entreprise_factory, mocker
     entreprise = entreprise_factory()
 
     mocker.patch(
-        "reglementations.views.BDESEReglementation.est_soumis",
+        "reglementations.views.bdese.BDESEReglementation.est_soumis",
         return_value=False,
     )
     status = BDESEReglementation(entreprise).calculate_status(
@@ -48,7 +48,7 @@ def test_calculate_status_with_not_authenticated_user(entreprise_factory, mocker
     assert status.secondary_actions == []
 
     mocker.patch(
-        "reglementations.views.BDESEReglementation.est_soumis",
+        "reglementations.views.bdese.BDESEReglementation.est_soumis",
         return_value=True,
     )
     status = BDESEReglementation(entreprise).calculate_status(
@@ -71,7 +71,7 @@ def test_calculate_status_with_not_attached_user(entreprise_factory, alice, mock
     entreprise = entreprise_factory()
 
     mocker.patch(
-        "reglementations.views.BDESEReglementation.est_soumis",
+        "reglementations.views.bdese.BDESEReglementation.est_soumis",
         return_value=False,
     )
     status = BDESEReglementation(entreprise).calculate_status(
@@ -86,7 +86,7 @@ def test_calculate_status_with_not_attached_user(entreprise_factory, alice, mock
     assert status.secondary_actions == []
 
     mocker.patch(
-        "reglementations.views.BDESEReglementation.est_soumis",
+        "reglementations.views.bdese.BDESEReglementation.est_soumis",
         return_value=True,
     )
     status = BDESEReglementation(entreprise).calculate_status(
