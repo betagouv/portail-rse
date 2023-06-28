@@ -5,9 +5,9 @@ import pytest
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
 from reglementations.models import derniere_annee_a_remplir_index_egapro
-from reglementations.views import IndexEgaproReglementation
-from reglementations.views import is_index_egapro_published
-from reglementations.views import ReglementationStatus
+from reglementations.views.base import ReglementationStatus
+from reglementations.views.index_egapro import IndexEgaproReglementation
+from reglementations.views.index_egapro import is_index_egapro_published
 
 
 def test_index_egapro_reglementation_info():

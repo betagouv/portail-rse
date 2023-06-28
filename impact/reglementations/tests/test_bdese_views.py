@@ -10,9 +10,9 @@ from reglementations.models import annees_a_remplir_bdese
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
 from reglementations.tests.test_bdese_forms import configuration_form_data
-from reglementations.views import get_bdese_data_from_egapro
-from reglementations.views import initialize_bdese_configuration
-from reglementations.views import render_bdese_pdf_html
+from reglementations.views.bdese import get_bdese_data_from_egapro
+from reglementations.views.bdese import initialize_bdese_configuration
+from reglementations.views.bdese import render_bdese_pdf_html
 
 
 def test_bdese_is_not_public(client, alice, grande_entreprise):
@@ -172,7 +172,7 @@ def test_bdese_step_fetch_data(configured_bdese, habilitated_user, client, mocke
     bdese = configured_bdese
     client.force_login(habilitated_user)
 
-    fetch_data = mocker.patch("reglementations.views.get_bdese_data_from_egapro")
+    fetch_data = mocker.patch("reglementations.views.bdese.get_bdese_data_from_egapro")
 
     url = bdese_step_url(bdese, 1)
     client.get(url)

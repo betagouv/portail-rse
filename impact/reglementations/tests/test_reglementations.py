@@ -6,8 +6,8 @@ from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from entreprises.tests.conftest import entreprise_non_qualifiee  # noqa
 from habilitations.models import attach_user_to_entreprise
-from reglementations.views import BDESEReglementation
-from reglementations.views import IndexEgaproReglementation
+from reglementations.views.bdese import BDESEReglementation
+from reglementations.views.index_egapro import IndexEgaproReglementation
 
 
 def test_public_reglementations(client):
@@ -39,11 +39,11 @@ def test_public_reglementations_with_entreprise_data(status_est_soumis, client, 
     }
 
     mocker.patch(
-        "reglementations.views.BDESEReglementation.est_soumis",
+        "reglementations.views.bdese.BDESEReglementation.est_soumis",
         return_value=status_est_soumis,
     )
     mocker.patch(
-        "reglementations.views.IndexEgaproReglementation.est_soumis",
+        "reglementations.views.index_egapro.IndexEgaproReglementation.est_soumis",
         return_value=status_est_soumis,
     )
     response = client.get("/reglementations", data=data)
@@ -121,11 +121,11 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
     }
 
     mocker.patch(
-        "reglementations.views.BDESEReglementation.est_soumis",
+        "reglementations.views.bdese.BDESEReglementation.est_soumis",
         return_value=status_est_soumis,
     )
     mocker.patch(
-        "reglementations.views.IndexEgaproReglementation.est_soumis",
+        "reglementations.views.index_egapro.IndexEgaproReglementation.est_soumis",
         return_value=status_est_soumis,
     )
     response = client.get("/reglementations", data=data)
