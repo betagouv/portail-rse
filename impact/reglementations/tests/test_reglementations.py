@@ -11,6 +11,14 @@ from reglementations.views.dispositif_alerte import DispositifAlerteReglementati
 from reglementations.views.index_egapro import IndexEgaproReglementation
 
 
+REGLEMENTATIONS = (
+    BDESEReglementation,
+    IndexEgaproReglementation,
+    DispositifAlerteReglementation,
+    BGESReglementation,
+)
+
+
 def test_public_reglementations(client):
     response = client.get("/reglementations")
 
@@ -23,16 +31,9 @@ def test_public_reglementations(client):
 
     context = response.context
     assert context["entreprise"] is None
-    assert context["reglementations"][0]["info"] == BDESEReglementation.info()
-    assert context["reglementations"][0]["status"] is None
-    assert context["reglementations"][1]["info"] == IndexEgaproReglementation.info()
-    assert context["reglementations"][1]["status"] is None
-    assert (
-        context["reglementations"][2]["info"] == DispositifAlerteReglementation.info()
-    )
-    assert context["reglementations"][2]["status"] is None
-    assert context["reglementations"][3]["info"] == BGESReglementation.info()
-    assert context["reglementations"][3]["status"] is None
+    for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
+        assert context["reglementations"][index]["info"] == REGLEMENTATION.info()
+        assert context["reglementations"][index]["status"] is None
 
 
 @pytest.mark.parametrize("status_est_soumis", [True, False])
@@ -73,18 +74,10 @@ def test_public_reglementations_with_entreprise_data(status_est_soumis, client, 
     context = response.context
     assert context["entreprise"] == entreprise
     reglementations = context["reglementations"]
-    assert reglementations[0]["status"] == BDESEReglementation(
-        entreprise
-    ).calculate_status(caracteristiques, AnonymousUser())
-    assert reglementations[1]["status"] == IndexEgaproReglementation(
-        entreprise
-    ).calculate_status(caracteristiques, AnonymousUser())
-    assert reglementations[2]["status"] == DispositifAlerteReglementation(
-        entreprise
-    ).calculate_status(caracteristiques, AnonymousUser())
-    assert reglementations[3]["status"] == BGESReglementation(
-        entreprise
-    ).calculate_status(caracteristiques, AnonymousUser())
+    for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
+        assert reglementations[index]["status"] == REGLEMENTATION(
+            entreprise
+        ).calculate_status(caracteristiques, AnonymousUser())
 
     if status_est_soumis:
         assert '<p class="fr-badge">soumis</p>' in content, content
@@ -192,25 +185,15 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
 
     context = response.context
     assert context["entreprise"] == entreprise
-    bdese_status = context["reglementations"][0]["status"]
-    index_egapro_status = context["reglementations"][1]["status"]
-    dispositif_alerte_status = context["reglementations"][2]["status"]
-    bges_status = context["reglementations"][3]["status"]
+    reglementations = context["reglementations"]
     caracteristiques = CaracteristiquesAnnuelles(
         annee=2022, entreprise=entreprise, effectif=effectif, bdese_accord=False
     )
-    assert bdese_status == BDESEReglementation(entreprise).calculate_status(
-        caracteristiques, AnonymousUser()
-    )
-    assert index_egapro_status == IndexEgaproReglementation(
-        entreprise
-    ).calculate_status(caracteristiques, AnonymousUser())
-    assert dispositif_alerte_status == DispositifAlerteReglementation(
-        entreprise
-    ).calculate_status(caracteristiques, AnonymousUser())
-    assert bges_status == BGESReglementation(entreprise).calculate_status(
-        caracteristiques, AnonymousUser()
-    )
+    for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
+        status = reglementations[index]["status"]
+        assert status == REGLEMENTATION(entreprise).calculate_status(
+            caracteristiques, AnonymousUser()
+        )
 
     # si c'est un utilisateur rattaché à l'entreprise qui fait la simulation en changeant les données d'évolution
     # on enregistre ces nouvelles données en base
@@ -236,26 +219,12 @@ def test_reglementation_with_authenticated_user(client, entreprise):
     context = response.context
     assert context["entreprise"] == entreprise
     reglementations = context["reglementations"]
-    assert reglementations[0]["status"] == BDESEReglementation(
-        entreprise
-    ).calculate_status(
-        entreprise.caracteristiques_actuelles(), entreprise.users.first()
-    )
-    assert reglementations[1]["status"] == IndexEgaproReglementation(
-        entreprise
-    ).calculate_status(
-        entreprise.caracteristiques_actuelles(), entreprise.users.first()
-    )
-    assert reglementations[2]["status"] == DispositifAlerteReglementation(
-        entreprise
-    ).calculate_status(
-        entreprise.caracteristiques_actuelles(), entreprise.users.first()
-    )
-    assert reglementations[3]["status"] == BGESReglementation(
-        entreprise
-    ).calculate_status(
-        entreprise.caracteristiques_actuelles(), entreprise.users.first()
-    )
+    for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
+        assert reglementations[index]["status"] == REGLEMENTATION(
+            entreprise
+        ).calculate_status(
+            entreprise.caracteristiques_actuelles(), entreprise.users.first()
+        )
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
 
@@ -277,18 +246,10 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
     context = response.context
     assert context["entreprise"] == entreprise1
     reglementations = context["reglementations"]
-    assert reglementations[0]["status"] == BDESEReglementation(
-        entreprise1
-    ).calculate_status(entreprise1.caracteristiques_actuelles(), alice)
-    assert reglementations[1]["status"] == IndexEgaproReglementation(
-        entreprise1
-    ).calculate_status(entreprise1.caracteristiques_actuelles(), alice)
-    assert reglementations[2]["status"] == DispositifAlerteReglementation(
-        entreprise1
-    ).calculate_status(entreprise1.caracteristiques_actuelles(), alice)
-    assert reglementations[3]["status"] == BGESReglementation(
-        entreprise1
-    ).calculate_status(entreprise1.caracteristiques_actuelles(), alice)
+    for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
+        assert reglementations[index]["status"] == REGLEMENTATION(
+            entreprise1
+        ).calculate_status(entreprise1.caracteristiques_actuelles(), alice)
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
 
@@ -300,18 +261,10 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
     context = response.context
     assert context["entreprise"] == entreprise2
     reglementations = context["reglementations"]
-    assert reglementations[0]["status"] == BDESEReglementation(
-        entreprise2
-    ).calculate_status(entreprise2.caracteristiques_actuelles(), alice)
-    assert reglementations[1]["status"] == IndexEgaproReglementation(
-        entreprise2
-    ).calculate_status(entreprise2.caracteristiques_actuelles(), alice)
-    assert reglementations[2]["status"] == DispositifAlerteReglementation(
-        entreprise2
-    ).calculate_status(entreprise2.caracteristiques_actuelles(), alice)
-    assert reglementations[3]["status"] == BGESReglementation(
-        entreprise2
-    ).calculate_status(entreprise2.caracteristiques_actuelles(), alice)
+    for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
+        assert reglementations[index]["status"] == REGLEMENTATION(
+            entreprise2
+        ).calculate_status(entreprise2.caracteristiques_actuelles(), alice)
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
 
