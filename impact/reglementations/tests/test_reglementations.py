@@ -6,6 +6,7 @@ from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from habilitations.models import attach_user_to_entreprise
 from reglementations.views.bdese import BDESEReglementation
+from reglementations.views.bges import BGESReglementation
 from reglementations.views.dispositif_alerte import DispositifAlerteReglementation
 from reglementations.views.index_egapro import IndexEgaproReglementation
 
@@ -30,6 +31,8 @@ def test_public_reglementations(client):
         context["reglementations"][2]["info"] == DispositifAlerteReglementation.info()
     )
     assert context["reglementations"][2]["status"] is None
+    assert context["reglementations"][3]["info"] == BGESReglementation.info()
+    assert context["reglementations"][3]["status"] is None
 
 
 @pytest.mark.parametrize("status_est_soumis", [True, False])
@@ -77,6 +80,9 @@ def test_public_reglementations_with_entreprise_data(status_est_soumis, client, 
         entreprise
     ).calculate_status(caracteristiques, AnonymousUser())
     assert reglementations[2]["status"] == DispositifAlerteReglementation(
+        entreprise
+    ).calculate_status(caracteristiques, AnonymousUser())
+    assert reglementations[3]["status"] == BGESReglementation(
         entreprise
     ).calculate_status(caracteristiques, AnonymousUser())
 
@@ -189,6 +195,7 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
     bdese_status = context["reglementations"][0]["status"]
     index_egapro_status = context["reglementations"][1]["status"]
     dispositif_alerte_status = context["reglementations"][2]["status"]
+    bges_status = context["reglementations"][3]["status"]
     caracteristiques = CaracteristiquesAnnuelles(
         annee=2022, entreprise=entreprise, effectif=effectif, bdese_accord=False
     )
@@ -201,6 +208,9 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
     assert dispositif_alerte_status == DispositifAlerteReglementation(
         entreprise
     ).calculate_status(caracteristiques, AnonymousUser())
+    assert bges_status == BGESReglementation(entreprise).calculate_status(
+        caracteristiques, AnonymousUser()
+    )
 
     # si c'est un utilisateur rattaché à l'entreprise qui fait la simulation en changeant les données d'évolution
     # on enregistre ces nouvelles données en base
@@ -241,6 +251,11 @@ def test_reglementation_with_authenticated_user(client, entreprise):
     ).calculate_status(
         entreprise.caracteristiques_actuelles(), entreprise.users.first()
     )
+    assert reglementations[3]["status"] == BGESReglementation(
+        entreprise
+    ).calculate_status(
+        entreprise.caracteristiques_actuelles(), entreprise.users.first()
+    )
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
 
@@ -271,6 +286,9 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
     assert reglementations[2]["status"] == DispositifAlerteReglementation(
         entreprise1
     ).calculate_status(entreprise1.caracteristiques_actuelles(), alice)
+    assert reglementations[3]["status"] == BGESReglementation(
+        entreprise1
+    ).calculate_status(entreprise1.caracteristiques_actuelles(), alice)
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
 
@@ -289,6 +307,9 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
         entreprise2
     ).calculate_status(entreprise2.caracteristiques_actuelles(), alice)
     assert reglementations[2]["status"] == DispositifAlerteReglementation(
+        entreprise2
+    ).calculate_status(entreprise2.caracteristiques_actuelles(), alice)
+    assert reglementations[3]["status"] == BGESReglementation(
         entreprise2
     ).calculate_status(entreprise2.caracteristiques_actuelles(), alice)
     for reglementation in reglementations:

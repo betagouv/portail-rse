@@ -15,6 +15,7 @@ from habilitations.models import is_user_attached_to_entreprise
 from public.forms import CaracteristiquesForm
 from public.forms import EntrepriseForm
 from reglementations.views.bdese import BDESEReglementation
+from reglementations.views.bges import BGESReglementation
 from reglementations.views.dispositif_alerte import DispositifAlerteReglementation
 from reglementations.views.index_egapro import IndexEgaproReglementation
 
@@ -113,6 +114,14 @@ def _reglementations_context(entreprise, caracteristiques, user):
         {
             "info": DispositifAlerteReglementation.info(),
             "status": DispositifAlerteReglementation(entreprise).calculate_status(
+                caracteristiques, user
+            )
+            if entreprise
+            else None,
+        },
+        {
+            "info": BGESReglementation.info(),
+            "status": BGESReglementation(entreprise).calculate_status(
                 caracteristiques, user
             )
             if entreprise
