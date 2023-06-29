@@ -144,7 +144,7 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
         assert anonymous_status_detail in content, content
 
 
-def test_entreprise_data_are_saved_only_when_entreprise_user_is_autenticated(
+def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
     client, entreprise, entreprise_factory
 ):
     """
