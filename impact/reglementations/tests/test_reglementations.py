@@ -73,10 +73,12 @@ def test_public_reglementations_with_entreprise_data(status_est_soumis, client, 
         assert '<p class="fr-badge">soumis</p>' in content, content
         anonymous_status_detail = "Vous êtes soumis à cette réglementation. Connectez-vous pour en savoir plus."
         assert anonymous_status_detail in content, content
+        assert '<p class="fr-badge">non soumis</p>' not in content, content
     else:
         assert '<p class="fr-badge">non soumis</p>' in content, content
         anonymous_status_detail = "Vous n'êtes pas soumis à cette réglementation."
         assert anonymous_status_detail in content, content
+        assert '<p class="fr-badge">soumis</p>' not in content, content
 
 
 @pytest.fixture
