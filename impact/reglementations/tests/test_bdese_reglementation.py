@@ -122,7 +122,8 @@ def test_calculate_status_less_than_50_employees(
 @pytest.mark.parametrize(
     "effectif, bdese_class",
     [
-        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299, BDESE_50_300),
+        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249, BDESE_50_300),
+        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299, BDESE_50_300),
         (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499, BDESE_300),
         (CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS, BDESE_300),
     ],
@@ -193,7 +194,8 @@ def test_calculate_status_more_than_50_employees_with_habilited_user(
 @pytest.mark.parametrize(
     "effectif, bdese_class",
     [
-        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299, BDESE_50_300),
+        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249, BDESE_50_300),
+        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299, BDESE_50_300),
         (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499, BDESE_300),
         (CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS, BDESE_300),
     ],
@@ -230,7 +232,8 @@ def test_calculate_status_more_than_50_employees_with_not_habilited_user(
 @pytest.mark.parametrize(
     "effectif",
     [
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
         CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS,
     ],
@@ -286,7 +289,8 @@ def test_calculate_status_with_bdese_accord_with_not_habilited_user(
 @pytest.mark.parametrize(
     "effectif",
     [
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
         CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS,
     ],

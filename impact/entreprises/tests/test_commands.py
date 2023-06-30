@@ -16,7 +16,7 @@ def test_remplit_la_denomination(db, mocker, entreprise_non_qualifiee):
         "api.recherche_entreprises.recherche",
         return_value={
             "siren": entreprise_non_qualifiee.siren,
-            "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299,
+            "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
             "denomination": RAISON_SOCIALE,
         },
     )
@@ -36,7 +36,7 @@ def test_ne_modifie_pas_la_denomination_si_deja_remplie(
         "api.recherche_entreprises.recherche",
         return_value={
             "siren": entreprise_non_qualifiee.siren,
-            "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299,
+            "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
             "denomination": "RAISON SOCIALE",
         },
     )

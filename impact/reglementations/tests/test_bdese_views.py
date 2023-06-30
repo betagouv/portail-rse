@@ -34,7 +34,8 @@ def test_bdese_is_not_public(client, alice, grande_entreprise):
 @pytest.mark.parametrize(
     "effectif, bdese_class",
     [
-        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299, BDESE_50_300),
+        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249, BDESE_50_300),
+        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299, BDESE_50_300),
         (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499, BDESE_300),
     ],
 )

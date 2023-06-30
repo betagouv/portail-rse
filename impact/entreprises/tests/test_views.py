@@ -221,7 +221,7 @@ def test_qualify_entreprise(
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
     client.force_login(alice)
     data = {
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299,
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         "bdese_accord": True,
     }
@@ -234,7 +234,7 @@ def test_qualify_entreprise(
     assert entreprise_non_qualifiee.denomination == "Entreprise SAS"
     caracteristiques = entreprise_non_qualifiee.caracteristiques_actuelles()
     assert (
-        caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299
+        caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     )
     assert (
         caracteristiques.effectif_outre_mer
