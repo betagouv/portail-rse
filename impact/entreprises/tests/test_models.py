@@ -44,6 +44,7 @@ def test_entreprise_est_qualifiee(entreprise_non_qualifiee):
 
     caracteristiques = entreprise_non_qualifiee.actualise_caracteristiques(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         bdese_accord=True,
     )
     caracteristiques.save()

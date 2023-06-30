@@ -21,7 +21,12 @@ class Entreprise(TimestampedModel):
 
     @property
     def est_qualifiee(self):
-        return bool(self.caracteristiques_actuelles())
+        caracteristiques_actuelles = self.caracteristiques_actuelles()
+        return (
+            bool(caracteristiques_actuelles)
+            and caracteristiques_actuelles.effectif
+            and caracteristiques_actuelles.effectif_outre_mer
+        )
 
     def caracteristiques_annuelles(self, annee):
         try:
