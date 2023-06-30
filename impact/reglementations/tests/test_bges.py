@@ -22,7 +22,7 @@ def test_bges_reglementation_info():
     "effectif",
     [
         CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
     ],
 )
@@ -71,7 +71,7 @@ def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer(
     entreprise_factory, alice
 ):
     entreprise = entreprise_factory(
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")

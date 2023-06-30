@@ -37,7 +37,8 @@ def recherche(siren):
         if tranche_effectif < 21:  # moins de 50 salariés
             effectif = CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
         elif tranche_effectif < 32:  # moins de 250 salariés
-            effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299
+            effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+        # la tranche EFFECTIF_ENTRE_250_ET_299 ne peut pas être trouvée avec l'API
         elif tranche_effectif < 41:  # moins de 500 salariés
             effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
         else:

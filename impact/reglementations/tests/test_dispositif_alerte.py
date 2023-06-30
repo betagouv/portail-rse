@@ -40,7 +40,8 @@ def test_calculate_status_less_than_50_employees(entreprise_factory, alice):
 @pytest.mark.parametrize(
     "effectif",
     [
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
         CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS,
     ],

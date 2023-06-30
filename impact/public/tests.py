@@ -154,7 +154,7 @@ def test_succes_recherche_siren(client, mocker):
         "api.recherche_entreprises.recherche",
         return_value={
             "siren": SIREN,
-            "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299,
+            "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
             "denomination": RAISON_SOCIALE,
         },
     )

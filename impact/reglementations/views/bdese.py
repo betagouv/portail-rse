@@ -46,7 +46,10 @@ class BDESEReglementation(Reglementation):
         effectif = caracteristiques.effectif
         if caracteristiques.bdese_accord:
             return self.TYPE_AVEC_ACCORD
-        elif effectif == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299:
+        elif effectif in (
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+        ):
             return self.TYPE_INFERIEUR_300
         elif effectif == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499:
             return self.TYPE_INFERIEUR_500

@@ -13,7 +13,7 @@ def bdese_factory(entreprise_factory):
     def create_bdese(bdese_class=BDESE_300, entreprise=None, user=None, annee=2021):
         if not entreprise:
             entreprise = entreprise_factory(
-                effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299
+                effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
                 if bdese_class == BDESE_50_300
                 else CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
             )
