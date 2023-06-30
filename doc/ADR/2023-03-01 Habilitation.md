@@ -82,3 +82,9 @@ Choix 3 : « une seule table, deux objets proxy et deux managers différenciés 
 Le choix 1 qui avait été privilégiée au départ a été abandonné à cause de la migration nécessaire (renommage et suppression des modèles existants qui deviennent abstraits). Cette migration causait des problèmes dans les tests.
 
 Quelques fonctions ont été ajoutées en plus pour avoir une interface cohérente avec le métier. Comme les managers et proxys, elles abstraient la réalité de la base de donnée.
+
+Pour le moment il n'y a pas d'utilisateurs habilités donc toutes les BDESE présentes en base ont été transformées en BDESE personnelles.
+
+⚠️ Par soucis de simplicité, nous avons également fait le choix suivant pour la transformation d'une BDESE personnelle en BDESE officielle :
+- Quand le premier utilisateur d'une entreprise devient habilité, sa BDESE personnelle devient automatiquement la BDESE officielle de l'entreprise.
+- Les utilisateurs suivants qui deviennent habilités après lui basculent sur la BDESE officielle et perdent l'accès à leur BDESE personnelle. L'ordre d'habilitation des utilisateurs est donc important. Pour le moment on ne supprime pas les BDESE personnelles de la base de données (notamment pour pouvoir intervenir en support en cas de problème du type : c'est la BDESE personnelle du deuxième utilisateur qui était la plus complète/à jour et l'entreprise ne voulait pas perdre ces données) mais l'utilisateur n'y a plus accès.
