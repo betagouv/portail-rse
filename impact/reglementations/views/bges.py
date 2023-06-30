@@ -13,6 +13,8 @@ class BGESReglementation(Reglementation):
     def est_soumis(self, caracteristiques):
         return (
             caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS
+            or caracteristiques.effectif_outre_mer
+            == CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS
         )
 
     def calculate_status(

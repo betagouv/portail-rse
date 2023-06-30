@@ -222,6 +222,7 @@ def test_qualify_entreprise(
     client.force_login(alice)
     data = {
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299,
+        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         "bdese_accord": True,
     }
 
@@ -234,6 +235,10 @@ def test_qualify_entreprise(
     caracteristiques = entreprise_non_qualifiee.caracteristiques_actuelles()
     assert (
         caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299
+    )
+    assert (
+        caracteristiques.effectif_outre_mer
+        == CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
     )
     assert caracteristiques.bdese_accord
     assert entreprise_non_qualifiee.est_qualifiee

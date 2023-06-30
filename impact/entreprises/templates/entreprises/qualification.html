@@ -14,6 +14,7 @@
                 <form class="fr-mt-6w" action="{% url 'entreprises:qualification' entreprise.siren %}" method="post">
                     {% csrf_token %}
                     {% include 'snippets/field.html' with field=form.effectif %}
+                    {% include 'snippets/field.html' with field=form.effectif_outre_mer %}
                     {% include 'snippets/field.html' with field=form.bdese_accord %}
                     <input type="submit" value="Enregistrer et accéder aux réglementations" class="fr-btn fr-mt-4w">
                 </form>

@@ -37,4 +37,4 @@ class EntrepriseDetachForm(DsfrForm):
 class EntrepriseQualificationForm(DsfrForm, forms.ModelForm):
     class Meta:
         model = CaracteristiquesAnnuelles
-        fields = ["effectif", "bdese_accord"]
+        fields = ["effectif", "effectif_outre_mer", "bdese_accord"]

@@ -52,3 +52,20 @@ def test_calculate_status_more_than_500_employees(entreprise_factory, alice):
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert reglementation.status_detail == "Vous êtes soumis à cette réglementation"
+
+
+def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer(
+    entreprise_factory, alice
+):
+    entreprise = entreprise_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299,
+        effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    reglementation = BGESReglementation(entreprise).calculate_status(
+        entreprise.caracteristiques_actuelles(), alice
+    )
+
+    assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
+    assert reglementation.status_detail == "Vous êtes soumis à cette réglementation"

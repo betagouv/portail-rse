@@ -35,12 +35,15 @@ class Entreprise(TimestampedModel):
     def caracteristiques_actuelles(self):
         return self.caracteristiques_annuelles(date.today().year - 1)
 
-    def actualise_caracteristiques(self, effectif, bdese_accord):
+    def actualise_caracteristiques(
+        self, effectif, bdese_accord, effectif_outre_mer=None
+    ):
         caracteristiques = (
             self.caracteristiques_actuelles()
             or CaracteristiquesAnnuelles(entreprise=self, annee=date.today().year - 1)
         )
         caracteristiques.effectif = effectif
+        caracteristiques.effectif_outre_mer = effectif_outre_mer
         caracteristiques.bdese_accord = bdese_accord
         return caracteristiques
 
@@ -57,12 +60,25 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         (EFFECTIF_500_ET_PLUS, "500 salariés ou plus"),
     ]
 
+    EFFECTIF_OUTRE_MER_MOINS_DE_250 = "0-249"
+    EFFECTIF_OUTRE_MER_250_ET_PLUS = "250+"
+    EFFECTIF_OUTRE_MER_CHOICES = [
+        (EFFECTIF_OUTRE_MER_MOINS_DE_250, "moins de 250 salariés"),
+        (EFFECTIF_OUTRE_MER_250_ET_PLUS, "250 salariés ou plus"),
+    ]
+
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
     annee = models.IntegerField()
     effectif = models.CharField(
         max_length=9,
         choices=EFFECTIF_CHOICES,
         help_text="Vérifiez et confirmez le nombre de salariés",
+        null=True,
+    )
+    effectif_outre_mer = models.CharField(
+        max_length=9,
+        choices=EFFECTIF_OUTRE_MER_CHOICES,
+        help_text="Vérifiez et confirmez le nombre de salariés dans les DOM-TOM",
         null=True,
     )
     bdese_accord = models.BooleanField(

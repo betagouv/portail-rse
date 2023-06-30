@@ -121,6 +121,7 @@ def qualification(request, siren):
             caracteristiques = entreprise.actualise_caracteristiques(
                 form.cleaned_data["effectif"],
                 form.cleaned_data["bdese_accord"],
+                form.cleaned_data["effectif_outre_mer"],
             )
             caracteristiques.save()
             messages.success(request, "Entreprise enregistrée")

@@ -41,6 +41,7 @@ def test_public_reglementations(client):
 def test_public_reglementations_with_entreprise_data(status_est_soumis, client, mocker):
     data = {
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
         "bdese_accord": False,
         "denomination": "Entreprise SAS",
         "siren": "000000001",
@@ -56,6 +57,10 @@ def test_public_reglementations_with_entreprise_data(status_est_soumis, client, 
     )
     mocker.patch(
         "reglementations.views.dispositif_alerte.DispositifAlerteReglementation.est_soumis",
+        return_value=status_est_soumis,
+    )
+    mocker.patch(
+        "reglementations.views.bges.BGESReglementation.est_soumis",
         return_value=status_est_soumis,
     )
     response = client.get("/reglementations", data=data)
@@ -125,6 +130,7 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
 
     data = {
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
         "bdese_accord": False,
         "denomination": "Une autre entreprise SAS",
         "siren": "000000002",
@@ -168,8 +174,10 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
     mais affiche quand même à l'utilisateur anonyme les statuts correspondant aux données utilisées lors de la simulation
     """
     effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
+    effectif_outre_mer = CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS
     data = {
         "effectif": effectif,
+        "effectif_outre_mer": effectif_outre_mer,
         "bdese_accord": False,
         "denomination": entreprise.denomination,
         "siren": entreprise.siren,
@@ -187,7 +195,11 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
     assert context["entreprise"] == entreprise
     reglementations = context["reglementations"]
     caracteristiques = CaracteristiquesAnnuelles(
-        annee=2022, entreprise=entreprise, effectif=effectif, bdese_accord=False
+        annee=2022,
+        entreprise=entreprise,
+        effectif=effectif,
+        effectif_outre_mer=effectif_outre_mer,
+        bdese_accord=False,
     )
     for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
         status = reglementations[index]["status"]
