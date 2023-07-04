@@ -4,7 +4,7 @@
         {% block boolean_field %}
             <div class="{{ fr_group_class }}{% if field.errors %} {{ fr_group_class }}--error {% endif %} fr-mb-3w">
                 {{ field }}
-                <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label }}
+                <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label|safe }}
                     <span class="fr-hint-text">{{ field.help_text }}</span>
                 </label>
                 {% if field.errors %}
