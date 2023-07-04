@@ -48,6 +48,7 @@ def test_entreprise_est_qualifiee(entreprise_non_qualifiee):
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
         bdese_accord=True,
+        systeme_management_energie=True,
     )
     caracteristiques.save()
 
@@ -61,9 +62,14 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
     tranche_chiffre_affaires = CaracteristiquesAnnuelles.CA_MOINS_DE_700K
     tranche_bilan = CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
     bdese_accord = False
+    systeme_management_energie = False
 
     caracteristiques = entreprise_non_qualifiee.actualise_caracteristiques(
-        effectif, tranche_chiffre_affaires, tranche_bilan, bdese_accord
+        effectif,
+        tranche_chiffre_affaires,
+        tranche_bilan,
+        bdese_accord,
+        systeme_management_energie,
     )
     caracteristiques.save()
 
@@ -71,6 +77,7 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
     assert caracteristiques.tranche_chiffre_affaires == tranche_chiffre_affaires
     assert caracteristiques.tranche_bilan == tranche_bilan
     assert caracteristiques.bdese_accord == bdese_accord
+    assert caracteristiques.systeme_management_energie == systeme_management_energie
     entreprise_non_qualifiee.refresh_from_db()
     assert entreprise_non_qualifiee.caracteristiques_actuelles() == caracteristiques
 
@@ -78,12 +85,14 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
     nouvelle_tranche_chiffre_affaires = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
     nouvelle_tranche_bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
     nouveau_bdese_accord = True
+    nouveau_systeme_management_energie = True
 
     nouvelles_caracteristiques = entreprise_non_qualifiee.actualise_caracteristiques(
         nouvel_effectif,
         nouvelle_tranche_chiffre_affaires,
         nouvelle_tranche_bilan,
         nouveau_bdese_accord,
+        nouveau_systeme_management_energie,
     )
     nouvelles_caracteristiques.save()
 
@@ -94,6 +103,10 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
     )
     assert nouvelles_caracteristiques.tranche_bilan == nouvelle_tranche_bilan
     assert nouvelles_caracteristiques.bdese_accord == nouveau_bdese_accord
+    assert (
+        nouvelles_caracteristiques.systeme_management_energie
+        == nouveau_systeme_management_energie
+    )
     entreprise_non_qualifiee.refresh_from_db()
     assert (
         entreprise_non_qualifiee.caracteristiques_actuelles()

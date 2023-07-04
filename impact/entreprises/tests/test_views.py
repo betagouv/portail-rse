@@ -226,6 +226,7 @@ def test_qualify_entreprise(
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
         "bdese_accord": True,
+        "systeme_management_energie": True,
     }
 
     url = f"/entreprises/{entreprise_non_qualifiee.siren}"
@@ -251,6 +252,7 @@ def test_qualify_entreprise(
         == CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
     )
     assert caracteristiques.bdese_accord
+    assert caracteristiques.systeme_management_energie
     assert entreprise_non_qualifiee.est_qualifiee
 
 

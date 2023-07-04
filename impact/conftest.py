@@ -46,6 +46,7 @@ def entreprise_factory(db):
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
         bdese_accord=False,
+        systeme_management_energie=False,
     ):
         entreprise = Entreprise.objects.create(
             siren=siren,
@@ -57,6 +58,7 @@ def entreprise_factory(db):
             tranche_chiffre_affaires=tranche_chiffre_affaires,
             tranche_bilan=tranche_bilan,
             bdese_accord=bdese_accord,
+            systeme_management_energie=systeme_management_energie,
         )
         caracteristiques.save()
         return entreprise

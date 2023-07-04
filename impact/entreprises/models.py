@@ -43,7 +43,13 @@ class Entreprise(TimestampedModel):
         return self.caracteristiques_annuelles(date.today().year - 1)
 
     def actualise_caracteristiques(
-        self, effectif, tranche_chiffre_affaires, tranche_bilan, bdese_accord, effectif_outre_mer=None
+        self,
+        effectif,
+        tranche_chiffre_affaires,
+        tranche_bilan,
+        bdese_accord,
+        systeme_management_energie,
+        effectif_outre_mer=None
     ):
         caracteristiques = (
             self.caracteristiques_actuelles()
@@ -54,6 +60,7 @@ class Entreprise(TimestampedModel):
         caracteristiques.bdese_accord = bdese_accord
         caracteristiques.tranche_chiffre_affaires = tranche_chiffre_affaires
         caracteristiques.tranche_bilan = tranche_bilan
+        caracteristiques.systeme_management_energie = systeme_management_energie
         return caracteristiques
 
 
@@ -141,6 +148,10 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     bdese_accord = models.BooleanField(
         verbose_name="L'entreprise a un accord collectif d'entreprise concernant la Base de Données Économiques, Sociales et Environnementales (BDESE)",
         default=False,
+    )
+    systeme_management_energie = models.BooleanField(
+        verbose_name="L'entreprise a mis en place un système de management de l’énergie",
+        null=True,
     )
 
     class Meta:

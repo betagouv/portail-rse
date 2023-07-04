@@ -124,6 +124,7 @@ def qualification(request, siren):
                 form.cleaned_data["tranche_chiffre_affaires"],
                 form.cleaned_data["tranche_bilan"],
                 form.cleaned_data["bdese_accord"],
+                form.cleaned_data["systeme_management_energie"],
                 form.cleaned_data["effectif_outre_mer"],
             )
             caracteristiques.save()
