@@ -26,6 +26,8 @@ class Entreprise(TimestampedModel):
             bool(caracteristiques_actuelles)
             and caracteristiques_actuelles.effectif
             and caracteristiques_actuelles.effectif_outre_mer
+            and caracteristiques_actuelles.tranche_chiffre_affaires
+            and caracteristiques_actuelles.tranche_bilan
         )
 
     def caracteristiques_annuelles(self, annee):
@@ -41,7 +43,7 @@ class Entreprise(TimestampedModel):
         return self.caracteristiques_annuelles(date.today().year - 1)
 
     def actualise_caracteristiques(
-        self, effectif, bdese_accord, effectif_outre_mer=None
+        self, effectif, tranche_chiffre_affaires, tranche_bilan, bdese_accord, effectif_outre_mer=None
     ):
         caracteristiques = (
             self.caracteristiques_actuelles()
@@ -50,6 +52,8 @@ class Entreprise(TimestampedModel):
         caracteristiques.effectif = effectif
         caracteristiques.effectif_outre_mer = effectif_outre_mer
         caracteristiques.bdese_accord = bdese_accord
+        caracteristiques.tranche_chiffre_affaires = tranche_chiffre_affaires
+        caracteristiques.tranche_bilan = tranche_bilan
         return caracteristiques
 
 
@@ -108,18 +112,6 @@ class CaracteristiquesAnnuelles(TimestampedModel):
 
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
     annee = models.IntegerField()
-    tranche_chiffre_affaires = models.CharField(
-        verbose_name="Chiffre d'affaires",
-        max_length=9,
-        choices=CA_CHOICES,
-        null=True,
-    )
-    tranche_bilan = models.CharField(
-        verbose_name="Bilan",
-        max_length=9,
-        choices=BILAN_CHOICES,
-        null=True,
-    )
     effectif = models.CharField(
         max_length=9,
         choices=EFFECTIF_CHOICES,
@@ -132,6 +124,18 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         choices=EFFECTIF_OUTRE_MER_CHOICES,
         verbose_name="Effectif outre-mer",
         help_text="Nombre de salariés dans les régions et départements d'outre-mer",
+        null=True,
+    )
+    tranche_chiffre_affaires = models.CharField(
+        verbose_name="Chiffre d'affaires",
+        max_length=9,
+        choices=CA_CHOICES,
+        null=True,
+    )
+    tranche_bilan = models.CharField(
+        verbose_name="Bilan",
+        max_length=9,
+        choices=BILAN_CHOICES,
         null=True,
     )
     bdese_accord = models.BooleanField(

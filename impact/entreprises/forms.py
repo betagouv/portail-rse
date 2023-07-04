@@ -37,4 +37,14 @@ class EntrepriseDetachForm(DsfrForm):
 class EntrepriseQualificationForm(DsfrForm, forms.ModelForm):
     class Meta:
         model = CaracteristiquesAnnuelles
-        fields = ["effectif", "effectif_outre_mer", "bdese_accord"]
+        fields = [
+            "effectif",
+            "effectif_outre_mer",
+            "tranche_chiffre_affaires",
+            "tranche_bilan",
+            "bdese_accord",
+        ]
+        help_texts = {
+            "tranche_chiffre_affaires": "Sélectionnez le chiffre d'affaires de l'exercice clos",
+            "tranche_bilan": "Sélectionnez le bilan de l'exercice clos",
+        }

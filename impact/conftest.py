@@ -43,6 +43,8 @@ def entreprise_factory(db):
         denomination="Entreprise SAS",
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
         bdese_accord=False,
     ):
         entreprise = Entreprise.objects.create(
@@ -52,6 +54,8 @@ def entreprise_factory(db):
         caracteristiques = entreprise.actualise_caracteristiques(
             effectif=effectif,
             effectif_outre_mer=effectif_outre_mer,
+            tranche_chiffre_affaires=tranche_chiffre_affaires,
+            tranche_bilan=tranche_bilan,
             bdese_accord=bdese_accord,
         )
         caracteristiques.save()

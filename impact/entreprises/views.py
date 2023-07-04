@@ -121,6 +121,8 @@ def qualification(request, siren):
         if form.is_valid():
             caracteristiques = entreprise.actualise_caracteristiques(
                 form.cleaned_data["effectif"],
+                form.cleaned_data["tranche_chiffre_affaires"],
+                form.cleaned_data["tranche_bilan"],
                 form.cleaned_data["bdese_accord"],
                 form.cleaned_data["effectif_outre_mer"],
             )
