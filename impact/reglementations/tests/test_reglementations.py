@@ -5,6 +5,7 @@ from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from habilitations.models import attach_user_to_entreprise
+from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
 from reglementations.views.bdese import BDESEReglementation
 from reglementations.views.bges import BGESReglementation
 from reglementations.views.dispositif_alerte import DispositifAlerteReglementation
@@ -16,6 +17,7 @@ REGLEMENTATIONS = (
     IndexEgaproReglementation,
     DispositifAlerteReglementation,
     BGESReglementation,
+    AuditEnergetiqueReglementation,
 )
 
 
@@ -63,6 +65,10 @@ def test_public_reglementations_with_entreprise_data(status_est_soumis, client, 
     )
     mocker.patch(
         "reglementations.views.bges.BGESReglementation.est_soumis",
+        return_value=status_est_soumis,
+    )
+    mocker.patch(
+        "reglementations.views.audit_energetique.AuditEnergetiqueReglementation.est_soumis",
         return_value=status_est_soumis,
     )
     response = client.get("/reglementations", data=data)
