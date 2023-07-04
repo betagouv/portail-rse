@@ -42,6 +42,8 @@ def test_public_reglementations_with_entreprise_data(status_est_soumis, client, 
     data = {
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
         "bdese_accord": False,
         "denomination": "Entreprise SAS",
         "siren": "000000001",
@@ -74,6 +76,14 @@ def test_public_reglementations_with_entreprise_data(status_est_soumis, client, 
     caracteristiques = entreprise.caracteristiques_actuelles()
     assert not caracteristiques.bdese_accord
     assert caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+    assert (
+        caracteristiques.tranche_chiffre_affaires
+        == CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
+    )
+    assert (
+        caracteristiques.tranche_bilan
+        == CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
+    )
 
     # reglementations for this entreprise are anonymously displayed
     context = response.context
@@ -131,6 +141,8 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
     data = {
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
         "bdese_accord": False,
         "denomination": "Une autre entreprise SAS",
         "siren": "000000002",
@@ -178,6 +190,8 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
     data = {
         "effectif": effectif,
         "effectif_outre_mer": effectif_outre_mer,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
         "bdese_accord": False,
         "denomination": entreprise.denomination,
         "siren": entreprise.siren,
@@ -186,9 +200,14 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
     response = client.get("/reglementations", data=data)
 
     entreprise.refresh_from_db()
+    caracteristiques = entreprise.caracteristiques_actuelles()
+    assert caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
     assert (
-        entreprise.caracteristiques_actuelles().effectif
-        == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+        caracteristiques.tranche_chiffre_affaires
+        == CaracteristiquesAnnuelles.CA_MOINS_DE_700K
+    )
+    assert (
+        caracteristiques.tranche_bilan == CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
     )
 
     context = response.context
@@ -214,9 +233,17 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
     client.get("/reglementations", data=data)
 
     entreprise.refresh_from_db()
+    caracteristiques = entreprise.caracteristiques_actuelles()
     assert (
-        entreprise.caracteristiques_actuelles().effectif
-        == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
+        caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
+    )
+    assert (
+        caracteristiques.tranche_chiffre_affaires
+        == CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
+    )
+    assert (
+        caracteristiques.tranche_bilan
+        == CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
     )
 
 
