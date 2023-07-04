@@ -25,8 +25,12 @@ def test_audit_energetique_reglementation_info():
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
     ],
 )
-def test_calculate_status_less_than_50_employees(effectif, entreprise_factory, alice):
-    entreprise = entreprise_factory(effectif=effectif)
+def test_calcule_statut_moins_de_249_employes_et_petit_bilan(
+    effectif, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(
+        effectif=effectif, tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
+    )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
     reglementation = AuditEnergetiqueReglementation(entreprise).calculate_status(
@@ -47,7 +51,7 @@ def test_calculate_status_less_than_50_employees(effectif, entreprise_factory, a
         CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS,
     ],
 )
-def test_calculate_status_more_than_250_employees(effectif, entreprise_factory, alice):
+def test_calcule_statut_plus_de_250_employes(effectif, entreprise_factory, alice):
     entreprise = entreprise_factory(effectif=effectif)
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
@@ -81,7 +85,9 @@ def test_calcule_etat_avec_bilan_et_ca_trop_faible(
     bilan, ca, entreprise_factory, alice
 ):
     entreprise = entreprise_factory(
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        tranche_bilan=bilan,
+        tranche_chiffre_affaires=ca,
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
@@ -108,15 +114,14 @@ def test_calcule_etat_avec_bilan_et_ca_trop_faible(
 )
 def test_calcule_etat_avec_bilan_et_ca_suffisants(bilan, ca, entreprise_factory, alice):
     entreprise = entreprise_factory(
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        tranche_bilan=bilan,
+        tranche_chiffre_affaires=ca,
     )
-    caracs = entreprise.caracteristiques_actuelles()
-    caracs.tranche_bilan = bilan
-    caracs.tranche_chiffre_affaires = ca
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
     reglementation = AuditEnergetiqueReglementation(entreprise).calculate_status(
-        caracs, alice
+        entreprise.caracteristiques_actuelles(), alice
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
@@ -132,15 +137,14 @@ def test_calcule_etat_avec_bilan_et_ca_suffisants(bilan, ca, entreprise_factory,
 )
 def test_calcule_etat_avec_bilan_insuffisant(ca, entreprise_factory, alice):
     entreprise = entreprise_factory(
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires=ca,
     )
-    caracs = entreprise.caracteristiques_actuelles()
-    caracs.tranche_bilan = CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
-    caracs.tranche_chiffre_affaires = ca
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
     reglementation = AuditEnergetiqueReglementation(entreprise).calculate_status(
-        caracs, alice
+        entreprise.caracteristiques_actuelles(), alice
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -155,15 +159,14 @@ def test_calcule_etat_avec_bilan_insuffisant(ca, entreprise_factory, alice):
 )
 def test_calcule_etat_avec_ca_insuffisant(bilan, entreprise_factory, alice):
     entreprise = entreprise_factory(
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        tranche_bilan=bilan,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
     )
-    caracs = entreprise.caracteristiques_actuelles()
-    caracs.tranche_bilan = bilan
-    caracs.tranche_chiffre_affaires = CaracteristiquesAnnuelles.CA_MOINS_DE_700K
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
     reglementation = AuditEnergetiqueReglementation(entreprise).calculate_status(
-        caracs, alice
+        entreprise.caracteristiques_actuelles(), alice
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
