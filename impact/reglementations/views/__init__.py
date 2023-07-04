@@ -14,6 +14,7 @@ from entreprises.views import get_current_entreprise
 from habilitations.models import is_user_attached_to_entreprise
 from public.forms import CaracteristiquesForm
 from public.forms import EntrepriseForm
+from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
 from reglementations.views.bdese import BDESEReglementation
 from reglementations.views.bges import BGESReglementation
 from reglementations.views.dispositif_alerte import DispositifAlerteReglementation
@@ -122,6 +123,14 @@ def _reglementations_context(entreprise, caracteristiques, user):
         {
             "info": BGESReglementation.info(),
             "status": BGESReglementation(entreprise).calculate_status(
+                caracteristiques, user
+            )
+            if entreprise
+            else None,
+        },
+        {
+            "info": AuditEnergetiqueReglementation.info(),
+            "status": AuditEnergetiqueReglementation(entreprise).calculate_status(
                 caracteristiques, user
             )
             if entreprise
