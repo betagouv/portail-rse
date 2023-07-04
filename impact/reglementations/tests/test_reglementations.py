@@ -81,6 +81,7 @@ def test_public_reglementations_with_entreprise_data(status_est_soumis, client, 
     assert entreprise.denomination == "Entreprise SAS"
     caracteristiques = entreprise.caracteristiques_actuelles()
     assert not caracteristiques.bdese_accord
+    assert caracteristiques.systeme_management_energie is False
     assert caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
     assert (
         caracteristiques.tranche_chiffre_affaires
@@ -199,6 +200,7 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
         "bdese_accord": False,
+        "systeme_management_energie": True,
         "denomination": entreprise.denomination,
         "siren": entreprise.siren,
     }
@@ -215,6 +217,7 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
     assert (
         caracteristiques.tranche_bilan == CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
     )
+    assert not caracteristiques.systeme_management_energie
 
     context = response.context
     assert context["entreprise"] == entreprise
@@ -251,6 +254,7 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
         caracteristiques.tranche_bilan
         == CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
     )
+    assert caracteristiques.systeme_management_energie
 
 
 def test_reglementation_with_authenticated_user(client, entreprise):

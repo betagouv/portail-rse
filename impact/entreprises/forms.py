@@ -43,8 +43,12 @@ class EntrepriseQualificationForm(DsfrForm, forms.ModelForm):
             "tranche_chiffre_affaires",
             "tranche_bilan",
             "bdese_accord",
+            "systeme_management_energie",
         ]
         help_texts = {
             "tranche_chiffre_affaires": "Sélectionnez le chiffre d'affaires de l'exercice clos",
             "tranche_bilan": "Sélectionnez le bilan de l'exercice clos",
+        }
+        widgets = {
+            "systeme_management_energie": forms.CheckboxInput,
         }

@@ -21,9 +21,8 @@
                     {% include 'snippets/field.html' with field=caracteristiques_form.tranche_chiffre_affaires %}
                     {% include 'snippets/field.html' with field=caracteristiques_form.tranche_bilan %}
                     {% include 'snippets/field.html' with field=caracteristiques_form.bdese_accord %}
-                    <div class="fr-pt-3w">
-                        <input type="submit" value="Vérifier mes obligations" class="fr-btn">
-                    </div>
+                    {% include 'snippets/field.html' with field=caracteristiques_form.systeme_management_energie %}
+                    <input type="submit" value="Vérifier mes obligations" class="fr-btn">
                 </form>
             </div>
         </div>
