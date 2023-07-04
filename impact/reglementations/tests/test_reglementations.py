@@ -228,6 +228,7 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
         effectif=effectif,
         effectif_outre_mer=effectif_outre_mer,
         bdese_accord=False,
+        systeme_management_energie=True,
     )
     for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
         status = reglementations[index]["status"]

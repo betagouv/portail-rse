@@ -170,3 +170,25 @@ def test_calcule_etat_avec_ca_insuffisant(bilan, entreprise_factory, alice):
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
+
+
+def test_calcule_etat_avec_bilan_et_ca_suffisants_mais_systeme_management_energie_en_place(
+    entreprise_factory, alice
+):
+    entreprise = entreprise_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+        systeme_management_energie=True,
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    reglementation = AuditEnergetiqueReglementation(entreprise).calculate_status(
+        entreprise.caracteristiques_actuelles(), alice
+    )
+
+    assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
+    assert (
+        reglementation.status_detail
+        == "Vous n'êtes pas soumis à cette réglementation si le système de management de l'énergie est certifié par un organisme de certification accrédité par un organisme d'accréditation signataire de l'accord de reconnaissance multilatéral établi par la coordination européenne des organismes d'accréditation et que ce système prévoit un audit énergétique satisfaisant aux critères mentionnés à l'article L. 233-1."
+    )

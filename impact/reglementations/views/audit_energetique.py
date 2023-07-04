@@ -11,23 +11,26 @@ class AuditEnergetiqueReglementation(Reglementation):
     more_info_url = ""
 
     def est_soumis(self, caracteristiques):
-        return (
-            caracteristiques.effectif
-            in (
-                CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
-                CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
-                CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS,
+        return (not caracteristiques.systeme_management_energie) and (
+            (
+                caracteristiques.effectif
+                in (
+                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+                    CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS,
+                )
             )
-        ) or (
-            caracteristiques.tranche_bilan
-            in (
-                CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
-                CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
-            )
-            and caracteristiques.tranche_chiffre_affaires
-            in (
-                CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
-                CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+            or (
+                caracteristiques.tranche_bilan
+                in (
+                    CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+                    CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+                )
+                and caracteristiques.tranche_chiffre_affaires
+                in (
+                    CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
+                    CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+                )
             )
         )
 
@@ -45,4 +48,6 @@ class AuditEnergetiqueReglementation(Reglementation):
         else:
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
+            if caracteristiques.systeme_management_energie:
+                status_detail += " si le système de management de l'énergie est certifié par un organisme de certification accrédité par un organisme d'accréditation signataire de l'accord de reconnaissance multilatéral établi par la coordination européenne des organismes d'accréditation et que ce système prévoit un audit énergétique satisfaisant aux critères mentionnés à l'article L. 233-1."
         return ReglementationStatus(status, status_detail)
