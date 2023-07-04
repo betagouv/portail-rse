@@ -223,6 +223,8 @@ def test_qualify_entreprise(
     data = {
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
         "bdese_accord": True,
     }
 
@@ -239,6 +241,14 @@ def test_qualify_entreprise(
     assert (
         caracteristiques.effectif_outre_mer
         == CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
+    )
+    assert (
+        caracteristiques.tranche_chiffre_affaires
+        == CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
+    )
+    assert (
+        caracteristiques.tranche_bilan
+        == CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
     )
     assert caracteristiques.bdese_accord
     assert entreprise_non_qualifiee.est_qualifiee
