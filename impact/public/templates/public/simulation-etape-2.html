@@ -18,6 +18,8 @@
                     {{ entreprise_form.denomination.as_hidden }}
                     {% include 'snippets/field.html' with field=caracteristiques_form.effectif %}
                     {% include 'snippets/field.html' with field=caracteristiques_form.effectif_outre_mer %}
+                    {% include 'snippets/field.html' with field=caracteristiques_form.tranche_chiffre_affaires %}
+                    {% include 'snippets/field.html' with field=caracteristiques_form.tranche_bilan %}
                     {% include 'snippets/field.html' with field=caracteristiques_form.bdese_accord %}
                     <div class="fr-pt-3w">
                         <input type="submit" value="Vérifier mes obligations" class="fr-btn">
