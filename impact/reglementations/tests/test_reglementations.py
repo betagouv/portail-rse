@@ -194,13 +194,15 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
     """
     effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
     effectif_outre_mer = CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS
+    bdese_accord = False
+    systeme_management_energie = True
     data = {
         "effectif": effectif,
         "effectif_outre_mer": effectif_outre_mer,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
-        "bdese_accord": False,
-        "systeme_management_energie": True,
+        "bdese_accord": bdese_accord,
+        "systeme_management_energie": systeme_management_energie,
         "denomination": entreprise.denomination,
         "siren": entreprise.siren,
     }
