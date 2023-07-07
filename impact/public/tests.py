@@ -1,4 +1,5 @@
 import html
+from datetime import date
 
 import pytest
 
@@ -138,6 +139,7 @@ def test_entreprise_form_truncate_raison_social_when_too_long(db):
         data={
             "denomination": "a" * (DENOMINATION_MAX_LENGTH + 1),
             "siren": "123456789",
+            "date_cloture_exercice": date(2022, 12, 31).isoformat(),
         }
     )
     assert form.is_valid()

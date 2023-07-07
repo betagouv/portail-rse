@@ -16,6 +16,7 @@
                     {% csrf_token %}
                     {{ entreprise_form.siren.as_hidden }}
                     {{ entreprise_form.denomination.as_hidden }}
+                    {% include 'snippets/field.html' with field=entreprise_form.date_cloture_exercice %}
                     {% include 'snippets/field.html' with field=caracteristiques_form.effectif %}
                     {% include 'snippets/field.html' with field=caracteristiques_form.effectif_outre_mer %}
                     {% include 'snippets/field.html' with field=caracteristiques_form.tranche_chiffre_affaires %}

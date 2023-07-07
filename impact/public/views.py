@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.conf import settings
 from django.contrib import messages
 from django.core.mail import EmailMessage
@@ -74,6 +76,10 @@ def simulation(request):
                 infos_entreprise[
                     "effectif_outre_mer"
                 ] = CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
+                date_cloture_exercice = date(date.today().year - 1, 12, 31)
+                infos_entreprise[
+                    "date_cloture_exercice"
+                ] = date_cloture_exercice.isoformat()
                 entreprise_form = EntrepriseForm(initial=infos_entreprise)
                 caracteristiques_form = CaracteristiquesForm(initial=infos_entreprise)
                 return render(

@@ -5,6 +5,7 @@ from entreprises.forms import SirenField
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import DENOMINATION_MAX_LENGTH
 from entreprises.models import Entreprise
+from utils.forms import DateInput
 from utils.forms import DsfrForm
 
 
@@ -17,7 +18,8 @@ class EntrepriseForm(DsfrForm, forms.ModelForm):
 
     class Meta:
         model = Entreprise
-        fields = ["denomination", "siren"]
+        fields = ["denomination", "siren", "date_cloture_exercice"]
+        widgets = {"date_cloture_exercice": DateInput}
 
     def clean_denomination(self):
         denomination = self.cleaned_data.get("denomination")

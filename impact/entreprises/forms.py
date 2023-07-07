@@ -2,11 +2,8 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 from .models import CaracteristiquesAnnuelles
+from utils.forms import DateInput
 from utils.forms import DsfrForm
-
-
-class DateInput(forms.DateInput):
-    input_type = "date"
 
 
 class SirenField(forms.CharField):
