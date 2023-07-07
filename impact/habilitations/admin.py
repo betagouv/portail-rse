@@ -5,7 +5,9 @@ from habilitations.models import Habilitation
 
 
 class HabilitationAdminForm(forms.ModelForm):
-    should_be_confirmed = forms.BooleanField(required=False, label="Confirmer ?")
+    should_be_confirmed = forms.BooleanField(
+        required=False, label="Confirmer l'habilitation"
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
