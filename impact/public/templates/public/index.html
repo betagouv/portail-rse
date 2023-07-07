@@ -2,20 +2,9 @@
 {% load static %}
 
 {% block content %}
-    <div class="fr-notice fr-notice--info">
-        <div class="fr-container">
-            <div class="fr-notice__body">
-                <p class="fr-notice__title">
-                    L'ancienne plateforme expérimentale impact.gouv.fr évolue et devient le projet Impact :
-                    un outil qui aide les entreprises à satisfaire leurs obligations réglementaires en matière de performance extra-financière.
-                </p>
-            </div>
-        </div>
-    </div>
-
     <div class="fr-container fr-my-16w">
-        <div class="fr-grid-row fr-grid-row--center">
-            <div class="fr-col-8">
+        <div class="fr-grid-row fr-grid-row--center fr-grid-row--middle">
+            <div class="fr-col-12 fr-col-md-8">
                 <h1>Projet IMPACT</h1>
                 <p class="fr-text--lead">Le meilleur moyen pour les entreprises de déclarer leur performance extra-financière</p>
                 <p>
@@ -33,11 +22,10 @@
                     <a href="{% url 'simulation' %}" class="fr-btn">Commencer avec mon entreprise</a>
                 {% endif %}
             </div>
-            <div class="fr-col-4">
+            <div class="fr-col-8 fr-col-md-4 fr-my-8w">
                 <img src="{% static 'img/illustration-ESG.png' %}" class="fr-responsive-img" alt="" />
             </div>
         </div>
-
     </div>
 <!-- page index -->
 {% endblock %}
