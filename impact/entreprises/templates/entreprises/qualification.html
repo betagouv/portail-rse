@@ -13,6 +13,7 @@
 
                 <form class="fr-mt-6w" action="{% url 'entreprises:qualification' entreprise.siren %}" method="post">
                     {% csrf_token %}
+                    {% include 'snippets/field.html' with field=form.date_cloture_exercice %}
                     {% include 'snippets/field.html' with field=form.effectif %}
                     {% include 'snippets/field.html' with field=form.effectif_outre_mer %}
                     {% include 'snippets/field.html' with field=form.tranche_chiffre_affaires %}

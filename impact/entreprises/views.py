@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -119,6 +121,10 @@ def qualification(request, siren):
     if request.POST:
         form = EntrepriseQualificationForm(data=request.POST)
         if form.is_valid():
+            entreprise.date_cloture_exercice = form.cleaned_data[
+                "date_cloture_exercice"
+            ]
+            entreprise.save()
             caracteristiques = entreprise.actualise_caracteristiques(
                 form.cleaned_data["effectif"],
                 form.cleaned_data["tranche_chiffre_affaires"],
@@ -143,6 +149,9 @@ def qualification(request, siren):
         infos_entreprise[
             "effectif_outre_mer"
         ] = CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
+        infos_entreprise["date_cloture_exercice"] = date(
+            date.today().year - 1, 12, 31
+        ).isoformat()
         form = EntrepriseQualificationForm(initial=infos_entreprise)
 
     return render(

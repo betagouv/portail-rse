@@ -5,6 +5,10 @@ from .models import CaracteristiquesAnnuelles
 from utils.forms import DsfrForm
 
 
+class DateInput(forms.DateInput):
+    input_type = "date"
+
+
 class SirenField(forms.CharField):
     def __init__(self, *args, **kwargs):
         if not kwargs.get("label"):
@@ -35,6 +39,11 @@ class EntrepriseDetachForm(DsfrForm):
 
 
 class EntrepriseQualificationForm(DsfrForm, forms.ModelForm):
+    date_cloture_exercice = forms.DateField(
+        widget=DateInput,
+        label="Date de clôture du dernier exercice comptable",
+    )
+
     class Meta:
         model = CaracteristiquesAnnuelles
         fields = [

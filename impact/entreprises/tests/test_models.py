@@ -1,3 +1,4 @@
+from datetime import date
 from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
@@ -16,13 +17,16 @@ def test_entreprise():
 
     with freeze_time(now):
         entreprise = Entreprise.objects.create(
-            siren="123456789", denomination="Entreprise SAS"
+            siren="123456789",
+            denomination="Entreprise SAS",
+            date_cloture_exercice=date(2023, 7, 7),
         )
 
     assert entreprise.created_at == now
     assert entreprise.updated_at == now
     assert entreprise.siren == "123456789"
     assert entreprise.denomination == "Entreprise SAS"
+    assert entreprise.date_cloture_exercice == date(2023, 7, 7)
     assert not entreprise.users.all()
     assert not entreprise.est_qualifiee
 
@@ -51,6 +55,11 @@ def test_entreprise_est_qualifiee(entreprise_non_qualifiee):
         systeme_management_energie=True,
     )
     caracteristiques.save()
+
+    assert not entreprise_non_qualifiee.est_qualifiee
+
+    entreprise_non_qualifiee.date_cloture_exercice = date(2023, 7, 7)
+    entreprise_non_qualifiee.save()
 
     assert entreprise_non_qualifiee.est_qualifiee
 

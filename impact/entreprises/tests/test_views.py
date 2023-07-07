@@ -1,7 +1,9 @@
 import html
+from datetime import date
 
 import pytest
 from django.urls import reverse
+from freezegun import freeze_time
 
 import api.exceptions
 from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
@@ -201,7 +203,8 @@ def test_qualification_page(
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
     client.force_login(alice)
 
-    response = client.get(f"/entreprises/{entreprise_non_qualifiee.siren}")
+    with freeze_time(date(2023, 1, 27)):
+        response = client.get(f"/entreprises/{entreprise_non_qualifiee.siren}")
 
     assert response.status_code == 200
     content = response.content.decode("utf-8")
@@ -209,10 +212,8 @@ def test_qualification_page(
     mock_api_recherche_entreprises.assert_called_once_with(
         entreprise_non_qualifiee.siren
     )
-
-    entreprise_non_qualifiee.refresh_from_db()
-    assert entreprise_non_qualifiee.denomination == "Entreprise SAS"
-    assert not entreprise_non_qualifiee.est_qualifiee
+    context = response.context
+    assert context["form"]["date_cloture_exercice"].initial == "2022-12-31"
 
 
 def test_qualify_entreprise(
@@ -221,6 +222,7 @@ def test_qualify_entreprise(
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
     client.force_login(alice)
     data = {
+        "date_cloture_exercice": date(2022, 12, 31),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
@@ -239,6 +241,7 @@ def test_qualify_entreprise(
 
     entreprise_non_qualifiee.refresh_from_db()
     assert entreprise_non_qualifiee.denomination == "Entreprise SAS"
+    assert entreprise_non_qualifiee.date_cloture_exercice == date(2022, 12, 31)
     caracteristiques = entreprise_non_qualifiee.caracteristiques_actuelles()
     assert (
         caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
