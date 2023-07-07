@@ -197,7 +197,7 @@ def test_qualification_page_is_not_public(client, alice, entreprise_non_qualifie
     assert response.status_code == 403
 
 
-def test_qualification_page(
+def test_qualification_page_without_current_qualification(
     client, alice, entreprise_non_qualifiee, mock_api_recherche_entreprises
 ):
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
@@ -213,6 +213,37 @@ def test_qualification_page(
         entreprise_non_qualifiee.siren
     )
     context = response.context
+    assert context["form"]["date_cloture_exercice"].initial == "2022-12-31"
+
+
+def test_qualification_page_with_incomplete_qualification(
+    client, alice, entreprise_factory, mock_api_recherche_entreprises
+):
+    entreprise = entreprise_factory()
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    client.force_login(alice)
+
+    with freeze_time(date(2023, 1, 27)):
+        response = client.get(f"/entreprises/{entreprise.siren}")
+
+    assert response.status_code == 200
+    content = response.content.decode("utf-8")
+    assert "<!-- page qualification entreprise -->" in content
+    mock_api_recherche_entreprises.assert_not_called()
+    context = response.context
+    caracs = entreprise.caracteristiques_actuelles()
+
+    assert context["form"]["effectif"].initial == caracs.effectif
+    assert (
+        context["form"]["tranche_chiffre_affaires"].initial
+        == caracs.tranche_chiffre_affaires
+    )
+    assert context["form"]["tranche_bilan"].initial == caracs.tranche_bilan
+    assert context["form"]["bdese_accord"].initial == caracs.bdese_accord
+    assert (
+        context["form"]["systeme_management_energie"].initial
+        == caracs.systeme_management_energie
+    )
     assert context["form"]["date_cloture_exercice"].initial == "2022-12-31"
 
 
