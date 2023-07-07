@@ -12,6 +12,10 @@ DENOMINATION_MAX_LENGTH = 250
 class Entreprise(TimestampedModel):
     siren = models.CharField(max_length=9, unique=True)
     denomination = models.CharField(max_length=DENOMINATION_MAX_LENGTH)
+    date_cloture_exercice = models.DateField(
+        verbose_name="Date de clôture du dernier exercice comptable",
+        null=True,
+    )
     users = models.ManyToManyField(
         settings.AUTH_USER_MODEL, through="habilitations.Habilitation"
     )
@@ -22,12 +26,13 @@ class Entreprise(TimestampedModel):
     @property
     def est_qualifiee(self):
         caracteristiques_actuelles = self.caracteristiques_actuelles()
-        return (
-            bool(caracteristiques_actuelles)
+        return bool(
+            caracteristiques_actuelles
             and caracteristiques_actuelles.effectif
             and caracteristiques_actuelles.effectif_outre_mer
             and caracteristiques_actuelles.tranche_chiffre_affaires
             and caracteristiques_actuelles.tranche_bilan
+            and self.date_cloture_exercice
         )
 
     def caracteristiques_annuelles(self, annee):
