@@ -143,12 +143,21 @@ def qualification(request, siren):
                 request,
                 "Les caractéristiques de l'entreprise n'ont pas été mises à jour car le formulaire contient des erreurs.",
             )
-
     else:
-        infos_entreprise = api.recherche_entreprises.recherche(entreprise.siren)
-        infos_entreprise[
-            "effectif_outre_mer"
-        ] = CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
+        if caracs := entreprise.caracteristiques_actuelles():
+            infos_entreprise = {
+                "effectif": caracs.effectif,
+                "effectif_outre_mer": caracs.effectif_outre_mer,
+                "tranche_chiffre_affaires": caracs.tranche_chiffre_affaires,
+                "tranche_bilan": caracs.tranche_bilan,
+                "bdese_accord": caracs.bdese_accord,
+                "systeme_management_energie": caracs.systeme_management_energie,
+            }
+        else:
+            infos_entreprise = api.recherche_entreprises.recherche(entreprise.siren)
+            infos_entreprise[
+                "effectif_outre_mer"
+            ] = CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
         date_cloture_exercice = date(date.today().year - 1, 12, 31)
         infos_entreprise["date_cloture_exercice"] = date_cloture_exercice.isoformat()
         form = EntrepriseQualificationForm(initial=infos_entreprise)
