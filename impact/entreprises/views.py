@@ -128,12 +128,14 @@ def qualification(request, siren):
                 form.cleaned_data["effectif_outre_mer"],
             )
             caracteristiques.save()
-            messages.success(request, "Entreprise enregistrée")
+            messages.success(
+                request, "Les caractéristiques de l'entreprise ont été mises à jour."
+            )
             return redirect("reglementations:reglementations", siren=siren)
         else:
             messages.error(
                 request,
-                "L'entreprise n'a pas été enregistrée car le formulaire contient des erreurs",
+                "Les caractéristiques de l'entreprise n'ont pas été mises à jour car le formulaire contient des erreurs.",
             )
 
     else:

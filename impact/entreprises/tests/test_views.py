@@ -231,7 +231,11 @@ def test_qualify_entreprise(
 
     url = f"/entreprises/{entreprise_non_qualifiee.siren}"
     response = client.get(url)
-    response = client.post(url, data=data)
+    response = client.post(url, data=data, follow=True)
+
+    assert response.status_code == 200
+    content = html.unescape(response.content.decode("utf-8"))
+    assert "Les caractéristiques de l'entreprise ont été mises à jour." in content
 
     entreprise_non_qualifiee.refresh_from_db()
     assert entreprise_non_qualifiee.denomination == "Entreprise SAS"
@@ -273,7 +277,7 @@ def test_qualify_entreprise_error(
     assert response.status_code == 200
     content = html.unescape(response.content.decode("utf-8"))
     assert (
-        "L'entreprise n'a pas été enregistrée car le formulaire contient des erreurs"
+        "Les caractéristiques de l'entreprise n'ont pas été mises à jour car le formulaire contient des erreurs."
         in content
     )
 
