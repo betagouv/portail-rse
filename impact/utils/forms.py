@@ -17,3 +17,7 @@ class DsfrForm(forms.Form):
                         "aria-describedby": f"{name}-error-desc-error",
                     }
                 )
+
+
+class DateInput(forms.DateInput):
+    input_type = "date"

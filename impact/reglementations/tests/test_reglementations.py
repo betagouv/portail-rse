@@ -1,3 +1,5 @@
+from datetime import date
+
 import pytest
 from django.contrib.auth.models import AnonymousUser
 
@@ -42,6 +44,7 @@ def test_public_reglementations(client):
 @pytest.mark.django_db
 def test_public_reglementations_with_entreprise_data(status_est_soumis, client, mocker):
     data = {
+        "date_cloture_exercice": date(2022, 12, 31),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
@@ -79,6 +82,7 @@ def test_public_reglementations_with_entreprise_data(status_est_soumis, client, 
     # entreprise has been created
     entreprise = Entreprise.objects.get(siren="000000001")
     assert entreprise.denomination == "Entreprise SAS"
+    assert entreprise.date_cloture_exercice == date(2022, 12, 31)
     caracteristiques = entreprise.caracteristiques_actuelles()
     assert not caracteristiques.bdese_accord
     assert caracteristiques.systeme_management_energie is False
@@ -146,6 +150,7 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
     client.force_login(entreprise.users.first())
 
     data = {
+        "date_cloture_exercice": date(2022, 6, 30),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
@@ -192,11 +197,13 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
     La simulation par un utilisateur anonyme sur une entreprise déjà enregistrée en base ne modifie pas en base son évolution
     mais affiche quand même à l'utilisateur anonyme les statuts correspondant aux données utilisées lors de la simulation
     """
+    date_cloture_exercice = date(2022, 6, 30)
     effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
     effectif_outre_mer = CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS
     bdese_accord = False
     systeme_management_energie = True
     data = {
+        "date_cloture_exercice": date_cloture_exercice,
         "effectif": effectif,
         "effectif_outre_mer": effectif_outre_mer,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
@@ -210,6 +217,7 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
     response = client.get("/reglementations", data=data)
 
     entreprise.refresh_from_db()
+    assert entreprise.date_cloture_exercice != date_cloture_exercice
     caracteristiques = entreprise.caracteristiques_actuelles()
     assert caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
     assert (
@@ -245,6 +253,7 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
     client.get("/reglementations", data=data)
 
     entreprise.refresh_from_db()
+    assert entreprise.date_cloture_exercice == date_cloture_exercice
     caracteristiques = entreprise.caracteristiques_actuelles()
     assert (
         caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
