@@ -230,7 +230,7 @@ def test_qualification_page_with_current_qualification(
     assert "<!-- page qualification entreprise -->" in content
     mock_api_recherche_entreprises.assert_not_called()
     context = response.context
-    caracs = entreprise.caracteristiques_actuelles()
+    caracs = entreprise.dernieres_caracteristiques_qualifiantes
 
     assert context["form"]["effectif"].initial == caracs.effectif
     assert (

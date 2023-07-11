@@ -15,27 +15,32 @@ from metabase.models import Utilisateur as MetabaseUtilisateur
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
-def test_synchronise_une_entreprise(entreprise_factory):
-    with freeze_time("2023-06-12 12:00"):
-        entreprise_A = entreprise_factory(
-            siren="000000001",
-            denomination="A",
-            effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
-            bdese_accord=True,
-        )
-    date_deuxieme_evolution = datetime(2024, 7, 13, tzinfo=timezone.utc)
-    date_troisieme_evolution = datetime(2025, 8, 14, tzinfo=timezone.utc)
+def test_synchronise_une_entreprise(entreprise_factory, annee_dernier_exercice):
+    entreprise_A = entreprise_factory(
+        siren="000000001",
+        denomination="A",
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+        bdese_accord=True,
+    )
+    annee_deuxieme_evolution = annee_dernier_exercice + 1
+    annee_troisieme_evolution = annee_dernier_exercice + 2
+    date_deuxieme_evolution = datetime(
+        annee_deuxieme_evolution, 7, 13, tzinfo=timezone.utc
+    )
+    date_troisieme_evolution = datetime(
+        annee_troisieme_evolution, 8, 14, tzinfo=timezone.utc
+    )
     with freeze_time(date_deuxieme_evolution) as frozen_datetime:
         CaracteristiquesAnnuelles.objects.create(
             entreprise=entreprise_A,
-            annee=2024,
+            annee=annee_deuxieme_evolution,
             effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
             bdese_accord=True,
         )
         frozen_datetime.move_to(date_troisieme_evolution)
         CaracteristiquesAnnuelles.objects.create(
             entreprise=entreprise_A,
-            annee=2025,
+            annee=annee_troisieme_evolution,
             effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
             bdese_accord=True,
         )

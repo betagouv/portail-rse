@@ -145,7 +145,7 @@ def qualification(request, siren):
                 "Les caractéristiques de l'entreprise n'ont pas été mises à jour car le formulaire contient des erreurs.",
             )
     else:
-        if caracs := entreprise.caracteristiques_actuelles():
+        if caracs := entreprise.dernieres_caracteristiques_qualifiantes:
             infos_entreprise = {
                 "effectif": caracs.effectif,
                 "effectif_outre_mer": caracs.effectif_outre_mer,

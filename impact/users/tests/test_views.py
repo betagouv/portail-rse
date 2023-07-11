@@ -9,6 +9,7 @@ from freezegun import freeze_time
 
 import impact.settings
 from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
+from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from habilitations.models import get_habilitation
 from users.models import User
@@ -57,7 +58,7 @@ def test_create_user_with_real_siren(client, db, mailoutbox):
     user = User.objects.get(email="user@example.com")
     entreprise = Entreprise.objects.get(siren="130025265")
     assert entreprise.denomination == "DIRECTION INTERMINISTERIELLE DU NUMERIQUE"
-    assert not entreprise.caracteristiques_actuelles()
+    assert not CaracteristiquesAnnuelles.objects.filter(entreprise=entreprise)
     assert user.created_at
     assert user.updated_at
     assert user.email == "user@example.com"

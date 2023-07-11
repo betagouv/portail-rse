@@ -85,7 +85,7 @@ def test_public_reglementations_with_entreprise_data(status_est_soumis, client, 
     entreprise = Entreprise.objects.get(siren="000000001")
     assert entreprise.denomination == "Entreprise SAS"
     assert entreprise.date_cloture_exercice == date(2022, 12, 31)
-    caracteristiques = entreprise.caracteristiques_actuelles()
+    caracteristiques = entreprise.caracteristiques_annuelles(2022)
     assert not caracteristiques.bdese_accord
     assert caracteristiques.systeme_management_energie is False
     assert caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
@@ -195,13 +195,13 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
 
 
 def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
-    client, entreprise, entreprise_factory
+    client, annee_dernier_exercice, entreprise, entreprise_factory
 ):
     """
     La simulation par un utilisateur anonyme sur une entreprise déjà enregistrée en base ne modifie pas en base son évolution
     mais affiche quand même à l'utilisateur anonyme les statuts correspondant aux données utilisées lors de la simulation
     """
-    date_cloture_exercice = date(2022, 6, 30)
+    date_cloture_exercice = date(annee_dernier_exercice, 6, 30)
     effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
     effectif_outre_mer = CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS
     bdese_accord = False
@@ -288,7 +288,7 @@ def test_reglementations_with_authenticated_user(client, entreprise):
         assert reglementations[index]["status"] == REGLEMENTATION(
             entreprise
         ).calculate_status(
-            entreprise.caracteristiques_actuelles(), entreprise.users.first()
+            entreprise.dernieres_caracteristiques_qualifiantes, entreprise.users.first()
         )
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
@@ -314,7 +314,7 @@ def test_reglementations_with_authenticated_user_and_multiple_entreprises(
     for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
         assert reglementations[index]["status"] == REGLEMENTATION(
             entreprise1
-        ).calculate_status(entreprise1.caracteristiques_actuelles(), alice)
+        ).calculate_status(entreprise1.dernieres_caracteristiques_qualifiantes, alice)
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
 
@@ -329,7 +329,7 @@ def test_reglementations_with_authenticated_user_and_multiple_entreprises(
     for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
         assert reglementations[index]["status"] == REGLEMENTATION(
             entreprise2
-        ).calculate_status(entreprise2.caracteristiques_actuelles(), alice)
+        ).calculate_status(entreprise2.dernieres_caracteristiques_qualifiantes, alice)
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
 
@@ -350,13 +350,16 @@ def test_reglementations_with_entreprise_non_qualifiee_redirect_to_qualification
 
 
 def test_reglementations_avec_entreprise_qualifiee_dans_le_passe(
-    client, entreprise, mock_api_recherche_entreprises
+    client, annee_dernier_exercice, entreprise, mock_api_recherche_entreprises
 ):
 
-    with freeze_time(date(2024, 1, 27)):
+    with freeze_time(date(annee_dernier_exercice + 2, 1, 27)):
         client.force_login(entreprise.users.first())
         response = client.get(f"/reglementations/{entreprise.siren}")
 
     assert response.status_code == 200
     content = html.unescape(response.content.decode("utf-8"))
-    assert "Les informations sont basées sur des données de 2022." in content, content
+    assert (
+        f"Les informations sont basées sur des données de {annee_dernier_exercice}."
+        in content
+    ), content
