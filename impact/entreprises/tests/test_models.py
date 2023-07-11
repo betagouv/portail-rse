@@ -28,7 +28,6 @@ def test_entreprise():
     assert entreprise.denomination == "Entreprise SAS"
     assert entreprise.date_cloture_exercice == date(2023, 7, 7)
     assert not entreprise.users.all()
-    assert not entreprise.est_qualifiee
 
     with pytest.raises(IntegrityError):
         Entreprise.objects.create(
@@ -42,11 +41,12 @@ def test_entreprise():
     assert entreprise.updated_at == now + timedelta(1)
 
 
-@pytest.mark.django_db(transaction=True)
-def test_entreprise_est_qualifiee(entreprise_non_qualifiee):
-    assert not entreprise_non_qualifiee.est_qualifiee
+def test_caracteristiques_sont_qualifiantes():
+    caracteristiques = CaracteristiquesAnnuelles()
 
-    caracteristiques = entreprise_non_qualifiee.actualise_caracteristiques(
+    assert not caracteristiques.sont_qualifiantes
+
+    caracteristiques = CaracteristiquesAnnuelles(
         date_cloture_exercice=date(2023, 7, 7),
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
@@ -55,14 +55,7 @@ def test_entreprise_est_qualifiee(entreprise_non_qualifiee):
         bdese_accord=True,
         systeme_management_energie=True,
     )
-    caracteristiques.save()
-
-    assert not entreprise_non_qualifiee.est_qualifiee
-
-    entreprise_non_qualifiee.date_cloture_exercice = date(2023, 7, 7)
-    entreprise_non_qualifiee.save()
-
-    assert entreprise_non_qualifiee.est_qualifiee
+    assert caracteristiques.sont_qualifiantes
 
 
 @pytest.mark.django_db(transaction=True)

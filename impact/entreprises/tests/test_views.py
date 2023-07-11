@@ -66,7 +66,6 @@ def test_create_and_attach_to_entreprise(client, alice, mock_api_recherche_entre
     entreprise = Entreprise.objects.get(siren="000000001")
     assert get_habilitation(alice, entreprise).fonctions == "Présidente"
     assert entreprise.denomination == "Entreprise SAS"
-    assert not entreprise.est_qualifiee
 
 
 def test_attach_to_an_existing_entreprise(client, alice, entreprise_factory):
@@ -291,7 +290,6 @@ def test_qualify_entreprise(
     )
     assert caracteristiques.bdese_accord
     assert caracteristiques.systeme_management_energie
-    assert entreprise_non_qualifiee.est_qualifiee
 
 
 def test_qualify_entreprise_error(
@@ -316,4 +314,4 @@ def test_qualify_entreprise_error(
     )
 
     entreprise_non_qualifiee.refresh_from_db()
-    assert not entreprise_non_qualifiee.est_qualifiee
+    assert not entreprise_non_qualifiee.dernieres_caracteristiques_qualifiantes
