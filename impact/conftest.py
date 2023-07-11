@@ -57,6 +57,7 @@ def entreprise_factory(db):
             date_cloture_exercice=date_cloture_exercice,
         )
         caracteristiques = entreprise.actualise_caracteristiques(
+            date_cloture_exercice=date_cloture_exercice.replace(year=2022),
             effectif=effectif,
             effectif_outre_mer=effectif_outre_mer,
             tranche_chiffre_affaires=tranche_chiffre_affaires,

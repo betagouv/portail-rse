@@ -218,7 +218,7 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
 
     entreprise.refresh_from_db()
     assert entreprise.date_cloture_exercice != date_cloture_exercice
-    caracteristiques = entreprise.caracteristiques_actuelles()
+    caracteristiques = entreprise.caracteristiques_annuelles(date_cloture_exercice.year)
     assert caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
     assert (
         caracteristiques.tranche_chiffre_affaires
@@ -233,7 +233,7 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
     assert context["entreprise"] == entreprise
     reglementations = context["reglementations"]
     caracteristiques = CaracteristiquesAnnuelles(
-        annee=2022,
+        annee=date_cloture_exercice.year,
         entreprise=entreprise,
         effectif=effectif,
         effectif_outre_mer=effectif_outre_mer,
@@ -254,7 +254,7 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
 
     entreprise.refresh_from_db()
     assert entreprise.date_cloture_exercice == date_cloture_exercice
-    caracteristiques = entreprise.caracteristiques_actuelles()
+    caracteristiques = entreprise.caracteristiques_annuelles(date_cloture_exercice.year)
     assert (
         caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
     )
