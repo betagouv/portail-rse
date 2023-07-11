@@ -49,8 +49,12 @@
                                         <p class="fr-card__desc">
                                             {% if habilitation and habilitation.fonctions %}en tant que {{ habilitation.fonctions }}{% endif %} </br>
                                             SIREN :<b> {{ entreprise.siren }} </b></br>
-                                            Effectif :<b> {% if entreprise.caracteristiques_actuelles.effectif %}{{ entreprise.caracteristiques_actuelles.get_effectif_display }}{% else %}non renseigné{% endif %} </b></br>
-                                            Accord d'entreprise concernant la BDESE :<b> {{ entreprise.caracteristiques_actuelles.bdese_accord | translate_boolean }} </b></br>
+                                            Date de clôture du dernier exercice :<b> {{ entreprise.dernieres_caracteristiques_qualifiantes.date_cloture_exercice }} </b></br>
+                                            Effectif :<b> {% if entreprise.dernieres_caracteristiques_qualifiantes.effectif %}{{ entreprise.dernieres_caracteristiques_qualifiantes.get_effectif_display }}{% else %}non renseigné{% endif %} </b></br>
+                                            Bilan :<b> {{ entreprise.dernieres_caracteristiques_qualifiantes.get_tranche_bilan_display }} </b></br>
+                                            Chiffre d'affaires :<b> {{ entreprise.dernieres_caracteristiques_qualifiantes.get_tranche_chiffre_affaires_display }} </b></br>
+                                            Accord d'entreprise concernant la BDESE :<b> {{ entreprise.dernieres_caracteristiques_qualifiantes.bdese_accord | translate_boolean }} </b></br>
+                                            Système de management de l'énergie :<b> {{ entreprise.dernieres_caracteristiques_qualifiantes.systeme_management_energie | translate_boolean }} </b></br>
                                         </p>
                                     </div>
                                     <div class="fr-card__footer">
