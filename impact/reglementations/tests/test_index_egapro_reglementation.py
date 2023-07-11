@@ -37,7 +37,7 @@ def test_calculate_status_less_than_50_employees(
     )
 
     assert index.status == ReglementationStatus.STATUS_NON_SOUMIS
-    assert index.status_detail == "Vous n'êtes pas soumis à cette réglementation"
+    assert index.status_detail == "Vous n'êtes pas soumis à cette réglementation."
     assert (
         index.primary_action.url
         == "https://egapro.travail.gouv.fr/index-egapro/recherche"
@@ -71,7 +71,7 @@ def test_calculate_status_more_than_50_employees(
     assert index.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
         index.status_detail
-        == "Vous êtes soumis à cette réglementation. Vous n'avez pas encore déclaré votre index sur la plateforme Egapro."
+        == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous n'avez pas encore déclaré votre index sur la plateforme Egapro."
     )
     assert index.primary_action.url == "https://egapro.travail.gouv.fr/"
     assert index.primary_action.title == "Calculer et déclarer mon index sur Egapro"
@@ -87,7 +87,7 @@ def test_calculate_status_more_than_50_employees(
     assert index.status == ReglementationStatus.STATUS_A_JOUR
     assert (
         index.status_detail
-        == "Vous êtes soumis à cette réglementation. Vous avez rempli vos obligations d'après les données disponibles sur la plateforme Egapro."
+        == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez rempli vos obligations d'après les données disponibles sur la plateforme Egapro."
     )
     mock_index_egapro.assert_called_once_with(entreprise, annee)
 

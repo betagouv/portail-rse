@@ -25,8 +25,8 @@ class DispositifAlerteReglementation(Reglementation):
 
         if self.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_SOUMIS
-            status_detail = "Vous êtes soumis à cette réglementation"
+            status_detail = "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés."
         else:
             status = ReglementationStatus.STATUS_NON_SOUMIS
-            status_detail = "Vous n'êtes pas soumis à cette réglementation"
+            status_detail = "Vous n'êtes pas soumis à cette réglementation."
         return ReglementationStatus(status, status_detail)
