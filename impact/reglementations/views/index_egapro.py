@@ -28,7 +28,7 @@ class IndexEgaproReglementation(Reglementation):
 
         if not self.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_NON_SOUMIS
-            status_detail = "Vous n'êtes pas soumis à cette réglementation"
+            status_detail = "Vous n'êtes pas soumis à cette réglementation."
             primary_action = ReglementationAction(
                 "https://egapro.travail.gouv.fr/index-egapro/recherche",
                 "Consulter les index sur Egapro",
@@ -42,10 +42,10 @@ class IndexEgaproReglementation(Reglementation):
             )
             if is_index_egapro_published(self.entreprise, caracteristiques.annee):
                 status = ReglementationStatus.STATUS_A_JOUR
-                status_detail = "Vous êtes soumis à cette réglementation. Vous avez rempli vos obligations d'après les données disponibles sur la plateforme Egapro."
+                status_detail = "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez rempli vos obligations d'après les données disponibles sur la plateforme Egapro."
             else:
                 status = ReglementationStatus.STATUS_A_ACTUALISER
-                status_detail = "Vous êtes soumis à cette réglementation. Vous n'avez pas encore déclaré votre index sur la plateforme Egapro."
+                status_detail = "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous n'avez pas encore déclaré votre index sur la plateforme Egapro."
         return ReglementationStatus(
             status, status_detail, primary_action=primary_action
         )

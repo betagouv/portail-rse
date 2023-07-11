@@ -114,7 +114,7 @@ def test_calculate_status_less_than_50_employees(
     )
 
     assert status.status == ReglementationStatus.STATUS_NON_SOUMIS
-    assert status.status_detail == "Vous n'êtes pas soumis à cette réglementation"
+    assert status.status_detail == "Vous n'êtes pas soumis à cette réglementation."
     assert status.primary_action is None
     assert status.secondary_actions == []
 
@@ -144,7 +144,7 @@ def test_calculate_status_more_than_50_employees_with_habilited_user(
     assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
         status.status_detail
-        == "Vous êtes soumis à cette réglementation. Nous allons vous aider à la remplir."
+        == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Nous allons vous aider à la remplir."
     )
     assert status.primary_action.title == "Actualiser ma BDESE"
     assert status.primary_action.url == reverse(
@@ -160,7 +160,7 @@ def test_calculate_status_more_than_50_employees_with_habilited_user(
     assert status.status == ReglementationStatus.STATUS_EN_COURS
     assert (
         status.status_detail
-        == f"Vous êtes soumis à cette réglementation. Vous avez démarré le remplissage de votre BDESE {annee} sur la plateforme."
+        == f"Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez démarré le remplissage de votre BDESE {annee} sur la plateforme."
     )
     assert status.primary_action.title == "Reprendre l'actualisation de ma BDESE"
     assert status.primary_action.url == reverse(
@@ -178,7 +178,7 @@ def test_calculate_status_more_than_50_employees_with_habilited_user(
     assert status.status == ReglementationStatus.STATUS_A_JOUR
     assert (
         status.status_detail
-        == f"Vous êtes soumis à cette réglementation. Vous avez actualisé votre BDESE {annee} sur la plateforme."
+        == f"Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez actualisé votre BDESE {annee} sur la plateforme."
     )
     assert status.primary_action.title == f"Télécharger le pdf {annee}"
     assert status.primary_action.url == reverse(
@@ -252,7 +252,7 @@ def test_calculate_status_with_bdese_accord_with_not_habilited_user(
     assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
         status.status_detail
-        == "Vous êtes soumis à cette réglementation. Vous avez un accord d'entreprise spécifique. Veuillez vous y référer."
+        == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez un accord d'entreprise spécifique. Veuillez vous y référer."
     )
     assert status.primary_action.title == f"Marquer ma BDESE {annee} comme actualisée"
     assert status.primary_action.url == reverse(
@@ -311,7 +311,7 @@ def test_calculate_status_with_bdese_accord_with_habilited_user(
     assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
         status.status_detail
-        == "Vous êtes soumis à cette réglementation. Vous avez un accord d'entreprise spécifique. Veuillez vous y référer."
+        == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez un accord d'entreprise spécifique. Veuillez vous y référer."
     )
     assert status.primary_action.title == f"Marquer ma BDESE {annee} comme actualisée"
     assert status.primary_action.url == reverse(
