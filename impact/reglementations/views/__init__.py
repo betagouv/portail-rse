@@ -1,5 +1,3 @@
-from datetime import date
-
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -47,17 +45,17 @@ def reglementations(request):
                     request.user, entreprise
                 ):
                     request.session["entreprise"] = entreprise.siren
-                last_year = date.today().year - 1
+                annee = caracteristiques_form.cleaned_data["date_cloture_exercice"].year
                 try:
                     caracteristiques = CaracteristiquesAnnuelles.objects.get(
-                        entreprise=entreprise, annee=last_year
+                        entreprise=entreprise, annee=annee
                     )
                     caracteristiques_form = CaracteristiquesForm(
                         request.GET, instance=caracteristiques
                     )
                 except ObjectDoesNotExist:
                     caracteristiques_form.instance.entreprise = entreprise
-                    caracteristiques_form.instance.annee = last_year
+                    caracteristiques_form.instance.annee = annee
                 caracteristiques = caracteristiques_form.save(commit=commit)
 
     elif entreprise := get_current_entreprise(request):

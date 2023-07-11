@@ -33,7 +33,7 @@ def test_calculate_status_less_than_50_employees(
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
     index = IndexEgaproReglementation(entreprise).calculate_status(
-        entreprise.caracteristiques_actuelles(), alice
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
     assert index.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -65,7 +65,7 @@ def test_calculate_status_more_than_50_employees(
 
     mock_index_egapro.return_value = False
     index = IndexEgaproReglementation(entreprise).calculate_status(
-        entreprise.caracteristiques_actuelles(), alice
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
     assert index.status == ReglementationStatus.STATUS_A_ACTUALISER
@@ -76,12 +76,14 @@ def test_calculate_status_more_than_50_employees(
     assert index.primary_action.url == "https://egapro.travail.gouv.fr/"
     assert index.primary_action.title == "Calculer et déclarer mon index sur Egapro"
     assert index.primary_action.external
-    mock_index_egapro.assert_called_once_with(entreprise, annee)
+    mock_index_egapro.assert_called_once_with(
+        entreprise, entreprise.dernieres_caracteristiques_qualifiantes.annee
+    )
 
     mock_index_egapro.reset_mock()
     mock_index_egapro.return_value = True
     index = IndexEgaproReglementation(entreprise).calculate_status(
-        entreprise.caracteristiques_actuelles(), alice
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
     assert index.status == ReglementationStatus.STATUS_A_JOUR
@@ -89,7 +91,9 @@ def test_calculate_status_more_than_50_employees(
         index.status_detail
         == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez rempli vos obligations d'après les données disponibles sur la plateforme Egapro."
     )
-    mock_index_egapro.assert_called_once_with(entreprise, annee)
+    mock_index_egapro.assert_called_once_with(
+        entreprise, entreprise.dernieres_caracteristiques_qualifiantes.annee
+    )
 
 
 class MockedResponse:

@@ -387,7 +387,7 @@ def get_or_create_bdese(
     annee: int,
     user: settings.AUTH_USER_MODEL,
 ) -> BDESE_300 | BDESE_50_300 | BDESEAvecAccord:
-    caracteristiques = entreprise.caracteristiques_actuelles()
+    caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
     if not caracteristiques:
         raise EntrepriseNonQualifieeError(
             "Veuillez renseigner les informations suivantes pour accéder à la BDESE",

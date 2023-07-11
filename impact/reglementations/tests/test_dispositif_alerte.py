@@ -28,7 +28,7 @@ def test_calculate_status_less_than_50_employees(entreprise_factory, alice):
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
     reglementation = DispositifAlerteReglementation(entreprise).calculate_status(
-        entreprise.caracteristiques_actuelles(), alice
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -51,7 +51,7 @@ def test_calculate_status_more_than_50_employees(effectif, entreprise_factory, a
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
     reglementation = DispositifAlerteReglementation(entreprise).calculate_status(
-        entreprise.caracteristiques_actuelles(), alice
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
