@@ -78,20 +78,30 @@ def reglementations_for_entreprise(request, siren):
 
     request.session["entreprise"] = entreprise.siren
 
-    if not entreprise.est_qualifiee:
+    if entreprise.est_qualifiee:
+        return render(
+            request,
+            "reglementations/reglementations.html",
+            _reglementations_context(
+                entreprise, entreprise.caracteristiques_actuelles(), request.user
+            ),
+        )
+    elif caracteristiques := entreprise.dernieres_caracteristiques_qualifiantes:
+        messages.warning(
+            request,
+            f"Les informations sont basées sur des données de {caracteristiques.annee}.",
+        )
+        return render(
+            request,
+            "reglementations/reglementations.html",
+            _reglementations_context(entreprise, caracteristiques, request.user),
+        )
+    else:
         messages.warning(
             request,
             "Veuillez renseigner les informations suivantes pour connaître les réglementations auxquelles est soumise cette entreprise",
         )
         return redirect("entreprises:qualification", siren=entreprise.siren)
-
-    return render(
-        request,
-        "reglementations/reglementations.html",
-        _reglementations_context(
-            entreprise, entreprise.caracteristiques_actuelles(), request.user
-        ),
-    )
 
 
 def _reglementations_context(entreprise, caracteristiques, user):

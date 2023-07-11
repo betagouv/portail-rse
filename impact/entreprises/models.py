@@ -28,12 +28,17 @@ class Entreprise(TimestampedModel):
         caracteristiques_actuelles = self.caracteristiques_actuelles()
         return bool(
             caracteristiques_actuelles
-            and caracteristiques_actuelles.effectif
-            and caracteristiques_actuelles.effectif_outre_mer
-            and caracteristiques_actuelles.tranche_chiffre_affaires
-            and caracteristiques_actuelles.tranche_bilan
+            and caracteristiques_actuelles.sont_qualifiantes
             and self.date_cloture_exercice
         )
+
+    @property
+    def dernieres_caracteristiques_qualifiantes(self):
+        for caracteristiques in CaracteristiquesAnnuelles.objects.filter(
+            entreprise=self,
+        ).order_by("-annee"):
+            if caracteristiques.sont_qualifiantes:
+                return caracteristiques
 
     def caracteristiques_annuelles(self, annee):
         try:
@@ -163,7 +168,7 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     )
     bdese_accord = models.BooleanField(
         verbose_name="L'entreprise a un accord collectif d'entreprise concernant la Base de Données Économiques, Sociales et Environnementales (BDESE)",
-        default=False,
+        default=False,  # null=True serait préférable
     )
     systeme_management_energie = models.BooleanField(
         verbose_name="L'entreprise a mis en place un <a target='_blank' href='https://agirpourlatransition.ademe.fr/entreprises/demarche-decarbonation-industrie/agir/structurer-demarche/mettre-en-place-systeme-management-energie'>système de management de l’énergie</a>",
@@ -179,3 +184,14 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         ]
         verbose_name = "Caractéristiques annuelles"
         verbose_name_plural = "Caractéristiques annuelles"
+
+    @property
+    def sont_qualifiantes(self):
+        return bool(
+            self.effectif
+            and self.effectif_outre_mer
+            and self.tranche_chiffre_affaires
+            and self.tranche_bilan
+            and self.bdese_accord is not None
+            and self.systeme_management_energie is not None
+        )

@@ -1,7 +1,9 @@
+import html
 from datetime import date
 
 import pytest
 from django.contrib.auth.models import AnonymousUser
+from freezegun import freeze_time
 
 from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
@@ -345,3 +347,16 @@ def test_reglementations_with_entreprise_non_qualifiee_redirect_to_qualification
     assert response.status_code == 200
     url = f"/entreprises/{entreprise_non_qualifiee.siren}"
     assert response.redirect_chain == [(url, 302)]
+
+
+def test_reglementations_avec_entreprise_qualifiee_dans_le_passe(
+    client, entreprise, mock_api_recherche_entreprises
+):
+
+    with freeze_time(date(2024, 1, 27)):
+        client.force_login(entreprise.users.first())
+        response = client.get(f"/reglementations/{entreprise.siren}")
+
+    assert response.status_code == 200
+    content = html.unescape(response.content.decode("utf-8"))
+    assert "Les informations sont basées sur des données de 2022." in content, content

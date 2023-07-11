@@ -65,6 +65,40 @@ def test_entreprise_est_qualifiee(entreprise_non_qualifiee):
     assert entreprise_non_qualifiee.est_qualifiee
 
 
+@pytest.mark.django_db(transaction=True)
+def test_dernieres_caracteristiques_qualifiantes(entreprise_non_qualifiee):
+    assert entreprise_non_qualifiee.dernieres_caracteristiques_qualifiantes is None
+
+    caracteristiques_2023 = entreprise_non_qualifiee.actualise_caracteristiques(
+        date_cloture_exercice=date(2023, 7, 7),
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        bdese_accord=True,
+        systeme_management_energie=True,
+    )
+    caracteristiques_2023.save()
+
+    with freeze_time(date(2025, 1, 27)):
+        assert (
+            entreprise_non_qualifiee.dernieres_caracteristiques_qualifiantes
+            == caracteristiques_2023
+        )
+
+    caracteristiques_2024 = CaracteristiquesAnnuelles(
+        annee=2024,
+        entreprise=entreprise_non_qualifiee,
+    )
+    caracteristiques_2024.save()
+
+    with freeze_time(date(2025, 1, 27)):
+        assert (
+            entreprise_non_qualifiee.dernieres_caracteristiques_qualifiantes
+            == caracteristiques_2023
+        )
+
+
 def test_actualise_caracteristiques(entreprise_non_qualifiee):
     assert entreprise_non_qualifiee.caracteristiques_actuelles() is None
 
