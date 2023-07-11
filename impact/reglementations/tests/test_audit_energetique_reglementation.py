@@ -39,7 +39,7 @@ def test_calcule_statut_moins_de_249_employes_et_petit_bilan(
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
     assert (
-        reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation"
+        reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation."
     )
 
 
@@ -60,7 +60,10 @@ def test_calcule_statut_plus_de_250_employes(effectif, entreprise_factory, alice
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
-    assert reglementation.status_detail == "Vous êtes soumis à cette réglementation"
+    assert (
+        reglementation.status_detail
+        == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 250 salariés."
+    )
 
 
 @pytest.mark.parametrize(
@@ -125,7 +128,10 @@ def test_calcule_etat_avec_bilan_et_ca_suffisants(bilan, ca, entreprise_factory,
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
-    assert reglementation.status_detail == "Vous êtes soumis à cette réglementation"
+    assert (
+        reglementation.status_detail
+        == "Vous êtes soumis à cette réglementation car votre bilan est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
+    )
 
 
 @pytest.mark.parametrize(
@@ -170,6 +176,49 @@ def test_calcule_etat_avec_ca_insuffisant(bilan, entreprise_factory, alice):
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
+
+
+@pytest.mark.parametrize(
+    "effectif",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+        CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "bilan",
+    [
+        CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+        CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "ca",
+    [
+        CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
+        CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    ],
+)
+def test_calcule_etat_avec_effectif_bilan_et_ca_suffisants(
+    effectif, bilan, ca, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(
+        effectif=effectif,
+        tranche_bilan=bilan,
+        tranche_chiffre_affaires=ca,
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    reglementation = AuditEnergetiqueReglementation(entreprise).calculate_status(
+        entreprise.caracteristiques_actuelles(), alice
+    )
+
+    assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
+    assert (
+        reglementation.status_detail
+        == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 250 salariés, votre bilan est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
+    )
 
 
 def test_calcule_etat_avec_bilan_et_ca_suffisants_mais_systeme_management_energie_en_place(
