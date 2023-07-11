@@ -46,6 +46,7 @@ class AuditEnergetiqueReglementation(Reglementation):
         if self.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_SOUMIS
             status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(self.criteres_remplis(caracteristiques))}."
+            status_detail += " Vous devez réaliser un audit énergétique si vous remplissez l'une des conditions suivantes lors des deux derniers exercices comptables : soit votre effectif est supérieur à 250 salariés, soit votre bilan est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
         else:
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"

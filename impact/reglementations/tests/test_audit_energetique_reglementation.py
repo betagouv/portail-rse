@@ -60,9 +60,11 @@ def test_calcule_statut_plus_de_250_employes(effectif, entreprise_factory, alice
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
-    assert (
-        reglementation.status_detail
-        == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 250 salariés."
+    assert reglementation.status_detail.startswith(
+        "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 250 salariés."
+    )
+    assert reglementation.status_detail.endswith(
+        "Vous devez réaliser un audit énergétique si vous remplissez l'une des conditions suivantes lors des deux derniers exercices comptables : soit votre effectif est supérieur à 250 salariés, soit votre bilan est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
     )
 
 
@@ -128,9 +130,11 @@ def test_calcule_etat_avec_bilan_et_ca_suffisants(bilan, ca, entreprise_factory,
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
-    assert (
-        reglementation.status_detail
-        == "Vous êtes soumis à cette réglementation car votre bilan est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
+    assert reglementation.status_detail.startswith(
+        "Vous êtes soumis à cette réglementation car votre bilan est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
+    )
+    assert reglementation.status_detail.endswith(
+        "Vous devez réaliser un audit énergétique si vous remplissez l'une des conditions suivantes lors des deux derniers exercices comptables : soit votre effectif est supérieur à 250 salariés, soit votre bilan est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
     )
 
 
@@ -215,9 +219,11 @@ def test_calcule_etat_avec_effectif_bilan_et_ca_suffisants(
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
-    assert (
-        reglementation.status_detail
-        == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 250 salariés, votre bilan est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
+    assert reglementation.status_detail.startswith(
+        "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 250 salariés, votre bilan est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
+    )
+    assert reglementation.status_detail.endswith(
+        "Vous devez réaliser un audit énergétique si vous remplissez l'une des conditions suivantes lors des deux derniers exercices comptables : soit votre effectif est supérieur à 250 salariés, soit votre bilan est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
     )
 
 
