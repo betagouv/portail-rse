@@ -24,15 +24,6 @@ class Entreprise(TimestampedModel):
         return f"{self.siren} {self.denomination}"
 
     @property
-    def est_qualifiee(self):
-        caracteristiques_actuelles = self.caracteristiques_actuelles()
-        return bool(
-            caracteristiques_actuelles
-            and caracteristiques_actuelles.sont_qualifiantes
-            and self.date_cloture_exercice
-        )
-
-    @property
     def dernieres_caracteristiques_qualifiantes(self):
         for caracteristiques in CaracteristiquesAnnuelles.objects.filter(
             entreprise=self,
@@ -76,6 +67,7 @@ class Entreprise(TimestampedModel):
         ) or CaracteristiquesAnnuelles(
             entreprise=self, annee=date_cloture_exercice.year
         )
+        caracteristiques.date_cloture_exercice = date_cloture_exercice
         caracteristiques.effectif = effectif
         caracteristiques.effectif_outre_mer = effectif_outre_mer
         caracteristiques.bdese_accord = bdese_accord
@@ -140,6 +132,10 @@ class CaracteristiquesAnnuelles(TimestampedModel):
 
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
     annee = models.IntegerField()
+    date_cloture_exercice = models.DateField(
+        verbose_name="Date de clôture de l'exercice comptable",
+        null=True,
+    )
     effectif = models.CharField(
         max_length=9,
         choices=EFFECTIF_CHOICES,
@@ -188,7 +184,8 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     @property
     def sont_qualifiantes(self):
         return bool(
-            self.effectif
+            self.date_cloture_exercice
+            and self.effectif
             and self.effectif_outre_mer
             and self.tranche_chiffre_affaires
             and self.tranche_bilan
