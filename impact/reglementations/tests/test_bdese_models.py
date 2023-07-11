@@ -1,8 +1,8 @@
-import freezegun
 import pytest
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.utils import IntegrityError
+from freezegun import freeze_time
 
 from habilitations.models import get_habilitation
 from reglementations.models import annees_a_remplir_bdese
@@ -178,21 +178,21 @@ def test_bdese_avec_accord(grande_entreprise):
 
 
 def test_derniere_annee_a_remplir_bdese():
-    with freezegun.freeze_time("2022-11-23"):
+    with freeze_time("2022-11-23"):
         annee = derniere_annee_a_remplir_bdese()
         assert annee == 2021
 
-    with freezegun.freeze_time("2023-11-23"):
+    with freeze_time("2023-11-23"):
         annee = derniere_annee_a_remplir_bdese()
         assert annee == 2022
 
 
 def test_annees_a_remplir_pour_bdese():
-    with freezegun.freeze_time("2022-11-23"):
+    with freeze_time("2022-11-23"):
         annees = annees_a_remplir_bdese()
         assert annees == [2019, 2020, 2021, 2022, 2023, 2024]
 
-    with freezegun.freeze_time("2023-11-23"):
+    with freeze_time("2023-11-23"):
         annees = annees_a_remplir_bdese()
         assert annees == [2020, 2021, 2022, 2023, 2024, 2025]
 
