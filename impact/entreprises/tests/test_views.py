@@ -216,7 +216,7 @@ def test_qualification_page_without_current_qualification(
     assert context["form"]["date_cloture_exercice"].initial == "2022-12-31"
 
 
-def test_qualification_page_with_incomplete_qualification(
+def test_qualification_page_with_current_qualification(
     client, alice, entreprise_factory, mock_api_recherche_entreprises
 ):
     entreprise = entreprise_factory()
