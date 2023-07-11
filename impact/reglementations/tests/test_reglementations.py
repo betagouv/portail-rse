@@ -129,7 +129,9 @@ def entreprise(db, alice, entreprise_factory):
     return entreprise
 
 
-def test_reglementations_with_authenticated_user(client, entreprise):
+def test_reglementations_redirige_vers_les_reglementations_associees_a_l_entreprise_de_l_utilisateur(
+    client, entreprise
+):
     client.force_login(entreprise.users.first())
 
     response = client.get("/reglementations", follow=True)
@@ -269,7 +271,7 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
     assert caracteristiques.systeme_management_energie
 
 
-def test_reglementation_with_authenticated_user(client, entreprise):
+def test_reglementations_with_authenticated_user(client, entreprise):
     client.force_login(entreprise.users.first())
 
     response = client.get(f"/reglementations/{entreprise.siren}")
@@ -290,7 +292,7 @@ def test_reglementation_with_authenticated_user(client, entreprise):
         assert reglementation["status"].status_detail in content
 
 
-def test_reglementation_with_authenticated_user_and_multiple_entreprises(
+def test_reglementations_with_authenticated_user_and_multiple_entreprises(
     client, entreprise_factory, alice
 ):
     entreprise1 = entreprise_factory(siren="000000001")
@@ -330,7 +332,7 @@ def test_reglementation_with_authenticated_user_and_multiple_entreprises(
         assert reglementation["status"].status_detail in content
 
 
-def test_reglementation_with_entreprise_non_qualifiee_redirect_to_qualification_page(
+def test_reglementations_with_entreprise_non_qualifiee_redirect_to_qualification_page(
     client, alice, entreprise_non_qualifiee, mock_api_recherche_entreprises
 ):
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
