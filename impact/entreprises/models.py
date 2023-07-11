@@ -45,10 +45,20 @@ class Entreprise(TimestampedModel):
             return None
 
     def caracteristiques_actuelles(self):
-        return self.caracteristiques_annuelles(date.today().year - 1)
+        cette_annee = date.today().year
+        if not self.date_cloture_exercice:
+            # ce cas existe lorsque l'entreprise n'a pas encore été qualifiée
+            return self.caracteristiques_annuelles(cette_annee - 1)
+        annee_dernier_exercice_clos = (
+            cette_annee
+            if self.date_cloture_exercice.replace(year=cette_annee) < date.today()
+            else cette_annee - 1
+        )
+        return self.caracteristiques_annuelles(annee_dernier_exercice_clos)
 
     def actualise_caracteristiques(
         self,
+        date_cloture_exercice,
         effectif,
         tranche_chiffre_affaires,
         tranche_bilan,
@@ -56,9 +66,10 @@ class Entreprise(TimestampedModel):
         systeme_management_energie,
         effectif_outre_mer=None
     ):
-        caracteristiques = (
-            self.caracteristiques_actuelles()
-            or CaracteristiquesAnnuelles(entreprise=self, annee=date.today().year - 1)
+        caracteristiques = self.caracteristiques_annuelles(
+            date_cloture_exercice.year
+        ) or CaracteristiquesAnnuelles(
+            entreprise=self, annee=date_cloture_exercice.year
         )
         caracteristiques.effectif = effectif
         caracteristiques.effectif_outre_mer = effectif_outre_mer
