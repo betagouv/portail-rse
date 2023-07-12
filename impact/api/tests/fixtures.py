@@ -13,3 +13,9 @@ def mock_api_recherche_entreprises(mocker):
             "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         },
     )
+
+
+@pytest.fixture
+def mock_api_index_egapro(mocker):
+    mocker.patch("api.egapro.indicateurs")
+    return mocker.patch("api.egapro.is_index_egapro_published")

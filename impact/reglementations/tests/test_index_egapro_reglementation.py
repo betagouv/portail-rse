@@ -2,6 +2,7 @@ import json
 
 import pytest
 
+from api.tests.fixtures import mock_api_index_egapro  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
 from reglementations.models import derniere_annee_a_remplir_index_egapro
@@ -25,7 +26,7 @@ def test_index_egapro_reglementation_info():
 
 
 def test_calculate_status_less_than_50_employees(
-    entreprise_factory, alice, mock_index_egapro
+    entreprise_factory, alice, mock_api_index_egapro
 ):
     entreprise = entreprise_factory(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
@@ -44,7 +45,7 @@ def test_calculate_status_less_than_50_employees(
     )
     assert index.primary_action.title == "Consulter les index sur Egapro"
     assert index.primary_action.external
-    assert not mock_index_egapro.called
+    assert not mock_api_index_egapro.called
 
 
 @pytest.mark.parametrize(
@@ -57,13 +58,13 @@ def test_calculate_status_less_than_50_employees(
     ],
 )
 def test_calculate_status_more_than_50_employees(
-    effectif, entreprise_factory, alice, mock_index_egapro
+    effectif, entreprise_factory, alice, mock_api_index_egapro
 ):
     entreprise = entreprise_factory(effectif=effectif)
     attach_user_to_entreprise(alice, entreprise, "Présidente")
     annee = derniere_annee_a_remplir_index_egapro()
 
-    mock_index_egapro.return_value = False
+    mock_api_index_egapro.return_value = False
     index = IndexEgaproReglementation(entreprise).calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
@@ -76,12 +77,10 @@ def test_calculate_status_more_than_50_employees(
     assert index.primary_action.url == "https://egapro.travail.gouv.fr/"
     assert index.primary_action.title == "Calculer et déclarer mon index sur Egapro"
     assert index.primary_action.external
-    mock_index_egapro.assert_called_once_with(
-        entreprise, entreprise.dernieres_caracteristiques_qualifiantes.annee
-    )
+    mock_api_index_egapro.assert_called_once_with(entreprise.siren, annee)
 
-    mock_index_egapro.reset_mock()
-    mock_index_egapro.return_value = True
+    mock_api_index_egapro.reset_mock()
+    mock_api_index_egapro.return_value = True
     index = IndexEgaproReglementation(entreprise).calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
@@ -91,8 +90,8 @@ def test_calculate_status_more_than_50_employees(
         index.status_detail
         == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez rempli vos obligations d'après les données disponibles sur la plateforme Egapro."
     )
-    mock_index_egapro.assert_called_once_with(
-        entreprise, entreprise.dernieres_caracteristiques_qualifiantes.annee
+    mock_api_index_egapro.assert_called_once_with(
+        entreprise.siren, derniere_annee_a_remplir_index_egapro()
     )
 
 
@@ -115,9 +114,9 @@ def test_is_index_egapro_published_with_up_to_date_entreprise(
         "requests.get", return_value=MockedResponse(index_egapro_data, 200)
     )
 
-    assert is_index_egapro_published(grande_entreprise, 2021)
+    assert is_index_egapro_published(grande_entreprise)
     egapro_request.assert_called_once_with(
-        f"https://egapro.travail.gouv.fr/api/public/declaration/{grande_entreprise.siren}/2021"
+        f"https://egapro.travail.gouv.fr/api/public/declaration/{grande_entreprise.siren}/{derniere_annee_a_remplir_index_egapro()}"
     )
 
 
@@ -130,7 +129,7 @@ def test_is_index_egapro_not_published(grande_entreprise, mocker):
         "requests.get", return_value=MockedResponse(index_egapro_data, 404)
     )
 
-    assert not is_index_egapro_published(grande_entreprise, 2020)
+    assert not is_index_egapro_published(grande_entreprise)
     egapro_request.assert_called_once_with(
-        f"https://egapro.travail.gouv.fr/api/public/declaration/{grande_entreprise.siren}/2020"
+        f"https://egapro.travail.gouv.fr/api/public/declaration/{grande_entreprise.siren}/{derniere_annee_a_remplir_index_egapro()}"
     )
