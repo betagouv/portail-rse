@@ -15,32 +15,43 @@ from metabase.models import Utilisateur as MetabaseUtilisateur
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
-def test_synchronise_une_entreprise(entreprise_factory, annee_dernier_exercice):
-    entreprise_A = entreprise_factory(
-        siren="000000001",
-        denomination="A",
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
-        bdese_accord=True,
+def test_synchronise_une_entreprise(entreprise_factory, date_cloture_dernier_exercice):
+    date_creation = datetime(
+        date_cloture_dernier_exercice.year,
+        date_cloture_dernier_exercice.month,
+        date_cloture_dernier_exercice.day,
+        tzinfo=timezone.utc,
     )
-    annee_deuxieme_evolution = annee_dernier_exercice + 1
-    annee_troisieme_evolution = annee_dernier_exercice + 2
     date_deuxieme_evolution = datetime(
-        annee_deuxieme_evolution, 7, 13, tzinfo=timezone.utc
+        date_cloture_dernier_exercice.year + 1,
+        date_cloture_dernier_exercice.month,
+        date_cloture_dernier_exercice.day,
+        tzinfo=timezone.utc,
     )
     date_troisieme_evolution = datetime(
-        annee_troisieme_evolution, 8, 14, tzinfo=timezone.utc
+        date_cloture_dernier_exercice.year + 2,
+        date_cloture_dernier_exercice.month,
+        date_cloture_dernier_exercice.day,
+        tzinfo=timezone.utc,
     )
-    with freeze_time(date_deuxieme_evolution) as frozen_datetime:
+    with freeze_time(date_creation) as frozen_datetime:
+        entreprise_A = entreprise_factory(
+            siren="000000001",
+            denomination="A",
+            effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+            bdese_accord=True,
+        )
+        frozen_datetime.move_to(date_deuxieme_evolution)
         CaracteristiquesAnnuelles.objects.create(
             entreprise=entreprise_A,
-            annee=annee_deuxieme_evolution,
+            annee=date_deuxieme_evolution.year,
             effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
             bdese_accord=True,
         )
         frozen_datetime.move_to(date_troisieme_evolution)
         CaracteristiquesAnnuelles.objects.create(
             entreprise=entreprise_A,
-            annee=annee_troisieme_evolution,
+            annee=date_troisieme_evolution.year,
             effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
             bdese_accord=True,
         )
@@ -50,7 +61,7 @@ def test_synchronise_une_entreprise(entreprise_factory, annee_dernier_exercice):
     assert MetabaseEntreprise.objects.count() == 1
     metabase_entreprise = MetabaseEntreprise.objects.first()
     assert metabase_entreprise.pk == metabase_entreprise.impact_id == entreprise_A.pk
-    assert metabase_entreprise.ajoutee_le == entreprise_A.created_at
+    assert metabase_entreprise.ajoutee_le == date_creation
     assert metabase_entreprise.modifiee_le == date_troisieme_evolution
     assert metabase_entreprise.siren == "000000001"
     assert metabase_entreprise.denomination == "A"

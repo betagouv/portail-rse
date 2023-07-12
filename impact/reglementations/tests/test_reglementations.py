@@ -1,5 +1,6 @@
 import html
 from datetime import date
+from datetime import timedelta
 
 import pytest
 from django.contrib.auth.models import AnonymousUser
@@ -195,23 +196,25 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
 
 
 def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
-    client, annee_dernier_exercice, entreprise, entreprise_factory
+    client, date_cloture_dernier_exercice, entreprise, entreprise_factory
 ):
     """
     La simulation par un utilisateur anonyme sur une entreprise déjà enregistrée en base ne modifie pas en base son évolution
     mais affiche quand même à l'utilisateur anonyme les statuts correspondant aux données utilisées lors de la simulation
     """
-    date_cloture_exercice = date(annee_dernier_exercice, 6, 30)
+    date_cloture_exercice = date_cloture_dernier_exercice - timedelta(days=1)
     effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
     effectif_outre_mer = CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS
+    ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
+    bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
     bdese_accord = False
     systeme_management_energie = True
     data = {
         "date_cloture_exercice": date_cloture_exercice,
         "effectif": effectif,
         "effectif_outre_mer": effectif_outre_mer,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "tranche_chiffre_affaires": ca,
+        "tranche_bilan": bilan,
         "bdese_accord": bdese_accord,
         "systeme_management_energie": systeme_management_energie,
         "denomination": entreprise.denomination,
@@ -221,7 +224,7 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
     response = client.get("/reglementations", data=data)
 
     entreprise.refresh_from_db()
-    assert entreprise.date_cloture_exercice != date_cloture_exercice
+    assert entreprise.date_cloture_exercice == date_cloture_dernier_exercice
     caracteristiques = entreprise.caracteristiques_annuelles(date_cloture_exercice.year)
     assert caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
     assert (
@@ -239,10 +242,13 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
     caracteristiques = CaracteristiquesAnnuelles(
         annee=date_cloture_exercice.year,
         entreprise=entreprise,
+        date_cloture_exercice=date_cloture_exercice,
         effectif=effectif,
         effectif_outre_mer=effectif_outre_mer,
-        bdese_accord=False,
-        systeme_management_energie=True,
+        tranche_chiffre_affaires=ca,
+        tranche_bilan=bilan,
+        bdese_accord=bdese_accord,
+        systeme_management_energie=systeme_management_energie,
     )
     for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
         status = reglementations[index]["status"]
@@ -259,17 +265,9 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
     entreprise.refresh_from_db()
     assert entreprise.date_cloture_exercice == date_cloture_exercice
     caracteristiques = entreprise.caracteristiques_annuelles(date_cloture_exercice.year)
-    assert (
-        caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
-    )
-    assert (
-        caracteristiques.tranche_chiffre_affaires
-        == CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
-    )
-    assert (
-        caracteristiques.tranche_bilan
-        == CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
-    )
+    assert caracteristiques.effectif == effectif
+    assert caracteristiques.tranche_chiffre_affaires == ca
+    assert caracteristiques.tranche_bilan == bilan
     assert caracteristiques.systeme_management_energie
 
 
@@ -350,16 +348,15 @@ def test_reglementations_with_entreprise_non_qualifiee_redirect_to_qualification
 
 
 def test_reglementations_avec_entreprise_qualifiee_dans_le_passe(
-    client, annee_dernier_exercice, entreprise, mock_api_recherche_entreprises
+    client, date_cloture_dernier_exercice, entreprise, mock_api_recherche_entreprises
 ):
-
-    with freeze_time(date(annee_dernier_exercice + 2, 1, 27)):
+    with freeze_time(date_cloture_dernier_exercice + timedelta(days=367)):
         client.force_login(entreprise.users.first())
         response = client.get(f"/reglementations/{entreprise.siren}")
 
     assert response.status_code == 200
     content = html.unescape(response.content.decode("utf-8"))
     assert (
-        f"Les informations sont basées sur des données de {annee_dernier_exercice}."
+        f"Les informations sont basées sur des données de l'exercice {date_cloture_dernier_exercice.year}."
         in content
     ), content

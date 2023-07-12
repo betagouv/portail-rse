@@ -39,16 +39,16 @@ def entreprise_non_qualifiee(alice):
 
 
 @pytest.fixture
-def annee_dernier_exercice():
-    return 2022
+def date_cloture_dernier_exercice():
+    return date(2022, 12, 31)
 
 
 @pytest.fixture
-def entreprise_factory(db, annee_dernier_exercice):
+def entreprise_factory(db, date_cloture_dernier_exercice):
     def create_entreprise(
         siren="000000001",
         denomination="Entreprise SAS",
-        date_cloture_exercice=date(2000, 12, 31),
+        date_cloture_exercice=date_cloture_dernier_exercice,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
@@ -62,9 +62,7 @@ def entreprise_factory(db, annee_dernier_exercice):
             date_cloture_exercice=date_cloture_exercice,
         )
         caracteristiques = entreprise.actualise_caracteristiques(
-            date_cloture_exercice=date_cloture_exercice.replace(
-                year=annee_dernier_exercice
-            ),
+            date_cloture_exercice=date_cloture_dernier_exercice,
             effectif=effectif,
             effectif_outre_mer=effectif_outre_mer,
             tranche_chiffre_affaires=tranche_chiffre_affaires,
