@@ -348,7 +348,7 @@ def test_reglementations_with_entreprise_non_qualifiee_redirect_to_qualification
 
 
 def test_reglementations_avec_entreprise_qualifiee_dans_le_passe(
-    client, date_cloture_dernier_exercice, entreprise, mock_api_recherche_entreprises
+    client, date_cloture_dernier_exercice, entreprise
 ):
     with freeze_time(date_cloture_dernier_exercice + timedelta(days=367)):
         client.force_login(entreprise.users.first())
