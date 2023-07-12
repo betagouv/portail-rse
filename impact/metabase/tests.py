@@ -35,48 +35,67 @@ def test_synchronise_une_entreprise(entreprise_factory, date_cloture_dernier_exe
         tzinfo=timezone.utc,
     )
     with freeze_time(date_creation) as frozen_datetime:
-        entreprise_A = entreprise_factory(
+        entreprise = entreprise_factory(
             siren="000000001",
-            denomination="A",
-            effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
-            bdese_accord=True,
+            denomination="Entreprise A",
+            date_cloture_exercice=date_cloture_dernier_exercice,
+            effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+            tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+            tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+            bdese_accord=False,
+            systeme_management_energie=False,
         )
         frozen_datetime.move_to(date_deuxieme_evolution)
-        CaracteristiquesAnnuelles.objects.create(
-            entreprise=entreprise_A,
-            annee=date_deuxieme_evolution.year,
-            effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+        entreprise.actualise_caracteristiques(
+            date_cloture_exercice=date_cloture_dernier_exercice.replace(
+                year=date_cloture_dernier_exercice.year + 1
+            ),
+            effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+            tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+            tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
             bdese_accord=True,
-        )
+            systeme_management_energie=False,
+        ).save()
         frozen_datetime.move_to(date_troisieme_evolution)
-        CaracteristiquesAnnuelles.objects.create(
-            entreprise=entreprise_A,
-            annee=date_troisieme_evolution.year,
+        entreprise.actualise_caracteristiques(
+            date_cloture_exercice=date_cloture_dernier_exercice.replace(
+                year=date_cloture_dernier_exercice.year + 2
+            ),
             effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+            tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
+            tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
             bdese_accord=True,
-        )
+            systeme_management_energie=True,
+        ).save()
 
     Command().handle()
 
     assert MetabaseEntreprise.objects.count() == 1
     metabase_entreprise = MetabaseEntreprise.objects.first()
-    assert metabase_entreprise.pk == metabase_entreprise.impact_id == entreprise_A.pk
+    assert metabase_entreprise.pk == metabase_entreprise.impact_id == entreprise.pk
     assert metabase_entreprise.ajoutee_le == date_creation
     assert metabase_entreprise.modifiee_le == date_troisieme_evolution
     assert metabase_entreprise.siren == "000000001"
-    assert metabase_entreprise.denomination == "A"
+    assert metabase_entreprise.denomination == "Entreprise A"
+    assert (
+        metabase_entreprise.date_cloture_exercice
+        == date_cloture_dernier_exercice.replace(
+            year=date_cloture_dernier_exercice.year + 2
+        )
+    )
     assert metabase_entreprise.effectif == "300-499"
-    assert metabase_entreprise.bdese_accord == True
+    assert metabase_entreprise.tranche_bilan == "6M-20M"
+    assert metabase_entreprise.tranche_chiffre_affaires == "12M-40M"
+    assert metabase_entreprise.bdese_accord is True
+    assert metabase_entreprise.systeme_management_energie is True
     assert metabase_entreprise.nombre_utilisateurs == 0
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_une_entreprise_plusieurs_fois(entreprise_factory):
-    entreprise_A = entreprise_factory(
+    entreprise = entreprise_factory(
         siren="000000001",
-        denomination="A",
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
-        bdese_accord=True,
+        denomination="Entreprise A",
     )
 
     Command().handle()
@@ -84,16 +103,13 @@ def test_synchronise_une_entreprise_plusieurs_fois(entreprise_factory):
 
     assert MetabaseEntreprise.objects.count() == 1
     metabase_entreprise = MetabaseEntreprise.objects.first()
-    assert metabase_entreprise.impact_id == entreprise_A.pk
+    assert metabase_entreprise.impact_id == entreprise.pk
     assert metabase_entreprise.siren == "000000001"
-    assert metabase_entreprise.denomination == "A"
-    assert metabase_entreprise.effectif == "0-49"
-    assert metabase_entreprise.bdese_accord == True
-    assert metabase_entreprise.nombre_utilisateurs == 0
+    assert metabase_entreprise.denomination == "Entreprise A"
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
-def test_synchronise_une_entreprise_sans_caracteristiques_actuelles():
+def test_synchronise_une_entreprise_non_qualifiee():
     entreprise = Entreprise.objects.create(
         siren="000000001", denomination="Entreprise SAS"
     )
@@ -103,8 +119,12 @@ def test_synchronise_une_entreprise_sans_caracteristiques_actuelles():
     metabase_entreprise = MetabaseEntreprise.objects.first()
     assert metabase_entreprise.denomination == "Entreprise SAS"
     assert metabase_entreprise.siren == "000000001"
+    assert metabase_entreprise.date_cloture_exercice is None
     assert metabase_entreprise.effectif is None
+    assert metabase_entreprise.tranche_chiffre_affaires is None
+    assert metabase_entreprise.tranche_bilan is None
     assert metabase_entreprise.bdese_accord is None
+    assert metabase_entreprise.systeme_management_energie is None
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])

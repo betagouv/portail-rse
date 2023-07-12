@@ -33,14 +33,26 @@ class Command(BaseCommand):
             caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
             meta_e = MetabaseEntreprise.objects.create(
                 impact_id=entreprise.pk,
+                ajoutee_le=entreprise.created_at,
+                modifiee_le=_last_update(entreprise),
                 siren=entreprise.siren,
                 denomination=entreprise.denomination,
-                bdese_accord=caracteristiques.bdese_accord
+                date_cloture_exercice=caracteristiques.date_cloture_exercice
                 if caracteristiques
                 else None,
                 effectif=caracteristiques.effectif if caracteristiques else None,
-                ajoutee_le=entreprise.created_at,
-                modifiee_le=_last_update(entreprise),
+                tranche_chiffre_affaires=caracteristiques.tranche_chiffre_affaires
+                if caracteristiques
+                else None,
+                tranche_bilan=caracteristiques.tranche_bilan
+                if caracteristiques
+                else None,
+                bdese_accord=caracteristiques.bdese_accord
+                if caracteristiques
+                else None,
+                systeme_management_energie=caracteristiques.systeme_management_energie
+                if caracteristiques
+                else None,
                 nombre_utilisateurs=entreprise.nombre_utilisateurs,
             )
             meta_e.save()
