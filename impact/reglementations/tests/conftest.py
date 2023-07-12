@@ -8,6 +8,12 @@ from reglementations.models import BDESE_50_300
 from reglementations.models import BDESEAvecAccord
 
 
+# Empêche tous les tests de faire des requêtes externes
+@pytest.fixture(autouse=True)
+def mock_request(mocker):
+    mocker.patch("requests.get")
+
+
 @pytest.fixture
 def bdese_factory(entreprise_factory):
     def create_bdese(bdese_class=BDESE_300, entreprise=None, user=None, annee=2021):
@@ -47,12 +53,6 @@ def grande_entreprise(entreprise_factory):
     return entreprise_factory(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
     )
-
-
-@pytest.fixture(autouse=True)
-def mock_index_egapro(mocker):
-    mocker.patch("reglementations.views.bdese.get_bdese_data_from_egapro")
-    return mocker.patch("reglementations.views.index_egapro.is_index_egapro_published")
 
 
 @pytest.fixture

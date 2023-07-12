@@ -3,6 +3,7 @@ from django.conf import settings
 from api import egapro
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
+from reglementations.models import derniere_annee_a_remplir_index_egapro
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
 from reglementations.views.base import ReglementationStatus
@@ -40,7 +41,7 @@ class IndexEgaproReglementation(Reglementation):
                 "Calculer et déclarer mon index sur Egapro",
                 external=True,
             )
-            if is_index_egapro_published(self.entreprise, caracteristiques.annee):
+            if is_index_egapro_published(self.entreprise):
                 status = ReglementationStatus.STATUS_A_JOUR
                 status_detail = "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez rempli vos obligations d'après les données disponibles sur la plateforme Egapro."
             else:
@@ -51,5 +52,7 @@ class IndexEgaproReglementation(Reglementation):
         )
 
 
-def is_index_egapro_published(entreprise: Entreprise, annee: int) -> bool:
-    return egapro.is_index_egapro_published(entreprise.siren, annee)
+def is_index_egapro_published(entreprise: Entreprise) -> bool:
+    return egapro.is_index_egapro_published(
+        entreprise.siren, derniere_annee_a_remplir_index_egapro()
+    )

@@ -40,6 +40,7 @@ def test_synchronise_une_entreprise(entreprise_factory, date_cloture_dernier_exe
             denomination="Entreprise A",
             date_cloture_exercice=date_cloture_dernier_exercice,
             effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+            effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
             tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
             tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
             bdese_accord=False,
@@ -51,6 +52,7 @@ def test_synchronise_une_entreprise(entreprise_factory, date_cloture_dernier_exe
                 year=date_cloture_dernier_exercice.year + 1
             ),
             effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+            effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
             tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
             tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
             bdese_accord=True,
@@ -62,6 +64,7 @@ def test_synchronise_une_entreprise(entreprise_factory, date_cloture_dernier_exe
                 year=date_cloture_dernier_exercice.year + 2
             ),
             effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+            effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
             tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
             tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
             bdese_accord=True,
