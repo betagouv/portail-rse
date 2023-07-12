@@ -80,7 +80,7 @@ def reglementations_for_entreprise(request, siren):
         if caracteristiques != entreprise.caracteristiques_actuelles():
             messages.warning(
                 request,
-                f"Les informations sont basées sur des données de {caracteristiques.annee}.",
+                f"Les informations sont basées sur des données de l'exercice {caracteristiques.annee}.",
             )
         return render(
             request,
