@@ -10,6 +10,7 @@ from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from habilitations.models import attach_user_to_entreprise
+from reglementations.views import should_commit
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
 from reglementations.views.bdese import BDESEReglementation
 from reglementations.views.bges import BGESReglementation
@@ -199,7 +200,7 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
     client, date_cloture_dernier_exercice, entreprise, entreprise_factory
 ):
     """
-    La simulation par un utilisateur anonyme sur une entreprise déjà enregistrée en base ne modifie pas en base son évolution
+    La simulation par un utilisateur anonyme sur une entreprise avec un utilisateur déjà enregistrée en base ne modifie pas en base son évolution
     mais affiche quand même à l'utilisateur anonyme les statuts correspondant aux données utilisées lors de la simulation
     """
     date_cloture_exercice = date_cloture_dernier_exercice - timedelta(days=1)
@@ -269,6 +270,39 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
     assert caracteristiques.tranche_chiffre_affaires == ca
     assert caracteristiques.tranche_bilan == bilan
     assert caracteristiques.systeme_management_energie
+
+
+def test_should_commit_une_entreprise_sans_utilisateur(
+    client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory()
+    assert not entreprise.users.all()
+
+    assert should_commit(entreprise, AnonymousUser())
+    assert should_commit(entreprise, alice)
+
+
+def test_should_commit_utilisateur_rattaché_a_l_entreprise(
+    client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory()
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    assert should_commit(entreprise, alice)
+
+
+def test_should_not_commit_utilisateur_externe_a_l_entreprise(
+    client, entreprise_factory, alice, bob
+):
+    entreprise = entreprise_factory()
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    assert not should_commit(entreprise, bob)
+
+
+def test_should_commit_nouvelle_entreprise(client, alice):
+    assert should_commit(None, AnonymousUser())
+    assert should_commit(None, alice)
 
 
 def test_reglementations_with_authenticated_user(client, entreprise):

@@ -31,15 +31,10 @@ def reglementations(request):
             ):
                 entreprise = entreprises[0]
                 entreprise_form = EntrepriseForm(request.GET, instance=entreprise)
-                commit = (
-                    request.user.is_authenticated
-                    and request.user in entreprise.users.all()
-                )
-            else:
-                commit = True
 
             if entreprise_form.is_valid() and caracteristiques_form.is_valid():
                 request.session["siren"] = entreprise_form.cleaned_data["siren"]
+                commit = should_commit(entreprise, request.user)
                 entreprise = entreprise_form.save(commit=commit)
                 if request.user.is_authenticated and is_user_attached_to_entreprise(
                     request.user, entreprise
@@ -65,6 +60,14 @@ def reglementations(request):
         request,
         "reglementations/reglementations.html",
         _reglementations_context(entreprise, caracteristiques, request.user),
+    )
+
+
+def should_commit(entreprise, user):
+    return (
+        not entreprise
+        or not entreprise.users.all()
+        or is_user_attached_to_entreprise(user, entreprise)
     )
 
 
