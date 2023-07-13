@@ -25,6 +25,7 @@ from reglementations.models import annees_a_remplir_bdese
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
 from reglementations.models import BDESEAvecAccord
+from reglementations.models import derniere_annee_a_remplir_bdese
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
 from reglementations.views.base import ReglementationStatus
@@ -86,23 +87,20 @@ class BDESEReglementation(Reglementation):
 
     def _match_avec_accord(self, caracteristiques, user):
         if self.bdese_type(caracteristiques) == self.TYPE_AVEC_ACCORD:
-            bdese = self._select_bdese(BDESEAvecAccord, caracteristiques.annee, user)
+            annee = derniere_annee_a_remplir_bdese()
+            bdese = self._select_bdese(BDESEAvecAccord, annee, user)
             if bdese and bdese.is_complete:
                 status = ReglementationStatus.STATUS_A_JOUR
-                primary_action_title = (
-                    f"Marquer ma BDESE {caracteristiques.annee} comme non actualisée"
-                )
+                primary_action_title = f"Marquer ma BDESE {annee} comme non actualisée"
             else:
                 status = ReglementationStatus.STATUS_A_ACTUALISER
-                primary_action_title = (
-                    f"Marquer ma BDESE {caracteristiques.annee} comme actualisée"
-                )
+                primary_action_title = f"Marquer ma BDESE {annee} comme actualisée"
 
             status_detail = "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez un accord d'entreprise spécifique. Veuillez vous y référer."
             primary_action = ReglementationAction(
                 reverse_lazy(
                     "reglementations:toggle_bdese_completion",
-                    args=[self.entreprise.siren, caracteristiques.annee],
+                    args=[self.entreprise.siren, annee],
                 ),
                 primary_action_title,
             )
@@ -118,37 +116,38 @@ class BDESEReglementation(Reglementation):
         else:
             bdese_class = BDESE_300
 
-        bdese = self._select_bdese(bdese_class, caracteristiques.annee, user)
+        annee = derniere_annee_a_remplir_bdese()
+        bdese = self._select_bdese(bdese_class, annee, user)
         if not bdese:
             return
 
         if bdese.is_complete:
             status = ReglementationStatus.STATUS_A_JOUR
-            status_detail = f"Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez actualisé votre BDESE {caracteristiques.annee} sur la plateforme."
+            status_detail = f"Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez actualisé votre BDESE {annee} sur la plateforme."
             primary_action = ReglementationAction(
                 reverse_lazy(
                     "reglementations:bdese_pdf",
-                    args=[self.entreprise.siren, caracteristiques.annee],
+                    args=[self.entreprise.siren, annee],
                 ),
-                f"Télécharger le pdf {caracteristiques.annee}",
+                f"Télécharger le pdf {annee}",
                 external=True,
             )
             secondary_actions = [
                 ReglementationAction(
                     reverse_lazy(
                         "reglementations:bdese",
-                        args=[self.entreprise.siren, caracteristiques.annee, 1],
+                        args=[self.entreprise.siren, annee, 1],
                     ),
                     "Modifier ma BDESE",
                 )
             ]
         else:
             status = ReglementationStatus.STATUS_EN_COURS
-            status_detail = f"Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez démarré le remplissage de votre BDESE {caracteristiques.annee} sur la plateforme."
+            status_detail = f"Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez démarré le remplissage de votre BDESE {annee} sur la plateforme."
             primary_action = ReglementationAction(
                 reverse_lazy(
                     "reglementations:bdese",
-                    args=[self.entreprise.siren, caracteristiques.annee, 1],
+                    args=[self.entreprise.siren, annee, 1],
                 ),
                 "Reprendre l'actualisation de ma BDESE",
             )
@@ -156,9 +155,9 @@ class BDESEReglementation(Reglementation):
                 ReglementationAction(
                     reverse_lazy(
                         "reglementations:bdese_pdf",
-                        args=[self.entreprise.siren, caracteristiques.annee],
+                        args=[self.entreprise.siren, annee],
                     ),
-                    f"Télécharger le pdf {caracteristiques.annee} (brouillon)",
+                    f"Télécharger le pdf {annee} (brouillon)",
                     external=True,
                 ),
             ]
@@ -171,12 +170,13 @@ class BDESEReglementation(Reglementation):
         )
 
     def _match_sans_bdese(self, caracteristiques, user):
+        annee = derniere_annee_a_remplir_bdese()
         status = ReglementationStatus.STATUS_A_ACTUALISER
         status_detail = "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Nous allons vous aider à la remplir."
         primary_action = ReglementationAction(
             reverse_lazy(
                 "reglementations:bdese",
-                args=[self.entreprise.siren, caracteristiques.annee, 0],
+                args=[self.entreprise.siren, annee, 0],
             ),
             "Actualiser ma BDESE",
         )
