@@ -173,12 +173,12 @@ def test_bdese_step_fetch_data(configured_bdese, habilitated_user, client, mocke
     bdese = configured_bdese
     client.force_login(habilitated_user)
 
-    fetch_data = mocker.patch("reglementations.views.bdese.get_bdese_data_from_egapro")
+    fetch_data = mocker.patch("api.egapro.indicateurs_bdese")
 
     url = bdese_step_url(bdese, 1)
     client.get(url)
 
-    fetch_data.assert_called_once_with(bdese.entreprise, bdese.annee)
+    fetch_data.assert_called_once_with(bdese.entreprise.siren, bdese.annee)
 
 
 def test_save_step_error(configured_bdese, habilitated_user, client):
