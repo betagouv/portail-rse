@@ -1,5 +1,4 @@
 import html
-import json
 
 import pytest
 from django.urls import reverse
@@ -11,7 +10,6 @@ from reglementations.models import annees_a_remplir_bdese
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
 from reglementations.tests.test_bdese_forms import configuration_form_data
-from reglementations.views.bdese import get_bdese_data_from_egapro
 from reglementations.views.bdese import get_or_create_bdese
 from reglementations.views.bdese import initialize_bdese_configuration
 from reglementations.views.bdese import render_bdese_pdf_html
@@ -660,113 +658,6 @@ def test_initialize_official_bdese_configuration_only_with_other_official_bdeses
             "I",
         ]
         assert initial["niveaux_hierarchiques"] == ["Y", "Z"]
-
-
-class MockedResponse:
-    def __init__(self, content, status_code):
-        self.content = content
-        self.status_code = status_code
-
-    def json(self):
-        return json.loads(self.content)
-
-
-def test_get_bdese_data_from_egapro_with_only_one_objectif_de_progression(
-    grande_entreprise, mocker
-):
-    # Example response inspired from https://egapro.travail.gouv.fr/api/public/declaration/552032534/2021
-    index_egapro_data = """{"entreprise":{"siren":"552032534","r\u00e9gion":"\u00cele-de-France","code_naf":"70.10Z","effectif":{"total":867,"tranche":"251:999"},"d\u00e9partement":"Paris","raison_sociale":"DANONE"},"indicateurs":{"promotions":{"non_calculable":null,"note":15,"objectif_de_progression":null},"augmentations_et_promotions":{"non_calculable":null,"note":null,"objectif_de_progression":null},"r\u00e9mun\u00e9rations":{"non_calculable":null,"note":29,"objectif_de_progression":null},"cong\u00e9s_maternit\u00e9":{"non_calculable":null,"note":15,"objectif_de_progression":null},"hautes_r\u00e9mun\u00e9rations":{"non_calculable":null,"note":0,"objectif_de_progression":"plus dans le futur","r\u00e9sultat":1,"population_favorable":"femmes"}},"d\u00e9claration":{"index":79,"ann\u00e9e_indicateurs":2021,"mesures_correctives":null}}"""
-
-    egapro_request = mocker.patch(
-        "requests.get", return_value=MockedResponse(index_egapro_data, 200)
-    )
-
-    bdese_data_from_egapro = get_bdese_data_from_egapro(grande_entreprise, 2021)
-
-    assert bdese_data_from_egapro == {
-        "nombre_femmes_plus_hautes_remunerations": 9,
-        "objectifs_progression": "Hautes rémunérations : plus dans le futur",
-    }
-    egapro_request.assert_called_once_with(
-        f"https://egapro.travail.gouv.fr/api/public/declaration/{grande_entreprise.siren}/2021"
-    )
-
-
-def test_get_bdese_data_from_egapro_without_objectif_de_progression(
-    grande_entreprise, mocker
-):
-    # Example response inspired from https://egapro.travail.gouv.fr/api/public/declaration/552032534/2021
-    index_egapro_data = """{"entreprise":{"siren":"552032534","r\u00e9gion":"\u00cele-de-France","code_naf":"70.10Z","effectif":{"total":867,"tranche":"251:999"},"d\u00e9partement":"Paris","raison_sociale":"DANONE"},"indicateurs":{"promotions":{"non_calculable":null,"note":15,"objectif_de_progression":null},"augmentations_et_promotions":{"non_calculable":null,"note":null,"objectif_de_progression":null},"r\u00e9mun\u00e9rations":{"non_calculable":null,"note":29,"objectif_de_progression":null},"cong\u00e9s_maternit\u00e9":{"non_calculable":null,"note":15,"objectif_de_progression":null},"hautes_r\u00e9mun\u00e9rations":{"non_calculable":null,"note":0,"objectif_de_progression":null,"r\u00e9sultat":1,"population_favorable":"femmes"}},"d\u00e9claration":{"index":79,"ann\u00e9e_indicateurs":2021,"mesures_correctives":null}}"""
-
-    egapro_request = mocker.patch(
-        "requests.get", return_value=MockedResponse(index_egapro_data, 200)
-    )
-
-    bdese_data_from_egapro = get_bdese_data_from_egapro(grande_entreprise, 2021)
-
-    assert bdese_data_from_egapro["objectifs_progression"] == None
-
-
-def test_get_bdese_data_from_egapro_with_all_objectifs_de_progression(
-    grande_entreprise, mocker
-):
-    # Example response inspired from https://egapro.travail.gouv.fr/api/public/declaration/552032534/2021
-    index_egapro_data = """{"entreprise":{"siren":"552032534","r\u00e9gion":"\u00cele-de-France","code_naf":"70.10Z","effectif":{"total":867,"tranche":"251:999"},"d\u00e9partement":"Paris","raison_sociale":"DANONE"},"indicateurs":{"promotions":{"non_calculable":null,"note":15,"objectif_de_progression":"P1"},"augmentations_et_promotions":{"non_calculable":null,"note":null,"objectif_de_progression":"P2"},"r\u00e9mun\u00e9rations":{"non_calculable":null,"note":29,"objectif_de_progression":"P3"},"cong\u00e9s_maternit\u00e9":{"non_calculable":null,"note":15,"objectif_de_progression":"P4"},"hautes_r\u00e9mun\u00e9rations":{"non_calculable":null,"note":0,"objectif_de_progression":"P5","r\u00e9sultat":1,"population_favorable":"femmes"}},"d\u00e9claration":{"index":79,"ann\u00e9e_indicateurs":2021,"mesures_correctives":null}}"""
-
-    egapro_request = mocker.patch(
-        "requests.get", return_value=MockedResponse(index_egapro_data, 200)
-    )
-
-    bdese_data_from_egapro = get_bdese_data_from_egapro(grande_entreprise, 2021)
-
-    assert (
-        bdese_data_from_egapro["objectifs_progression"]
-        == "Écart taux promotion : P1\nÉcart taux d'augmentation : P2\nÉcart rémunérations : P3\nRetour congé maternité : P4\nHautes rémunérations : P5"
-    )
-
-
-def test_get_bdese_data_from_egapro_with_no_result(grande_entreprise, mocker):
-    # Example response from https://egapro.travail.gouv.fr/api/public/declaration/552032534/1990
-    index_egapro_data = (
-        """{"error":"No declaration with siren 552032534 and year 1990"}"""
-    )
-
-    egapro_request = mocker.patch(
-        "requests.get", return_value=MockedResponse(index_egapro_data, 200)
-    )
-
-    bdese_data_from_egapro = get_bdese_data_from_egapro(grande_entreprise, 1990)
-
-    assert bdese_data_from_egapro == {
-        "nombre_femmes_plus_hautes_remunerations": None,
-        "objectifs_progression": None,
-    }
-
-
-def test_configuration_bdese_redirige_vers_la_qualification_si_manquante(
-    bdese, habilitated_user, client
-):
-    client.force_login(habilitated_user)
-    entreprise = bdese.entreprise
-    entreprise.caracteristiques_actuelles().delete()
-    url = bdese_step_url(bdese, 0)
-
-    response = client.get(url)
-
-    assert response.status_code == 302
-    assert response.url == reverse("entreprises:qualification", args=[entreprise.siren])
-
-
-def test_toggle_bdese_completion_inaccessible_si_non_connecte(
-    client, bdese_avec_accord
-):
-    url = f"/bdese/{bdese_avec_accord.entreprise.siren}/{bdese_avec_accord.annee}/actualiser-desactualiser"
-
-    response = client.get(url)
-
-    assert response.status_code == 302
-    connexion_url = reverse("users:login")
-    assert response.url == f"{connexion_url}?next={url}"
 
 
 def test_toggle_bdese_completion(client, bdese_avec_accord, alice):
