@@ -12,7 +12,7 @@
                     <a href="{% url 'simulation' %}">Ce n'est pas mon entreprise</a>
                 </p>
 
-                <form class="fr-mt-6w" action="{% url 'reglementations:reglementations' %}" method="get">
+                <form class="fr-mt-6w" action="{% url 'reglementations:reglementations' %}" method="post">
                     {% csrf_token %}
                     {{ entreprise_form.siren.as_hidden }}
                     {{ entreprise_form.denomination.as_hidden }}

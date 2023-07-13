@@ -22,15 +22,15 @@ from reglementations.views.index_egapro import IndexEgaproReglementation
 def reglementations(request):
     entreprise = None
     caracteristiques = None
-    if request.GET:
-        entreprise_form = EntrepriseForm(request.GET)
-        caracteristiques_form = CaracteristiquesForm(request.GET)
-        if "siren" in request.GET:
+    if request.POST:
+        entreprise_form = EntrepriseForm(request.POST)
+        caracteristiques_form = CaracteristiquesForm(request.POST)
+        if "siren" in request.POST:
             if entreprises := Entreprise.objects.filter(
                 siren=entreprise_form.data["siren"]
             ):
                 entreprise = entreprises[0]
-                entreprise_form = EntrepriseForm(request.GET, instance=entreprise)
+                entreprise_form = EntrepriseForm(request.POST, instance=entreprise)
 
             if entreprise_form.is_valid() and caracteristiques_form.is_valid():
                 request.session["siren"] = entreprise_form.cleaned_data["siren"]
@@ -46,7 +46,7 @@ def reglementations(request):
                         entreprise=entreprise, annee=annee
                     )
                     caracteristiques_form = CaracteristiquesForm(
-                        request.GET, instance=caracteristiques
+                        request.POST, instance=caracteristiques
                     )
                 except ObjectDoesNotExist:
                     caracteristiques_form.instance.entreprise = entreprise

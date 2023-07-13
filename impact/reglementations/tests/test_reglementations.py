@@ -78,7 +78,7 @@ def test_public_reglementations_with_entreprise_data(status_est_soumis, client, 
         "reglementations.views.audit_energetique.AuditEnergetiqueReglementation.est_soumis",
         return_value=status_est_soumis,
     )
-    response = client.get("/reglementations", data=data)
+    response = client.post("/reglementations", data=data)
 
     content = response.content.decode("utf-8")
     assert "Entreprise SAS" in content
@@ -178,7 +178,7 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
         "reglementations.views.dispositif_alerte.DispositifAlerteReglementation.est_soumis",
         return_value=status_est_soumis,
     )
-    response = client.get("/reglementations", data=data)
+    response = client.post("/reglementations", data=data)
 
     content = response.content.decode("utf-8")
     assert "Une autre entreprise SAS" in content
@@ -222,7 +222,7 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
         "siren": entreprise.siren,
     }
 
-    response = client.get("/reglementations", data=data)
+    response = client.post("/reglementations", data=data)
 
     entreprise.refresh_from_db()
     assert entreprise.date_cloture_exercice == date_cloture_dernier_exercice
@@ -261,7 +261,7 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
     # on enregistre ces nouvelles données en base
     # ce cas est encore accessible mais ne correspond pas à un parcours utilisateur normal
     client.force_login(entreprise.users.first())
-    client.get("/reglementations", data=data)
+    client.post("/reglementations", data=data)
 
     entreprise.refresh_from_db()
     assert entreprise.date_cloture_exercice == date_cloture_exercice
