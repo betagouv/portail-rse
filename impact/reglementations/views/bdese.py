@@ -250,7 +250,7 @@ def _pdf_template_path_from_bdese(bdese):
 
 
 def get_bdese_data_from_egapro(entreprise: Entreprise, year: int) -> dict:
-    return egapro.indicateurs(entreprise.siren, year)
+    return egapro.indicateurs_bdese(entreprise.siren, year)
 
 
 @login_required
