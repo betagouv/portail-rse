@@ -40,6 +40,7 @@ class CaracteristiquesForm(DsfrForm, forms.ModelForm):
         ]
         labels = {
             "date_cloture_exercice": "Date de clôture du dernier exercice comptable",
+            "systeme_management_energie": "L'entreprise a mis en place un <a target='_blank' href='https://agirpourlatransition.ademe.fr/entreprises/demarche-decarbonation-industrie/agir/structurer-demarche/mettre-en-place-systeme-management-energie'>système de management de l’énergie</a>",
         }
         help_texts = {
             "tranche_chiffre_affaires": "Sélectionnez le chiffre d'affaires de l'exercice clos",
