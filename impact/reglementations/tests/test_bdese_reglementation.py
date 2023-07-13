@@ -7,6 +7,7 @@ from habilitations.models import attach_user_to_entreprise
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
 from reglementations.models import BDESEAvecAccord
+from reglementations.models import derniere_annee_a_remplir_bdese
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.bdese import BDESEReglementation
 
@@ -134,7 +135,7 @@ def test_calculate_status_more_than_50_employees_with_habilited_user(
     habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
     habilitation.confirm()
     habilitation.save()
-    annee = entreprise.dernieres_caracteristiques_qualifiantes.annee
+    annee = derniere_annee_a_remplir_bdese()
 
     status = BDESEReglementation(entreprise).calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
@@ -204,7 +205,7 @@ def test_calculate_status_more_than_50_employees_with_not_habilited_user(
 ):
     entreprise = entreprise_factory(effectif=effectif, bdese_accord=False)
     habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
-    annee = entreprise.dernieres_caracteristiques_qualifiantes.annee
+    annee = derniere_annee_a_remplir_bdese()
 
     status = BDESEReglementation(entreprise).calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
@@ -242,7 +243,7 @@ def test_calculate_status_with_bdese_accord_with_not_habilited_user(
 ):
     entreprise = entreprise_factory(effectif=effectif, bdese_accord=True)
     attach_user_to_entreprise(alice, entreprise, "Présidente")
-    annee = entreprise.dernieres_caracteristiques_qualifiantes.annee
+    annee = derniere_annee_a_remplir_bdese()
 
     status = BDESEReglementation(entreprise).calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
@@ -301,7 +302,7 @@ def test_calculate_status_with_bdese_accord_with_habilited_user(
     habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
     habilitation.confirm()
     habilitation.save()
-    annee = entreprise.dernieres_caracteristiques_qualifiantes.annee
+    annee = derniere_annee_a_remplir_bdese()
 
     status = BDESEReglementation(entreprise).calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
