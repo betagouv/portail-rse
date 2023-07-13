@@ -174,7 +174,7 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         default=False,  # null=True serait préférable
     )
     systeme_management_energie = models.BooleanField(
-        verbose_name="L'entreprise a mis en place un <a target='_blank' href='https://agirpourlatransition.ademe.fr/entreprises/demarche-decarbonation-industrie/agir/structurer-demarche/mettre-en-place-systeme-management-energie'>système de management de l’énergie</a>",
+        verbose_name="L'entreprise a mis en place un système de management de l’énergie",
         null=True,
     )
 

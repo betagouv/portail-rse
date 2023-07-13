@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             name="systeme_management_energie",
             field=models.BooleanField(
                 null=True,
-                verbose_name="L'entreprise a mis en place un\xa0<a target='_blank' href='https://agirpourlatransition.ademe.fr/entreprises/demarche-decarbonation-industrie/agir/structurer-demarche/mettre-en-place-systeme-management-energie'>système de management de l’énergie</a>",
+                verbose_name="L'entreprise a mis en place un système de management de l’énergie",
             ),
         ),
     ]
