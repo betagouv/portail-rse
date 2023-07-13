@@ -249,10 +249,6 @@ def _pdf_template_path_from_bdese(bdese):
         return "reglementations/bdese_50_300_pdf.html"
 
 
-def get_bdese_data_from_egapro(entreprise: Entreprise, year: int) -> dict:
-    return egapro.indicateurs_bdese(entreprise.siren, year)
-
-
 @login_required
 @entreprise_qualifiee_required
 def bdese(request, siren, annee, step):
@@ -309,7 +305,7 @@ def bdese(request, siren, annee, step):
                 initial=initial,
             )
         else:
-            fetched_data = get_bdese_data_from_egapro(entreprise, annee)
+            fetched_data = egapro.indicateurs_bdese(entreprise.siren, annee)
             form = bdese_form_factory(
                 bdese,
                 step,
