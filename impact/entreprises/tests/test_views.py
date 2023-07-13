@@ -6,6 +6,7 @@ from django.urls import reverse
 from freezegun import freeze_time
 
 import api.exceptions
+from api.tests.fixtures import mock_api_index_egapro  # noqa
 from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
@@ -247,7 +248,11 @@ def test_qualification_page_with_current_qualification(
 
 
 def test_qualify_entreprise(
-    client, alice, entreprise_non_qualifiee, mock_api_recherche_entreprises
+    client,
+    alice,
+    entreprise_non_qualifiee,
+    mock_api_recherche_entreprises,
+    mock_api_index_egapro,
 ):
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
     client.force_login(alice)
@@ -266,6 +271,14 @@ def test_qualify_entreprise(
     response = client.post(url, data=data, follow=True)
 
     assert response.status_code == 200
+    assert response.redirect_chain == [
+        (
+            reverse(
+                "reglementations:reglementations", args=[entreprise_non_qualifiee.siren]
+            ),
+            302,
+        )
+    ]
     content = html.unescape(response.content.decode("utf-8"))
     assert "Les caractéristiques de l'entreprise ont été mises à jour." in content
 
