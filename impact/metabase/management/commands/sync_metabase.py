@@ -30,7 +30,10 @@ class Command(BaseCommand):
         for entreprise in ImpactEntreprise.objects.annotate(
             nombre_utilisateurs=Count("users")
         ):
-            caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
+            caracteristiques = (
+                entreprise.dernieres_caracteristiques_qualifiantes
+                or entreprise.dernieres_caracteristiques
+            )
             meta_e = MetabaseEntreprise.objects.create(
                 impact_id=entreprise.pk,
                 ajoutee_le=entreprise.created_at,

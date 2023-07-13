@@ -31,6 +31,13 @@ class Entreprise(TimestampedModel):
             if caracteristiques.sont_qualifiantes:
                 return caracteristiques
 
+    @property
+    def dernieres_caracteristiques(self):
+        if caracteristiques := CaracteristiquesAnnuelles.objects.filter(
+            entreprise=self,
+        ).order_by("-annee"):
+            return caracteristiques.first()
+
     def caracteristiques_annuelles(self, annee):
         try:
             return CaracteristiquesAnnuelles.objects.get(
