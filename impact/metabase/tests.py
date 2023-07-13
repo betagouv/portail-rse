@@ -15,7 +15,9 @@ from metabase.models import Utilisateur as MetabaseUtilisateur
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
-def test_synchronise_une_entreprise(entreprise_factory, date_cloture_dernier_exercice):
+def test_synchronise_une_entreprise_qualifiee(
+    entreprise_factory, date_cloture_dernier_exercice
+):
     date_creation = datetime(
         date_cloture_dernier_exercice.year,
         date_cloture_dernier_exercice.month,
@@ -112,7 +114,7 @@ def test_synchronise_une_entreprise_plusieurs_fois(entreprise_factory):
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
-def test_synchronise_une_entreprise_non_qualifiee():
+def test_synchronise_une_entreprise_sans_caracteristiques_annuelles():
     entreprise = Entreprise.objects.create(
         siren="000000001", denomination="Entreprise SAS"
     )
@@ -128,6 +130,25 @@ def test_synchronise_une_entreprise_non_qualifiee():
     assert metabase_entreprise.tranche_bilan is None
     assert metabase_entreprise.bdese_accord is None
     assert metabase_entreprise.systeme_management_energie is None
+
+
+@pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
+def test_synchronise_une_entreprise_sans_caracteristiques_qualifiantes(
+    entreprise_factory,
+):
+    # Ce cas arrive lorsqu'on ajoute une nouvelle caracteristique qualifiante dans les caracteristiques annuelles
+    # Les anciennes caracteristiques ne sont plus qualifiantes mais on veut quand même les avoir dans metabase
+    entreprise = entreprise_factory()
+    caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
+    tranche_bilan = caracteristiques.tranche_bilan
+    caracteristiques.tranche_chiffre_affaires = None
+    caracteristiques.save()
+
+    Command().handle()
+
+    metabase_entreprise = MetabaseEntreprise.objects.first()
+    assert metabase_entreprise.tranche_bilan == tranche_bilan
+    assert metabase_entreprise.tranche_chiffre_affaires is None
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
