@@ -1,6 +1,6 @@
 import json
 
-from api.egapro import indicateurs
+from api.egapro import indicateurs_bdese
 from api.egapro import is_index_egapro_published
 
 SIREN = "123456789"
@@ -62,7 +62,7 @@ def test_succes_indicateurs_avec_un_seul_objectif_de_progression(mocker):
         "requests.get", return_value=MockedResponse(200, index_egapro_data)
     )
 
-    bdese_indicateurs = indicateurs(SIREN, 2021)
+    bdese_indicateurs = indicateurs_bdese(SIREN, 2021)
 
     assert bdese_indicateurs == {
         "nombre_femmes_plus_hautes_remunerations": 9,
@@ -81,7 +81,7 @@ def test_succes_indicateurs_sans_objectif_de_progression(mocker):
         "requests.get", return_value=MockedResponse(200, index_egapro_data)
     )
 
-    bdese_indicateurs = indicateurs(SIREN, 2021)
+    bdese_indicateurs = indicateurs_bdese(SIREN, 2021)
 
     assert bdese_indicateurs["objectifs_progression"] == None
 
@@ -94,7 +94,7 @@ def test_succes_indicateurs_avec_tous_les_objectifs_de_progression(mocker):
         "requests.get", return_value=MockedResponse(200, index_egapro_data)
     )
 
-    bdese_indicateurs = indicateurs(SIREN, 2021)
+    bdese_indicateurs = indicateurs_bdese(SIREN, 2021)
 
     assert (
         bdese_indicateurs["objectifs_progression"]
@@ -112,7 +112,7 @@ def test_succes_indicateurs_sans_resultat(mocker):
         "requests.get", return_value=MockedResponse(200, index_egapro_data)
     )
 
-    bdese_indicateurs = indicateurs(SIREN, 1990)
+    bdese_indicateurs = indicateurs_bdese(SIREN, 1990)
 
     assert bdese_indicateurs == {
         "nombre_femmes_plus_hautes_remunerations": None,
@@ -124,7 +124,7 @@ def test_echec_indicateurs(mocker):
     mocker.patch("requests.get", return_value=MockedResponse(400))
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
-    indicateurs(SIREN, 2023)
+    indicateurs_bdese(SIREN, 2023)
 
     capture_message_mock.assert_called_once_with(
         "Requête invalide sur l'API index EgaPro (indicateurs)"

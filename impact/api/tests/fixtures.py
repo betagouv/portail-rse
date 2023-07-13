@@ -17,5 +17,5 @@ def mock_api_recherche_entreprises(mocker):
 
 @pytest.fixture
 def mock_api_index_egapro(mocker):
-    mocker.patch("api.egapro.indicateurs")
+    mocker.patch("api.egapro.indicateurs_bdese")
     return mocker.patch("api.egapro.is_index_egapro_published")

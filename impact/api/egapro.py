@@ -2,7 +2,7 @@ import requests
 import sentry_sdk
 
 
-def indicateurs(siren, annee):
+def indicateurs_bdese(siren, annee):
     EGAPRO_INDICATEURS = {
         "promotions": "Écart taux promotion",
         "augmentations_et_promotions": "Écart taux d'augmentation",
