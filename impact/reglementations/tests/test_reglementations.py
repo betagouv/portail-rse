@@ -4,7 +4,6 @@ from django.contrib.auth.models import AnonymousUser
 from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
-from entreprises.tests.conftest import entreprise_non_qualifiee  # noqa
 from habilitations.models import attach_user_to_entreprise
 from reglementations.views.bdese import BDESEReglementation
 from reglementations.views.dispositif_alerte import DispositifAlerteReglementation
