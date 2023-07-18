@@ -205,7 +205,7 @@ def bdese_pdf(request, siren, annee):
     entreprise = Entreprise.objects.get(siren=siren)
     if not is_user_attached_to_entreprise(request.user, entreprise):
         raise PermissionDenied
-    bdese = _get_or_create_bdese(entreprise, annee, request.user)
+    bdese = get_or_create_bdese(entreprise, annee, request.user)
     pdf_html = render_bdese_pdf_html(bdese)
     html = HTML(string=pdf_html)
     css = CSS(
@@ -253,7 +253,7 @@ def bdese(request, siren, annee, step):
     if not is_user_attached_to_entreprise(request.user, entreprise):
         raise PermissionDenied
 
-    bdese = _get_or_create_bdese(entreprise, annee, request.user)
+    bdese = get_or_create_bdese(entreprise, annee, request.user)
 
     if not bdese.is_configured and step != 0:
         messages.warning(request, f"Commencez par configurer votre BDESE {annee}")
@@ -375,7 +375,7 @@ def _bdese_step_context(form, siren, annee, bdese, step):
     return context
 
 
-def _get_or_create_bdese(
+def get_or_create_bdese(
     entreprise: Entreprise,
     annee: int,
     user: settings.AUTH_USER_MODEL,
@@ -428,7 +428,7 @@ def toggle_bdese_completion(request, siren, annee):
     if not is_user_attached_to_entreprise(request.user, entreprise):
         raise PermissionDenied
 
-    bdese = _get_or_create_bdese(entreprise, annee, request.user)
+    bdese = get_or_create_bdese(entreprise, annee, request.user)
 
     if bdese.is_bdese_avec_accord:
         bdese.toggle_completion()
