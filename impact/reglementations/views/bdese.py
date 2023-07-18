@@ -432,6 +432,7 @@ def initialize_bdese_configuration(bdese: BDESE_300 | BDESE_50_300) -> dict:
             return initial
 
 
+@login_required
 @entreprise_qualifiee_required
 def toggle_bdese_completion(request, siren, annee):
     entreprise = Entreprise.objects.get(siren=siren)

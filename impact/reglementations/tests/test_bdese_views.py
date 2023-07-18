@@ -756,6 +756,18 @@ def test_configuration_bdese_redirige_vers_la_qualification_si_manquante(
     assert response.url == reverse("entreprises:qualification", args=[entreprise.siren])
 
 
+def test_toggle_bdese_completion_inaccessible_si_non_connecte(
+    client, bdese_avec_accord
+):
+    url = f"/bdese/{bdese_avec_accord.entreprise.siren}/{bdese_avec_accord.annee}/actualiser-desactualiser"
+
+    response = client.get(url)
+
+    assert response.status_code == 302
+    connexion_url = reverse("users:login")
+    assert response.url == f"{connexion_url}?next={url}"
+
+
 def test_toggle_bdese_completion(client, bdese_avec_accord, alice):
     client.force_login(alice)
     entreprise = bdese_avec_accord.entreprise
