@@ -2,6 +2,10 @@
 
 {% load filters %}
 
+{% block title %}
+    {% if user.entreprise_set.count >= 2 %}Mes entreprises{% else %}Mon entreprise{% endif %} - Impact
+{% endblock %}
+
 {% block content %}
     <div class="fr-container fr-my-8w">
         {% if user.entreprise_set.count >= 2 %}
