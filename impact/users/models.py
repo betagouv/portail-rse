@@ -43,7 +43,7 @@ class User(AbstractBaseUser, TimestampedModel):
     )
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(
-        verbose_name="Accès admin",
+        verbose_name="Accès à /admin (back-office)",
         default=False,
     )
     acceptation_cgu = models.BooleanField(
