@@ -386,7 +386,10 @@ def get_or_create_bdese(
 ) -> BDESE_300 | BDESE_50_300 | BDESEAvecAccord:
     caracteristiques = entreprise.caracteristiques_actuelles()
     if not caracteristiques:
-        raise EntrepriseNonQualifieeError("entreprise non qualifiée", entreprise)
+        raise EntrepriseNonQualifieeError(
+            "Veuillez renseigner les informations suivantes pour accéder à la BDESE",
+            entreprise,
+        )
 
     bdese_type = BDESEReglementation(entreprise).bdese_type(caracteristiques)
     habilitation = get_habilitation(user, entreprise)
