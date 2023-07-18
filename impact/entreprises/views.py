@@ -20,7 +20,11 @@ from habilitations.models import is_user_attached_to_entreprise
 
 def get_current_entreprise(request):
     if siren := request.session.get("entreprise"):
-        entreprise = Entreprise.objects.get(siren=siren)
+        try:
+            entreprise = Entreprise.objects.get(siren=siren)
+        except ObjectDoesNotExist:
+            entreprise = None
+            del request.session["entreprise"]
     elif request.user.is_authenticated and (
         entreprises := request.user.entreprise_set.all()
     ):

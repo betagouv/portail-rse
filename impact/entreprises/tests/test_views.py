@@ -7,10 +7,24 @@ import api.exceptions
 from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
+from entreprises.views import get_current_entreprise
 from habilitations.models import attach_user_to_entreprise
 from habilitations.models import get_habilitation
 from habilitations.models import Habilitation
 from habilitations.models import is_user_attached_to_entreprise
+
+
+def test_get_current_entreprise_avec_une_entreprise_en_session_mais_inexistante_en_base(
+    client, alice
+):
+    session = client.session
+    session["entreprise"] = "123456789"
+    session.save()
+    request = client.get("/").wsgi_request
+
+    assert get_current_entreprise(request) is None
+    session = client.session
+    assert "entreprise" not in session
 
 
 def _attach_data(siren):
