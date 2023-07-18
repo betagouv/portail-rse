@@ -4,6 +4,7 @@ import json
 import pytest
 from django.urls import reverse
 
+from entreprises.exceptions import EntrepriseNonQualifieeError
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
 from reglementations.models import annees_a_remplir_bdese
@@ -11,6 +12,7 @@ from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
 from reglementations.tests.test_bdese_forms import configuration_form_data
 from reglementations.views.bdese import get_bdese_data_from_egapro
+from reglementations.views.bdese import get_or_create_bdese
 from reglementations.views.bdese import initialize_bdese_configuration
 from reglementations.views.bdese import render_bdese_pdf_html
 
@@ -299,6 +301,20 @@ def test_get_pdf(bdese, habilitated_user, client):
     response = client.get(url)
 
     assert response.status_code == 200
+
+
+def test_get_pdf_redirige_vers_la_qualification_si_manquante(
+    bdese, habilitated_user, client
+):
+    client.force_login(habilitated_user)
+    entreprise = bdese.entreprise
+    entreprise.caracteristiques_actuelles().delete()
+    url = f"/bdese/{entreprise.siren}/{bdese.annee}/pdf"
+
+    response = client.get(url)
+
+    assert response.status_code == 302
+    assert response.url == reverse("entreprises:qualification", args=[entreprise.siren])
 
 
 def test_render_bdese_pdf_html(configured_bdese):
@@ -726,6 +742,20 @@ def test_get_bdese_data_from_egapro_with_no_result(grande_entreprise, mocker):
     }
 
 
+def test_configuration_bdese_redirige_vers_la_qualification_si_manquante(
+    bdese, habilitated_user, client
+):
+    client.force_login(habilitated_user)
+    entreprise = bdese.entreprise
+    entreprise.caracteristiques_actuelles().delete()
+    url = bdese_step_url(bdese, 0)
+
+    response = client.get(url)
+
+    assert response.status_code == 302
+    assert response.url == reverse("entreprises:qualification", args=[entreprise.siren])
+
+
 def test_toggle_bdese_completion(client, bdese_avec_accord, alice):
     client.force_login(alice)
     entreprise = bdese_avec_accord.entreprise
@@ -746,3 +776,26 @@ def test_toggle_bdese_completion(client, bdese_avec_accord, alice):
 
     bdese_avec_accord.refresh_from_db()
     assert not bdese_avec_accord.is_complete
+
+
+def test_toggle_bdese_completion_redirige_vers_la_qualification_si_manquante(
+    bdese, habilitated_user, client
+):
+    client.force_login(habilitated_user)
+    entreprise = bdese.entreprise
+    entreprise.caracteristiques_actuelles().delete()
+    url = f"/bdese/{entreprise.siren}/{bdese.annee}/actualiser-desactualiser"
+
+    response = client.get(url)
+
+    assert response.status_code == 302
+    assert response.url == reverse("entreprises:qualification", args=[entreprise.siren])
+
+
+def test_get_or_create_bdese_avec_une_entreprise_non_qualifiee(
+    entreprise_non_qualifiee, alice
+):
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+
+    with pytest.raises(EntrepriseNonQualifieeError):
+        get_or_create_bdese(entreprise_non_qualifiee, 2023, alice)

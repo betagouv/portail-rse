@@ -11,6 +11,8 @@ from weasyprint import CSS
 from weasyprint import HTML
 
 from api import egapro
+from entreprises.decorators import entreprise_qualifiee_required
+from entreprises.exceptions import EntrepriseNonQualifieeError
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from habilitations.models import get_habilitation
@@ -201,6 +203,7 @@ class BDESEReglementation(Reglementation):
 
 
 @login_required
+@entreprise_qualifiee_required
 def bdese_pdf(request, siren, annee):
     entreprise = Entreprise.objects.get(siren=siren)
     if not is_user_attached_to_entreprise(request.user, entreprise):
@@ -248,6 +251,7 @@ def get_bdese_data_from_egapro(entreprise: Entreprise, year: int) -> dict:
 
 
 @login_required
+@entreprise_qualifiee_required
 def bdese(request, siren, annee, step):
     entreprise = Entreprise.objects.get(siren=siren)
     if not is_user_attached_to_entreprise(request.user, entreprise):
@@ -380,9 +384,11 @@ def get_or_create_bdese(
     annee: int,
     user: settings.AUTH_USER_MODEL,
 ) -> BDESE_300 | BDESE_50_300 | BDESEAvecAccord:
-    bdese_type = BDESEReglementation(entreprise).bdese_type(
-        entreprise.caracteristiques_actuelles()
-    )
+    caracteristiques = entreprise.caracteristiques_actuelles()
+    if not caracteristiques:
+        raise EntrepriseNonQualifieeError("entreprise non qualifiée", entreprise)
+
+    bdese_type = BDESEReglementation(entreprise).bdese_type(caracteristiques)
     habilitation = get_habilitation(user, entreprise)
     if bdese_type == BDESEReglementation.TYPE_AVEC_ACCORD:
         bdese_class = BDESEAvecAccord
@@ -423,6 +429,7 @@ def initialize_bdese_configuration(bdese: BDESE_300 | BDESE_50_300) -> dict:
             return initial
 
 
+@entreprise_qualifiee_required
 def toggle_bdese_completion(request, siren, annee):
     entreprise = Entreprise.objects.get(siren=siren)
     if not is_user_attached_to_entreprise(request.user, entreprise):
