@@ -32,14 +32,14 @@ class CategorieJuridique(Enum):
     SOCIETE_EUROPEENNE = 4
 
 
-def categorie(categorie_insee):
-    if 5308 <= categorie_insee <= 5385:
+def conversion_categorie_juridique(categorie_juridique_sirene):
+    if 5308 <= categorie_juridique_sirene <= 5385:
         return CategorieJuridique.SOCIETE_COMMANDITE_PAR_ACTION
-    elif 5005 <= categorie_insee <= 5699:
+    elif 5005 <= categorie_juridique_sirene <= 5699:
         return CategorieJuridique.SOCIETE_ANONYME
-    elif 5710 <= categorie_insee <= 5785:
+    elif 5710 <= categorie_juridique_sirene <= 5785:
         return CategorieJuridique.SOCIETE_PAR_ACTION_SIMPLIFIEE
-    elif categorie_insee == 5800:
+    elif categorie_juridique_sirene == 5800:
         return CategorieJuridique.SOCIETE_EUROPEENNE
     else:
         return

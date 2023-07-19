@@ -9,8 +9,8 @@ from freezegun import freeze_time
 
 from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
-from entreprises.models import categorie
 from entreprises.models import CategorieJuridique
+from entreprises.models import conversion_categorie_juridique
 from entreprises.models import Entreprise
 
 
@@ -352,7 +352,10 @@ def test_categorie_SA():
         5505,  # SA à participation ouvrière à conseil d'administration
         5699,  # SA à directoire (s.a.i.)
     ):
-        assert categorie(cat_insee) == CategorieJuridique.SOCIETE_ANONYME
+        assert (
+            conversion_categorie_juridique(cat_insee)
+            == CategorieJuridique.SOCIETE_ANONYME
+        )
 
 
 def test_categorie_SCA():
@@ -360,7 +363,10 @@ def test_categorie_SCA():
         5308,  # Société en commandite par actions
         5385,  # Société d'exercice libéral en commandite par actions
     ):
-        assert categorie(cat_insee) == CategorieJuridique.SOCIETE_COMMANDITE_PAR_ACTION
+        assert (
+            conversion_categorie_juridique(cat_insee)
+            == CategorieJuridique.SOCIETE_COMMANDITE_PAR_ACTION
+        )
 
 
 def test_categorie_SAS():
@@ -368,13 +374,16 @@ def test_categorie_SAS():
         5710,  # SAS, société par actions simplifiée
         5785,  # Société d'exercice libéral par action simplifiée
     ):
-        assert categorie(cat_insee) == CategorieJuridique.SOCIETE_PAR_ACTION_SIMPLIFIEE
+        assert (
+            conversion_categorie_juridique(cat_insee)
+            == CategorieJuridique.SOCIETE_PAR_ACTION_SIMPLIFIEE
+        )
 
 
 def test_categorie_SE():
-    assert categorie(5800) == CategorieJuridique.SOCIETE_EUROPEENNE
+    assert conversion_categorie_juridique(5800) == CategorieJuridique.SOCIETE_EUROPEENNE
 
 
 def test_categorie_non_traitee():
     cat_insee = 9240  # congrégation
-    assert categorie(cat_insee) is None
+    assert conversion_categorie_juridique(cat_insee) is None
