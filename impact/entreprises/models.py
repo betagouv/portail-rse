@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import date
+from enum import Enum
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
@@ -22,6 +23,26 @@ class ActualisationCaracteristiquesAnnuelles:
     tranche_bilan_consolide: str
     bdese_accord: bool
     systeme_management_energie: bool
+
+
+class CategorieJuridique(Enum):
+    SOCIETE_ANONYME = 1
+    SOCIETE_COMMANDITE_PAR_ACTION = 2
+    SOCIETE_PAR_ACTION_SIMPLIFIEE = 3
+    SOCIETE_EUROPEENNE = 4
+
+
+def categorie(categorie_insee):
+    if 5308 <= categorie_insee <= 5385:
+        return CategorieJuridique.SOCIETE_COMMANDITE_PAR_ACTION
+    elif 5005 <= categorie_insee <= 5699:
+        return CategorieJuridique.SOCIETE_ANONYME
+    elif 5710 <= categorie_insee <= 5785:
+        return CategorieJuridique.SOCIETE_PAR_ACTION_SIMPLIFIEE
+    elif categorie_insee == 5800:
+        return CategorieJuridique.SOCIETE_EUROPEENNE
+    else:
+        return
 
 
 class Entreprise(TimestampedModel):

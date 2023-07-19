@@ -9,6 +9,8 @@ from freezegun import freeze_time
 
 from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
+from entreprises.models import categorie
+from entreprises.models import CategorieJuridique
 from entreprises.models import Entreprise
 
 
@@ -343,3 +345,36 @@ def test_caracteristiques_actuelles_selon_la_date_de_cloture(entreprise_non_qual
 
     with freeze_time(datetime(2024, 11, 27, 16, 1, tzinfo=timezone.utc)):
         assert entreprise_non_qualifiee.caracteristiques_actuelles() is None
+
+
+def test_categorie_SA():
+    for cat_insee in (
+        5505,  # SA à participation ouvrière à conseil d'administration
+        5699,  # SA à directoire (s.a.i.)
+    ):
+        assert categorie(cat_insee) == CategorieJuridique.SOCIETE_ANONYME
+
+
+def test_categorie_SCA():
+    for cat_insee in (
+        5308,  # Société en commandite par actions
+        5385,  # Société d'exercice libéral en commandite par actions
+    ):
+        assert categorie(cat_insee) == CategorieJuridique.SOCIETE_COMMANDITE_PAR_ACTION
+
+
+def test_categorie_SAS():
+    for cat_insee in (
+        5710,  # SAS, société par actions simplifiée
+        5785,  # Société d'exercice libéral par action simplifiée
+    ):
+        assert categorie(cat_insee) == CategorieJuridique.SOCIETE_PAR_ACTION_SIMPLIFIEE
+
+
+def test_categorie_SE():
+    assert categorie(5800) == CategorieJuridique.SOCIETE_EUROPEENNE
+
+
+def test_categorie_non_traitee():
+    cat_insee = 9240  # congrégation
+    assert categorie(cat_insee) is None
