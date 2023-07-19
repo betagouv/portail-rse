@@ -17,7 +17,7 @@ def test_api_fonctionnelle():
         "siren": SIREN,
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "denomination": "DIRECTION INTERMINISTERIELLE DU NUMERIQUE",
-        "categorie_juridique": 7120,
+        "categorie_juridique_sirene": 7120,
     }
 
 
@@ -47,7 +47,7 @@ def test_succes_recherche_comportant_la_raison_sociale(mocker):
         "siren": SIREN,
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         "denomination": "ENTREPRISE",
-        "categorie_juridique": 5710,
+        "categorie_juridique_sirene": 5710,
     }
 
 
@@ -77,7 +77,7 @@ def test_succes_recherche_sans_la_raison_sociale(mocker):
         "siren": SIREN,
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         "denomination": "ENTREPRISE",
-        "categorie_juridique": 5710,
+        "categorie_juridique_sirene": 5710,
     }
 
 

@@ -52,6 +52,7 @@ class Entreprise(TimestampedModel):
         verbose_name="Date de la dernière qualification",
         null=True,
     )
+    categorie_juridique_sirene = models.IntegerField(null=True)
     date_cloture_exercice = models.DateField(
         verbose_name="Date de clôture du dernier exercice comptable",
         null=True,

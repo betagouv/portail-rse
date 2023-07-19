@@ -11,7 +11,7 @@ def mock_api_recherche_entreprises(mocker):
             "siren": "000000001",
             "denomination": "Entreprise SAS",
             "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
-            "categorie_juridique": 5710,
+            "categorie_juridique_sirene": 5710,
         },
     )
 

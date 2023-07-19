@@ -78,6 +78,7 @@ def search_and_create_entreprise(siren):
     return Entreprise.objects.create(
         siren=infos_entreprise["siren"],
         denomination=infos_entreprise["denomination"],
+        categorie_juridique_sirene=infos_entreprise["categorie_juridique_sirene"],
     )
 
 

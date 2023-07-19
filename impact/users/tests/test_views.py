@@ -58,6 +58,7 @@ def test_create_user_with_real_siren(client, db, mailoutbox):
     user = User.objects.get(email="user@example.com")
     entreprise = Entreprise.objects.get(siren="130025265")
     assert entreprise.denomination == "DIRECTION INTERMINISTERIELLE DU NUMERIQUE"
+    assert entreprise.categorie_juridique_sirene == 7120
     assert not CaracteristiquesAnnuelles.objects.filter(entreprise=entreprise)
     assert user.created_at
     assert user.updated_at
