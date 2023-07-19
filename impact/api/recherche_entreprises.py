@@ -28,6 +28,7 @@ def recherche(siren):
 
         data = response.json()["results"][0]
         denomination = data["nom_raison_sociale"] or data["nom_complet"]
+        categorie_juridique = int(data["nature_juridique"])
         try:
             # les tranches d'effectif correspondent à celles de l'API Sirene de l'Insee
             # https://www.sirene.fr/sirene/public/variable/tefen
@@ -51,6 +52,7 @@ def recherche(siren):
             "siren": siren,
             "effectif": effectif,
             "denomination": denomination,
+            "categorie_juridique": categorie_juridique,
         }
     elif response.status_code == 429:
         raise TooManyRequestError(TOO_MANY_REQUESTS_ERROR)

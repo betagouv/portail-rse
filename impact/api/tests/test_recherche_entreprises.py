@@ -8,6 +8,19 @@ from api.recherche_entreprises import recherche
 from entreprises.models import CaracteristiquesAnnuelles
 
 
+@pytest.mark.network
+def test_api_fonctionnelle():
+    SIREN = "130025265"
+    infos = recherche(SIREN)
+
+    assert infos == {
+        "siren": SIREN,
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_299,
+        "denomination": "DIRECTION INTERMINISTERIELLE DU NUMERIQUE",
+        "categorie_juridique": 7120,
+    }
+
+
 def test_succes_recherche_comportant_la_raison_sociale(mocker):
     SIREN = "123456789"
 
@@ -22,6 +35,7 @@ def test_succes_recherche_comportant_la_raison_sociale(mocker):
                         "nom_complet": "entreprise",
                         "nom_raison_sociale": "ENTREPRISE",
                         "tranche_effectif_salarie": "15",
+                        "nature_juridique": "5710",
                     }
                 ],
             }
@@ -33,6 +47,7 @@ def test_succes_recherche_comportant_la_raison_sociale(mocker):
         "siren": SIREN,
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         "denomination": "ENTREPRISE",
+        "categorie_juridique": 5710,
     }
 
 
@@ -50,6 +65,7 @@ def test_succes_recherche_sans_la_raison_sociale(mocker):
                         "nom_complet": "ENTREPRISE",
                         "nom_raison_sociale": None,
                         "tranche_effectif_salarie": "15",
+                        "nature_juridique": "5710",
                     }
                 ],
             }
@@ -61,6 +77,7 @@ def test_succes_recherche_sans_la_raison_sociale(mocker):
         "siren": SIREN,
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         "denomination": "ENTREPRISE",
+        "categorie_juridique": 5710,
     }
 
 
