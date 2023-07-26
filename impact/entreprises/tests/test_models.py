@@ -348,34 +348,34 @@ def test_caracteristiques_actuelles_selon_la_date_de_cloture(entreprise_non_qual
 
 
 def test_categorie_SA():
-    for cat_insee in (
+    for categorie_juridique_sirene in (
         5505,  # SA à participation ouvrière à conseil d'administration
         5699,  # SA à directoire (s.a.i.)
     ):
         assert (
-            conversion_categorie_juridique(cat_insee)
+            conversion_categorie_juridique(categorie_juridique_sirene)
             == CategorieJuridique.SOCIETE_ANONYME
         )
 
 
 def test_categorie_SCA():
-    for cat_insee in (
+    for categorie_juridique_sirene in (
         5308,  # Société en commandite par actions
         5385,  # Société d'exercice libéral en commandite par actions
     ):
         assert (
-            conversion_categorie_juridique(cat_insee)
+            conversion_categorie_juridique(categorie_juridique_sirene)
             == CategorieJuridique.SOCIETE_COMMANDITE_PAR_ACTION
         )
 
 
 def test_categorie_SAS():
-    for cat_insee in (
+    for categorie_juridique_sirene in (
         5710,  # SAS, société par actions simplifiée
         5785,  # Société d'exercice libéral par action simplifiée
     ):
         assert (
-            conversion_categorie_juridique(cat_insee)
+            conversion_categorie_juridique(categorie_juridique_sirene)
             == CategorieJuridique.SOCIETE_PAR_ACTION_SIMPLIFIEE
         )
 
@@ -385,5 +385,5 @@ def test_categorie_SE():
 
 
 def test_categorie_non_traitee():
-    cat_insee = 9240  # congrégation
-    assert conversion_categorie_juridique(cat_insee) is None
+    categorie_juridique_sirene = 9240  # congrégation
+    assert conversion_categorie_juridique(categorie_juridique_sirene) is None
