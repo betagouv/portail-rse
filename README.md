@@ -33,6 +33,16 @@ make run
 - Le service est disponible sur http://127.0.0.1:8000
 
 
+En cas de problème avec `pipenv`, pour l'installer en parallèle :
+
+```shell
+python3 -m venv venv
+. ./venv/bin/activate
+pip install pipenv
+# puis exécuter les commandes au début de ce paragraphe
+```
+
+
 ### Migration des données
 
 Pour générer les nouvelles migrations éventuelles et les appliquer :
