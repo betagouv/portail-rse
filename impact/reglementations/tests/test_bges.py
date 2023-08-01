@@ -26,7 +26,9 @@ def test_bges_reglementation_info():
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
     ],
 )
-def test_calculate_status_less_than_500_employees(effectif, entreprise_factory, alice):
+def test_calcule_le_statut_si_moins_de_500_employes(
+    effectif, entreprise_factory, alice
+):
     entreprise = entreprise_factory(effectif=effectif)
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
@@ -40,7 +42,7 @@ def test_calculate_status_less_than_500_employees(effectif, entreprise_factory, 
     )
 
 
-def test_calculate_status_more_than_500_employees(entreprise_factory, alice):
+def test_calcule_le_statut_si_plus_de_500_employes(entreprise_factory, alice):
     entreprise = entreprise_factory(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS
     )
