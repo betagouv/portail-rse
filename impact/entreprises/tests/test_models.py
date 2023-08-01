@@ -7,6 +7,7 @@ import pytest
 from django.db import IntegrityError
 from freezegun import freeze_time
 
+from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 
@@ -129,7 +130,7 @@ def test_dernieres_caracteristiques_qualifiantes(entreprise_non_qualifiee):
     entreprise_non_qualifiee.appartient_groupe = False
     entreprise_non_qualifiee.comptes_consolides = False
     entreprise_non_qualifiee.save()
-    caracteristiques_2023 = entreprise_non_qualifiee.actualise_caracteristiques(
+    actualisation = ActualisationCaracteristiquesAnnuelles(
         date_cloture_exercice=date(2023, 7, 7),
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
@@ -139,6 +140,9 @@ def test_dernieres_caracteristiques_qualifiantes(entreprise_non_qualifiee):
         tranche_bilan_consolide=None,
         bdese_accord=True,
         systeme_management_energie=True,
+    )
+    caracteristiques_2023 = entreprise_non_qualifiee.actualise_caracteristiques(
+        actualisation
     )
     caracteristiques_2023.save()
 
@@ -165,6 +169,7 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
     assert entreprise_non_qualifiee.caracteristiques_actuelles() is None
 
     effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
+    effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
     tranche_chiffre_affaires = CaracteristiquesAnnuelles.CA_MOINS_DE_700K
     tranche_bilan = CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
     tranche_chiffre_affaires_consolide = CaracteristiquesAnnuelles.CA_MOINS_DE_700K
@@ -173,15 +178,19 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
     systeme_management_energie = False
     date_cloture_exercice = date(2023, 7, 7)
 
-    caracteristiques = entreprise_non_qualifiee.actualise_caracteristiques(
+    actualisation = ActualisationCaracteristiquesAnnuelles(
         date_cloture_exercice,
         effectif,
+        effectif_outre_mer,
         tranche_chiffre_affaires,
         tranche_bilan,
         tranche_chiffre_affaires_consolide,
         tranche_bilan_consolide,
         bdese_accord,
         systeme_management_energie,
+    )
+    caracteristiques = entreprise_non_qualifiee.actualise_caracteristiques(
+        actualisation
     )
     caracteristiques.save()
 
@@ -201,6 +210,7 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
     assert entreprise_non_qualifiee.caracteristiques_annuelles(2023) == caracteristiques
 
     nouvel_effectif = CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS
+    nouvel_effectif_outre_mer = CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS
     nouvelle_tranche_chiffre_affaires = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
     nouvelle_tranche_bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
     nouvelle_tranche_chiffre_affaires_consolide = (
@@ -210,9 +220,10 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
     nouveau_bdese_accord = True
     nouveau_systeme_management_energie = True
 
-    nouvelles_caracteristiques = entreprise_non_qualifiee.actualise_caracteristiques(
+    actualisation = ActualisationCaracteristiquesAnnuelles(
         date_cloture_exercice,
         nouvel_effectif,
+        nouvel_effectif_outre_mer,
         nouvelle_tranche_chiffre_affaires,
         nouvelle_tranche_bilan,
         nouvelle_tranche_chiffre_affaires_consolide,
@@ -220,12 +231,16 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
         nouveau_bdese_accord,
         nouveau_systeme_management_energie,
     )
+    nouvelles_caracteristiques = entreprise_non_qualifiee.actualise_caracteristiques(
+        actualisation
+    )
     nouvelles_caracteristiques.save()
 
     nouvelles_caracteristiques = CaracteristiquesAnnuelles.objects.get(
         pk=nouvelles_caracteristiques.pk
     )
     assert nouvelles_caracteristiques.effectif == nouvel_effectif
+    assert nouvelles_caracteristiques.effectif_outre_mer == nouvel_effectif_outre_mer
     assert (
         nouvelles_caracteristiques.tranche_chiffre_affaires
         == nouvelle_tranche_chiffre_affaires
@@ -277,9 +292,10 @@ def test_uniques_caracteristiques_annuelles(entreprise_non_qualifiee):
 def test_caracteristiques_actuelles_selon_la_date_de_cloture(entreprise_non_qualifiee):
     entreprise_non_qualifiee.date_cloture_exercice = date(2000, 6, 30)
     for annee in (2022, 2023):
-        caracs = entreprise_non_qualifiee.actualise_caracteristiques(
+        actualisation = ActualisationCaracteristiquesAnnuelles(
             date(annee, 6, 30),
             effectif=CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS,
+            effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
             tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
             tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
             tranche_chiffre_affaires_consolide=None,
@@ -287,6 +303,7 @@ def test_caracteristiques_actuelles_selon_la_date_de_cloture(entreprise_non_qual
             bdese_accord=False,
             systeme_management_energie=False,
         )
+        caracs = entreprise_non_qualifiee.actualise_caracteristiques(actualisation)
         caracs.save()
 
     with freeze_time(datetime(2023, 1, 27, 16, 1, tzinfo=timezone.utc)):
