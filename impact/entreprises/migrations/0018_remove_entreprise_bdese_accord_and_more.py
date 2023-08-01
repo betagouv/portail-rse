@@ -49,6 +49,7 @@ class Migration(migrations.Migration):
                 help_text="Vérifiez et confirmez le nombre de salariés",
                 max_length=9,
                 null=True,
+                verbose_name="Effectif total",
             ),
         ),
         migrations.AddField(
