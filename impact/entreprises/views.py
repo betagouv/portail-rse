@@ -124,12 +124,16 @@ def qualification(request, siren):
             entreprise.date_cloture_exercice = form.cleaned_data[
                 "date_cloture_exercice"
             ]
+            entreprise.appartient_groupe = form.cleaned_data["appartient_groupe"]
+            entreprise.comptes_consolides = form.cleaned_data["comptes_consolides"]
             entreprise.save()
             caracteristiques = entreprise.actualise_caracteristiques(
                 form.cleaned_data["date_cloture_exercice"],
                 form.cleaned_data["effectif"],
                 form.cleaned_data["tranche_chiffre_affaires"],
                 form.cleaned_data["tranche_bilan"],
+                form.cleaned_data["tranche_chiffre_affaires_consolide"],
+                form.cleaned_data["tranche_bilan_consolide"],
                 form.cleaned_data["bdese_accord"],
                 form.cleaned_data["systeme_management_energie"],
                 form.cleaned_data["effectif_outre_mer"],

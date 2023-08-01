@@ -60,6 +60,8 @@ def entreprise_factory(db, date_cloture_dernier_exercice):
             siren=siren,
             denomination=denomination,
             date_cloture_exercice=date_cloture_exercice,
+            appartient_groupe=False,
+            comptes_consolides=False,
         )
         caracteristiques = entreprise.actualise_caracteristiques(
             date_cloture_exercice=date_cloture_dernier_exercice,
@@ -67,6 +69,8 @@ def entreprise_factory(db, date_cloture_dernier_exercice):
             effectif_outre_mer=effectif_outre_mer,
             tranche_chiffre_affaires=tranche_chiffre_affaires,
             tranche_bilan=tranche_bilan,
+            tranche_chiffre_affaires_consolide=None,
+            tranche_bilan_consolide=None,
             bdese_accord=bdese_accord,
             systeme_management_energie=systeme_management_energie,
         )

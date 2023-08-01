@@ -18,8 +18,21 @@ class EntrepriseForm(DsfrForm, forms.ModelForm):
 
     class Meta:
         model = Entreprise
-        fields = ["denomination", "siren", "date_cloture_exercice"]
-        widgets = {"date_cloture_exercice": DateInput}
+        fields = [
+            "denomination",
+            "siren",
+            "date_cloture_exercice",
+            "appartient_groupe",
+            "comptes_consolides",
+        ]
+        labels = {
+            "appartient_groupe": "L'entreprise appartient à un groupe composé d'une société-mère et d'une ou plusieurs filiales",
+        }
+        widgets = {
+            "date_cloture_exercice": DateInput,
+            "appartient_groupe": forms.CheckboxInput,
+            "comptes_consolides": forms.CheckboxInput,
+        }
 
     def clean_denomination(self):
         denomination = self.cleaned_data.get("denomination")
@@ -35,6 +48,8 @@ class CaracteristiquesForm(DsfrForm, forms.ModelForm):
             "effectif_outre_mer",
             "tranche_chiffre_affaires",
             "tranche_bilan",
+            "tranche_chiffre_affaires_consolide",
+            "tranche_bilan_consolide",
             "bdese_accord",
             "systeme_management_energie",
         ]
