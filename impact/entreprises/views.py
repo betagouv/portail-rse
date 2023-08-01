@@ -13,6 +13,7 @@ from .forms import EntrepriseDetachForm
 from .forms import EntrepriseQualificationForm
 from .models import Entreprise
 from api.exceptions import APIError
+from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
 from habilitations.models import detach_user_from_entreprise
 from habilitations.models import is_user_attached_to_entreprise
@@ -134,6 +135,9 @@ def qualification(request, siren):
 
     else:
         infos_entreprise = api.recherche_entreprises.recherche(entreprise.siren)
+        infos_entreprise[
+            "effectif_outre_mer"
+        ] = CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
         form = EntrepriseQualificationForm(initial=infos_entreprise)
 
     return render(

@@ -10,6 +10,7 @@ from .forms import CaracteristiquesForm
 from .forms import ContactForm
 from .forms import EntrepriseForm
 from .forms import SirenForm
+from entreprises.models import CaracteristiquesAnnuelles
 
 
 def index(request):
@@ -70,6 +71,9 @@ def simulation(request):
             siren = siren_form.cleaned_data["siren"]
             try:
                 infos_entreprise = api.recherche_entreprises.recherche(siren)
+                infos_entreprise[
+                    "effectif_outre_mer"
+                ] = CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
                 entreprise_form = EntrepriseForm(initial=infos_entreprise)
                 caracteristiques_form = CaracteristiquesForm(initial=infos_entreprise)
                 return render(
