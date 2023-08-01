@@ -62,3 +62,13 @@ DROP SCHEMA impact CASCADE;
 ```
 
 Cela supprime le schéma, il faut donc le recréer ensuite et attribuer à nouveau les droits d'accès à l'utilisateur `metabase`.
+
+## Mise à jour de Metabase
+
+Pour modifier la version de Metabase il faut :
+  - mettre à jour la version souhaitée dans la variable d'environnement `METABASE_VERSION` de l'application Metabase sur Scalingo
+  - faire un nouveau déploiement (comme indiqué dans [la documentation de Scalingo](https://doc.scalingo.com/platform/getting-started/getting-started-with-metabase#update-the-application))
+
+  ```
+  scalingo --app my-app deploy https://github.com/Scalingo/metabase-scalingo/archive/refs/heads/master.tar.gz
+  ```
