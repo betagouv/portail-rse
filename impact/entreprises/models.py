@@ -83,7 +83,8 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     effectif_outre_mer = models.CharField(
         max_length=9,
         choices=EFFECTIF_OUTRE_MER_CHOICES,
-        help_text="Vérifiez et confirmez le nombre de salariés dans les DOM-TOM",
+        verbose_name="Effectif outre-mer",
+        help_text="Nombre de salariés dans les régions et départements d'outre-mer",
         null=True,
     )
     bdese_accord = models.BooleanField(

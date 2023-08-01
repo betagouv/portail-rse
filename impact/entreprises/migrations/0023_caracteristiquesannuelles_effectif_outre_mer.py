@@ -18,9 +18,10 @@ class Migration(migrations.Migration):
                     ("0-249", "moins de 250 salariés"),
                     ("250+", "250 salariés ou plus"),
                 ],
-                help_text="Vérifiez et confirmez le nombre de salariés dans les DOM-TOM",
+                help_text="Nombre de salariés dans les régions et départements d'outre-mer",
                 max_length=9,
                 null=True,
+                verbose_name="Effectif outre-mer",
             ),
         ),
     ]
