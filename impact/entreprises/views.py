@@ -13,6 +13,7 @@ import api.recherche_entreprises
 from .forms import EntrepriseAttachForm
 from .forms import EntrepriseDetachForm
 from .forms import EntrepriseQualificationForm
+from .models import ActualisationCaracteristiquesAnnuelles
 from .models import Entreprise
 from api.exceptions import APIError
 from entreprises.models import CaracteristiquesAnnuelles
@@ -127,17 +128,18 @@ def qualification(request, siren):
             entreprise.appartient_groupe = form.cleaned_data["appartient_groupe"]
             entreprise.comptes_consolides = form.cleaned_data["comptes_consolides"]
             entreprise.save()
-            caracteristiques = entreprise.actualise_caracteristiques(
+            actualisation = ActualisationCaracteristiquesAnnuelles(
                 form.cleaned_data["date_cloture_exercice"],
                 form.cleaned_data["effectif"],
+                form.cleaned_data["effectif_outre_mer"],
                 form.cleaned_data["tranche_chiffre_affaires"],
                 form.cleaned_data["tranche_bilan"],
                 form.cleaned_data["tranche_chiffre_affaires_consolide"],
                 form.cleaned_data["tranche_bilan_consolide"],
                 form.cleaned_data["bdese_accord"],
                 form.cleaned_data["systeme_management_energie"],
-                form.cleaned_data["effectif_outre_mer"],
             )
+            caracteristiques = entreprise.actualise_caracteristiques(actualisation)
             caracteristiques.save()
             messages.success(
                 request, "Les caractéristiques de l'entreprise ont été mises à jour."

@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from datetime import date
 
 from django.conf import settings
@@ -7,6 +8,19 @@ from django.db import models
 from utils.models import TimestampedModel
 
 DENOMINATION_MAX_LENGTH = 250
+
+
+@dataclass
+class ActualisationCaracteristiquesAnnuelles:
+    date_cloture_exercice: date
+    effectif: str
+    effectif_outre_mer: str
+    tranche_chiffre_affaires: str
+    tranche_bilan: str
+    tranche_chiffre_affaires_consolide: str
+    tranche_bilan_consolide: str
+    bdese_accord: bool
+    systeme_management_energie: bool
 
 
 class Entreprise(TimestampedModel):
@@ -66,34 +80,27 @@ class Entreprise(TimestampedModel):
         )
         return self.caracteristiques_annuelles(annee_dernier_exercice_clos)
 
-    def actualise_caracteristiques(
-        self,
-        date_cloture_exercice,
-        effectif,
-        tranche_chiffre_affaires,
-        tranche_bilan,
-        tranche_chiffre_affaires_consolide,
-        tranche_bilan_consolide,
-        bdese_accord,
-        systeme_management_energie,
-        effectif_outre_mer=None
-    ):
+    def actualise_caracteristiques(self, actualisation):
         caracteristiques = self.caracteristiques_annuelles(
-            date_cloture_exercice.year
+            actualisation.date_cloture_exercice.year
         ) or CaracteristiquesAnnuelles(
-            entreprise=self, annee=date_cloture_exercice.year
+            entreprise=self, annee=actualisation.date_cloture_exercice.year
         )
-        caracteristiques.date_cloture_exercice = date_cloture_exercice
-        caracteristiques.effectif = effectif
-        caracteristiques.effectif_outre_mer = effectif_outre_mer
-        caracteristiques.tranche_chiffre_affaires = tranche_chiffre_affaires
-        caracteristiques.tranche_bilan = tranche_bilan
+        caracteristiques.date_cloture_exercice = actualisation.date_cloture_exercice
+        caracteristiques.effectif = actualisation.effectif
+        caracteristiques.effectif_outre_mer = actualisation.effectif_outre_mer
+        caracteristiques.tranche_chiffre_affaires = (
+            actualisation.tranche_chiffre_affaires
+        )
+        caracteristiques.tranche_bilan = actualisation.tranche_bilan
         caracteristiques.tranche_chiffre_affaires_consolide = (
-            tranche_chiffre_affaires_consolide
+            actualisation.tranche_chiffre_affaires_consolide
         )
-        caracteristiques.tranche_bilan_consolide = tranche_bilan_consolide
-        caracteristiques.bdese_accord = bdese_accord
-        caracteristiques.systeme_management_energie = systeme_management_energie
+        caracteristiques.tranche_bilan_consolide = actualisation.tranche_bilan_consolide
+        caracteristiques.bdese_accord = actualisation.bdese_accord
+        caracteristiques.systeme_management_energie = (
+            actualisation.systeme_management_energie
+        )
         return caracteristiques
 
 

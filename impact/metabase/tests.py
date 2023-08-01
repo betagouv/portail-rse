@@ -4,6 +4,7 @@ from datetime import timezone
 import pytest
 from freezegun import freeze_time
 
+from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from habilitations.models import attach_user_to_entreprise
@@ -49,7 +50,7 @@ def test_synchronise_une_entreprise_qualifiee(
             systeme_management_energie=False,
         )
         frozen_datetime.move_to(date_deuxieme_evolution)
-        entreprise.actualise_caracteristiques(
+        actualisation = ActualisationCaracteristiquesAnnuelles(
             date_cloture_exercice=date_cloture_dernier_exercice.replace(
                 year=date_cloture_dernier_exercice.year + 1
             ),
@@ -61,9 +62,10 @@ def test_synchronise_une_entreprise_qualifiee(
             tranche_bilan_consolide=None,
             bdese_accord=True,
             systeme_management_energie=False,
-        ).save()
+        )
+        entreprise.actualise_caracteristiques(actualisation).save()
         frozen_datetime.move_to(date_troisieme_evolution)
-        entreprise.actualise_caracteristiques(
+        actualisation = ActualisationCaracteristiquesAnnuelles(
             date_cloture_exercice=date_cloture_dernier_exercice.replace(
                 year=date_cloture_dernier_exercice.year + 2
             ),
@@ -75,7 +77,8 @@ def test_synchronise_une_entreprise_qualifiee(
             tranche_bilan_consolide=None,
             bdese_accord=True,
             systeme_management_energie=True,
-        ).save()
+        )
+        entreprise.actualise_caracteristiques(actualisation).save()
 
     Command().handle()
 

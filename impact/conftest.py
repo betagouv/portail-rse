@@ -2,6 +2,7 @@ from datetime import date
 
 import pytest
 
+from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 
@@ -63,17 +64,18 @@ def entreprise_factory(db, date_cloture_dernier_exercice):
             appartient_groupe=False,
             comptes_consolides=False,
         )
-        caracteristiques = entreprise.actualise_caracteristiques(
-            date_cloture_exercice=date_cloture_dernier_exercice,
-            effectif=effectif,
-            effectif_outre_mer=effectif_outre_mer,
-            tranche_chiffre_affaires=tranche_chiffre_affaires,
-            tranche_bilan=tranche_bilan,
-            tranche_chiffre_affaires_consolide=None,
-            tranche_bilan_consolide=None,
-            bdese_accord=bdese_accord,
-            systeme_management_energie=systeme_management_energie,
+        actualisation = ActualisationCaracteristiquesAnnuelles(
+            date_cloture_exercice,
+            effectif,
+            effectif_outre_mer,
+            tranche_chiffre_affaires,
+            tranche_bilan,
+            None,
+            None,
+            bdese_accord,
+            systeme_management_energie,
         )
+        caracteristiques = entreprise.actualise_caracteristiques(actualisation)
         caracteristiques.save()
         return entreprise
 
