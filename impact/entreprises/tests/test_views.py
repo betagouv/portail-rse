@@ -247,7 +247,7 @@ def test_qualification_page_with_current_qualification(
     assert context["form"]["date_cloture_exercice"].initial == "2022-12-31"
 
 
-def test_qualify_entreprise(
+def test_qualie_entreprise_appartenant_a_un_groupe(
     client,
     alice,
     entreprise_non_qualifiee,
@@ -262,6 +262,10 @@ def test_qualify_entreprise(
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "appartient_groupe": True,
+        "comptes_consolides": True,
+        "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
         "bdese_accord": True,
         "systeme_management_energie": True,
     }
@@ -285,6 +289,8 @@ def test_qualify_entreprise(
     entreprise_non_qualifiee.refresh_from_db()
     assert entreprise_non_qualifiee.denomination == "Entreprise SAS"
     assert entreprise_non_qualifiee.date_cloture_exercice == date(2022, 12, 31)
+    assert entreprise_non_qualifiee.appartient_groupe is True
+    assert entreprise_non_qualifiee.comptes_consolides is True
     caracteristiques = entreprise_non_qualifiee.caracteristiques_actuelles()
     assert (
         caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
@@ -301,6 +307,61 @@ def test_qualify_entreprise(
         caracteristiques.tranche_bilan
         == CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
     )
+    assert (
+        caracteristiques.tranche_chiffre_affaires_consolide
+        == CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
+    )
+    assert (
+        caracteristiques.tranche_bilan_consolide
+        == CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
+    )
+    assert caracteristiques.bdese_accord
+    assert caracteristiques.systeme_management_energie
+
+
+def test_qualifie_entreprise_sans_groupe(
+    client,
+    alice,
+    entreprise_non_qualifiee,
+    mock_api_recherche_entreprises,
+    mock_api_index_egapro,
+):
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    client.force_login(alice)
+    data = {
+        "date_cloture_exercice": date(2022, 12, 31),
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "bdese_accord": True,
+        "systeme_management_energie": True,
+    }
+
+    url = f"/entreprises/{entreprise_non_qualifiee.siren}"
+    response = client.post(url, data=data)
+
+    assert response.status_code == 302
+
+    entreprise_non_qualifiee.refresh_from_db()
+    assert entreprise_non_qualifiee.denomination == "Entreprise SAS"
+    assert entreprise_non_qualifiee.date_cloture_exercice == date(2022, 12, 31)
+    assert entreprise_non_qualifiee.appartient_groupe is False
+    assert entreprise_non_qualifiee.comptes_consolides is False
+    caracteristiques = entreprise_non_qualifiee.caracteristiques_actuelles()
+    assert (
+        caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+    )
+    assert (
+        caracteristiques.tranche_chiffre_affaires
+        == CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
+    )
+    assert (
+        caracteristiques.tranche_bilan
+        == CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
+    )
+    assert caracteristiques.tranche_chiffre_affaires_consolide is None
+    assert caracteristiques.tranche_bilan_consolide is None
     assert caracteristiques.bdese_accord
     assert caracteristiques.systeme_management_energie
 

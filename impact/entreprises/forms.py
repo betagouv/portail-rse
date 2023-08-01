@@ -36,6 +36,15 @@ class EntrepriseDetachForm(DsfrForm):
 
 
 class EntrepriseQualificationForm(DsfrForm, forms.ModelForm):
+    appartient_groupe = forms.BooleanField(
+        required=False,
+        label="L'entreprise appartient à un groupe composé d'une société-mère et d'une ou plusieurs filiales",
+    )
+    comptes_consolides = forms.BooleanField(
+        required=False,
+        label="Le groupe d'entreprises établit des comptes consolidés",
+    )
+
     class Meta:
         model = CaracteristiquesAnnuelles
         fields = [
@@ -44,6 +53,8 @@ class EntrepriseQualificationForm(DsfrForm, forms.ModelForm):
             "effectif_outre_mer",
             "tranche_chiffre_affaires",
             "tranche_bilan",
+            "tranche_chiffre_affaires_consolide",
+            "tranche_bilan_consolide",
             "bdese_accord",
             "systeme_management_energie",
         ]

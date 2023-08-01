@@ -53,6 +53,10 @@ def test_public_reglementations_with_entreprise_data(status_est_soumis, client, 
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "appartient_groupe": True,
+        "comptes_consolides": True,
+        "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
         "bdese_accord": False,
         "denomination": "Entreprise SAS",
         "siren": "000000001",
@@ -87,6 +91,8 @@ def test_public_reglementations_with_entreprise_data(status_est_soumis, client, 
     entreprise = Entreprise.objects.get(siren="000000001")
     assert entreprise.denomination == "Entreprise SAS"
     assert entreprise.date_cloture_exercice == date(2022, 12, 31)
+    assert entreprise.appartient_groupe is True
+    assert entreprise.comptes_consolides is True
     caracteristiques = entreprise.caracteristiques_annuelles(2022)
     assert not caracteristiques.bdese_accord
     assert caracteristiques.systeme_management_energie is False
@@ -97,6 +103,14 @@ def test_public_reglementations_with_entreprise_data(status_est_soumis, client, 
     )
     assert (
         caracteristiques.tranche_bilan
+        == CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
+    )
+    assert (
+        caracteristiques.tranche_chiffre_affaires_consolide
+        == CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
+    )
+    assert (
+        caracteristiques.tranche_bilan_consolide
         == CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
     )
 

@@ -16,6 +16,13 @@ class Entreprise(TimestampedModel):
         verbose_name="Date de clôture du dernier exercice comptable",
         null=True,
     )
+    appartient_groupe = models.BooleanField(
+        verbose_name="L'entreprise fait partie d'un groupe",
+        null=True,
+    )
+    comptes_consolides = models.BooleanField(
+        verbose_name="Le groupe d'entreprises établit des comptes consolidés", null=True
+    )
     users = models.ManyToManyField(
         settings.AUTH_USER_MODEL, through="habilitations.Habilitation"
     )
@@ -65,6 +72,8 @@ class Entreprise(TimestampedModel):
         effectif,
         tranche_chiffre_affaires,
         tranche_bilan,
+        tranche_chiffre_affaires_consolide,
+        tranche_bilan_consolide,
         bdese_accord,
         systeme_management_energie,
         effectif_outre_mer=None
@@ -77,9 +86,13 @@ class Entreprise(TimestampedModel):
         caracteristiques.date_cloture_exercice = date_cloture_exercice
         caracteristiques.effectif = effectif
         caracteristiques.effectif_outre_mer = effectif_outre_mer
-        caracteristiques.bdese_accord = bdese_accord
         caracteristiques.tranche_chiffre_affaires = tranche_chiffre_affaires
         caracteristiques.tranche_bilan = tranche_bilan
+        caracteristiques.tranche_chiffre_affaires_consolide = (
+            tranche_chiffre_affaires_consolide
+        )
+        caracteristiques.tranche_bilan_consolide = tranche_bilan_consolide
+        caracteristiques.bdese_accord = bdese_accord
         caracteristiques.systeme_management_energie = systeme_management_energie
         return caracteristiques
 
@@ -111,7 +124,6 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     CA_ENTRE_40M_ET_50M = "40M-50M"
     CA_ENTRE_50M_ET_100M = "50M-100M"
     CA_100M_ET_PLUS = "100M+"
-
     CA_CHOICES = [
         (CA_MOINS_DE_700K, "moins de 700k€"),
         (CA_ENTRE_700K_ET_12M, "entre 700k€ et 12M€"),
@@ -127,7 +139,6 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     BILAN_ENTRE_20M_ET_43M = "20M-43M"
     BILAN_ENTRE_43M_ET_100M = "43M-100M"
     BILAN_100M_ET_PLUS = "100M+"
-
     BILAN_CHOICES = [
         (BILAN_MOINS_DE_350K, "moins de 350k€"),
         (BILAN_ENTRE_350K_ET_6M, "entre 350k€ et 6M€"),
@@ -169,12 +180,26 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         choices=BILAN_CHOICES,
         null=True,
     )
+    tranche_chiffre_affaires_consolide = models.CharField(
+        verbose_name="Chiffre d'affaires consolidé du groupe",
+        max_length=9,
+        choices=CA_CHOICES,
+        null=True,
+        blank=True,
+    )
+    tranche_bilan_consolide = models.CharField(
+        verbose_name="Bilan consolidé du groupe",
+        max_length=9,
+        choices=BILAN_CHOICES,
+        null=True,
+        blank=True,
+    )
     bdese_accord = models.BooleanField(
         verbose_name="L'entreprise a un accord collectif d'entreprise concernant la Base de Données Économiques, Sociales et Environnementales (BDESE)",
         default=False,  # null=True serait préférable
     )
     systeme_management_energie = models.BooleanField(
-        verbose_name="L'entreprise a mis en place un système de management de l’énergie",
+        verbose_name="L'entreprise a mis en place un système de management de l’énergie",
         null=True,
     )
 
@@ -190,12 +215,26 @@ class CaracteristiquesAnnuelles(TimestampedModel):
 
     @property
     def sont_qualifiantes(self):
-        return bool(
-            self.date_cloture_exercice
-            and self.effectif
-            and self.effectif_outre_mer
-            and self.tranche_chiffre_affaires
-            and self.tranche_bilan
-            and self.bdese_accord is not None
-            and self.systeme_management_energie is not None
+        groupe_est_qualifie = bool(
+            self.entreprise.appartient_groupe is not None
+            and (
+                (self.entreprise.comptes_consolides is False)
+                or (
+                    self.entreprise.comptes_consolides is True
+                    and self.tranche_chiffre_affaires_consolide
+                    and self.tranche_bilan_consolide
+                )
+            )
+        )
+        return (
+            bool(
+                self.date_cloture_exercice
+                and self.effectif
+                and self.effectif_outre_mer
+                and self.tranche_chiffre_affaires
+                and self.tranche_bilan
+                and self.bdese_accord is not None
+                and self.systeme_management_energie is not None
+            )
+            and groupe_est_qualifie
         )
