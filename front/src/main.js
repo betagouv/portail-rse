@@ -1,4 +1,5 @@
 import ExternalFieldToggle from './lib/ExternalFieldToggle.svelte'
+import GroupeFields from './lib/GroupeFields.svelte'
 import SearchEntreprise from './lib/SearchEntreprise.svelte'
 
 for (let externalFieldToggle of document.getElementsByClassName("svelte-external-field-toggle")) {
@@ -18,5 +19,12 @@ if (document.getElementById("svelte-search-entreprise")) {
   new SearchEntreprise({
     target: target,
     hydrate: true,
+  })
+}
+
+if (document.getElementById("svelte-appartient-groupe-field")) {
+  let target = document.getElementById("svelte-appartient-groupe-field")
+  new GroupeFields({
+    target: target,
   })
 }
