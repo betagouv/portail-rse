@@ -64,7 +64,7 @@ def test_calcule_statut_plus_de_250_employes(effectif, entreprise_factory, alice
         "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 250 salariés."
     )
     assert reglementation.status_detail.endswith(
-        "Vous devez réaliser un audit énergétique si vous remplissez l'une des conditions suivantes lors des deux derniers exercices comptables : soit votre effectif est supérieur à 250 salariés, soit votre bilan est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
+        "Vous devez réaliser un audit énergétique si vous remplissez l'une des conditions suivantes lors des deux derniers exercices comptables : soit votre effectif est supérieur à 250 salariés, soit votre bilan (ou bilan consolidé) est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
     )
 
 
@@ -134,7 +134,7 @@ def test_calcule_etat_avec_bilan_et_ca_suffisants(bilan, ca, entreprise_factory,
         "Vous êtes soumis à cette réglementation car votre bilan est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
     )
     assert reglementation.status_detail.endswith(
-        "Vous devez réaliser un audit énergétique si vous remplissez l'une des conditions suivantes lors des deux derniers exercices comptables : soit votre effectif est supérieur à 250 salariés, soit votre bilan est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
+        "Vous devez réaliser un audit énergétique si vous remplissez l'une des conditions suivantes lors des deux derniers exercices comptables : soit votre effectif est supérieur à 250 salariés, soit votre bilan (ou bilan consolidé) est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
     )
 
 
@@ -223,7 +223,7 @@ def test_calcule_etat_avec_effectif_bilan_et_ca_suffisants(
         "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 250 salariés, votre bilan est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
     )
     assert reglementation.status_detail.endswith(
-        "Vous devez réaliser un audit énergétique si vous remplissez l'une des conditions suivantes lors des deux derniers exercices comptables : soit votre effectif est supérieur à 250 salariés, soit votre bilan est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
+        "Vous devez réaliser un audit énergétique si vous remplissez l'une des conditions suivantes lors des deux derniers exercices comptables : soit votre effectif est supérieur à 250 salariés, soit votre bilan (ou bilan consolidé) est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
     )
 
 
@@ -246,4 +246,44 @@ def test_calcule_etat_avec_bilan_et_ca_suffisants_mais_systeme_management_energi
     assert (
         reglementation.status_detail
         == "Vous n'êtes pas soumis à cette réglementation si le système de management de l'énergie est certifié par un organisme de certification accrédité par un organisme d'accréditation signataire de l'accord de reconnaissance multilatéral établi par la coordination européenne des organismes d'accréditation et que ce système prévoit un audit énergétique satisfaisant aux critères mentionnés à l'article L. 233-1."
+    )
+
+
+@pytest.mark.parametrize(
+    "bilan_consolide",
+    [
+        CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+        CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "ca",
+    [
+        CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
+        CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    ],
+)
+def test_calcule_etat_avec_bilan_insuffisant_mais_bilan_consolide_et_ca_suffisants(
+    bilan_consolide, ca, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(
+        appartient_groupe=True,
+        comptes_consolides=True,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires=ca,
+        tranche_bilan_consolide=bilan_consolide,
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    reglementation = AuditEnergetiqueReglementation(entreprise).calculate_status(
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
+    )
+
+    assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
+    assert reglementation.status_detail.startswith(
+        "Vous êtes soumis à cette réglementation car votre bilan consolidé est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
+    )
+    assert reglementation.status_detail.endswith(
+        "Vous devez réaliser un audit énergétique si vous remplissez l'une des conditions suivantes lors des deux derniers exercices comptables : soit votre effectif est supérieur à 250 salariés, soit votre bilan (ou bilan consolidé) est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
     )
