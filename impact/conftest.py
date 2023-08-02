@@ -50,10 +50,14 @@ def entreprise_factory(db, date_cloture_dernier_exercice):
         siren="000000001",
         denomination="Entreprise SAS",
         date_cloture_exercice=date_cloture_dernier_exercice,
+        appartient_groupe=False,
+        comptes_consolides=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
         bdese_accord=False,
         systeme_management_energie=False,
     ):
@@ -61,8 +65,8 @@ def entreprise_factory(db, date_cloture_dernier_exercice):
             siren=siren,
             denomination=denomination,
             date_cloture_exercice=date_cloture_exercice,
-            appartient_groupe=False,
-            comptes_consolides=False,
+            appartient_groupe=appartient_groupe,
+            comptes_consolides=comptes_consolides,
         )
         actualisation = ActualisationCaracteristiquesAnnuelles(
             date_cloture_exercice,
@@ -70,8 +74,8 @@ def entreprise_factory(db, date_cloture_dernier_exercice):
             effectif_outre_mer,
             tranche_chiffre_affaires,
             tranche_bilan,
-            None,
-            None,
+            tranche_chiffre_affaires_consolide if comptes_consolides else None,
+            tranche_bilan_consolide if comptes_consolides else None,
             bdese_accord,
             systeme_management_energie,
         )
