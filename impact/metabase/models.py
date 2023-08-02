@@ -20,9 +20,13 @@ class Entreprise(models.Model):
     denomination = models.CharField(max_length=DENOMINATION_MAX_LENGTH)
 
     date_cloture_exercice = models.DateField(null=True)
+    appartient_groupe = models.BooleanField(null=True)
+    comptes_consolides = models.BooleanField(null=True)
     effectif = models.CharField(max_length=9, null=True)
     tranche_chiffre_affaires = models.CharField(max_length=9, null=True)
     tranche_bilan = models.CharField(max_length=9, null=True)
+    tranche_chiffre_affaires_consolide = models.CharField(max_length=9, null=True)
+    tranche_bilan_consolide = models.CharField(max_length=9, null=True)
     bdese_accord = models.BooleanField(null=True)
     systeme_management_energie = models.BooleanField(null=True)
 

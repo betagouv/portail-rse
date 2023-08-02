@@ -95,12 +95,41 @@ def test_synchronise_une_entreprise_qualifiee(
             year=date_cloture_dernier_exercice.year + 2
         )
     )
+    assert metabase_entreprise.appartient_groupe is False
+    assert metabase_entreprise.comptes_consolides is False
     assert metabase_entreprise.effectif == "300-499"
     assert metabase_entreprise.tranche_bilan == "6M-20M"
     assert metabase_entreprise.tranche_chiffre_affaires == "12M-40M"
     assert metabase_entreprise.bdese_accord is True
     assert metabase_entreprise.systeme_management_energie is True
     assert metabase_entreprise.nombre_utilisateurs == 0
+
+
+@pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
+def test_synchronise_une_entreprise_qualifiee_appartenant_a_un_groupe(
+    entreprise_factory, date_cloture_dernier_exercice
+):
+    entreprise = entreprise_factory(
+        appartient_groupe=True,
+        comptes_consolides=True,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+    )
+
+    Command().handle()
+
+    assert MetabaseEntreprise.objects.count() == 1
+    metabase_entreprise = MetabaseEntreprise.objects.first()
+    assert metabase_entreprise.appartient_groupe is True
+    assert metabase_entreprise.comptes_consolides is True
+    assert (
+        metabase_entreprise.tranche_chiffre_affaires_consolide
+        == CaracteristiquesAnnuelles.CA_MOINS_DE_700K
+    )
+    assert (
+        metabase_entreprise.tranche_bilan_consolide
+        == CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
+    )
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])

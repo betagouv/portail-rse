@@ -43,11 +43,19 @@ class Command(BaseCommand):
                 date_cloture_exercice=caracteristiques.date_cloture_exercice
                 if caracteristiques
                 else None,
+                appartient_groupe=entreprise.appartient_groupe,
+                comptes_consolides=entreprise.comptes_consolides,
                 effectif=caracteristiques.effectif if caracteristiques else None,
                 tranche_chiffre_affaires=caracteristiques.tranche_chiffre_affaires
                 if caracteristiques
                 else None,
                 tranche_bilan=caracteristiques.tranche_bilan
+                if caracteristiques
+                else None,
+                tranche_chiffre_affaires_consolide=caracteristiques.tranche_chiffre_affaires_consolide
+                if caracteristiques
+                else None,
+                tranche_bilan_consolide=caracteristiques.tranche_bilan_consolide
                 if caracteristiques
                 else None,
                 bdese_accord=caracteristiques.bdese_accord
