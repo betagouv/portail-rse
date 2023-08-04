@@ -26,22 +26,28 @@ class IndexEgaproReglementation(Reglementation):
         if reglementation_status := super().calculate_status(caracteristiques, user):
             return reglementation_status
 
-        PRIMARY_ACTION = ReglementationAction(
-            "https://egapro.travail.gouv.fr/",
-            "Calculer et déclarer mon index sur Egapro",
-            external=True,
-        )
         if not self.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
-        elif is_index_egapro_published(self.entreprise, caracteristiques.annee):
-            status = ReglementationStatus.STATUS_A_JOUR
-            status_detail = "Vous êtes soumis à cette réglementation. Vous avez rempli vos obligations d'après les données disponibles sur la plateforme Egapro."
+            primary_action = ReglementationAction(
+                "https://egapro.travail.gouv.fr/index-egapro/recherche",
+                "Consulter les index sur Egapro",
+                external=True,
+            )
         else:
-            status = ReglementationStatus.STATUS_A_ACTUALISER
-            status_detail = "Vous êtes soumis à cette réglementation. Vous n'avez pas encore déclaré votre index sur la plateforme Egapro."
+            primary_action = ReglementationAction(
+                "https://egapro.travail.gouv.fr/",
+                "Calculer et déclarer mon index sur Egapro",
+                external=True,
+            )
+            if is_index_egapro_published(self.entreprise, caracteristiques.annee):
+                status = ReglementationStatus.STATUS_A_JOUR
+                status_detail = "Vous êtes soumis à cette réglementation. Vous avez rempli vos obligations d'après les données disponibles sur la plateforme Egapro."
+            else:
+                status = ReglementationStatus.STATUS_A_ACTUALISER
+                status_detail = "Vous êtes soumis à cette réglementation. Vous n'avez pas encore déclaré votre index sur la plateforme Egapro."
         return ReglementationStatus(
-            status, status_detail, primary_action=PRIMARY_ACTION
+            status, status_detail, primary_action=primary_action
         )
 
 

@@ -2,6 +2,7 @@ from django.conf import settings
 
 from entreprises.models import CaracteristiquesAnnuelles
 from reglementations.views.base import Reglementation
+from reglementations.views.base import ReglementationAction
 from reglementations.views.base import ReglementationStatus
 
 
@@ -28,7 +29,19 @@ class BGESReglementation(Reglementation):
         if self.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_SOUMIS
             status_detail = "Vous êtes soumis à cette réglementation"
+            primary_action = ReglementationAction(
+                "https://bilans-ges.ademe.fr/bilans/comment-publier",
+                "Publier mon Bilan GES sur Bilans GES",
+                external=True,
+            )
         else:
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
-        return ReglementationStatus(status, status_detail)
+            primary_action = ReglementationAction(
+                "https://bilans-ges.ademe.fr/bilans",
+                "Consulter les Bilans GES sur Bilans GES",
+                external=True,
+            )
+        return ReglementationStatus(
+            status, status_detail, primary_action=primary_action
+        )
