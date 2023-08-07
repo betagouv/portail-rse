@@ -31,7 +31,7 @@ class BGESReglementation(Reglementation):
             status_detail = "Vous êtes soumis à cette réglementation"
             primary_action = ReglementationAction(
                 "https://bilans-ges.ademe.fr/bilans/comment-publier",
-                "Publier mon Bilan GES sur Bilans GES",
+                "Publier mon Bilan GES",
                 external=True,
             )
         else:
