@@ -221,6 +221,12 @@ def test_qualification_page_with_current_qualification(
 ):
     entreprise = entreprise_factory()
     attach_user_to_entreprise(alice, entreprise, "Présidente")
+    caracs = entreprise.dernieres_caracteristiques_qualifiantes
+    caracs.tranche_chiffre_affaires_consolide = (
+        CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
+    )
+    caracs.tranche_bilan_consolide = CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
+    caracs.save()
     client.force_login(alice)
 
     with freeze_time(date(2023, 1, 27)):
@@ -239,6 +245,19 @@ def test_qualification_page_with_current_qualification(
         == caracs.tranche_chiffre_affaires
     )
     assert context["form"]["tranche_bilan"].initial == caracs.tranche_bilan
+    assert context["form"]["appartient_groupe"].initial == entreprise.appartient_groupe
+    assert (
+        context["form"]["comptes_consolides"].initial == entreprise.comptes_consolides
+    )
+
+    assert (
+        context["form"]["tranche_chiffre_affaires_consolide"].initial
+        == caracs.tranche_chiffre_affaires_consolide
+    )
+    assert (
+        context["form"]["tranche_bilan_consolide"].initial
+        == caracs.tranche_bilan_consolide
+    )
     assert context["form"]["bdese_accord"].initial == caracs.bdese_accord
     assert (
         context["form"]["systeme_management_energie"].initial

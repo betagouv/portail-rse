@@ -157,6 +157,10 @@ def qualification(request, siren):
                 "effectif_outre_mer": caracs.effectif_outre_mer,
                 "tranche_chiffre_affaires": caracs.tranche_chiffre_affaires,
                 "tranche_bilan": caracs.tranche_bilan,
+                "appartient_groupe": entreprise.appartient_groupe,
+                "comptes_consolides": entreprise.comptes_consolides,
+                "tranche_chiffre_affaires_consolide": caracs.tranche_chiffre_affaires_consolide,
+                "tranche_bilan_consolide": caracs.tranche_bilan_consolide,
                 "bdese_accord": caracs.bdese_accord,
                 "systeme_management_energie": caracs.systeme_management_energie,
             }
