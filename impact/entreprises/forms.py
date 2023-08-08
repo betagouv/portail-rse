@@ -70,3 +70,17 @@ class EntrepriseQualificationForm(DsfrForm, forms.ModelForm):
             "systeme_management_energie": forms.CheckboxInput,
             "date_cloture_exercice": DateInput,
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        tranche_chiffre_affaires_consolide = cleaned_data.get(
+            "tranche_chiffre_affaires_consolide"
+        )
+        tranche_bilan_consolide = cleaned_data.get("tranche_bilan_consolide")
+        comptes_consolides = cleaned_data.get("comptes_consolides")
+        if comptes_consolides:
+            ERREUR = "Ce champ est obligatoire lorsque les comptes sont consolidés"
+            if not tranche_chiffre_affaires_consolide:
+                self.add_error("tranche_chiffre_affaires_consolide", ERREUR)
+            if not tranche_bilan_consolide:
+                self.add_error("tranche_bilan_consolide", ERREUR)

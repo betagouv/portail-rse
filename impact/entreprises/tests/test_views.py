@@ -408,3 +408,71 @@ def test_qualify_entreprise_error(
 
     entreprise_non_qualifiee.refresh_from_db()
     assert not entreprise_non_qualifiee.dernieres_caracteristiques_qualifiantes
+
+
+def test_qualification_entreprise_en_erreur_car_comptes_consolides_sans_ca_consolides(
+    client, alice, entreprise_non_qualifiee, mock_api_recherche_entreprises
+):
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    client.force_login(alice)
+    data = {
+        "date_cloture_exercice": date(2022, 12, 31),
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "appartient_groupe": True,
+        "comptes_consolides": True,
+        "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        "bdese_accord": True,
+        "systeme_management_energie": True,
+    }
+
+    url = f"/entreprises/{entreprise_non_qualifiee.siren}"
+    response = client.get(url)
+    response = client.post(url, data=data)
+
+    assert response.status_code == 200
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        "Les caractéristiques de l'entreprise n'ont pas été mises à jour car le formulaire contient des erreurs."
+        in content
+    )
+    assert "Ce champ est obligatoire lorsque les comptes sont consolidés" in content
+
+    entreprise_non_qualifiee.refresh_from_db()
+    assert not entreprise_non_qualifiee.dernieres_caracteristiques_qualifiantes
+
+
+def test_qualification_entreprise_en_erreur_car_comptes_consolides_sans_bilan_consolides(
+    client, alice, entreprise_non_qualifiee, mock_api_recherche_entreprises
+):
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    client.force_login(alice)
+    data = {
+        "date_cloture_exercice": date(2022, 12, 31),
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "appartient_groupe": True,
+        "comptes_consolides": True,
+        "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+        "bdese_accord": True,
+        "systeme_management_energie": True,
+    }
+
+    url = f"/entreprises/{entreprise_non_qualifiee.siren}"
+    response = client.get(url)
+    response = client.post(url, data=data)
+
+    assert response.status_code == 200
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        "Les caractéristiques de l'entreprise n'ont pas été mises à jour car le formulaire contient des erreurs."
+        in content
+    )
+    assert "Ce champ est obligatoire lorsque les comptes sont consolidés" in content
+
+    entreprise_non_qualifiee.refresh_from_db()
+    assert not entreprise_non_qualifiee.dernieres_caracteristiques_qualifiantes
