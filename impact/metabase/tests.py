@@ -98,6 +98,7 @@ def test_synchronise_une_entreprise_qualifiee(
     assert metabase_entreprise.appartient_groupe is False
     assert metabase_entreprise.comptes_consolides is False
     assert metabase_entreprise.effectif == "300-499"
+    assert metabase_entreprise.effectif_outre_mer == "0-249"
     assert metabase_entreprise.tranche_bilan == "6M-20M"
     assert metabase_entreprise.tranche_chiffre_affaires == "12M-40M"
     assert metabase_entreprise.bdese_accord is True

@@ -46,6 +46,9 @@ class Command(BaseCommand):
                 appartient_groupe=entreprise.appartient_groupe,
                 comptes_consolides=entreprise.comptes_consolides,
                 effectif=caracteristiques.effectif if caracteristiques else None,
+                effectif_outre_mer=caracteristiques.effectif_outre_mer
+                if caracteristiques
+                else None,
                 tranche_chiffre_affaires=caracteristiques.tranche_chiffre_affaires
                 if caracteristiques
                 else None,
