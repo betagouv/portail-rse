@@ -11,12 +11,20 @@ class BGESReglementation(Reglementation):
     description = "Le Bilan GES réglementaire a vocation à contribuer à la mise en œuvre de la stratégie de réduction des émissions de GES des entreprises. Un plan de transition est obligatoirement joint à ce bilan. Il vise à réduire les émissions de gaz à effet de serre et présente les objectifs, moyens et actions envisagées à cette fin ainsi que, le cas échéant, les actions mises en œuvre lors du précédent bilan. Ils sont mis à jour tous les quatre ans."
     more_info_url = "https://bilans-ges.ademe.fr/"
 
-    def est_soumis(self, caracteristiques):
-        return (
-            caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS
-            or caracteristiques.effectif_outre_mer
+    def criteres_remplis(self, caracteristiques):
+        criteres = []
+        if caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS:
+            criteres.append("votre effectif est supérieur à 500 salariés")
+
+        if (
+            caracteristiques.effectif_outre_mer
             == CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS
-        )
+        ):
+            criteres.append("votre effectif outre-mer est supérieur à 250 salariés")
+        return criteres
+
+    def est_soumis(self, caracteristiques):
+        return self.criteres_remplis(caracteristiques)
 
     def calculate_status(
         self,
@@ -28,7 +36,7 @@ class BGESReglementation(Reglementation):
 
         if self.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_SOUMIS
-            status_detail = "Vous êtes soumis à cette réglementation"
+            status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(self.criteres_remplis(caracteristiques))}."
             primary_action = ReglementationAction(
                 "https://bilans-ges.ademe.fr/bilans/comment-publier",
                 "Publier mon Bilan GES",

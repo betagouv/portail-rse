@@ -58,7 +58,10 @@ def test_calcule_le_statut_si_plus_de_500_employes(entreprise_factory, alice):
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
-    assert reglementation.status_detail == "Vous êtes soumis à cette réglementation"
+    assert (
+        reglementation.status_detail
+        == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 500 salariés."
+    )
     assert (
         reglementation.primary_action.url
         == "https://bilans-ges.ademe.fr/bilans/comment-publier"
@@ -81,5 +84,8 @@ def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer(
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
-    assert reglementation.status_detail == "Vous êtes soumis à cette réglementation"
+    assert (
+        reglementation.status_detail
+        == "Vous êtes soumis à cette réglementation car votre effectif outre-mer est supérieur à 250 salariés."
+    )
     assert reglementation.primary_action.title == "Publier mon Bilan GES"
