@@ -45,7 +45,7 @@ pip install pipenv
 
 ### Migration des données
 
-Pour générer les nouvelles migrations éventuelles et les appliquer :
+Pour générer les nouvelles migrations éventuelles et les appliquer :
 
 ```
 make migrations
@@ -89,7 +89,7 @@ scalingo --app ${PROJET} run python3 impact/manage.py migrate NOM_DE_L_APP_DJANG
 
 ### Suppression des données
 
-Pour supprimer toutes les données en recette :
+Pour supprimer toutes les données en recette :
 
 ```
 scalingo --app ${PROJET} pgsql-console
@@ -105,7 +105,7 @@ scalingo --app ${PROJET} run python3 impact/manage.py createsuperuser
 
 ## Consommation et mémoire en recette et production
 
-Il est possible de connaître en temps réel la consommation CPU et mémoire avec la commande :
+Il est possible de connaître en temps réel la consommation CPU et mémoire avec la commande :
 
 ```
 scalingo --app ${PROJET} stats
