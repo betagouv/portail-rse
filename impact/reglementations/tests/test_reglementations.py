@@ -48,18 +48,11 @@ def test_public_reglementations(client):
 @pytest.mark.django_db
 def test_public_reglementations_with_entreprise_data(status_est_soumis, client, mocker):
     data = {
-        "date_cloture_exercice": date(2022, 12, 31),
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
-        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
-        "appartient_groupe": True,
-        "comptes_consolides": True,
-        "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
-        "bdese_accord": False,
         "denomination": "Entreprise SAS",
         "siren": "000000001",
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
     }
 
     mocker.patch(
@@ -91,8 +84,8 @@ def test_public_reglementations_with_entreprise_data(status_est_soumis, client, 
     entreprise = Entreprise.objects.get(siren="000000001")
     assert entreprise.denomination == "Entreprise SAS"
     assert entreprise.date_cloture_exercice == date(2022, 12, 31)
-    assert entreprise.appartient_groupe is True
-    assert entreprise.comptes_consolides is True
+    assert entreprise.appartient_groupe is None
+    assert entreprise.comptes_consolides is None
     caracteristiques = entreprise.caracteristiques_annuelles(2022)
     assert not caracteristiques.bdese_accord
     assert caracteristiques.systeme_management_energie is False
@@ -105,14 +98,8 @@ def test_public_reglementations_with_entreprise_data(status_est_soumis, client, 
         caracteristiques.tranche_bilan
         == CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
     )
-    assert (
-        caracteristiques.tranche_chiffre_affaires_consolide
-        == CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
-    )
-    assert (
-        caracteristiques.tranche_bilan_consolide
-        == CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
-    )
+    assert caracteristiques.tranche_chiffre_affaires_consolide is None
+    assert caracteristiques.tranche_bilan_consolide is None
 
     # reglementations for this entreprise are anonymously displayed
     context = response.context
@@ -170,14 +157,11 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
     client.force_login(entreprise.users.first())
 
     data = {
-        "date_cloture_exercice": date(2022, 6, 30),
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
-        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
-        "bdese_accord": False,
         "denomination": "Une autre entreprise SAS",
         "siren": "000000002",
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
     }
 
     mocker.patch(
@@ -222,18 +206,23 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
     effectif_outre_mer = CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS
     ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
     bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
-    bdese_accord = False
+    ca_consolide = CaracteristiquesAnnuelles.CA_MOINS_DE_700K
+    bilan_consolide = CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
+    bdese_accord = True
     systeme_management_energie = True
+    caracteristiques = entreprise.caracteristiques_annuelles(date_cloture_exercice.year)
+    caracteristiques.tranche_chiffre_affaires_consolide = ca_consolide
+    caracteristiques.tranche_bilan_consolide = bilan_consolide
+    caracteristiques.bdese_accord = bdese_accord
+    caracteristiques.systeme_management_energie = systeme_management_energie
+    caracteristiques.save()
+    autre_denomination = "Autre dénomination"
     data = {
-        "date_cloture_exercice": date_cloture_exercice,
+        "denomination": autre_denomination,
+        "siren": entreprise.siren,
         "effectif": effectif,
-        "effectif_outre_mer": effectif_outre_mer,
         "tranche_chiffre_affaires": ca,
         "tranche_bilan": bilan,
-        "bdese_accord": bdese_accord,
-        "systeme_management_energie": systeme_management_energie,
-        "denomination": entreprise.denomination,
-        "siren": entreprise.siren,
     }
 
     response = client.post("/reglementations", data=data)
@@ -249,41 +238,37 @@ def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
     assert (
         caracteristiques.tranche_bilan == CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
     )
-    assert not caracteristiques.systeme_management_energie
+    assert (
+        caracteristiques.tranche_chiffre_affaires_consolide
+        == CaracteristiquesAnnuelles.CA_MOINS_DE_700K
+    )
+    assert (
+        caracteristiques.tranche_bilan_consolide
+        == CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
+    )
+    assert caracteristiques.bdese_accord
+    assert caracteristiques.systeme_management_energie
 
     context = response.context
     assert context["entreprise"] == entreprise
+    assert context["entreprise"].denomination == autre_denomination
     reglementations = context["reglementations"]
     caracteristiques = CaracteristiquesAnnuelles(
         annee=date_cloture_exercice.year,
         entreprise=entreprise,
         date_cloture_exercice=date_cloture_exercice,
         effectif=effectif,
-        effectif_outre_mer=effectif_outre_mer,
+        effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         tranche_chiffre_affaires=ca,
         tranche_bilan=bilan,
-        bdese_accord=bdese_accord,
-        systeme_management_energie=systeme_management_energie,
+        bdese_accord=False,
+        systeme_management_energie=False,
     )
     for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
         status = reglementations[index]["status"]
         assert status == REGLEMENTATION(entreprise).calculate_status(
             caracteristiques, AnonymousUser()
         )
-
-    # si c'est un utilisateur rattaché à l'entreprise qui fait la simulation en changeant les données d'évolution
-    # on enregistre ces nouvelles données en base
-    # ce cas est encore accessible mais ne correspond pas à un parcours utilisateur normal
-    client.force_login(entreprise.users.first())
-    client.post("/reglementations", data=data)
-
-    entreprise.refresh_from_db()
-    assert entreprise.date_cloture_exercice == date_cloture_exercice
-    caracteristiques = entreprise.caracteristiques_annuelles(date_cloture_exercice.year)
-    assert caracteristiques.effectif == effectif
-    assert caracteristiques.tranche_chiffre_affaires == ca
-    assert caracteristiques.tranche_bilan == bilan
-    assert caracteristiques.systeme_management_energie
 
 
 def test_should_commit_une_entreprise_sans_utilisateur(

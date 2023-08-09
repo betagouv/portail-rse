@@ -4,8 +4,19 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.db import models
 
+from entreprises.models import CaracteristiquesAnnuelles
 from reglementations.models import CategoryType
 from utils.forms import DsfrForm
+
+
+class SimulationForm(DsfrForm):
+    denomination = forms.CharField()
+    siren = forms.CharField()
+    effectif = forms.ChoiceField(choices=CaracteristiquesAnnuelles.EFFECTIF_CHOICES)
+    tranche_chiffre_affaires = forms.ChoiceField(
+        choices=CaracteristiquesAnnuelles.CA_CHOICES
+    )
+    tranche_bilan = forms.ChoiceField(choices=CaracteristiquesAnnuelles.BILAN_CHOICES)
 
 
 class IntroductionDemoForm(DsfrForm):
