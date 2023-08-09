@@ -1,17 +1,19 @@
+from datetime import date
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
 
+from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
 from habilitations.models import is_user_attached_to_entreprise
-from public.forms import CaracteristiquesForm
 from public.forms import EntrepriseForm
+from reglementations.forms import SimulationForm
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
 from reglementations.views.bdese import BDESEReglementation
 from reglementations.views.bges import BGESReglementation
@@ -24,34 +26,46 @@ def reglementations(request):
     caracteristiques = None
     if request.POST:
         entreprise_form = EntrepriseForm(request.POST)
-        caracteristiques_form = CaracteristiquesForm(request.POST)
+        simulation_form = SimulationForm(request.POST)
         if "siren" in request.POST:
             if entreprises := Entreprise.objects.filter(
-                siren=entreprise_form.data["siren"]
+                siren=simulation_form.data["siren"]
             ):
                 entreprise = entreprises[0]
-                entreprise_form = EntrepriseForm(request.POST, instance=entreprise)
-
-            if entreprise_form.is_valid() and caracteristiques_form.is_valid():
-                request.session["siren"] = entreprise_form.cleaned_data["siren"]
-                commit = should_commit(entreprise, request.user)
-                entreprise = entreprise_form.save(commit=commit)
+                entreprise.denomination = simulation_form.cleaned_data["denomination"]
+                commit = not entreprise.caracteristiques_actuelles()
+            else:
+                entreprise = Entreprise.objects.create(
+                    denomination=simulation_form.cleaned_data["denomination"],
+                    siren=simulation_form.data["siren"],
+                    date_cloture_exercice=date(date.today().year - 1, 12, 31),
+                    comptes_consolides=None,
+                )
+                commit = True
+            if simulation_form.is_valid():
+                request.session["siren"] = simulation_form.cleaned_data["siren"]
                 if request.user.is_authenticated and is_user_attached_to_entreprise(
                     request.user, entreprise
                 ):
                     request.session["entreprise"] = entreprise.siren
-                annee = caracteristiques_form.cleaned_data["date_cloture_exercice"].year
-                try:
-                    caracteristiques = CaracteristiquesAnnuelles.objects.get(
-                        entreprise=entreprise, annee=annee
-                    )
-                    caracteristiques_form = CaracteristiquesForm(
-                        request.POST, instance=caracteristiques
-                    )
-                except ObjectDoesNotExist:
-                    caracteristiques_form.instance.entreprise = entreprise
-                    caracteristiques_form.instance.annee = annee
-                caracteristiques = caracteristiques_form.save(commit=commit)
+                date_cloture_exercice = date(date.today().year - 1, 12, 31)
+                annee = date_cloture_exercice.year
+                actualisation = ActualisationCaracteristiquesAnnuelles(
+                    date_cloture_exercice=date_cloture_exercice,
+                    effectif=simulation_form.data["effectif"],
+                    effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+                    tranche_chiffre_affaires=simulation_form.data[
+                        "tranche_chiffre_affaires"
+                    ],
+                    tranche_bilan=simulation_form.data["tranche_bilan"],
+                    tranche_chiffre_affaires_consolide=None,
+                    tranche_bilan_consolide=None,
+                    bdese_accord=False,
+                    systeme_management_energie=False,
+                )
+                caracteristiques = entreprise.actualise_caracteristiques(actualisation)
+                if commit:
+                    caracteristiques.save()
 
     elif entreprise := get_current_entreprise(request):
         return redirect("reglementations:reglementations", siren=entreprise.siren)

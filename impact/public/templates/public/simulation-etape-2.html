@@ -14,19 +14,11 @@
 
                 <form class="fr-mt-6w" action="{% url 'reglementations:reglementations' %}" method="post">
                     {% csrf_token %}
-                    {{ entreprise_form.siren.as_hidden }}
-                    {{ entreprise_form.denomination.as_hidden }}
-                    {% include 'snippets/field.html' with field=entreprise_form.date_cloture_exercice %}
-                    {% include 'snippets/field.html' with field=caracteristiques_form.effectif %}
-                    {% include 'snippets/field.html' with field=caracteristiques_form.effectif_outre_mer %}
-                    {% include 'snippets/field.html' with field=caracteristiques_form.tranche_chiffre_affaires %}
-                    {% include 'snippets/field.html' with field=caracteristiques_form.tranche_bilan %}
-                    {% include 'snippets/field.html' with field=entreprise_form.appartient_groupe %}
-                    {% include 'snippets/field.html' with field=entreprise_form.comptes_consolides %}
-                    {% include 'snippets/field.html' with field=caracteristiques_form.tranche_chiffre_affaires_consolide %}
-                    {% include 'snippets/field.html' with field=caracteristiques_form.tranche_bilan_consolide %}
-                    {% include 'snippets/field.html' with field=caracteristiques_form.bdese_accord %}
-                    {% include 'snippets/field.html' with field=caracteristiques_form.systeme_management_energie %}
+                    {{ simulation_form.siren.as_hidden }}
+                    {{ simulation_form.denomination.as_hidden }}
+                    {% include 'snippets/field.html' with field=simulation_form.effectif %}
+                    {% include 'snippets/field.html' with field=simulation_form.tranche_chiffre_affaires %}
+                    {% include 'snippets/field.html' with field=simulation_form.tranche_bilan %}
                     <input type="submit" value="Vérifier mes obligations" class="fr-btn">
                 </form>
             </div>

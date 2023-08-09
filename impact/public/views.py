@@ -1,5 +1,3 @@
-from datetime import date
-
 from django.conf import settings
 from django.contrib import messages
 from django.core.mail import EmailMessage
@@ -8,11 +6,9 @@ from django.shortcuts import render
 
 import api.exceptions
 import api.recherche_entreprises
-from .forms import CaracteristiquesForm
 from .forms import ContactForm
-from .forms import EntrepriseForm
 from .forms import SirenForm
-from entreprises.models import CaracteristiquesAnnuelles
+from reglementations.forms import SimulationForm
 
 
 def index(request):
@@ -73,23 +69,14 @@ def simulation(request):
             siren = siren_form.cleaned_data["siren"]
             try:
                 infos_entreprise = api.recherche_entreprises.recherche(siren)
-                infos_entreprise[
-                    "effectif_outre_mer"
-                ] = CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
-                date_cloture_exercice = date(date.today().year - 1, 12, 31)
-                infos_entreprise[
-                    "date_cloture_exercice"
-                ] = date_cloture_exercice.isoformat()
-                entreprise_form = EntrepriseForm(initial=infos_entreprise)
-                caracteristiques_form = CaracteristiquesForm(initial=infos_entreprise)
+                simulation_form = SimulationForm(initial=infos_entreprise)
                 return render(
                     request,
                     "public/simulation-etape-2.html",
                     {
                         "denomination": infos_entreprise["denomination"],
                         "siren": siren,
-                        "entreprise_form": entreprise_form,
-                        "caracteristiques_form": caracteristiques_form,
+                        "simulation_form": simulation_form,
                     },
                 )
             except api.exceptions.SirenError as e:
