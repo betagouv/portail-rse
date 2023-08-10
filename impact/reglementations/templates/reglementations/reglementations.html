@@ -13,7 +13,7 @@
                     Pour disposer une version plus précise de vos obligations réglementaires, vous devez vous connecter et remplir des indicateurs supplémentaires.
                     <br>
                     <a href="{% url 'simulation' %}" class="fr-btn">Faire une nouvelle simulation</a>
-                    <a href="{% url 'users:login' %}?next={{ request.path }}" class="fr-btn fr-btn--secondary">Se connecter</a>
+                    <a href="{% url 'users:login' %}?next={% url 'reglementations:reglementations' siren=entreprise.siren %}" class="fr-btn fr-btn--secondary">Se connecter</a>
                 {% else %}
                     La liste des réglementations ci-dessous n’est pas encore complète et va s’enrichir progressivement. Le site actuel, encore au stade de prototype (bêta), sera amené à évoluer.
                 {% endif %}
