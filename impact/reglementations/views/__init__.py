@@ -25,7 +25,7 @@ def reglementations(request):
     caracteristiques = None
     if request.POST:
         simulation_form = SimulationForm(request.POST)
-        if "siren" in request.POST:
+        if simulation_form.is_valid():
             if entreprises := Entreprise.objects.filter(
                 siren=simulation_form.data["siren"]
             ):
@@ -40,29 +40,30 @@ def reglementations(request):
                     comptes_consolides=None,
                 )
                 commit = True
-            if simulation_form.is_valid():
-                request.session["siren"] = simulation_form.cleaned_data["siren"]
-                if request.user.is_authenticated and is_user_attached_to_entreprise(
-                    request.user, entreprise
-                ):
-                    request.session["entreprise"] = entreprise.siren
-                date_cloture_exercice = date(date.today().year - 1, 12, 31)
-                actualisation = ActualisationCaracteristiquesAnnuelles(
-                    date_cloture_exercice=date_cloture_exercice,
-                    effectif=simulation_form.data["effectif"],
-                    effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-                    tranche_chiffre_affaires=simulation_form.data[
-                        "tranche_chiffre_affaires"
-                    ],
-                    tranche_bilan=simulation_form.data["tranche_bilan"],
-                    tranche_chiffre_affaires_consolide=None,
-                    tranche_bilan_consolide=None,
-                    bdese_accord=False,
-                    systeme_management_energie=False,
-                )
-                caracteristiques = entreprise.actualise_caracteristiques(actualisation)
-                if commit:
-                    caracteristiques.save()
+            request.session["siren"] = simulation_form.cleaned_data["siren"]
+            if request.user.is_authenticated and is_user_attached_to_entreprise(
+                request.user, entreprise
+            ):
+                request.session["entreprise"] = entreprise.siren
+            date_cloture_exercice = date(date.today().year - 1, 12, 31)
+            actualisation = ActualisationCaracteristiquesAnnuelles(
+                date_cloture_exercice=date_cloture_exercice,
+                effectif=simulation_form.data["effectif"],
+                effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+                tranche_chiffre_affaires=simulation_form.data[
+                    "tranche_chiffre_affaires"
+                ],
+                tranche_bilan=simulation_form.data["tranche_bilan"],
+                tranche_chiffre_affaires_consolide=None,
+                tranche_bilan_consolide=None,
+                bdese_accord=False,
+                systeme_management_energie=False,
+            )
+            caracteristiques = entreprise.actualise_caracteristiques(actualisation)
+            if commit:
+                caracteristiques.save()
+        else:
+            return redirect("simulation")
 
     elif entreprise := get_current_entreprise(request):
         return redirect("reglementations:reglementations", siren=entreprise.siren)
