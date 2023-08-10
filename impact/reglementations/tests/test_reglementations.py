@@ -107,6 +107,7 @@ def test_simulation_de_reglementations_avec_donnees_entreprise_postees_et_sans_e
     # reglementations for this entreprise are anonymously displayed
     context = response.context
     assert context["entreprise"] == entreprise
+    assert context["simulation"] == True
     reglementations = context["reglementations"]
     for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
         assert reglementations[index]["status"] == REGLEMENTATION(
@@ -359,6 +360,7 @@ def test_reglementations_with_authenticated_user_and_multiple_entreprises(
     content = response.content.decode("utf-8")
     context = response.context
     assert context["entreprise"] == entreprise2
+    assert context["simulation"] == False
     reglementations = context["reglementations"]
     for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
         assert reglementations[index]["status"] == REGLEMENTATION(
