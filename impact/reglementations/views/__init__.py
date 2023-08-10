@@ -12,7 +12,6 @@ from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
 from habilitations.models import is_user_attached_to_entreprise
-from public.forms import EntrepriseForm
 from reglementations.forms import SimulationForm
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
 from reglementations.views.bdese import BDESEReglementation
@@ -25,7 +24,6 @@ def reglementations(request):
     entreprise = None
     caracteristiques = None
     if request.POST:
-        entreprise_form = EntrepriseForm(request.POST)
         simulation_form = SimulationForm(request.POST)
         if "siren" in request.POST:
             if entreprises := Entreprise.objects.filter(
@@ -49,7 +47,6 @@ def reglementations(request):
                 ):
                     request.session["entreprise"] = entreprise.siren
                 date_cloture_exercice = date(date.today().year - 1, 12, 31)
-                annee = date_cloture_exercice.year
                 actualisation = ActualisationCaracteristiquesAnnuelles(
                     date_cloture_exercice=date_cloture_exercice,
                     effectif=simulation_form.data["effectif"],
