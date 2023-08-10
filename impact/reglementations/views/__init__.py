@@ -23,6 +23,7 @@ from reglementations.views.index_egapro import IndexEgaproReglementation
 def reglementations(request):
     entreprise = None
     caracteristiques = None
+    simulation = True
     if request.POST:
         simulation_form = SimulationForm(request.POST)
         if simulation_form.is_valid():
@@ -67,12 +68,14 @@ def reglementations(request):
 
     elif entreprise := get_current_entreprise(request):
         return redirect("reglementations:reglementations", siren=entreprise.siren)
+    else:  # affichage simple des réglementations
+        simulation = False
 
     return render(
         request,
         "reglementations/reglementations.html",
         _reglementations_context(
-            entreprise, caracteristiques, request.user, simulation=True
+            entreprise, caracteristiques, request.user, simulation=simulation
         ),
     )
 
