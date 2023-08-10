@@ -28,7 +28,7 @@ REGLEMENTATIONS = (
 )
 
 
-def test_public_reglementations(client):
+def test_page_publique_des_reglementations(client):
     response = client.get("/reglementations")
 
     assert response.status_code == 200
@@ -47,7 +47,9 @@ def test_public_reglementations(client):
 
 @pytest.mark.parametrize("status_est_soumis", [True, False])
 @pytest.mark.django_db
-def test_public_reglementations_with_entreprise_data(status_est_soumis, client, mocker):
+def test_simulation_de_reglementations_avec_donnees_entreprise_postees_et_sans_entreprise_en_bdd(
+    status_est_soumis, client, mocker
+):
     data = {
         "denomination": "Entreprise SAS",
         "siren": "000000001",
@@ -135,7 +137,7 @@ def entreprise(db, alice, entreprise_factory):
     return entreprise
 
 
-def test_reglementations_redirige_vers_les_reglementations_associees_a_l_entreprise_de_l_utilisateur(
+def test_page_reglementations_redirige_vers_les_reglementations_associees_a_l_entreprise_de_l_utilisateur(
     client, entreprise
 ):
     client.force_login(entreprise.users.first())
@@ -149,7 +151,7 @@ def test_reglementations_redirige_vers_les_reglementations_associees_a_l_entrepr
 
 
 @pytest.mark.parametrize("status_est_soumis", [True, False])
-def test_reglementations_with_authenticated_user_and_another_entreprise_data(
+def test_simulation_de_reglementations_avec_utilisateur_authentifie_et_des_donnees_d_une_autre_entreprise(
     status_est_soumis, client, entreprise, mocker
 ):
     """
@@ -195,7 +197,7 @@ def test_reglementations_with_authenticated_user_and_another_entreprise_data(
         assert anonymous_status_detail in content, content
 
 
-def test_entreprise_data_are_saved_only_when_entreprise_user_is_authenticated(
+def test_lors_d_une_simulation_les_donnees_d_une_entreprise_en_bdd_ne_sont_pas_modifiees(
     client, date_cloture_dernier_exercice, entreprise, entreprise_factory
 ):
     """
