@@ -4,6 +4,7 @@ from datetime import timedelta
 
 import pytest
 from django.contrib.auth.models import AnonymousUser
+from django.urls import reverse
 from freezegun import freeze_time
 
 from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
@@ -393,3 +394,26 @@ def test_reglementations_avec_entreprise_qualifiee_dans_le_passe(
         f"Les informations sont basées sur des données de l'exercice {date_cloture_dernier_exercice.year}."
         in content
     ), content
+
+
+@pytest.mark.django_db
+def test_simulation_incorrecte_car_siren_manquant(client):
+    data = {
+        "denomination": "Entreprise SAS",
+        "siren": "",
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+    }
+
+    response = client.post("/reglementations", data=data, follow=True)
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [
+        (
+            reverse(
+                "simulation",
+            ),
+            302,
+        )
+    ]
