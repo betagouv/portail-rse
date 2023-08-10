@@ -8,7 +8,12 @@
     <div class="fr-container fr-my-8w">
         <div class="fr-callout">
             <p class="fr-callout__text">
-                La liste des réglementations ci-dessous n’est pas encore complète et va s’enrichir progressivement. Le site actuel, encore au stade de prototype (bêta), sera amené à évoluer.
+                {% if simulation %}
+                    Vous êtes dans le cadre d'une simulation simplifiée.
+                    Pour disposer une version plus précise de vos obligations réglementaires, vous devez vous connecter et remplir des indicateurs supplémentaires.
+                {% else %}
+                    La liste des réglementations ci-dessous n’est pas encore complète et va s’enrichir progressivement. Le site actuel, encore au stade de prototype (bêta), sera amené à évoluer.
+                {% endif %}
             </p>
         </div>
 

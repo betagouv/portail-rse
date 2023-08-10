@@ -71,7 +71,9 @@ def reglementations(request):
     return render(
         request,
         "reglementations/reglementations.html",
-        _reglementations_context(entreprise, caracteristiques, request.user),
+        _reglementations_context(
+            entreprise, caracteristiques, request.user, simulation=True
+        ),
     )
 
 
@@ -100,7 +102,9 @@ def reglementations_for_entreprise(request, siren):
         return render(
             request,
             "reglementations/reglementations.html",
-            _reglementations_context(entreprise, caracteristiques, request.user),
+            _reglementations_context(
+                entreprise, caracteristiques, request.user, simulation=False
+            ),
         )
     else:
         messages.warning(
@@ -110,7 +114,7 @@ def reglementations_for_entreprise(request, siren):
         return redirect("entreprises:qualification", siren=entreprise.siren)
 
 
-def _reglementations_context(entreprise, caracteristiques, user):
+def _reglementations_context(entreprise, caracteristiques, user, simulation):
     reglementations = [
         {
             "info": BDESEReglementation.info(),
@@ -156,4 +160,5 @@ def _reglementations_context(entreprise, caracteristiques, user):
     return {
         "entreprise": entreprise,
         "reglementations": reglementations,
+        "simulation": simulation,
     }
