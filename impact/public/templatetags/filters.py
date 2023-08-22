@@ -19,6 +19,17 @@ def translate_boolean(boolean):
 
 
 @register.filter
+def display_field(field):
+    if field in (None, ""):
+        return "non renseigné"
+    elif type(field) == bool:
+        return "oui" if field else "non"
+    else:
+        return field
+    return field if field else "non renseigné"
+
+
+@register.filter
 def field_type(field):
     return field.field.__class__.__name__
 

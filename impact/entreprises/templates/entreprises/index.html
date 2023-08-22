@@ -47,14 +47,16 @@
                                             {% endif %}
                                         </h3>
                                         <p class="fr-card__desc">
-                                            {% if habilitation and habilitation.fonctions %}en tant que {{ habilitation.fonctions }}{% endif %} </br>
-                                            SIREN :<b> {{ entreprise.siren }} </b></br>
-                                            Date de clôture du dernier exercice :<b> {{ entreprise.dernieres_caracteristiques_qualifiantes.date_cloture_exercice }} </b></br>
-                                            Effectif :<b> {% if entreprise.dernieres_caracteristiques_qualifiantes.effectif %}{{ entreprise.dernieres_caracteristiques_qualifiantes.get_effectif_display }}{% else %}non renseigné{% endif %} </b></br>
-                                            Bilan :<b> {{ entreprise.dernieres_caracteristiques_qualifiantes.get_tranche_bilan_display }} </b></br>
-                                            Chiffre d'affaires :<b> {{ entreprise.dernieres_caracteristiques_qualifiantes.get_tranche_chiffre_affaires_display }} </b></br>
-                                            Accord d'entreprise concernant la BDESE :<b> {{ entreprise.dernieres_caracteristiques_qualifiantes.bdese_accord | translate_boolean }} </b></br>
-                                            Système de management de l'énergie :<b> {{ entreprise.dernieres_caracteristiques_qualifiantes.systeme_management_energie | translate_boolean }} </b></br>
+                                            {% with caracs=entreprise.dernieres_caracteristiques_qualifiantes|default:entreprise.dernieres_caracteristiques %}
+                                                {% if habilitation and habilitation.fonctions %}en tant que {{ habilitation.fonctions }}{% endif %} </br>
+                                                SIREN :<b> {{ entreprise.siren }} </b></br>
+                                                Date de clôture du dernier exercice :<b> {{ caracs.date_cloture_exercice | display_field }} </b></br>
+                                                Effectif :<b> {{ caracs.get_effectif_display | display_field }} </b></br>
+                                                Bilan :<b> {{ caracs.get_tranche_bilan_display | display_field }} </b></br>
+                                                Chiffre d'affaires :<b> {{ caracs.get_tranche_chiffre_affaires_display | display_field }} </b></br>
+                                                Accord d'entreprise concernant la BDESE :<b> {{ caracs.bdese_accord | display_field }} </b></br>
+                                                Système de management de l'énergie :<b> {{ caracs.systeme_management_energie | display_field }} </b></br>
+                                            {% endwith %}
                                         </p>
                                     </div>
                                     <div class="fr-card__footer">
