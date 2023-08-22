@@ -199,28 +199,33 @@ def test_simulation_de_reglementations_avec_utilisateur_authentifie_et_des_donne
 
 
 def test_lors_d_une_simulation_les_donnees_d_une_entreprise_en_bdd_ne_sont_pas_modifiees(
-    client, date_cloture_dernier_exercice, entreprise, entreprise_factory
+    client, date_cloture_dernier_exercice, alice, entreprise_factory
 ):
     """
     La simulation par un utilisateur anonyme sur une entreprise avec un utilisateur déjà enregistrée en base ne modifie pas en base son évolution
     mais affiche quand même à l'utilisateur anonyme les statuts correspondant aux données utilisées lors de la simulation
     """
-    date_cloture_exercice = date_cloture_dernier_exercice - timedelta(days=1)
-    effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
-    effectif_outre_mer = CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS
+
+    entreprise = entreprise_factory(
+        date_cloture_exercice=date_cloture_dernier_exercice - timedelta(days=1),
+        appartient_groupe=True,
+        comptes_consolides=True,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+        effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        bdese_accord=True,
+        systeme_management_energie=True,
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    effectif = CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS
     ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
     bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
-    ca_consolide = CaracteristiquesAnnuelles.CA_MOINS_DE_700K
-    bilan_consolide = CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
-    bdese_accord = True
-    systeme_management_energie = True
-    caracteristiques = entreprise.caracteristiques_annuelles(date_cloture_exercice.year)
-    caracteristiques.tranche_chiffre_affaires_consolide = ca_consolide
-    caracteristiques.tranche_bilan_consolide = bilan_consolide
-    caracteristiques.bdese_accord = bdese_accord
-    caracteristiques.systeme_management_energie = systeme_management_energie
-    caracteristiques.save()
     autre_denomination = "Autre dénomination"
+
     data = {
         "denomination": autre_denomination,
         "siren": entreprise.siren,
@@ -232,9 +237,18 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_en_bdd_ne_sont_pas_m
     response = client.post("/reglementations", data=data)
 
     entreprise.refresh_from_db()
-    assert entreprise.date_cloture_exercice == date_cloture_dernier_exercice
-    caracteristiques = entreprise.caracteristiques_annuelles(date_cloture_exercice.year)
-    assert caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+    assert (
+        entreprise.date_cloture_exercice
+        == date_cloture_dernier_exercice - timedelta(days=1)
+    )
+    assert entreprise.appartient_groupe
+    assert entreprise.comptes_consolides
+    caracteristiques = entreprise.caracteristiques_annuelles(
+        entreprise.date_cloture_exercice.year
+    )
+    assert (
+        caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
+    )
     assert (
         caracteristiques.tranche_chiffre_affaires
         == CaracteristiquesAnnuelles.CA_MOINS_DE_700K
@@ -258,9 +272,9 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_en_bdd_ne_sont_pas_m
     assert context["entreprise"].denomination == autre_denomination
     reglementations = context["reglementations"]
     caracteristiques = CaracteristiquesAnnuelles(
-        annee=date_cloture_exercice.year,
+        annee=entreprise.date_cloture_exercice.year,
         entreprise=entreprise,
-        date_cloture_exercice=date_cloture_exercice,
+        date_cloture_exercice=entreprise.date_cloture_exercice,
         effectif=effectif,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         tranche_chiffre_affaires=ca,
