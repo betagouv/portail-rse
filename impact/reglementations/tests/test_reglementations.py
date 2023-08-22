@@ -198,12 +198,12 @@ def test_simulation_de_reglementations_avec_utilisateur_authentifie_et_des_donne
         assert anonymous_status_detail in content, content
 
 
-def test_lors_d_une_simulation_les_donnees_d_une_entreprise_en_bdd_ne_sont_pas_modifiees(
-    client, date_cloture_dernier_exercice, alice, entreprise_factory
+def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracteristiques_actuelles_ne_sont_pas_modifiees(
+    client, date_cloture_dernier_exercice, entreprise_factory
 ):
     """
-    La simulation par un utilisateur anonyme sur une entreprise avec un utilisateur déjà enregistrée en base ne modifie pas en base son évolution
-    mais affiche quand même à l'utilisateur anonyme les statuts correspondant aux données utilisées lors de la simulation
+    La simulation sur une entreprise déjà enregistrée en base avec des caracteristiques actuelles ne modifie pas ses caractéristiques
+    mais affiche quand même les statuts correspondant aux données utilisées lors de la simulation
     """
 
     entreprise = entreprise_factory(
@@ -219,7 +219,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_en_bdd_ne_sont_pas_m
         bdese_accord=True,
         systeme_management_energie=True,
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    assert entreprise.caracteristiques_actuelles()
 
     effectif = CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS
     ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
@@ -272,9 +272,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_en_bdd_ne_sont_pas_m
     assert context["entreprise"].denomination == autre_denomination
     reglementations = context["reglementations"]
     caracteristiques = CaracteristiquesAnnuelles(
-        annee=entreprise.date_cloture_exercice.year,
         entreprise=entreprise,
-        date_cloture_exercice=entreprise.date_cloture_exercice,
         effectif=effectif,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         tranche_chiffre_affaires=ca,
@@ -289,37 +287,97 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_en_bdd_ne_sont_pas_m
         )
 
 
-def test_should_commit_une_entreprise_sans_utilisateur(
+def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_sont_pas_modifiees(
+    client, alice, entreprise_non_qualifiee
+):
+    """
+    La simulation sur une entreprise déjà enregistrée en base avec un utilisateur ne créé pas de caractéristique
+    mais affiche quand même les statuts correspondant aux données utilisées lors de la simulation
+    """
+
+    entreprise = entreprise_non_qualifiee
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    effectif = CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS
+    ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
+    bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
+    autre_denomination = "Autre dénomination"
+
+    data = {
+        "denomination": autre_denomination,
+        "siren": entreprise.siren,
+        "effectif": effectif,
+        "tranche_chiffre_affaires": ca,
+        "tranche_bilan": bilan,
+    }
+
+    response = client.post("/reglementations", data=data)
+
+    entreprise.refresh_from_db()
+    assert entreprise.date_cloture_exercice is None
+    assert entreprise.appartient_groupe is None
+    assert entreprise.comptes_consolides is None
+    assert not entreprise.caracteristiques_actuelles()
+
+    context = response.context
+    assert context["entreprise"] == entreprise
+    assert context["entreprise"].denomination == autre_denomination
+    reglementations = context["reglementations"]
+    caracteristiques = CaracteristiquesAnnuelles(
+        entreprise=entreprise,
+        effectif=effectif,
+        effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+        tranche_chiffre_affaires=ca,
+        tranche_bilan=bilan,
+        bdese_accord=False,
+        systeme_management_energie=False,
+    )
+    for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
+        status = reglementations[index]["status"]
+        assert status == REGLEMENTATION(entreprise).calculate_status(
+            caracteristiques, AnonymousUser()
+        )
+
+
+def test_should_not_commit_une_entreprise_avec_des_caracteristiques_actuelles_sans_utilisateur(
+    client, entreprise_factory
+):
+    entreprise = entreprise_factory()
+    assert entreprise.caracteristiques_actuelles()
+
+    # une simulation ne devrait jamais écraser des caractéristiques existantes
+    assert not should_commit(entreprise)
+
+
+def test_should_not_commit_une_entreprise_avec_des_caracteristiques_actuelles_avec_utilisateur(
     client, entreprise_factory, alice
 ):
     entreprise = entreprise_factory()
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    assert entreprise.caracteristiques_actuelles()
+
+    # une simulation ne devrait jamais écraser des caractéristiques existantes
+    assert not should_commit(entreprise)
+
+
+def test_should_commit_une_entreprise_sans_caracteristiques_actuelles_sans_utilisateur(
+    client, entreprise_non_qualifiee, alice
+):
+    entreprise = entreprise_non_qualifiee
     assert not entreprise.users.all()
+    assert not entreprise.caracteristiques_actuelles()
 
-    assert should_commit(entreprise, AnonymousUser())
-    assert should_commit(entreprise, alice)
+    assert should_commit(entreprise)
 
 
-def test_should_commit_utilisateur_rattaché_a_l_entreprise(
-    client, entreprise_factory, alice
+def test_should_not_commit_une_entreprise_sans_caracteristiques_actuelles_avec_utilisateur(
+    client, entreprise_non_qualifiee, alice
 ):
-    entreprise = entreprise_factory()
+    entreprise = entreprise_non_qualifiee
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
-    assert should_commit(entreprise, alice)
-
-
-def test_should_not_commit_utilisateur_externe_a_l_entreprise(
-    client, entreprise_factory, alice, bob
-):
-    entreprise = entreprise_factory()
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
-
-    assert not should_commit(entreprise, bob)
-
-
-def test_should_commit_nouvelle_entreprise(client, alice):
-    assert should_commit(None, AnonymousUser())
-    assert should_commit(None, alice)
+    assert not should_commit(entreprise)
 
 
 def test_reglementations_with_authenticated_user(client, entreprise):
