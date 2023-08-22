@@ -19,6 +19,14 @@ from reglementations.views.bges import BGESReglementation
 from reglementations.views.dispositif_alerte import DispositifAlerteReglementation
 from reglementations.views.index_egapro import IndexEgaproReglementation
 
+REGLEMENTATIONS = [
+    BDESEReglementation,
+    IndexEgaproReglementation,
+    DispositifAlerteReglementation,
+    BGESReglementation,
+    AuditEnergetiqueReglementation,
+]
+
 
 def reglementations(request):
     entreprise = None
@@ -120,45 +128,14 @@ def reglementations_for_entreprise(request, siren):
 def _reglementations_context(entreprise, caracteristiques, user, simulation):
     reglementations = [
         {
-            "info": BDESEReglementation.info(),
-            "status": BDESEReglementation(entreprise).calculate_status(
+            "info": reglementation.info(),
+            "status": reglementation(entreprise).calculate_status(
                 caracteristiques, user
             )
             if entreprise
             else None,
-        },
-        {
-            "info": IndexEgaproReglementation.info(),
-            "status": IndexEgaproReglementation(entreprise).calculate_status(
-                caracteristiques, user
-            )
-            if entreprise
-            else None,
-        },
-        {
-            "info": DispositifAlerteReglementation.info(),
-            "status": DispositifAlerteReglementation(entreprise).calculate_status(
-                caracteristiques, user
-            )
-            if entreprise
-            else None,
-        },
-        {
-            "info": BGESReglementation.info(),
-            "status": BGESReglementation(entreprise).calculate_status(
-                caracteristiques, user
-            )
-            if entreprise
-            else None,
-        },
-        {
-            "info": AuditEnergetiqueReglementation.info(),
-            "status": AuditEnergetiqueReglementation(entreprise).calculate_status(
-                caracteristiques, user
-            )
-            if entreprise
-            else None,
-        },
+        }
+        for reglementation in REGLEMENTATIONS
     ]
     return {
         "entreprise": entreprise,
