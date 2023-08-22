@@ -63,7 +63,7 @@ def reglementations(request):
                 tranche_bilan=simulation_form.data["tranche_bilan"],
                 tranche_chiffre_affaires_consolide=None,
                 tranche_bilan_consolide=None,
-                bdese_accord=False,  # None serait préférable si bdese_accord est nullable
+                bdese_accord=None,
                 systeme_management_energie=None,
             )
             caracteristiques = entreprise.actualise_caracteristiques(actualisation)

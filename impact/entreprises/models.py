@@ -205,7 +205,7 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     )
     bdese_accord = models.BooleanField(
         verbose_name="L'entreprise a un accord collectif d'entreprise concernant la Base de Données Économiques, Sociales et Environnementales (BDESE)",
-        default=False,  # null=True serait préférable
+        null=True,
     )
     systeme_management_energie = models.BooleanField(
         verbose_name="L'entreprise a mis en place un système de management de l’énergie",
