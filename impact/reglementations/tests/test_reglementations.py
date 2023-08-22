@@ -101,7 +101,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     )
     assert caracteristiques.tranche_chiffre_affaires_consolide is None
     assert caracteristiques.tranche_bilan_consolide is None
-    assert not caracteristiques.bdese_accord
+    assert caracteristiques.bdese_accord is None
     assert caracteristiques.systeme_management_energie is None
 
     # reglementations for this entreprise are anonymously displayed
@@ -132,7 +132,6 @@ def entreprise(db, alice, entreprise_factory):
         siren="000000001",
         denomination="Entreprise SAS",
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
-        bdese_accord=False,
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
     return entreprise
