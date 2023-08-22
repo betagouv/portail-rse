@@ -10,7 +10,7 @@
             <p class="fr-callout__text">
                 {% if simulation %}
                     Vous êtes dans le cadre d'une simulation simplifiée.
-                    Pour disposer une version plus précise de vos obligations réglementaires, vous devez vous connecter et remplir des indicateurs supplémentaires.
+                    Pour disposer d'une version plus précise de vos obligations réglementaires, vous devez vous connecter et remplir des indicateurs supplémentaires.
                     <br>
                     <a href="{% url 'simulation' %}" class="fr-btn fr-btn--secondary">Faire une nouvelle simulation</a>
                     <a href="{% url 'users:login' %}?next={% url 'reglementations:reglementations' siren=entreprise.siren %}" class="fr-btn">Se connecter</a>

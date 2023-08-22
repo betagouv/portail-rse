@@ -14,9 +14,13 @@ class SimulationForm(DsfrForm):
     siren = forms.CharField()
     effectif = forms.ChoiceField(choices=CaracteristiquesAnnuelles.EFFECTIF_CHOICES)
     tranche_chiffre_affaires = forms.ChoiceField(
-        choices=CaracteristiquesAnnuelles.CA_CHOICES
+        label="Chiffre d'affaires",
+        choices=CaracteristiquesAnnuelles.CA_CHOICES,
     )
-    tranche_bilan = forms.ChoiceField(choices=CaracteristiquesAnnuelles.BILAN_CHOICES)
+    tranche_bilan = forms.ChoiceField(
+        label="Bilan",
+        choices=CaracteristiquesAnnuelles.BILAN_CHOICES,
+    )
 
 
 class IntroductionDemoForm(DsfrForm):
