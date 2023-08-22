@@ -80,7 +80,9 @@ class Entreprise(TimestampedModel):
         )
         return self.caracteristiques_annuelles(annee_dernier_exercice_clos)
 
-    def actualise_caracteristiques(self, actualisation):
+    def actualise_caracteristiques(
+        self, actualisation: ActualisationCaracteristiquesAnnuelles
+    ):
         caracteristiques = self.caracteristiques_annuelles(
             actualisation.date_cloture_exercice.year
         ) or CaracteristiquesAnnuelles(

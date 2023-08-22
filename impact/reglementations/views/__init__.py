@@ -44,31 +44,36 @@ def reglementations(request):
                 entreprise = Entreprise.objects.create(
                     denomination=simulation_form.cleaned_data["denomination"],
                     siren=simulation_form.data["siren"],
-                    date_cloture_exercice=date(date.today().year - 1, 12, 31),
-                    comptes_consolides=None,
                 )
+
             request.session["siren"] = simulation_form.cleaned_data["siren"]
             if request.user.is_authenticated and is_user_attached_to_entreprise(
                 request.user, entreprise
             ):
                 request.session["entreprise"] = entreprise.siren
+
             date_cloture_exercice = date(date.today().year - 1, 12, 31)
             actualisation = ActualisationCaracteristiquesAnnuelles(
                 date_cloture_exercice=date_cloture_exercice,
                 effectif=simulation_form.data["effectif"],
-                effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+                effectif_outre_mer=None,
                 tranche_chiffre_affaires=simulation_form.data[
                     "tranche_chiffre_affaires"
                 ],
                 tranche_bilan=simulation_form.data["tranche_bilan"],
                 tranche_chiffre_affaires_consolide=None,
                 tranche_bilan_consolide=None,
-                bdese_accord=False,
-                systeme_management_energie=False,
+                bdese_accord=False,  # None serait préférable si bdese_accord est nullable
+                systeme_management_energie=None,
             )
             caracteristiques = entreprise.actualise_caracteristiques(actualisation)
             if should_commit(entreprise):
                 caracteristiques.save()
+
+            entreprise, caracteristiques = enrichit_les_donnees_pour_la_simulation(
+                entreprise, caracteristiques
+            )
+
         else:
             return redirect("simulation")
 
@@ -84,6 +89,17 @@ def reglementations(request):
             entreprise, caracteristiques, request.user, simulation=simulation
         ),
     )
+
+
+def enrichit_les_donnees_pour_la_simulation(entreprise, caracteristiques):
+    entreprise.appartient_groupe = False
+    entreprise.comptes_consolides = False
+    caracteristiques.effectif_outre_mer = (
+        CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
+    )
+    caracteristiques.bdese_accord = False
+    caracteristiques.systeme_management_energie = False
+    return (entreprise, caracteristiques)
 
 
 def should_commit(entreprise):

@@ -1,5 +1,4 @@
 import html
-from datetime import date
 from datetime import timedelta
 
 import pytest
@@ -47,7 +46,7 @@ def test_page_publique_des_reglementations(client):
 
 @pytest.mark.parametrize("status_est_soumis", [True, False])
 @pytest.mark.django_db
-def test_simulation_de_reglementations_avec_donnees_entreprise_postees_et_sans_entreprise_en_bdd(
+def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     status_est_soumis, client, mocker
 ):
     data = {
@@ -86,13 +85,12 @@ def test_simulation_de_reglementations_avec_donnees_entreprise_postees_et_sans_e
     # entreprise has been created
     entreprise = Entreprise.objects.get(siren="000000001")
     assert entreprise.denomination == "Entreprise SAS"
-    assert entreprise.date_cloture_exercice == date(2022, 12, 31)
+    assert entreprise.date_cloture_exercice is None
     assert entreprise.appartient_groupe is None
     assert entreprise.comptes_consolides is None
-    caracteristiques = entreprise.caracteristiques_annuelles(2022)
-    assert not caracteristiques.bdese_accord
-    assert caracteristiques.systeme_management_energie is False
+    caracteristiques = entreprise.caracteristiques_actuelles()
     assert caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+    assert caracteristiques.effectif_outre_mer is None
     assert (
         caracteristiques.tranche_chiffre_affaires
         == CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
@@ -103,6 +101,8 @@ def test_simulation_de_reglementations_avec_donnees_entreprise_postees_et_sans_e
     )
     assert caracteristiques.tranche_chiffre_affaires_consolide is None
     assert caracteristiques.tranche_bilan_consolide is None
+    assert not caracteristiques.bdese_accord
+    assert caracteristiques.systeme_management_energie is None
 
     # reglementations for this entreprise are anonymously displayed
     context = response.context
