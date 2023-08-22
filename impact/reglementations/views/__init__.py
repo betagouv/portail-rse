@@ -40,7 +40,6 @@ def reglementations(request):
             ):
                 entreprise = entreprises[0]
                 entreprise.denomination = simulation_form.cleaned_data["denomination"]
-                commit = not entreprise.caracteristiques_actuelles()
             else:
                 entreprise = Entreprise.objects.create(
                     denomination=simulation_form.cleaned_data["denomination"],
@@ -48,7 +47,6 @@ def reglementations(request):
                     date_cloture_exercice=date(date.today().year - 1, 12, 31),
                     comptes_consolides=None,
                 )
-                commit = True
             request.session["siren"] = simulation_form.cleaned_data["siren"]
             if request.user.is_authenticated and is_user_attached_to_entreprise(
                 request.user, entreprise
@@ -69,7 +67,7 @@ def reglementations(request):
                 systeme_management_energie=False,
             )
             caracteristiques = entreprise.actualise_caracteristiques(actualisation)
-            if commit:
+            if should_commit(entreprise):
                 caracteristiques.save()
         else:
             return redirect("simulation")
@@ -88,12 +86,8 @@ def reglementations(request):
     )
 
 
-def should_commit(entreprise, user):
-    return (
-        not entreprise
-        or not entreprise.users.all()
-        or is_user_attached_to_entreprise(user, entreprise)
-    )
+def should_commit(entreprise):
+    return not entreprise.users.all() and not entreprise.caracteristiques_actuelles()
 
 
 @login_required
