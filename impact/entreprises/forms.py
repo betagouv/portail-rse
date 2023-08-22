@@ -67,6 +67,7 @@ class EntrepriseQualificationForm(DsfrForm, forms.ModelForm):
             "tranche_bilan": "Sélectionnez le bilan de l'exercice clos",
         }
         widgets = {
+            "bdese_accord": forms.CheckboxInput,
             "systeme_management_energie": forms.CheckboxInput,
             "date_cloture_exercice": DateInput,
         }
