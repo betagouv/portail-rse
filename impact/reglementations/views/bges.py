@@ -1,6 +1,7 @@
 from django.conf import settings
 
 from entreprises.models import CaracteristiquesAnnuelles
+from habilitations.models import is_user_attached_to_entreprise
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
 from reglementations.views.base import ReglementationStatus
@@ -31,8 +32,18 @@ class BGESReglementation(Reglementation):
         caracteristiques: CaracteristiquesAnnuelles,
         user: settings.AUTH_USER_MODEL,
     ) -> ReglementationStatus:
-        if reglementation_status := super().calculate_status(caracteristiques, user):
-            return reglementation_status
+        NON_SOUMIS_PRIMARY_ACTION = ReglementationAction(
+            "https://bilans-ges.ademe.fr/bilans",
+            "Consulter les Bilans GES sur Bilans GES",
+            external=True,
+        )
+
+        if not user.is_authenticated:
+            return self.calculate_status_for_anonymous_user(
+                caracteristiques, primary_action=NON_SOUMIS_PRIMARY_ACTION
+            )
+        elif not is_user_attached_to_entreprise(user, self.entreprise):
+            return self.calculate_status_for_unauthorized_user(caracteristiques)
 
         if self.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_SOUMIS
@@ -45,11 +56,7 @@ class BGESReglementation(Reglementation):
         else:
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
-            primary_action = ReglementationAction(
-                "https://bilans-ges.ademe.fr/bilans",
-                "Consulter les Bilans GES sur Bilans GES",
-                external=True,
-            )
+            primary_action = NON_SOUMIS_PRIMARY_ACTION
         return ReglementationStatus(
             status, status_detail, primary_action=primary_action
         )
