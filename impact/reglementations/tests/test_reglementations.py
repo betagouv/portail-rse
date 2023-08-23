@@ -102,8 +102,8 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     entreprise = Entreprise.objects.get(siren="000000001")
     assert entreprise.denomination == "Entreprise SAS"
     assert entreprise.date_cloture_exercice is None
-    assert entreprise.appartient_groupe == True
-    assert entreprise.comptes_consolides == True
+    assert entreprise.appartient_groupe
+    assert entreprise.comptes_consolides
     caracteristiques = entreprise.caracteristiques_actuelles()
     assert caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
     assert caracteristiques.effectif_outre_mer is None
@@ -129,7 +129,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     # reglementations for this entreprise are anonymously displayed
     context = response.context
     assert context["entreprise"] == entreprise
-    assert context["simulation"] == True
+    assert context["simulation"]
     reglementations = context["reglementations"]
     for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
         assert reglementations[index]["status"] == REGLEMENTATION(
@@ -160,7 +160,7 @@ def entreprise(db, alice, entreprise_factory):
 
 
 @pytest.mark.parametrize("status_est_soumis", [True, False])
-def test_simulation_de_reglementations_avec_utilisateur_authentifie_et_des_donnees_d_une_autre_entreprise(
+def test_simulation_par_un_utilisateur_authentifie_sur_une_nouvelle_entreprise(
     status_est_soumis, client, entreprise, mocker
 ):
     """
@@ -190,6 +190,14 @@ def test_simulation_de_reglementations_avec_utilisateur_authentifie_et_des_donne
     )
     mocker.patch(
         "reglementations.views.dispositif_alerte.DispositifAlerteReglementation.est_soumis",
+        return_value=status_est_soumis,
+    )
+    mocker.patch(
+        "reglementations.views.bges.BGESReglementation.est_soumis",
+        return_value=status_est_soumis,
+    )
+    mocker.patch(
+        "reglementations.views.audit_energetique.AuditEnergetiqueReglementation.est_soumis",
         return_value=status_est_soumis,
     )
     response = client.post("/reglementations", data=data)
@@ -286,6 +294,8 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     context = response.context
     assert context["entreprise"] == entreprise
     assert context["entreprise"].denomination == autre_denomination
+    assert context["entreprise"].appartient_groupe == False
+    assert context["entreprise"].comptes_consolides == False
     reglementations = context["reglementations"]
     caracteristiques = CaracteristiquesAnnuelles(
         entreprise=entreprise,
@@ -293,6 +303,8 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         tranche_chiffre_affaires=ca,
         tranche_bilan=bilan,
+        tranche_chiffre_affaires_consolide=None,
+        tranche_bilan_consolide=None,
         bdese_accord=False,
         systeme_management_energie=False,
     )
@@ -342,6 +354,8 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
     context = response.context
     assert context["entreprise"] == entreprise
     assert context["entreprise"].denomination == autre_denomination
+    assert context["entreprise"].appartient_groupe
+    assert context["entreprise"].comptes_consolides
     reglementations = context["reglementations"]
     caracteristiques = CaracteristiquesAnnuelles(
         entreprise=entreprise,
@@ -349,6 +363,71 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         tranche_chiffre_affaires=ca,
         tranche_bilan=bilan,
+        tranche_chiffre_affaires_consolide=ca,
+        tranche_bilan_consolide=bilan,
+        bdese_accord=False,
+        systeme_management_energie=False,
+    )
+    for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
+        status = reglementations[index]["status"]
+        assert status == REGLEMENTATION(entreprise).calculate_status(
+            caracteristiques, AnonymousUser()
+        )
+
+
+def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristiques_actuelles_sont_enregistrees(
+    client, date_cloture_dernier_exercice, entreprise_non_qualifiee
+):
+    """
+    La simulation sur une entreprise déjà enregistrée en base sans caracteristiques actuelles enregistre les données de simulation
+    et affiche les statuts correspondant aux données utilisées lors de la simulation
+    """
+
+    entreprise = entreprise_non_qualifiee
+
+    effectif = CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS
+    ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
+    bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
+    autre_denomination = "Autre dénomination"
+    data = {
+        "denomination": autre_denomination,
+        "siren": entreprise.siren,
+        "effectif": effectif,
+        "tranche_chiffre_affaires": ca,
+        "tranche_bilan": bilan,
+        "appartient_groupe": True,
+        "comptes_consolides": True,
+        "tranche_chiffre_affaires_consolide": ca,
+        "tranche_bilan_consolide": bilan,
+    }
+
+    response = client.post("/reglementations", data=data)
+
+    entreprise.refresh_from_db()
+    assert entreprise.date_cloture_exercice is None
+    assert entreprise.appartient_groupe
+    assert entreprise.comptes_consolides
+    caracteristiques = entreprise.caracteristiques_actuelles()
+    assert caracteristiques.effectif == effectif
+    assert caracteristiques.tranche_chiffre_affaires == ca
+    assert caracteristiques.tranche_bilan == bilan
+    assert caracteristiques.tranche_chiffre_affaires_consolide == ca
+    assert caracteristiques.tranche_bilan_consolide == bilan
+
+    context = response.context
+    assert context["entreprise"] == entreprise
+    assert context["entreprise"].denomination == autre_denomination
+    assert context["entreprise"].appartient_groupe
+    assert context["entreprise"].comptes_consolides
+    reglementations = context["reglementations"]
+    caracteristiques = CaracteristiquesAnnuelles(
+        entreprise=entreprise,
+        effectif=effectif,
+        effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+        tranche_chiffre_affaires=ca,
+        tranche_bilan=bilan,
+        tranche_chiffre_affaires_consolide=ca,
+        tranche_bilan_consolide=bilan,
         bdese_accord=False,
         systeme_management_energie=False,
     )
