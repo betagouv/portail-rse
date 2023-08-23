@@ -74,14 +74,22 @@ class EntrepriseQualificationForm(DsfrForm, forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
+        appartient_groupe = cleaned_data.get("appartient_groupe")
+        if not appartient_groupe:
+            cleaned_data["comptes_consolides"] = False
+        comptes_consolides = cleaned_data.get("comptes_consolides")
         tranche_chiffre_affaires_consolide = cleaned_data.get(
             "tranche_chiffre_affaires_consolide"
         )
         tranche_bilan_consolide = cleaned_data.get("tranche_bilan_consolide")
-        comptes_consolides = cleaned_data.get("comptes_consolides")
         if comptes_consolides:
             ERREUR = "Ce champ est obligatoire lorsque les comptes sont consolidés"
             if not tranche_chiffre_affaires_consolide:
                 self.add_error("tranche_chiffre_affaires_consolide", ERREUR)
             if not tranche_bilan_consolide:
                 self.add_error("tranche_bilan_consolide", ERREUR)
+        else:
+            if tranche_chiffre_affaires_consolide:
+                cleaned_data["tranche_chiffre_affaires_consolide"] = None
+            if tranche_bilan_consolide:
+                cleaned_data["tranche_bilan_consolide"] = None
