@@ -268,7 +268,7 @@ def test_qualification_page_with_current_qualification(
     assert context["form"]["date_cloture_exercice"].initial == "2022-06-30"
 
 
-def test_qualie_entreprise_appartenant_a_un_groupe(
+def test_qualifie_entreprise_appartenant_a_un_groupe(
     client,
     alice,
     entreprise_non_qualifiee,
@@ -457,3 +457,39 @@ def test_qualification_entreprise_en_erreur_car_comptes_consolides_sans_bilan_ou
 
     entreprise_non_qualifiee.refresh_from_db()
     assert not entreprise_non_qualifiee.dernieres_caracteristiques_qualifiantes
+
+
+def test_qualification_supprime_les_caracteristiques_annuelles_posterieures_a_la_date_de_cloture_du_dernier_exercice(
+    client,
+    alice,
+    entreprise_factory,
+    date_cloture_dernier_exercice,
+    mock_api_recherche_entreprises,
+):
+    """Cas limite
+    Ce cas pourrait exister si un utilisateur corrige la date de clôture du dernier exercice en la reculant dans le passé.
+    """
+    entreprise = entreprise_factory()
+    assert entreprise.caracteristiques_annuelles(date_cloture_dernier_exercice.year)
+    assert not entreprise.caracteristiques_annuelles(
+        date_cloture_dernier_exercice.year - 1
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    client.force_login(alice)
+    data = {
+        "date_cloture_exercice": date_cloture_dernier_exercice.replace(
+            year=date_cloture_dernier_exercice.year - 1
+        ),
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "bdese_accord": True,
+        "systeme_management_energie": True,
+    }
+
+    url = f"/entreprises/{entreprise.siren}"
+    response = client.post(url, data=data)
+
+    assert not entreprise.caracteristiques_annuelles(date_cloture_dernier_exercice.year)
+    assert entreprise.caracteristiques_annuelles(date_cloture_dernier_exercice.year - 1)

@@ -10,12 +10,13 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 
 import api.recherche_entreprises
-from .forms import EntrepriseAttachForm
-from .forms import EntrepriseDetachForm
-from .forms import EntrepriseQualificationForm
-from .models import ActualisationCaracteristiquesAnnuelles
-from .models import Entreprise
 from api.exceptions import APIError
+from entreprises.forms import EntrepriseAttachForm
+from entreprises.forms import EntrepriseDetachForm
+from entreprises.forms import EntrepriseQualificationForm
+from entreprises.models import ActualisationCaracteristiquesAnnuelles
+from entreprises.models import CaracteristiquesAnnuelles
+from entreprises.models import Entreprise
 from habilitations.models import attach_user_to_entreprise
 from habilitations.models import detach_user_from_entreprise
 from habilitations.models import is_user_attached_to_entreprise
@@ -121,14 +122,13 @@ def qualification(request, siren):
     if request.POST:
         form = EntrepriseQualificationForm(data=request.POST)
         if form.is_valid():
-            entreprise.date_cloture_exercice = form.cleaned_data[
-                "date_cloture_exercice"
-            ]
+            date_cloture_dernier_exercice = form.cleaned_data["date_cloture_exercice"]
+            entreprise.date_cloture_exercice = date_cloture_dernier_exercice
             entreprise.appartient_groupe = form.cleaned_data["appartient_groupe"]
             entreprise.comptes_consolides = form.cleaned_data["comptes_consolides"]
             entreprise.save()
             actualisation = ActualisationCaracteristiquesAnnuelles(
-                form.cleaned_data["date_cloture_exercice"],
+                date_cloture_dernier_exercice,
                 form.cleaned_data["effectif"],
                 form.cleaned_data["effectif_outre_mer"],
                 form.cleaned_data["tranche_chiffre_affaires"],
@@ -140,6 +140,9 @@ def qualification(request, siren):
             )
             caracteristiques = entreprise.actualise_caracteristiques(actualisation)
             caracteristiques.save()
+            CaracteristiquesAnnuelles.objects.filter(
+                entreprise=entreprise, annee__gt=date_cloture_dernier_exercice.year
+            ).delete()
             messages.success(
                 request, "Les caractéristiques de l'entreprise ont été mises à jour."
             )
