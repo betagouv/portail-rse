@@ -2,6 +2,7 @@ from django.conf import settings
 
 from api import egapro
 from entreprises.models import CaracteristiquesAnnuelles
+from habilitations.models import is_user_attached_to_entreprise
 from reglementations.models import derniere_annee_a_remplir_index_egapro
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
@@ -23,17 +24,24 @@ class IndexEgaproReglementation(Reglementation):
         caracteristiques: CaracteristiquesAnnuelles,
         user: settings.AUTH_USER_MODEL,
     ) -> ReglementationStatus:
-        if reglementation_status := super().calculate_status(caracteristiques, user):
-            return reglementation_status
+
+        NON_SOUMIS_PRIMARY_ACTION = ReglementationAction(
+            "https://egapro.travail.gouv.fr/index-egapro/recherche",
+            "Consulter les index sur Egapro",
+            external=True,
+        )
+
+        if not user.is_authenticated:
+            return self.calculate_status_for_anonymous_user(
+                caracteristiques, primary_action=NON_SOUMIS_PRIMARY_ACTION
+            )
+        elif not is_user_attached_to_entreprise(user, self.entreprise):
+            return self.calculate_status_for_unauthorized_user(caracteristiques)
 
         if not self.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation."
-            primary_action = ReglementationAction(
-                "https://egapro.travail.gouv.fr/index-egapro/recherche",
-                "Consulter les index sur Egapro",
-                external=True,
-            )
+            primary_action = NON_SOUMIS_PRIMARY_ACTION
         else:
             primary_action = ReglementationAction(
                 "https://egapro.travail.gouv.fr/",
