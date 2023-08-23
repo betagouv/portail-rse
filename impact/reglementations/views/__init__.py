@@ -83,11 +83,10 @@ def reglementations(request):
             )
             caracteristiques = entreprise.actualise_caracteristiques(actualisation)
             if should_commit(entreprise):
+                entreprise.save()
                 caracteristiques.save()
 
-            entreprise, caracteristiques = enrichit_les_donnees_pour_la_simulation(
-                entreprise, caracteristiques
-            )
+            caracteristiques = enrichit_les_donnees_pour_la_simulation(caracteristiques)
 
         else:
             messages.error(
@@ -118,15 +117,13 @@ def reglementations(request):
     )
 
 
-def enrichit_les_donnees_pour_la_simulation(entreprise, caracteristiques):
-    entreprise.appartient_groupe = False
-    entreprise.comptes_consolides = False
+def enrichit_les_donnees_pour_la_simulation(caracteristiques):
     caracteristiques.effectif_outre_mer = (
         CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
     )
     caracteristiques.bdese_accord = False
     caracteristiques.systeme_management_energie = False
-    return (entreprise, caracteristiques)
+    return caracteristiques
 
 
 def should_commit(entreprise):
