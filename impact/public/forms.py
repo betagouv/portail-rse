@@ -2,7 +2,6 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 from entreprises.forms import SirenField
-from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import DENOMINATION_MAX_LENGTH
 from entreprises.models import Entreprise
 from utils.forms import DateInput
@@ -37,34 +36,6 @@ class EntrepriseForm(DsfrForm, forms.ModelForm):
     def clean_denomination(self):
         denomination = self.cleaned_data.get("denomination")
         return denomination[:DENOMINATION_MAX_LENGTH]
-
-
-class CaracteristiquesForm(DsfrForm, forms.ModelForm):
-    class Meta:
-        model = CaracteristiquesAnnuelles
-        fields = [
-            "date_cloture_exercice",
-            "effectif",
-            "effectif_outre_mer",
-            "tranche_chiffre_affaires",
-            "tranche_bilan",
-            "tranche_chiffre_affaires_consolide",
-            "tranche_bilan_consolide",
-            "bdese_accord",
-            "systeme_management_energie",
-        ]
-        labels = {
-            "date_cloture_exercice": "Date de clôture du dernier exercice comptable",
-            "systeme_management_energie": "L'entreprise a mis en place un <a target='_blank' href='https://agirpourlatransition.ademe.fr/entreprises/demarche-decarbonation-industrie/agir/structurer-demarche/mettre-en-place-systeme-management-energie'>système de management de l’énergie</a>",
-        }
-        help_texts = {
-            "tranche_chiffre_affaires": "Sélectionnez le chiffre d'affaires de l'exercice clos",
-            "tranche_bilan": "Sélectionnez le bilan de l'exercice clos",
-        }
-        widgets = {
-            "systeme_management_energie": forms.CheckboxInput,
-            "date_cloture_exercice": DateInput,
-        }
 
 
 class NaiveCaptchaField(forms.CharField):
