@@ -73,6 +73,9 @@
                                                 <a href="{% url 'reglementations:reglementations' entreprise.siren %}" class="fr-btn fr-btn--icon-left fr-icon-file-text-line">Voir les réglementations</a>
                                             </li>
                                             <li>
+                                                <a href="{% url 'entreprises:qualification' entreprise.siren %}" class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-edit-line">Modifier l'entreprise</a>
+                                            </li>
+                                            <li>
                                                 <button class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-close-circle-line" data-fr-opened="false" aria-controls="modal-detach-{{ entreprise.siren }}">
                                                     Quitter cette entreprise
                                                 </button>
