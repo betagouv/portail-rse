@@ -3,6 +3,15 @@
 {% block title %}{{ entreprise.denomination }} - Impact{% endblock %}
 
 {% block content %}
+
+    {% if entreprise.users.count >= 2 %}
+        <div class="fr-container fr-mt-4w">
+            <div class="fr-alert fr-alert--info">
+                <p>Plusieurs utilisateurs sont rattachés à cette entreprise. Les modifications seront visibles par tous les utilisateurs.</p>
+            </div>
+        </div>
+    {% endif %}
+
     <div class="fr-container fr-my-10w">
         <div class="fr-grid-row">
             <div class="fr-col">
