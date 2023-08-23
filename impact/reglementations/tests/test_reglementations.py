@@ -3,7 +3,6 @@ from datetime import timedelta
 
 import pytest
 from django.contrib.auth.models import AnonymousUser
-from django.urls import reverse
 from freezegun import freeze_time
 
 from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
@@ -42,6 +41,19 @@ def test_page_publique_des_reglementations(client):
     for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
         assert context["reglementations"][index]["info"] == REGLEMENTATION.info()
         assert context["reglementations"][index]["status"] is None
+
+
+def test_page_reglementations_redirige_utilisateur_authentifie_vers_les_reglementations_associees_a_son_entreprise(
+    client, entreprise
+):
+    client.force_login(entreprise.users.first())
+
+    response = client.get("/reglementations", follow=True)
+
+    assert response.status_code == 200
+
+    url = f"/reglementations/{entreprise.siren}"
+    assert response.redirect_chain == [(url, 302)]
 
 
 @pytest.mark.parametrize("status_est_soumis", [True, False])
@@ -145,19 +157,6 @@ def entreprise(db, alice, entreprise_factory):
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
     return entreprise
-
-
-def test_page_reglementations_redirige_vers_les_reglementations_associees_a_l_entreprise_de_l_utilisateur(
-    client, entreprise
-):
-    client.force_login(entreprise.users.first())
-
-    response = client.get("/reglementations", follow=True)
-
-    assert response.status_code == 200
-
-    url = f"/reglementations/{entreprise.siren}"
-    assert response.redirect_chain == [(url, 302)]
 
 
 @pytest.mark.parametrize("status_est_soumis", [True, False])
@@ -401,7 +400,32 @@ def test_should_not_commit_une_entreprise_sans_caracteristiques_actuelles_avec_u
     assert not should_commit(entreprise)
 
 
-def test_reglementations_with_authenticated_user(client, entreprise):
+@pytest.mark.django_db
+def test_simulation_incorrecte(client):
+    unvalid_data = {
+        "denomination": "Entreprise SAS",
+        "siren": "000000001",
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "appartient_groupe": True,
+        "comptes_consolides": True,
+    }
+
+    response = client.post("/reglementations", data=unvalid_data)
+
+    assert response.status_code == 200
+    content = response.content.decode("utf-8")
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        "Impossible de finaliser la simulation car le formulaire contient des erreurs."
+        in content
+    )
+    assert Entreprise.objects.count() == 0
+    assert CaracteristiquesAnnuelles.objects.count() == 0
+
+
+def test_reglementations_for_entreprise_with_authenticated_user(client, entreprise):
     client.force_login(entreprise.users.first())
 
     response = client.get(f"/reglementations/{entreprise.siren}")
@@ -422,7 +446,7 @@ def test_reglementations_with_authenticated_user(client, entreprise):
         assert reglementation["status"].status_detail in content
 
 
-def test_reglementations_with_authenticated_user_and_multiple_entreprises(
+def test_reglementations_for_entreprise_with_authenticated_user_and_multiple_entreprises(
     client, entreprise_factory, alice
 ):
     entreprise1 = entreprise_factory(siren="000000001")
@@ -463,7 +487,7 @@ def test_reglementations_with_authenticated_user_and_multiple_entreprises(
         assert reglementation["status"].status_detail in content
 
 
-def test_reglementations_with_entreprise_non_qualifiee_redirect_to_qualification_page(
+def test_reglementations_for_entreprise_non_qualifiee_redirect_to_qualification_page(
     client, alice, entreprise_non_qualifiee, mock_api_recherche_entreprises
 ):
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
@@ -478,7 +502,7 @@ def test_reglementations_with_entreprise_non_qualifiee_redirect_to_qualification
     assert response.redirect_chain == [(url, 302)]
 
 
-def test_reglementations_avec_entreprise_qualifiee_dans_le_passe(
+def test_reglementations_for_entreprise_qualifiee_dans_le_passe(
     client, date_cloture_dernier_exercice, entreprise
 ):
     with freeze_time(date_cloture_dernier_exercice + timedelta(days=367)):
@@ -491,26 +515,3 @@ def test_reglementations_avec_entreprise_qualifiee_dans_le_passe(
         f"Les informations sont basées sur des données de l'exercice {date_cloture_dernier_exercice.year}."
         in content
     ), content
-
-
-@pytest.mark.django_db
-def test_simulation_incorrecte_car_siren_manquant(client):
-    data = {
-        "denomination": "Entreprise SAS",
-        "siren": "",
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
-    }
-
-    response = client.post("/reglementations", data=data, follow=True)
-
-    assert response.status_code == 200
-    assert response.redirect_chain == [
-        (
-            reverse(
-                "simulation",
-            ),
-            302,
-        )
-    ]
