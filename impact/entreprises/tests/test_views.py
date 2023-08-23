@@ -214,6 +214,7 @@ def test_qualification_page_without_current_qualification(
     )
     context = response.context
     assert context["form"]["date_cloture_exercice"].initial == "2022-12-31"
+    assert context["form"]["effectif_outre_mer"].initial is None
 
 
 def test_qualification_page_with_current_qualification(
@@ -222,6 +223,7 @@ def test_qualification_page_with_current_qualification(
     entreprise = entreprise_factory()
     attach_user_to_entreprise(alice, entreprise, "Présidente")
     caracs = entreprise.dernieres_caracteristiques_qualifiantes
+    caracs.date_cloture_exercice = date(2022, 6, 30)
     caracs.tranche_chiffre_affaires_consolide = (
         CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
     )
@@ -263,7 +265,7 @@ def test_qualification_page_with_current_qualification(
         context["form"]["systeme_management_energie"].initial
         == caracs.systeme_management_energie
     )
-    assert context["form"]["date_cloture_exercice"].initial == "2022-12-31"
+    assert context["form"]["date_cloture_exercice"].initial == "2022-06-30"
 
 
 def test_qualie_entreprise_appartenant_a_un_groupe(

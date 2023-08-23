@@ -16,7 +16,6 @@ from .forms import EntrepriseQualificationForm
 from .models import ActualisationCaracteristiquesAnnuelles
 from .models import Entreprise
 from api.exceptions import APIError
-from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
 from habilitations.models import detach_user_from_entreprise
 from habilitations.models import is_user_attached_to_entreprise
@@ -153,6 +152,7 @@ def qualification(request, siren):
     else:
         if caracs := entreprise.dernieres_caracteristiques_qualifiantes:
             infos_entreprise = {
+                "date_cloture_exercice": caracs.date_cloture_exercice.isoformat(),
                 "effectif": caracs.effectif,
                 "effectif_outre_mer": caracs.effectif_outre_mer,
                 "tranche_chiffre_affaires": caracs.tranche_chiffre_affaires,
@@ -166,11 +166,10 @@ def qualification(request, siren):
             }
         else:
             infos_entreprise = api.recherche_entreprises.recherche(entreprise.siren)
+            date_cloture_exercice = date(date.today().year - 1, 12, 31)
             infos_entreprise[
-                "effectif_outre_mer"
-            ] = CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
-        date_cloture_exercice = date(date.today().year - 1, 12, 31)
-        infos_entreprise["date_cloture_exercice"] = date_cloture_exercice.isoformat()
+                "date_cloture_exercice"
+            ] = date_cloture_exercice.isoformat()
         form = EntrepriseQualificationForm(initial=infos_entreprise)
 
     return render(
