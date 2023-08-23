@@ -37,14 +37,24 @@ def reglementations(request):
         simulation_form = SimulationForm(request.POST)
         if simulation_form.is_valid():
             if entreprises := Entreprise.objects.filter(
-                siren=simulation_form.data["siren"]
+                siren=simulation_form.cleaned_data["siren"]
             ):
                 entreprise = entreprises[0]
                 entreprise.denomination = simulation_form.cleaned_data["denomination"]
+                entreprise.appartient_groupe = simulation_form.cleaned_data[
+                    "appartient_groupe"
+                ]
+                entreprise.comptes_consolides = simulation_form.cleaned_data[
+                    "comptes_consolides"
+                ]
             else:
                 entreprise = Entreprise.objects.create(
                     denomination=simulation_form.cleaned_data["denomination"],
-                    siren=simulation_form.data["siren"],
+                    siren=simulation_form.cleaned_data["siren"],
+                    appartient_groupe=simulation_form.cleaned_data["appartient_groupe"],
+                    comptes_consolides=simulation_form.cleaned_data[
+                        "comptes_consolides"
+                    ],
                 )
 
             request.session["siren"] = simulation_form.cleaned_data["siren"]
@@ -56,14 +66,18 @@ def reglementations(request):
             date_cloture_exercice = date(date.today().year - 1, 12, 31)
             actualisation = ActualisationCaracteristiquesAnnuelles(
                 date_cloture_exercice=date_cloture_exercice,
-                effectif=simulation_form.data["effectif"],
+                effectif=simulation_form.cleaned_data["effectif"],
                 effectif_outre_mer=None,
-                tranche_chiffre_affaires=simulation_form.data[
+                tranche_chiffre_affaires=simulation_form.cleaned_data[
                     "tranche_chiffre_affaires"
                 ],
-                tranche_bilan=simulation_form.data["tranche_bilan"],
-                tranche_chiffre_affaires_consolide=None,
-                tranche_bilan_consolide=None,
+                tranche_bilan=simulation_form.cleaned_data["tranche_bilan"],
+                tranche_chiffre_affaires_consolide=simulation_form.cleaned_data[
+                    "tranche_chiffre_affaires_consolide"
+                ],
+                tranche_bilan_consolide=simulation_form.cleaned_data[
+                    "tranche_bilan_consolide"
+                ],
                 bdese_accord=None,
                 systeme_management_energie=None,
             )

@@ -55,6 +55,10 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "appartient_groupe": True,
+        "comptes_consolides": True,
+        "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
     }
 
     mocker.patch(
@@ -86,8 +90,8 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     entreprise = Entreprise.objects.get(siren="000000001")
     assert entreprise.denomination == "Entreprise SAS"
     assert entreprise.date_cloture_exercice is None
-    assert entreprise.appartient_groupe is None
-    assert entreprise.comptes_consolides is None
+    assert entreprise.appartient_groupe == True
+    assert entreprise.comptes_consolides == True
     caracteristiques = entreprise.caracteristiques_actuelles()
     assert caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
     assert caracteristiques.effectif_outre_mer is None
@@ -99,8 +103,14 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
         caracteristiques.tranche_bilan
         == CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
     )
-    assert caracteristiques.tranche_chiffre_affaires_consolide is None
-    assert caracteristiques.tranche_bilan_consolide is None
+    assert (
+        caracteristiques.tranche_chiffre_affaires_consolide
+        == CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
+    )
+    assert (
+        caracteristiques.tranche_bilan_consolide
+        == CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
+    )
     assert caracteristiques.bdese_accord is None
     assert caracteristiques.systeme_management_energie is None
 
@@ -165,6 +175,10 @@ def test_simulation_de_reglementations_avec_utilisateur_authentifie_et_des_donne
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "appartient_groupe": True,
+        "comptes_consolides": True,
+        "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
     }
 
     mocker.patch(
@@ -231,6 +245,10 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
         "effectif": effectif,
         "tranche_chiffre_affaires": ca,
         "tranche_bilan": bilan,
+        "appartient_groupe": False,
+        "comptes_consolides": False,
+        "tranche_chiffre_affaires_consolide": "",
+        "tranche_bilan_consolide": "",
     }
 
     response = client.post("/reglementations", data=data)
@@ -308,6 +326,10 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
         "effectif": effectif,
         "tranche_chiffre_affaires": ca,
         "tranche_bilan": bilan,
+        "appartient_groupe": True,
+        "comptes_consolides": True,
+        "tranche_chiffre_affaires_consolide": ca,
+        "tranche_bilan_consolide": bilan,
     }
 
     response = client.post("/reglementations", data=data)

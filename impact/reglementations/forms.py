@@ -9,18 +9,53 @@ from reglementations.models import CategoryType
 from utils.forms import DsfrForm
 
 
-class SimulationForm(DsfrForm):
+class SimulationForm(DsfrForm, forms.ModelForm):
     denomination = forms.CharField()
     siren = forms.CharField()
-    effectif = forms.ChoiceField(choices=CaracteristiquesAnnuelles.EFFECTIF_CHOICES)
-    tranche_chiffre_affaires = forms.ChoiceField(
-        label="Chiffre d'affaires",
-        choices=CaracteristiquesAnnuelles.CA_CHOICES,
+    appartient_groupe = forms.BooleanField(
+        required=False,
+        label="L'entreprise appartient à un groupe composé d'une société-mère et d'une ou plusieurs filiales",
     )
-    tranche_bilan = forms.ChoiceField(
-        label="Bilan",
-        choices=CaracteristiquesAnnuelles.BILAN_CHOICES,
+    comptes_consolides = forms.BooleanField(
+        required=False,
+        label="Le groupe d'entreprises établit des comptes consolidés",
     )
+
+    class Meta:
+        model = CaracteristiquesAnnuelles
+        fields = [
+            "effectif",
+            "tranche_chiffre_affaires",
+            "tranche_bilan",
+            "tranche_chiffre_affaires_consolide",
+            "tranche_bilan_consolide",
+        ]
+        help_texts = {
+            "tranche_chiffre_affaires": "Sélectionnez le chiffre d'affaires de l'exercice clos",
+            "tranche_bilan": "Sélectionnez le bilan de l'exercice clos",
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        appartient_groupe = cleaned_data.get("appartient_groupe")
+        if not appartient_groupe:
+            cleaned_data["comptes_consolides"] = False
+        comptes_consolides = cleaned_data.get("comptes_consolides")
+        tranche_chiffre_affaires_consolide = cleaned_data.get(
+            "tranche_chiffre_affaires_consolide"
+        )
+        tranche_bilan_consolide = cleaned_data.get("tranche_bilan_consolide")
+        if comptes_consolides:
+            ERREUR = "Ce champ est obligatoire lorsque les comptes sont consolidés"
+            if not tranche_chiffre_affaires_consolide:
+                self.add_error("tranche_chiffre_affaires_consolide", ERREUR)
+            if not tranche_bilan_consolide:
+                self.add_error("tranche_bilan_consolide", ERREUR)
+        else:
+            if tranche_chiffre_affaires_consolide:
+                cleaned_data["tranche_chiffre_affaires_consolide"] = None
+            if tranche_bilan_consolide:
+                cleaned_data["tranche_bilan_consolide"] = None
 
 
 class IntroductionDemoForm(DsfrForm):
