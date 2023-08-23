@@ -64,7 +64,7 @@ class Reglementation(ABC):
             return self.calculate_status_for_unauthorized_user(caracteristiques)
 
     def calculate_status_for_anonymous_user(
-        self, caracteristiques: CaracteristiquesAnnuelles
+        self, caracteristiques: CaracteristiquesAnnuelles, primary_action=None
     ):
         if self.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_SOUMIS
@@ -74,7 +74,6 @@ class Reglementation(ABC):
         else:
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation."
-            primary_action = None
         return ReglementationStatus(
             status, status_detail, primary_action=primary_action
         )
