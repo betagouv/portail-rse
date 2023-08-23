@@ -90,7 +90,19 @@ def reglementations(request):
             )
 
         else:
-            return redirect("simulation")
+            messages.error(
+                request,
+                f"Impossible de finaliser la simulation car le formulaire contient des erreurs.",
+            )
+            return render(
+                request,
+                "public/simulation-etape-2.html",
+                {
+                    "denomination": simulation_form.cleaned_data["denomination"],
+                    "siren": simulation_form.cleaned_data["siren"],
+                    "simulation_form": simulation_form,
+                },
+            )
 
     elif entreprise := get_current_entreprise(request):
         return redirect("reglementations:reglementations", siren=entreprise.siren)
