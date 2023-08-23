@@ -6,6 +6,7 @@ from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.urls import reverse_lazy
 
 from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
@@ -118,7 +119,7 @@ def reglementations_for_entreprise(request, siren):
         if caracteristiques != entreprise.caracteristiques_actuelles():
             messages.warning(
                 request,
-                f"Les informations sont basées sur des données de l'exercice {caracteristiques.annee}.",
+                f"Les informations sont basées sur des données de l'exercice {caracteristiques.annee}. <a href='{reverse_lazy('entreprises:qualification', args=[entreprise.siren])}'>Mettre à jour les données de l'entreprise</a>",
             )
         return render(
             request,
