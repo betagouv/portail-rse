@@ -139,7 +139,7 @@
                 <div class="fr-container fr-mt-4w">
                     {% for message in messages %}
                         <div class="fr-alert fr-alert--{{ message.tags }}">
-                            <p>{{ message }}</p>
+                            <p>{{ message|safe }}</p>
                         </div>
                     {% endfor %}
                 </div>
