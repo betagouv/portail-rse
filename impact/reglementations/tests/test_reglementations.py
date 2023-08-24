@@ -319,7 +319,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
     client, alice, entreprise_non_qualifiee
 ):
     """
-    La simulation sur une entreprise déjà enregistrée en base avec un utilisateur ne créé pas de caractéristique
+    La simulation sur une entreprise déjà enregistrée en base avec un utilisateur ne crée pas de caractéristique
     mais affiche quand même les statuts correspondant aux données utilisées lors de la simulation
     """
 
