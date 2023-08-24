@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 from entreprises.models import CaracteristiquesAnnuelles
+from entreprises.models import DENOMINATION_MAX_LENGTH
 from reglementations.models import CategoryType
 from utils.forms import DsfrForm
 
@@ -34,6 +35,10 @@ class SimulationForm(DsfrForm, forms.ModelForm):
             "tranche_chiffre_affaires": "Sélectionnez le chiffre d'affaires de l'exercice clos",
             "tranche_bilan": "Sélectionnez le bilan de l'exercice clos",
         }
+
+    def clean_denomination(self):
+        denomination = self.cleaned_data.get("denomination")
+        return denomination[:DENOMINATION_MAX_LENGTH]
 
     def clean(self):
         cleaned_data = super().clean()
