@@ -2,6 +2,7 @@ from django.conf import settings
 
 from entreprises.models import CaracteristiquesAnnuelles
 from reglementations.views.base import Reglementation
+from reglementations.views.base import ReglementationAction
 from reglementations.views.base import ReglementationStatus
 
 
@@ -58,6 +59,11 @@ class AuditEnergetiqueReglementation(Reglementation):
             status = ReglementationStatus.STATUS_SOUMIS
             status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(self.criteres_remplis(caracteristiques))}."
             status_detail += " Vous devez réaliser un audit énergétique si vous remplissez l'une des conditions suivantes lors des deux derniers exercices comptables : soit votre effectif est supérieur à 250 salariés, soit votre bilan (ou bilan consolidé) est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
+            primary_action = ReglementationAction(
+                "https://audit-energie.ademe.fr/",
+                "Publier mon audit",
+                external=True,
+            )
         else:
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
@@ -65,4 +71,5 @@ class AuditEnergetiqueReglementation(Reglementation):
                 status_detail += " si le système de management de l'énergie est certifié par un organisme de certification accrédité par un organisme d'accréditation signataire de l'accord de reconnaissance multilatéral établi par la coordination européenne des organismes d'accréditation et que ce système prévoit un audit énergétique satisfaisant aux critères mentionnés à l'article L. 233-1."
             else:
                 status_detail += "."
-        return ReglementationStatus(status, status_detail)
+            primary_action = None
+        return ReglementationStatus(status, status_detail, primary_action)
