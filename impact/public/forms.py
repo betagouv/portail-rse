@@ -2,40 +2,11 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 from entreprises.forms import SirenField
-from entreprises.models import DENOMINATION_MAX_LENGTH
-from entreprises.models import Entreprise
-from utils.forms import DateInput
 from utils.forms import DsfrForm
 
 
 class SirenForm(DsfrForm):
     siren = SirenField()
-
-
-class EntrepriseForm(DsfrForm, forms.ModelForm):
-    denomination = forms.CharField()
-
-    class Meta:
-        model = Entreprise
-        fields = [
-            "denomination",
-            "siren",
-            "date_cloture_exercice",
-            "appartient_groupe",
-            "comptes_consolides",
-        ]
-        labels = {
-            "appartient_groupe": "L'entreprise appartient à un groupe composé d'une société-mère et d'une ou plusieurs filiales",
-        }
-        widgets = {
-            "date_cloture_exercice": DateInput,
-            "appartient_groupe": forms.CheckboxInput,
-            "comptes_consolides": forms.CheckboxInput,
-        }
-
-    def clean_denomination(self):
-        denomination = self.cleaned_data.get("denomination")
-        return denomination[:DENOMINATION_MAX_LENGTH]
 
 
 class NaiveCaptchaField(forms.CharField):

@@ -1,12 +1,9 @@
 import html
-from datetime import date
 
 import pytest
 
 import api.exceptions
 from entreprises.models import CaracteristiquesAnnuelles
-from public.forms import DENOMINATION_MAX_LENGTH
-from public.forms import EntrepriseForm
 
 
 def test_page_index(client):
@@ -132,21 +129,6 @@ def test_page_cgu(client):
     assert response.status_code == 200
     content = response.content.decode("utf-8")
     assert "<!-- page cgu -->" in content
-
-
-def test_entreprise_form_truncate_raison_social_when_too_long(db):
-    form = EntrepriseForm(
-        data={
-            "denomination": "a" * (DENOMINATION_MAX_LENGTH + 1),
-            "siren": "123456789",
-            "date_cloture_exercice": date(2022, 12, 31).isoformat(),
-        }
-    )
-    assert form.is_valid()
-
-    entreprise = form.save()
-
-    assert entreprise.denomination == "a" * DENOMINATION_MAX_LENGTH
 
 
 def test_succes_recherche_siren(client, mocker):
