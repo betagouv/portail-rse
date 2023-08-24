@@ -376,7 +376,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
 
 
 def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristiques_actuelles_sont_enregistrees(
-    client, date_cloture_dernier_exercice, entreprise_non_qualifiee
+    client, entreprise_non_qualifiee
 ):
     """
     La simulation sur une entreprise déjà enregistrée en base sans caracteristiques actuelles enregistre les données de simulation
