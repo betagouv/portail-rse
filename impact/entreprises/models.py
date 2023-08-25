@@ -15,6 +15,7 @@ class ActualisationCaracteristiquesAnnuelles:
     date_cloture_exercice: date
     effectif: str
     effectif_outre_mer: str
+    effectif_groupe: str
     tranche_chiffre_affaires: str
     tranche_bilan: str
     tranche_chiffre_affaires_consolide: str
@@ -32,6 +33,10 @@ class Entreprise(TimestampedModel):
     )
     appartient_groupe = models.BooleanField(
         verbose_name="L'entreprise fait partie d'un groupe",
+        null=True,
+    )
+    societe_mere_en_france = models.BooleanField(
+        verbose_name="La société mère a son siège social en France",
         null=True,
     )
     comptes_consolides = models.BooleanField(
@@ -91,6 +96,7 @@ class Entreprise(TimestampedModel):
         caracteristiques.date_cloture_exercice = actualisation.date_cloture_exercice
         caracteristiques.effectif = actualisation.effectif
         caracteristiques.effectif_outre_mer = actualisation.effectif_outre_mer
+        caracteristiques.effectif_groupe = actualisation.effectif_groupe
         caracteristiques.tranche_chiffre_affaires = (
             actualisation.tranche_chiffre_affaires
         )
@@ -129,6 +135,16 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     EFFECTIF_OUTRE_MER_CHOICES = [
         (EFFECTIF_OUTRE_MER_MOINS_DE_250, "moins de 250 salariés"),
         (EFFECTIF_OUTRE_MER_250_ET_PLUS, "250 salariés ou plus"),
+    ]
+
+    EFFECTIF_ENTRE_250_ET_499 = "250-499"
+    EFFECTIF_GROUPE_CHOICES = [
+        (EFFECTIF_MOINS_DE_50, "moins de 50 salariés"),
+        (EFFECTIF_ENTRE_50_ET_249, "entre 50 et 249 salariés"),
+        (EFFECTIF_ENTRE_250_ET_499, "entre 250 et 499 salariés"),
+        (EFFECTIF_ENTRE_500_ET_4999, "entre 500 et 4 999 salariés"),
+        (EFFECTIF_ENTRE_5000_ET_9999, "entre 5 000 et 9 999 salariés"),
+        (EFFECTIF_10000_ET_PLUS, "10 000 salariés ou plus"),
     ]
 
     CA_MOINS_DE_700K = "0-700k"
@@ -180,6 +196,14 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         verbose_name="Effectif outre-mer",
         help_text="Nombre de salariés dans les régions et départements d'outre-mer",
         null=True,
+    )
+    effectif_groupe = models.CharField(
+        max_length=9,
+        choices=EFFECTIF_GROUPE_CHOICES,
+        verbose_name="Effectif du groupe",
+        help_text="Nombre de salariés du groupe",
+        null=True,
+        blank=True,
     )
     tranche_chiffre_affaires = models.CharField(
         verbose_name="Chiffre d'affaires",

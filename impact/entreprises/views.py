@@ -131,6 +131,7 @@ def qualification(request, siren):
                 date_cloture_dernier_exercice,
                 form.cleaned_data["effectif"],
                 form.cleaned_data["effectif_outre_mer"],
+                None,
                 form.cleaned_data["tranche_chiffre_affaires"],
                 form.cleaned_data["tranche_bilan"],
                 form.cleaned_data["tranche_chiffre_affaires_consolide"],
