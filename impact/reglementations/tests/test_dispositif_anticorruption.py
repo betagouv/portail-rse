@@ -123,3 +123,33 @@ def test_calcule_etat_seuils_effectif_ca_et_ca_consolide_suffisants(
         reglementation.status_detail
         == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 500 salariés et votre chiffre d'affaires est supérieur à 100 millions d'euros."
     )
+
+
+@pytest.mark.parametrize(
+    "effectif_groupe",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+def test_calcule_etat_seuils_effectif_groupe_et_ca_suffisants(
+    effectif_groupe, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(
+        appartient_groupe=True,
+        societe_mere_en_france=True,
+        effectif_groupe=effectif_groupe,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    reglementation = DispositifAntiCorruption.calculate_status(
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
+    )
+
+    assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
+    assert (
+        reglementation.status_detail
+        == "Vous êtes soumis à cette réglementation car l'effectif du groupe est supérieur à 500 salariés et votre chiffre d'affaires est supérieur à 100 millions d'euros."
+    )
