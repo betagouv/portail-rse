@@ -15,8 +15,8 @@ from reglementations.views.audit_energetique import AuditEnergetiqueReglementati
 from reglementations.views.bdese import BDESEReglementation
 from reglementations.views.bges import BGESReglementation
 from reglementations.views.dispositif_alerte import DispositifAlerteReglementation
+from reglementations.views.dispositif_anticorruption import DispositifAntiCorruption
 from reglementations.views.index_egapro import IndexEgaproReglementation
-
 
 REGLEMENTATIONS = (
     BDESEReglementation,
@@ -24,6 +24,7 @@ REGLEMENTATIONS = (
     DispositifAlerteReglementation,
     BGESReglementation,
     AuditEnergetiqueReglementation,
+    DispositifAntiCorruption,
 )
 
 
@@ -92,6 +93,10 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     )
     mocker.patch(
         "reglementations.views.audit_energetique.AuditEnergetiqueReglementation.est_soumis",
+        return_value=status_est_soumis,
+    )
+    mocker.patch(
+        "reglementations.views.dispositif_anticorruption.DispositifAntiCorruption.est_soumis",
         return_value=status_est_soumis,
     )
     response = client.post("/reglementations", data=data)
