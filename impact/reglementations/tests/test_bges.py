@@ -15,7 +15,7 @@ def test_bges_reglementation_info():
 
     assert (
         info["description"]
-        == "Le Bilan GES réglementaire a vocation à contribuer à la mise en œuvre de la stratégie de réduction des émissions de GES des entreprises. Un plan de transition est obligatoirement joint à ce bilan. Il vise à réduire les émissions de gaz à effet de serre et présente les objectifs, moyens et actions envisagées à cette fin ainsi que, le cas échéant, les actions mises en œuvre lors du précédent bilan. Ils sont mis à jour tous les quatre ans."
+        == "Le bilan GES réglementaire a vocation à contribuer à la mise en œuvre de la stratégie de réduction des émissions de GES des entreprises. Un plan de transition est obligatoirement joint à ce bilan. Il vise à réduire les émissions de gaz à effet de serre et présente les objectifs, moyens et actions envisagées à cette fin ainsi que, le cas échéant, les actions mises en œuvre lors du précédent bilan. Ils sont mis à jour tous les quatre ans."
     )
     assert info["more_info_url"] == "https://bilans-ges.ademe.fr/"
 
@@ -34,7 +34,10 @@ def test_calculate_status_with_not_authenticated_user(entreprise_factory, mocker
     assert status.status == ReglementationStatus.STATUS_NON_SOUMIS
     assert status.status_detail == "Vous n'êtes pas soumis à cette réglementation."
     assert status.primary_action.url == "https://bilans-ges.ademe.fr/bilans"
-    assert status.primary_action.title == "Consulter les Bilans GES sur Bilans GES"
+    assert (
+        status.primary_action.title
+        == "Consulter les bilans GES sur la plateforme nationale"
+    )
     assert status.primary_action.external
     assert status.secondary_actions == []
 
@@ -114,7 +117,8 @@ def test_calcule_le_statut_si_moins_de_500_employes(
     )
     assert reglementation.primary_action.url == "https://bilans-ges.ademe.fr/bilans"
     assert (
-        reglementation.primary_action.title == "Consulter les Bilans GES sur Bilans GES"
+        reglementation.primary_action.title
+        == "Consulter les bilans GES sur la plateforme nationale"
     )
     assert reglementation.primary_action.external
 
@@ -138,7 +142,10 @@ def test_calcule_le_statut_si_plus_de_500_employes(entreprise_factory, alice):
         reglementation.primary_action.url
         == "https://bilans-ges.ademe.fr/bilans/comment-publier"
     )
-    assert reglementation.primary_action.title == "Publier mon Bilan GES"
+    assert (
+        reglementation.primary_action.title
+        == "Publier mon bilan GES sur la plateforme nationale"
+    )
     assert reglementation.primary_action.external
 
 
@@ -160,4 +167,7 @@ def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer(
         reglementation.status_detail
         == "Vous êtes soumis à cette réglementation car votre effectif outre-mer est supérieur à 250 salariés."
     )
-    assert reglementation.primary_action.title == "Publier mon Bilan GES"
+    assert (
+        reglementation.primary_action.title
+        == "Publier mon bilan GES sur la plateforme nationale"
+    )

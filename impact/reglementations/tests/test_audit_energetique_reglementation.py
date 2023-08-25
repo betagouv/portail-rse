@@ -71,7 +71,10 @@ def test_calcule_statut_plus_de_250_employes(effectif, entreprise_factory, alice
         "Vous devez réaliser un audit énergétique si vous remplissez l'une des conditions suivantes lors des deux derniers exercices comptables : soit votre effectif est supérieur à 250 salariés, soit votre bilan (ou bilan consolidé) est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
     )
     assert reglementation.primary_action.url == "https://audit-energie.ademe.fr/"
-    assert reglementation.primary_action.title == "Publier mon audit"
+    assert (
+        reglementation.primary_action.title
+        == "Déposer mon audit sur la plateforme de recueil"
+    )
     assert reglementation.primary_action.external
 
 
@@ -145,7 +148,10 @@ def test_calcule_etat_avec_bilan_et_ca_suffisants(bilan, ca, entreprise_factory,
         "Vous devez réaliser un audit énergétique si vous remplissez l'une des conditions suivantes lors des deux derniers exercices comptables : soit votre effectif est supérieur à 250 salariés, soit votre bilan (ou bilan consolidé) est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
     )
     assert reglementation.primary_action.url == "https://audit-energie.ademe.fr/"
-    assert reglementation.primary_action.title == "Publier mon audit"
+    assert (
+        reglementation.primary_action.title
+        == "Déposer mon audit sur la plateforme de recueil"
+    )
     assert reglementation.primary_action.external
 
 
@@ -239,7 +245,10 @@ def test_calcule_etat_avec_effectif_bilan_et_ca_suffisants(
         "Vous devez réaliser un audit énergétique si vous remplissez l'une des conditions suivantes lors des deux derniers exercices comptables : soit votre effectif est supérieur à 250 salariés, soit votre bilan (ou bilan consolidé) est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
     )
     assert reglementation.primary_action.url == "https://audit-energie.ademe.fr/"
-    assert reglementation.primary_action.title == "Publier mon audit"
+    assert (
+        reglementation.primary_action.title
+        == "Déposer mon audit sur la plateforme de recueil"
+    )
     assert reglementation.primary_action.external
 
 
@@ -305,5 +314,8 @@ def test_calcule_etat_avec_bilan_insuffisant_mais_bilan_consolide_et_ca_suffisan
         "Vous devez réaliser un audit énergétique si vous remplissez l'une des conditions suivantes lors des deux derniers exercices comptables : soit votre effectif est supérieur à 250 salariés, soit votre bilan (ou bilan consolidé) est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
     )
     assert reglementation.primary_action.url == "https://audit-energie.ademe.fr/"
-    assert reglementation.primary_action.title == "Publier mon audit"
+    assert (
+        reglementation.primary_action.title
+        == "Déposer mon audit sur la plateforme de recueil"
+    )
     assert reglementation.primary_action.external

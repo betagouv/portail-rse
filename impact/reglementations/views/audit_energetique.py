@@ -61,7 +61,7 @@ class AuditEnergetiqueReglementation(Reglementation):
             status_detail += " Vous devez réaliser un audit énergétique si vous remplissez l'une des conditions suivantes lors des deux derniers exercices comptables : soit votre effectif est supérieur à 250 salariés, soit votre bilan (ou bilan consolidé) est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
             primary_action = ReglementationAction(
                 "https://audit-energie.ademe.fr/",
-                "Publier mon audit",
+                "Déposer mon audit sur la plateforme de recueil",
                 external=True,
             )
         else:
