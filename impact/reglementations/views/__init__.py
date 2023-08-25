@@ -71,7 +71,7 @@ def reglementations(request):
                 date_cloture_exercice=date_cloture_exercice,
                 effectif=simulation_form.cleaned_data["effectif"],
                 effectif_outre_mer=None,
-                effectif_groupe=None,
+                effectif_groupe=simulation_form.cleaned_data["effectif_groupe"],
                 tranche_chiffre_affaires=simulation_form.cleaned_data[
                     "tranche_chiffre_affaires"
                 ],
