@@ -19,6 +19,32 @@ def test_dispositif_alerte_reglementation_info():
 
 
 @pytest.mark.parametrize(
+    "effectif",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+    ],
+)
+def test_calcule_etat_avec_effectif_insuffisant(effectif, entreprise_factory, alice):
+    entreprise = entreprise_factory(
+        effectif=effectif,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    reglementation = DispositifAntiCorruption.calculate_status(
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
+    )
+
+    assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
+    assert (
+        reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation."
+    )
+
+
+@pytest.mark.parametrize(
     "ca",
     [
         CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
