@@ -19,10 +19,14 @@ class DispositifAntiCorruption(Reglementation):
             CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         ):
             criteres.append("votre effectif est supérieur à 500 salariés")
-        elif caracteristiques.effectif_groupe in (
-            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
-            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
-            CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        elif (
+            caracteristiques.effectif_groupe
+            in (
+                CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+                CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+                CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+            )
+            and caracteristiques.entreprise.societe_mere_en_france
         ):
             criteres.append("l'effectif du groupe est supérieur à 500 salariés")
 
