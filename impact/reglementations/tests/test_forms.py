@@ -23,11 +23,12 @@ def test_ignore_bilan_et_ca_consolides_lorsque_pas_de_comptes_consolides():
     assert form.cleaned_data["tranche_bilan_consolide"] is None
 
 
-def test_pas_de_comptes_consolides_si_pas_de_groupe():
+def test_ni_comptes_consolides_ni_effectif_groupe_si_pas_de_groupe():
     data = {
         "siren": "123456789",
         "denomination": "Entreprise SAS",
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
         "appartient_groupe": False,
@@ -39,6 +40,7 @@ def test_pas_de_comptes_consolides_si_pas_de_groupe():
     form = SimulationForm(data=data)
 
     assert form.is_valid(), form.errors
+    assert form.cleaned_data["effectif_groupe"] is None
     assert form.cleaned_data["comptes_consolides"] == False
     assert form.cleaned_data["tranche_chiffre_affaires_consolide"] is None
     assert form.cleaned_data["tranche_bilan_consolide"] is None

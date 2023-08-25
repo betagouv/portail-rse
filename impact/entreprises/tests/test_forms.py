@@ -26,11 +26,12 @@ def test_ignore_bilan_et_ca_consolides_lorsque_pas_de_comptes_consolides():
     assert form.cleaned_data["tranche_bilan_consolide"] is None
 
 
-def test_pas_de_comptes_consolides_si_pas_de_groupe():
+def test_ni_comptes_consolides_ni_effectif_groupe_si_pas_de_groupe():
     data = {
         "date_cloture_exercice": date(2022, 12, 31),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+        "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
         "appartient_groupe": False,
@@ -44,6 +45,7 @@ def test_pas_de_comptes_consolides_si_pas_de_groupe():
     form = EntrepriseQualificationForm(data=data)
 
     assert form.is_valid()
+    assert form.cleaned_data["effectif_groupe"] is None
     assert form.cleaned_data["comptes_consolides"] == False
     assert form.cleaned_data["tranche_chiffre_affaires_consolide"] is None
     assert form.cleaned_data["tranche_bilan_consolide"] is None

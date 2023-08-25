@@ -50,6 +50,7 @@ class EntrepriseForm(DsfrForm):
         appartient_groupe = cleaned_data.get("appartient_groupe")
         if not appartient_groupe:
             cleaned_data["comptes_consolides"] = False
+            cleaned_data["effectif_groupe"] = None
         comptes_consolides = cleaned_data.get("comptes_consolides")
         tranche_chiffre_affaires_consolide = cleaned_data.get(
             "tranche_chiffre_affaires_consolide"
