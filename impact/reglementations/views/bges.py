@@ -9,7 +9,7 @@ from reglementations.views.base import ReglementationStatus
 
 class BGESReglementation(Reglementation):
     title = "BGES et plan de transition"
-    description = "Le Bilan GES réglementaire a vocation à contribuer à la mise en œuvre de la stratégie de réduction des émissions de GES des entreprises. Un plan de transition est obligatoirement joint à ce bilan. Il vise à réduire les émissions de gaz à effet de serre et présente les objectifs, moyens et actions envisagées à cette fin ainsi que, le cas échéant, les actions mises en œuvre lors du précédent bilan. Ils sont mis à jour tous les quatre ans."
+    description = "Le bilan GES réglementaire a vocation à contribuer à la mise en œuvre de la stratégie de réduction des émissions de GES des entreprises. Un plan de transition est obligatoirement joint à ce bilan. Il vise à réduire les émissions de gaz à effet de serre et présente les objectifs, moyens et actions envisagées à cette fin ainsi que, le cas échéant, les actions mises en œuvre lors du précédent bilan. Ils sont mis à jour tous les quatre ans."
     more_info_url = "https://bilans-ges.ademe.fr/"
 
     def criteres_remplis(self, caracteristiques):
@@ -34,7 +34,7 @@ class BGESReglementation(Reglementation):
     ) -> ReglementationStatus:
         NON_SOUMIS_PRIMARY_ACTION = ReglementationAction(
             "https://bilans-ges.ademe.fr/bilans",
-            "Consulter les Bilans GES sur Bilans GES",
+            "Consulter les bilans GES sur la plateforme nationale",
             external=True,
         )
 
@@ -50,7 +50,7 @@ class BGESReglementation(Reglementation):
             status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(self.criteres_remplis(caracteristiques))}."
             primary_action = ReglementationAction(
                 "https://bilans-ges.ademe.fr/bilans/comment-publier",
-                "Publier mon Bilan GES",
+                "Publier mon bilan GES sur la plateforme nationale",
                 external=True,
             )
         else:

@@ -27,7 +27,7 @@ class IndexEgaproReglementation(Reglementation):
 
         NON_SOUMIS_PRIMARY_ACTION = ReglementationAction(
             "https://egapro.travail.gouv.fr/index-egapro/recherche",
-            "Consulter les index sur Egapro",
+            "Consulter les index sur la plateforme Egapro",
             external=True,
         )
 
@@ -45,7 +45,7 @@ class IndexEgaproReglementation(Reglementation):
         else:
             primary_action = ReglementationAction(
                 "https://egapro.travail.gouv.fr/",
-                "Calculer et déclarer mon index sur Egapro",
+                "Calculer et déclarer mon index sur la plateforme Egapro",
                 external=True,
             )
             if egapro.is_index_egapro_published(
