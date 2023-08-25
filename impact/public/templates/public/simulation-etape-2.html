@@ -26,6 +26,9 @@
                         <legend class="fr-fieldset__legend">
                             Groupe d'entreprises
                         </legend>
+                        <div class="fr-fieldset__element">
+                            {% include 'snippets/field.html' with field=simulation_form.effectif_groupe %}
+                        </div>
                         <div class="fr-fieldset__element" id="svelte-avec-comptes-consolides-field">
                             {% include 'snippets/field.html' with field=simulation_form.comptes_consolides %}
                         </div>

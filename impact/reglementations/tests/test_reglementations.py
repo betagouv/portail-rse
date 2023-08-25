@@ -70,6 +70,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
         "appartient_groupe": True,
+        "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         "comptes_consolides": True,
         "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
@@ -113,6 +114,10 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     caracteristiques = entreprise.caracteristiques_actuelles()
     assert caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
     assert caracteristiques.effectif_outre_mer is None
+    assert (
+        caracteristiques.effectif_groupe
+        == CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
+    )
     assert (
         caracteristiques.tranche_chiffre_affaires
         == CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
@@ -181,6 +186,7 @@ def test_simulation_par_un_utilisateur_authentifie_sur_une_nouvelle_entreprise(
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
         "appartient_groupe": True,
+        "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         "comptes_consolides": True,
         "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
@@ -204,6 +210,10 @@ def test_simulation_par_un_utilisateur_authentifie_sur_une_nouvelle_entreprise(
     )
     mocker.patch(
         "reglementations.views.audit_energetique.AuditEnergetiqueReglementation.est_soumis",
+        return_value=status_est_soumis,
+    )
+    mocker.patch(
+        "reglementations.views.dispositif_anticorruption.DispositifAntiCorruption.est_soumis",
         return_value=status_est_soumis,
     )
     response = client.post("/reglementations", data=data)
@@ -259,6 +269,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
         "tranche_chiffre_affaires": ca,
         "tranche_bilan": bilan,
         "appartient_groupe": False,
+        "effectif_groupe": "",
         "comptes_consolides": False,
         "tranche_chiffre_affaires_consolide": "",
         "tranche_bilan_consolide": "",

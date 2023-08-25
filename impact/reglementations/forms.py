@@ -19,6 +19,7 @@ class SimulationForm(EntrepriseForm, forms.ModelForm):
         model = CaracteristiquesAnnuelles
         fields = [
             "effectif",
+            "effectif_groupe",
             "tranche_chiffre_affaires",
             "tranche_bilan",
             "tranche_chiffre_affaires_consolide",
