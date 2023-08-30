@@ -123,10 +123,16 @@ def test_calcule_le_statut_si_moins_de_500_employes(
     assert reglementation.primary_action.external
 
 
-def test_calcule_le_statut_si_plus_de_500_employes(entreprise_factory, alice):
-    entreprise = entreprise_factory(
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS
-    )
+@pytest.mark.parametrize(
+    "effectif",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+def test_calcule_le_statut_si_plus_de_500_employes(effectif, entreprise_factory, alice):
+    entreprise = entreprise_factory(effectif=effectif)
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
     reglementation = BGESReglementation(entreprise).calculate_status(

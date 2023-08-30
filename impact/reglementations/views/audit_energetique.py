@@ -18,7 +18,9 @@ class AuditEnergetiqueReglementation(Reglementation):
         if caracteristiques.effectif in (
             CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
             CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
-            CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS,
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+            CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         ):
             criteres.append("votre effectif est supérieur à 250 salariés")
 

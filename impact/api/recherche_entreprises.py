@@ -41,8 +41,12 @@ def recherche(siren):
         # la tranche EFFECTIF_ENTRE_250_ET_299 ne peut pas être trouvée avec l'API
         elif tranche_effectif < 41:  # moins de 500 salariés
             effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
+        elif tranche_effectif < 52:  # moins de 5 000 salariés:
+            effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999
+        elif tranche_effectif == 52:
+            effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999
         else:
-            effectif = CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS
+            effectif = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
         return {
             "siren": siren,
             "effectif": effectif,
