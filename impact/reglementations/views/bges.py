@@ -14,7 +14,11 @@ class BGESReglementation(Reglementation):
 
     def criteres_remplis(self, caracteristiques):
         criteres = []
-        if caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS:
+        if caracteristiques.effectif in (
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+            CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        ):
             criteres.append("votre effectif est supérieur à 500 salariés")
 
         if (

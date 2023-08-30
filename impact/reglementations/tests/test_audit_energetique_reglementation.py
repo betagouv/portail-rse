@@ -52,7 +52,9 @@ def test_calcule_statut_moins_de_249_employes_et_petit_bilan(
     [
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
-        CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
 def test_calcule_statut_plus_de_250_employes(effectif, entreprise_factory, alice):
@@ -206,7 +208,9 @@ def test_calcule_etat_avec_ca_insuffisant(bilan, entreprise_factory, alice):
     [
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
-        CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
 @pytest.mark.parametrize(
@@ -256,7 +260,7 @@ def test_calcule_etat_avec_bilan_et_ca_suffisants_mais_systeme_management_energi
     entreprise_factory, alice
 ):
     entreprise = entreprise_factory(
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
         systeme_management_energie=True,

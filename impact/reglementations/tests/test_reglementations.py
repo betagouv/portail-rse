@@ -241,7 +241,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     )
     assert entreprise.caracteristiques_actuelles()
 
-    effectif = CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS
+    effectif = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
     bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
     autre_denomination = "Autre dénomination"
@@ -326,7 +326,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
     entreprise = entreprise_non_qualifiee
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
-    effectif = CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS
+    effectif = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
     bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
     autre_denomination = "Autre dénomination"
@@ -385,7 +385,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
 
     entreprise = entreprise_non_qualifiee
 
-    effectif = CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS
+    effectif = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
     bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
     autre_denomination = "Autre dénomination"

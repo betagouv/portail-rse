@@ -43,7 +43,9 @@ def test_calculate_status_less_than_50_employees(entreprise_factory, alice):
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
-        CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
 def test_calculate_status_more_than_50_employees(effectif, entreprise_factory, alice):

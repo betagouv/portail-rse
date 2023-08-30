@@ -54,7 +54,11 @@ class BDESEReglementation(Reglementation):
             return self.TYPE_INFERIEUR_300
         elif effectif == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499:
             return self.TYPE_INFERIEUR_500
-        elif effectif == CaracteristiquesAnnuelles.EFFECTIF_500_ET_PLUS:
+        elif effectif in (
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+            CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        ):
             return self.TYPE_SUPERIEUR_500
 
     def est_soumis(self, caracteristiques):
