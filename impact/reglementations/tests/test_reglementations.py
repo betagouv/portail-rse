@@ -245,9 +245,11 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     entreprise = entreprise_factory(
         date_cloture_exercice=date_cloture_dernier_exercice,
         appartient_groupe=True,
+        societe_mere_en_france=True,
         comptes_consolides=True,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
+        effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
@@ -280,12 +282,17 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     entreprise.refresh_from_db()
     assert entreprise.date_cloture_exercice == date_cloture_dernier_exercice
     assert entreprise.appartient_groupe
+    assert entreprise.societe_mere_en_france
     assert entreprise.comptes_consolides
     caracteristiques = entreprise.caracteristiques_annuelles(
         entreprise.date_cloture_exercice.year
     )
     assert (
         caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
+    )
+    assert (
+        caracteristiques.effectif_groupe
+        == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     )
     assert (
         caracteristiques.tranche_chiffre_affaires
@@ -308,13 +315,14 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     context = response.context
     assert context["entreprise"] == entreprise
     assert context["entreprise"].denomination == autre_denomination
-    assert context["entreprise"].appartient_groupe == False
-    assert context["entreprise"].comptes_consolides == False
+    assert not context["entreprise"].appartient_groupe
+    assert not context["entreprise"].comptes_consolides
     reglementations = context["reglementations"]
     caracteristiques = CaracteristiquesAnnuelles(
         entreprise=entreprise,
         effectif=effectif,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+        effectif_groupe=None,
         tranche_chiffre_affaires=ca,
         tranche_bilan=bilan,
         tranche_chiffre_affaires_consolide=None,
@@ -341,6 +349,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
     effectif = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
+    effectif_groupe = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
     bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
     autre_denomination = "Autre dénomination"
@@ -352,6 +361,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
         "tranche_chiffre_affaires": ca,
         "tranche_bilan": bilan,
         "appartient_groupe": True,
+        "effectif_groupe": effectif_groupe,
         "comptes_consolides": True,
         "tranche_chiffre_affaires_consolide": ca,
         "tranche_bilan_consolide": bilan,
@@ -400,6 +410,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
     entreprise = entreprise_non_qualifiee
 
     effectif = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
+    effectif_groupe = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
     bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
     autre_denomination = "Autre dénomination"
@@ -410,6 +421,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
         "tranche_chiffre_affaires": ca,
         "tranche_bilan": bilan,
         "appartient_groupe": True,
+        "effectif_groupe": effectif_groupe,
         "comptes_consolides": True,
         "tranche_chiffre_affaires_consolide": ca,
         "tranche_bilan_consolide": bilan,
@@ -423,6 +435,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
     assert entreprise.comptes_consolides
     caracteristiques = entreprise.caracteristiques_actuelles()
     assert caracteristiques.effectif == effectif
+    assert caracteristiques.effectif_groupe == effectif_groupe
     assert caracteristiques.tranche_chiffre_affaires == ca
     assert caracteristiques.tranche_bilan == bilan
     assert caracteristiques.tranche_chiffre_affaires_consolide == ca
@@ -438,6 +451,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
         entreprise=entreprise,
         effectif=effectif,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+        effectif_groupe=effectif_groupe,
         tranche_chiffre_affaires=ca,
         tranche_bilan=bilan,
         tranche_chiffre_affaires_consolide=ca,

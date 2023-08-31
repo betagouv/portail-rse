@@ -215,15 +215,19 @@ def test_qualification_page_without_current_qualification(
     context = response.context
     assert context["form"]["date_cloture_exercice"].initial == "2022-12-31"
     assert context["form"]["effectif_outre_mer"].initial is None
+    assert context["form"]["effectif_groupe"].initial is None
 
 
 def test_qualification_page_with_current_qualification(
     client, alice, entreprise_factory, mock_api_recherche_entreprises
 ):
-    entreprise = entreprise_factory()
+    entreprise = entreprise_factory(
+        appartient_groupe=True, societe_mere_en_france=True, comptes_consolides=True
+    )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
     caracs = entreprise.dernieres_caracteristiques_qualifiantes
     caracs.date_cloture_exercice = date(2022, 6, 30)
+    caracs.effectif_groupe = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     caracs.tranche_chiffre_affaires_consolide = (
         CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
     )
@@ -241,31 +245,27 @@ def test_qualification_page_with_current_qualification(
     context = response.context
     caracs = entreprise.dernieres_caracteristiques_qualifiantes
 
-    assert context["form"]["effectif"].initial == caracs.effectif
+    form = context["form"]
+    assert form["date_cloture_exercice"].initial == "2022-06-30"
+    assert form["effectif"].initial == caracs.effectif
+    assert form["tranche_chiffre_affaires"].initial == caracs.tranche_chiffre_affaires
+    assert form["tranche_bilan"].initial == caracs.tranche_bilan
+    assert form["appartient_groupe"].initial
     assert (
-        context["form"]["tranche_chiffre_affaires"].initial
-        == caracs.tranche_chiffre_affaires
+        form["effectif_groupe"].initial
+        == CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     )
-    assert context["form"]["tranche_bilan"].initial == caracs.tranche_bilan
-    assert context["form"]["appartient_groupe"].initial == entreprise.appartient_groupe
+    assert form["societe_mere_en_france"].initial
+    assert form["comptes_consolides"].initial == entreprise.comptes_consolides
     assert (
-        context["form"]["comptes_consolides"].initial == entreprise.comptes_consolides
-    )
-
-    assert (
-        context["form"]["tranche_chiffre_affaires_consolide"].initial
+        form["tranche_chiffre_affaires_consolide"].initial
         == caracs.tranche_chiffre_affaires_consolide
     )
+    assert form["tranche_bilan_consolide"].initial == caracs.tranche_bilan_consolide
+    assert form["bdese_accord"].initial == caracs.bdese_accord
     assert (
-        context["form"]["tranche_bilan_consolide"].initial
-        == caracs.tranche_bilan_consolide
+        form["systeme_management_energie"].initial == caracs.systeme_management_energie
     )
-    assert context["form"]["bdese_accord"].initial == caracs.bdese_accord
-    assert (
-        context["form"]["systeme_management_energie"].initial
-        == caracs.systeme_management_energie
-    )
-    assert context["form"]["date_cloture_exercice"].initial == "2022-06-30"
 
 
 def test_qualifie_entreprise_appartenant_a_un_groupe(
@@ -284,6 +284,8 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
         "appartient_groupe": True,
+        "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        "societe_mere_en_france": True,
         "comptes_consolides": True,
         "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
@@ -310,15 +312,20 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
     entreprise_non_qualifiee.refresh_from_db()
     assert entreprise_non_qualifiee.denomination == "Entreprise SAS"
     assert entreprise_non_qualifiee.date_cloture_exercice == date(2022, 12, 31)
-    assert entreprise_non_qualifiee.appartient_groupe is True
-    assert entreprise_non_qualifiee.comptes_consolides is True
-    caracteristiques = entreprise_non_qualifiee.caracteristiques_actuelles()
+    assert entreprise_non_qualifiee.appartient_groupe
+    assert entreprise_non_qualifiee.societe_mere_en_france
+    assert entreprise_non_qualifiee.comptes_consolides
+    caracteristiques = entreprise_non_qualifiee.caracteristiques_annuelles(2022)
     assert (
         caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     )
     assert (
         caracteristiques.effectif_outre_mer
         == CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
+    )
+    assert (
+        caracteristiques.effectif_groupe
+        == CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     )
     assert (
         caracteristiques.tranche_chiffre_affaires
@@ -338,6 +345,7 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
     )
     assert caracteristiques.bdese_accord
     assert caracteristiques.systeme_management_energie
+    assert caracteristiques.sont_qualifiantes
 
 
 def test_qualifie_entreprise_sans_groupe(
@@ -368,11 +376,17 @@ def test_qualifie_entreprise_sans_groupe(
     assert entreprise_non_qualifiee.denomination == "Entreprise SAS"
     assert entreprise_non_qualifiee.date_cloture_exercice == date(2022, 12, 31)
     assert entreprise_non_qualifiee.appartient_groupe is False
+    assert entreprise_non_qualifiee.societe_mere_en_france is False
     assert entreprise_non_qualifiee.comptes_consolides is False
-    caracteristiques = entreprise_non_qualifiee.caracteristiques_actuelles()
+    caracteristiques = entreprise_non_qualifiee.caracteristiques_annuelles(2022)
     assert (
         caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     )
+    assert (
+        caracteristiques.effectif_outre_mer
+        == CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
+    )
+    assert caracteristiques.effectif_groupe is None
     assert (
         caracteristiques.tranche_chiffre_affaires
         == CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
@@ -385,9 +399,10 @@ def test_qualifie_entreprise_sans_groupe(
     assert caracteristiques.tranche_bilan_consolide is None
     assert caracteristiques.bdese_accord
     assert caracteristiques.systeme_management_energie
+    assert caracteristiques.sont_qualifiantes
 
 
-def test_qualify_entreprise_error(
+def test_echoue_a_qualifier_l_entreprise(
     client, alice, entreprise_non_qualifiee, mock_api_recherche_entreprises
 ):
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
@@ -437,6 +452,8 @@ def test_qualification_entreprise_en_erreur_car_comptes_consolides_sans_bilan_ou
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
         "appartient_groupe": True,
+        "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        "societe_mere_en_france": True,
         "comptes_consolides": True,
         "bdese_accord": True,
         "systeme_management_energie": True,

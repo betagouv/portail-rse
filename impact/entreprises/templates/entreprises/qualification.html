@@ -34,6 +34,12 @@
                         <legend class="fr-fieldset__legend">
                             Groupe d'entreprises
                         </legend>
+                        <div class="fr-fieldset__element">
+                            {% include 'snippets/field.html' with field=form.effectif_groupe %}
+                        </div>
+                        <div class="fr-fieldset__element">
+                            {% include 'snippets/field.html' with field=form.societe_mere_en_france %}
+                        </div>
                         <div class="fr-fieldset__element" id="svelte-avec-comptes-consolides-field">
                             {% include 'snippets/field.html' with field=form.comptes_consolides %}
                         </div>

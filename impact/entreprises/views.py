@@ -125,13 +125,16 @@ def qualification(request, siren):
             date_cloture_dernier_exercice = form.cleaned_data["date_cloture_exercice"]
             entreprise.date_cloture_exercice = date_cloture_dernier_exercice
             entreprise.appartient_groupe = form.cleaned_data["appartient_groupe"]
+            entreprise.societe_mere_en_france = form.cleaned_data[
+                "societe_mere_en_france"
+            ]
             entreprise.comptes_consolides = form.cleaned_data["comptes_consolides"]
             entreprise.save()
             actualisation = ActualisationCaracteristiquesAnnuelles(
                 date_cloture_dernier_exercice,
                 form.cleaned_data["effectif"],
                 form.cleaned_data["effectif_outre_mer"],
-                None,
+                form.cleaned_data["effectif_groupe"],
                 form.cleaned_data["tranche_chiffre_affaires"],
                 form.cleaned_data["tranche_bilan"],
                 form.cleaned_data["tranche_chiffre_affaires_consolide"],
@@ -162,6 +165,8 @@ def qualification(request, siren):
                 "tranche_chiffre_affaires": caracs.tranche_chiffre_affaires,
                 "tranche_bilan": caracs.tranche_bilan,
                 "appartient_groupe": entreprise.appartient_groupe,
+                "effectif_groupe": caracs.effectif_groupe,
+                "societe_mere_en_france": entreprise.societe_mere_en_france,
                 "comptes_consolides": entreprise.comptes_consolides,
                 "tranche_chiffre_affaires_consolide": caracs.tranche_chiffre_affaires_consolide,
                 "tranche_bilan_consolide": caracs.tranche_bilan_consolide,
