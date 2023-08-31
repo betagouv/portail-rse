@@ -63,20 +63,31 @@ def test_page_reglementations_redirige_utilisateur_authentifie_vers_les_reglemen
 def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     status_est_soumis, client, mocker
 ):
+    siren = "000000001"
+    denomination = "Entreprise SAS"
+    effectif = CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+    ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
+    bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
+    appartient_groupe = True
+    effectif_groupe = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
+    comptes_consolides = True
+    ca_consolide = CaracteristiquesAnnuelles.CA_100M_ET_PLUS
+    bilan_consolide = CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
+
     data = {
-        "denomination": "Entreprise SAS",
-        "siren": "000000001",
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
-        "appartient_groupe": True,
-        "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
-        "comptes_consolides": True,
-        "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "siren": siren,
+        "denomination": denomination,
+        "effectif": effectif,
+        "tranche_chiffre_affaires": ca,
+        "tranche_bilan": bilan,
+        "appartient_groupe": appartient_groupe,
+        "effectif_groupe": effectif_groupe,
+        "comptes_consolides": comptes_consolides,
+        "tranche_chiffre_affaires_consolide": ca_consolide,
+        "tranche_bilan_consolide": bilan_consolide,
     }
 
-    mocker.patch(
+    mock_est_soumis = mocker.patch(
         "reglementations.views.bdese.BDESEReglementation.est_soumis",
         return_value=status_est_soumis,
     )
@@ -103,41 +114,41 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     response = client.post("/reglementations", data=data)
 
     content = response.content.decode("utf-8")
-    assert "Entreprise SAS" in content
+    assert denomination in content
 
-    # entreprise has been created
-    entreprise = Entreprise.objects.get(siren="000000001")
-    assert entreprise.denomination == "Entreprise SAS"
-    assert entreprise.date_cloture_exercice is None
+    # l'entreprise a été créée avec les caractéristiques de simulation
+    entreprise = Entreprise.objects.get(siren=siren)
+    assert entreprise.denomination == denomination
     assert entreprise.appartient_groupe
     assert entreprise.comptes_consolides
     caracteristiques = entreprise.caracteristiques_actuelles()
-    assert caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+    assert caracteristiques.effectif == effectif
+    assert caracteristiques.effectif_groupe == effectif_groupe
+    assert caracteristiques.tranche_chiffre_affaires == ca
+    assert caracteristiques.tranche_bilan == bilan
+    assert caracteristiques.tranche_chiffre_affaires_consolide == ca_consolide
+    assert caracteristiques.tranche_bilan_consolide == bilan_consolide
+
+    # les caractéristiques non présentes dans la simulation simplifiées sont laissées vides en base
+    assert entreprise.date_cloture_exercice is None
+    assert entreprise.societe_mere_en_france is None
     assert caracteristiques.effectif_outre_mer is None
-    assert (
-        caracteristiques.effectif_groupe
-        == CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
-    )
-    assert (
-        caracteristiques.tranche_chiffre_affaires
-        == CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
-    )
-    assert (
-        caracteristiques.tranche_bilan
-        == CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
-    )
-    assert (
-        caracteristiques.tranche_chiffre_affaires_consolide
-        == CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
-    )
-    assert (
-        caracteristiques.tranche_bilan_consolide
-        == CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
-    )
     assert caracteristiques.bdese_accord is None
     assert caracteristiques.systeme_management_energie is None
 
-    # reglementations for this entreprise are anonymously displayed
+    # les données servant à la simulation sont celles du formulaire de simulation simplifiée
+    # enrichies avec des valeurs par défaut pour les champs manquants
+    simulation_caracs = mock_est_soumis.call_args.args[0]
+    assert simulation_caracs.entreprise.societe_mere_en_france
+    assert (
+        simulation_caracs.effectif_outre_mer
+        == CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
+    )
+    assert not simulation_caracs.bdese_accord
+    assert not simulation_caracs.systeme_management_energie
+
+    # les statuts des réglementations de cette entreprise sont affichées de manière anonyme (non détaillée)
+    # car l'utilisateur n'est pas authentifié
     context = response.context
     assert context["entreprise"] == entreprise
     assert context["simulation"]
@@ -316,6 +327,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     assert context["entreprise"] == entreprise
     assert context["entreprise"].denomination == autre_denomination
     assert not context["entreprise"].appartient_groupe
+    assert context["entreprise"].societe_mere_en_france
     assert not context["entreprise"].comptes_consolides
     reglementations = context["reglementations"]
     caracteristiques = CaracteristiquesAnnuelles(
