@@ -157,9 +157,15 @@ def qualification(request, siren):
                 "Les informations de l'entreprise n'ont pas été mises à jour car le formulaire contient des erreurs.",
             )
     else:
-        if caracs := entreprise.dernieres_caracteristiques_qualifiantes:
+        date_cloture_exercice_par_defaut = date(date.today().year - 1, 12, 31)
+        if (
+            caracs := entreprise.dernieres_caracteristiques_qualifiantes
+            or entreprise.dernieres_caracteristiques
+        ):
             infos_entreprise = {
-                "date_cloture_exercice": caracs.date_cloture_exercice.isoformat(),
+                "date_cloture_exercice": caracs.date_cloture_exercice.isoformat()
+                if caracs.date_cloture_exercice
+                else date_cloture_exercice_par_defaut.isoformat(),
                 "effectif": caracs.effectif,
                 "effectif_outre_mer": caracs.effectif_outre_mer,
                 "tranche_chiffre_affaires": caracs.tranche_chiffre_affaires,
@@ -175,10 +181,9 @@ def qualification(request, siren):
             }
         else:
             infos_entreprise = api.recherche_entreprises.recherche(entreprise.siren)
-            date_cloture_exercice = date(date.today().year - 1, 12, 31)
             infos_entreprise[
                 "date_cloture_exercice"
-            ] = date_cloture_exercice.isoformat()
+            ] = date_cloture_exercice_par_defaut.isoformat()
         form = EntrepriseQualificationForm(initial=infos_entreprise)
 
     return render(

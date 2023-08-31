@@ -218,7 +218,7 @@ def test_qualification_page_without_current_qualification(
     assert context["form"]["effectif_groupe"].initial is None
 
 
-def test_qualification_page_with_current_qualification(
+def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs(
     client, alice, entreprise_factory, mock_api_recherche_entreprises
 ):
     entreprise = entreprise_factory(
@@ -256,6 +256,43 @@ def test_qualification_page_with_current_qualification(
         == CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     )
     assert form["societe_mere_en_france"].initial
+    assert form["comptes_consolides"].initial == entreprise.comptes_consolides
+    assert (
+        form["tranche_chiffre_affaires_consolide"].initial
+        == caracs.tranche_chiffre_affaires_consolide
+    )
+    assert form["tranche_bilan_consolide"].initial == caracs.tranche_bilan_consolide
+    assert form["bdese_accord"].initial == caracs.bdese_accord
+    assert (
+        form["systeme_management_energie"].initial == caracs.systeme_management_energie
+    )
+
+
+def test_page_de_qualification_avec_des_caracteristiques_non_qualifiantes_initialise_les_champs(
+    client, alice, entreprise_factory, mock_api_recherche_entreprises
+):
+    entreprise = entreprise_factory()
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    caracs = entreprise.dernieres_caracteristiques_qualifiantes
+    caracs.date_cloture_exercice = None
+    caracs.save()
+    assert not caracs.sont_qualifiantes
+    client.force_login(alice)
+
+    with freeze_time(date(2023, 1, 27)):
+        response = client.get(f"/entreprises/{entreprise.siren}")
+
+    mock_api_recherche_entreprises.assert_not_called()
+    context = response.context
+
+    form = context["form"]
+    assert form["date_cloture_exercice"].initial == "2022-12-31"
+    assert form["effectif"].initial == caracs.effectif
+    assert form["tranche_chiffre_affaires"].initial == caracs.tranche_chiffre_affaires
+    assert form["tranche_bilan"].initial == caracs.tranche_bilan
+    assert form["appartient_groupe"].initial == entreprise.appartient_groupe
+    assert form["effectif_groupe"].initial == caracs.effectif_groupe
+    assert form["societe_mere_en_france"].initial == entreprise.societe_mere_en_france
     assert form["comptes_consolides"].initial == entreprise.comptes_consolides
     assert (
         form["tranche_chiffre_affaires_consolide"].initial
