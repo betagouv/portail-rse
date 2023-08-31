@@ -56,6 +56,8 @@
                                                 Bilan : <b>{{ caracs.get_tranche_bilan_display | display_field }}</b><br>
                                                 Appartient à un groupe d'entreprise : <b>{{ entreprise.appartient_groupe | display_field }}</b><br>
                                                 {% if entreprise.appartient_groupe %}
+                                                    Effectif du groupe : <b>{{ caracs.get_effectif_groupe_display | display_field }}</b><br>
+                                                    Siège social de la société mère en France : <b>{{ entreprise.societe_mere_en_france | display_field }}</b><br>
                                                     Établit des comptes consolidés : <b>{{ entreprise.comptes_consolides | display_field }}</b><br>
                                                     {% if entreprise.comptes_consolides %}
                                                         Chiffre d'affaires consolidé : <b>{{ caracs.get_tranche_chiffre_affaires_consolide_display | display_field }}</b><br>
