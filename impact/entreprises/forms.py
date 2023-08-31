@@ -46,22 +46,39 @@ class EntrepriseForm(DsfrForm):
     )
 
     def clean(self):
+        ERREUR_CHAMP_MANQUANT_GROUPE = (
+            "Ce champ est obligatoire lorsque l'entreprise appartient à un groupe"
+        )
+        ERREUR_CHAMP_MANQUANT_COMPTES_CONSOLIDES = (
+            "Ce champ est obligatoire lorsque les comptes sont consolidés"
+        )
+
         cleaned_data = super().clean()
+
         appartient_groupe = cleaned_data.get("appartient_groupe")
-        if not appartient_groupe:
-            cleaned_data["comptes_consolides"] = False
+        if appartient_groupe:
+            if not cleaned_data["effectif_groupe"]:
+                self.add_error("effectif_groupe", ERREUR_CHAMP_MANQUANT_GROUPE)
+        else:
             cleaned_data["effectif_groupe"] = None
+            cleaned_data["societe_mere_en_france"] = False
+            cleaned_data["comptes_consolides"] = False
+
         comptes_consolides = cleaned_data.get("comptes_consolides")
         tranche_chiffre_affaires_consolide = cleaned_data.get(
             "tranche_chiffre_affaires_consolide"
         )
         tranche_bilan_consolide = cleaned_data.get("tranche_bilan_consolide")
         if comptes_consolides:
-            ERREUR = "Ce champ est obligatoire lorsque les comptes sont consolidés"
             if not tranche_chiffre_affaires_consolide:
-                self.add_error("tranche_chiffre_affaires_consolide", ERREUR)
+                self.add_error(
+                    "tranche_chiffre_affaires_consolide",
+                    ERREUR_CHAMP_MANQUANT_COMPTES_CONSOLIDES,
+                )
             if not tranche_bilan_consolide:
-                self.add_error("tranche_bilan_consolide", ERREUR)
+                self.add_error(
+                    "tranche_bilan_consolide", ERREUR_CHAMP_MANQUANT_COMPTES_CONSOLIDES
+                )
         else:
             if tranche_chiffre_affaires_consolide:
                 cleaned_data["tranche_chiffre_affaires_consolide"] = None
@@ -70,12 +87,18 @@ class EntrepriseForm(DsfrForm):
 
 
 class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
+    societe_mere_en_france = forms.BooleanField(
+        required=False,
+        label="La société mère du groupe a son siège social en France",
+    )
+
     class Meta:
         model = CaracteristiquesAnnuelles
         fields = [
             "date_cloture_exercice",
             "effectif",
             "effectif_outre_mer",
+            "effectif_groupe",
             "tranche_chiffre_affaires",
             "tranche_bilan",
             "tranche_chiffre_affaires_consolide",
