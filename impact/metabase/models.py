@@ -8,8 +8,11 @@ class Utilisateur(models.Model):
     impact_id = models.BigIntegerField(primary_key=True)
     ajoute_le = models.DateTimeField()
     modifie_le = models.DateTimeField()
+    connecte_le = models.DateField(null=True)
     reception_actualites = models.BooleanField()
     email_confirme = models.BooleanField()
+
+    nombre_entreprises = models.IntegerField()
 
 
 class Entreprise(models.Model):

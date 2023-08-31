@@ -225,8 +225,10 @@ def test_synchronise_une_entreprise_avec_un_utilisateur(
     assert metabase_utilisateur.pk == metabase_utilisateur.impact_id == utilisateur.pk
     assert metabase_utilisateur.ajoute_le == utilisateur.created_at
     assert metabase_utilisateur.modifie_le == utilisateur.updated_at
+    assert metabase_utilisateur.connecte_le == utilisateur.last_login
     assert metabase_utilisateur.reception_actualites is False
     assert metabase_utilisateur.email_confirme is True
+    assert metabase_utilisateur.nombre_entreprises == 1
 
     assert MetabaseHabilitation.objects.count() == 1
     metabase_habilitation = MetabaseHabilitation.objects.first()
