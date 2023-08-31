@@ -21,9 +21,11 @@ class Entreprise(models.Model):
 
     date_cloture_exercice = models.DateField(null=True)
     appartient_groupe = models.BooleanField(null=True)
+    societe_mere_en_france = models.BooleanField(null=True)
     comptes_consolides = models.BooleanField(null=True)
     effectif = models.CharField(max_length=9, null=True)
     effectif_outre_mer = models.CharField(max_length=9, null=True)
+    effectif_groupe = models.CharField(max_length=9, null=True)
     tranche_chiffre_affaires = models.CharField(max_length=9, null=True)
     tranche_bilan = models.CharField(max_length=9, null=True)
     tranche_chiffre_affaires_consolide = models.CharField(max_length=9, null=True)

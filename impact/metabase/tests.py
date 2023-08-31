@@ -16,7 +16,7 @@ from metabase.models import Utilisateur as MetabaseUtilisateur
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
-def test_synchronise_une_entreprise_qualifiee(
+def test_synchronise_une_entreprise_qualifiee_sans_groupe(
     entreprise_factory, date_cloture_dernier_exercice
 ):
     date_creation = datetime(
@@ -98,11 +98,15 @@ def test_synchronise_une_entreprise_qualifiee(
         )
     )
     assert metabase_entreprise.appartient_groupe is False
+    assert metabase_entreprise.societe_mere_en_france is False
     assert metabase_entreprise.comptes_consolides is False
     assert metabase_entreprise.effectif == "300-499"
     assert metabase_entreprise.effectif_outre_mer == "0-249"
+    assert metabase_entreprise.effectif_groupe is None
     assert metabase_entreprise.tranche_bilan == "6M-20M"
     assert metabase_entreprise.tranche_chiffre_affaires == "12M-40M"
+    assert metabase_entreprise.tranche_bilan_consolide is None
+    assert metabase_entreprise.tranche_chiffre_affaires_consolide is None
     assert metabase_entreprise.bdese_accord is True
     assert metabase_entreprise.systeme_management_energie is True
     assert metabase_entreprise.nombre_utilisateurs == 0
@@ -114,7 +118,9 @@ def test_synchronise_une_entreprise_qualifiee_appartenant_a_un_groupe(
 ):
     entreprise = entreprise_factory(
         appartient_groupe=True,
+        societe_mere_en_france=True,
         comptes_consolides=True,
+        effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
     )
@@ -123,8 +129,13 @@ def test_synchronise_une_entreprise_qualifiee_appartenant_a_un_groupe(
 
     assert MetabaseEntreprise.objects.count() == 1
     metabase_entreprise = MetabaseEntreprise.objects.first()
-    assert metabase_entreprise.appartient_groupe is True
-    assert metabase_entreprise.comptes_consolides is True
+    assert metabase_entreprise.appartient_groupe
+    assert metabase_entreprise.societe_mere_en_france
+    assert metabase_entreprise.comptes_consolides
+    assert (
+        metabase_entreprise.effectif_groupe
+        == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+    )
     assert (
         metabase_entreprise.tranche_chiffre_affaires_consolide
         == CaracteristiquesAnnuelles.CA_MOINS_DE_700K
