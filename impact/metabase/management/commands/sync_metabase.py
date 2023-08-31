@@ -79,13 +79,17 @@ class Command(BaseCommand):
 
     def _insert_utilisateurs(self):
         self._success("Ajout des utilisateurs dans Metabase")
-        for utilisateur in ImpactUtilisateur.objects.all():
+        for utilisateur in ImpactUtilisateur.objects.annotate(
+            nombre_entreprises=Count("entreprise")
+        ):
             meta_u = MetabaseUtilisateur.objects.create(
                 impact_id=utilisateur.pk,
                 ajoute_le=utilisateur.created_at,
                 modifie_le=utilisateur.updated_at,
+                connecte_le=utilisateur.last_login,
                 reception_actualites=utilisateur.reception_actualites,
                 email_confirme=utilisateur.is_email_confirmed,
+                nombre_entreprises=utilisateur.nombre_entreprises,
             )
             meta_u.save()
             self._success(str(utilisateur.pk))
