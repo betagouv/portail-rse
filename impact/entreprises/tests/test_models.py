@@ -46,37 +46,51 @@ def test_entreprise():
     assert entreprise.updated_at == now + timedelta(1)
 
 
-def test_caracteristiques_ne_sont_pas_qualifiantes_si_groupe_indetermine(
+def test_caracteristiques_ne_sont_pas_qualifiantes_tant_que_groupe_non_qualifie(
     entreprise_non_qualifiee,
 ):
     entreprise_non_qualifiee.appartient_groupe = None
+    entreprise_non_qualifiee.societe_mere_en_france = None
     entreprise_non_qualifiee.comptes_consolides = None
 
     caracteristiques = CaracteristiquesAnnuelles(
+        entreprise=entreprise_non_qualifiee,
         date_cloture_exercice=date(2023, 7, 7),
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+        effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_499,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
         bdese_accord=True,
         systeme_management_energie=True,
-        entreprise=entreprise_non_qualifiee,
     )
 
+    assert not caracteristiques.groupe_est_qualifie
     assert not caracteristiques.sont_qualifiantes
 
-    entreprise_non_qualifiee.appartient_groupe = False
+    entreprise_non_qualifiee.appartient_groupe = True
 
+    assert not caracteristiques.groupe_est_qualifie
     assert not caracteristiques.sont_qualifiantes
+
+    entreprise_non_qualifiee.comptes_consolides = False
+
+    assert not caracteristiques.groupe_est_qualifie
+    assert not caracteristiques.sont_qualifiantes
+
+    entreprise_non_qualifiee.societe_mere_en_france = False
+
+    assert caracteristiques.groupe_est_qualifie
+    assert caracteristiques.sont_qualifiantes
 
 
 def test_caracteristiques_sont_qualifiantes_si_entreprise_n_appartient_pas_groupe(
     entreprise_non_qualifiee,
 ):
     entreprise_non_qualifiee.appartient_groupe = False
-    entreprise_non_qualifiee.comptes_consolides = False
 
     caracteristiques = CaracteristiquesAnnuelles(
+        entreprise=entreprise_non_qualifiee,
         date_cloture_exercice=date(2023, 7, 7),
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
@@ -84,7 +98,6 @@ def test_caracteristiques_sont_qualifiantes_si_entreprise_n_appartient_pas_group
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
         bdese_accord=True,
         systeme_management_energie=True,
-        entreprise=entreprise_non_qualifiee,
     )
 
     assert caracteristiques.sont_qualifiantes
@@ -94,9 +107,11 @@ def test_caracteristiques_sont_qualifiantes_si_entreprise_appartient_groupe(
     entreprise_non_qualifiee,
 ):
     entreprise_non_qualifiee.appartient_groupe = True
+    entreprise_non_qualifiee.societe_mere_en_france = False
     entreprise_non_qualifiee.comptes_consolides = False
 
     caracteristiques = CaracteristiquesAnnuelles(
+        entreprise=entreprise_non_qualifiee,
         date_cloture_exercice=date(2023, 7, 7),
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
@@ -104,7 +119,12 @@ def test_caracteristiques_sont_qualifiantes_si_entreprise_appartient_groupe(
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
         bdese_accord=True,
         systeme_management_energie=True,
-        entreprise=entreprise_non_qualifiee,
+    )
+
+    assert not caracteristiques.sont_qualifiantes
+
+    caracteristiques.effectif_groupe = (
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_499
     )
 
     assert caracteristiques.sont_qualifiantes
