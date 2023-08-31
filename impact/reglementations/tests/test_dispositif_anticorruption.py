@@ -6,14 +6,17 @@ from reglementations.views.base import ReglementationStatus
 from reglementations.views.dispositif_anticorruption import DispositifAntiCorruption
 
 
-def test_dispositif_alerte_reglementation_info():
+def test_dispositif_anticorruption_reglementation_info():
     info = DispositifAntiCorruption.info()
 
     assert info["title"] == "Dispositif anti-corruption"
-
     assert (
         info["description"]
-        == """La loi du 9 décembre 2016 (dite "loi Sapin 2") impose aux entreprises d'au moins 500 salariés la mise en place de mesures préventives anticorruption : cartographie des risques, procédures d’évaluation de la situation des clients, fournisseurs, information et sanctions des salariés."""
+        == """La loi dite « loi Sapin 2 » désigne la loi du 9 décembre 2016 relative à la transparence, à la lutte contre la corruption et à la modernisation de la vie économique.
+        Elle impose à certaines entreprises la mise en place de mesures destinées à prévenir, détecter et sanctionner la commission, en France ou à l’étranger, de faits de corruption ou de trafic d’influence.
+        Ces mesures sont diverses : code de bonne conduite, dispositif d’alerte interne, cartographie des risques, évaluation des clients et fournisseurs,
+        procédures de contrôles comptables, formation du personnel exposé, régime disciplinaire propre à sanctionner les salariés en cas de violation du code de conduite,
+        dispositif de contrôle et d’évaluation interne des mesures mises en œuvre."""
     )
     assert info["more_info_url"] == ""
 
