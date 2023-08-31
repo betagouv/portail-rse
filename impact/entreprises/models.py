@@ -251,27 +251,35 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         verbose_name_plural = "Caractéristiques annuelles"
 
     @property
-    def sont_qualifiantes(self):
-        groupe_est_qualifie = bool(
-            self.entreprise.appartient_groupe is not None
-            and (
-                (self.entreprise.comptes_consolides is False)
+    def groupe_est_qualifie(self):
+        if self.entreprise.appartient_groupe is None:
+            return False
+        elif not self.entreprise.appartient_groupe:
+            return True
+        else:
+            comptes_consolides_sont_qualifies = bool(
+                not self.entreprise.comptes_consolides
                 or (
-                    self.entreprise.comptes_consolides is True
-                    and self.tranche_chiffre_affaires_consolide
+                    self.tranche_chiffre_affaires_consolide
                     and self.tranche_bilan_consolide
                 )
             )
-        )
-        return (
-            bool(
-                self.date_cloture_exercice
-                and self.effectif
-                and self.effectif_outre_mer
-                and self.tranche_chiffre_affaires
-                and self.tranche_bilan
-                and self.bdese_accord is not None
-                and self.systeme_management_energie is not None
+            return bool(
+                self.effectif_groupe
+                and self.entreprise.societe_mere_en_france is not None
+                and self.entreprise.comptes_consolides is not None
+                and comptes_consolides_sont_qualifies
             )
-            and groupe_est_qualifie
+
+    @property
+    def sont_qualifiantes(self):
+        return bool(
+            self.date_cloture_exercice
+            and self.effectif
+            and self.effectif_outre_mer
+            and self.tranche_chiffre_affaires
+            and self.tranche_bilan
+            and self.bdese_accord is not None
+            and self.systeme_management_energie is not None
+            and self.groupe_est_qualifie
         )
