@@ -589,6 +589,6 @@ def test_reglementations_for_entreprise_qualifiee_dans_le_passe(
     assert response.status_code == 200
     content = html.unescape(response.content.decode("utf-8"))
     assert (
-        f"Les informations sont basées sur des données de l'exercice {date_cloture_dernier_exercice.year}."
+        f"Les réglementations sont basées sur des informations de l'exercice {date_cloture_dernier_exercice.year}."
         in content
     ), content

@@ -144,13 +144,13 @@ def qualification(request, siren):
                 entreprise=entreprise, annee__gt=date_cloture_dernier_exercice.year
             ).delete()
             messages.success(
-                request, "Les caractéristiques de l'entreprise ont été mises à jour."
+                request, "Les informations de l'entreprise ont été mises à jour."
             )
             return redirect("reglementations:reglementations", siren=siren)
         else:
             messages.error(
                 request,
-                "Les caractéristiques de l'entreprise n'ont pas été mises à jour car le formulaire contient des erreurs.",
+                "Les informations de l'entreprise n'ont pas été mises à jour car le formulaire contient des erreurs.",
             )
     else:
         if caracs := entreprise.dernieres_caracteristiques_qualifiantes:

@@ -142,7 +142,7 @@ def reglementations_for_entreprise(request, siren):
         if caracteristiques != entreprise.caracteristiques_actuelles():
             messages.warning(
                 request,
-                f"Les informations sont basées sur des données de l'exercice {caracteristiques.annee}. <a href='{reverse_lazy('entreprises:qualification', args=[entreprise.siren])}'>Mettre à jour les données de l'entreprise</a>",
+                f"Les réglementations sont basées sur des informations de l'exercice {caracteristiques.annee}. <a href='{reverse_lazy('entreprises:qualification', args=[entreprise.siren])}'>Mettre à jour les informations de l'entreprise.</a>",
             )
         return render(
             request,
