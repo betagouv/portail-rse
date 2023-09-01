@@ -10,10 +10,11 @@
             <p class="fr-callout__text">
                 {% if simulation %}
                     Vous êtes dans le cadre d'une simulation simplifiée.
-                    Pour disposer d'une version plus précise de vos obligations réglementaires, vous devez vous connecter et remplir des indicateurs supplémentaires.
-                    <br>
-                    <a href="{% url 'simulation' %}" class="fr-btn fr-btn--secondary">Faire une nouvelle simulation</a>
-                    <a href="{% url 'users:login' %}?next={% url 'reglementations:reglementations' siren=entreprise.siren %}" class="fr-btn">Se connecter</a>
+                    {% if not user.is_authenticated %}
+                        Pour disposer d'une version plus précise de vos obligations réglementaires, vous devez vous connecter et remplir des informations supplémentaires concernant l'entreprise.
+                        <br>
+                        <a href="{% url 'users:login' %}?next={% url 'reglementations:reglementations' siren=entreprise.siren %}" class="fr-btn">Se connecter pour compléter les informations</a>
+                    {% endif %}
                 {% else %}
                     La liste des réglementations ci-dessous n’est pas encore complète et va s’enrichir progressivement. Le site actuel, encore au stade de prototype (bêta), sera amené à évoluer.
                 {% endif %}
