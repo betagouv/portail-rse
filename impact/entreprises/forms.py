@@ -87,8 +87,8 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
             "systeme_management_energie": "L'entreprise a mis en place un <a target='_blank' href='https://agirpourlatransition.ademe.fr/entreprises/demarche-decarbonation-industrie/agir/structurer-demarche/mettre-en-place-systeme-management-energie'>système de management de l’énergie</a>",
         }
         help_texts = {
-            "tranche_chiffre_affaires": "Sélectionnez le chiffre d'affaires de l'exercice clos",
-            "tranche_bilan": "Sélectionnez le bilan de l'exercice clos",
+            "tranche_chiffre_affaires": "Chiffre d'affaires de l'exercice clos",
+            "tranche_bilan": "Bilan de l'exercice clos",
         }
         widgets = {
             "bdese_accord": forms.CheckboxInput,
