@@ -25,8 +25,8 @@ class SimulationForm(EntrepriseForm, forms.ModelForm):
             "tranche_bilan_consolide",
         ]
         help_texts = {
-            "tranche_chiffre_affaires": "Sélectionnez le chiffre d'affaires de l'exercice clos",
-            "tranche_bilan": "Sélectionnez le bilan de l'exercice clos",
+            "tranche_chiffre_affaires": "Chiffre d'affaires de l'exercice clos",
+            "tranche_bilan": "Bilan de l'exercice clos",
         }
 
     def clean_denomination(self):
