@@ -75,7 +75,7 @@ def test_calcule_statut_plus_de_250_employes(effectif, entreprise_factory, alice
     assert reglementation.primary_action.url == "https://audit-energie.ademe.fr/"
     assert (
         reglementation.primary_action.title
-        == "Déposer mon audit sur la plateforme de recueil"
+        == "Publier mon audit sur la plateforme nationale"
     )
     assert reglementation.primary_action.external
 
@@ -152,7 +152,7 @@ def test_calcule_etat_avec_bilan_et_ca_suffisants(bilan, ca, entreprise_factory,
     assert reglementation.primary_action.url == "https://audit-energie.ademe.fr/"
     assert (
         reglementation.primary_action.title
-        == "Déposer mon audit sur la plateforme de recueil"
+        == "Publier mon audit sur la plateforme nationale"
     )
     assert reglementation.primary_action.external
 
@@ -251,7 +251,7 @@ def test_calcule_etat_avec_effectif_bilan_et_ca_suffisants(
     assert reglementation.primary_action.url == "https://audit-energie.ademe.fr/"
     assert (
         reglementation.primary_action.title
-        == "Déposer mon audit sur la plateforme de recueil"
+        == "Publier mon audit sur la plateforme nationale"
     )
     assert reglementation.primary_action.external
 
@@ -320,6 +320,6 @@ def test_calcule_etat_avec_bilan_insuffisant_mais_bilan_consolide_et_ca_suffisan
     assert reglementation.primary_action.url == "https://audit-energie.ademe.fr/"
     assert (
         reglementation.primary_action.title
-        == "Déposer mon audit sur la plateforme de recueil"
+        == "Publier mon audit sur la plateforme nationale"
     )
     assert reglementation.primary_action.external

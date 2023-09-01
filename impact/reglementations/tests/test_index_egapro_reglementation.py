@@ -41,7 +41,9 @@ def test_calculate_status_with_not_authenticated_user(entreprise_factory, mocker
         status.primary_action.url
         == "https://egapro.travail.gouv.fr/index-egapro/recherche"
     )
-    assert status.primary_action.title == "Consulter les index sur la plateforme Egapro"
+    assert (
+        status.primary_action.title == "Consulter les index sur la plateforme nationale"
+    )
     assert status.primary_action.external
     assert status.secondary_actions == []
 
@@ -115,7 +117,9 @@ def test_calculate_status_less_than_50_employees(
         index.primary_action.url
         == "https://egapro.travail.gouv.fr/index-egapro/recherche"
     )
-    assert index.primary_action.title == "Consulter les index sur la plateforme Egapro"
+    assert (
+        index.primary_action.title == "Consulter les index sur la plateforme nationale"
+    )
     assert index.primary_action.external
     assert not mock_api_index_egapro.called
 
@@ -149,10 +153,7 @@ def test_calculate_status_more_than_50_employees(
         == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous n'avez pas encore déclaré votre index sur la plateforme Egapro."
     )
     assert index.primary_action.url == "https://egapro.travail.gouv.fr/"
-    assert (
-        index.primary_action.title
-        == "Calculer et déclarer mon index sur la plateforme Egapro"
-    )
+    assert index.primary_action.title == "Publier mon index sur la plateforme nationale"
     assert index.primary_action.external
     mock_api_index_egapro.assert_called_once_with(entreprise.siren, annee)
 
