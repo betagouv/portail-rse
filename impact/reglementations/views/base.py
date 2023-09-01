@@ -69,7 +69,6 @@ class Reglementation(ABC):
             status = ReglementationStatus.STATUS_SOUMIS
             login_url = f"{reverse_lazy('users:login')}?next={reverse_lazy('reglementations:reglementations', args=[caracteristiques.entreprise.siren])}"
             status_detail = f'<a href="{login_url}">Vous êtes soumis à cette réglementation. Connectez-vous pour en savoir plus.</a>'
-            primary_action = ReglementationAction(login_url, f"Se connecter")
         else:
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation."

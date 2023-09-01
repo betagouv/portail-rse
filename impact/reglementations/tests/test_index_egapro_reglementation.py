@@ -24,19 +24,30 @@ def test_index_egapro_reglementation_info():
     )
 
 
-def test_calculate_status_with_not_authenticated_user(entreprise_factory, mocker):
+@pytest.mark.parametrize("est_soumis", [True, False])
+def test_calculate_status_with_not_authenticated_user(
+    est_soumis, entreprise_factory, mocker
+):
     entreprise = entreprise_factory()
+    login_url = f"{reverse('users:login')}?next={reverse('reglementations:reglementations', args=[entreprise.siren])}"
 
     mocker.patch(
         "reglementations.views.index_egapro.IndexEgaproReglementation.est_soumis",
-        return_value=False,
+        return_value=est_soumis,
     )
     status = IndexEgaproReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, AnonymousUser()
     )
 
-    assert status.status == ReglementationStatus.STATUS_NON_SOUMIS
-    assert status.status_detail == "Vous n'êtes pas soumis à cette réglementation."
+    if est_soumis:
+        assert status.status == ReglementationStatus.STATUS_SOUMIS
+        assert (
+            status.status_detail
+            == f'<a href="{login_url}">Vous êtes soumis à cette réglementation. Connectez-vous pour en savoir plus.</a>'
+        )
+    else:
+        assert status.status == ReglementationStatus.STATUS_NON_SOUMIS
+        assert status.status_detail == "Vous n'êtes pas soumis à cette réglementation."
     assert (
         status.primary_action.url
         == "https://egapro.travail.gouv.fr/index-egapro/recherche"
@@ -47,54 +58,32 @@ def test_calculate_status_with_not_authenticated_user(entreprise_factory, mocker
     assert status.primary_action.external
     assert status.secondary_actions == []
 
-    mocker.patch(
-        "reglementations.views.index_egapro.IndexEgaproReglementation.est_soumis",
-        return_value=True,
-    )
-    status = IndexEgaproReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, AnonymousUser()
-    )
 
-    assert status.status == ReglementationStatus.STATUS_SOUMIS
-    login_url = f"{reverse('users:login')}?next={reverse('reglementations:reglementations', args=[entreprise.siren])}"
-
-    assert (
-        status.status_detail
-        == f'<a href="{login_url}">Vous êtes soumis à cette réglementation. Connectez-vous pour en savoir plus.</a>'
-    )
-    assert status.primary_action.title == "Se connecter"
-    assert status.primary_action.url == login_url
-    assert status.secondary_actions == []
-
-
-def test_calculate_status_with_not_attached_user(entreprise_factory, alice, mocker):
+@pytest.mark.parametrize("est_soumis", [True, False])
+def test_calculate_status_with_not_attached_user(
+    est_soumis, entreprise_factory, alice, mocker
+):
     entreprise = entreprise_factory()
 
     mocker.patch(
         "reglementations.views.index_egapro.IndexEgaproReglementation.est_soumis",
-        return_value=False,
+        return_value=est_soumis,
     )
     status = IndexEgaproReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
-    assert status.status == ReglementationStatus.STATUS_NON_SOUMIS
-    assert (
-        status.status_detail == "L'entreprise n'est pas soumise à cette réglementation."
-    )
-    assert status.primary_action is None
-    assert status.secondary_actions == []
-
-    mocker.patch(
-        "reglementations.views.index_egapro.IndexEgaproReglementation.est_soumis",
-        return_value=True,
-    )
-    status = IndexEgaproReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
-    )
-
-    assert status.status == ReglementationStatus.STATUS_SOUMIS
-    assert status.status_detail == "L'entreprise est soumise à cette réglementation."
+    if est_soumis:
+        assert status.status == ReglementationStatus.STATUS_SOUMIS
+        assert (
+            status.status_detail == "L'entreprise est soumise à cette réglementation."
+        )
+    else:
+        assert status.status == ReglementationStatus.STATUS_NON_SOUMIS
+        assert (
+            status.status_detail
+            == "L'entreprise n'est pas soumise à cette réglementation."
+        )
     assert status.primary_action is None
     assert status.secondary_actions == []
 
