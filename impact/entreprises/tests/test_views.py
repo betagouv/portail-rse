@@ -305,7 +305,7 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
         )
     ]
     content = html.unescape(response.content.decode("utf-8"))
-    assert "Les caractéristiques de l'entreprise ont été mises à jour." in content
+    assert "Les informations de l'entreprise ont été mises à jour." in content
 
     entreprise_non_qualifiee.refresh_from_db()
     assert entreprise_non_qualifiee.denomination == "Entreprise SAS"
@@ -404,7 +404,7 @@ def test_qualify_entreprise_error(
     assert response.status_code == 200
     content = html.unescape(response.content.decode("utf-8"))
     assert (
-        "Les caractéristiques de l'entreprise n'ont pas été mises à jour car le formulaire contient des erreurs."
+        "Les informations de l'entreprise n'ont pas été mises à jour car le formulaire contient des erreurs."
         in content
     )
 
@@ -450,7 +450,7 @@ def test_qualification_entreprise_en_erreur_car_comptes_consolides_sans_bilan_ou
     assert response.status_code == 200
     content = html.unescape(response.content.decode("utf-8"))
     assert (
-        "Les caractéristiques de l'entreprise n'ont pas été mises à jour car le formulaire contient des erreurs."
+        "Les informations de l'entreprise n'ont pas été mises à jour car le formulaire contient des erreurs."
         in content
     )
     assert "Ce champ est obligatoire lorsque les comptes sont consolidés" in content
