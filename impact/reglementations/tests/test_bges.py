@@ -27,7 +27,7 @@ def test_calculate_status_with_not_authenticated_user(entreprise_factory, mocker
         "reglementations.views.bges.BGESReglementation.est_soumis",
         return_value=False,
     )
-    status = BGESReglementation(entreprise).calculate_status(
+    status = BGESReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, AnonymousUser()
     )
 
@@ -45,7 +45,7 @@ def test_calculate_status_with_not_authenticated_user(entreprise_factory, mocker
         "reglementations.views.bges.BGESReglementation.est_soumis",
         return_value=True,
     )
-    status = BGESReglementation(entreprise).calculate_status(
+    status = BGESReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, AnonymousUser()
     )
 
@@ -68,7 +68,7 @@ def test_calculate_status_with_not_attached_user(entreprise_factory, alice, mock
         "reglementations.views.bges.BGESReglementation.est_soumis",
         return_value=False,
     )
-    status = BGESReglementation(entreprise).calculate_status(
+    status = BGESReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
@@ -83,7 +83,7 @@ def test_calculate_status_with_not_attached_user(entreprise_factory, alice, mock
         "reglementations.views.bges.BGESReglementation.est_soumis",
         return_value=True,
     )
-    status = BGESReglementation(entreprise).calculate_status(
+    status = BGESReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
@@ -107,7 +107,7 @@ def test_calcule_le_statut_si_moins_de_500_employes(
     entreprise = entreprise_factory(effectif=effectif)
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
-    reglementation = BGESReglementation(entreprise).calculate_status(
+    reglementation = BGESReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
@@ -135,7 +135,7 @@ def test_calcule_le_statut_si_plus_de_500_employes(effectif, entreprise_factory,
     entreprise = entreprise_factory(effectif=effectif)
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
-    reglementation = BGESReglementation(entreprise).calculate_status(
+    reglementation = BGESReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
@@ -164,7 +164,7 @@ def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer(
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
-    reglementation = BGESReglementation(entreprise).calculate_status(
+    reglementation = BGESReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 

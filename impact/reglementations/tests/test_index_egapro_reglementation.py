@@ -31,7 +31,7 @@ def test_calculate_status_with_not_authenticated_user(entreprise_factory, mocker
         "reglementations.views.index_egapro.IndexEgaproReglementation.est_soumis",
         return_value=False,
     )
-    status = IndexEgaproReglementation(entreprise).calculate_status(
+    status = IndexEgaproReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, AnonymousUser()
     )
 
@@ -49,7 +49,7 @@ def test_calculate_status_with_not_authenticated_user(entreprise_factory, mocker
         "reglementations.views.index_egapro.IndexEgaproReglementation.est_soumis",
         return_value=True,
     )
-    status = IndexEgaproReglementation(entreprise).calculate_status(
+    status = IndexEgaproReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, AnonymousUser()
     )
 
@@ -72,7 +72,7 @@ def test_calculate_status_with_not_attached_user(entreprise_factory, alice, mock
         "reglementations.views.index_egapro.IndexEgaproReglementation.est_soumis",
         return_value=False,
     )
-    status = IndexEgaproReglementation(entreprise).calculate_status(
+    status = IndexEgaproReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
@@ -87,7 +87,7 @@ def test_calculate_status_with_not_attached_user(entreprise_factory, alice, mock
         "reglementations.views.index_egapro.IndexEgaproReglementation.est_soumis",
         return_value=True,
     )
-    status = IndexEgaproReglementation(entreprise).calculate_status(
+    status = IndexEgaproReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
@@ -105,7 +105,7 @@ def test_calculate_status_less_than_50_employees(
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
-    index = IndexEgaproReglementation(entreprise).calculate_status(
+    index = IndexEgaproReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
@@ -139,7 +139,7 @@ def test_calculate_status_more_than_50_employees(
     annee = derniere_annee_a_remplir_index_egapro()
 
     mock_api_index_egapro.return_value = False
-    index = IndexEgaproReglementation(entreprise).calculate_status(
+    index = IndexEgaproReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
@@ -158,7 +158,7 @@ def test_calculate_status_more_than_50_employees(
 
     mock_api_index_egapro.reset_mock()
     mock_api_index_egapro.return_value = True
-    index = IndexEgaproReglementation(entreprise).calculate_status(
+    index = IndexEgaproReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 

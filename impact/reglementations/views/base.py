@@ -36,10 +36,6 @@ class Reglementation(ABC):
     description: str
     more_info_url: str
 
-    def __init__(self, entreprise) -> None:
-        super().__init__()
-        self.entreprise = entreprise
-
     @classmethod
     def info(cls):
         return {
@@ -48,27 +44,30 @@ class Reglementation(ABC):
             "more_info_url": cls.more_info_url,
         }
 
+    @classmethod
     @abstractmethod
-    def est_soumis(self, caracteristiques: CaracteristiquesAnnuelles) -> bool:
+    def est_soumis(cls, caracteristiques: CaracteristiquesAnnuelles) -> bool:
         pass
 
+    @classmethod
     @abstractmethod
     def calculate_status(
-        self,
+        cls,
         caracteristiques: CaracteristiquesAnnuelles,
         user: settings.AUTH_USER_MODEL,
     ) -> ReglementationStatus:
         if not user.is_authenticated:
-            return self.calculate_status_for_anonymous_user(caracteristiques)
-        elif not is_user_attached_to_entreprise(user, self.entreprise):
-            return self.calculate_status_for_unauthorized_user(caracteristiques)
+            return cls.calculate_status_for_anonymous_user(caracteristiques)
+        elif not is_user_attached_to_entreprise(user, caracteristiques.entreprise):
+            return cls.calculate_status_for_unauthorized_user(caracteristiques)
 
+    @classmethod
     def calculate_status_for_anonymous_user(
-        self, caracteristiques: CaracteristiquesAnnuelles, primary_action=None
+        cls, caracteristiques: CaracteristiquesAnnuelles, primary_action=None
     ):
-        if self.est_soumis(caracteristiques):
+        if cls.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_SOUMIS
-            login_url = f"{reverse_lazy('users:login')}?next={reverse_lazy('reglementations:reglementations', args=[self.entreprise.siren])}"
+            login_url = f"{reverse_lazy('users:login')}?next={reverse_lazy('reglementations:reglementations', args=[caracteristiques.entreprise.siren])}"
             status_detail = f'<a href="{login_url}">Vous êtes soumis à cette réglementation. Connectez-vous pour en savoir plus.</a>'
             primary_action = ReglementationAction(login_url, f"Se connecter")
         else:
@@ -78,10 +77,11 @@ class Reglementation(ABC):
             status, status_detail, primary_action=primary_action
         )
 
+    @classmethod
     def calculate_status_for_unauthorized_user(
-        self, caracteristiques: CaracteristiquesAnnuelles
+        cls, caracteristiques: CaracteristiquesAnnuelles
     ):
-        if self.est_soumis(caracteristiques):
+        if cls.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_SOUMIS
             status_detail = "L'entreprise est soumise à cette réglementation."
         else:

@@ -27,7 +27,7 @@ def test_calculate_status_less_than_50_employees(entreprise_factory, alice):
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
-    reglementation = DispositifAlerteReglementation(entreprise).calculate_status(
+    reglementation = DispositifAlerteReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
@@ -52,7 +52,7 @@ def test_calculate_status_more_than_50_employees(effectif, entreprise_factory, a
     entreprise = entreprise_factory(effectif=effectif)
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
-    reglementation = DispositifAlerteReglementation(entreprise).calculate_status(
+    reglementation = DispositifAlerteReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 

@@ -12,7 +12,8 @@ class BGESReglementation(Reglementation):
     description = "Le bilan GES réglementaire a vocation à contribuer à la mise en œuvre de la stratégie de réduction des émissions de GES des entreprises. Un plan de transition est obligatoirement joint à ce bilan. Il vise à réduire les émissions de gaz à effet de serre et présente les objectifs, moyens et actions envisagées à cette fin ainsi que, le cas échéant, les actions mises en œuvre lors du précédent bilan. Ils sont mis à jour tous les quatre ans."
     more_info_url = "https://bilans-ges.ademe.fr/"
 
-    def criteres_remplis(self, caracteristiques):
+    @staticmethod
+    def criteres_remplis(caracteristiques):
         criteres = []
         if caracteristiques.effectif in (
             CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
@@ -28,11 +29,13 @@ class BGESReglementation(Reglementation):
             criteres.append("votre effectif outre-mer est supérieur à 250 salariés")
         return criteres
 
-    def est_soumis(self, caracteristiques):
-        return self.criteres_remplis(caracteristiques)
+    @classmethod
+    def est_soumis(cls, caracteristiques):
+        return cls.criteres_remplis(caracteristiques)
 
+    @classmethod
     def calculate_status(
-        self,
+        cls,
         caracteristiques: CaracteristiquesAnnuelles,
         user: settings.AUTH_USER_MODEL,
     ) -> ReglementationStatus:
@@ -43,15 +46,15 @@ class BGESReglementation(Reglementation):
         )
 
         if not user.is_authenticated:
-            return self.calculate_status_for_anonymous_user(
+            return cls.calculate_status_for_anonymous_user(
                 caracteristiques, primary_action=NON_SOUMIS_PRIMARY_ACTION
             )
-        elif not is_user_attached_to_entreprise(user, self.entreprise):
-            return self.calculate_status_for_unauthorized_user(caracteristiques)
+        elif not is_user_attached_to_entreprise(user, caracteristiques.entreprise):
+            return cls.calculate_status_for_unauthorized_user(caracteristiques)
 
-        if self.est_soumis(caracteristiques):
+        if cls.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_SOUMIS
-            status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(self.criteres_remplis(caracteristiques))}."
+            status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(cls.criteres_remplis(caracteristiques))}."
             primary_action = ReglementationAction(
                 "https://bilans-ges.ademe.fr/bilans/comment-publier",
                 "Publier mon bilan GES sur la plateforme nationale",
