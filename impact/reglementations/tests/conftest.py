@@ -15,8 +15,13 @@ def mock_request(mocker):
 
 
 @pytest.fixture
-def bdese_factory(entreprise_factory):
-    def create_bdese(bdese_class=BDESE_300, entreprise=None, user=None, annee=2021):
+def bdese_factory(entreprise_factory, date_cloture_dernier_exercice):
+    def create_bdese(
+        bdese_class=BDESE_300,
+        entreprise=None,
+        user=None,
+        annee=date_cloture_dernier_exercice.year,
+    ):
         if not entreprise:
             entreprise = entreprise_factory(
                 effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249

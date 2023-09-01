@@ -307,7 +307,7 @@ def test_get_pdf_redirige_vers_la_qualification_si_manquante(
 ):
     client.force_login(habilitated_user)
     entreprise = bdese.entreprise
-    entreprise.caracteristiques_actuelles().delete()
+    entreprise.caracteristiques_annuelles(bdese.annee).delete()
     url = f"/bdese/{entreprise.siren}/{bdese.annee}/pdf"
 
     response = client.get(url)
@@ -687,7 +687,7 @@ def test_toggle_bdese_completion_redirige_vers_la_qualification_si_manquante(
 ):
     client.force_login(habilitated_user)
     entreprise = bdese.entreprise
-    entreprise.caracteristiques_actuelles().delete()
+    entreprise.caracteristiques_annuelles(bdese.annee).delete()
     url = f"/bdese/{entreprise.siren}/{bdese.annee}/actualiser-desactualiser"
 
     response = client.get(url)
