@@ -14,13 +14,15 @@ class IndexEgaproReglementation(Reglementation):
     description = "Afin de lutter contre les inégalités salariales entre les femmes et les hommes, certaines entreprises doivent calculer et transmettre un index mesurant l’égalité salariale au sein de leur structure."
     more_info_url = "https://www.economie.gouv.fr/entreprises/index-egalite-professionnelle-obligatoire"
 
-    def est_soumis(self, caracteristiques):
+    @classmethod
+    def est_soumis(cls, caracteristiques):
         return (
             caracteristiques.effectif != CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
         )
 
+    @classmethod
     def calculate_status(
-        self,
+        cls,
         caracteristiques: CaracteristiquesAnnuelles,
         user: settings.AUTH_USER_MODEL,
     ) -> ReglementationStatus:
@@ -32,13 +34,13 @@ class IndexEgaproReglementation(Reglementation):
         )
 
         if not user.is_authenticated:
-            return self.calculate_status_for_anonymous_user(
+            return cls.calculate_status_for_anonymous_user(
                 caracteristiques, primary_action=NON_SOUMIS_PRIMARY_ACTION
             )
-        elif not is_user_attached_to_entreprise(user, self.entreprise):
-            return self.calculate_status_for_unauthorized_user(caracteristiques)
+        elif not is_user_attached_to_entreprise(user, caracteristiques.entreprise):
+            return cls.calculate_status_for_unauthorized_user(caracteristiques)
 
-        if not self.est_soumis(caracteristiques):
+        if not cls.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation."
             primary_action = NON_SOUMIS_PRIMARY_ACTION
@@ -49,7 +51,8 @@ class IndexEgaproReglementation(Reglementation):
                 external=True,
             )
             if egapro.is_index_egapro_published(
-                self.entreprise.siren, derniere_annee_a_remplir_index_egapro()
+                caracteristiques.entreprise.siren,
+                derniere_annee_a_remplir_index_egapro(),
             ):
                 status = ReglementationStatus.STATUS_A_JOUR
                 status_detail = "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez rempli vos obligations d'après les données disponibles sur la plateforme Egapro."

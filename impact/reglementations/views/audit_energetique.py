@@ -13,7 +13,8 @@ class AuditEnergetiqueReglementation(Reglementation):
         "https://www.ecologie.gouv.fr/audit-energetique-des-grandes-entreprises"
     )
 
-    def criteres_remplis(self, caracteristiques):
+    @staticmethod
+    def criteres_remplis(caracteristiques):
         criteres = []
         if caracteristiques.effectif in (
             CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
@@ -44,22 +45,24 @@ class AuditEnergetiqueReglementation(Reglementation):
                 )
         return criteres
 
-    def est_soumis(self, caracteristiques):
+    @classmethod
+    def est_soumis(cls, caracteristiques):
         return (
             not caracteristiques.systeme_management_energie
-        ) and self.criteres_remplis(caracteristiques)
+        ) and cls.criteres_remplis(caracteristiques)
 
+    @classmethod
     def calculate_status(
-        self,
+        cls,
         caracteristiques: CaracteristiquesAnnuelles,
         user: settings.AUTH_USER_MODEL,
     ) -> ReglementationStatus:
         if reglementation_status := super().calculate_status(caracteristiques, user):
             return reglementation_status
 
-        if self.est_soumis(caracteristiques):
+        if cls.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_SOUMIS
-            status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(self.criteres_remplis(caracteristiques))}."
+            status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(cls.criteres_remplis(caracteristiques))}."
             status_detail += " Vous devez réaliser un audit énergétique si vous remplissez l'une des conditions suivantes lors des deux derniers exercices comptables : soit votre effectif est supérieur à 250 salariés, soit votre bilan (ou bilan consolidé) est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
             primary_action = ReglementationAction(
                 "https://audit-energie.ademe.fr/",

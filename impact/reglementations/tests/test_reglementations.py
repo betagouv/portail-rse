@@ -133,9 +133,9 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     assert context["simulation"]
     reglementations = context["reglementations"]
     for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
-        assert reglementations[index]["status"] == REGLEMENTATION(
-            entreprise
-        ).calculate_status(caracteristiques, AnonymousUser())
+        assert reglementations[index]["status"] == REGLEMENTATION.calculate_status(
+            caracteristiques, AnonymousUser()
+        )
 
     if status_est_soumis:
         assert '<p class="fr-badge">soumis</p>' in content, content
@@ -308,7 +308,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     )
     for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
         status = reglementations[index]["status"]
-        assert status == REGLEMENTATION(entreprise).calculate_status(
+        assert status == REGLEMENTATION.calculate_status(
             caracteristiques, AnonymousUser()
         )
 
@@ -368,7 +368,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
     )
     for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
         status = reglementations[index]["status"]
-        assert status == REGLEMENTATION(entreprise).calculate_status(
+        assert status == REGLEMENTATION.calculate_status(
             caracteristiques, AnonymousUser()
         )
 
@@ -431,7 +431,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
     )
     for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
         status = reglementations[index]["status"]
-        assert status == REGLEMENTATION(entreprise).calculate_status(
+        assert status == REGLEMENTATION.calculate_status(
             caracteristiques, AnonymousUser()
         )
 
@@ -516,9 +516,7 @@ def test_reglementations_for_entreprise_with_authenticated_user(client, entrepri
     assert context["entreprise"] == entreprise
     reglementations = context["reglementations"]
     for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
-        assert reglementations[index]["status"] == REGLEMENTATION(
-            entreprise
-        ).calculate_status(
+        assert reglementations[index]["status"] == REGLEMENTATION.calculate_status(
             entreprise.dernieres_caracteristiques_qualifiantes, entreprise.users.first()
         )
     for reglementation in reglementations:
@@ -543,9 +541,9 @@ def test_reglementations_for_entreprise_with_authenticated_user_and_multiple_ent
     assert context["entreprise"] == entreprise1
     reglementations = context["reglementations"]
     for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
-        assert reglementations[index]["status"] == REGLEMENTATION(
-            entreprise1
-        ).calculate_status(entreprise1.dernieres_caracteristiques_qualifiantes, alice)
+        assert reglementations[index]["status"] == REGLEMENTATION.calculate_status(
+            entreprise1.dernieres_caracteristiques_qualifiantes, alice
+        )
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
 
@@ -559,9 +557,9 @@ def test_reglementations_for_entreprise_with_authenticated_user_and_multiple_ent
     assert context["simulation"] == False
     reglementations = context["reglementations"]
     for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
-        assert reglementations[index]["status"] == REGLEMENTATION(
-            entreprise2
-        ).calculate_status(entreprise2.dernieres_caracteristiques_qualifiantes, alice)
+        assert reglementations[index]["status"] == REGLEMENTATION.calculate_status(
+            entreprise2.dernieres_caracteristiques_qualifiantes, alice
+        )
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
 

@@ -38,7 +38,7 @@ def test_calculate_status_with_not_authenticated_user(entreprise_factory, mocker
         "reglementations.views.bdese.BDESEReglementation.est_soumis",
         return_value=False,
     )
-    status = BDESEReglementation(entreprise).calculate_status(
+    status = BDESEReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, AnonymousUser()
     )
 
@@ -51,7 +51,7 @@ def test_calculate_status_with_not_authenticated_user(entreprise_factory, mocker
         "reglementations.views.bdese.BDESEReglementation.est_soumis",
         return_value=True,
     )
-    status = BDESEReglementation(entreprise).calculate_status(
+    status = BDESEReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, AnonymousUser()
     )
 
@@ -74,7 +74,7 @@ def test_calculate_status_with_not_attached_user(entreprise_factory, alice, mock
         "reglementations.views.bdese.BDESEReglementation.est_soumis",
         return_value=False,
     )
-    status = BDESEReglementation(entreprise).calculate_status(
+    status = BDESEReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
@@ -89,7 +89,7 @@ def test_calculate_status_with_not_attached_user(entreprise_factory, alice, mock
         "reglementations.views.bdese.BDESEReglementation.est_soumis",
         return_value=True,
     )
-    status = BDESEReglementation(entreprise).calculate_status(
+    status = BDESEReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
@@ -109,7 +109,7 @@ def test_calculate_status_less_than_50_employees(
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
-    status = BDESEReglementation(entreprise).calculate_status(
+    status = BDESEReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
@@ -139,7 +139,7 @@ def test_calculate_status_more_than_50_employees_with_habilited_user(
     habilitation.save()
     annee = derniere_annee_a_remplir_bdese()
 
-    status = BDESEReglementation(entreprise).calculate_status(
+    status = BDESEReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
@@ -155,7 +155,7 @@ def test_calculate_status_more_than_50_employees_with_habilited_user(
     assert not status.secondary_actions
 
     bdese_class.objects.create(entreprise=entreprise, annee=annee)
-    status = BDESEReglementation(entreprise).calculate_status(
+    status = BDESEReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
@@ -173,7 +173,7 @@ def test_calculate_status_more_than_50_employees_with_habilited_user(
     )
 
     mocker.patch("reglementations.models.AbstractBDESE.is_complete", return_value=True)
-    status = BDESEReglementation(entreprise).calculate_status(
+    status = BDESEReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
@@ -211,14 +211,14 @@ def test_calculate_status_more_than_50_employees_with_not_habilited_user(
     habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
     annee = derniere_annee_a_remplir_bdese()
 
-    status = BDESEReglementation(entreprise).calculate_status(
+    status = BDESEReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
     assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
 
     bdese_class.officials.create(entreprise=entreprise, annee=annee)
-    status = BDESEReglementation(entreprise).calculate_status(
+    status = BDESEReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
@@ -226,7 +226,7 @@ def test_calculate_status_more_than_50_employees_with_not_habilited_user(
     assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
 
     bdese_class.personals.create(entreprise=entreprise, annee=annee, user=alice)
-    status = BDESEReglementation(entreprise).calculate_status(
+    status = BDESEReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
@@ -251,7 +251,7 @@ def test_calculate_status_with_bdese_accord_with_not_habilited_user(
     attach_user_to_entreprise(alice, entreprise, "Présidente")
     annee = derniere_annee_a_remplir_bdese()
 
-    status = BDESEReglementation(entreprise).calculate_status(
+    status = BDESEReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
@@ -269,7 +269,7 @@ def test_calculate_status_with_bdese_accord_with_not_habilited_user(
     bdese = BDESEAvecAccord.officials.create(entreprise=entreprise, annee=annee)
     bdese.is_complete = True
     bdese.save()
-    status = BDESEReglementation(entreprise).calculate_status(
+    status = BDESEReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
@@ -282,7 +282,7 @@ def test_calculate_status_with_bdese_accord_with_not_habilited_user(
     bdese.is_complete = True
     bdese.save()
 
-    status = BDESEReglementation(entreprise).calculate_status(
+    status = BDESEReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
@@ -312,7 +312,7 @@ def test_calculate_status_with_bdese_accord_with_habilited_user(
     habilitation.save()
     annee = derniere_annee_a_remplir_bdese()
 
-    status = BDESEReglementation(entreprise).calculate_status(
+    status = BDESEReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
@@ -330,7 +330,7 @@ def test_calculate_status_with_bdese_accord_with_habilited_user(
     bdese = BDESEAvecAccord.officials.create(entreprise=entreprise, annee=annee)
     bdese.is_complete = True
     bdese.save()
-    status = BDESEReglementation(entreprise).calculate_status(
+    status = BDESEReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 

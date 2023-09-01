@@ -163,9 +163,7 @@ def _reglementations_context(entreprise, caracteristiques, user, simulation):
     reglementations = [
         {
             "info": reglementation.info(),
-            "status": reglementation(entreprise).calculate_status(
-                caracteristiques, user
-            )
+            "status": reglementation.calculate_status(caracteristiques, user)
             if entreprise
             else None,
         }
