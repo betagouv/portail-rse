@@ -108,7 +108,7 @@ def test_calcule_le_statut_si_moins_de_500_employes(
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
     reglementation = BGESReglementation(entreprise).calculate_status(
-        entreprise.caracteristiques_actuelles(), alice
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -136,7 +136,7 @@ def test_calcule_le_statut_si_plus_de_500_employes(effectif, entreprise_factory,
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
     reglementation = BGESReglementation(entreprise).calculate_status(
-        entreprise.caracteristiques_actuelles(), alice
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
@@ -165,7 +165,7 @@ def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer(
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
     reglementation = BGESReglementation(entreprise).calculate_status(
-        entreprise.caracteristiques_actuelles(), alice
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS

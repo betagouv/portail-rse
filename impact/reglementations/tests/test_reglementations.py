@@ -1,4 +1,5 @@
 import html
+from datetime import date
 from datetime import timedelta
 
 import pytest
@@ -219,15 +220,15 @@ def test_simulation_par_un_utilisateur_authentifie_sur_une_nouvelle_entreprise(
 
 
 def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracteristiques_actuelles_ne_sont_pas_modifiees(
-    client, date_cloture_dernier_exercice, entreprise_factory
+    client, entreprise_factory
 ):
     """
     La simulation sur une entreprise déjà enregistrée en base avec des caracteristiques actuelles ne modifie pas ses caractéristiques
     mais affiche quand même les statuts correspondant aux données utilisées lors de la simulation
     """
-
+    date_cloture_dernier_exercice = date.today() - timedelta(days=1)
     entreprise = entreprise_factory(
-        date_cloture_exercice=date_cloture_dernier_exercice - timedelta(days=1),
+        date_cloture_exercice=date_cloture_dernier_exercice,
         appartient_groupe=True,
         comptes_consolides=True,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
@@ -261,10 +262,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     response = client.post("/reglementations", data=data)
 
     entreprise.refresh_from_db()
-    assert (
-        entreprise.date_cloture_exercice
-        == date_cloture_dernier_exercice - timedelta(days=1)
-    )
+    assert entreprise.date_cloture_exercice == date_cloture_dernier_exercice
     assert entreprise.appartient_groupe
     assert entreprise.comptes_consolides
     caracteristiques = entreprise.caracteristiques_annuelles(
@@ -441,7 +439,8 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
 def test_should_not_commit_une_entreprise_avec_des_caracteristiques_actuelles_sans_utilisateur(
     client, entreprise_factory
 ):
-    entreprise = entreprise_factory()
+    date_cloture_dernier_exercice = date.today() - timedelta(days=1)
+    entreprise = entreprise_factory(date_cloture_exercice=date_cloture_dernier_exercice)
     assert entreprise.caracteristiques_actuelles()
 
     # une simulation ne devrait jamais écraser des caractéristiques existantes
@@ -451,7 +450,8 @@ def test_should_not_commit_une_entreprise_avec_des_caracteristiques_actuelles_sa
 def test_should_not_commit_une_entreprise_avec_des_caracteristiques_actuelles_avec_utilisateur(
     client, entreprise_factory, alice
 ):
-    entreprise = entreprise_factory()
+    date_cloture_dernier_exercice = date.today() - timedelta(days=1)
+    entreprise = entreprise_factory(date_cloture_exercice=date_cloture_dernier_exercice)
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
     assert entreprise.caracteristiques_actuelles()
