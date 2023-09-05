@@ -13,3 +13,4 @@ impact/static/svelte
 node_modules
 
 doc/dat/
+logs/
