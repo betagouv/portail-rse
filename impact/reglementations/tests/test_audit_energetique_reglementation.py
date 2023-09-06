@@ -274,7 +274,7 @@ def test_calcule_etat_avec_bilan_et_ca_suffisants_mais_systeme_management_energi
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
     assert (
         reglementation.status_detail
-        == "Vous n'êtes pas soumis à cette réglementation si le système de management de l'énergie est certifié par un organisme de certification accrédité par un organisme d'accréditation signataire de l'accord de reconnaissance multilatéral établi par la coordination européenne des organismes d'accréditation et que ce système prévoit un audit énergétique satisfaisant aux critères mentionnés à l'article L. 233-1."
+        == "Vous n'êtes pas soumis à cette réglementation si le système de management de l'énergie est certifié conforme à la norme ISO 50001."
     )
     assert not reglementation.primary_action
 

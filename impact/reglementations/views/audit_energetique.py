@@ -73,7 +73,7 @@ class AuditEnergetiqueReglementation(Reglementation):
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
             if caracteristiques.systeme_management_energie:
-                status_detail += " si le système de management de l'énergie est certifié par un organisme de certification accrédité par un organisme d'accréditation signataire de l'accord de reconnaissance multilatéral établi par la coordination européenne des organismes d'accréditation et que ce système prévoit un audit énergétique satisfaisant aux critères mentionnés à l'article L. 233-1."
+                status_detail += " si le système de management de l'énergie est certifié conforme à la norme ISO 50001."
             else:
                 status_detail += "."
             primary_action = None
