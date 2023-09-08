@@ -28,6 +28,8 @@ def recherche(siren):
 
         data = response.json()["results"][0]
         denomination = data["nom_raison_sociale"] or data["nom_complet"]
+        # la nature juridique correspond à la nomenclature des catégories juridiques retenue dans a gestion du repertoire Sirene
+        # https://www.insee.fr/fr/information/2028129
         categorie_juridique_sirene = int(data["nature_juridique"])
         try:
             # les tranches d'effectif correspondent à celles de l'API Sirene de l'Insee
