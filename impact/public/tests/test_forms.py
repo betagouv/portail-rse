@@ -7,6 +7,7 @@ def test_ignore_bilan_et_ca_consolides_lorsque_pas_de_comptes_consolides():
     data = {
         "siren": "123456789",
         "denomination": "Entreprise SAS",
+        "categorie_juridique_sirene": 5710,
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
@@ -29,6 +30,7 @@ def test_ignore_effectif_groupe_et_comptes_consolides_lorsque_pas_de_groupe():
     data = {
         "siren": "123456789",
         "denomination": "Entreprise SAS",
+        "categorie_juridique_sirene": 5710,
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
@@ -52,6 +54,7 @@ def test_tronque_la_raison_sociale_si_trop_longue():
     data = {
         "siren": "123456789",
         "denomination": "a" * (DENOMINATION_MAX_LENGTH + 1),
+        "categorie_juridique_sirene": 5710,
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,

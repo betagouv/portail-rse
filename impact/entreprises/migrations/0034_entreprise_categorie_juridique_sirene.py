@@ -5,7 +5,7 @@ from django.db import models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("entreprises", "0031_caracteristiquesannuelles_effectif_groupe_and_more"),
+        ("entreprises", "0033_entreprise_date_derniere_qualification"),
     ]
 
     operations = [

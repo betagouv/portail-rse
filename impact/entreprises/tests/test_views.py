@@ -67,6 +67,7 @@ def test_create_and_attach_to_entreprise(client, alice, mock_api_recherche_entre
     entreprise = Entreprise.objects.get(siren="000000001")
     assert get_habilitation(alice, entreprise).fonctions == "Présidente"
     assert entreprise.denomination == "Entreprise SAS"
+    assert entreprise.categorie_juridique_sirene == 5710
 
 
 def test_attach_to_an_existing_entreprise(client, alice, entreprise_factory):
