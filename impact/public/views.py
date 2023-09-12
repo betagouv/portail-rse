@@ -147,6 +147,7 @@ def calcule_simulation(simulation_form, user):
         effectif_permanent=None,
         effectif_outre_mer=None,
         effectif_groupe=simulation_form.cleaned_data["effectif_groupe"],
+        effectif_groupe_international=None,
         effectif_groupe_permanent=None,
         tranche_chiffre_affaires=simulation_form.cleaned_data[
             "tranche_chiffre_affaires"

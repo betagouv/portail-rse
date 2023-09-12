@@ -68,7 +68,9 @@ def test_calcule_statut_moins_de_5000_employes(
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_calcule_statut_plus_de_5000_employes(effectif, entreprise_factory, alice):
+def test_calcule_statut_plus_de_5000_employes_dans_l_entreprise(
+    effectif, entreprise_factory, alice
+):
     entreprise = entreprise_factory(effectif=effectif)
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
@@ -79,6 +81,37 @@ def test_calcule_statut_plus_de_5000_employes(effectif, entreprise_factory, alic
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert reglementation.status_detail.startswith(
         "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 5000 salariés."
+    )
+    assert reglementation.status_detail.endswith(
+        "Vous devez établir un plan de vigilance si vous employez, à la clôture de deux exercices consécutifs, au moins 5 000 salariés, en votre sein ou dans vos filiales directes ou indirectes françaises, ou 10 000 salariés, en incluant vos filiales directes ou indirectes étrangères."
+    )
+    assert not reglementation.primary_action
+
+
+@pytest.mark.parametrize(
+    "effectif_groupe",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+def test_calcule_statut_plus_de_5000_employes_dans_le_groupe(
+    effectif_groupe, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        appartient_groupe=True,
+        effectif_groupe=effectif_groupe,
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    reglementation = PlanVigilanceReglementation.calculate_status(
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
+    )
+
+    assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
+    assert reglementation.status_detail.startswith(
+        "Vous êtes soumis à cette réglementation car l'effectif du groupe est supérieur à 5000 salariés."
     )
     assert reglementation.status_detail.endswith(
         "Vous devez établir un plan de vigilance si vous employez, à la clôture de deux exercices consécutifs, au moins 5 000 salariés, en votre sein ou dans vos filiales directes ou indirectes françaises, ou 10 000 salariés, en incluant vos filiales directes ou indirectes étrangères."

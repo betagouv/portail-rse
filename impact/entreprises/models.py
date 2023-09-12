@@ -19,6 +19,7 @@ class ActualisationCaracteristiquesAnnuelles:
     effectif_permanent: str
     effectif_outre_mer: str
     effectif_groupe: str
+    effectif_groupe_international: str
     effectif_groupe_permanent: str
     tranche_chiffre_affaires: str
     tranche_bilan: str
@@ -150,6 +151,9 @@ class Entreprise(TimestampedModel):
         caracteristiques.effectif_permanent = actualisation.effectif_permanent
         caracteristiques.effectif_outre_mer = actualisation.effectif_outre_mer
         caracteristiques.effectif_groupe = actualisation.effectif_groupe
+        caracteristiques.effectif_groupe_international = (
+            actualisation.effectif_groupe_international
+        )
         caracteristiques.effectif_groupe_permanent = (
             actualisation.effectif_groupe_permanent
         )
@@ -264,10 +268,19 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         null=True,
     )
     effectif_groupe = models.CharField(
+        # TODO: renommer en effectif_groupe_france ?
         max_length=9,
         choices=[BLANK_CHOICE] + EFFECTIF_GROUPE_CHOICES,
-        verbose_name="Effectif du groupe",
-        help_text="Nombre de salariés (notamment CDI, CDD et salariés à temps partiel) du groupe au prorata de leur temps de présence au cours des douze mois précédents (cf. <a href='https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000006072050/LEGISCTA000006177833/#LEGISCTA000006177833' target='_blank' rel='noopener'>articles L.1111-2 et L.1111-3 du Code du Travail</a>)",
+        verbose_name="Effectif du groupe France",
+        help_text="Nombre de salariés (notamment CDI, CDD et salariés à temps partiel) employés par les entreprises françaises du groupe au prorata de leur temps de présence au cours des douze mois précédents (cf. <a href='https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000006072050/LEGISCTA000006177833/#LEGISCTA000006177833' target='_blank' rel='noopener'>articles L.1111-2 et L.1111-3 du Code du Travail</a>)",
+        null=True,
+        blank=True,
+    )
+    effectif_groupe_international = models.CharField(
+        max_length=9,
+        choices=EFFECTIF_GROUPE_CHOICES,
+        verbose_name="Effectif du groupe international",
+        help_text="Nombre de salariés employés par les entreprises du groupe en incluant les filiales directes ou indirectes étrangères",
         null=True,
         blank=True,
     )
