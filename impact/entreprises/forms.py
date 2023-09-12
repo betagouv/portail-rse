@@ -7,6 +7,14 @@ from utils.forms import DateInput
 from utils.forms import DsfrForm
 
 
+ERREUR_CHAMP_MANQUANT_GROUPE = (
+    "Ce champ est obligatoire lorsque l'entreprise appartient à un groupe"
+)
+ERREUR_CHAMP_MANQUANT_COMPTES_CONSOLIDES = (
+    "Ce champ est obligatoire lorsque les comptes sont consolidés"
+)
+
+
 class SirenField(forms.CharField):
     def __init__(self, *args, **kwargs):
         if not kwargs.get("label"):
@@ -51,29 +59,23 @@ class EntrepriseForm(DsfrForm):
     )
 
     def clean(self):
-        ERREUR_CHAMP_MANQUANT_GROUPE = (
-            "Ce champ est obligatoire lorsque l'entreprise appartient à un groupe"
-        )
-        ERREUR_CHAMP_MANQUANT_COMPTES_CONSOLIDES = (
-            "Ce champ est obligatoire lorsque les comptes sont consolidés"
-        )
+        super().clean()
 
-        cleaned_data = super().clean()
-
-        appartient_groupe = cleaned_data.get("appartient_groupe")
+        appartient_groupe = self.cleaned_data.get("appartient_groupe")
         if appartient_groupe:
-            if not cleaned_data.get("effectif_groupe"):
+            if not self.cleaned_data.get("effectif_groupe"):
                 self.add_error("effectif_groupe", ERREUR_CHAMP_MANQUANT_GROUPE)
         else:
-            cleaned_data["effectif_groupe"] = None
-            cleaned_data["societe_mere_en_france"] = False
-            cleaned_data["comptes_consolides"] = False
+            self.cleaned_data["effectif_groupe"] = None
+            self.cleaned_data["effectif_groupe_international"] = None
+            self.cleaned_data["societe_mere_en_france"] = False
+            self.cleaned_data["comptes_consolides"] = False
 
-        comptes_consolides = cleaned_data.get("comptes_consolides")
-        tranche_chiffre_affaires_consolide = cleaned_data.get(
+        comptes_consolides = self.cleaned_data.get("comptes_consolides")
+        tranche_chiffre_affaires_consolide = self.cleaned_data.get(
             "tranche_chiffre_affaires_consolide"
         )
-        tranche_bilan_consolide = cleaned_data.get("tranche_bilan_consolide")
+        tranche_bilan_consolide = self.cleaned_data.get("tranche_bilan_consolide")
         if comptes_consolides:
             if not tranche_chiffre_affaires_consolide:
                 self.add_error(
@@ -86,11 +88,11 @@ class EntrepriseForm(DsfrForm):
                 )
         else:
             if tranche_chiffre_affaires_consolide:
-                cleaned_data["tranche_chiffre_affaires_consolide"] = None
+                self.cleaned_data["tranche_chiffre_affaires_consolide"] = None
             if tranche_bilan_consolide:
-                cleaned_data["tranche_bilan_consolide"] = None
+                self.cleaned_data["tranche_bilan_consolide"] = None
 
-        return cleaned_data
+        return self.cleaned_data
 
 
 class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
@@ -107,6 +109,7 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
             "effectif_permanent",
             "effectif_outre_mer",
             "effectif_groupe",
+            "effectif_groupe_international",
             "effectif_groupe_permanent",
             "tranche_chiffre_affaires",
             "tranche_bilan",
@@ -141,6 +144,10 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
             if not cleaned_data.get("effectif_groupe_permanent"):
                 self.add_error(
                     "effectif_groupe_permanent", ERREUR_CHAMP_MANQUANT_GROUPE
+                )
+            if not self.cleaned_data.get("effectif_groupe_international"):
+                self.add_error(
+                    "effectif_groupe_international", ERREUR_CHAMP_MANQUANT_GROUPE
                 )
         else:
             cleaned_data["effectif_groupe_permanent"] = None

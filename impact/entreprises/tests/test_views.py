@@ -217,30 +217,32 @@ def test_qualification_page_without_current_qualification(
     assert context["form"]["date_cloture_exercice"].initial == "2022-12-31"
     assert context["form"]["effectif_outre_mer"].initial is None
     assert context["form"]["effectif_groupe"].initial is None
+    assert context["form"]["effectif_groupe_international"].initial is None
 
 
 def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs(
     client, alice, entreprise_factory, mock_api_recherche_entreprises
 ):
     entreprise = entreprise_factory(
+        date_cloture_exercice=date(2022, 6, 30),
         appartient_groupe=True,
         societe_mere_en_france=True,
         comptes_consolides=True,
         est_cotee=True,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        effectif_groupe_international=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        effectif_groupe_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        bdese_accord=True,
+        systeme_management_energie=True,
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
-    caracs = entreprise.dernieres_caracteristiques_qualifiantes
-    caracs.date_cloture_exercice = date(2022, 6, 30)
-    caracs.effectif_permanent = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999
-    caracs.effectif_groupe = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
-    caracs.effectif_groupe_permanent = (
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999
-    )
-    caracs.tranche_chiffre_affaires_consolide = (
-        CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
-    )
-    caracs.tranche_bilan_consolide = CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
-    caracs.save()
     client.force_login(alice)
 
     with freeze_time(date(2023, 1, 27)):
@@ -251,18 +253,29 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs(
     assert "<!-- page qualification entreprise -->" in content
     mock_api_recherche_entreprises.assert_not_called()
     context = response.context
-    caracs = entreprise.dernieres_caracteristiques_qualifiantes
 
     form = context["form"]
     assert form["date_cloture_exercice"].initial == "2022-06-30"
-    assert form["effectif"].initial == caracs.effectif
-    assert form["effectif_permanent"].initial == caracs.effectif_permanent
-    assert form["tranche_chiffre_affaires"].initial == caracs.tranche_chiffre_affaires
-    assert form["tranche_bilan"].initial == caracs.tranche_bilan
-    assert form["est_cotee"].initial == entreprise.est_cotee
+    assert form["effectif"].initial == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+    assert (
+        form["effectif_permanent"].initial
+        == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+    )
+    assert (
+        form["tranche_chiffre_affaires"].initial
+        == CaracteristiquesAnnuelles.CA_MOINS_DE_700K
+    )
+    assert (
+        form["tranche_bilan"].initial == CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
+    )
+    assert form["est_cotee"].initial
     assert form["appartient_groupe"].initial
     assert (
         form["effectif_groupe"].initial
+        == CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
+    )
+    assert (
+        form["effectif_groupe_international"].initial
         == CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     )
     assert (
@@ -270,16 +283,17 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs(
         == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999
     )
     assert form["societe_mere_en_france"].initial
-    assert form["comptes_consolides"].initial == entreprise.comptes_consolides
+    assert form["comptes_consolides"].initial
     assert (
         form["tranche_chiffre_affaires_consolide"].initial
-        == caracs.tranche_chiffre_affaires_consolide
+        == CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
     )
-    assert form["tranche_bilan_consolide"].initial == caracs.tranche_bilan_consolide
-    assert form["bdese_accord"].initial == caracs.bdese_accord
     assert (
-        form["systeme_management_energie"].initial == caracs.systeme_management_energie
+        form["tranche_bilan_consolide"].initial
+        == CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
     )
+    assert form["bdese_accord"].initial
+    assert form["systeme_management_energie"].initial
 
 
 def test_page_de_qualification_avec_des_caracteristiques_non_qualifiantes_initialise_les_champs(
@@ -307,7 +321,10 @@ def test_page_de_qualification_avec_des_caracteristiques_non_qualifiantes_initia
     assert form["est_cotee"].initial == entreprise.est_cotee
     assert form["appartient_groupe"].initial == entreprise.appartient_groupe
     assert form["effectif_groupe"].initial == caracs.effectif_groupe
-    assert form["effectif_groupe"].initial == caracs.effectif_groupe
+    assert (
+        form["effectif_groupe_international"].initial
+        == caracs.effectif_groupe_international
+    )
     assert form["societe_mere_en_france"].initial == entreprise.societe_mere_en_france
     assert form["comptes_consolides"].initial == entreprise.comptes_consolides
     assert (
@@ -340,6 +357,7 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
         "est_cotee": True,
         "appartient_groupe": True,
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        "effectif_groupe_international": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         "effectif_groupe_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
         "societe_mere_en_france": True,
         "comptes_consolides": True,
@@ -393,6 +411,10 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
     assert (
         caracteristiques.effectif_groupe_permanent
         == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999
+    )
+    assert (
+        caracteristiques.effectif_groupe_international
+        == CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     )
     assert (
         caracteristiques.tranche_chiffre_affaires
@@ -459,6 +481,7 @@ def test_qualifie_entreprise_sans_groupe(
         == CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
     )
     assert caracteristiques.effectif_groupe is None
+    assert caracteristiques.effectif_groupe_international is None
     assert (
         caracteristiques.tranche_chiffre_affaires
         == CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M

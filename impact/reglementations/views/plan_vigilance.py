@@ -15,7 +15,14 @@ class PlanVigilanceReglementation(Reglementation):
 
     @classmethod
     def est_suffisamment_qualifiee(cls, caracteristiques):
-        return caracteristiques.effectif is not None
+        return (
+            caracteristiques.effectif is not None
+            and caracteristiques.entreprise.appartient_groupe is not None
+            and (
+                not caracteristiques.entreprise.appartient_groupe
+                or caracteristiques.effectif_groupe is not None
+            )
+        )
 
     @staticmethod
     def criteres_remplis(caracteristiques):
@@ -25,6 +32,11 @@ class PlanVigilanceReglementation(Reglementation):
             CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         ):
             criteres.append("votre effectif est supérieur à 5000 salariés")
+        elif caracteristiques.effectif_groupe in (
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+            CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        ):
+            criteres.append("l'effectif du groupe est supérieur à 5000 salariés.")
         return criteres
 
     @classmethod
