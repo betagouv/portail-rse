@@ -12,7 +12,7 @@ class DispositifAntiCorruption(Reglementation):
         Ces mesures sont diverses : code de bonne conduite, dispositif d’alerte interne, cartographie des risques, évaluation des clients et fournisseurs,
         procédures de contrôles comptables, formation du personnel exposé, régime disciplinaire propre à sanctionner les salariés en cas de violation du code de conduite,
         dispositif de contrôle et d’évaluation interne des mesures mises en œuvre."""
-    more_info_url = ""
+    more_info_url = "https://www.agence-francaise-anticorruption.gouv.fr/files/files/Recommandations AFA.pdf"
 
     @staticmethod
     def criteres_remplis(caracteristiques):

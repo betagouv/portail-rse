@@ -18,7 +18,10 @@ def test_dispositif_anticorruption_reglementation_info():
         procédures de contrôles comptables, formation du personnel exposé, régime disciplinaire propre à sanctionner les salariés en cas de violation du code de conduite,
         dispositif de contrôle et d’évaluation interne des mesures mises en œuvre."""
     )
-    assert info["more_info_url"] == ""
+    assert (
+        info["more_info_url"]
+        == "https://www.agence-francaise-anticorruption.gouv.fr/files/files/Recommandations AFA.pdf"
+    )
 
 
 @pytest.mark.parametrize(
