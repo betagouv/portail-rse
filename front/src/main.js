@@ -25,11 +25,19 @@ if (document.getElementById("svelte-search-entreprise")) {
 
 if (document.getElementById("svelte-simulation-form")) {
   let target = document.getElementById("svelte-simulation-form")
-  console.log("target", target.dataset.csrfToken)
+  let formData = JSON.parse(document.getElementById("svelte-form-data").textContent)
   new SimulationForm({
     target: target,
     props: {
-      csrfToken: target.dataset.csrfToken
+      csrfToken: formData.csrfToken,
+      effectif: formData.effectif,
+      trancheChiffreAffaires: formData.tranche_chiffre_affaires,
+      trancheBilan: formData.tranche_bilan,
+      effectifGroupe: formData.effectif_groupe,
+      trancheChiffreAffairesConsolide: formData.tranche_chiffre_affaires_consolide,
+      trancheBilanConsolide: formData.tranche_bilan_consolide,
+      comptesConsolides: formData.comptes_consolides,
+      appartientGroupe: formData.appartient_groupe
     }
   })
 }

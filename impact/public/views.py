@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib import messages
 from django.core.mail import EmailMessage
+from django.middleware.csrf import get_token
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -79,7 +80,7 @@ def simulation(request):
                     {
                         "denomination": infos_entreprise["denomination"],
                         "siren": siren,
-                        "simulation_form": simulation_form,
+                        "svelte_form_data": {"csrfToken": get_token(request)},
                     },
                 )
             except api.exceptions.SirenError as e:
@@ -93,4 +94,10 @@ def simulation(request):
                     request,
                     str(e),
                 )
-    return render(request, "public/simulation-etape-1.html", {"form": siren_form})
+    return render(
+        request,
+        "public/simulation-etape-1.html",
+        {
+            "form": siren_form,
+        },
+    )

@@ -3,6 +3,7 @@ from datetime import date
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -119,12 +120,36 @@ def calcule_simulation(request):
                 "simulation_form": simulation_form,
             },
         )
+    context = _reglementations_context(
+        entreprise, caracteristiques, request.user, simulation=simulation
+    )
+    context.update(
+        {
+            "svelte_form_data": {
+                "csrfToken": get_token(request),
+                "effectif": simulation_form.cleaned_data["effectif"],
+                "tranche_chiffre_affaires": simulation_form.cleaned_data[
+                    "tranche_chiffre_affaires"
+                ],
+                "tranche_bilan": simulation_form.cleaned_data["tranche_bilan"],
+                "effectif_groupe": simulation_form.cleaned_data["effectif_groupe"],
+                "tranche_chiffre_affaires_consolide": simulation_form.cleaned_data[
+                    "tranche_chiffre_affaires_consolide"
+                ],
+                "tranche_bilan_consolide": simulation_form.cleaned_data[
+                    "tranche_bilan_consolide"
+                ],
+                "comptes_consolides": simulation_form.cleaned_data[
+                    "comptes_consolides"
+                ],
+                "appartient_groupe": simulation_form.cleaned_data["appartient_groupe"],
+            }
+        }
+    )
     return render(
         request,
-        "reglementations/reglementations.html",
-        _reglementations_context(
-            entreprise, caracteristiques, request.user, simulation=simulation
-        ),
+        "public/simulation-etape-2.html",
+        context,
     )
 
 
