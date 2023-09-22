@@ -5,6 +5,7 @@
 {% block content %}
     <div class="fr-container fr-my-10w">
         <div class="fr-grid-row fr-grid-row--center">
+
             <div class="fr-col">
                 <h2>{{ denomination }}</h2>
                 <p>
@@ -12,36 +13,17 @@
                     <a href="{% url 'simulation' %}">Ce n'est pas mon entreprise</a>
                 </p>
 
-                <div id="svelte-simulation-form" data-csrf-token="TIJENSIF"></div>
-
-                <!--
-                <form class="fr-mt-6w" action="{% url 'reglementations:reglementations' %}" method="post">
-                    {% csrf_token %}
-                    {{ simulation_form.siren.as_hidden }}
-                    {{ simulation_form.denomination.as_hidden }}
-                    {% include 'snippets/field.html' with field=simulation_form.effectif %}
-                    {% include 'snippets/field.html' with field=simulation_form.tranche_chiffre_affaires %}
-                    {% include 'snippets/field.html' with field=simulation_form.tranche_bilan %}
-                    <fieldset class="fr-fieldset">
-                        <legend class="fr-fieldset__legend">
-                            Groupe d'entreprises
-                        </legend>
-                        {% include 'snippets/fieldset_element.html' with field=simulation_form.appartient_groupe fieldset_id="svelte-appartient-groupe-field" %}
-                        <div id="svelte-groupe-fields" class="fr-col-12">
-                            {% include 'snippets/fieldset_element.html' with field=simulation_form.effectif_groupe %}
-                            {% include 'snippets/fieldset_element.html' with field=simulation_form.comptes_consolides id="svelte-avec-comptes-consolides-field" %}
-                            <div id="svelte-comptes-consolides-fields">
-                                {% include 'snippets/fieldset_element.html' with field=simulation_form.tranche_chiffre_affaires_consolide %}
-                                {% include 'snippets/fieldset_element.html' with field=simulation_form.tranche_bilan_consolide %}
-                            </div>
-                        </div>
-                    </fieldset>
-                    <input type="submit" value="Vérifier mes obligations" class="fr-btn">
-                </form>
-                -->
-
+                {{ svelte_form_data|json_script:"svelte-form-data" }}
+                <div id="svelte-simulation-form" data-csrf-token="{{ csrfToken }}"></div>
             </div>
         </div>
     </div>
-<!-- page simulation étape 2 -->
+
+    <div class="fr-container fr-my-4w">
+        {% for reglementation in reglementations %}
+            {% include "snippets/reglementation_card.html" with reglementation=reglementation %}
+        {% endfor %}
+    </div>
+
+    <!-- page simulation étape 2 -->
 {% endblock %}
