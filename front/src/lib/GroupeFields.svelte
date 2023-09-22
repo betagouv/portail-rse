@@ -28,5 +28,4 @@
 
     displayGroupeFields()
     displayComptesConsolidesFields()
-
 </script>

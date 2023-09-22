@@ -12,6 +12,9 @@
                     <a href="{% url 'simulation' %}">Ce n'est pas mon entreprise</a>
                 </p>
 
+                <div id="svelte-simulation-form" data-csrf-token="TIJENSIF"></div>
+
+                <!--
                 <form class="fr-mt-6w" action="{% url 'reglementations:reglementations' %}" method="post">
                     {% csrf_token %}
                     {{ simulation_form.siren.as_hidden }}
@@ -35,6 +38,8 @@
                     </fieldset>
                     <input type="submit" value="Vérifier mes obligations" class="fr-btn">
                 </form>
+                -->
+
             </div>
         </div>
     </div>
