@@ -1,12 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from entreprises.forms import SirenField
 from utils.forms import DsfrForm
-
-
-class SirenForm(DsfrForm):
-    siren = SirenField()
 
 
 class NaiveCaptchaField(forms.CharField):

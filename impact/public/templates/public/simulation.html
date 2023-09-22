@@ -7,11 +7,7 @@
         <div class="fr-grid-row fr-grid-row--center">
 
             <div class="fr-col">
-                <h2>{{ denomination }}</h2>
-                <p>
-                    <span class="fr-tag">SIREN : {{ siren }}</span>
-                    <a href="{% url 'simulation' %}">Ce n'est pas mon entreprise</a>
-                </p>
+                <h2>Simulation</h2>
 
                 {{ svelte_form_data|json_script:"svelte-form-data" }}
                 <div id="svelte-simulation-form" data-csrf-token="{{ csrfToken }}"></div>

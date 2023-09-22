@@ -30,6 +30,8 @@ if (document.getElementById("svelte-simulation-form")) {
     target: target,
     props: {
       csrfToken: formData.csrfToken,
+      siren: formData.siren,
+      denomination: formData.denomination,
       effectif: formData.effectif,
       trancheChiffreAffaires: formData.tranche_chiffre_affaires,
       trancheBilan: formData.tranche_bilan,

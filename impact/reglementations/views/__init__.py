@@ -113,7 +113,7 @@ def calcule_simulation(request):
         )
         return render(
             request,
-            "public/simulation-etape-2.html",
+            "public/simulation.html",
             {
                 "denomination": simulation_form.cleaned_data["denomination"],
                 "siren": simulation_form.cleaned_data["siren"],
@@ -127,6 +127,8 @@ def calcule_simulation(request):
         {
             "svelte_form_data": {
                 "csrfToken": get_token(request),
+                "siren": simulation_form.cleaned_data["siren"],
+                "denomination": simulation_form.cleaned_data["denomination"],
                 "effectif": simulation_form.cleaned_data["effectif"],
                 "tranche_chiffre_affaires": simulation_form.cleaned_data[
                     "tranche_chiffre_affaires"
@@ -148,7 +150,7 @@ def calcule_simulation(request):
     )
     return render(
         request,
-        "public/simulation-etape-2.html",
+        "public/simulation.html",
         context,
     )
 

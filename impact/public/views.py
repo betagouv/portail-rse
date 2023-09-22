@@ -6,11 +6,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
 
-import api.exceptions
-import api.recherche_entreprises
 from .forms import ContactForm
-from .forms import SirenForm
-from reglementations.forms import SimulationForm
 
 
 def index(request):
@@ -67,37 +63,10 @@ def contact(request):
 
 
 def simulation(request):
-    siren_form = SirenForm(request.GET or None)
-    if request.GET:
-        if siren_form.is_valid():
-            siren = siren_form.cleaned_data["siren"]
-            try:
-                infos_entreprise = api.recherche_entreprises.recherche(siren)
-                simulation_form = SimulationForm(initial=infos_entreprise)
-                return render(
-                    request,
-                    "public/simulation-etape-2.html",
-                    {
-                        "denomination": infos_entreprise["denomination"],
-                        "siren": siren,
-                        "svelte_form_data": {"csrfToken": get_token(request)},
-                    },
-                )
-            except api.exceptions.SirenError as e:
-                siren_form.add_error("siren", "SIREN introuvable")
-                messages.error(
-                    request,
-                    str(e),
-                )
-            except api.exceptions.APIError as e:
-                messages.error(
-                    request,
-                    str(e),
-                )
     return render(
         request,
-        "public/simulation-etape-1.html",
+        "public/simulation.html",
         {
-            "form": siren_form,
+            "svelte_form_data": {"csrfToken": get_token(request)},
         },
     )
