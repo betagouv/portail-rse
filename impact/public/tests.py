@@ -33,7 +33,7 @@ def test_page_simulation(client):
 
     assert response.status_code == 200
     content = response.content.decode("utf-8")
-    assert "<!-- page simulation étape 1 -->" in content
+    assert "<!-- page simulation -->" in content
 
 
 def test_page_contact(client):
