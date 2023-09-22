@@ -84,7 +84,7 @@
     <input type="hidden" name="denomination" value="{denomination}" id="id_denomination">
 
     <div class="fr-select-group">
-        <label class="fr-label" for="id_effectif">Effectif total
+        <label class="fr-label" for="id_effectif">Effectif
             <span class="fr-hint-text">Vérifiez et confirmez le nombre de salariés</span>
         </label>
         <div class="fr-col-12 ">
@@ -105,7 +105,7 @@
 
     <div class="fr-select-group">
         <label class="fr-label" for="id_tranche_chiffre_affaires">Chiffre d&#x27;affaires
-            <span class="fr-hint-text">Chiffre d'affaires de l'exercice clos</span>
+            <span class="fr-hint-text">Montant net du chiffre d'affaires de l'exercice clos</span>
         </label>
         <div class="fr-col-12 ">
             <select name="tranche_chiffre_affaires" class="fr-select" required id="id_tranche_chiffre_affaires"
@@ -124,7 +124,7 @@
 
     <div class="fr-select-group">
         <label class="fr-label" for="id_tranche_bilan">Bilan
-            <span class="fr-hint-text">Bilan de l'exercice clos</span>
+            <span class="fr-hint-text">Total du bilan de l'exercice clos</span>
         </label>
         <div class="fr-col-12 ">
             <select name="tranche_bilan" class="fr-select" required id="id_tranche_bilan"
@@ -158,7 +158,7 @@
             <div class="fr-fieldset__element">
                 <div class="fr-select-group">
                     <label class="fr-label" for="id_effectif_groupe">Effectif du groupe
-                        <span class="fr-hint-text">Nombre de salariés du groupe</span>
+                        <span class="fr-hint-text">Nombre de salariés employés par les entreprises du groupe</span>
                     </label>
                     <div class="fr-col-12 ">
                         <select name="effectif_groupe" class="fr-select" id="id_effectif_groupe"
