@@ -44,6 +44,7 @@
             loading = false
             errors["siren"] = undefined
             denomination = json.denomination
+            effectif = json.effectif
         } else {
             loading = false
             errors["siren"] = [json['error']]
