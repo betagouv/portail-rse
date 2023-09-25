@@ -1,5 +1,6 @@
 <script>
     import spinner from './assets/spinner.svg'
+    import ErrorField from './ErrorField.svelte'
 
     export let csrfToken = undefined
     export let siren = ""
@@ -12,6 +13,7 @@
     export let trancheChiffreAffairesConsolide = ""
     export let appartientGroupe = false
     export let comptesConsolides = false
+    export let errors = {}
 
     let loading = false
     let promise = async () => {}
@@ -31,7 +33,8 @@
 
     async function searchEntreprise(siren) {
         if( siren.length !== 9 || isNaN(siren)){
-            throw new Error("Le siren est incorrect.")
+            errors["siren"] = ["Le siren est incorrect."]
+            return
         }
         loading = true
         const res = await fetch("/api/search-entreprise/" + siren)
@@ -39,11 +42,11 @@
 
         if (res.ok) {
             loading = false
+            errors["siren"] = undefined
             denomination = json.denomination
-            return json;
         } else {
             loading = false
-            throw new Error(json['error'])
+            errors["siren"] = [json['error']]
         }
     }
 
@@ -56,14 +59,14 @@
 <form class="fr-mt-6w" action="/reglementations" method="post">
 <fieldset class="fr-fieldset" aria-label="SIREN de l'entreprise">
     <div class="fr-fieldset__element">
-        <div class="fr-input-group">
+        <div class="fr-input-group {errors.siren ? 'fr-input-group--error' : ''}">
             <label class="fr-label" for="{sirenFieldId}">Votre numéro SIREN
                 <span class="fr-hint-text">Saisissez un numéro SIREN valide, disponible sur le Kbis de votre organisation ou sur l'Annuaire des Entreprises</span>
             </label>
             <div class="fr-col-12 fr-col-sm-6 fr-mt-1w">
                 <div class="fr-search-bar" role="search">
                 {#if ! loading}
-                    <input type="search" name="siren" maxlength="9" minlength="9" class="fr-input" id="{sirenFieldId}" required bind:value={siren} on:change|preventDefault={handleChange}>
+                    <input type="search" name="siren" maxlength="9" minlength="9" class="fr-input {errors.siren ? 'fr-input--error' : ''}" id="{sirenFieldId}" required bind:value={siren} on:change|preventDefault={handleChange}>
                     <button type="button" class="fr-btn" title="Rechercher" on:click|preventDefault={handleChange}>
                         Rechercher
                     </button>
@@ -73,13 +76,12 @@
                 {/if}
                 </div>
             </div>
-            {#await promise then json}
-                {#if json.denomination}
-                    <p class="fr-mt-1w fr-mb-n1v">Entreprise : {json.denomination}</p>
+            {#await promise then result}
+                {#if denomination}
+                    <p class="fr-mt-1w fr-mb-n1v">Entreprise : {denomination}</p>
                 {/if}
-            {:catch error}
-                <p class="fr-error-text">{error.message}</p>
             {/await}
+            <ErrorField id="siren-error-desc-error" errors={errors.siren} />
         </div>
     </div>
     <div class="fr-fieldset__element">
@@ -93,12 +95,13 @@
     <input type="hidden" name="{csrfTokenFieldName}" value="{csrfToken}">
     <input type="hidden" name="denomination" value="{denomination}" id="{denominationFieldId}">
 
-    <div class="fr-select-group">
+    <div class="fr-select-group {errors.effectif ? 'fr-select-group--error' : ''}">
         <label class="fr-label" for="{effectifFieldId}">Effectif
             <span class="fr-hint-text">Vérifiez et confirmez le nombre de salariés</span>
         </label>
         <div class="fr-col-12 ">
-            <select name="effectif" class="fr-select" required id="{effectifFieldId}"
+            <select name="effectif" class="fr-select {errors.effectif ? 'fr-select--error' : ''}" required id="{effectifFieldId}"
+                aria-describedby={errors.effectif ? 'effectif-error-desc-error' : null}
                 bind:value={effectif}
             >
                 <option value="">---------</option>
@@ -111,14 +114,16 @@
                 <option value="10000+">10 000 salariés ou plus</option>
             </select>
         </div>
+        <ErrorField id="effectif-error-desc-error" errors={errors.effectif} />
     </div>
 
-    <div class="fr-select-group">
+    <div class="fr-select-group {errors.tranche_chiffre_affaires ? 'fr-select-group--error' : ''}">
         <label class="fr-label" for="{trancheChiffreAffairesFieldId}">Chiffre d&#x27;affaires
             <span class="fr-hint-text">Montant net du chiffre d'affaires de l'exercice clos</span>
         </label>
         <div class="fr-col-12 ">
-            <select name="tranche_chiffre_affaires" class="fr-select" required id="{trancheChiffreAffairesFieldId}"
+            <select name="tranche_chiffre_affaires" class="fr-select {errors.tranche_chiffre_affaires ? 'fr-select--error' : ''}" required id="{trancheChiffreAffairesFieldId}"
+                aria-describedby={errors.tranche_chiffre_affaires ? 'tranche_chiffre_affaires-error-desc-error' : null}
                 bind:value={trancheChiffreAffaires}
             >
                 <option value="">---------</option>
@@ -130,14 +135,16 @@
                 <option value="100M+">100M€ ou plus</option>
             </select>
         </div>
+        <ErrorField id="tranche_chiffre_affaires-error-desc-error" errors={errors.tranche_chiffre_affaires} />
     </div>
 
-    <div class="fr-select-group">
+    <div class="fr-select-group {errors.tranche_bilan ? 'fr-select-group--error' : ''}">
         <label class="fr-label" for="{trancheBilanFieldId}">Bilan
             <span class="fr-hint-text">Total du bilan de l'exercice clos</span>
         </label>
         <div class="fr-col-12 ">
-            <select name="tranche_bilan" class="fr-select" required id="{trancheBilanFieldId}"
+            <select name="tranche_bilan" class="fr-select {errors.tranche_bilan ? 'fr-select--error' : ''}" required id="{trancheBilanFieldId}"
+                aria-describedby={errors.tranche_bilan ? 'tranche_bilan-error-desc-error' : null}
                 bind:value={trancheBilan}
             >
                 <option value="">---------</option>
@@ -149,6 +156,7 @@
                 <option value="100M+">100M€ ou plus</option>
             </select>
         </div>
+        <ErrorField id="tranche_bilan-error-desc-error" errors={errors.tranche_bilan} />
     </div>
 
     <fieldset class="fr-fieldset">
@@ -164,12 +172,13 @@
 
         {#if appartientGroupe}
             <div class="fr-fieldset__element">
-                <div class="fr-select-group">
+                <div class="fr-select-group {errors.effectif_groupe ? 'fr-select-group--error' : ''}">
                     <label class="fr-label" for="{effectifGroupeFieldId}">Effectif du groupe
                         <span class="fr-hint-text">Nombre de salariés employés par les entreprises du groupe</span>
                     </label>
                     <div class="fr-col-12 ">
-                        <select name="effectif_groupe" class="fr-select" id="{effectifGroupeFieldId}"
+                        <select name="effectif_groupe" class="fr-select {errors.effectif_groupe ? 'fr-select--error' : ''}" id="{effectifGroupeFieldId}"
+                        aria-describedby={errors.effectif_groupe ? 'effectif_groupe-error-desc-error' : null}
                         bind:value={effectifGroupe}
                         >
                         <option value="">---------</option>
@@ -181,6 +190,7 @@
                         <option value="10000+">10 000 salariés ou plus</option>
                         </select>
                     </div>
+                    <ErrorField id="effectif_groupe-error-desc-error" errors={errors.effectif_groupe} />
                 </div>
             </div>
 
@@ -195,12 +205,13 @@
 
             {#if comptesConsolides}
                 <div class="fr-fieldset__element">
-                    <div class="fr-select-group">
+                    <div class="fr-select-group {errors.tranche_chiffre_affaires_consolide ? 'fr-select-group--error' : ''}">
                         <label class="fr-label" for="{trancheChiffreAffairesConsolideFieldId}">Chiffre d'affaires consolidé du groupe
                             <span class="fr-hint-text"></span>
                         </label>
                         <div class="fr-col-12 ">
-                            <select name="tranche_chiffre_affaires_consolide" class="fr-select" id="{trancheChiffreAffairesConsolideFieldId}"
+                            <select name="tranche_chiffre_affaires_consolide" class="fr-select {errors.tranche_chiffre_affaires_consolide ? 'fr-select--error' : ''}" id="{trancheChiffreAffairesConsolideFieldId}"
+                                aria-describedby={errors.tranche_chiffre_affaires_consolide ? 'tranche_chiffre_affaires_consolide-error-desc-error' : null}
                                 bind:value={trancheChiffreAffairesConsolide}
                             >
                                 <option value="">---------</option>
@@ -212,16 +223,18 @@
                                 <option value="100M+">100M€ ou plus</option>
                             </select>
                         </div>
+                        <ErrorField id="tranche_chiffre_affaires_consolide-error-desc-error" errors={errors.tranche_chiffre_affaires_consolide} />
                     </div>
                 </div>
 
                 <div class="fr-fieldset__element">
-                    <div class="fr-select-group">
+                    <div class="fr-select-group {errors.tranche_bilan_consolide ? 'fr-select-group--error' : ''}">
                         <label class="fr-label" for="{trancheBilanConsolideFieldId}">Bilan consolidé du groupe
                             <span class="fr-hint-text"></span>
                         </label>
                         <div class="fr-col-12 ">
-                            <select name="tranche_bilan_consolide" class="fr-select" id="{trancheBilanConsolideFieldId}"
+                            <select name="tranche_bilan_consolide" class="fr-select {errors.tranche_bilan_consolide ? 'fr-select--error' : ''}" id="{trancheBilanConsolideFieldId}"
+                                aria-describedby={errors.tranche_bilan_consolide ? 'tranche_bilan_consolide-error-desc-error' : null}
                                 bind:value={trancheBilanConsolide}
                             >
                                 <option value="">---------</option>
@@ -233,6 +246,7 @@
                                 <option value="100M+">100M€ ou plus</option>
                             </select>
                         </div>
+                        <ErrorField id="tranche_bilan_consolide-error-desc-error" errors={errors.tranche_bilan_consolide} />
                     </div>
                 </div>
             {/if}

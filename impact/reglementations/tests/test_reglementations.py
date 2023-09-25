@@ -176,9 +176,9 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     assert form_data["effectif"] == effectif
     assert form_data["tranche_chiffre_affaires"] == ca
     assert form_data["tranche_bilan"] == bilan
-    assert form_data["appartient_groupe"] == appartient_groupe
+    assert form_data["appartient_groupe"] == str(appartient_groupe)
     assert form_data["effectif_groupe"] == effectif_groupe
-    assert form_data["comptes_consolides"] == comptes_consolides
+    assert form_data["comptes_consolides"] == str(comptes_consolides)
     assert form_data["tranche_chiffre_affaires_consolide"] == ca_consolide
     assert form_data["tranche_bilan_consolide"] == bilan_consolide
     assert "svelte-simulation-form" in content
@@ -557,6 +557,14 @@ def test_simulation_incorrecte(client):
         "Impossible de finaliser la simulation car le formulaire contient des erreurs."
         in content
     )
+    # le formulaire svelte connait les erreurs
+    form_data = response.context["svelte_form_data"]
+    assert form_data["errors"]["effectif_groupe"] == [
+        "Ce champ est obligatoire lorsque l'entreprise appartient à un groupe"
+    ]
+    assert "svelte-simulation-form" in content
+    assert "svelte-form-data" in content
+
     assert Entreprise.objects.count() == 0
     assert CaracteristiquesAnnuelles.objects.count() == 0
 
