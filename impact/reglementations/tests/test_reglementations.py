@@ -169,6 +169,21 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
         assert anonymous_status_detail in content, content
         assert '<p class="fr-badge">soumis</p>' not in content, content
 
+    # le formulaire svelte est toujours sur la page, avec les bonnes données d'initialisation
+    form_data = context["svelte_form_data"]
+    assert form_data["siren"] == siren
+    assert form_data["denomination"] == denomination
+    assert form_data["effectif"] == effectif
+    assert form_data["tranche_chiffre_affaires"] == ca
+    assert form_data["tranche_bilan"] == bilan
+    assert form_data["appartient_groupe"] == appartient_groupe
+    assert form_data["effectif_groupe"] == effectif_groupe
+    assert form_data["comptes_consolides"] == comptes_consolides
+    assert form_data["tranche_chiffre_affaires_consolide"] == ca_consolide
+    assert form_data["tranche_bilan_consolide"] == bilan_consolide
+    assert "svelte-simulation-form" in content
+    assert "svelte-form-data" in content
+
 
 @pytest.fixture
 def entreprise(db, alice, entreprise_factory):

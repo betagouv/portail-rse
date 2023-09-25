@@ -3,9 +3,6 @@ import html
 import pytest
 from django.urls import reverse
 
-import api.exceptions
-from entreprises.models import CaracteristiquesAnnuelles
-
 
 def test_page_index_pour_un_visiteur_anonyme(client):
     response = client.get("/")
@@ -143,53 +140,3 @@ def test_page_cgu(client):
     assert response.status_code == 200
     content = response.content.decode("utf-8")
     assert "<!-- page cgu -->" in content
-
-
-def test_succes_recherche_siren(client, mocker):
-    SIREN = "123456789"
-    RAISON_SOCIALE = "ENTREPRISE_TEST"
-    mocker.patch(
-        "api.recherche_entreprises.recherche",
-        return_value={
-            "siren": SIREN,
-            "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-            "denomination": RAISON_SOCIALE,
-        },
-    )
-    response = client.get("/simulation", {"siren": SIREN})
-
-    assert response.status_code == 200
-    content = response.content.decode("utf-8")
-    assert SIREN in content
-    assert RAISON_SOCIALE in content
-    assert "<!-- page simulation étape 2 -->" in content
-
-
-def test_erreur_recherche_siren__siren_incorrect(client, mocker):
-    SIREN = "123456789"
-    mocker.patch(
-        "api.recherche_entreprises.recherche",
-        side_effect=api.exceptions.SirenError("MESSAGE"),
-    )
-    response = client.get("/simulation", {"siren": SIREN})
-
-    assert response.status_code == 200
-    content = response.content.decode("utf-8")
-    assert "MESSAGE" in content
-    assert "SIREN introuvable" in content
-    assert "<!-- page simulation étape 1 -->" in content
-
-
-def test_erreur_recherche_siren__erreur_api(client, mocker):
-    SIREN = "123456789"
-    mocker.patch(
-        "api.recherche_entreprises.recherche",
-        side_effect=api.exceptions.APIError("MESSAGE"),
-    )
-    response = client.get("/simulation", {"siren": SIREN})
-
-    assert response.status_code == 200
-    content = response.content.decode("utf-8")
-    assert "MESSAGE" in content
-    assert "SIREN introuvable" not in content
-    assert "<!-- page simulation étape 1 -->" in content
