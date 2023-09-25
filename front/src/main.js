@@ -39,7 +39,8 @@ if (document.getElementById("svelte-simulation-form")) {
       trancheChiffreAffairesConsolide: formData.tranche_chiffre_affaires_consolide,
       trancheBilanConsolide: formData.tranche_bilan_consolide,
       comptesConsolides: formData.comptes_consolides,
-      appartientGroupe: formData.appartient_groupe
+      appartientGroupe: formData.appartient_groupe,
+      errors: formData.errors,
     }
   })
 }
