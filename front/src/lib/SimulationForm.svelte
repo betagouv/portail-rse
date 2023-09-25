@@ -57,7 +57,7 @@
     }
 </script>
 
-<form class="fr-mt-6w" action="/reglementations" method="post">
+<form class="fr-mt-6w" on:submit|preventDefault>
 <fieldset class="fr-fieldset" aria-label="SIREN de l'entreprise">
     <div class="fr-fieldset__element">
         <div class="fr-input-group {errors.siren ? 'fr-input-group--error' : ''}">
@@ -91,9 +91,12 @@
         </a>
     </div>
 </fieldset>
+</form>
 
 {#if denomination}
+<form action="/reglementations" method="post">
     <input type="hidden" name="{csrfTokenFieldName}" value="{csrfToken}">
+    <input type="hidden" name="siren" value="{siren}">
     <input type="hidden" name="denomination" value="{denomination}" id="{denominationFieldId}">
 
     <div class="fr-select-group {errors.effectif ? 'fr-select-group--error' : ''}">
@@ -254,5 +257,5 @@
         {/if}
     </fieldset>
     <input type="submit" value="Vérifier mes obligations" class="fr-btn">
-{/if}
 </form>
+{/if}
