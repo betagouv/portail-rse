@@ -113,9 +113,6 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     )
     response = client.post("/reglementations", data=data)
 
-    content = response.content.decode("utf-8")
-    assert denomination in content
-
     # l'entreprise a été créée avec les caractéristiques de simulation
     entreprise = Entreprise.objects.get(siren=siren)
     assert entreprise.denomination == denomination
@@ -158,6 +155,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
             caracteristiques, AnonymousUser()
         )
 
+    content = response.content.decode("utf-8")
     if status_est_soumis:
         assert (
             '<p class="fr-badge fr-badge--info fr-badge--no-icon">' in content
@@ -173,20 +171,18 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
             '<p class="fr-badge fr-badge--info fr-badge--no-icon">' not in content
         ), content
 
-    # le formulaire svelte est toujours sur la page, avec les bonnes données d'initialisation
-    form_data = context["svelte_form_data"]
-    assert form_data["siren"] == siren
-    assert form_data["denomination"] == denomination
-    assert form_data["effectif"] == effectif
-    assert form_data["tranche_chiffre_affaires"] == ca
-    assert form_data["tranche_bilan"] == bilan
-    assert form_data["appartient_groupe"] == str(appartient_groupe)
-    assert form_data["effectif_groupe"] == effectif_groupe
-    assert form_data["comptes_consolides"] == str(comptes_consolides)
-    assert form_data["tranche_chiffre_affaires_consolide"] == ca_consolide
-    assert form_data["tranche_bilan_consolide"] == bilan_consolide
-    assert "svelte-simulation-form" in content
-    assert "svelte-form-data" in content
+    # le formulaire est toujours sur la page, avec les bonnes données d'initialisation
+    simulation_form = context["simulation_form"]
+    assert simulation_form["siren"].value() == siren
+    assert simulation_form["denomination"].value() == denomination
+    assert simulation_form["effectif"].value() == effectif
+    assert simulation_form["tranche_chiffre_affaires"].value() == ca
+    assert simulation_form["tranche_bilan"].value() == bilan
+    assert simulation_form["appartient_groupe"].value() == appartient_groupe
+    assert simulation_form["effectif_groupe"].value() == effectif_groupe
+    assert simulation_form["comptes_consolides"].value() == comptes_consolides
+    assert simulation_form["tranche_chiffre_affaires_consolide"].value() == ca_consolide
+    assert simulation_form["tranche_bilan_consolide"].value() == bilan_consolide
 
 
 @pytest.fixture
@@ -249,8 +245,6 @@ def test_simulation_par_un_utilisateur_authentifie_sur_une_nouvelle_entreprise(
     response = client.post("/reglementations", data=data)
 
     content = response.content.decode("utf-8")
-    assert "Une autre entreprise SAS" in content
-
     reglementations = response.context["reglementations"]
     if status_est_soumis:
         assert '<p class="fr-badge fr-badge--info fr-badge--no-icon">' in content
@@ -561,13 +555,6 @@ def test_simulation_incorrecte(client):
         "Impossible de finaliser la simulation car le formulaire contient des erreurs."
         in content
     )
-    # le formulaire svelte connait les erreurs
-    form_data = response.context["svelte_form_data"]
-    assert form_data["errors"]["effectif_groupe"] == [
-        "Ce champ est obligatoire lorsque l'entreprise appartient à un groupe"
-    ]
-    assert "svelte-simulation-form" in content
-    assert "svelte-form-data" in content
 
     assert Entreprise.objects.count() == 0
     assert CaracteristiquesAnnuelles.objects.count() == 0

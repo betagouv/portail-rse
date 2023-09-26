@@ -1,28 +1,49 @@
 <script>
-    import spinner from './assets/spinner.svg';
+    import spinner from './assets/spinner.svg'
 
-    let siren = ""
+    export let siren = ""
     let loading = false
     let promise = async () => {}
+    let denomination = ""
 
     const sirenFieldId = "id_siren" // defined by django
+    const effectifFieldId = "id_effectif" // defined by django
+    const effectifField = document.getElementById(effectifFieldId)
     const submitButton = document.getElementById(sirenFieldId).closest("form").querySelector("[type=submit]")
     submitButton.disabled = true
 
+    const simulationFields = document.getElementById("svelte-simulation-fields")
+    const showSimulationFields = () => {
+        if (simulationFields) {
+            simulationFields.style.display = "block"
+        }
+    }
+    const hideSimulationFields = () => {
+        if (simulationFields) {
+            simulationFields.style.display = "none"
+        }
+    }
+
     async function searchEntreprise(siren) {
         if( siren.length !== 9 || isNaN(siren)){
+            hideSimulationFields()
             throw new Error("Le siren est incorrect.")
         }
         loading = true
         const res = await fetch("/api/search-entreprise/" + siren)
-        const json = await res.json();
+        const json = await res.json()
 
         if (res.ok) {
             loading = false
             submitButton.disabled = false
-            return json;
+            denomination = json.denomination
+            if (effectifField) {
+                effectifField.value = json.effectif
+            }
+            showSimulationFields()
         } else {
             loading = false
+            hideSimulationFields()
             throw new Error(json['error'])
         }
     }
@@ -30,6 +51,13 @@
     const handleChange = () => {
         submitButton.disabled = true
         promise = searchEntreprise(siren)
+    }
+
+    if (siren) {
+        handleChange()
+    }
+    else {
+        hideSimulationFields()
     }
 </script>
 
@@ -52,9 +80,9 @@
                 {/if}
                 </div>
             </div>
-            {#await promise then json}
-                {#if json.denomination}
-                    <p class="fr-mt-1w fr-mb-n1v">Entreprise : {json.denomination}</p>
+            {#await promise then result}
+                {#if denomination}
+                    <p class="fr-mt-1w fr-mb-n1v">Entreprise : {denomination}</p>
                 {/if}
             {:catch error}
                 <p class="fr-error-text">{error.message}</p>
@@ -67,3 +95,5 @@
         </a>
     </div>
 </fieldset>
+
+<input type="hidden" name="denomination" value="{denomination}">
