@@ -1,6 +1,6 @@
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import DENOMINATION_MAX_LENGTH
-from reglementations.forms import SimulationForm
+from public.forms import SimulationForm
 
 
 def test_ignore_bilan_et_ca_consolides_lorsque_pas_de_comptes_consolides():
