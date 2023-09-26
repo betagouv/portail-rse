@@ -186,8 +186,8 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     effectif = models.CharField(
         max_length=9,
         choices=EFFECTIF_CHOICES,
-        verbose_name="Effectif total",
-        help_text="Vérifiez et confirmez le nombre de salariés",
+        verbose_name="Effectif",
+        help_text="Nombre de salariés de l'entreprise",
         null=True,
     )
     effectif_outre_mer = models.CharField(
