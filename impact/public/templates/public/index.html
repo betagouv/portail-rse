@@ -5,25 +5,256 @@
     <div class="fr-container fr-my-16w">
         <div class="fr-grid-row fr-grid-row--center fr-grid-row--middle">
             <div class="fr-col-12 fr-col-md-8">
-                <h1>Projet IMPACT</h1>
-                <p class="fr-text--lead">Le meilleur moyen pour les entreprises de déclarer leur performance extra-financière</p>
-                <p>
-                    Gratuit et en ligne. <br>
-                    L’outil aide les entreprises à :
-                    <ul>
-                        <li>Disposer dans un seul espace des réglementations extra-financières</li>
-                        <li>Identifier un chemin pour satisfaire leurs obligations réglementaires</li>
-                        <li>Établir leur document base de données économiques, sociales et environnementales (BDESE)</li>
-                    </ul>
-                </p>
+                <h1>Portail RSE</h1>
+                <p class="fr-text--lead">Un parcours unique pour connaitre et répondre à ses obligations RSE</p>
                 {% if user.is_authenticated and current_entreprise %}
-                    <a href="{% url 'reglementations:reglementations' current_entreprise.siren %}" class="fr-btn">Remplir mes réglementations</a>
+                    <a href="{% url 'reglementations:reglementations' current_entreprise.siren %}" class="fr-btn fr-btn--lg">Remplir mes réglementations</a>
                 {% else %}
-                    <a href="{% url 'simulation' %}" class="fr-btn">Commencer avec mon entreprise</a>
+                    <a href="{% url 'simulation' %}" class="fr-btn fr-btn--lg">Consulter mes obligations</a>
                 {% endif %}
             </div>
             <div class="fr-col-8 fr-col-md-4 fr-my-8w">
                 <img src="{% static 'img/illustration-ESG.png' %}" class="fr-responsive-img" alt="" />
+            </div>
+        </div>
+        <!-- Separateur -->
+        <div class="fr-container">
+            <div class="fr-grid-row">
+                <div class="fr-col-12">
+                    <hr class="fr-mt-6w fr-mb-4w">
+                </div>
+            </div>
+        </div>
+        <!-- Bloc 2 cards -->
+        <div class="fr-grid-row fr-grid-row--gutters fr-mb-1w">
+            <div class="fr-col-md-6 fr-col-12">
+
+
+                <div class="fr-card">
+                    <div class="fr-card__body">
+                        <div class="fr-card__content">
+                            <h3 class="fr-card__title">
+                                Mon espace simulation
+                            </h3>
+                            <p class="fr-card__desc">Découvrez en 30 secondes à quelles réglementations votre entreprise est soumise</p>
+                        </div>
+                        <div class="fr-card__footer">
+                            <ul class="fr-btns-group fr-btns-group--inline-reverse fr-btns-group--inline-lg">
+                                <li>
+                                    <a href="#" class="fr-btn">
+                                        Consulter mes obligations
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="fr-card__header">
+                        <div class="fr-card__img">
+                            <img class="fr-responsive-img" src="{% static 'img/illustration-ESG.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="fr-col-md-6 fr-col-12">
+                <div class="fr-card">
+                    <div class="fr-card__body">
+                        <div class="fr-card__content">
+                            <h3 class="fr-card__title">
+                                Mes obligations RSE
+                            </h3>
+                            <p class="fr-card__desc">Consultez nos fiches sur les réglementations RSE</p>
+                        </div>
+                        <div class="fr-card__footer">
+                            <ul class="fr-btns-group fr-btns-group--inline-reverse fr-btns-group--inline-lg">
+                                <li>
+                                    <a href="#" class="fr-btn">
+                                        Consulter mes obligations
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="fr-card__header">
+                        <div class="fr-card__img">
+                            <img class="fr-responsive-img" src="{% static 'img/illustration-ESG.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- Separateur -->
+        <div class="fr-container">
+            <div class="fr-grid-row">
+                <div class="fr-col-12">
+                    <hr class="fr-mt-6w fr-mb-4w">
+                </div>
+            </div>
+        </div>
+
+        <!-- Bloc titre textes -->
+        <div class="fr-container">
+            <div class="fr-grid-row">
+                <div class="fr-col-12">
+                    <div class="fr-grid-row fr-grid-row--center">
+                        <h2>Les services du portail RSE</h2>
+                    </div>
+                    <div class="fr-grid-row">
+                        <p class="fr-mt-2w">
+                            Dans un contexte où les réglementations RSE sont de plus en plus nombreuses, le Portail RSE offre aux entreprises la possibilité de se renseigner sur ses obligations et de s'y conformer directement sur la plateforme ou en étant redirigé vers les plateformes ministérielles adéquates.
+                            <br> <br>
+                            A terme, nous avons l'ambition de proposer aux entreprises un espace unique gratuit pour renseigner leurs indicateurs ESG (Environnement, Social, Gouvernance) et piloter de leurs obligations extra-financières.
+                        </p>
+                        <a href="#" class="fr-btn fr-btn--secondary">
+                            En savoir plus
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Separateur -->
+        <div class="fr-container">
+            <div class="fr-grid-row">
+                <div class="fr-col-12">
+                    <hr class="fr-mt-6w fr-mb-4w">
+                </div>
+            </div>
+        </div>
+
+        <!-- Bloc titre textes -->
+        <div class="fr-container">
+            <div class="fr-grid-row">
+                <div class="fr-col-12">
+                    <div class="fr-grid-row fr-grid-row--center">
+                        <h2>La RSE c'est quoi ?</h2>
+                    </div>
+                    <div class="fr-grid-row">
+                        <p class="fr-mt-2w">
+                            La Commission européenne définit en 2011 la responsabilité sociétale des entreprises comme « la responsabilité des entreprises vis-à-vis des effets qu'elles exercent sur la société »
+                            <br>
+                            La norme ISO 26000 définit le périmètre de la RSE autour de sept thématiques centrales :
+
+                            <!-- thématiques -->
+                        </p>
+                        <ul>
+                            <li>La gouvernance de l’organisation</li>
+                            <li>Les droits de l’homme</li>
+                            <li>Les relations et conditions de travail</li>
+                            <li>L’environnement</li>
+                            <li>La loyauté des pratiques</li>
+                            <li>Les questions relatives aux consommateurs</li>
+                            <li>Les communautés et le développement local</li>
+                        </ul>
+                        <p class="fr-mt-2w">
+                            Des obligations pèsent sur les entreprises afin d'améliorer leur transparence et leur responsabilité. Elles prévoient de se doter de dispositifs extra-financiers pour mesurer leur performance en matière de développement durable, communiquer leurs résultats et en rendre compte aux parties prenantes internes et externes.
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Separateur -->
+        <div class="fr-container">
+            <div class="fr-grid-row">
+                <div class="fr-col-12">
+                    <hr class="fr-mt-6w fr-mb-4w">
+                </div>
+            </div>
+        </div>
+
+        <!-- Bloc titre, 2 colonnes texte et image -->
+        <div class="fr-container">
+            <div class="fr-grid-row fr-grid-row--center">
+                <h2>Qui sommes-nous ?</h2>
+            </div>
+            <div class="fr-grid-row">
+                <div class="fr-col-12 fr-col-md-6 fr-mr-7v">
+                    <p class="fr-mt-2w">Le Portail RSE est né d'une collaboration entre le Ministère de l'Economie et des Finances et de l'incubateur des services numériques (beta.gouv).
+                        <br><br>
+                        Ce service public est développé sous la forme d'une start-up d'Etat par itérations, co-construite grâce aux retours des utilisateurs. De nouvelles fonctionnalités sont progressivement ajoutées.</p>
+                </div>
+                <div class="fr-col-12 fr-col-md-4">
+                    <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                        <div class="fr-content-media__img">
+                            <img class="fr-responsive-img fr-ratio-16x9" src="{% static 'img/illustration-ESG.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                            <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
+                        </div>
+                    </figure>
+                </div>
+            </div>
+        </div>
+        <!-- Separateur -->
+        <div class="fr-container">
+            <div class="fr-grid-row">
+                <div class="fr-col-12">
+                    <hr class="fr-mt-6w fr-mb-4w">
+                </div>
+            </div>
+        </div>
+
+        <!-- Bloc logos ils nous soutiennent etc -->
+        <div class="fr-container">
+            <div class="fr-grid-row">
+                <div class="fr-col-12">
+                    <div class="fr-grid-row fr-grid-row--center">
+                        <h2>
+                            Ils utilisent la plateforme et nous aident à l'améliorer
+                        </h2>
+                    </div>
+                </div>
+            </div>
+            <div class="fr-grid-row fr-grid-row--center">
+                <div class="fr-col-2">
+                    <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                        <div class="fr-content-media__img">
+                            <img class="fr-responsive-img fr-ratio-16x9" src="{% static 'img/illustration-ESG.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                            <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
+                        </div>
+                    </figure>
+                </div>
+                <div class="fr-col-2">
+                    <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                        <div class="fr-content-media__img">
+                            <img class="fr-responsive-img fr-ratio-16x9" src="{% static 'img/illustration-ESG.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                            <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
+                        </div>
+                    </figure>
+                </div>
+                <div class="fr-col-2">
+                    <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                        <div class="fr-content-media__img">
+                            <img class="fr-responsive-img fr-ratio-16x9" src="{% static 'img/illustration-ESG.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                            <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
+                        </div>
+                    </figure>
+                </div>
+                <div class="fr-col-2">
+                    <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                        <div class="fr-content-media__img">
+                            <img class="fr-responsive-img fr-ratio-16x9" src="{% static 'img/illustration-ESG.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                            <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
+                        </div>
+                    </figure>
+                </div>
+                <div class="fr-col-2">
+                    <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                        <div class="fr-content-media__img">
+                            <img class="fr-responsive-img fr-ratio-16x9" src="{% static 'img/illustration-ESG.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                            <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
+                        </div>
+                    </figure>
+                </div>
+                <div class="fr-col-2">
+                    <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                        <div class="fr-content-media__img">
+                            <img class="fr-responsive-img fr-ratio-16x9" src="{% static 'img/illustration-ESG.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                            <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
+                        </div>
+                    </figure>
+                </div>
             </div>
         </div>
     </div>
