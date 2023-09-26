@@ -36,12 +36,18 @@ def reglementations(request):
     else:  # affichage simple des réglementations
         simulation = False
 
+    context = {
+        "entreprise": entreprise,
+        "reglementations": calcule_reglementations(
+            entreprise, caracteristiques, request.user
+        ),
+        "simulation": simulation,
+    }
+
     return render(
         request,
         "reglementations/reglementations.html",
-        _reglementations_context(
-            entreprise, caracteristiques, request.user, simulation=simulation
-        ),
+        context,
     )
 
 
@@ -62,9 +68,13 @@ def reglementations_for_entreprise(request, siren):
         return render(
             request,
             "reglementations/reglementations.html",
-            _reglementations_context(
-                entreprise, caracteristiques, request.user, simulation=False
-            ),
+            context={
+                "entreprise": entreprise,
+                "reglementations": calcule_reglementations(
+                    entreprise, caracteristiques, request.user
+                ),
+                "simulation": False,
+            },
         )
     else:
         messages.warning(
@@ -74,8 +84,8 @@ def reglementations_for_entreprise(request, siren):
         return redirect("entreprises:qualification", siren=entreprise.siren)
 
 
-def _reglementations_context(entreprise, caracteristiques, user, simulation):
-    reglementations = [
+def calcule_reglementations(entreprise, caracteristiques, user):
+    return [
         {
             "info": reglementation.info(),
             "status": reglementation.calculate_status(caracteristiques, user)
@@ -84,8 +94,3 @@ def _reglementations_context(entreprise, caracteristiques, user, simulation):
         }
         for reglementation in REGLEMENTATIONS
     ]
-    return {
-        "entreprise": entreprise,
-        "reglementations": reglementations,
-        "simulation": simulation,
-    }
