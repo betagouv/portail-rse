@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.contrib import messages
 from django.core.mail import EmailMessage
-from django.middleware.csrf import get_token
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -68,7 +67,6 @@ def simulation(request):
         request,
         "public/simulation.html",
         {
-            "svelte_form_data": {"csrfToken": get_token(request)},
             "simulation_form": SimulationForm(),
         },
     )
