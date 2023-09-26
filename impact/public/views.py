@@ -83,7 +83,6 @@ def reglementations(request):
             }
             for reglementation in REGLEMENTATIONS
         ],
-        "simulation": False,
     }
 
     return render(
@@ -167,7 +166,6 @@ def calcule_simulation(request):
         "reglementations": calcule_reglementations(
             entreprise, caracteristiques, request.user
         ),
-        "simulation": True,
         "simulation_form": simulation_form,
     }
     return render(

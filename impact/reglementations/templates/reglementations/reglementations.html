@@ -6,18 +6,9 @@
 <!-- page reglementations -->
 
     <div class="fr-container fr-my-4w">
-        <div class="fr-callout {% if simulation %}fr-callout--yellow-tournesol{% endif %}">
+        <div class="fr-callout">
             <p class="fr-callout__text">
-                {% if simulation %}
-                    Vous êtes dans le cadre d'une simulation simplifiée.
-                    {% if not user.is_authenticated %}
-                        Pour disposer d'une version plus précise de vos obligations réglementaires, vous devez vous connecter et remplir des informations supplémentaires concernant l'entreprise.
-                        <br>
-                        <a href="{% url 'users:login' %}?next={% url 'reglementations:reglementations' siren=entreprise.siren %}" class="fr-btn">Se connecter pour compléter les informations</a>
-                    {% endif %}
-                {% else %}
-                    La liste des réglementations ci-dessous n’est pas encore complète et va s’enrichir progressivement. Le site actuel, encore au stade de prototype (bêta), sera amené à évoluer.
-                {% endif %}
+                La liste des réglementations ci-dessous n’est pas encore complète et va s’enrichir progressivement. Le site actuel, encore au stade de prototype (bêta), sera amené à évoluer.
             </p>
         </div>
 
