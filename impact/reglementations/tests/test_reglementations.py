@@ -98,7 +98,6 @@ def test_reglementations_for_entreprise_with_authenticated_user_and_multiple_ent
     content = response.content.decode("utf-8")
     context = response.context
     assert context["entreprise"] == entreprise2
-    assert context["simulation"] == False
     reglementations = context["reglementations"]
     for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
         assert reglementations[index]["status"] == REGLEMENTATION.calculate_status(

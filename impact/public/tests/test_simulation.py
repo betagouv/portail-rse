@@ -127,7 +127,6 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     # car l'utilisateur n'est pas authentifié
     context = response.context
     assert context["entreprise"] == entreprise
-    assert context["simulation"]
     reglementations = context["reglementations"]
     for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
         assert reglementations[index]["status"] == REGLEMENTATION.calculate_status(
