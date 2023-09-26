@@ -3,7 +3,6 @@ from datetime import date
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.middleware.csrf import get_token
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -58,23 +57,6 @@ def calcule_simulation(request):
     caracteristiques = None
     simulation = True
     simulation_form = SimulationForm(request.POST)
-    svelte_form_data = {
-        "csrfToken": get_token(request),
-        "siren": simulation_form.data.get("siren"),
-        "denomination": simulation_form.data.get("denomination"),
-        "effectif": simulation_form.data.get("effectif"),
-        "tranche_chiffre_affaires": simulation_form.data.get(
-            "tranche_chiffre_affaires"
-        ),
-        "tranche_bilan": simulation_form.data.get("tranche_bilan"),
-        "effectif_groupe": simulation_form.data.get("effectif_groupe"),
-        "tranche_chiffre_affaires_consolide": simulation_form.data.get(
-            "tranche_chiffre_affaires_consolide"
-        ),
-        "tranche_bilan_consolide": simulation_form.data.get("tranche_bilan_consolide"),
-        "comptes_consolides": simulation_form.data.get("comptes_consolides"),
-        "appartient_groupe": simulation_form.data.get("appartient_groupe"),
-    }
     if simulation_form.is_valid():
         if entreprises := Entreprise.objects.filter(
             siren=simulation_form.cleaned_data["siren"]
@@ -128,11 +110,9 @@ def calcule_simulation(request):
             request,
             f"Impossible de finaliser la simulation car le formulaire contient des erreurs.",
         )
-        svelte_form_data["errors"] = simulation_form.errors
     context = _reglementations_context(
         entreprise, caracteristiques, request.user, simulation=simulation
     )
-    context["svelte_form_data"] = svelte_form_data
     context["simulation_form"] = simulation_form
     return render(
         request,
