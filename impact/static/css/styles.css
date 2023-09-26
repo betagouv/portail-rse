@@ -1,3 +1,116 @@
 .fr-btns-group--md {
     --ul-type: none;
 }
+
+/* Réglementation Component */
+.reglementation {
+    width: 100%;
+}
+
+.reglementation--full {
+    box-shadow: inset 0 -1px 0 0px var(--background-contrast-grey);
+}
+
+.reglementation-header {
+    width: 100%;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    grid-template-rows: auto;
+    grid-column: 1/3;
+}
+
+.reglementation-title {
+    font-size: 1.375rem;
+    line-height: 1.75rem;
+    max-width: 960px;
+}
+
+.reglementation_desc {
+    font-size: .875rem;
+    line-height: 1.5rem;
+    margin-bottom: 0;
+    margin-top: .75rem;
+    order: 3;
+}
+
+.reglementation--content {
+    grid-column: 1/4;
+}
+
+.reglementation_badge {
+    min-width: 135px;
+    max-width: 135px;
+}
+
+.reglementation_badge .fr-badge {
+    margin: .25rem .5rem.25rem .5rem;
+}
+
+.reglementation .fr-btns-group, .reglementation-grid .fr-btns-group {
+    justify-content: flex-end;
+    align-items: start;
+}
+
+.reglementation_detail {
+    align-items: flex-start;
+    color: var(--text-default-info);
+    display: flex;
+    flex-direction: row;
+    font-size: .75rem;
+    line-height: 1.25rem;
+    margin-bottom: 0;
+    background-color: var(--background-contrast-info);
+    border-radius: .25rem;
+    grid-column: 1/3;
+    align-items: center;
+}
+
+.reglementation_detail[class*=" fr-fi-"]::before, .reglementation_detail[class*=" fr-icon-"]::before, .reglementation_detail[class^="fr-fi-"]::before, .reglementation_detail[class^="fr-icon-"]::before {
+    --icon-size: 1rem;
+    margin-right: .5rem;
+  }
+
+.reglementation-grid {
+    display: grid;
+    grid-template-columns: 135px auto auto;
+    grid-template-rows: auto;
+}
+
+.reglementation--grey {
+    color: var(--text-default-grey);
+}
+
+.reglementation--grey .reglementation_detail {
+    color: var(--text-default-grey);
+    background-color: var(--background-contrast-grey);
+}
+
+@media screen and (max-width: 992px) {
+    .reglementation-header {
+        grid-column: 1/4;
+    }
+    .reglementation .fr-btns-group, .reglementation-grid .fr-btns-group {
+        justify-content:flex-start;
+        grid-row: 3/4;
+        grid-column: 1/4;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .reglementation-header {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 100%;
+        grid-template-rows: auto auto auto;
+    }
+    .reglementation_badge {
+        min-width: 135px;
+        grid-row: 1/2;
+    }
+    .reglementation-title {
+        grid-row: 2/3;
+    }
+    .reglementation_badge .fr-badge {
+        margin: 0 0 1rem 0;
+    }
+}

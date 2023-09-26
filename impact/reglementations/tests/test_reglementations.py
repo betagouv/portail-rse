@@ -159,7 +159,9 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
         )
 
     if status_est_soumis:
-        assert '<p class="fr-badge">soumis</p>' in content, content
+        assert (
+            '<p class="fr-badge fr-badge--info fr-badge--no-icon">' in content
+        ), content
         anonymous_status_detail = "Vous êtes soumis à cette réglementation. Connectez-vous pour en savoir plus."
         assert anonymous_status_detail in content, content
         assert '<p class="fr-badge">non soumis</p>' not in content, content
@@ -167,7 +169,9 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
         assert '<p class="fr-badge">non soumis</p>' in content, content
         anonymous_status_detail = "Vous n'êtes pas soumis à cette réglementation."
         assert anonymous_status_detail in content, content
-        assert '<p class="fr-badge">soumis</p>' not in content, content
+        assert (
+            '<p class="fr-badge fr-badge--info fr-badge--no-icon">' not in content
+        ), content
 
     # le formulaire svelte est toujours sur la page, avec les bonnes données d'initialisation
     form_data = context["svelte_form_data"]
@@ -249,7 +253,7 @@ def test_simulation_par_un_utilisateur_authentifie_sur_une_nouvelle_entreprise(
 
     reglementations = response.context["reglementations"]
     if status_est_soumis:
-        assert '<p class="fr-badge">soumis</p>' in content
+        assert '<p class="fr-badge fr-badge--info fr-badge--no-icon">' in content
         anonymous_status_detail = "L'entreprise est soumise à cette réglementation."
         assert anonymous_status_detail in content, content
     else:
