@@ -105,8 +105,6 @@ def simulation(request):
 
 
 def calcule_simulation(request):
-    entreprise = None
-    caracteristiques = None
     simulation_form = SimulationForm(request.POST)
     if simulation_form.is_valid():
         if entreprises := Entreprise.objects.filter(
@@ -156,17 +154,19 @@ def calcule_simulation(request):
             entreprise.save()
             caracteristiques.save()
         caracteristiques = enrichit_les_donnees_pour_la_simulation(caracteristiques)
+        reglementations = calcule_reglementations(
+            entreprise, caracteristiques, request.user
+        )
     else:
         messages.error(
             request,
             f"Impossible de finaliser la simulation car le formulaire contient des erreurs.",
         )
+        reglementations = None
+
     context = {
-        "entreprise": entreprise,
-        "reglementations": calcule_reglementations(
-            entreprise, caracteristiques, request.user
-        ),
         "simulation_form": simulation_form,
+        "reglementations": reglementations,
     }
     return render(
         request,

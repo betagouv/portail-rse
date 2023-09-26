@@ -126,7 +126,6 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     # les statuts des réglementations de cette entreprise sont affichées de manière anonyme (non détaillée)
     # car l'utilisateur n'est pas authentifié
     context = response.context
-    assert context["entreprise"] == entreprise
     reglementations = context["reglementations"]
     for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
         assert reglementations[index]["status"] == REGLEMENTATION.calculate_status(
@@ -304,14 +303,15 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     assert caracteristiques.systeme_management_energie
 
     context = response.context
-    assert context["entreprise"] == entreprise
-    assert context["entreprise"].denomination == autre_denomination
-    assert not context["entreprise"].appartient_groupe
-    assert context["entreprise"].societe_mere_en_france
-    assert not context["entreprise"].comptes_consolides
     reglementations = context["reglementations"]
+    entreprise_simulee = Entreprise(
+        siren=entreprise.siren,
+        appartient_groupe=False,
+        societe_mere_en_france=True,
+        comptes_consolides=False,
+    )
     caracteristiques = CaracteristiquesAnnuelles(
-        entreprise=entreprise,
+        entreprise=entreprise_simulee,
         effectif=effectif,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         effectif_groupe=None,
@@ -368,13 +368,15 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
     assert not entreprise.caracteristiques_actuelles()
 
     context = response.context
-    assert context["entreprise"] == entreprise
-    assert context["entreprise"].denomination == autre_denomination
-    assert context["entreprise"].appartient_groupe
-    assert context["entreprise"].comptes_consolides
     reglementations = context["reglementations"]
+    entreprise_simulee = Entreprise(
+        siren=entreprise.siren,
+        appartient_groupe=True,
+        societe_mere_en_france=True,
+        comptes_consolides=True,
+    )
     caracteristiques = CaracteristiquesAnnuelles(
-        entreprise=entreprise,
+        entreprise=entreprise_simulee,
         effectif=effectif,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         tranche_chiffre_affaires=ca,
@@ -434,13 +436,15 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
     assert caracteristiques.tranche_bilan_consolide == bilan
 
     context = response.context
-    assert context["entreprise"] == entreprise
-    assert context["entreprise"].denomination == autre_denomination
-    assert context["entreprise"].appartient_groupe
-    assert context["entreprise"].comptes_consolides
     reglementations = context["reglementations"]
+    entreprise_simulee = Entreprise(
+        siren=entreprise.siren,
+        appartient_groupe=True,
+        societe_mere_en_france=True,
+        comptes_consolides=True,
+    )
     caracteristiques = CaracteristiquesAnnuelles(
-        entreprise=entreprise,
+        entreprise=entreprise_simulee,
         effectif=effectif,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         effectif_groupe=effectif_groupe,
