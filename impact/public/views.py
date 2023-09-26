@@ -7,6 +7,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from .forms import ContactForm
+from reglementations.forms import SimulationForm
 
 
 def index(request):
@@ -68,5 +69,6 @@ def simulation(request):
         "public/simulation.html",
         {
             "svelte_form_data": {"csrfToken": get_token(request)},
+            "simulation_form": SimulationForm(),
         },
     )

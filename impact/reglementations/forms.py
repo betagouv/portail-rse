@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 from entreprises.forms import EntrepriseForm
+from entreprises.forms import SirenField
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import DENOMINATION_MAX_LENGTH
 from reglementations.models import CategoryType
@@ -13,7 +14,7 @@ from utils.forms import DsfrForm
 
 class SimulationForm(EntrepriseForm, forms.ModelForm):
     denomination = forms.CharField()
-    siren = forms.CharField()
+    siren = SirenField()
 
     class Meta:
         model = CaracteristiquesAnnuelles

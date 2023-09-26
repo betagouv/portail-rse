@@ -133,6 +133,7 @@ def calcule_simulation(request):
         entreprise, caracteristiques, request.user, simulation=simulation
     )
     context["svelte_form_data"] = svelte_form_data
+    context["simulation_form"] = simulation_form
     return render(
         request,
         "public/simulation.html",
