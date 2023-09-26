@@ -13,7 +13,7 @@ from entreprises.views import ActualisationCaracteristiquesAnnuelles
 from habilitations.models import is_user_attached_to_entreprise
 from public.forms import ContactForm
 from reglementations.forms import SimulationForm
-from reglementations.views import _reglementations_context
+from reglementations.views import calcule_reglementations
 
 
 def index(request):
@@ -84,7 +84,6 @@ def simulation(request):
 def calcule_simulation(request):
     entreprise = None
     caracteristiques = None
-    simulation = True
     simulation_form = SimulationForm(request.POST)
     if simulation_form.is_valid():
         if entreprises := Entreprise.objects.filter(
@@ -139,10 +138,14 @@ def calcule_simulation(request):
             request,
             f"Impossible de finaliser la simulation car le formulaire contient des erreurs.",
         )
-    context = _reglementations_context(
-        entreprise, caracteristiques, request.user, simulation=simulation
-    )
-    context["simulation_form"] = simulation_form
+    context = {
+        "entreprise": entreprise,
+        "reglementations": calcule_reglementations(
+            entreprise, caracteristiques, request.user
+        ),
+        "simulation": True,
+        "simulation_form": simulation_form,
+    }
     return render(
         request,
         "public/simulation.html",
