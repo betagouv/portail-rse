@@ -16,13 +16,13 @@
                     </div>
                     <div id="svelte-simulation-fields" style="display: none">
                         <div class="fr-grid-row fr-grid-row--gutters fr-pb-4w">
-                            <div class="fr-col-4">
+                            <div class="fr-col-md-4 fr-col-12">
                                 {% include 'snippets/field.html' with field=simulation_form.effectif %}
                             </div>
-                            <div class="fr-col-4">
+                            <div class="fr-col-md-4 fr-col-12">
                                 {% include 'snippets/field.html' with field=simulation_form.tranche_chiffre_affaires %}
                             </div>
-                            <div class="fr-col-4">
+                            <div class="fr-col-md-4 fr-col-12">
                                 {% include 'snippets/field.html' with field=simulation_form.tranche_bilan %}
                             </div>
                         </div>
@@ -32,11 +32,21 @@
                             </legend>
                             {% include 'snippets/fieldset_element.html' with field=simulation_form.appartient_groupe fieldset_id="svelte-appartient-groupe-field" %}
                             <div id="svelte-groupe-fields" class="fr-col-12">
-                                {% include 'snippets/fieldset_element.html' with field=simulation_form.effectif_groupe %}
                                 {% include 'snippets/fieldset_element.html' with field=simulation_form.comptes_consolides id="svelte-avec-comptes-consolides-field" %}
-                                <div id="svelte-comptes-consolides-fields">
-                                    {% include 'snippets/fieldset_element.html' with field=simulation_form.tranche_chiffre_affaires_consolide %}
-                                    {% include 'snippets/fieldset_element.html' with field=simulation_form.tranche_bilan_consolide %}
+                                <div class="fr-grid-row">
+                                    <div class="fr-col-lg-4 fr-col-12 fr-my-2w">
+                                        {% include 'snippets/fieldset_element.html' with field=simulation_form.effectif_groupe %}
+                                    </div>
+                                    <div id="svelte-comptes-consolides-fields" class="fr-col-lg-8 fr-col-12">
+                                        <div class="fr-grid-row">
+                                            <div class="fr-col-lg-6 fr-col-12 fr-my-2w">
+                                                {% include 'snippets/fieldset_element.html' with field=simulation_form.tranche_chiffre_affaires_consolide %}
+                                            </div>
+                                            <div class="fr-col-lg-6 fr-col-12 fr-my-2w">
+                                                {% include 'snippets/fieldset_element.html' with field=simulation_form.tranche_bilan_consolide %}
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </fieldset>
