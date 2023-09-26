@@ -28,20 +28,18 @@ REGLEMENTATIONS = [
 
 
 def reglementations(request):
-    entreprise = None
-    caracteristiques = None
-    simulation = True
     if entreprise := get_current_entreprise(request):
         return redirect("reglementations:reglementations", siren=entreprise.siren)
-    else:  # affichage simple des réglementations
-        simulation = False
 
     context = {
-        "entreprise": entreprise,
-        "reglementations": calcule_reglementations(
-            entreprise, caracteristiques, request.user
-        ),
-        "simulation": simulation,
+        "reglementations": [
+            {
+                "info": reglementation.info(),
+                "status": None,
+            }
+            for reglementation in REGLEMENTATIONS
+        ],
+        "simulation": False,
     }
 
     return render(
