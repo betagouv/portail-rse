@@ -12,7 +12,7 @@ from entreprises.models import Entreprise
 from entreprises.views import ActualisationCaracteristiquesAnnuelles
 from habilitations.models import is_user_attached_to_entreprise
 from public.forms import ContactForm
-from reglementations.forms import SimulationForm
+from public.forms import SimulationForm
 from reglementations.views import calcule_reglementations
 
 

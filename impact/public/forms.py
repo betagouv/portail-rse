@@ -1,6 +1,10 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
+from entreprises.forms import EntrepriseForm
+from entreprises.forms import SirenField
+from entreprises.models import CaracteristiquesAnnuelles
+from entreprises.models import DENOMINATION_MAX_LENGTH
 from utils.forms import DsfrForm
 
 
@@ -27,3 +31,30 @@ class ContactForm(DsfrForm):
         label="Pour vérifier que vous n'êtes pas un robot, merci de répondre en toutes lettres à la question 1 + 2 = ?",
         max_length=10,
     )
+
+
+class SimulationForm(EntrepriseForm, forms.ModelForm):
+    denomination = forms.CharField()
+    siren = SirenField()
+
+    class Meta:
+        model = CaracteristiquesAnnuelles
+        fields = [
+            "effectif",
+            "effectif_groupe",
+            "tranche_chiffre_affaires",
+            "tranche_bilan",
+            "tranche_chiffre_affaires_consolide",
+            "tranche_bilan_consolide",
+        ]
+        help_texts = {
+            "effectif": "Vérifiez et confirmez le nombre de salariés de l'entreprise",
+            "tranche_chiffre_affaires": "Montant net du chiffre d'affaires de l'exercice clos",
+            "tranche_bilan": "Total du bilan de l'exercice clos",
+            "tranche_chiffre_affaires_consolide": "Montant net du chiffre d'affaires consolidé de l'exercice clos",
+            "tranche_bilan_consolide": "Total du bilan consolidé de l'exercice clos",
+        }
+
+    def clean_denomination(self):
+        denomination = self.cleaned_data.get("denomination")
+        return denomination[:DENOMINATION_MAX_LENGTH]
