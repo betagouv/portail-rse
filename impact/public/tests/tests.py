@@ -3,6 +3,22 @@ import html
 import pytest
 from django.urls import reverse
 
+from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
+from reglementations.views.bdese import BDESEReglementation
+from reglementations.views.bges import BGESReglementation
+from reglementations.views.dispositif_alerte import DispositifAlerteReglementation
+from reglementations.views.dispositif_anticorruption import DispositifAntiCorruption
+from reglementations.views.index_egapro import IndexEgaproReglementation
+
+REGLEMENTATIONS = (
+    BDESEReglementation,
+    IndexEgaproReglementation,
+    DispositifAlerteReglementation,
+    BGESReglementation,
+    AuditEnergetiqueReglementation,
+    DispositifAntiCorruption,
+)
+
 
 def test_page_index_pour_un_visiteur_anonyme(client):
     response = client.get("/")
@@ -140,3 +156,19 @@ def test_page_cgu(client):
     assert response.status_code == 200
     content = response.content.decode("utf-8")
     assert "<!-- page cgu -->" in content
+
+
+def test_page_publique_des_reglementations(client):
+    response = client.get("/reglementations")
+
+    assert response.status_code == 200
+
+    content = response.content.decode("utf-8")
+    assert "<!-- page reglementations -->" in content
+    assert "BDESE" in content
+    assert "Index de l’égalité professionnelle" in content
+
+    context = response.context
+    for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
+        assert context["reglementations"][index]["info"] == REGLEMENTATION.info()
+        assert context["reglementations"][index]["status"] is None

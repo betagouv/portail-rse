@@ -5,7 +5,6 @@ from . import views
 
 app_name = "reglementations"
 urlpatterns = [
-    path("reglementations", views.reglementations, name="reglementations"),
     path(
         "reglementations/<str:siren>",
         views.reglementations_for_entreprise,

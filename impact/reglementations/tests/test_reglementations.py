@@ -24,20 +24,15 @@ REGLEMENTATIONS = (
 )
 
 
-def test_page_publique_des_reglementations(client):
-    response = client.get("/reglementations")
-
-    assert response.status_code == 200
-
-    content = response.content.decode("utf-8")
-    assert "<!-- page reglementations -->" in content
-    assert "BDESE" in content
-    assert "Index de l’égalité professionnelle" in content
-
-    context = response.context
-    for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
-        assert context["reglementations"][index]["info"] == REGLEMENTATION.info()
-        assert context["reglementations"][index]["status"] is None
+@pytest.fixture
+def entreprise(db, alice, entreprise_factory):
+    entreprise = entreprise_factory(
+        siren="000000001",
+        denomination="Entreprise SAS",
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    return entreprise
 
 
 def test_page_reglementations_redirige_utilisateur_authentifie_vers_les_reglementations_associees_a_son_entreprise(
@@ -51,17 +46,6 @@ def test_page_reglementations_redirige_utilisateur_authentifie_vers_les_reglemen
 
     url = f"/reglementations/{entreprise.siren}"
     assert response.redirect_chain == [(url, 302)]
-
-
-@pytest.fixture
-def entreprise(db, alice, entreprise_factory):
-    entreprise = entreprise_factory(
-        siren="000000001",
-        denomination="Entreprise SAS",
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
-    )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
-    return entreprise
 
 
 def test_reglementations_for_entreprise_with_authenticated_user(client, entreprise):

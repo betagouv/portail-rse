@@ -13,4 +13,5 @@ urlpatterns = [
     ),
     path("cgu", views.cgu, name="cgu"),
     path("contact", views.contact, name="contact"),
+    path("reglementations", views.reglementations, name="reglementations"),
 ]
