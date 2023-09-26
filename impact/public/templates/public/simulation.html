@@ -9,7 +9,7 @@
             <div class="fr-col">
                 <h2>Simulation</h2>
 
-                <form action="{% url 'reglementations:reglementations' %}" method="post">
+                <form action="{% url 'simulation' %}" method="post">
                     {% csrf_token %}
                     <div id="svelte-search-entreprise" data-siren="{{ simulation_form.siren.value|default:'' }}">
                         {% include 'snippets/siren_field.html' with field=simulation_form.siren %}

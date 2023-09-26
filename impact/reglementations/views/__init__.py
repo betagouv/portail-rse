@@ -1,5 +1,3 @@
-from datetime import date
-
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -8,12 +6,9 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 
-from entreprises.models import ActualisationCaracteristiquesAnnuelles
-from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
 from habilitations.models import is_user_attached_to_entreprise
-from reglementations.forms import SimulationForm
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
 from reglementations.views.bdese import BDESEReglementation
 from reglementations.views.bges import BGESReglementation
@@ -36,9 +31,7 @@ def reglementations(request):
     entreprise = None
     caracteristiques = None
     simulation = True
-    if request.POST:
-        return calcule_simulation(request)
-    elif entreprise := get_current_entreprise(request):
+    if entreprise := get_current_entreprise(request):
         return redirect("reglementations:reglementations", siren=entreprise.siren)
     else:  # affichage simple des réglementations
         simulation = False
@@ -50,89 +43,6 @@ def reglementations(request):
             entreprise, caracteristiques, request.user, simulation=simulation
         ),
     )
-
-
-def calcule_simulation(request):
-    entreprise = None
-    caracteristiques = None
-    simulation = True
-    simulation_form = SimulationForm(request.POST)
-    if simulation_form.is_valid():
-        if entreprises := Entreprise.objects.filter(
-            siren=simulation_form.cleaned_data["siren"]
-        ):
-            entreprise = entreprises[0]
-            entreprise.denomination = simulation_form.cleaned_data["denomination"]
-            entreprise.appartient_groupe = simulation_form.cleaned_data[
-                "appartient_groupe"
-            ]
-            entreprise.comptes_consolides = simulation_form.cleaned_data[
-                "comptes_consolides"
-            ]
-        else:
-            entreprise = Entreprise.objects.create(
-                denomination=simulation_form.cleaned_data["denomination"],
-                siren=simulation_form.cleaned_data["siren"],
-                appartient_groupe=simulation_form.cleaned_data["appartient_groupe"],
-                comptes_consolides=simulation_form.cleaned_data["comptes_consolides"],
-            )
-        request.session["siren"] = simulation_form.cleaned_data["siren"]
-        if request.user.is_authenticated and is_user_attached_to_entreprise(
-            request.user, entreprise
-        ):
-            request.session["entreprise"] = entreprise.siren
-        date_cloture_exercice = date(date.today().year - 1, 12, 31)
-        actualisation = ActualisationCaracteristiquesAnnuelles(
-            date_cloture_exercice=date_cloture_exercice,
-            effectif=simulation_form.cleaned_data["effectif"],
-            effectif_outre_mer=None,
-            effectif_groupe=simulation_form.cleaned_data["effectif_groupe"],
-            tranche_chiffre_affaires=simulation_form.cleaned_data[
-                "tranche_chiffre_affaires"
-            ],
-            tranche_bilan=simulation_form.cleaned_data["tranche_bilan"],
-            tranche_chiffre_affaires_consolide=simulation_form.cleaned_data[
-                "tranche_chiffre_affaires_consolide"
-            ],
-            tranche_bilan_consolide=simulation_form.cleaned_data[
-                "tranche_bilan_consolide"
-            ],
-            bdese_accord=None,
-            systeme_management_energie=None,
-        )
-        caracteristiques = entreprise.actualise_caracteristiques(actualisation)
-        if should_commit(entreprise):
-            entreprise.save()
-            caracteristiques.save()
-        caracteristiques = enrichit_les_donnees_pour_la_simulation(caracteristiques)
-    else:
-        messages.error(
-            request,
-            f"Impossible de finaliser la simulation car le formulaire contient des erreurs.",
-        )
-    context = _reglementations_context(
-        entreprise, caracteristiques, request.user, simulation=simulation
-    )
-    context["simulation_form"] = simulation_form
-    return render(
-        request,
-        "public/simulation.html",
-        context,
-    )
-
-
-def enrichit_les_donnees_pour_la_simulation(caracteristiques):
-    caracteristiques.entreprise.societe_mere_en_france = True
-    caracteristiques.effectif_outre_mer = (
-        CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
-    )
-    caracteristiques.bdese_accord = False
-    caracteristiques.systeme_management_energie = False
-    return caracteristiques
-
-
-def should_commit(entreprise):
-    return not entreprise.users.all() and not entreprise.caracteristiques_actuelles()
 
 
 @login_required
