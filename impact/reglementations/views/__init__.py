@@ -48,7 +48,6 @@ def reglementations_for_entreprise(request, siren):
                 "reglementations": calcule_reglementations(
                     entreprise, caracteristiques, request.user
                 ),
-                "simulation": False,
             },
         )
     else:
