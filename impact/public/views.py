@@ -10,10 +10,12 @@ from django.urls import reverse
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from entreprises.views import ActualisationCaracteristiquesAnnuelles
+from entreprises.views import get_current_entreprise
 from habilitations.models import is_user_attached_to_entreprise
 from public.forms import ContactForm
 from public.forms import SimulationForm
 from reglementations.views import calcule_reglementations
+from reglementations.views import REGLEMENTATIONS
 
 
 def index(request):
@@ -67,6 +69,28 @@ def contact(request):
         form = ContactForm(initial=initial)
 
     return render(request, "public/contact.html", {"form": form})
+
+
+def reglementations(request):
+    if entreprise := get_current_entreprise(request):
+        return redirect("reglementations:reglementations", siren=entreprise.siren)
+
+    context = {
+        "reglementations": [
+            {
+                "info": reglementation.info(),
+                "status": None,
+            }
+            for reglementation in REGLEMENTATIONS
+        ],
+        "simulation": False,
+    }
+
+    return render(
+        request,
+        "reglementations/reglementations.html",
+        context,
+    )
 
 
 def simulation(request):

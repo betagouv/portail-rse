@@ -7,7 +7,6 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 
 from entreprises.models import Entreprise
-from entreprises.views import get_current_entreprise
 from habilitations.models import is_user_attached_to_entreprise
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
 from reglementations.views.bdese import BDESEReglementation
@@ -25,28 +24,6 @@ REGLEMENTATIONS = [
     AuditEnergetiqueReglementation,
     DispositifAntiCorruption,
 ]
-
-
-def reglementations(request):
-    if entreprise := get_current_entreprise(request):
-        return redirect("reglementations:reglementations", siren=entreprise.siren)
-
-    context = {
-        "reglementations": [
-            {
-                "info": reglementation.info(),
-                "status": None,
-            }
-            for reglementation in REGLEMENTATIONS
-        ],
-        "simulation": False,
-    }
-
-    return render(
-        request,
-        "reglementations/reglementations.html",
-        context,
-    )
 
 
 @login_required

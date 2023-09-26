@@ -77,7 +77,7 @@
                                 <div class="fr-header__tools-links">
                                     <ul class="fr-btns-group">
                                         <li><a class="fr-btn fr-icon-mail-line" href="{% url 'contact' %}">Contactez-nous</a></li>
-                                        <li><a class="fr-btn fr-icon-file-text-line" href="{% url 'reglementations:reglementations' %}">Réglementations</a></li>
+                                        <li><a class="fr-btn fr-icon-file-text-line" href="{% url 'reglementations' %}">Réglementations</a></li>
                                         {% if user.is_authenticated %}
                                             <li><a class="fr-btn fr-icon-lock-unlock-line" href="{% url 'users:logout' %}">Se déconnecter</a></li>
                                         {% else %}
