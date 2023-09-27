@@ -24,8 +24,6 @@
         }
     }
 
-    const simulationResult = document.getElementById("svelte-simulation-result")
-
     async function searchEntreprise(siren) {
         if( siren.length !== 9 || isNaN(siren)){
             hideSimulationFields()
@@ -52,7 +50,6 @@
 
     const handleChange = () => {
         submitButton.disabled = true
-        simulationResult.classList.add("deprecated")
         promise = searchEntreprise(siren)
     }
 

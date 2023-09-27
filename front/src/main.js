@@ -1,5 +1,6 @@
 import ExternalFieldToggle from './lib/ExternalFieldToggle.svelte'
 import GroupeFields from './lib/GroupeFields.svelte'
+import SimulationChange from './lib/SimulationChange.svelte'
 import SearchEntreprise from './lib/SearchEntreprise.svelte'
 
 for (let externalFieldToggle of document.getElementsByClassName("svelte-external-field-toggle")) {
@@ -29,5 +30,11 @@ if (document.getElementById("svelte-appartient-groupe-field")) {
   let target = document.getElementById("svelte-appartient-groupe-field")
   new GroupeFields({
     target: target,
+  })
+}
+
+if (document.getElementById("svelte-simulation-result")) {
+  new SimulationChange({
+    target: document.getElementById("svelte-simulation-form")
   })
 }
