@@ -6,8 +6,12 @@
     let loading = false
     let promise = async () => {}
 
-    const sirenFieldId = "id_siren" // defined by django
-    const effectifFieldId = "id_effectif" // defined by django
+    // defined by django
+    const sirenFieldId = "id_siren"
+    const sirenFieldName = "siren"
+    const denominationFieldName = "denomination"
+    const effectifFieldId = "id_effectif"
+
     const effectifField = document.getElementById(effectifFieldId)
     const submitButton = document.getElementById(sirenFieldId).closest("form").querySelector("[type=submit]")
 
@@ -24,7 +28,7 @@
     }
 
     async function searchEntreprise(siren) {
-        if( siren.length !== 9 || isNaN(siren)){
+        if (siren.length !== 9 || isNaN(siren)){
             hideSimulationFields()
             throw new Error("Le siren est incorrect.")
         }
@@ -70,12 +74,12 @@
             <div class="fr-col-12 fr-col-sm-6 fr-mt-1w">
                 <div class="fr-search-bar" role="search">
                 {#if ! loading}
-                    <input type="search" name="siren" maxlength="9" minlength="9" class="fr-input" id="{sirenFieldId}" required bind:value={siren} on:change|preventDefault={handleChange}>
+                    <input type="search" name="{sirenFieldName}" maxlength="9" minlength="9" class="fr-input" id="{sirenFieldId}" required bind:value={siren} on:change|preventDefault={handleChange}>
                     <button type="button" class="fr-btn" title="Rechercher" on:click|preventDefault={handleChange}>
                         Rechercher
                     </button>
                 {:else}
-                    <input type="text" name="siren" maxlength="9" minlength="9" class="fr-input" id="{sirenFieldId}" value="{siren}" readonly>
+                    <input type="text" name="{sirenFieldName}" maxlength="9" minlength="9" class="fr-input" id="{sirenFieldId}" value="{siren}" readonly>
                     <img src="{spinner}" width="40" alt="Spinner d'attente">
                 {/if}
                 </div>
@@ -96,4 +100,4 @@
     </div>
 </fieldset>
 
-<input type="hidden" name="denomination" value="{denomination}">
+<input type="hidden" name="{denominationFieldName}" value="{denomination}">
