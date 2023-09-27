@@ -90,7 +90,7 @@ def reglementations(request):
 
 
 def simulation(request):
-    simulation_form = SimulationForm(request.POST)
+    simulation_form = SimulationForm(request.POST or None)
     reglementations = None
     if request.POST:
         if simulation_form.is_valid():
