@@ -74,20 +74,18 @@ def reglementations(request):
     if entreprise := get_current_entreprise(request):
         return redirect("reglementations:reglementations", siren=entreprise.siren)
 
-    context = {
-        "reglementations": [
-            {
-                "reglementation": reglementation,
-                "status": None,
-            }
-            for reglementation in REGLEMENTATIONS
-        ],
-    }
+    reglementations = [
+        {
+            "reglementation": reglementation,
+            "status": None,
+        }
+        for reglementation in REGLEMENTATIONS
+    ]
 
     return render(
         request,
         "reglementations/reglementations.html",
-        context,
+        {"reglementations": reglementations},
     )
 
 
