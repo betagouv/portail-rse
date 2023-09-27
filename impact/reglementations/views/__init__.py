@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -6,6 +7,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 
+from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from habilitations.models import is_user_attached_to_entreprise
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
@@ -58,13 +60,13 @@ def reglementations_for_entreprise(request, siren):
         return redirect("entreprises:qualification", siren=entreprise.siren)
 
 
-def calcule_reglementations(caracteristiques, user):
+def calcule_reglementations(
+    caracteristiques: CaracteristiquesAnnuelles, user: settings.AUTH_USER_MODEL
+):
     reglementations = [
         {
             "reglementation": reglementation,
-            "status": reglementation.calculate_status(caracteristiques, user)
-            if caracteristiques
-            else None,
+            "status": reglementation.calculate_status(caracteristiques, user),
         }
         for reglementation in REGLEMENTATIONS
     ]
