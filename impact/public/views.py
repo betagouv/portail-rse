@@ -154,9 +154,7 @@ def calcule_simulation(request):
             entreprise.save()
             caracteristiques.save()
         caracteristiques = enrichit_les_donnees_pour_la_simulation(caracteristiques)
-        reglementations = calcule_reglementations(
-            entreprise, caracteristiques, request.user
-        )
+        reglementations = calcule_reglementations(caracteristiques, request.user)
     else:
         messages.error(
             request,

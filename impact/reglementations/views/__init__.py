@@ -46,7 +46,7 @@ def reglementations_for_entreprise(request, siren):
             context={
                 "entreprise": entreprise,
                 "reglementations": calcule_reglementations(
-                    entreprise, caracteristiques, request.user
+                    caracteristiques, request.user
                 ),
             },
         )
@@ -58,12 +58,12 @@ def reglementations_for_entreprise(request, siren):
         return redirect("entreprises:qualification", siren=entreprise.siren)
 
 
-def calcule_reglementations(entreprise, caracteristiques, user):
+def calcule_reglementations(caracteristiques, user):
     reglementations = [
         {
             "reglementation": reglementation,
             "status": reglementation.calculate_status(caracteristiques, user)
-            if entreprise
+            if caracteristiques
             else None,
         }
         for reglementation in REGLEMENTATIONS
