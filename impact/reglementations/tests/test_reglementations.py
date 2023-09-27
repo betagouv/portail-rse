@@ -170,7 +170,7 @@ def test_calcule_reglementations_trie_les_statuts_soumis_en_premier(
     )
 
     reglementations = calcule_reglementations(
-        entreprise, entreprise.dernieres_caracteristiques_qualifiantes, AnonymousUser()
+        entreprise.dernieres_caracteristiques_qualifiantes, AnonymousUser()
     )
 
     assert [reglementation["reglementation"] for reglementation in reglementations] == [
