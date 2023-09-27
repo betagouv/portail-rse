@@ -61,7 +61,7 @@
         <div class="fr-container fr-my-4w" id="svelte-simulation-result">
             <h2>Résultats de la simulation</h2>
             {% for reglementation in reglementations %}
-                {% include "snippets/reglementation_card.html" with reglementation=reglementation %}
+                {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
             {% endfor %}
         </div>
     {% endif %}

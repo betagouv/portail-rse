@@ -13,7 +13,7 @@
             </p>
         </div>
         {% for reglementation in reglementations %}
-            {% include "snippets/reglementation_card.html" with reglementation=reglementation %}
+            {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
         {% endfor %}
     </div>
 
