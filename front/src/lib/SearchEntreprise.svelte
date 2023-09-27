@@ -2,15 +2,14 @@
     import spinner from './assets/spinner.svg'
 
     export let siren = ""
+    export let denomination = ""
     let loading = false
     let promise = async () => {}
-    let denomination = ""
 
     const sirenFieldId = "id_siren" // defined by django
     const effectifFieldId = "id_effectif" // defined by django
     const effectifField = document.getElementById(effectifFieldId)
     const submitButton = document.getElementById(sirenFieldId).closest("form").querySelector("[type=submit]")
-    submitButton.disabled = true
 
     const simulationFields = document.getElementById("svelte-simulation-fields")
     const showSimulationFields = () => {
@@ -53,10 +52,11 @@
         promise = searchEntreprise(siren)
     }
 
-    if (siren) {
-        promise = searchEntreprise(siren)
+    if (siren && denomination) {
+        showSimulationFields()
     }
     else {
+        submitButton.disabled = true
         hideSimulationFields()
     }
 </script>
