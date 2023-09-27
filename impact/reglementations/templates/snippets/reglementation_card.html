@@ -1,18 +1,18 @@
-<div class="reglementation-grid reglementation--full fr-pb-4w fr-my-6w {% if reglementation.status and reglementation.status.status == reglementation.status.STATUS_NON_SOUMIS %}reglementation--grey{% endif %}">
+<div class="reglementation-grid reglementation--full fr-pb-4w fr-my-6w {% if status and status.status == status.STATUS_NON_SOUMIS %}reglementation--grey{% endif %}">
     <div class="reglementation-header">
-        {% if reglementation.status %}
+        {% if status %}
             <div class="reglementation_badge">
                 <ul class="fr-badges-group">
                     <li>
-                        {% if reglementation.status.status == reglementation.status.STATUS_NON_SOUMIS %}
+                        {% if status.status == status.STATUS_NON_SOUMIS %}
                             <p class="fr-badge">non soumis</p>
-                        {% elif reglementation.status.status == reglementation.status.STATUS_SOUMIS %}
+                        {% elif status.status == status.STATUS_SOUMIS %}
                             <p class="fr-badge fr-badge--info fr-badge--no-icon">soumis</p>
-                        {% elif reglementation.status.status == reglementation.status.STATUS_A_ACTUALISER %}
+                        {% elif status.status == status.STATUS_A_ACTUALISER %}
                             <p class="fr-badge fr-badge--error fr-badge--no-icon">à actualiser</p>
-                        {% elif reglementation.status.status == reglementation.status.STATUS_A_JOUR %}
+                        {% elif status.status == status.STATUS_A_JOUR %}
                             <p class="fr-badge fr-badge--success fr-badge--no-icon">à jour</p>
-                        {% elif reglementation.status.status == reglementation.status.STATUS_EN_COURS %}
+                        {% elif status.status == status.STATUS_EN_COURS %}
                             <p class="fr-badge fr-badge--warning fr-badge--no-icon">en cours</p>
                         {% endif %}
                     </li>
@@ -20,9 +20,9 @@
             </div>
         {% endif %}
         <h3 class="reglementation-title">{{ reglementation.info.title }}</h3>
-        {% if reglementation.status %}
+        {% if status %}
             <p class="reglementation_detail fr-icon-info-fill fr-p-1w">
-                {{ reglementation.status.status_detail|safe }}
+                {{ status.status_detail|safe }}
             </p>
         {% endif %}
     </div>
@@ -34,15 +34,15 @@
                 </a>
             </li>
         {% endif %}
-        {% if reglementation.status %}
-            {% if reglementation.status.primary_action %}
+        {% if status %}
+            {% if status.primary_action %}
                 <li>
-                    <a class="fr-btn" href="{{ reglementation.status.primary_action.url }}" {% if reglementation.status.primary_action.external %}target="_blank" rel="noopener"{% endif %}>
-                        {{ reglementation.status.primary_action.title }}
+                    <a class="fr-btn" href="{{ status.primary_action.url }}" {% if status.primary_action.external %}target="_blank" rel="noopener"{% endif %}>
+                        {{ status.primary_action.title }}
                     </a>
                 </li>
             {% endif %}
-            {% for secondary_action in reglementation.status.secondary_actions %}
+            {% for secondary_action in status.secondary_actions %}
                 <li>
                     <a class="fr-btn fr-btn--secondary" href="{{ secondary_action.url }}" {% if secondary_action.external %}target="_blank" rel="noopener"{% endif %}>
                         {{ secondary_action.title }}

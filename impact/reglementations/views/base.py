@@ -19,13 +19,13 @@ class ReglementationAction:
 
 @dataclass
 class ReglementationStatus:
-    STATUS_NON_SOUMIS = "non soumis"
-    STATUS_SOUMIS = "soumis"
-    STATUS_A_JOUR = "à jour"
-    STATUS_A_ACTUALISER = "à actualiser"
-    STATUS_EN_COURS = "en cours"
+    STATUS_A_ACTUALISER = 0
+    STATUS_EN_COURS = 1
+    STATUS_A_JOUR = 2
+    STATUS_SOUMIS = 3
+    STATUS_NON_SOUMIS = 4
 
-    status: str
+    status: int
     status_detail: str
     primary_action: ReglementationAction | None = None
     secondary_actions: list[ReglementationAction] = field(default_factory=list)

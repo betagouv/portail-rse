@@ -78,7 +78,7 @@ def reglementations(request):
     context = {
         "reglementations": [
             {
-                "info": reglementation.info(),
+                "reglementation": reglementation,
                 "status": None,
             }
             for reglementation in REGLEMENTATIONS

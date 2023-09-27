@@ -59,12 +59,13 @@ def reglementations_for_entreprise(request, siren):
 
 
 def calcule_reglementations(entreprise, caracteristiques, user):
-    return [
+    reglementations = [
         {
-            "info": reglementation.info(),
+            "reglementation": reglementation,
             "status": reglementation.calculate_status(caracteristiques, user)
             if entreprise
             else None,
         }
         for reglementation in REGLEMENTATIONS
     ]
+    return sorted(reglementations, key=lambda x: x["status"].status)

@@ -170,5 +170,5 @@ def test_page_publique_des_reglementations(client):
 
     context = response.context
     for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
-        assert context["reglementations"][index]["info"] == REGLEMENTATION.info()
+        assert context["reglementations"][index]["reglementation"] == REGLEMENTATION
         assert context["reglementations"][index]["status"] is None
