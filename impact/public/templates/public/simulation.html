@@ -9,7 +9,7 @@
             <div class="fr-col">
                 <h2>Simulation</h2>
 
-                <form action="{% url 'simulation' %}" method="post">
+                <form action="{% url 'simulation' %}" method="post" id="svelte-simulation-form">
                     {% csrf_token %}
                     <div id="svelte-search-entreprise" data-siren="{{ simulation_form.siren.value|default:'' }}">
                         {% include 'snippets/siren_field.html' with field=simulation_form.siren %}
@@ -57,11 +57,13 @@
         </div>
     </div>
 
-    <div class="fr-container fr-my-4w" id="svelte-simulation-result">
-        {% for reglementation in reglementations %}
-            {% include "snippets/reglementation_card.html" with reglementation=reglementation %}
-        {% endfor %}
-    </div>
+    {% if reglementations %}
+        <div class="fr-container fr-my-4w" id="svelte-simulation-result">
+            {% for reglementation in reglementations %}
+                {% include "snippets/reglementation_card.html" with reglementation=reglementation %}
+            {% endfor %}
+        </div>
+    {% endif %}
 
     <!-- page simulation -->
 {% endblock %}
