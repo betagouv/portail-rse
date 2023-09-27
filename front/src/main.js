@@ -15,21 +15,21 @@ for (let externalFieldToggle of document.getElementsByClassName("svelte-external
   })
 }
 
-if (document.getElementById("svelte-search-entreprise")) {
-  let target = document.getElementById("svelte-search-entreprise")
+const searchEntrepriseElement = document.getElementById("svelte-search-entreprise")
+if (searchEntrepriseElement) {
   new SearchEntreprise({
-    target: target,
+    target: searchEntrepriseElement,
     props: {
-      siren: target.dataset.siren
+      siren: searchEntrepriseElement.dataset.siren
     },
     hydrate: true,
   })
 }
 
-if (document.getElementById("svelte-appartient-groupe-field")) {
-  let target = document.getElementById("svelte-appartient-groupe-field")
+const appartientGroupeFieldElement = document.getElementById("svelte-appartient-groupe-field")
+if (appartientGroupeFieldElement) {
   new GroupeFields({
-    target: target,
+    target: appartientGroupeFieldElement,
   })
 }
 
