@@ -20,7 +20,8 @@ if (searchEntrepriseElement) {
   new SearchEntreprise({
     target: searchEntrepriseElement,
     props: {
-      siren: searchEntrepriseElement.dataset.siren
+      siren: searchEntrepriseElement.dataset.siren,
+      denomination: searchEntrepriseElement.dataset.denomination
     },
     hydrate: true,
   })
