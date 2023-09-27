@@ -2,6 +2,13 @@
     --ul-type: none;
 }
 
+/* Simulation */
+
+.deprecated {
+    opacity: .5;
+    transition: all .2s;
+}
+
 /* Réglementation Component */
 .reglementation {
     width: 100%;
