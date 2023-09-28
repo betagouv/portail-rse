@@ -33,27 +33,95 @@ class ContactForm(DsfrForm):
     )
 
 
-class SimulationForm(EntrepriseForm, forms.ModelForm):
+class ChoiceFieldWithDefaultLabel(forms.ChoiceField):
+    def __init__(
+        self,
+        choices=(),
+        required=True,
+        widget=None,
+        label=None,
+        initial=None,
+        help_text=None,
+        *args,
+        **kwargs
+    ):
+        choices = tuple([("", "Sélectionner une réponse")] + list(choices))
+        super().__init__(
+            choices=choices,
+            required=required,
+            widget=widget,
+            label=label,
+            initial=initial,
+            help_text=help_text,
+            *args,
+            **kwargs
+        )
+
+
+class SimulationForm(EntrepriseForm):
     denomination = forms.CharField()
     siren = SirenField()
+    effectif = ChoiceFieldWithDefaultLabel(
+        choices=CaracteristiquesAnnuelles.EFFECTIF_CHOICES,
+        required=True,
+        help_text="Vérifiez et confirmez le nombre de salariés de l'entreprise",
+    )
+    tranche_bilan = ChoiceFieldWithDefaultLabel(
+        choices=CaracteristiquesAnnuelles.BILAN_CHOICES,
+        required=True,
+        help_text="Total du bilan de l'exercice clos",
+    )
+    tranche_chiffre_affaires = ChoiceFieldWithDefaultLabel(
+        choices=CaracteristiquesAnnuelles.CA_CHOICES,
+        required=True,
+        help_text="Montant net du chiffre d'affaires de l'exercice clos",
+    )
+    effectif_groupe = ChoiceFieldWithDefaultLabel(
+        choices=CaracteristiquesAnnuelles.EFFECTIF_CHOICES,
+        required=False,
+        help_text="Nombre de salariés du groupe",
+    )
+    tranche_bilan_consolide = ChoiceFieldWithDefaultLabel(
+        choices=CaracteristiquesAnnuelles.BILAN_CHOICES,
+        required=False,
+        help_text="Total du bilan consolidé de l'exercice clos",
+    )
+    tranche_chiffre_affaires_consolide = ChoiceFieldWithDefaultLabel(
+        choices=CaracteristiquesAnnuelles.CA_CHOICES,
+        required=False,
+        help_text="Montant net du chiffre d'affaires consolidé de l'exercice clos",
+    )
 
-    class Meta:
-        model = CaracteristiquesAnnuelles
-        fields = [
-            "effectif",
-            "effectif_groupe",
-            "tranche_chiffre_affaires",
-            "tranche_bilan",
-            "tranche_chiffre_affaires_consolide",
-            "tranche_bilan_consolide",
-        ]
-        help_texts = {
-            "effectif": "Vérifiez et confirmez le nombre de salariés de l'entreprise",
-            "tranche_chiffre_affaires": "Montant net du chiffre d'affaires de l'exercice clos",
-            "tranche_bilan": "Total du bilan de l'exercice clos",
-            "tranche_chiffre_affaires_consolide": "Montant net du chiffre d'affaires consolidé de l'exercice clos",
-            "tranche_bilan_consolide": "Total du bilan consolidé de l'exercice clos",
-        }
+    #
+    #    class Meta:
+    #        model = CaracteristiquesAnnuelles
+    #        fields = [
+    #            #"effectif",
+    ##            "effectif_groupe",
+    #            #"tranche_chiffre_affaires",
+    #            #"tranche_bilan",
+    ##            "tranche_chiffre_affaires_consolide",
+    ##            "tranche_bilan_consolide",
+    #        ]
+    #        help_texts = {
+    #            #"effectif": "Vérifiez et confirmez le nombre de salariés de l'entreprise",
+    #            #"tranche_chiffre_affaires": "Montant net du chiffre d'affaires de l'exercice clos",
+    #            #"tranche_bilan": "Total du bilan de l'exercice clos",
+    # #           "tranche_chiffre_affaires_consolide": "Montant net du chiffre d'affaires consolidé de l'exercice clos",
+    #  #          "tranche_bilan_consolide": "Total du bilan consolidé de l'exercice clos",
+    #        }
+    ##        widgets = {
+    ##            #"tranche_bilan": EmptySelect,
+    ##            "tranche_bilan": forms.widgets.Select(choices=tuple([("", "XXXXXX")] + CaracteristiquesAnnuelles.BILAN_CHOICES)),
+    ##        }
+    #        #empty_values = {
+    #        #    "tranche_bilan": ("", "XXXXX"),
+    #
+    #        #}
+    #        #choices = {
+    #        #"tranche_bilan": tuple([("", "XXXXXX")] + CaracteristiquesAnnuelles.BILAN_CHOICES)
+    ##
+    # #       }
 
     def clean_denomination(self):
         denomination = self.cleaned_data.get("denomination")
