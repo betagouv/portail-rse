@@ -3,9 +3,8 @@
 {% block title %}Simulation - Impact{% endblock %}
 
 {% block content %}
-    <div class="fr-container fr-mt-10w">
+    <div class="fr-container fr-mt-10w fr-mb-4w">
         <div class="fr-grid-row fr-grid-row--center">
-
             <div class="fr-col">
                 <h2>Simulation</h2>
 
@@ -58,15 +57,18 @@
     </div>
 
     {% if reglementations %}
+        <div class="fr-container">
+            <hr>
+        </div>
         <div class="fr-grid-row fr-py-3w">
-            <div class="fr-container fr-mt-4w" id="svelte-simulation-result">
+            <div class="fr-container" id="svelte-simulation-result">
                 <h2>Résultats de la simulation</h2>
                 {% for reglementation in reglementations %}
                     {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
                 {% endfor %}
             </div>
         </div>
-        <div class="fr-grid-row fr-pt-6w fr-pb-12w">
+        <div class="fr-grid-row fr-pt-6w fr-pb-12w background-blue">
             <div class="fr-container">
                 <div class="fr-grid-row">
                     <div class="fr-col-12">
