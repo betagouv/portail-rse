@@ -63,8 +63,17 @@
             {% for reglementation in reglementations %}
                 {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
             {% endfor %}
+            <div class="fr-callout fr-callout--blue-ecume">
+                <h3 class="fr-callout__title">Faire le suivi de mes réglementations</h3>
+                <p class="fr-callout__text">
+                    Vous souhaitez aller plus loin ? <b>Inscrivez vous pour affiner vos réglementations applicables.</b><br>
+                    En vous inscrivant sur Portail RSE, vous pourrez procéder au suivi complet des réglementations qui vous concernent.
+                </p>
+                <a href="#" class="fr-btn fr-btn--lg">
+                    Label bouton MD
+                </a>
+            </div>
         </div>
     {% endif %}
-
     <!-- page simulation -->
 {% endblock %}
