@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-    <div class="fr-grid-row fr-py-6w">
+    <div class="fr-grid-row fr-py-6w portail-header">
         <did class="fr-container">
             <div class="fr-grid-row fr-grid-row--center fr-grid-row--middle">
                 <div class="fr-col-12 fr-col-md-8">
@@ -15,7 +15,7 @@
                     {% endif %}
                 </div>
                 <div class="fr-col-8 fr-col-md-4 fr-my-8w">
-                    <img src="{% static 'img/illustration-ESG.png' %}" class="fr-responsive-img" alt="" />
+                    <img src="{% static 'img/PORTAIL.png' %}" class="fr-responsive-img" alt="" />
                 </div>
             </div>
         </did>
@@ -36,7 +36,7 @@
                             <div class="fr-card__footer">
                                 <ul class="fr-btns-group">
                                     <li>
-                                        <a href="#" class="fr-btn fr-btn--secondary">
+                                        <a href="{% url 'simulation' %}" class="fr-btn fr-btn--secondary">
                                             Consulter mes obligations
                                         </a>
                                     </li>
@@ -57,13 +57,13 @@
                                 <h3 class="fr-card__title">
                                     Mes obligations RSE
                                 </h3>
-                                <p class="fr-card__desc">Consultez nos fiches sur les réglementations RSE</p>
+                                <p class="fr-card__desc">Identifier la procédure pour répondre à ces réglementations</p>
                             </div>
                             <div class="fr-card__footer">
                                 <ul class="fr-btns-group">
                                     <li>
-                                        <a href="#" class="fr-btn fr-btn--secondary">
-                                            Consulter mes obligations
+                                        <a href="{% url 'users:creation' %}" class="fr-btn fr-btn--secondary">
+                                            M’inscrire pour réaliser mes déclarations
                                         </a>
                                     </li>
                                 </ul>
@@ -92,8 +92,8 @@
                         <br> <br>
                         A terme, nous avons l'ambition de proposer aux entreprises <b>un espace unique gratuit pour renseigner leurs indicateurs ESG (Environnement, Social, Gouvernance) et piloter de leurs obligations extra-financières</b>.
                     </p>
-                    <a href="#" class="fr-btn fr-btn--secondary">
-                        En savoir plus
+                    <a title="Consulter notre FAQ - ouvre une nouvelle fenêtre" target="_blank" rel="noopener" href="https://impact-beta-gouv.gitbook.io/untitled/" class="fr-btn fr-btn--secondary">
+                        Consulter notre FAQ
                     </a>
                 </div>
             </div>
@@ -211,76 +211,81 @@
             </div>
         </div>
     </div>
-        <!-- Separateur -->
-    <div class="fr-container">
-        <div class="fr-grid-row">
-            <div class="fr-col-12">
-                <hr class="">
-            </div>
-        </div>
-    </div>
 
-        <!-- Bloc logos ils nous soutiennent etc -->
-    <div class="fr-container fr-mb-16w fr-py-3w">
-        <div class="fr-grid-row">
-            <div class="fr-col-12">
-                <div class="fr-grid-row fr-grid-row--center">
-                    <h2>
-                        Ils utilisent la plateforme et nous aident à l'améliorer
-                    </h2>
-                </div>
-            </div>
-        </div>
-        <div class="fr-grid-row fr-grid-row--center">
-            <div class="fr-col-2">
-                <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
-                    <div class="fr-content-media__img">
-                        <img class="fr-responsive-img fr-ratio-16x9" src="{% static 'img/illustration-ESG.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
-                            <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
-                    </div>
-                </figure>
-            </div>
-            <div class="fr-col-2">
-                <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
-                    <div class="fr-content-media__img">
-                        <img class="fr-responsive-img fr-ratio-16x9" src="{% static 'img/illustration-ESG.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
-                            <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
-                    </div>
-                </figure>
-            </div>
-            <div class="fr-col-2">
-                <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
-                    <div class="fr-content-media__img">
-                        <img class="fr-responsive-img fr-ratio-16x9" src="{% static 'img/illustration-ESG.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
-                            <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
-                    </div>
-                </figure>
-            </div>
-            <div class="fr-col-2">
-                <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
-                    <div class="fr-content-media__img">
-                        <img class="fr-responsive-img fr-ratio-16x9" src="{% static 'img/illustration-ESG.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
-                            <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
-                    </div>
-                </figure>
-            </div>
-            <div class="fr-col-2">
-                <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
-                    <div class="fr-content-media__img">
-                        <img class="fr-responsive-img fr-ratio-16x9" src="{% static 'img/illustration-ESG.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
-                            <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
-                    </div>
-                </figure>
-            </div>
-            <div class="fr-col-2">
-                <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
-                    <div class="fr-content-media__img">
-                        <img class="fr-responsive-img fr-ratio-16x9" src="{% static 'img/illustration-ESG.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
-                            <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
-                    </div>
-                </figure>
-            </div>
-        </div>
-    </div>
+
 <!-- page index -->
 {% endblock %}
+
+
+        <!-- Separateur -->
+<div class="fr-container">
+    <div class="fr-grid-row">
+        <div class="fr-col-12">
+            <hr class="">
+        </div>
+    </div>
+</div>
+
+            <!-- Bloc logos ils nous soutiennent etc -->
+
+<div class="fr-container fr-mb-16w fr-py-3w">
+    <div class="fr-grid-row">
+        <div class="fr-col-12">
+            <div class="fr-grid-row fr-grid-row--center">
+                <h2>
+                    Ils utilisent la plateforme et nous aident à l'améliorer
+                </h2>
+            </div>
+        </div>
+    </div>
+    <div class="fr-grid-row fr-grid-row--center">
+        <div class="fr-col-2">
+            <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                <div class="fr-content-media__img">
+                    <img class="fr-responsive-img fr-ratio-16x9" src="{% static 'img/illustration-ESG.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                                <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
+                </div>
+            </figure>
+        </div>
+        <div class="fr-col-2">
+            <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                <div class="fr-content-media__img">
+                    <img class="fr-responsive-img fr-ratio-16x9" src="{% static 'img/illustration-ESG.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                                <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
+                </div>
+            </figure>
+        </div>
+        <div class="fr-col-2">
+            <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                <div class="fr-content-media__img">
+                    <img class="fr-responsive-img fr-ratio-16x9" src="{% static 'img/illustration-ESG.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                                <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
+                </div>
+            </figure>
+        </div>
+        <div class="fr-col-2">
+            <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                <div class="fr-content-media__img">
+                    <img class="fr-responsive-img fr-ratio-16x9" src="{% static 'img/illustration-ESG.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                                <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
+                </div>
+            </figure>
+        </div>
+        <div class="fr-col-2">
+            <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                <div class="fr-content-media__img">
+                    <img class="fr-responsive-img fr-ratio-16x9" src="{% static 'img/illustration-ESG.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                                <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
+                </div>
+            </figure>
+        </div>
+        <div class="fr-col-2">
+            <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                <div class="fr-content-media__img">
+                    <img class="fr-responsive-img fr-ratio-16x9" src="{% static 'img/illustration-ESG.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                                <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
+                </div>
+            </figure>
+        </div>
+    </div>
+</div>
