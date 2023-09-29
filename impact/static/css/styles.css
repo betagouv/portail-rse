@@ -17,6 +17,13 @@
     text-align: center;
 }
 
+.portail-header {
+    background-image: url("../img/wave.svg");
+    background-size: contain;
+    background-position: bottom;
+    background-repeat: no-repeat;
+}
+
 /* Simulation */
 
 .deprecated {
@@ -157,3 +164,4 @@
         margin: 0 0 1rem 0;
     }
 }
+
