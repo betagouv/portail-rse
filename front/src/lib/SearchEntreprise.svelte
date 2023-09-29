@@ -84,19 +84,19 @@
                 {/if}
                 </div>
             </div>
+            <div class="fr-my-1w">
+                <a class="fr-link" target="_blank" rel="noopener noreferrer" href="https://annuaire-entreprises.data.gouv.fr/">
+                    Trouvez votre SIREN sur l'Annuaire des entreprises
+                </a>
+            </div>
             {#await promise then result}
                 {#if denomination}
-                    <h2 class="fr-mb-1v fr-mt-4w">Entreprise : {denomination}</h2>
+                    <p class="fr-my-2w denomination">Entreprise : {denomination}</p>
                 {/if}
             {:catch error}
                 <p class="fr-error-text">{error.message}</p>
             {/await}
         </div>
-    </div>
-    <div class="fr-fieldset__element">
-        <a class="fr-link" target="_blank" rel="noopener noreferrer" href="https://annuaire-entreprises.data.gouv.fr/">
-            Trouvez votre SIREN sur l'Annuaire des entreprises
-        </a>
     </div>
 </fieldset>
 

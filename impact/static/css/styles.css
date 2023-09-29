@@ -24,6 +24,17 @@
     transition: all .2s;
 }
 
+.container-simulation .denomination {
+    font-size: 2rem;
+    line-height: 2.5rem;
+    font-weight:700;
+    padding-top: 2rem;
+    margin-bottom: 0px;
+}
+.container-simulation .fr-fieldset__element {
+    margin-bottom: 0px;
+}
+
 /* Réglementation Component */
 .reglementation {
     width: 100%;
