@@ -56,7 +56,7 @@
         promise = searchEntreprise(siren)
     }
 
-    if (siren && denomination) {
+    if (siren) {
         showSimulationFields()
     }
     else {
