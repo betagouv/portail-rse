@@ -112,6 +112,9 @@ class Entreprise(TimestampedModel):
         return caracteristiques
 
 
+BLANK_CHOICE = ("", "Sélectionnez une réponse")
+
+
 class CaracteristiquesAnnuelles(TimestampedModel):
     EFFECTIF_MOINS_DE_50 = "0-49"
     EFFECTIF_ENTRE_50_ET_249 = "50-249"
@@ -185,21 +188,21 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     )
     effectif = models.CharField(
         max_length=9,
-        choices=EFFECTIF_CHOICES,
+        choices=[BLANK_CHOICE] + EFFECTIF_CHOICES,
         verbose_name="Effectif",
         help_text="Nombre de salariés de l'entreprise",
         null=True,
     )
     effectif_outre_mer = models.CharField(
         max_length=9,
-        choices=EFFECTIF_OUTRE_MER_CHOICES,
+        choices=[BLANK_CHOICE] + EFFECTIF_OUTRE_MER_CHOICES,
         verbose_name="Effectif outre-mer",
         help_text="Nombre de salariés dans les régions et départements d'outre-mer",
         null=True,
     )
     effectif_groupe = models.CharField(
         max_length=9,
-        choices=EFFECTIF_GROUPE_CHOICES,
+        choices=[BLANK_CHOICE] + EFFECTIF_GROUPE_CHOICES,
         verbose_name="Effectif du groupe",
         help_text="Nombre de salariés du groupe",
         null=True,
@@ -208,26 +211,26 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     tranche_chiffre_affaires = models.CharField(
         verbose_name="Chiffre d'affaires",
         max_length=9,
-        choices=CA_CHOICES,
+        choices=[BLANK_CHOICE] + CA_CHOICES,
         null=True,
     )
     tranche_bilan = models.CharField(
         verbose_name="Bilan",
         max_length=9,
-        choices=BILAN_CHOICES,
+        choices=[BLANK_CHOICE] + BILAN_CHOICES,
         null=True,
     )
     tranche_chiffre_affaires_consolide = models.CharField(
         verbose_name="Chiffre d'affaires consolidé du groupe",
         max_length=9,
-        choices=CA_CHOICES,
+        choices=[BLANK_CHOICE] + CA_CHOICES,
         null=True,
         blank=True,
     )
     tranche_bilan_consolide = models.CharField(
         verbose_name="Bilan consolidé du groupe",
         max_length=9,
-        choices=BILAN_CHOICES,
+        choices=[BLANK_CHOICE] + BILAN_CHOICES,
         null=True,
         blank=True,
     )
