@@ -86,7 +86,7 @@
             </div>
             {#await promise then result}
                 {#if denomination}
-                    <p class="fr-mt-1w fr-mb-n1v">Entreprise : {denomination}</p>
+                    <h2 class="fr-mb-1v fr-mt-4w">Entreprise : {denomination}</h2>
                 {/if}
             {:catch error}
                 <p class="fr-error-text">{error.message}</p>
