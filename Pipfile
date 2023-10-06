@@ -21,6 +21,7 @@ pytest-mock = "*"
 freezegun = "*"
 pre-commit = "*"
 honcho = "*"
+exceptiongroup = {version = "*", markers="python_version < '3.11'"}
 
 [requires]
 python_version = "3.10"
