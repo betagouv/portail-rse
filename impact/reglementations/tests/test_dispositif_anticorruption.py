@@ -20,7 +20,7 @@ def test_dispositif_anticorruption_reglementation_info():
     )
     assert (
         info["more_info_url"]
-        == "https://www.agence-francaise-anticorruption.gouv.fr/files/files/Recommandations AFA.pdf"
+        == "https://www.agence-francaise-anticorruption.gouv.fr/fr/lafa-vous-conseille/vous-etes-acteur-economique"
     )
 
 
