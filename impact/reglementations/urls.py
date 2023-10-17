@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.generic.base import TemplateView
 
 from . import views
 
@@ -6,14 +7,47 @@ from . import views
 app_name = "reglementations"
 urlpatterns = [
     path(
+        "reglementations/bdese",
+        TemplateView.as_view(template_name="reglementations/fiches/bdese.html"),
+        name="fiche_bdese",
+    ),
+    path(
+        "reglementations/index-egalite-professionnelle",
+        TemplateView.as_view(
+            template_name="reglementations/fiches/index-egalite-professionnelle.html"
+        ),
+        name="fiche_index_egapro",
+    ),
+    path(
+        "reglementations/dispositif-alerte",
+        TemplateView.as_view(
+            template_name="reglementations/fiches/dispositif-alerte.html"
+        ),
+        name="fiche_dispositif_alerte",
+    ),
+    path(
+        "reglementations/bilan-ges",
+        TemplateView.as_view(template_name="reglementations/fiches/bilan-ges.html"),
+        name="fiche_bilan_ges",
+    ),
+    path(
+        "reglementations/audit-energetique",
+        TemplateView.as_view(
+            template_name="reglementations/fiches/audit-energetique.html"
+        ),
+        name="fiche_audit_energetique",
+    ),
+    path(
+        "reglementations/dispositif-anticorruption",
+        TemplateView.as_view(
+            template_name="reglementations/fiches/dispositif-anticorruption.html"
+        ),
+        name="fiche_dispositif_anticorruption",
+    ),
+    path(
         "reglementations/<str:siren>",
         views.reglementations_for_entreprise,
         name="reglementations",
-    ),
-    path(
-        "reglementations/fiches/<str:reglementation>",
-        views.fiche_reglementation,
-        name="fiche_reglementation",
     ),
     path("bdese/<str:siren>/<int:annee>/<int:step>", views.bdese.bdese, name="bdese"),
     path("bdese/<str:siren>/<int:annee>/pdf", views.bdese.bdese_pdf, name="bdese_pdf"),

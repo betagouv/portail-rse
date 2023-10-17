@@ -26,6 +26,22 @@ REGLEMENTATIONS = (
 )
 
 
+def test_fiches_reglementations_sont_publiques(client):
+    templates = {
+        "/reglementations/bdese": "reglementations/fiches/bdese.html",
+        "/reglementations/index-egalite-professionnelle": "reglementations/fiches/index-egalite-professionnelle.html",
+        "/reglementations/dispositif-alerte": "reglementations/fiches/dispositif-alerte.html",
+        "/reglementations/bilan-ges": "reglementations/fiches/bilan-ges.html",
+        "/reglementations/audit-energetique": "reglementations/fiches/audit-energetique.html",
+        "/reglementations/dispositif-anticorruption": "reglementations/fiches/dispositif-anticorruption.html",
+    }
+
+    for url, template in templates.items():
+        response = client.get(url)
+        assert response.status_code == 200
+        assert response.templates[0].name == template
+
+
 @pytest.fixture
 def entreprise(db, alice, entreprise_factory):
     entreprise = entreprise_factory(
