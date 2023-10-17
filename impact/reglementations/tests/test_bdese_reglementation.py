@@ -25,10 +25,7 @@ def test_bdese_reglementation_info():
         La BDESE rassemble les informations sur les grandes orientations économiques et sociales de l'entreprise.
         En l'absence d'accord d'entreprise spécifique, elle comprend des mentions obligatoires qui varient selon l'effectif de l'entreprise."""
     )
-    assert (
-        info["more_info_url"]
-        == "https://entreprendre.service-public.fr/vosdroits/F32193"
-    )
+    assert info["more_info_url"] == reverse("reglementations:fiche_bdese")
 
 
 @pytest.mark.parametrize("est_soumis", [True, False])

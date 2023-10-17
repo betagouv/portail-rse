@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.urls import reverse_lazy
 
 from entreprises.models import CaracteristiquesAnnuelles
 from reglementations.views.base import Reglementation
@@ -8,7 +9,7 @@ from reglementations.views.base import ReglementationStatus
 class DispositifAlerteReglementation(Reglementation):
     title = "Dispositif d'alerte"
     description = "Un dispositif d’alertes professionnelles (ou DAP) est un outil permettant à une personne (salarié, cocontractant, tiers…) de porter à la connaissance d’un organisme une situation, un comportement ou un risque susceptible de caractériser une infraction ou une violation de règles éthiques adoptées par l’organisme en question, tel qu’un manquement à une charte ou à un code de conduite. Les entreprises de plus de 50 salariés doivent mettre en place depuis le 1er septembre 2022 des dispositifs d’alerte sécurisés qui garantissent la confidentialité de l’identité de l’auteur du signalement."
-    more_info_url = "https://www.service-public.fr/particuliers/vosdroits/F32031"
+    more_info_url = reverse_lazy("reglementations:fiche_dispositif_alerte")
 
     @classmethod
     def est_soumis(cls, caracteristiques):
