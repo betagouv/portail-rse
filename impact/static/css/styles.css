@@ -41,9 +41,9 @@
 }
 
 .portail-header {
-    background-image: url("../img/wave.svg");
-    background-size: contain;
-    background-position: bottom;
+    background-image: url("../img/header-bg-full.png");
+    background-size: cover;
+    background-position: top;
     background-repeat: no-repeat;
 }
 
