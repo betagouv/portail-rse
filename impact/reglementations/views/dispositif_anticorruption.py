@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.urls import reverse_lazy
 
 from entreprises.models import CaracteristiquesAnnuelles
 from reglementations.views.base import Reglementation
@@ -12,7 +13,7 @@ class DispositifAntiCorruption(Reglementation):
         Ces mesures sont diverses : code de bonne conduite, dispositif d’alerte interne, cartographie des risques, évaluation des clients et fournisseurs,
         procédures de contrôles comptables, formation du personnel exposé, régime disciplinaire propre à sanctionner les salariés en cas de violation du code de conduite,
         dispositif de contrôle et d’évaluation interne des mesures mises en œuvre."""
-    more_info_url = "https://www.agence-francaise-anticorruption.gouv.fr/fr/lafa-vous-conseille/vous-etes-acteur-economique"
+    more_info_url = reverse_lazy("reglementations:fiche_dispositif_anticorruption")
 
     @staticmethod
     def criteres_remplis(caracteristiques):

@@ -1,4 +1,5 @@
 import pytest
+from django.urls import reverse
 
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
@@ -18,9 +19,8 @@ def test_dispositif_anticorruption_reglementation_info():
         procédures de contrôles comptables, formation du personnel exposé, régime disciplinaire propre à sanctionner les salariés en cas de violation du code de conduite,
         dispositif de contrôle et d’évaluation interne des mesures mises en œuvre."""
     )
-    assert (
-        info["more_info_url"]
-        == "https://www.agence-francaise-anticorruption.gouv.fr/fr/lafa-vous-conseille/vous-etes-acteur-economique"
+    assert info["more_info_url"] == reverse(
+        "reglementations:fiche_dispositif_anticorruption"
     )
 
 
