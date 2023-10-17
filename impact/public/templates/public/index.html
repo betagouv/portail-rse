@@ -24,7 +24,7 @@
     <div class="fr-grid-row background-blue fr-py-6w">
         <div class="fr-container">
             <div class="fr-grid-row fr-grid-row--gutters fr-mb-1w">
-                <div class="fr-col-md-6 fr-col-12">
+                <div class="fr-col-md-4 fr-col-12">
                     <div class="fr-card">
                         <div class="fr-card__body">
                             <div class="fr-card__content">
@@ -43,14 +43,14 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="fr-card__header">
+                        <div class="fr-card__header fr-pt-2w">
                             <div class="fr-card__img">
-                                <img class="fr-responsive-img" src="{% static 'img/connaitre.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                                <img class="fr-responsive-img" src="{% static 'img/connaitre.png' %}" alt="" />
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="fr-col-md-6 fr-col-12">
+                <div class="fr-col-md-4 fr-col-12">
                     <div class="fr-card">
                         <div class="fr-card__body">
                             <div class="fr-card__content">
@@ -69,9 +69,41 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="fr-card__header">
+                        <div class="fr-card__header fr-pt-2w">
                             <div class="fr-card__img">
-                                <img class="fr-responsive-img" src="{% static 'img/piloter.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                                <img class="fr-responsive-img" src="{% static 'img/piloter.png' %}" alt="" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fr-col-md-4 fr-col-12">
+                    <div class="fr-card">
+                        <div class="fr-card__body">
+                            <div class="fr-card__content">
+                                <h3 class="fr-card__title">
+                                    Mon tableau de bord
+                                </h3>
+                                <p class="fr-card__desc">Piloter et suivre mes réglementations depuis mon tableau de bord.</p>
+                            </div>
+                            <div class="fr-card__footer">
+                                <ul class="fr-btns-group">
+                                    <li>
+                                        {% if user.is_authenticated %}
+                                            <a href="{% url 'entreprises:entreprises' %}" class="fr-btn fr-btn--secondary">
+                                                Accéder à mon tableau de bord
+                                            </a>
+                                        {% else %}
+                                            <a href="{% url 'users:login' %}?next={{ request.path }}" class="fr-btn fr-btn--secondary">
+                                                Accéder à mon tableau de bord
+                                            </a>
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="fr-card__header fr-pt-2w">
+                            <div class="fr-card__img">
+                                <img class="fr-responsive-img" src="{% static 'img/dashboard.png' %}" alt="" />
                             </div>
                         </div>
                     </div>
@@ -117,63 +149,63 @@
                         </p>
                         <div class="fr-grid-row rse-themes">
                             <div class="">
-                                <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                                <figure class="fr-content-media" role="group">
                                     <div class="fr-content-media__img">
-                                        <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/gouvernance.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                                        <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/gouvernance.png' %}" alt="" />
                                             <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
                                     </div>
                                 </figure>
                                 <p class="fr-text--sm">La gouvernance de l’organisation</p>
                             </div>
                             <div class="">
-                                <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                                <figure class="fr-content-media" role="group">
                                     <div class="fr-content-media__img">
-                                        <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/droits.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                                        <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/droits.png' %}" alt="" />
                                             <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
                                     </div>
                                 </figure>
                                 <p class="fr-text--sm">Les droits de l’homme</p>
                             </div>
                             <div class="">
-                                <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                                <figure class="fr-content-media" role="group">
                                     <div class="fr-content-media__img">
-                                        <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/conditions.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                                        <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/conditions.png' %}" alt="" />
                                             <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
                                     </div>
                                 </figure>
                                 <p class="fr-text--sm">Les relations et conditions de travail</p>
                             </div>
                             <div class="">
-                                <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                                <figure class="fr-content-media" role="group">
                                     <div class="fr-content-media__img">
-                                        <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/environnement.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                                        <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/environnement.png' %}" alt="" />
                                             <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
                                     </div>
                                 </figure>
                                 <p class="fr-text--sm">L’environnement</p>
                             </div>
                             <div class="">
-                                <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                                <figure class="fr-content-media" role="group">
                                     <div class="fr-content-media__img">
-                                        <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/loyaute.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                                        <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/loyaute.png' %}" alt="" />
                                             <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
                                     </div>
                                 </figure>
                                 <p class="fr-text--sm">La loyauté des pratiques</p>
                             </div>
                             <div class="">
-                                <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                                <figure class="fr-content-media" role="group">
                                     <div class="fr-content-media__img">
-                                        <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/consommateurs.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                                        <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/consommateurs.png' %}" alt="" />
                                             <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
                                     </div>
                                 </figure>
                                 <p class="fr-text--sm">Les questions relatives aux consommateurs</p>
                             </div>
                             <div class="">
-                                <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                                <figure class="fr-content-media" role="group">
                                     <div class="fr-content-media__img">
-                                        <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/communautes.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                                        <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/communautes.png' %}" alt="" />
                                             <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
                                     </div>
                                 </figure>
@@ -199,7 +231,7 @@
             <div class="fr-col-12 fr-col-md-2">
                 <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
                     <div class="fr-content-media__img">
-                        <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/logo.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                        <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/logo.png' %}" alt="Logo du Portail RSE" />
                             <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
                     </div>
                 </figure>
