@@ -4,7 +4,7 @@
 {% block content %}
     <div class="fr-grid-row fr-py-6w portail-header">
         <did class="fr-container">
-            <div class="fr-grid-row fr-grid-row--center fr-grid-row--middle">
+            <div class="fr-grid-row fr-grid-row--middle fr-py-14w">
                 <div class="fr-col-12 fr-col-md-8">
                     <h1>Portail RSE</h1>
                     <p class="fr-text--lead">Un parcours unique pour connaitre et répondre à ses obligations RSE</p>
@@ -14,16 +14,8 @@
                         <a href="{% url 'simulation' %}" class="fr-btn fr-btn--lg">Consulter mes obligations</a>
                     {% endif %}
                 </div>
-                <div class="fr-col-8 fr-col-md-4 fr-my-8w">
-                    <img src="{% static 'img/PORTAIL.png' %}" class="fr-responsive-img" alt="" />
-                </div>
             </div>
-        </did>
-    </div>
-        <!-- Bloc 2 cards -->
-    <div class="fr-grid-row background-blue fr-py-6w">
-        <div class="fr-container">
-            <div class="fr-grid-row fr-grid-row--gutters fr-mb-1w">
+            <div class="fr-grid-row fr-grid-row--gutters fr-mb-1w fr-py-6w">
                 <div class="fr-col-md-4 fr-col-12">
                     <div class="fr-card">
                         <div class="fr-card__body">
