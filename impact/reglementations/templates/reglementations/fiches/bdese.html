@@ -1,3 +1,195 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}BDESE - Impact{% endblock %}
+{% block title %}Fiche BDESE - Impact{% endblock %}
+
+{% block content %}
+    <div class="fr-container">
+        <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-py-6w">
+            <div class="fr-col-lg-4">
+                <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                    <div class="fr-content-media__img">
+                        <img class="fr-responsive-img fr-ratio-2x3" src="{% static 'img/PORTAIL.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                        <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
+                    </div>
+                </figure>
+            </div>
+            <div class="fr-col-lg-8">
+                <h2 class="fr-mb-1v">Base de données économiques, sociales et environnementales (BDESE)</h2>
+                <p class="fr-text--xs">Dernière mise à jour le JJ/MM/AAAA</p>
+                <p>L'employeur d'au moins 50 salariés doit mettre à disposition du comité économique et social (CSE) ou des représentants du personnel une base de données économiques, sociales et environnementales (BDESE).
+                    <br><br>
+                    La BDESE rassemble les informations sur les grandes orientations économiques et sociales de l'entreprise, afin de facilitation du dialogue social. En l'absence d'accord d'entreprise, elle comprend des mentions obligatoires qui varient selon l'effectif de l'entreprise.</p>
+            </div>
+        </div>
+    </div>
+    <div class="fr-grid-row background-gov fr-py-6w">
+        <div class="fr-container">
+            <div class="fr-grid-row">
+                <div class="fr-col-12">
+                    <div class="fr-grid-row fr-grid-row--center">
+                        <h2>Quelles entreprises sont concernées ?</h2>
+                    </div>
+                    <div class="fr-grid-row">
+                        <p class="fr-mt-2w">
+                            Toute entreprise présentant un nombre de salariés supérieur ou égal à 50.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="fr-grid-row fr-grid-row--gutters">
+                <div class="fr-col-lg-3">
+                    <div class="fr-tile fr-tile--vertical">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    Qui sont les destinataires ?
+                                </h3>
+                                <p class="fr-tile__detail">Le comité social et économique (CSE)  ou les représentants du personnel</p>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram">
+                                <svg aria-hidden="true" class="fr-artwork" viewBox="0 0 80 80" width="80px" height="80px">
+                                    <use class="fr-artwork-decorative" href="/img/artwork/pictograms/city-hall.svg#artwork-decorative"></use>
+                                    <use class="fr-artwork-minor" href="/img/artwork/pictograms/city-hall.svg#artwork-minor"></use>
+                                    <use class="fr-artwork-major" href="/img/artwork/pictograms/city-hall.svg#artwork-major"></use>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fr-col-lg-3">
+                    <div class="fr-tile fr-tile--vertical">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    Quel support ?
+                                </h3>
+                                <p class="fr-tile__detail">Papier ou informatique et toujours accessible aux membres du CSE</p>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram">
+                                <svg aria-hidden="true" class="fr-artwork" viewBox="0 0 80 80" width="80px" height="80px">
+                                    <use class="fr-artwork-decorative" href="/img/artwork/pictograms/city-hall.svg#artwork-decorative"></use>
+                                    <use class="fr-artwork-minor" href="/img/artwork/pictograms/city-hall.svg#artwork-minor"></use>
+                                    <use class="fr-artwork-major" href="/img/artwork/pictograms/city-hall.svg#artwork-major"></use>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fr-col-lg-3">
+                    <div class="fr-tile fr-tile--vertical">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    Quel mode de transmission ?
+                                </h3>
+                                <p class="fr-tile__detail">La BDESE doit être tenue à la disposition des membres du CSE et accessible en permanence.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram">
+                                <svg aria-hidden="true" class="fr-artwork" viewBox="0 0 80 80" width="80px" height="80px">
+                                    <use class="fr-artwork-decorative" href="/img/artwork/pictograms/city-hall.svg#artwork-decorative"></use>
+                                    <use class="fr-artwork-minor" href="/img/artwork/pictograms/city-hall.svg#artwork-minor"></use>
+                                    <use class="fr-artwork-major" href="/img/artwork/pictograms/city-hall.svg#artwork-major"></use>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fr-col-lg-3">
+                    <div class="fr-tile fr-tile--vertical">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    Fréquence
+                                </h3>
+                                <p class="fr-tile__detail">Tous les ans avant les grandes consultations annuelles et régulièrement mise à jour.</p>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram">
+                                <svg aria-hidden="true" class="fr-artwork" viewBox="0 0 80 80" width="80px" height="80px">
+                                    <use class="fr-artwork-decorative" href="/img/artwork/pictograms/city-hall.svg#artwork-decorative"></use>
+                                    <use class="fr-artwork-minor" href="/img/artwork/pictograms/city-hall.svg#artwork-minor"></use>
+                                    <use class="fr-artwork-major" href="/img/artwork/pictograms/city-hall.svg#artwork-major"></use>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="fr-container">
+        <div class="fr-grid-row">
+            <div class="fr-col-12 fr-py-6w">
+                <h2>Quelles sont les sanctions encourues ?</h2>
+                <p>
+                    Injonction de publication sous astreinte (jusqu’à 5000 euros par jour de retard)
+                    <br><br>
+                    7500 euros en cas d’entrave au CSE
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="fr-container">
+        <div class="fr-grid-row">
+            <div class="fr-col-12">
+                <div class="fr-table fr-table--bordered">
+                    <table class="fr-py-3w">
+                        <caption>Textes de référence</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Texte légal</th>
+                                <th scope="col">Contenu associé</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Article L2312-18 Code du travail</td>
+                                <td>Définition de la BDESE</td>
+                            </tr>
+                            <tr>
+                                <td>Article L2312-36 Code du travail</td>
+                                <td>Contenu de la BDESE / Accès en permanence / Mise à jour régulière</td>
+                            </tr>
+                            <tr>
+                                <td>Articles R2312-8 à -10 Code du travail</td>
+                                <td>Contenu de la BDESE</td>
+                            </tr>
+                            <tr>
+                                <td>Article L2312-17 et Articles L2312-22 à  L2312-26  Code du travail</td>
+                                <td>Consultations annuelles du comité</td>
+                            </tr>
+                            <tr>
+                                <td>Article L2317-1 Code du travail</td>
+                                <td>Dispositions pénales</td>
+                            </tr>
+                            <tr>
+                                <td>Article L2312-15 Code du travail et Article 835 Code de procédure civile</td>
+                                <td>Saisine du président du tribunal judiciaire par le comité</td>
+                            </tr>
+                            <tr>
+                                <td>Article R2312-12 Code du travail</td>
+                                <td>Support de la BDESE</td>
+                            </tr>
+                            <tr>
+                                <td>Ordonnance n°2022-678 du 26 avril 2022</td>
+                                <td>Relatif aux indicateurs environnementaux devant figurer dans la base de données économiques, sociales et  environnementales (BDESE) et aux formations économiques, sociales, environnementales et syndicales</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- page fiche réglementation -->
+{% endblock %}
+
+<!-- page fiche BDESE -->

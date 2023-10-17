@@ -6,6 +6,15 @@
 .background-blue {
     background-color: var(--background-alt-blue-france);
 }
+.background-gov {
+    background-color: var(--background-contrast-blue-ecume);
+}
+.background-social {
+    background-color: var(--background-contrast-purple-glycine);
+}
+.background-env {
+    background-color: var(--background-contrast-green-emeraude);
+}
 
 .rse-themes {
     display: grid;
