@@ -51,6 +51,7 @@
 
 .simu-steps {
     background-color: var(--yellow-tournesol-925-125);
+    height: 100%;
 }
 
 .simu-steps h6 {
@@ -68,6 +69,7 @@
     font-weight:700;
     padding-top: 2rem;
     margin-bottom: 0px;
+    color: var(--background-flat-info);
 }
 .container-simulation .fr-fieldset__element {
     margin-bottom: 0px;
