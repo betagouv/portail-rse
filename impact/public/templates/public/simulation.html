@@ -6,7 +6,33 @@
     <div class="fr-container container-simulation fr-mt-10w fr-mb-4w">
         <div class="fr-grid-row fr-grid-row--center">
             <div class="fr-col">
-                <h2>Simulation</h2>
+                <h2>Simulation simplifiée</h2>
+                <p>
+                    Effectuez une simulation simplifiée pour connaître les réglementations à laquelle votre entreprise peut être soumise.
+                    <br>Inscrivez-vous ou connectez-vous pour saisir vos critères complets.
+                </p>
+                <div class="fr-grid-row fr-grid-row--gutters">
+                    <div class="simu-steps fr-col-lg-3 fr-col-12 fr-p-3w">
+                        <h6>
+                            1. Cherchez votre entreprise
+                        </h6>
+                    </div>
+                    <div class="simu-steps fr-col-lg-3 fr-col-12 fr-p-3w">
+                        <h6>
+                            2. Indiquez les informations de votre entreprise
+                        </h6>
+                    </div>
+                    <div class="simu-steps fr-col-lg-3 fr-col-12 fr-p-3w">
+                        <h6>
+                            3. Consultez le résultat de votre simulation
+                        </h6>
+                    </div>
+                    <div class="simu-steps fr-col-lg-3 fr-col-12 fr-p-3w">
+                        <h6>
+                            4. Inscrivez-vous et pilotez vos obligations
+                        </h6>
+                    </div>
+                </div>
 
                 <form action="{% url 'simulation' %}#svelte-simulation-result" method="post" id="svelte-simulation-form">
                     {% csrf_token %}
