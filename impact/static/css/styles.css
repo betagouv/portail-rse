@@ -49,6 +49,14 @@
 
 /* Simulation */
 
+.simu-steps {
+    background-color: var(--yellow-tournesol-925-125);
+}
+
+.simu-steps h6 {
+    margin-bottom: 0;
+}
+
 .deprecated {
     opacity: .5;
     transition: all .2s;
