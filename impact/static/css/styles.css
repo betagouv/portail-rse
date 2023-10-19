@@ -25,6 +25,20 @@
     box-shadow: inset 0 0 0 0px var(--border-default-grey),inset 0 -.25rem 0 0 var(--green-emeraude-main-632);
 }
 
+/* colored bgs */
+
+.background-y {
+    background-color: var(--yellow-tournesol-975-75);
+}
+
+.background-g {
+    background-color: var(--green-emeraude-975-75);
+}
+
+.background-light-grey {
+    background-color: var(--grey-975-75);
+}
+
 /* homepage */
 .background-blue {
     background-color: var(--background-alt-blue-france);
@@ -41,8 +55,8 @@
 }
 
 .portail-header {
-    background-image: url("../img/header-bg-full.png");
-    background-size: cover;
+    background-image: url("../img/portail-1920.png");
+    background-size: contain;
     background-position: top;
     background-repeat: no-repeat;
 }
@@ -64,7 +78,7 @@
 }
 
 .container-simulation .denomination {
-    font-size: 2rem;
+    font-size: 1.5rem;
     line-height: 2.5rem;
     font-weight:700;
     padding-top: 2rem;
