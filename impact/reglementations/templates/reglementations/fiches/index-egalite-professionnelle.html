@@ -1,3 +1,209 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Index égalité professionnelle - Impact{% endblock %}
+
+{% block content %}
+    <div class="fr-container">
+        <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-pt-1w fr-pb-6w">
+            <div class="fr-col-lg-3">
+                <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                    <div class="fr-content-media__img">
+                        <img class="fr-responsive-img fr-ratio-2x3" src="{% static 'img/social-2x3.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                        <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
+                    </div>
+                </figure>
+            </div>
+            <div class="fr-col-lg-9 fr-my-5w">
+                <div class="fr-grid-row">
+                    <div class="fr-col-12">
+                        <h2 class="fr-mb-1v">Index de l'Égalité Professionnelle</h2>
+                        <p class="fr-text--xs">Dernière mise à jour le JJ/MM/AAAA</p>
+                        <p>
+                            Chaque année, l'employeur publie l'ensemble des indicateurs relatifs aux écarts de rémunération entre les femmes et les hommes et les actions mises en œuvre pour les supprimer.
+                            <br><br>
+                            En ce sens, l’index de l’égalité professionnelle a pour objectif principal de mesurer les écarts salariaux qui existent entre les hommes et les femmes dans l'entreprise : l'Index est noté sur 100 points et est calculé à partir de 5 indicateurs [L’écart de rémunération ; L’écart de répartition des augmentations individuelles; L’écart de répartition des promotions; Le pourcentage de salariées augmentées au retour de congé maternité; La répartition entre les femmes et les hommes parmi les dix plus hautes rémunérations]
+                            <br><br>
+                            En cas d'index inférieur à un certain nombre de points, l'entreprise est tenue de fixer des objectifs de progression de chaque indicateur et de mettre en œuvre des mesures correctives.
+                        </p>
+                    </div>
+                </div>
+                <div class="fr-grid-row fr-mt-2w">
+                    <h5>Quelles entreprises sont concernées ?</h5>
+                    <p class="">
+                        Toute entreprise présentant un nombre de salariés supérieur ou égal à 50 au cours de l’année écoulée
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="fr-grid-row background-social fr-py-6w">
+        <div class="fr-container">
+            <div class="fr-grid-row fr-grid-row--gutters">
+                <div class="fr-col-lg-3">
+                    <div class="fr-tile fr-tile--vertical fr-tile--no-border">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    Qui sont les destinataires ?
+                                </h3>
+                                <p class="fr-tile__detail">
+                                    Les salariés
+                                    <br>
+                                    L'ensemble des indicateurs est rendu public.
+                                    <br>
+                                    CSE (Index global, modalités de calcul, méthodologie, données de référence, objectifs de progression le cas échéant)
+                                    <br>
+                                    Inspection du travail et ministère chargé du travail
+                                </p>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram">
+                                <svg aria-hidden="true" class="fr-artwork" viewBox="0 0 80 80" width="80px" height="80px">
+                                    <use class="fr-artwork-decorative" href="/img/artwork/pictograms/city-hall.svg#artwork-decorative"></use>
+                                    <use class="fr-artwork-minor" href="/img/artwork/pictograms/city-hall.svg#artwork-minor"></use>
+                                    <use class="fr-artwork-major" href="/img/artwork/pictograms/city-hall.svg#artwork-major"></use>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fr-col-lg-3">
+                    <div class="fr-tile fr-tile--vertical">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    Quel support ?
+                                </h3>
+                                <p class="fr-tile__detail">
+                                    L'Index est communiqué sur un support numérique ou, à défaut, par tout moyen, aux salariés.
+                                    <br>
+                                    Il se retrouve également au sein de la BDESE.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram">
+                                <svg aria-hidden="true" class="fr-artwork" viewBox="0 0 80 80" width="80px" height="80px">
+                                    <use class="fr-artwork-decorative" href="/img/artwork/pictograms/city-hall.svg#artwork-decorative"></use>
+                                    <use class="fr-artwork-minor" href="/img/artwork/pictograms/city-hall.svg#artwork-minor"></use>
+                                    <use class="fr-artwork-major" href="/img/artwork/pictograms/city-hall.svg#artwork-major"></use>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fr-col-lg-3">
+                    <div class="fr-tile fr-tile--vertical">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    Quel mode de transmission ?
+                                </h3>
+                                <p class="fr-tile__detail">
+                                    Publication de l’index sur le site internet de l’entreprise
+                                    <br>
+                                    Publication de l’ensemble des indicateurs sur la plateforme de l’inspection du travail
+                                    <br>
+                                    Transmission de l’ensemble des données aux élus du CSE (cf BDESE)
+                                </p>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram">
+                                <svg aria-hidden="true" class="fr-artwork" viewBox="0 0 80 80" width="80px" height="80px">
+                                    <use class="fr-artwork-decorative" href="/img/artwork/pictograms/city-hall.svg#artwork-decorative"></use>
+                                    <use class="fr-artwork-minor" href="/img/artwork/pictograms/city-hall.svg#artwork-minor"></use>
+                                    <use class="fr-artwork-major" href="/img/artwork/pictograms/city-hall.svg#artwork-major"></use>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fr-col-lg-3">
+                    <div class="fr-tile fr-tile--vertical">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    Fréquence
+                                </h3>
+                                <p class="fr-tile__detail">
+                                    Publication annuelle, au plus tard le 1er mars de l'année en cours, au titre de l'année précédente.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram">
+                                <svg aria-hidden="true" class="fr-artwork" viewBox="0 0 80 80" width="80px" height="80px">
+                                    <use class="fr-artwork-decorative" href="/img/artwork/pictograms/city-hall.svg#artwork-decorative"></use>
+                                    <use class="fr-artwork-minor" href="/img/artwork/pictograms/city-hall.svg#artwork-minor"></use>
+                                    <use class="fr-artwork-major" href="/img/artwork/pictograms/city-hall.svg#artwork-major"></use>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="fr-container">
+        <div class="fr-grid-row">
+            <div class="fr-col-12 fr-py-6w">
+                <h3>Quelles sont les sanctions encourues ?</h3>
+                <p>
+                    Dès lors que les résultats obtenus par l'entreprise ne satisfont pas un certain nombre de points, celle-ci dispose d'un délai de trois ans pour se mettre en conformité: à l'expiration de ce délai et en cas de résultats inchangés, l'entreprise se voit appliquer une pénalité financière dont le montant ne peut dépasser 1% des rémunérations et gains.
+                    <br><br>
+                    Cette pénalité n'est pas à confondre avec celle applicable en cas d'absence de publication de l'index: l'Inspection du travail met en demeure l'entreprise de publier son index dans un délai minimum d'un mois. A l'expiration de ce délai et en absence de preuve du respect de l'obligation de publication, l'entreprise se voit appliquer une pénalité financière dont le montant ne peut dépasser 1% des rémunérations et gains.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="fr-container">
+        <div class="fr-grid-row fr-mb-6w">
+            <div class="fr-col-12">
+                <section class="fr-accordion">
+                    <h3 class="fr-accordion__title">
+                        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-106">Textes de référence</button>
+                    </h3>
+                    <div class="fr-collapse" id="accordion-106">
+                        <a href="#" target="_blank" rel="noopener">Article L1142-8 Code du travail / Article D1142-2-1 Code du travail</a>
+                        <p class="fr-text--sm">Entreprises concernées [emploie au moins 50 salariés]</p>
+
+                        <a href="#" target="_blank" rel="noopener">Article D1142-2  / Article L1142-11 Code du travail</a>
+                        <p class="fr-text--sm">Liste des indicateurs et entreprises concernées [entreprises employant : plus de 250 salariés / au moins 1000 salariés]</p>
+
+                        <a href="#" target="_blank" rel="noopener">Articles L1111-2 et -3 Code du travail</a>
+                        <p class="fr-text--sm">Modalités de calcul des effectifs </p>
+
+                        <a href="#" target="_blank" rel="noopener">Articles L1142-9 et -9-1 Code du travail</a>
+                        <p class="fr-text--sm">Mesures de correction et objectifs de progression</p>
+
+                        <a href="#" target="_blank" rel="noopener">Article L1142-8 Code du travail / Alinéa 2 Article D1142-4 Code du travail /Alinéa 2 Article D1142-5 Code du travail / Article D1142-6-2 Code du travail</a>
+                        <p class="fr-text--sm">Mise à disposition publique des indicateurs, des mesures de correction et des objectifs de progression sur le site internet du ministère chargé du travail et transmission par télé-déclaration.</p>
+
+                        <a href="#" target="_blank" rel="noopener">Alinéa 1 Article D1142-4 Code du travail</a>
+                        <p class="fr-text--sm">Publication au plus tard le 1er mars / Publication des indicateurs sur le site internet de l'entreprise ou, à défaut, par tout moyen </p>
+
+                        <a href="#" target="_blank" rel="noopener">Article D1142-5 Code du travail / Article D1142-6-2 Code du travail / Article L2312-18 Code du travail</a>
+                        <p class="fr-text--sm">Mise à disposition des indicateurs, des mesures de correction et des objectifs de progression au comité social et économique </p>
+
+                        <a href="#" target="_blank" rel="noopener">Article D1142-6 Code du travail</a>
+                        <p class="fr-text--sm">Publication des mesures de correction sur le site internet de l'entreprise en cas d'un résultat inférieur à 75 points </p>
+
+                        <a href="#" target="_blank" rel="noopener">Article D1142-6-1 Code du travail</a>
+                        <p class="fr-text--sm">Publication des objectifs de progression sur le site internet de l'entreprise en cas d'un résultat inférieur à 85 points </p>
+
+                        <a href="#" target="_blank" rel="noopener">Article L1142-10 Code du travail</a>
+                        <p class="fr-text--sm">Sanctions et pénalités financières pour résultat faible </p>
+
+                        <a href="#" target="_blank" rel="noopener">Articles R2242-3 et -5 Code du travail / Article L2242-8 Code du travail</a>
+                        <p class="fr-text--sm">Sanctions et pénalités financières pour défaut de publication de l'index </p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    <!-- page fiche réglementation -->
+{% endblock %}
