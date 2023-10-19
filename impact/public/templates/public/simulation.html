@@ -55,8 +55,8 @@
             </div>
         </div>
         <div class="fr-grid-row fr-grid-row--center">
-            <div class="fr-col">
-                <h3>Recherchez votre entreprise</h3>
+            <div class="fr-col background-light-grey fr-p-3w">
+                <h5>Recherchez votre entreprise</h5>
                 <form action="{% url 'simulation' %}#svelte-simulation-result" method="post" id="svelte-simulation-form">
                     {% csrf_token %}
                     <div id="svelte-search-entreprise" data-siren="{{ simulation_form.siren.value|default:'' }}" data-denomination="{{ simulation_form.denomination.value|default:'' }}">
@@ -69,7 +69,7 @@
                         </div>
                     </div>
                     <div id="svelte-simulation-fields" style="display: none">
-                        <h3>Renseignez les informations de votre entreprise</h3>
+                        <h5>Renseignez les informations de votre entreprise</h5>
                         <div class="fr-grid-row fr-grid-row--gutters fr-pb-4w">
                             <div class="fr-col-md-4 fr-col-12">
                                 {% include 'snippets/field.html' with field=simulation_form.effectif %}
@@ -116,9 +116,9 @@
         <div class="fr-container">
             <hr>
         </div>
-        <div class="fr-grid-row fr-py-3w">
-            <div class="fr-container" id="svelte-simulation-result">
-                <h2>Résultats de votre simulation</h2>
+        <div class="fr-grid-row">
+            <div class="fr-container fr-py-3w" id="svelte-simulation-result">
+                <h3>Résultats de votre simulation</h3>
                 {% for reglementation in reglementations %}
                     {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
                 {% endfor %}
