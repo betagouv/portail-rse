@@ -1,3 +1,197 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Audit Énergétique - Impact{% endblock %}
+
+{% block content %}
+    <div class="fr-container">
+        <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-pt-1w fr-pb-6w">
+            <div class="fr-col-lg-3">
+                <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                    <div class="fr-content-media__img">
+                        <img class="fr-responsive-img fr-ratio-2x3" src="{% static 'img/environnement-2x3.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                        <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
+                    </div>
+                </figure>
+            </div>
+            <div class="fr-col-lg-9 fr-my-5w">
+                <div class="fr-grid-row">
+                    <div class="fr-col-12">
+                        <h2 class="fr-mb-1v">Audit énergétique</h2>
+                        <p class="fr-text--xs">Dernière mise à jour le JJ/MM/AAAA</p>
+                        <p>
+                            L’audit énergétique vise à inciter les grandes entreprises à entamer une démarche d’amélioration de leur performance énergétique en leur permettant de repérer les gisements d’économie d’énergie.
+                            <br><br>
+                            Le périmètre de l'audit énergétique couvre au moins 80% des factures énergétiques acquittées par l'entreprise : il revient à celle-ci de mettre en place une stratégie d'efficacité énergétique pour les activités comprises dans le périmètre.
+                            <br><br>
+                            L'audit doit être réalisé au moins tous les quatre ans.
+                        </p>
+                    </div>
+                </div>
+                <div class="fr-grid-row fr-mt-2w">
+                    <h5>Quelles entreprises sont concernées ?</h5>
+                    <p class="">
+                        <ul>
+                            <li>Toute entreprise réalisant un total de bilan d’au moins 43 M € au cours des deux derniers exercices comptables clôturés et un chiffre d'affaires hors taxe annuel supérieur ou égal à 50M € ; ou</li>
+                            <li>Toute entreprise présentant un effectif supérieur ou égal à 250.</li>
+                        </ul>
+                        Remarque: l'effectif est calculé en nombre d’unités de travail par années, c'est-à-dire le nombre de personnes ayant travaillé dans l’entreprise ou pour son compte à temps plein pendant l’année considérée.  Le travail des personnes n'ayant pas travaillé toute l'année ou ayant travaillé à temps partiel, quelle que soit sa durée, ou le travail  saisonnier, est compté comme fractions d'UTA.
+                    </p>
+                    <h5 class="fr-mt-4w">Quelles sont les entreprises exemptées de la réalisation d'un audit énergétique?</h5>
+                    <p>
+                        Dès lors que les activités du périmètre de l'audit sont couvertes par un système de management de l'énergie conforme à la norme NF EN ISO 50001 [sur au moins 80% des factures énergétiques] et certifié par un organisme signataire de l'accord européen multilatéral pris dans le cadre de la coordination européenne des organismes d'accréditation, alors l'entreprise est exemptée de l'obligation de réaliser un audit énergétique.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="fr-grid-row background-env fr-py-6w">
+        <div class="fr-container">
+            <div class="fr-grid-row fr-grid-row--gutters">
+                <div class="fr-col-lg-3">
+                    <div class="fr-tile fr-tile--vertical fr-tile--no-border">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    Qui sont les destinataires ?
+                                </h3>
+                                <p class="fr-tile__detail">
+                                    L'agence de l'environnement et de la maîtrise de l'énergie (ADEME)
+                                    <br>
+                                    La préfecture de la région d'implantation du siège social  de l'entreprise
+                                    <br>
+                                    La préfecture d'Île-de-France si le siège social de l'entreprise est à l'étranger
+                                    <br>
+                                    Le public
+                                </p>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram">
+                                <svg aria-hidden="true" class="fr-artwork" viewBox="0 0 80 80" width="80px" height="80px">
+                                    <use class="fr-artwork-decorative" href="/img/artwork/pictograms/city-hall.svg#artwork-decorative"></use>
+                                    <use class="fr-artwork-minor" href="/img/artwork/pictograms/city-hall.svg#artwork-minor"></use>
+                                    <use class="fr-artwork-major" href="/img/artwork/pictograms/city-hall.svg#artwork-major"></use>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fr-col-lg-3">
+                    <div class="fr-tile fr-tile--vertical">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    Quel support ?
+                                </h3>
+                                <p class="fr-tile__detail">
+                                    L'audit énergétique est réalisé obligatoirement sur un support électronique mais peut également faire l'objet d'un support papier, selon le mode de transmission.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram">
+                                <svg aria-hidden="true" class="fr-artwork" viewBox="0 0 80 80" width="80px" height="80px">
+                                    <use class="fr-artwork-decorative" href="/img/artwork/pictograms/city-hall.svg#artwork-decorative"></use>
+                                    <use class="fr-artwork-minor" href="/img/artwork/pictograms/city-hall.svg#artwork-minor"></use>
+                                    <use class="fr-artwork-major" href="/img/artwork/pictograms/city-hall.svg#artwork-major"></use>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fr-col-lg-3">
+                    <div class="fr-tile fr-tile--vertical">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    Quel mode de transmission ?
+                                </h3>
+                                <p class="fr-tile__detail">
+                                    Dépôt en libre accès sur la plate-forme informatique de l’ADEME
+                                    <br>
+                                    Transmission par voie écrite ou électronique à la Préfecture
+                                </p>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram">
+                                <svg aria-hidden="true" class="fr-artwork" viewBox="0 0 80 80" width="80px" height="80px">
+                                    <use class="fr-artwork-decorative" href="/img/artwork/pictograms/city-hall.svg#artwork-decorative"></use>
+                                    <use class="fr-artwork-minor" href="/img/artwork/pictograms/city-hall.svg#artwork-minor"></use>
+                                    <use class="fr-artwork-major" href="/img/artwork/pictograms/city-hall.svg#artwork-major"></use>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fr-col-lg-3">
+                    <div class="fr-tile fr-tile--vertical">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    Fréquence
+                                </h3>
+                                <p class="fr-tile__detail">Tous les  les 4 ans</p>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram">
+                                <svg aria-hidden="true" class="fr-artwork" viewBox="0 0 80 80" width="80px" height="80px">
+                                    <use class="fr-artwork-decorative" href="/img/artwork/pictograms/city-hall.svg#artwork-decorative"></use>
+                                    <use class="fr-artwork-minor" href="/img/artwork/pictograms/city-hall.svg#artwork-minor"></use>
+                                    <use class="fr-artwork-major" href="/img/artwork/pictograms/city-hall.svg#artwork-major"></use>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="fr-container">
+        <div class="fr-grid-row">
+            <div class="fr-col-12 fr-py-6w">
+                <h3>Quelles sont les sanctions encourues ?</h3>
+                <p>
+                    En cas de manquements, l'ADEME met en demeure l'entreprise intéressée de se conformer à ses obligations dans un délai fixé.
+                    <br><br>
+                    A l'issue de ce délai, et en absence d'exécution de l'obligation, l'ADEME peut infliger une amende dont le montant ne peut excéder  2% du CA HT du dernier exercice clos, qui est porté à 4% en cas de nouvelle violation de la même obligation.
+
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="fr-container">
+        <div class="fr-grid-row fr-mb-6w">
+            <div class="fr-col-12">
+                <section class="fr-accordion">
+                    <h3 class="fr-accordion__title">
+                        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-106">Textes de référence</button>
+                    </h3>
+                    <div class="fr-collapse" id="accordion-106">
+                        <a href="#" target="_blank" rel="noopener">Article 1 Décret n°2014-1393 du 24 novembre 2014 relatif aux modalités d'application de l'audit énergétique prévu par le chapitre III du titre III du livre II du code de l'énergie</a>
+                        <p class="fr-text--sm">Périmètre de l'audit </p>
+
+                        <a href="#" target="_blank" rel="noopener">Article L233-1 Code de l'énergie</a>
+                        <p class="fr-text--sm">Les entreprises concernées et fréquence de l'audit </p>
+
+                        <a href="#" target="_blank" rel="noopener">Article 2 Décret n°2014-1393 du 24 novembre 2014</a>
+                        <p class="fr-text--sm">Modalités d'exemption de la réalisation de l'audit énergétique </p>
+
+                        <a href="#" target="_blank" rel="noopener">Article 5 Décret n°2014-1393 du 24 novembre 2014 / Article 1er Arrêté du 20 mai 2016 relatif aux données à renseigner et aux catégories d'utilisateur concernant la plate-forme informatique prévue  par l'article L. 233-1 du code de l'énergie</a>
+                        <p class="fr-text--sm">Destinataires du document et modalités de transmission des documents </p>
+
+                        <a href="#" target="_blank" rel="noopener">Article L233-4 Code de l'énergie</a>
+                        <p class="fr-text--sm">Sanctions</p>
+
+                        <a href="#" target="_blank" rel="noopener">Article R233-1 et R233-2 Code de l'énergie</a>
+                        <p class="fr-text--sm">Définition des seuils et seuils chiffrés emportant obligation de réalisation de l'audit énergétique </p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    <!-- page fiche réglementation -->
+{% endblock %}
