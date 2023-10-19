@@ -1,3 +1,169 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Dispositif d'alerte - Impact{% endblock %}
+
+{% block content %}
+    <div class="fr-container">
+        <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-pt-1w fr-pb-6w">
+            <div class="fr-col-lg-3">
+                <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                    <div class="fr-content-media__img">
+                        <img class="fr-responsive-img fr-ratio-2x3" src="{% static 'img/gouvernance-2x3.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                        <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
+                    </div>
+                </figure>
+            </div>
+            <div class="fr-col-lg-9 fr-my-5w">
+                <div class="fr-grid-row">
+                    <div class="fr-col-12">
+                        <h2 class="fr-mb-1v">Dispositif d'Alerte</h2>
+                        <p class="fr-text--xs">Dernière mise à jour le JJ/MM/AAAA</p>
+                        <p>
+                            La loi Sapin 2 vise à instaurer une obligation de mettre en place, au sein des entreprises, des procédures d’alerte pour recueillir les signalements internes émanant du personnel ou des collaborateurs extérieurs ou occasionnels. En particulier, le dispositif permet de recueillir en interne et de traiter, au stade le plus précoce possible, toutes les alertes portant sur un crime ou un délit, une menace ou un préjudice pour l’intérêt général, une violation d’un engagement international régulièrement ratifié ou approuvé par la France, une violation du droit de l’Union européenne, de la loi ou d’un règlement, susceptibles ou très susceptibles de se produire dans l'entreprise et dont le lanceur d'alerte a obtenu l'information dans le cadre de son activité professionnelle.
+                        </p>
+                    </div>
+                </div>
+                <div class="fr-grid-row fr-mt-2w">
+                    <h5>Quelles entreprises sont concernées ?</h5>
+                    <p class="">
+                        Toute entreprise présentant, à la clôture de deux exercices consécutifs, un nombre de salariés, calculé sur la base d’une moyenne de chaque mois de l’année civile écoulée, supérieur ou égal à 50.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="fr-grid-row background-gov fr-py-6w">
+        <div class="fr-container">
+            <div class="fr-grid-row fr-grid-row--gutters">
+                <div class="fr-col-lg-3">
+                    <div class="fr-tile fr-tile--vertical fr-tile--no-border">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    Qui sont les destinataires ?
+                                </h3>
+                                <p class="fr-tile__detail">Informer les salariés de l’existence et du fonctionnement du dispositif</p>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram">
+                                <svg aria-hidden="true" class="fr-artwork" viewBox="0 0 80 80" width="80px" height="80px">
+                                    <use class="fr-artwork-decorative" href="/img/artwork/pictograms/city-hall.svg#artwork-decorative"></use>
+                                    <use class="fr-artwork-minor" href="/img/artwork/pictograms/city-hall.svg#artwork-minor"></use>
+                                    <use class="fr-artwork-major" href="/img/artwork/pictograms/city-hall.svg#artwork-major"></use>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fr-col-lg-3">
+                    <div class="fr-tile fr-tile--vertical">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    Quel support ?
+                                </h3>
+                                <p class="fr-tile__detail">-</p>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram">
+                                <svg aria-hidden="true" class="fr-artwork" viewBox="0 0 80 80" width="80px" height="80px">
+                                    <use class="fr-artwork-decorative" href="/img/artwork/pictograms/city-hall.svg#artwork-decorative"></use>
+                                    <use class="fr-artwork-minor" href="/img/artwork/pictograms/city-hall.svg#artwork-minor"></use>
+                                    <use class="fr-artwork-major" href="/img/artwork/pictograms/city-hall.svg#artwork-major"></use>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fr-col-lg-3">
+                    <div class="fr-tile fr-tile--vertical">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    Quel mode de transmission ?
+                                </h3>
+                                <p class="fr-tile__detail">
+                                    La procédure du dispositif d'alerte doit être diffusée par tout moyen assurant une publicité suffisante, notamment par voie de notification, affichage ou publication, le cas échéant sur le site internet ou par voie électronique.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram">
+                                <svg aria-hidden="true" class="fr-artwork" viewBox="0 0 80 80" width="80px" height="80px">
+                                    <use class="fr-artwork-decorative" href="/img/artwork/pictograms/city-hall.svg#artwork-decorative"></use>
+                                    <use class="fr-artwork-minor" href="/img/artwork/pictograms/city-hall.svg#artwork-minor"></use>
+                                    <use class="fr-artwork-major" href="/img/artwork/pictograms/city-hall.svg#artwork-major"></use>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fr-col-lg-3">
+                    <div class="fr-tile fr-tile--vertical">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    Fréquence
+                                </h3>
+                                <p class="fr-tile__detail">
+                                    La procédure du dispositif d'alerte doit être accessible en permanence aux salariés.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram">
+                                <svg aria-hidden="true" class="fr-artwork" viewBox="0 0 80 80" width="80px" height="80px">
+                                    <use class="fr-artwork-decorative" href="/img/artwork/pictograms/city-hall.svg#artwork-decorative"></use>
+                                    <use class="fr-artwork-minor" href="/img/artwork/pictograms/city-hall.svg#artwork-minor"></use>
+                                    <use class="fr-artwork-major" href="/img/artwork/pictograms/city-hall.svg#artwork-major"></use>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="fr-container">
+        <div class="fr-grid-row">
+            <div class="fr-col-12 fr-py-6w">
+                <h3>Quelles sont les sanctions encourues ?</h3>
+                <p>
+                    -
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="fr-container">
+        <div class="fr-grid-row fr-mb-6w">
+            <div class="fr-col-12">
+                <section class="fr-accordion">
+                    <h3 class="fr-accordion__title">
+                        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-106">Textes de référence</button>
+                    </h3>
+                    <div class="fr-collapse" id="accordion-106">
+                        <a href="#" target="_blank" rel="noopener">Articles 6 et 8 Loi n°2016-1961 du 9 décembre 2016 relative à la transparence, à la lutte contre la corruption et à la modernisation de la vie économique</a>
+                        <p class="fr-text--sm">Définition du lanceur d'alerte et du dispositif interne de signalement </p>
+
+                        <a href="#" target="_blank" rel="noopener">I-B-1° Article 8 Loi n°2016-1961 du 9 décembre 2016</a>
+                        <p class="fr-text--sm">Les entreprises concernées </p>
+
+                        <a href="#" target="_blank" rel="noopener">I-A-1° à 5° Article 8 Loi n°2016-1961 du 9 décembre 2016</a>
+                        <p class="fr-text--sm">Les destinataires du dispositif </p>
+
+                        <a href="#" target="_blank" rel="noopener">Article 2 Décret n°2022-1248 du 3 octobre 2022 relatif aux procédures de recueil et de traitement des signalements émis par les lanceurs d'alerte et fixant la  liste des autorités externes instituées par la loi n° 2022-401 du 21  mars 2022 visant à améliorer la protection des lanceurs d'alerte</a>
+                        <p class="fr-text--sm">Modalités de calcul du seuil </p>
+
+                        <a href="#" target="_blank" rel="noopener">Article 8 Décret n°2022-1248</a>
+                        <p class="fr-text--sm">Diffusion et accès permanent du dispositif </p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    <!-- page fiche réglementation -->
+{% endblock %}
