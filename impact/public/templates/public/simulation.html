@@ -9,37 +9,42 @@
                 <h2>Simulation simplifiée</h2>
                 <p>
                     Effectuez une simulation simplifiée pour connaître les réglementations à laquelle votre entreprise peut être soumise.
-                    <br>Inscrivez-vous ou connectez-vous pour saisir vos critères complets.
+                    <br><a href="{% url 'users:creation' %}" target="_self">Inscrivez-vous</a> ou <a href="{% url 'users:login' %}" target="_self">connectez-vous</a> pour saisir vos critères complets.
                 </p>
             </div>
         </div>
         <div class="fr-grid-row fr-grid-row--gutters fr-pb-6w fr-pt-2w">
-            <div class="fr-col-lg-3">
+            <div class="fr-col-lg-4">
                 <div class="simu-steps  fr-p-3w">
-                    <h6>
-                        1. Cherchez votre entreprise
+                    <h6 class="fr-pb-2w">
+                        1. J’effectue ma simulation simplifiée
                     </h6>
+                    <p class="fr-text--sm">
+                        A l’aide de mon numéro SIREN, je renseigne ma tranche d’effectifs, mon CA et mon bilan pour connaitre rapidement mes obligations.
+                    </p>
+                    <p class="fr-text--sm">
+                        <span class="fr-icon-info-fill" aria-hidden="true"></span> Cette étape ne vous permet pas de connaitre précisément les réglementations auxquelles votre entreprise est soumise
+                    </p>
                 </div>
             </div>
-            <div class="fr-col-lg-3">
+            <div class="fr-col-lg-4">
                 <div class="simu-steps fr-p-3w">
-                    <h6>
-                        2. Indiquez les informations de votre entreprise
+                    <h6 class="fr-pb-2w">
+                        2. Je m'inscris
                     </h6>
+                    <p class="fr-text--sm">
+                        Je me crée un compte pour accéder à l’espace de simulation personnalisé pour mon entreprise.
+                    </p>
                 </div>
             </div>
-            <div class="fr-col-lg-3">
+            <div class="fr-col-lg-4">
                 <div class="simu-steps fr-p-3w">
-                    <h6>
-                        3. Consultez le résultat de votre simulation
+                    <h6 class="fr-pb-2w">
+                        3. J'accède à la simulation avancée
                     </h6>
-                </div>
-            </div>
-            <div class="fr-col-lg-3">
-                <div class="simu-steps fr-p-3w">
-                    <h6>
-                        4. Inscrivez-vous et pilotez vos obligations
-                    </h6>
+                    <p class="fr-text--sm">
+                        Après inscription, j’accède aux champs complémentaires pour avoir à la simulation avancée.
+                    </p>
                 </div>
             </div>
         </div>
@@ -51,7 +56,7 @@
         </div>
         <div class="fr-grid-row fr-grid-row--center">
             <div class="fr-col">
-                <h3>1. Recherchez votre entreprise</h3>
+                <h3>Recherchez votre entreprise</h3>
                 <form action="{% url 'simulation' %}#svelte-simulation-result" method="post" id="svelte-simulation-form">
                     {% csrf_token %}
                     <div id="svelte-search-entreprise" data-siren="{{ simulation_form.siren.value|default:'' }}" data-denomination="{{ simulation_form.denomination.value|default:'' }}">
@@ -64,7 +69,7 @@
                         </div>
                     </div>
                     <div id="svelte-simulation-fields" style="display: none">
-                        <h3>2. Renseignez les informations de votre entreprise</h3>
+                        <h3>Renseignez les informations de votre entreprise</h3>
                         <div class="fr-grid-row fr-grid-row--gutters fr-pb-4w">
                             <div class="fr-col-md-4 fr-col-12">
                                 {% include 'snippets/field.html' with field=simulation_form.effectif %}
@@ -113,7 +118,7 @@
         </div>
         <div class="fr-grid-row fr-py-3w">
             <div class="fr-container" id="svelte-simulation-result">
-                <h2>3. Résultats de votre simulation</h2>
+                <h2>Résultats de votre simulation</h2>
                 {% for reglementation in reglementations %}
                     {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
                 {% endfor %}
@@ -123,7 +128,7 @@
             <div class="fr-container">
                 <div class="fr-grid-row">
                     <div class="fr-col-12">
-                        <h2>4. Faire le suivi de vos réglementations</h2>
+                        <h2>Faire le suivi de vos réglementations</h2>
                         <p>
                             Vous souhaitez aller plus loin ? <b>Inscrivez-vous pour affiner vos réglementations applicables.</b><br>
                             En vous inscrivant sur Portail RSE, vous pourrez procéder au suivi complet des réglementations qui vous concernent.
