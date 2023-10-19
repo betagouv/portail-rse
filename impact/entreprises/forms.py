@@ -57,7 +57,7 @@ class EntrepriseForm(DsfrForm):
 
         appartient_groupe = cleaned_data.get("appartient_groupe")
         if appartient_groupe:
-            if not cleaned_data["effectif_groupe"]:
+            if not cleaned_data.get("effectif_groupe"):
                 self.add_error("effectif_groupe", ERREUR_CHAMP_MANQUANT_GROUPE)
         else:
             cleaned_data["effectif_groupe"] = None
