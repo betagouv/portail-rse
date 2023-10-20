@@ -166,6 +166,19 @@
     background-color: var(--background-contrast-grey);
 }
 
+/* fiches réglementation */
+
+.fiche-tuiles .fr-tile .fr-responsive-img {
+    height: 80px;
+    object-fit: contain;
+}
+
+.fiche-tuiles .fr-tile__body {
+    justify-content: start;
+}
+
+/* media queries */
+
 @media screen and (max-width: 992px) {
     .reglementation-grid {
         grid-gap: 0rem;
