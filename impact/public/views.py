@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.core.mail import EmailMessage
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.urls import reverse
 
 import api.exceptions
 import api.recherche_entreprises
@@ -12,6 +13,8 @@ from reglementations.forms import SimulationForm
 
 
 def index(request):
+    if request.user.is_authenticated:
+        return redirect(reverse("reglementations:reglementations"))
     return render(request, "public/index.html")
 
 
