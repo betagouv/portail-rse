@@ -12,10 +12,9 @@
         </div>
         <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-pb-6w fr-mt-1v">
             <div class="fr-col-lg-3">
-                <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                <figure class="fr-content-media" role="group" aria-label="">
                     <div class="fr-content-media__img">
-                        <img class="fr-responsive-img fr-ratio-2x3" src="{% static 'img/gouvernance-2x3.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
-                        <!-- L’alternative de l’image (attribut alt) doit toujours être présente, sa valeur peut-être vide (image n’apportant pas de sens supplémentaire au contexte) ou non (porteuse de texte ou apportant du sens) selon votre contexte -->
+                        <img class="fr-responsive-img fr-ratio-2x3" src="{% static 'img/gouvernance-2x3.png' %}" alt="" />
                     </div>
                 </figure>
             </div>
@@ -23,18 +22,19 @@
                 <div class="fr-grid-row">
                     <div class="fr-col-12">
                         <h2 class="fr-mb-1v">Dispositif Anti-corruption</h2>
-                        <p class="fr-text--xs">Dernière mise à jour le JJ/MM/AAAA</p>
+                        <p class="fr-text--xs">Dernière mise à jour le 13/10/2023</p>
                         <p>
-                            Le dispositif anti-corruption vise à permettre la détection, la prévention et la sanction potentielle de faits de corruption et d’atteinte à la probité qui adviendraient dans une entreprise.
+                            Le dispositif anti-corruption consacre un panel d'obligations générales de prévention et de détection de faits, en France ou à l’étranger, de corruption ou de trafic d’influence. Il vise à permettre la détection, la prévention et la sanction potentielle de faits de corruption et d’atteinte à la probité qui adviendraient dans une entreprise.
                         </p>
                     </div>
                 </div>
                 <div class="fr-grid-row fr-mt-2w">
                     <h5>Quelles entreprises sont concernées ?</h5>
                     <p class="">
-                        Toute entreprise employant au moins cinq cents salariés et dont le chiffre d'affaires HT est supérieur à 100 millions d'euros;
-                        <br><br>
-                        Tout groupe de sociétés dont la société mère a son siège social en France, employant au moins cinq cents salariés et dont le chiffre d'affaires consolidé HT est supérieur à cent millions d'euros [effectif du groupe international]
+                        <ul>
+                            <li>Toute entreprise employant au moins cinq cents salariés et dont le chiffre d'affaires est supérieur à 100 millions d'euros; ou</li>
+                            <li>Tout groupe de sociétés dont la société mère a son siège social en France, employant au moins cinq cents salariés et dont le chiffre d'affaires consolidé est supérieur à 100 millions d'euros.</li>
+                        </ul>
                     </p>
                 </div>
             </div>
@@ -48,14 +48,14 @@
                         <div class="fr-tile__body">
                             <div class="fr-tile__content">
                                 <h3 class="fr-tile__title">
-                                    Qui sont les destinataires ?
+                                    Quel est l'objectif poursuivi par l'obligation
                                 </h3>
-                                <p class="fr-tile__detail">Informer les salariés de l’existence et du fonctionnement du dispositif</p>
+                                <p class="fr-tile__detail">Se doter d'un dispositif interne de prévention et de détection de la corruption et du trafic d'influence</p>
                             </div>
                         </div>
                         <div class="fr-tile__header">
                             <div class="fr-tile__pictogram fr-pt-3w">
-                                <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Destinataires.svg' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                                <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Support.svg' %}" alt="" />
                             </div>
                         </div>
                     </div>
@@ -65,20 +65,16 @@
                         <div class="fr-tile__body">
                             <div class="fr-tile__content">
                                 <h3 class="fr-tile__title">
-                                    Quel support ?
+                                    Qui sont les destinataires / bénéficiaires du dispositif ?
                                 </h3>
                                 <p class="fr-tile__detail">
-                                    Parmi les procédures et mesures à mettre en place, le dispositif anti-corruption se matérialise notamment par la mise en place :
-                                    <br>
-                                    - d'un code de conduite au sein du règlement intérieur de l'entreprise
-                                    <br>
-                                    - d'une cartographie des risques prenant la forme d'une documentation régulièrement actualisée
+                                    Les différentes parties prenantes internes et externes de l'entreprise (salariés, actionnaires, fournisseurs, clients...)
                                 </p>
                             </div>
                         </div>
                         <div class="fr-tile__header">
                             <div class="fr-tile__pictogram fr-pt-3w">
-                                <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Support.svg' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                                <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Destinataires.svg' %}" alt="" />
                             </div>
                         </div>
                     </div>
@@ -88,16 +84,26 @@
                         <div class="fr-tile__body">
                             <div class="fr-tile__content">
                                 <h3 class="fr-tile__title">
-                                    Quel mode de transmission ?
+                                    Que dois-je faire pour me mettre en conformité ?
                                 </h3>
                                 <p class="fr-tile__detail">
-                                    Parmi les procédures et mesures à mettre en place, il revient à l'entreprise par exemple de délivrer des formations internes.
+                                    8 mesures et procédures sont prévues par la loi, à savoir :
+                                    <ol>
+                                        <li>Se doter d'un code de conduite</li>
+                                        <li>Avoir un dispositif d'alerte interne</li>
+                                        <li>Faire une cartographie des risques d'exposition à la corruption</li>
+                                        <li>Avoir des procédures d’évaluation de la situation de sa chaîne de valeur au regard des risques</li>
+                                        <li>Avoir des procédures de contrôles comptables internes ou externes</li>
+                                        <li>Avoir un dispositif de formation sur les risques de corruption et de trafic d'influence</li>
+                                        <li>Avoir un régime disciplinaire pour sanctionner les manquements au code de conduite</li>
+                                        <li>Avoir un dispositif de contrôle et d'évaluation interne des mesures mises en œuvre</li>
+                                    </ol>
                                 </p>
                             </div>
                         </div>
                         <div class="fr-tile__header">
                             <div class="fr-tile__pictogram fr-pt-3w">
-                                <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Transmission.svg' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                                <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Transmission.svg' %}" alt="" />
                             </div>
                         </div>
                     </div>
@@ -107,16 +113,17 @@
                         <div class="fr-tile__body">
                             <div class="fr-tile__content">
                                 <h3 class="fr-tile__title">
-                                    Fréquence
+                                    A quelle fréquence dois-je mettre à jour ce dispositif ?
                                 </h3>
                                 <p class="fr-tile__detail">
-                                    A mettre en œuvre de manière permanente au sein de l'entreprise
+                                    Les dispositifs doivent être accessible en permanence aux salariés.
+                                    <br>Les documents doivent être régulièrement actualisés.
                                 </p>
                             </div>
                         </div>
                         <div class="fr-tile__header">
                             <div class="fr-tile__pictogram fr-pt-3w">
-                                <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Quand.svg' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
+                                <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Quand.svg' %}" alt="" />
                             </div>
                         </div>
                     </div>
@@ -129,13 +136,9 @@
             <div class="fr-col-12 fr-py-6w">
                 <h3>Quelles sont les sanctions encourues ?</h3>
                 <p>
-                    Saisine de la commission des sanctions par l'agence française anticorruption qui :
-                    <ul>
-                        <li>Enjoint à la société et à ses représentants d'adapter le dispositif anti-corruption, dans un délai maximum de trois ans.</li>
-                        <li>Peut prononcer des sanctions pécuniaires : <br>
-                            Amende ne pouvant excéder de un million euros pour la personne morale et 200 000 euros pour une personne physique</li>
-                    </ul>
-                    De plus, en cas de manquement aux obligations de mise en œuvre des mesures anti-corruption, la société voit sa propre responsabilité engagée, indépendamment de la responsabilité des instances dirigeantes.
+                    Le respect des mesures et procédures peuvent faire l'objet d'un contrôle par l'Agence française anticorruption (AFA). Un rapport est établi et transmis à l'autorité mentionnée.
+                    <br><br>
+                    <b>En cas de manquement :</b> la commission des sanctions de l'AFA peut enjoindre la société d'adapter son dispositif et prononcer des sanctions pécuniaires pouvant aller jusqu'à 200 000€ pour les personnes physiques et 1 000 000€ pour les personnes morales
                 </p>
             </div>
         </div>
@@ -149,7 +152,7 @@
                         <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-106">Textes de référence</button>
                     </h3>
                     <div class="fr-collapse" id="accordion-106">
-                        <a href="#" target="_blank" rel="noopener">Article 17 loi n° 2016-1691 du 9 décembre 2016 relative à la transparence, à la lutte contre la corruption et à la modernisation de  la vie économique</a>
+                        <a href="https://www.legifrance.gouv.fr/jorf/article_jo/JORFARTI000033558666" target="_blank" rel="noopener">Article 17 loi n° 2016-1691 du 9 décembre 2016 relative à la transparence, à la lutte contre la corruption et à la modernisation de la vie économique</a>
                         <p class="fr-text--sm">Définition</p>
 
                         <a href="#" target="_blank" rel="noopener">I- Article 17 Loi n°2016-1691</a>
@@ -164,10 +167,8 @@
                         <a href="#" target="_blank" rel="noopener">Alinéa 9 II- Article 17 Loi N°2016-1691</a>
                         <p class="fr-text--sm">Engagement de la responsabilité de l'entreprise</p>
 
-                        <a href="#" target="_blank" rel="noopener">III- à V- Article 17 Loi N°2016-1691</a>
+                        <a href="#" target="_blank" rel="noopener">III- à V- Article 17 Loi N°2016-1691 / Article 5 Décret n° 2017-329 du 14 mars 2017 relatif à l'Agence française anticorruption</a>
                         <p class="fr-text--sm">Contrôle de l'agence française anticorruption et pénalités financières </p>
-
-                        <a href="#" target="_blank" rel="noopener">Recommandations AFA, 4 décembre 2020</a>
                     </div>
                 </section>
             </div>
