@@ -89,6 +89,17 @@
 .simu-steps {
     background-color: var(--yellow-tournesol-925-125);
     height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.simu-steps p {
+    flex-grow: 1;
+}
+
+.simu-steps .fr-btn {
+    justify-self:end;
+    align-self: flex-end;
 }
 
 .simu-steps.step-check {
@@ -216,6 +227,10 @@
 
 .fiche-tuiles .fr-tile__body {
     justify-content: start;
+}
+
+.fiche-tuiles .fr-tile ol li {
+    text-align: left;
 }
 
 /* media queries */
