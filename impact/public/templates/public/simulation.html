@@ -14,7 +14,7 @@
         </div>
         <div class="fr-grid-row fr-grid-row--gutters fr-pb-6w fr-pt-2w">
             <div class="fr-col-lg-4">
-                <div class="simu-steps  fr-p-3w">
+                <div class="simu-steps step-check fr-p-3w">
                     <h6 class="fr-pb-2w">
                         1. J’effectue ma simulation simplifiée
                     </h6>
@@ -27,7 +27,7 @@
                 </div>
             </div>
             <div class="fr-col-lg-4">
-                <div class="simu-steps fr-p-3w">
+                <div class="simu-steps {% if user.is_authenticated %}step-check {% else %}{% endif %} fr-p-3w">
                     <h6 class="fr-pb-2w">
                         2. Je m'inscris
                     </h6>
