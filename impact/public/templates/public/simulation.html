@@ -3,13 +3,12 @@
 {% block title %}Simulation - Portail RSE{% endblock %}
 
 {% block content %}
-    <div class="fr-container container-simulation fr-mt-10w fr-mb-4w">
+    <div class="fr-container container-simulation fr-mt-6w fr-mb-4w">
         <div class="fr-grid-row fr-grid-row--center">
             <div class="fr-col">
-                <h2>Simulation simplifiée</h2>
+                <h2>Comment effectuer une simulation complète ?</h2>
                 <p>
-                    Effectuez une simulation simplifiée pour connaître les réglementations à laquelle votre entreprise peut être soumise.
-                    <br><a href="{% url 'users:creation' %}" target="_self">Inscrivez-vous</a> ou <a href="{% url 'users:login' %}" target="_self">connectez-vous</a> pour saisir vos critères complets.
+                    Pour connaître les réglementations auxquelles votre entreprise est soumise, suivez ces 3 étapes :
                 </p>
             </div>
         </div>
@@ -35,6 +34,9 @@
                     <p class="fr-text--sm">
                         Je me crée un compte pour accéder à l’espace de simulation personnalisé pour mon entreprise.
                     </p>
+                    <a href="{% url 'users:creation'%}" class="fr-btn fr-btn--secondary fr-btn--md">
+                        M’inscrire sur le Portail RSE
+                    </a>
                 </div>
             </div>
             <div class="fr-col-lg-4">
@@ -46,6 +48,15 @@
                         Après inscription, j’accède aux champs complémentaires pour avoir à la simulation avancée.
                     </p>
                 </div>
+            </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--center">
+            <div class="fr-col">
+                <h2>1. Simulation simplifiée</h2>
+                <p>
+                    Effectuez une simulation simplifiée pour connaître les réglementations à laquelle votre entreprise peut être soumise.
+                    <br><a href="{% url 'users:creation' %}" target="_self">Inscrivez-vous</a> ou <a href="{% url 'users:login' %}" target="_self">connectez-vous</a> pour saisir vos critères complets.
+                </p>
             </div>
         </div>
                 <!-- Separateur -->
@@ -128,7 +139,7 @@
             <div class="fr-container">
                 <div class="fr-grid-row">
                     <div class="fr-col-12">
-                        <h2>Faire le suivi de vos réglementations</h2>
+                        <h2>2. Inscrivez-vous pour affiner vos réglementations applicables</h2>
                         <p>
                             Vous souhaitez aller plus loin ? <b>Inscrivez-vous pour affiner vos réglementations applicables.</b><br>
                             En vous inscrivant sur Portail RSE, vous pourrez procéder au suivi complet des réglementations qui vous concernent.
