@@ -17,7 +17,7 @@ def test_bges_reglementation_info():
         info["description"]
         == "Le bilan GES réglementaire a vocation à contribuer à la mise en œuvre de la stratégie de réduction des émissions de GES des entreprises. Un plan de transition est obligatoirement joint à ce bilan. Il vise à réduire les émissions de gaz à effet de serre et présente les objectifs, moyens et actions envisagées à cette fin ainsi que, le cas échéant, les actions mises en œuvre lors du précédent bilan. Ils sont mis à jour tous les quatre ans."
     )
-    assert info["more_info_url"] == reverse("reglementations:fiche_bilan_ges")
+    assert info["more_info_url"] == "https://bilans-ges.ademe.fr/"
 
 
 @pytest.mark.parametrize("est_soumis", [True, False])
