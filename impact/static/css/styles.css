@@ -68,6 +68,10 @@
     height: 100%;
 }
 
+.simu-steps.step-check {
+    background-color: var(--green-emeraude-950-100);
+}
+
 .simu-steps h6 {
     margin-bottom: 0;
 }
