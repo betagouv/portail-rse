@@ -83,7 +83,7 @@ class UserCreationForm(UserPasswordForm):
         model = User
         fields = ("email", "acceptation_cgu", "reception_actualites", "prenom", "nom")
         labels = {
-            "reception_actualites": "Je souhaite recevoir les actualités du projet Impact (optionnel)",
+            "reception_actualites": "Je souhaite recevoir les actualités du Portail RSE (optionnel)",
         }
 
 
@@ -92,7 +92,7 @@ class UserEditionForm(DsfrForm, forms.ModelForm):
         model = User
         fields = ("prenom", "nom", "email", "reception_actualites")
         labels = {
-            "reception_actualites": "Je souhaite recevoir les actualités du projet Impact (optionnel)",
+            "reception_actualites": "Je souhaite recevoir les actualités du Portail RSE (optionnel)",
         }
 
 
