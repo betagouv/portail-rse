@@ -19,7 +19,7 @@ from reglementations.views import REGLEMENTATIONS
 
 def index(request):
     if request.user.is_authenticated:
-        return redirect(reverse("reglementations:reglementations"))
+        return redirect(reverse("reglementations"))
     return render(request, "public/index.html")
 
 
