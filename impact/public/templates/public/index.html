@@ -91,8 +91,8 @@
                             <div class="fr-card__footer">
                                 <ul class="fr-btns-group">
                                     <li>
-                                        {% if user.is_authenticated %}
-                                            <a href="{% url 'entreprises:entreprises' %}" class="fr-btn fr-btn--secondary">
+                                        {% if user.is_authenticated and current_entreprise %}
+                                            <a href="{% url 'reglementations:reglementations' current_entreprise.siren %}" class="fr-btn fr-btn--secondary">
                                                 Accéder à mon tableau de bord
                                             </a>
                                         {% else %}

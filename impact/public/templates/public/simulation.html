@@ -6,7 +6,7 @@
     <div class="fr-container container-simulation fr-mt-6w fr-mb-4w">
         <div class="fr-grid-row fr-grid-row--center">
             <div class="fr-col">
-                <h2>Comment effectuer une simulation complète ?</h2>
+                <h2>Comment connaître mes obligations ?</h2>
                 <p>
                     Pour connaître les réglementations auxquelles votre entreprise est soumise, suivez ces 3 étapes :
                 </p>
@@ -32,20 +32,22 @@
                         2. Je m'inscris
                     </h6>
                     <p class="fr-text--sm">
-                        Je me crée un compte pour accéder à l’espace de simulation personnalisé pour mon entreprise.
+                        Je me crée un compte pour accéder au tableau de bord personnalisé de mon entreprise.
                     </p>
-                    <a href="{% url 'users:creation'%}" class="fr-btn fr-btn--secondary fr-btn--md">
-                        M’inscrire sur le Portail RSE
-                    </a>
+                    {% if user.is_authenticated %}{% else %}
+                        <a href="{% url 'users:creation'%}" class="fr-btn fr-btn--secondary fr-btn--md">
+                            M’inscrire sur le Portail RSE
+                        </a>
+                    {% endif %}
                 </div>
             </div>
             <div class="fr-col-lg-4 fr-col-12">
                 <div class="simu-steps fr-p-3w">
                     <h6 class="fr-pb-2w">
-                        3. J'accède à la simulation avancée
+                        3. J'accède à mon tableau de bord
                     </h6>
                     <p class="fr-text--sm">
-                        Après inscription, j’accède aux champs complémentaires pour avoir à la simulation avancée.
+                        Après inscription, je saisis les caractéristiques de mon entreprise pour accéder à mon tableau de bord. Je peux piloter et suivre mes obligations.
                     </p>
                 </div>
             </div>
@@ -55,7 +57,10 @@
                 <h2>1. Simulation simplifiée</h2>
                 <p>
                     Effectuez une simulation simplifiée pour connaître les réglementations à laquelle votre entreprise peut être soumise.
-                    <br><a href="{% url 'users:creation' %}" target="_self">Inscrivez-vous</a> ou <a href="{% url 'users:login' %}" target="_self">connectez-vous</a> pour saisir vos critères complets.
+                    {% if user.is_authenticated %}
+                    {% else %}
+                        <br><a href="{% url 'users:creation' %}" target="_self">Inscrivez-vous</a> ou <a href="{% url 'users:login' %}" target="_self">connectez-vous</a> pour saisir vos critères complets.
+                    {% endif %}
                 </p>
             </div>
         </div>
