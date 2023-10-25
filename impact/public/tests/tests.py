@@ -28,12 +28,13 @@ def test_page_index_pour_un_visiteur_anonyme(client):
     assert "<!-- page index -->" in content
 
 
-def test_redirection_de_la_page_index_vers_ses_reglementations_si_l_utilisateur_est_connecte(
+def test_redirection_de_la_page_index_vers_ses_reglementations_si_l_utilisateur_vient_de_se_connecter_depuis_la_page_d_accueil(
     client, alice
 ):
     client.force_login(alice)
-
-    response = client.get("/", follow=True)
+    response = client.get(
+        "/", follow=True, headers={"referer": "http://domain.test/connexion?next=/"}
+    )
 
     assert response.status_code == 200
     assert response.redirect_chain == [

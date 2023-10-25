@@ -18,7 +18,8 @@ from reglementations.views import REGLEMENTATIONS
 
 
 def index(request):
-    if request.user.is_authenticated:
+    referer = request.META.get("HTTP_REFERER", "")
+    if referer.endswith("/connexion?next=/"):
         return redirect(reverse("reglementations"))
     return render(request, "public/index.html")
 
