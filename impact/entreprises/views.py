@@ -1,4 +1,6 @@
 from datetime import date
+from datetime import datetime
+from datetime import timezone
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -129,6 +131,7 @@ def qualification(request, siren):
                 "societe_mere_en_france"
             ]
             entreprise.comptes_consolides = form.cleaned_data["comptes_consolides"]
+            entreprise.date_derniere_qualification = datetime.now(tz=timezone.utc)
             entreprise.save()
             actualisation = ActualisationCaracteristiquesAnnuelles(
                 date_cloture_dernier_exercice,

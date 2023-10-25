@@ -330,9 +330,10 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
         "systeme_management_energie": True,
     }
 
-    url = f"/entreprises/{entreprise_non_qualifiee.siren}"
-    response = client.get(url)
-    response = client.post(url, data=data, follow=True)
+    with freeze_time(date(2023, 10, 25)):
+        url = f"/entreprises/{entreprise_non_qualifiee.siren}"
+        response = client.get(url)
+        response = client.post(url, data=data, follow=True)
 
     assert response.status_code == 200
     assert response.redirect_chain == [
@@ -347,6 +348,7 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
     assert "Les informations de l'entreprise ont été mises à jour." in content
 
     entreprise_non_qualifiee.refresh_from_db()
+    assert entreprise_non_qualifiee.date_derniere_qualification == date(2023, 10, 25)
     assert entreprise_non_qualifiee.denomination == "Entreprise SAS"
     assert entreprise_non_qualifiee.date_cloture_exercice == date(2022, 12, 31)
     assert entreprise_non_qualifiee.appartient_groupe

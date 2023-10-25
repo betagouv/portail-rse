@@ -27,6 +27,10 @@ class ActualisationCaracteristiquesAnnuelles:
 class Entreprise(TimestampedModel):
     siren = models.CharField(max_length=9, unique=True)
     denomination = models.CharField(max_length=DENOMINATION_MAX_LENGTH)
+    date_derniere_qualification = models.DateField(
+        verbose_name="Date de la dernière qualification",
+        null=True,
+    )
     date_cloture_exercice = models.DateField(
         verbose_name="Date de clôture du dernier exercice comptable",
         null=True,
