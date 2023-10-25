@@ -3,6 +3,7 @@ import html
 import pytest
 from django.urls import reverse
 
+from habilitations.models import attach_user_to_entreprise
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
 from reglementations.views.bdese import BDESEReglementation
 from reglementations.views.bges import BGESReglementation
@@ -29,8 +30,25 @@ def test_page_index_pour_un_visiteur_anonyme(client):
 
 
 def test_redirection_de_la_page_index_vers_ses_reglementations_si_l_utilisateur_vient_de_se_connecter_depuis_la_page_d_accueil(
+    client, alice, entreprise_factory
+):
+    entreprise = entreprise_factory()
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    client.force_login(alice)
+    response = client.get(
+        "/", follow=True, headers={"referer": "http://domain.test/connexion?next=/"}
+    )
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [
+        (reverse("reglementations:reglementations", args=[entreprise.siren]), 302),
+    ]
+
+
+def test_redirection_de_la_page_index_vers_les_reglementations_generique_si_l_utilisateur_vient_de_se_connecter_depuis_la_page_d_accueil_et_sans_entreprise(
     client, alice
 ):
+    """cas où un utilisateur aurait créé un compte directement"""
     client.force_login(alice)
     response = client.get(
         "/", follow=True, headers={"referer": "http://domain.test/connexion?next=/"}

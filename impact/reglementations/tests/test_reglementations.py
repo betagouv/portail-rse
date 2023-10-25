@@ -53,19 +53,6 @@ def entreprise(db, alice, entreprise_factory):
     return entreprise
 
 
-def test_page_reglementations_redirige_utilisateur_authentifie_vers_les_reglementations_associees_a_son_entreprise(
-    client, entreprise
-):
-    client.force_login(entreprise.users.first())
-
-    response = client.get("/reglementations", follow=True)
-
-    assert response.status_code == 200
-
-    url = f"/reglementations/{entreprise.siren}"
-    assert response.redirect_chain == [(url, 302)]
-
-
 def test_reglementations_for_entreprise_with_authenticated_user(client, entreprise):
     client.force_login(entreprise.users.first())
 

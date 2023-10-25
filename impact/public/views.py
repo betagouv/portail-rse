@@ -19,7 +19,9 @@ from reglementations.views import REGLEMENTATIONS
 
 def index(request):
     referer = request.META.get("HTTP_REFERER", "")
-    if referer.endswith("/connexion?next=/"):
+    if request.user.is_authenticated and referer.endswith("/connexion?next=/"):
+        if entreprise := get_current_entreprise(request):
+            return redirect("reglementations:reglementations", siren=entreprise.siren)
         return redirect(reverse("reglementations"))
     return render(request, "public/index.html")
 
@@ -72,9 +74,6 @@ def contact(request):
 
 
 def reglementations(request):
-    if entreprise := get_current_entreprise(request):
-        return redirect("reglementations:reglementations", siren=entreprise.siren)
-
     reglementations = [
         {
             "reglementation": reglementation,
