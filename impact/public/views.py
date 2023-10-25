@@ -5,7 +5,6 @@ from django.contrib import messages
 from django.core.mail import EmailMessage
 from django.shortcuts import redirect
 from django.shortcuts import render
-from django.urls import reverse
 
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
@@ -18,11 +17,15 @@ from reglementations.views import REGLEMENTATIONS
 
 
 def index(request):
-    referer = request.META.get("HTTP_REFERER", "")
-    if request.user.is_authenticated and referer.endswith("/connexion?next=/"):
-        if entreprise := get_current_entreprise(request):
-            return redirect("reglementations:reglementations", siren=entreprise.siren)
-        return redirect(reverse("reglementations"))
+    if request.user.is_authenticated:
+        referer = request.META.get("HTTP_REFERER", "")
+        if referer.endswith("/connexion") or referer.endswith("/connexion?next=/"):
+            if entreprise := get_current_entreprise(request):
+                return redirect(
+                    "reglementations:reglementations", siren=entreprise.siren
+                )
+            else:
+                return redirect("entreprises:entreprises")
     return render(request, "public/index.html")
 
 

@@ -35,6 +35,16 @@ def test_redirection_de_la_page_index_vers_ses_reglementations_si_l_utilisateur_
     entreprise = entreprise_factory()
     attach_user_to_entreprise(alice, entreprise, "Présidente")
     client.force_login(alice)
+
+    response = client.get(
+        "/", follow=True, headers={"referer": "http://domain.test/connexion"}
+    )
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [
+        (reverse("reglementations:reglementations", args=[entreprise.siren]), 302),
+    ]
+
     response = client.get(
         "/", follow=True, headers={"referer": "http://domain.test/connexion?next=/"}
     )
@@ -45,10 +55,10 @@ def test_redirection_de_la_page_index_vers_ses_reglementations_si_l_utilisateur_
     ]
 
 
-def test_redirection_de_la_page_index_vers_les_reglementations_generique_si_l_utilisateur_vient_de_se_connecter_depuis_la_page_d_accueil_et_sans_entreprise(
+def test_redirection_de_la_page_index_vers_l_ajout_d_entreprise_si_l_utilisateur_vient_de_se_connecter_depuis_la_page_d_accueil_et_sans_entreprise(
     client, alice
 ):
-    """cas où un utilisateur aurait créé un compte directement"""
+    """cas où un utilisateur aurait quitté toutes ses entreprises"""
     client.force_login(alice)
     response = client.get(
         "/", follow=True, headers={"referer": "http://domain.test/connexion?next=/"}
@@ -56,7 +66,7 @@ def test_redirection_de_la_page_index_vers_les_reglementations_generique_si_l_ut
 
     assert response.status_code == 200
     assert response.redirect_chain == [
-        (reverse("reglementations"), 302),
+        (reverse("entreprises:entreprises"), 302),
     ]
 
 
