@@ -67,6 +67,10 @@
     background-color: var(--background-alt-blue-france);
 }
 
+.logo-rse {
+    max-width: 180px;
+}
+
 .rse-themes {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
@@ -246,6 +250,11 @@
         justify-content:flex-start;
         grid-row: 3/4;
     }
+    .rse-themes {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-gap: 1rem;
+    }
 }
 
 @media screen and (max-width: 576px) {
@@ -264,6 +273,20 @@
     }
     .reglementation_badge .fr-badge {
         margin: 0 0 1rem 0;
+    }
+    .rse-themes {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-gap: .5rem;
+    }
+
+    .rse-themes p {
+        text-align: left;
+        margin-bottom: .5rem;
+    }
+
+    .rse-themes .fr-content-media {
+        display: none;
     }
 }
 
