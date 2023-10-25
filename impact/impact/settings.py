@@ -146,7 +146,7 @@ EMAIL_BACKEND = (
     else "django.core.mail.backends.console.EmailBackend"
 )
 ANYMAIL = {"SENDINBLUE_API_KEY": SENDINBLUE_API_KEY}
-DEFAULT_FROM_EMAIL = "ne-pas-repondre@impact.beta.gouv.fr"
+DEFAULT_FROM_EMAIL = "ne-pas-repondre@portail-rse.beta.gouv.fr"
 CONTACT_EMAIL = os.getenv("CONTACT_EMAIL")
 SENDINBLUE_CONFIRM_EMAIL_TEMPLATE = 1
 
