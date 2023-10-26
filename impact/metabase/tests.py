@@ -1,3 +1,4 @@
+from datetime import date
 from datetime import datetime
 from datetime import timezone
 
@@ -37,11 +38,17 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
         date_cloture_dernier_exercice.day,
         tzinfo=timezone.utc,
     )
+    date_derniere_qualification = date(
+        date_cloture_dernier_exercice.year,
+        month=12,
+        day=15,
+    )
     with freeze_time(date_creation) as frozen_datetime:
         entreprise = entreprise_factory(
             siren="000000001",
             denomination="Entreprise A",
             date_cloture_exercice=date_cloture_dernier_exercice,
+            date_derniere_qualification=date_derniere_qualification,
             effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
             effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
             tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
@@ -96,6 +103,9 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
         == date_cloture_dernier_exercice.replace(
             year=date_cloture_dernier_exercice.year + 2
         )
+    )
+    assert (
+        metabase_entreprise.date_derniere_qualification == date_derniere_qualification
     )
     assert metabase_entreprise.appartient_groupe is False
     assert metabase_entreprise.societe_mere_en_france is False

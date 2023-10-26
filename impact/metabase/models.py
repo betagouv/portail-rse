@@ -23,6 +23,7 @@ class Entreprise(models.Model):
     denomination = models.CharField(max_length=DENOMINATION_MAX_LENGTH)
 
     date_cloture_exercice = models.DateField(null=True)
+    date_derniere_qualification = models.DateField(null=True)
     appartient_groupe = models.BooleanField(null=True)
     societe_mere_en_france = models.BooleanField(null=True)
     comptes_consolides = models.BooleanField(null=True)
