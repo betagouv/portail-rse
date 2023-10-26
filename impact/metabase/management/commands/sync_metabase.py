@@ -43,6 +43,7 @@ class Command(BaseCommand):
                 date_cloture_exercice=caracteristiques.date_cloture_exercice
                 if caracteristiques
                 else None,
+                date_derniere_qualification=entreprise.date_derniere_qualification,
                 appartient_groupe=entreprise.appartient_groupe,
                 societe_mere_en_france=entreprise.societe_mere_en_france,
                 comptes_consolides=entreprise.comptes_consolides,
