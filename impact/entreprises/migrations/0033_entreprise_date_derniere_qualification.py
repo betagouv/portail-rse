@@ -3,6 +3,73 @@ from django.db import migrations
 from django.db import models
 
 
+def fill_date_derniere_qualification(apps, schema_editor):
+    """Remplit la date de derniere qualification si l'entreprise est qualifiee
+
+    Il est possible de sous-évaluer les entreprises ayant été qualifiées car
+    certaines ont pu l'être dans le passé mais ne plus l'être lors de
+    l'exécution de la migration car des champs obligatoires ont été ajoutés
+    entre temps.
+    """
+    Entreprise = apps.get_model("entreprises", "Entreprise")
+    for entreprise in Entreprise.objects.all():
+        if not entreprise.date_derniere_qualification:
+            if caracteristiques := dernieres_caracteristiques_qualifiantes(
+                apps, entreprise
+            ):
+                derniere_maj = caracteristiques.updated_at
+                entreprise.date_derniere_qualification = derniere_maj.date()
+                entreprise.save()
+                print(f"MIGRATION pour {entreprise}")
+            else:
+                print(f"pas de dernière qualification pour {entreprise}")
+
+
+def dernieres_caracteristiques_qualifiantes(apps, entreprise):
+    CaracteristiquesAnnuelles = apps.get_model(
+        "entreprises", "CaracteristiquesAnnuelles"
+    )
+    for caracteristiques in CaracteristiquesAnnuelles.objects.filter(
+        entreprise=entreprise,
+    ).order_by("-annee"):
+        if sont_qualifiantes(caracteristiques, entreprise):
+            return caracteristiques
+
+
+def sont_qualifiantes(caracteristiques, entreprise):
+    return bool(
+        caracteristiques.date_cloture_exercice
+        and caracteristiques.effectif
+        and caracteristiques.effectif_outre_mer
+        and caracteristiques.tranche_chiffre_affaires
+        and caracteristiques.tranche_bilan
+        and caracteristiques.bdese_accord is not None
+        and caracteristiques.systeme_management_energie is not None
+        and groupe_est_qualifie(caracteristiques, entreprise)
+    )
+
+
+def groupe_est_qualifie(caracteristiques, entreprise):
+    if entreprise.appartient_groupe is None:
+        return False
+    elif not entreprise.appartient_groupe:
+        return True
+    else:
+        comptes_consolides_sont_qualifies = bool(
+            not entreprise.comptes_consolides
+            or (
+                caracteristiques.tranche_chiffre_affaires_consolide
+                and caracteristiques.tranche_bilan_consolide
+            )
+        )
+        return bool(
+            caracteristiques.effectif_groupe
+            and entreprise.societe_mere_en_france is not None
+            and entreprise.comptes_consolides is not None
+            and comptes_consolides_sont_qualifies
+        )
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -16,5 +83,9 @@ class Migration(migrations.Migration):
             field=models.DateField(
                 null=True, verbose_name="Date de la dernière qualification"
             ),
+        ),
+        migrations.RunPython(
+            fill_date_derniere_qualification,
+            reverse_code=migrations.RunPython.noop,
         ),
     ]
