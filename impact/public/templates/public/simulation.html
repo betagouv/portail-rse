@@ -13,7 +13,7 @@
             </div>
         </div>
         <div class="fr-grid-row fr-grid-row--gutters fr-pb-6w fr-pt-2w">
-            <div class="fr-col-lg-4 fr-col-12">
+            <div class="fr-col-lg-4 fr-col-12 fr-col-12">
                 <div class="simu-steps step-check fr-p-3w">
                     <h6 class="fr-pb-2w">
                         1. J’effectue ma simulation simplifiée
@@ -26,7 +26,7 @@
                     </p>
                 </div>
             </div>
-            <div class="fr-col-lg-4 fr-col-12">
+            <div class="fr-col-lg-4 fr-col-12 fr-col-12">
                 <div class="simu-steps {% if user.is_authenticated %}step-check {% else %}{% endif %} fr-p-3w">
                     <h6 class="fr-pb-2w">
                         2. Je m'inscris
@@ -41,7 +41,7 @@
                     {% endif %}
                 </div>
             </div>
-            <div class="fr-col-lg-4 fr-col-12">
+            <div class="fr-col-lg-4 fr-col-12 fr-col-12">
                 <div class="simu-steps fr-p-3w">
                     <h6 class="fr-pb-2w">
                         3. J'accède à mon tableau de bord
@@ -105,7 +105,7 @@
                             <div id="svelte-groupe-fields" class="fr-col-12 fr-mt-1w">
                                 {% include 'snippets/fieldset_element.html' with field=simulation_form.comptes_consolides id="svelte-avec-comptes-consolides-field" %}
                                 <div class="fr-grid-row">
-                                    <div class="fr-col-lg-4 fr-col-12 fr-my-2w">
+                                    <div class="fr-col-lg-4 fr-col-12 fr-col-12 fr-my-2w">
                                         {% include 'snippets/fieldset_element.html' with field=simulation_form.effectif_groupe %}
                                     </div>
                                     <div id="svelte-comptes-consolides-fields" class="fr-col-lg-8 fr-col-12">
