@@ -198,6 +198,7 @@ def test_page_publique_des_reglementations(client):
     assert "Index de l’égalité professionnelle" in content
 
     context = response.context
+    assert not context.get("entreprise")
     for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
         assert context["reglementations"][index]["reglementation"] == REGLEMENTATION
         assert context["reglementations"][index]["status"] is None
