@@ -233,7 +233,7 @@
     justify-content: start;
 }
 
-.fiche-tuiles .fr-tile ol li {
+.fiche-tuiles .fr-tile ol li, .fiche-tuiles .fr-tile__detail {
     text-align: left;
 }
 
