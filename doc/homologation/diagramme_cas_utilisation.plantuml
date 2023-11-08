@@ -1,0 +1,30 @@
+@startuml
+left to right direction
+actor "Visiteur" as visiteur
+actor "recherche-entreprises.api.gouv.fr" as apiRE
+actor "egapro.travail.gouv.fr" as apiEP
+actor "brevo.com" as apiBrevo
+
+rectangle portail-rse.beta.gouv.fr {
+  usecase "Consultation des réglementations" as UC1
+  usecase "Simulation d'une entreprise" as UC2
+  usecase "Création de compte" as UC3
+  usecase "Connexion" as UC4
+  usecase "Configuration détaillée d'une entreprise" as UC5
+  usecase "Visualisation du tableau de bord" as UC6
+  usecase "Remplissage BDESE" as UC7
+}
+visiteur --> UC1
+visiteur --> UC2
+visiteur --> UC3
+visiteur --> UC4
+visiteur --> UC5
+visiteur --> UC6
+visiteur --> UC7
+UC2 --> apiRE
+UC3 --> apiRE
+UC3 --> apiBrevo
+UC5 --> apiRE
+UC6 --> apiEP
+UC7 --> apiEP
+@enduml
