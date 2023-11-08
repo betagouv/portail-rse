@@ -1,19 +1,23 @@
-@startditaa(--no-shadows, scale=0.8)
+@startditaa(--no-shadows)
 
-                 portail-rse.beta.gouv.fr                              stats.portail-rse.beta.gouv.fr
-            +--------------------------------+                       +--------------------------------+
-            |                                |                       |                                |
-            |        Service Django          |                       |           Metabase             |
-            |                                |                       |                                |
-            |                                |  données anonymisées  |                                |
-            |                                +---------------------->+                                |
-            |         PostgreSQL             |                       |          PostgreSQL            |
-            |                                |                       |                                |
-            |                                |                       |                                |
-            +------+-------------+-----------+                       +--------------------------------+
-                   ^             |
-                   |             |
-   API recherche entreprises     +--> API envoi d'e-mail
-   API Index EgaPro                   API Sentry
-                                      API Matomo
+                 portail-rse.beta.gouv.fr                                    stats.portail-rse.beta.gouv.fr
+            +--------------------------------+                             +--------------------------------+
+            |                                |     données anonymisées     |                                |
+            |      Service Portail RSE       |                             |       Service Metabase         |
+            |                                |        +----------+         |                                |
+            |                                |        |          |         |                                |
+            |                                +------->|PostgreSQL|-------->+                                |
+            |                     +----------+        |       {s}|         |                     +----------+
+            |                     |          |        +----------+         |                     |          |
+            |                     |PostgreSQL|                             |                     |PostgreSQL|
+            |                     |       {s}|                             |                     |       {s}|
+            +------+-----------+--+----------+                             +---------------------+----------+
+                   ^           |
+                   |           |
+                   |           |
+                   |           |
+                   |           |    API Brevo
+   API Recherche entreprises   +--> API Sentry
+   API Index EgaPro                 API Matomo
+
 @endditaa
