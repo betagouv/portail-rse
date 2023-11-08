@@ -72,18 +72,32 @@
 }
 
 .rse-themes {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-gap: 1rem;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.rse-themes .rse-theme {
+    max-width: 140px;
+}
+
+.rse-theme .fr-content-media {
+    margin: 1rem 0;
 }
 
 .rse-themes p {
     text-align: center;
 }
 
+.fr-responsive-img {
+    height: 100%;
+    object-fit: contain;
+}
+
 .portail-header {
-    background-image: url("../img/portail-1920.png");
-    background-size: contain;
+    background-image: url("../img/home.png");
+    background-size: cover;
     background-position: top;
     background-repeat: no-repeat;
 }
@@ -262,6 +276,17 @@
     }
 }
 
+@media screen and (max-width: 768px) {
+    .portail-header {
+        background-image: none;
+        background-color: var(--background-contrast-blue-ecume);
+        background-size: cover;
+        background-position: top;
+        background-repeat: no-repeat;
+    }
+}
+
+
 @media screen and (max-width: 576px) {
     .reglementation-header {
         width: 100%;
@@ -292,6 +317,9 @@
 
     .rse-themes .fr-content-media {
         display: none;
+    }
+    .rse-themes .rse-theme {
+        max-width: none;
     }
 }
 
