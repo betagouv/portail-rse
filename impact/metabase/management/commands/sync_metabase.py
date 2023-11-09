@@ -44,6 +44,7 @@ class Command(BaseCommand):
                 if caracteristiques
                 else None,
                 date_derniere_qualification=entreprise.date_derniere_qualification,
+                categorie_juridique_sirene=entreprise.categorie_juridique_sirene,
                 appartient_groupe=entreprise.appartient_groupe,
                 societe_mere_en_france=entreprise.societe_mere_en_france,
                 comptes_consolides=entreprise.comptes_consolides,

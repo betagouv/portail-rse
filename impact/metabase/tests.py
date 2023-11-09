@@ -49,6 +49,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
             denomination="Entreprise A",
             date_cloture_exercice=date_cloture_dernier_exercice,
             date_derniere_qualification=date_derniere_qualification,
+            categorie_juridique_sirene=5699,
             effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
             effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
             tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
@@ -98,6 +99,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
     assert metabase_entreprise.modifiee_le == date_troisieme_evolution
     assert metabase_entreprise.siren == "000000001"
     assert metabase_entreprise.denomination == "Entreprise A"
+    assert metabase_entreprise.categorie_juridique_sirene == 5699
     assert (
         metabase_entreprise.date_cloture_exercice
         == date_cloture_dernier_exercice.replace(
