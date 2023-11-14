@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name="entreprise",
-            name="categorie_juridique_sirene",
-            field=models.IntegerField(null=True),
+            name="categorie_juridique",
+            field=models.CharField(max_length=50, null=True),
         ),
     ]

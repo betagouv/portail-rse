@@ -99,7 +99,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
     assert metabase_entreprise.modifiee_le == date_troisieme_evolution
     assert metabase_entreprise.siren == "000000001"
     assert metabase_entreprise.denomination == "Entreprise A"
-    assert metabase_entreprise.categorie_juridique_sirene == 5699
+    assert metabase_entreprise.categorie_juridique == "SOCIETE_ANONYME"
     assert (
         metabase_entreprise.date_cloture_exercice
         == date_cloture_dernier_exercice.replace(

@@ -93,6 +93,10 @@ class Entreprise(TimestampedModel):
         ).order_by("-annee"):
             return caracteristiques.first()
 
+    @property
+    def categorie_juridique(self):
+        return convertit_categorie_juridique(self.categorie_juridique_sirene)
+
     def caracteristiques_annuelles(self, annee):
         try:
             return CaracteristiquesAnnuelles.objects.get(
