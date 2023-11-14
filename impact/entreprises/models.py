@@ -26,6 +26,7 @@ class ActualisationCaracteristiquesAnnuelles:
 
 
 class CategorieJuridique(Enum):
+    AUTRE = 0
     SOCIETE_ANONYME = 1
     SOCIETE_COMMANDITE_PAR_ACTION = 2
     SOCIETE_PAR_ACTION_SIMPLIFIEE = 3
@@ -33,7 +34,9 @@ class CategorieJuridique(Enum):
 
 
 def conversion_categorie_juridique(categorie_juridique_sirene):
-    if 5308 <= categorie_juridique_sirene <= 5385:
+    if not categorie_juridique_sirene:
+        return
+    elif 5308 <= categorie_juridique_sirene <= 5385:
         return CategorieJuridique.SOCIETE_COMMANDITE_PAR_ACTION
     elif 5505 <= categorie_juridique_sirene <= 5699:
         return CategorieJuridique.SOCIETE_ANONYME
@@ -42,7 +45,7 @@ def conversion_categorie_juridique(categorie_juridique_sirene):
     elif categorie_juridique_sirene == 5800:
         return CategorieJuridique.SOCIETE_EUROPEENNE
     else:
-        return
+        return CategorieJuridique.AUTRE
 
 
 class Entreprise(TimestampedModel):

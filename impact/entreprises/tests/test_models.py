@@ -384,6 +384,14 @@ def test_categorie_SE():
     assert conversion_categorie_juridique(5800) == CategorieJuridique.SOCIETE_EUROPEENNE
 
 
-def test_categorie_non_traitee():
+def test_categorie_autre():
     categorie_juridique_sirene = 9240  # congrégation
+    assert (
+        conversion_categorie_juridique(categorie_juridique_sirene)
+        == CategorieJuridique.AUTRE
+    )
+
+
+def test_aucune_categorie():
+    categorie_juridique_sirene = None
     assert conversion_categorie_juridique(categorie_juridique_sirene) is None
