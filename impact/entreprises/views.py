@@ -137,6 +137,7 @@ def qualification(request, siren):
             actualisation = ActualisationCaracteristiquesAnnuelles(
                 date_cloture_dernier_exercice,
                 form.cleaned_data["effectif"],
+                None,
                 form.cleaned_data["effectif_outre_mer"],
                 form.cleaned_data["effectif_groupe"],
                 form.cleaned_data["tranche_chiffre_affaires"],

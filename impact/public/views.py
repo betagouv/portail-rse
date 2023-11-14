@@ -136,6 +136,7 @@ def calcule_simulation(simulation_form, user):
     actualisation = ActualisationCaracteristiquesAnnuelles(
         date_cloture_exercice=date_cloture_exercice,
         effectif=simulation_form.cleaned_data["effectif"],
+        effectif_permanent=None,
         effectif_outre_mer=None,
         effectif_groupe=simulation_form.cleaned_data["effectif_groupe"],
         tranche_chiffre_affaires=simulation_form.cleaned_data[

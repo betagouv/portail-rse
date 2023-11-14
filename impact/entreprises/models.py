@@ -15,6 +15,7 @@ DENOMINATION_MAX_LENGTH = 250
 class ActualisationCaracteristiquesAnnuelles:
     date_cloture_exercice: date
     effectif: str
+    effectif_permanent: str
     effectif_outre_mer: str
     effectif_groupe: str
     tranche_chiffre_affaires: str
@@ -128,6 +129,7 @@ class Entreprise(TimestampedModel):
         )
         caracteristiques.date_cloture_exercice = actualisation.date_cloture_exercice
         caracteristiques.effectif = actualisation.effectif
+        caracteristiques.effectif_permanent = actualisation.effectif_permanent
         caracteristiques.effectif_outre_mer = actualisation.effectif_outre_mer
         caracteristiques.effectif_groupe = actualisation.effectif_groupe
         caracteristiques.tranche_chiffre_affaires = (
@@ -224,6 +226,13 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         choices=[BLANK_CHOICE] + EFFECTIF_CHOICES,
         verbose_name="Effectif",
         help_text="Nombre de salariés de l'entreprise",
+        null=True,
+    )
+    effectif_permanent = models.CharField(
+        max_length=9,
+        choices=[BLANK_CHOICE] + EFFECTIF_CHOICES,
+        verbose_name="Effectif",
+        help_text="Nombre moyen de salariés à temps plein, titulaires d'un contrat à durée indéterminée employés par l'entreprise au cours de l'exercice",
         null=True,
     )
     effectif_outre_mer = models.CharField(

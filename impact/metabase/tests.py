@@ -63,6 +63,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
                 year=date_cloture_dernier_exercice.year + 1
             ),
             effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+            effectif_permanent=None,
             effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
             effectif_groupe=None,
             tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
@@ -79,6 +80,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
                 year=date_cloture_dernier_exercice.year + 2
             ),
             effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+            effectif_permanent=None,
             effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
             effectif_groupe=None,
             tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
