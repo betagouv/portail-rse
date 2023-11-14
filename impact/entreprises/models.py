@@ -33,7 +33,7 @@ class CategorieJuridique(Enum):
     SOCIETE_EUROPEENNE = 4
 
 
-def conversion_categorie_juridique(categorie_juridique_sirene):
+def convertit_categorie_juridique(categorie_juridique_sirene):
     if not categorie_juridique_sirene:
         return
     elif 5308 <= categorie_juridique_sirene <= 5385:

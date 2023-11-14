@@ -10,7 +10,7 @@ from freezegun import freeze_time
 from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import CategorieJuridique
-from entreprises.models import conversion_categorie_juridique
+from entreprises.models import convertit_categorie_juridique
 from entreprises.models import Entreprise
 
 
@@ -353,7 +353,7 @@ def test_categorie_SA():
         5699,  # SA à directoire (s.a.i.)
     ):
         assert (
-            conversion_categorie_juridique(categorie_juridique_sirene)
+            convertit_categorie_juridique(categorie_juridique_sirene)
             == CategorieJuridique.SOCIETE_ANONYME
         )
 
@@ -364,7 +364,7 @@ def test_categorie_SCA():
         5385,  # Société d'exercice libéral en commandite par actions
     ):
         assert (
-            conversion_categorie_juridique(categorie_juridique_sirene)
+            convertit_categorie_juridique(categorie_juridique_sirene)
             == CategorieJuridique.SOCIETE_COMMANDITE_PAR_ACTION
         )
 
@@ -375,23 +375,23 @@ def test_categorie_SAS():
         5785,  # Société d'exercice libéral par action simplifiée
     ):
         assert (
-            conversion_categorie_juridique(categorie_juridique_sirene)
+            convertit_categorie_juridique(categorie_juridique_sirene)
             == CategorieJuridique.SOCIETE_PAR_ACTION_SIMPLIFIEE
         )
 
 
 def test_categorie_SE():
-    assert conversion_categorie_juridique(5800) == CategorieJuridique.SOCIETE_EUROPEENNE
+    assert convertit_categorie_juridique(5800) == CategorieJuridique.SOCIETE_EUROPEENNE
 
 
 def test_categorie_autre():
     categorie_juridique_sirene = 9240  # congrégation
     assert (
-        conversion_categorie_juridique(categorie_juridique_sirene)
+        convertit_categorie_juridique(categorie_juridique_sirene)
         == CategorieJuridique.AUTRE
     )
 
 
 def test_aucune_categorie():
     categorie_juridique_sirene = None
-    assert conversion_categorie_juridique(categorie_juridique_sirene) is None
+    assert convertit_categorie_juridique(categorie_juridique_sirene) is None
