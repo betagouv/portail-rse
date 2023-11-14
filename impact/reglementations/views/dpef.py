@@ -7,6 +7,9 @@ from reglementations.views.base import ReglementationStatus
 
 
 CRITERE_EFFECTIF_PERMANENT = "votre effectif permanent est supérieur à 500 salariés"
+CRITERE_EFFECTIF_GROUPE_PERMANENT = (
+    "l'effectif permanent du groupe est supérieur à 500 salariés"
+)
 
 
 class DPEFReglementation(Reglementation):
@@ -32,20 +35,43 @@ class DPEFReglementation(Reglementation):
             CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         ):
             criteres.append(CRITERE_EFFECTIF_PERMANENT)
+        elif (
+            caracteristiques.entreprise.comptes_consolides
+            and caracteristiques.effectif_groupe_permanent
+            in (
+                CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+                CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+                CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+            )
+        ):
+            criteres.append(CRITERE_EFFECTIF_GROUPE_PERMANENT)
         if (
             caracteristiques.tranche_bilan
             == CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
         ):
             criteres.append("votre bilan est supérieur à 100M€")
+        elif (
+            caracteristiques.tranche_bilan_consolide
+            == CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
+        ):
+            criteres.append("votre bilan consolidé est supérieur à 100M€")
         if (
             caracteristiques.tranche_chiffre_affaires
             == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
         ):
             criteres.append("votre chiffre d'affaires est supérieur à 100M€")
+        elif (
+            caracteristiques.tranche_chiffre_affaires_consolide
+            == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
+        ):
+            criteres.append("votre chiffre d'affaires consolidé est supérieur à 100M€")
 
         return criteres
 
     @classmethod
     def est_soumis(cls, caracteristiques):
         criteres = cls.criteres_remplis(caracteristiques)
-        return len(criteres) >= 2 and CRITERE_EFFECTIF_PERMANENT in criteres
+        return len(criteres) >= 2 and (
+            CRITERE_EFFECTIF_PERMANENT in criteres
+            or CRITERE_EFFECTIF_GROUPE_PERMANENT in criteres
+        )

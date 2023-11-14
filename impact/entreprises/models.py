@@ -18,6 +18,7 @@ class ActualisationCaracteristiquesAnnuelles:
     effectif_permanent: str
     effectif_outre_mer: str
     effectif_groupe: str
+    effectif_groupe_permanent: str
     tranche_chiffre_affaires: str
     tranche_bilan: str
     tranche_chiffre_affaires_consolide: str
@@ -132,6 +133,9 @@ class Entreprise(TimestampedModel):
         caracteristiques.effectif_permanent = actualisation.effectif_permanent
         caracteristiques.effectif_outre_mer = actualisation.effectif_outre_mer
         caracteristiques.effectif_groupe = actualisation.effectif_groupe
+        caracteristiques.effectif_groupe_permanent = (
+            actualisation.effectif_groupe_permanent
+        )
         caracteristiques.tranche_chiffre_affaires = (
             actualisation.tranche_chiffre_affaires
         )
@@ -231,7 +235,7 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     effectif_permanent = models.CharField(
         max_length=9,
         choices=[BLANK_CHOICE] + EFFECTIF_CHOICES,
-        verbose_name="Effectif",
+        verbose_name="Effectif permanent",
         help_text="Nombre moyen de salariés à temps plein, titulaires d'un contrat à durée indéterminée employés par l'entreprise au cours de l'exercice",
         null=True,
     )
@@ -247,6 +251,14 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         choices=[BLANK_CHOICE] + EFFECTIF_GROUPE_CHOICES,
         verbose_name="Effectif du groupe",
         help_text="Nombre de salariés du groupe",
+        null=True,
+        blank=True,
+    )
+    effectif_groupe_permanent = models.CharField(
+        max_length=9,
+        choices=[BLANK_CHOICE] + EFFECTIF_GROUPE_CHOICES,
+        verbose_name="Effectif permanent du groupe",
+        help_text="Nombre moyen de salariés à temps plein, titulaires d'un contrat à durée indéterminée employés par le groupe au cours de l'exercice",
         null=True,
         blank=True,
     )
