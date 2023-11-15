@@ -160,10 +160,14 @@ def calcule_simulation(simulation_form, user):
 
 
 def enrichit_les_donnees_pour_la_simulation(caracteristiques):
+    caracteristiques.entreprise.est_cotee = False
     caracteristiques.entreprise.societe_mere_en_france = True
+    caracteristiques.effectif_permanent = caracteristiques.effectif
     caracteristiques.effectif_outre_mer = (
         CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
     )
+    if caracteristiques.entreprise.appartient_groupe:
+        caracteristiques.effectif_groupe_permanent = caracteristiques.effectif_groupe
     caracteristiques.bdese_accord = False
     caracteristiques.systeme_management_energie = False
     return caracteristiques
