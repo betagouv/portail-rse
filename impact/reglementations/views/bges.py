@@ -12,6 +12,7 @@ class BGESReglementation(Reglementation):
     title = "BGES et plan de transition"
     description = "Le bilan GES réglementaire a vocation à contribuer à la mise en œuvre de la stratégie de réduction des émissions de GES des entreprises. Un plan de transition est obligatoirement joint à ce bilan. Il vise à réduire les émissions de gaz à effet de serre et présente les objectifs, moyens et actions envisagées à cette fin ainsi que, le cas échéant, les actions mises en œuvre lors du précédent bilan. Ils sont mis à jour tous les quatre ans."
     more_info_url = reverse_lazy("reglementations:fiche_bilan_ges")
+    tag = "tag-environnement"
 
     @staticmethod
     def criteres_remplis(caracteristiques):

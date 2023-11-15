@@ -26,6 +26,7 @@ def test_bdese_reglementation_info():
         En l'absence d'accord d'entreprise spécifique, elle comprend des mentions obligatoires qui varient selon l'effectif de l'entreprise."""
     )
     assert info["more_info_url"] == reverse("reglementations:fiche_bdese")
+    assert info["tag"] == "tag-social"
 
 
 @pytest.mark.parametrize("est_soumis", [True, False])

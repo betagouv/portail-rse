@@ -22,6 +22,7 @@ def test_dispositif_anticorruption_reglementation_info():
     assert info["more_info_url"] == reverse(
         "reglementations:fiche_dispositif_anticorruption"
     )
+    assert info["tag"] == "tag-gouvernance"
 
 
 @pytest.mark.parametrize(

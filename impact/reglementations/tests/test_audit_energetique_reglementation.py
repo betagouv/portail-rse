@@ -17,6 +17,7 @@ def test_audit_energetique_reglementation_info():
         == "Le code de l'énergie prévoit la réalisation d’un audit énergétique pour les grandes entreprises de plus de 250 salariés, afin qu’elles mettent en place une stratégie d’efficacité énergétique de leurs activités. L’audit énergétique permet de repérer les gisements d’économies d’énergie chez les plus gros consommateurs professionnels (tertiaires et industriels). L’audit doit dater de moins de 4 ans."
     )
     assert info["more_info_url"] == reverse("reglementations:fiche_audit_energetique")
+    assert info["tag"] == "tag-environnement"
 
 
 @pytest.mark.parametrize(

@@ -17,6 +17,7 @@ def test_dispositif_alerte_reglementation_info():
         == "Un dispositif d’alertes professionnelles (ou DAP) est un outil permettant à une personne (salarié, cocontractant, tiers…) de porter à la connaissance d’un organisme une situation, un comportement ou un risque susceptible de caractériser une infraction ou une violation de règles éthiques adoptées par l’organisme en question, tel qu’un manquement à une charte ou à un code de conduite. Les entreprises de plus de 50 salariés doivent mettre en place depuis le 1er septembre 2022 des dispositifs d’alerte sécurisés qui garantissent la confidentialité de l’identité de l’auteur du signalement."
     )
     assert info["more_info_url"] == reverse("reglementations:fiche_dispositif_alerte")
+    assert info["tag"] == "tag-gouvernance"
 
 
 def test_calculate_status_less_than_50_employees(entreprise_factory, alice):

@@ -14,6 +14,7 @@ class IndexEgaproReglementation(Reglementation):
     title = "Index de l’égalité professionnelle"
     description = "Afin de lutter contre les inégalités salariales entre les femmes et les hommes, certaines entreprises doivent calculer et transmettre un index mesurant l’égalité salariale au sein de leur structure."
     more_info_url = reverse_lazy("reglementations:fiche_index_egapro")
+    tag = "tag-social"
 
     @classmethod
     def est_soumis(cls, caracteristiques):

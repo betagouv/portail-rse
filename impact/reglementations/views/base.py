@@ -42,6 +42,7 @@ class Reglementation(ABC):
             "title": cls.title,
             "description": cls.description,
             "more_info_url": cls.more_info_url,
+            "tag": cls.tag,
         }
 
     @classmethod
