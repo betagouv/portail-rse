@@ -45,7 +45,7 @@ urlpatterns = [
         name="fiche_dispositif_anticorruption",
     ),
     path(
-        "reglementations/dpef",
+        "reglementations/declaration-de-performance-extra-financiere",
         TemplateView.as_view(template_name="reglementations/fiches/dpef.html"),
         name="fiche_dpef",
     ),

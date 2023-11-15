@@ -34,6 +34,7 @@ def test_fiches_reglementations_sont_publiques(client):
         "/reglementations/bilan-ges": "reglementations/fiches/bilan-ges.html",
         "/reglementations/audit-energetique": "reglementations/fiches/audit-energetique.html",
         "/reglementations/dispositif-anticorruption": "reglementations/fiches/dispositif-anticorruption.html",
+        "/reglementations/declaration-de-performance-extra-financiere": "reglementations/fiches/dpef.html",
     }
 
     for url, template in templates.items():
