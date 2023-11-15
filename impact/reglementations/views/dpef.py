@@ -78,6 +78,15 @@ class DPEFReglementation(Reglementation):
             == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
         ):
             return "votre chiffre d'affaires consolidé est supérieur à 100M€"
+        elif (
+            caracteristiques.entreprise.est_cotee
+            and caracteristiques.tranche_chiffre_affaires
+            in (
+                CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
+                CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
+            )
+        ):
+            return "votre chiffre d'affaires est supérieur à 40M€"
 
     @classmethod
     def criteres_remplis(cls, caracteristiques):
