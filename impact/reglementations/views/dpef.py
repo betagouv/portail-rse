@@ -25,6 +25,18 @@ class DPEFReglementation(Reglementation):
         if reglementation_status := super().calculate_status(caracteristiques, user):
             return reglementation_status
 
+        if cls.est_soumis(caracteristiques):
+            status = ReglementationStatus.STATUS_SOUMIS
+            criteres = cls.criteres_remplis(caracteristiques)
+            justification = ", ".join(criteres[:-1]) + " et " + criteres[-1]
+            status_detail = (
+                f"Vous êtes soumis à cette réglementation car {justification}."
+            )
+        else:
+            status = ReglementationStatus.STATUS_NON_SOUMIS
+            status_detail = "Vous n'êtes pas soumis à cette réglementation."
+        return ReglementationStatus(status, status_detail)
+
     @classmethod
     def critere_effectif(cls, caracteristiques):
         if caracteristiques.effectif_permanent in (

@@ -2,6 +2,8 @@ import pytest
 from django.urls import reverse
 
 from entreprises.models import CaracteristiquesAnnuelles
+from habilitations.models import attach_user_to_entreprise
+from reglementations.views.base import ReglementationStatus
 from reglementations.views.dpef import DPEFReglementation
 
 
@@ -514,7 +516,7 @@ def test_soumis_si_societe_cotee_et_effectif_groupe_permanent_et_bilan_consolide
         CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     ],
 )
-def test_soumis_si_effectif_groupe_permanent_et_ca_consolide_suffisants(
+def test_soumis_si_societe_cotee_et_effectif_groupe_permanent_et_ca_consolide_suffisants(
     effectif_groupe_permanent, ca, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -539,3 +541,61 @@ def test_soumis_si_effectif_groupe_permanent_et_ca_consolide_suffisants(
         "l'effectif permanent du groupe est supérieur à 500 salariés",
         "votre chiffre d'affaires consolidé est supérieur à 40M€",
     ]
+
+
+def test_calcule_etat_si_soumis_avec_deux_critères_remplis(entreprise_factory, alice):
+    entreprise = entreprise_factory(
+        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    reglementation = DPEFReglementation.calculate_status(
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
+    )
+
+    assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
+    assert (
+        reglementation.status_detail
+        == "Vous êtes soumis à cette réglementation car votre effectif permanent est supérieur à 500 salariés et votre bilan est supérieur à 100M€."
+    )
+
+
+def test_calcule_etat_si_soumis_avec_plus_de_deux_critères_remplis(
+    entreprise_factory, alice
+):
+    entreprise = entreprise_factory(
+        est_cotee=True,
+        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    reglementation = DPEFReglementation.calculate_status(
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
+    )
+
+    assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
+    assert (
+        reglementation.status_detail
+        == "Vous êtes soumis à cette réglementation car votre sociétée est cotée sur un marché réglementé, votre effectif permanent est supérieur à 500 salariés, votre bilan est supérieur à 20M€ et votre chiffre d'affaires est supérieur à 40M€."
+    )
+
+
+def test_calcule_etat_si_non_soumis(entreprise_factory, alice):
+    entreprise = entreprise_factory(
+        est_cotee=True,
+        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    reglementation = DPEFReglementation.calculate_status(
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
+    )
+
+    assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
+    assert (
+        reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation."
+    )
