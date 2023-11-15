@@ -384,3 +384,73 @@ def test_soumis_si_societe_cotee_et_effectif_permanent_bilan_et_ca_suffisants(
     )
 
     assert soumis
+
+
+@pytest.mark.parametrize(
+    "effectif_groupe_permanent",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "bilan",
+    [
+        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+        CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+    ],
+)
+def test_soumis_si_societe_cotee_et_effectif_groupe_permanent_et_bilan_consolide_suffisants(
+    effectif_groupe_permanent, bilan, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        est_cotee=True,
+        appartient_groupe=True,
+        comptes_consolides=True,
+        effectif_groupe_permanent=effectif_groupe_permanent,
+        tranche_bilan_consolide=bilan,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+    )
+
+    soumis = DPEFReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+    assert soumis
+
+
+@pytest.mark.parametrize(
+    "effectif_groupe_permanent",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "ca",
+    [
+        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
+        CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
+        CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    ],
+)
+def test_soumis_si_effectif_groupe_permanent_et_ca_consolide_suffisants(
+    effectif_groupe_permanent, ca, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        est_cotee=True,
+        appartient_groupe=True,
+        comptes_consolides=True,
+        effectif_groupe_permanent=effectif_groupe_permanent,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires_consolide=ca,
+    )
+
+    soumis = DPEFReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+    assert soumis

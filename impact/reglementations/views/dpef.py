@@ -65,6 +65,15 @@ class DPEFReglementation(Reglementation):
             )
         ):
             return "votre bilan est supérieur à 20M€"
+        elif (
+            caracteristiques.entreprise.est_cotee
+            and caracteristiques.tranche_bilan_consolide
+            in (
+                CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+                CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+            )
+        ):
+            return "votre bilan consolidé est supérieur à 20M€"
 
     @classmethod
     def critere_chiffre_affaires(cls, caracteristiques):
@@ -87,6 +96,15 @@ class DPEFReglementation(Reglementation):
             )
         ):
             return "votre chiffre d'affaires est supérieur à 40M€"
+        elif (
+            caracteristiques.entreprise.est_cotee
+            and caracteristiques.tranche_chiffre_affaires_consolide
+            in (
+                CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
+                CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
+            )
+        ):
+            return "votre chiffre d'affaires consolidé est supérieur à 40M€"
 
     @classmethod
     def criteres_remplis(cls, caracteristiques):
