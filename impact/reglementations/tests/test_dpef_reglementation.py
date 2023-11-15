@@ -37,8 +37,15 @@ def test_soumis_si_effectif_permanent_et_bilan_suffisants(
     soumis = DPEFReglementation.est_soumis(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
+    criteres_remplis = DPEFReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
     assert soumis
+    assert criteres_remplis == [
+        "votre effectif permanent est supérieur à 500 salariés",
+        "votre bilan est supérieur à 100M€",
+    ]
 
 
 @pytest.mark.parametrize(
@@ -61,8 +68,15 @@ def test_soumis_si_effectif_permanent_et_ca_suffisants(
     soumis = DPEFReglementation.est_soumis(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
+    criteres_remplis = DPEFReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
     assert soumis
+    assert criteres_remplis == [
+        "votre effectif permanent est supérieur à 500 salariés",
+        "votre chiffre d'affaires est supérieur à 100M€",
+    ]
 
 
 @pytest.mark.parametrize(
@@ -85,8 +99,16 @@ def test_soumis_si_effectif_permanent_bilan_et_ca_suffisants(
     soumis = DPEFReglementation.est_soumis(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
+    criteres_remplis = DPEFReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
     assert soumis
+    assert criteres_remplis == [
+        "votre effectif permanent est supérieur à 500 salariés",
+        "votre bilan est supérieur à 100M€",
+        "votre chiffre d'affaires est supérieur à 100M€",
+    ]
 
 
 @pytest.mark.parametrize(
@@ -170,8 +192,15 @@ def test_soumis_si_effectif_groupe_permanent_et_bilan_consolide_suffisants(
     soumis = DPEFReglementation.est_soumis(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
+    criteres_remplis = DPEFReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
     assert soumis
+    assert criteres_remplis == [
+        "l'effectif permanent du groupe est supérieur à 500 salariés",
+        "votre bilan consolidé est supérieur à 100M€",
+    ]
 
 
 @pytest.mark.parametrize(
@@ -196,8 +225,15 @@ def test_soumis_si_effectif_groupe_permanent_et_ca_consolide_suffisants(
     soumis = DPEFReglementation.est_soumis(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
+    criteres_remplis = DPEFReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
     assert soumis
+    assert criteres_remplis == [
+        "l'effectif permanent du groupe est supérieur à 500 salariés",
+        "votre chiffre d'affaires consolidé est supérieur à 100M€",
+    ]
 
 
 @pytest.mark.parametrize(
@@ -222,8 +258,16 @@ def test_soumis_si_effectif_groupe_permanent_bilan_et_ca_consolides_suffisants(
     soumis = DPEFReglementation.est_soumis(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
+    criteres_remplis = DPEFReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
     assert soumis
+    assert criteres_remplis == [
+        "l'effectif permanent du groupe est supérieur à 500 salariés",
+        "votre bilan consolidé est supérieur à 100M€",
+        "votre chiffre d'affaires consolidé est supérieur à 100M€",
+    ]
 
 
 @pytest.mark.parametrize(
@@ -308,8 +352,15 @@ def test_soumis_si_societe_cotee_et_effectif_permanent_et_bilan_suffisants(
     soumis = DPEFReglementation.est_soumis(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
+    criteres_remplis = DPEFReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
     assert soumis
+    assert criteres_remplis == [
+        "votre effectif permanent est supérieur à 500 salariés",
+        "votre bilan est supérieur à 20M€",
+    ]
 
 
 @pytest.mark.parametrize(
@@ -341,8 +392,15 @@ def test_soumis_si_societe_cotee_et_effectif_permanent_et_ca_suffisants(
     soumis = DPEFReglementation.est_soumis(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
+    criteres_remplis = DPEFReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
     assert soumis
+    assert criteres_remplis == [
+        "votre effectif permanent est supérieur à 500 salariés",
+        "votre chiffre d'affaires est supérieur à 40M€",
+    ]
 
 
 @pytest.mark.parametrize(
@@ -382,8 +440,16 @@ def test_soumis_si_societe_cotee_et_effectif_permanent_bilan_et_ca_suffisants(
     soumis = DPEFReglementation.est_soumis(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
+    criteres_remplis = DPEFReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
     assert soumis
+    assert criteres_remplis == [
+        "votre effectif permanent est supérieur à 500 salariés",
+        "votre bilan est supérieur à 20M€",
+        "votre chiffre d'affaires est supérieur à 40M€",
+    ]
 
 
 @pytest.mark.parametrize(
@@ -417,8 +483,15 @@ def test_soumis_si_societe_cotee_et_effectif_groupe_permanent_et_bilan_consolide
     soumis = DPEFReglementation.est_soumis(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
+    criteres_remplis = DPEFReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
     assert soumis
+    assert criteres_remplis == [
+        "l'effectif permanent du groupe est supérieur à 500 salariés",
+        "votre bilan consolidé est supérieur à 20M€",
+    ]
 
 
 @pytest.mark.parametrize(
@@ -452,5 +525,12 @@ def test_soumis_si_effectif_groupe_permanent_et_ca_consolide_suffisants(
     soumis = DPEFReglementation.est_soumis(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
+    criteres_remplis = DPEFReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
     assert soumis
+    assert criteres_remplis == [
+        "l'effectif permanent du groupe est supérieur à 500 salariés",
+        "votre chiffre d'affaires consolidé est supérieur à 40M€",
+    ]
