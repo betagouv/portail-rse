@@ -55,6 +55,15 @@ class DPEFReglementation(Reglementation):
             == CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
         ):
             criteres.append("votre bilan consolidé est supérieur à 100M€")
+        elif (
+            caracteristiques.entreprise.est_cotee
+            and caracteristiques.tranche_bilan
+            in (
+                CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+                CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+            )
+        ):
+            criteres.append("votre bilan est supérieur à 20M€")
         if (
             caracteristiques.tranche_chiffre_affaires
             == CaracteristiquesAnnuelles.CA_100M_ET_PLUS

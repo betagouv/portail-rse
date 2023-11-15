@@ -62,6 +62,10 @@ class Entreprise(TimestampedModel):
         verbose_name="Date de clôture du dernier exercice comptable",
         null=True,
     )
+    est_cotee = models.BooleanField(
+        verbose_name="L'entreprise émet des titres admis aux négociations sur un marché réglementé",
+        null=True,
+    )
     appartient_groupe = models.BooleanField(
         verbose_name="L'entreprise fait partie d'un groupe",
         null=True,

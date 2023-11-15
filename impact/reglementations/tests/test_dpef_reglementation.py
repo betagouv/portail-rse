@@ -25,7 +25,7 @@ def test_dpef_reglementation_info():
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_soumis_avec_effectif_permanent_et_bilan_suffisants(
+def test_soumis_si_effectif_permanent_et_bilan_suffisants(
     effectif_permanent, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -49,7 +49,7 @@ def test_soumis_avec_effectif_permanent_et_bilan_suffisants(
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_soumis_avec_effectif_permanent_et_ca_suffisants(
+def test_soumis_si_effectif_permanent_et_ca_suffisants(
     effectif_permanent, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -73,7 +73,7 @@ def test_soumis_avec_effectif_permanent_et_ca_suffisants(
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_soumis_avec_effectif_permanent_bilan_et_ca_suffisants(
+def test_soumis_si_effectif_permanent_bilan_et_ca_suffisants(
     effectif_permanent, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -98,7 +98,7 @@ def test_soumis_avec_effectif_permanent_bilan_et_ca_suffisants(
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
     ],
 )
-def test_non_soumis_car_effectif_permanent_insuffisant(
+def test_non_soumis_si_effectif_permanent_insuffisant(
     effectif_permanent, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -122,7 +122,7 @@ def test_non_soumis_car_effectif_permanent_insuffisant(
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_soumis_avec_effectif_groupe_permanent_et_bilan_consolide_suffisants(
+def test_soumis_si_effectif_groupe_permanent_et_bilan_consolide_suffisants(
     effectif_groupe_permanent, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -148,7 +148,7 @@ def test_soumis_avec_effectif_groupe_permanent_et_bilan_consolide_suffisants(
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_soumis_avec_effectif_groupe_permanent_et_ca_consolide_suffisants(
+def test_soumis_si_effectif_groupe_permanent_et_ca_consolide_suffisants(
     effectif_groupe_permanent, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -174,7 +174,7 @@ def test_soumis_avec_effectif_groupe_permanent_et_ca_consolide_suffisants(
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_soumis_avec_effectif_groupe_permanent_bilan_et_ca_consolides_suffisants(
+def test_soumis_si_effectif_groupe_permanent_bilan_et_ca_consolides_suffisants(
     effectif_groupe_permanent, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -201,7 +201,7 @@ def test_soumis_avec_effectif_groupe_permanent_bilan_et_ca_consolides_suffisants
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
     ],
 )
-def test_non_soumis_car_effectif_groupe_permanent_insuffisant(
+def test_non_soumis_si_effectif_groupe_permanent_insuffisant(
     effectif_groupe_permanent, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -243,3 +243,36 @@ def test_non_soumis_si_effectif_insuffisant_et_effectif_groupe_permanent_suffisa
     )
 
     assert not soumis
+
+
+@pytest.mark.parametrize(
+    "effectif_permanent",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "bilan",
+    [
+        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+        CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+    ],
+)
+def test_soumis_si_societe_cotee_et_effectif_permanent_et_bilan_suffisants(
+    effectif_permanent, bilan, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        est_cotee=True,
+        effectif_permanent=effectif_permanent,
+        tranche_bilan=bilan,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+    )
+
+    soumis = DPEFReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+    assert soumis
