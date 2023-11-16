@@ -12,9 +12,11 @@
                 La liste des réglementations ci-dessous n’est pas encore complète et va s’enrichir progressivement. Le site actuel, encore au stade de prototype (bêta), sera amené à évoluer.
             </p>
         </div>
-        {% for reglementation in reglementations %}
-            {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
-        {% endfor %}
+        <div class="fr-grid-row fr-grid-row--gutters">
+            {% for reglementation in reglementations %}
+                {% include "snippets/reglementation_card_list.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+            {% endfor %}
+        </div>
     </div>
 
 {% endblock %}
