@@ -341,6 +341,7 @@ class CaracteristiquesAnnuelles(TimestampedModel):
             and self.effectif_outre_mer
             and self.tranche_chiffre_affaires
             and self.tranche_bilan
+            and self.entreprise.est_cotee is not None
             and self.bdese_accord is not None
             and self.systeme_management_energie is not None
             and self.groupe_est_qualifie
