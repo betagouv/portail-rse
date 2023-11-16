@@ -97,8 +97,10 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
         fields = [
             "date_cloture_exercice",
             "effectif",
+            "effectif_permanent",
             "effectif_outre_mer",
             "effectif_groupe",
+            "effectif_groupe_permanent",
             "tranche_chiffre_affaires",
             "tranche_bilan",
             "tranche_chiffre_affaires_consolide",

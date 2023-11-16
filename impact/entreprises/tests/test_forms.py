@@ -8,6 +8,7 @@ def test_ignore_bilan_et_ca_consolides_lorsque_pas_de_comptes_consolides():
     data = {
         "date_cloture_exercice": date(2022, 12, 31),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
@@ -32,6 +33,7 @@ def test_ignore_effectif_groupe_societe_mere_et_comptes_consolides_lorsque_pas_d
     data = {
         "date_cloture_exercice": date(2022, 12, 31),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
@@ -59,11 +61,13 @@ def test_erreur_si_appartient_groupe_sans_effectif_groupe():
     data = {
         "date_cloture_exercice": date(2022, 12, 31),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
         "appartient_groupe": True,
         "effectif_groupe": "",
+        "effectif_groupe_permanent": "",
         "societe_mere_en_france": True,
         "comptes_consolides": False,
         "tranche_chiffre_affaires_consolide": "",
