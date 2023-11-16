@@ -47,14 +47,21 @@ class Command(BaseCommand):
                 categorie_juridique=entreprise.categorie_juridique.name
                 if entreprise.categorie_juridique
                 else None,
+                est_cotee=entreprise.est_cotee,
                 appartient_groupe=entreprise.appartient_groupe,
                 societe_mere_en_france=entreprise.societe_mere_en_france,
                 comptes_consolides=entreprise.comptes_consolides,
                 effectif=caracteristiques.effectif if caracteristiques else None,
+                effectif_permanent=caracteristiques.effectif_permanent
+                if caracteristiques
+                else None,
                 effectif_outre_mer=caracteristiques.effectif_outre_mer
                 if caracteristiques
                 else None,
                 effectif_groupe=caracteristiques.effectif_groupe
+                if caracteristiques
+                else None,
+                effectif_groupe_permanent=caracteristiques.effectif_groupe_permanent
                 if caracteristiques
                 else None,
                 tranche_chiffre_affaires=caracteristiques.tranche_chiffre_affaires

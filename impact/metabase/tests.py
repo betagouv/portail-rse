@@ -115,10 +115,12 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
     assert (
         metabase_entreprise.date_derniere_qualification == date_derniere_qualification
     )
+    assert metabase_entreprise.est_cotee is False
     assert metabase_entreprise.appartient_groupe is False
     assert metabase_entreprise.societe_mere_en_france is False
     assert metabase_entreprise.comptes_consolides is False
     assert metabase_entreprise.effectif == "300-499"
+    assert metabase_entreprise.effectif_permanent == "250-299"
     assert metabase_entreprise.effectif_outre_mer == "0-249"
     assert metabase_entreprise.effectif_groupe is None
     assert metabase_entreprise.tranche_bilan == "6M-20M"
@@ -139,6 +141,7 @@ def test_synchronise_une_entreprise_qualifiee_appartenant_a_un_groupe(
         societe_mere_en_france=True,
         comptes_consolides=True,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
     )
@@ -153,6 +156,10 @@ def test_synchronise_une_entreprise_qualifiee_appartenant_a_un_groupe(
     assert (
         metabase_entreprise.effectif_groupe
         == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+    )
+    assert (
+        metabase_entreprise.effectif_groupe_permanent
+        == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
     )
     assert (
         metabase_entreprise.tranche_chiffre_affaires_consolide
@@ -194,6 +201,9 @@ def test_synchronise_une_entreprise_sans_caracteristiques_annuelles():
     assert metabase_entreprise.siren == "000000001"
     assert metabase_entreprise.date_cloture_exercice is None
     assert metabase_entreprise.effectif is None
+    assert metabase_entreprise.effectif_permanent is None
+    assert metabase_entreprise.effectif_groupe is None
+    assert metabase_entreprise.effectif_groupe_permanent is None
     assert metabase_entreprise.tranche_chiffre_affaires is None
     assert metabase_entreprise.tranche_bilan is None
     assert metabase_entreprise.bdese_accord is None
