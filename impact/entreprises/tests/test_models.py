@@ -60,6 +60,7 @@ def test_caracteristiques_ne_sont_pas_qualifiantes_tant_que_groupe_non_qualifie(
         entreprise=entreprise_non_qualifiee,
         date_cloture_exercice=date(2023, 7, 7),
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_499,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
@@ -117,6 +118,10 @@ def test_caracteristiques_sont_qualifiantes_si_entreprise_n_appartient_pas_group
 
     assert not caracteristiques.sont_qualifiantes
 
+    caracteristiques.effectif_permanent = CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+
+    assert not caracteristiques.sont_qualifiantes
+
     caracteristiques.effectif_outre_mer = (
         CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
     )
@@ -155,7 +160,7 @@ def test_caracteristiques_sont_qualifiantes_si_entreprise_appartient_groupe(
         date_cloture_exercice=date(2023, 7, 7),
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        effectif_groupe_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
         bdese_accord=True,
@@ -166,6 +171,12 @@ def test_caracteristiques_sont_qualifiantes_si_entreprise_appartient_groupe(
 
     caracteristiques.effectif_groupe = (
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_499
+    )
+
+    assert not caracteristiques.sont_qualifiantes
+
+    caracteristiques.effectif_groupe_permanent = (
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     )
 
     assert caracteristiques.sont_qualifiantes
@@ -195,7 +206,7 @@ def test_dernieres_caracteristiques_qualifiantes(entreprise_non_qualifiee):
     actualisation = ActualisationCaracteristiquesAnnuelles(
         date_cloture_exercice=date(2023, 7, 7),
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
-        effectif_permanent=None,
+        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         effectif_groupe=None,
         effectif_groupe_permanent=None,

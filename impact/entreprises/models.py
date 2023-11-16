@@ -339,6 +339,7 @@ class CaracteristiquesAnnuelles(TimestampedModel):
             self.date_cloture_exercice
             and self.effectif
             and self.effectif_outre_mer
+            and self.effectif_permanent
             and self.tranche_chiffre_affaires
             and self.tranche_bilan
             and self.entreprise.est_cotee is not None

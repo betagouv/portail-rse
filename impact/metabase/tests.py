@@ -51,7 +51,9 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
             date_derniere_qualification=date_derniere_qualification,
             categorie_juridique_sirene=5699,
             effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+            effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
             effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+            est_cotee=False,
             tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
             tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
             bdese_accord=False,
@@ -63,7 +65,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
                 year=date_cloture_dernier_exercice.year + 1
             ),
             effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-            effectif_permanent=None,
+            effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
             effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
             effectif_groupe=None,
             effectif_groupe_permanent=None,
@@ -81,7 +83,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
                 year=date_cloture_dernier_exercice.year + 2
             ),
             effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
-            effectif_permanent=None,
+            effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
             effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
             effectif_groupe=None,
             effectif_groupe_permanent=None,
