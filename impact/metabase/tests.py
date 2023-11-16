@@ -126,9 +126,9 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_une_entreprise_qualifiee_appartenant_a_un_groupe(
-    entreprise_factory, date_cloture_dernier_exercice
+    entreprise_factory,
 ):
-    entreprise = entreprise_factory(
+    entreprise_factory(
         appartient_groupe=True,
         societe_mere_en_france=True,
         comptes_consolides=True,
