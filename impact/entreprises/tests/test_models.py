@@ -100,14 +100,39 @@ def test_caracteristiques_sont_qualifiantes_si_entreprise_n_appartient_pas_group
 
     caracteristiques = CaracteristiquesAnnuelles(
         entreprise=entreprise_non_qualifiee,
-        date_cloture_exercice=date(2023, 7, 7),
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
-        effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        bdese_accord=True,
-        systeme_management_energie=True,
     )
+
+    assert not caracteristiques.sont_qualifiantes
+
+    caracteristiques.date_cloture_exercice = date(2023, 7, 7)
+
+    assert not caracteristiques.sont_qualifiantes
+
+    caracteristiques.effectif = CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+
+    assert not caracteristiques.sont_qualifiantes
+
+    caracteristiques.effectif_outre_mer = (
+        CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
+    )
+
+    assert not caracteristiques.sont_qualifiantes
+
+    caracteristiques.tranche_chiffre_affaires = (
+        CaracteristiquesAnnuelles.CA_MOINS_DE_700K
+    )
+
+    assert not caracteristiques.sont_qualifiantes
+
+    caracteristiques.tranche_bilan = CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
+
+    assert not caracteristiques.sont_qualifiantes
+
+    caracteristiques.bdese_accord = True
+
+    assert not caracteristiques.sont_qualifiantes
+
+    caracteristiques.systeme_management_energie = True
 
     assert caracteristiques.sont_qualifiantes
 
