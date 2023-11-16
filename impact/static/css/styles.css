@@ -146,6 +146,14 @@
 }
 
 /* Réglementation Component */
+
+.reglementation-card .fr-card__desc {
+    max-height: 120px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: pre-line;
+}
+
 .reglementation {
     width: 100%;
 }
@@ -235,6 +243,8 @@
     color: var(--text-default-grey);
     background-color: var(--background-contrast-grey);
 }
+
+
 
 /* fiches réglementation */
 
