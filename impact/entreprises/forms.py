@@ -85,6 +85,8 @@ class EntrepriseForm(DsfrForm):
             if tranche_bilan_consolide:
                 cleaned_data["tranche_bilan_consolide"] = None
 
+        return cleaned_data
+
 
 class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
     societe_mere_en_france = forms.BooleanField(
@@ -121,3 +123,19 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
             "systeme_management_energie": forms.CheckboxInput,
             "date_cloture_exercice": DateInput,
         }
+
+    def clean(self):
+        ERREUR_CHAMP_MANQUANT_GROUPE = (
+            "Ce champ est obligatoire lorsque l'entreprise appartient à un groupe"
+        )
+
+        cleaned_data = super().clean()
+
+        appartient_groupe = cleaned_data.get("appartient_groupe")
+        if appartient_groupe:
+            if not cleaned_data.get("effectif_groupe_permanent"):
+                self.add_error(
+                    "effectif_groupe_permanent", ERREUR_CHAMP_MANQUANT_GROUPE
+                )
+        else:
+            cleaned_data["effectif_groupe_permanent"] = None
