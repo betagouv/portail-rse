@@ -82,6 +82,13 @@ def test_caracteristiques_ne_sont_pas_qualifiantes_tant_que_groupe_non_qualifie(
 
     entreprise_non_qualifiee.societe_mere_en_france = False
 
+    assert not caracteristiques.groupe_est_qualifie
+    assert not caracteristiques.sont_qualifiantes
+
+    caracteristiques.effectif_groupe_permanent = (
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
+    )
+
     assert caracteristiques.groupe_est_qualifie
     assert caracteristiques.sont_qualifiantes
 
@@ -117,6 +124,7 @@ def test_caracteristiques_sont_qualifiantes_si_entreprise_appartient_groupe(
         date_cloture_exercice=date(2023, 7, 7),
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+        effectif_groupe_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
         bdese_accord=True,
