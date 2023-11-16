@@ -93,6 +93,10 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
         required=False,
         label="La société mère du groupe a son siège social en France",
     )
+    est_cotee = forms.BooleanField(
+        required=False,
+        label="L'entreprise émet des titres admis aux négociations sur un marché réglementé",
+    )
 
     class Meta:
         model = CaracteristiquesAnnuelles

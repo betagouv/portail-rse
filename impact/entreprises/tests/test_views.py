@@ -223,7 +223,10 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs(
     client, alice, entreprise_factory, mock_api_recherche_entreprises
 ):
     entreprise = entreprise_factory(
-        appartient_groupe=True, societe_mere_en_france=True, comptes_consolides=True
+        appartient_groupe=True,
+        societe_mere_en_france=True,
+        comptes_consolides=True,
+        est_cotee=True,
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
     caracs = entreprise.dernieres_caracteristiques_qualifiantes
@@ -256,6 +259,7 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs(
     assert form["effectif_permanent"].initial == caracs.effectif_permanent
     assert form["tranche_chiffre_affaires"].initial == caracs.tranche_chiffre_affaires
     assert form["tranche_bilan"].initial == caracs.tranche_bilan
+    assert form["est_cotee"].initial == entreprise.est_cotee
     assert form["appartient_groupe"].initial
     assert (
         form["effectif_groupe"].initial
@@ -300,6 +304,7 @@ def test_page_de_qualification_avec_des_caracteristiques_non_qualifiantes_initia
     assert form["effectif"].initial == caracs.effectif
     assert form["tranche_chiffre_affaires"].initial == caracs.tranche_chiffre_affaires
     assert form["tranche_bilan"].initial == caracs.tranche_bilan
+    assert form["est_cotee"].initial == entreprise.est_cotee
     assert form["appartient_groupe"].initial == entreprise.appartient_groupe
     assert form["effectif_groupe"].initial == caracs.effectif_groupe
     assert form["effectif_groupe"].initial == caracs.effectif_groupe
@@ -332,6 +337,7 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "est_cotee": True,
         "appartient_groupe": True,
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         "effectif_groupe_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
@@ -364,6 +370,7 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
     assert entreprise_non_qualifiee.date_derniere_qualification == date(2023, 10, 25)
     assert entreprise_non_qualifiee.denomination == "Entreprise SAS"
     assert entreprise_non_qualifiee.date_cloture_exercice == date(2022, 12, 31)
+    assert entreprise_non_qualifiee.est_cotee
     assert entreprise_non_qualifiee.appartient_groupe
     assert entreprise_non_qualifiee.societe_mere_en_france
     assert entreprise_non_qualifiee.comptes_consolides
