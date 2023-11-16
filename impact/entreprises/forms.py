@@ -2,6 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 from .models import CaracteristiquesAnnuelles
+from .models import Entreprise
 from utils.forms import DateInput
 from utils.forms import DsfrForm
 
@@ -91,11 +92,11 @@ class EntrepriseForm(DsfrForm):
 class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
     societe_mere_en_france = forms.BooleanField(
         required=False,
-        label="La société mère du groupe a son siège social en France",
+        label=Entreprise.societe_mere_en_france.field.verbose_name,
     )
     est_cotee = forms.BooleanField(
         required=False,
-        label="L'entreprise émet des titres admis aux négociations sur un marché réglementé",
+        label=Entreprise.est_cotee.field.verbose_name,
     )
 
     class Meta:
