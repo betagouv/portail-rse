@@ -90,6 +90,10 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
         "reglementations.views.dispositif_anticorruption.DispositifAntiCorruption.est_soumis",
         return_value=status_est_soumis,
     )
+    mocker.patch(
+        "reglementations.views.dpef.DPEFReglementation.est_soumis",
+        return_value=status_est_soumis,
+    )
     response = client.post("/simulation", data=data)
 
     # l'entreprise a été créée avec les caractéristiques de simulation

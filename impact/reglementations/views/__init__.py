@@ -15,6 +15,7 @@ from reglementations.views.bdese import BDESEReglementation
 from reglementations.views.bges import BGESReglementation
 from reglementations.views.dispositif_alerte import DispositifAlerteReglementation
 from reglementations.views.dispositif_anticorruption import DispositifAntiCorruption
+from reglementations.views.dpef import DPEFReglementation
 from reglementations.views.index_egapro import IndexEgaproReglementation
 
 
@@ -25,6 +26,7 @@ REGLEMENTATIONS = [
     BGESReglementation,
     AuditEnergetiqueReglementation,
     DispositifAntiCorruption,
+    DPEFReglementation,
 ]
 
 
