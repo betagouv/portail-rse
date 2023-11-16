@@ -193,7 +193,7 @@ def test_page_publique_des_reglementations(client):
     assert response.status_code == 200
 
     content = response.content.decode("utf-8")
-    assert "<!-- page reglementations -->" in content
+    assert "<!-- page publique reglementations -->" in content
     assert "BDESE" in content
     assert "Index de l’égalité professionnelle" in content
 

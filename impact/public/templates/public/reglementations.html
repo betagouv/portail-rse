@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Réglementations - Portail RSE{% endblock %}
+
+{% block content %}
+<!-- page publique reglementations -->
+
+    <div class="fr-container fr-my-4w">
+        <h2>Liste des réglementations</h2>
+        <div class="fr-callout fr-callout--blue-ecume">
+            <p class="fr-callout__text">
+                La liste des réglementations ci-dessous n’est pas encore complète et va s’enrichir progressivement. Le site actuel, encore au stade de prototype (bêta), sera amené à évoluer.
+            </p>
+        </div>
+        {% for reglementation in reglementations %}
+            {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+        {% endfor %}
+    </div>
+
+{% endblock %}

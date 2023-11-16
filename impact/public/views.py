@@ -87,7 +87,7 @@ def reglementations(request):
 
     return render(
         request,
-        "reglementations/reglementations.html",
+        "public/reglementations.html",
         {"reglementations": reglementations},
     )
 
