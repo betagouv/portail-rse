@@ -112,7 +112,7 @@ class DPEFReglementation(Reglementation):
     def criteres_remplis(cls, caracteristiques):
         criteres = []
         if caracteristiques.entreprise.est_cotee:
-            criteres.append("votre sociétée est cotée sur un marché réglementé")
+            criteres.append("votre société est cotée sur un marché réglementé")
         if critere := cls.critere_effectif(caracteristiques):
             criteres.append(critere)
         if critere := cls.critere_bilan(caracteristiques):

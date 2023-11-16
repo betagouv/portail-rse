@@ -360,7 +360,7 @@ def test_soumis_si_societe_cotee_et_effectif_permanent_et_bilan_suffisants(
 
     assert soumis
     assert criteres_remplis == [
-        "votre sociétée est cotée sur un marché réglementé",
+        "votre société est cotée sur un marché réglementé",
         "votre effectif permanent est supérieur à 500 salariés",
         "votre bilan est supérieur à 20M€",
     ]
@@ -401,7 +401,7 @@ def test_soumis_si_societe_cotee_et_effectif_permanent_et_ca_suffisants(
 
     assert soumis
     assert criteres_remplis == [
-        "votre sociétée est cotée sur un marché réglementé",
+        "votre société est cotée sur un marché réglementé",
         "votre effectif permanent est supérieur à 500 salariés",
         "votre chiffre d'affaires est supérieur à 40M€",
     ]
@@ -450,7 +450,7 @@ def test_soumis_si_societe_cotee_et_effectif_permanent_bilan_et_ca_suffisants(
 
     assert soumis
     assert criteres_remplis == [
-        "votre sociétée est cotée sur un marché réglementé",
+        "votre société est cotée sur un marché réglementé",
         "votre effectif permanent est supérieur à 500 salariés",
         "votre bilan est supérieur à 20M€",
         "votre chiffre d'affaires est supérieur à 40M€",
@@ -494,7 +494,7 @@ def test_soumis_si_societe_cotee_et_effectif_groupe_permanent_et_bilan_consolide
 
     assert soumis
     assert criteres_remplis == [
-        "votre sociétée est cotée sur un marché réglementé",
+        "votre société est cotée sur un marché réglementé",
         "l'effectif permanent du groupe est supérieur à 500 salariés",
         "votre bilan consolidé est supérieur à 20M€",
     ]
@@ -537,7 +537,7 @@ def test_soumis_si_societe_cotee_et_effectif_groupe_permanent_et_ca_consolide_su
 
     assert soumis
     assert criteres_remplis == [
-        "votre sociétée est cotée sur un marché réglementé",
+        "votre société est cotée sur un marché réglementé",
         "l'effectif permanent du groupe est supérieur à 500 salariés",
         "votre chiffre d'affaires consolidé est supérieur à 40M€",
     ]
@@ -579,7 +579,7 @@ def test_calcule_etat_si_soumis_avec_plus_de_deux_critères_remplis(
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert (
         reglementation.status_detail
-        == "Vous êtes soumis à cette réglementation car votre sociétée est cotée sur un marché réglementé, votre effectif permanent est supérieur à 500 salariés, votre bilan est supérieur à 20M€ et votre chiffre d'affaires est supérieur à 40M€."
+        == "Vous êtes soumis à cette réglementation car votre société est cotée sur un marché réglementé, votre effectif permanent est supérieur à 500 salariés, votre bilan est supérieur à 20M€ et votre chiffre d'affaires est supérieur à 40M€."
     )
 
 
