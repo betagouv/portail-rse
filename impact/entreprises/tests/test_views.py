@@ -161,7 +161,7 @@ def test_detach_from_an_entreprise(
     )
 
 
-def test_fail_to_detach_whithout_relation_to_an_entreprise(
+def test_fail_to_detach_without_relation_to_an_entreprise(
     client, alice, entreprise_factory
 ):
     entreprise = entreprise_factory()
