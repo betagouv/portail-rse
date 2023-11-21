@@ -47,6 +47,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     effectif = CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
     ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
     bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
+    est_cotee = True
     appartient_groupe = True
     effectif_groupe = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     comptes_consolides = True
@@ -59,6 +60,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
         "effectif": effectif,
         "tranche_chiffre_affaires": ca,
         "tranche_bilan": bilan,
+        "est_cotee": est_cotee,
         "appartient_groupe": appartient_groupe,
         "effectif_groupe": effectif_groupe,
         "comptes_consolides": comptes_consolides,
@@ -99,6 +101,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     # l'entreprise a été créée avec les caractéristiques de simulation
     entreprise = Entreprise.objects.get(siren=siren)
     assert entreprise.denomination == denomination
+    assert entreprise.est_cotee
     assert entreprise.appartient_groupe
     assert entreprise.comptes_consolides
     caracteristiques = entreprise.caracteristiques_actuelles()
@@ -111,7 +114,6 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
 
     # les caractéristiques non présentes dans la simulation simplifiées sont laissées vides en base
     assert entreprise.date_cloture_exercice is None
-    assert entreprise.est_cotee is None
     assert entreprise.societe_mere_en_france is None
     assert caracteristiques.effectif_permanent is None
     assert caracteristiques.effectif_outre_mer is None
@@ -122,7 +124,6 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     # les données servant à la simulation sont celles du formulaire de simulation simplifiée
     # enrichies avec des valeurs par défaut pour les champs manquants
     simulation_caracs = mock_est_soumis.call_args.args[0]
-    assert not simulation_caracs.entreprise.est_cotee
     assert simulation_caracs.entreprise.societe_mere_en_france
     assert simulation_caracs.effectif_permanent == effectif
     assert (
@@ -165,6 +166,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     assert simulation_form["effectif"].value() == effectif
     assert simulation_form["tranche_chiffre_affaires"].value() == ca
     assert simulation_form["tranche_bilan"].value() == bilan
+    assert simulation_form["est_cotee"].value() == est_cotee
     assert simulation_form["appartient_groupe"].value() == appartient_groupe
     assert simulation_form["effectif_groupe"].value() == effectif_groupe
     assert simulation_form["comptes_consolides"].value() == comptes_consolides
@@ -187,6 +189,7 @@ def test_simulation_par_un_utilisateur_authentifie_sur_une_nouvelle_entreprise(
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "est_cotée": False,
         "appartient_groupe": True,
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         "comptes_consolides": True,
@@ -244,6 +247,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     date_cloture_dernier_exercice = date.today() - timedelta(days=1)
     entreprise = entreprise_factory(
         date_cloture_exercice=date_cloture_dernier_exercice,
+        est_cotee=True,
         appartient_groupe=True,
         societe_mere_en_france=True,
         comptes_consolides=True,
@@ -270,6 +274,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
         "effectif": effectif,
         "tranche_chiffre_affaires": ca,
         "tranche_bilan": bilan,
+        "est_cotee": False,
         "appartient_groupe": False,
         "effectif_groupe": "",
         "comptes_consolides": False,
@@ -281,6 +286,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
 
     entreprise.refresh_from_db()
     assert entreprise.date_cloture_exercice == date_cloture_dernier_exercice
+    assert entreprise.est_cotee
     assert entreprise.appartient_groupe
     assert entreprise.societe_mere_en_france
     assert entreprise.comptes_consolides
@@ -316,6 +322,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     reglementations = context["reglementations"]
     entreprise_simulee = Entreprise(
         siren=entreprise.siren,
+        est_cotee=False,
         appartient_groupe=False,
         societe_mere_en_france=True,
         comptes_consolides=False,
@@ -362,6 +369,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
         "effectif": effectif,
         "tranche_chiffre_affaires": ca,
         "tranche_bilan": bilan,
+        "est_cotee": True,
         "appartient_groupe": True,
         "effectif_groupe": effectif_groupe,
         "comptes_consolides": True,
@@ -373,6 +381,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
 
     entreprise.refresh_from_db()
     assert entreprise.date_cloture_exercice is None
+    assert entreprise.est_cotee is None
     assert entreprise.appartient_groupe is None
     assert entreprise.comptes_consolides is None
     assert not entreprise.caracteristiques_actuelles()
@@ -381,6 +390,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
     reglementations = context["reglementations"]
     entreprise_simulee = Entreprise(
         siren=entreprise.siren,
+        est_cotee=True,
         appartient_groupe=True,
         societe_mere_en_france=True,
         comptes_consolides=True,
@@ -424,6 +434,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
         "effectif": effectif,
         "tranche_chiffre_affaires": ca,
         "tranche_bilan": bilan,
+        "est_cotee": True,
         "appartient_groupe": True,
         "effectif_groupe": effectif_groupe,
         "comptes_consolides": True,
@@ -435,6 +446,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
 
     entreprise.refresh_from_db()
     assert entreprise.date_cloture_exercice is None
+    assert entreprise.est_cotee
     assert entreprise.appartient_groupe
     assert entreprise.comptes_consolides
     caracteristiques = entreprise.caracteristiques_actuelles()
@@ -449,6 +461,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
     reglementations = context["reglementations"]
     entreprise_simulee = Entreprise(
         siren=entreprise.siren,
+        est_cotee=True,
         appartient_groupe=True,
         societe_mere_en_france=True,
         comptes_consolides=True,

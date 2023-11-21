@@ -37,6 +37,10 @@ class EntrepriseDetachForm(DsfrForm):
 
 
 class EntrepriseForm(DsfrForm):
+    est_cotee = forms.BooleanField(
+        required=False,
+        label=Entreprise.est_cotee.field.verbose_name,
+    )
     appartient_groupe = forms.BooleanField(
         required=False,
         label="L'entreprise appartient à un groupe composé d'une société-mère et d'une ou plusieurs filiales",
@@ -93,10 +97,6 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
     societe_mere_en_france = forms.BooleanField(
         required=False,
         label=Entreprise.societe_mere_en_france.field.verbose_name,
-    )
-    est_cotee = forms.BooleanField(
-        required=False,
-        label=Entreprise.est_cotee.field.verbose_name,
     )
 
     class Meta:

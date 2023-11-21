@@ -120,6 +120,7 @@ def calcule_simulation(simulation_form, user):
     ):
         entreprise = entreprises[0]
         entreprise.denomination = simulation_form.cleaned_data["denomination"]
+        entreprise.est_cotee = simulation_form.cleaned_data["est_cotee"]
         entreprise.appartient_groupe = simulation_form.cleaned_data["appartient_groupe"]
         entreprise.comptes_consolides = simulation_form.cleaned_data[
             "comptes_consolides"
@@ -128,6 +129,7 @@ def calcule_simulation(simulation_form, user):
         entreprise = Entreprise.objects.create(
             denomination=simulation_form.cleaned_data["denomination"],
             siren=simulation_form.cleaned_data["siren"],
+            est_cotee=simulation_form.cleaned_data["est_cotee"],
             appartient_groupe=simulation_form.cleaned_data["appartient_groupe"],
             comptes_consolides=simulation_form.cleaned_data["comptes_consolides"],
         )
@@ -160,7 +162,6 @@ def calcule_simulation(simulation_form, user):
 
 
 def enrichit_les_donnees_pour_la_simulation(caracteristiques):
-    caracteristiques.entreprise.est_cotee = False
     caracteristiques.entreprise.societe_mere_en_france = True
     caracteristiques.effectif_permanent = caracteristiques.effectif
     caracteristiques.effectif_outre_mer = (
