@@ -277,6 +277,7 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
     caracteristiques.save()
 
     caracteristiques = CaracteristiquesAnnuelles.objects.get(pk=caracteristiques.pk)
+    assert caracteristiques.entreprise == entreprise_non_qualifiee
     assert caracteristiques.annee == 2023
     assert caracteristiques.effectif == effectif
     assert caracteristiques.effectif_permanent == effectif_permanent
@@ -333,6 +334,8 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
     nouvelles_caracteristiques = CaracteristiquesAnnuelles.objects.get(
         pk=nouvelles_caracteristiques.pk
     )
+    assert nouvelles_caracteristiques.entreprise == entreprise_non_qualifiee
+    assert nouvelles_caracteristiques.annee == 2023
     assert nouvelles_caracteristiques.effectif == nouvel_effectif
     assert nouvelles_caracteristiques.effectif_permanent == nouvel_effectif_permanent
     assert nouvelles_caracteristiques.effectif_outre_mer == nouvel_effectif_outre_mer
@@ -364,6 +367,50 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
         entreprise_non_qualifiee.caracteristiques_annuelles(2023)
         == nouvelles_caracteristiques
     )
+
+
+def test_actualise_caracteristiques_conserve_attributs_entreprise_non_commités(
+    entreprise_factory,
+):
+    entreprise = entreprise_factory(appartient_groupe=False)
+    entreprise.appartient_groupe = True
+    # ne commit pas
+
+    actualisation = ActualisationCaracteristiquesAnnuelles(
+        date_cloture_exercice=entreprise.date_cloture_exercice,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+        effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        effectif_groupe_permanent=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        bdese_accord=False,
+        systeme_management_energie=False,
+    )
+    caracteristiques = entreprise.actualise_caracteristiques(actualisation)
+
+    assert entreprise.appartient_groupe
+    assert caracteristiques.entreprise == entreprise
+    assert caracteristiques.entreprise.appartient_groupe
+    entreprise_en_base = Entreprise.objects.get(pk=entreprise.id)
+    assert not entreprise_en_base.appartient_groupe
+    caracteristiques_en_base = CaracteristiquesAnnuelles.objects.get(
+        entreprise=entreprise_en_base
+    )
+    assert not caracteristiques_en_base.entreprise.appartient_groupe
+
+    entreprise.save()
+    caracteristiques.save()
+
+    entreprise_en_base = Entreprise.objects.get(pk=entreprise.id)
+    assert entreprise_en_base.appartient_groupe
+    caracteristiques_en_base = CaracteristiquesAnnuelles.objects.get(
+        entreprise=entreprise_en_base
+    )
+    assert caracteristiques_en_base.entreprise.appartient_groupe
 
 
 @pytest.mark.django_db(transaction=True)

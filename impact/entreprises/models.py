@@ -129,9 +129,8 @@ class Entreprise(TimestampedModel):
     ):
         caracteristiques = self.caracteristiques_annuelles(
             actualisation.date_cloture_exercice.year
-        ) or CaracteristiquesAnnuelles(
-            entreprise=self, annee=actualisation.date_cloture_exercice.year
-        )
+        ) or CaracteristiquesAnnuelles(annee=actualisation.date_cloture_exercice.year)
+        caracteristiques.entreprise = self
         caracteristiques.date_cloture_exercice = actualisation.date_cloture_exercice
         caracteristiques.effectif = actualisation.effectif
         caracteristiques.effectif_permanent = actualisation.effectif_permanent
