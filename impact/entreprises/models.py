@@ -63,7 +63,7 @@ class Entreprise(TimestampedModel):
         null=True,
     )
     est_cotee = models.BooleanField(
-        verbose_name="L'entreprise est cotée sur un marché réglementé (Euronext Paris, MATIF, MONEP ou BlueNext)",
+        verbose_name="L'entreprise est cotée sur un marché réglementé européen",
         null=True,
     )
     appartient_groupe = models.BooleanField(

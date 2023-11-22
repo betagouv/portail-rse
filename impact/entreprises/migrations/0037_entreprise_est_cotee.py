@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             name="est_cotee",
             field=models.BooleanField(
                 null=True,
-                verbose_name="L'entreprise est cotée sur un marché réglementé (Euronext Paris, MATIF, MONEP ou BlueNext)",
+                verbose_name="L'entreprise est cotée sur un marché réglementé européen",
             ),
         ),
     ]
