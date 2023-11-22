@@ -2,6 +2,8 @@ from django.conf import settings
 from django.urls import reverse_lazy
 
 from entreprises.models import CaracteristiquesAnnuelles
+from entreprises.models import CategorieJuridique
+from entreprises.models import convertit_categorie_juridique
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationStatus
 
@@ -36,6 +38,18 @@ class DPEFReglementation(Reglementation):
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation."
         return ReglementationStatus(status, status_detail)
+
+    @classmethod
+    def critere_categorie_juridique(cls, caracteristiques):
+        categorie_juridique = convertit_categorie_juridique(
+            caracteristiques.entreprise.categorie_juridique_sirene
+        )
+        if categorie_juridique == CategorieJuridique.SOCIETE_ANONYME:
+            return "votre entreprise est une Société Anonyme"
+        elif categorie_juridique == CategorieJuridique.SOCIETE_COMMANDITE_PAR_ACTION:
+            return "votre entreprise est une Société en Commandite par Actions"
+        elif categorie_juridique == CategorieJuridique.SOCIETE_EUROPEENNE:
+            return "votre entreprise est une Société Européenne"
 
     @classmethod
     def critere_effectif(cls, caracteristiques):
@@ -111,6 +125,8 @@ class DPEFReglementation(Reglementation):
     @classmethod
     def criteres_remplis(cls, caracteristiques):
         criteres = []
+        if critere := cls.critere_categorie_juridique(caracteristiques):
+            criteres.append(critere)
         if caracteristiques.entreprise.est_cotee:
             criteres.append("votre société est cotée sur un marché réglementé")
         if critere := cls.critere_effectif(caracteristiques):
@@ -123,7 +139,11 @@ class DPEFReglementation(Reglementation):
 
     @classmethod
     def est_soumis(cls, caracteristiques):
-        return cls.critere_effectif(caracteristiques) and (
-            cls.critere_bilan(caracteristiques)
-            or cls.critere_chiffre_affaires(caracteristiques)
+        return (
+            cls.critere_categorie_juridique(caracteristiques)
+            and cls.critere_effectif(caracteristiques)
+            and (
+                cls.critere_bilan(caracteristiques)
+                or cls.critere_chiffre_affaires(caracteristiques)
+            )
         )
