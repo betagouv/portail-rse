@@ -11,9 +11,13 @@ from entreprises.models import Entreprise
 from habilitations.models import attach_user_to_entreprise
 from impact.settings import METABASE_DATABASE_NAME
 from metabase.management.commands.sync_metabase import Command
+from metabase.models import BDESE as MetabaseBDESE
 from metabase.models import Entreprise as MetabaseEntreprise
 from metabase.models import Habilitation as MetabaseHabilitation
 from metabase.models import Utilisateur as MetabaseUtilisateur
+from reglementations.models import BDESE_50_300
+from reglementations.models import derniere_annee_a_remplir_bdese
+from reglementations.tests.conftest import bdese_factory  # noqa
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
@@ -269,3 +273,103 @@ def test_synchronise_une_entreprise_avec_un_utilisateur(
     assert metabase_habilitation.entreprise == metabase_entreprise
     assert metabase_habilitation.fonctions == "Présidente"
     assert not metabase_habilitation.confirmee_le
+
+
+@pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
+def test_synchronise_les_reglementations_BDESE(
+    alice, bob, entreprise_factory, bdese_factory
+):
+    entreprise_non_soumise = entreprise_factory(
+        siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+    )
+    entreprise_soumise_a_actualiser = entreprise_factory(
+        siren="000000002", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+    )
+    entreprise_soumise_en_cours = entreprise_factory(
+        siren="000000003", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+    )
+    entreprise_soumise_2_utilisateurs = entreprise_factory(
+        siren="000000004", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+    )
+    for entreprise in (
+        entreprise_non_soumise,
+        entreprise_soumise_a_actualiser,
+        entreprise_soumise_en_cours,
+        entreprise_soumise_2_utilisateurs,
+    ):
+        attach_user_to_entreprise(alice, entreprise, "Présidente")
+    bdese_a_actualiser = bdese_factory(
+        bdese_class=BDESE_50_300,
+        entreprise=entreprise_soumise_a_actualiser,
+        annee=derniere_annee_a_remplir_bdese(),
+    )
+    bdese_en_cours = bdese_factory(
+        bdese_class=BDESE_50_300,
+        entreprise=entreprise_soumise_en_cours,
+        user=alice,
+        annee=derniere_annee_a_remplir_bdese(),
+    )
+    bdese_a_jour_alice = bdese_factory(
+        bdese_class=BDESE_50_300,
+        entreprise=entreprise_soumise_2_utilisateurs,
+        user=alice,
+        annee=derniere_annee_a_remplir_bdese(),
+    )
+    bdese_en_cours_bob = bdese_factory(
+        bdese_class=BDESE_50_300,
+        entreprise=entreprise_soumise_2_utilisateurs,
+        user=bob,
+        annee=derniere_annee_a_remplir_bdese(),
+    )
+    for step in bdese_a_jour_alice.STEPS:
+        bdese_a_jour_alice.mark_step_as_complete(step)
+    bdese_a_jour_alice.save()
+
+    Command().handle()
+
+    assert MetabaseBDESE.objects.count() == 5
+
+    metabase_bdese_entreprise_non_soumise = MetabaseBDESE.objects.get(
+        entreprise__siren=entreprise_non_soumise.siren
+    )
+    assert not metabase_bdese_entreprise_non_soumise.est_soumise
+    assert metabase_bdese_entreprise_non_soumise.statut is None
+
+    metabase_bdese_entreprise_soumise_a_actualiser = MetabaseBDESE.objects.get(
+        entreprise__siren=entreprise_soumise_a_actualiser.siren
+    )
+    assert metabase_bdese_entreprise_soumise_a_actualiser.est_soumise
+    assert (
+        metabase_bdese_entreprise_soumise_a_actualiser.statut
+        == MetabaseBDESE.STATUT_A_ACTUALISER
+    )
+
+    metabase_bdese_entreprise_soumise_en_cours = MetabaseBDESE.objects.get(
+        entreprise__siren=entreprise_soumise_en_cours.siren
+    )
+    assert metabase_bdese_entreprise_soumise_en_cours.est_soumise
+    assert (
+        metabase_bdese_entreprise_soumise_en_cours.statut
+        == MetabaseBDESE.STATUT_EN_COURS
+    )
+
+    metabase_bdese_entreprise_soumise_2_utilisateurs = MetabaseBDESE.objects.filter(
+        entreprise__siren=entreprise_soumise_2_utilisateurs.siren
+    )
+    assert metabase_bdese_entreprise_soumise_2_utilisateurs.count() == 2
+    assert metabase_bdese_entreprise_soumise_2_utilisateurs[
+        0
+    ].utilisateur == MetabaseUtilisateur.objects.get(pk=alice.pk)
+    assert metabase_bdese_entreprise_soumise_2_utilisateurs[0].est_soumise
+    assert (
+        metabase_bdese_entreprise_soumise_2_utilisateurs[0].statut
+        == MetabaseBDESE.STATUT_A_JOUR
+    )
+    assert metabase_bdese_entreprise_soumise_2_utilisateurs[
+        1
+    ].utilisateur == MetabaseUtilisateur.objects.get(pk=bob.pk)
+    assert metabase_bdese_entreprise_soumise_2_utilisateurs[1].est_soumise
+    assert (
+        metabase_bdese_entreprise_soumise_2_utilisateurs[1].statut
+        == MetabaseBDESE.STATUT_EN_COURS
+    )

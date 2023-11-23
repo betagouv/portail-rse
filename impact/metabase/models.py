@@ -57,3 +57,18 @@ class Habilitation(models.Model):
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
     fonctions = models.CharField(max_length=FONCTIONS_MAX_LENGTH, null=True)
     confirmee_le = models.DateTimeField(null=True)
+
+
+class BDESE(models.Model):
+    STATUT_A_ACTUALISER = "A ACTUALISER"
+    STATUT_EN_COURS = "EN COURS"
+    STATUT_A_JOUR = "A JOUR"
+    STATUT_CHOICES = [
+        (STATUT_A_ACTUALISER, ""),
+        (STATUT_EN_COURS, ""),
+        (STATUT_A_JOUR, ""),
+    ]
+    entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
+    utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE, null=True)
+    est_soumise = models.BooleanField(null=True)
+    statut = models.CharField(choices=STATUT_CHOICES, max_length=15, null=True)

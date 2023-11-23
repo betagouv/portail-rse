@@ -1,4 +1,5 @@
 import pytest
+from django.core.exceptions import ObjectDoesNotExist
 
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
@@ -31,7 +32,10 @@ def bdese_factory(entreprise_factory, date_cloture_dernier_exercice):
         if not user:
             bdese = bdese_class.officials.create(entreprise=entreprise, annee=annee)
         else:
-            attach_user_to_entreprise(user, entreprise, "Président·e")
+            try:
+                get_habilitation(user, entreprise)
+            except ObjectDoesNotExist:
+                attach_user_to_entreprise(user, entreprise, "Président·e")
             bdese = bdese_class.personals.create(
                 entreprise=entreprise, annee=annee, user=user
             )

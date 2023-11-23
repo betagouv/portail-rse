@@ -4,9 +4,12 @@ from django.db.models import Count
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise as ImpactEntreprise
 from habilitations.models import Habilitation as ImpactHabilitation
+from metabase.models import BDESE as MetabaseBDESE
 from metabase.models import Entreprise as MetabaseEntreprise
 from metabase.models import Habilitation as MetabaseHabilitation
 from metabase.models import Utilisateur as MetabaseUtilisateur
+from reglementations.views.base import ReglementationStatus
+from reglementations.views.bdese import BDESEReglementation
 from users.models import User as ImpactUtilisateur
 
 
@@ -16,6 +19,7 @@ class Command(BaseCommand):
         self._insert_entreprises()
         self._insert_utilisateurs()
         self._insert_habilitations()
+        self._insert_reglementations()
 
     def _drop_tables(self):
         MetabaseEntreprise.objects.all().delete()
@@ -84,7 +88,6 @@ class Command(BaseCommand):
                 else None,
                 nombre_utilisateurs=entreprise.nombre_utilisateurs,
             )
-            meta_e.save()
             self._success(str(entreprise))
         self._success("Ajout des entreprises dans Metabase: OK")
 
@@ -128,6 +131,43 @@ class Command(BaseCommand):
 
     def _success(self, message):
         self.stdout.write(self.style.SUCCESS(message))
+
+    def _insert_reglementations(self):
+        self._insert_bdese()
+
+    def _insert_bdese(self):
+        for entreprise in ImpactEntreprise.objects.filter(
+            users__isnull=False
+        ).distinct():
+            est_soumise = BDESEReglementation.est_soumis(
+                entreprise.dernieres_caracteristiques_qualifiantes
+            )
+            if est_soumise:
+                for utilisateur in entreprise.users.all():
+                    impact_status = BDESEReglementation.calculate_status(
+                        entreprise.dernieres_caracteristiques_qualifiantes, utilisateur
+                    ).status
+                    if impact_status == ReglementationStatus.STATUS_A_ACTUALISER:
+                        statut = MetabaseBDESE.STATUT_A_ACTUALISER
+                    elif impact_status == ReglementationStatus.STATUS_EN_COURS:
+                        statut = MetabaseBDESE.STATUT_EN_COURS
+                    elif impact_status == ReglementationStatus.STATUS_A_JOUR:
+                        statut = MetabaseBDESE.STATUT_A_JOUR
+                    meta_bdese = MetabaseBDESE.objects.create(
+                        entreprise=MetabaseEntreprise.objects.get(
+                            impact_id=entreprise.id
+                        ),
+                        utilisateur=MetabaseUtilisateur.objects.get(
+                            impact_id=utilisateur.id
+                        ),
+                        est_soumise=est_soumise,
+                        statut=statut,
+                    )
+            else:
+                meta_bdese = MetabaseBDESE.objects.create(
+                    entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
+                    est_soumise=est_soumise,
+                )
 
 
 def _last_update(entreprise):
