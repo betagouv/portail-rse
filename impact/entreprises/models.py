@@ -32,17 +32,17 @@ class ActualisationCaracteristiquesAnnuelles:
 class CategorieJuridique(Enum):
     AUTRE = 0
     SOCIETE_ANONYME = 1
-    SOCIETE_COMMANDITE_PAR_ACTION = 2
-    SOCIETE_PAR_ACTION_SIMPLIFIEE = 3
+    SOCIETE_COMMANDITE_PAR_ACTIONS = 2
+    SOCIETE_PAR_ACTIONS_SIMPLIFIEES = 3
     SOCIETE_EUROPEENNE = 4
 
     @property
     def label(self):
         if self.value == self.SOCIETE_ANONYME.value:
             return "Société Anonyme"
-        elif self.value == self.SOCIETE_COMMANDITE_PAR_ACTION.value:
+        elif self.value == self.SOCIETE_COMMANDITE_PAR_ACTIONS.value:
             return "Société en Commandite par Actions"
-        elif self.value == self.SOCIETE_PAR_ACTION_SIMPLIFIEE.value:
+        elif self.value == self.SOCIETE_PAR_ACTIONS_SIMPLIFIEES.value:
             return "Société par Actions Simplifiées"
         elif self.value == self.SOCIETE_EUROPEENNE.value:
             return "Société Européenne"
@@ -53,11 +53,11 @@ def convertit_categorie_juridique(categorie_juridique_sirene):
     if not categorie_juridique_sirene:
         return
     elif 5308 <= categorie_juridique_sirene <= 5385:
-        return CategorieJuridique.SOCIETE_COMMANDITE_PAR_ACTION
+        return CategorieJuridique.SOCIETE_COMMANDITE_PAR_ACTIONS
     elif 5505 <= categorie_juridique_sirene <= 5699:
         return CategorieJuridique.SOCIETE_ANONYME
     elif 5710 <= categorie_juridique_sirene <= 5785:
-        return CategorieJuridique.SOCIETE_PAR_ACTION_SIMPLIFIEE
+        return CategorieJuridique.SOCIETE_PAR_ACTIONS_SIMPLIFIEES
     elif categorie_juridique_sirene == 5800:
         return CategorieJuridique.SOCIETE_EUROPEENNE
     else:

@@ -484,7 +484,7 @@ def test_categorie_SCA():
     ):
         categorie_juridique = convertit_categorie_juridique(categorie_juridique_sirene)
 
-        assert categorie_juridique == CategorieJuridique.SOCIETE_COMMANDITE_PAR_ACTION
+        assert categorie_juridique == CategorieJuridique.SOCIETE_COMMANDITE_PAR_ACTIONS
         assert categorie_juridique.label == "Société en Commandite par Actions"
 
 
@@ -495,7 +495,7 @@ def test_categorie_SAS():
     ):
         categorie_juridique = convertit_categorie_juridique(categorie_juridique_sirene)
 
-        assert categorie_juridique == CategorieJuridique.SOCIETE_PAR_ACTION_SIMPLIFIEE
+        assert categorie_juridique == CategorieJuridique.SOCIETE_PAR_ACTIONS_SIMPLIFIEES
         assert categorie_juridique.label == "Société par Actions Simplifiées"
 
 
