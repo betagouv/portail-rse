@@ -38,7 +38,7 @@ class EntrepriseDetachForm(DsfrForm):
 class EntrepriseForm(DsfrForm):
     appartient_groupe = forms.BooleanField(
         required=False,
-        label="L'entreprise appartient à un groupe composé d'une société-mère en France et d'une ou plusieurs filiales",
+        label="L'entreprise appartient à un groupe composé d'une société-mère et d'une ou plusieurs filiales",
     )
     comptes_consolides = forms.BooleanField(
         required=False,
