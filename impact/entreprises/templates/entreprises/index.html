@@ -50,6 +50,9 @@
                                             {% with caracs=entreprise.dernieres_caracteristiques_qualifiantes|default:entreprise.dernieres_caracteristiques %}
                                                 {% if habilitation and habilitation.fonctions %}en tant que {{ habilitation.fonctions }}{% endif %}<br>
                                                 SIREN : <b>{{ entreprise.siren }}</b><br>
+                                                {% if entreprise.categorie_juridique and entreprise.categorie_juridique.label %}
+                                                    Catégorie juridique : <b>{{ entreprise.categorie_juridique.label }}</b><br>
+                                                {% endif %}
                                                 Date de clôture du dernier exercice : <b>{{ caracs.date_cloture_exercice | display_field }}</b><br>
                                                 Effectif : <b>{{ caracs.get_effectif_display | display_field }}</b><br>
                                                 Chiffre d'affaires : <b>{{ caracs.get_tranche_chiffre_affaires_display | display_field }}</b><br>

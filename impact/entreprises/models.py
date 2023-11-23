@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import date
 from enum import Enum
+from enum import unique
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
@@ -27,12 +28,25 @@ class ActualisationCaracteristiquesAnnuelles:
     systeme_management_energie: bool
 
 
+@unique
 class CategorieJuridique(Enum):
     AUTRE = 0
     SOCIETE_ANONYME = 1
     SOCIETE_COMMANDITE_PAR_ACTION = 2
     SOCIETE_PAR_ACTION_SIMPLIFIEE = 3
     SOCIETE_EUROPEENNE = 4
+
+    @property
+    def label(self):
+        if self.value == self.SOCIETE_ANONYME.value:
+            return "Société Anonyme"
+        elif self.value == self.SOCIETE_COMMANDITE_PAR_ACTION.value:
+            return "Société en Commandite par Actions"
+        elif self.value == self.SOCIETE_PAR_ACTION_SIMPLIFIEE.value:
+            return "Société par Actions Simplifiées"
+        elif self.value == self.SOCIETE_EUROPEENNE.value:
+            return "Société Européenne"
+        return ""
 
 
 def convertit_categorie_juridique(categorie_juridique_sirene):
