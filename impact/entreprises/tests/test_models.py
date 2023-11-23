@@ -471,10 +471,9 @@ def test_categorie_SA():
         5505,  # SA à participation ouvrière à conseil d'administration
         5699,  # SA à directoire (s.a.i.)
     ):
-        assert (
-            convertit_categorie_juridique(categorie_juridique_sirene)
-            == CategorieJuridique.SOCIETE_ANONYME
-        )
+        categorie_juridique = convertit_categorie_juridique(categorie_juridique_sirene)
+
+        assert categorie_juridique == CategorieJuridique.SOCIETE_ANONYME
 
 
 def test_categorie_SCA():
@@ -482,10 +481,9 @@ def test_categorie_SCA():
         5308,  # Société en commandite par actions
         5385,  # Société d'exercice libéral en commandite par actions
     ):
-        assert (
-            convertit_categorie_juridique(categorie_juridique_sirene)
-            == CategorieJuridique.SOCIETE_COMMANDITE_PAR_ACTION
-        )
+        categorie_juridique = convertit_categorie_juridique(categorie_juridique_sirene)
+
+        assert categorie_juridique == CategorieJuridique.SOCIETE_COMMANDITE_PAR_ACTION
 
 
 def test_categorie_SAS():
@@ -493,22 +491,22 @@ def test_categorie_SAS():
         5710,  # SAS, société par actions simplifiée
         5785,  # Société d'exercice libéral par action simplifiée
     ):
-        assert (
-            convertit_categorie_juridique(categorie_juridique_sirene)
-            == CategorieJuridique.SOCIETE_PAR_ACTION_SIMPLIFIEE
-        )
+        categorie_juridique = convertit_categorie_juridique(categorie_juridique_sirene)
+
+        assert categorie_juridique == CategorieJuridique.SOCIETE_PAR_ACTION_SIMPLIFIEE
 
 
 def test_categorie_SE():
-    assert convertit_categorie_juridique(5800) == CategorieJuridique.SOCIETE_EUROPEENNE
+    categorie_juridique = convertit_categorie_juridique(5800)
+
+    assert categorie_juridique == CategorieJuridique.SOCIETE_EUROPEENNE
 
 
 def test_categorie_autre():
     categorie_juridique_sirene = 9240  # congrégation
-    assert (
-        convertit_categorie_juridique(categorie_juridique_sirene)
-        == CategorieJuridique.AUTRE
-    )
+    categorie_juridique = convertit_categorie_juridique(categorie_juridique_sirene)
+
+    assert categorie_juridique == CategorieJuridique.AUTRE
 
 
 def test_aucune_categorie():
