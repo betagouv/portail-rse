@@ -10,8 +10,10 @@
     const sirenFieldId = "id_siren"
     const sirenFieldName = "siren"
     const denominationFieldName = "denomination"
+    const categorieJuridiqueFieldId = "id_categorie_juridique_sirene"
     const effectifFieldId = "id_effectif"
 
+    const categorieJuridiqueField = document.getElementById(categorieJuridiqueFieldId)
     const effectifField = document.getElementById(effectifFieldId)
     const submitButton = document.getElementById(sirenFieldId).closest("form").querySelector("[type=submit]")
 
@@ -42,6 +44,9 @@
             denomination = json.denomination
             if (effectifField) {
                 effectifField.value = json.effectif
+            }
+            if (categorieJuridiqueField) {
+                categorieJuridiqueField.value = json.categorie_juridique_sirene
             }
             showSimulationFields()
         } else {

@@ -34,7 +34,9 @@ def bob(django_user_model):
 @pytest.fixture
 def entreprise_non_qualifiee(alice):
     entreprise = Entreprise.objects.create(
-        siren="000000001", denomination="Entreprise SAS"
+        siren="000000001",
+        denomination="Entreprise SAS",
+        categorie_juridique_sirene=5710,
     )
     return entreprise
 

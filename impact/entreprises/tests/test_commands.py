@@ -68,6 +68,7 @@ def test_erreur_de_l_api(capsys, db, mocker, entreprise_non_qualifiee):
 @pytest.mark.django_db(transaction=True)
 def test_remplit_la_categorie_juridique(db, mocker, entreprise_non_qualifiee):
     entreprise_non_qualifiee.denomination = ""
+    entreprise_non_qualifiee.categorie_juridique_sirene = None
     entreprise_non_qualifiee.save()
     CATEGORIE_JURIDIQUE_SIRENE = 5555
 

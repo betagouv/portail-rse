@@ -44,6 +44,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
 ):
     siren = "000000001"
     denomination = "Entreprise SAS"
+    categorie_juridique_sirene = 5200
     effectif = CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
     ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
     bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
@@ -57,6 +58,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     data = {
         "siren": siren,
         "denomination": denomination,
+        "categorie_juridique_sirene": categorie_juridique_sirene,
         "effectif": effectif,
         "tranche_chiffre_affaires": ca,
         "tranche_bilan": bilan,
@@ -101,6 +103,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     # l'entreprise a été créée avec les caractéristiques de simulation
     entreprise = Entreprise.objects.get(siren=siren)
     assert entreprise.denomination == denomination
+    assert entreprise.categorie_juridique_sirene == categorie_juridique_sirene
     assert entreprise.est_cotee
     assert entreprise.appartient_groupe
     assert entreprise.comptes_consolides
@@ -163,6 +166,9 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     simulation_form = context["simulation_form"]
     assert simulation_form["siren"].value() == siren
     assert simulation_form["denomination"].value() == denomination
+    assert simulation_form["categorie_juridique_sirene"].value() == str(
+        categorie_juridique_sirene
+    )
     assert simulation_form["effectif"].value() == effectif
     assert simulation_form["tranche_chiffre_affaires"].value() == ca
     assert simulation_form["tranche_bilan"].value() == bilan
@@ -186,6 +192,7 @@ def test_simulation_par_un_utilisateur_authentifie_sur_une_nouvelle_entreprise(
     data = {
         "denomination": "Une autre entreprise SAS",
         "siren": "000000002",
+        "categorie_juridique_sirene": 5200,
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
@@ -247,6 +254,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     date_cloture_dernier_exercice = date.today() - timedelta(days=1)
     entreprise = entreprise_factory(
         date_cloture_exercice=date_cloture_dernier_exercice,
+        categorie_juridique_sirene=5200,
         est_cotee=True,
         appartient_groupe=True,
         societe_mere_en_france=True,
@@ -267,10 +275,12 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
     bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
     autre_denomination = "Autre dénomination"
+    autre_categorie_juridique_sirene = 5300
 
     data = {
-        "denomination": autre_denomination,
         "siren": entreprise.siren,
+        "denomination": autre_denomination,
+        "categorie_juridique_sirene": autre_categorie_juridique_sirene,
         "effectif": effectif,
         "tranche_chiffre_affaires": ca,
         "tranche_bilan": bilan,
@@ -286,6 +296,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
 
     entreprise.refresh_from_db()
     assert entreprise.date_cloture_exercice == date_cloture_dernier_exercice
+    assert entreprise.categorie_juridique_sirene == 5200
     assert entreprise.est_cotee
     assert entreprise.appartient_groupe
     assert entreprise.societe_mere_en_france
@@ -322,6 +333,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     reglementations = context["reglementations"]
     entreprise_simulee = Entreprise(
         siren=entreprise.siren,
+        categorie_juridique_sirene=autre_categorie_juridique_sirene,
         est_cotee=False,
         appartient_groupe=False,
         societe_mere_en_france=True,
@@ -362,10 +374,12 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
     ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
     bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
     autre_denomination = "Autre dénomination"
+    autre_categorie_juridique_sirene = 5200
 
     data = {
-        "denomination": autre_denomination,
         "siren": entreprise.siren,
+        "denomination": autre_denomination,
+        "categorie_juridique_sirene": autre_categorie_juridique_sirene,
         "effectif": effectif,
         "tranche_chiffre_affaires": ca,
         "tranche_bilan": bilan,
@@ -381,6 +395,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
 
     entreprise.refresh_from_db()
     assert entreprise.date_cloture_exercice is None
+    assert entreprise.categorie_juridique_sirene != autre_categorie_juridique_sirene
     assert entreprise.est_cotee is None
     assert entreprise.appartient_groupe is None
     assert entreprise.comptes_consolides is None
@@ -390,6 +405,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
     reglementations = context["reglementations"]
     entreprise_simulee = Entreprise(
         siren=entreprise.siren,
+        categorie_juridique_sirene=autre_categorie_juridique_sirene,
         est_cotee=True,
         appartient_groupe=True,
         societe_mere_en_france=True,
@@ -428,9 +444,11 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
     ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
     bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
     autre_denomination = "Autre dénomination"
+    autre_categorie_juridique_sirene = 5200
     data = {
         "denomination": autre_denomination,
         "siren": entreprise.siren,
+        "categorie_juridique_sirene": autre_categorie_juridique_sirene,
         "effectif": effectif,
         "tranche_chiffre_affaires": ca,
         "tranche_bilan": bilan,
@@ -446,6 +464,8 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
 
     entreprise.refresh_from_db()
     assert entreprise.date_cloture_exercice is None
+    assert entreprise.denomination == autre_denomination
+    assert entreprise.categorie_juridique_sirene == autre_categorie_juridique_sirene
     assert entreprise.est_cotee
     assert entreprise.appartient_groupe
     assert entreprise.comptes_consolides
@@ -461,6 +481,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
     reglementations = context["reglementations"]
     entreprise_simulee = Entreprise(
         siren=entreprise.siren,
+        categorie_juridique_sirene=autre_categorie_juridique_sirene,
         est_cotee=True,
         appartient_groupe=True,
         societe_mere_en_france=True,

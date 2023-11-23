@@ -120,6 +120,9 @@ def calcule_simulation(simulation_form, user):
     ):
         entreprise = entreprises[0]
         entreprise.denomination = simulation_form.cleaned_data["denomination"]
+        entreprise.categorie_juridique_sirene = simulation_form.cleaned_data[
+            "categorie_juridique_sirene"
+        ]
         entreprise.est_cotee = simulation_form.cleaned_data["est_cotee"]
         entreprise.appartient_groupe = simulation_form.cleaned_data["appartient_groupe"]
         entreprise.comptes_consolides = simulation_form.cleaned_data[
@@ -129,6 +132,9 @@ def calcule_simulation(simulation_form, user):
         entreprise = Entreprise.objects.create(
             denomination=simulation_form.cleaned_data["denomination"],
             siren=simulation_form.cleaned_data["siren"],
+            categorie_juridique_sirene=simulation_form.cleaned_data[
+                "categorie_juridique_sirene"
+            ],
             est_cotee=simulation_form.cleaned_data["est_cotee"],
             appartient_groupe=simulation_form.cleaned_data["appartient_groupe"],
             comptes_consolides=simulation_form.cleaned_data["comptes_consolides"],

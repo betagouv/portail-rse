@@ -36,6 +36,7 @@ class ContactForm(DsfrForm):
 class SimulationForm(EntrepriseForm, forms.ModelForm):
     denomination = forms.CharField()
     siren = SirenField()
+    categorie_juridique_sirene = forms.IntegerField()
 
     class Meta:
         model = CaracteristiquesAnnuelles
