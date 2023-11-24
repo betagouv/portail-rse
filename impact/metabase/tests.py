@@ -373,3 +373,18 @@ def test_synchronise_les_reglementations_BDESE(
         metabase_bdese_entreprise_soumise_2_utilisateurs[1].statut
         == MetabaseBDESE.STATUT_EN_COURS
     )
+
+
+@pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
+def test_synchronise_les_reglementations_BDESE_plusieurs_fois(
+    alice, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    Command().handle()
+    Command().handle()
+
+    assert MetabaseBDESE.objects.count() == 1
