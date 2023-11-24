@@ -15,6 +15,7 @@ class DispositifAntiCorruption(Reglementation):
         dispositif de contrôle et d’évaluation interne des mesures mises en œuvre."""
     more_info_url = reverse_lazy("reglementations:fiche_dispositif_anticorruption")
     tag = "tag-gouvernance"
+    summary = "Se doter d'un dispositif efficace pour lutter contre la corruption et le trafic d'influence."
 
     @staticmethod
     def criteres_remplis(caracteristiques):

@@ -35,6 +35,7 @@ class Reglementation(ABC):
     title: str
     description: str
     more_info_url: str
+    summary: str
 
     @classmethod
     def info(cls):
@@ -43,6 +44,7 @@ class Reglementation(ABC):
             "description": cls.description,
             "more_info_url": cls.more_info_url,
             "tag": cls.tag,
+            "summary": cls.summary,
         }
 
     @classmethod

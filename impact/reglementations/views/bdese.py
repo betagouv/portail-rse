@@ -43,6 +43,7 @@ class BDESEReglementation(Reglementation):
         En l'absence d'accord d'entreprise spécifique, elle comprend des mentions obligatoires qui varient selon l'effectif de l'entreprise."""
     more_info_url = reverse_lazy("reglementations:fiche_bdese")
     tag = "tag-social"
+    summary = "Constituer une base de données économiques, sociales et environnementale sà transmettre à son CSE."
 
     @classmethod
     def bdese_type(cls, caracteristiques: CaracteristiquesAnnuelles) -> int:
