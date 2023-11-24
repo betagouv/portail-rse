@@ -50,6 +50,7 @@ class SimulationForm(EntrepriseForm, forms.ModelForm):
         ]
         help_texts = {
             "effectif": "Vérifiez et confirmez le nombre de salariés de l'entreprise",
+            "effectif_groupe": "Nombre de salariés du groupe",
             "tranche_chiffre_affaires": "Montant net du chiffre d'affaires de l'exercice clos",
             "tranche_bilan": "Total du bilan de l'exercice clos",
             "tranche_chiffre_affaires_consolide": "Montant net du chiffre d'affaires consolidé de l'exercice clos",

@@ -246,7 +246,7 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         max_length=9,
         choices=[BLANK_CHOICE] + EFFECTIF_CHOICES,
         verbose_name="Effectif",
-        help_text="Nombre de salariés de l'entreprise",
+        help_text="Nombre de salariés de l'entreprise au prorata de leur temps de présence au cours des douze mois précédents (conformément aux <a href='https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000006072050/LEGISCTA000006177833/#LEGISCTA000006177833' target='_blank' rel='noopener'>articles L.1111-2 et L.1111-3 du Code du Travail</a>)",
         null=True,
     )
     effectif_permanent = models.CharField(
@@ -260,14 +260,14 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         max_length=9,
         choices=[BLANK_CHOICE] + EFFECTIF_OUTRE_MER_CHOICES,
         verbose_name="Effectif outre-mer",
-        help_text="Nombre de salariés dans les régions et départements d'outre-mer",
+        help_text="Nombre de salariés de l'entreprise dans les régions et départements d'outre-mer au prorata de leur temps de présence au cours des douze mois précédents",
         null=True,
     )
     effectif_groupe = models.CharField(
         max_length=9,
         choices=[BLANK_CHOICE] + EFFECTIF_GROUPE_CHOICES,
         verbose_name="Effectif du groupe",
-        help_text="Nombre de salariés du groupe",
+        help_text="Nombre de salariés du groupe au prorata de leur temps de présence au cours des douze mois précédents",
         null=True,
         blank=True,
     )
