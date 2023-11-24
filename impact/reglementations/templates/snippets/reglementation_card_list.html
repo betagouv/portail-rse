@@ -21,6 +21,10 @@
                             <li>
                                 <p class="fr-badge fr-badge--info fr-badge--no-icon {{ reglementation.info.tag }}">Gouvernance</p>
                             </li>
+                        {% elif reglementation.info.tag == "tag-durabilite" %}
+                            <li>
+                                <p class="fr-badge fr-badge--new fr-badge--no-icon {{ reglementation.info.tag }}">Durabilité</p>
+                            </li>
                         {% endif %}
                     </ul>
                 </div>
@@ -34,6 +38,8 @@
                     <img class="fr-responsive-img" src="{% static 'img/environnement-2x3.png' %}" alt="" />
                 {% elif reglementation.info.tag == "tag-gouvernance" %}
                     <img class="fr-responsive-img" src="{% static 'img/gouvernance-2x3.png' %}" alt="" />
+                {% elif reglementation.info.tag == "tag-durabilite" %}
+                    <img class="fr-responsive-img" src="{% static 'img/durable-2x3.png' %}" alt="" />
                 {% endif %}
             </div>
         </div>
