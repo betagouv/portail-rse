@@ -7,9 +7,11 @@ from habilitations.models import Habilitation as ImpactHabilitation
 from metabase.models import BDESE as MetabaseBDESE
 from metabase.models import Entreprise as MetabaseEntreprise
 from metabase.models import Habilitation as MetabaseHabilitation
+from metabase.models import IndexEgaPro as MetabaseIndexEgaPro
 from metabase.models import Utilisateur as MetabaseUtilisateur
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.bdese import BDESEReglementation
+from reglementations.views.index_egapro import IndexEgaproReglementation
 from users.models import User as ImpactUtilisateur
 
 
@@ -134,6 +136,7 @@ class Command(BaseCommand):
 
     def _insert_reglementations(self):
         self._insert_bdese()
+        self._insert_index_egapro()
 
     def _insert_bdese(self):
         for entreprise in ImpactEntreprise.objects.filter(
@@ -169,6 +172,30 @@ class Command(BaseCommand):
                     entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
                     est_soumise=est_soumise,
                 )
+
+    def _insert_index_egapro(self):
+        for entreprise in ImpactEntreprise.objects.filter(
+            users__isnull=False
+        ).distinct():
+            caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
+            if not caracteristiques:
+                continue
+            est_soumise = IndexEgaproReglementation.est_soumis(caracteristiques)
+            if est_soumise:
+                impact_status = IndexEgaproReglementation.calculate_status(
+                    caracteristiques, entreprise.users.first()
+                ).status
+                if impact_status == ReglementationStatus.STATUS_A_ACTUALISER:
+                    statut = MetabaseBDESE.STATUT_A_ACTUALISER
+                elif impact_status == ReglementationStatus.STATUS_A_JOUR:
+                    statut = MetabaseBDESE.STATUT_A_JOUR
+            else:
+                statut = None
+            MetabaseIndexEgaPro.objects.create(
+                entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
+                est_soumise=est_soumise,
+                statut=statut,
+            )
 
 
 def _last_update(entreprise):

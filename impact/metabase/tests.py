@@ -5,6 +5,7 @@ from datetime import timezone
 import pytest
 from freezegun import freeze_time
 
+from api.tests.fixtures import mock_api_index_egapro  # noqa
 from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
@@ -14,6 +15,7 @@ from metabase.management.commands.sync_metabase import Command
 from metabase.models import BDESE as MetabaseBDESE
 from metabase.models import Entreprise as MetabaseEntreprise
 from metabase.models import Habilitation as MetabaseHabilitation
+from metabase.models import IndexEgaPro as MetabaseIndexEgaPro
 from metabase.models import Utilisateur as MetabaseUtilisateur
 from reglementations.models import BDESE_50_300
 from reglementations.models import derniere_annee_a_remplir_bdese
@@ -399,3 +401,56 @@ def test_ignore_les_entreprises_inscrites_non_qualifiees_dans_la_synchro_des_reg
     Command().handle()
 
     assert MetabaseBDESE.objects.count() == 0
+
+
+@pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
+def test_synchronise_les_reglementations_IndexEgaPro(
+    alice, entreprise_factory, mock_api_index_egapro
+):
+    entreprise_non_soumise = entreprise_factory(
+        siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+    )
+    entreprise_soumise_a_actualiser = entreprise_factory(
+        siren="000000002", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+    )
+    entreprise_soumise_a_jour = entreprise_factory(
+        siren="000000003", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+    )
+    for entreprise in (
+        entreprise_non_soumise,
+        entreprise_soumise_a_actualiser,
+        entreprise_soumise_a_jour,
+    ):
+        attach_user_to_entreprise(alice, entreprise, "Présidente")
+    mock_api_index_egapro.side_effect = [False, True]
+
+    Command().handle()
+
+    assert mock_api_index_egapro.call_count == 2
+    assert MetabaseIndexEgaPro.objects.count() == 3
+
+    metabase_index_egapro_entreprise_non_soumise = MetabaseIndexEgaPro.objects.get(
+        entreprise__siren=entreprise_non_soumise.siren
+    )
+    assert not metabase_index_egapro_entreprise_non_soumise.est_soumise
+    assert metabase_index_egapro_entreprise_non_soumise.statut is None
+
+    metabase_index_egapro_entreprise_soumise_a_actualiser = (
+        MetabaseIndexEgaPro.objects.get(
+            entreprise__siren=entreprise_soumise_a_actualiser.siren
+        )
+    )
+    assert metabase_index_egapro_entreprise_soumise_a_actualiser.est_soumise
+    assert (
+        metabase_index_egapro_entreprise_soumise_a_actualiser.statut
+        == MetabaseIndexEgaPro.STATUT_A_ACTUALISER
+    )
+
+    metabase_index_egapro_entreprise_soumise_a_jour = MetabaseIndexEgaPro.objects.get(
+        entreprise__siren=entreprise_soumise_a_jour.siren
+    )
+    assert metabase_index_egapro_entreprise_soumise_a_jour.est_soumise
+    assert (
+        metabase_index_egapro_entreprise_soumise_a_jour.statut
+        == MetabaseIndexEgaPro.STATUT_A_JOUR
+    )

@@ -72,3 +72,17 @@ class BDESE(models.Model):
     utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE, null=True)
     est_soumise = models.BooleanField(null=True)
     statut = models.CharField(choices=STATUT_CHOICES, max_length=15, null=True)
+
+
+class IndexEgaPro(models.Model):
+    STATUT_A_ACTUALISER = "A ACTUALISER"
+    STATUT_EN_COURS = "EN COURS"
+    STATUT_A_JOUR = "A JOUR"
+    STATUT_CHOICES = [
+        (STATUT_A_ACTUALISER, ""),
+        (STATUT_EN_COURS, ""),
+        (STATUT_A_JOUR, ""),
+    ]
+    entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
+    est_soumise = models.BooleanField(null=True)
+    statut = models.CharField(choices=STATUT_CHOICES, max_length=15, null=True)
