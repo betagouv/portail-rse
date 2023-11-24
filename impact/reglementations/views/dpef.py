@@ -12,6 +12,8 @@ class DPEFReglementation(Reglementation):
     title = "Déclaration de Performance Extra-Financière"
     description = """La Déclaration de Performance Extra-Financière (dite "DPEF") est un document par l'intermédiaire duquel une entreprise détaille les implications sociales, environnementales et sociétales de sa performance et de ses activités, ainsi que son mode de gouvernance."""
     more_info_url = reverse_lazy("reglementations:fiche_dpef")
+    tag = "tag-durabilite"
+    summary = "Établir une déclaration de performance extra-financière contenant des informations sociales, environnementales et sociétales."
 
     CRITERE_EFFECTIF_PERMANENT = "votre effectif permanent est supérieur à 500 salariés"
     CRITERE_EFFECTIF_GROUPE_PERMANENT = (
