@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.core.management.base import BaseCommand
 from django.db.models import Count
 
@@ -8,6 +10,7 @@ from metabase.models import BDESE as MetabaseBDESE
 from metabase.models import Entreprise as MetabaseEntreprise
 from metabase.models import Habilitation as MetabaseHabilitation
 from metabase.models import IndexEgaPro as MetabaseIndexEgaPro
+from metabase.models import Stats as MetabaseStats
 from metabase.models import Utilisateur as MetabaseUtilisateur
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.bdese import BDESEReglementation
@@ -22,6 +25,7 @@ class Command(BaseCommand):
         self._insert_utilisateurs()
         self._insert_habilitations()
         self._insert_reglementations()
+        self._insert_stats()
 
     def _drop_tables(self):
         MetabaseEntreprise.objects.all().delete()
@@ -191,6 +195,25 @@ class Command(BaseCommand):
         elif impact_status == ReglementationStatus.STATUS_A_JOUR:
             statut = MetabaseBDESE.STATUT_A_JOUR
         return statut
+
+    def _insert_stats(self):
+        bdese_a_jour = (
+            MetabaseBDESE.objects.filter(statut=MetabaseBDESE.STATUT_A_JOUR)
+            .values("entreprise")
+            .distinct()
+            .count()
+        )
+        index_egapro_a_jour = (
+            MetabaseIndexEgaPro.objects.filter(statut=MetabaseBDESE.STATUT_A_JOUR)
+            .values("entreprise")
+            .distinct()
+            .count()
+        )
+
+        MetabaseStats.objects.create(
+            date=date.today(),
+            reglementations_a_jour=bdese_a_jour + index_egapro_a_jour,
+        )
 
 
 def _last_update(entreprise):

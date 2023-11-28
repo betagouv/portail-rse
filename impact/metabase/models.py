@@ -82,3 +82,8 @@ class BDESE(Reglementation):
 
 class IndexEgaPro(Reglementation):
     pass
+
+
+class Stats(models.Model):
+    date = models.DateField()
+    reglementations_a_jour = models.IntegerField()
