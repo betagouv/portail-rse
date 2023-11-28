@@ -23,6 +23,12 @@ from reglementations.models import derniere_annee_a_remplir_bdese
 from reglementations.tests.conftest import bdese_factory  # noqa
 
 
+def mark_bdese_as_complete(bdese):
+    for step in bdese.STEPS:
+        bdese.mark_step_as_complete(step)
+    bdese.save()
+
+
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_une_entreprise_qualifiee_sans_groupe(
     entreprise_factory, date_cloture_dernier_exercice
@@ -319,9 +325,7 @@ def test_synchronise_les_reglementations_BDESE(
         user=bob,
         annee=derniere_annee_a_remplir_bdese(),
     )
-    for step in bdese_a_jour_alice.STEPS:
-        bdese_a_jour_alice.mark_step_as_complete(step)
-    bdese_a_jour_alice.save()
+    mark_bdese_as_complete(bdese_a_jour_alice)
 
     Command().handle()
 
@@ -503,13 +507,9 @@ def test_synchronise_l_indicateur_d_impact_nombre_de_reglementations_a_jour(
             user=bob,
             annee=derniere_annee_a_remplir_bdese(),
         )
-        for step in BDESE_50_300.STEPS:
-            bdese_a_jour.mark_step_as_complete(step)
-            bdese_a_jour_alice.mark_step_as_complete(step)
-            bdese_a_jour_bob.mark_step_as_complete(step)
-        bdese_a_jour.save()
-        bdese_a_jour_alice.save()
-        bdese_a_jour_bob.save()
+        mark_bdese_as_complete(bdese_a_jour)
+        mark_bdese_as_complete(bdese_a_jour_alice)
+        mark_bdese_as_complete(bdese_a_jour_bob)
 
         Command().handle()
 
