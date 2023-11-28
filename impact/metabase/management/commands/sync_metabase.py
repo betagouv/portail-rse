@@ -1,5 +1,6 @@
 from datetime import date
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import BaseCommand
 from django.db.models import Count
 
@@ -209,11 +210,18 @@ class Command(BaseCommand):
             .distinct()
             .count()
         )
-
-        MetabaseStats.objects.create(
-            date=date.today(),
-            reglementations_a_jour=bdese_a_jour + index_egapro_a_jour,
-        )
+        nombre_reglementations_a_jour = bdese_a_jour + index_egapro_a_jour
+        try:
+            stats = MetabaseStats.objects.get(
+                date=date.today(),
+            )
+            stats.reglementations_a_jour = nombre_reglementations_a_jour
+            stats.save()
+        except ObjectDoesNotExist:
+            MetabaseStats.objects.create(
+                date=date.today(),
+                reglementations_a_jour=nombre_reglementations_a_jour,
+            )
 
 
 def _last_update(entreprise):

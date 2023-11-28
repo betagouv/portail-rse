@@ -517,3 +517,24 @@ def test_synchronise_l_indicateur_d_impact_nombre_de_reglementations_a_jour(
     stat = MetabaseStats.objects.first()
     assert stat.date == date_premiere_synchro
     assert stat.reglementations_a_jour == 3  # 1 Index Egapro et 2 BDESE
+
+
+@pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
+def test_synchronise_les_stats_plusieurs_fois():
+    date_premiere_synchro = date(2020, 11, 28)
+    date_troisieme_synchro = date(2020, 11, 29)
+
+    with freeze_time(date_premiere_synchro):
+        Command().handle()
+        Command().handle()
+
+    assert MetabaseStats.objects.count() == 1
+    stat = MetabaseStats.objects.first()
+    assert stat.date == date_premiere_synchro
+
+    with freeze_time(date_troisieme_synchro):
+        Command().handle()
+
+    assert MetabaseStats.objects.count() == 2
+    assert MetabaseStats.objects.get(date=date_premiere_synchro)
+    assert MetabaseStats.objects.get(date=date_troisieme_synchro)

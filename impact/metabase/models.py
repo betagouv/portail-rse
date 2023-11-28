@@ -85,5 +85,5 @@ class IndexEgaPro(Reglementation):
 
 
 class Stats(models.Model):
-    date = models.DateField()
+    date = models.DateField(unique=True)
     reglementations_a_jour = models.IntegerField()
