@@ -517,6 +517,9 @@ def test_synchronise_l_indicateur_d_impact_nombre_de_reglementations_a_jour(
     stat = MetabaseStats.objects.first()
     assert stat.date == date_premiere_synchro
     assert stat.reglementations_a_jour == 3  # 1 Index Egapro et 2 BDESE
+    assert (
+        stat.reglementations_statut_connu == 6
+    )  # 3 entreprises soumises à la BDESE et Index Egapro dont on connait le statut
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])

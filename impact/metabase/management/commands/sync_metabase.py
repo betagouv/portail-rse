@@ -198,29 +198,42 @@ class Command(BaseCommand):
         return statut
 
     def _insert_stats(self):
-        bdese_a_jour = (
-            MetabaseBDESE.objects.filter(statut=MetabaseBDESE.STATUT_A_JOUR)
+        bdese_statut_connu = (
+            MetabaseBDESE.objects.filter(statut__isnull=False)
             .values("entreprise")
             .distinct()
-            .count()
         )
-        index_egapro_a_jour = (
-            MetabaseIndexEgaPro.objects.filter(statut=MetabaseBDESE.STATUT_A_JOUR)
+        nombre_bdese_statut_connu = bdese_statut_connu.count()
+        nombre_bdese_a_jour = bdese_statut_connu.filter(
+            statut=MetabaseBDESE.STATUT_A_JOUR
+        ).count()
+
+        index_egapro_statut_connu = (
+            MetabaseIndexEgaPro.objects.filter(statut__isnull=False)
             .values("entreprise")
             .distinct()
-            .count()
         )
-        nombre_reglementations_a_jour = bdese_a_jour + index_egapro_a_jour
+        nombre_index_egapro_statut_connu = index_egapro_statut_connu.count()
+        nombre_index_egapro_a_jour = index_egapro_statut_connu.filter(
+            statut=MetabaseBDESE.STATUT_A_JOUR
+        ).count()
+
+        nombre_reglementations_a_jour = nombre_bdese_a_jour + nombre_index_egapro_a_jour
+        nombre_reglementations_statut_connu = (
+            nombre_bdese_statut_connu + nombre_index_egapro_statut_connu
+        )
         try:
             stats = MetabaseStats.objects.get(
                 date=date.today(),
             )
             stats.reglementations_a_jour = nombre_reglementations_a_jour
+            stats.reglementations_statut_connu = nombre_reglementations_statut_connu
             stats.save()
         except ObjectDoesNotExist:
             MetabaseStats.objects.create(
                 date=date.today(),
                 reglementations_a_jour=nombre_reglementations_a_jour,
+                reglementations_statut_connu=nombre_reglementations_statut_connu,
             )
 
 

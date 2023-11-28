@@ -6,7 +6,7 @@ from django.db import models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("metabase", "0011_indexegapro"),
+        ("metabase", "0012_indexegapro"),
     ]
 
     operations = [
@@ -24,6 +24,7 @@ class Migration(migrations.Migration):
                 ),
                 ("date", models.DateField(unique=True)),
                 ("reglementations_a_jour", models.IntegerField()),
+                ("reglementations_statut_connu", models.IntegerField()),
             ],
         ),
     ]
