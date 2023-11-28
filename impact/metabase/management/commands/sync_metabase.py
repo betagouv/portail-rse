@@ -140,6 +140,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(message))
 
     def _insert_reglementations(self):
+        self._success("Ajout des réglementations dans Metabase")
         for entreprise in ImpactEntreprise.objects.filter(
             users__isnull=False
         ).distinct():
@@ -147,6 +148,8 @@ class Command(BaseCommand):
             if caracteristiques:
                 self._insert_bdese(caracteristiques)
                 self._insert_index_egapro(caracteristiques)
+                self._success(str(entreprise))
+        self._success("Ajout des réglementations dans Metabase: OK")
 
     def _insert_bdese(self, caracteristiques):
         entreprise = caracteristiques.entreprise
@@ -198,6 +201,7 @@ class Command(BaseCommand):
         return statut
 
     def _insert_stats(self):
+        self._success("Ajout des stats dans Metabase")
         bdese_statut_connu = (
             MetabaseBDESE.objects.filter(statut__isnull=False)
             .values("entreprise")
@@ -235,6 +239,7 @@ class Command(BaseCommand):
                 reglementations_a_jour=nombre_reglementations_a_jour,
                 reglementations_statut_connu=nombre_reglementations_statut_connu,
             )
+        self._success("Ajout des stats dans Metabase: OK")
 
 
 def _last_update(entreprise):
