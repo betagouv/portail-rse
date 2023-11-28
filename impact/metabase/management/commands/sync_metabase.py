@@ -135,67 +135,62 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(message))
 
     def _insert_reglementations(self):
-        self._insert_bdese()
-        self._insert_index_egapro()
-
-    def _insert_bdese(self):
         for entreprise in ImpactEntreprise.objects.filter(
             users__isnull=False
         ).distinct():
             caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
-            if not caracteristiques:
-                continue
-            est_soumise = BDESEReglementation.est_soumis(caracteristiques)
-            if est_soumise:
-                for utilisateur in entreprise.users.all():
-                    impact_status = BDESEReglementation.calculate_status(
-                        caracteristiques, utilisateur
-                    ).status
-                    if impact_status == ReglementationStatus.STATUS_A_ACTUALISER:
-                        statut = MetabaseBDESE.STATUT_A_ACTUALISER
-                    elif impact_status == ReglementationStatus.STATUS_EN_COURS:
-                        statut = MetabaseBDESE.STATUT_EN_COURS
-                    elif impact_status == ReglementationStatus.STATUS_A_JOUR:
-                        statut = MetabaseBDESE.STATUT_A_JOUR
-                    meta_bdese = MetabaseBDESE.objects.create(
-                        entreprise=MetabaseEntreprise.objects.get(
-                            impact_id=entreprise.id
-                        ),
-                        utilisateur=MetabaseUtilisateur.objects.get(
-                            impact_id=utilisateur.id
-                        ),
-                        est_soumise=est_soumise,
-                        statut=statut,
-                    )
-            else:
+            if caracteristiques:
+                self._insert_bdese(caracteristiques)
+                self._insert_index_egapro(caracteristiques)
+
+    def _insert_bdese(self, caracteristiques):
+        entreprise = caracteristiques.entreprise
+        est_soumise = BDESEReglementation.est_soumis(caracteristiques)
+        if est_soumise:
+            for utilisateur in entreprise.users.all():
+                impact_status = BDESEReglementation.calculate_status(
+                    caracteristiques, utilisateur
+                ).status
+                statut = self._convertit_impact_status_en_statut_metabase(impact_status)
                 meta_bdese = MetabaseBDESE.objects.create(
                     entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
+                    utilisateur=MetabaseUtilisateur.objects.get(
+                        impact_id=utilisateur.id
+                    ),
                     est_soumise=est_soumise,
+                    statut=statut,
                 )
-
-    def _insert_index_egapro(self):
-        for entreprise in ImpactEntreprise.objects.filter(
-            users__isnull=False
-        ).distinct():
-            caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
-            if not caracteristiques:
-                continue
-            est_soumise = IndexEgaproReglementation.est_soumis(caracteristiques)
-            if est_soumise:
-                impact_status = IndexEgaproReglementation.calculate_status(
-                    caracteristiques, entreprise.users.first()
-                ).status
-                if impact_status == ReglementationStatus.STATUS_A_ACTUALISER:
-                    statut = MetabaseBDESE.STATUT_A_ACTUALISER
-                elif impact_status == ReglementationStatus.STATUS_A_JOUR:
-                    statut = MetabaseBDESE.STATUT_A_JOUR
-            else:
-                statut = None
-            MetabaseIndexEgaPro.objects.create(
+        else:
+            meta_bdese = MetabaseBDESE.objects.create(
                 entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
                 est_soumise=est_soumise,
-                statut=statut,
             )
+
+    def _insert_index_egapro(self, caracteristiques):
+        entreprise = caracteristiques.entreprise
+        est_soumise = IndexEgaproReglementation.est_soumis(caracteristiques)
+        if est_soumise:
+            impact_status = IndexEgaproReglementation.calculate_status(
+                caracteristiques, entreprise.users.first()
+            ).status
+            statut = self._convertit_impact_status_en_statut_metabase(impact_status)
+        else:
+            statut = None
+        MetabaseIndexEgaPro.objects.create(
+            entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
+            est_soumise=est_soumise,
+            statut=statut,
+        )
+
+    def _convertit_impact_status_en_statut_metabase(self, impact_status):
+        statut = None
+        if impact_status == ReglementationStatus.STATUS_A_ACTUALISER:
+            statut = MetabaseBDESE.STATUT_A_ACTUALISER
+        elif impact_status == ReglementationStatus.STATUS_EN_COURS:
+            statut = MetabaseBDESE.STATUT_EN_COURS
+        elif impact_status == ReglementationStatus.STATUS_A_JOUR:
+            statut = MetabaseBDESE.STATUT_A_JOUR
+        return statut
 
 
 def _last_update(entreprise):
