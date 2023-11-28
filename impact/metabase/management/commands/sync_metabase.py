@@ -139,13 +139,14 @@ class Command(BaseCommand):
         for entreprise in ImpactEntreprise.objects.filter(
             users__isnull=False
         ).distinct():
-            est_soumise = BDESEReglementation.est_soumis(
-                entreprise.dernieres_caracteristiques_qualifiantes
-            )
+            caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
+            if not caracteristiques:
+                continue
+            est_soumise = BDESEReglementation.est_soumis(caracteristiques)
             if est_soumise:
                 for utilisateur in entreprise.users.all():
                     impact_status = BDESEReglementation.calculate_status(
-                        entreprise.dernieres_caracteristiques_qualifiantes, utilisateur
+                        caracteristiques, utilisateur
                     ).status
                     if impact_status == ReglementationStatus.STATUS_A_ACTUALISER:
                         statut = MetabaseBDESE.STATUT_A_ACTUALISER

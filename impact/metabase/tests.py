@@ -388,3 +388,14 @@ def test_synchronise_les_reglementations_BDESE_plusieurs_fois(
     Command().handle()
 
     assert MetabaseBDESE.objects.count() == 1
+
+
+@pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
+def test_ignore_les_entreprises_inscrites_non_qualifiees_dans_la_synchro_des_reglementations_BDESE(
+    alice, entreprise_non_qualifiee
+):
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+
+    Command().handle()
+
+    assert MetabaseBDESE.objects.count() == 0
