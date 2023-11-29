@@ -1,6 +1,6 @@
 # Metabase
 
-Le projet Impact utilise trois aplications Scalingo associées chacune à une base de données PostgreSQL :
+Le projet Impact utilise trois applications Scalingo associées chacune à une base de données PostgreSQL :
  - une application Django, déployée via Scalingo à partir de ce repo
  - une application Metabase, déployée via Scalingo à partir de https://github.com/Scalingo/metabase-scalingo
  - une application vide Metabase-data servant uniquement pour sa base de données PostgreSQL associée (Scalingo ne permet pas d'avoir plusieurs bdd associées à une seule application)
@@ -67,7 +67,7 @@ Cela supprime le schéma, il faut donc le recréer ensuite et attribuer à nouve
 
 Pour modifier la version de Metabase il faut :
   - mettre à jour la version souhaitée dans la variable d'environnement `METABASE_VERSION` de l'application Metabase sur Scalingo
-  - faire un nouveau déploiement (comme indiqué dans [la documentation de Scalingo](https://doc.scalingo.com/platform/getting-started/getting-started-with-metabase#update-the-application))
+  - faire un nouveau déploiement (comme indiqué dans [la documentation de Scalingo](https://doc.scalingo.com/platform/getting-started/getting-started-with-metabase#updating-metabase))
 
   ```
   scalingo --app my-app deploy https://github.com/Scalingo/metabase-scalingo/archive/refs/heads/master.tar.gz
