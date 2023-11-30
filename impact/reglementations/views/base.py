@@ -76,7 +76,7 @@ class Reglementation(ABC):
             )
             return ReglementationStatus(
                 status=ReglementationStatus.STATUS_INCALCULABLE,
-                status_detail="C'est râté",
+                status_detail="Impossible de connaitre l'état de cette réglementation",
                 primary_action=primary_action,
             )
         if not user.is_authenticated:
