@@ -17,6 +17,18 @@ class DispositifAntiCorruption(Reglementation):
     tag = "tag-gouvernance"
     summary = "Se doter d'un dispositif efficace pour lutter contre la corruption et le trafic d'influence."
 
+    @classmethod
+    def est_suffisamment_qualifiee(cls, caracteristiques):
+        return (
+            caracteristiques.effectif is not None
+            and caracteristiques.tranche_chiffre_affaires is not None
+            and caracteristiques.tranche_bilan is not None
+            and (
+                not caracteristiques.entreprise.appartient_groupe
+                or caracteristiques.tranche_bilan is not None
+            )
+        )
+
     @staticmethod
     def criteres_remplis(caracteristiques):
         criteres = []
@@ -55,6 +67,7 @@ class DispositifAntiCorruption(Reglementation):
 
     @classmethod
     def est_soumis(cls, caracteristiques):
+        super().est_soumis(caracteristiques)
         return len(cls.criteres_remplis(caracteristiques)) == 2
 
     @classmethod

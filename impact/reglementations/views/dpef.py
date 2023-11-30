@@ -21,6 +21,10 @@ class DPEFReglementation(Reglementation):
     )
 
     @classmethod
+    def est_suffisamment_qualifiee(cls, caracteristiques):
+        return caracteristiques.effectif is not None
+
+    @classmethod
     def calculate_status(
         cls,
         caracteristiques: CaracteristiquesAnnuelles,
@@ -141,6 +145,7 @@ class DPEFReglementation(Reglementation):
 
     @classmethod
     def est_soumis(cls, caracteristiques):
+        super().est_soumis(caracteristiques)
         return (
             cls.critere_categorie_juridique(caracteristiques)
             and cls.critere_effectif(caracteristiques)

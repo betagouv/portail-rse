@@ -16,7 +16,12 @@ class DispositifAlerteReglementation(Reglementation):
     )
 
     @classmethod
+    def est_suffisamment_qualifiee(cls, caracteristiques):
+        return caracteristiques.effectif is not None
+
+    @classmethod
     def est_soumis(cls, caracteristiques):
+        super().est_soumis(caracteristiques)
         return (
             caracteristiques.effectif != CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
         )

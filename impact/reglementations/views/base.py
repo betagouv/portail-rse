@@ -10,6 +10,10 @@ from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import is_user_attached_to_entreprise
 
 
+class InsuffisammentQualifieeError(Exception):
+    pass
+
+
 @dataclass
 class ReglementationAction:
     url: str
@@ -24,6 +28,7 @@ class ReglementationStatus:
     STATUS_A_JOUR = 2
     STATUS_SOUMIS = 3
     STATUS_NON_SOUMIS = 4
+    STATUS_INCALCULABLE = 1000
 
     status: int
     status_detail: str
@@ -49,8 +54,14 @@ class Reglementation(ABC):
 
     @classmethod
     @abstractmethod
-    def est_soumis(cls, caracteristiques: CaracteristiquesAnnuelles) -> bool:
+    def est_suffisamment_qualifiee(cls, caracteristiques):
         pass
+
+    @classmethod
+    @abstractmethod
+    def est_soumis(cls, caracteristiques: CaracteristiquesAnnuelles) -> bool:
+        if not cls.est_suffisamment_qualifiee(caracteristiques):
+            raise InsuffisammentQualifieeError
 
     @classmethod
     @abstractmethod
@@ -59,6 +70,15 @@ class Reglementation(ABC):
         caracteristiques: CaracteristiquesAnnuelles,
         user: settings.AUTH_USER_MODEL,
     ) -> ReglementationStatus:
+        if not cls.est_suffisamment_qualifiee(caracteristiques):
+            primary_action = ReglementationAction(
+                "/qualification", "Qualifier mon entreprise"
+            )
+            return ReglementationStatus(
+                status=ReglementationStatus.STATUS_INCALCULABLE,
+                status_detail="C'est râté",
+                primary_action=primary_action,
+            )
         if not user.is_authenticated:
             return cls.calculate_status_for_anonymous_user(caracteristiques)
         elif not is_user_attached_to_entreprise(user, caracteristiques.entreprise):

@@ -14,6 +14,10 @@ class AuditEnergetiqueReglementation(Reglementation):
     tag = "tag-environnement"
     summary = "Evaluer la performance énergétique de son entreprise."
 
+    @classmethod
+    def est_suffisamment_qualifiee(cls, caracteristiques):
+        return caracteristiques.effectif is not None
+
     @staticmethod
     def criteres_remplis(caracteristiques):
         criteres = []
@@ -48,6 +52,7 @@ class AuditEnergetiqueReglementation(Reglementation):
 
     @classmethod
     def est_soumis(cls, caracteristiques):
+        super().est_soumis(caracteristiques)
         return (
             not caracteristiques.systeme_management_energie
         ) and cls.criteres_remplis(caracteristiques)

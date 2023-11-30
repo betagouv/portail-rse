@@ -10,6 +10,8 @@ from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
 from reglementations.views import calcule_reglementations
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
+from reglementations.views.base import InsuffisammentQualifieeError
+from reglementations.views.base import ReglementationStatus
 from reglementations.views.bdese import BDESEReglementation
 from reglementations.views.bges import BGESReglementation
 from reglementations.views.dispositif_alerte import DispositifAlerteReglementation
@@ -26,6 +28,18 @@ REGLEMENTATIONS = (
     DispositifAntiCorruption,
     DPEFReglementation,
 )
+
+
+def test_les_reglementations_levent_une_exception_si_les_caracteristiques_sont_vides(
+    entreprise_non_qualifiee,
+):
+    caracteristiques = CaracteristiquesAnnuelles(entreprise=entreprise_non_qualifiee)
+
+    for reglementation in REGLEMENTATIONS:
+        with pytest.raises(InsuffisammentQualifieeError):
+            reglementation.est_soumis(caracteristiques)
+        status = reglementation.calculate_status(caracteristiques, AnonymousUser())
+        assert status.status == ReglementationStatus.STATUS_INCALCULABLE
 
 
 def test_fiches_reglementations_sont_publiques(client):

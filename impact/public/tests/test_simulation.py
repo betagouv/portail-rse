@@ -143,7 +143,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     reglementations = context["reglementations"]
     for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
         assert reglementations[index]["status"] == REGLEMENTATION.calculate_status(
-            caracteristiques, AnonymousUser()
+            simulation_caracs, AnonymousUser()
         )
 
     content = response.content.decode("utf-8")

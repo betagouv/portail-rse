@@ -2,7 +2,6 @@ from django.conf import settings
 from django.urls import reverse_lazy
 
 from entreprises.models import CaracteristiquesAnnuelles
-from habilitations.models import is_user_attached_to_entreprise
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
 from reglementations.views.base import ReglementationStatus
@@ -14,6 +13,18 @@ class BGESReglementation(Reglementation):
     more_info_url = reverse_lazy("reglementations:fiche_bilan_ges")
     tag = "tag-environnement"
     summary = "Mesurer ses émissions de gaz à effet de serre directes et adopter un plan de transition en conséquence."
+    NON_SOUMIS_PRIMARY_ACTION = ReglementationAction(
+        "https://bilans-ges.ademe.fr/bilans",
+        "Consulter les bilans GES sur la plateforme nationale",
+        external=True,
+    )
+
+    @classmethod
+    def est_suffisamment_qualifiee(cls, caracteristiques):
+        return (
+            caracteristiques.effectif is not None
+            and caracteristiques.effectif_outre_mer is not None
+        )
 
     @staticmethod
     def criteres_remplis(caracteristiques):
@@ -34,6 +45,7 @@ class BGESReglementation(Reglementation):
 
     @classmethod
     def est_soumis(cls, caracteristiques):
+        super().est_soumis(caracteristiques)
         return cls.criteres_remplis(caracteristiques)
 
     @classmethod
@@ -42,18 +54,8 @@ class BGESReglementation(Reglementation):
         caracteristiques: CaracteristiquesAnnuelles,
         user: settings.AUTH_USER_MODEL,
     ) -> ReglementationStatus:
-        NON_SOUMIS_PRIMARY_ACTION = ReglementationAction(
-            "https://bilans-ges.ademe.fr/bilans",
-            "Consulter les bilans GES sur la plateforme nationale",
-            external=True,
-        )
-
-        if not user.is_authenticated:
-            return cls.calculate_status_for_anonymous_user(
-                caracteristiques, primary_action=NON_SOUMIS_PRIMARY_ACTION
-            )
-        elif not is_user_attached_to_entreprise(user, caracteristiques.entreprise):
-            return cls.calculate_status_for_unauthorized_user(caracteristiques)
+        if reglementation_status := super().calculate_status(caracteristiques, user):
+            return reglementation_status
 
         if cls.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_SOUMIS
@@ -66,7 +68,15 @@ class BGESReglementation(Reglementation):
         else:
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
-            primary_action = NON_SOUMIS_PRIMARY_ACTION
+            primary_action = cls.NON_SOUMIS_PRIMARY_ACTION
         return ReglementationStatus(
             status, status_detail, primary_action=primary_action
+        )
+
+    @classmethod
+    def calculate_status_for_anonymous_user(
+        cls, caracteristiques: CaracteristiquesAnnuelles
+    ):
+        return super().calculate_status_for_anonymous_user(
+            caracteristiques, primary_action=cls.NON_SOUMIS_PRIMARY_ACTION
         )
