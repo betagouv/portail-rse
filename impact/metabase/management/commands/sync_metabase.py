@@ -45,7 +45,7 @@ class Command(BaseCommand):
                 entreprise.dernieres_caracteristiques_qualifiantes
                 or entreprise.dernieres_caracteristiques
             )
-            meta_e = MetabaseEntreprise.objects.create(
+            MetabaseEntreprise.objects.create(
                 impact_id=entreprise.pk,
                 ajoutee_le=entreprise.created_at,
                 modifiee_le=_last_update(entreprise),
@@ -103,7 +103,7 @@ class Command(BaseCommand):
         for utilisateur in ImpactUtilisateur.objects.annotate(
             nombre_entreprises=Count("entreprise")
         ):
-            meta_u = MetabaseUtilisateur.objects.create(
+            MetabaseUtilisateur.objects.create(
                 impact_id=utilisateur.pk,
                 ajoute_le=utilisateur.created_at,
                 modifie_le=utilisateur.updated_at,
@@ -112,7 +112,6 @@ class Command(BaseCommand):
                 email_confirme=utilisateur.is_email_confirmed,
                 nombre_entreprises=utilisateur.nombre_entreprises,
             )
-            meta_u.save()
             self._success(str(utilisateur.pk))
         self._success("Ajout des utilisateurs dans Metabase: OK")
 
@@ -160,7 +159,7 @@ class Command(BaseCommand):
                     caracteristiques, utilisateur
                 ).status
                 statut = self._convertit_impact_status_en_statut_metabase(impact_status)
-                meta_bdese = MetabaseBDESE.objects.create(
+                MetabaseBDESE.objects.create(
                     entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
                     utilisateur=MetabaseUtilisateur.objects.get(
                         impact_id=utilisateur.id
@@ -169,7 +168,7 @@ class Command(BaseCommand):
                     statut=statut,
                 )
         else:
-            meta_bdese = MetabaseBDESE.objects.create(
+            MetabaseBDESE.objects.create(
                 entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
                 est_soumise=est_soumise,
             )
