@@ -37,6 +37,7 @@ def test_fiches_reglementations_sont_publiques(client):
         "/reglementations/audit-energetique": "reglementations/fiches/audit-energetique.html",
         "/reglementations/dispositif-anticorruption": "reglementations/fiches/dispositif-anticorruption.html",
         "/reglementations/declaration-de-performance-extra-financiere": "reglementations/fiches/dpef.html",
+        "/reglementations/rapport-durabilite-csrd": "reglementations/fiches/csrd.html",
     }
 
     for url, template in templates.items():

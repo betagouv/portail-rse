@@ -50,6 +50,11 @@ urlpatterns = [
         name="fiche_dpef",
     ),
     path(
+        "reglementations/rapport-durabilite-csrd",
+        TemplateView.as_view(template_name="reglementations/fiches/csrd.html"),
+        name="fiche_csrd",
+    ),
+    path(
         "reglementations/<str:siren>",
         views.reglementations_for_entreprise,
         name="reglementations",
