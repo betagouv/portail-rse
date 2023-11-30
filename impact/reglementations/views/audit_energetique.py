@@ -16,7 +16,23 @@ class AuditEnergetiqueReglementation(Reglementation):
 
     @classmethod
     def est_suffisamment_qualifiee(cls, caracteristiques):
-        return caracteristiques.effectif is not None
+        return (
+            caracteristiques.effectif is not None
+            and caracteristiques.tranche_chiffre_affaires is not None
+            and caracteristiques.tranche_bilan is not None
+            and caracteristiques.systeme_management_energie is not None
+            and caracteristiques.entreprise.appartient_groupe is not None
+            and (
+                caracteristiques.entreprise.appartient_groupe is False
+                or (
+                    caracteristiques.entreprise.comptes_consolides is not None
+                    and (
+                        caracteristiques.entreprise.comptes_consolides is False
+                        or caracteristiques.tranche_bilan_consolide is not None
+                    )
+                )
+            )
+        )
 
     @staticmethod
     def criteres_remplis(caracteristiques):

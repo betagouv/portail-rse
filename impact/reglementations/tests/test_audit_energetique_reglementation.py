@@ -20,6 +20,141 @@ def test_audit_energetique_reglementation_info():
     assert info["tag"] == "tag-environnement"
 
 
+def _rend_caracteristiques_calculables(caracteristiques):
+    caracteristiques.effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299
+    caracteristiques.tranche_chiffre_affaires = (
+        CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M
+    )
+    caracteristiques.tranche_bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M
+    caracteristiques.systeme_management_energie = True
+    caracteristiques.entreprise.appartient_groupe = False
+    caracteristiques.entreprise.comptes_consolides = None
+    return caracteristiques
+
+
+def _rend_caracteristiques_calculables_pour_groupe_sans_comptes_consolides(
+    caracteristiques,
+):
+    caracteristiques = _rend_caracteristiques_calculables(caracteristiques)
+    caracteristiques.entreprise.appartient_groupe = True
+    caracteristiques.entreprise.comptes_consolides = False
+    return caracteristiques
+
+
+def _rend_caracteristiques_calculables_pour_groupe_avec_comptes_consolides(
+    caracteristiques,
+):
+    caracteristiques = (
+        _rend_caracteristiques_calculables_pour_groupe_sans_comptes_consolides(
+            caracteristiques
+        )
+    )
+    caracteristiques.entreprise.comptes_consolides = True
+    caracteristiques.tranche_bilan_consolide = (
+        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M
+    )
+    return caracteristiques
+
+
+def test_audit_energetique_calculable(entreprise_non_qualifiee):
+    caracteristiques = CaracteristiquesAnnuelles(entreprise=entreprise_non_qualifiee)
+    caracteristiques = _rend_caracteristiques_calculables(caracteristiques)
+
+    assert (
+        AuditEnergetiqueReglementation.est_suffisamment_qualifiee(caracteristiques)
+        is True
+    )
+
+    caracteristiques = (
+        _rend_caracteristiques_calculables_pour_groupe_sans_comptes_consolides(
+            caracteristiques
+        )
+    )
+
+    assert (
+        AuditEnergetiqueReglementation.est_suffisamment_qualifiee(caracteristiques)
+        is True
+    )
+
+    caracteristiques = (
+        _rend_caracteristiques_calculables_pour_groupe_avec_comptes_consolides(
+            caracteristiques
+        )
+    )
+
+    assert (
+        AuditEnergetiqueReglementation.est_suffisamment_qualifiee(caracteristiques)
+        is True
+    )
+
+
+def test_audit_energetique_non_calculable(entreprise_non_qualifiee):
+    caracteristiques = CaracteristiquesAnnuelles(entreprise=entreprise_non_qualifiee)
+    caracteristiques = _rend_caracteristiques_calculables(caracteristiques)
+    caracteristiques.effectif = None
+
+    assert (
+        AuditEnergetiqueReglementation.est_suffisamment_qualifiee(caracteristiques)
+        is False
+    )
+
+    caracteristiques = _rend_caracteristiques_calculables(caracteristiques)
+    caracteristiques.tranche_chiffre_affaires = None
+
+    assert (
+        AuditEnergetiqueReglementation.est_suffisamment_qualifiee(caracteristiques)
+        is False
+    )
+
+    caracteristiques = _rend_caracteristiques_calculables(caracteristiques)
+    caracteristiques.tranche_bilan = None
+
+    assert (
+        AuditEnergetiqueReglementation.est_suffisamment_qualifiee(caracteristiques)
+        is False
+    )
+
+    caracteristiques = _rend_caracteristiques_calculables(caracteristiques)
+    caracteristiques.entreprise.appartient_groupe = None
+
+    assert (
+        AuditEnergetiqueReglementation.est_suffisamment_qualifiee(caracteristiques)
+        is False
+    )
+
+    caracteristiques = _rend_caracteristiques_calculables(caracteristiques)
+    caracteristiques.systeme_management_energie = None
+
+    assert (
+        AuditEnergetiqueReglementation.est_suffisamment_qualifiee(caracteristiques)
+        is False
+    )
+
+    caracteristiques = (
+        _rend_caracteristiques_calculables_pour_groupe_sans_comptes_consolides(
+            caracteristiques
+        )
+    )
+    caracteristiques.entreprise.comptes_consolides = None
+
+    assert (
+        AuditEnergetiqueReglementation.est_suffisamment_qualifiee(caracteristiques)
+        is False
+    )
+
+    caracteristiques = (
+        _rend_caracteristiques_calculables_pour_groupe_avec_comptes_consolides(
+            caracteristiques
+        )
+    )
+    caracteristiques.tranche_bilan_consolide = None
+
+    assert (
+        AuditEnergetiqueReglementation.est_suffisamment_qualifiee(caracteristiques)
+        is False
+    )
+
+
 @pytest.mark.parametrize(
     "effectif",
     [
