@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Rapport de durabilité - Directive CSRD - Portail RSE{% endblock %}
+
+{% block content %}
+    <div class="fr-container">
+        <div class="fr-grid-row fr-pt-2w ">
+            <div class="fr-col-12">
+                <a class="fr-link fr-icon-arrow-left-line fr-link--icon-left" href="{% url 'reglementations' %}">Retour à la liste des réglementations</a>
+            </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-pb-6w fr-mt-1v">
+            <div class="fr-col-lg-2 fiche-img">
+                <figure class="fr-content-media" role="group" aria-label="© Légende de l‘image">
+                    <div class="fr-content-media__img">
+                        <img class="fr-responsive-img fr-ratio-2x3" src="{% static 'img/durable-2x3.png' %}" alt="" />
+                    </div>
+                </figure>
+            </div>
+            <div class="fr-col-lg-10 fr-my-5w">
+                <div class="fr-grid-row">
+                    <div class="fr-col-12">
+                        <h2 class="fr-mb-1v">Déclaration de performance extra-financière</h2>
+                        <p class="fr-text--xs">Dernière mise à jour le 24/11/2023</p>
+                        <p>
+                            La directive européenne CSRD (Corporate Sustainability Reporting Directive) renforce les obligations de publication d'informations en matière de durabilité à l'égard des entreprises.
+                            <br><br>
+                            Les informations à publier se divisent en trois thématiques spécifiques (l'environnement, le social et la gouvernance) et répondent au principe de la double matérialité : les informations, évaluées comme matériellement importantes par l'entreprise prennent en compte la matérialité d'impact (impact de l'entreprise sur les questions de développements durables) et la matérialité financière (risques et opportunités pour l'entreprise liés au développement durable).
+                            <br><br>
+                            Afin d'encadrer l'élaboration et publication de telles informations, la CSRD prévoit l'adoption de standards européens de reporting en matière de durabilité, les normes "ESRS" (European Sustainability Reporting Standards), sous la conduite des groupes de travail de l'EFRAG (le groupe consultatif européen sur l’information financière). L'objectif est d'adopter un langage européen unifié relatif aux informations de durabilité, pour permettre une meilleure comparaison de la performance globale des entreprises.
+                            <br><br>
+                            L'obtention d’informations pertinentes, comparables et fiables est indispensable pour parvenir à une croissance durable et inclusive, ambition du Pacte Vert. Aussi, cette directive prévoit une vérification par un organisme tiers indépendant du rapport, certifiant la véracité des éléments présentés dans le rapport de durabilité. Les informations seront ensuite transmises à la plateforme numérique "ESAP" (European Single Access Point) qui recueillera les données financières et extra-financières des sociétés en vue de réorienter les flux de capitaux vers des investissements durables.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="fr-grid-row background-dur fr-py-6w fiche-tuiles fr-mb-6w">
+        <div class="fr-container">
+            <div class="fr-grid-row fr-grid-row--gutters">
+                <div class="fr-col-lg-4 fr-col-12">
+                    <div class="fr-tile fr-tile--vertical">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    A quelle fréquence dois-je mettre à jour ce dispositif ?
+                                </h3>
+                                <p class="fr-tile__detail">
+                                    L'entreprise doit publier, dans un délai raisonnable ne dépassant pas douze mois après la clôture du bilan, son rapport de gestion avec les informations de durabilité.
+                                    <br>
+                                    Les informations de durabilité doivent faire l'objet d'une mise à jour, résultant de la révision de l'analyse de la double matérialité.
+                                    <br>
+                                    Attention : l'entrée en vigueur de la CSRD est progressive. Les premiers rapports de durabilité devront être finalisés en janvier 2025.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram fr-pt-3w">
+                                <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Quand.png' %}" alt="" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fr-col-lg-4 fr-col-12">
+                    <div class="fr-tile fr-tile--vertical fr-tile--no-border">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    Quel est l'objectif poursuivi par l'obligation ?
+                                </h3>
+                                <p class="fr-tile__detail">
+                                    Publier un rapport comprenant des informations détaillées sur les incidences, risques et opportunités matériels de l'entreprise relatifs à la durabilité.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram fr-pt-3w">
+                                <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Objectif.png' %}" alt="" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fr-col-lg-4 fr-col-12">
+                    <div class="fr-tile fr-tile--vertical">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    Qui sont les destinataires / bénéficiaires du dispositif ?
+                                </h3>
+                                <p class="fr-tile__detail">
+                                    Les destinataires du rapport de durabilité sont identiques à ceux du rapport de gestion :
+                                    <ul>
+                                        <li>
+                                            Les différentes parties prenantes internes et externes de l'entreprise (salariés, actionnaires, fournisseurs, clients...)
+                                        </li>
+                                        <li>
+                                            European Single Access Point (ESAP)
+                                        </li>
+                                        <li>
+                                            Greffe du tribunal de commerce
+                                        </li>
+                                    </ul>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram fr-pt-3w">
+                                <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Destinataires.png' %}" alt="" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fr-col-lg-4 fr-col-12">
+                    <div class="fr-tile fr-tile--vertical">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    Quelles entreprises sont concernées ?
+                                </h3>
+                                <p class="fr-tile__detail">
+                                    Attention : les informations présentées ci-dessous sont susceptibles de changer prochainement. Cette partie sera mise à jour une fois la directive transposée en droit national.
+                                </p>
+                                <p class="fr-tile__detail">
+                                    Toute entreprise :
+                                </p>
+                                <ul>
+                                    <li>Cotée sur le marché réglementé européen, peu importe le montant de son bilan, de son chiffre d'affaires ou du nombre d'employés ; ou</li>
+                                    <li>Non cotée sur le marché réglementé européen et correspondant à la définition de grande entreprise selon la directive Comptable [une société qui dépasse au moins deux des trois seuils suivants: un total du bilan de 20 millions d'euros / un chiffre d'affaires net de 40 millions d'euros  / un nombre moyen de salariés de 250] ; ou</li>
+                                    <li>
+                                        Entreprise de pays tiers dont le chiffre d'affaires net réalisé dans l'Union européenne, au niveau du groupe ou, à défaut, au niveau individuel, est supérieur à 150 millions d'euros pour chacun des deux derniers exercices consécutifs et qui possède :
+                                        <ul>
+                                            <li>Une grande filiale européenne (total du bilan > 20M / CA net > 40M / Nombre moyen de salariés au cours de l'exercice > 250) ; et/ou</li>
+                                            <li>Une petite et moyenne filiale européenne ( total de bilan annuel < 43M / CA annuel < 50M / Nombre moyen de salariés au cours de l'exercice < 250) ; ou</li>
+                                            <li>Une succursale européenne réalisant un chiffre d'affaires net supérieur à 40 millions d'euros. </li>
+                                        </ul>
+                                        Il reviendra à ces filiales et succursales européennes d'entreprises de pays tiers de publier et de rendre accessible le rapport de durabilité de l'entreprise mère établie conformément aux normes d'information en matière de durabilité de la CSRD ou d'une façon équivalente à ces normes. A défaut, la filiale ou la succursale publie et rend accessible le rapport de durabilité avec toutes les informations qu'elle a en sa possession, obtenues ou acquises, et émet une déclaration indiquant que l’entreprise de pays tiers n’a pas mis à disposition les informations nécessaires.
+                                    </li>
+                                </ul>
+                                <p class="fr-tile__detail">
+                                    Exclusion : Les micro-entreprises ne sont pas concernées par l'obligation d'inclure dans leur rapport de gestion des informations de durabilité.
+                                </p>
+                                <p class="fr-tile__detail">
+                                    Exemption : Les filiales sont exemptées de l'obligation de publication des informations de durabilité dès lors que :
+                                </p>
+                                <ul>
+                                    <li>La filiale est incluse dans le rapport consolidé de gestion de l'entreprise mère établie dans l'Union européenne ; ou</li>
+                                    <li>La filiale est incluse dans l'information consolidée en matière de durabilité de l'entreprise mère établie dans un pays tiers et cette information a été réalisée conformément aux normes standards.</li>
+                                </ul>
+                                <p class="fr-tile__detail">
+                                    Cette exemption ne s'applique pas aux filiales dont les seuils correspondent à ceux d'une grande entreprise, dans un souci de protection des investisseurs.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram fr-pt-3w">
+                                <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Entreprise.png' %}" alt="" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fr-col-lg-4 fr-col-12">
+                    <div class="fr-tile fr-tile--vertical">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    Que dois-je faire pour me mettre en conformité ?
+                                </h3>
+
+                                <p class="fr-tile__detail">
+                                    L'entreprise doit d'abord réaliser une analyse de double matérialité afin d'identifier les informations extra-financières présentant une importance relative qu'elle doit publier.
+                                    <br><br>
+                                    Il s'agit d'informations qui permettront de comprendre l'incidence de l'entrep rise sur les questions de durabilité et, à l'inverse, les incidences de celles-ci sur sa performance économique.
+                                    Cette analyse se réalise notamment avec la collaboration des parties prenantes. <a href="" target="_blank" rel="noopener">Un guide méthodologique de l'EFRAG</a> présente des orientations pour se préparer à l'analyse de double matérialité.
+                                    <br><br>
+                                    Cette analyse de double matérialité s'effectue sur l'ensemble des indicateurs issus des ESRS. En cours de finalisation, la liste actuelle est disponible <a href="https://efrag.sharefile.com/share/view/s1a12c193b86d406e90b1bcd7b6bb8f6f/fo37c90b-9d9b-4432-a76b-27760cfcc01b" target="_blank" rel="noopener">au lien suivant</a>. Ils seront prochainement intégrés au Portail RSE. <a href="https://www.efrag.org/Assets/Download?assetUrl=%2Fsites%2Fwebpublishing%2FMeeting%20Documents%2F2302241032237237%2F05-02%20-%20Draft%20List%20of%20ESRS%20Data%20Points%20Methodology%20-%20Implementation%20Guidance.pdf" target="_blank" rel="noopener">Un deuxième guide méthodologique</a> de l'EFRAG précise la lecture du tableau.
+                                    Des <a href="https://www.efrag.org/Assets/Download?assetUrl=%2Fsites%2Fwebpublishing%2FMeeting%20Documents%2F2307280747599961%2F05-02%20VCIG%20SRB%20230823.pdf" target="_blank" rel="noopener">précisions</a> sur l'approche avec sa chaine de valeur sont également disponibles.
+                                    <br><br>
+                                    L'ensemble de ces informations forment le rapport de durabilité, intégré au rapport de gestion.
+                                    Il doit être disponible sous le format d'information électronique XHTML, pour transmission à l'ESAP.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram fr-pt-3w">
+                                <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Checklist.png' %}" alt="" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fr-col-lg-4 fr-col-12">
+                    <div class="fr-tile fr-tile--vertical">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    Quelles sont les sanctions encourues ?
+                                </h3>
+                                <p class="fr-tile__detail">
+                                    Cette partie sera mise à jour une fois la directive transposée en droit national.
+                                    <br>
+                                    Il reviendra à chaque État membre de déterminer les sanctions effectives, proportionnées et dissuasives en cas de non respect du reporting de durabilité.
+                                    <br>
+                                    Les informations de durabilité feront l'objet d'un contrôle par un assureur indépendant qui vérifiera, à court terme, l'existence de la donnée, puis, à long terme, la fiabilité et la véracité de l'information.
+                                    <br>
+                                    La directive CSRD dispose que les membres des organes d’administration, de direction et de surveillance d’une entreprise ont la responsabilité collective de veiller à ce que le rapport de gestion et les informations de durabilité contenues soient établis et publiés conformément aux dispositions communautaires.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram fr-pt-3w">
+                                <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Sanction.png' %}" alt="" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fr-container">
+        <div class="fr-grid-row fr-mb-6w">
+            <div class="fr-col-12">
+                <section class="fr-accordion">
+                    <h3 class="fr-accordion__title">
+                        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-106">Textes de référence</button>
+                    </h3>
+                    <div class="fr-collapse" id="accordion-106">
+                        <a href="https://miro.com/app/board/uXjVMFFJ56s=/?moveToWidget=3458764570894187732&cot=14" target="_blank" rel="noopener">Article 1er, 4) de la directive 2022/2464 [CSRD] modifiant l'article 19bis§2 de la directive 2013/34/UE</a>
+                        <p class="fr-text--sm">Le contenu des informations en matière de durabilité </p>
+
+                        <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037556825/2023-11-03/" target="_blank" rel="noopener">Article 1er, 12) et 13) de la directive 2022/2464 [CSRD] modifiant le chapitre 8 Contrôle des comptes et assurance de l’information en matière de durabilité de la directive 2013/34/UE </a><br>
+                        <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000042340113/" target="_blank" rel="noopener">Article 2, 2) de la directive 2022/2464 [CSRD] modifiant l'article 4§4 et §5 de la directive 2004/109/CE</a><br>
+                        <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000006228757" target="_blank" rel="noopener">Article 3 de la directive 2022/2464 [CSRD] modifiant la directive 2006/43/CE</a>
+                        <p class="fr-text--sm">Contrôle de l'information de durabilité par un assureur et communication du rapport d'assurance </p>
+
+                        <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000035431525/2023-11-03/" target="_blank" rel="noopener">Article 1er, 4) de la directive 2022/2464 [CSRD] modifiant l'article 19bis§6 de la directive 2013/34/UE</a>
+                        <p class="fr-text--sm">Aménagement des informations de durabilité pour les petites et moyennes entreprises </p>
+
+                        <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037556825/2023-11-03/" target="_blank" rel="noopener">Article 1er, 4) de la directive 2022/2464 [CSRD] modifiant l'article 19bis§1 de la directive 2013/34/UE</a><br>
+                        <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037556825/2023-11-03/" target="_blank" rel="noopener">Article 5 de la directive 2022/2464 [CSRD]</a>
+                        <p class="fr-text--sm">Les entreprises concernées (grandes entreprises et les petites et moyennes entreprises) et exclusion des micro-entreprises</p>
+
+                        <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037556825/2023-11-03/" target="_blank" rel="noopener">Point (20) de la directive 2022/2454 [CSRD]</a><br>
+                        <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000030927205" target="_blank" rel="noopener">Article 1er, 14) de la directive 2022/2464 [CSRD] ajoutant l'article 40bis à la directive 2013/34/UE</a>
+                        <p class="fr-text--sm">Les entreprises de pays tiers concernées par le rapport de durabilité </p>
+
+                        <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037556825/2023-11-03/" target="_blank" rel="noopener">Point (25) de la directive 2022/2464</a><br>
+                        <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000042959816/2021-11-25" target="_blank" rel="noopener">Article 1er, 4) de la directive 2022/2464 [CSRD] modifiant l'article 19bis§9 de la directive 2013/34/UE</a><br>
+                        <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000042959816/2021-11-25" target="_blank" rel="noopener">Article 1er, 7) de la directive 2022/2464 [CSRD] modifiant l'article 29bis de la directive 2013/34/UE</a>
+                        <p class="fr-text--sm">Exemption des filiales et contenu de l'information consolidée en matière de durabilité</p>
+
+                        <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000042338920/2022-10-05" target="_blank" rel="noopener">Article 1er, 10) de la directive 2022/2464 [CSRD] modifiant l'article 30§1 de la directive 2013/34/UE</a>
+                        <p class="fr-text--sm">Destinataires et délai de publication des informations de durabilité </p>
+
+                        <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000047933578/2023-08-05" target="_blank" rel="noopener">Article 1er, 4) de la directive 2022/2464 [CSRD] modifiant l'article 19bis§1 alinéa 2 de la directive 2013/34/UE</a>
+                        <p class="fr-text--sm">Retranscription des informations de durabilité dans une section spécifique du rapport de gestion </p>
+
+                        <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037556825/2023-11-03/" target="_blank" rel="noopener">Article 1er, 4) de la directive 2022/2464 [CSRD] modifiant l'article 19bis§5 de la directive 2013/34/UE</a>
+                        <p class="fr-text--sm">Information et échange avec les représentants des travailleurs </p>
+
+                        <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037556825/2023-11-03/" target="_blank" rel="noopener">Article 1er, 9) de la directive 2022/2464 [CSRD] ajoutant l'article 29 quinquies à la directive 2013/34/UE</a><br>
+                        <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000035431545" target="_blank" rel="noopener">Article 3 du règlement délégué (UE) 2019/815 de la Commission du 17 décembre 2018 complétant la directive 2004/109/CE du Parlement européen et du Conseil par des normes techniques de réglementation précisant le format  d’information électronique unique</a>
+                        <p class="fr-text--sm">Format électronique </p>
+
+                        <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000042339790" target="_blank" rel="noopener">Draft ESRS 2</a>
+                        <p class="fr-text--sm">Mise à jour des informations et dates des futures révisions de l'évaluation de la double matérialité </p>
+
+                        <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000006260409/2023-10-20/" target="_blank" rel="noopener">Article 1er, 11) de la directive 2022/2464 [CSRD] ajoutant l'article 33 à la directive 2013/34/UE</a>
+                        <p class="fr-text--sm">Responsabilité collective des membres des organes d’administration, de direction et de surveillance de l'entreprise</p>
+
+                        <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037556825/2023-11-03/" target="_blank" rel="noopener">Article 3 de la directive CSRD modifiant l'article 30 §1 de la directive UE 2006/43/CE</a>
+                        <p class="fr-text--sm">Les sanctions concernant le contrôle légal des comptes et de l'assurance de l'information en matière de durabilité </p>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <!--
+        <div class="fr-grid-row fr-mb-6w fr-grid-row--center">
+            <a class="fr-btn fr-btn--secondary" href="https://www.ecologie.gouv.fr/rapportage-extra-financier-des-entreprises" target="_blank" rel="noopener">
+                En savoir plus sur le site ministériel
+            </a>
+        </div>
+        -->
+    </div>
+    <!-- page fiche réglementation -->
+{% endblock %}
