@@ -7,7 +7,7 @@ from reglementations.views.base import ReglementationStatus
 from reglementations.views.dispositif_anticorruption import DispositifAntiCorruption
 
 
-def test_dispositif_anticorruption_reglementation_info():
+def test_reglementation_info():
     info = DispositifAntiCorruption.info()
 
     assert info["title"] == "Dispositif anti-corruption"

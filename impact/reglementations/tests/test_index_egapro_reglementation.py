@@ -10,7 +10,7 @@ from reglementations.views.base import ReglementationStatus
 from reglementations.views.index_egapro import IndexEgaproReglementation
 
 
-def test_index_egapro_reglementation_info():
+def test_reglementation_info():
     info = IndexEgaproReglementation.info()
 
     assert info["title"] == "Index de l’égalité professionnelle"

@@ -8,7 +8,7 @@ from reglementations.views.base import ReglementationStatus
 from reglementations.views.bges import BGESReglementation
 
 
-def test_bges_reglementation_info():
+def test_reglementation_info():
     info = BGESReglementation.info()
 
     assert info["title"] == "BGES et plan de transition"

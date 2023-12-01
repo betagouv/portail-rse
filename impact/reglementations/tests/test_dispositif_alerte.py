@@ -7,7 +7,7 @@ from reglementations.views.base import ReglementationStatus
 from reglementations.views.dispositif_alerte import DispositifAlerteReglementation
 
 
-def test_dispositif_alerte_reglementation_info():
+def test_reglementation_info():
     info = DispositifAlerteReglementation.info()
 
     assert info["title"] == "Dispositif d'alerte"

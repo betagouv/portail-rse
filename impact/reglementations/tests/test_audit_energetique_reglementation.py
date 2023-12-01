@@ -7,7 +7,7 @@ from reglementations.views.audit_energetique import AuditEnergetiqueReglementati
 from reglementations.views.base import ReglementationStatus
 
 
-def test_audit_energetique_reglementation_info():
+def test_reglementation_info():
     info = AuditEnergetiqueReglementation.info()
 
     assert info["title"] == "Audit énergétique"

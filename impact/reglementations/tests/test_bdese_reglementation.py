@@ -12,7 +12,7 @@ from reglementations.views.base import ReglementationStatus
 from reglementations.views.bdese import BDESEReglementation
 
 
-def test_bdese_reglementation_info():
+def test_reglementation_info():
     info = BDESEReglementation.info()
 
     assert (

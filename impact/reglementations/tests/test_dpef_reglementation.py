@@ -13,7 +13,7 @@ CODE_SCA = 5310
 CODE_SE = 5800
 
 
-def test_dpef_reglementation_info():
+def test_reglementation_info():
     info = DPEFReglementation.info()
 
     assert info["title"] == "Déclaration de Performance Extra-Financière"
