@@ -20,67 +20,71 @@ def test_audit_energetique_reglementation_info():
     assert info["tag"] == "tag-environnement"
 
 
-def _rend_caracteristiques_calculables(caracteristiques):
-    caracteristiques.effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299
-    caracteristiques.tranche_chiffre_affaires = (
-        CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M
+@pytest.fixture
+def _caracteristiques_calculables_sans_groupe(entreprise_factory):
+    entreprise = entreprise_factory(
+        siren="000000001",
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+        tranche_chiffre_affaires=(CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M),
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        systeme_management_energie=True,
+        appartient_groupe=False,
+        comptes_consolides=None,
     )
-    caracteristiques.tranche_bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M
-    caracteristiques.systeme_management_energie = True
-    caracteristiques.entreprise.appartient_groupe = False
-    caracteristiques.entreprise.comptes_consolides = None
-    return caracteristiques
+    return entreprise.dernieres_caracteristiques
 
 
-def _rend_caracteristiques_calculables_pour_groupe_sans_comptes_consolides(
-    caracteristiques,
+@pytest.fixture
+def _caracteristiques_calculables_avec_groupe_sans_comptes_consolides(
+    entreprise_factory,
 ):
-    caracteristiques = _rend_caracteristiques_calculables(caracteristiques)
-    caracteristiques.entreprise.appartient_groupe = True
-    caracteristiques.entreprise.comptes_consolides = False
-    return caracteristiques
+    entreprise = entreprise_factory(
+        siren="000000002",
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+        tranche_chiffre_affaires=(CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M),
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        systeme_management_energie=True,
+        appartient_groupe=True,
+        comptes_consolides=False,
+    )
+    return entreprise.dernieres_caracteristiques
 
 
-def _rend_caracteristiques_calculables_pour_groupe_avec_comptes_consolides(
-    caracteristiques,
+@pytest.fixture
+def _caracteristiques_calculables_avec_groupe_et_comptes_consolides(entreprise_factory):
+    entreprise = entreprise_factory(
+        siren="000000003",
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+        tranche_chiffre_affaires=(CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M),
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        systeme_management_energie=True,
+        appartient_groupe=True,
+        comptes_consolides=True,
+        tranche_bilan_consolide=(CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M),
+    )
+    return entreprise.dernieres_caracteristiques
+
+
+def test_audit_energetique_calculable(
+    _caracteristiques_calculables_sans_groupe,
+    _caracteristiques_calculables_avec_groupe_sans_comptes_consolides,
+    _caracteristiques_calculables_avec_groupe_et_comptes_consolides,
 ):
-    caracteristiques = (
-        _rend_caracteristiques_calculables_pour_groupe_sans_comptes_consolides(
-            caracteristiques
-        )
-    )
-    caracteristiques.entreprise.comptes_consolides = True
-    caracteristiques.tranche_bilan_consolide = (
-        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M
-    )
-    return caracteristiques
-
-
-def test_audit_energetique_calculable(entreprise_non_qualifiee):
-    caracteristiques = CaracteristiquesAnnuelles(entreprise=entreprise_non_qualifiee)
-    caracteristiques = _rend_caracteristiques_calculables(caracteristiques)
+    caracteristiques = _caracteristiques_calculables_sans_groupe
 
     assert (
         AuditEnergetiqueReglementation.est_suffisamment_qualifiee(caracteristiques)
         is True
     )
 
-    caracteristiques = (
-        _rend_caracteristiques_calculables_pour_groupe_sans_comptes_consolides(
-            caracteristiques
-        )
-    )
+    caracteristiques = _caracteristiques_calculables_avec_groupe_sans_comptes_consolides
 
     assert (
         AuditEnergetiqueReglementation.est_suffisamment_qualifiee(caracteristiques)
         is True
     )
 
-    caracteristiques = (
-        _rend_caracteristiques_calculables_pour_groupe_avec_comptes_consolides(
-            caracteristiques
-        )
-    )
+    caracteristiques = _caracteristiques_calculables_avec_groupe_et_comptes_consolides
 
     assert (
         AuditEnergetiqueReglementation.est_suffisamment_qualifiee(caracteristiques)
@@ -88,9 +92,10 @@ def test_audit_energetique_calculable(entreprise_non_qualifiee):
     )
 
 
-def test_audit_energetique_non_calculable(entreprise_non_qualifiee):
-    caracteristiques = CaracteristiquesAnnuelles(entreprise=entreprise_non_qualifiee)
-    caracteristiques = _rend_caracteristiques_calculables(caracteristiques)
+def test_audit_energetique_non_calculable_car_sans_effectif(
+    _caracteristiques_calculables_sans_groupe,
+):
+    caracteristiques = _caracteristiques_calculables_sans_groupe
     caracteristiques.effectif = None
 
     assert (
@@ -98,7 +103,11 @@ def test_audit_energetique_non_calculable(entreprise_non_qualifiee):
         is False
     )
 
-    caracteristiques = _rend_caracteristiques_calculables(caracteristiques)
+
+def test_audit_energetique_non_calculable_car_sans_ca(
+    _caracteristiques_calculables_sans_groupe,
+):
+    caracteristiques = _caracteristiques_calculables_sans_groupe
     caracteristiques.tranche_chiffre_affaires = None
 
     assert (
@@ -106,7 +115,11 @@ def test_audit_energetique_non_calculable(entreprise_non_qualifiee):
         is False
     )
 
-    caracteristiques = _rend_caracteristiques_calculables(caracteristiques)
+
+def test_audit_energetique_non_calculable_car_sans_bilan(
+    _caracteristiques_calculables_sans_groupe,
+):
+    caracteristiques = _caracteristiques_calculables_sans_groupe
     caracteristiques.tranche_bilan = None
 
     assert (
@@ -114,7 +127,11 @@ def test_audit_energetique_non_calculable(entreprise_non_qualifiee):
         is False
     )
 
-    caracteristiques = _rend_caracteristiques_calculables(caracteristiques)
+
+def test_audit_energetique_non_calculable_car_groupe_non_renseigne(
+    _caracteristiques_calculables_sans_groupe,
+):
+    caracteristiques = _caracteristiques_calculables_sans_groupe
     caracteristiques.entreprise.appartient_groupe = None
 
     assert (
@@ -122,7 +139,11 @@ def test_audit_energetique_non_calculable(entreprise_non_qualifiee):
         is False
     )
 
-    caracteristiques = _rend_caracteristiques_calculables(caracteristiques)
+
+def test_audit_energetique_non_calculable_car_sysmteme_management_non_renseigne(
+    _caracteristiques_calculables_sans_groupe,
+):
+    caracteristiques = _caracteristiques_calculables_sans_groupe
     caracteristiques.systeme_management_energie = None
 
     assert (
@@ -130,11 +151,12 @@ def test_audit_energetique_non_calculable(entreprise_non_qualifiee):
         is False
     )
 
-    caracteristiques = (
-        _rend_caracteristiques_calculables_pour_groupe_sans_comptes_consolides(
-            caracteristiques
-        )
-    )
+
+def test_audit_energetique_non_calculable_car_groupe_mais_comptes_consolides_non_renseigne(
+    _caracteristiques_calculables_avec_groupe_sans_comptes_consolides,
+):
+
+    caracteristiques = _caracteristiques_calculables_avec_groupe_sans_comptes_consolides
     caracteristiques.entreprise.comptes_consolides = None
 
     assert (
@@ -142,11 +164,11 @@ def test_audit_energetique_non_calculable(entreprise_non_qualifiee):
         is False
     )
 
-    caracteristiques = (
-        _rend_caracteristiques_calculables_pour_groupe_avec_comptes_consolides(
-            caracteristiques
-        )
-    )
+
+def test_audit_energetique_non_calculable_car_groupe_mais_bilan_consolide_non_renseigne(
+    _caracteristiques_calculables_avec_groupe_et_comptes_consolides,
+):
+    caracteristiques = _caracteristiques_calculables_avec_groupe_et_comptes_consolides
     caracteristiques.tranche_bilan_consolide = None
 
     assert (
