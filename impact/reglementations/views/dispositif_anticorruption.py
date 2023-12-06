@@ -22,10 +22,18 @@ class DispositifAntiCorruption(Reglementation):
         return (
             caracteristiques.effectif is not None
             and caracteristiques.tranche_chiffre_affaires is not None
-            and caracteristiques.tranche_bilan is not None
+            and caracteristiques.entreprise.appartient_groupe is not None
             and (
                 not caracteristiques.entreprise.appartient_groupe
-                or caracteristiques.tranche_bilan is not None
+                or (
+                    caracteristiques.effectif_groupe is not None
+                    and caracteristiques.entreprise.comptes_consolides is not None
+                    and (
+                        not caracteristiques.entreprise.comptes_consolides
+                        or caracteristiques.tranche_chiffre_affaires_consolide
+                        is not None
+                    )
+                )
             )
         )
 

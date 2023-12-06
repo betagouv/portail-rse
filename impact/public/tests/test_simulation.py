@@ -415,6 +415,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
         entreprise=entreprise_simulee,
         effectif=effectif,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+        effectif_groupe=effectif_groupe,
         tranche_chiffre_affaires=ca,
         tranche_bilan=bilan,
         tranche_chiffre_affaires_consolide=ca,

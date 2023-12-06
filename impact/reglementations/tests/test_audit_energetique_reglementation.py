@@ -25,7 +25,7 @@ def _caracteristiques_suffisamment_qualifiantes_sans_groupe(entreprise_factory):
     entreprise = entreprise_factory(
         siren="000000001",
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
-        tranche_chiffre_affaires=(CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M),
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
         systeme_management_energie=True,
         appartient_groupe=False,
@@ -41,7 +41,7 @@ def _caracteristiques_suffisamment_qualifiantes_avec_groupe_sans_comptes_consoli
     entreprise = entreprise_factory(
         siren="000000002",
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
-        tranche_chiffre_affaires=(CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M),
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
         systeme_management_energie=True,
         appartient_groupe=True,
@@ -57,12 +57,12 @@ def _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolide
     entreprise = entreprise_factory(
         siren="000000003",
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
-        tranche_chiffre_affaires=(CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M),
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
         systeme_management_energie=True,
         appartient_groupe=True,
         comptes_consolides=True,
-        tranche_bilan_consolide=(CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M),
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
     )
     return entreprise.dernieres_caracteristiques
 
