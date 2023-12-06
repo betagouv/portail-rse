@@ -21,6 +21,36 @@ def test_reglementation_info():
     assert info["tag"] == "tag-environnement"
 
 
+def test_est_suffisamment_qualifiee(entreprise_non_qualifiee):
+    caracteristiques = CaracteristiquesAnnuelles(
+        entreprise=entreprise_non_qualifiee,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+    )
+
+    assert BGESReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+
+def test_n_est_pas_suffisamment_qualifiee_car_sans_effectif(entreprise_non_qualifiee):
+    caracteristiques = CaracteristiquesAnnuelles(
+        entreprise=entreprise_non_qualifiee,
+        effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+    )
+
+    assert not BGESReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+
+def test_n_est_pas_suffisamment_qualifiee_car_sans_effectif_outre_mer(
+    entreprise_non_qualifiee,
+):
+    caracteristiques = CaracteristiquesAnnuelles(
+        entreprise=entreprise_non_qualifiee,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+    )
+
+    assert not BGESReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+
 @pytest.mark.parametrize("est_soumis", [True, False])
 def test_calculate_status_with_not_authenticated_user(
     est_soumis, entreprise_factory, mocker
