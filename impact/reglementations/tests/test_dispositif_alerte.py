@@ -20,6 +20,23 @@ def test_reglementation_info():
     assert info["tag"] == "tag-gouvernance"
 
 
+def test_est_suffisamment_qualifiee(entreprise_non_qualifiee):
+    caracteristiques = CaracteristiquesAnnuelles(
+        entreprise=entreprise_non_qualifiee,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+    )
+
+    assert DispositifAlerteReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+
+def test_n_est_pas_suffisamment_qualifiee_car_sans_effectif(entreprise_non_qualifiee):
+    caracteristiques = CaracteristiquesAnnuelles(entreprise=entreprise_non_qualifiee)
+
+    assert not DispositifAlerteReglementation.est_suffisamment_qualifiee(
+        caracteristiques
+    )
+
+
 def test_calculate_status_less_than_50_employees(entreprise_factory, alice):
     entreprise = entreprise_factory(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
