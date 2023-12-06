@@ -22,7 +22,28 @@ class DPEFReglementation(Reglementation):
 
     @classmethod
     def est_suffisamment_qualifiee(cls, caracteristiques):
-        return caracteristiques.effectif is not None
+        return (
+            caracteristiques.entreprise.est_cotee is not None
+            and caracteristiques.effectif_permanent is not None
+            and caracteristiques.tranche_bilan is not None
+            and caracteristiques.tranche_chiffre_affaires is not None
+            and caracteristiques.entreprise.appartient_groupe is not None
+            and (
+                not caracteristiques.entreprise.appartient_groupe
+                or (
+                    caracteristiques.entreprise.comptes_consolides is not None
+                    and (
+                        not caracteristiques.entreprise.comptes_consolides
+                        or (
+                            caracteristiques.effectif_groupe_permanent is not None
+                            and caracteristiques.tranche_bilan_consolide is not None
+                            and caracteristiques.tranche_chiffre_affaires_consolide
+                            is not None
+                        )
+                    )
+                )
+            )
+        )
 
     @classmethod
     def calculate_status(

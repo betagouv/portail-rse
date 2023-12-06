@@ -25,6 +25,166 @@ def test_reglementation_info():
     assert info["more_info_url"] == reverse("reglementations:fiche_dpef")
 
 
+@pytest.fixture
+def _caracteristiques_suffisamment_qualifiantes_sans_groupe(entreprise_factory):
+    entreprise = entreprise_factory(
+        siren="000000001",
+        est_cotee=False,
+        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
+        appartient_groupe=False,
+        comptes_consolides=None,
+    )
+    return entreprise.dernieres_caracteristiques
+
+
+@pytest.fixture
+def _caracteristiques_suffisamment_qualifiantes_avec_groupe_sans_comptes_consolides(
+    entreprise_factory,
+):
+    entreprise = entreprise_factory(
+        siren="000000002",
+        est_cotee=False,
+        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
+        appartient_groupe=True,
+        comptes_consolides=False,
+    )
+    return entreprise.dernieres_caracteristiques
+
+
+@pytest.fixture
+def _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolides(
+    entreprise_factory,
+):
+    entreprise = entreprise_factory(
+        siren="000000003",
+        est_cotee=False,
+        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
+        appartient_groupe=True,
+        comptes_consolides=True,
+        effectif_groupe_permanent=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    )
+    return entreprise.dernieres_caracteristiques
+
+
+def test_est_suffisamment_qualifiee(
+    _caracteristiques_suffisamment_qualifiantes_sans_groupe,
+    _caracteristiques_suffisamment_qualifiantes_avec_groupe_sans_comptes_consolides,
+    _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolides,
+):
+    caracteristiques = _caracteristiques_suffisamment_qualifiantes_sans_groupe
+
+    assert DPEFReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+    caracteristiques = (
+        _caracteristiques_suffisamment_qualifiantes_avec_groupe_sans_comptes_consolides
+    )
+
+    assert DPEFReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+    caracteristiques = (
+        _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolides
+    )
+
+    assert DPEFReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+
+def test_n_est_pas_suffisamment_qualifiee_car_est_cotee_non_renseigne(
+    _caracteristiques_suffisamment_qualifiantes_sans_groupe,
+):
+    caracteristiques = _caracteristiques_suffisamment_qualifiantes_sans_groupe
+    caracteristiques.entreprise.est_cotee = None
+
+    assert not DPEFReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+
+def test_n_est_pas_suffisamment_qualifiee_car_sans_effectif_permanent(
+    _caracteristiques_suffisamment_qualifiantes_sans_groupe,
+):
+    caracteristiques = _caracteristiques_suffisamment_qualifiantes_sans_groupe
+    caracteristiques.effectif_permanent = None
+
+    assert not DPEFReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+
+def test_n_est_pas_suffisamment_qualifiee_car_sans_CA(
+    _caracteristiques_suffisamment_qualifiantes_sans_groupe,
+):
+    caracteristiques = _caracteristiques_suffisamment_qualifiantes_sans_groupe
+    caracteristiques.tranche_chiffre_affaires = None
+
+    assert not DPEFReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+
+def test_n_est_pas_suffisamment_qualifiee_car_sans_bilan(
+    _caracteristiques_suffisamment_qualifiantes_sans_groupe,
+):
+    caracteristiques = _caracteristiques_suffisamment_qualifiantes_sans_groupe
+    caracteristiques.tranche_bilan = None
+
+    assert not DPEFReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+
+def test_n_est_pas_suffisamment_qualifiee_car_groupe_non_renseigne(
+    _caracteristiques_suffisamment_qualifiantes_sans_groupe,
+):
+    caracteristiques = _caracteristiques_suffisamment_qualifiantes_sans_groupe
+    caracteristiques.entreprise.appartient_groupe = None
+
+    assert not DPEFReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+
+def test_n_est_pas_suffisamment_qualifiee_car_groupe_mais_comptes_consolides_non_renseigne(
+    _caracteristiques_suffisamment_qualifiantes_avec_groupe_sans_comptes_consolides,
+):
+    caracteristiques = (
+        _caracteristiques_suffisamment_qualifiantes_avec_groupe_sans_comptes_consolides
+    )
+    caracteristiques.entreprise.comptes_consolides = None
+
+    assert not DPEFReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+
+def test_n_est_pas_suffisamment_qualifiee_car_comptes_consolides_mais_sans_effectif_groupe_permanent(
+    _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolides,
+):
+    caracteristiques = (
+        _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolides
+    )
+    caracteristiques.effectif_groupe_permanent = None
+
+    assert not DPEFReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+
+def test_n_est_pas_suffisamment_qualifiee_car_comptes_consolides_mais_sans_bilan_consolide(
+    _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolides,
+):
+    caracteristiques = (
+        _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolides
+    )
+    caracteristiques.tranche_bilan_consolide = None
+
+    assert not DPEFReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+
+def test_n_est_pas_suffisamment_qualifiee_car_comptes_consolides_mais_sans_CA_consolide(
+    _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolides,
+):
+    caracteristiques = (
+        _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolides
+    )
+    caracteristiques.tranche_chiffre_affaires_consolide = None
+
+    assert not DPEFReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+
 @pytest.mark.parametrize(
     "effectif_permanent",
     [
