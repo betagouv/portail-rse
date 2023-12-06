@@ -378,9 +378,7 @@ def test_synchronise_les_reglementations_BDESE(
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
-def test_synchronise_les_reglementations_BDESE_plusieurs_fois(
-    alice, entreprise_factory
-):
+def test_synchronise_les_reglementations_plusieurs_fois(alice, entreprise_factory):
     entreprise = entreprise_factory(
         siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
     )
@@ -390,10 +388,11 @@ def test_synchronise_les_reglementations_BDESE_plusieurs_fois(
     Command().handle()
 
     assert MetabaseBDESE.objects.count() == 1
+    assert MetabaseIndexEgaPro.objects.count() == 1
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
-def test_ignore_les_entreprises_inscrites_non_qualifiees_dans_la_synchro_des_reglementations_BDESE(
+def test_ignore_les_entreprises_inscrites_non_qualifiees_dans_la_synchro_des_reglementations(
     alice, entreprise_non_qualifiee
 ):
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
@@ -401,6 +400,50 @@ def test_ignore_les_entreprises_inscrites_non_qualifiees_dans_la_synchro_des_reg
     Command().handle()
 
     assert MetabaseBDESE.objects.count() == 0
+    assert MetabaseIndexEgaPro.objects.count() == 0
+
+
+@pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
+def test_conserve_les_entreprises_inscrites_suffisamment_qualifiées_dans_la_synchro_des_reglementations(
+    alice,
+    entreprise_factory,
+):
+    # Ce cas arrive lorsqu'on ajoute une nouvelle caracteristique qualifiante dans les caracteristiques annuelles
+    # Les anciennes caracteristiques ne sont plus qualifiantes mais peuvent être encore suffisamment qualifiantes pour des réglementations
+    # Dans ce cas on veut les garder dans Metabase
+    entreprise = entreprise_factory()
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
+    caracteristiques.tranche_chiffre_affaires = None  # CA non renseigné
+    caracteristiques.save()
+
+    Command().handle()
+
+    # CA non nécessaire pour qualifier la BDESE
+    assert MetabaseBDESE.objects.count() == 1
+    # CA non nécessaire pour qualifier Index Egapro
+    assert MetabaseIndexEgaPro.objects.count() == 1
+
+
+@pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
+def test_ignore_les_entreprises_inscrites_qui_ne_sont_pas_suffisamment_qualifiées_dans_la_synchro_des_reglementations(
+    alice,
+    entreprise_factory,
+):
+    # Si l'entreprise est insuffisamment qualifiée pour une réglementation
+    # on ne met pas la réglementation de cette entreprise dans Metabase
+    entreprise = entreprise_factory()
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
+    caracteristiques.effectif = None  # effectif non renseigné
+    caracteristiques.save()
+
+    Command().handle()
+
+    # effectif nécessaire pour qualifier la BDESE
+    assert MetabaseBDESE.objects.count() == 0
+    # effectif nécessaire pour qualifier Index Egapro
+    assert MetabaseIndexEgaPro.objects.count() == 0
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])

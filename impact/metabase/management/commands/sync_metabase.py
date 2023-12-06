@@ -13,6 +13,7 @@ from metabase.models import Habilitation as MetabaseHabilitation
 from metabase.models import IndexEgaPro as MetabaseIndexEgaPro
 from metabase.models import Stats as MetabaseStats
 from metabase.models import Utilisateur as MetabaseUtilisateur
+from reglementations.views.base import InsuffisammentQualifieeError
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.bdese import BDESEReglementation
 from reglementations.views.index_egapro import IndexEgaproReglementation
@@ -143,7 +144,10 @@ class Command(BaseCommand):
         for entreprise in ImpactEntreprise.objects.filter(
             users__isnull=False
         ).distinct():
-            caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
+            caracteristiques = (
+                entreprise.dernieres_caracteristiques_qualifiantes
+                or entreprise.dernieres_caracteristiques
+            )
             if caracteristiques:
                 self._insert_bdese(caracteristiques)
                 self._insert_index_egapro(caracteristiques)
@@ -152,7 +156,10 @@ class Command(BaseCommand):
 
     def _insert_bdese(self, caracteristiques):
         entreprise = caracteristiques.entreprise
-        est_soumise = BDESEReglementation.est_soumis(caracteristiques)
+        try:
+            est_soumise = BDESEReglementation.est_soumis(caracteristiques)
+        except InsuffisammentQualifieeError:
+            return
         if est_soumise:
             for utilisateur in entreprise.users.all():
                 impact_status = BDESEReglementation.calculate_status(
@@ -175,7 +182,10 @@ class Command(BaseCommand):
 
     def _insert_index_egapro(self, caracteristiques):
         entreprise = caracteristiques.entreprise
-        est_soumise = IndexEgaproReglementation.est_soumis(caracteristiques)
+        try:
+            est_soumise = IndexEgaproReglementation.est_soumis(caracteristiques)
+        except InsuffisammentQualifieeError:
+            return
         if est_soumise:
             impact_status = IndexEgaproReglementation.calculate_status(
                 caracteristiques, entreprise.users.first()
