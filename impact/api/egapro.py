@@ -41,17 +41,22 @@ def indicateurs_bdese(siren, annee):
         sentry_sdk.capture_message(
             "Requête invalide sur l'API index EgaPro (indicateurs)"
         )
+    else:
+        sentry_sdk.capture_message("Erreur API index EgaPro (indicateurs)")
     return bdese_data_from_egapro
 
 
 def is_index_egapro_published(siren, annee):
     url = f"https://egapro.travail.gouv.fr/api/public/declaration/{siren}/{annee}"
     response = requests.get(url)
-    if response.status_code == 200 and "déclaration" in response.json():
-        return True
+    if response.status_code == 200:
+        return "déclaration" in response.json()
+    elif response.status_code == 400:
+        sentry_sdk.capture_message(
+            "Requête invalide sur l'API index EgaPro (is_index_egapro_published)"
+        )
     else:
-        if response.status_code == 400:
-            sentry_sdk.capture_message(
-                "Requête invalide sur l'API index EgaPro (is_index_egapro_published)"
-            )
-        return False
+        sentry_sdk.capture_message(
+            "Erreur API index EgaPro (is_index_egapro_published)"
+        )
+    return False

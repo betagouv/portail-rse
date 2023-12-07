@@ -56,6 +56,17 @@ def test_echec_is_index_egapro_published(mocker):
     )
 
 
+def test_echec_is_index_egapro_published_erreur_de_l_api(mocker):
+    mocker.patch("requests.get", return_value=MockedResponse(500))
+    capture_message_mock = mocker.patch("sentry_sdk.capture_message")
+
+    is_index_egapro_published(SIREN, 2023)
+
+    capture_message_mock.assert_called_once_with(
+        "Erreur API index EgaPro (is_index_egapro_published)"
+    )
+
+
 @pytest.mark.network
 def test_api_fonctionnelle():
     siren = 552032534  # DANONE
@@ -141,4 +152,15 @@ def test_echec_indicateurs(mocker):
 
     capture_message_mock.assert_called_once_with(
         "Requête invalide sur l'API index EgaPro (indicateurs)"
+    )
+
+
+def test_echec_indicateurs_erreur_de_l_api(mocker):
+    mocker.patch("requests.get", return_value=MockedResponse(500))
+    capture_message_mock = mocker.patch("sentry_sdk.capture_message")
+
+    indicateurs_bdese(SIREN, 2023)
+
+    capture_message_mock.assert_called_once_with(
+        "Erreur API index EgaPro (indicateurs)"
     )
