@@ -1,5 +1,7 @@
 import json
 
+import pytest
+
 from api.egapro import indicateurs_bdese
 from api.egapro import is_index_egapro_published
 
@@ -52,6 +54,17 @@ def test_echec_is_index_egapro_published(mocker):
     capture_message_mock.assert_called_once_with(
         "Requête invalide sur l'API index EgaPro (is_index_egapro_published)"
     )
+
+
+@pytest.mark.network
+def test_api_fonctionnelle():
+    siren = 552032534  # DANONE
+    bdese_indicateurs = indicateurs_bdese(siren, 2021)
+
+    assert bdese_indicateurs == {
+        "nombre_femmes_plus_hautes_remunerations": 9,
+        "objectifs_progression": None,
+    }
 
 
 def test_succes_indicateurs_avec_un_seul_objectif_de_progression(mocker):
