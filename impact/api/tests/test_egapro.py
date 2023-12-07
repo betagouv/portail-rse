@@ -133,7 +133,7 @@ def test_succes_indicateurs_sans_resultat(mocker):
     )
 
     egapro_request = mocker.patch(
-        "requests.get", return_value=MockedResponse(200, index_egapro_data)
+        "requests.get", return_value=MockedResponse(404, index_egapro_data)
     )
 
     bdese_indicateurs = indicateurs_bdese(SIREN, 1990)
