@@ -16,7 +16,8 @@ class PlanVigilanceReglementation(Reglementation):
     @classmethod
     def est_suffisamment_qualifiee(cls, caracteristiques):
         return (
-            caracteristiques.effectif is not None
+            caracteristiques.entreprise.categorie_juridique_sirene is not None
+            and caracteristiques.effectif is not None
             and caracteristiques.entreprise.appartient_groupe is not None
             and (
                 not caracteristiques.entreprise.appartient_groupe
