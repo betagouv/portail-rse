@@ -2,6 +2,7 @@ import pytest
 
 from conftest import CODE_AUTRE
 from conftest import CODE_SA
+from conftest import CODE_SAS
 from conftest import CODE_SCA
 from conftest import CODE_SE
 from entreprises.models import CaracteristiquesAnnuelles
@@ -136,6 +137,7 @@ def test_calcule_statut_autre_statut_juridique(entreprise_factory, alice):
     "categorie_juridique_sirene",
     [
         (CODE_SA, "votre entreprise est une Société Anonyme"),
+        (CODE_SAS, "votre entreprise est une Société par Actions Simplifiées"),
         (CODE_SCA, "votre entreprise est une Société en Commandite par Actions"),
         (CODE_SE, "votre entreprise est une Société Européenne"),
     ],
