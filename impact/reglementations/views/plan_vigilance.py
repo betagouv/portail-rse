@@ -34,6 +34,8 @@ class PlanVigilanceReglementation(Reglementation):
         )
         if categorie_juridique == CategorieJuridique.SOCIETE_ANONYME:
             return "votre entreprise est une Société Anonyme"
+        elif categorie_juridique == CategorieJuridique.SOCIETE_PAR_ACTIONS_SIMPLIFIEES:
+            return "votre entreprise est une Société par Actions Simplifiées"
         elif categorie_juridique == CategorieJuridique.SOCIETE_COMMANDITE_PAR_ACTIONS:
             return "votre entreprise est une Société en Commandite par Actions"
         elif categorie_juridique == CategorieJuridique.SOCIETE_EUROPEENNE:
