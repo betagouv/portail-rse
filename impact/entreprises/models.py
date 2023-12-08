@@ -278,7 +278,7 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     )
     effectif_groupe_international = models.CharField(
         max_length=9,
-        choices=EFFECTIF_GROUPE_CHOICES,
+        choices=[BLANK_CHOICE] + EFFECTIF_GROUPE_CHOICES,
         verbose_name="Effectif du groupe international",
         help_text="Nombre de salariés employés par les entreprises du groupe en incluant les filiales directes ou indirectes étrangères",
         null=True,
