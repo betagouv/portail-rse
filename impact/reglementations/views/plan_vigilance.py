@@ -1,6 +1,8 @@
 from django.conf import settings
 
 from entreprises.models import CaracteristiquesAnnuelles
+from entreprises.models import CategorieJuridique
+from entreprises.models import convertit_categorie_juridique
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationStatus
 
@@ -25,9 +27,24 @@ class PlanVigilanceReglementation(Reglementation):
             )
         )
 
-    @staticmethod
-    def criteres_remplis(caracteristiques):
+    @classmethod
+    def critere_categorie_juridique(cls, caracteristiques):
+        categorie_juridique = convertit_categorie_juridique(
+            caracteristiques.entreprise.categorie_juridique_sirene
+        )
+        if categorie_juridique == CategorieJuridique.SOCIETE_ANONYME:
+            return "votre entreprise est une Société Anonyme"
+        elif categorie_juridique == CategorieJuridique.SOCIETE_COMMANDITE_PAR_ACTIONS:
+            return "votre entreprise est une Société en Commandite par Actions"
+        elif categorie_juridique == CategorieJuridique.SOCIETE_EUROPEENNE:
+            return "votre entreprise est une Société Européenne"
+
+    @classmethod
+    def criteres_remplis(cls, caracteristiques):
         criteres = []
+        if critere := cls.critere_categorie_juridique(caracteristiques):
+            criteres.append(critere)
+
         if caracteristiques.effectif in (
             CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
             CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
@@ -42,7 +59,7 @@ class PlanVigilanceReglementation(Reglementation):
 
     @classmethod
     def est_soumis(cls, caracteristiques):
-        return cls.criteres_remplis(caracteristiques)
+        return len(cls.criteres_remplis(caracteristiques)) >= 2
 
     @classmethod
     def calculate_status(
