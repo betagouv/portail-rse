@@ -7,6 +7,7 @@ import pytest
 from django.db import IntegrityError
 from freezegun import freeze_time
 
+from conftest import CODE_AUTRE
 from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import CategorieJuridique
@@ -523,7 +524,7 @@ def test_categorie_SE():
 
 
 def test_categorie_autre():
-    categorie_juridique_sirene = 9240  # congrégation
+    categorie_juridique_sirene = CODE_AUTRE
     categorie_juridique = convertit_categorie_juridique(categorie_juridique_sirene)
 
     assert categorie_juridique == CategorieJuridique.AUTRE

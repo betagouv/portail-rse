@@ -1,15 +1,13 @@
 import pytest
 
+from conftest import CODE_AUTRE
+from conftest import CODE_SA
+from conftest import CODE_SCA
+from conftest import CODE_SE
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.plan_vigilance import PlanVigilanceReglementation
-
-CODE_SA = 5505
-CODE_SAS = 5710
-CODE_SCA = 5310
-CODE_SE = 5800
-CODE_AUTRE = 99
 
 
 def test_reglementation_info():
