@@ -6,6 +6,12 @@ from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 
+CODE_SA = 5505
+CODE_SAS = 5710
+CODE_SCA = 5310
+CODE_SE = 5800
+CODE_AUTRE = 9240  # congrégation
+
 
 @pytest.fixture
 def alice(django_user_model):
