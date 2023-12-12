@@ -20,6 +20,16 @@ make install
 ℹ️ Il est nécessaire d'installer le paquet système `libpq-dev` pour avoir `pg_config`.
 
 
+En cas de problème avec `pipenv`, il est possible de l'installer dans un environnement virtuel :
+
+```shell
+python3 -m venv venv
+. ./venv/bin/activate
+pip install pipenv
+# puis exécuter les commandes au début de ce paragraphe
+```
+
+
 ### Lancement en local
 
 - Créer le fichier de variable d'environnement `.env` à partir du fichier d'exemple `.env.example`. Si nécessaire, il est possible d'activer l'intégration avec Sentry en local en renseignant la variable d'environnement `SENTRY_DSN`.
@@ -32,16 +42,6 @@ make run
 ```
 
 - Le service est disponible sur http://127.0.0.1:8000
-
-
-En cas de problème avec `pipenv`, pour l'installer en parallèle :
-
-```shell
-python3 -m venv venv
-. ./venv/bin/activate
-pip install pipenv
-# puis exécuter les commandes au début de ce paragraphe
-```
 
 
 ### Migration des données
