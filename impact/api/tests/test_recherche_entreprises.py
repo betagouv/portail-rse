@@ -155,3 +155,36 @@ def test_echec_erreur_de_l_API(mocker):
         str(e.value)
         == "Le service est actuellement indisponible. Merci de réessayer plus tard."
     )
+
+
+def test_pas_de_nature_juridique(mocker):
+    # On se sert de la catégorie juridique pour certaines réglementations qu'on récupère via la nature juridique renvoyée par l'API.
+    # Normalement toutes les entreprises en ont une.
+    # On souhaite être informé si ce n'est pas le cas car le diagnostic pour ces réglementations pourrait être faux.
+    SIREN = "123456789"
+
+    class FakeResponse:
+        status_code = 200
+
+        def json(self):
+            return {
+                "total_results": 1,
+                "results": [
+                    {
+                        "nom_complet": "ENTREPRISE",
+                        "nom_raison_sociale": None,
+                        "tranche_effectif_salarie": "15",
+                        "nature_juridique": "",
+                    }
+                ],
+            }
+
+    mocker.patch("requests.get", return_value=FakeResponse())
+    capture_message_mock = mocker.patch("sentry_sdk.capture_message")
+
+    infos = recherche(SIREN)
+
+    capture_message_mock.assert_called_once_with(
+        "Nature juridique récupérée par l'API recherche entreprise invalide"
+    )
+    assert infos["categorie_juridique_sirene"] == None

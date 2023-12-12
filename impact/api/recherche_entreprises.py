@@ -30,7 +30,13 @@ def recherche(siren):
         denomination = data["nom_raison_sociale"] or data["nom_complet"]
         # la nature juridique correspond à la nomenclature des catégories juridiques retenue dans a gestion du repertoire Sirene
         # https://www.insee.fr/fr/information/2028129
-        categorie_juridique_sirene = int(data["nature_juridique"])
+        try:
+            categorie_juridique_sirene = int(data["nature_juridique"])
+        except ValueError:
+            sentry_sdk.capture_message(
+                "Nature juridique récupérée par l'API recherche entreprise invalide"
+            )
+            categorie_juridique_sirene = None
         try:
             # les tranches d'effectif correspondent à celles de l'API Sirene de l'Insee
             # https://www.sirene.fr/sirene/public/variable/tefen
