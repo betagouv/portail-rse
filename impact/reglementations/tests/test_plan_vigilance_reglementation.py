@@ -63,15 +63,6 @@ def test_est_suffisamment_qualifiee(
     assert PlanVigilanceReglementation.est_suffisamment_qualifiee(caracteristiques)
 
 
-def test_n_est_pas_suffisamment_qualifiee_car_categorie_juridique_sirene_non_renseigne(
-    _caracteristiques_suffisamment_qualifiantes_sans_groupe,
-):
-    caracteristiques = _caracteristiques_suffisamment_qualifiantes_sans_groupe
-    caracteristiques.entreprise.categorie_juridique_sirene = None
-
-    assert not PlanVigilanceReglementation.est_suffisamment_qualifiee(caracteristiques)
-
-
 @pytest.mark.parametrize(
     "effectif",
     [
