@@ -8,7 +8,7 @@ def bges_publication_year(siren):
         params={"page": "1", "itemsPerPage": "11", "entity.siren": siren},
     )
     if response.status_code != 200:
-        sentry_sdk.capture_message("Erreur API bilans-ges")
+        sentry_sdk.capture_message(f"Erreur API bilans-ges ({siren})")
         return
 
     data = response.json()
