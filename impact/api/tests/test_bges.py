@@ -71,3 +71,12 @@ def test_echec_erreur_de_l_api(code_http, mocker):
     year = bges_publication_year(SIREN)
 
     capture_message_mock.assert_called_once_with("Erreur API bilans-ges")
+
+
+@pytest.mark.network
+def test_api_fonctionnelle():
+    siren = 511278533  # 3MEDIA
+
+    year = bges_publication_year(siren)
+
+    assert year >= 2021
