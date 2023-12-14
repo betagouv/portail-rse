@@ -70,7 +70,9 @@ def test_echec_erreur_de_l_api(code_http, mocker):
 
     year = bges_publication_year(SIREN)
 
-    capture_message_mock.assert_called_once_with("Erreur API bilans-ges")
+    capture_message_mock.assert_called_once_with(
+        "Erreur API bilans-ges (" + SIREN + ")"
+    )
 
 
 @pytest.mark.network
