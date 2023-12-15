@@ -1,9 +1,11 @@
 import pytest
 from django.contrib.auth.models import AnonymousUser
 from django.urls import reverse
+from freezegun import freeze_time
 
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
+from reglementations.views.base import ReglementationAction
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.bges import BGESReglementation
 
@@ -151,49 +153,112 @@ def test_calcule_le_statut_si_moins_de_500_employes(
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_calcule_le_statut_si_plus_de_500_employes(effectif, entreprise_factory, alice):
+@pytest.mark.parametrize(
+    "publication",
+    [
+        (
+            None,
+            ReglementationStatus.STATUS_A_ACTUALISER,
+            ReglementationAction(
+                "https://bilans-ges.ademe.fr/bilans/comment-publier",
+                "Publier mon bilan GES sur la plateforme nationale",
+                external=True,
+            ),
+        ),
+        (
+            2015,
+            ReglementationStatus.STATUS_A_ACTUALISER,
+            ReglementationAction(
+                "https://bilans-ges.ademe.fr/bilans/comment-publier",
+                "Publier mon bilan GES sur la plateforme nationale",
+                external=True,
+            ),
+        ),
+        (
+            2023,
+            ReglementationStatus.STATUS_A_JOUR,
+            ReglementationAction(
+                "https://bilans-ges.ademe.fr",
+                "Voir les bilans GES sur la plateforme nationale",
+                external=True,
+            ),
+        ),
+    ],
+)
+def test_calcule_le_statut_si_plus_de_500_employes(
+    mocker, effectif, publication, entreprise_factory, alice
+):
     entreprise = entreprise_factory(effectif=effectif)
     attach_user_to_entreprise(alice, entreprise, "Présidente")
+    mocker.patch("api.bges.bges_publication_year", return_value=publication[0])
 
-    reglementation = BGESReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
-    )
+    with freeze_time("2023-12-15"):
+        reglementation = BGESReglementation.calculate_status(
+            entreprise.dernieres_caracteristiques_qualifiantes, alice
+        )
 
-    assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
+    assert reglementation.status == publication[1]
     assert (
         reglementation.status_detail
         == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 500 salariés."
     )
-    assert (
-        reglementation.primary_action.url
-        == "https://bilans-ges.ademe.fr/bilans/comment-publier"
-    )
-    assert (
-        reglementation.primary_action.title
-        == "Publier mon bilan GES sur la plateforme nationale"
-    )
+    assert reglementation.primary_action.url == publication[2].url
+    assert reglementation.primary_action.title == publication[2].title
     assert reglementation.primary_action.external
 
 
+@pytest.mark.parametrize(
+    "publication",
+    [
+        (
+            None,
+            ReglementationStatus.STATUS_A_ACTUALISER,
+            ReglementationAction(
+                "https://bilans-ges.ademe.fr/bilans/comment-publier",
+                "Publier mon bilan GES sur la plateforme nationale",
+                external=True,
+            ),
+        ),
+        (
+            2015,
+            ReglementationStatus.STATUS_A_ACTUALISER,
+            ReglementationAction(
+                "https://bilans-ges.ademe.fr/bilans/comment-publier",
+                "Publier mon bilan GES sur la plateforme nationale",
+                external=True,
+            ),
+        ),
+        (
+            2023,
+            ReglementationStatus.STATUS_A_JOUR,
+            ReglementationAction(
+                "https://bilans-ges.ademe.fr",
+                "Voir les bilans GES sur la plateforme nationale",
+                external=True,
+            ),
+        ),
+    ],
+)
 def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer(
-    entreprise_factory, alice
+    mocker, publication, entreprise_factory, alice
 ):
     entreprise = entreprise_factory(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
+    mocker.patch("api.bges.bges_publication_year", return_value=publication[0])
 
-    reglementation = BGESReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
-    )
+    with freeze_time("2023-12-15"):
+        reglementation = BGESReglementation.calculate_status(
+            entreprise.dernieres_caracteristiques_qualifiantes, alice
+        )
 
-    assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
+    assert reglementation.status == publication[1]
     assert (
         reglementation.status_detail
         == "Vous êtes soumis à cette réglementation car votre effectif outre-mer est supérieur à 250 salariés."
     )
-    assert (
-        reglementation.primary_action.title
-        == "Publier mon bilan GES sur la plateforme nationale"
-    )
+    assert reglementation.primary_action.url == publication[2].url
+    assert reglementation.primary_action.title == publication[2].title
+    assert reglementation.primary_action.external
