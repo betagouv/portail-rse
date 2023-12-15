@@ -70,9 +70,22 @@ def test_echec_erreur_de_l_api(code_http, mocker):
 
     year = bges_publication_year(SIREN)
 
+    assert year is None
     capture_message_mock.assert_called_once_with(
         "Erreur API bilans-ges (" + SIREN + ")"
     )
+
+
+@pytest.mark.parametrize("code_http", [400, 500])
+def test_echec_l_api_a_change(code_http, mocker):
+    data = """{"@context": "/api/contexts/Inventory", "autre": "structure"}"""
+    mocker.patch("requests.get", return_value=MockedResponse(200, data))
+    capture_exception_mock = mocker.patch("sentry_sdk.capture_exception")
+
+    year = bges_publication_year(SIREN)
+
+    assert year is None
+    assert capture_exception_mock.called_once
 
 
 @pytest.mark.network
