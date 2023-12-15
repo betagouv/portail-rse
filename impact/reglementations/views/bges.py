@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.urls import reverse_lazy
 
+from api import bges
 from entreprises.models import CaracteristiquesAnnuelles
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
@@ -58,13 +59,21 @@ class BGESReglementation(Reglementation):
             return reglementation_status
 
         if cls.est_soumis(caracteristiques):
-            status = ReglementationStatus.STATUS_SOUMIS
+            if bges.bges_publication_year(caracteristiques.annee) == 2023:
+                status = ReglementationStatus.STATUS_A_JOUR
+                primary_action = ReglementationAction(
+                    "https://bilans-ges.ademe.fr",
+                    "Voir les bilans GES sur la plateforme nationale",
+                    external=True,
+                )
+            else:
+                status = ReglementationStatus.STATUS_A_ACTUALISER
+                primary_action = ReglementationAction(
+                    "https://bilans-ges.ademe.fr/bilans/comment-publier",
+                    "Publier mon bilan GES sur la plateforme nationale",
+                    external=True,
+                )
             status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(cls.criteres_remplis(caracteristiques))}."
-            primary_action = ReglementationAction(
-                "https://bilans-ges.ademe.fr/bilans/comment-publier",
-                "Publier mon bilan GES sur la plateforme nationale",
-                external=True,
-            )
         else:
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
