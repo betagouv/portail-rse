@@ -59,7 +59,8 @@ class BGESReglementation(Reglementation):
             return reglementation_status
 
         if cls.est_soumis(caracteristiques):
-            if bges.bges_publication_year(caracteristiques.annee) == 2023:
+            annee_publication = bges.bges_publication_year(caracteristiques.annee)
+            if annee_publication == 2023:
                 status = ReglementationStatus.STATUS_A_JOUR
                 primary_action = ReglementationAction(
                     "https://bilans-ges.ademe.fr",
