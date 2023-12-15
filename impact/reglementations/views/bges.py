@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.conf import settings
 from django.urls import reverse_lazy
 
@@ -60,7 +62,7 @@ class BGESReglementation(Reglementation):
 
         if cls.est_soumis(caracteristiques):
             annee_publication = bges.bges_publication_year(caracteristiques.annee)
-            if annee_publication == 2023:
+            if annee_publication and cls.publication_est_recente(annee_publication):
                 status = ReglementationStatus.STATUS_A_JOUR
                 primary_action = ReglementationAction(
                     "https://bilans-ges.ademe.fr",
@@ -90,3 +92,10 @@ class BGESReglementation(Reglementation):
         return super().calculate_status_for_anonymous_user(
             caracteristiques, primary_action=cls.NON_SOUMIS_PRIMARY_ACTION
         )
+
+    @classmethod
+    def publication_est_recente(cls, annee_publication):
+        """une entreprise doit publier son bilan GES tous les quatre ans"""
+        DELAI_MAX_PUBLICATION = 4
+        annee_en_cours = date.today().year
+        return annee_en_cours - annee_publication < DELAI_MAX_PUBLICATION

@@ -262,3 +262,13 @@ def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer(
     assert reglementation.primary_action.url == publication[2].url
     assert reglementation.primary_action.title == publication[2].title
     assert reglementation.primary_action.external
+
+
+def test_date_de_publication_recente():
+    with freeze_time("2023-12-15"):
+        assert BGESReglementation.publication_est_recente(2020)
+
+
+def test_date_de_publication_trop_ancienne():
+    with freeze_time("2024-01-01"):
+        assert not BGESReglementation.publication_est_recente(2020)
