@@ -1,8 +1,7 @@
 from django.urls import path
 from django.views.generic.base import TemplateView
 
-from . import views
-
+from reglementations import views
 
 app_name = "reglementations"
 urlpatterns = [
@@ -66,4 +65,5 @@ urlpatterns = [
         views.bdese.toggle_bdese_completion,
         name="toggle_bdese_completion",
     ),
+    path("csrd", views.csrd, name="csrd"),
 ]
