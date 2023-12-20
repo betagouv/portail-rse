@@ -5,6 +5,7 @@ from datetime import timezone
 import pytest
 from freezegun import freeze_time
 
+from api.tests.fixtures import mock_api_bges  # noqa
 from api.tests.fixtures import mock_api_index_egapro  # noqa
 from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
@@ -13,6 +14,7 @@ from habilitations.models import attach_user_to_entreprise
 from impact.settings import METABASE_DATABASE_NAME
 from metabase.management.commands.sync_metabase import Command
 from metabase.models import BDESE as MetabaseBDESE
+from metabase.models import BGES as MetabaseBGES
 from metabase.models import Entreprise as MetabaseEntreprise
 from metabase.models import Habilitation as MetabaseHabilitation
 from metabase.models import IndexEgaPro as MetabaseIndexEgaPro
@@ -444,6 +446,8 @@ def test_ignore_les_entreprises_inscrites_qui_ne_sont_pas_suffisamment_qualifié
     assert MetabaseBDESE.objects.count() == 0
     # effectif nécessaire pour qualifier Index Egapro
     assert MetabaseIndexEgaPro.objects.count() == 0
+    # effectif nécessaire pour qualifier Bilan GES
+    assert MetabaseBGES.objects.count() == 0
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
@@ -500,8 +504,58 @@ def test_synchronise_les_reglementations_IndexEgaPro(
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
+def test_synchronise_les_reglementations_BGES(alice, entreprise_factory, mock_api_bges):
+    entreprise_non_soumise = entreprise_factory(
+        siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+    )
+    entreprise_soumise_a_actualiser = entreprise_factory(
+        siren="000000002", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999
+    )
+    entreprise_soumise_a_jour = entreprise_factory(
+        siren="000000003", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999
+    )
+    for entreprise in (
+        entreprise_non_soumise,
+        entreprise_soumise_a_actualiser,
+        entreprise_soumise_a_jour,
+    ):
+        attach_user_to_entreprise(alice, entreprise, "Présidente")
+    mock_api_bges.side_effect = [2010, 2023]
+
+    with freeze_time("2023-12-20"):
+        Command().handle()
+
+    assert mock_api_bges.call_count == 2
+    assert MetabaseBGES.objects.count() == 3
+
+    metabase_bges_entreprise_non_soumise = MetabaseBGES.objects.get(
+        entreprise__siren=entreprise_non_soumise.siren
+    )
+    assert not metabase_bges_entreprise_non_soumise.est_soumise
+    assert metabase_bges_entreprise_non_soumise.statut is None
+
+    metabase_bges_entreprise_soumise_a_actualiser = MetabaseBGES.objects.get(
+        entreprise__siren=entreprise_soumise_a_actualiser.siren
+    )
+    assert metabase_bges_entreprise_soumise_a_actualiser.est_soumise
+    assert (
+        metabase_bges_entreprise_soumise_a_actualiser.statut
+        == MetabaseBGES.STATUT_A_ACTUALISER
+    )
+
+    metabase_bges_entreprise_soumise_a_jour = MetabaseBGES.objects.get(
+        entreprise__siren=entreprise_soumise_a_jour.siren
+    )
+    assert metabase_bges_entreprise_soumise_a_jour.est_soumise
+    assert (
+        metabase_bges_entreprise_soumise_a_jour.statut
+        == MetabaseIndexEgaPro.STATUT_A_JOUR
+    )
+
+
+@pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_l_indicateur_d_impact_nombre_de_reglementations_a_jour(
-    alice, bob, entreprise_factory, bdese_factory, mock_api_index_egapro
+    alice, bob, entreprise_factory, bdese_factory, mock_api_index_egapro, mock_api_bges
 ):
     entreprise_non_soumise = entreprise_factory(
         siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
@@ -563,6 +617,44 @@ def test_synchronise_l_indicateur_d_impact_nombre_de_reglementations_a_jour(
     assert (
         stat.reglementations_statut_connu == 6
     )  # 3 entreprises soumises à la BDESE et Index Egapro dont on connait le statut
+
+
+@pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
+def test_synchronise_l_indicateur_d_impact_nombre_de_reglementations_bges_a_jour(
+    alice, bob, entreprise_factory, bdese_factory, mock_api_index_egapro, mock_api_bges
+):
+    entreprise_non_soumise = entreprise_factory(
+        siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+    )
+    entreprise_a_actualiser = entreprise_factory(
+        siren="000000002", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999
+    )
+    entreprise_a_jour = entreprise_factory(
+        siren="000000003", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999
+    )
+    for entreprise in (
+        entreprise_non_soumise,
+        entreprise_a_actualiser,
+        entreprise_a_jour,
+    ):
+        attach_user_to_entreprise(alice, entreprise, "Présidente")
+    date_premiere_synchro = date(2020, 11, 28)
+    with freeze_time(date_premiere_synchro):
+        # aucune entreprise à jour pour Index Egapo
+        mock_api_index_egapro.side_effect = [False, False, False]
+        # aucune BDESE
+        # dépot BGES trop ancien puis récent
+        mock_api_bges.side_effect = [2010, 2023]
+
+        Command().handle()
+
+    assert MetabaseStats.objects.count() == 1
+    stat = MetabaseStats.objects.first()
+    assert stat.date == date_premiere_synchro
+    assert stat.reglementations_a_jour == 1  # BGES déposé en 2023
+    assert (
+        stat.reglementations_statut_connu == 6
+    )  # 6 statuts connus (3 Index Egapro et 3 BGES)
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])

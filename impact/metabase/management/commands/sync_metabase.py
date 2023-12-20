@@ -8,6 +8,7 @@ from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise as ImpactEntreprise
 from habilitations.models import Habilitation as ImpactHabilitation
 from metabase.models import BDESE as MetabaseBDESE
+from metabase.models import BGES as MetabaseBGES
 from metabase.models import Entreprise as MetabaseEntreprise
 from metabase.models import Habilitation as MetabaseHabilitation
 from metabase.models import IndexEgaPro as MetabaseIndexEgaPro
@@ -16,6 +17,7 @@ from metabase.models import Utilisateur as MetabaseUtilisateur
 from reglementations.views.base import InsuffisammentQualifieeError
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.bdese import BDESEReglementation
+from reglementations.views.bges import BGESReglementation
 from reglementations.views.index_egapro import IndexEgaproReglementation
 from users.models import User as ImpactUtilisateur
 
@@ -151,6 +153,7 @@ class Command(BaseCommand):
             if caracteristiques:
                 self._insert_bdese(caracteristiques)
                 self._insert_index_egapro(caracteristiques)
+                self._insert_bges(caracteristiques)
                 self._success(str(entreprise))
         self._success("Ajout des réglementations dans Metabase: OK")
 
@@ -199,6 +202,25 @@ class Command(BaseCommand):
             statut=statut,
         )
 
+    def _insert_bges(self, caracteristiques):
+        entreprise = caracteristiques.entreprise
+        try:
+            est_soumise = BGESReglementation.est_soumis(caracteristiques)
+        except InsuffisammentQualifieeError:
+            return
+        if est_soumise:
+            impact_status = BGESReglementation.calculate_status(
+                caracteristiques, entreprise.users.first()
+            ).status
+            statut = self._convertit_impact_status_en_statut_metabase(impact_status)
+        else:
+            statut = None
+        MetabaseBGES.objects.create(
+            entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
+            est_soumise=est_soumise,
+            statut=statut,
+        )
+
     def _convertit_impact_status_en_statut_metabase(self, impact_status):
         statut = None
         if impact_status == ReglementationStatus.STATUS_A_ACTUALISER:
@@ -231,9 +253,23 @@ class Command(BaseCommand):
             statut=MetabaseBDESE.STATUT_A_JOUR
         ).count()
 
-        nombre_reglementations_a_jour = nombre_bdese_a_jour + nombre_index_egapro_a_jour
+        bges_statut_connu = (
+            MetabaseBGES.objects.filter(statut__isnull=False)
+            .values("entreprise")
+            .distinct()
+        )
+        nombre_bges_statut_connu = bges_statut_connu.count()
+        nombre_bges_a_jour = bges_statut_connu.filter(
+            statut=MetabaseBDESE.STATUT_A_JOUR
+        ).count()
+
+        nombre_reglementations_a_jour = (
+            nombre_bdese_a_jour + nombre_index_egapro_a_jour + nombre_bges_a_jour
+        )
         nombre_reglementations_statut_connu = (
-            nombre_bdese_statut_connu + nombre_index_egapro_statut_connu
+            nombre_bdese_statut_connu
+            + nombre_index_egapro_statut_connu
+            + nombre_bges_statut_connu
         )
         try:
             stats = MetabaseStats.objects.get(

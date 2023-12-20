@@ -49,7 +49,7 @@ class BGESReglementation(Reglementation):
     @classmethod
     def est_soumis(cls, caracteristiques):
         super().est_soumis(caracteristiques)
-        return cls.criteres_remplis(caracteristiques)
+        return bool(cls.criteres_remplis(caracteristiques))
 
     @classmethod
     def calculate_status(
