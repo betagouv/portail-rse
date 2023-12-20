@@ -20,3 +20,8 @@ def mock_api_recherche_entreprises(mocker):
 def mock_api_index_egapro(mocker):
     mocker.patch("api.egapro.indicateurs_bdese")
     return mocker.patch("api.egapro.is_index_egapro_published")
+
+
+@pytest.fixture
+def mock_api_bges(mocker):
+    return mocker.patch("api.bges.bges_publication_year")
