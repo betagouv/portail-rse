@@ -73,10 +73,3 @@ def calcule_reglementations(
         for reglementation in REGLEMENTATIONS
     ]
     return sorted(reglementations, key=lambda x: x["status"].status)
-
-
-def fiche_reglementation(request, reglementation):
-    return render(
-        request,
-        f"reglementations/fiches/{reglementation}.html",
-    )
