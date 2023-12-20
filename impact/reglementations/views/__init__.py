@@ -13,6 +13,7 @@ from habilitations.models import is_user_attached_to_entreprise
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
 from reglementations.views.bdese import BDESEReglementation
 from reglementations.views.bges import BGESReglementation
+from reglementations.views.csrd import csrd  # noqa
 from reglementations.views.dispositif_alerte import DispositifAlerteReglementation
 from reglementations.views.dispositif_anticorruption import DispositifAntiCorruption
 from reglementations.views.dpef import DPEFReglementation
