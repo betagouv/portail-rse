@@ -269,7 +269,104 @@
     text-align: left;
 }
 
+/* espace CSRD */
 
+.rse-organizer {}
+
+.rse-organizer .fr-icon-information-fill {
+    cursor:pointer;
+}
+
+.rse-organizer ul {
+    margin: 0px;
+    list-style-type: none;
+    font-weight: bold;
+}
+
+.rse-organizer ul li ul {
+    background-color: var(--background-alt-grey);
+    font-weight: normal;
+}
+
+.rse-organizer--container {
+    border-radius: .25rem;
+    padding:.5rem 1rem;
+    padding-bottom: 1rem;
+}
+
+.rse-organizer--header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.rse-organizer--title {
+    text-transform: uppercase;
+    font-size: .875rem;
+    font-weight: 700;
+    line-height: 1.5rem;
+    margin-bottom:  .5rem;
+}
+
+.rse-organizer--content {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.rse-organizer--card {
+    background-color: var(--background-default-grey);
+    border-radius: .25rem;
+    padding: .5rem 1rem;
+    cursor: pointer;
+}
+
+.rse-organizer--card:hover {
+    background-color: var(--background-default-grey-hover);
+}
+
+.rse-organizer--card-disabled.rse-organizer--card:hover {
+    background-color: var(--background-default-grey);
+    cursor: auto;
+}
+
+.rse-organizer--content {}
+
+.rse-organizer--gov {
+    background-color: var(--background-contrast-info);
+}
+
+.rse-organizer--gov .rse-organizer--title, .rse-organizer--gov .fr-icon-information-fill {
+    color: var(--text-default-info);
+}
+
+.rse-organizer--gov .fr-icon-information-fill:hover {
+    color: var(--text-default-info-hover);
+}
+
+.rse-organizer--env {
+    background-color: var(--background-contrast-green-emeraude);
+}
+
+.rse-organizer--env .rse-organizer--title, .rse-organizer--env .fr-icon-information-fill {
+    color: var(--text-label-green-emeraude);
+}
+
+.rse-organizer--env .fr-icon-information-fill:hover {
+    color: var(--text-label-green-emeraude-hover);
+}
+
+.rse-organizer--social {
+    background-color: var(--background-contrast-purple-glycine);
+}
+
+.rse-organizer--social .rse-organizer--title, .rse-organizer--social .fr-icon-information-fill {
+    color: var(--text-label-purple-glycine);
+}
+
+.rse-organizer--social .fr-icon-information-fill:hover {
+    color: var(--text-label-purple-glycine-hover);
+}
 
 /* media queries */
 
