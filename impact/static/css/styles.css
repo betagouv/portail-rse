@@ -314,15 +314,21 @@
     gap: .5rem;
 }
 
-.rse-organizer--card {
+button.fr-icon-information-fill:hover {
+    background-color: rgba(0,0,0,0);
+}
+
+a[href].rse-organizer--card,.rse-organizer--card {
     background-color: var(--background-default-grey);
     border-radius: .25rem;
     padding: .5rem 1rem;
-    cursor: pointer;
+    text-decoration: none;
+    background-image: none;
 }
 
-.rse-organizer--card:hover {
+a[href].rse-organizer--card:hover, .rse-organizer--card:hover {
     background-color: var(--background-default-grey-hover);
+    background-image: none;
 }
 
 .rse-organizer--card-disabled.rse-organizer--card:hover {
