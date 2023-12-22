@@ -3,6 +3,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.urls import reverse
 from freezegun import freeze_time
 
+from api.tests.fixtures import mock_api_bges  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
 from reglementations.views.base import ReglementationAction
@@ -124,7 +125,7 @@ def test_calculate_status_with_not_attached_user(
     ],
 )
 def test_calcule_le_statut_si_moins_de_500_employes(
-    effectif, entreprise_factory, alice
+    effectif, entreprise_factory, alice, mock_api_bges
 ):
     entreprise = entreprise_factory(effectif=effectif)
     attach_user_to_entreprise(alice, entreprise, "Présidente")
@@ -143,6 +144,7 @@ def test_calcule_le_statut_si_moins_de_500_employes(
         == "Consulter les bilans GES sur la plateforme nationale"
     )
     assert reglementation.primary_action.external
+    assert not mock_api_bges.called
 
 
 @pytest.mark.parametrize(
@@ -186,11 +188,11 @@ def test_calcule_le_statut_si_moins_de_500_employes(
     ],
 )
 def test_calcule_le_statut_si_plus_de_500_employes(
-    mocker, effectif, publication, entreprise_factory, alice
+    effectif, publication, entreprise_factory, alice, mock_api_bges
 ):
     entreprise = entreprise_factory(effectif=effectif)
     attach_user_to_entreprise(alice, entreprise, "Présidente")
-    mocker.patch("api.bges.bges_publication_year", return_value=publication[0])
+    mock_api_bges.return_value = publication[0]
 
     with freeze_time("2023-12-15"):
         reglementation = BGESReglementation.calculate_status(
@@ -205,6 +207,7 @@ def test_calcule_le_statut_si_plus_de_500_employes(
     assert reglementation.primary_action.url == publication[2].url
     assert reglementation.primary_action.title == publication[2].title
     assert reglementation.primary_action.external
+    mock_api_bges.assert_called_once_with(entreprise.siren)
 
 
 @pytest.mark.parametrize(
@@ -240,14 +243,14 @@ def test_calcule_le_statut_si_plus_de_500_employes(
     ],
 )
 def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer(
-    mocker, publication, entreprise_factory, alice
+    publication, entreprise_factory, alice, mock_api_bges
 ):
     entreprise = entreprise_factory(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
-    mocker.patch("api.bges.bges_publication_year", return_value=publication[0])
+    mock_api_bges.return_value = publication[0]
 
     with freeze_time("2023-12-15"):
         reglementation = BGESReglementation.calculate_status(
@@ -262,6 +265,7 @@ def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer(
     assert reglementation.primary_action.url == publication[2].url
     assert reglementation.primary_action.title == publication[2].title
     assert reglementation.primary_action.external
+    mock_api_bges.assert_called_once_with(entreprise.siren)
 
 
 def test_date_de_publication_recente():
