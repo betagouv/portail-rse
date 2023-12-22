@@ -316,10 +316,6 @@
     gap: .5rem;
 }
 
-button.fr-icon-information-fill:hover {
-    background-color: rgba(0,0,0,0);
-}
-
 button.rse-organizer--card,.rse-organizer--card {
     background-color: var(--background-default-grey);
     border-radius: .25rem;
