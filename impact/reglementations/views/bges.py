@@ -21,6 +21,11 @@ class BGESReglementation(Reglementation):
         "Consulter les bilans GES sur la plateforme nationale",
         external=True,
     )
+    PUBLIER_BILAN_PRIMARY_ACTION = ReglementationAction(
+        "https://bilans-ges.ademe.fr/bilans/comment-publier",
+        "Publier mon bilan GES sur la plateforme nationale",
+        external=True,
+    )
 
     @classmethod
     def est_suffisamment_qualifiee(cls, caracteristiques):
@@ -61,20 +66,22 @@ class BGESReglementation(Reglementation):
             return reglementation_status
 
         if cls.est_soumis(caracteristiques):
+            status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(cls.criteres_remplis(caracteristiques))}."
             annee_publication = bges.bges_publication_year(
                 caracteristiques.entreprise.siren
             )
-            if annee_publication and cls.publication_est_recente(annee_publication):
+            if not annee_publication:
+                status = ReglementationStatus.STATUS_A_ACTUALISER
+                primary_action = cls.PUBLIER_BILAN_PRIMARY_ACTION
+                status_detail += " Vous n'avez pas encore publié votre bilan sur la plateforme Bilans GES."
+            elif not cls.publication_est_recente(annee_publication):
+                status = ReglementationStatus.STATUS_A_ACTUALISER
+                primary_action = cls.PUBLIER_BILAN_PRIMARY_ACTION
+                status_detail += f" Le dernier bilan publié sur la plateforme Bilans GES concerne l'année {annee_reporting}."
+            else:
                 status = ReglementationStatus.STATUS_A_JOUR
                 primary_action = cls.CONSULTER_BILANS_PRIMARY_ACTION
-            else:
-                status = ReglementationStatus.STATUS_A_ACTUALISER
-                primary_action = ReglementationAction(
-                    "https://bilans-ges.ademe.fr/bilans/comment-publier",
-                    "Publier mon bilan GES sur la plateforme nationale",
-                    external=True,
-                )
-            status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(cls.criteres_remplis(caracteristiques))}."
+                status_detail += f" Vous avez publié un bilan {annee_publication} sur la plateforme Bilans GES."
         else:
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
