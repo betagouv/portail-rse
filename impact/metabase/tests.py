@@ -288,7 +288,7 @@ def test_synchronise_une_entreprise_avec_un_utilisateur(
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_les_reglementations_BDESE(
-    alice, bob, entreprise_factory, bdese_factory
+    alice, bob, entreprise_factory, bdese_factory, mock_api_index_egapro
 ):
     entreprise_non_soumise = entreprise_factory(
         siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
@@ -433,7 +433,9 @@ def test_synchronise_les_reglementations_IndexEgaPro(
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
-def test_synchronise_les_reglementations_BGES(alice, entreprise_factory, mock_api_bges):
+def test_synchronise_les_reglementations_BGES(
+    alice, entreprise_factory, mock_api_index_egapro, mock_api_bges
+):
     entreprise_non_soumise = entreprise_factory(
         siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
     )
