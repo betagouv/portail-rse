@@ -61,7 +61,9 @@ class BGESReglementation(Reglementation):
             return reglementation_status
 
         if cls.est_soumis(caracteristiques):
-            annee_publication = bges.bges_publication_year(caracteristiques.annee)
+            annee_publication = bges.bges_publication_year(
+                caracteristiques.entreprise.siren
+            )
             if annee_publication and cls.publication_est_recente(annee_publication):
                 status = ReglementationStatus.STATUS_A_JOUR
                 primary_action = ReglementationAction(
