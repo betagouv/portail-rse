@@ -2,7 +2,7 @@ import requests
 import sentry_sdk
 
 
-def bges_publication_year(siren):
+def last_reporting_year(siren):
     response = requests.get(
         "https://bilans-ges.ademe.fr/api/inventories",
         params={"page": "1", "itemsPerPage": "11", "entity.siren": siren},

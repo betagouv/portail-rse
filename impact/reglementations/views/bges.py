@@ -67,21 +67,21 @@ class BGESReglementation(Reglementation):
 
         if cls.est_soumis(caracteristiques):
             status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(cls.criteres_remplis(caracteristiques))}."
-            annee_publication = bges.bges_publication_year(
+            annee_reporting = bges.last_reporting_year(
                 caracteristiques.entreprise.siren
             )
-            if not annee_publication:
+            if not annee_reporting:
                 status = ReglementationStatus.STATUS_A_ACTUALISER
                 primary_action = cls.PUBLIER_BILAN_PRIMARY_ACTION
                 status_detail += " Vous n'avez pas encore publié votre bilan sur la plateforme Bilans GES."
-            elif not cls.publication_est_recente(annee_publication):
+            elif not cls.publication_est_recente(annee_reporting):
                 status = ReglementationStatus.STATUS_A_ACTUALISER
                 primary_action = cls.PUBLIER_BILAN_PRIMARY_ACTION
                 status_detail += f" Le dernier bilan publié sur la plateforme Bilans GES concerne l'année {annee_reporting}."
             else:
                 status = ReglementationStatus.STATUS_A_JOUR
                 primary_action = cls.CONSULTER_BILANS_PRIMARY_ACTION
-                status_detail += f" Vous avez publié un bilan {annee_publication} sur la plateforme Bilans GES."
+                status_detail += f" Vous avez publié un bilan {annee_reporting} sur la plateforme Bilans GES."
         else:
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
@@ -99,8 +99,8 @@ class BGESReglementation(Reglementation):
         )
 
     @classmethod
-    def publication_est_recente(cls, annee_publication):
+    def publication_est_recente(cls, annee_reporting):
         """une entreprise doit publier son bilan GES tous les quatre ans"""
         DELAI_MAX_PUBLICATION = 4
         annee_en_cours = date.today().year
-        return annee_en_cours - annee_publication < DELAI_MAX_PUBLICATION
+        return annee_en_cours - annee_reporting < DELAI_MAX_PUBLICATION

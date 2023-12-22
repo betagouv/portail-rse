@@ -24,4 +24,4 @@ def mock_api_index_egapro(mocker):
 
 @pytest.fixture
 def mock_api_bges(mocker):
-    return mocker.patch("api.bges.bges_publication_year")
+    return mocker.patch("api.bges.last_reporting_year")
