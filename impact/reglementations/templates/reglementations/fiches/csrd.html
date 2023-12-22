@@ -32,6 +32,11 @@
                             <br><br>
                             L'obtention d’informations pertinentes, comparables et fiables est indispensable pour parvenir à une croissance durable et inclusive, ambition du Pacte Vert. Aussi, cette directive prévoit une vérification par un organisme tiers indépendant du rapport, certifiant la véracité des éléments présentés dans le rapport de durabilité. Les informations seront ensuite transmises à la plateforme numérique "ESAP" (European Single Access Point) qui recueillera les données financières et extra-financières des sociétés en vue de réorienter les flux de capitaux vers des investissements durables.
                         </p>
+                        {% if user.is_authenticated %}
+                            <a class="fr-btn" href="{% url 'reglementations:csrd' %}">Consultez les thèmes du Rapport de Durabilité</a>
+                        {% else %}
+                            <a class="fr-btn" href="{% url 'reglementations:csrd' %}">Connectez-vous pour consulter les thèmes du Rapport de Durabilité</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

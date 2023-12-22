@@ -49,6 +49,12 @@
                     <p class="fr-text--sm">
                         Après inscription, je saisis les caractéristiques de mon entreprise pour accéder à mon tableau de bord. Je peux piloter et suivre mes obligations.
                     </p>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'reglementations:reglementations' current_entreprise.siren %}" class="fr-btn">
+                            Accéder à mon tableau de bord
+                        </a>
+                    {% else %}
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -146,22 +152,40 @@
                 {% endfor %}
             </div>
         </div>
-        <div class="fr-grid-row fr-pt-6w fr-pb-12w background-blue">
-            <div class="fr-container">
-                <div class="fr-grid-row">
-                    <div class="fr-col-12">
-                        <h2>2. Inscrivez-vous pour affiner vos réglementations applicables</h2>
-                        <p>
-                            Vous souhaitez aller plus loin ? <b>Inscrivez-vous pour affiner vos réglementations applicables.</b><br>
-                            En vous inscrivant sur Portail RSE, vous pourrez procéder au suivi complet des réglementations qui vous concernent.
-                        </p>
-                        <a href="{% url 'users:creation'%}" class="fr-btn fr-btn--lg">
-                            M’inscrire sur le Portail RSE
-                        </a>
+        {% if user.is_authenticated %}
+            <div class="fr-grid-row fr-pt-6w fr-pb-12w background-blue">
+                <div class="fr-container">
+                    <div class="fr-grid-row">
+                        <div class="fr-col-12">
+                            <h2>Accéder à mon tableau de bord</h2>
+                            <p>
+                                Après inscription, je saisis les caractéristiques de mon entreprise pour accéder à mon tableau de bord. Je peux piloter et suivre mes obligations.
+                            </p>
+                            <a href="{% url 'reglementations:reglementations' current_entreprise.siren %}" class="fr-btn">
+                                Accéder à mon tableau de bord
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        {% else %}
+            <div class="fr-grid-row fr-pt-6w fr-pb-12w background-blue">
+                <div class="fr-container">
+                    <div class="fr-grid-row">
+                        <div class="fr-col-12">
+                            <h2>2. Inscrivez-vous pour affiner vos réglementations applicables</h2>
+                            <p>
+                                Vous souhaitez aller plus loin ? <b>Inscrivez-vous pour affiner vos réglementations applicables.</b><br>
+                                En vous inscrivant sur Portail RSE, vous pourrez procéder au suivi complet des réglementations qui vous concernent.
+                            </p>
+                            <a href="{% url 'users:creation'%}" class="fr-btn fr-btn--lg">
+                                M’inscrire sur le Portail RSE
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
     {% endif %}
     <!-- page simulation -->
 {% endblock %}
