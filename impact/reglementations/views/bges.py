@@ -16,7 +16,7 @@ class BGESReglementation(Reglementation):
     more_info_url = reverse_lazy("reglementations:fiche_bilan_ges")
     tag = "tag-environnement"
     summary = "Mesurer ses émissions de gaz à effet de serre directes et adopter un plan de transition en conséquence."
-    NON_SOUMIS_PRIMARY_ACTION = ReglementationAction(
+    CONSULTER_BILANS_PRIMARY_ACTION = ReglementationAction(
         "https://bilans-ges.ademe.fr/bilans",
         "Consulter les bilans GES sur la plateforme nationale",
         external=True,
@@ -66,11 +66,7 @@ class BGESReglementation(Reglementation):
             )
             if annee_publication and cls.publication_est_recente(annee_publication):
                 status = ReglementationStatus.STATUS_A_JOUR
-                primary_action = ReglementationAction(
-                    "https://bilans-ges.ademe.fr",
-                    "Voir les bilans GES sur la plateforme nationale",
-                    external=True,
-                )
+                primary_action = cls.CONSULTER_BILANS_PRIMARY_ACTION
             else:
                 status = ReglementationStatus.STATUS_A_ACTUALISER
                 primary_action = ReglementationAction(
@@ -82,7 +78,7 @@ class BGESReglementation(Reglementation):
         else:
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation"
-            primary_action = cls.NON_SOUMIS_PRIMARY_ACTION
+            primary_action = cls.CONSULTER_BILANS_PRIMARY_ACTION
         return ReglementationStatus(
             status, status_detail, primary_action=primary_action
         )
@@ -92,7 +88,7 @@ class BGESReglementation(Reglementation):
         cls, caracteristiques: CaracteristiquesAnnuelles
     ):
         return super().calculate_status_for_anonymous_user(
-            caracteristiques, primary_action=cls.NON_SOUMIS_PRIMARY_ACTION
+            caracteristiques, primary_action=cls.CONSULTER_BILANS_PRIMARY_ACTION
         )
 
     @classmethod

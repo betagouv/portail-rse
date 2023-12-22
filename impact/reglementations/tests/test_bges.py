@@ -17,9 +17,9 @@ ACTION_PUBLIER = ReglementationAction(
     external=True,
 )
 
-ACTION_VOIR = ReglementationAction(
-    "https://bilans-ges.ademe.fr",
-    "Voir les bilans GES sur la plateforme nationale",
+ACTION_CONSULTER = ReglementationAction(
+    "https://bilans-ges.ademe.fr/bilans",
+    "Consulter les bilans GES sur la plateforme nationale",
     external=True,
 )
 
@@ -91,12 +91,7 @@ def test_calculate_status_with_not_authenticated_user(
     else:
         assert status.status == ReglementationStatus.STATUS_NON_SOUMIS
         assert status.status_detail == "Vous n'êtes pas soumis à cette réglementation."
-    assert status.primary_action.url == "https://bilans-ges.ademe.fr/bilans"
-    assert (
-        status.primary_action.title
-        == "Consulter les bilans GES sur la plateforme nationale"
-    )
-    assert status.primary_action.external
+    assert status.primary_action == ACTION_CONSULTER
     assert status.secondary_actions == []
 
 
@@ -151,12 +146,7 @@ def test_calcule_le_statut_si_moins_de_500_employes(
     assert (
         reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation"
     )
-    assert reglementation.primary_action.url == "https://bilans-ges.ademe.fr/bilans"
-    assert (
-        reglementation.primary_action.title
-        == "Consulter les bilans GES sur la plateforme nationale"
-    )
-    assert reglementation.primary_action.external
+    assert reglementation.primary_action == ACTION_CONSULTER
     assert not mock_api_bges.called
 
 
@@ -243,7 +233,7 @@ def test_calcule_le_statut_si_plus_de_500_employes_bilan_publie_recent(
         reglementation.status_detail
         == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 500 salariés."
     )
-    assert reglementation.primary_action == ACTION_VOIR
+    assert reglementation.primary_action == ACTION_CONSULTER
     mock_api_bges.assert_called_once_with(entreprise.siren)
 
 
@@ -315,7 +305,7 @@ def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer_bilan_publie_rece
         reglementation.status_detail
         == "Vous êtes soumis à cette réglementation car votre effectif outre-mer est supérieur à 250 salariés."
     )
-    assert reglementation.primary_action == ACTION_VOIR
+    assert reglementation.primary_action == ACTION_CONSULTER
     mock_api_bges.assert_called_once_with(entreprise.siren)
 
 
