@@ -283,6 +283,10 @@
     font-weight: bold;
 }
 
+.rse-organizer p {
+    margin: 0px;
+}
+
 .rse-organizer ul li ul {
     background-color: var(--background-alt-grey);
     font-weight: normal;
@@ -318,15 +322,17 @@ button.fr-icon-information-fill:hover {
     background-color: rgba(0,0,0,0);
 }
 
-a[href].rse-organizer--card,.rse-organizer--card {
+button.rse-organizer--card,.rse-organizer--card {
     background-color: var(--background-default-grey);
     border-radius: .25rem;
     padding: .5rem 1rem;
     text-decoration: none;
     background-image: none;
+    text-align: left;
+    font-size: 1rem;
 }
 
-a[href].rse-organizer--card:hover, .rse-organizer--card:hover {
+button.rse-organizer--card:hover, .rse-organizer--card:hover {
     background-color: var(--background-default-grey-hover);
     background-image: none;
 }

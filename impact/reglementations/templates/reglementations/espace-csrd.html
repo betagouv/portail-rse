@@ -10,7 +10,9 @@
             <p>
                 Consultez les thèmes et les sous-thèmes proposés du Rapport de Durabilité sur cette page.
                 <br>
-                Accédez à des <a href="#" title="Ouvre une modale de Ressources et Annexes" aria-hidden="true" data-fr-opened="false" aria-controls="fr-modal-1">ressources et annexes européennes et de l'EFRAG</a> pour vous accompagner dans votre mise en conformité.
+                Accédez à des <a href="#" title="Ouvre une modale de Ressources, Annexes et définitions" aria-hidden="true" data-fr-opened="false" aria-controls="fr-modal-1">ressources et annexes européennes et de l'EFRAG</a> pour vous accompagner dans votre mise en conformité.
+                <br>
+                Consultez <a href="{% url 'reglementations:fiche_csrd' %}">notre fiche réglementation</a> sur le Rapport de Drabilité.
             </p>
         </div>
         <div class="fr-grid-row">
@@ -21,14 +23,17 @@
                 <div class="rse-organizer--container rse-organizer--gov">
                     <div class="rse-organizer--header">
                         <h4 class="rse-organizer--title">Général</h4>
-                        <button class="fr-icon-information-fill" title="Ouvre une modale de Ressources et Annexes" aria-hidden="true" data-fr-opened="false" aria-controls="fr-modal-1"></button>
+                        <button class="fr-icon-information-fill" title="Ouvre une modale de Ressources, Annexes et définitions" aria-hidden="true" data-fr-opened="false" aria-controls="fr-modal-1"></button>
                     </div>
                     <div class="rse-organizer--content">
-                        <div class="rse-organizer--card rse-organizer--card-disabled" title="Dérouler les sous-thèmes" aria-expanded="false" aria-controls="accordion-ESRS1">
+                        <button class="rse-organizer--card" title="Dérouler les sous-thèmes" aria-expanded="false" aria-controls="accordion-ESRS1">
                             <div class="rse-organizer--card-title">
-                                <b>ESRS 1 - Exigences générales (informatif uniquement)</b>
+                                <b>ESRS 1 - Exigences générales</b>
+                                <p class="fr-collapse fr-text--sm" id="accordion-ESRS1">
+                                    L'ESRS 1, à visée informative, instruit les principes généraux de la CSRD, comme sa temporalité et la forme que doit prendre le Rapport de Durabilité.
+                                </p>
                             </div>
-                        </div>
+                        </button>
                         <div class="rse-organizer--card rse-organizer--card-disabled" title="Dérouler les sous-thèmes" aria-expanded="false" aria-controls="accordion-ESRS2">
                             <div class="rse-organizer--card-title">
                                 <b>ESRS 2 - Informations générales à publier</b>
@@ -41,10 +46,10 @@
                 <div class="rse-organizer--container rse-organizer--env">
                     <div class="rse-organizer--header">
                         <h4 class="rse-organizer--title">Environnement</h4>
-                        <button class="fr-icon-information-fill" title="Ouvre une modale de Ressources et Annexes" aria-hidden="true" data-fr-opened="false" aria-controls="fr-modal-1"></button>
+                        <button class="fr-icon-information-fill" title="Ouvre une modale de Ressources, Annexes et définitions" aria-hidden="true" data-fr-opened="false" aria-controls="fr-modal-1"></button>
                     </div>
                     <div class="rse-organizer--content">
-                        <a href="#" class="rse-organizer--card" title="Dérouler les sous-thèmes" aria-expanded="false" aria-controls="accordion-ESRS-E1" aria-expanded="false" aria-controls="accordion-ESRS-E1">
+                        <button class="rse-organizer--card" title="Dérouler les sous-thèmes" aria-expanded="false" aria-controls="accordion-ESRS-E1" aria-expanded="false" aria-controls="accordion-ESRS-E1">
                             <div class="rse-organizer--card-title">
                                 <b>ESRS E1 - Changement climatique</b>
                             </div>
@@ -55,8 +60,8 @@
                                     <li>Energie</li>
                                 </ul>
                             </div>
-                        </a>
-                        <a href="#" class="rse-organizer--card" title="Dérouler les sous-thèmes" aria-expanded="false" aria-controls="accordion-ESRS-E2">
+                        </button>
+                        <button class="rse-organizer--card" title="Dérouler les sous-thèmes" aria-expanded="false" aria-controls="accordion-ESRS-E2">
                             <div class="rse-organizer--card-title">
                                 <b>ESRS E2 - Pollution</b>
                             </div>
@@ -69,8 +74,8 @@
                                 <li>Substances extrêmement préoccupantes</li>
                                 <li>Microplastiques</li>
                             </ul>
-                        </a>
-                        <a href="#" class="rse-organizer--card" title="Dérouler les sous-thèmes" aria-expanded="false" aria-controls="accordion-ESRS-E3">
+                        </button>
+                        <button class="rse-organizer--card" title="Dérouler les sous-thèmes" aria-expanded="false" aria-controls="accordion-ESRS-E3">
                             <div class="rse-organizer--card-title">
                                 <b>ESRS E3 - Ressources aquatiques et marines</b>
                             </div>
@@ -87,8 +92,8 @@
                                     </ul>
                                 </li>
                             </ul>
-                        </a>
-                        <a href="#" class="rse-organizer--card" title="Dérouler les sous-thèmes" aria-expanded="false" aria-controls="accordion-ESRS-E4">
+                        </button>
+                        <button class="rse-organizer--card" title="Dérouler les sous-thèmes" aria-expanded="false" aria-controls="accordion-ESRS-E4">
                             <div class="rse-organizer--card-title">
                                 <b>ESRS E4 - Biodiversité et écosystèmes</b>
                             </div>
@@ -109,8 +114,8 @@
                                     <li>Incidences sur l'étendue et l'état des écosystèmes</li>
                                 </ul>
                             </div>
-                        </a>
-                        <a href="#" class="rse-organizer--card" title="Dérouler les sous-thèmes" aria-expanded="false" aria-controls="accordion-ESRS-E5">
+                        </button>
+                        <button class="rse-organizer--card" title="Dérouler les sous-thèmes" aria-expanded="false" aria-controls="accordion-ESRS-E5">
                             <div class="rse-organizer--card-title">
                                 <b>ESRS E5 - Economie circulaire</b>
                             </div>
@@ -121,7 +126,7 @@
                                     <li>Déchets</li>
                                 </ul>
                             </div>
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -129,10 +134,10 @@
                 <div class="rse-organizer--container rse-organizer--social">
                     <div class="rse-organizer--header">
                         <h4 class="rse-organizer--title">Social</h4>
-                        <button class="fr-icon-information-fill" title="Ouvre une modale de Ressources et Annexes" aria-hidden="true" data-fr-opened="false" aria-controls="fr-modal-1"></button>
+                        <button class="fr-icon-information-fill" title="Ouvre une modale de Ressources, Annexes et définitions" aria-hidden="true" data-fr-opened="false" aria-controls="fr-modal-1"></button>
                     </div>
                     <div class="rse-organizer--content">
-                        <a href="#" class="rse-organizer--card" title="Dérouler les sous-thèmes" aria-expanded="false" aria-controls="accordion-ESRS-S1">
+                        <button class="rse-organizer--card" title="Dérouler les sous-thèmes" aria-expanded="false" aria-controls="accordion-ESRS-S1">
                             <div class="rse-organizer--card-title">
                                 <b>ESRS S1 - Effectifs de l’entreprise</b>
                             </div>
@@ -172,8 +177,8 @@
                                     </li>
                                 </ul>
                             </div>
-                        </a>
-                        <a href="#" class="rse-organizer--card" title="Dérouler les sous-thèmes" aria-expanded="false" aria-controls="accordion-ESRS-S2">
+                        </button>
+                        <button class="rse-organizer--card" title="Dérouler les sous-thèmes" aria-expanded="false" aria-controls="accordion-ESRS-S2">
                             <div class="rse-organizer--card-title">
                                 <b>ESRS S2 - Travailleurs de la chaîne de valeurs</b>
                             </div>
@@ -214,8 +219,8 @@
                                     </li>
                                 </ul>
                             </div>
-                        </a>
-                        <a href="#" class="rse-organizer--card" title="Dérouler les sous-thèmes" aria-expanded="false" aria-controls="accordion-ESRS-S3">
+                        </button>
+                        <button class="rse-organizer--card" title="Dérouler les sous-thèmes" aria-expanded="false" aria-controls="accordion-ESRS-S3">
                             <div class="rse-organizer--card-title">
                                 <b>ESRS S3 - Communautés touchées</b>
                             </div>
@@ -249,8 +254,8 @@
                                     </li>
                                 </ul>
                             </div>
-                        </a>
-                        <a href="#" class="rse-organizer--card" title="Dérouler les sous-thèmes" aria-expanded="false" aria-controls="accordion-ESRS-S4">
+                        </button>
+                        <button class="rse-organizer--card" title="Dérouler les sous-thèmes" aria-expanded="false" aria-controls="accordion-ESRS-S4">
                             <div class="rse-organizer--card-title">
                                 <b>ESRS S4 - Consommateurs et utilisateurs finals</b>
                             </div>
@@ -282,7 +287,7 @@
                                     </li>
                                 </ul>
                             </div>
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -290,10 +295,10 @@
                 <div class="rse-organizer--container rse-organizer--gov">
                     <div class="rse-organizer--header">
                         <h4 class="rse-organizer--title">Gouvernance</h4>
-                        <button class="fr-icon-information-fill" title="Ouvre une modale de Ressources et Annexes" aria-hidden="true" data-fr-opened="false" aria-controls="fr-modal-1"></button>
+                        <button class="fr-icon-information-fill" title="Ouvre une modale de Ressources, Annexes et définitions" aria-hidden="true" data-fr-opened="false" aria-controls="fr-modal-1"></button>
                     </div>
                     <div class="rse-organizer--content">
-                        <a href="#" class="rse-organizer--card" title="Dérouler les sous-thèmes" aria-expanded="false" aria-controls="accordion-ESRS-G1">
+                        <button class="rse-organizer--card" title="Dérouler les sous-thèmes" aria-expanded="false" aria-controls="accordion-ESRS-G1">
                             <div class="rse-organizer--card-title">
                                 <b>ESRS G1 - Conduite des affaires</b>
                             </div>
@@ -313,7 +318,7 @@
                                     </li>
                                 </ul>
                             </div>
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -333,6 +338,18 @@
                                 <a title="Consulter le guide méthodologique de l’EFRAG sur l’analyse de double matérialité - ouvre une nouvelle fenêtre" href="https://www.efrag.org/Assets/Download?assetUrl=%2Fsites%2Fwebpublishing%2FMeeting%20Documents%2F2302241032237237%2F03-02%20Materiality%20Assessment%20Implementation%20guidance%20clean%20SRB%20231025.pdf" target="_blank" rel="noopener external">Consulter le guide méthodologique de l’EFRAG sur l’analyse de double matérialité</a><br><br>
                                 <a title="Consulter le guide méthodologique de l’EFRAG la lecture du tableau des indicateurs - ouvre une nouvelle fenêtre" href="https://www.efrag.org/Assets/Download?assetUrl=%2Fsites%2Fwebpublishing%2FMeeting%20Documents%2F2302241032237237%2F05-02%20-%20Draft%20List%20of%20ESRS%20Data%20Points%20Methodology%20-%20Implementation%20Guidance.pdf" target="_blank" rel="noopener external">Consulter le guide méthodologique de l’EFRAG la lecture du tableau des indicateurs</a><br><br>
                                 <a title="Consulter l’annexe I des Normes Européennes d’Information en matière de durabilité (ESRS) - ouvre une nouvelle fenêtre" href="https://data.consilium.europa.eu/doc/document/ST-12481-2023-ADD-1/fr/pdf" target="_blank" rel="noopener external">Consulter l’annexe I des Normes Européennes d’Information en matière de durabilité (ESRS)</a>
+                            </p>
+                            <h1 id="fr-modal-title-modal-2" class="fr-modal__title"><span class="fr-icon-arrow-right-line fr-icon--lg"></span>Définitions</h1>
+                            <p>
+                                <b>ESRS</b> : <i>European Sustainability Reporting Standards</i>, les normes européennes visant à unifier les informations de durabilité, pour permettre une meilleure comparaison de la performance globale des entreprises.<br><br>
+                                <b>Double matérialité, ou double importance</b>
+                                <br>
+                                La double matérialité correspond à la conjonction entre :<br>
+                                <ul>
+                                    <li>La matérialité d'impact (l'importance du point de vue de l'incidence) : l'impact négatif ou positif des activités de l'entreprise sur son environnement économique, social et naturel.</li>
+                                    <li>La matérialité financière (l'importance du point de vue financier) : l'impact négatif (risques) ou positifs (opportunités) généré par l'environnement économique, social et naturel de l'entreprise sur son développement, sa performance et ses résultats.</li>
+                                </ul>
+                                Il revient à l'entreprise l'obligation de procéder à une évaluation de l'importance d'un sujet environnemental, social ou de gouvernance : en cas de conclusion positive, l'entreprise ne devra uniquement communiquer les indicateurs à propos desquels elle estime qu'il y a ou peut avoir un impact sur sa performance économique ou si son activité impact cet indicateur.
                             </p>
                         </div>
                     </div>
