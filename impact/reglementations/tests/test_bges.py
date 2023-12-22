@@ -11,6 +11,19 @@ from reglementations.views.base import ReglementationStatus
 from reglementations.views.bges import BGESReglementation
 
 
+ACTION_PUBLIER = ReglementationAction(
+    "https://bilans-ges.ademe.fr/bilans/comment-publier",
+    "Publier mon bilan GES sur la plateforme nationale",
+    external=True,
+)
+
+ACTION_VOIR = ReglementationAction(
+    "https://bilans-ges.ademe.fr",
+    "Voir les bilans GES sur la plateforme nationale",
+    external=True,
+)
+
+
 def test_reglementation_info():
     info = BGESReglementation.info()
 
@@ -155,116 +168,154 @@ def test_calcule_le_statut_si_moins_de_500_employes(
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-@pytest.mark.parametrize(
-    "publication",
-    [
-        (
-            None,
-            ReglementationStatus.STATUS_A_ACTUALISER,
-            ReglementationAction(
-                "https://bilans-ges.ademe.fr/bilans/comment-publier",
-                "Publier mon bilan GES sur la plateforme nationale",
-                external=True,
-            ),
-        ),
-        (
-            2015,
-            ReglementationStatus.STATUS_A_ACTUALISER,
-            ReglementationAction(
-                "https://bilans-ges.ademe.fr/bilans/comment-publier",
-                "Publier mon bilan GES sur la plateforme nationale",
-                external=True,
-            ),
-        ),
-        (
-            2023,
-            ReglementationStatus.STATUS_A_JOUR,
-            ReglementationAction(
-                "https://bilans-ges.ademe.fr",
-                "Voir les bilans GES sur la plateforme nationale",
-                external=True,
-            ),
-        ),
-    ],
-)
-def test_calcule_le_statut_si_plus_de_500_employes(
-    effectif, publication, entreprise_factory, alice, mock_api_bges
+def test_calcule_le_statut_si_plus_de_500_employes_sans_bilan_publie(
+    effectif, entreprise_factory, alice, mock_api_bges
 ):
     entreprise = entreprise_factory(effectif=effectif)
     attach_user_to_entreprise(alice, entreprise, "Présidente")
-    mock_api_bges.return_value = publication[0]
+    mock_api_bges.return_value = None
 
     with freeze_time("2023-12-15"):
         reglementation = BGESReglementation.calculate_status(
             entreprise.dernieres_caracteristiques_qualifiantes, alice
         )
 
-    assert reglementation.status == publication[1]
+    assert reglementation.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
         reglementation.status_detail
         == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 500 salariés."
     )
-    assert reglementation.primary_action.url == publication[2].url
-    assert reglementation.primary_action.title == publication[2].title
-    assert reglementation.primary_action.external
+    assert reglementation.primary_action == ACTION_PUBLIER
     mock_api_bges.assert_called_once_with(entreprise.siren)
 
 
 @pytest.mark.parametrize(
-    "publication",
+    "effectif",
     [
-        (
-            None,
-            ReglementationStatus.STATUS_A_ACTUALISER,
-            ReglementationAction(
-                "https://bilans-ges.ademe.fr/bilans/comment-publier",
-                "Publier mon bilan GES sur la plateforme nationale",
-                external=True,
-            ),
-        ),
-        (
-            2015,
-            ReglementationStatus.STATUS_A_ACTUALISER,
-            ReglementationAction(
-                "https://bilans-ges.ademe.fr/bilans/comment-publier",
-                "Publier mon bilan GES sur la plateforme nationale",
-                external=True,
-            ),
-        ),
-        (
-            2023,
-            ReglementationStatus.STATUS_A_JOUR,
-            ReglementationAction(
-                "https://bilans-ges.ademe.fr",
-                "Voir les bilans GES sur la plateforme nationale",
-                external=True,
-            ),
-        ),
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer(
-    publication, entreprise_factory, alice, mock_api_bges
+def test_calcule_le_statut_si_plus_de_500_employes_bilan_publie_trop_vieux(
+    effectif, entreprise_factory, alice, mock_api_bges
+):
+    entreprise = entreprise_factory(effectif=effectif)
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    mock_api_bges.return_value = 2015
+
+    with freeze_time("2023-12-15"):
+        reglementation = BGESReglementation.calculate_status(
+            entreprise.dernieres_caracteristiques_qualifiantes, alice
+        )
+
+    assert reglementation.status == ReglementationStatus.STATUS_A_ACTUALISER
+    assert (
+        reglementation.status_detail
+        == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 500 salariés."
+    )
+    assert reglementation.primary_action == ACTION_PUBLIER
+    mock_api_bges.assert_called_once_with(entreprise.siren)
+
+
+@pytest.mark.parametrize(
+    "effectif",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+def test_calcule_le_statut_si_plus_de_500_employes_bilan_publie_recent(
+    effectif, entreprise_factory, alice, mock_api_bges
+):
+    entreprise = entreprise_factory(effectif=effectif)
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    mock_api_bges.return_value = 2022
+
+    with freeze_time("2023-12-15"):
+        reglementation = BGESReglementation.calculate_status(
+            entreprise.dernieres_caracteristiques_qualifiantes, alice
+        )
+
+    assert reglementation.status == ReglementationStatus.STATUS_A_JOUR
+    assert (
+        reglementation.status_detail
+        == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 500 salariés."
+    )
+    assert reglementation.primary_action == ACTION_VOIR
+    mock_api_bges.assert_called_once_with(entreprise.siren)
+
+
+def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer_sans_bilan_publie(
+    entreprise_factory, alice, mock_api_bges
 ):
     entreprise = entreprise_factory(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
-    mock_api_bges.return_value = publication[0]
+    mock_api_bges.return_value = None
 
     with freeze_time("2023-12-15"):
         reglementation = BGESReglementation.calculate_status(
             entreprise.dernieres_caracteristiques_qualifiantes, alice
         )
 
-    assert reglementation.status == publication[1]
+    assert reglementation.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
         reglementation.status_detail
         == "Vous êtes soumis à cette réglementation car votre effectif outre-mer est supérieur à 250 salariés."
     )
-    assert reglementation.primary_action.url == publication[2].url
-    assert reglementation.primary_action.title == publication[2].title
-    assert reglementation.primary_action.external
+    assert reglementation.primary_action == ACTION_PUBLIER
+    mock_api_bges.assert_called_once_with(entreprise.siren)
+
+
+def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer_bilan_publie_trop_vieux(
+    entreprise_factory, alice, mock_api_bges
+):
+    entreprise = entreprise_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    mock_api_bges.return_value = 2015
+
+    with freeze_time("2023-12-15"):
+        reglementation = BGESReglementation.calculate_status(
+            entreprise.dernieres_caracteristiques_qualifiantes, alice
+        )
+
+    assert reglementation.status == ReglementationStatus.STATUS_A_ACTUALISER
+    assert (
+        reglementation.status_detail
+        == "Vous êtes soumis à cette réglementation car votre effectif outre-mer est supérieur à 250 salariés."
+    )
+    assert reglementation.primary_action == ACTION_PUBLIER
+    mock_api_bges.assert_called_once_with(entreprise.siren)
+
+
+def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer_bilan_publie_recent(
+    entreprise_factory, alice, mock_api_bges
+):
+    entreprise = entreprise_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    mock_api_bges.return_value = 2022
+
+    with freeze_time("2023-12-15"):
+        reglementation = BGESReglementation.calculate_status(
+            entreprise.dernieres_caracteristiques_qualifiantes, alice
+        )
+
+    assert reglementation.status == ReglementationStatus.STATUS_A_JOUR
+    assert (
+        reglementation.status_detail
+        == "Vous êtes soumis à cette réglementation car votre effectif outre-mer est supérieur à 250 salariés."
+    )
+    assert reglementation.primary_action == ACTION_VOIR
     mock_api_bges.assert_called_once_with(entreprise.siren)
 
 
