@@ -62,6 +62,7 @@ def entreprise_factory(db, date_cloture_dernier_exercice):
         categorie_juridique_sirene=None,
         est_cotee=False,
         appartient_groupe=False,
+        est_societe_mere=False,
         societe_mere_en_france=False,
         comptes_consolides=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
@@ -85,6 +86,7 @@ def entreprise_factory(db, date_cloture_dernier_exercice):
             categorie_juridique_sirene=categorie_juridique_sirene,
             est_cotee=est_cotee,
             appartient_groupe=appartient_groupe,
+            est_societe_mere=est_societe_mere,
             societe_mere_en_france=societe_mere_en_france,
             comptes_consolides=comptes_consolides,
         )
