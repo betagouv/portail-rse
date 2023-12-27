@@ -67,7 +67,7 @@ class EntrepriseForm(DsfrForm):
                 self.add_error("effectif_groupe", ERREUR_CHAMP_MANQUANT_GROUPE)
         else:
             self.cleaned_data["effectif_groupe"] = None
-            self.cleaned_data["effectif_groupe_international"] = None
+            self.cleaned_data["effectif_groupe_france"] = None
             self.cleaned_data["societe_mere_en_france"] = False
             self.cleaned_data["comptes_consolides"] = False
 
@@ -109,7 +109,7 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
             "effectif_permanent",
             "effectif_outre_mer",
             "effectif_groupe",
-            "effectif_groupe_international",
+            "effectif_groupe_france",
             "effectif_groupe_permanent",
             "tranche_chiffre_affaires",
             "tranche_bilan",
@@ -145,9 +145,7 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
                 self.add_error(
                     "effectif_groupe_permanent", ERREUR_CHAMP_MANQUANT_GROUPE
                 )
-            if not self.cleaned_data.get("effectif_groupe_international"):
-                self.add_error(
-                    "effectif_groupe_international", ERREUR_CHAMP_MANQUANT_GROUPE
-                )
+            if not self.cleaned_data.get("effectif_groupe_france"):
+                self.add_error("effectif_groupe_france", ERREUR_CHAMP_MANQUANT_GROUPE)
         else:
             cleaned_data["effectif_groupe_permanent"] = None

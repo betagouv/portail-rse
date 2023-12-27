@@ -15,7 +15,7 @@ def test_ignore_bilan_et_ca_consolides_lorsque_pas_de_comptes_consolides():
         "est_cotee": False,
         "appartient_groupe": True,
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "effectif_groupe_international": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "effectif_groupe_france": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_groupe_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "societe_mere_en_france": True,
         "comptes_consolides": False,
@@ -43,7 +43,7 @@ def test_ignore_effectifs_groupe_societe_mere_et_comptes_consolides_lorsque_pas_
         "est_cotee": False,
         "appartient_groupe": False,
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "effectif_groupe_international": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "effectif_groupe_france": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_groupe_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "societe_mere_en_france": True,
         "comptes_consolides": True,
@@ -57,7 +57,7 @@ def test_ignore_effectifs_groupe_societe_mere_et_comptes_consolides_lorsque_pas_
 
     assert form.is_valid(), form.errors
     assert form.cleaned_data["effectif_groupe"] is None
-    assert form.cleaned_data["effectif_groupe_international"] is None
+    assert form.cleaned_data["effectif_groupe_france"] is None
     assert form.cleaned_data["effectif_groupe_permanent"] is None
     assert form.cleaned_data["societe_mere_en_france"] == False
     assert form.cleaned_data["comptes_consolides"] == False
@@ -76,7 +76,7 @@ def test_erreur_si_appartient_groupe_sans_effectif_groupe():
         "est_cotee": False,
         "appartient_groupe": True,
         "effectif_groupe": "",
-        "effectif_groupe_international": "",
+        "effectif_groupe_france": "",
         "effectif_groupe_permanent": "",
         "societe_mere_en_france": True,
         "comptes_consolides": False,
@@ -94,7 +94,7 @@ def test_erreur_si_appartient_groupe_sans_effectif_groupe():
         == "Ce champ est obligatoire lorsque l'entreprise appartient à un groupe"
     )
     assert (
-        form.errors["effectif_groupe_international"][0]
+        form.errors["effectif_groupe_france"][0]
         == "Ce champ est obligatoire lorsque l'entreprise appartient à un groupe"
     )
     assert (
