@@ -188,6 +188,11 @@
                                     L'ensemble de ces informations forment le rapport de durabilité, intégré au rapport de gestion.
                                     Il doit être disponible sous le format d'information électronique XHTML, pour transmission à l'ESAP.
                                 </p>
+                                {% if user.is_authenticated %}
+                                    <a class="fr-btn fr-mt-2w" href="{% url 'reglementations:csrd' %}">Consultez les thèmes du Rapport de Durabilité</a>
+                                {% else %}
+                                    <a class="fr-btn fr-mt-2w" href="{% url 'reglementations:csrd' %}">Connectez-vous pour consulter les thèmes du Rapport de Durabilité</a>
+                                {% endif %}
                             </div>
                         </div>
                         <div class="fr-tile__header">
