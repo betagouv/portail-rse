@@ -45,6 +45,7 @@ def test_ignore_effectifs_groupe_societe_mere_et_comptes_consolides_lorsque_pas_
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_groupe_france": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_groupe_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "est_societe_mere": True,
         "societe_mere_en_france": True,
         "comptes_consolides": True,
         "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
@@ -59,6 +60,7 @@ def test_ignore_effectifs_groupe_societe_mere_et_comptes_consolides_lorsque_pas_
     assert form.cleaned_data["effectif_groupe"] is None
     assert form.cleaned_data["effectif_groupe_france"] is None
     assert form.cleaned_data["effectif_groupe_permanent"] is None
+    assert form.cleaned_data["est_societe_mere"] == False
     assert form.cleaned_data["societe_mere_en_france"] == False
     assert form.cleaned_data["comptes_consolides"] == False
     assert form.cleaned_data["tranche_chiffre_affaires_consolide"] is None
