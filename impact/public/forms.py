@@ -48,6 +48,9 @@ class SimulationForm(EntrepriseForm, forms.ModelForm):
             "tranche_chiffre_affaires_consolide",
             "tranche_bilan_consolide",
         ]
+        labels = {
+            "effectif_groupe": "Effectif du groupe",
+        }
         help_texts = {
             "effectif": "Vérifiez et confirmez le nombre de salariés de l'entreprise",
             "effectif_groupe": "Nombre de salariés du groupe",

@@ -217,7 +217,7 @@ def test_qualification_page_without_current_qualification(
     assert context["form"]["date_cloture_exercice"].initial == "2022-12-31"
     assert context["form"]["effectif_outre_mer"].initial is None
     assert context["form"]["effectif_groupe"].initial is None
-    assert context["form"]["effectif_groupe_international"].initial is None
+    assert context["form"]["effectif_groupe_france"].initial is None
 
 
 def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs(
@@ -233,7 +233,7 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs(
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
-        effectif_groupe_international=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        effectif_groupe_france=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         effectif_groupe_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
@@ -275,7 +275,7 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs(
         == CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     )
     assert (
-        form["effectif_groupe_international"].initial
+        form["effectif_groupe_france"].initial
         == CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     )
     assert (
@@ -321,10 +321,7 @@ def test_page_de_qualification_avec_des_caracteristiques_non_qualifiantes_initia
     assert form["est_cotee"].initial == entreprise.est_cotee
     assert form["appartient_groupe"].initial == entreprise.appartient_groupe
     assert form["effectif_groupe"].initial == caracs.effectif_groupe
-    assert (
-        form["effectif_groupe_international"].initial
-        == caracs.effectif_groupe_international
-    )
+    assert form["effectif_groupe_france"].initial == caracs.effectif_groupe_france
     assert form["societe_mere_en_france"].initial == entreprise.societe_mere_en_france
     assert form["comptes_consolides"].initial == entreprise.comptes_consolides
     assert (
@@ -357,7 +354,7 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
         "est_cotee": True,
         "appartient_groupe": True,
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
-        "effectif_groupe_international": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        "effectif_groupe_france": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         "effectif_groupe_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
         "societe_mere_en_france": True,
         "comptes_consolides": True,
@@ -413,7 +410,7 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
         == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999
     )
     assert (
-        caracteristiques.effectif_groupe_international
+        caracteristiques.effectif_groupe_france
         == CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     )
     assert (
@@ -481,7 +478,7 @@ def test_qualifie_entreprise_sans_groupe(
         == CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
     )
     assert caracteristiques.effectif_groupe is None
-    assert caracteristiques.effectif_groupe_international is None
+    assert caracteristiques.effectif_groupe_france is None
     assert (
         caracteristiques.tranche_chiffre_affaires
         == CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
