@@ -175,6 +175,7 @@ def enrichit_les_donnees_pour_la_simulation(caracteristiques):
         CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
     )
     if caracteristiques.entreprise.appartient_groupe:
+        caracteristiques.effectif_groupe_france = caracteristiques.effectif_groupe
         caracteristiques.effectif_groupe_permanent = caracteristiques.effectif_groupe
     caracteristiques.bdese_accord = False
     caracteristiques.systeme_management_energie = False

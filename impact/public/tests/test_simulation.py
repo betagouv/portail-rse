@@ -120,6 +120,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     assert entreprise.societe_mere_en_france is None
     assert caracteristiques.effectif_permanent is None
     assert caracteristiques.effectif_outre_mer is None
+    assert caracteristiques.effectif_groupe_france is None
     assert caracteristiques.effectif_groupe_permanent is None
     assert caracteristiques.bdese_accord is None
     assert caracteristiques.systeme_management_energie is None
@@ -133,6 +134,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
         simulation_caracs.effectif_outre_mer
         == CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
     )
+    assert simulation_caracs.effectif_groupe_france == effectif_groupe
     assert simulation_caracs.effectif_groupe_permanent == effectif_groupe
     assert not simulation_caracs.bdese_accord
     assert not simulation_caracs.systeme_management_energie
