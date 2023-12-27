@@ -22,7 +22,10 @@ class PlanVigilanceReglementation(Reglementation):
             and caracteristiques.entreprise.appartient_groupe is not None
             and (
                 not caracteristiques.entreprise.appartient_groupe
-                or caracteristiques.effectif_groupe is not None
+                or (
+                    caracteristiques.effectif_groupe is not None
+                    and caracteristiques.effectif_groupe_france is not None
+                )
             )
         )
 
@@ -41,21 +44,30 @@ class PlanVigilanceReglementation(Reglementation):
             return "votre entreprise est une Société Européenne"
 
     @classmethod
-    def criteres_remplis(cls, caracteristiques):
-        criteres = []
-        if critere := cls.critere_categorie_juridique(caracteristiques):
-            criteres.append(critere)
-
+    def critere_effectif(cls, caracteristiques):
         if caracteristiques.effectif in (
             CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
             CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         ):
-            criteres.append("votre effectif est supérieur à 5000 salariés")
+            return "votre effectif est supérieur à 5 000 salariés"
+        elif caracteristiques.effectif_groupe_france in (
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+            CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        ):
+            return "l'effectif du groupe France est supérieur à 5 000 salariés"
         elif caracteristiques.effectif_groupe in (
             CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
             CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         ):
-            criteres.append("l'effectif du groupe est supérieur à 5000 salariés.")
+            return "l'effectif du groupe international est supérieur à 10 000 salariés"
+
+    @classmethod
+    def criteres_remplis(cls, caracteristiques):
+        criteres = []
+        if critere := cls.critere_categorie_juridique(caracteristiques):
+            criteres.append(critere)
+        if critere := cls.critere_effectif(caracteristiques):
+            criteres.append(critere)
         return criteres
 
     @classmethod
