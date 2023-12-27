@@ -129,6 +129,7 @@ def qualification(request, siren):
             entreprise.date_cloture_exercice = date_cloture_dernier_exercice
             entreprise.est_cotee = form.cleaned_data["est_cotee"]
             entreprise.appartient_groupe = form.cleaned_data["appartient_groupe"]
+            entreprise.est_societe_mere = form.cleaned_data["est_societe_mere"]
             entreprise.societe_mere_en_france = form.cleaned_data[
                 "societe_mere_en_france"
             ]
@@ -184,6 +185,7 @@ def qualification(request, siren):
                 "effectif_groupe": caracs.effectif_groupe,
                 "effectif_groupe_france": caracs.effectif_groupe_france,
                 "effectif_groupe_permanent": caracs.effectif_groupe_permanent,
+                "est_societe_mere": entreprise.est_societe_mere,
                 "societe_mere_en_france": entreprise.societe_mere_en_france,
                 "comptes_consolides": entreprise.comptes_consolides,
                 "tranche_chiffre_affaires_consolide": caracs.tranche_chiffre_affaires_consolide,

@@ -96,6 +96,10 @@ class EntrepriseForm(DsfrForm):
 
 
 class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
+    est_societe_mere = forms.BooleanField(
+        required=False,
+        label=Entreprise.est_societe_mere.field.verbose_name,
+    )
     societe_mere_en_france = forms.BooleanField(
         required=False,
         label=Entreprise.societe_mere_en_france.field.verbose_name,
@@ -137,15 +141,20 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
             "Ce champ est obligatoire lorsque l'entreprise appartient à un groupe"
         )
 
-        cleaned_data = super().clean()
+        super().clean()
 
-        appartient_groupe = cleaned_data.get("appartient_groupe")
+        appartient_groupe = self.cleaned_data.get("appartient_groupe")
         if appartient_groupe:
-            if not cleaned_data.get("effectif_groupe_permanent"):
+            if not self.cleaned_data.get("effectif_groupe_permanent"):
                 self.add_error(
                     "effectif_groupe_permanent", ERREUR_CHAMP_MANQUANT_GROUPE
                 )
             if not self.cleaned_data.get("effectif_groupe_france"):
                 self.add_error("effectif_groupe_france", ERREUR_CHAMP_MANQUANT_GROUPE)
         else:
-            cleaned_data["effectif_groupe_permanent"] = None
+            self.cleaned_data["effectif_groupe_permanent"] = None
+
+        if self.cleaned_data.get("est_societe_mere"):
+            self.cleaned_data["societe_mere_en_france"] = True
+
+        return self.cleaned_data
