@@ -85,8 +85,12 @@ class Entreprise(TimestampedModel):
         verbose_name="L'entreprise fait partie d'un groupe",
         null=True,
     )
+    est_societe_mere = models.BooleanField(
+        verbose_name="L'entreprise est la société mère du groupe",
+        null=True,
+    )
     societe_mere_en_france = models.BooleanField(
-        verbose_name="La société mère a son siège social en France",
+        verbose_name="La société mère du groupe a son siège social en France",
         null=True,
     )
     comptes_consolides = models.BooleanField(

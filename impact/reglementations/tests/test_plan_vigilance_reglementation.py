@@ -45,6 +45,7 @@ def _caracteristiques_suffisamment_qualifiantes_avec_groupe(
         categorie_juridique_sirene=CODE_SA,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
         appartient_groupe=True,
+        est_societe_mere=True,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_499,
         effectif_groupe_france=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_499,
     )
@@ -78,6 +79,15 @@ def test_n_est_pas_suffisamment_qualifiee_car_groupe_non_renseigne(
 ):
     caracteristiques = _caracteristiques_suffisamment_qualifiantes_sans_groupe
     caracteristiques.entreprise.appartient_groupe = None
+
+    assert not PlanVigilanceReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+
+def test_n_est_pas_suffisamment_qualifiee_car_groupe_mais_societe_mere_non_renseignee(
+    _caracteristiques_suffisamment_qualifiantes_avec_groupe,
+):
+    caracteristiques = _caracteristiques_suffisamment_qualifiantes_avec_groupe
+    caracteristiques.entreprise.est_societe_mere = None
 
     assert not PlanVigilanceReglementation.est_suffisamment_qualifiee(caracteristiques)
 
@@ -138,13 +148,14 @@ def test_calcule_statut_moins_de_5000_employes(effectif, entreprise_factory, ali
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
     ],
 )
-def test_calcule_statut_moins_de_5000_employes_dans_le_groupe(
+def test_calcule_statut_societe_mere_moins_de_5000_employes_dans_le_groupe(
     effectif_groupe, entreprise_factory, alice
 ):
     entreprise = entreprise_factory(
         categorie_juridique_sirene=CODE_SA,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         appartient_groupe=True,
+        est_societe_mere=True,
         effectif_groupe=effectif_groupe,
         effectif_groupe_france=effectif_groupe,
     )
@@ -249,13 +260,14 @@ def test_calcule_statut_plus_de_5000_employes_dans_l_entreprise(
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_calcule_statut_plus_de_5000_employes_dans_le_groupe_france(
+def test_calcule_statut_societe_mere_plus_de_5000_employes_dans_le_groupe_france(
     effectif_groupe_france, entreprise_factory, alice
 ):
     entreprise = entreprise_factory(
         categorie_juridique_sirene=CODE_SA,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         appartient_groupe=True,
+        est_societe_mere=True,
         effectif_groupe=effectif_groupe_france,
         effectif_groupe_france=effectif_groupe_france,
     )
@@ -275,13 +287,14 @@ def test_calcule_statut_plus_de_5000_employes_dans_le_groupe_france(
     assert not reglementation.primary_action
 
 
-def test_calcule_statut_plus_de_10000_employes_dans_le_groupe_international(
+def test_calcule_statut_societe_mere_plus_de_10000_employes_dans_le_groupe_international(
     entreprise_factory, alice
 ):
     entreprise = entreprise_factory(
         categorie_juridique_sirene=CODE_SA,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         appartient_groupe=True,
+        est_societe_mere=True,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         effectif_groupe_france=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
     )
@@ -297,5 +310,27 @@ def test_calcule_statut_plus_de_10000_employes_dans_le_groupe_international(
     )
     assert reglementation.status_detail.endswith(
         "Vous devez établir un plan de vigilance si vous employez, à la clôture de deux exercices consécutifs, au moins 5 000 salariés, en votre sein ou dans vos filiales directes ou indirectes françaises, ou 10 000 salariés, en incluant vos filiales directes ou indirectes étrangères."
+    )
+    assert not reglementation.primary_action
+
+
+def test_calcule_statut_filiale_du_groupe(entreprise_factory, alice):
+    entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        appartient_groupe=True,
+        est_societe_mere=False,  # filiale
+        effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        effectif_groupe_france=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    reglementation = PlanVigilanceReglementation.calculate_status(
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
+    )
+
+    assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
+    assert (
+        reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation."
     )
     assert not reglementation.primary_action

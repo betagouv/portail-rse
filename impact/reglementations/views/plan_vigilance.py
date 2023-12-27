@@ -23,7 +23,8 @@ class PlanVigilanceReglementation(Reglementation):
             and (
                 not caracteristiques.entreprise.appartient_groupe
                 or (
-                    caracteristiques.effectif_groupe is not None
+                    caracteristiques.entreprise.est_societe_mere is not None
+                    and caracteristiques.effectif_groupe is not None
                     and caracteristiques.effectif_groupe_france is not None
                 )
             )
@@ -50,16 +51,19 @@ class PlanVigilanceReglementation(Reglementation):
             CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         ):
             return "votre effectif est supérieur à 5 000 salariés"
-        elif caracteristiques.effectif_groupe_france in (
-            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
-            CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
-        ):
-            return "l'effectif du groupe France est supérieur à 5 000 salariés"
-        elif caracteristiques.effectif_groupe in (
-            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
-            CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
-        ):
-            return "l'effectif du groupe international est supérieur à 10 000 salariés"
+        elif caracteristiques.entreprise.est_societe_mere:
+            if caracteristiques.effectif_groupe_france in (
+                CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+                CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+            ):
+                return "l'effectif du groupe France est supérieur à 5 000 salariés"
+            elif caracteristiques.effectif_groupe in (
+                CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+                CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+            ):
+                return (
+                    "l'effectif du groupe international est supérieur à 10 000 salariés"
+                )
 
     @classmethod
     def criteres_remplis(cls, caracteristiques):
