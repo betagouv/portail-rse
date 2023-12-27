@@ -50,10 +50,11 @@
                         </legend>
                         {% include 'snippets/fieldset_element.html' with field=form.appartient_groupe fieldset_id="svelte-appartient-groupe-field" %}
                         <div id="svelte-groupe-fields" class="fr-col-12">
+                            {% include 'snippets/fieldset_element.html' with field=form.est_societe_mere %}
+                            {% include 'snippets/fieldset_element.html' with field=form.societe_mere_en_france %}
                             {% include 'snippets/fieldset_element.html' with field=form.effectif_groupe %}
                             {% include 'snippets/fieldset_element.html' with field=form.effectif_groupe_france %}
                             {% include 'snippets/fieldset_element.html' with field=form.effectif_groupe_permanent %}
-                            {% include 'snippets/fieldset_element.html' with field=form.societe_mere_en_france %}
                             {% include 'snippets/fieldset_element.html' with field=form.comptes_consolides id="svelte-avec-comptes-consolides-field" %}
                             <div id="svelte-comptes-consolides-fields">
                                 {% include 'snippets/fieldset_element.html' with field=form.tranche_chiffre_affaires_consolide %}

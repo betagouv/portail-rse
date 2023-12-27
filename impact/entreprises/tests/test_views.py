@@ -215,6 +215,7 @@ def test_qualification_page_without_current_qualification(
     )
     context = response.context
     assert context["form"]["date_cloture_exercice"].initial == "2022-12-31"
+    assert not context["form"]["est_societe_mere"].initial
     assert context["form"]["effectif_outre_mer"].initial is None
     assert context["form"]["effectif_groupe"].initial is None
     assert context["form"]["effectif_groupe_france"].initial is None
@@ -226,6 +227,7 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs(
     entreprise = entreprise_factory(
         date_cloture_exercice=date(2022, 6, 30),
         appartient_groupe=True,
+        est_societe_mere=True,
         societe_mere_en_france=True,
         comptes_consolides=True,
         est_cotee=True,
@@ -282,6 +284,7 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs(
         form["effectif_groupe_permanent"].initial
         == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999
     )
+    assert form["est_societe_mere"].initial
     assert form["societe_mere_en_france"].initial
     assert form["comptes_consolides"].initial
     assert (
@@ -322,6 +325,7 @@ def test_page_de_qualification_avec_des_caracteristiques_non_qualifiantes_initia
     assert form["appartient_groupe"].initial == entreprise.appartient_groupe
     assert form["effectif_groupe"].initial == caracs.effectif_groupe
     assert form["effectif_groupe_france"].initial == caracs.effectif_groupe_france
+    assert form["est_societe_mere"].initial == entreprise.societe_mere_en_france
     assert form["societe_mere_en_france"].initial == entreprise.societe_mere_en_france
     assert form["comptes_consolides"].initial == entreprise.comptes_consolides
     assert (
@@ -356,6 +360,7 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         "effectif_groupe_france": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         "effectif_groupe_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        "est_societe_mere": True,
         "societe_mere_en_france": True,
         "comptes_consolides": True,
         "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
@@ -387,6 +392,7 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
     assert entreprise_non_qualifiee.date_cloture_exercice == date(2022, 12, 31)
     assert entreprise_non_qualifiee.est_cotee
     assert entreprise_non_qualifiee.appartient_groupe
+    assert entreprise_non_qualifiee.est_societe_mere
     assert entreprise_non_qualifiee.societe_mere_en_france
     assert entreprise_non_qualifiee.comptes_consolides
     caracteristiques = entreprise_non_qualifiee.caracteristiques_annuelles(2022)
@@ -463,6 +469,7 @@ def test_qualifie_entreprise_sans_groupe(
     assert entreprise_non_qualifiee.denomination == "Entreprise SAS"
     assert entreprise_non_qualifiee.date_cloture_exercice == date(2022, 12, 31)
     assert entreprise_non_qualifiee.appartient_groupe is False
+    assert entreprise_non_qualifiee.est_societe_mere is False
     assert entreprise_non_qualifiee.societe_mere_en_france is False
     assert entreprise_non_qualifiee.comptes_consolides is False
     caracteristiques = entreprise_non_qualifiee.caracteristiques_annuelles(2022)
