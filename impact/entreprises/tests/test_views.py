@@ -469,9 +469,9 @@ def test_qualifie_entreprise_sans_groupe(
     assert entreprise_non_qualifiee.denomination == "Entreprise SAS"
     assert entreprise_non_qualifiee.date_cloture_exercice == date(2022, 12, 31)
     assert entreprise_non_qualifiee.appartient_groupe is False
-    assert entreprise_non_qualifiee.est_societe_mere is False
-    assert entreprise_non_qualifiee.societe_mere_en_france is False
-    assert entreprise_non_qualifiee.comptes_consolides is False
+    assert entreprise_non_qualifiee.est_societe_mere is None
+    assert entreprise_non_qualifiee.societe_mere_en_france is None
+    assert entreprise_non_qualifiee.comptes_consolides is None
     caracteristiques = entreprise_non_qualifiee.caracteristiques_annuelles(2022)
     assert (
         caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249

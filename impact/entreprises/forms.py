@@ -67,7 +67,7 @@ class EntrepriseForm(DsfrForm):
                 self.add_error("effectif_groupe", ERREUR_CHAMP_MANQUANT_GROUPE)
         else:
             self.cleaned_data["effectif_groupe"] = None
-            self.cleaned_data["comptes_consolides"] = False
+            self.cleaned_data["comptes_consolides"] = None
 
         comptes_consolides = self.cleaned_data.get("comptes_consolides")
         tranche_chiffre_affaires_consolide = self.cleaned_data.get(
@@ -152,8 +152,8 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
         else:
             self.cleaned_data["effectif_groupe_france"] = None
             self.cleaned_data["effectif_groupe_permanent"] = None
-            self.cleaned_data["est_societe_mere"] = False
-            self.cleaned_data["societe_mere_en_france"] = False
+            self.cleaned_data["est_societe_mere"] = None
+            self.cleaned_data["societe_mere_en_france"] = None
 
         if self.cleaned_data.get("est_societe_mere"):
             self.cleaned_data["societe_mere_en_france"] = True

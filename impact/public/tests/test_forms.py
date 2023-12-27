@@ -45,7 +45,7 @@ def test_ignore_effectif_groupe_et_comptes_consolides_lorsque_pas_de_groupe():
 
     assert form.is_valid(), form.errors
     assert form.cleaned_data["effectif_groupe"] is None
-    assert form.cleaned_data["comptes_consolides"] == False
+    assert form.cleaned_data["comptes_consolides"] is None
     assert form.cleaned_data["tranche_chiffre_affaires_consolide"] is None
     assert form.cleaned_data["tranche_bilan_consolide"] is None
 
