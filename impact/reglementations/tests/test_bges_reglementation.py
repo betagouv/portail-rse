@@ -144,7 +144,7 @@ def test_calcule_le_statut_si_moins_de_500_employes(
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
     assert (
-        reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation"
+        reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation."
     )
     assert reglementation.primary_action == ACTION_CONSULTER
     assert not mock_api_bges.called
