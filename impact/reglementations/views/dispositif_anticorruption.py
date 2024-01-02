@@ -10,7 +10,7 @@ class DispositifAntiCorruption(Reglementation):
     title = "Dispositif anti-corruption"
     description = """La loi dite « loi Sapin 2 » désigne la loi du 9 décembre 2016 relative à la transparence, à la lutte contre la corruption et à la modernisation de la vie économique.
         Elle impose à certaines entreprises la mise en place de mesures destinées à prévenir, détecter et sanctionner la commission, en France ou à l’étranger, de faits de corruption ou de trafic d’influence.
-        Ces mesures sont diverses : code de bonne conduite, dispositif d’alerte interne, cartographie des risques, évaluation des clients et fournisseurs,
+        Ces mesures sont diverses : code de bonne conduite, dispositif d’alerte interne, cartographie des risques, évaluation des clients et fournisseurs,
         procédures de contrôles comptables, formation du personnel exposé, régime disciplinaire propre à sanctionner les salariés en cas de violation du code de conduite,
         dispositif de contrôle et d’évaluation interne des mesures mises en œuvre."""
     more_info_url = reverse_lazy("reglementations:fiche_dispositif_anticorruption")
