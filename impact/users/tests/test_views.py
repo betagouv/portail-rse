@@ -369,12 +369,12 @@ def test_update_last_connection_date(client, alice_with_password):
     with freeze_time(now):
         response = client.post(
             "/connexion",
-            {"username": "alice@impact.test", "password": "Passw0rd!123"},
+            {"username": "alice@portail-rse.test", "password": "Passw0rd!123"},
             follow=True,
         )
 
     assert response.status_code == 200
-    assert response.context["user"].email == "alice@impact.test"
+    assert response.context["user"].email == "alice@portail-rse.test"
     alice_with_password.refresh_from_db()
     assert alice_with_password.last_login == now
 
@@ -385,7 +385,7 @@ def test_can_not_login_if_email_is_not_confirmed(client, alice_with_password):
 
     response = client.post(
         "/connexion",
-        {"username": "alice@impact.test", "password": "Passw0rd!123"},
+        {"username": "alice@portail-rse.test", "password": "Passw0rd!123"},
         follow=True,
     )
 

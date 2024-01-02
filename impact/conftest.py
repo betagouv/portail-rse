@@ -18,7 +18,7 @@ def alice(django_user_model):
     alice = django_user_model.objects.create(
         prenom="Alice",
         nom="Cooper",
-        email="alice@impact.test",
+        email="alice@portail-rse.test",
         reception_actualites=False,
         is_email_confirmed=True,
     )
@@ -30,7 +30,7 @@ def bob(django_user_model):
     bob = django_user_model.objects.create(
         prenom="Bob",
         nom="Dylan",
-        email="bob@impact.test",
+        email="bob@portail-rse.test",
         reception_actualites=False,
         is_email_confirmed=True,
     )
