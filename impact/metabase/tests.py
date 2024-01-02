@@ -261,7 +261,7 @@ def test_synchronise_une_entreprise_avec_un_utilisateur(
     utilisateur = django_user_model.objects.create(
         prenom="Alice",
         nom="Cooper",
-        email="alice@impact.test",
+        email="alice@portail-rse.test",
         reception_actualites=False,
         is_email_confirmed=True,
     )
