@@ -84,7 +84,7 @@ class BGESReglementation(Reglementation):
                 status_detail += f" Vous avez publié un bilan {annee_reporting} sur la plateforme Bilans GES."
         else:
             status = ReglementationStatus.STATUS_NON_SOUMIS
-            status_detail = "Vous n'êtes pas soumis à cette réglementation"
+            status_detail = "Vous n'êtes pas soumis à cette réglementation."
             primary_action = cls.CONSULTER_BILANS_PRIMARY_ACTION
         return ReglementationStatus(
             status, status_detail, primary_action=primary_action
