@@ -1,6 +1,6 @@
 # Metabase
 
-Le projet Impact utilise trois applications Scalingo associées chacune à une base de données PostgreSQL :
+Le Portail RSE utilise trois applications Scalingo associées chacune à une base de données PostgreSQL :
  - une application Django, déployée via Scalingo à partir de ce repo
  - une application Metabase, déployée via Scalingo à partir de https://github.com/Scalingo/metabase-scalingo
  - une application vide Metabase-data servant uniquement pour sa base de données PostgreSQL associée (Scalingo ne permet pas d'avoir plusieurs bdd associées à une seule application)
