@@ -91,7 +91,7 @@ def test_page_contact(client):
     ["trois", "TROIS", " trois "],
 )
 def test_send_contact_mail_with_valid_captcha(client, captcha, mailoutbox, settings):
-    settings.DEFAULT_FROM_EMAIL = "impact@example.com"
+    settings.DEFAULT_FROM_EMAIL = "portail@example.com"
     settings.CONTACT_EMAIL = "contact@example.com"
 
     subject = "Bonjour"
@@ -110,7 +110,7 @@ def test_send_contact_mail_with_valid_captcha(client, captcha, mailoutbox, setti
 
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
-    assert mail.from_email == "impact@example.com"
+    assert mail.from_email == "portail@example.com"
     assert list(mail.to) == ["contact@example.com"]
     assert list(mail.reply_to) == [email]
     assert mail.subject == subject
@@ -121,7 +121,7 @@ def test_send_contact_mail_with_valid_captcha(client, captcha, mailoutbox, setti
 
 
 def test_send_contact_mail_with_invalid_captcha(client, mailoutbox, settings):
-    settings.DEFAULT_FROM_EMAIL = "impact@example.com"
+    settings.DEFAULT_FROM_EMAIL = "portail@example.com"
     settings.CONTACT_EMAIL = "contact@example.com"
 
     subject = "Bonjour"
@@ -142,7 +142,7 @@ def test_send_contact_mail_with_invalid_captcha(client, mailoutbox, settings):
 
 
 def test_send_contact_mail_with_numerical_captcha(client, mailoutbox, settings):
-    settings.DEFAULT_FROM_EMAIL = "impact@example.com"
+    settings.DEFAULT_FROM_EMAIL = "portail@example.com"
     settings.CONTACT_EMAIL = "contact@example.com"
 
     subject = "Bonjour"
