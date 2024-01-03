@@ -52,6 +52,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
     est_cotee = True
     appartient_groupe = True
+    est_societe_mere = True
     effectif_groupe = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     comptes_consolides = True
     ca_consolide = CaracteristiquesAnnuelles.CA_100M_ET_PLUS
@@ -66,6 +67,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
         "tranche_bilan": bilan,
         "est_cotee": est_cotee,
         "appartient_groupe": appartient_groupe,
+        "est_societe_mere": est_societe_mere,
         "effectif_groupe": effectif_groupe,
         "comptes_consolides": comptes_consolides,
         "tranche_chiffre_affaires_consolide": ca_consolide,
@@ -86,6 +88,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     assert entreprise.categorie_juridique_sirene == categorie_juridique_sirene
     assert entreprise.est_cotee
     assert entreprise.appartient_groupe
+    assert entreprise.est_societe_mere
     assert entreprise.comptes_consolides
     caracteristiques = entreprise.caracteristiques_actuelles()
     assert caracteristiques.effectif == effectif
@@ -156,6 +159,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     assert simulation_form["tranche_bilan"].value() == bilan
     assert simulation_form["est_cotee"].value() == est_cotee
     assert simulation_form["appartient_groupe"].value() == appartient_groupe
+    assert simulation_form["est_societe_mere"].value() == est_societe_mere
     assert simulation_form["effectif_groupe"].value() == effectif_groupe
     assert simulation_form["comptes_consolides"].value() == comptes_consolides
     assert simulation_form["tranche_chiffre_affaires_consolide"].value() == ca_consolide
@@ -180,6 +184,7 @@ def test_simulation_par_un_utilisateur_authentifie_sur_une_nouvelle_entreprise(
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
         "est_cotée": False,
         "appartient_groupe": True,
+        "est_societe_mere": True,
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         "comptes_consolides": True,
         "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
@@ -221,6 +226,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
         categorie_juridique_sirene=5200,
         est_cotee=True,
         appartient_groupe=True,
+        est_societe_mere=True,
         societe_mere_en_france=True,
         comptes_consolides=True,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
@@ -250,10 +256,6 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
         "tranche_bilan": bilan,
         "est_cotee": False,
         "appartient_groupe": False,
-        "effectif_groupe": "",
-        "comptes_consolides": False,
-        "tranche_chiffre_affaires_consolide": "",
-        "tranche_bilan_consolide": "",
     }
 
     response = client.post("/simulation", data=data)
@@ -263,6 +265,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     assert entreprise.categorie_juridique_sirene == 5200
     assert entreprise.est_cotee
     assert entreprise.appartient_groupe
+    assert entreprise.est_societe_mere
     assert entreprise.societe_mere_en_france
     assert entreprise.comptes_consolides
     caracteristiques = entreprise.caracteristiques_annuelles(
@@ -300,19 +303,14 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
         categorie_juridique_sirene=autre_categorie_juridique_sirene,
         est_cotee=False,
         appartient_groupe=False,
-        societe_mere_en_france=True,
-        comptes_consolides=False,
     )
     caracteristiques = CaracteristiquesAnnuelles(
         entreprise=entreprise_simulee,
         effectif=effectif,
         effectif_permanent=effectif,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        effectif_groupe=None,
         tranche_chiffre_affaires=ca,
         tranche_bilan=bilan,
-        tranche_chiffre_affaires_consolide=None,
-        tranche_bilan_consolide=None,
         bdese_accord=False,
         systeme_management_energie=False,
     )
@@ -350,6 +348,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
         "tranche_bilan": bilan,
         "est_cotee": True,
         "appartient_groupe": True,
+        "est_societe_mere": True,
         "effectif_groupe": effectif_groupe,
         "comptes_consolides": True,
         "tranche_chiffre_affaires_consolide": ca,
@@ -363,6 +362,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
     assert entreprise.categorie_juridique_sirene != autre_categorie_juridique_sirene
     assert entreprise.est_cotee is None
     assert entreprise.appartient_groupe is None
+    assert entreprise.est_societe_mere is None
     assert entreprise.comptes_consolides is None
     assert not entreprise.caracteristiques_actuelles()
 
@@ -373,6 +373,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
         categorie_juridique_sirene=autre_categorie_juridique_sirene,
         est_cotee=True,
         appartient_groupe=True,
+        est_societe_mere=True,
         societe_mere_en_france=True,
         comptes_consolides=True,
     )
@@ -422,6 +423,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
         "tranche_bilan": bilan,
         "est_cotee": True,
         "appartient_groupe": True,
+        "est_societe_mere": True,
         "effectif_groupe": effectif_groupe,
         "comptes_consolides": True,
         "tranche_chiffre_affaires_consolide": ca,
@@ -436,6 +438,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
     assert entreprise.categorie_juridique_sirene == autre_categorie_juridique_sirene
     assert entreprise.est_cotee
     assert entreprise.appartient_groupe
+    assert entreprise.est_societe_mere
     assert entreprise.comptes_consolides
     caracteristiques = entreprise.caracteristiques_actuelles()
     assert caracteristiques.effectif == effectif
@@ -452,6 +455,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
         categorie_juridique_sirene=autre_categorie_juridique_sirene,
         est_cotee=True,
         appartient_groupe=True,
+        est_societe_mere=True,
         societe_mere_en_france=True,
         comptes_consolides=True,
     )

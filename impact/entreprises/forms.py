@@ -53,6 +53,10 @@ class EntrepriseForm(DsfrForm):
         required=False,
         label="L'entreprise appartient à un groupe composé d'une société-mère et d'une ou plusieurs filiales",
     )
+    est_societe_mere = forms.BooleanField(
+        required=False,
+        label=Entreprise.est_societe_mere.field.verbose_name,
+    )
     comptes_consolides = forms.BooleanField(
         required=False,
         label="Le groupe d'entreprises établit des comptes consolidés",
@@ -66,6 +70,7 @@ class EntrepriseForm(DsfrForm):
             if not self.cleaned_data.get("effectif_groupe"):
                 self.add_error("effectif_groupe", ERREUR_CHAMP_MANQUANT_GROUPE)
         else:
+            self.cleaned_data["est_societe_mere"] = None
             self.cleaned_data["effectif_groupe"] = None
             self.cleaned_data["comptes_consolides"] = None
 
@@ -94,10 +99,6 @@ class EntrepriseForm(DsfrForm):
 
 
 class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
-    est_societe_mere = forms.BooleanField(
-        required=False,
-        label=Entreprise.est_societe_mere.field.verbose_name,
-    )
     societe_mere_en_france = forms.BooleanField(
         required=False,
         label=Entreprise.societe_mere_en_france.field.verbose_name,
@@ -152,7 +153,6 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
         else:
             self.cleaned_data["effectif_groupe_france"] = None
             self.cleaned_data["effectif_groupe_permanent"] = None
-            self.cleaned_data["est_societe_mere"] = None
             self.cleaned_data["societe_mere_en_france"] = None
 
         if self.cleaned_data.get("est_societe_mere"):
