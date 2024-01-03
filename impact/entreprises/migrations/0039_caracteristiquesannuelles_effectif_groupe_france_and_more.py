@@ -50,4 +50,24 @@ class Migration(migrations.Migration):
                 verbose_name="Effectif du groupe international",
             ),
         ),
+        migrations.AlterField(
+            model_name="caracteristiquesannuelles",
+            name="effectif_groupe_permanent",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("", "Sélectionnez une réponse"),
+                    ("0-49", "moins de 50 salariés"),
+                    ("50-249", "entre 50 et 249 salariés"),
+                    ("250-499", "entre 250 et 499 salariés"),
+                    ("500-4999", "entre 500 et 4 999 salariés"),
+                    ("5000-9999", "entre 5 000 et 9 999 salariés"),
+                    ("10000+", "10 000 salariés ou plus"),
+                ],
+                help_text="Nombre moyen de salariés à temps plein, titulaires d'un contrat à durée indéterminée employés par le groupe au cours de l'exercice comptable en incluant les filiales directes ou indirectes étrangères",
+                max_length=9,
+                null=True,
+                verbose_name="Effectif permanent du groupe",
+            ),
+        ),
     ]
