@@ -18,6 +18,7 @@ from reglementations.views.dispositif_alerte import DispositifAlerteReglementati
 from reglementations.views.dispositif_anticorruption import DispositifAntiCorruption
 from reglementations.views.dpef import DPEFReglementation
 from reglementations.views.index_egapro import IndexEgaproReglementation
+from reglementations.views.plan_vigilance import PlanVigilanceReglementation
 
 REGLEMENTATIONS = (
     BDESEReglementation,
@@ -27,6 +28,7 @@ REGLEMENTATIONS = (
     AuditEnergetiqueReglementation,
     DispositifAntiCorruption,
     DPEFReglementation,
+    PlanVigilanceReglementation,
 )
 
 
@@ -193,6 +195,10 @@ def test_calcule_reglementations_trie_les_statuts_soumis_en_premier(
         "reglementations.views.dpef.DPEFReglementation.est_soumis",
         return_value=False,
     )
+    mocker.patch(
+        "reglementations.views.plan_vigilance.PlanVigilanceReglementation.est_soumis",
+        return_value=True,
+    )
 
     reglementations = calcule_reglementations(
         entreprise.dernieres_caracteristiques_qualifiantes, AnonymousUser()
@@ -202,6 +208,7 @@ def test_calcule_reglementations_trie_les_statuts_soumis_en_premier(
         IndexEgaproReglementation,
         BGESReglementation,
         DispositifAntiCorruption,
+        PlanVigilanceReglementation,
         BDESEReglementation,
         DispositifAlerteReglementation,
         AuditEnergetiqueReglementation,

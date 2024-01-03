@@ -18,6 +18,7 @@ from reglementations.views.dispositif_alerte import DispositifAlerteReglementati
 from reglementations.views.dispositif_anticorruption import DispositifAntiCorruption
 from reglementations.views.dpef import DPEFReglementation
 from reglementations.views.index_egapro import IndexEgaproReglementation
+from reglementations.views.plan_vigilance import PlanVigilanceReglementation
 
 
 REGLEMENTATIONS = [
@@ -28,6 +29,7 @@ REGLEMENTATIONS = [
     AuditEnergetiqueReglementation,
     DispositifAntiCorruption,
     DPEFReglementation,
+    PlanVigilanceReglementation,
 ]
 
 
