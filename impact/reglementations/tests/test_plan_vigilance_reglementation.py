@@ -1,4 +1,5 @@
 import pytest
+from django.urls import reverse
 
 from conftest import CODE_AUTRE
 from conftest import CODE_SA
@@ -21,7 +22,7 @@ def test_reglementation_info():
         == """Le plan de vigilance comporte les mesures de vigilance propres à identifier et à prévenir les atteintes graves envers les droits humains et les libertés fondamentales,
         la santé et la sécurité des personnes ainsi que de l’environnement qui adviendraient au sein de l’entreprise."""
     )
-    assert not info["more_info_url"]
+    assert info["more_info_url"] == reverse("reglementations:fiche_plan_vigilance")
     assert info["tag"] == "tag-social"
 
 
