@@ -14,6 +14,7 @@ from reglementations.views.bdese import BDESEReglementation
 from reglementations.views.bges import BGESReglementation
 from reglementations.views.dispositif_alerte import DispositifAlerteReglementation
 from reglementations.views.dispositif_anticorruption import DispositifAntiCorruption
+from reglementations.views.dpef import DPEFReglementation
 from reglementations.views.index_egapro import IndexEgaproReglementation
 
 REGLEMENTATIONS = (
@@ -23,6 +24,7 @@ REGLEMENTATIONS = (
     BGESReglementation,
     AuditEnergetiqueReglementation,
     DispositifAntiCorruption,
+    DPEFReglementation,
 )
 
 
@@ -70,34 +72,12 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
         "tranche_bilan_consolide": bilan_consolide,
     }
 
-    mock_est_soumis = mocker.patch(
-        "reglementations.views.bdese.BDESEReglementation.est_soumis",
-        return_value=status_est_soumis,
-    )
-    mocker.patch(
-        "reglementations.views.index_egapro.IndexEgaproReglementation.est_soumis",
-        return_value=status_est_soumis,
-    )
-    mocker.patch(
-        "reglementations.views.dispositif_alerte.DispositifAlerteReglementation.est_soumis",
-        return_value=status_est_soumis,
-    )
-    mocker.patch(
-        "reglementations.views.bges.BGESReglementation.est_soumis",
-        return_value=status_est_soumis,
-    )
-    mocker.patch(
-        "reglementations.views.audit_energetique.AuditEnergetiqueReglementation.est_soumis",
-        return_value=status_est_soumis,
-    )
-    mocker.patch(
-        "reglementations.views.dispositif_anticorruption.DispositifAntiCorruption.est_soumis",
-        return_value=status_est_soumis,
-    )
-    mocker.patch(
-        "reglementations.views.dpef.DPEFReglementation.est_soumis",
-        return_value=status_est_soumis,
-    )
+    for REGLEMENTATION in REGLEMENTATIONS:
+        mock_est_soumis = mocker.patch(
+            f"{REGLEMENTATION.__module__}.{REGLEMENTATION.__name__}.est_soumis",
+            return_value=status_est_soumis,
+        )
+
     response = client.post("/simulation", data=data)
 
     # l'entreprise a été créée avec les caractéristiques de simulation
@@ -206,30 +186,12 @@ def test_simulation_par_un_utilisateur_authentifie_sur_une_nouvelle_entreprise(
         "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
     }
 
-    mocker.patch(
-        "reglementations.views.bdese.BDESEReglementation.est_soumis",
-        return_value=status_est_soumis,
-    )
-    mocker.patch(
-        "reglementations.views.index_egapro.IndexEgaproReglementation.est_soumis",
-        return_value=status_est_soumis,
-    )
-    mocker.patch(
-        "reglementations.views.dispositif_alerte.DispositifAlerteReglementation.est_soumis",
-        return_value=status_est_soumis,
-    )
-    mocker.patch(
-        "reglementations.views.bges.BGESReglementation.est_soumis",
-        return_value=status_est_soumis,
-    )
-    mocker.patch(
-        "reglementations.views.audit_energetique.AuditEnergetiqueReglementation.est_soumis",
-        return_value=status_est_soumis,
-    )
-    mocker.patch(
-        "reglementations.views.dispositif_anticorruption.DispositifAntiCorruption.est_soumis",
-        return_value=status_est_soumis,
-    )
+    for REGLEMENTATION in REGLEMENTATIONS:
+        mock_est_soumis = mocker.patch(
+            f"{REGLEMENTATION.__module__}.{REGLEMENTATION.__name__}.est_soumis",
+            return_value=status_est_soumis,
+        )
+
     response = client.post("/simulation", data=data)
 
     content = response.content.decode("utf-8")
@@ -344,6 +306,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     caracteristiques = CaracteristiquesAnnuelles(
         entreprise=entreprise_simulee,
         effectif=effectif,
+        effectif_permanent=effectif,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         effectif_groupe=None,
         tranche_chiffre_affaires=ca,
@@ -357,7 +320,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
         status = reglementations[index]["status"]
         assert status == REGLEMENTATION.calculate_status(
             caracteristiques, AnonymousUser()
-        )
+        ), REGLEMENTATION
 
 
 def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_sont_pas_modifiees(
@@ -416,8 +379,10 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
     caracteristiques = CaracteristiquesAnnuelles(
         entreprise=entreprise_simulee,
         effectif=effectif,
+        effectif_permanent=effectif,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         effectif_groupe=effectif_groupe,
+        effectif_groupe_permanent=effectif_groupe,
         tranche_chiffre_affaires=ca,
         tranche_bilan=bilan,
         tranche_chiffre_affaires_consolide=ca,
@@ -493,8 +458,10 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
     caracteristiques = CaracteristiquesAnnuelles(
         entreprise=entreprise_simulee,
         effectif=effectif,
+        effectif_permanent=effectif,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         effectif_groupe=effectif_groupe,
+        effectif_groupe_permanent=effectif_groupe,
         tranche_chiffre_affaires=ca,
         tranche_bilan=bilan,
         tranche_chiffre_affaires_consolide=ca,
