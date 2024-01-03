@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Plan de vigilance - Portail RSE{% endblock %}
+
+{% block content %}
+    <div class="fr-container">
+        <div class="fr-grid-row fr-pt-2w ">
+            <div class="fr-col-12">
+                <a class="fr-link fr-icon-arrow-left-line fr-link--icon-left" href="{% url 'reglementations' %}">Retour à la liste des réglementations</a>
+            </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-pb-6w fr-mt-1v">
+            <div class="fr-col-lg-2 fiche-img">
+                <figure class="fr-content-media" role="group" aria-label="">
+                    <div class="fr-content-media__img">
+                        <img class="fr-responsive-img fr-ratio-2x3" src="{% static 'img/social-2x3.png' %}" alt="" />
+                    </div>
+                </figure>
+            </div>
+            <div class="fr-col-lg-10 fr-my-5w">
+                <div class="fr-grid-row">
+                    <div class="fr-col-12">
+                        <h2 class="fr-mb-1v">Plan de vigilance</h2>
+                        <p class="fr-text--xs">Dernière mise à jour le 02/01/2024</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- page fiche réglementation -->
+{% endblock %}

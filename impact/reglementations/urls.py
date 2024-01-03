@@ -54,6 +54,13 @@ urlpatterns = [
         name="fiche_csrd",
     ),
     path(
+        "reglementations/plan-vigilance",
+        TemplateView.as_view(
+            template_name="reglementations/fiches/plan-vigilance.html"
+        ),
+        name="fiche_plan_vigilance",
+    ),
+    path(
         "tableau-de-bord/<str:siren>",
         views.tableau_de_bord,
         name="tableau_de_bord",

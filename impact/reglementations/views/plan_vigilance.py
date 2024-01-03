@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.urls import reverse_lazy
 
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import CategorieJuridique
@@ -11,7 +12,7 @@ class PlanVigilanceReglementation(Reglementation):
     title = "Plan de vigilance"
     description = """Le plan de vigilance comporte les mesures de vigilance propres à identifier et à prévenir les atteintes graves envers les droits humains et les libertés fondamentales,
         la santé et la sécurité des personnes ainsi que de l’environnement qui adviendraient au sein de l’entreprise."""
-    more_info_url = None
+    more_info_url = reverse_lazy("reglementations:fiche_plan_vigilance")
     tag = "tag-social"
     summary = ""
 
