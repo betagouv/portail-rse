@@ -155,10 +155,12 @@ def test_synchronise_une_entreprise_qualifiee_appartenant_a_un_groupe(
 ):
     entreprise_factory(
         appartient_groupe=True,
+        est_societe_mere=True,
         societe_mere_en_france=True,
         comptes_consolides=True,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif_groupe_france=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        effectif_groupe_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
     )
@@ -168,6 +170,7 @@ def test_synchronise_une_entreprise_qualifiee_appartenant_a_un_groupe(
     assert MetabaseEntreprise.objects.count() == 1
     metabase_entreprise = MetabaseEntreprise.objects.first()
     assert metabase_entreprise.appartient_groupe
+    assert metabase_entreprise.est_societe_mere
     assert metabase_entreprise.societe_mere_en_france
     assert metabase_entreprise.comptes_consolides
     assert (
@@ -175,8 +178,12 @@ def test_synchronise_une_entreprise_qualifiee_appartenant_a_un_groupe(
         == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     )
     assert (
+        metabase_entreprise.effectif_groupe_france
+        == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+    )
+    assert (
         metabase_entreprise.effectif_groupe_permanent
-        == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+        == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     )
     assert (
         metabase_entreprise.tranche_chiffre_affaires_consolide
