@@ -55,12 +55,21 @@
                                                 {% endif %}
                                                 Date de clôture du dernier exercice : <b>{{ caracs.date_cloture_exercice | display_field }}</b><br>
                                                 Effectif : <b>{{ caracs.get_effectif_display | display_field }}</b><br>
+                                                Effectif permanent : <b>{{ caracs.get_effectif_display | display_field }}</b><br>
                                                 Chiffre d'affaires : <b>{{ caracs.get_tranche_chiffre_affaires_display | display_field }}</b><br>
                                                 Bilan : <b>{{ caracs.get_tranche_bilan_display | display_field }}</b><br>
                                                 Appartient à un groupe d'entreprise : <b>{{ entreprise.appartient_groupe | display_field }}</b><br>
                                                 {% if entreprise.appartient_groupe %}
-                                                    Effectif du groupe : <b>{{ caracs.get_effectif_groupe_display | display_field }}</b><br>
-                                                    Siège social de la société mère en France : <b>{{ entreprise.societe_mere_en_france | display_field }}</b><br>
+                                                    {% if entreprise.est_societe_mere %}
+                                                        <b>Société mère du groupe</b><br>
+                                                    {% elif entreprise.societe_mere_en_france %}
+                                                        <b>Filiale d'un groupe français</b> <em>(dont la société mère est située en France)</em><br>
+                                                    {% else %}
+                                                        <b>Filiale d'un groupe étranger</b> <em>(dont la société mère n'est pas située en France)</em><br>
+                                                    {% endif %}
+                                                    Effectif du groupe international : <b>{{ caracs.get_effectif_groupe_display | display_field }}</b><br>
+                                                    Effectif du groupe France : <b>{{ caracs.get_effectif_groupe_france_display | display_field }}</b><br>
+                                                    Effectif permanent du groupe : <b>{{ caracs.get_effectif_groupe_france_display | display_field }}</b><br>
                                                     Établit des comptes consolidés : <b>{{ entreprise.comptes_consolides | display_field }}</b><br>
                                                     {% if entreprise.comptes_consolides %}
                                                         Chiffre d'affaires consolidé : <b>{{ caracs.get_tranche_chiffre_affaires_consolide_display | display_field }}</b><br>
