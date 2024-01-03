@@ -76,6 +76,7 @@ class PlanVigilanceReglementation(Reglementation):
 
     @classmethod
     def est_soumis(cls, caracteristiques):
+        super().est_soumis(caracteristiques)
         return len(cls.criteres_remplis(caracteristiques)) >= 2
 
     @classmethod

@@ -16,6 +16,7 @@ from reglementations.views.dispositif_alerte import DispositifAlerteReglementati
 from reglementations.views.dispositif_anticorruption import DispositifAntiCorruption
 from reglementations.views.dpef import DPEFReglementation
 from reglementations.views.index_egapro import IndexEgaproReglementation
+from reglementations.views.plan_vigilance import PlanVigilanceReglementation
 
 REGLEMENTATIONS = (
     BDESEReglementation,
@@ -25,6 +26,7 @@ REGLEMENTATIONS = (
     AuditEnergetiqueReglementation,
     DispositifAntiCorruption,
     DPEFReglementation,
+    PlanVigilanceReglementation,
 )
 
 
@@ -383,6 +385,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
         effectif_permanent=effectif,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         effectif_groupe=effectif_groupe,
+        effectif_groupe_france=effectif_groupe,
         effectif_groupe_permanent=effectif_groupe,
         tranche_chiffre_affaires=ca,
         tranche_bilan=bilan,
@@ -465,6 +468,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
         effectif_permanent=effectif,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         effectif_groupe=effectif_groupe,
+        effectif_groupe_france=effectif_groupe,
         effectif_groupe_permanent=effectif_groupe,
         tranche_chiffre_affaires=ca,
         tranche_bilan=bilan,
