@@ -36,14 +36,13 @@ class PlanVigilanceReglementation(Reglementation):
         categorie_juridique = convertit_categorie_juridique(
             caracteristiques.entreprise.categorie_juridique_sirene
         )
-        if categorie_juridique == CategorieJuridique.SOCIETE_ANONYME:
-            return "votre entreprise est une Société Anonyme"
-        elif categorie_juridique == CategorieJuridique.SOCIETE_PAR_ACTIONS_SIMPLIFIEES:
-            return "votre entreprise est une Société par Actions Simplifiées"
-        elif categorie_juridique == CategorieJuridique.SOCIETE_COMMANDITE_PAR_ACTIONS:
-            return "votre entreprise est une Société en Commandite par Actions"
-        elif categorie_juridique == CategorieJuridique.SOCIETE_EUROPEENNE:
-            return "votre entreprise est une Société Européenne"
+        if categorie_juridique in (
+            CategorieJuridique.SOCIETE_ANONYME,
+            CategorieJuridique.SOCIETE_PAR_ACTIONS_SIMPLIFIEES,
+            CategorieJuridique.SOCIETE_COMMANDITE_PAR_ACTIONS,
+            CategorieJuridique.SOCIETE_EUROPEENNE,
+        ):
+            return f"votre entreprise est une {categorie_juridique.label}"
 
     @classmethod
     def critere_effectif(cls, caracteristiques):
