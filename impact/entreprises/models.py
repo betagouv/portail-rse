@@ -355,7 +355,9 @@ class CaracteristiquesAnnuelles(TimestampedModel):
             )
             return bool(
                 self.effectif_groupe
+                and self.effectif_groupe_france
                 and self.effectif_groupe_permanent
+                and self.entreprise.est_societe_mere is not None
                 and self.entreprise.societe_mere_en_france is not None
                 and self.entreprise.comptes_consolides is not None
                 and comptes_consolides_sont_qualifies

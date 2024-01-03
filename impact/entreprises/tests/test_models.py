@@ -49,11 +49,12 @@ def test_entreprise():
     assert entreprise.updated_at == now + timedelta(1)
 
 
-def test_caracteristiques_ne_sont_pas_qualifiantes_tant_que_groupe_non_qualifie(
+def test_caracteristiques_sont_qualifiantes_avec_groupe(
     entreprise_non_qualifiee,
 ):
     entreprise_non_qualifiee.est_cotee = False
     entreprise_non_qualifiee.appartient_groupe = None
+    entreprise_non_qualifiee.est_societe_mere = None
     entreprise_non_qualifiee.societe_mere_en_france = None
     entreprise_non_qualifiee.comptes_consolides = None
 
@@ -63,7 +64,6 @@ def test_caracteristiques_ne_sont_pas_qualifiantes_tant_que_groupe_non_qualifie(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_499,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
         bdese_accord=True,
@@ -88,15 +88,47 @@ def test_caracteristiques_ne_sont_pas_qualifiantes_tant_que_groupe_non_qualifie(
     assert not caracteristiques.groupe_est_qualifie
     assert not caracteristiques.sont_qualifiantes
 
+    caracteristiques.effectif_groupe = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
+
+    assert not caracteristiques.groupe_est_qualifie
+    assert not caracteristiques.sont_qualifiantes
+
     caracteristiques.effectif_groupe_permanent = (
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
+    )
+
+    assert not caracteristiques.groupe_est_qualifie
+    assert not caracteristiques.sont_qualifiantes
+
+    caracteristiques.effectif_groupe_france = (
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
+    )
+
+    assert not caracteristiques.groupe_est_qualifie
+    assert not caracteristiques.sont_qualifiantes
+
+    entreprise_non_qualifiee.est_societe_mere = False
+
+    assert caracteristiques.groupe_est_qualifie
+    assert caracteristiques.sont_qualifiantes
+
+    entreprise_non_qualifiee.comptes_consolides = True
+
+    assert not caracteristiques.groupe_est_qualifie
+    assert not caracteristiques.sont_qualifiantes
+
+    caracteristiques.tranche_chiffre_affaires_consolide = (
+        CaracteristiquesAnnuelles.CA_MOINS_DE_700K
+    )
+    caracteristiques.tranche_bilan_consolide = (
+        CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
     )
 
     assert caracteristiques.groupe_est_qualifie
     assert caracteristiques.sont_qualifiantes
 
 
-def test_caracteristiques_sont_qualifiantes_si_entreprise_n_appartient_pas_groupe(
+def test_caracteristiques_sont_qualifiantes_sans_groupe(
     entreprise_non_qualifiee,
 ):
     entreprise_non_qualifiee.appartient_groupe = False
@@ -144,54 +176,6 @@ def test_caracteristiques_sont_qualifiantes_si_entreprise_n_appartient_pas_group
     assert not caracteristiques.sont_qualifiantes
 
     caracteristiques.systeme_management_energie = True
-
-    assert caracteristiques.sont_qualifiantes
-
-
-def test_caracteristiques_sont_qualifiantes_si_entreprise_appartient_groupe(
-    entreprise_non_qualifiee,
-):
-    entreprise_non_qualifiee.est_cotee = False
-    entreprise_non_qualifiee.appartient_groupe = True
-    entreprise_non_qualifiee.societe_mere_en_france = False
-    entreprise_non_qualifiee.comptes_consolides = False
-
-    caracteristiques = CaracteristiquesAnnuelles(
-        entreprise=entreprise_non_qualifiee,
-        date_cloture_exercice=date(2023, 7, 7),
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
-        effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        bdese_accord=True,
-        systeme_management_energie=True,
-    )
-
-    assert not caracteristiques.sont_qualifiantes
-
-    caracteristiques.effectif_groupe = (
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_499
-    )
-
-    assert not caracteristiques.sont_qualifiantes
-
-    caracteristiques.effectif_groupe_permanent = (
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
-    )
-
-    assert caracteristiques.sont_qualifiantes
-
-    entreprise_non_qualifiee.comptes_consolides = True
-
-    assert not caracteristiques.sont_qualifiantes
-
-    caracteristiques.tranche_chiffre_affaires_consolide = (
-        CaracteristiquesAnnuelles.CA_MOINS_DE_700K
-    )
-    caracteristiques.tranche_bilan_consolide = (
-        CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
-    )
 
     assert caracteristiques.sont_qualifiantes
 
