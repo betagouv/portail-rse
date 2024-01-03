@@ -290,7 +290,7 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         max_length=9,
         choices=[BLANK_CHOICE] + EFFECTIF_GROUPE_CHOICES,
         verbose_name="Effectif permanent du groupe",
-        help_text="Nombre moyen de salariés à temps plein, titulaires d'un contrat à durée indéterminée employés par le groupe au cours de l'exercice comptable",
+        help_text="Nombre moyen de salariés à temps plein, titulaires d'un contrat à durée indéterminée employés par le groupe au cours de l'exercice comptable en incluant les filiales directes ou indirectes étrangères",
         null=True,
         blank=True,
     )
