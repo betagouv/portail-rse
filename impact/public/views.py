@@ -125,6 +125,7 @@ def calcule_simulation(simulation_form, user):
         ]
         entreprise.est_cotee = simulation_form.cleaned_data["est_cotee"]
         entreprise.appartient_groupe = simulation_form.cleaned_data["appartient_groupe"]
+        entreprise.est_societe_mere = simulation_form.cleaned_data["est_societe_mere"]
         entreprise.comptes_consolides = simulation_form.cleaned_data[
             "comptes_consolides"
         ]
@@ -137,6 +138,7 @@ def calcule_simulation(simulation_form, user):
             ],
             est_cotee=simulation_form.cleaned_data["est_cotee"],
             appartient_groupe=simulation_form.cleaned_data["appartient_groupe"],
+            est_societe_mere=simulation_form.cleaned_data["est_societe_mere"],
             comptes_consolides=simulation_form.cleaned_data["comptes_consolides"],
         )
 
