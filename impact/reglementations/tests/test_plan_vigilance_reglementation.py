@@ -215,7 +215,7 @@ def test_critere_categorie_juridique_si_categorie_juridique_SA_SCA_ou_SE(
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert reglementation.status_detail.startswith(
-        f"Vous êtes soumis à cette réglementation car {categorie_juridique_sirene[1]}, votre effectif est supérieur à 5 000 salariés."
+        f"Vous êtes soumis à cette réglementation car {categorie_juridique_sirene[1]} et votre effectif est supérieur à 5 000 salariés."
     )
     assert reglementation.status_detail.endswith(
         "Vous devez établir un plan de vigilance si vous employez, à la clôture de deux exercices consécutifs, au moins 5 000 salariés, en votre sein ou dans vos filiales directes ou indirectes françaises, ou 10 000 salariés, en incluant vos filiales directes ou indirectes étrangères."
@@ -245,7 +245,7 @@ def test_calcule_statut_plus_de_5000_employes_dans_l_entreprise(
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert reglementation.status_detail.startswith(
-        "Vous êtes soumis à cette réglementation car votre entreprise est une Société Anonyme, votre effectif est supérieur à 5 000 salariés."
+        "Vous êtes soumis à cette réglementation car votre entreprise est une Société Anonyme et votre effectif est supérieur à 5 000 salariés."
     )
     assert reglementation.status_detail.endswith(
         "Vous devez établir un plan de vigilance si vous employez, à la clôture de deux exercices consécutifs, au moins 5 000 salariés, en votre sein ou dans vos filiales directes ou indirectes françaises, ou 10 000 salariés, en incluant vos filiales directes ou indirectes étrangères."
@@ -279,7 +279,7 @@ def test_calcule_statut_societe_mere_plus_de_5000_employes_dans_le_groupe_france
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert reglementation.status_detail.startswith(
-        "Vous êtes soumis à cette réglementation car votre entreprise est une Société Anonyme, l'effectif du groupe France est supérieur à 5 000 salariés."
+        "Vous êtes soumis à cette réglementation car votre entreprise est une Société Anonyme et l'effectif du groupe France est supérieur à 5 000 salariés."
     )
     assert reglementation.status_detail.endswith(
         "Vous devez établir un plan de vigilance si vous employez, à la clôture de deux exercices consécutifs, au moins 5 000 salariés, en votre sein ou dans vos filiales directes ou indirectes françaises, ou 10 000 salariés, en incluant vos filiales directes ou indirectes étrangères."
@@ -306,7 +306,7 @@ def test_calcule_statut_societe_mere_plus_de_10000_employes_dans_le_groupe_inter
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert reglementation.status_detail.startswith(
-        "Vous êtes soumis à cette réglementation car votre entreprise est une Société Anonyme, l'effectif du groupe international est supérieur à 10 000 salariés."
+        "Vous êtes soumis à cette réglementation car votre entreprise est une Société Anonyme et l'effectif du groupe international est supérieur à 10 000 salariés."
     )
     assert reglementation.status_detail.endswith(
         "Vous devez établir un plan de vigilance si vous employez, à la clôture de deux exercices consécutifs, au moins 5 000 salariés, en votre sein ou dans vos filiales directes ou indirectes françaises, ou 10 000 salariés, en incluant vos filiales directes ou indirectes étrangères."

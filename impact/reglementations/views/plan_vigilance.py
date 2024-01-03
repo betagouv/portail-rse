@@ -90,7 +90,7 @@ class PlanVigilanceReglementation(Reglementation):
 
         if cls.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_SOUMIS
-            status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(cls.criteres_remplis(caracteristiques))}."
+            status_detail = f"Vous êtes soumis à cette réglementation car {' et '.join(cls.criteres_remplis(caracteristiques))}."
             status_detail += " Vous devez établir un plan de vigilance si vous employez, à la clôture de deux exercices consécutifs, au moins 5 000 salariés, en votre sein ou dans vos filiales directes ou indirectes françaises, ou 10 000 salariés, en incluant vos filiales directes ou indirectes étrangères."
         else:
             status = ReglementationStatus.STATUS_NON_SOUMIS
