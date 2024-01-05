@@ -36,6 +36,10 @@ class CategorieJuridique(Enum):
     SOCIETE_COMMANDITE_PAR_ACTIONS = 2
     SOCIETE_PAR_ACTIONS_SIMPLIFIEES = 3
     SOCIETE_EUROPEENNE = 4
+    SOCIETE_COOPERATIVE_AGRICOLE = 5
+    SOCIETE_ASSURANCE_MUTUELLE = 6
+    MUTUELLE = 7
+    INSTITUTION_PREVOYANCE = 8
 
     @property
     def label(self):
@@ -47,6 +51,14 @@ class CategorieJuridique(Enum):
             return "Société par Actions Simplifiées"
         elif self.value == self.SOCIETE_EUROPEENNE.value:
             return "Société Européenne"
+        elif self.value == self.SOCIETE_COOPERATIVE_AGRICOLE.value:
+            return "Société Coopérative Agricole"
+        elif self.value == self.SOCIETE_ASSURANCE_MUTUELLE.value:
+            return "Société d'assurance à forme mutuelle"
+        elif self.value == self.MUTUELLE.value:
+            return "Mutuelle"
+        elif self.value == self.INSTITUTION_PREVOYANCE.value:
+            return "Institution de prévoyance"
         return ""
 
 
@@ -61,6 +73,14 @@ def convertit_categorie_juridique(categorie_juridique_sirene):
         return CategorieJuridique.SOCIETE_PAR_ACTIONS_SIMPLIFIEES
     elif categorie_juridique_sirene == 5800:
         return CategorieJuridique.SOCIETE_EUROPEENNE
+    elif categorie_juridique_sirene in (6317, 6318):
+        return CategorieJuridique.SOCIETE_COOPERATIVE_AGRICOLE
+    elif categorie_juridique_sirene == 6411:
+        return CategorieJuridique.SOCIETE_ASSURANCE_MUTUELLE
+    elif categorie_juridique_sirene == 8210:
+        return CategorieJuridique.MUTUELLE
+    elif categorie_juridique_sirene == 8510:
+        return CategorieJuridique.INSTITUTION_PREVOYANCE
     else:
         return CategorieJuridique.AUTRE
 
