@@ -6,54 +6,31 @@
 
 /* color themes */
 
-.background-gov {
+.background-tag-gouvernance {
     background-color: var(--background-contrast-blue-ecume);
 }
-.background-social {
+.background-tag-social {
     background-color: var(--background-contrast-purple-glycine);
 }
 
-.background-social .fr-tile {
+.background-tag-social .fr-tile {
     box-shadow: inset 0 0 0 0px var(--border-default-grey),inset 0 -.25rem 0 0 var(--purple-glycine-main-494);
 }
 
-.background-env {
+.background-tag-environnement {
     background-color: var(--background-contrast-green-emeraude);
 }
 
-.background-env .fr-tile {
+.background-tag-environnement .fr-tile {
     box-shadow: inset 0 0 0 0px var(--border-default-grey),inset 0 -.25rem 0 0 var(--green-emeraude-main-632);
 }
 
-.background-dur {
+.background-tag-durabilite {
     background-color: var(--background-contrast-yellow-moutarde);
 }
 
-.background-dur .fr-tile {
+.background-tag-durabilite .fr-tile {
     box-shadow: inset 0 0 0 0px var(--border-default-grey),inset 0 -.25rem 0 0 var(--yellow-moutarde-main-679);
-}
-
-/* colored bgs */
-
-.background-y {
-    background-color: var(--yellow-tournesol-975-75);
-}
-
-.background-g {
-    background-color: var(--green-emeraude-975-75);
-}
-
-.background-light-grey {
-    background-color: var(--grey-975-75);
-}
-
-/* homepage */
-.background-blue {
-    background-color: var(--background-alt-blue-france);
-}
-
-.background-env .fr-tile {
-    box-shadow: inset 0 0 0 0px var(--border-default-grey),inset 0 -.25rem 0 0 var(--green-emeraude-main-632);
 }
 
 /* colored bgs */
