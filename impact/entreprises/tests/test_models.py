@@ -505,6 +505,35 @@ def test_categorie_SE():
     assert categorie_juridique.label == "Société Européenne"
 
 
+def test_categorie_Societe_Cooperative_Agricole():
+    for categorie_juridique_sirene in (6317, 6318):
+        categorie_juridique = convertit_categorie_juridique(categorie_juridique_sirene)
+
+        assert categorie_juridique == CategorieJuridique.SOCIETE_COOPERATIVE_AGRICOLE
+        assert categorie_juridique.label == "Société Coopérative Agricole"
+
+
+def test_categorie_assurance_a_forme_mutuelle():
+    categorie_juridique = convertit_categorie_juridique(6411)
+
+    assert categorie_juridique == CategorieJuridique.SOCIETE_ASSURANCE_MUTUELLE
+    assert categorie_juridique.label == "Société d'assurance à forme mutuelle"
+
+
+def test_categorie_Mutuelle():
+    categorie_juridique = convertit_categorie_juridique(8210)
+
+    assert categorie_juridique == CategorieJuridique.MUTUELLE
+    assert categorie_juridique.label == "Mutuelle"
+
+
+def test_categorie_Institution_prevoyance():
+    categorie_juridique = convertit_categorie_juridique(8510)
+
+    assert categorie_juridique == CategorieJuridique.INSTITUTION_PREVOYANCE
+    assert categorie_juridique.label == "Institution de prévoyance"
+
+
 def test_categorie_autre():
     categorie_juridique_sirene = CODE_AUTRE
     categorie_juridique = convertit_categorie_juridique(categorie_juridique_sirene)
