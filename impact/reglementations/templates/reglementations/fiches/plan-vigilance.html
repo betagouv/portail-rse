@@ -1,32 +1,121 @@
-{% extends "base.html" %}
+{% extends "reglementations/fiches/base.html" %}
 {% load static %}
 
 {% block title %}Plan de vigilance - Portail RSE{% endblock %}
 
 {% block content %}
-    <div class="fr-container">
-        <div class="fr-grid-row fr-pt-2w ">
-            <div class="fr-col-12">
-                <a class="fr-link fr-icon-arrow-left-line fr-link--icon-left" href="{% url 'reglementations' %}">Retour à la liste des réglementations</a>
-            </div>
-        </div>
-        <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-pb-6w fr-mt-1v">
-            <div class="fr-col-lg-2 fiche-img">
-                <figure class="fr-content-media" role="group" aria-label="">
-                    <div class="fr-content-media__img">
-                        <img class="fr-responsive-img fr-ratio-2x3" src="{% static 'img/social-2x3.png' %}" alt="" />
-                    </div>
-                </figure>
-            </div>
-            <div class="fr-col-lg-10 fr-my-5w">
-                <div class="fr-grid-row">
-                    <div class="fr-col-12">
-                        <h2 class="fr-mb-1v">Plan de vigilance</h2>
-                        <p class="fr-text--xs">Dernière mise à jour le 02/01/2024</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+    {% with tag="tag-durabilite" %}
+        {{ block.super }}
+    {% endwith %}
+{% endblock %}
+
+{% block titre %}Plan de vigilance{% endblock %}
+
+{% block mise_a_jour %}02/01/2024{% endblock %}
+
+{% block description %}
+    <p>
+        Le plan de vigilance a pour objectif d'identifier les risques et prévenir les atteintes graves
+        envers les droits humains et les libertés fondamentales, la santé et la sécurité des personnes ainsi que l'environnement
+        qui découlent de l'activité de l'entreprise et de celle de leurs filiales, sous-traitants ou fournisseurs
+        avec lesquels est entretenue une relation commerciale établie.
+    </p>
+    <p>
+        L'entreprise publie les mesures de vigilance raisonnable adoptées pour atténuer les risques identifiés.
+    </p>
+{% endblock %}
+
+{% block quand %}
+    <p class="fr-tile__detail">
+        La périodicité du plan de vigilance est celle du rapport de gestion :
+        tous les ans, à la fin de l’exercice comptable et à communiquer aux associés 15 jours avant l’Assemblée Générale.
+    </p>
+{% endblock %}
+
+{% block objectif %}
+    <p class="fr-tile__detail">
+        Instaurer une obligation de vigilance des sociétés mères et des entreprises donneuses d'ordre à l'égard de leurs filiales, sous-traitants et fournisseurs.
+    </p>
+{% endblock %}
+
+{% block destinataires %}
+    <p class="fr-tile__detail">
+        Les destinataires du plan de vigilance sont identiques à ceux du rapport de gestion :
+        <ul>
+            <li>Les différentes parties prenantes internes et externes de l'entreprise (salariés, actionnaires, fournisseurs, clients...)</li>
+            <li>Greffe du tribunal de commerce</li>
+        </ul>
+    </p>
+{% endblock %}
+
+{% block qui %}
+    <p class="fr-tile__detail">
+        Les sociétés de capitaux dont le siège social est en France présentant au cours des deux derniers exercices comptables clôturés :
+    </p>
+    <ul>
+        <li>soit un effectif en son sein et dans ses filiales françaises directes et indirectes, supérieur ou égal à 5 000 (effectif du groupe en France) ;</li>
+        <li>soit un effectif en son sein et dans l’ensemble de ses filiales françaises et étrangères, directes ou indirectes, supérieur ou égal à 10 000 à la clôture de deux exercices comptables consécutifs (effectif du groupe international) ;</li>
+        <li>soit un effectif en son sein, supérieur ou égal à 5 000 et appartenant à un groupe, dont la société-mère est à l’étranger, et n’a pas établi de plan de vigilance pour sa propre activité et celle de l’ensemble de ses filiales et sociétés qu’elle contrôle.</li>
+    </ul>
+    <p class="fr-tile__detail">
+        Exemption : Les filiales ou sociétés contrôlées qui dépassent les seuils conditionnant l'application des obligations de vigilance
+        sont réputées satisfaire celles-ci dès lors que la société qui les contrôle établit et met en œuvre un plan de vigilance relatif :
+    </p>
+    <ul>
+        <li>à l'activité propre de la société ; et</li>
+        <li>à/aux activité(s) de l'ensemble des filiales ou sociétés qu'elle contrôle.</li>
+    </ul>
+{% endblock %}
+
+{% block quoi %}
+    <p class="fr-tile__detail">
+        En premier, l'entreprise doit identifier ses parties prenantes afin d'élaborer son plan de vigilance en association avec celles-ci.
+    </p>
+    <p class="fr-tile__detail">
+        Puis, elle doit mettre en œuvre différentes mesures :
+    </p>
+    <ol>
+        <li>Une cartographie des risques destinée à leur identification, leur analyse et leur hiérarchisation ;</li>
+        <li>Des procédures d'évaluation régulière de la situation des filiales, des sous-traitants ou fournisseurs avec lesquels est entretenue une  relation commerciale établie, au regard de la cartographie des risques ;</li>
+        <li>Des actions adaptées d'atténuation des risques ou de prévention des atteintes graves ;</li>
+        <li>Un mécanisme d'alerte et de recueil des signalements relatifs à  l'existence ou à la réalisation des risques, établi en concertation avec les organisations syndicales représentatives dans ladite société ;</li>
+        <li>Un dispositif de suivi des mesures mises en œuvre et d'évaluation de leur efficacité.</li>
+    </ol>
+    <p class="fr-tile__detail">
+        Enfin, l'entreprise doit intégrer le plan de vigilance et le compte rendu de sa mise en œuvre dans le rapport de gestion.
+    </p>
+{% endblock %}
+
+{% block sanctions %}
+    <p class="fr-tile__detail">
+        <b>En cas de manquement à l'établissement du plan de vigilance ou  à son intégration au sein du rapport de gestion :</b>
+        la société n'ayant pas respecté ses obligations de vigilance est mise en demeure et doit, dans un délai de trois mois, mettre en œuvre un plan de vigilance.
+        <br>
+        À défaut, toute personne justifiant d'un intérêt à agir peut saisir la juridiction compétente afin d'enjoindre l'entreprise, sous astreinte, de respecter ses obligations.
+        <br><br>
+    </p>
+    <p class="fr-tile__detail">
+        Dans le cadre d'un marché public, l'acheteur peut, à sa discrétion, décider d'exclure de la procédure de passation l'entreprise n'ayant pas satisfait l'obligation d'établir un plan de vigilance pour l'année qui précède l'année de publication de l'avis d'appel à la concurrence ou d'engagement de la consultation.
+        <br><br>
+    </p>
+    <p class="fr-tile__detail">
+        <b>En cas de préjudice causé à autrui résultant de l'inexécution des obligations de vigilance :</b>
+        dès lors que l'entreprise, de son fait, de sa négligence ou de par son imprudence en matière de vigilance, cause un dommage à autrui, alors elle voit sa responsabilité civile engagée par toute personne justifiant d'un intérêt à agir et peut être condamnée à réparer le préjudice causé, sous astreinte.
+    </p>
+{% endblock %}
+
+{% block references %}
+    <h3 class="fr-accordion__title">
+        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-106">Textes de référence</button>
+    </h3>
+    <div class="fr-collapse" id="accordion-106">
+        <a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000035181820/" target="_blank" rel="noopener">Article L225-102-4 Code de commerce</a>
+        <p class="fr-text--sm">Définition et contenu du plan de vigilance</p>
     </div>
-    <!-- page fiche réglementation -->
+{% endblock %}
+
+{% block call_to_action %}
+    <a class="fr-btn fr-btn--secondary" href="" target="_blank" rel="noopener">
+        En savoir plus sur le site ministériel
+    </a>
 {% endblock %}
