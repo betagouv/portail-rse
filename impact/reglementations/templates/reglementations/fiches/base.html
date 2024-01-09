@@ -12,13 +12,13 @@
             <div class="fr-col-lg-2 fiche-img">
                 <figure class="fr-content-media" role="group" aria-label="">
                     <div class="fr-content-media__img">
-                        {% if tag == "tag-environnement" %}
+                        {% if reglementation.tag == "tag-environnement" %}
                             <img class="fr-responsive-img fr-ratio-2x3" src="{% static 'img/environnement-2x3.png' %}" alt="" />
-                        {% elif tag == "tag-social" %}
+                        {% elif reglementation.tag == "tag-social" %}
                             <img class="fr-responsive-img fr-ratio-2x3" src="{% static 'img/social-2x3.png' %}" alt="" />
-                        {% elif tag == "tag-durabilite" %}
+                        {% elif reglementation.tag == "tag-durabilite" %}
                             <img class="fr-responsive-img fr-ratio-2x3" src="{% static 'img/durable-2x3.png' %}" alt="" />
-                        {% elif tag == "tag-gouvernance" %}
+                        {% elif reglementation.tag == "tag-gouvernance" %}
                             <img class="fr-responsive-img fr-ratio-2x3" src="{% static 'img/gouvernance-2x3.png' %}" alt="" />
                         {% endif %}
                     </div>
@@ -27,7 +27,7 @@
             <div class="fr-col-lg-10 fr-my-5w">
                 <div class="fr-grid-row">
                     <div class="fr-col-12">
-                        <h2 class="fr-mb-1v">{% block titre %}Réglementation{% endblock %}</h2>
+                        <h2 class="fr-mb-1v">{% block titre %}{{ reglementation.title }}{% endblock %}</h2>
                         <p class="fr-text--xs">Dernière mise à jour le {% block mise_a_jour %}01/01/1970{% endblock %}</p>
                         {% block description %}{% endblock %}
                     </div>
@@ -36,7 +36,7 @@
         </div>
     </div>
 
-    <div class="fr-grid-row background-{{ tag }} fr-py-6w fiche-tuiles fr-mb-6w">
+    <div class="fr-grid-row background-{{ reglementation.tag }} fr-py-6w fiche-tuiles fr-mb-6w">
         <div class="fr-container">
             <div class="fr-grid-row fr-grid-row--gutters">
                 <div class="fr-col-lg-4 fr-col-12">

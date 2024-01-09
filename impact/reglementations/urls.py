@@ -13,7 +13,10 @@ urlpatterns = [
     path(
         "reglementations/index-egalite-professionnelle",
         TemplateView.as_view(
-            template_name="reglementations/fiches/index-egalite-professionnelle.html"
+            template_name="reglementations/fiches/index-egalite-professionnelle.html",
+            extra_context={
+                "reglementation": views.index_egapro.IndexEgaproReglementation
+            },
         ),
         name="fiche_index_egapro",
     ),
@@ -56,7 +59,10 @@ urlpatterns = [
     path(
         "reglementations/plan-vigilance",
         TemplateView.as_view(
-            template_name="reglementations/fiches/plan-vigilance.html"
+            template_name="reglementations/fiches/plan-vigilance.html",
+            extra_context={
+                "reglementation": views.plan_vigilance.PlanVigilanceReglementation
+            },
         ),
         name="fiche_plan_vigilance",
     ),
