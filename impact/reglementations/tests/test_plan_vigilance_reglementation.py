@@ -23,7 +23,7 @@ def test_reglementation_info():
         la santé et la sécurité des personnes ainsi que de l’environnement qui adviendraient au sein de l’entreprise."""
     )
     assert info["more_info_url"] == reverse("reglementations:fiche_plan_vigilance")
-    assert info["tag"] == "tag-durabilite"
+    assert info["tag"] == "tag-gouvernance"
     assert (
         info["summary"]
         == "Établir un plan de vigilance pour prévenir des risques d’atteintes aux droits humains et à l’environnement liés à l'activité des sociétés mères et entreprises donneuses d'ordre."
