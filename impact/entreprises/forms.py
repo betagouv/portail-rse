@@ -155,7 +155,4 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
             self.cleaned_data["effectif_groupe_permanent"] = None
             self.cleaned_data["societe_mere_en_france"] = None
 
-        if self.cleaned_data.get("est_societe_mere"):
-            self.cleaned_data["societe_mere_en_france"] = True
-
         return self.cleaned_data
