@@ -53,7 +53,15 @@ urlpatterns = [
     ),
     path(
         "reglementations/rapport-durabilite-csrd",
-        TemplateView.as_view(template_name="reglementations/fiches/csrd.html"),
+        TemplateView.as_view(
+            template_name="reglementations/fiches/csrd.html",
+            extra_context={
+                "reglementation": {
+                    "title": "Rapport de durabilité - Directive CSRD",
+                    "tag": "tag-durabilite",
+                },
+            },
+        ),
         name="fiche_csrd",
     ),
     path(
