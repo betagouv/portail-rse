@@ -51,6 +51,7 @@ def _caracteristiques_suffisamment_qualifiantes_avec_groupe(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
         appartient_groupe=True,
         est_societe_mere=True,
+        societe_mere_en_france=True,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_499,
         effectif_groupe_france=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_499,
     )
@@ -93,6 +94,15 @@ def test_n_est_pas_suffisamment_qualifiee_car_groupe_mais_societe_mere_non_rense
 ):
     caracteristiques = _caracteristiques_suffisamment_qualifiantes_avec_groupe
     caracteristiques.entreprise.est_societe_mere = None
+
+    assert not PlanVigilanceReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+
+def test_n_est_pas_suffisamment_qualifiee_car_groupe_mais_societe_mere_en_france_non_renseignee(
+    _caracteristiques_suffisamment_qualifiantes_avec_groupe,
+):
+    caracteristiques = _caracteristiques_suffisamment_qualifiantes_avec_groupe
+    caracteristiques.entreprise.societe_mere_en_france = None
 
     assert not PlanVigilanceReglementation.est_suffisamment_qualifiee(caracteristiques)
 
@@ -153,7 +163,7 @@ def test_calcule_statut_moins_de_5000_employes(effectif, entreprise_factory, ali
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
     ],
 )
-def test_calcule_statut_societe_mere_moins_de_5000_employes_dans_le_groupe(
+def test_calcule_statut_societe_mere_francaise_moins_de_5000_employes_dans_le_groupe(
     effectif_groupe, entreprise_factory, alice
 ):
     entreprise = entreprise_factory(
@@ -161,6 +171,7 @@ def test_calcule_statut_societe_mere_moins_de_5000_employes_dans_le_groupe(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         appartient_groupe=True,
         est_societe_mere=True,
+        societe_mere_en_france=True,
         effectif_groupe=effectif_groupe,
         effectif_groupe_france=effectif_groupe,
     )
@@ -209,8 +220,8 @@ def test_critere_categorie_juridique_si_categorie_juridique_SA_SCA_ou_SE(
     categorie_juridique_sirene, entreprise_factory, alice
 ):
     entreprise = entreprise_factory(
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         categorie_juridique_sirene=categorie_juridique_sirene[0],
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
@@ -265,7 +276,7 @@ def test_calcule_statut_plus_de_5000_employes_dans_l_entreprise(
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_calcule_statut_societe_mere_plus_de_5000_employes_dans_le_groupe_france(
+def test_calcule_statut_societe_mere_francaise_plus_de_5000_employes_dans_le_groupe_france(
     effectif_groupe_france, entreprise_factory, alice
 ):
     entreprise = entreprise_factory(
@@ -273,6 +284,7 @@ def test_calcule_statut_societe_mere_plus_de_5000_employes_dans_le_groupe_france
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         appartient_groupe=True,
         est_societe_mere=True,
+        societe_mere_en_france=True,
         effectif_groupe=effectif_groupe_france,
         effectif_groupe_france=effectif_groupe_france,
     )
@@ -292,7 +304,46 @@ def test_calcule_statut_societe_mere_plus_de_5000_employes_dans_le_groupe_france
     assert not reglementation.primary_action
 
 
-def test_calcule_statut_societe_mere_moins_de_5000_employes_dans_le_groupe_france_plus_de_10000_employes_dans_le_groupe_international(
+@pytest.mark.parametrize(
+    "effectif_groupe_france",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+def test_calcule_statut_societe_mere_etrangere_plus_de_5000_employes_dans_le_groupe_france(
+    effectif_groupe_france, entreprise_factory, alice
+):
+    """Cas limite
+    Ce cas ne devrait pas exister car une société mère étrangère devrait avoir une catégorie juridique sirene
+    de type "Personne morale de droit étranger" (comprise entre 3000 et 3999) donc différente de SA, SAS, SCA et SE
+    mais un utilisateur d'une entreprise SA, SAS, SCA et SE peut remplir le formulaire de qualification en cochant la case société mère
+    sans cocher la case société mère a son siège social en France. Ce cas peut donc arriver aujourd'hui.
+    On considère alors que le choix de l'utilisateur prime et que la société mère est à l'étranger.
+    """
+    entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        appartient_groupe=True,
+        est_societe_mere=True,
+        societe_mere_en_france=False,
+        effectif_groupe=effectif_groupe_france,
+        effectif_groupe_france=effectif_groupe_france,
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    reglementation = PlanVigilanceReglementation.calculate_status(
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
+    )
+
+    assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
+    assert (
+        reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation."
+    )
+    assert not reglementation.primary_action
+
+
+def test_calcule_statut_societe_mere_francaise_moins_de_5000_employes_dans_le_groupe_france_plus_de_10000_employes_dans_le_groupe_international(
     entreprise_factory, alice
 ):
     entreprise = entreprise_factory(
@@ -300,6 +351,7 @@ def test_calcule_statut_societe_mere_moins_de_5000_employes_dans_le_groupe_franc
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         appartient_groupe=True,
         est_societe_mere=True,
+        societe_mere_en_france=True,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         effectif_groupe_france=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
     )
@@ -319,7 +371,7 @@ def test_calcule_statut_societe_mere_moins_de_5000_employes_dans_le_groupe_franc
     assert not reglementation.primary_action
 
 
-def test_calcule_statut_societe_mere_moins_de_5000_employes_dans_le_groupe_france_moins_de_10000_employes_dans_le_groupe_international(
+def test_calcule_statut_societe_mere_francaise_moins_de_5000_employes_dans_le_groupe_france_moins_de_10000_employes_dans_le_groupe_international(
     entreprise_factory, alice
 ):
     entreprise = entreprise_factory(
@@ -327,6 +379,7 @@ def test_calcule_statut_societe_mere_moins_de_5000_employes_dans_le_groupe_franc
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         appartient_groupe=True,
         est_societe_mere=True,
+        societe_mere_en_france=True,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
         effectif_groupe_france=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
     )
@@ -349,6 +402,7 @@ def test_calcule_statut_filiale_du_groupe(entreprise_factory, alice):
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         appartient_groupe=True,
         est_societe_mere=False,  # filiale
+        societe_mere_en_france=True,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         effectif_groupe_france=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     )
