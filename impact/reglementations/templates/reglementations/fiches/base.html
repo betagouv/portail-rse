@@ -2,155 +2,171 @@
 {% load static %}
 
 {% block content %}
-    <div class="fr-container">
-        <div class="fr-grid-row fr-pt-2w ">
-            <div class="fr-col-12">
-                <a class="fr-link fr-icon-arrow-left-line fr-link--icon-left" href="{% url 'reglementations' %}">Retour à la liste des réglementations</a>
-            </div>
-        </div>
-        <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-pb-6w fr-mt-1v">
-            <div class="fr-col-lg-2 fiche-img">
-                <figure class="fr-content-media" role="group" aria-label="">
-                    <div class="fr-content-media__img">
-                        {% if reglementation.tag == "tag-environnement" %}
-                            <img class="fr-responsive-img fr-ratio-2x3" src="{% static 'img/environnement-2x3.png' %}" alt="" />
-                        {% elif reglementation.tag == "tag-social" %}
-                            <img class="fr-responsive-img fr-ratio-2x3" src="{% static 'img/social-2x3.png' %}" alt="" />
-                        {% elif reglementation.tag == "tag-durabilite" %}
-                            <img class="fr-responsive-img fr-ratio-2x3" src="{% static 'img/durable-2x3.png' %}" alt="" />
-                        {% elif reglementation.tag == "tag-gouvernance" %}
-                            <img class="fr-responsive-img fr-ratio-2x3" src="{% static 'img/gouvernance-2x3.png' %}" alt="" />
-                        {% endif %}
-                    </div>
-                </figure>
-            </div>
-            <div class="fr-col-lg-10 fr-my-5w">
-                <div class="fr-grid-row">
-                    <div class="fr-col-12">
-                        <h2 class="fr-mb-1v">{% block titre %}{{ reglementation.title }}{% endblock %}</h2>
-                        <p class="fr-text--xs">Dernière mise à jour le {% block mise_a_jour %}01/01/1970{% endblock %}</p>
-                        {% block description %}{% endblock %}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="fr-grid-row background-{{ reglementation.tag }} fr-py-6w fiche-tuiles fr-mb-6w">
+    {% block introduction %}
         <div class="fr-container">
-            <div class="fr-grid-row fr-grid-row--gutters">
-                <div class="fr-col-lg-4 fr-col-12">
-                    <div class="fr-tile fr-tile--vertical">
-                        <div class="fr-tile__body">
-                            <div class="fr-tile__content">
-                                <h3 class="fr-tile__title">
-                                    A quelle fréquence dois-je mettre à jour ce dispositif ?
-                                </h3>
-                                {% block quand %}{% endblock %}
-                            </div>
-                        </div>
-                        <div class="fr-tile__header">
-                            <div class="fr-tile__pictogram fr-pt-3w">
-                                <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Quand.png' %}" alt="" />
-                            </div>
-                        </div>
-                    </div>
+            <div class="fr-grid-row fr-pt-2w ">
+                <div class="fr-col-12">
+                    <a class="fr-link fr-icon-arrow-left-line fr-link--icon-left" href="{% url 'reglementations' %}">Retour à la liste des réglementations</a>
                 </div>
-                <div class="fr-col-lg-4 fr-col-12">
-                    <div class="fr-tile fr-tile--vertical fr-tile--no-border">
-                        <div class="fr-tile__body">
-                            <div class="fr-tile__content">
-                                <h3 class="fr-tile__title">
-                                    Quel est l'objectif poursuivi par l'obligation ?
-                                </h3>
-                                {% block objectif %}{% endblock %}
-                            </div>
+            </div>
+            <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-pb-6w fr-mt-1v">
+                <div class="fr-col-lg-2 fiche-img">
+                    <figure class="fr-content-media" role="group" aria-label="">
+                        <div class="fr-content-media__img">
+                            {% if reglementation.tag == "tag-environnement" %}
+                                <img class="fr-responsive-img fr-ratio-2x3" src="{% static 'img/environnement-2x3.png' %}" alt="" />
+                            {% elif reglementation.tag == "tag-social" %}
+                                <img class="fr-responsive-img fr-ratio-2x3" src="{% static 'img/social-2x3.png' %}" alt="" />
+                            {% elif reglementation.tag == "tag-durabilite" %}
+                                <img class="fr-responsive-img fr-ratio-2x3" src="{% static 'img/durable-2x3.png' %}" alt="" />
+                            {% elif reglementation.tag == "tag-gouvernance" %}
+                                <img class="fr-responsive-img fr-ratio-2x3" src="{% static 'img/gouvernance-2x3.png' %}" alt="" />
+                            {% endif %}
                         </div>
-                        <div class="fr-tile__header">
-                            <div class="fr-tile__pictogram fr-pt-3w">
-                                <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Objectif.png' %}" alt="" />
-                            </div>
-                        </div>
-                    </div>
+                    </figure>
                 </div>
-                <div class="fr-col-lg-4 fr-col-12">
-                    <div class="fr-tile fr-tile--vertical">
-                        <div class="fr-tile__body">
-                            <div class="fr-tile__content">
-                                <h3 class="fr-tile__title">
-                                    Qui sont les destinataires / bénéficiaires du dispositif ?
-                                </h3>
-                                {% block destinataires %}{% endblock %}
-                            </div>
-                        </div>
-                        <div class="fr-tile__header">
-                            <div class="fr-tile__pictogram fr-pt-3w">
-                                <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Destinataires.png' %}" alt="" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="fr-col-lg-4 fr-col-12">
-                    <div class="fr-tile fr-tile--vertical">
-                        <div class="fr-tile__body">
-                            <div class="fr-tile__content">
-                                <h3 class="fr-tile__title">
-                                    Quelles entreprises sont concernées ?
-                                </h3>
-                                {% block qui %}{% endblock %}
-                            </div>
-                        </div>
-                        <div class="fr-tile__header">
-                            <div class="fr-tile__pictogram fr-pt-3w">
-                                <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Entreprise.png' %}" alt="" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="fr-col-lg-4 fr-col-12">
-                    <div class="fr-tile fr-tile--vertical">
-                        <div class="fr-tile__body">
-                            <div class="fr-tile__content">
-                                <h3 class="fr-tile__title">
-                                    Que dois-je faire pour me mettre en conformité ?
-                                </h3>
-                                {% block quoi %}{% endblock %}
-                            </div>
-                        </div>
-                        <div class="fr-tile__header">
-                            <div class="fr-tile__pictogram fr-pt-3w">
-                                <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Checklist.png' %}" alt="" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="fr-col-lg-4 fr-col-12">
-                    <div class="fr-tile fr-tile--vertical">
-                        <div class="fr-tile__body">
-                            <div class="fr-tile__content">
-                                <h3 class="fr-tile__title">
-                                    Quelles sont les sanctions encourues ?
-                                </h3>
-                                {% block sanctions %}{% endblock %}
-                            </div>
-                        </div>
-                        <div class="fr-tile__header">
-                            <div class="fr-tile__pictogram fr-pt-3w">
-                                <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Sanction.png' %}" alt="" />
-                            </div>
+                <div class="fr-col-lg-10 fr-my-5w">
+                    <div class="fr-grid-row">
+                        <div class="fr-col-12">
+                            <h2 class="fr-mb-1v">{% block titre %}{{ reglementation.title }}{% endblock %}</h2>
+                            <p class="fr-text--xs">Dernière mise à jour le {% block mise_a_jour %}01/01/1970{% endblock %}</p>
+                            {% block description %}{% endblock %}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    {% endblock %}
+
+    {% block questions %}
+        <div class="fr-grid-row background-{{ reglementation.tag }} fr-py-6w fiche-tuiles fr-mb-6w">
+            <div class="fr-container">
+                <div class="fr-grid-row fr-grid-row--gutters">
+                    {% block question_quand %}
+                        <div class="fr-col-lg fr-col-12">
+                            <div class="fr-tile fr-tile--vertical">
+                                <div class="fr-tile__body">
+                                    <div class="fr-tile__content">
+                                        <h3 class="fr-tile__title">
+                                            A quelle fréquence dois-je mettre à jour ce dispositif ?
+                                        </h3>
+                                        {% block quand %}{% endblock %}
+                                    </div>
+                                </div>
+                                <div class="fr-tile__header">
+                                    <div class="fr-tile__pictogram fr-pt-3w">
+                                        <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Quand.png' %}" alt="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endblock %}
+                    {% block question_objectif %}
+                        <div class="fr-col-lg fr-col-12">
+                            <div class="fr-tile fr-tile--vertical fr-tile--no-border">
+                                <div class="fr-tile__body">
+                                    <div class="fr-tile__content">
+                                        <h3 class="fr-tile__title">
+                                            Quel est l'objectif poursuivi par l'obligation ?
+                                        </h3>
+                                        {% block objectif %}{% endblock %}
+                                    </div>
+                                </div>
+                                <div class="fr-tile__header">
+                                    <div class="fr-tile__pictogram fr-pt-3w">
+                                        <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Objectif.png' %}" alt="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endblock %}
+                    {% block question_destinataires %}
+                        <div class="fr-col-lg fr-col-12">
+                            <div class="fr-tile fr-tile--vertical">
+                                <div class="fr-tile__body">
+                                    <div class="fr-tile__content">
+                                        <h3 class="fr-tile__title">
+                                            Qui sont les destinataires / bénéficiaires du dispositif ?
+                                        </h3>
+                                        {% block destinataires %}{% endblock %}
+                                    </div>
+                                </div>
+                                <div class="fr-tile__header">
+                                    <div class="fr-tile__pictogram fr-pt-3w">
+                                        <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Destinataires.png' %}" alt="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endblock %}
+                </div>
+                <div class="fr-grid-row fr-grid-row--gutters">
+                    {% block question_qui %}
+                        <div class="fr-col-lg fr-col-12">
+                            <div class="fr-tile fr-tile--vertical">
+                                <div class="fr-tile__body">
+                                    <div class="fr-tile__content">
+                                        <h3 class="fr-tile__title">
+                                            Quelles entreprises sont concernées ?
+                                        </h3>
+                                        {% block qui %}{% endblock %}
+                                    </div>
+                                </div>
+                                <div class="fr-tile__header">
+                                    <div class="fr-tile__pictogram fr-pt-3w">
+                                        <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Entreprise.png' %}" alt="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endblock %}
+                    {% block question_quoi %}
+                        <div class="fr-col-lg fr-col-12">
+                            <div class="fr-tile fr-tile--vertical">
+                                <div class="fr-tile__body">
+                                    <div class="fr-tile__content">
+                                        <h3 class="fr-tile__title">
+                                            Que dois-je faire pour me mettre en conformité ?
+                                        </h3>
+                                        {% block quoi %}{% endblock %}
+                                    </div>
+                                </div>
+                                <div class="fr-tile__header">
+                                    <div class="fr-tile__pictogram fr-pt-3w">
+                                        <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Checklist.png' %}" alt="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endblock %}
+                    {% block question_sanctions %}
+                        <div class="fr-col-lg fr-col-12">
+                            <div class="fr-tile fr-tile--vertical">
+                                <div class="fr-tile__body">
+                                    <div class="fr-tile__content">
+                                        <h3 class="fr-tile__title">
+                                            Quelles sont les sanctions encourues ?
+                                        </h3>
+                                        {% block sanctions %}{% endblock %}
+                                    </div>
+                                </div>
+                                <div class="fr-tile__header">
+                                    <div class="fr-tile__pictogram fr-pt-3w">
+                                        <img class="fr-responsive-img fr-ratio-1x1" src="{% static 'img/Sanction.png' %}" alt="" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    {% endblock %}
 
     <div class="fr-container">
         <div class="fr-grid-row fr-mb-6w">
             <div class="fr-col-12">
-                <section class="fr-accordion">
-                    {% block references %}{% endblock %}
-                </section>
+                {% block references %}{% endblock %}
             </div>
         </div>
         <div class="fr-grid-row fr-mb-6w fr-grid-row--center">
