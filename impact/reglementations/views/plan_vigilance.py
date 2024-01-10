@@ -25,6 +25,7 @@ class PlanVigilanceReglementation(Reglementation):
                 not caracteristiques.entreprise.appartient_groupe
                 or (
                     caracteristiques.entreprise.est_societe_mere is not None
+                    and caracteristiques.entreprise.societe_mere_en_france is not None
                     and caracteristiques.effectif_groupe is not None
                     and caracteristiques.effectif_groupe_france is not None
                 )
@@ -51,7 +52,10 @@ class PlanVigilanceReglementation(Reglementation):
             CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         ):
             return "votre effectif est supérieur à 5 000 salariés"
-        elif caracteristiques.entreprise.est_societe_mere:
+        elif (
+            caracteristiques.entreprise.est_societe_mere
+            and caracteristiques.entreprise.societe_mere_en_france
+        ):
             if caracteristiques.effectif_groupe_france in (
                 CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
                 CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
