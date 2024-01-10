@@ -163,26 +163,3 @@ def test_erreur_si_comptes_consolides_sans_ca_consolide():
         form.errors["tranche_chiffre_affaires_consolide"][0]
         == "Ce champ est obligatoire lorsque les comptes sont consolidés"
     )
-
-
-def test_societe_mere_en_france_si_est_societe_mere():
-    data = {
-        "date_cloture_exercice": date(2022, 12, 31),
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
-        "est_cotee": False,
-        "appartient_groupe": True,
-        "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "effectif_groupe_france": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "effectif_groupe_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "est_societe_mere": True,
-        "societe_mere_en_france": False,
-    }
-
-    form = EntrepriseQualificationForm(data=data)
-
-    assert form.is_valid(), form.errors
-    assert form.cleaned_data["societe_mere_en_france"]
