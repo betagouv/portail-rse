@@ -150,7 +150,75 @@ class DPEFReglementation(Reglementation):
             return "votre chiffre d'affaires consolidé est supérieur à 100M€"
 
     @classmethod
+    def criteres_prevoyance(cls, caracteristiques):
+        criteres = []
+        categorie_juridique = convertit_categorie_juridique(
+            caracteristiques.entreprise.categorie_juridique_sirene
+        )
+        if categorie_juridique == CategorieJuridique.INSTITUTION_PREVOYANCE:
+            criteres.append("votre entreprise est une Institution de Prévoyance")
+        else:
+            return []
+
+        if caracteristiques.effectif_permanent in (
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+            CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        ):
+            criteres.append(cls.CRITERE_EFFECTIF_PERMANENT)
+        elif (
+            caracteristiques.entreprise.comptes_consolides
+            and caracteristiques.effectif_groupe_permanent
+            in (
+                CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+                CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+                CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+            )
+        ):
+            criteres.append(cls.CRITERE_EFFECTIF_GROUPE_PERMANENT)
+        else:
+            return []
+
+        if (
+            caracteristiques.tranche_chiffre_affaires
+            == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
+            or caracteristiques.tranche_bilan
+            == CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
+            or caracteristiques.tranche_chiffre_affaires_consolide
+            == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
+            or caracteristiques.tranche_bilan_consolide
+            == CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
+        ):
+            if (
+                caracteristiques.tranche_chiffre_affaires
+                == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
+            ):
+                criteres.append("votre chiffre d'affaires est supérieur à 100M€")
+            elif (
+                caracteristiques.tranche_bilan
+                == CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
+            ):
+                criteres.append("votre bilan est supérieur à 100M€")
+            elif (
+                caracteristiques.tranche_chiffre_affaires_consolide
+                == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
+            ):
+                criteres.append(
+                    "votre chiffre d'affaires consolidé est supérieur à 100M€"
+                )
+            elif (
+                caracteristiques.tranche_bilan_consolide
+                == CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
+            ):
+                criteres.append("votre bilan consolidé est supérieur à 100M€")
+        else:
+            return []
+        return criteres
+
+    @classmethod
     def criteres_remplis(cls, caracteristiques):
+        if criteres := cls.criteres_prevoyance(caracteristiques):
+            return criteres
         criteres = []
         if critere := cls.critere_categorie_juridique(caracteristiques):
             criteres.append(critere)
@@ -167,7 +235,7 @@ class DPEFReglementation(Reglementation):
     @classmethod
     def est_soumis(cls, caracteristiques):
         super().est_soumis(caracteristiques)
-        return (
+        return cls.criteres_prevoyance(caracteristiques) or (
             cls.critere_categorie_juridique(caracteristiques)
             and cls.critere_effectif(caracteristiques)
             and (
