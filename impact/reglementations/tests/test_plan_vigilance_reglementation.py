@@ -292,7 +292,7 @@ def test_calcule_statut_societe_mere_plus_de_5000_employes_dans_le_groupe_france
     assert not reglementation.primary_action
 
 
-def test_calcule_statut_societe_mere_plus_de_10000_employes_dans_le_groupe_international(
+def test_calcule_statut_societe_mere_moins_de_5000_employes_dans_le_groupe_france_plus_de_10000_employes_dans_le_groupe_international(
     entreprise_factory, alice
 ):
     entreprise = entreprise_factory(
@@ -315,6 +315,30 @@ def test_calcule_statut_societe_mere_plus_de_10000_employes_dans_le_groupe_inter
     )
     assert reglementation.status_detail.endswith(
         "Vous devez établir un plan de vigilance si vous employez, à la clôture de deux exercices consécutifs, au moins 5 000 salariés, en votre sein ou dans vos filiales directes ou indirectes françaises, ou 10 000 salariés, en incluant vos filiales directes ou indirectes étrangères."
+    )
+    assert not reglementation.primary_action
+
+
+def test_calcule_statut_societe_mere_moins_de_5000_employes_dans_le_groupe_france_moins_de_10000_employes_dans_le_groupe_international(
+    entreprise_factory, alice
+):
+    entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        appartient_groupe=True,
+        est_societe_mere=True,
+        effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        effectif_groupe_france=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    reglementation = PlanVigilanceReglementation.calculate_status(
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
+    )
+
+    assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
+    assert (
+        reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation."
     )
     assert not reglementation.primary_action
 

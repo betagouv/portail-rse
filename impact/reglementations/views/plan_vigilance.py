@@ -58,7 +58,6 @@ class PlanVigilanceReglementation(Reglementation):
             ):
                 return "l'effectif du groupe France est supérieur à 5 000 salariés"
             elif caracteristiques.effectif_groupe in (
-                CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
                 CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
             ):
                 return (
