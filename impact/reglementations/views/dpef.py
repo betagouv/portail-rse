@@ -74,26 +74,26 @@ class DPEFReglementation(Reglementation):
             return cls.criteres_cooperative(caracteristiques)
         if cls.est_soumis_mutuelle(caracteristiques):
             return cls.criteres_mutuelle(caracteristiques)
-        elif criteres := cls.criteres_remplis_general(caracteristiques):
+        elif criteres := cls.criteres_remplis_selon_cotation(caracteristiques):
             return criteres
 
     @classmethod
-    def criteres_remplis_general(cls, caracteristiques):
+    def criteres_remplis_selon_cotation(cls, caracteristiques):
         criteres = []
-        if critere := cls.critere_categorie_juridique_general(caracteristiques):
+        if critere := cls.critere_categorie_juridique_selon_cotation(caracteristiques):
             criteres.append(critere)
         if caracteristiques.entreprise.est_cotee:
             criteres.append("votre société est cotée sur un marché réglementé")
-        if critere := cls.critere_effectif_general(caracteristiques):
+        if critere := cls.critere_effectif_selon_cotation(caracteristiques):
             criteres.append(critere)
-        if critere := cls.critere_bilan_general(caracteristiques):
+        if critere := cls.critere_bilan_selon_cotation(caracteristiques):
             criteres.append(critere)
-        if critere := cls.critere_chiffre_affaires_general(caracteristiques):
+        if critere := cls.critere_chiffre_affaires_selon_cotation(caracteristiques):
             criteres.append(critere)
         return criteres
 
     @classmethod
-    def critere_categorie_juridique_general(cls, caracteristiques):
+    def critere_categorie_juridique_selon_cotation(cls, caracteristiques):
         categorie_juridique = convertit_categorie_juridique(
             caracteristiques.entreprise.categorie_juridique_sirene
         )
@@ -105,7 +105,7 @@ class DPEFReglementation(Reglementation):
             return f"votre entreprise est une {categorie_juridique.label}"
 
     @classmethod
-    def critere_effectif_general(cls, caracteristiques):
+    def critere_effectif_selon_cotation(cls, caracteristiques):
         if caracteristiques.effectif_permanent in (
             CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
             CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
@@ -124,7 +124,7 @@ class DPEFReglementation(Reglementation):
             return cls.CRITERE_EFFECTIF_GROUPE_PERMANENT
 
     @classmethod
-    def critere_bilan_general(cls, caracteristiques):
+    def critere_bilan_selon_cotation(cls, caracteristiques):
         if caracteristiques.entreprise.est_cotee:
             if caracteristiques.tranche_bilan in (
                 CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
@@ -150,7 +150,7 @@ class DPEFReglementation(Reglementation):
             return "votre bilan consolidé est supérieur à 100M€"
 
     @classmethod
-    def critere_chiffre_affaires_general(cls, caracteristiques):
+    def critere_chiffre_affaires_selon_cotation(cls, caracteristiques):
         if caracteristiques.entreprise.est_cotee:
             if caracteristiques.tranche_chiffre_affaires in (
                 CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
@@ -181,12 +181,12 @@ class DPEFReglementation(Reglementation):
         if critere := cls.critere_categorie_juridique_prevoyance(caracteristiques):
             criteres.append(critere)
 
-        if critere := cls.critere_effectif_prevoyance(caracteristiques):
+        if critere := cls.critere_effectif_cotation_indifferente(caracteristiques):
             criteres.append(critere)
 
-        if critere := cls.critere_bilan_general(caracteristiques):
+        if critere := cls.critere_bilan_selon_cotation(caracteristiques):
             criteres.append(critere)
-        if critere := cls.critere_chiffre_affaires_general(caracteristiques):
+        if critere := cls.critere_chiffre_affaires_selon_cotation(caracteristiques):
             criteres.append(critere)
         return criteres
 
@@ -199,7 +199,7 @@ class DPEFReglementation(Reglementation):
             return "votre entreprise est une Institution de Prévoyance"
 
     @classmethod
-    def critere_effectif_prevoyance(cls, caracteristiques):
+    def critere_effectif_cotation_indifferente(cls, caracteristiques):
         if caracteristiques.effectif_permanent in (
             CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
             CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
@@ -218,7 +218,7 @@ class DPEFReglementation(Reglementation):
             return cls.CRITERE_EFFECTIF_GROUPE_PERMANENT
 
     @classmethod
-    def critere_bilan_prevoyance(cls, caracteristiques):
+    def critere_bilan_cotation_indifferente(cls, caracteristiques):
         if (
             caracteristiques.tranche_bilan
             == CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
@@ -231,7 +231,7 @@ class DPEFReglementation(Reglementation):
             return "votre bilan consolidé est supérieur à 100M€"
 
     @classmethod
-    def critere_chiffre_affaires_prevoyance(cls, caracteristiques):
+    def critere_chiffre_affaires_cotation_indifferente(cls, caracteristiques):
         if (
             caracteristiques.tranche_chiffre_affaires
             == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
@@ -249,12 +249,14 @@ class DPEFReglementation(Reglementation):
         if critere := cls.critere_categorie_juridique_mutuelle(caracteristiques):
             criteres.append(critere)
 
-        if critere := cls.critere_effectif_prevoyance(caracteristiques):
+        if critere := cls.critere_effectif_cotation_indifferente(caracteristiques):
             criteres.append(critere)
 
-        if critere := cls.critere_bilan_prevoyance(caracteristiques):
+        if critere := cls.critere_bilan_cotation_indifferente(caracteristiques):
             criteres.append(critere)
-        if critere := cls.critere_chiffre_affaires_prevoyance(caracteristiques):
+        if critere := cls.critere_chiffre_affaires_cotation_indifferente(
+            caracteristiques
+        ):
             criteres.append(critere)
         return criteres
 
@@ -272,12 +274,14 @@ class DPEFReglementation(Reglementation):
         if critere := cls.critere_categorie_juridique_cooperative(caracteristiques):
             criteres.append(critere)
 
-        if critere := cls.critere_effectif_prevoyance(caracteristiques):
+        if critere := cls.critere_effectif_cotation_indifferente(caracteristiques):
             criteres.append(critere)
 
-        if critere := cls.critere_bilan_prevoyance(caracteristiques):
+        if critere := cls.critere_bilan_cotation_indifferente(caracteristiques):
             criteres.append(critere)
-        if critere := cls.critere_chiffre_affaires_prevoyance(caracteristiques):
+        if critere := cls.critere_chiffre_affaires_cotation_indifferente(
+            caracteristiques
+        ):
             criteres.append(critere)
         return criteres
 
@@ -299,17 +303,17 @@ class DPEFReglementation(Reglementation):
             cls.est_soumis_prevoyance(caracteristiques)
             or cls.est_soumis_cooperative(caracteristiques)
             or cls.est_soumis_mutuelle(caracteristiques)
-            or cls.est_soumis_general(caracteristiques)
+            or cls.est_soumis_selon_cotation(caracteristiques)
         )
 
     @classmethod
     def est_soumis_prevoyance(cls, caracteristiques):
         return (
             cls.critere_categorie_juridique_prevoyance(caracteristiques)
-            and cls.critere_effectif_prevoyance(caracteristiques)
+            and cls.critere_effectif_cotation_indifferente(caracteristiques)
             and (
-                cls.critere_bilan_prevoyance(caracteristiques)
-                or cls.critere_chiffre_affaires_prevoyance(caracteristiques)
+                cls.critere_bilan_cotation_indifferente(caracteristiques)
+                or cls.critere_chiffre_affaires_cotation_indifferente(caracteristiques)
             )
         )
 
@@ -317,10 +321,10 @@ class DPEFReglementation(Reglementation):
     def est_soumis_cooperative(cls, caracteristiques):
         return (
             cls.critere_categorie_juridique_cooperative(caracteristiques)
-            and cls.critere_effectif_prevoyance(caracteristiques)
+            and cls.critere_effectif_cotation_indifferente(caracteristiques)
             and (
-                cls.critere_bilan_prevoyance(caracteristiques)
-                or cls.critere_chiffre_affaires_prevoyance(caracteristiques)
+                cls.critere_bilan_cotation_indifferente(caracteristiques)
+                or cls.critere_chiffre_affaires_cotation_indifferente(caracteristiques)
             )
         )
 
@@ -328,20 +332,20 @@ class DPEFReglementation(Reglementation):
     def est_soumis_mutuelle(cls, caracteristiques):
         return (
             cls.critere_categorie_juridique_mutuelle(caracteristiques)
-            and cls.critere_effectif_prevoyance(caracteristiques)
+            and cls.critere_effectif_cotation_indifferente(caracteristiques)
             and (
-                cls.critere_bilan_prevoyance(caracteristiques)
-                or cls.critere_chiffre_affaires_prevoyance(caracteristiques)
+                cls.critere_bilan_cotation_indifferente(caracteristiques)
+                or cls.critere_chiffre_affaires_cotation_indifferente(caracteristiques)
             )
         )
 
     @classmethod
-    def est_soumis_general(cls, caracteristiques):
+    def est_soumis_selon_cotation(cls, caracteristiques):
         return (
-            cls.critere_categorie_juridique_general(caracteristiques)
-            and cls.critere_effectif_general(caracteristiques)
+            cls.critere_categorie_juridique_selon_cotation(caracteristiques)
+            and cls.critere_effectif_selon_cotation(caracteristiques)
             and (
-                cls.critere_bilan_general(caracteristiques)
-                or cls.critere_chiffre_affaires_general(caracteristiques)
+                cls.critere_bilan_selon_cotation(caracteristiques)
+                or cls.critere_chiffre_affaires_selon_cotation(caracteristiques)
             )
         )
