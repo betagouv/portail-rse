@@ -955,6 +955,31 @@ def test_soumis_si_societe_prevoyance_et_effectif_groupe_permanent_et_ca_consoli
     )
 
 
+def test_non_soumis_si_societe_prevoyance_et_effectif_groupe_permanent_et_ca_consolide_insuffisants(
+    entreprise_factory,
+):
+    """les tranches minimales de CA sont supérieures à celles du cas général"""
+    entreprise = entreprise_factory(
+        est_cotee=True,
+        appartient_groupe=True,
+        comptes_consolides=True,
+        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
+        categorie_juridique_sirene=CODE_PREVOYANCE,
+    )
+
+    soumis = DPEFReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    criteres = DPEFReglementation.criteres_prevoyance(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+    assert not soumis
+    assert len(criteres) == 2  # categorie juridique et effectif
+
+
 @pytest.mark.parametrize(
     "effectif_groupe_permanent",
     [
