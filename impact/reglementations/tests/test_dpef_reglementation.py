@@ -352,9 +352,6 @@ def test_non_soumis_car_certaines_categories_juridiques_sont_non_soumises(
     soumis = DPEFReglementation.est_soumis(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
-    criteres_remplis = DPEFReglementation.criteres_remplis(
-        entreprise.dernieres_caracteristiques_qualifiantes
-    )
 
     assert not soumis
 
