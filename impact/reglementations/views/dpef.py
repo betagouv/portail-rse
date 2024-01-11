@@ -235,7 +235,13 @@ class DPEFReglementation(Reglementation):
     @classmethod
     def est_soumis(cls, caracteristiques):
         super().est_soumis(caracteristiques)
-        return cls.criteres_prevoyance(caracteristiques) or (
+        return cls.criteres_prevoyance(caracteristiques) or cls.est_soumis_general(
+            caracteristiques
+        )
+
+    @classmethod
+    def est_soumis_general(cls, caracteristiques):
+        return (
             cls.critere_categorie_juridique(caracteristiques)
             and cls.critere_effectif(caracteristiques)
             and (
