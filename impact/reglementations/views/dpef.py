@@ -219,6 +219,11 @@ class DPEFReglementation(Reglementation):
     def criteres_remplis(cls, caracteristiques):
         if criteres := cls.criteres_prevoyance(caracteristiques):
             return criteres
+        elif criteres := cls.criteres_remplis_general(caracteristiques):
+            return criteres
+
+    @classmethod
+    def criteres_remplis_general(cls, caracteristiques):
         criteres = []
         if critere := cls.critere_categorie_juridique(caracteristiques):
             criteres.append(critere)
@@ -235,9 +240,13 @@ class DPEFReglementation(Reglementation):
     @classmethod
     def est_soumis(cls, caracteristiques):
         super().est_soumis(caracteristiques)
-        return cls.criteres_prevoyance(caracteristiques) or cls.est_soumis_general(
+        return cls.est_soumis_prevoyance(caracteristiques) or cls.est_soumis_general(
             caracteristiques
         )
+
+    @classmethod
+    def est_soumis_prevoyance(cls, caracteristiques):
+        return cls.criteres_prevoyance(caracteristiques)
 
     @classmethod
     def est_soumis_general(cls, caracteristiques):
