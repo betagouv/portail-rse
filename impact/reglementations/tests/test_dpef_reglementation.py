@@ -339,7 +339,9 @@ def test_non_soumis_si_bilan_et_ca_insuffisants(bilan, ca, entreprise_factory):
     assert not soumis
 
 
-def test_non_soumis_si_categorie_juridique_n_est_pas_SA_SCA_ou_SE(entreprise_factory):
+def test_non_soumis_car_certaines_categories_juridiques_sont_non_soumises(
+    entreprise_factory,
+):
     entreprise = entreprise_factory(
         effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
