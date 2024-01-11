@@ -67,6 +67,28 @@ class DPEFReglementation(Reglementation):
         return ReglementationStatus(status, status_detail)
 
     @classmethod
+    def criteres_remplis(cls, caracteristiques):
+        if cls.est_soumis_prevoyance(caracteristiques):
+            return cls.criteres_prevoyance(caracteristiques)
+        elif criteres := cls.criteres_remplis_general(caracteristiques):
+            return criteres
+
+    @classmethod
+    def criteres_remplis_general(cls, caracteristiques):
+        criteres = []
+        if critere := cls.critere_categorie_juridique_general(caracteristiques):
+            criteres.append(critere)
+        if caracteristiques.entreprise.est_cotee:
+            criteres.append("votre société est cotée sur un marché réglementé")
+        if critere := cls.critere_effectif_general(caracteristiques):
+            criteres.append(critere)
+        if critere := cls.critere_bilan_general(caracteristiques):
+            criteres.append(critere)
+        if critere := cls.critere_chiffre_affaires_general(caracteristiques):
+            criteres.append(critere)
+        return criteres
+
+    @classmethod
     def critere_categorie_juridique_general(cls, caracteristiques):
         categorie_juridique = convertit_categorie_juridique(
             caracteristiques.entreprise.categorie_juridique_sirene
@@ -216,28 +238,6 @@ class DPEFReglementation(Reglementation):
             == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
         ):
             return "votre chiffre d'affaires consolidé est supérieur à 100M€"
-
-    @classmethod
-    def criteres_remplis(cls, caracteristiques):
-        if cls.est_soumis_prevoyance(caracteristiques):
-            return cls.criteres_prevoyance(caracteristiques)
-        elif criteres := cls.criteres_remplis_general(caracteristiques):
-            return criteres
-
-    @classmethod
-    def criteres_remplis_general(cls, caracteristiques):
-        criteres = []
-        if critere := cls.critere_categorie_juridique_general(caracteristiques):
-            criteres.append(critere)
-        if caracteristiques.entreprise.est_cotee:
-            criteres.append("votre société est cotée sur un marché réglementé")
-        if critere := cls.critere_effectif_general(caracteristiques):
-            criteres.append(critere)
-        if critere := cls.critere_bilan_general(caracteristiques):
-            criteres.append(critere)
-        if critere := cls.critere_chiffre_affaires_general(caracteristiques):
-            criteres.append(critere)
-        return criteres
 
     @classmethod
     def est_soumis(cls, caracteristiques):
