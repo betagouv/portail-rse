@@ -286,10 +286,11 @@ class DPEFReglementation(Reglementation):
         categorie_juridique = convertit_categorie_juridique(
             caracteristiques.entreprise.categorie_juridique_sirene
         )
-        if categorie_juridique == CategorieJuridique.SOCIETE_COOPERATIVE_DE_PRODUCTION:
-            return "votre entreprise est une Société Coopérative de Production"
-        elif categorie_juridique == CategorieJuridique.SOCIETE_COOPERATIVE_AGRICOLE:
-            return "votre entreprise est une Société Coopérative Agricole"
+        if categorie_juridique in (
+            CategorieJuridique.SOCIETE_COOPERATIVE_DE_PRODUCTION,
+            CategorieJuridique.SOCIETE_COOPERATIVE_AGRICOLE,
+        ):
+            return f"votre entreprise est une {categorie_juridique.label}"
 
     @classmethod
     def est_soumis(cls, caracteristiques):
