@@ -11,6 +11,7 @@ CODE_SA = 5505
 CODE_SAS = 5710
 CODE_SCA = 5310
 CODE_SE = 5800
+CODE_MUTUELLE = 8210
 CODE_PREVOYANCE = 8510
 
 
@@ -951,3 +952,115 @@ def test_soumis_si_societe_prevoyance_et_effectif_groupe_permanent_et_ca_consoli
     assert (
         "votre chiffre d'affaires consolidé est supérieur à 100M€" in criteres_remplis
     )
+
+
+@pytest.mark.parametrize(
+    "effectif_groupe_permanent",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "est_cotee",
+    [
+        True,
+        False,
+    ],
+)
+def test_soumis_si_mutuelle_et_effectif_groupe_permanent_et_bilan_consolide_suffisants(
+    effectif_groupe_permanent, est_cotee, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        est_cotee=est_cotee,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        appartient_groupe=True,
+        comptes_consolides=True,
+        effectif_groupe_permanent=effectif_groupe_permanent,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        categorie_juridique_sirene=CODE_MUTUELLE,
+    )
+
+    soumis = DPEFReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    criteres_remplis = DPEFReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+    assert soumis
+    assert "votre entreprise est une Mutuelle" in criteres_remplis
+    assert (
+        "l'effectif permanent du groupe est supérieur à 500 salariés"
+        in criteres_remplis
+    )
+    assert "votre bilan consolidé est supérieur à 100M€" in criteres_remplis
+
+
+@pytest.mark.parametrize(
+    "effectif_groupe_permanent",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "est_cotee",
+    [
+        True,
+        False,
+    ],
+)
+def test_soumis_si_mutuelle_et_effectif_groupe_permanent_et_ca_consolide_suffisants(
+    effectif_groupe_permanent, est_cotee, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        est_cotee=est_cotee,
+        appartient_groupe=True,
+        comptes_consolides=True,
+        effectif_groupe_permanent=effectif_groupe_permanent,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+        categorie_juridique_sirene=CODE_MUTUELLE,
+    )
+
+    soumis = DPEFReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    criteres_remplis = DPEFReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+    assert soumis
+    assert "votre entreprise est une Mutuelle" in criteres_remplis
+    assert (
+        "l'effectif permanent du groupe est supérieur à 500 salariés"
+        in criteres_remplis
+    )
+    assert (
+        "votre chiffre d'affaires consolidé est supérieur à 100M€" in criteres_remplis
+    )
+
+
+def test_non_soumis_si_mutuelle_et_effectif_groupe_permanent_et_ca_consolide_insuffisants(
+    entreprise_factory,
+):
+    """les tranches minimales de CA sont supérieures à celles du cas général"""
+    entreprise = entreprise_factory(
+        est_cotee=True,
+        appartient_groupe=True,
+        comptes_consolides=True,
+        effectif_groupe_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
+        categorie_juridique_sirene=CODE_MUTUELLE,
+    )
+
+    soumis = DPEFReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+    assert not soumis
