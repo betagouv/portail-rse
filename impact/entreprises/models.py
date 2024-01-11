@@ -40,6 +40,7 @@ class CategorieJuridique(Enum):
     SOCIETE_ASSURANCE_MUTUELLE = 6
     MUTUELLE = 7
     INSTITUTION_PREVOYANCE = 8
+    SOCIETE_COOPERATIVE_DE_PRODUCTION = 9
 
     @property
     def label(self):
@@ -47,6 +48,8 @@ class CategorieJuridique(Enum):
             return "Société Anonyme"
         elif self.value == self.SOCIETE_COMMANDITE_PAR_ACTIONS.value:
             return "Société en Commandite par Actions"
+        elif self.value == self.SOCIETE_COOPERATIVE_DE_PRODUCTION.value:
+            return "Société Coopérative de Production"
         elif self.value == self.SOCIETE_PAR_ACTIONS_SIMPLIFIEES.value:
             return "Société par Actions Simplifiées"
         elif self.value == self.SOCIETE_EUROPEENNE.value:
@@ -67,6 +70,8 @@ def convertit_categorie_juridique(categorie_juridique_sirene):
         return
     elif 5308 <= categorie_juridique_sirene <= 5385:
         return CategorieJuridique.SOCIETE_COMMANDITE_PAR_ACTIONS
+    elif categorie_juridique_sirene in (5458, 5558, 5658):
+        return CategorieJuridique.SOCIETE_COOPERATIVE_DE_PRODUCTION
     elif 5505 <= categorie_juridique_sirene <= 5699:
         return CategorieJuridique.SOCIETE_ANONYME
     elif 5710 <= categorie_juridique_sirene <= 5785:
