@@ -513,6 +513,16 @@ def test_categorie_Societe_Cooperative_Agricole():
         assert categorie_juridique.label == "Société Coopérative Agricole"
 
 
+def test_categorie_SCOP():
+    for categorie_juridique_sirene in (5458, 5558, 5658):
+        categorie_juridique = convertit_categorie_juridique(categorie_juridique_sirene)
+
+        assert (
+            categorie_juridique == CategorieJuridique.SOCIETE_COOPERATIVE_DE_PRODUCTION
+        )
+        assert categorie_juridique.label == "Société Coopérative de Production"
+
+
 def test_categorie_assurance_a_forme_mutuelle():
     categorie_juridique = convertit_categorie_juridique(6411)
 
