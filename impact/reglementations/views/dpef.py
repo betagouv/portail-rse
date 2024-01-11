@@ -70,8 +70,8 @@ class DPEFReglementation(Reglementation):
     def criteres_remplis(cls, caracteristiques):
         if cls.est_soumis_prevoyance(caracteristiques):
             return cls.criteres_prevoyance(caracteristiques)
-        elif cls.est_soumis_scop(caracteristiques):
-            return cls.criteres_scop(caracteristiques)
+        elif cls.est_soumis_cooperative(caracteristiques):
+            return cls.criteres_cooperative(caracteristiques)
         if cls.est_soumis_mutuelle(caracteristiques):
             return cls.criteres_mutuelle(caracteristiques)
         elif criteres := cls.criteres_remplis_general(caracteristiques):
@@ -267,9 +267,9 @@ class DPEFReglementation(Reglementation):
             return "votre entreprise est une Mutuelle"
 
     @classmethod
-    def criteres_scop(cls, caracteristiques):
+    def criteres_cooperative(cls, caracteristiques):
         criteres = []
-        if critere := cls.critere_categorie_juridique_scop(caracteristiques):
+        if critere := cls.critere_categorie_juridique_cooperative(caracteristiques):
             criteres.append(critere)
 
         if critere := cls.critere_effectif_prevoyance(caracteristiques):
@@ -282,19 +282,21 @@ class DPEFReglementation(Reglementation):
         return criteres
 
     @classmethod
-    def critere_categorie_juridique_scop(cls, caracteristiques):
+    def critere_categorie_juridique_cooperative(cls, caracteristiques):
         categorie_juridique = convertit_categorie_juridique(
             caracteristiques.entreprise.categorie_juridique_sirene
         )
         if categorie_juridique == CategorieJuridique.SOCIETE_COOPERATIVE_DE_PRODUCTION:
             return "votre entreprise est une Société Coopérative de Production"
+        elif categorie_juridique == CategorieJuridique.SOCIETE_COOPERATIVE_AGRICOLE:
+            return "votre entreprise est une Société Coopérative Agricole"
 
     @classmethod
     def est_soumis(cls, caracteristiques):
         super().est_soumis(caracteristiques)
         return (
             cls.est_soumis_prevoyance(caracteristiques)
-            or cls.est_soumis_scop(caracteristiques)
+            or cls.est_soumis_cooperative(caracteristiques)
             or cls.est_soumis_mutuelle(caracteristiques)
             or cls.est_soumis_general(caracteristiques)
         )
@@ -311,9 +313,9 @@ class DPEFReglementation(Reglementation):
         )
 
     @classmethod
-    def est_soumis_scop(cls, caracteristiques):
+    def est_soumis_cooperative(cls, caracteristiques):
         return (
-            cls.critere_categorie_juridique_scop(caracteristiques)
+            cls.critere_categorie_juridique_cooperative(caracteristiques)
             and cls.critere_effectif_prevoyance(caracteristiques)
             and (
                 cls.critere_bilan_prevoyance(caracteristiques)

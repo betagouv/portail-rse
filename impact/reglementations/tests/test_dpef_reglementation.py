@@ -12,6 +12,7 @@ CODE_SAS = 5710
 CODE_SCA = 5310
 CODE_SE = 5800
 CODE_SCOP = 5458
+CODE_COOPERATIVE_AGRICOLE = 6317
 CODE_MUTUELLE = 8210
 CODE_PREVOYANCE = 8510
 
@@ -1081,8 +1082,15 @@ def test_non_soumis_si_mutuelle_et_effectif_groupe_permanent_et_ca_consolide_ins
         False,
     ],
 )
-def test_soumis_si_scop_et_effectif_groupe_permanent_et_bilan_consolide_suffisants(
-    effectif_groupe_permanent, est_cotee, entreprise_factory
+@pytest.mark.parametrize(
+    "categorie_juridique_sirene",
+    [
+        CODE_SCOP,
+        CODE_COOPERATIVE_AGRICOLE,
+    ],
+)
+def test_soumis_si_cooperative_et_effectif_groupe_permanent_et_bilan_consolide_suffisants(
+    effectif_groupe_permanent, est_cotee, categorie_juridique_sirene, entreprise_factory
 ):
     entreprise = entreprise_factory(
         est_cotee=est_cotee,
@@ -1092,7 +1100,7 @@ def test_soumis_si_scop_et_effectif_groupe_permanent_et_bilan_consolide_suffisan
         effectif_groupe_permanent=effectif_groupe_permanent,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
-        categorie_juridique_sirene=CODE_SCOP,
+        categorie_juridique_sirene=categorie_juridique_sirene,
     )
 
     soumis = DPEFReglementation.est_soumis(
@@ -1103,9 +1111,15 @@ def test_soumis_si_scop_et_effectif_groupe_permanent_et_bilan_consolide_suffisan
     )
 
     assert soumis
-    assert (
-        "votre entreprise est une Société Coopérative de Production" in criteres_remplis
-    )
+    if categorie_juridique_sirene == CODE_SCOP:
+        assert (
+            "votre entreprise est une Société Coopérative de Production"
+            in criteres_remplis
+        )
+    else:
+        assert (
+            "votre entreprise est une Société Coopérative Agricole" in criteres_remplis
+        )
     assert (
         "l'effectif permanent du groupe est supérieur à 500 salariés"
         in criteres_remplis
@@ -1128,8 +1142,15 @@ def test_soumis_si_scop_et_effectif_groupe_permanent_et_bilan_consolide_suffisan
         False,
     ],
 )
-def test_soumis_si_scop_et_effectif_groupe_permanent_et_ca_consolide_suffisants(
-    effectif_groupe_permanent, est_cotee, entreprise_factory
+@pytest.mark.parametrize(
+    "categorie_juridique_sirene",
+    [
+        CODE_SCOP,
+        CODE_COOPERATIVE_AGRICOLE,
+    ],
+)
+def test_soumis_si_cooperative_et_effectif_groupe_permanent_et_ca_consolide_suffisants(
+    effectif_groupe_permanent, est_cotee, categorie_juridique_sirene, entreprise_factory
 ):
     entreprise = entreprise_factory(
         est_cotee=est_cotee,
@@ -1138,7 +1159,7 @@ def test_soumis_si_scop_et_effectif_groupe_permanent_et_ca_consolide_suffisants(
         effectif_groupe_permanent=effectif_groupe_permanent,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
-        categorie_juridique_sirene=CODE_SCOP,
+        categorie_juridique_sirene=categorie_juridique_sirene,
     )
 
     soumis = DPEFReglementation.est_soumis(
@@ -1149,9 +1170,15 @@ def test_soumis_si_scop_et_effectif_groupe_permanent_et_ca_consolide_suffisants(
     )
 
     assert soumis
-    assert (
-        "votre entreprise est une Société Coopérative de Production" in criteres_remplis
-    )
+    if categorie_juridique_sirene == CODE_SCOP:
+        assert (
+            "votre entreprise est une Société Coopérative de Production"
+            in criteres_remplis
+        )
+    else:
+        assert (
+            "votre entreprise est une Société Coopérative Agricole" in criteres_remplis
+        )
     assert (
         "l'effectif permanent du groupe est supérieur à 500 salariés"
         in criteres_remplis
@@ -1161,7 +1188,15 @@ def test_soumis_si_scop_et_effectif_groupe_permanent_et_ca_consolide_suffisants(
     )
 
 
-def test_non_soumis_si_scop_et_effectif_groupe_permanent_et_ca_consolide_insuffisants(
+@pytest.mark.parametrize(
+    "categorie_juridique_sirene",
+    [
+        CODE_SCOP,
+        CODE_COOPERATIVE_AGRICOLE,
+    ],
+)
+def test_non_soumis_si_cooperative_et_effectif_groupe_permanent_et_ca_consolide_insuffisants(
+    categorie_juridique_sirene,
     entreprise_factory,
 ):
     """les tranches minimales de CA sont supérieures à celles du cas général"""
@@ -1172,7 +1207,7 @@ def test_non_soumis_si_scop_et_effectif_groupe_permanent_et_ca_consolide_insuffi
         effectif_groupe_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
-        categorie_juridique_sirene=CODE_SCOP,
+        categorie_juridique_sirene=categorie_juridique_sirene,
     )
 
     soumis = DPEFReglementation.est_soumis(
