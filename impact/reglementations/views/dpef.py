@@ -184,9 +184,11 @@ class DPEFReglementation(Reglementation):
         if critere := cls.critere_effectif_cotation_indifferente(caracteristiques):
             criteres.append(critere)
 
-        if critere := cls.critere_bilan_selon_cotation(caracteristiques):
+        if critere := cls.critere_bilan_cotation_indifferente(caracteristiques):
             criteres.append(critere)
-        if critere := cls.critere_chiffre_affaires_selon_cotation(caracteristiques):
+        if critere := cls.critere_chiffre_affaires_cotation_indifferente(
+            caracteristiques
+        ):
             criteres.append(critere)
         return criteres
 
