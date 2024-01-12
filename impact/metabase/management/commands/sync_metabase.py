@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand
 from django.db.models import Count
 
 from entreprises.models import CaracteristiquesAnnuelles
-from entreprises.models import Entreprise as ImpactEntreprise
+from entreprises.models import Entreprise as PortailRSEEntreprise
 from habilitations.models import Habilitation as ImpactHabilitation
 from metabase.models import BDESE as MetabaseBDESE
 from metabase.models import BGES as MetabaseBGES
@@ -19,7 +19,7 @@ from reglementations.views.base import ReglementationStatus
 from reglementations.views.bdese import BDESEReglementation
 from reglementations.views.bges import BGESReglementation
 from reglementations.views.index_egapro import IndexEgaproReglementation
-from users.models import User as ImpactUtilisateur
+from users.models import User as PortailRSEUtilisateur
 
 
 class Command(BaseCommand):
@@ -41,7 +41,7 @@ class Command(BaseCommand):
 
     def _insert_entreprises(self):
         self._success("Ajout des entreprises dans Metabase")
-        for entreprise in ImpactEntreprise.objects.annotate(
+        for entreprise in PortailRSEEntreprise.objects.annotate(
             nombre_utilisateurs=Count("users")
         ):
             caracteristiques = (
@@ -107,7 +107,7 @@ class Command(BaseCommand):
 
     def _insert_utilisateurs(self):
         self._success("Ajout des utilisateurs dans Metabase")
-        for utilisateur in ImpactUtilisateur.objects.annotate(
+        for utilisateur in PortailRSEUtilisateur.objects.annotate(
             nombre_entreprises=Count("entreprise")
         ):
             MetabaseUtilisateur.objects.create(
@@ -147,7 +147,7 @@ class Command(BaseCommand):
 
     def _insert_reglementations(self):
         self._success("Ajout des réglementations dans Metabase")
-        for entreprise in ImpactEntreprise.objects.filter(
+        for entreprise in PortailRSEEntreprise.objects.filter(
             users__isnull=False
         ).distinct():
             caracteristiques = (
