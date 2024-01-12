@@ -95,7 +95,7 @@ def test_send_contact_mail_with_valid_captcha(client, captcha, mailoutbox, setti
     settings.CONTACT_EMAIL = "contact@example.com"
 
     subject = "Bonjour"
-    message = "Bonjour Impact"
+    message = "Bonjour Utilisateur"
     email = "user@example.com"
 
     response = client.post(
@@ -125,7 +125,7 @@ def test_send_contact_mail_with_invalid_captcha(client, mailoutbox, settings):
     settings.CONTACT_EMAIL = "contact@example.com"
 
     subject = "Bonjour"
-    message = "Bonjour Impact"
+    message = "Bonjour Utilisateur"
     email = "user@example.com"
     sum = "mauvaise réponse"
 
@@ -146,7 +146,7 @@ def test_send_contact_mail_with_numerical_captcha(client, mailoutbox, settings):
     settings.CONTACT_EMAIL = "contact@example.com"
 
     subject = "Bonjour"
-    message = "Bonjour Impact"
+    message = "Bonjour Utilisateur"
     email = "user@example.com"
     sum = "3"
 
