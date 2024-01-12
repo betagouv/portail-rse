@@ -1197,6 +1197,88 @@ def test_soumis_si_assurance_mutuelle_et_effectif_groupe_permanent_et_ca_consoli
 
 
 @pytest.mark.parametrize(
+    "effectif_permanent",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "est_cotee",
+    [
+        True,
+        False,
+    ],
+)
+def test_soumis_si_mutuelle_et_effectif_permanent_et_bilan_suffisants(
+    effectif_permanent, est_cotee, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        est_cotee=est_cotee,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        appartient_groupe=True,
+        comptes_consolides=False,
+        effectif_permanent=effectif_permanent,
+        categorie_juridique_sirene=CODE_MUTUELLE,
+    )
+
+    soumis = DPEFReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    criteres_remplis = DPEFReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+    assert soumis
+    assert "votre entreprise est une Mutuelle" in criteres_remplis
+    assert "votre effectif permanent est supérieur à 500 salariés" in criteres_remplis
+    assert "votre bilan est supérieur à 100M€" in criteres_remplis
+
+
+@pytest.mark.parametrize(
+    "effectif_permanent",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "est_cotee",
+    [
+        True,
+        False,
+    ],
+)
+def test_soumis_si_mutuelle_et_effectif_permanent_et_ca_suffisants(
+    effectif_permanent, est_cotee, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        est_cotee=est_cotee,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+        appartient_groupe=True,
+        comptes_consolides=False,
+        effectif_permanent=effectif_permanent,
+        categorie_juridique_sirene=CODE_MUTUELLE,
+    )
+
+    soumis = DPEFReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    criteres_remplis = DPEFReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+    assert soumis
+    assert "votre entreprise est une Mutuelle" in criteres_remplis
+    assert "votre effectif permanent est supérieur à 500 salariés" in criteres_remplis
+    assert "votre chiffre d'affaires est supérieur à 100M€" in criteres_remplis
+
+
+@pytest.mark.parametrize(
     "effectif_groupe_permanent",
     [
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
@@ -1306,6 +1388,118 @@ def test_non_soumis_si_mutuelle_et_effectif_groupe_permanent_et_ca_consolide_ins
     )
 
     assert not soumis
+
+
+@pytest.mark.parametrize(
+    "effectif_permanent",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "est_cotee",
+    [
+        True,
+        False,
+    ],
+)
+@pytest.mark.parametrize(
+    "categorie_juridique_sirene",
+    [
+        CODE_SCOP,
+        CODE_COOPERATIVE_AGRICOLE,
+    ],
+)
+def test_soumis_si_cooperative_et_effectif_permanent_et_bilan_suffisants(
+    effectif_permanent, est_cotee, categorie_juridique_sirene, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        est_cotee=est_cotee,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        appartient_groupe=True,
+        comptes_consolides=False,
+        effectif_permanent=effectif_permanent,
+        categorie_juridique_sirene=categorie_juridique_sirene,
+    )
+
+    soumis = DPEFReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    criteres_remplis = DPEFReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+    assert soumis
+    if categorie_juridique_sirene == CODE_SCOP:
+        assert (
+            "votre entreprise est une Société Coopérative de Production"
+            in criteres_remplis
+        )
+    else:
+        assert (
+            "votre entreprise est une Société Coopérative Agricole" in criteres_remplis
+        )
+    assert "votre effectif permanent est supérieur à 500 salariés" in criteres_remplis
+    assert "votre bilan est supérieur à 100M€" in criteres_remplis
+
+
+@pytest.mark.parametrize(
+    "effectif_permanent",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "est_cotee",
+    [
+        True,
+        False,
+    ],
+)
+@pytest.mark.parametrize(
+    "categorie_juridique_sirene",
+    [
+        CODE_SCOP,
+        CODE_COOPERATIVE_AGRICOLE,
+    ],
+)
+def test_soumis_si_cooperative_et_effectif_permanent_et_ca_suffisants(
+    effectif_permanent, est_cotee, categorie_juridique_sirene, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        est_cotee=est_cotee,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+        appartient_groupe=True,
+        comptes_consolides=False,
+        effectif_permanent=effectif_permanent,
+        categorie_juridique_sirene=categorie_juridique_sirene,
+    )
+
+    soumis = DPEFReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    criteres_remplis = DPEFReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+    assert soumis
+    if categorie_juridique_sirene == CODE_SCOP:
+        assert (
+            "votre entreprise est une Société Coopérative de Production"
+            in criteres_remplis
+        )
+    else:
+        assert (
+            "votre entreprise est une Société Coopérative Agricole" in criteres_remplis
+        )
+    assert "votre effectif permanent est supérieur à 500 salariés" in criteres_remplis
+    assert "votre chiffre d'affaires est supérieur à 100M€" in criteres_remplis
 
 
 @pytest.mark.parametrize(
