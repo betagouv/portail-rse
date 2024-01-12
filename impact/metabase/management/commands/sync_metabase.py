@@ -169,10 +169,12 @@ class Command(BaseCommand):
             return
         if est_soumise:
             for utilisateur in entreprise.users.all():
-                impact_status = BDESEReglementation.calculate_status(
+                portail_rse_status = BDESEReglementation.calculate_status(
                     caracteristiques, utilisateur
                 ).status
-                statut = self._convertit_impact_status_en_statut_metabase(impact_status)
+                statut = self._convertit_portail_rse_status_en_statut_metabase(
+                    portail_rse_status
+                )
                 MetabaseBDESE.objects.create(
                     entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
                     utilisateur=MetabaseUtilisateur.objects.get(
@@ -194,10 +196,12 @@ class Command(BaseCommand):
         except InsuffisammentQualifieeError:
             return
         if est_soumise:
-            impact_status = IndexEgaproReglementation.calculate_status(
+            portail_rse_status = IndexEgaproReglementation.calculate_status(
                 caracteristiques, entreprise.users.first()
             ).status
-            statut = self._convertit_impact_status_en_statut_metabase(impact_status)
+            statut = self._convertit_portail_rse_status_en_statut_metabase(
+                portail_rse_status
+            )
         else:
             statut = None
         MetabaseIndexEgaPro.objects.create(
@@ -213,10 +217,12 @@ class Command(BaseCommand):
         except InsuffisammentQualifieeError:
             return
         if est_soumise:
-            impact_status = BGESReglementation.calculate_status(
+            portail_rse_status = BGESReglementation.calculate_status(
                 caracteristiques, entreprise.users.first()
             ).status
-            statut = self._convertit_impact_status_en_statut_metabase(impact_status)
+            statut = self._convertit_portail_rse_status_en_statut_metabase(
+                portail_rse_status
+            )
         else:
             statut = None
         MetabaseBGES.objects.create(
@@ -225,13 +231,13 @@ class Command(BaseCommand):
             statut=statut,
         )
 
-    def _convertit_impact_status_en_statut_metabase(self, impact_status):
+    def _convertit_portail_rse_status_en_statut_metabase(self, portail_rse_status):
         statut = None
-        if impact_status == ReglementationStatus.STATUS_A_ACTUALISER:
+        if portail_rse_status == ReglementationStatus.STATUS_A_ACTUALISER:
             statut = MetabaseBDESE.STATUT_A_ACTUALISER
-        elif impact_status == ReglementationStatus.STATUS_EN_COURS:
+        elif portail_rse_status == ReglementationStatus.STATUS_EN_COURS:
             statut = MetabaseBDESE.STATUT_EN_COURS
-        elif impact_status == ReglementationStatus.STATUS_A_JOUR:
+        elif portail_rse_status == ReglementationStatus.STATUS_A_JOUR:
             statut = MetabaseBDESE.STATUT_A_JOUR
         return statut
 
