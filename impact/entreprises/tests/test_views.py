@@ -358,7 +358,7 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
     assert response.redirect_chain == [
         (
             reverse(
-                "reglementations:reglementations", args=[entreprise_non_qualifiee.siren]
+                "reglementations:tableau_de_bord", args=[entreprise_non_qualifiee.siren]
             ),
             302,
         )

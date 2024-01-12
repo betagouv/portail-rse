@@ -22,7 +22,7 @@ def index(request):
         if referer.endswith("/connexion") or referer.endswith("/connexion?next=/"):
             if entreprise := get_current_entreprise(request):
                 return redirect(
-                    "reglementations:reglementations", siren=entreprise.siren
+                    "reglementations:tableau_de_bord", siren=entreprise.siren
                 )
             else:
                 return redirect("entreprises:entreprises")

@@ -50,7 +50,7 @@
                         <p class="fr-text--sm">
                             Après inscription, je saisis les caractéristiques de mon entreprise pour accéder à mon tableau de bord. Je peux piloter et suivre mes obligations.
                         </p>
-                        <a href="{% url 'reglementations:reglementations' current_entreprise.siren %}" class="fr-btn">
+                        <a href="{% url 'reglementations:tableau_de_bord' current_entreprise.siren %}" class="fr-btn">
                             Accéder à mon tableau de bord
                         </a>
                     {% elif user.is_authenticated %}
@@ -172,7 +172,7 @@
                                 <p>
                                     Après inscription, je saisis les caractéristiques de mon entreprise pour accéder à mon tableau de bord. Je peux piloter et suivre mes obligations.
                                 </p>
-                                <a href="{% url 'reglementations:reglementations' current_entreprise.siren %}" class="fr-btn">
+                                <a href="{% url 'reglementations:tableau_de_bord' current_entreprise.siren %}" class="fr-btn">
                                     Accéder à mon tableau de bord
                                 </a>
                             {% else %}

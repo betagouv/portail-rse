@@ -157,7 +157,7 @@ def qualification(request, siren):
             messages.success(
                 request, "Les informations de l'entreprise ont été mises à jour."
             )
-            return redirect("reglementations:reglementations", siren=siren)
+            return redirect("reglementations:tableau_de_bord", siren=siren)
         else:
             messages.error(
                 request,

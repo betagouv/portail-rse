@@ -467,4 +467,4 @@ def toggle_bdese_completion(request, siren, annee):
         else:
             success_message = "La BDESE a été marquée comme non actualisée"
         messages.success(request, success_message)
-    return redirect("reglementations:reglementations", siren=bdese.entreprise.siren)
+    return redirect("reglementations:tableau_de_bord", siren=bdese.entreprise.siren)

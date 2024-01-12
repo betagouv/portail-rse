@@ -49,7 +49,7 @@ def creation(request):
                 else:
                     error_message = f"L'e-mail de confirmation n'a pas pu être envoyé à {user.email}. Contactez-nous si cette adresse est légitime."
                     messages.error(request, error_message)
-                return redirect("reglementations:reglementations", siren)
+                return redirect("reglementations:tableau_de_bord", siren)
             except APIError as exception:
                 messages.error(request, exception)
         else:

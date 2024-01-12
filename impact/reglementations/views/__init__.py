@@ -32,7 +32,7 @@ REGLEMENTATIONS = [
 
 
 @login_required
-def reglementations_for_entreprise(request, siren):
+def tableau_de_bord(request, siren):
     entreprise = get_object_or_404(Entreprise, siren=siren)
     if not is_user_attached_to_entreprise(request.user, entreprise):
         raise PermissionDenied
@@ -43,11 +43,11 @@ def reglementations_for_entreprise(request, siren):
         if caracteristiques != entreprise.caracteristiques_actuelles():
             messages.warning(
                 request,
-                f"Les réglementations sont basées sur des informations de l'exercice {caracteristiques.annee}. <a href='{reverse_lazy('entreprises:qualification', args=[entreprise.siren])}'>Mettre à jour les informations de l'entreprise.</a>",
+                f"Les réglementations affichées sont basées sur des informations de l'exercice comptable {caracteristiques.annee}. <a href='{reverse_lazy('entreprises:qualification', args=[entreprise.siren])}'>Mettre à jour les informations de l'entreprise.</a>",
             )
         return render(
             request,
-            "reglementations/reglementations.html",
+            "reglementations/tableau_de_bord.html",
             context={
                 "entreprise": entreprise,
                 "reglementations": calcule_reglementations(
@@ -58,7 +58,7 @@ def reglementations_for_entreprise(request, siren):
     else:
         messages.warning(
             request,
-            "Veuillez renseigner les informations suivantes pour connaître les réglementations auxquelles est soumise cette entreprise",
+            "Veuillez renseigner les informations suivantes pour accéder au tableau de bord de cette entreprise.",
         )
         return redirect("entreprises:qualification", siren=entreprise.siren)
 

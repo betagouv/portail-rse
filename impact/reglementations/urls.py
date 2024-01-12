@@ -54,9 +54,9 @@ urlpatterns = [
         name="fiche_csrd",
     ),
     path(
-        "reglementations/<str:siren>",
-        views.reglementations_for_entreprise,
-        name="reglementations",
+        "tableau-de-bord/<str:siren>",
+        views.tableau_de_bord,
+        name="tableau_de_bord",
     ),
     path("bdese/<str:siren>/<int:annee>/<int:step>", views.bdese.bdese, name="bdese"),
     path("bdese/<str:siren>/<int:annee>/pdf", views.bdese.bdese_pdf, name="bdese_pdf"),

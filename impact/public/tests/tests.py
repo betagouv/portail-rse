@@ -42,7 +42,7 @@ def test_redirection_de_la_page_index_vers_ses_reglementations_si_l_utilisateur_
 
     assert response.status_code == 200
     assert response.redirect_chain == [
-        (reverse("reglementations:reglementations", args=[entreprise.siren]), 302),
+        (reverse("reglementations:tableau_de_bord", args=[entreprise.siren]), 302),
     ]
 
     response = client.get(
@@ -51,7 +51,7 @@ def test_redirection_de_la_page_index_vers_ses_reglementations_si_l_utilisateur_
 
     assert response.status_code == 200
     assert response.redirect_chain == [
-        (reverse("reglementations:reglementations", args=[entreprise.siren]), 302),
+        (reverse("reglementations:tableau_de_bord", args=[entreprise.siren]), 302),
     ]
 
 

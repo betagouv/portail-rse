@@ -42,7 +42,7 @@ def test_calculate_status_with_not_authenticated_user(
     est_soumis, entreprise_factory, mocker
 ):
     entreprise = entreprise_factory()
-    login_url = f"{reverse('users:login')}?next={reverse('reglementations:reglementations', args=[entreprise.siren])}"
+    login_url = f"{reverse('users:login')}?next={reverse('reglementations:tableau_de_bord', args=[entreprise.siren])}"
 
     mocker.patch(
         "reglementations.views.index_egapro.IndexEgaproReglementation.est_soumis",

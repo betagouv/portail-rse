@@ -20,7 +20,7 @@
                     <h1>Portail RSE</h1>
                     <p class="fr-text--lead">Un chemin unique pour connaitre et répondre à ses obligations RSE</p>
                     {% if user.is_authenticated and current_entreprise %}
-                        <a href="{% url 'reglementations:reglementations' current_entreprise.siren %}" class="fr-btn fr-btn--lg">Remplir mes réglementations</a>
+                        <a href="{% url 'reglementations:tableau_de_bord' current_entreprise.siren %}" class="fr-btn fr-btn--lg">Remplir mes réglementations</a>
                     {% else %}
                         <a href="{% url 'simulation' %}" class="fr-btn fr-btn--lg">Consulter mes obligations</a>
                     {% endif %}
@@ -92,7 +92,7 @@
                                 <ul class="fr-btns-group">
                                     <li>
                                         {% if user.is_authenticated and current_entreprise %}
-                                            <a href="{% url 'reglementations:reglementations' current_entreprise.siren %}" class="fr-btn fr-btn--secondary">
+                                            <a href="{% url 'reglementations:tableau_de_bord' current_entreprise.siren %}" class="fr-btn fr-btn--secondary">
                                                 Accéder à mon tableau de bord
                                             </a>
                                         {% else %}
