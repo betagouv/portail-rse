@@ -13,6 +13,7 @@ CODE_SCA = 5310
 CODE_SE = 5800
 CODE_SCOP = 5458
 CODE_COOPERATIVE_AGRICOLE = 6317
+CODE_ASSURANCE_MUTUELLE = 6411
 CODE_MUTUELLE = 8210
 CODE_PREVOYANCE = 8510
 
@@ -978,6 +979,221 @@ def test_non_soumis_si_societe_prevoyance_et_effectif_groupe_permanent_et_ca_con
 
     assert not soumis
     assert len(criteres) == 2  # categorie juridique et effectif
+
+
+@pytest.mark.parametrize(
+    "effectif_permanent",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "bilan",
+    [
+        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+        CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "est_cotee",
+    [
+        True,
+        False,
+    ],
+)
+def test_soumis_si_assurance_mutuelle_et_effectif_permanent_et_bilan_suffisants(
+    effectif_permanent, bilan, est_cotee, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        est_cotee=est_cotee,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan=bilan,
+        appartient_groupe=False,
+        comptes_consolides=False,
+        effectif_permanent=effectif_permanent,
+        categorie_juridique_sirene=CODE_ASSURANCE_MUTUELLE,
+    )
+
+    soumis = DPEFReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    criteres_remplis = DPEFReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+    assert soumis
+    assert (
+        "votre entreprise est une Société d'assurance à forme mutuelle"
+        in criteres_remplis
+    )
+    assert "votre effectif permanent est supérieur à 500 salariés" in criteres_remplis
+    assert "votre bilan est supérieur à 20M€" in criteres_remplis
+
+
+@pytest.mark.parametrize(
+    "effectif_permanent",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "chiffre_affaires",
+    [
+        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
+        CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
+        CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "est_cotee",
+    [
+        True,
+        False,
+    ],
+)
+def test_soumis_si_assurance_mutuelle_et_effectif_permanent_et_ca_suffisants(
+    effectif_permanent, chiffre_affaires, est_cotee, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        est_cotee=est_cotee,
+        appartient_groupe=False,
+        comptes_consolides=False,
+        effectif_permanent=effectif_permanent,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires=chiffre_affaires,
+        categorie_juridique_sirene=CODE_ASSURANCE_MUTUELLE,
+    )
+
+    soumis = DPEFReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    criteres_remplis = DPEFReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+    assert soumis
+    assert (
+        "votre entreprise est une Société d'assurance à forme mutuelle"
+        in criteres_remplis
+    )
+    assert "votre effectif permanent est supérieur à 500 salariés" in criteres_remplis
+    assert "votre chiffre d'affaires est supérieur à 40M€" in criteres_remplis
+
+
+@pytest.mark.parametrize(
+    "effectif_groupe_permanent",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "bilan",
+    [
+        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+        CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "est_cotee",
+    [
+        True,
+        False,
+    ],
+)
+def test_soumis_si_assurance_mutuelle_et_effectif_groupe_permanent_et_bilan_consolide_suffisants(
+    effectif_groupe_permanent, bilan, est_cotee, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        est_cotee=est_cotee,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        appartient_groupe=True,
+        comptes_consolides=True,
+        effectif_groupe_permanent=effectif_groupe_permanent,
+        tranche_bilan_consolide=bilan,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        categorie_juridique_sirene=CODE_ASSURANCE_MUTUELLE,
+    )
+
+    soumis = DPEFReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    criteres_remplis = DPEFReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+    assert soumis
+    assert (
+        "votre entreprise est une Société d'assurance à forme mutuelle"
+        in criteres_remplis
+    )
+    assert (
+        "l'effectif permanent du groupe est supérieur à 500 salariés"
+        in criteres_remplis
+    )
+    assert "votre bilan consolidé est supérieur à 20M€" in criteres_remplis
+
+
+@pytest.mark.parametrize(
+    "effectif_groupe_permanent",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "chiffre_affaires",
+    [
+        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
+        CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
+        CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "est_cotee",
+    [
+        True,
+        False,
+    ],
+)
+def test_soumis_si_assurance_mutuelle_et_effectif_groupe_permanent_et_ca_consolide_suffisants(
+    effectif_groupe_permanent, chiffre_affaires, est_cotee, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        est_cotee=est_cotee,
+        appartient_groupe=True,
+        comptes_consolides=True,
+        effectif_groupe_permanent=effectif_groupe_permanent,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires_consolide=chiffre_affaires,
+        categorie_juridique_sirene=CODE_ASSURANCE_MUTUELLE,
+    )
+
+    soumis = DPEFReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    criteres_remplis = DPEFReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+    assert soumis
+    assert (
+        "votre entreprise est une Société d'assurance à forme mutuelle"
+        in criteres_remplis
+    )
+    assert (
+        "l'effectif permanent du groupe est supérieur à 500 salariés"
+        in criteres_remplis
+    )
+    assert "votre chiffre d'affaires consolidé est supérieur à 40M€" in criteres_remplis
 
 
 @pytest.mark.parametrize(

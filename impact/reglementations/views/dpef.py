@@ -72,6 +72,8 @@ class DPEFReglementation(Reglementation):
             return cls.criteres_prevoyance(caracteristiques)
         elif cls.est_soumis_cooperative(caracteristiques):
             return cls.criteres_cooperative(caracteristiques)
+        if cls.est_soumis_assurance_mutuelle(caracteristiques):
+            return cls.criteres_assurance_mutuelle(caracteristiques)
         if cls.est_soumis_mutuelle(caracteristiques):
             return cls.criteres_mutuelle(caracteristiques)
         elif criteres := cls.criteres_remplis_selon_cotation(caracteristiques):
@@ -271,6 +273,61 @@ class DPEFReglementation(Reglementation):
             return "votre entreprise est une Mutuelle"
 
     @classmethod
+    def criteres_assurance_mutuelle(cls, caracteristiques):
+        criteres = []
+        if critere := cls.critere_categorie_juridique_assurance_mutuelle(
+            caracteristiques
+        ):
+            criteres.append(critere)
+
+        if critere := cls.critere_effectif_cotation_indifferente(caracteristiques):
+            criteres.append(critere)
+
+        if critere := cls.critere_bilan_assurance_mutuelle(caracteristiques):
+            criteres.append(critere)
+        if critere := cls.critere_chiffre_affaires_assurance_mutuelle(caracteristiques):
+            criteres.append(critere)
+        return criteres
+
+    @classmethod
+    def critere_categorie_juridique_assurance_mutuelle(cls, caracteristiques):
+        categorie_juridique = convertit_categorie_juridique(
+            caracteristiques.entreprise.categorie_juridique_sirene
+        )
+        if categorie_juridique == CategorieJuridique.SOCIETE_ASSURANCE_MUTUELLE:
+            return "votre entreprise est une Société d'assurance à forme mutuelle"
+
+    @classmethod
+    def critere_bilan_assurance_mutuelle(cls, caracteristiques):
+        if caracteristiques.tranche_bilan in (
+            CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+            CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+            CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        ):
+            return "votre bilan est supérieur à 20M€"
+        elif caracteristiques.tranche_bilan_consolide in (
+            CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+            CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+            CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        ):
+            return "votre bilan consolidé est supérieur à 20M€"
+
+    @classmethod
+    def critere_chiffre_affaires_assurance_mutuelle(cls, caracteristiques):
+        if caracteristiques.tranche_chiffre_affaires in (
+            CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
+            CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
+            CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+        ):
+            return "votre chiffre d'affaires est supérieur à 40M€"
+        elif caracteristiques.tranche_chiffre_affaires_consolide in (
+            CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
+            CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
+            CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+        ):
+            return "votre chiffre d'affaires consolidé est supérieur à 40M€"
+
+    @classmethod
     def criteres_cooperative(cls, caracteristiques):
         criteres = []
         if critere := cls.critere_categorie_juridique_cooperative(caracteristiques):
@@ -304,6 +361,7 @@ class DPEFReglementation(Reglementation):
         return (
             cls.est_soumis_prevoyance(caracteristiques)
             or cls.est_soumis_cooperative(caracteristiques)
+            or cls.est_soumis_assurance_mutuelle(caracteristiques)
             or cls.est_soumis_mutuelle(caracteristiques)
             or cls.est_soumis_selon_cotation(caracteristiques)
         )
@@ -327,6 +385,17 @@ class DPEFReglementation(Reglementation):
             and (
                 cls.critere_bilan_cotation_indifferente(caracteristiques)
                 or cls.critere_chiffre_affaires_cotation_indifferente(caracteristiques)
+            )
+        )
+
+    @classmethod
+    def est_soumis_assurance_mutuelle(cls, caracteristiques):
+        return (
+            cls.critere_categorie_juridique_assurance_mutuelle(caracteristiques)
+            and cls.critere_effectif_cotation_indifferente(caracteristiques)
+            and (
+                cls.critere_bilan_assurance_mutuelle(caracteristiques)
+                or cls.critere_chiffre_affaires_assurance_mutuelle(caracteristiques)
             )
         )
 
