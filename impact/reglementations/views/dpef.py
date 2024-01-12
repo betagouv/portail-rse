@@ -108,20 +108,16 @@ class DPEFReglementation(Reglementation):
 
     @classmethod
     def critere_effectif_selon_cotation(cls, caracteristiques):
-        if caracteristiques.effectif_permanent in (
+        TRANCHES_ACCEPTEES = (
             CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
             CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
             CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
-        ):
+        )
+        if caracteristiques.effectif_permanent in TRANCHES_ACCEPTEES:
             return cls.CRITERE_EFFECTIF_PERMANENT
         elif (
             caracteristiques.entreprise.comptes_consolides
-            and caracteristiques.effectif_groupe_permanent
-            in (
-                CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
-                CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
-                CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
-            )
+            and caracteristiques.effectif_groupe_permanent in TRANCHES_ACCEPTEES
         ):
             return cls.CRITERE_EFFECTIF_GROUPE_PERMANENT
 
@@ -204,20 +200,16 @@ class DPEFReglementation(Reglementation):
 
     @classmethod
     def critere_effectif_cotation_indifferente(cls, caracteristiques):
-        if caracteristiques.effectif_permanent in (
+        TRANCHES_ACCEPTEES = (
             CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
             CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
             CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
-        ):
+        )
+        if caracteristiques.effectif_permanent in TRANCHES_ACCEPTEES:
             return cls.CRITERE_EFFECTIF_PERMANENT
         elif (
             caracteristiques.entreprise.comptes_consolides
-            and caracteristiques.effectif_groupe_permanent
-            in (
-                CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
-                CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
-                CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
-            )
+            and caracteristiques.effectif_groupe_permanent in TRANCHES_ACCEPTEES
         ):
             return cls.CRITERE_EFFECTIF_GROUPE_PERMANENT
 
@@ -299,32 +291,27 @@ class DPEFReglementation(Reglementation):
 
     @classmethod
     def critere_bilan_assurance_mutuelle(cls, caracteristiques):
-        if caracteristiques.tranche_bilan in (
+        TRANCHES_ACCEPTEES = (
             CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
             CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
             CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
-        ):
+        )
+        if caracteristiques.tranche_bilan in TRANCHES_ACCEPTEES:
             return "votre bilan est supérieur à 20M€"
-        elif caracteristiques.tranche_bilan_consolide in (
-            CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
-            CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
-            CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
-        ):
+        elif caracteristiques.tranche_bilan_consolide in TRANCHES_ACCEPTEES:
             return "votre bilan consolidé est supérieur à 20M€"
 
     @classmethod
     def critere_chiffre_affaires_assurance_mutuelle(cls, caracteristiques):
-        if caracteristiques.tranche_chiffre_affaires in (
+        TRANCHES_ACCEPTEES = (
             CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
             CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
             CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
-        ):
+        )
+
+        if caracteristiques.tranche_chiffre_affaires in TRANCHES_ACCEPTEES:
             return "votre chiffre d'affaires est supérieur à 40M€"
-        elif caracteristiques.tranche_chiffre_affaires_consolide in (
-            CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
-            CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
-            CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
-        ):
+        elif caracteristiques.tranche_chiffre_affaires_consolide in TRANCHES_ACCEPTEES:
             return "votre chiffre d'affaires consolidé est supérieur à 40M€"
 
     @classmethod
