@@ -1,5 +1,5 @@
 """
-WSGI config for impact project.
+WSGI config for Portail RSE project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

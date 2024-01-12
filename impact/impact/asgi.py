@@ -1,5 +1,5 @@
 """
-ASGI config for impact project.
+ASGI config for Portail RSE project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
