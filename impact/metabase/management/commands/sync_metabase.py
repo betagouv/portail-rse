@@ -6,7 +6,7 @@ from django.db.models import Count
 
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise as PortailRSEEntreprise
-from habilitations.models import Habilitation as ImpactHabilitation
+from habilitations.models import Habilitation as PortailRSEHabilitation
 from metabase.models import BDESE as MetabaseBDESE
 from metabase.models import BGES as MetabaseBGES
 from metabase.models import Entreprise as MetabaseEntreprise
@@ -124,7 +124,7 @@ class Command(BaseCommand):
 
     def _insert_habilitations(self):
         self._success("Ajout des habilitations dans Metabase")
-        for habilitation in ImpactHabilitation.objects.all():
+        for habilitation in PortailRSEHabilitation.objects.all():
             # https://docs.djangoproject.com/fr/4.2/topics/db/optimization/#use-foreign-key-values-directly
             meta_h = MetabaseHabilitation.objects.create(
                 impact_id=habilitation.pk,
