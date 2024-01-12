@@ -549,7 +549,47 @@ def test_categorie_Societe_Cooperative_Agricole():
 
 
 def test_categorie_SCOP():
-    for categorie_juridique_sirene in (5458, 5558, 5658):
+
+    PLAGES = [
+        range(
+            5443,  # SARL coopérative de construction
+            5460 + 1,  # Autre SARL coopérative
+        ),
+        range(
+            5551,  # SA coopérative de consommation à conseil d'administration
+            5560 + 1,  # Autre SA coopérative à conseil d'administration
+        ),
+        range(
+            5651,  # SA coopérative de consommation à directoire
+            5660 + 1,  # Autre SA coopérative à directoire
+        ),
+    ]
+
+    for plage in PLAGES:
+        for categorie_juridique_sirene in plage:
+            categorie_juridique = convertit_categorie_juridique(
+                categorie_juridique_sirene
+            )
+
+            assert (
+                categorie_juridique
+                == CategorieJuridique.SOCIETE_COOPERATIVE_DE_PRODUCTION
+            )
+            assert categorie_juridique.label == "Société Coopérative de Production"
+
+    for entre_plage in (5461, 5561, 5661):
+        categorie_juridique = convertit_categorie_juridique(entre_plage)
+
+        assert (
+            categorie_juridique != CategorieJuridique.SOCIETE_COOPERATIVE_DE_PRODUCTION
+        )
+
+    for categorie_juridique_sirene in (
+        5543,  # SA coopérative de construction à conseil d'administration
+        5547,  # SA coopérative de production de HLM à conseil d'administration
+        5643,  # SA coopérative de construction à directoire
+        5647,  # Société coopérative de production de HLM anonyme à directoire
+    ):
         categorie_juridique = convertit_categorie_juridique(categorie_juridique_sirene)
 
         assert (
