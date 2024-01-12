@@ -72,7 +72,13 @@ def convertit_categorie_juridique(categorie_juridique_sirene):
         return CategorieJuridique.SOCIETE_COMMANDITE_PAR_ACTIONS
     elif categorie_juridique_sirene in (5458, 5558, 5658):
         return CategorieJuridique.SOCIETE_COOPERATIVE_DE_PRODUCTION
-    elif 5505 <= categorie_juridique_sirene <= 5699:
+    elif (
+        5505 <= categorie_juridique_sirene <= 5515
+        or 5522 <= categorie_juridique_sirene <= 5542
+        or 5599 <= categorie_juridique_sirene <= 5642
+        or 5670 <= categorie_juridique_sirene <= 5699
+        or categorie_juridique_sirene in (5546, 5646, 5648)
+    ):
         return CategorieJuridique.SOCIETE_ANONYME
     elif 5710 <= categorie_juridique_sirene <= 5785:
         return CategorieJuridique.SOCIETE_PAR_ACTIONS_SIMPLIFIEES

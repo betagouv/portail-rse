@@ -466,9 +466,44 @@ def test_caracteristiques_actuelles_selon_la_date_de_cloture(entreprise_non_qual
 
 
 def test_categorie_SA():
+
+    PLAGES = [
+        range(
+            5505,  # SA à participation ouvrière à conseil d'administration
+            5515 + 1,  # SA nationale à conseil d’administration
+        ),
+        range(
+            5522,  # SA immobilière pour le commerce et l'industrie (SICOMI) à conseil d'administration
+            5542 + 1,  # SA d'attribution à conseil d'administration
+        ),
+        range(
+            5599,  # SA à conseil d'administration (s.a.i.)
+            5642 + 1,  # SA d'attribution à directoire
+        ),
+        range(
+            5670,  # Société de Participations Financières de Profession Libérale Société anonyme à Directoire (SPFPL SA à directoire)
+            5699 + 1,  # SA à directoire (s.a.i.)
+        ),
+    ]
+
+    for plage in PLAGES:
+        for categorie_juridique_sirene in plage:
+            categorie_juridique = convertit_categorie_juridique(
+                categorie_juridique_sirene
+            )
+
+            assert categorie_juridique == CategorieJuridique.SOCIETE_ANONYME
+            assert categorie_juridique.label == "Société Anonyme"
+
+    for entre_plage in (5543, 5643, 5700):
+        categorie_juridique = convertit_categorie_juridique(entre_plage)
+
+        assert categorie_juridique != CategorieJuridique.SOCIETE_ANONYME
+
     for categorie_juridique_sirene in (
-        5505,  # SA à participation ouvrière à conseil d'administration
-        5699,  # SA à directoire (s.a.i.)
+        5546,  # SA de HLM à conseil d'administration
+        5646,  # SA de HLM à directoire
+        5648,  # SA de crédit immobilier à directoire
     ):
         categorie_juridique = convertit_categorie_juridique(categorie_juridique_sirene)
 
