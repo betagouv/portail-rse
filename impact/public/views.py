@@ -41,6 +41,10 @@ def cgu(request):
     return render(request, "public/cgu.html")
 
 
+def stats(request):
+    return render(request, "public/stats.html")
+
+
 def contact(request):
     if request.method == "POST":
         form = ContactForm(request.POST)
