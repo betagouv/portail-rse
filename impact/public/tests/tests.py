@@ -187,6 +187,14 @@ def test_page_cgu(client):
     assert "<!-- page cgu -->" in content
 
 
+def test_page_stats(client):
+    response = client.get("/stats")
+
+    assert response.status_code == 200
+    content = response.content.decode("utf-8")
+    assert "<!-- page stats -->" in content
+
+
 def test_page_publique_des_reglementations(client):
     response = client.get("/reglementations")
 
