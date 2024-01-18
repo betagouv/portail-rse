@@ -466,7 +466,6 @@ def test_caracteristiques_actuelles_selon_la_date_de_cloture(entreprise_non_qual
 
 
 def test_categorie_SA():
-
     PLAGES = [
         range(
             5505,  # SA à participation ouvrière à conseil d'administration
@@ -549,7 +548,6 @@ def test_categorie_Societe_Cooperative_Agricole():
 
 
 def test_categorie_SCOP():
-
     PLAGES = [
         range(
             5443,  # SARL coopérative de construction
@@ -612,11 +610,11 @@ def test_categorie_Mutuelle():
     assert categorie_juridique.label == "Mutuelle"
 
 
-def test_categorie_Institution_prevoyance():
+def test_categorie_Institution_Prevoyance():
     categorie_juridique = convertit_categorie_juridique(8510)
 
     assert categorie_juridique == CategorieJuridique.INSTITUTION_PREVOYANCE
-    assert categorie_juridique.label == "Institution de prévoyance"
+    assert categorie_juridique.label == "Institution de Prévoyance"
 
 
 def test_categorie_autre():

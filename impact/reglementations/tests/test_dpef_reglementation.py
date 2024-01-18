@@ -787,7 +787,7 @@ def test_calcule_etat_si_soumis_avec_plus_de_deux_critères_remplis(
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert (
         reglementation.status_detail
-        == "Vous êtes soumis à cette réglementation car votre entreprise est une Société Anonyme, votre société est cotée sur un marché réglementé, votre effectif permanent est supérieur à 500 salariés, votre bilan est supérieur à 20M€ et votre chiffre d'affaires est supérieur à 40M€."
+        == "Vous êtes soumis à cette réglementation car votre entreprise est une Société Anonyme, votre effectif permanent est supérieur à 500 salariés, votre société est cotée sur un marché réglementé, votre bilan est supérieur à 20M€ et votre chiffre d'affaires est supérieur à 40M€."
     )
 
 
@@ -973,7 +973,7 @@ def test_non_soumis_si_societe_prevoyance_et_effectif_groupe_permanent_et_ca_con
     soumis = DPEFReglementation.est_soumis(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
-    criteres = DPEFReglementation.criteres_prevoyance(
+    criteres = DPEFReglementation.criteres_remplis(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
 
