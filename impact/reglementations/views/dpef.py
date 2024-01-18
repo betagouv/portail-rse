@@ -68,46 +68,48 @@ class DPEFReglementation(Reglementation):
 
     @classmethod
     def criteres_remplis(cls, caracteristiques):
-        if cls.est_soumis_prevoyance(caracteristiques):
-            return cls.criteres_prevoyance(caracteristiques)
-        elif cls.est_soumis_cooperative(caracteristiques):
-            return cls.criteres_cooperative(caracteristiques)
-        if cls.est_soumis_assurance_mutuelle(caracteristiques):
-            return cls.criteres_assurance_mutuelle(caracteristiques)
-        if cls.est_soumis_mutuelle(caracteristiques):
-            return cls.criteres_mutuelle(caracteristiques)
-        elif criteres := cls.criteres_remplis_selon_cotation(caracteristiques):
-            return criteres
-
-    @classmethod
-    def criteres_remplis_selon_cotation(cls, caracteristiques):
         criteres = []
-        if critere := cls.critere_categorie_juridique_selon_cotation(caracteristiques):
-            criteres.append(critere)
-        if caracteristiques.entreprise.est_cotee:
-            criteres.append("votre société est cotée sur un marché réglementé")
-        if critere := cls.critere_effectif_selon_cotation(caracteristiques):
-            criteres.append(critere)
-        if critere := cls.critere_bilan_selon_cotation(caracteristiques):
-            criteres.append(critere)
-        if critere := cls.critere_chiffre_affaires_selon_cotation(caracteristiques):
-            criteres.append(critere)
-        return criteres
-
-    @classmethod
-    def critere_categorie_juridique_selon_cotation(cls, caracteristiques):
         categorie_juridique = convertit_categorie_juridique(
             caracteristiques.entreprise.categorie_juridique_sirene
         )
+        criteres.append(f"votre entreprise est une {categorie_juridique.label}")
+        if critere := cls.critere_effectif(caracteristiques):
+            criteres.append(critere)
         if categorie_juridique in (
+            CategorieJuridique.INSTITUTION_PREVOYANCE,
+            CategorieJuridique.MUTUELLE,
+            CategorieJuridique.SOCIETE_COOPERATIVE_AGRICOLE,
+            CategorieJuridique.SOCIETE_COOPERATIVE_DE_PRODUCTION,
+        ):
+            if critere := cls.critere_bilan_non_cotee(caracteristiques):
+                criteres.append(critere)
+            if critere := cls.critere_chiffre_affaires_non_cotee(caracteristiques):
+                criteres.append(critere)
+        elif categorie_juridique == CategorieJuridique.SOCIETE_ASSURANCE_MUTUELLE:
+            if critere := cls.critere_bilan_cotee(caracteristiques):
+                criteres.append(critere)
+            if critere := cls.critere_chiffre_affaires_cotee(caracteristiques):
+                criteres.append(critere)
+        elif categorie_juridique in (
             CategorieJuridique.SOCIETE_ANONYME,
             CategorieJuridique.SOCIETE_COMMANDITE_PAR_ACTIONS,
             CategorieJuridique.SOCIETE_EUROPEENNE,
         ):
-            return f"votre entreprise est une {categorie_juridique.label}"
+            if caracteristiques.entreprise.est_cotee:
+                criteres.append(f"votre société est cotée sur un marché réglementé")
+                if critere := cls.critere_bilan_cotee(caracteristiques):
+                    criteres.append(critere)
+                if critere := cls.critere_chiffre_affaires_cotee(caracteristiques):
+                    criteres.append(critere)
+            else:
+                if critere := cls.critere_bilan_non_cotee(caracteristiques):
+                    criteres.append(critere)
+                if critere := cls.critere_chiffre_affaires_non_cotee(caracteristiques):
+                    criteres.append(critere)
+        return criteres
 
     @classmethod
-    def critere_effectif_selon_cotation(cls, caracteristiques):
+    def critere_effectif(cls, caracteristiques):
         TRANCHES_ACCEPTEES = (
             CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
             CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
@@ -122,288 +124,96 @@ class DPEFReglementation(Reglementation):
             return cls.CRITERE_EFFECTIF_GROUPE_PERMANENT
 
     @classmethod
-    def critere_bilan_selon_cotation(cls, caracteristiques):
-        if caracteristiques.entreprise.est_cotee:
-            if caracteristiques.tranche_bilan in (
-                CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
-                CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
-                CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
-            ):
-                return "votre bilan est supérieur à 20M€"
-            elif caracteristiques.tranche_bilan_consolide in (
-                CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
-                CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
-                CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
-            ):
-                return "votre bilan consolidé est supérieur à 20M€"
-        elif (
-            caracteristiques.tranche_bilan
-            == CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
-        ):
-            return "votre bilan est supérieur à 100M€"
-        elif (
-            caracteristiques.tranche_bilan_consolide
-            == CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
-        ):
-            return "votre bilan consolidé est supérieur à 100M€"
-
-    @classmethod
-    def critere_chiffre_affaires_selon_cotation(cls, caracteristiques):
-        if caracteristiques.entreprise.est_cotee:
-            if caracteristiques.tranche_chiffre_affaires in (
-                CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
-                CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
-                CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
-            ):
-                return "votre chiffre d'affaires est supérieur à 40M€"
-            elif caracteristiques.tranche_chiffre_affaires_consolide in (
-                CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
-                CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
-                CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
-            ):
-                return "votre chiffre d'affaires consolidé est supérieur à 40M€"
-        if (
-            caracteristiques.tranche_chiffre_affaires
-            == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
-        ):
-            return "votre chiffre d'affaires est supérieur à 100M€"
-        elif (
-            caracteristiques.tranche_chiffre_affaires_consolide
-            == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
-        ):
-            return "votre chiffre d'affaires consolidé est supérieur à 100M€"
-
-    @classmethod
-    def criteres_prevoyance(cls, caracteristiques):
-        criteres = []
-        if critere := cls.critere_categorie_juridique_prevoyance(caracteristiques):
-            criteres.append(critere)
-
-        if critere := cls.critere_effectif_cotation_indifferente(caracteristiques):
-            criteres.append(critere)
-
-        if critere := cls.critere_bilan_cotation_indifferente(caracteristiques):
-            criteres.append(critere)
-        if critere := cls.critere_chiffre_affaires_cotation_indifferente(
-            caracteristiques
-        ):
-            criteres.append(critere)
-        return criteres
-
-    @classmethod
-    def critere_categorie_juridique_prevoyance(cls, caracteristiques):
-        categorie_juridique = convertit_categorie_juridique(
-            caracteristiques.entreprise.categorie_juridique_sirene
-        )
-        if categorie_juridique == CategorieJuridique.INSTITUTION_PREVOYANCE:
-            return "votre entreprise est une Institution de Prévoyance"
-
-    @classmethod
-    def critere_effectif_cotation_indifferente(cls, caracteristiques):
-        TRANCHES_ACCEPTEES = (
-            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
-            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
-            CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
-        )
-        if caracteristiques.effectif_permanent in TRANCHES_ACCEPTEES:
-            return cls.CRITERE_EFFECTIF_PERMANENT
-        elif (
-            caracteristiques.entreprise.comptes_consolides
-            and caracteristiques.effectif_groupe_permanent in TRANCHES_ACCEPTEES
-        ):
-            return cls.CRITERE_EFFECTIF_GROUPE_PERMANENT
-
-    @classmethod
-    def critere_bilan_cotation_indifferente(cls, caracteristiques):
-        if (
-            caracteristiques.tranche_bilan
-            == CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
-        ):
-            return "votre bilan est supérieur à 100M€"
-        elif (
-            caracteristiques.tranche_bilan_consolide
-            == CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
-        ):
-            return "votre bilan consolidé est supérieur à 100M€"
-
-    @classmethod
-    def critere_chiffre_affaires_cotation_indifferente(cls, caracteristiques):
-        if (
-            caracteristiques.tranche_chiffre_affaires
-            == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
-        ):
-            return "votre chiffre d'affaires est supérieur à 100M€"
-        elif (
-            caracteristiques.tranche_chiffre_affaires_consolide
-            == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
-        ):
-            return "votre chiffre d'affaires consolidé est supérieur à 100M€"
-
-    @classmethod
-    def criteres_mutuelle(cls, caracteristiques):
-        criteres = []
-        if critere := cls.critere_categorie_juridique_mutuelle(caracteristiques):
-            criteres.append(critere)
-
-        if critere := cls.critere_effectif_cotation_indifferente(caracteristiques):
-            criteres.append(critere)
-
-        if critere := cls.critere_bilan_cotation_indifferente(caracteristiques):
-            criteres.append(critere)
-        if critere := cls.critere_chiffre_affaires_cotation_indifferente(
-            caracteristiques
-        ):
-            criteres.append(critere)
-        return criteres
-
-    @classmethod
-    def critere_categorie_juridique_mutuelle(cls, caracteristiques):
-        categorie_juridique = convertit_categorie_juridique(
-            caracteristiques.entreprise.categorie_juridique_sirene
-        )
-        if categorie_juridique == CategorieJuridique.MUTUELLE:
-            return "votre entreprise est une Mutuelle"
-
-    @classmethod
-    def criteres_assurance_mutuelle(cls, caracteristiques):
-        criteres = []
-        if critere := cls.critere_categorie_juridique_assurance_mutuelle(
-            caracteristiques
-        ):
-            criteres.append(critere)
-
-        if critere := cls.critere_effectif_cotation_indifferente(caracteristiques):
-            criteres.append(critere)
-
-        if critere := cls.critere_bilan_assurance_mutuelle(caracteristiques):
-            criteres.append(critere)
-        if critere := cls.critere_chiffre_affaires_assurance_mutuelle(caracteristiques):
-            criteres.append(critere)
-        return criteres
-
-    @classmethod
-    def critere_categorie_juridique_assurance_mutuelle(cls, caracteristiques):
-        categorie_juridique = convertit_categorie_juridique(
-            caracteristiques.entreprise.categorie_juridique_sirene
-        )
-        if categorie_juridique == CategorieJuridique.SOCIETE_ASSURANCE_MUTUELLE:
-            return "votre entreprise est une Société d'assurance à forme mutuelle"
-
-    @classmethod
-    def critere_bilan_assurance_mutuelle(cls, caracteristiques):
-        TRANCHES_ACCEPTEES = (
+    def critere_bilan_cotee(cls, caracteristiques):
+        if caracteristiques.tranche_bilan in (
             CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
             CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
             CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
-        )
-        if caracteristiques.tranche_bilan in TRANCHES_ACCEPTEES:
+        ):
             return "votre bilan est supérieur à 20M€"
-        elif caracteristiques.tranche_bilan_consolide in TRANCHES_ACCEPTEES:
+        elif caracteristiques.tranche_bilan_consolide in (
+            CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+            CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+            CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        ):
             return "votre bilan consolidé est supérieur à 20M€"
 
     @classmethod
-    def critere_chiffre_affaires_assurance_mutuelle(cls, caracteristiques):
-        TRANCHES_ACCEPTEES = (
+    def critere_chiffre_affaires_cotee(cls, caracteristiques):
+        if caracteristiques.tranche_chiffre_affaires in (
             CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
             CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
             CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
-        )
-
-        if caracteristiques.tranche_chiffre_affaires in TRANCHES_ACCEPTEES:
+        ):
             return "votre chiffre d'affaires est supérieur à 40M€"
-        elif caracteristiques.tranche_chiffre_affaires_consolide in TRANCHES_ACCEPTEES:
+        elif caracteristiques.tranche_chiffre_affaires_consolide in (
+            CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
+            CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
+            CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+        ):
             return "votre chiffre d'affaires consolidé est supérieur à 40M€"
 
     @classmethod
-    def criteres_cooperative(cls, caracteristiques):
-        criteres = []
-        if critere := cls.critere_categorie_juridique_cooperative(caracteristiques):
-            criteres.append(critere)
-
-        if critere := cls.critere_effectif_cotation_indifferente(caracteristiques):
-            criteres.append(critere)
-
-        if critere := cls.critere_bilan_cotation_indifferente(caracteristiques):
-            criteres.append(critere)
-        if critere := cls.critere_chiffre_affaires_cotation_indifferente(
-            caracteristiques
+    def critere_bilan_non_cotee(cls, caracteristiques):
+        if (
+            caracteristiques.tranche_bilan
+            == CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
         ):
-            criteres.append(critere)
-        return criteres
+            return "votre bilan est supérieur à 100M€"
+        elif (
+            caracteristiques.tranche_bilan_consolide
+            == CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
+        ):
+            return "votre bilan consolidé est supérieur à 100M€"
 
     @classmethod
-    def critere_categorie_juridique_cooperative(cls, caracteristiques):
-        categorie_juridique = convertit_categorie_juridique(
-            caracteristiques.entreprise.categorie_juridique_sirene
-        )
-        if categorie_juridique in (
-            CategorieJuridique.SOCIETE_COOPERATIVE_DE_PRODUCTION,
-            CategorieJuridique.SOCIETE_COOPERATIVE_AGRICOLE,
+    def critere_chiffre_affaires_non_cotee(cls, caracteristiques):
+        if (
+            caracteristiques.tranche_chiffre_affaires
+            == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
         ):
-            return f"votre entreprise est une {categorie_juridique.label}"
+            return "votre chiffre d'affaires est supérieur à 100M€"
+        elif (
+            caracteristiques.tranche_chiffre_affaires_consolide
+            == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
+        ):
+            return "votre chiffre d'affaires consolidé est supérieur à 100M€"
 
     @classmethod
     def est_soumis(cls, caracteristiques):
         super().est_soumis(caracteristiques)
-        return (
-            cls.est_soumis_prevoyance(caracteristiques)
-            or cls.est_soumis_cooperative(caracteristiques)
-            or cls.est_soumis_assurance_mutuelle(caracteristiques)
-            or cls.est_soumis_mutuelle(caracteristiques)
-            or cls.est_soumis_selon_cotation(caracteristiques)
+        categorie_juridique = convertit_categorie_juridique(
+            caracteristiques.entreprise.categorie_juridique_sirene
+        )
+        if categorie_juridique in (
+            CategorieJuridique.INSTITUTION_PREVOYANCE,
+            CategorieJuridique.MUTUELLE,
+            CategorieJuridique.SOCIETE_COOPERATIVE_AGRICOLE,
+            CategorieJuridique.SOCIETE_COOPERATIVE_DE_PRODUCTION,
+        ):
+            return cls.est_soumis_non_cotee(caracteristiques)
+        elif categorie_juridique == CategorieJuridique.SOCIETE_ASSURANCE_MUTUELLE:
+            return cls.est_soumis_cotee(caracteristiques)
+        elif categorie_juridique in (
+            CategorieJuridique.SOCIETE_ANONYME,
+            CategorieJuridique.SOCIETE_COMMANDITE_PAR_ACTIONS,
+            CategorieJuridique.SOCIETE_EUROPEENNE,
+        ):
+            if caracteristiques.entreprise.est_cotee:
+                return cls.est_soumis_cotee(caracteristiques)
+            else:
+                return cls.est_soumis_non_cotee(caracteristiques)
+
+    @classmethod
+    def est_soumis_non_cotee(cls, caracteristiques):
+        return cls.critere_effectif(caracteristiques) and (
+            cls.critere_bilan_non_cotee(caracteristiques)
+            or cls.critere_chiffre_affaires_non_cotee(caracteristiques)
         )
 
     @classmethod
-    def est_soumis_prevoyance(cls, caracteristiques):
-        return (
-            cls.critere_categorie_juridique_prevoyance(caracteristiques)
-            and cls.critere_effectif_cotation_indifferente(caracteristiques)
-            and (
-                cls.critere_bilan_cotation_indifferente(caracteristiques)
-                or cls.critere_chiffre_affaires_cotation_indifferente(caracteristiques)
-            )
-        )
-
-    @classmethod
-    def est_soumis_cooperative(cls, caracteristiques):
-        return (
-            cls.critere_categorie_juridique_cooperative(caracteristiques)
-            and cls.critere_effectif_cotation_indifferente(caracteristiques)
-            and (
-                cls.critere_bilan_cotation_indifferente(caracteristiques)
-                or cls.critere_chiffre_affaires_cotation_indifferente(caracteristiques)
-            )
-        )
-
-    @classmethod
-    def est_soumis_assurance_mutuelle(cls, caracteristiques):
-        return (
-            cls.critere_categorie_juridique_assurance_mutuelle(caracteristiques)
-            and cls.critere_effectif_cotation_indifferente(caracteristiques)
-            and (
-                cls.critere_bilan_assurance_mutuelle(caracteristiques)
-                or cls.critere_chiffre_affaires_assurance_mutuelle(caracteristiques)
-            )
-        )
-
-    @classmethod
-    def est_soumis_mutuelle(cls, caracteristiques):
-        return (
-            cls.critere_categorie_juridique_mutuelle(caracteristiques)
-            and cls.critere_effectif_cotation_indifferente(caracteristiques)
-            and (
-                cls.critere_bilan_cotation_indifferente(caracteristiques)
-                or cls.critere_chiffre_affaires_cotation_indifferente(caracteristiques)
-            )
-        )
-
-    @classmethod
-    def est_soumis_selon_cotation(cls, caracteristiques):
-        return (
-            cls.critere_categorie_juridique_selon_cotation(caracteristiques)
-            and cls.critere_effectif_selon_cotation(caracteristiques)
-            and (
-                cls.critere_bilan_selon_cotation(caracteristiques)
-                or cls.critere_chiffre_affaires_selon_cotation(caracteristiques)
-            )
+    def est_soumis_cotee(cls, caracteristiques):
+        return cls.critere_effectif(caracteristiques) and (
+            cls.critere_bilan_cotee(caracteristiques)
+            or cls.critere_chiffre_affaires_cotee(caracteristiques)
         )

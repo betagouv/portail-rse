@@ -61,7 +61,7 @@ class CategorieJuridique(Enum):
         elif self.value == self.MUTUELLE.value:
             return "Mutuelle"
         elif self.value == self.INSTITUTION_PREVOYANCE.value:
-            return "Institution de prévoyance"
+            return "Institution de Prévoyance"
         return ""
 
 
