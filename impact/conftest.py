@@ -7,6 +7,7 @@ from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 
 CODE_SA = 5505
+CODE_SA_COOPERATIVE = 5551
 CODE_SAS = 5710
 CODE_SCA = 5310
 CODE_SE = 5800

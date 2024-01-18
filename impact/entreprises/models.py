@@ -64,6 +64,14 @@ class CategorieJuridique(Enum):
             return "Institution de Prévoyance"
         return ""
 
+    @staticmethod
+    def est_une_SA_cooperative(categorie_juridique_sirene):
+        return (
+            5551 <= categorie_juridique_sirene <= 5560
+            or 5651 <= categorie_juridique_sirene <= 5660
+            or categorie_juridique_sirene in (5543, 5547, 5643, 5647)
+        )
+
 
 def convertit_categorie_juridique(categorie_juridique_sirene):
     if not categorie_juridique_sirene:

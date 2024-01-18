@@ -3,6 +3,7 @@ from django.urls import reverse
 
 from conftest import CODE_AUTRE
 from conftest import CODE_SA
+from conftest import CODE_SA_COOPERATIVE
 from conftest import CODE_SAS
 from conftest import CODE_SCA
 from conftest import CODE_SE
@@ -210,6 +211,7 @@ def test_calcule_statut_autre_statut_juridique(entreprise_factory, alice):
 @pytest.mark.parametrize(
     "categorie_juridique_sirene",
     [
+        (CODE_SA_COOPERATIVE, "votre entreprise est une Société Anonyme"),
         (CODE_SA, "votre entreprise est une Société Anonyme"),
         (CODE_SAS, "votre entreprise est une Société par Actions Simplifiées"),
         (CODE_SCA, "votre entreprise est une Société en Commandite par Actions"),
