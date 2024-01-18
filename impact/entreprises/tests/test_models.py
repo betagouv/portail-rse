@@ -659,3 +659,7 @@ def test_societe_cooperative_est_une_SA():
         5647,  # Société Coopérative de HLM anonyme à directoire
     ):
         assert CategorieJuridique.est_une_SA_cooperative(categorie_juridique_sirene)
+
+
+def test_est_une_SA_cooperative_sans_categorie_juridique_sirene():
+    assert CategorieJuridique.est_une_SA_cooperative(None) is None

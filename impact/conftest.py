@@ -58,9 +58,9 @@ def entreprise_factory(db, date_cloture_dernier_exercice):
     def create_entreprise(
         siren="000000001",
         denomination="Entreprise SAS",
+        categorie_juridique_sirene=CODE_SA,
         date_cloture_exercice=date_cloture_dernier_exercice,
         date_derniere_qualification=None,
-        categorie_juridique_sirene=None,
         est_cotee=False,
         appartient_groupe=False,
         est_societe_mere=False,
