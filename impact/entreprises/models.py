@@ -66,6 +66,8 @@ class CategorieJuridique(Enum):
 
     @staticmethod
     def est_une_SA_cooperative(categorie_juridique_sirene):
+        if not categorie_juridique_sirene:
+            return
         return (
             5551 <= categorie_juridique_sirene <= 5560
             or 5651 <= categorie_juridique_sirene <= 5660
