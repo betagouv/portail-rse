@@ -11,6 +11,7 @@ from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from habilitations.models import is_user_attached_to_entreprise
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
+from reglementations.views.base import ReglementationStatus
 from reglementations.views.bdese import BDESEReglementation
 from reglementations.views.bges import BGESReglementation
 from reglementations.views.csrd import csrd  # noqa
@@ -19,7 +20,6 @@ from reglementations.views.dispositif_anticorruption import DispositifAntiCorrup
 from reglementations.views.dpef import DPEFReglementation
 from reglementations.views.index_egapro import IndexEgaproReglementation
 from reglementations.views.plan_vigilance import PlanVigilanceReglementation
-
 
 REGLEMENTATIONS = [
     BDESEReglementation,
@@ -52,7 +52,7 @@ def tableau_de_bord(request, siren):
             "reglementations/tableau_de_bord.html",
             context={
                 "entreprise": entreprise,
-                "reglementations": calcule_reglementations(
+                "reglementations": trie_reglementations_par_status(
                     caracteristiques, request.user
                 ),
             },
@@ -63,6 +63,15 @@ def tableau_de_bord(request, siren):
             "Veuillez renseigner les informations suivantes pour accéder au tableau de bord de cette entreprise.",
         )
         return redirect("entreprises:qualification", siren=entreprise.siren)
+
+
+def trie_reglementations_par_status(
+    caracteristiques: CaracteristiquesAnnuelles, user: settings.AUTH_USER_MODEL
+):
+    tri = {status.label: [] for status in ReglementationStatus.status_possibles()}
+    for reglementation_et_status in calcule_reglementations(caracteristiques, user):
+        tri[reglementation_et_status["status"].label].append(reglementation_et_status)
+    return tri
 
 
 def calcule_reglementations(

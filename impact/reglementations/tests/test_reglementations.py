@@ -85,12 +85,22 @@ def test_tableau_de_bord_avec_utilisateur_authentifié(client, entreprise):
     context = response.context
     assert context["entreprise"] == entreprise
     reglementations = context["reglementations"]
-    for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
-        assert reglementations[index]["status"] == REGLEMENTATION.calculate_status(
+    for REGLEMENTATION in REGLEMENTATIONS:
+        REGLEMENTATION_STATUS = REGLEMENTATION.calculate_status(
             entreprise.dernieres_caracteristiques_qualifiantes, entreprise.users.first()
         )
-    for reglementation in reglementations:
-        assert reglementation["status"].status_detail in content
+        assert REGLEMENTATION_STATUS in [
+            status
+            for liste_de_reglementation_et_status in reglementations[
+                REGLEMENTATION_STATUS.label
+            ]
+            for k, status in liste_de_reglementation_et_status.items()
+            if k == "status"
+        ]
+    for status_label, reglementations_et_status in reglementations.items():
+        for reglementation_et_status in reglementations_et_status:
+            assert reglementation_et_status["status"].status_detail in content
+            assert reglementation_et_status["status"].label == status_label
 
 
 def test_tableau_de_bord_avec_utilisateur_authentifie_et_multiple_entreprises(
@@ -110,12 +120,21 @@ def test_tableau_de_bord_avec_utilisateur_authentifie_et_multiple_entreprises(
     context = response.context
     assert context["entreprise"] == entreprise1
     reglementations = context["reglementations"]
-    for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
-        assert reglementations[index]["status"] == REGLEMENTATION.calculate_status(
+    for REGLEMENTATION in REGLEMENTATIONS:
+        REGLEMENTATION_STATUS = REGLEMENTATION.calculate_status(
             entreprise1.dernieres_caracteristiques_qualifiantes, alice
         )
-    for reglementation in reglementations:
-        assert reglementation["status"].status_detail in content
+        assert REGLEMENTATION_STATUS in [
+            status
+            for liste_de_reglementation_et_status in reglementations[
+                REGLEMENTATION_STATUS.label
+            ]
+            for k, status in liste_de_reglementation_et_status.items()
+            if k == "status"
+        ]
+    for _, reglementations_et_status in reglementations.items():
+        for reglementation_et_status in reglementations_et_status:
+            assert reglementation_et_status["status"].status_detail in content
 
     response = client.get(f"/tableau-de-bord/{entreprise2.siren}")
 
@@ -125,12 +144,21 @@ def test_tableau_de_bord_avec_utilisateur_authentifie_et_multiple_entreprises(
     context = response.context
     assert context["entreprise"] == entreprise2
     reglementations = context["reglementations"]
-    for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
-        assert reglementations[index]["status"] == REGLEMENTATION.calculate_status(
+    for REGLEMENTATION in REGLEMENTATIONS:
+        REGLEMENTATION_STATUS = REGLEMENTATION.calculate_status(
             entreprise2.dernieres_caracteristiques_qualifiantes, alice
         )
-    for reglementation in reglementations:
-        assert reglementation["status"].status_detail in content
+        assert REGLEMENTATION_STATUS in [
+            status
+            for liste_de_reglementation_et_status in reglementations[
+                REGLEMENTATION_STATUS.label
+            ]
+            for k, status in liste_de_reglementation_et_status.items()
+            if k == "status"
+        ]
+    for _, reglementations_et_status in reglementations.items():
+        for reglementation_et_status in reglementations_et_status:
+            assert reglementation_et_status["status"].status_detail in content
 
 
 def test_tableau_de_bord_entreprise_non_qualifiee_redirige_vers_la_qualification(
