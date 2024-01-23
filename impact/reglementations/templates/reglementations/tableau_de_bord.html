@@ -14,10 +14,12 @@
         </div>
         <div class="fr-grid-row fr-grid-row--gutters">
             {% for status_label, reglementations_et_status in reglementations.items %}
-                <h3>{{ status_label }}</h3>
-                {% for reglementation in reglementations_et_status %}
-                    {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
-                {% endfor %}
+                {% if reglementations_et_status %}
+                    <h3>{{ status_label }}</h3>
+                    {% for reglementation in reglementations_et_status %}
+                        {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+                    {% endfor %}
+                {% endif %}
             {% endfor %}
         </div>
     </div>
