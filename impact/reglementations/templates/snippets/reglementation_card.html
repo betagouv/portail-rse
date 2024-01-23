@@ -5,15 +5,15 @@
                 <ul class="fr-badges-group">
                     <li>
                         {% if status.status == status.STATUS_NON_SOUMIS %}
-                            <p class="fr-badge">non soumis</p>
+                            <p class="fr-badge">{{ status.label }}</p>
                         {% elif status.status == status.STATUS_SOUMIS %}
-                            <p class="fr-badge fr-badge--info fr-badge--no-icon">soumis</p>
+                            <p class="fr-badge fr-badge--info fr-badge--no-icon">{{ status.label }}</p>
                         {% elif status.status == status.STATUS_A_ACTUALISER %}
-                            <p class="fr-badge fr-badge--error fr-badge--no-icon">à actualiser</p>
+                            <p class="fr-badge fr-badge--error fr-badge--no-icon">{{ status.label }}</p>
                         {% elif status.status == status.STATUS_A_JOUR %}
-                            <p class="fr-badge fr-badge--success fr-badge--no-icon">à jour</p>
+                            <p class="fr-badge fr-badge--success fr-badge--no-icon">{{ status.label }}</p>
                         {% elif status.status == status.STATUS_EN_COURS %}
-                            <p class="fr-badge fr-badge--warning fr-badge--no-icon">en cours</p>
+                            <p class="fr-badge fr-badge--warning fr-badge--no-icon">{{ status.label }}</p>
                         {% endif %}
                     </li>
                 </ul>
