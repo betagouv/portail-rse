@@ -3,6 +3,7 @@ from datetime import timedelta
 
 import pytest
 from django.contrib.auth.models import AnonymousUser
+from django.urls import reverse
 from freezegun import freeze_time
 
 from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
@@ -61,6 +62,22 @@ def test_fiches_reglementations_sont_publiques(client):
         response = client.get(url)
         assert response.status_code == 200
         assert response.templates[0].name == template
+
+
+def test_tableau_de_bord_est_prive(client, entreprise_factory, alice):
+    entreprise = entreprise_factory()
+    url = f"/tableau-de-bord/{entreprise.siren}"
+
+    response = client.get(url)
+
+    assert response.status_code == 302
+    connexion_url = reverse("users:login")
+    assert response.url == f"{connexion_url}?next={url}"
+
+    client.force_login(alice)
+    response = client.get(url)
+
+    assert response.status_code == 403
 
 
 @pytest.fixture
