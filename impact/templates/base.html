@@ -141,7 +141,8 @@
                                     </li>
                                     -->
                                     <li class="fr-nav__item">
-                                        <a class="fr-nav__link" href="{% url 'reglementations:csrd' %}" target="_self">Espace Rapport de Durabilité</a>
+                                        {% url 'reglementations:csrd' as url_page %}
+                                        <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Espace Rapport de Durabilité</a>
                                     </li>
                                     {% url 'entreprises:entreprises' as url_page %}
                                     <li><a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>{% if user.entreprise_set.count >= 2 %}Mes entreprises{% else %}Mon entreprise{% endif %}</a></li>
