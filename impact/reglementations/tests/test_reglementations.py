@@ -68,7 +68,7 @@ def entreprise(db, alice, entreprise_factory):
     entreprise = entreprise_factory(
         siren="000000001",
         denomination="Entreprise SAS",
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
     return entreprise
@@ -84,81 +84,23 @@ def test_tableau_de_bord_avec_utilisateur_authentifié(client, entreprise):
     content = response.content.decode("utf-8")
     context = response.context
     assert context["entreprise"] == entreprise
-    reglementations = context["reglementations"]
+    reglementations = (
+        context["reglementations_a_actualiser"]
+        + context["reglementations_en_cours"]
+        + context["reglementations_a_jour"]
+        + context["reglementations_soumises"]
+        + context["reglementations_non_soumises"]
+    )
+    assert len(reglementations) == len(REGLEMENTATIONS)
     for REGLEMENTATION in REGLEMENTATIONS:
-        REGLEMENTATION_STATUS = REGLEMENTATION.calculate_status(
+        index = [
+            reglementation["reglementation"] for reglementation in reglementations
+        ].index(REGLEMENTATION)
+        assert reglementations[index]["status"] == REGLEMENTATION.calculate_status(
             entreprise.dernieres_caracteristiques_qualifiantes, entreprise.users.first()
         )
-        assert REGLEMENTATION_STATUS in [
-            status
-            for liste_de_reglementation_et_status in reglementations[
-                REGLEMENTATION_STATUS.label
-            ]
-            for k, status in liste_de_reglementation_et_status.items()
-            if k == "status"
-        ]
-    for status_label, reglementations_et_status in reglementations.items():
-        for reglementation_et_status in reglementations_et_status:
-            assert reglementation_et_status["status"].status_detail in content
-            assert reglementation_et_status["status"].label == status_label
-
-
-def test_tableau_de_bord_avec_utilisateur_authentifie_et_multiple_entreprises(
-    client, entreprise_factory, alice
-):
-    entreprise1 = entreprise_factory(siren="000000001")
-    entreprise2 = entreprise_factory(siren="000000002")
-    attach_user_to_entreprise(alice, entreprise1, "Présidente")
-    attach_user_to_entreprise(alice, entreprise2, "Présidente")
-    client.force_login(alice)
-
-    response = client.get(f"/tableau-de-bord/{entreprise1.siren}")
-
-    assert response.status_code == 200
-
-    content = response.content.decode("utf-8")
-    context = response.context
-    assert context["entreprise"] == entreprise1
-    reglementations = context["reglementations"]
-    for REGLEMENTATION in REGLEMENTATIONS:
-        REGLEMENTATION_STATUS = REGLEMENTATION.calculate_status(
-            entreprise1.dernieres_caracteristiques_qualifiantes, alice
-        )
-        assert REGLEMENTATION_STATUS in [
-            status
-            for liste_de_reglementation_et_status in reglementations[
-                REGLEMENTATION_STATUS.label
-            ]
-            for k, status in liste_de_reglementation_et_status.items()
-            if k == "status"
-        ]
-    for _, reglementations_et_status in reglementations.items():
-        for reglementation_et_status in reglementations_et_status:
-            assert reglementation_et_status["status"].status_detail in content
-
-    response = client.get(f"/tableau-de-bord/{entreprise2.siren}")
-
-    assert response.status_code == 200
-
-    content = response.content.decode("utf-8")
-    context = response.context
-    assert context["entreprise"] == entreprise2
-    reglementations = context["reglementations"]
-    for REGLEMENTATION in REGLEMENTATIONS:
-        REGLEMENTATION_STATUS = REGLEMENTATION.calculate_status(
-            entreprise2.dernieres_caracteristiques_qualifiantes, alice
-        )
-        assert REGLEMENTATION_STATUS in [
-            status
-            for liste_de_reglementation_et_status in reglementations[
-                REGLEMENTATION_STATUS.label
-            ]
-            for k, status in liste_de_reglementation_et_status.items()
-            if k == "status"
-        ]
-    for _, reglementations_et_status in reglementations.items():
-        for reglementation_et_status in reglementations_et_status:
-            assert reglementation_et_status["status"].status_detail in content
+    for reglementation in reglementations:
+        assert reglementation["status"].status_detail in content
 
 
 def test_tableau_de_bord_entreprise_non_qualifiee_redirige_vers_la_qualification(

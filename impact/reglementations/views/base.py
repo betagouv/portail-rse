@@ -35,32 +35,6 @@ class ReglementationStatus:
     primary_action: ReglementationAction | None = None
     secondary_actions: list[ReglementationAction] = field(default_factory=list)
 
-    @property
-    def label(self):
-        if self.status == self.STATUS_A_ACTUALISER:
-            return "à actualiser"
-        elif self.status == self.STATUS_EN_COURS:
-            return "en cours"
-        elif self.status == self.STATUS_A_JOUR:
-            return "à jour"
-        elif self.status == self.STATUS_SOUMIS:
-            return "soumis"
-        elif self.status == self.STATUS_NON_SOUMIS:
-            return "non soumis"
-        elif self.status == self.STATUS_INCALCULABLE:
-            return "incalculable"
-        return ""
-
-    @classmethod
-    def status_possibles(cls):
-        return (
-            cls(status=cls.STATUS_A_ACTUALISER, status_detail=""),
-            cls(status=cls.STATUS_EN_COURS, status_detail=""),
-            cls(status=cls.STATUS_SOUMIS, status_detail=""),
-            cls(status=cls.STATUS_A_JOUR, status_detail=""),
-            cls(status=cls.STATUS_NON_SOUMIS, status_detail=""),
-        )
-
 
 class Reglementation(ABC):
     title: str

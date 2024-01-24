@@ -13,13 +13,33 @@
             </p>
         </div>
         <div class="fr-grid-row fr-grid-row--gutters">
-            {% for status_label, reglementations_et_status in reglementations.items %}
-                {% if reglementations_et_status %}
-                    <h3>{{ status_label }}</h3>
-                    {% for reglementation in reglementations_et_status %}
-                        {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
-                    {% endfor %}
-                {% endif %}
+            <h3>Réglementations à actualiser</h3>
+            {% for reglementation in reglementations_a_actualiser %}
+                {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+            {% endfor %}
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters">
+            <h3>Réglementations en cours</h3>
+            {% for reglementation in reglementations_en_cours %}
+                {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+            {% endfor %}
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters">
+            <h3>Réglementations à jour</h3>
+            {% for reglementation in reglementations_a_jour %}
+                {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+            {% endfor %}
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters">
+            <h3>Réglementations soumises</h3>
+            {% for reglementation in reglementations_soumises %}
+                {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+            {% endfor %}
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters">
+            <h3>Réglementations non soumises</h3>
+            {% for reglementation in reglementations_non_soumises %}
+                {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
             {% endfor %}
         </div>
     </div>
