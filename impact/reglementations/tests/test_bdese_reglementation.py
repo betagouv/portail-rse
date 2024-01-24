@@ -152,7 +152,7 @@ def test_calculate_status_more_than_50_employees_with_habilited_user(
     )
     assert status.primary_action.title == "Actualiser ma BDESE"
     assert status.primary_action.url == reverse(
-        "reglementations:bdese", args=[entreprise.siren, annee, 0]
+        "reglementations:bdese_step", args=[entreprise.siren, annee, 0]
     )
     assert not status.secondary_actions
 
@@ -168,7 +168,7 @@ def test_calculate_status_more_than_50_employees_with_habilited_user(
     )
     assert status.primary_action.title == "Reprendre l'actualisation de ma BDESE"
     assert status.primary_action.url == reverse(
-        "reglementations:bdese", args=[entreprise.siren, annee, 1]
+        "reglementations:bdese_step", args=[entreprise.siren, annee, 1]
     )
     assert (
         status.secondary_actions[0].title == f"Télécharger le pdf {annee} (brouillon)"
@@ -191,7 +191,7 @@ def test_calculate_status_more_than_50_employees_with_habilited_user(
     assert len(status.secondary_actions) == 1
     assert status.secondary_actions[0].title == "Modifier ma BDESE"
     assert status.secondary_actions[0].url == reverse(
-        "reglementations:bdese", args=[entreprise.siren, annee, 1]
+        "reglementations:bdese_step", args=[entreprise.siren, annee, 1]
     )
 
 
