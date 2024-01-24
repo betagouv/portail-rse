@@ -98,10 +98,12 @@
                         <nav class="fr-nav" id="navigation-494" role="navigation" aria-label="Menu principal">
                             <ul class="fr-nav__list">
                                 <li class="fr-nav__item">
-                                    <a class="fr-nav__link" href="{% url 'reglementations' %}" target="_self">Les réglementations RSE</a>
+                                    {% url 'reglementations' as url_page %}
+                                    <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Les réglementations RSE</a>
                                 </li>
                                 <li class="fr-nav__item">
-                                    <a class="fr-nav__link" href="{% url 'simulation' %}" target="_self">Simulation</a>
+                                    {% url 'simulation' as url_page %}
+                                    <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Simulation</a>
                                 </li>
                                 {% if user.is_authenticated %}
                                     {% if user.entreprise_set.count >= 2 %}
@@ -112,14 +114,16 @@
                                         <div class="fr-collapse fr-menu" id="menu-1">
                                             <ul class="fr-menu__list">
                                                 {% for entreprise in user.entreprises %}
-                                                    <li><a class="fr-nav__link" href="{% url 'reglementations:tableau_de_bord' entreprise.siren %}" target="_self">Tableau de Bord pour {{ entreprise.denomination }}</a></li>
+                                                    {% url 'reglementations:tableau_de_bord' entreprise.siren as url_page %}
+                                                    <li><a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Tableau de Bord pour {{ entreprise.denomination }}</a></li>
                                                 {% endfor %}
                                             </ul>
                                         </div>
                                         </li>
                                     {% else %}
                                         {% for entreprise in user.entreprises %}
-                                            <li class="fr-nav__item"><a class="fr-nav__link" href="{% url 'reglementations:tableau_de_bord' entreprise.siren %}" target="_self">Tableau de bord</a></li>
+                                            {% url 'reglementations:tableau_de_bord' entreprise.siren as url_page %}
+                                            <li class="fr-nav__item"><a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Tableau de bord</a></li>
                                         {% endfor %}
                                     {% endif %}
                                         <!--
@@ -139,7 +143,8 @@
                                     <li class="fr-nav__item">
                                         <a class="fr-nav__link" href="{% url 'reglementations:csrd' %}" target="_self">Espace Rapport de Durabilité</a>
                                     </li>
-                                    <li><a class="fr-nav__link" href="{% url 'entreprises:entreprises' %}" target="_self">{% if user.entreprise_set.count >= 2 %}Mes entreprises{% else %}Mon entreprise{% endif %}</a></li>
+                                    {% url 'entreprises:entreprises' as url_page %}
+                                    <li><a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>{% if user.entreprise_set.count >= 2 %}Mes entreprises{% else %}Mon entreprise{% endif %}</a></li>
                                 {% else %}
                                     <li class="fr-nav__item"><a class="fr-nav__link" href="{% url 'users:login' %}?next={{ request.path }}" target="_self">Tableau de bord</a></li>
                                 {% endif %}
