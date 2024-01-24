@@ -107,12 +107,12 @@
                         <nav class="fr-nav" id="navigation-494" role="navigation" aria-label="Menu principal">
                             <ul class="fr-nav__list">
                                 <li class="fr-nav__item">
-                                    {% url 'reglementations' as url_page %}
-                                    <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Les réglementations RSE</a>
-                                </li>
-                                <li class="fr-nav__item">
                                     {% url 'simulation' as url_page %}
                                     <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Simulation</a>
+                                </li>
+                                <li class="fr-nav__item">
+                                    {% url 'reglementations' as url_page %}
+                                    <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Les réglementations RSE</a>
                                 </li>
                                 {% if user.is_authenticated %}
                                     {% if user.entreprise_set.count >= 2 %}
