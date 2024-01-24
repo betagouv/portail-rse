@@ -87,7 +87,7 @@ def test_bdese_step_redirect_to_configuration_if_bdese_not_configured(
     assert response.redirect_chain == [
         (
             reverse(
-                "reglementations:bdese",
+                "reglementations:bdese_step",
                 args=[bdese.entreprise.siren, bdese.annee, 0],
             ),
             302,
@@ -540,7 +540,7 @@ def test_save_bdese_configuration_for_a_new_year(
     assert response.redirect_chain == [
         (
             reverse(
-                "reglementations:bdese",
+                "reglementations:bdese_step",
                 args=[configured_bdese.entreprise.siren, new_year, 0],
             ),
             302,

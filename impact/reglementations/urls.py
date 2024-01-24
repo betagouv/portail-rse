@@ -79,7 +79,11 @@ urlpatterns = [
         views.tableau_de_bord,
         name="tableau_de_bord",
     ),
-    path("bdese/<str:siren>/<int:annee>/<int:step>", views.bdese.bdese, name="bdese"),
+    path(
+        "bdese/<str:siren>/<int:annee>/<int:step>",
+        views.bdese.bdese_step,
+        name="bdese_step",
+    ),
     path("bdese/<str:siren>/<int:annee>/pdf", views.bdese.bdese_pdf, name="bdese_pdf"),
     path(
         "bdese/<str:siren>/<int:annee>/actualiser-desactualiser",
