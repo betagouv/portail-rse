@@ -65,6 +65,16 @@ def bdese_step_url(bdese, step):
     return f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/{step}"
 
 
+def test_bdese_step_introuvable_si_bdese_avec_accord(bdese_avec_accord, alice, client):
+    client.force_login(alice)
+    entreprise = bdese_avec_accord.entreprise
+
+    url = bdese_step_url(bdese_avec_accord, 1)
+    response = client.get(url)
+
+    assert response.status_code == 404
+
+
 def test_bdese_step_redirect_to_configuration_if_bdese_not_configured(
     bdese, habilitated_user, client
 ):
@@ -314,6 +324,15 @@ def test_get_pdf_redirige_vers_la_qualification_si_manquante(
 
     assert response.status_code == 302
     assert response.url == reverse("entreprises:qualification", args=[entreprise.siren])
+
+
+def test_get_pdf_introuvable_si_bdese_avec_accord(bdese_avec_accord, alice, client):
+    client.force_login(alice)
+
+    url = f"/bdese/{bdese_avec_accord.entreprise.siren}/{bdese_avec_accord.annee}/pdf"
+    response = client.get(url)
+
+    assert response.status_code == 404
 
 
 def test_render_bdese_pdf_html(configured_bdese):
