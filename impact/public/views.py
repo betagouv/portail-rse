@@ -81,18 +81,10 @@ def contact(request):
 
 
 def reglementations(request):
-    reglementations = [
-        {
-            "reglementation": reglementation,
-            "status": None,
-        }
-        for reglementation in REGLEMENTATIONS
-    ]
-
     return render(
         request,
         "public/reglementations.html",
-        {"reglementations": reglementations},
+        {"reglementations": REGLEMENTATIONS},
     )
 
 
