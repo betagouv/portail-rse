@@ -12,36 +12,46 @@
                 La liste des réglementations ci-dessous n’est pas encore complète et va s’enrichir progressivement. Le site actuel, encore au stade de prototype (bêta), sera amené à évoluer.
             </p>
         </div>
-        <div class="fr-grid-row fr-grid-row--gutters">
-            <h3>Réglementations à actualiser</h3>
-            {% for reglementation in reglementations_a_actualiser %}
-                {% include "snippets/reglementation_component.html" with reglementation=reglementation.reglementation status=reglementation.status %}
-            {% endfor %}
-        </div>
-        <div class="fr-grid-row fr-grid-row--gutters">
-            <h3>Réglementations en cours</h3>
-            {% for reglementation in reglementations_en_cours %}
-                {% include "snippets/reglementation_component.html" with reglementation=reglementation.reglementation status=reglementation.status %}
-            {% endfor %}
-        </div>
-        <div class="fr-grid-row fr-grid-row--gutters">
-            <h3>Réglementations à jour</h3>
-            {% for reglementation in reglementations_a_jour %}
-                {% include "snippets/reglementation_component.html" with reglementation=reglementation.reglementation status=reglementation.status %}
-            {% endfor %}
-        </div>
-        <div class="fr-grid-row fr-grid-row--gutters">
-            <h3>Réglementations soumises</h3>
-            {% for reglementation in reglementations_soumises %}
-                {% include "snippets/reglementation_component.html" with reglementation=reglementation.reglementation status=reglementation.status %}
-            {% endfor %}
-        </div>
-        <div class="fr-grid-row fr-grid-row--gutters">
-            <h3>Réglementations non soumises</h3>
-            {% for reglementation in reglementations_non_soumises %}
-                {% include "snippets/reglementation_component.html" with reglementation=reglementation.reglementation status=reglementation.status %}
-            {% endfor %}
-        </div>
+        {% if reglementations_a_actualiser %}
+            <div class="fr-grid-row fr-grid-row--gutters">
+                <h3>Réglementations à actualiser</h3>
+                {% for reglementation in reglementations_a_actualiser %}
+                    {% include "snippets/reglementation_component.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% if reglementations_en_cours %}
+            <div class="fr-grid-row fr-grid-row--gutters">
+                <h3>Réglementations en cours</h3>
+                {% for reglementation in reglementations_en_cours %}
+                    {% include "snippets/reglementation_component.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% if reglementations_a_jour %}
+            <div class="fr-grid-row fr-grid-row--gutters">
+                <h3>Réglementations à jour</h3>
+                {% for reglementation in reglementations_a_jour %}
+                    {% include "snippets/reglementation_component.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% if reglementations_soumises %}
+            <div class="fr-grid-row fr-grid-row--gutters">
+                <h3>Réglementations soumises</h3>
+                {% for reglementation in reglementations_soumises %}
+                    {% include "snippets/reglementation_component.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% if reglementations_non_soumises %}
+            <div class="fr-grid-row fr-grid-row--gutters">
+                <h3>Réglementations non soumises</h3>
+                {% for reglementation in reglementations_non_soumises %}
+                    {% include "snippets/reglementation_component.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
 
 {% endblock %}
