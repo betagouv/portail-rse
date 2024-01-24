@@ -159,7 +159,7 @@
             <div class="fr-container fr-py-3w" id="svelte-simulation-result">
                 <h3>Résultats de votre simulation</h3>
                 {% for reglementation in reglementations %}
-                    {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+                    {% include "snippets/reglementation_component.html" with reglementation=reglementation.reglementation status=reglementation.status %}
                 {% endfor %}
             </div>
         </div>
