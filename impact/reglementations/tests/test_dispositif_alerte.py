@@ -10,7 +10,7 @@ from reglementations.views.dispositif_alerte import DispositifAlerteReglementati
 def test_reglementation_info():
     info = DispositifAlerteReglementation.info()
 
-    assert info["title"] == "Dispositif d'alerte"
+    assert info["title"] == "Dispositif d’alerte"
 
     assert (
         info["description"]
