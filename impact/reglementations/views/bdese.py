@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.http import Http404
 from django.shortcuts import HttpResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -230,7 +231,12 @@ def bdese_pdf(request, siren, annee):
     entreprise = Entreprise.objects.get(siren=siren)
     if not is_user_attached_to_entreprise(request.user, entreprise):
         raise PermissionDenied
+
     bdese = get_or_create_bdese(entreprise, annee, request.user)
+
+    if bdese.is_bdese_avec_accord:
+        raise Http404
+
     pdf_html = render_bdese_pdf_html(bdese)
     html = HTML(string=pdf_html)
     css = CSS(
@@ -277,6 +283,8 @@ def bdese(request, siren, annee, step):
 
     bdese = get_or_create_bdese(entreprise, annee, request.user)
 
+    if bdese.is_bdese_avec_accord:
+        raise Http404
     if not bdese.is_configured and step != 0:
         messages.warning(request, f"Commencez par configurer votre BDESE {annee}")
         return redirect("reglementations:bdese", siren=siren, annee=annee, step=0)
