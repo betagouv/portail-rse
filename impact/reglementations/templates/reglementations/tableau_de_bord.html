@@ -15,31 +15,31 @@
         <div class="fr-grid-row fr-grid-row--gutters">
             <h3>Réglementations à actualiser</h3>
             {% for reglementation in reglementations_a_actualiser %}
-                {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+                {% include "snippets/reglementation_component.html" with reglementation=reglementation.reglementation status=reglementation.status %}
             {% endfor %}
         </div>
         <div class="fr-grid-row fr-grid-row--gutters">
             <h3>Réglementations en cours</h3>
             {% for reglementation in reglementations_en_cours %}
-                {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+                {% include "snippets/reglementation_component.html" with reglementation=reglementation.reglementation status=reglementation.status %}
             {% endfor %}
         </div>
         <div class="fr-grid-row fr-grid-row--gutters">
             <h3>Réglementations à jour</h3>
             {% for reglementation in reglementations_a_jour %}
-                {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+                {% include "snippets/reglementation_component.html" with reglementation=reglementation.reglementation status=reglementation.status %}
             {% endfor %}
         </div>
         <div class="fr-grid-row fr-grid-row--gutters">
             <h3>Réglementations soumises</h3>
             {% for reglementation in reglementations_soumises %}
-                {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+                {% include "snippets/reglementation_component.html" with reglementation=reglementation.reglementation status=reglementation.status %}
             {% endfor %}
         </div>
         <div class="fr-grid-row fr-grid-row--gutters">
             <h3>Réglementations non soumises</h3>
             {% for reglementation in reglementations_non_soumises %}
-                {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+                {% include "snippets/reglementation_component.html" with reglementation=reglementation.reglementation status=reglementation.status %}
             {% endfor %}
         </div>
     </div>
