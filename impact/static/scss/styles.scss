@@ -522,6 +522,107 @@ button.rse-organizer--card:hover, .rse-organizer--card:hover {
     }
 }
 
+/* dashboard */
+
+.dashboard-category {
+    border-radius: .5rem;
+    padding:.5rem 1rem;
+    padding-bottom: 1rem;
+    flex-direction: column;
+}
+
+.dashboard-category h3 {
+    text-transform: uppercase;
+    font-size: .875rem;
+    font-weight: 700;
+    line-height: 1.5rem;
+    margin-bottom:  .5rem;
+}
+
+.dashboard-list {
+    background-color: var(--background-default-grey);
+    border-radius: .5rem;
+    padding:.5rem 1rem;
+    padding-bottom: 0rem;
+}
+
+.dashboard-list h6 {
+    font-size: 1.2em;
+}
+
+.dashboard--a-actualiser {
+    background-color: var(--background-contrast-error);
+}
+
+.dashboard--a-actualiser h3 {
+    color: var(--text-default-error);
+}
+
+.dashboard--en-cours {
+    background-color: var(--background-contrast-warning);
+}
+
+.dashboard--en-cours h3 {
+    color: var(--text-default-warning);
+}
+
+.dashboard--a-jour {
+    background-color: var(--background-contrast-green-emeraude);
+}
+
+.dashboard--a-jour h3 {
+    color: var(--text-label-green-emeraude);
+}
+
+.dashboard--soumis {
+    background-color: var(--background-contrast-info);
+}
+
+.dashboard--soumis h3 {
+    color: var(--text-default-info);
+}
+
+.dashboard--non-soumis {
+    background-color: var(--background-alt-grey);
+}
+
+.dashboard--non-soumis h3 {
+    color: var(--text-label-grey);
+}
+
+.dashboard .reglementation-grid {
+    display: grid;
+    grid-template-columns: auto;
+}
+
+.dashboard .reglementation-grid .fr-btns-group {
+    flex-flow: row;
+    align-items: flex-end;
+    grid-column: 2/3;
+    grid-row: 1/2;
+    text-align: right;
+    justify-content: end;
+}
+
+.dashboard .reglementation-grid .reglementation-header {
+    grid-column: 1/2;
+    grid-row:1/2;
+}
+
+.dashboard-category-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.dashboard-category-header button {
+    color: var(--text-default-info);
+}
+.dashboard-category-header button:hover {
+    color: var(--text-default-info-hover);
+    background-color: rgba(0,0,0,0);
+}
+
 /* media queries */
 
 @media screen and (max-width: 992px) {
