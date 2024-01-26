@@ -188,14 +188,16 @@
 
 .reglementation_detail {
     align-items: flex-start;
+    /*
     color: var(--text-default-info);
+    background-color: var(--background-contrast-info);
+    border-radius: .25rem;
+    */
     display: flex;
     flex-direction: row;
     font-size: .75rem;
     line-height: 1.25rem;
     margin-bottom: 0;
-    background-color: var(--background-contrast-info);
-    border-radius: .25rem;
     grid-column: 1/3;
     align-items: center;
     width: fit-content;
@@ -395,6 +397,7 @@ button.rse-organizer--card:hover, .rse-organizer--card:hover {
 .dashboard .reglementation-grid {
     display: grid;
     grid-template-columns: auto 1fr;
+    grid-gap: 0rem;
 }
 
 .dashboard .fr-btn {
