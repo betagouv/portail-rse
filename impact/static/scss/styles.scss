@@ -531,7 +531,7 @@ button.rse-organizer--card:hover, .rse-organizer--card:hover {
     flex-direction: column;
 }
 
-.dashboard-category h3 {
+.dashboard-category h4 {
     text-transform: uppercase;
     font-size: .875rem;
     font-weight: 700;
@@ -554,7 +554,7 @@ button.rse-organizer--card:hover, .rse-organizer--card:hover {
     background-color: var(--background-contrast-error);
 }
 
-.dashboard--a-actualiser h3 {
+.dashboard--a-actualiser h4 {
     color: var(--text-default-error);
 }
 
@@ -562,7 +562,7 @@ button.rse-organizer--card:hover, .rse-organizer--card:hover {
     background-color: var(--background-contrast-warning);
 }
 
-.dashboard--en-cours h3 {
+.dashboard--en-cours h4 {
     color: var(--text-default-warning);
 }
 
@@ -570,7 +570,7 @@ button.rse-organizer--card:hover, .rse-organizer--card:hover {
     background-color: var(--background-contrast-green-emeraude);
 }
 
-.dashboard--a-jour h3 {
+.dashboard--a-jour h4 {
     color: var(--text-label-green-emeraude);
 }
 
@@ -578,7 +578,7 @@ button.rse-organizer--card:hover, .rse-organizer--card:hover {
     background-color: var(--background-contrast-info);
 }
 
-.dashboard--soumis h3 {
+.dashboard--soumis h4 {
     color: var(--text-default-info);
 }
 
@@ -586,18 +586,26 @@ button.rse-organizer--card:hover, .rse-organizer--card:hover {
     background-color: var(--background-alt-grey);
 }
 
-.dashboard--non-soumis h3 {
+.dashboard--non-soumis h4 {
     color: var(--text-label-grey);
 }
 
 .dashboard .reglementation-grid {
     display: grid;
-    grid-template-columns: auto;
+    grid-template-columns: auto 1fr;
+}
+
+.dashboard .fr-btn {
+    margin-bottom: .5rem;
+}
+
+.dashboard .fr-text--sm {
+    color: var(--text-mention-grey);
 }
 
 .dashboard .reglementation-grid .fr-btns-group {
     flex-flow: row;
-    align-items: flex-end;
+    align-items: flex-start;
     grid-column: 2/3;
     grid-row: 1/2;
     text-align: right;
@@ -607,12 +615,18 @@ button.rse-organizer--card:hover, .rse-organizer--card:hover {
 .dashboard .reglementation-grid .reglementation-header {
     grid-column: 1/2;
     grid-row:1/2;
+    display: flex;
+    flex-direction: column;
+    grid-gap:0px;
 }
 
 .dashboard-category-header {
     display: flex;
+    flex-direction: column;
+    /*
     flex-direction: row;
     justify-content: space-between;
+    */
 }
 
 .dashboard-category-header button {
