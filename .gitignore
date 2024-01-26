@@ -5,6 +5,7 @@ __pycache__
 .env
 
 impact/static_collected/
+impact/static/css/
 impact/static/svelte
 *.sqlite3
 
