@@ -16,7 +16,7 @@
         <div class="dashboard">
             {% if reglementations_a_actualiser %}
                 <div class="fr-my-4w fr-grid-row fr-grid-row--gutters dashboard-category dashboard--a-actualiser">
-                    <h3>Réglementations à actualiser</h3>
+                    <h4>Réglementations à actualiser ({{reglementations_a_actualiser|length}})</h4>
                     <div class="dashboard-list">
                         {% for reglementation in reglementations_a_actualiser %}
                             {% include "snippets/reglementation_component_dashboard.html" with reglementation=reglementation.reglementation status=reglementation.status %}
@@ -26,19 +26,9 @@
             {% endif %}
             {% if reglementations_en_cours %}
                 <div class="fr-my-4w fr-grid-row fr-grid-row--gutters dashboard-category dashboard--en-cours">
-                    <h3>Réglementations en cours</h3>
+                    <h4>Réglementations en cours de saisie ({{reglementations_en_cours|length}})</h4>
                     <div class="dashboard-list">
                         {% for reglementation in reglementations_en_cours %}
-                            {% include "snippets/reglementation_component_dashboard.html" with reglementation=reglementation.reglementation status=reglementation.status %}
-                        {% endfor %}
-                    </div>
-                </div>
-            {% endif %}
-            {% if reglementations_a_jour %}
-                <div class="fr-my-4w fr-grid-row fr-grid-row--gutters dashboard-category dashboard--a-jour">
-                    <h3>Réglementations à jour</h3>
-                    <div class="dashboard-list">
-                        {% for reglementation in reglementations_a_jour %}
                             {% include "snippets/reglementation_component_dashboard.html" with reglementation=reglementation.reglementation status=reglementation.status %}
                         {% endfor %}
                     </div>
@@ -47,8 +37,8 @@
             {% if reglementations_soumises %}
                 <div class="fr-my-4w fr-grid-row fr-grid-row--gutters dashboard-category dashboard--soumis">
                     <div class="dashboard-category-header">
-                        <h3>Réglementations soumises</h3>
-                        <button><span class="fr-icon-question-fill" aria-hidden="true"></span></button>
+                        <h4>Autres réglementations auxquelles votre entreprise est soumise ({{reglementations_soumises|length}})</h4>
+                        <p class="fr-text--xs">Nous savons que votre entreprise est soumise à ces réglementations, mais nous ne connaissons pas son statut d'actualisation.</p>
                     </div>
                     <div class="dashboard-list">
                         {% for reglementation in reglementations_soumises %}
@@ -57,9 +47,20 @@
                     </div>
                 </div>
             {% endif %}
+            {% if reglementations_a_jour %}
+                <div class="fr-my-4w fr-grid-row fr-grid-row--gutters dashboard-category dashboard--a-jour">
+                    <h3>Réglementations actualisées ({{reglementations_a_jour|length}})</h3>
+                    <div class="dashboard-list">
+                        {% for reglementation in reglementations_a_jour %}
+                            {% include "snippets/reglementation_component_dashboard.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
             {% if reglementations_non_soumises %}
+                <h3>Vous n'êtes pas soumis à ces réglementations</h3>
                 <div class="fr-my-4w fr-grid-row fr-grid-row--gutters dashboard-category dashboard--non-soumis">
-                    <h3>Réglementations non soumises</h3>
+                    <h4>Réglementations non soumises</h4>
                     <div class="dashboard-list">
                         {% for reglementation in reglementations_non_soumises %}
                             {% include "snippets/reglementation_component_dashboard.html" with reglementation=reglementation.reglementation status=reglementation.status %}
@@ -69,5 +70,4 @@
             {% endif %}
         </div>
     </div>
-
 {% endblock %}
