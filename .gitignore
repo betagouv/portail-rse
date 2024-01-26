@@ -6,7 +6,9 @@ __pycache__
 
 impact/static_collected/
 impact/static/css/
+impact/static/dsfr
 impact/static/svelte
+
 *.sqlite3
 
 .vscode

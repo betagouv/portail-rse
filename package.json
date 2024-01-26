@@ -6,13 +6,15 @@
   "scripts": {
     "compile:css": "sass impact/static/scss:impact/static/css",
     "compile:css:watch": "sass impact/static/scss:impact/static/css --watch",
-    "dev": "vite front",
-    "build": "vite build front && npm run compile:css"
+    "dsfr": "rm -rf impact/static/dsfr && cp -r node_modules/@gouvfr/dsfr/dist impact/static/dsfr",
+    "dev": "npm run dsfr && vite front",
+    "build": "vite build front && npm run compile:css && npm run dsfr"
   },
   "devDependencies": {
+    "@gouvfr/dsfr": "^1.11.0",
     "@sveltejs/vite-plugin-svelte": "^2.0.0",
+    "sass": "^1.70.0",
     "svelte": "^4.2.1",
-    "vite": "^4.5.2",
-    "sass": "^1.70.0"
+    "vite": "^4.5.2"
   }
 }
