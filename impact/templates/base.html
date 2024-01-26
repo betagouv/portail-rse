@@ -5,15 +5,15 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <link rel="stylesheet" href="{% static 'dsfr-1.9.0/dsfr/dsfr.min.css' %}">
-        <link rel="stylesheet" href="{% static 'dsfr-1.9.0/utility/icons/icons.css' %}">
+        <link rel="stylesheet" href="{% static 'dsfr/dsfr/dsfr.min.css' %}">
+        <link rel="stylesheet" href="{% static 'dsfr/utility/icons/icons.css' %}">
         <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 
         <meta name="theme-color" content="#000091"><!-- Défini la couleur de thème du navigateur (Safari/Android) -->
-        <link rel="apple-touch-icon" href="{% static 'dsfr-1.9.0/favicon/apple-touch-icon.png' %}"><!-- 180×180 -->
-        <link rel="icon" href="{% static 'dsfr-1.9.0/favicon/favicon.svg' %}" type="image/svg+xml">
-        <link rel="shortcut icon" href="{% static 'dsfr-1.9.0/favicon/favicon.ico' %}" type="image/x-icon"><!-- 32×32 -->
-        <link rel="manifest" href="{% static 'dsfr-1.9.0/favicon/manifest.webmanifest' %}" crossorigin="use-credentials">
+        <link rel="apple-touch-icon" href="{% static 'dsfr/favicon/apple-touch-icon.png' %}"><!-- 180×180 -->
+        <link rel="icon" href="{% static 'dsfr/favicon/favicon.svg' %}" type="image/svg+xml">
+        <link rel="shortcut icon" href="{% static 'dsfr/favicon/favicon.ico' %}" type="image/x-icon"><!-- 32×32 -->
+        <link rel="manifest" href="{% static 'dsfr/favicon/manifest.webmanifest' %}" crossorigin="use-credentials">
 
         <title>{% block title %}Portail RSE{% endblock %}</title>
 
@@ -224,7 +224,7 @@
         {% endblock %}
 
         <!-- Script en version es6 module et nomodule pour les navigateurs le ne supportant pas -->
-        <script type="module" src="{% static 'dsfr-1.9.0/dsfr/dsfr.module.js' %}"></script>
-        <script type="text/javascript" nomodule src="{% static 'dsfr-1.9.0/dsfr/dsfr.nomodule.min.js' %}"></script>
+        <script type="module" src="{% static 'dsfr/dsfr/dsfr.module.js' %}"></script>
+        <script type="text/javascript" nomodule src="{% static 'dsfr/dsfr/dsfr.nomodule.min.js' %}"></script>
     </body>
 </html>
