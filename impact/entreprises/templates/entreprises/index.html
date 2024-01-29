@@ -17,7 +17,6 @@
 
         {% if not user.entreprise_set.all %}
             Aucune entreprise n'est associée à votre compte.
-
         {% comment %}
             Limitation de l'ajout d'entreprise pour n'en avoir qu'une seule car il n'est pas certain que l'on puisse avoir une authentification forte d'un seul compte sur plusieurs entreprises.
             Actuellement, deux utilisateurs réels sont dans cette situation.
@@ -33,7 +32,6 @@
             </form>
         {% else %}
             <div class="fr-grid-row fr-mb-1w fr-grid-row--gutters">
-
                 {% for entreprise in user.entreprise_set.all %}
                     {% with habilitation=user|habilitation:entreprise %}
                         <div class="fr-col-12">
@@ -112,7 +110,7 @@
                                                     <span class="fr-fi-arrow-right-line fr-fi--lg"></span>
                                                     Quitter cette entreprise
                                                 </h1>
-                                                <p>Êtes-vous sûr de vouloir retirer votre compte de l'entreprise {{ entreprise.denomination }} ?</p>
+                                                <p>Êtes-vous sûr de vouloir retirer votre compte de l'entreprise {{ entreprise.denomination }} ?</p>
                                                 <p>L'entreprise et ses données éventuelles ne seront pas supprimées mais votre compte utilisateur n'y sera plus rattaché.</p>
                                             </div>
                                             <div class="fr-modal__footer">
@@ -126,18 +124,17 @@
                                                         <li>
                                                             <button type="button" class="fr-btn fr-btn--secondary" aria-controls="modal-detach-{{ entreprise.siren }}">Annuler</button>
                                                         </li>
-                                                    </form>
-                                                </div>
+                                                    </ul>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </dialog>
+                            </div>
+                        </dialog>
                     {% endwith %}
                 {% endfor %}
         {% endif %}
     </div>
-    </div>
-
-<!-- page entreprises -->
+    <!-- page entreprises -->
 {% endblock %}
