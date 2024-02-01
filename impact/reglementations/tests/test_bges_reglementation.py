@@ -1,3 +1,5 @@
+from datetime import date
+
 import pytest
 from django.contrib.auth.models import AnonymousUser
 from django.urls import reverse
@@ -216,7 +218,10 @@ def test_calcule_le_statut_si_plus_de_500_employes_bilan_publie_trop_vieux(
 ):
     entreprise = entreprise_factory(effectif=effectif)
     attach_user_to_entreprise(alice, entreprise, "Présidente")
-    mock_api_bges.return_value = 2015
+    mock_api_bges.return_value = {
+        "annee_reporting": 2015,
+        "date_publication": date(2016, 6, 30),
+    }
 
     with freeze_time("2023-12-15"):
         reglementation = BGESReglementation.calculate_status(
@@ -245,7 +250,10 @@ def test_calcule_le_statut_si_plus_de_500_employes_bilan_publie_recent(
 ):
     entreprise = entreprise_factory(effectif=effectif)
     attach_user_to_entreprise(alice, entreprise, "Présidente")
-    mock_api_bges.return_value = 2022
+    mock_api_bges.return_value = {
+        "annee_reporting": 2022,
+        "date_publication": date(2023, 6, 30),
+    }
 
     with freeze_time("2023-12-15"):
         reglementation = BGESReglementation.calculate_status(
@@ -293,7 +301,10 @@ def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer_bilan_publie_trop
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
-    mock_api_bges.return_value = 2015
+    mock_api_bges.return_value = {
+        "annee_reporting": 2015,
+        "date_publication": date(2016, 6, 30),
+    }
 
     with freeze_time("2023-12-15"):
         reglementation = BGESReglementation.calculate_status(
@@ -317,7 +328,10 @@ def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer_bilan_publie_rece
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
-    mock_api_bges.return_value = 2022
+    mock_api_bges.return_value = {
+        "annee_reporting": 2022,
+        "date_publication": date(2023, 6, 30),
+    }
 
     with freeze_time("2023-12-15"):
         reglementation = BGESReglementation.calculate_status(

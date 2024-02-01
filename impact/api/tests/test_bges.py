@@ -1,10 +1,11 @@
 import json
+from datetime import date
 
 import pytest
 from requests.exceptions import Timeout
 
 from api.bges import BGES_TIMEOUT
-from api.bges import last_reporting_year
+from api.bges import dernier_bilan_ges
 from api.exceptions import APIError
 from api.tests import MockedResponse
 
@@ -20,9 +21,10 @@ def test_une_seule_annee_de_publication_trouvee(mocker):
         "requests.get", return_value=MockedResponse(200, json.loads(data))
     )
 
-    year = last_reporting_year(SIREN)
+    dernier_bilan_ges_data = dernier_bilan_ges(SIREN)
 
-    assert year == 2021
+    assert dernier_bilan_ges_data["annee_reporting"] == 2021
+    assert dernier_bilan_ges_data["date_publication"] == date(2022, 5, 12)
     faked_request.assert_called_once_with(
         "https://bilans-ges.ademe.fr/api/inventories",
         params={"page": "1", "itemsPerPage": "11", "entity.siren": SIREN},
@@ -38,9 +40,9 @@ def test_aucune_annee_de_publication(mocker):
         "requests.get", return_value=MockedResponse(200, json.loads(data))
     )
 
-    year = last_reporting_year(SIREN)
+    dernier_bilan_ges_data = dernier_bilan_ges(SIREN)
 
-    assert year == None
+    assert dernier_bilan_ges_data == None
     faked_request.assert_called_once_with(
         "https://bilans-ges.ademe.fr/api/inventories",
         params={"page": "1", "itemsPerPage": "11", "entity.siren": SIREN},
@@ -57,9 +59,10 @@ def test_deux_annees_de_publication_trouvees(mocker):
         "requests.get", return_value=MockedResponse(200, json.loads(data))
     )
 
-    year = last_reporting_year(SIREN)
+    dernier_bilan_ges_data = dernier_bilan_ges(SIREN)
 
-    assert year == 2022
+    assert dernier_bilan_ges_data["annee_reporting"] == 2022
+    assert dernier_bilan_ges_data["date_publication"] == date(2023, 12, 14)
     faked_request.assert_called_once_with(
         "https://bilans-ges.ademe.fr/api/inventories",
         params={"page": "1", "itemsPerPage": "11", "entity.siren": SIREN},
@@ -73,7 +76,7 @@ def test_echec_l_api_renvoie_un_code_erreur(code_http, mocker):
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
     with pytest.raises(APIError):
-        last_reporting_year(SIREN)
+        dernier_bilan_ges(SIREN)
 
     capture_message_mock.assert_called_once_with("Erreur API bilans-ges")
 
@@ -84,7 +87,7 @@ def test_echec_l_api_a_change(mocker):
     capture_exception_mock = mocker.patch("sentry_sdk.capture_exception")
 
     with pytest.raises(APIError):
-        year = last_reporting_year(SIREN)
+        dernier_bilan_ges_data = dernier_bilan_ges(SIREN)
 
     capture_exception_mock.assert_called_once()
     args, _ = capture_exception_mock.call_args
@@ -97,7 +100,7 @@ def test_echec_exception_provoquee_par_l_api(mocker):
     capture_exception_mock = mocker.patch("sentry_sdk.capture_exception")
 
     with pytest.raises(APIError):
-        last_reporting_year(SIREN)
+        dernier_bilan_ges(SIREN)
 
     faked_request.assert_called_once_with(
         "https://bilans-ges.ademe.fr/api/inventories",
@@ -113,6 +116,7 @@ def test_echec_exception_provoquee_par_l_api(mocker):
 def test_api_fonctionnelle():
     siren = 511278533  # 3MEDIA
 
-    year = last_reporting_year(siren)
+    dernier_bilan_ges_data = dernier_bilan_ges(siren)
 
-    assert year >= 2021
+    assert dernier_bilan_ges_data["annee_reporting"] >= 2021
+    assert dernier_bilan_ges_data["date_publication"] >= date(2022, 5, 12)

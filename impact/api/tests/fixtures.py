@@ -67,4 +67,4 @@ def mock_api_egapro(mocker):
 
 @pytest.fixture
 def mock_api_bges(mocker):
-    return mocker.patch("api.bges.last_reporting_year", return_value=None)
+    return mocker.patch("api.bges.dernier_bilan_ges", return_value=None)

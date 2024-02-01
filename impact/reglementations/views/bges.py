@@ -69,9 +69,12 @@ class BGESReglementation(Reglementation):
         if cls.est_soumis(caracteristiques):
             status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(cls.criteres_remplis(caracteristiques))}."
             try:
-                annee_reporting = bges.last_reporting_year(
+                if derniere_publication := bges.dernier_bilan_ges(
                     caracteristiques.entreprise.siren
-                )
+                ):
+                    annee_reporting = derniere_publication["annee_reporting"]
+                else:
+                    annee_reporting = None
             except APIError:
                 status = ReglementationStatus.STATUS_SOUMIS
                 primary_action = cls.PUBLIER_BILAN_PRIMARY_ACTION
