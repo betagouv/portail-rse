@@ -11,7 +11,7 @@ from entreprises.models import Entreprise
 from utils.models import TimestampedModel
 
 
-def derniere_annee_a_remplir_index_egapro():
+def derniere_annee_a_publier_index_egapro():
     annee = datetime.date.today().year
     return annee - 1
 

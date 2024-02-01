@@ -6,7 +6,7 @@ from freezegun import freeze_time
 from api.tests.fixtures import mock_api_index_egapro  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
-from reglementations.models import derniere_annee_a_remplir_index_egapro
+from reglementations.models import derniere_annee_a_publier_index_egapro
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.index_egapro import IndexEgaproReglementation
 
@@ -146,7 +146,7 @@ def test_calculate_status_more_than_50_employees(
 
     mock_api_index_egapro.return_value = False
     with freeze_time("2023-02-28"):
-        annee = derniere_annee_a_remplir_index_egapro()
+        annee = derniere_annee_a_publier_index_egapro()
         index = IndexEgaproReglementation.calculate_status(
             entreprise.dernieres_caracteristiques_qualifiantes, alice
         )
@@ -165,7 +165,7 @@ def test_calculate_status_more_than_50_employees(
     mock_api_index_egapro.reset_mock()
     mock_api_index_egapro.return_value = True
     with freeze_time("2023-02-28"):
-        annee = derniere_annee_a_remplir_index_egapro()
+        annee = derniere_annee_a_publier_index_egapro()
         index = IndexEgaproReglementation.calculate_status(
             entreprise.dernieres_caracteristiques_qualifiantes, alice
         )

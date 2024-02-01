@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 
 from api import egapro
 from entreprises.models import CaracteristiquesAnnuelles
-from reglementations.models import derniere_annee_a_remplir_index_egapro
+from reglementations.models import derniere_annee_a_publier_index_egapro
 from reglementations.models import prochaine_echeance_index_egapro
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
@@ -54,7 +54,7 @@ class IndexEgaproReglementation(Reglementation):
                 "Publier mon index sur la plateforme nationale",
                 external=True,
             )
-            annee = derniere_annee_a_remplir_index_egapro()
+            annee = derniere_annee_a_publier_index_egapro()
             derniere_annee_est_publiee = egapro.is_index_egapro_published(
                 caracteristiques.entreprise.siren, annee
             )
