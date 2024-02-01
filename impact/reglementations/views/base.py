@@ -32,6 +32,7 @@ class ReglementationStatus:
 
     status: int
     status_detail: str
+    prochaine_echeance: str | None = None
     primary_action: ReglementationAction | None = None
     secondary_actions: list[ReglementationAction] = field(default_factory=list)
 

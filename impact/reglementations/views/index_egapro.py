@@ -4,6 +4,7 @@ from django.urls import reverse_lazy
 from api import egapro
 from entreprises.models import CaracteristiquesAnnuelles
 from reglementations.models import derniere_annee_a_remplir_index_egapro
+from reglementations.models import prochaine_echeance_index_egapro
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
 from reglementations.views.base import ReglementationStatus
@@ -42,9 +43,11 @@ class IndexEgaproReglementation(Reglementation):
             return reglementation_status
 
         if not cls.est_soumis(caracteristiques):
-            status = ReglementationStatus.STATUS_NON_SOUMIS
-            status_detail = "Vous n'êtes pas soumis à cette réglementation."
-            primary_action = cls.NON_SOUMIS_PRIMARY_ACTION
+            return ReglementationStatus(
+                status=ReglementationStatus.STATUS_NON_SOUMIS,
+                status_detail="Vous n'êtes pas soumis à cette réglementation.",
+                primary_action=cls.NON_SOUMIS_PRIMARY_ACTION,
+            )
         else:
             primary_action = ReglementationAction(
                 "https://egapro.travail.gouv.fr/",
@@ -52,18 +55,23 @@ class IndexEgaproReglementation(Reglementation):
                 external=True,
             )
             annee = derniere_annee_a_remplir_index_egapro()
-            if egapro.is_index_egapro_published(
-                caracteristiques.entreprise.siren,
-                annee,
-            ):
+            derniere_annee_est_publiee = egapro.is_index_egapro_published(
+                caracteristiques.entreprise.siren, annee
+            )
+            if derniere_annee_est_publiee:
                 status = ReglementationStatus.STATUS_A_JOUR
                 status_detail = f"Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez publié votre index {annee} d'après les données disponibles sur la plateforme Egapro."
             else:
                 status = ReglementationStatus.STATUS_A_ACTUALISER
                 status_detail = f"Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous n'avez pas encore publié votre index {annee} sur la plateforme Egapro. Vous devez calculer et publier votre index chaque année au plus tard le 1er mars."
-        return ReglementationStatus(
-            status, status_detail, primary_action=primary_action
-        )
+            return ReglementationStatus(
+                status,
+                status_detail,
+                prochaine_echeance=prochaine_echeance_index_egapro(
+                    derniere_annee_est_publiee
+                ).strftime("%d/%m/%Y"),
+                primary_action=primary_action,
+            )
 
     @classmethod
     def calculate_status_for_anonymous_user(
