@@ -44,13 +44,13 @@
                 <div class="fr-grid-row fr-grid-row--gutters">
                     {% block question_quand %}
                         <div class="fr-col-lg fr-col-12">
-                            <div class="fr-tile fr-tile--vertical">
+                            <div class="fr-tile ">
                                 <div class="fr-tile__body">
                                     <div class="fr-tile__content">
                                         <h3 class="fr-tile__title">
                                             A quelle fréquence dois-je mettre à jour ce dispositif ?
                                         </h3>
-                                        {% block quand %}{% endblock %}
+                                        <p class="fr-tile__detail" >{% block quand %}{% endblock %}</p>
                                     </div>
                                 </div>
                                 <div class="fr-tile__header">
@@ -63,13 +63,13 @@
                     {% endblock %}
                     {% block question_objectif %}
                         <div class="fr-col-lg fr-col-12">
-                            <div class="fr-tile fr-tile--vertical fr-tile--no-border">
+                            <div class="fr-tile  fr-tile--no-border">
                                 <div class="fr-tile__body">
                                     <div class="fr-tile__content">
                                         <h3 class="fr-tile__title">
                                             Quel est l'objectif poursuivi par l'obligation ?
                                         </h3>
-                                        {% block objectif %}{% endblock %}
+                                        <p class="fr-tile__detail" >{% block objectif %}{% endblock %}</p>
                                     </div>
                                 </div>
                                 <div class="fr-tile__header">
@@ -82,13 +82,13 @@
                     {% endblock %}
                     {% block question_destinataires %}
                         <div class="fr-col-lg fr-col-12">
-                            <div class="fr-tile fr-tile--vertical">
+                            <div class="fr-tile ">
                                 <div class="fr-tile__body">
                                     <div class="fr-tile__content">
                                         <h3 class="fr-tile__title">
                                             Qui sont les destinataires / bénéficiaires du dispositif ?
                                         </h3>
-                                        {% block destinataires %}{% endblock %}
+                                        <p class="fr-tile__detail" >{% block destinataires %}{% endblock %}</p>
                                     </div>
                                 </div>
                                 <div class="fr-tile__header">
@@ -103,13 +103,13 @@
                 <div class="fr-grid-row fr-grid-row--gutters">
                     {% block question_qui %}
                         <div class="fr-col-lg fr-col-12">
-                            <div class="fr-tile fr-tile--vertical">
+                            <div class="fr-tile ">
                                 <div class="fr-tile__body">
                                     <div class="fr-tile__content">
                                         <h3 class="fr-tile__title">
                                             Quelles entreprises sont concernées ?
                                         </h3>
-                                        {% block qui %}{% endblock %}
+                                        <p class="fr-tile__detail" >{% block qui %}{% endblock %}</p>
                                     </div>
                                 </div>
                                 <div class="fr-tile__header">
@@ -122,13 +122,13 @@
                     {% endblock %}
                     {% block question_quoi %}
                         <div class="fr-col-lg fr-col-12">
-                            <div class="fr-tile fr-tile--vertical">
+                            <div class="fr-tile ">
                                 <div class="fr-tile__body">
                                     <div class="fr-tile__content">
                                         <h3 class="fr-tile__title">
                                             Que dois-je faire pour me mettre en conformité ?
                                         </h3>
-                                        {% block quoi %}{% endblock %}
+                                        <p class="fr-tile__detail" >{% block quoi %}{% endblock %}</p>
                                     </div>
                                 </div>
                                 <div class="fr-tile__header">
@@ -141,13 +141,13 @@
                     {% endblock %}
                     {% block question_sanctions %}
                         <div class="fr-col-lg fr-col-12">
-                            <div class="fr-tile fr-tile--vertical">
+                            <div class="fr-tile ">
                                 <div class="fr-tile__body">
                                     <div class="fr-tile__content">
                                         <h3 class="fr-tile__title">
                                             Quelles sont les sanctions encourues ?
                                         </h3>
-                                        {% block sanctions %}{% endblock %}
+                                        <p class="fr-tile__detail" >{% block sanctions %}{% endblock %}</p>
                                     </div>
                                 </div>
                                 <div class="fr-tile__header">
