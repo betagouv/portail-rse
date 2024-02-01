@@ -239,7 +239,7 @@
     }
     .fr-tile ol li,.fr-tile__detail, .fr-tile ul li {
         text-align: left;
-        flex-direction: column;
+        display: block;
     }
 }
 
