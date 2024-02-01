@@ -1,6 +1,7 @@
 import pytest
 from django.contrib.auth.models import AnonymousUser
 from django.urls import reverse
+from freezegun import freeze_time
 
 from api.tests.fixtures import mock_api_index_egapro  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
@@ -142,18 +143,20 @@ def test_calculate_status_more_than_50_employees(
 ):
     entreprise = entreprise_factory(effectif=effectif)
     attach_user_to_entreprise(alice, entreprise, "Présidente")
-    annee = derniere_annee_a_remplir_index_egapro()
 
     mock_api_index_egapro.return_value = False
-    index = IndexEgaproReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
-    )
+    with freeze_time("2023-02-28"):
+        annee = derniere_annee_a_remplir_index_egapro()
+        index = IndexEgaproReglementation.calculate_status(
+            entreprise.dernieres_caracteristiques_qualifiantes, alice
+        )
 
     assert index.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
         index.status_detail
         == f"Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous n'avez pas encore publié votre index {annee} sur la plateforme Egapro. Vous devez calculer et publier votre index chaque année au plus tard le 1er mars."
     )
+    assert index.prochaine_echeance == "01/03/2023"
     assert index.primary_action.url == "https://egapro.travail.gouv.fr/"
     assert index.primary_action.title == "Publier mon index sur la plateforme nationale"
     assert index.primary_action.external
@@ -161,15 +164,16 @@ def test_calculate_status_more_than_50_employees(
 
     mock_api_index_egapro.reset_mock()
     mock_api_index_egapro.return_value = True
-    index = IndexEgaproReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
-    )
+    with freeze_time("2023-02-28"):
+        annee = derniere_annee_a_remplir_index_egapro()
+        index = IndexEgaproReglementation.calculate_status(
+            entreprise.dernieres_caracteristiques_qualifiantes, alice
+        )
 
     assert index.status == ReglementationStatus.STATUS_A_JOUR
     assert (
         index.status_detail
         == f"Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez publié votre index {annee} d'après les données disponibles sur la plateforme Egapro."
     )
-    mock_api_index_egapro.assert_called_once_with(
-        entreprise.siren, derniere_annee_a_remplir_index_egapro()
-    )
+    assert index.prochaine_echeance == "01/03/2024"
+    mock_api_index_egapro.assert_called_once_with(entreprise.siren, annee)

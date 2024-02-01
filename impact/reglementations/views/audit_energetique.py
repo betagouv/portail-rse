@@ -100,4 +100,6 @@ class AuditEnergetiqueReglementation(Reglementation):
             else:
                 status_detail += "."
             primary_action = None
-        return ReglementationStatus(status, status_detail, primary_action)
+        return ReglementationStatus(
+            status, status_detail, primary_action=primary_action
+        )
