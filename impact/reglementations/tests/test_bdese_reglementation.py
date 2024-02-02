@@ -97,7 +97,6 @@ def test_calculate_status_with_not_attached_user(
             status.status_detail
             == "L'entreprise n'est pas soumise à cette réglementation."
         )
-    assert status.primary_action is None
     assert status.secondary_actions == []
 
 
@@ -117,7 +116,11 @@ def test_calculate_status_less_than_50_employees(
 
     assert status.status == ReglementationStatus.STATUS_NON_SOUMIS
     assert status.status_detail == "Vous n'êtes pas soumis à cette réglementation."
-    assert status.primary_action is None
+    assert status.primary_action.title == "Tester une BDESE"
+    annee = derniere_annee_a_remplir_bdese()
+    assert status.primary_action.url == reverse(
+        "reglementations:bdese_step", args=[entreprise.siren, annee, 1]
+    )
     assert status.secondary_actions == []
 
 

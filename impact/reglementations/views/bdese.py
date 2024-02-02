@@ -99,7 +99,18 @@ class BDESEReglementation(Reglementation):
         if not cls.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation."
-            return ReglementationStatus(status, status_detail)
+            entreprise = caracteristiques.entreprise
+            annee = derniere_annee_a_remplir_bdese()
+            primary_action = ReglementationAction(
+                reverse_lazy(
+                    "reglementations:bdese_step",
+                    args=[entreprise.siren, annee, 1],
+                ),
+                "Tester une BDESE",
+            )
+            return ReglementationStatus(
+                status, status_detail, primary_action=primary_action
+            )
 
     @classmethod
     def _match_avec_accord(cls, caracteristiques, user):
