@@ -362,7 +362,7 @@ def bdese_step(request, siren, annee, step):
     return render(
         request,
         _bdese_step_template_path(bdese, step),
-        _bdese_step_context(form, siren, annee, bdese, step),
+        _bdese_step_context(form, entreprise, annee, bdese, step),
     )
 
 
@@ -392,7 +392,7 @@ def _bdese_step_template_path(bdese: BDESE_300 | BDESE_50_300, step: int) -> str
     return f"reglementations/{directory}{template_file}"
 
 
-def _bdese_step_context(form, siren, annee, bdese, step):
+def _bdese_step_context(form, entreprise, annee, bdese, step):
     steps = {
         step: {
             "name": bdese.STEPS[step],
@@ -404,12 +404,15 @@ def _bdese_step_context(form, siren, annee, bdese, step):
     bdese_is_complete = bdese.is_complete
     context = {
         "form": form,
-        "siren": siren,
+        "siren": entreprise.siren,
         "annee": annee,
         "step_is_complete": step_is_complete,
         "steps": steps,
         "bdese_is_complete": bdese_is_complete,
         "annees": annees_a_remplir_bdese(),
+        "est_soumis_actuellement": BDESEReglementation.est_soumis(
+            entreprise.dernieres_caracteristiques_qualifiantes
+        ),
     }
     if step == 0:
         context["demo_form"] = IntroductionDemoForm()

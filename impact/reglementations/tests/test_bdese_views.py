@@ -99,6 +99,47 @@ def test_bdese_step_redirect_to_configuration_if_bdese_not_configured(
     )
 
 
+@pytest.mark.parametrize(
+    "effectif, affichage_non_soumis",
+    [
+        (CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50, True),
+        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249, False),
+        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299, False),
+        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499, False),
+        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999, False),
+        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999, False),
+        (CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS, False),
+    ],
+)
+def test_étape_bdese_affiche_un_message_indiquant_non_soumis_le_cas_échéant(
+    effectif, affichage_non_soumis, bdese, habilitated_user, client
+):
+    caracteristiques = bdese.entreprise.dernieres_caracteristiques_qualifiantes
+    print(("CARAC", caracteristiques, caracteristiques.annee))
+    caracteristiques.effectif = effectif
+    caracteristiques.save()
+
+    client.force_login(habilitated_user)
+
+    url = bdese_step_url(bdese, 1)
+    response = client.get(url, follow=True)
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [
+        (
+            reverse(
+                "reglementations:bdese_step",
+                args=[bdese.entreprise.siren, bdese.annee, 0],
+            ),
+            302,
+        )
+    ]
+    assert (
+        "Ceci est une démonstration de la BDESE : vous n'êtes actuellement pas soumis à cette réglementation."
+        in response.content.decode("utf-8")
+    ) == affichage_non_soumis
+
+
 @pytest.fixture
 def configured_bdese(bdese):
     bdese.categories_professionnelles = [
