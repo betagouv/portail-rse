@@ -14,12 +14,17 @@
 
     <div class="fr-grid-row">
         <div class="fr-col">
-            <p>
-                Années à remplir :
-                {% for annee in annees %}
-                    <a href="{% url 'reglementations:bdese_step' siren annee 0 %}" title="Remplissez la BDESE et télécharger le rapport pour {{ annee }}">{{ annee }}</a>
-                {% endfor %}
-            </p>
+            {% if est_soumis_actuellement %}
+                <p>
+                    Années à remplir :
+                    {% for annee in annees %}
+                        <a href="{% url 'reglementations:bdese_step' siren annee 0 %}" title="Remplissez la BDESE et télécharger le rapport pour {{ annee }}">{{ annee }}</a>
+                    {% endfor %}
+                </p>
+            {% else %}
+                <p>Ceci est une démonstration de la BDESE : vous n'êtes actuellement pas soumis à cette réglementation.
+                </p>
+            {% endif %}
         </div>
     </div>
 </div>
