@@ -82,7 +82,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
             return_value=status_est_soumis,
         )
 
-    response = client.post("/simulation", data=data)
+    response = client.post("/simulation", data=data, follow=True)
 
     # l'entreprise a été créée avec les caractéristiques de simulation
     entreprise = Entreprise.objects.get(siren=siren)
@@ -153,8 +153,9 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     simulation_form = context["simulation_form"]
     assert simulation_form["siren"].value() == siren
     assert simulation_form["denomination"].value() == denomination
-    assert simulation_form["categorie_juridique_sirene"].value() == str(
-        categorie_juridique_sirene
+    assert (
+        simulation_form["categorie_juridique_sirene"].value()
+        == categorie_juridique_sirene
     )
     assert simulation_form["effectif"].value() == effectif
     assert simulation_form["tranche_chiffre_affaires"].value() == ca
@@ -199,7 +200,7 @@ def test_simulation_par_un_utilisateur_authentifie_sur_une_nouvelle_entreprise(
             return_value=status_est_soumis,
         )
 
-    response = client.post("/simulation", data=data)
+    response = client.post("/simulation", data=data, follow=True)
 
     content = response.content.decode("utf-8")
     reglementations = response.context["reglementations"]
@@ -260,7 +261,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
         "appartient_groupe": False,
     }
 
-    response = client.post("/simulation", data=data)
+    response = client.post("/simulation", data=data, follow=True)
 
     entreprise.refresh_from_db()
     assert entreprise.date_cloture_exercice == date_cloture_dernier_exercice
@@ -357,7 +358,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
         "tranche_bilan_consolide": bilan,
     }
 
-    response = client.post("/simulation", data=data)
+    response = client.post("/simulation", data=data, follow=True)
 
     entreprise.refresh_from_db()
     assert entreprise.date_cloture_exercice is None
@@ -433,7 +434,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
         "tranche_bilan_consolide": bilan,
     }
 
-    response = client.post("/simulation", data=data)
+    response = client.post("/simulation", data=data, follow=True)
 
     entreprise.refresh_from_db()
     assert entreprise.date_cloture_exercice is None
