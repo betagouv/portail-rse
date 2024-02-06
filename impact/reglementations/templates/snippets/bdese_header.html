@@ -6,7 +6,11 @@
         <div class="fr-col" style="text-align: right;">
             <p>
                 <a class="fr-btn" href="{% url 'reglementations:bdese_pdf' siren annee %}" target="_blank" rel="noopener">
-                    Télécharger ma BDESE {{ annee }}{% if not bdese_is_complete %} (brouillon){% endif %}
+                    {% if est_soumis_actuellement %}
+                        Télécharger ma BDESE {{ annee }}{% if not bdese_is_complete %} (brouillon){% endif %}
+                    {% else %}
+                        Télécharger cet essai de BDESE
+                    {% endif %}
                 </a>
             </p>
         </div>
