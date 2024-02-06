@@ -122,17 +122,17 @@
         Il doit être disponible sous le format d'information électronique XHTML, pour transmission à l'ESAP.
     </p>
     {% if user.is_authenticated %}
-        <a class="fr-btn fr-mt-2w" href="{% url 'reglementations:csrd' %}">Consultez les thèmes du Rapport de Durabilité</a>
+        <a class="fr-btn fr-mt-2w fr-mb-2w" href="{% url 'reglementations:csrd' %}">Consultez les thèmes du Rapport de Durabilité</a>
     {% else %}
-        <a class="fr-btn fr-mt-2w" href="{% url 'reglementations:csrd' %}">Connectez-vous pour consulter les thèmes du Rapport de Durabilité</a>
+        <a class="fr-btn fr-mt-2w fr-mb-2w" href="{% url 'reglementations:csrd' %}">Connectez-vous pour consulter les thèmes du Rapport de Durabilité</a>
     {% endif %}
 {% endblock %}
 
 {% block sanctions %}
-    <div class="fr-notice fr-notice--info">
+    <div class="fr-notice fr-notice--info fr-mb-2w">
         <div class="fr-container">
             <div class="fr-notice__body">
-                <p class="fr-notice__title">
+                <p class="fr-notice__title ">
                     Cette partie sera mise à jour une fois la directive transposée en droit national.
                 </p>
             </div>
