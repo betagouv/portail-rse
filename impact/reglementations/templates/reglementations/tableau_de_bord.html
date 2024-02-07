@@ -12,11 +12,11 @@
                 La liste des réglementations ci-dessous n’est pas encore complète et va s’enrichir progressivement. Le site actuel, encore au stade de prototype (bêta), sera amené à évoluer.
             </p>
         </div>
-        <h3>Mes Réglementations</h3>
+        <h3>Mes obligations</h3>
         <div class="dashboard">
             {% if reglementations_a_actualiser %}
                 <div class="fr-my-4w fr-grid-row fr-grid-row--gutters dashboard-category dashboard--a-actualiser">
-                    <h4>Réglementations à actualiser ({{reglementations_a_actualiser|length}})</h4>
+                    <h4>Réglementations à mettre à jour ({{reglementations_a_actualiser|length}})</h4>
                     <div class="dashboard-list">
                         {% for reglementation in reglementations_a_actualiser %}
                             {% include "snippets/reglementation_component_dashboard.html" with reglementation=reglementation.reglementation status=reglementation.status %}
@@ -26,7 +26,7 @@
             {% endif %}
             {% if reglementations_en_cours %}
                 <div class="fr-my-4w fr-grid-row fr-grid-row--gutters dashboard-category dashboard--en-cours">
-                    <h4>Réglementations en cours de saisie ({{reglementations_en_cours|length}})</h4>
+                    <h4>Réglementations en cours de modification ({{reglementations_en_cours|length}})</h4>
                     <div class="dashboard-list">
                         {% for reglementation in reglementations_en_cours %}
                             {% include "snippets/reglementation_component_dashboard.html" with reglementation=reglementation.reglementation status=reglementation.status %}
@@ -37,8 +37,11 @@
             {% if reglementations_soumises %}
                 <div class="fr-my-4w fr-grid-row fr-grid-row--gutters dashboard-category dashboard--soumis">
                     <div class="dashboard-category-header">
-                        <h4>Autres réglementations auxquelles votre entreprise est soumise ({{reglementations_soumises|length}})</h4>
-                        <p class="fr-text--xs">Nous savons que votre entreprise est soumise à ces réglementations, mais nous ne connaissons pas son statut d'actualisation.</p>
+                        <h4>Autres réglementations applicables à votre entreprise ({{reglementations_soumises|length}})</h4>
+                        <p class="fr-text--xs">
+                            Votre entreprise doit répondre à ces obligations. Cliquez sur "En savoir plus" pour découvrir comment vous mettre en conformité. <br>
+                            Nous savons que votre entreprise est soumise à ces réglementations, mais nous ne connaissons pas son statut d'actualisation.
+                        </p>
                     </div>
                     <div class="dashboard-list">
                         {% for reglementation in reglementations_soumises %}
@@ -49,7 +52,7 @@
             {% endif %}
             {% if reglementations_a_jour %}
                 <div class="fr-my-4w fr-grid-row fr-grid-row--gutters dashboard-category dashboard--a-jour">
-                    <h3>Réglementations actualisées ({{reglementations_a_jour|length}})</h3>
+                    <h3>Réglementations à jour ({{reglementations_a_jour|length}})</h3>
                     <div class="dashboard-list">
                         {% for reglementation in reglementations_a_jour %}
                             {% include "snippets/reglementation_component_dashboard.html" with reglementation=reglementation.reglementation status=reglementation.status %}
@@ -58,9 +61,9 @@
                 </div>
             {% endif %}
             {% if reglementations_non_soumises %}
-                <h3>Vous n'êtes pas soumis à ces réglementations</h3>
+                <h3>Autres réglementations</h3>
                 <div class="fr-my-4w fr-grid-row fr-grid-row--gutters dashboard-category dashboard--non-soumis">
-                    <h4>Réglementations non soumises</h4>
+                    <h4>Votre entreprise ne doit pas répondre à ces obligations</h4>
                     <div class="dashboard-list">
                         {% for reglementation in reglementations_non_soumises %}
                             {% include "snippets/reglementation_component_dashboard.html" with reglementation=reglementation.reglementation status=reglementation.status %}
