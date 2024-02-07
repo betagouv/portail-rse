@@ -35,8 +35,8 @@ class AuditEnergetiqueReglementation(Reglementation):
             )
         )
 
-    @staticmethod
-    def criteres_remplis(caracteristiques):
+    @classmethod
+    def criteres_remplis(cls, caracteristiques):
         criteres = []
         if caracteristiques.effectif in (
             CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,

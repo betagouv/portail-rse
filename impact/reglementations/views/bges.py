@@ -34,8 +34,8 @@ class BGESReglementation(Reglementation):
             and caracteristiques.effectif_outre_mer is not None
         )
 
-    @staticmethod
-    def criteres_remplis(caracteristiques):
+    @classmethod
+    def criteres_remplis(cls, caracteristiques):
         criteres = []
         if caracteristiques.effectif in (
             CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,

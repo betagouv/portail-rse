@@ -19,8 +19,8 @@ class DispositifAlerteReglementation(Reglementation):
     def est_suffisamment_qualifiee(cls, caracteristiques):
         return caracteristiques.effectif is not None
 
-    @staticmethod
-    def criteres_remplis(caracteristiques):
+    @classmethod
+    def criteres_remplis(cls, caracteristiques):
         criteres = []
         if caracteristiques.effectif != CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50:
             criteres.append("votre effectif est supérieur à 50 salariés")

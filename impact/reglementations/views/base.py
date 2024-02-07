@@ -59,6 +59,11 @@ class Reglementation(ABC):
 
     @classmethod
     @abstractmethod
+    def criteres_remplis(cls, caracteristiques):
+        pass
+
+    @classmethod
+    @abstractmethod
     def est_soumis(cls, caracteristiques: CaracteristiquesAnnuelles) -> bool:
         if not cls.est_suffisamment_qualifiee(caracteristiques):
             raise InsuffisammentQualifieeError
