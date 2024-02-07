@@ -188,11 +188,9 @@
 
 .reglementation_detail {
     align-items: flex-start;
-    /*
     color: var(--text-default-info);
     background-color: var(--background-contrast-info);
     border-radius: .25rem;
-    */
     display: flex;
     flex-direction: row;
     font-size: .75rem;
@@ -341,6 +339,10 @@ button.rse-organizer--card:hover, .rse-organizer--card:hover {
     font-weight: 700;
     line-height: 1.5rem;
     margin-bottom:  .5rem;
+}
+.dashboard-category .reglementation_detail {
+    color: var(--text-default-grey);
+    background-color: var(--background-default-grey);
 }
 
 .dashboard-list {
