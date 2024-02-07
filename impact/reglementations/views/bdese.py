@@ -69,6 +69,13 @@ class BDESEReglementation(Reglementation):
     def est_suffisamment_qualifiee(cls, caracteristiques):
         return caracteristiques.effectif is not None
 
+    @staticmethod
+    def criteres_remplis(caracteristiques):
+        criteres = []
+        if caracteristiques.effectif != CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50:
+            criteres.append("votre effectif est supérieur à 50 salariés")
+        return criteres
+
     @classmethod
     def est_soumis(cls, caracteristiques):
         super().est_soumis(caracteristiques)
@@ -125,7 +132,7 @@ class BDESEReglementation(Reglementation):
                 status = ReglementationStatus.STATUS_A_ACTUALISER
                 primary_action_title = f"Marquer ma BDESE {annee} comme actualisée"
 
-            status_detail = "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez un accord d'entreprise spécifique. Veuillez vous y référer."
+            status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(cls.criteres_remplis(caracteristiques))}. Vous avez un accord d'entreprise spécifique. Veuillez vous y référer."
             primary_action = ReglementationAction(
                 reverse_lazy(
                     "reglementations:toggle_bdese_completion",
