@@ -55,6 +55,10 @@ def test_calculate_status_with_not_authenticated_user(
         "reglementations.views.bdese.BDESEReglementation.est_soumis",
         return_value=est_soumis,
     )
+    mocker.patch(
+        "reglementations.views.bdese.BDESEReglementation.criteres_remplis",
+        return_value=["RAISON"],
+    )
     status = BDESEReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, AnonymousUser()
     )
@@ -63,7 +67,7 @@ def test_calculate_status_with_not_authenticated_user(
         assert status.status == ReglementationStatus.STATUS_SOUMIS
         assert (
             status.status_detail
-            == f'<a href="{login_url}">Vous êtes soumis à cette réglementation. Connectez-vous pour en savoir plus.</a>'
+            == f'<a href="{login_url}">Vous êtes soumis à cette réglementation si RAISON. Connectez-vous pour en savoir plus.</a>'
         )
     else:
         assert status.status == ReglementationStatus.STATUS_NON_SOUMIS

@@ -96,7 +96,7 @@ class Reglementation(ABC):
         if cls.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_SOUMIS
             login_url = f"{reverse_lazy('users:login')}?next={reverse_lazy('reglementations:tableau_de_bord', args=[caracteristiques.entreprise.siren])}"
-            status_detail = f'<a href="{login_url}">Vous êtes soumis à cette réglementation. Connectez-vous pour en savoir plus.</a>'
+            status_detail = f"""<a href="{login_url}">Vous êtes soumis à cette réglementation si {', '.join(cls.criteres_remplis(caracteristiques))}. Connectez-vous pour en savoir plus.</a>"""
         else:
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation."

@@ -138,7 +138,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
         assert (
             '<p class="fr-badge fr-badge--info fr-badge--no-icon">' in content
         ), content
-        anonymous_status_detail = "Vous êtes soumis à cette réglementation. Connectez-vous pour en savoir plus."
+        anonymous_status_detail = "Vous êtes soumis à cette réglementation si "
         assert anonymous_status_detail in content, content
         assert '<p class="fr-badge">non soumis</p>' not in content, content
     else:
