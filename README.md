@@ -2,7 +2,7 @@
 
 # Portail RSE
 
-https://beta.gouv.fr/startups/plateforme.impact.html
+https://beta.gouv.fr/startups/portail-rse.html
 https://portail-rse.beta.gouv.fr
 
 
