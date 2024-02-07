@@ -19,6 +19,13 @@ class DispositifAlerteReglementation(Reglementation):
     def est_suffisamment_qualifiee(cls, caracteristiques):
         return caracteristiques.effectif is not None
 
+    @staticmethod
+    def criteres_remplis(caracteristiques):
+        criteres = []
+        if caracteristiques.effectif != CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50:
+            criteres.append("votre effectif est supérieur à 50 salariés")
+        return criteres
+
     @classmethod
     def est_soumis(cls, caracteristiques):
         super().est_soumis(caracteristiques)
@@ -37,7 +44,7 @@ class DispositifAlerteReglementation(Reglementation):
 
         if cls.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_SOUMIS
-            status_detail = "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés."
+            status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(cls.criteres_remplis(caracteristiques))}."
         else:
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation."

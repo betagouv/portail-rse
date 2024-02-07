@@ -25,6 +25,13 @@ class IndexEgaproReglementation(Reglementation):
     def est_suffisamment_qualifiee(cls, caracteristiques):
         return caracteristiques.effectif is not None
 
+    @staticmethod
+    def criteres_remplis(caracteristiques):
+        criteres = []
+        if caracteristiques.effectif != CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50:
+            criteres.append("votre effectif est supérieur à 50 salariés")
+        return criteres
+
     @classmethod
     def est_soumis(cls, caracteristiques):
         super().est_soumis(caracteristiques)
@@ -57,10 +64,10 @@ class IndexEgaproReglementation(Reglementation):
                 annee,
             ):
                 status = ReglementationStatus.STATUS_A_JOUR
-                status_detail = f"Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez publié votre index {annee} d'après les données disponibles sur la plateforme Egapro."
+                status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(cls.criteres_remplis(caracteristiques))}. Vous avez publié votre index {annee} d'après les données disponibles sur la plateforme Egapro."
             else:
                 status = ReglementationStatus.STATUS_A_ACTUALISER
-                status_detail = f"Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous n'avez pas encore publié votre index {annee} sur la plateforme Egapro. Vous devez calculer et publier votre index chaque année au plus tard le 1er mars."
+                status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(cls.criteres_remplis(caracteristiques))}. Vous n'avez pas encore publié votre index {annee} sur la plateforme Egapro. Vous devez calculer et publier votre index chaque année au plus tard le 1er mars."
         return ReglementationStatus(
             status, status_detail, primary_action=primary_action
         )
