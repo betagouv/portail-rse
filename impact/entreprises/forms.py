@@ -51,7 +51,7 @@ class EntrepriseForm(DsfrForm):
     )
     appartient_groupe = forms.BooleanField(
         required=False,
-        label="L'entreprise appartient à un groupe composé d'une société-mère et d'une ou plusieurs filiales",
+        label="L'entreprise fait partie d'un groupe composé d'une société-mère et d'une ou plusieurs filiales",
     )
     est_societe_mere = forms.BooleanField(
         required=False,
