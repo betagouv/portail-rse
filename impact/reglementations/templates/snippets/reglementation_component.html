@@ -22,7 +22,9 @@
         <h3 class="reglementation-title {{ reglementation.info.tag }}">{{ reglementation.info.title }}</h3>
         {% if status %}
             <p class="reglementation_detail fr-icon-info-fill fr-p-1w">
-                {{ status.status_detail|safe }}
+                <span>
+                    {{ status.status_detail|safe }}
+                </span>
             </p>
         {% endif %}
         <div class="reglementation--content">
