@@ -115,7 +115,7 @@
                                 {% endif %}
                                 <li class="fr-nav__item">
                                     {% url 'reglementations' as url_page %}
-                                    <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Les réglementations RSE</a>
+                                    <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Réglementations RSE</a>
                                 </li>
                                 {% if user.is_authenticated %}
                                     {% if user.entreprise_set.count >= 2 %}
