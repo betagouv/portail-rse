@@ -14,6 +14,7 @@ from public.forms import ContactForm
 from public.forms import SimulationForm
 from reglementations.views import calcule_reglementations
 from reglementations.views import REGLEMENTATIONS
+from reglementations.views.base import ReglementationStatus
 
 
 def index(request):
@@ -90,7 +91,8 @@ def reglementations(request):
 
 def simulation(request):
     simulation_form = SimulationForm(request.POST or None)
-    reglementations = None
+    reglementations_soumises = None
+    reglementations_non_soumises = None
     if request.POST:
         if simulation_form.is_valid():
             reglementations = calcule_simulation(simulation_form, request.user)
@@ -104,13 +106,23 @@ def simulation(request):
     elif request.session.get("simulation"):
         simulation_form = SimulationForm(request.session["simulation"])
         reglementations = calcule_simulation(simulation_form, request.user)
-
+        reglementations_soumises = [
+            r
+            for r in reglementations
+            if r["status"].status == ReglementationStatus.STATUS_SOUMIS
+        ]
+        reglementations_non_soumises = [
+            r
+            for r in reglementations
+            if r["status"].status == ReglementationStatus.STATUS_NON_SOUMIS
+        ]
     return render(
         request,
         "public/simulation.html",
         {
             "simulation_form": simulation_form,
-            "reglementations": reglementations,
+            "reglementations_soumises": reglementations_soumises,
+            "reglementations_non_soumises": reglementations_non_soumises,
         },
     )
 
