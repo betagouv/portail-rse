@@ -232,7 +232,7 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     EFFECTIF_ENTRE_5000_ET_9999 = "5000-9999"
     EFFECTIF_10000_ET_PLUS = "10000+"
     EFFECTIF_CHOICES = [
-        (EFFECTIF_MOINS_DE_50, "moins de 50 salariés"),
+        (EFFECTIF_MOINS_DE_50, "entre 0 et 49 salariés"),
         (EFFECTIF_ENTRE_50_ET_249, "entre 50 et 249 salariés"),
         (EFFECTIF_ENTRE_250_ET_299, "entre 250 et 299 salariés"),
         (EFFECTIF_ENTRE_300_ET_499, "entre 300 et 499 salariés"),
@@ -244,13 +244,13 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     EFFECTIF_OUTRE_MER_MOINS_DE_250 = "0-249"
     EFFECTIF_OUTRE_MER_250_ET_PLUS = "250+"
     EFFECTIF_OUTRE_MER_CHOICES = [
-        (EFFECTIF_OUTRE_MER_MOINS_DE_250, "moins de 250 salariés"),
+        (EFFECTIF_OUTRE_MER_MOINS_DE_250, "entre 0 et 249 salariés"),
         (EFFECTIF_OUTRE_MER_250_ET_PLUS, "250 salariés ou plus"),
     ]
 
     EFFECTIF_ENTRE_250_ET_499 = "250-499"
     EFFECTIF_GROUPE_CHOICES = [
-        (EFFECTIF_MOINS_DE_50, "moins de 50 salariés"),
+        (EFFECTIF_MOINS_DE_50, "entre 0 et 49 salariés"),
         (EFFECTIF_ENTRE_50_ET_249, "entre 50 et 249 salariés"),
         (EFFECTIF_ENTRE_250_ET_499, "entre 250 et 499 salariés"),
         (EFFECTIF_ENTRE_500_ET_4999, "entre 500 et 4 999 salariés"),
@@ -265,7 +265,7 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     CA_ENTRE_50M_ET_100M = "50M-100M"
     CA_100M_ET_PLUS = "100M+"
     CA_CHOICES = [
-        (CA_MOINS_DE_700K, "moins de 700k€"),
+        (CA_MOINS_DE_700K, "entre 0 et 700k€"),
         (CA_ENTRE_700K_ET_12M, "entre 700k€ et 12M€"),
         (CA_ENTRE_12M_ET_40M, "entre 12M€ et 40M€"),
         (CA_ENTRE_40M_ET_50M, "entre 40M€ et 50M€"),
@@ -280,7 +280,7 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     BILAN_ENTRE_43M_ET_100M = "43M-100M"
     BILAN_100M_ET_PLUS = "100M+"
     BILAN_CHOICES = [
-        (BILAN_MOINS_DE_350K, "moins de 350k€"),
+        (BILAN_MOINS_DE_350K, "entre 0 et 350k€"),
         (BILAN_ENTRE_350K_ET_6M, "entre 350k€ et 6M€"),
         (BILAN_ENTRE_6M_ET_20M, "entre 6M€ et 20M€"),
         (BILAN_ENTRE_20M_ET_43M, "entre 20M€ et 43M€"),
