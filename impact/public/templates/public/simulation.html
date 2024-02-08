@@ -151,15 +151,20 @@
         </div>
     </div>
 
-    {% if reglementations %}
+    {% if reglementations_soumises or reglementations_non_soumises %}
         <div class="fr-container">
             <hr>
         </div>
         <div class="fr-grid-row">
             <div class="fr-container fr-py-3w" id="svelte-simulation-result">
                 <h3>Résultats de votre simulation simplifiée</h3>
-                {% for reglementation in reglementations %}
-                    {% include "snippets/reglementation_component.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+                <h4>Soumis</h4>
+                {% for reglementation in reglementations_soumises %}
+                    {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+                {% endfor %}
+                <h4>Non soumis</h4>
+                {% for reglementation in reglementations_non_soumises %}
+                    {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
                 {% endfor %}
             </div>
         </div>

@@ -127,7 +127,10 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     # les statuts des réglementations de cette entreprise sont affichées de manière anonyme (non détaillée)
     # car l'utilisateur n'est pas authentifié
     context = response.context
-    reglementations = context["reglementations"]
+    reglementations = (
+        context["reglementations_soumises"] + context["reglementations_non_soumises"]
+    )
+    assert len(reglementations) == len(REGLEMENTATIONS)
     for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
         assert reglementations[index]["status"] == REGLEMENTATION.calculate_status(
             simulation_caracs, AnonymousUser()
@@ -203,7 +206,10 @@ def test_simulation_par_un_utilisateur_authentifie_sur_une_nouvelle_entreprise(
     response = client.post("/simulation", data=data, follow=True)
 
     content = response.content.decode("utf-8")
-    reglementations = response.context["reglementations"]
+    context = response.context
+    reglementations = (
+        context["reglementations_soumises"] + context["reglementations_non_soumises"]
+    )
     if status_est_soumis:
         assert '<p class="fr-badge fr-badge--info fr-badge--no-icon">' in content
         anonymous_status_detail = "L'entreprise est soumise à cette réglementation."
@@ -300,7 +306,10 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     assert caracteristiques.systeme_management_energie
 
     context = response.context
-    reglementations = context["reglementations"]
+    context = response.context
+    reglementations = (
+        context["reglementations_soumises"] + context["reglementations_non_soumises"]
+    )
     entreprise_simulee = Entreprise(
         siren=entreprise.siren,
         categorie_juridique_sirene=autre_categorie_juridique_sirene,
@@ -370,7 +379,10 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
     assert not entreprise.caracteristiques_actuelles()
 
     context = response.context
-    reglementations = context["reglementations"]
+    context = response.context
+    reglementations = (
+        context["reglementations_soumises"] + context["reglementations_non_soumises"]
+    )
     entreprise_simulee = Entreprise(
         siren=entreprise.siren,
         categorie_juridique_sirene=autre_categorie_juridique_sirene,
@@ -453,7 +465,10 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
     assert caracteristiques.tranche_bilan_consolide == bilan
 
     context = response.context
-    reglementations = context["reglementations"]
+    context = response.context
+    reglementations = (
+        context["reglementations_soumises"] + context["reglementations_non_soumises"]
+    )
     entreprise_simulee = Entreprise(
         siren=entreprise.siren,
         categorie_juridique_sirene=autre_categorie_juridique_sirene,
