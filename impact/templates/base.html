@@ -106,10 +106,13 @@
                         </div>
                         <nav class="fr-nav" id="navigation-494" role="navigation" aria-label="Menu principal">
                             <ul class="fr-nav__list">
-                                <li class="fr-nav__item">
-                                    {% url 'simulation' as url_page %}
-                                    <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Simulation</a>
-                                </li>
+                                {% if user.is_authenticated %}
+                                {% else %}
+                                    <li class="fr-nav__item">
+                                        {% url 'simulation' as url_page %}
+                                        <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Simulation</a>
+                                    </li>
+                                {% endif %}
                                 <li class="fr-nav__item">
                                     {% url 'reglementations' as url_page %}
                                     <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Les réglementations RSE</a>
@@ -142,6 +145,10 @@
                                     </li>
                                 {% else %}
                                     <li class="fr-nav__item"><a class="fr-nav__link" href="{% url 'users:login' %}?next={{ request.path }}" target="_self">Tableau de bord</a></li>
+                                    <li class="fr-nav__item">
+                                        {% url 'reglementations:csrd' as url_page %}
+                                        <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Espace Rapport de Durabilité</a>
+                                    </li>
                                 {% endif %}
                             </ul>
                         </nav>
