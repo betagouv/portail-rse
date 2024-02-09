@@ -1,5 +1,15 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from django.urls import reverse_lazy
+
+from reglementations.views.base import Reglementation
+
+
+class CSRDReglementation(Reglementation):
+    title = "Rapport de durabilité - Directive CSRD"
+    more_info_url = reverse_lazy("reglementations:fiche_csrd")
+    tag = "tag-environnement"
+    summary = ""
 
 
 @login_required
