@@ -163,7 +163,7 @@
                 {% for reglementation in reglementations_soumises %}
                     {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
                 {% endfor %}
-                <h4 class="fr-mt-2w">Votre entreprise ne doit pas répondre à ces obligations :</h4>
+                <h4 class="fr-mt-4w">Votre entreprise ne doit pas répondre à ces obligations :</h4>
                 {% for reglementation in reglementations_non_soumises %}
                     {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
                 {% endfor %}
