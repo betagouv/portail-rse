@@ -209,6 +209,8 @@
     grid-template-rows: auto;
     grid-gap: 1rem;
     width: 100%;
+    margin-top: 3rem;
+    padding-bottom: 1.5rem;
     .fr-btns-group {
         grid-column: 1/4;
     }
@@ -219,6 +221,25 @@
     .reglementation_detail {
         color: var(--text-default-grey);
         background-color: var(--background-contrast-grey);
+    }
+}
+
+.simulation-container {
+    padding:1rem;
+    border-radius: .375rem;
+    &.simulation-soumis {
+        background-color: var(--background-alt-blue-france);
+    }
+    &.simulation-non-soumis {
+        background-color: var(--background-contrast-grey);
+    }
+    .reglementation-grid {
+        padding: .5rem 1rem;
+        background-color: var(--background-default-grey);
+        border-radius: .375rem;
+        box-shadow: none;
+        margin:0;
+        margin-bottom: .5rem;
     }
 }
 
