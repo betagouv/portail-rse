@@ -8,8 +8,8 @@ from reglementations.views.base import Reglementation
 class CSRDReglementation(Reglementation):
     title = "Rapport de durabilité - Directive CSRD"
     more_info_url = reverse_lazy("reglementations:fiche_csrd")
-    tag = "tag-environnement"
-    summary = ""
+    tag = "tag-durabilite"
+    summary = "Publier un rapport de durabilité"
 
 
 @login_required
