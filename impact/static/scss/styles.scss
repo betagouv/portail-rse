@@ -234,12 +234,15 @@
         background-color: var(--background-contrast-grey);
     }
     .reglementation-grid {
-        padding: .5rem 1rem;
+        padding: 1rem 1rem 0.5rem 1rem;
         background-color: var(--background-default-grey);
         border-radius: .375rem;
         box-shadow: none;
         margin:0;
         margin-bottom: .5rem;
+        .reglementation_badge {
+            display: none;
+        }
     }
 }
 

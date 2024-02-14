@@ -165,7 +165,7 @@
                         Aucune.
                     {% endif %}
                     {% for reglementation in reglementations_soumises %}
-                        {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation  %}
+                        {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
                     {% endfor %}
                 </div>
                 <div class="simulation-container simulation-non-soumis">
@@ -174,7 +174,7 @@
                         Aucune.
                     {% endif %}
                     {% for reglementation in reglementations_non_soumises %}
-                        {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation  %}
+                        {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
                     {% endfor %}
                 </div>
             </div>
