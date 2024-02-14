@@ -160,10 +160,16 @@
                 <h3>Résultats de votre simulation simplifiée :</h3>
                 <hr>
                 <h4>Réglementations applicables à votre entreprise :</h4>
+                {% if reglementations_soumises|length == 0 %}
+                    Aucune.
+                {% endif %}
                 {% for reglementation in reglementations_soumises %}
                     {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
                 {% endfor %}
                 <h4 class="fr-mt-4w">Votre entreprise ne doit pas répondre à ces obligations :</h4>
+                {% if reglementations_non_soumises|length == 0 %}
+                    Aucune.
+                {% endif %}
                 {% for reglementation in reglementations_non_soumises %}
                     {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
                 {% endfor %}
