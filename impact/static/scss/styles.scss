@@ -277,6 +277,14 @@
     p {
         margin: 0px;
     }
+    .rse-organizer--esrs {
+        display: flex;
+        gap:.5rem;
+        .fr-btn--sm {
+            min-width: 32px;
+            margin-top: .5rem;
+        }
+    }
 }
 
 .rse-organizer--container {
@@ -303,14 +311,6 @@
     display: flex;
     flex-direction: column;
     gap: .5rem;
-    .rse-organizer--esrs {
-        display: flex;
-        gap:.5rem;
-        .fr-btn--sm {
-            min-width: 32px;
-            margin-top: .5rem;
-        }
-    }
 }
 
 button.rse-organizer--card,.rse-organizer--card {
