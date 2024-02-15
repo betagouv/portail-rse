@@ -102,31 +102,7 @@ def simulation(request):
     if request.POST:
         if simulation_form.is_valid():
             reglementations = calcule_simulation(simulation_form, request.user)
-            request.session["simulation"] = {
-                "siren": simulation_form.cleaned_data["siren"],
-                "denomination": simulation_form.cleaned_data["denomination"],
-                "categorie_juridique_sirene": simulation_form.cleaned_data[
-                    "categorie_juridique_sirene"
-                ],
-                "appartient_groupe": simulation_form.cleaned_data["appartient_groupe"],
-                "effectif": simulation_form.cleaned_data["effectif"],
-                "tranche_chiffre_affaires": simulation_form.cleaned_data[
-                    "tranche_chiffre_affaires"
-                ],
-                "tranche_bilan": simulation_form.cleaned_data["tranche_bilan"],
-                "est_cotee": simulation_form.cleaned_data["est_cotee"],
-                "est_societe_mere": simulation_form.cleaned_data["est_societe_mere"],
-                "comptes_consolides": simulation_form.cleaned_data[
-                    "comptes_consolides"
-                ],
-                "effectif_groupe": simulation_form.cleaned_data["effectif_groupe"],
-                "tranche_chiffre_affaires_consolide": simulation_form.cleaned_data[
-                    "tranche_chiffre_affaires_consolide"
-                ],
-                "tranche_bilan_consolide": simulation_form.cleaned_data[
-                    "tranche_bilan_consolide"
-                ],
-            }
+            request.session["simulation"] = simulation_form.cleaned_data
             return redirect("simulation")
         else:
             messages.error(
