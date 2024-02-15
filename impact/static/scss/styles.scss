@@ -137,9 +137,7 @@
 .reglementation {
     width: 100%;
         .fr-btns-group, .reglementation-grid .fr-btns-group {
-    /*    flex-flow: column;
-        align-items: flex-end; */
-        grid-column: 1/4;
+            grid-column: 1/4;
     }
 }
 
@@ -409,6 +407,7 @@ button.rse-organizer--card:hover, .rse-organizer--card:hover {
             grid-row: 1/2;
             text-align: right;
             justify-content: end;
+            margin-left: 1rem;
         }
         .reglementation-header {
             grid-column: 1/2;
