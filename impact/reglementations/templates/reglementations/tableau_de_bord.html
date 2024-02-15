@@ -52,7 +52,7 @@
             {% endif %}
             {% if reglementations_a_jour %}
                 <div class="fr-my-4w fr-grid-row fr-grid-row--gutters dashboard-category dashboard--a-jour">
-                    <h3>Réglementations à jour ({{reglementations_a_jour|length}})</h3>
+                    <h4>Réglementations à jour ({{reglementations_a_jour|length}})</h4>
                     <div class="dashboard-list">
                         {% for reglementation in reglementations_a_jour %}
                             {% include "snippets/reglementation_component_dashboard.html" with reglementation=reglementation.reglementation status=reglementation.status %}
