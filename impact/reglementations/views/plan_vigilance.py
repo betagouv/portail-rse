@@ -10,8 +10,6 @@ from reglementations.views.base import ReglementationStatus
 
 class PlanVigilanceReglementation(Reglementation):
     title = "Plan de vigilance"
-    description = """Le plan de vigilance comporte les mesures de vigilance propres à identifier et à prévenir les atteintes graves envers les droits humains et les libertés fondamentales,
-        la santé et la sécurité des personnes ainsi que de l’environnement qui adviendraient au sein de l’entreprise."""
     more_info_url = reverse_lazy("reglementations:fiche_plan_vigilance")
     tag = "tag-gouvernance"
     summary = "Établir un plan de vigilance pour prévenir des risques d’atteintes aux droits humains et à l’environnement liés à l'activité des sociétés mères et entreprises donneuses d'ordre."

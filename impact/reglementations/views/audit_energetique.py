@@ -9,7 +9,6 @@ from reglementations.views.base import ReglementationStatus
 
 class AuditEnergetiqueReglementation(Reglementation):
     title = "Audit énergétique"
-    description = "Le code de l'énergie prévoit la réalisation d’un audit énergétique pour les grandes entreprises de plus de 250 salariés, afin qu’elles mettent en place une stratégie d’efficacité énergétique de leurs activités. L’audit énergétique permet de repérer les gisements d’économies d’énergie chez les plus gros consommateurs professionnels (tertiaires et industriels). L’audit doit dater de moins de 4 ans."
     more_info_url = reverse_lazy("reglementations:fiche_audit_energetique")
     tag = "tag-environnement"
     summary = "Evaluer la performance énergétique de son entreprise."

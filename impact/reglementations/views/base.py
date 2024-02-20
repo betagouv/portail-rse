@@ -39,7 +39,6 @@ class ReglementationStatus:
 
 class Reglementation(ABC):
     title: str
-    description: str
     more_info_url: str
     summary: str
 
@@ -47,7 +46,6 @@ class Reglementation(ABC):
     def info(cls):
         return {
             "title": cls.title,
-            "description": cls.description,
             "more_info_url": cls.more_info_url,
             "tag": cls.tag,
             "summary": cls.summary,
