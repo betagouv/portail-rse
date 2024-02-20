@@ -35,7 +35,7 @@ def entreprise(db, alice, entreprise_factory):
     entreprise = entreprise_factory(
         siren="000000001",
         denomination="Entreprise SAS",
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
     return entreprise
@@ -49,7 +49,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     siren = "000000001"
     denomination = "Entreprise SAS"
     categorie_juridique_sirene = 5200
-    effectif = CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+    effectif = CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
     ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
     bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
     est_cotee = True
@@ -548,7 +548,7 @@ def test_simulation_incorrecte(client):
     invalid_data = {
         "denomination": "Entreprise SAS",
         "siren": "000000001",
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
         "appartient_groupe": True,

@@ -30,7 +30,7 @@ def test_reglementation_info():
 def test_est_suffisamment_qualifiee(entreprise_non_qualifiee):
     caracteristiques = CaracteristiquesAnnuelles(
         entreprise=entreprise_non_qualifiee,
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
     )
 
     assert BDESEReglementation.est_suffisamment_qualifiee(caracteristiques)
@@ -98,12 +98,19 @@ def test_calculate_status_with_not_attached_user(
     assert status.secondary_actions == []
 
 
+@pytest.mark.parametrize(
+    "effectif",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
+    ],
+)
 @pytest.mark.parametrize("bdese_accord", [True, False])
 def test_calculate_status_less_than_50_employees(
-    bdese_accord, entreprise_factory, alice
+    effectif, bdese_accord, entreprise_factory, alice
 ):
     entreprise = entreprise_factory(
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif=effectif,
         bdese_accord=bdese_accord,
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")

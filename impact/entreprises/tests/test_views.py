@@ -250,9 +250,9 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs(
         societe_mere_en_france=True,
         comptes_consolides=True,
         est_cotee=True,
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         effectif_groupe_france=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         effectif_groupe_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
@@ -277,10 +277,10 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs(
 
     form = context["form"]
     assert form["date_cloture_exercice"].initial == "2022-06-30"
-    assert form["effectif"].initial == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+    assert form["effectif"].initial == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
     assert (
         form["effectif_permanent"].initial
-        == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+        == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
     )
     assert (
         form["tranche_chiffre_affaires"].initial

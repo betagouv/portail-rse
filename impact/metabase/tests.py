@@ -65,8 +65,8 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
             date_cloture_exercice=date_cloture_dernier_exercice,
             date_derniere_qualification=date_derniere_qualification,
             categorie_juridique_sirene=5699,
-            effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
-            effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+            effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+            effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
             effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
             est_cotee=False,
             tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
@@ -300,7 +300,7 @@ def test_synchronise_les_reglementations_BDESE(
     alice, bob, entreprise_factory, bdese_factory, mock_api_index_egapro
 ):
     entreprise_non_soumise = entreprise_factory(
-        siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+        siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
     )
     entreprise_soumise_a_actualiser = entreprise_factory(
         siren="000000002", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
@@ -393,7 +393,7 @@ def test_synchronise_les_reglementations_IndexEgaPro(
     alice, entreprise_factory, mock_api_index_egapro
 ):
     entreprise_non_soumise = entreprise_factory(
-        siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+        siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
     )
     entreprise_soumise_a_actualiser = entreprise_factory(
         siren="000000002", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
@@ -446,7 +446,7 @@ def test_synchronise_les_reglementations_BGES(
     alice, entreprise_factory, mock_api_index_egapro, mock_api_bges
 ):
     entreprise_non_soumise = entreprise_factory(
-        siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+        siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
     )
     entreprise_soumise_a_actualiser = entreprise_factory(
         siren="000000002", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999
@@ -493,7 +493,7 @@ def test_synchronise_les_reglementations_BGES(
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_les_reglementations_plusieurs_fois(alice, entreprise_factory):
     entreprise = entreprise_factory(
-        siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+        siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
@@ -570,7 +570,7 @@ def test_synchronise_l_indicateur_d_impact_nombre_de_reglementations_a_jour(
     alice, bob, entreprise_factory, bdese_factory, mock_api_index_egapro, mock_api_bges
 ):
     entreprise_non_soumise = entreprise_factory(
-        siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+        siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
     )
     entreprise_tout_a_actualiser = entreprise_factory(
         siren="000000002", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
@@ -637,7 +637,7 @@ def test_synchronise_l_indicateur_d_impact_avec_des_entreprises_soumises_au_BGES
     alice, bob, entreprise_factory, bdese_factory, mock_api_index_egapro, mock_api_bges
 ):
     entreprise_non_soumise = entreprise_factory(
-        siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+        siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
     )
     entreprise_bges_a_actualiser = entreprise_factory(
         siren="000000002", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999

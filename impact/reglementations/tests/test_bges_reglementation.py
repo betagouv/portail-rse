@@ -39,7 +39,7 @@ def test_reglementation_info():
 def test_est_suffisamment_qualifiee(entreprise_non_qualifiee):
     caracteristiques = CaracteristiquesAnnuelles(
         entreprise=entreprise_non_qualifiee,
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
     )
 
@@ -60,7 +60,7 @@ def test_n_est_pas_suffisamment_qualifiee_car_sans_effectif_outre_mer(
 ):
     caracteristiques = CaracteristiquesAnnuelles(
         entreprise=entreprise_non_qualifiee,
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
     )
 
     assert not BGESReglementation.est_suffisamment_qualifiee(caracteristiques)
@@ -126,7 +126,8 @@ def test_calculate_status_with_not_attached_user(
 @pytest.mark.parametrize(
     "effectif",
     [
-        CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
     ],

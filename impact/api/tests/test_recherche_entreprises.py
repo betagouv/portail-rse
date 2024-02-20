@@ -34,7 +34,7 @@ def test_succes_recherche_comportant_la_raison_sociale(mocker):
                     {
                         "nom_complet": "entreprise",
                         "nom_raison_sociale": "ENTREPRISE",
-                        "tranche_effectif_salarie": "15",
+                        "tranche_effectif_salarie": "12",
                         "nature_juridique": "5710",
                     }
                 ],
@@ -45,7 +45,7 @@ def test_succes_recherche_comportant_la_raison_sociale(mocker):
 
     assert infos == {
         "siren": SIREN,
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
         "denomination": "ENTREPRISE",
         "categorie_juridique_sirene": 5710,
     }
@@ -64,7 +64,7 @@ def test_succes_recherche_sans_la_raison_sociale(mocker):
                     {
                         "nom_complet": "ENTREPRISE",
                         "nom_raison_sociale": None,
-                        "tranche_effectif_salarie": "15",
+                        "tranche_effectif_salarie": "12",
                         "nature_juridique": "5710",
                     }
                 ],
@@ -75,7 +75,7 @@ def test_succes_recherche_sans_la_raison_sociale(mocker):
 
     assert infos == {
         "siren": SIREN,
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
         "denomination": "ENTREPRISE",
         "categorie_juridique_sirene": 5710,
     }

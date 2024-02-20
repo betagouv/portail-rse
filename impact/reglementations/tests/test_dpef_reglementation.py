@@ -284,7 +284,8 @@ def test_soumis_si_effectif_permanent_bilan_et_ca_suffisants(
 @pytest.mark.parametrize(
     "effectif_permanent",
     [
-        CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
@@ -497,7 +498,8 @@ def test_soumis_si_effectif_groupe_permanent_bilan_et_ca_consolides_suffisants(
 @pytest.mark.parametrize(
     "effectif_groupe_permanent",
     [
-        CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
@@ -536,7 +538,7 @@ def test_non_soumis_si_effectif_insuffisant_et_effectif_groupe_permanent_suffisa
     entreprise = entreprise_factory(
         appartient_groupe=True,
         comptes_consolides=False,
-        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         effectif_groupe_permanent=effectif_groupe_permanent,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         categorie_juridique_sirene=CODE_SA,
@@ -794,7 +796,7 @@ def test_calcule_etat_si_soumis_avec_plus_de_deux_critères_remplis(
 def test_calcule_etat_si_non_soumis(entreprise_factory, alice):
     entreprise = entreprise_factory(
         est_cotee=True,
-        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")

@@ -185,7 +185,8 @@ def test_n_est_pas_suffisamment_qualifiee_car_groupe_mais_bilan_consolide_non_re
 @pytest.mark.parametrize(
     "effectif",
     [
-        CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
     ],
 )
@@ -263,7 +264,7 @@ def test_calcule_etat_avec_bilan_et_ca_trop_faible(
     bilan, ca, entreprise_factory, alice
 ):
     entreprise = entreprise_factory(
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         tranche_bilan=bilan,
         tranche_chiffre_affaires=ca,
     )
@@ -293,7 +294,7 @@ def test_calcule_etat_avec_bilan_et_ca_trop_faible(
 )
 def test_calcule_etat_avec_bilan_et_ca_suffisants(bilan, ca, entreprise_factory, alice):
     entreprise = entreprise_factory(
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         tranche_bilan=bilan,
         tranche_chiffre_affaires=ca,
     )
@@ -327,7 +328,7 @@ def test_calcule_etat_avec_bilan_et_ca_suffisants(bilan, ca, entreprise_factory,
 )
 def test_calcule_etat_avec_bilan_insuffisant(ca, entreprise_factory, alice):
     entreprise = entreprise_factory(
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
         tranche_chiffre_affaires=ca,
     )
@@ -350,7 +351,7 @@ def test_calcule_etat_avec_bilan_insuffisant(ca, entreprise_factory, alice):
 )
 def test_calcule_etat_avec_ca_insuffisant(bilan, entreprise_factory, alice):
     entreprise = entreprise_factory(
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         tranche_bilan=bilan,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
     )
@@ -460,7 +461,7 @@ def test_calcule_etat_avec_bilan_insuffisant_mais_bilan_consolide_et_ca_suffisan
     entreprise = entreprise_factory(
         appartient_groupe=True,
         comptes_consolides=True,
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
         tranche_chiffre_affaires=ca,
         tranche_bilan_consolide=bilan_consolide,
