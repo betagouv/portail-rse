@@ -221,6 +221,25 @@ def test_qualification_page_without_current_qualification(
     assert context["form"]["effectif_groupe_france"].initial is None
 
 
+def test_qualification_page_without_current_qualification_and_api_unavailable(
+    client, alice, entreprise_non_qualifiee, mock_api_recherche_entreprises
+):
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    client.force_login(alice)
+
+    mock_api_recherche_entreprises.side_effect = api.exceptions.APIError("yolo")
+
+    with freeze_time(date(2023, 1, 27)):
+        response = client.get(f"/entreprises/{entreprise_non_qualifiee.siren}")
+
+    assert response.status_code == 200
+    content = response.content.decode("utf-8")
+
+    context = response.context
+    assert context["form"]["date_cloture_exercice"].initial == "2022-12-31"
+    assert context["form"]["effectif"].initial is None
+
+
 def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs(
     client, alice, entreprise_factory, mock_api_recherche_entreprises
 ):

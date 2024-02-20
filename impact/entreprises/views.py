@@ -194,7 +194,10 @@ def qualification(request, siren):
                 "systeme_management_energie": caracs.systeme_management_energie,
             }
         else:
-            infos_entreprise = api.recherche_entreprises.recherche(entreprise.siren)
+            try:
+                infos_entreprise = api.recherche_entreprises.recherche(entreprise.siren)
+            except APIError:
+                infos_entreprise = {}
             infos_entreprise[
                 "date_cloture_exercice"
             ] = date_cloture_exercice_par_defaut.isoformat()
