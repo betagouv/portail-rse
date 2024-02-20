@@ -22,12 +22,12 @@ def test_reglementation_info():
     info = DPEFReglementation.info()
 
     assert info["title"] == "Déclaration de Performance Extra-Financière"
-
-    assert (
-        info["description"]
-        == """La Déclaration de Performance Extra-Financière (dite "DPEF") est un document par l'intermédiaire duquel une entreprise détaille les implications sociales, environnementales et sociétales de sa performance et de ses activités, ainsi que son mode de gouvernance."""
-    )
     assert info["more_info_url"] == reverse("reglementations:fiche_dpef")
+    assert info["tag"] == "tag-durabilite"
+    assert (
+        info["summary"]
+        == "Établir une déclaration de performance extra-financière contenant des informations sociales, environnementales et sociétales."
+    )
 
 
 @pytest.fixture

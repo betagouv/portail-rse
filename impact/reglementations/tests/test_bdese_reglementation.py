@@ -19,14 +19,12 @@ def test_reglementation_info():
         info["title"]
         == "Base de données économiques, sociales et environnementales (BDESE)"
     )
-    assert (
-        info["description"]
-        == """L'employeur d'au moins 50 salariés doit mettre à disposition du comité économique et social (CSE) ou des représentants du personnel une base de données économiques, sociales et environnementales (BDESE).
-        La BDESE rassemble les informations sur les grandes orientations économiques et sociales de l'entreprise.
-        En l'absence d'accord d'entreprise spécifique, elle comprend des mentions obligatoires qui varient selon l'effectif de l'entreprise."""
-    )
     assert info["more_info_url"] == reverse("reglementations:fiche_bdese")
     assert info["tag"] == "tag-social"
+    assert (
+        info["summary"]
+        == "Constituer une base de données économiques, sociales et environnementales à transmettre à son CSE."
+    )
 
 
 def test_est_suffisamment_qualifiee(entreprise_non_qualifiee):

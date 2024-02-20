@@ -28,13 +28,12 @@ def test_reglementation_info():
     info = BGESReglementation.info()
 
     assert info["title"] == "BGES et plan de transition"
-
-    assert (
-        info["description"]
-        == "Le bilan GES réglementaire a vocation à contribuer à la mise en œuvre de la stratégie de réduction des émissions de GES des entreprises. Un plan de transition est obligatoirement joint à ce bilan. Il vise à réduire les émissions de gaz à effet de serre et présente les objectifs, moyens et actions envisagées à cette fin ainsi que, le cas échéant, les actions mises en œuvre lors du précédent bilan. Ils sont mis à jour tous les quatre ans."
-    )
     assert info["more_info_url"] == reverse("reglementations:fiche_bilan_ges")
     assert info["tag"] == "tag-environnement"
+    assert (
+        info["summary"]
+        == "Mesurer ses émissions de gaz à effet de serre directes et adopter un plan de transition en conséquence."
+    )
 
 
 def test_est_suffisamment_qualifiee(entreprise_non_qualifiee):

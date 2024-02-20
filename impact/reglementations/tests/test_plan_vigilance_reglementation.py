@@ -17,12 +17,6 @@ def test_reglementation_info():
     info = PlanVigilanceReglementation.info()
 
     assert info["title"] == "Plan de vigilance"
-
-    assert (
-        info["description"]
-        == """Le plan de vigilance comporte les mesures de vigilance propres à identifier et à prévenir les atteintes graves envers les droits humains et les libertés fondamentales,
-        la santé et la sécurité des personnes ainsi que de l’environnement qui adviendraient au sein de l’entreprise."""
-    )
     assert info["more_info_url"] == reverse("reglementations:fiche_plan_vigilance")
     assert info["tag"] == "tag-gouvernance"
     assert (

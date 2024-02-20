@@ -12,10 +12,10 @@ from reglementations.views.base import ReglementationStatus
 
 class IndexEgaproReglementation(Reglementation):
     title = "Index de l’égalité professionnelle"
-    description = "Afin de lutter contre les inégalités salariales entre les femmes et les hommes, certaines entreprises doivent calculer et transmettre un index mesurant l’égalité salariale au sein de leur structure."
     more_info_url = reverse_lazy("reglementations:fiche_index_egapro")
     tag = "tag-social"
     summary = "Mesurer les écarts de rémunération entre les femmes et les hommes au sein de son entreprise."
+
     NON_SOUMIS_PRIMARY_ACTION = ReglementationAction(
         "https://egapro.travail.gouv.fr/index-egapro/recherche",
         "Consulter les index sur la plateforme nationale",

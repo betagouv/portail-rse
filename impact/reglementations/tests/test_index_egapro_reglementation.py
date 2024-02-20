@@ -15,12 +15,12 @@ def test_reglementation_info():
     info = IndexEgaproReglementation.info()
 
     assert info["title"] == "Index de l’égalité professionnelle"
-    assert (
-        info["description"]
-        == "Afin de lutter contre les inégalités salariales entre les femmes et les hommes, certaines entreprises doivent calculer et transmettre un index mesurant l’égalité salariale au sein de leur structure."
-    )
     assert info["more_info_url"] == reverse("reglementations:fiche_index_egapro")
     assert info["tag"] == "tag-social"
+    assert (
+        info["summary"]
+        == "Mesurer les écarts de rémunération entre les femmes et les hommes au sein de son entreprise."
+    )
 
 
 def test_est_suffisamment_qualifiee(entreprise_non_qualifiee):
