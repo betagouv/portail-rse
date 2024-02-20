@@ -47,20 +47,20 @@ class CSRDReglementation(Reglementation):
 
     @classmethod
     def est_microentreprise(cls, caracteristiques: CaracteristiquesAnnuelles):
-        score = 0
+        nombre_seuils_non_depasses = 0
         if (
             caracteristiques.tranche_bilan
             == CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
         ):
-            score += 1
+            nombre_seuils_non_depasses += 1
         if (
             caracteristiques.tranche_chiffre_affaires
             == CaracteristiquesAnnuelles.CA_MOINS_DE_700K
         ):
-            score += 1
+            nombre_seuils_non_depasses += 1
         if caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10:
-            score += 1
-        return score >= 2
+            nombre_seuils_non_depasses += 1
+        return nombre_seuils_non_depasses >= 2
 
     @classmethod
     def est_grande_entreprise(cls, caracteristiques: CaracteristiquesAnnuelles) -> bool:
