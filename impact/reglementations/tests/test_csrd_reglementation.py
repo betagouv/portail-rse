@@ -327,3 +327,241 @@ def test_entreprise_cotee_bilan_et_effectif_moins_de_500_superieurs_aux_seuils_g
         )
         == 2026
     )
+
+
+@pytest.mark.parametrize(
+    "bilan",
+    [
+        CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+        CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "ca",
+    [
+        CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
+    ],
+)
+def test_entreprise_cotee_bilan_et_ca_superieurs_aux_seuils_petite_entreprise_mais_ca_inferieur_seuil_grande_entreprise_soumise_en_2027(
+    bilan, ca, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        est_cotee=True,
+        appartient_groupe=False,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        tranche_bilan=bilan,
+        tranche_chiffre_affaires=ca,
+    )
+
+    assert CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert (
+        CSRDReglementation.est_soumis_a_partir_de(
+            entreprise.dernieres_caracteristiques_qualifiantes
+        )
+        == 2027
+    )
+
+
+@pytest.mark.parametrize(
+    "bilan",
+    [
+        CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+    ],
+)
+@pytest.mark.parametrize(
+    "ca",
+    [
+        CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
+        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
+        CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
+        CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    ],
+)
+def test_entreprise_cotee_bilan_et_ca_superieurs_aux_seuils_petite_entreprise_mais_bilan_inferieur_seuil_grande_entreprise_soumise_en_2027(
+    bilan, ca, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        est_cotee=True,
+        appartient_groupe=False,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        tranche_bilan=bilan,
+        tranche_chiffre_affaires=ca,
+    )
+
+    assert CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert (
+        CSRDReglementation.est_soumis_a_partir_de(
+            entreprise.dernieres_caracteristiques_qualifiantes
+        )
+        == 2027
+    )
+
+
+@pytest.mark.parametrize(
+    "effectif",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "ca",
+    [
+        CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
+    ],
+)
+def test_entreprise_cotee_effectif_et_ca_superieurs_aux_seuils_petite_entreprise_mais_ca_inferieur_seuil_grande_entreprise_soumise_en_2027(
+    effectif, ca, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        est_cotee=True,
+        appartient_groupe=False,
+        effectif=effectif,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires=ca,
+    )
+
+    assert CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert (
+        CSRDReglementation.est_soumis_a_partir_de(
+            entreprise.dernieres_caracteristiques_qualifiantes
+        )
+        == 2027
+    )
+
+
+@pytest.mark.parametrize(
+    "effectif",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+    ],
+)
+@pytest.mark.parametrize(
+    "ca",
+    [
+        CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
+        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
+        CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
+        CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    ],
+)
+def test_entreprise_cotee_effectif_et_ca_superieurs_aux_seuils_petite_entreprise_mais_effectif_inferieur_seuil_grande_entreprise_soumise_en_2027(
+    effectif, ca, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        est_cotee=True,
+        appartient_groupe=False,
+        effectif=effectif,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires=ca,
+    )
+
+    assert CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert (
+        CSRDReglementation.est_soumis_a_partir_de(
+            entreprise.dernieres_caracteristiques_qualifiantes
+        )
+        == 2027
+    )
+
+
+@pytest.mark.parametrize(
+    "effectif",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "bilan",
+    [
+        CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+    ],
+)
+def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entreprise_mais_bilan_inferieur_seuil_grande_entreprise_soumise_en_2027(
+    effectif, bilan, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        est_cotee=True,
+        appartient_groupe=False,
+        effectif=effectif,
+        tranche_bilan=bilan,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+    )
+
+    assert CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert (
+        CSRDReglementation.est_soumis_a_partir_de(
+            entreprise.dernieres_caracteristiques_qualifiantes
+        )
+        == 2027
+    )
+
+
+@pytest.mark.parametrize(
+    "effectif",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+    ],
+)
+@pytest.mark.parametrize(
+    "bilan",
+    [
+        CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+        CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+    ],
+)
+def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entreprise_mais_effectif_inferieur_seuil_grande_entreprise_soumise_en_2027(
+    effectif, bilan, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        est_cotee=True,
+        appartient_groupe=False,
+        effectif=effectif,
+        tranche_bilan=bilan,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+    )
+
+    assert CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert (
+        CSRDReglementation.est_soumis_a_partir_de(
+            entreprise.dernieres_caracteristiques_qualifiantes
+        )
+        == 2027
+    )
