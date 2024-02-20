@@ -30,16 +30,20 @@ class CSRDReglementation(Reglementation):
     def est_soumis_a_partir_de(
         cls, caracteristiques: CaracteristiquesAnnuelles
     ) -> int | None:
-        if cls.est_microentreprise(caracteristiques):
-            return None
         if caracteristiques.entreprise.est_cotee:
-            if caracteristiques.effectif in (
-                CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
-                CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
-                CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
-            ):
-                return 2025
-        return 2026
+            if cls.est_grande_entreprise(caracteristiques):
+                if caracteristiques.effectif in (
+                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+                    CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+                ):
+                    return 2025
+                else:
+                    return 2026
+            elif cls.est_petite_ou_moyenne_entreprise(caracteristiques):
+                return 2027
+        elif cls.est_grande_entreprise(caracteristiques):
+            return 2026
 
     @classmethod
     def est_microentreprise(cls, caracteristiques: CaracteristiquesAnnuelles):
@@ -57,6 +61,39 @@ class CSRDReglementation(Reglementation):
         if caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10:
             score += 1
         return score >= 2
+
+    @classmethod
+    def est_grande_entreprise(cls, caracteristiques: CaracteristiquesAnnuelles) -> bool:
+        nombre_seuils_depasses = 0
+        if caracteristiques.tranche_bilan in (
+            CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+            CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+            CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        ):
+            nombre_seuils_depasses += 1
+        if caracteristiques.tranche_chiffre_affaires in (
+            CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
+            CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
+            CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+        ):
+            nombre_seuils_depasses += 1
+        if caracteristiques.effectif in (
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+            CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        ):
+            nombre_seuils_depasses += 1
+        return nombre_seuils_depasses >= 2
+
+    @classmethod
+    def est_petite_ou_moyenne_entreprise(
+        cls, caracteristiques: CaracteristiquesAnnuelles
+    ) -> bool:
+        return not cls.est_microentreprise(
+            caracteristiques
+        ) and not cls.est_grande_entreprise(caracteristiques)
 
 
 @login_required
