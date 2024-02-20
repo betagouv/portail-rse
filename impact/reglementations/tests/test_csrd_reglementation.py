@@ -95,7 +95,7 @@ def test_n_est_pas_suffisamment_qualifiee_car_groupe_non_renseigne(
         CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     ],
 )
-def test_entreprise_non_cotee_bilan_et_ca_superieurs_aux_seuils_soumise_en_2026(
+def test_entreprise_non_cotee_bilan_et_ca_superieurs_aux_seuils_grande_entreprises_soumise_en_2026(
     bilan, ca, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -135,7 +135,7 @@ def test_entreprise_non_cotee_bilan_et_ca_superieurs_aux_seuils_soumise_en_2026(
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_entreprise_non_cotee_bilan_et_effectif_superieurs_aux_seuils_soumise_en_2026(
+def test_entreprise_non_cotee_bilan_et_effectif_superieurs_aux_seuils_grande_entreprise_soumise_en_2026(
     bilan, effectif, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -175,7 +175,7 @@ def test_entreprise_non_cotee_bilan_et_effectif_superieurs_aux_seuils_soumise_en
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_entreprise_non_cotee_bilan_et_effectif_superieurs_aux_seuils_soumise_en_2026(
+def test_entreprise_non_cotee_CA_et_effectif_superieurs_aux_seuils_grande_entreprise_soumise_en_2026(
     ca, effectif, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -216,7 +216,7 @@ def test_microentreprise_car_seuil_bilan_et_ca_insuffisants_est_non_soumise(
     )
 
 
-def test_microentreprise_car_seuil_bilan_et_ca_insuffisants_est_non_soumise(
+def test_microentreprise_car_seuil_effectif_et_ca_insuffisants_est_non_soumise(
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
@@ -235,7 +235,7 @@ def test_microentreprise_car_seuil_bilan_et_ca_insuffisants_est_non_soumise(
     )
 
 
-def test_microentreprise_car_aucun_seuil_insuffisants_est_non_soumise(
+def test_microentreprise_car_aucun_seuil_insuffisant_est_non_soumise(
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
@@ -270,7 +270,7 @@ def test_microentreprise_car_aucun_seuil_insuffisants_est_non_soumise(
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_entreprise_cotee_bilan_et_effectif_plus_de_500_superieurs_aux_seuils_soumise_en_2025(
+def test_entreprise_cotee_bilan_et_effectif_plus_de_500_superieurs_aux_seuils_grande_entreprise_soumise_en_2025(
     ca, effectif, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -307,7 +307,7 @@ def test_entreprise_cotee_bilan_et_effectif_plus_de_500_superieurs_aux_seuils_so
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
     ],
 )
-def test_entreprise_cotee_bilan_et_effectif_moins_de_500_superieurs_aux_seuils_soumise_en_2026(
+def test_entreprise_cotee_bilan_et_effectif_moins_de_500_superieurs_aux_seuils_grande_entreprise_soumise_en_2026(
     ca, effectif, entreprise_factory
 ):
     entreprise = entreprise_factory(
