@@ -2,6 +2,49 @@
 from django.db import migrations
 from django.db import models
 
+import api.recherche_entreprises
+
+
+def maj_effectif_0_49(apps, schema_editor):
+    """Mise-à-jour des effectifs qui étaient dans la tranche disparue (0-49)
+
+    La tranche a été séparée en deux nouvelles tranches (0-9 et 10-49).
+    """
+    CaracteristiquesAnnuelles = apps.get_model(
+        "entreprises", "CaracteristiquesAnnuelles"
+    )
+    for caracteristiques in CaracteristiquesAnnuelles.objects.all():
+        if (
+            caracteristiques.effectif == "0-49"
+            or caracteristiques.effectif_permanent == "0-49"
+        ):
+            effectif = nouvel_effectif(caracteristiques.entreprise)
+            if caracteristiques.effectif == "0-49":
+                caracteristiques.effectif = effectif
+            if caracteristiques.effectif_permanent == "0-49":
+                caracteristiques.effectif_permanent = effectif
+            print(
+                (
+                    "MODIFICATION",
+                    caracteristiques.entreprise.siren,
+                    caracteristiques.entreprise.denomination,
+                    caracteristiques.id,
+                )
+            )
+            caracteristiques.save()
+
+
+def nouvel_effectif(entreprise):
+    try:
+        infos_entreprise = api.recherche_entreprises.recherche(entreprise.siren)
+        if infos_entreprise["effectif"] == "0-9":
+            return "0-9"
+        else:
+            return "10-49"
+    except api.exceptions.APIError as e:
+        print(f"ERREUR {e}: {entreprise.siren}")
+        return "10-49"
+
 
 class Migration(migrations.Migration):
     dependencies = [
@@ -50,5 +93,9 @@ class Migration(migrations.Migration):
                 null=True,
                 verbose_name="Effectif permanent",
             ),
+        ),
+        migrations.RunPython(
+            maj_effectif_0_49,
+            reverse_code=migrations.RunPython.noop,
         ),
     ]
