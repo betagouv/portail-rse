@@ -54,7 +54,7 @@ class CSRDReglementation(Reglementation):
             == CaracteristiquesAnnuelles.CA_MOINS_DE_700K
         ):
             score += 1
-        if caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50:
+        if caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10:
             score += 1
         return score >= 2
 

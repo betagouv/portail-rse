@@ -22,7 +22,7 @@ def test_reglementation_info():
 def test_est_suffisamment_qualifiee(entreprise_non_qualifiee):
     caracteristiques = CaracteristiquesAnnuelles(
         entreprise=entreprise_non_qualifiee,
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
     )
 
     assert DispositifAlerteReglementation.est_suffisamment_qualifiee(caracteristiques)
@@ -36,10 +36,15 @@ def test_n_est_pas_suffisamment_qualifiee_car_sans_effectif(entreprise_non_quali
     )
 
 
-def test_calculate_status_less_than_50_employees(entreprise_factory, alice):
-    entreprise = entreprise_factory(
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
-    )
+@pytest.mark.parametrize(
+    "effectif",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
+    ],
+)
+def test_calculate_status_less_than_50_employees(effectif, entreprise_factory, alice):
+    entreprise = entreprise_factory(effectif=effectif)
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
     reglementation = DispositifAlerteReglementation.calculate_status(

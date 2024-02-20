@@ -19,7 +19,7 @@ def _caracteristiques_suffisamment_qualifiantes_sans_groupe(entreprise_factory):
     entreprise = entreprise_factory(
         est_cotee=False,
         appartient_groupe=False,
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
     )
@@ -101,7 +101,7 @@ def test_entreprise_non_cotee_bilan_et_ca_superieurs_aux_seuils_grande_entrepris
     entreprise = entreprise_factory(
         est_cotee=False,
         appartient_groupe=False,
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         tranche_bilan=bilan,
         tranche_chiffre_affaires=ca,
     )
@@ -222,7 +222,7 @@ def test_microentreprise_car_seuil_effectif_et_ca_insuffisants_est_non_soumise(
     entreprise = entreprise_factory(
         est_cotee=False,
         appartient_groupe=False,
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
     )
@@ -235,13 +235,13 @@ def test_microentreprise_car_seuil_effectif_et_ca_insuffisants_est_non_soumise(
     )
 
 
-def test_microentreprise_car_aucun_seuil_insuffisant_est_non_soumise(
+def test_microentreprise_car_aucun_seuil_suffisant_est_non_soumise(
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
         est_cotee=False,
         appartient_groupe=False,
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
     )

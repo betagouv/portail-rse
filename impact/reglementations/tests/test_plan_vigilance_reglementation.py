@@ -123,7 +123,8 @@ def test_n_est_pas_suffisamment_qualifiee_car_groupe_mais_sans_effectif_groupe_f
 @pytest.mark.parametrize(
     "effectif",
     [
-        CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
@@ -163,7 +164,7 @@ def test_calcule_statut_societe_mere_francaise_moins_de_5000_employes_dans_le_gr
 ):
     entreprise = entreprise_factory(
         categorie_juridique_sirene=CODE_SA,
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         appartient_groupe=True,
         est_societe_mere=True,
         societe_mere_en_france=True,
@@ -277,7 +278,7 @@ def test_calcule_statut_societe_mere_francaise_plus_de_5000_employes_dans_le_gro
 ):
     entreprise = entreprise_factory(
         categorie_juridique_sirene=CODE_SA,
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         appartient_groupe=True,
         est_societe_mere=True,
         societe_mere_en_france=True,
@@ -319,7 +320,7 @@ def test_calcule_statut_societe_mere_etrangere_plus_de_5000_employes_dans_le_gro
     """
     entreprise = entreprise_factory(
         categorie_juridique_sirene=CODE_SA,
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         appartient_groupe=True,
         est_societe_mere=True,
         societe_mere_en_france=False,
@@ -344,7 +345,7 @@ def test_calcule_statut_societe_mere_francaise_moins_de_5000_employes_dans_le_gr
 ):
     entreprise = entreprise_factory(
         categorie_juridique_sirene=CODE_SA,
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         appartient_groupe=True,
         est_societe_mere=True,
         societe_mere_en_france=True,
@@ -372,7 +373,7 @@ def test_calcule_statut_societe_mere_francaise_moins_de_5000_employes_dans_le_gr
 ):
     entreprise = entreprise_factory(
         categorie_juridique_sirene=CODE_SA,
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         appartient_groupe=True,
         est_societe_mere=True,
         societe_mere_en_france=True,
@@ -395,7 +396,7 @@ def test_calcule_statut_societe_mere_francaise_moins_de_5000_employes_dans_le_gr
 def test_calcule_statut_filiale_du_groupe(entreprise_factory, alice):
     entreprise = entreprise_factory(
         categorie_juridique_sirene=CODE_SA,
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         appartient_groupe=True,
         est_societe_mere=False,  # filiale
         societe_mere_en_france=True,

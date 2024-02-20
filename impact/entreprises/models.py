@@ -224,7 +224,8 @@ BLANK_CHOICE = ("", "Sélectionnez une réponse")
 
 
 class CaracteristiquesAnnuelles(TimestampedModel):
-    EFFECTIF_MOINS_DE_50 = "0-49"
+    EFFECTIF_MOINS_DE_10 = "0-9"
+    EFFECTIF_ENTRE_10_ET_49 = "10-49"
     EFFECTIF_ENTRE_50_ET_249 = "50-249"
     EFFECTIF_ENTRE_250_ET_299 = "250-299"
     EFFECTIF_ENTRE_300_ET_499 = "300-499"
@@ -232,7 +233,8 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     EFFECTIF_ENTRE_5000_ET_9999 = "5000-9999"
     EFFECTIF_10000_ET_PLUS = "10000+"
     EFFECTIF_CHOICES = [
-        (EFFECTIF_MOINS_DE_50, "entre 0 et 49 salariés"),
+        (EFFECTIF_MOINS_DE_10, "entre 0 et 9 salariés"),
+        (EFFECTIF_ENTRE_10_ET_49, "entre 10 et 49 salariés"),
         (EFFECTIF_ENTRE_50_ET_249, "entre 50 et 249 salariés"),
         (EFFECTIF_ENTRE_250_ET_299, "entre 250 et 299 salariés"),
         (EFFECTIF_ENTRE_300_ET_499, "entre 300 et 499 salariés"),
@@ -248,6 +250,7 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         (EFFECTIF_OUTRE_MER_250_ET_PLUS, "250 salariés ou plus"),
     ]
 
+    EFFECTIF_MOINS_DE_50 = "0-49"
     EFFECTIF_ENTRE_250_ET_499 = "250-499"
     EFFECTIF_GROUPE_CHOICES = [
         (EFFECTIF_MOINS_DE_50, "entre 0 et 49 salariés"),

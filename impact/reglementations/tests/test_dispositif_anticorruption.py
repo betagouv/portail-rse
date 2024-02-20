@@ -148,7 +148,8 @@ def test_n_est_pas_suffisamment_qualifiee_car_comptes_consolides_mais_sans_CA_co
 @pytest.mark.parametrize(
     "effectif",
     [
-        CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,

@@ -102,7 +102,8 @@ def test_bdese_step_redirect_to_configuration_if_bdese_not_configured(
 @pytest.mark.parametrize(
     "effectif, affichage_non_soumis",
     [
-        (CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50, True),
+        (CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10, True),
+        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49, True),
         (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249, False),
         (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299, False),
         (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499, False),
@@ -115,7 +116,6 @@ def test_étape_bdese_affiche_un_message_indiquant_non_soumis_le_cas_échéant(
     effectif, affichage_non_soumis, bdese, habilitated_user, client
 ):
     caracteristiques = bdese.entreprise.dernieres_caracteristiques_qualifiantes
-    print(("CARAC", caracteristiques, caracteristiques.annee))
     caracteristiques.effectif = effectif
     caracteristiques.save()
 

@@ -43,8 +43,10 @@ def recherche(siren):
             tranche_effectif = int(data["tranche_effectif_salarie"])
         except (ValueError, TypeError):
             tranche_effectif = 0
-        if tranche_effectif < 21:  # moins de 50 salariés
-            effectif = CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50
+        if tranche_effectif < 11:  # moins de 10 salariés
+            effectif = CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
+        elif tranche_effectif < 21:  # moins de 50 salariés
+            effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49
         elif tranche_effectif < 32:  # moins de 250 salariés
             effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
         # la tranche EFFECTIF_ENTRE_250_ET_299 ne peut pas être trouvée avec l'API

@@ -69,7 +69,10 @@ class BDESEReglementation(Reglementation):
     @classmethod
     def criteres_remplis(cls, caracteristiques):
         criteres = []
-        if caracteristiques.effectif != CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50:
+        if caracteristiques.effectif not in (
+            CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
+        ):
             criteres.append("votre effectif est supérieur à 50 salariés")
         return criteres
 
