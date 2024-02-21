@@ -2,6 +2,8 @@ import pytest
 from django.urls import reverse
 
 from entreprises.models import CaracteristiquesAnnuelles
+from habilitations.models import attach_user_to_entreprise
+from reglementations.views.base import ReglementationStatus
 from reglementations.views.csrd import CSRDReglementation
 
 
@@ -669,4 +671,45 @@ def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entrepr
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2027
+    )
+
+
+def test_calcule_etat_si_non_soumis(entreprise_factory, alice):
+    entreprise = entreprise_factory(
+        est_cotee=False,
+        appartient_groupe=False,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    reglementation = CSRDReglementation.calculate_status(
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
+    )
+
+    assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
+    assert (
+        reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation."
+    )
+
+
+def test_calcule_etat_si_soumis_en_2027(entreprise_factory, alice):
+    entreprise = entreprise_factory(
+        est_cotee=True,
+        appartient_groupe=False,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    reglementation = CSRDReglementation.calculate_status(
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
+    )
+
+    assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
+    assert (
+        reglementation.status_detail
+        == "Vous êtes soumis à cette réglementation à partir de 2027."
     )
