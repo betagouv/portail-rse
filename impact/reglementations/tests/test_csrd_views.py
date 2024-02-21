@@ -1,7 +1,7 @@
 from django.urls import reverse
 
 
-def test_bdese_is_not_public(client, alice):
+def test_espace_csrd_is_not_public(client, alice):
     url = f"/csrd"
     response = client.get(url)
 
