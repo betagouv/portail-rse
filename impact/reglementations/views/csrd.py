@@ -1,9 +1,11 @@
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.urls import reverse_lazy
 
 from entreprises.models import CaracteristiquesAnnuelles
 from reglementations.views.base import Reglementation
+from reglementations.views.base import ReglementationStatus
 
 
 class CSRDReglementation(Reglementation):
@@ -24,6 +26,7 @@ class CSRDReglementation(Reglementation):
 
     @classmethod
     def est_soumis(cls, caracteristiques):
+        super().est_soumis(caracteristiques)
         return bool(cls.est_soumis_a_partir_de(caracteristiques))
 
     @classmethod
@@ -44,6 +47,29 @@ class CSRDReglementation(Reglementation):
                 return 2027
         elif cls.est_grande_entreprise(caracteristiques):
             return 2026
+
+    @classmethod
+    def criteres_remplis(cls, caracteristiques):
+        return []
+
+    @classmethod
+    def calculate_status(
+        cls,
+        caracteristiques: CaracteristiquesAnnuelles,
+        user: settings.AUTH_USER_MODEL,
+    ) -> ReglementationStatus:
+        if reglementation_status := super().calculate_status(caracteristiques, user):
+            return reglementation_status
+        if annee := cls.est_soumis_a_partir_de(caracteristiques):
+            return ReglementationStatus(
+                status=ReglementationStatus.STATUS_SOUMIS,
+                status_detail=f"Vous êtes soumis à cette réglementation à partir de {annee}.",
+            )
+        else:
+            return ReglementationStatus(
+                status=ReglementationStatus.STATUS_NON_SOUMIS,
+                status_detail="Vous n'êtes pas soumis à cette réglementation.",
+            )
 
     @classmethod
     def est_microentreprise(cls, caracteristiques: CaracteristiquesAnnuelles):
