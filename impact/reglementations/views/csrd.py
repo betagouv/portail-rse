@@ -138,22 +138,24 @@ class CSRDReglementation(Reglementation):
     ) -> ReglementationStatus:
         if reglementation_status := super().calculate_status(caracteristiques, user):
             return reglementation_status
+        primary_action = ReglementationAction(
+            reverse_lazy("reglementations:csrd"),
+            "Accéder à l'espace Rapport de Durabilité",
+        )
         if annee := cls.est_soumis_a_partir_de(caracteristiques):
             criteres = cls.criteres_remplis(caracteristiques)
             justification = ", ".join(criteres[:-1]) + " et " + criteres[-1]
             return ReglementationStatus(
                 status=ReglementationStatus.STATUS_SOUMIS,
                 status_detail=f"Vous êtes soumis à cette réglementation à partir de {annee} sur les données de {annee - 1} car {justification}.",
-                primary_action=ReglementationAction(
-                    reverse_lazy("reglementations:csrd"),
-                    "Accéder à l'espace CSRD",
-                ),
+                primary_action=primary_action,
                 prochaine_echeance=annee,
             )
         else:
             return ReglementationStatus(
                 status=ReglementationStatus.STATUS_NON_SOUMIS,
                 status_detail="Vous n'êtes pas soumis à cette réglementation.",
+                primary_action=primary_action,
             )
 
     @classmethod
