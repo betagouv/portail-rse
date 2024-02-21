@@ -766,6 +766,11 @@ def test_calcule_etat_si_non_soumis(entreprise_factory, alice):
     assert (
         reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation."
     )
+    assert (
+        reglementation.primary_action.title
+        == "Accéder à l'espace Rapport de Durabilité"
+    )
+    assert reglementation.primary_action.url == reverse("reglementations:csrd")
 
 
 def test_calcule_etat_si_soumis_en_2027(entreprise_factory, alice):
@@ -788,5 +793,8 @@ def test_calcule_etat_si_soumis_en_2027(entreprise_factory, alice):
         == "Vous êtes soumis à cette réglementation à partir de 2027 sur les données de 2026 car votre société est cotée sur un marché réglementé, votre effectif est supérieur à 10 salariés et votre bilan est supérieur à 350k€."
     )
     assert reglementation.prochaine_echeance == 2027
-    assert reglementation.primary_action.title == "Accéder à l'espace CSRD"
+    assert (
+        reglementation.primary_action.title
+        == "Accéder à l'espace Rapport de Durabilité"
+    )
     assert reglementation.primary_action.url == reverse("reglementations:csrd")
