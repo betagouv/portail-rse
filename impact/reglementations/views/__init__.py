@@ -103,4 +103,4 @@ def calcule_reglementations(
         }
         for reglementation in REGLEMENTATIONS
     ]
-    return sorted(reglementations, key=lambda x: x["status"].status)
+    return reglementations
