@@ -64,34 +64,35 @@ class CSRDReglementation(Reglementation):
 
     @classmethod
     def critere_effectif(cls, caracteristiques):
-        if caracteristiques.effectif in (
-            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
-            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
-            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
-            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
-            CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
-        ):
+        if caracteristiques.entreprise.est_cotee:
             if cls.est_grande_entreprise(caracteristiques):
-                if (
-                    caracteristiques.entreprise.est_cotee
-                    and caracteristiques.effectif
-                    in (
-                        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
-                        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
-                        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
-                    )
+                if caracteristiques.effectif in (
+                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+                    CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
                 ):
                     return "votre effectif est supérieur à 500 salariés"
-                else:
+                elif caracteristiques.effectif in (
+                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+                ):
                     return "votre effectif est supérieur à 250 salariés"
-            elif cls.est_petite_ou_moyenne_entreprise(caracteristiques):
-                return "votre effectif est supérieur à 10 salariés"
-        elif caracteristiques.effectif in (
-            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
-            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        ):
             if cls.est_petite_ou_moyenne_entreprise(caracteristiques):
-                return "votre effectif est supérieur à 10 salariés"
+                if (
+                    caracteristiques.effectif
+                    != CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
+                ):
+                    return "votre effectif est supérieur à 10 salariés"
+        else:
+            if cls.est_grande_entreprise(caracteristiques):
+                if caracteristiques.effectif in (
+                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+                    CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+                ):
+                    return "votre effectif est supérieur à 250 salariés"
 
     @classmethod
     def critere_bilan(cls, caracteristiques):
