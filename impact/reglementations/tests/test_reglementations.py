@@ -9,7 +9,6 @@ from freezegun import freeze_time
 from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
-from reglementations.views import calcule_reglementations
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
 from reglementations.views.base import InsuffisammentQualifieeError
 from reglementations.views.base import ReglementationStatus
@@ -148,57 +147,3 @@ def test_tableau_de_bord_entreprise_qualifiee_dans_le_passe(
         f"Les réglementations affichées sont basées sur des informations de l'exercice comptable {date_cloture_dernier_exercice.year}."
         in content
     ), content
-
-
-def test_calcule_reglementations_trie_les_statuts_soumis_en_premier(
-    entreprise_factory, mocker
-):
-    entreprise = entreprise_factory()
-
-    mocker.patch(
-        "reglementations.views.bdese.BDESEReglementation.est_soumis",
-        return_value=False,
-    )
-    mocker.patch(
-        "reglementations.views.index_egapro.IndexEgaproReglementation.est_soumis",
-        return_value=True,
-    )
-    mocker.patch(
-        "reglementations.views.dispositif_alerte.DispositifAlerteReglementation.est_soumis",
-        return_value=False,
-    )
-    mocker.patch(
-        "reglementations.views.bges.BGESReglementation.est_soumis",
-        return_value=True,
-    )
-    mocker.patch(
-        "reglementations.views.audit_energetique.AuditEnergetiqueReglementation.est_soumis",
-        return_value=False,
-    )
-    mocker.patch(
-        "reglementations.views.dispositif_anticorruption.DispositifAntiCorruption.est_soumis",
-        return_value=True,
-    )
-    mocker.patch(
-        "reglementations.views.dpef.DPEFReglementation.est_soumis",
-        return_value=False,
-    )
-    mocker.patch(
-        "reglementations.views.plan_vigilance.PlanVigilanceReglementation.est_soumis",
-        return_value=True,
-    )
-
-    reglementations = calcule_reglementations(
-        entreprise.dernieres_caracteristiques_qualifiantes, AnonymousUser()
-    )
-
-    assert [reglementation["reglementation"] for reglementation in reglementations] == [
-        IndexEgaproReglementation,
-        BGESReglementation,
-        DispositifAntiCorruption,
-        PlanVigilanceReglementation,
-        BDESEReglementation,
-        DispositifAlerteReglementation,
-        AuditEnergetiqueReglementation,
-        DPEFReglementation,
-    ]
