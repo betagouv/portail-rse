@@ -131,7 +131,10 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
         context["reglementations_soumises"] + context["reglementations_non_soumises"]
     )
     assert len(reglementations) == len(REGLEMENTATIONS)
-    for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
+    for REGLEMENTATION in REGLEMENTATIONS:
+        index = [
+            reglementation["reglementation"] for reglementation in reglementations
+        ].index(REGLEMENTATION)
         assert reglementations[index]["status"] == REGLEMENTATION.calculate_status(
             simulation_caracs, AnonymousUser()
         )
@@ -326,7 +329,10 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
         bdese_accord=False,
         systeme_management_energie=False,
     )
-    for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
+    for REGLEMENTATION in REGLEMENTATIONS:
+        index = [
+            reglementation["reglementation"] for reglementation in reglementations
+        ].index(REGLEMENTATION)
         status = reglementations[index]["status"]
         assert status == REGLEMENTATION.calculate_status(
             caracteristiques, AnonymousUser()
@@ -407,7 +413,10 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
         bdese_accord=False,
         systeme_management_energie=False,
     )
-    for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
+    for REGLEMENTATION in REGLEMENTATIONS:
+        index = [
+            reglementation["reglementation"] for reglementation in reglementations
+        ].index(REGLEMENTATION)
         status = reglementations[index]["status"]
         assert status == REGLEMENTATION.calculate_status(
             caracteristiques, AnonymousUser()
@@ -493,7 +502,10 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
         bdese_accord=False,
         systeme_management_energie=False,
     )
-    for index, REGLEMENTATION in enumerate(REGLEMENTATIONS):
+    for REGLEMENTATION in REGLEMENTATIONS:
+        index = [
+            reglementation["reglementation"] for reglementation in reglementations
+        ].index(REGLEMENTATION)
         status = reglementations[index]["status"]
         assert status == REGLEMENTATION.calculate_status(
             caracteristiques, AnonymousUser()
