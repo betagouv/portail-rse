@@ -711,5 +711,6 @@ def test_calcule_etat_si_soumis_en_2027(entreprise_factory, alice):
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert (
         reglementation.status_detail
-        == "Vous êtes soumis à cette réglementation à partir de 2027."
+        == "Vous êtes soumis à cette réglementation à partir de 2027 sur les données de 2026."
     )
+    assert reglementation.prochaine_echeance == 2027
