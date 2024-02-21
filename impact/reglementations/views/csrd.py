@@ -51,7 +51,83 @@ class CSRDReglementation(Reglementation):
 
     @classmethod
     def criteres_remplis(cls, caracteristiques):
-        return []
+        criteres = []
+        if caracteristiques.entreprise.est_cotee:
+            criteres.append("votre société est cotée sur un marché réglementé")
+        if critere := cls.critere_effectif(caracteristiques):
+            criteres.append(critere)
+        if critere := cls.critere_bilan(caracteristiques):
+            criteres.append(critere)
+        if critere := cls.critere_CA(caracteristiques):
+            criteres.append(critere)
+        return criteres
+
+    @classmethod
+    def critere_effectif(cls, caracteristiques):
+        if caracteristiques.effectif in (
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+            CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        ):
+            if cls.est_grande_entreprise(caracteristiques):
+                if (
+                    caracteristiques.entreprise.est_cotee
+                    and caracteristiques.effectif
+                    in (
+                        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+                        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+                        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+                    )
+                ):
+                    return "votre effectif est supérieur à 500 salariés"
+                else:
+                    return "votre effectif est supérieur à 250 salariés"
+            elif cls.est_petite_ou_moyenne_entreprise(caracteristiques):
+                return "votre effectif est supérieur à 10 salariés"
+        elif caracteristiques.effectif in (
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        ):
+            if cls.est_petite_ou_moyenne_entreprise(caracteristiques):
+                return "votre effectif est supérieur à 10 salariés"
+
+    @classmethod
+    def critere_bilan(cls, caracteristiques):
+        if caracteristiques.tranche_bilan in (
+            CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+            CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+            CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        ):
+            if cls.est_grande_entreprise(caracteristiques):
+                return "votre bilan est supérieur à 20M€"
+            elif cls.est_petite_ou_moyenne_entreprise(caracteristiques):
+                return "votre bilan est supérieur à 350k€"
+        elif caracteristiques.tranche_bilan in (
+            CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
+            CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        ):
+            if cls.est_petite_ou_moyenne_entreprise(caracteristiques):
+                return "votre bilan est supérieur à 350k€"
+
+    @classmethod
+    def critere_CA(cls, caracteristiques):
+        if caracteristiques.tranche_chiffre_affaires in (
+            CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
+            CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
+            CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+        ):
+            if cls.est_grande_entreprise(caracteristiques):
+                return "votre chiffre d'affaires est supérieur à 40M€"
+            elif cls.est_petite_ou_moyenne_entreprise(caracteristiques):
+                return "votre chiffre d'affaires est supérieur à 700k€"
+        elif caracteristiques.tranche_chiffre_affaires in (
+            CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+            CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
+        ):
+            if cls.est_petite_ou_moyenne_entreprise(caracteristiques):
+                return "votre chiffre d'affaires est supérieur à 700k€"
 
     @classmethod
     def calculate_status(
@@ -62,9 +138,11 @@ class CSRDReglementation(Reglementation):
         if reglementation_status := super().calculate_status(caracteristiques, user):
             return reglementation_status
         if annee := cls.est_soumis_a_partir_de(caracteristiques):
+            criteres = cls.criteres_remplis(caracteristiques)
+            justification = ", ".join(criteres[:-1]) + " et " + criteres[-1]
             return ReglementationStatus(
                 status=ReglementationStatus.STATUS_SOUMIS,
-                status_detail=f"Vous êtes soumis à cette réglementation à partir de {annee} sur les données de {annee - 1}.",
+                status_detail=f"Vous êtes soumis à cette réglementation à partir de {annee} sur les données de {annee - 1} car {justification}.",
                 primary_action=ReglementationAction(
                     reverse_lazy("reglementations:csrd"),
                     "Accéder à l'espace CSRD",
