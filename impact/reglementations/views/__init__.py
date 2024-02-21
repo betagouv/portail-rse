@@ -14,7 +14,6 @@ from reglementations.views.audit_energetique import AuditEnergetiqueReglementati
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.bdese import BDESEReglementation
 from reglementations.views.bges import BGESReglementation
-from reglementations.views.csrd import csrd  # noqa
 from reglementations.views.csrd import CSRDReglementation
 from reglementations.views.dispositif_alerte import DispositifAlerteReglementation
 from reglementations.views.dispositif_anticorruption import DispositifAntiCorruption

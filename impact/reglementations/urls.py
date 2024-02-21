@@ -90,5 +90,5 @@ urlpatterns = [
         views.bdese.toggle_bdese_completion,
         name="toggle_bdese_completion",
     ),
-    path("csrd", views.csrd, name="csrd"),
+    path("csrd", views.csrd.csrd, name="csrd"),
 ]
