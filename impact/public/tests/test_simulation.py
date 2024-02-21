@@ -545,7 +545,7 @@ def test_should_not_commit_une_entreprise_sans_caracteristiques_actuelles_avec_u
 
 @pytest.mark.django_db
 def test_simulation_incorrecte(client):
-    unvalid_data = {
+    invalid_data = {
         "denomination": "Entreprise SAS",
         "siren": "000000001",
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
@@ -555,7 +555,7 @@ def test_simulation_incorrecte(client):
         "comptes_consolides": True,
     }
 
-    response = client.post("/simulation", data=unvalid_data)
+    response = client.post("/simulation", data=invalid_data)
 
     assert response.status_code == 200
     content = response.content.decode("utf-8")
@@ -567,3 +567,37 @@ def test_simulation_incorrecte(client):
 
     assert Entreprise.objects.count() == 0
     assert CaracteristiquesAnnuelles.objects.count() == 0
+
+
+@pytest.mark.django_db
+def test_resultats_simulation_en_session_incorrects(client):
+    """
+    Ce cas peut arriver si les champs de la simulation évoluent. Des données précédemment correctes ne le sont plus.
+    """
+    invalid_data = {
+        "siren": "000000001",
+        "denomination": "Entreprise SAS",
+        "categorie_juridique_sirene": 5200,
+        "effectif": "0-19",  # Cette valeur n'existe pas
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "est_cotee": False,
+        "appartient_groupe": False,
+    }
+
+    session = client.session
+    session["simulation"] = invalid_data
+    session.save()
+
+    response = client.get("/simulation")
+
+    assert response.status_code == 200
+
+    # le formulaire est sur la page, avec les bonnes données d'initialisation et une erreur sur les champs erronés
+    context = response.context
+    simulation_form = context["simulation_form"]
+    assert simulation_form.errors["effectif"]
+    assert simulation_form["siren"].value() == "000000001"
+
+    assert not context["reglementations_soumises"]
+    assert not context["reglementations_non_soumises"]

@@ -105,23 +105,24 @@ def simulation(request):
             )
     elif request.session.get("simulation"):
         simulation_form = SimulationForm(request.session["simulation"])
-        reglementations = calcule_simulation(simulation_form, request.user)
-        reglementations_soumises = [
-            r
-            for r in reglementations
-            if r["status"].status
-            in (
-                ReglementationStatus.STATUS_A_ACTUALISER,
-                ReglementationStatus.STATUS_EN_COURS,
-                ReglementationStatus.STATUS_A_JOUR,
-                ReglementationStatus.STATUS_SOUMIS,
-            )
-        ]
-        reglementations_non_soumises = [
-            r
-            for r in reglementations
-            if r["status"].status == ReglementationStatus.STATUS_NON_SOUMIS
-        ]
+        if simulation_form.is_valid():
+            reglementations = calcule_simulation(simulation_form, request.user)
+            reglementations_soumises = [
+                r
+                for r in reglementations
+                if r["status"].status
+                in (
+                    ReglementationStatus.STATUS_A_ACTUALISER,
+                    ReglementationStatus.STATUS_EN_COURS,
+                    ReglementationStatus.STATUS_A_JOUR,
+                    ReglementationStatus.STATUS_SOUMIS,
+                )
+            ]
+            reglementations_non_soumises = [
+                r
+                for r in reglementations
+                if r["status"].status == ReglementationStatus.STATUS_NON_SOUMIS
+            ]
     return render(
         request,
         "public/simulation.html",
