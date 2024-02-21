@@ -117,6 +117,12 @@ def test_entreprise_non_cotee_bilan_et_ca_superieurs_aux_seuils_grande_entrepris
         )
         == 2026
     )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre bilan est supérieur à 20M€",
+        "votre chiffre d'affaires est supérieur à 40M€",
+    ]
 
 
 @pytest.mark.parametrize(
@@ -157,6 +163,12 @@ def test_entreprise_non_cotee_bilan_et_effectif_superieurs_aux_seuils_grande_ent
         )
         == 2026
     )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre effectif est supérieur à 250 salariés",
+        "votre bilan est supérieur à 20M€",
+    ]
 
 
 @pytest.mark.parametrize(
@@ -197,6 +209,12 @@ def test_entreprise_non_cotee_CA_et_effectif_superieurs_aux_seuils_grande_entrep
         )
         == 2026
     )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre effectif est supérieur à 250 salariés",
+        "votre chiffre d'affaires est supérieur à 40M€",
+    ]
 
 
 @pytest.mark.parametrize(
@@ -377,7 +395,7 @@ def test_microentreprise_cotee_car_aucun_seuil_suffisant_est_non_soumise(
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_entreprise_cotee_bilan_et_effectif_plus_de_500_superieurs_aux_seuils_grande_entreprise_soumise_en_2025(
+def test_entreprise_cotee_ca_et_effectif_plus_de_500_superieurs_aux_seuils_grande_entreprise_soumise_en_2025(
     ca, effectif, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -397,6 +415,13 @@ def test_entreprise_cotee_bilan_et_effectif_plus_de_500_superieurs_aux_seuils_gr
         )
         == 2025
     )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre société est cotée sur un marché réglementé",
+        "votre effectif est supérieur à 500 salariés",
+        "votre chiffre d'affaires est supérieur à 40M€",
+    ]
 
 
 @pytest.mark.parametrize(
@@ -414,7 +439,7 @@ def test_entreprise_cotee_bilan_et_effectif_plus_de_500_superieurs_aux_seuils_gr
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
     ],
 )
-def test_entreprise_cotee_bilan_et_effectif_moins_de_500_superieurs_aux_seuils_grande_entreprise_soumise_en_2026(
+def test_entreprise_cotee_ca_et_effectif_moins_de_500_superieurs_aux_seuils_grande_entreprise_soumise_en_2026(
     ca, effectif, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -434,6 +459,13 @@ def test_entreprise_cotee_bilan_et_effectif_moins_de_500_superieurs_aux_seuils_g
         )
         == 2026
     )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre société est cotée sur un marché réglementé",
+        "votre effectif est supérieur à 250 salariés",
+        "votre chiffre d'affaires est supérieur à 40M€",
+    ]
 
 
 @pytest.mark.parametrize(
@@ -473,6 +505,13 @@ def test_entreprise_cotee_bilan_et_ca_superieurs_aux_seuils_petite_entreprise_ma
         )
         == 2027
     )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre société est cotée sur un marché réglementé",
+        "votre bilan est supérieur à 350k€",
+        "votre chiffre d'affaires est supérieur à 700k€",
+    ]
 
 
 @pytest.mark.parametrize(
@@ -512,6 +551,13 @@ def test_entreprise_cotee_bilan_et_ca_superieurs_aux_seuils_petite_entreprise_ma
         )
         == 2027
     )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre société est cotée sur un marché réglementé",
+        "votre bilan est supérieur à 350k€",
+        "votre chiffre d'affaires est supérieur à 700k€",
+    ]
 
 
 @pytest.mark.parametrize(
@@ -553,6 +599,13 @@ def test_entreprise_cotee_effectif_et_ca_superieurs_aux_seuils_petite_entreprise
         )
         == 2027
     )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre société est cotée sur un marché réglementé",
+        "votre effectif est supérieur à 10 salariés",
+        "votre chiffre d'affaires est supérieur à 700k€",
+    ]
 
 
 @pytest.mark.parametrize(
@@ -592,6 +645,13 @@ def test_entreprise_cotee_effectif_et_ca_superieurs_aux_seuils_petite_entreprise
         )
         == 2027
     )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre société est cotée sur un marché réglementé",
+        "votre effectif est supérieur à 10 salariés",
+        "votre chiffre d'affaires est supérieur à 700k€",
+    ]
 
 
 @pytest.mark.parametrize(
@@ -633,6 +693,13 @@ def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entrepr
         )
         == 2027
     )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre société est cotée sur un marché réglementé",
+        "votre effectif est supérieur à 10 salariés",
+        "votre bilan est supérieur à 350k€",
+    ]
 
 
 @pytest.mark.parametrize(
@@ -672,6 +739,13 @@ def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entrepr
         )
         == 2027
     )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre société est cotée sur un marché réglementé",
+        "votre effectif est supérieur à 10 salariés",
+        "votre bilan est supérieur à 350k€",
+    ]
 
 
 def test_calcule_etat_si_non_soumis(entreprise_factory, alice):
@@ -711,7 +785,7 @@ def test_calcule_etat_si_soumis_en_2027(entreprise_factory, alice):
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert (
         reglementation.status_detail
-        == "Vous êtes soumis à cette réglementation à partir de 2027 sur les données de 2026."
+        == "Vous êtes soumis à cette réglementation à partir de 2027 sur les données de 2026 car votre société est cotée sur un marché réglementé, votre effectif est supérieur à 10 salariés et votre bilan est supérieur à 350k€."
     )
     assert reglementation.prochaine_echeance == 2027
     assert reglementation.primary_action.title == "Accéder à l'espace CSRD"
