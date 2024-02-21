@@ -714,3 +714,5 @@ def test_calcule_etat_si_soumis_en_2027(entreprise_factory, alice):
         == "Vous êtes soumis à cette réglementation à partir de 2027 sur les données de 2026."
     )
     assert reglementation.prochaine_echeance == 2027
+    assert reglementation.primary_action.title == "Accéder à l'espace CSRD"
+    assert reglementation.primary_action.url == reverse("reglementations:csrd")

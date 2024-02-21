@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 
 from entreprises.models import CaracteristiquesAnnuelles
 from reglementations.views.base import Reglementation
+from reglementations.views.base import ReglementationAction
 from reglementations.views.base import ReglementationStatus
 
 
@@ -64,6 +65,10 @@ class CSRDReglementation(Reglementation):
             return ReglementationStatus(
                 status=ReglementationStatus.STATUS_SOUMIS,
                 status_detail=f"Vous êtes soumis à cette réglementation à partir de {annee} sur les données de {annee - 1}.",
+                primary_action=ReglementationAction(
+                    reverse_lazy("reglementations:csrd"),
+                    "Accéder à l'espace CSRD",
+                ),
                 prochaine_echeance=annee,
             )
         else:
