@@ -63,7 +63,8 @@ class CSRDReglementation(Reglementation):
         if annee := cls.est_soumis_a_partir_de(caracteristiques):
             return ReglementationStatus(
                 status=ReglementationStatus.STATUS_SOUMIS,
-                status_detail=f"Vous êtes soumis à cette réglementation à partir de {annee}.",
+                status_detail=f"Vous êtes soumis à cette réglementation à partir de {annee} sur les données de {annee - 1}.",
+                prochaine_echeance=annee,
             )
         else:
             return ReglementationStatus(
