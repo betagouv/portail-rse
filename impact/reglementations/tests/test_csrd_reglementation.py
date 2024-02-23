@@ -892,3 +892,132 @@ def test_calcule_etat_si_soumis_en_2027(entreprise_factory, alice):
         == "Accéder à l'espace Rapport de Durabilité"
     )
     assert reglementation.primary_action.url == reverse("reglementations:csrd")
+
+
+@pytest.mark.parametrize("est_cotee", [False, True])
+def test_microentreprise_filiale_grand_groupe_jamais_soumise(
+    est_cotee, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        est_cotee=est_cotee,
+        appartient_groupe=True,
+        est_societe_mere=False,
+        comptes_consolides=True,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    )
+
+    assert not CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+
+def test_microentreprise_cotee_societe_mere_grand_groupe_effectif_groupe_superieur_a_500_soumise_en_2025(
+    entreprise_factory,
+):
+    entreprise = entreprise_factory(
+        est_cotee=True,
+        appartient_groupe=True,
+        est_societe_mere=True,
+        comptes_consolides=True,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    )
+
+    assert CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert (
+        CSRDReglementation.est_soumis_a_partir_de(
+            entreprise.dernieres_caracteristiques_qualifiantes
+        )
+        == 2025
+    )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre société est cotée sur un marché réglementé",
+        "votre société est la société mère d'un groupe",
+        "l'effectif du groupe est supérieur à 500 salariés",
+        "le bilan du groupe est supérieur à 30M€",
+        "le chiffre d'affaires du groupe est supérieur à 60M€",
+    ]
+
+
+def test_microentreprise_cotee_societe_mere_grand_groupe_effectif_groupe_inferieur_a_500_soumise_en_2026(
+    entreprise_factory,
+):
+    entreprise = entreprise_factory(
+        est_cotee=True,
+        appartient_groupe=True,
+        est_societe_mere=True,
+        comptes_consolides=True,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_499,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    )
+
+    assert CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert (
+        CSRDReglementation.est_soumis_a_partir_de(
+            entreprise.dernieres_caracteristiques_qualifiantes
+        )
+        == 2026
+    )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre société est cotée sur un marché réglementé",
+        "votre société est la société mère d'un groupe",
+        "l'effectif du groupe est supérieur à 250 salariés",
+        "le bilan du groupe est supérieur à 30M€",
+        "le chiffre d'affaires du groupe est supérieur à 60M€",
+    ]
+
+
+def test_microentreprise_non_cotee_societe_mere_grand_groupe_soumise_en_2026(
+    entreprise_factory,
+):
+    entreprise = entreprise_factory(
+        est_cotee=False,
+        appartient_groupe=True,
+        est_societe_mere=True,
+        comptes_consolides=True,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    )
+
+    assert CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert (
+        CSRDReglementation.est_soumis_a_partir_de(
+            entreprise.dernieres_caracteristiques_qualifiantes
+        )
+        == 2026
+    )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre société est la société mère d'un groupe",
+        "l'effectif du groupe est supérieur à 250 salariés",
+        "le bilan du groupe est supérieur à 30M€",
+        "le chiffre d'affaires du groupe est supérieur à 60M€",
+    ]

@@ -59,9 +59,24 @@ class CSRDReglementation(Reglementation):
                     return 2025
                 else:
                     return 2026
+            elif caracteristiques.entreprise.est_societe_mere and cls.est_grand_groupe(
+                caracteristiques
+            ):
+                if caracteristiques.effectif_groupe in (
+                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+                    CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+                ):
+                    return 2025
+                else:
+                    return 2026
             elif cls.est_petite_ou_moyenne_entreprise(caracteristiques):
                 return 2027
         elif cls.est_grande_entreprise(caracteristiques):
+            return 2026
+        elif caracteristiques.entreprise.est_societe_mere and cls.est_grand_groupe(
+            caracteristiques
+        ):
             return 2026
 
     @classmethod
@@ -69,6 +84,10 @@ class CSRDReglementation(Reglementation):
         criteres = []
         if caracteristiques.entreprise.est_cotee:
             criteres.append("votre société est cotée sur un marché réglementé")
+        if caracteristiques.entreprise.est_societe_mere and cls.est_grand_groupe(
+            caracteristiques
+        ):
+            criteres.append("votre société est la société mère d'un groupe")
         if critere := cls.critere_effectif(caracteristiques):
             criteres.append(critere)
         if critere := cls.critere_bilan(caracteristiques):
@@ -92,6 +111,20 @@ class CSRDReglementation(Reglementation):
                     CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
                 ):
                     return "votre effectif est supérieur à 250 salariés"
+            if caracteristiques.entreprise.est_societe_mere and cls.est_grand_groupe(
+                caracteristiques
+            ):
+                if caracteristiques.effectif_groupe in (
+                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+                    CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+                ):
+                    return "l'effectif du groupe est supérieur à 500 salariés"
+                elif (
+                    caracteristiques.effectif_groupe
+                    == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_499
+                ):
+                    return "l'effectif du groupe est supérieur à 250 salariés"
             if cls.est_petite_ou_moyenne_entreprise(caracteristiques):
                 if (
                     caracteristiques.effectif
@@ -108,6 +141,16 @@ class CSRDReglementation(Reglementation):
                     CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
                 ):
                     return "votre effectif est supérieur à 250 salariés"
+            if caracteristiques.entreprise.est_societe_mere and cls.est_grand_groupe(
+                caracteristiques
+            ):
+                if caracteristiques.effectif_groupe in (
+                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_499,
+                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+                    CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+                ):
+                    return "l'effectif du groupe est supérieur à 250 salariés"
 
     @classmethod
     def critere_bilan(cls, caracteristiques):
@@ -126,6 +169,15 @@ class CSRDReglementation(Reglementation):
         ):
             if cls.est_petite_ou_moyenne_entreprise(caracteristiques):
                 return "votre bilan est supérieur à 350k€"
+        if caracteristiques.entreprise.est_societe_mere and cls.est_grand_groupe(
+            caracteristiques
+        ):
+            if caracteristiques.tranche_bilan_consolide in (
+                CaracteristiquesAnnuelles.BILAN_ENTRE_30M_ET_43M,
+                CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+                CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+            ):
+                return "le bilan du groupe est supérieur à 30M€"
 
     @classmethod
     def critere_CA(cls, caracteristiques):
@@ -144,6 +196,14 @@ class CSRDReglementation(Reglementation):
         ):
             if cls.est_petite_ou_moyenne_entreprise(caracteristiques):
                 return "votre chiffre d'affaires est supérieur à 700k€"
+        if caracteristiques.entreprise.est_societe_mere and cls.est_grand_groupe(
+            caracteristiques
+        ):
+            if caracteristiques.tranche_chiffre_affaires_consolide in (
+                CaracteristiquesAnnuelles.CA_ENTRE_60M_ET_100M,
+                CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+            ):
+                return "le chiffre d'affaires du groupe est supérieur à 60M€"
 
     @classmethod
     def calculate_status(
@@ -222,6 +282,32 @@ class CSRDReglementation(Reglementation):
         return not cls.est_microentreprise(
             caracteristiques
         ) and not cls.est_grande_entreprise(caracteristiques)
+
+    @classmethod
+    def est_grand_groupe(cls, caracteristiques: CaracteristiquesAnnuelles) -> bool:
+        nombre_seuils_depasses = 0
+        if caracteristiques.tranche_bilan_consolide in (
+            CaracteristiquesAnnuelles.BILAN_ENTRE_30M_ET_43M,
+            CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+            CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        ):
+            nombre_seuils_depasses += 1
+        if caracteristiques.tranche_chiffre_affaires_consolide in (
+            CaracteristiquesAnnuelles.CA_ENTRE_60M_ET_100M,
+            CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+        ):
+            nombre_seuils_depasses += 1
+        if caracteristiques.effectif_groupe in (
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_499,
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+            CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        ):
+            nombre_seuils_depasses += 1
+        return (
+            caracteristiques.entreprise.appartient_groupe
+            and nombre_seuils_depasses >= 2
+        )
 
 
 @login_required
