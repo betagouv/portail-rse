@@ -118,10 +118,10 @@ def test_caracteristiques_sont_qualifiantes_avec_groupe(
     assert not caracteristiques.sont_qualifiantes
 
     caracteristiques.tranche_chiffre_affaires_consolide = (
-        CaracteristiquesAnnuelles.CA_MOINS_DE_700K
+        CaracteristiquesAnnuelles.CA_MOINS_DE_40M
     )
     caracteristiques.tranche_bilan_consolide = (
-        CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
+        CaracteristiquesAnnuelles.BILAN_MOINS_DE_20M
     )
 
     assert caracteristiques.groupe_est_qualifie
@@ -238,8 +238,8 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
     effectif_groupe_permanent = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999
     tranche_chiffre_affaires = CaracteristiquesAnnuelles.CA_MOINS_DE_700K
     tranche_bilan = CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
-    tranche_chiffre_affaires_consolide = CaracteristiquesAnnuelles.CA_MOINS_DE_700K
-    tranche_bilan_consolide = CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
+    tranche_chiffre_affaires_consolide = CaracteristiquesAnnuelles.CA_MOINS_DE_40M
+    tranche_bilan_consolide = CaracteristiquesAnnuelles.BILAN_MOINS_DE_20M
     bdese_accord = False
     systeme_management_energie = False
     date_cloture_exercice = date(2023, 7, 7)
@@ -298,9 +298,9 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
     nouvelle_tranche_chiffre_affaires = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
     nouvelle_tranche_bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
     nouvelle_tranche_chiffre_affaires_consolide = (
-        CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
+        CaracteristiquesAnnuelles.CA_100M_ET_PLUS
     )
-    nouvelle_tranche_bilan_consolide = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
+    nouvelle_tranche_bilan_consolide = CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
     nouveau_bdese_accord = True
     nouveau_systeme_management_energie = True
 

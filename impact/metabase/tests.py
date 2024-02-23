@@ -161,8 +161,8 @@ def test_synchronise_une_entreprise_qualifiee_appartenant_a_un_groupe(
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         effectif_groupe_france=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         effectif_groupe_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
-        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_MOINS_DE_40M,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_20M,
     )
 
     Command().handle()
@@ -187,11 +187,11 @@ def test_synchronise_une_entreprise_qualifiee_appartenant_a_un_groupe(
     )
     assert (
         metabase_entreprise.tranche_chiffre_affaires_consolide
-        == CaracteristiquesAnnuelles.CA_MOINS_DE_700K
+        == CaracteristiquesAnnuelles.CA_MOINS_DE_40M
     )
     assert (
         metabase_entreprise.tranche_bilan_consolide
-        == CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
+        == CaracteristiquesAnnuelles.BILAN_MOINS_DE_20M
     )
 
 

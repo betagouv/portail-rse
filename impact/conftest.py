@@ -74,8 +74,8 @@ def entreprise_factory(db, date_cloture_dernier_exercice):
         effectif_groupe_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
-        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_MOINS_DE_40M,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_20M,
         bdese_accord=False,
         systeme_management_energie=False,
     ):
