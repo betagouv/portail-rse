@@ -19,19 +19,69 @@ def test_reglementation_info():
 @pytest.fixture
 def _caracteristiques_suffisamment_qualifiantes_sans_groupe(entreprise_factory):
     entreprise = entreprise_factory(
+        siren="000000001",
         est_cotee=False,
-        appartient_groupe=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        appartient_groupe=False,
+    )
+    return entreprise.dernieres_caracteristiques
+
+
+@pytest.fixture
+def _caracteristiques_suffisamment_qualifiantes_avec_groupe_sans_comptes_consolides(
+    entreprise_factory,
+):
+    entreprise = entreprise_factory(
+        siren="000000002",
+        est_cotee=False,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        appartient_groupe=True,
+        comptes_consolides=False,
+    )
+    return entreprise.dernieres_caracteristiques
+
+
+@pytest.fixture
+def _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolides(
+    entreprise_factory,
+):
+    entreprise = entreprise_factory(
+        siren="000000003",
+        est_cotee=False,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        appartient_groupe=True,
+        comptes_consolides=True,
+        effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     )
     return entreprise.dernieres_caracteristiques
 
 
 def test_est_suffisamment_qualifiee_sans_groupe(
     _caracteristiques_suffisamment_qualifiantes_sans_groupe,
+    _caracteristiques_suffisamment_qualifiantes_avec_groupe_sans_comptes_consolides,
+    _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolides,
 ):
     caracteristiques = _caracteristiques_suffisamment_qualifiantes_sans_groupe
+
+    assert CSRDReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+    caracteristiques = (
+        _caracteristiques_suffisamment_qualifiantes_avec_groupe_sans_comptes_consolides
+    )
+
+    assert CSRDReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+    caracteristiques = (
+        _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolides
+    )
 
     assert CSRDReglementation.est_suffisamment_qualifiee(caracteristiques)
 
@@ -77,6 +127,50 @@ def test_n_est_pas_suffisamment_qualifiee_car_groupe_non_renseigne(
 ):
     caracteristiques = _caracteristiques_suffisamment_qualifiantes_sans_groupe
     caracteristiques.entreprise.appartient_groupe = None
+
+    assert not CSRDReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+
+def test_n_est_pas_suffisamment_qualifiee_car_groupe_mais_comptes_consolides_non_renseigne(
+    _caracteristiques_suffisamment_qualifiantes_avec_groupe_sans_comptes_consolides,
+):
+    caracteristiques = (
+        _caracteristiques_suffisamment_qualifiantes_avec_groupe_sans_comptes_consolides
+    )
+    caracteristiques.entreprise.comptes_consolides = None
+
+    assert not CSRDReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+
+def test_n_est_pas_suffisamment_qualifiee_car_comptes_consolides_mais_sans_effectif_groupe(
+    _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolides,
+):
+    caracteristiques = (
+        _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolides
+    )
+    caracteristiques.effectif_groupe = None
+
+    assert not CSRDReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+
+def test_n_est_pas_suffisamment_qualifiee_car_comptes_consolides_mais_sans_bilan_consolide(
+    _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolides,
+):
+    caracteristiques = (
+        _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolides
+    )
+    caracteristiques.tranche_bilan_consolide = None
+
+    assert not CSRDReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+
+def test_n_est_pas_suffisamment_qualifiee_car_comptes_consolides_mais_sans_ca_consolide(
+    _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolides,
+):
+    caracteristiques = (
+        _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolides
+    )
+    caracteristiques.tranche_chiffre_affaires_consolide = None
 
     assert not CSRDReglementation.est_suffisamment_qualifiee(caracteristiques)
 

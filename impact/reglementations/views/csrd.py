@@ -23,6 +23,21 @@ class CSRDReglementation(Reglementation):
             and caracteristiques.tranche_bilan is not None
             and caracteristiques.tranche_chiffre_affaires is not None
             and caracteristiques.entreprise.appartient_groupe is not None
+            and (
+                not caracteristiques.entreprise.appartient_groupe
+                or (
+                    caracteristiques.entreprise.comptes_consolides is not None
+                    and (
+                        not caracteristiques.entreprise.comptes_consolides
+                        or (
+                            caracteristiques.effectif_groupe is not None
+                            and caracteristiques.tranche_bilan_consolide is not None
+                            and caracteristiques.tranche_chiffre_affaires_consolide
+                            is not None
+                        )
+                    )
+                )
+            )
         )
 
     @classmethod
