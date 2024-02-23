@@ -15,8 +15,8 @@ def test_ignore_bilan_et_ca_consolides_lorsque_pas_de_comptes_consolides():
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "societe_mere_en_france": True,
         "comptes_consolides": False,
-        "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+        "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
     }
 
     form = SimulationForm(data=data)
@@ -38,8 +38,8 @@ def test_ignore_effectif_groupe_societe_mere_et_comptes_consolides_lorsque_pas_d
         "est_societe_mere": True,
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "comptes_consolides": True,
-        "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+        "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
     }
 
     form = SimulationForm(data=data)
@@ -106,7 +106,7 @@ def test_erreur_si_comptes_consolides_sans_bilan_consolide():
         "appartient_groupe": True,
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "comptes_consolides": True,
-        "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
         "tranche_bilan_consolide": "",
     }
     form = SimulationForm(data=data)
@@ -129,7 +129,7 @@ def test_erreur_si_comptes_consolides_sans_ca_consolide():
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "comptes_consolides": True,
         "tranche_chiffre_affaires_consolide": "",
-        "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
     }
 
     form = SimulationForm(data=data)

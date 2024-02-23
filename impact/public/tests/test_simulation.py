@@ -198,8 +198,8 @@ def test_simulation_par_un_utilisateur_authentifie_sur_une_nouvelle_entreprise(
         "est_societe_mere": True,
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         "comptes_consolides": True,
-        "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+        "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
     }
 
     for REGLEMENTATION in REGLEMENTATIONS:
@@ -248,8 +248,8 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
-        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_MOINS_DE_40M,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_20M,
         bdese_accord=True,
         systeme_management_energie=True,
     )
@@ -301,11 +301,11 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     )
     assert (
         caracteristiques.tranche_chiffre_affaires_consolide
-        == CaracteristiquesAnnuelles.CA_MOINS_DE_700K
+        == CaracteristiquesAnnuelles.CA_MOINS_DE_40M
     )
     assert (
         caracteristiques.tranche_bilan_consolide
-        == CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
+        == CaracteristiquesAnnuelles.BILAN_MOINS_DE_20M
     )
     assert caracteristiques.bdese_accord
     assert caracteristiques.systeme_management_energie
@@ -356,6 +356,8 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
     effectif_groupe = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
     bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
+    ca_consolide = CaracteristiquesAnnuelles.CA_100M_ET_PLUS
+    bilan_consolide = CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
     autre_denomination = "Autre dénomination"
     autre_categorie_juridique_sirene = 5200
 
@@ -371,8 +373,8 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
         "est_societe_mere": True,
         "effectif_groupe": effectif_groupe,
         "comptes_consolides": True,
-        "tranche_chiffre_affaires_consolide": ca,
-        "tranche_bilan_consolide": bilan,
+        "tranche_chiffre_affaires_consolide": ca_consolide,
+        "tranche_bilan_consolide": bilan_consolide,
     }
 
     response = client.post("/simulation", data=data, follow=True)
@@ -410,8 +412,8 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
         effectif_groupe_permanent=effectif_groupe,
         tranche_chiffre_affaires=ca,
         tranche_bilan=bilan,
-        tranche_chiffre_affaires_consolide=ca,
-        tranche_bilan_consolide=bilan,
+        tranche_chiffre_affaires_consolide=ca_consolide,
+        tranche_bilan_consolide=bilan_consolide,
         bdese_accord=False,
         systeme_management_energie=False,
     )
@@ -439,6 +441,8 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
     effectif_groupe = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
     bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
+    ca_consolide = CaracteristiquesAnnuelles.CA_100M_ET_PLUS
+    bilan_consolide = CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
     autre_denomination = "Autre dénomination"
     autre_categorie_juridique_sirene = 5200
     data = {
@@ -453,8 +457,8 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
         "est_societe_mere": True,
         "effectif_groupe": effectif_groupe,
         "comptes_consolides": True,
-        "tranche_chiffre_affaires_consolide": ca,
-        "tranche_bilan_consolide": bilan,
+        "tranche_chiffre_affaires_consolide": ca_consolide,
+        "tranche_bilan_consolide": bilan_consolide,
     }
 
     response = client.post("/simulation", data=data, follow=True)
@@ -472,8 +476,8 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
     assert caracteristiques.effectif_groupe == effectif_groupe
     assert caracteristiques.tranche_chiffre_affaires == ca
     assert caracteristiques.tranche_bilan == bilan
-    assert caracteristiques.tranche_chiffre_affaires_consolide == ca
-    assert caracteristiques.tranche_bilan_consolide == bilan
+    assert caracteristiques.tranche_chiffre_affaires_consolide == ca_consolide
+    assert caracteristiques.tranche_bilan_consolide == bilan_consolide
 
     context = response.context
     context = response.context
@@ -499,8 +503,8 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
         effectif_groupe_permanent=effectif_groupe,
         tranche_chiffre_affaires=ca,
         tranche_bilan=bilan,
-        tranche_chiffre_affaires_consolide=ca,
-        tranche_bilan_consolide=bilan,
+        tranche_chiffre_affaires_consolide=ca_consolide,
+        tranche_bilan_consolide=bilan_consolide,
         bdese_accord=False,
         systeme_management_energie=False,
     )

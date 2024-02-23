@@ -435,7 +435,7 @@ def test_soumis_si_effectif_groupe_permanent_et_ca_consolide_suffisants(
         appartient_groupe=True,
         comptes_consolides=True,
         effectif_groupe_permanent=effectif_groupe_permanent,
-        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_20M,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
         categorie_juridique_sirene=CODE_SA,
     )
@@ -691,7 +691,8 @@ def test_soumis_si_societe_cotee_et_effectif_permanent_bilan_et_ca_suffisants(
 @pytest.mark.parametrize(
     "bilan",
     [
-        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_30M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_30M_ET_43M,
         CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
         CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
     ],
@@ -749,7 +750,7 @@ def test_soumis_si_societe_cotee_et_effectif_groupe_permanent_et_ca_consolide_su
         appartient_groupe=True,
         comptes_consolides=True,
         effectif_groupe_permanent=effectif_groupe_permanent,
-        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_20M,
         tranche_chiffre_affaires_consolide=ca,
         categorie_juridique_sirene=CODE_SA,
     )
@@ -935,7 +936,7 @@ def test_soumis_si_societe_prevoyance_et_effectif_groupe_permanent_et_ca_consoli
         appartient_groupe=True,
         comptes_consolides=True,
         effectif_groupe_permanent=effectif_groupe_permanent,
-        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_20M,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
         categorie_juridique_sirene=CODE_PREVOYANCE,
     )
@@ -1096,9 +1097,10 @@ def test_soumis_si_assurance_mutuelle_et_effectif_permanent_et_ca_suffisants(
     ],
 )
 @pytest.mark.parametrize(
-    "bilan",
+    "bilan_consolide",
     [
-        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_30M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_30M_ET_43M,
         CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
         CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
     ],
@@ -1111,7 +1113,7 @@ def test_soumis_si_assurance_mutuelle_et_effectif_permanent_et_ca_suffisants(
     ],
 )
 def test_soumis_si_assurance_mutuelle_et_effectif_groupe_permanent_et_bilan_consolide_suffisants(
-    effectif_groupe_permanent, bilan, est_cotee, entreprise_factory
+    effectif_groupe_permanent, bilan_consolide, est_cotee, entreprise_factory
 ):
     entreprise = entreprise_factory(
         est_cotee=est_cotee,
@@ -1119,7 +1121,7 @@ def test_soumis_si_assurance_mutuelle_et_effectif_groupe_permanent_et_bilan_cons
         appartient_groupe=True,
         comptes_consolides=True,
         effectif_groupe_permanent=effectif_groupe_permanent,
-        tranche_bilan_consolide=bilan,
+        tranche_bilan_consolide=bilan_consolide,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
         categorie_juridique_sirene=CODE_ASSURANCE_MUTUELLE,
     )
@@ -1174,7 +1176,7 @@ def test_soumis_si_assurance_mutuelle_et_effectif_groupe_permanent_et_ca_consoli
         appartient_groupe=True,
         comptes_consolides=True,
         effectif_groupe_permanent=effectif_groupe_permanent,
-        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_20M,
         tranche_chiffre_affaires_consolide=chiffre_affaires,
         categorie_juridique_sirene=CODE_ASSURANCE_MUTUELLE,
     )
@@ -1348,7 +1350,7 @@ def test_soumis_si_mutuelle_et_effectif_groupe_permanent_et_ca_consolide_suffisa
         appartient_groupe=True,
         comptes_consolides=True,
         effectif_groupe_permanent=effectif_groupe_permanent,
-        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_20M,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
         categorie_juridique_sirene=CODE_MUTUELLE,
     )
@@ -1380,7 +1382,7 @@ def test_non_soumis_si_mutuelle_et_effectif_groupe_permanent_et_ca_consolide_ins
         appartient_groupe=True,
         comptes_consolides=True,
         effectif_groupe_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
-        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_20M,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
         categorie_juridique_sirene=CODE_MUTUELLE,
     )
@@ -1594,7 +1596,7 @@ def test_soumis_si_cooperative_et_effectif_groupe_permanent_et_ca_consolide_suff
         appartient_groupe=True,
         comptes_consolides=True,
         effectif_groupe_permanent=effectif_groupe_permanent,
-        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_20M,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
         categorie_juridique_sirene=categorie_juridique_sirene,
     )
@@ -1642,7 +1644,7 @@ def test_non_soumis_si_cooperative_et_effectif_groupe_permanent_et_ca_consolide_
         appartient_groupe=True,
         comptes_consolides=True,
         effectif_groupe_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
-        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_20M,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
         categorie_juridique_sirene=categorie_juridique_sirene,
     )

@@ -258,7 +258,7 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs(
         effectif_groupe_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         bdese_accord=True,
         systeme_management_energie=True,
@@ -308,7 +308,7 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs(
     assert form["comptes_consolides"].initial
     assert (
         form["tranche_chiffre_affaires_consolide"].initial
-        == CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
+        == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
     )
     assert (
         form["tranche_bilan_consolide"].initial
@@ -382,8 +382,8 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
         "est_societe_mere": True,
         "societe_mere_en_france": True,
         "comptes_consolides": True,
-        "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+        "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         "bdese_accord": True,
         "systeme_management_energie": True,
     }
@@ -448,11 +448,11 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
     )
     assert (
         caracteristiques.tranche_chiffre_affaires_consolide
-        == CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
+        == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
     )
     assert (
         caracteristiques.tranche_bilan_consolide
-        == CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
+        == CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
     )
     assert caracteristiques.bdese_accord
     assert caracteristiques.systeme_management_energie

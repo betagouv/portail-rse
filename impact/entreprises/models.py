@@ -276,6 +276,16 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         (CA_100M_ET_PLUS, "100M€ ou plus"),
     ]
 
+    CA_MOINS_DE_40M = "0-40M"
+    CA_ENTRE_40M_ET_60M = "40-60M"
+    CA_ENTRE_60M_ET_100M = "60-100M"
+    CA_CONSOLIDE_CHOICES = [
+        (CA_MOINS_DE_40M, "entre 0 et 40M€"),
+        (CA_ENTRE_40M_ET_60M, "entre 40M€ et 60M€"),
+        (CA_ENTRE_60M_ET_100M, "entre 60M€ et 100M€"),
+        (CA_100M_ET_PLUS, "100M€ ou plus"),
+    ]
+
     BILAN_MOINS_DE_350K = "0-350k"
     BILAN_ENTRE_350K_ET_6M = "350k-6M"
     BILAN_ENTRE_6M_ET_20M = "6M-20M"
@@ -287,6 +297,17 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         (BILAN_ENTRE_350K_ET_6M, "entre 350k€ et 6M€"),
         (BILAN_ENTRE_6M_ET_20M, "entre 6M€ et 20M€"),
         (BILAN_ENTRE_20M_ET_43M, "entre 20M€ et 43M€"),
+        (BILAN_ENTRE_43M_ET_100M, "entre 43M€ et 100M€"),
+        (BILAN_100M_ET_PLUS, "100M€ ou plus"),
+    ]
+
+    BILAN_MOINS_DE_20M = "0-20M"
+    BILAN_ENTRE_20M_ET_30M = "20M-30M"
+    BILAN_ENTRE_30M_ET_43M = "30M-43M"
+    BILAN_CONSOLIDE_CHOICES = [
+        (BILAN_MOINS_DE_20M, "entre 0 et 20M€"),
+        (BILAN_ENTRE_20M_ET_30M, "entre 20M€ et 30M€"),
+        (BILAN_ENTRE_30M_ET_43M, "entre 30M€ et 43M€"),
         (BILAN_ENTRE_43M_ET_100M, "entre 43M€ et 100M€"),
         (BILAN_100M_ET_PLUS, "100M€ ou plus"),
     ]
@@ -358,14 +379,14 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     tranche_chiffre_affaires_consolide = models.CharField(
         verbose_name="Chiffre d'affaires consolidé du groupe",
         max_length=9,
-        choices=[BLANK_CHOICE] + CA_CHOICES,
+        choices=[BLANK_CHOICE] + CA_CONSOLIDE_CHOICES,
         null=True,
         blank=True,
     )
     tranche_bilan_consolide = models.CharField(
         verbose_name="Bilan consolidé du groupe",
         max_length=9,
-        choices=[BLANK_CHOICE] + BILAN_CHOICES,
+        choices=[BLANK_CHOICE] + BILAN_CONSOLIDE_CHOICES,
         null=True,
         blank=True,
     )

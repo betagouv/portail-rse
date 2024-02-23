@@ -131,7 +131,8 @@ class DPEFReglementation(Reglementation):
         ):
             return "votre bilan est supérieur à 20M€"
         elif caracteristiques.tranche_bilan_consolide in (
-            CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+            CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_30M,
+            CaracteristiquesAnnuelles.BILAN_ENTRE_30M_ET_43M,
             CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
             CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         ):
