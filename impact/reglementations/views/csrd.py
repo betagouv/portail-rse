@@ -10,7 +10,7 @@ from reglementations.views.base import ReglementationStatus
 
 
 class CSRDReglementation(Reglementation):
-    title = "Rapport de durabilité - Directive CSRD"
+    title = "Rapport de Durabilité - CSRD"
     more_info_url = reverse_lazy("reglementations:fiche_csrd")
     tag = "tag-durabilite"
     summary = "Publier un rapport de durabilité"
