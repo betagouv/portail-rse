@@ -54,12 +54,11 @@ class CSRDReglementation(Reglementation):
             if caracteristiques.entreprise.est_societe_mere:
                 if (
                     caracteristiques.entreprise.est_cotee
-                    and caracteristiques.effectif_groupe
-                    in (
-                        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
-                        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
-                        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
-                    )
+                    or caracteristiques.entreprise.est_interet_public
+                ) and caracteristiques.effectif_groupe in (
+                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+                    CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
                 ):
                     return 2025
                 else:
