@@ -334,6 +334,106 @@ def test_entreprise_non_cotee_CA_et_effectif_superieurs_aux_seuils_grande_entrep
 @pytest.mark.parametrize(
     "bilan",
     [
+        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+        CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "effectif",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+def test_entreprise_sans_interet_public_bilan_et_effectif_superieurs_à_500_soumise_en_2026(
+    bilan, effectif, entreprise_factory
+):
+    """ce CA et effectif est un sous-ensemble des seuils d'une grande entreprise"""
+    entreprise = entreprise_factory(
+        est_cotee=False,
+        est_interet_public=False,
+        appartient_groupe=False,
+        effectif=effectif,
+        tranche_bilan=bilan,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+    )
+
+    assert CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert (
+        CSRDReglementation.est_soumis_a_partir_de(
+            entreprise.dernieres_caracteristiques_qualifiantes
+        )
+        == 2026
+    )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre effectif est supérieur à 250 salariés",
+        "votre bilan est supérieur à 20M€",
+    ]
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+
+@pytest.mark.parametrize(
+    "ca",
+    [
+        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
+        CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
+        CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "effectif",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+def test_entreprise_sans_interet_public_CA_et_effectif_superieurs_superieurs_à_500_soumise_en_2026(
+    ca, effectif, entreprise_factory
+):
+    """ce CA et effectif est un sous-ensemble des seuils d'une grande entreprise"""
+    entreprise = entreprise_factory(
+        est_cotee=False,
+        est_interet_public=False,
+        appartient_groupe=False,
+        effectif=effectif,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires=ca,
+    )
+
+    assert CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert (
+        CSRDReglementation.est_soumis_a_partir_de(
+            entreprise.dernieres_caracteristiques_qualifiantes
+        )
+        == 2026
+    )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre effectif est supérieur à 250 salariés",
+        "votre chiffre d'affaires est supérieur à 40M€",
+    ]
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+
+@pytest.mark.parametrize(
+    "bilan",
+    [
         CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
         CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
         CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
@@ -514,6 +614,7 @@ def test_entreprise_cotee_ca_et_effectif_plus_de_500_superieurs_aux_seuils_grand
 ):
     entreprise = entreprise_factory(
         est_cotee=True,
+        est_interet_public=False,
         appartient_groupe=False,
         effectif=effectif,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
@@ -533,6 +634,55 @@ def test_entreprise_cotee_ca_et_effectif_plus_de_500_superieurs_aux_seuils_grand
         entreprise.dernieres_caracteristiques_qualifiantes
     ) == [
         "votre société est cotée sur un marché réglementé",
+        "votre effectif est supérieur à 500 salariés",
+        "votre chiffre d'affaires est supérieur à 40M€",
+    ]
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+
+@pytest.mark.parametrize(
+    "ca",
+    [
+        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
+        CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
+        CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "effectif",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+def test_entreprise_interet_public_ca_et_effectif_plus_de_500_superieurs_aux_seuils_grande_entreprise_soumise_en_2025(
+    ca, effectif, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        est_cotee=False,
+        est_interet_public=True,
+        appartient_groupe=False,
+        effectif=effectif,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires=ca,
+    )
+
+    assert CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert (
+        CSRDReglementation.est_soumis_a_partir_de(
+            entreprise.dernieres_caracteristiques_qualifiantes
+        )
+        == 2025
+    )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre société est d'intérêt public",
         "votre effectif est supérieur à 500 salariés",
         "votre chiffre d'affaires est supérieur à 40M€",
     ]
