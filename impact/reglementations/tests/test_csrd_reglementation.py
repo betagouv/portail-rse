@@ -36,6 +36,7 @@ def _caracteristiques_suffisamment_qualifiantes_avec_groupe_sans_comptes_consoli
     entreprise = entreprise_factory(
         siren="000000002",
         est_cotee=False,
+        est_interet_public=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
@@ -52,6 +53,7 @@ def _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolide
     entreprise = entreprise_factory(
         siren="000000003",
         est_cotee=False,
+        est_interet_public=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
@@ -91,6 +93,15 @@ def test_n_est_pas_suffisamment_qualifiee_car_est_cotee_non_renseigne(
 ):
     caracteristiques = _caracteristiques_suffisamment_qualifiantes_sans_groupe
     caracteristiques.entreprise.est_cotee = None
+
+    assert not CSRDReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+
+def test_n_est_pas_suffisamment_qualifiee_car_est_interet_public_non_renseigne(
+    _caracteristiques_suffisamment_qualifiantes_sans_groupe,
+):
+    caracteristiques = _caracteristiques_suffisamment_qualifiantes_sans_groupe
+    caracteristiques.entreprise.est_interet_public = None
 
     assert not CSRDReglementation.est_suffisamment_qualifiee(caracteristiques)
 
