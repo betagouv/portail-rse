@@ -1021,3 +1021,73 @@ def test_microentreprise_non_cotee_societe_mere_grand_groupe_soumise_en_2026(
         "le bilan du groupe est supérieur à 30M€",
         "le chiffre d'affaires du groupe est supérieur à 60M€",
     ]
+
+
+def test_PME_cotee_filiale_grand_groupe_effectif_groupe_superieur_a_500_soumise_en_2025(
+    entreprise_factory,
+):
+    entreprise = entreprise_factory(
+        est_cotee=True,
+        appartient_groupe=True,
+        est_societe_mere=False,
+        comptes_consolides=True,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    )
+
+    assert CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert (
+        CSRDReglementation.est_soumis_a_partir_de(
+            entreprise.dernieres_caracteristiques_qualifiantes
+        )
+        == 2025
+    )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre société est cotée sur un marché réglementé",
+        "l'effectif du groupe est supérieur à 500 salariés",
+        "le bilan du groupe est supérieur à 30M€",
+        "le chiffre d'affaires du groupe est supérieur à 60M€",
+    ]
+
+
+def test_PME_cotee_filiale_grand_groupe_effectif_groupe_inferieur_a_500_soumise_en_2026(
+    entreprise_factory,
+):
+    entreprise = entreprise_factory(
+        est_cotee=True,
+        appartient_groupe=True,
+        est_societe_mere=False,
+        comptes_consolides=True,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_499,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    )
+
+    assert CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert (
+        CSRDReglementation.est_soumis_a_partir_de(
+            entreprise.dernieres_caracteristiques_qualifiantes
+        )
+        == 2026
+    )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre société est cotée sur un marché réglementé",
+        "l'effectif du groupe est supérieur à 250 salariés",
+        "le bilan du groupe est supérieur à 30M€",
+        "le chiffre d'affaires du groupe est supérieur à 60M€",
+    ]
