@@ -19,6 +19,7 @@ class CSRDReglementation(Reglementation):
     def est_suffisamment_qualifiee(cls, caracteristiques):
         return (
             caracteristiques.entreprise.est_cotee is not None
+            and caracteristiques.entreprise.est_interet_public is not None
             and caracteristiques.effectif is not None
             and caracteristiques.tranche_bilan is not None
             and caracteristiques.tranche_chiffre_affaires is not None

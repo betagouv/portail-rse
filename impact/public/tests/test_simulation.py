@@ -321,6 +321,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
         siren=entreprise.siren,
         categorie_juridique_sirene=autre_categorie_juridique_sirene,
         est_cotee=False,
+        est_interet_public=False,
         appartient_groupe=False,
     )
     caracteristiques = CaracteristiquesAnnuelles(
@@ -399,6 +400,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
         siren=entreprise.siren,
         categorie_juridique_sirene=autre_categorie_juridique_sirene,
         est_cotee=True,
+        est_interet_public=False,
         appartient_groupe=True,
         est_societe_mere=True,
         societe_mere_en_france=True,
@@ -490,6 +492,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
         siren=entreprise.siren,
         categorie_juridique_sirene=autre_categorie_juridique_sirene,
         est_cotee=True,
+        est_interet_public=False,
         appartient_groupe=True,
         est_societe_mere=True,
         societe_mere_en_france=True,
