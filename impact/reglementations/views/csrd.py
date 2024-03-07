@@ -113,8 +113,6 @@ class CSRDReglementation(Reglementation):
                         return 2025
                     else:
                         return 2026
-                elif cls.est_petite_ou_moyenne_entreprise(caracteristiques):
-                    return 2027
             elif cls.est_grande_entreprise(caracteristiques):
                 return 2026
 
