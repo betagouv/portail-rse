@@ -104,6 +104,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
 
     # les caractéristiques non présentes dans la simulation simplifiées sont laissées vides en base
     assert entreprise.date_cloture_exercice is None
+    assert entreprise.est_interet_public is None
     assert entreprise.societe_mere_en_france is None
     assert caracteristiques.effectif_permanent is None
     assert caracteristiques.effectif_outre_mer is None
@@ -115,6 +116,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     # les données servant à la simulation sont celles du formulaire de simulation simplifiée
     # enrichies avec des valeurs par défaut pour les champs manquants
     simulation_caracs = mock_est_soumis.call_args.args[0]
+    assert simulation_caracs.entreprise.est_interet_public is False
     assert simulation_caracs.entreprise.societe_mere_en_france
     assert simulation_caracs.effectif_permanent == effectif
     assert (
