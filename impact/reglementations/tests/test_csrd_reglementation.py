@@ -1091,3 +1091,24 @@ def test_PME_cotee_filiale_grand_groupe_effectif_groupe_inferieur_a_500_soumise_
         "le bilan du groupe est supérieur à 30M€",
         "le chiffre d'affaires du groupe est supérieur à 60M€",
     ]
+
+
+def test_PME_non_cotee_filiale_grand_groupe_non_soumise(
+    entreprise_factory,
+):
+    entreprise = entreprise_factory(
+        est_cotee=False,
+        appartient_groupe=True,
+        est_societe_mere=False,
+        comptes_consolides=True,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    )
+
+    assert not CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
