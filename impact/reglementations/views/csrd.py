@@ -103,6 +103,18 @@ class CSRDReglementation(Reglementation):
                         return 2026
                 elif cls.est_petite_ou_moyenne_entreprise(caracteristiques):
                     return 2027
+            elif caracteristiques.entreprise.est_interet_public:
+                if cls.est_grande_entreprise(caracteristiques):
+                    if caracteristiques.effectif in (
+                        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+                        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+                        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+                    ):
+                        return 2025
+                    else:
+                        return 2026
+                elif cls.est_petite_ou_moyenne_entreprise(caracteristiques):
+                    return 2027
             elif cls.est_grande_entreprise(caracteristiques):
                 return 2026
 
@@ -111,6 +123,8 @@ class CSRDReglementation(Reglementation):
         criteres = []
         if caracteristiques.entreprise.est_cotee:
             criteres.append("votre société est cotée sur un marché réglementé")
+        if caracteristiques.entreprise.est_interet_public:
+            criteres.append("votre société est d'intérêt public")
         if caracteristiques.entreprise.est_societe_mere and cls.est_grand_groupe(
             caracteristiques
         ):
@@ -125,7 +139,10 @@ class CSRDReglementation(Reglementation):
 
     @classmethod
     def critere_effectif(cls, caracteristiques):
-        if caracteristiques.entreprise.est_cotee:
+        if (
+            caracteristiques.entreprise.est_cotee
+            or caracteristiques.entreprise.est_interet_public
+        ):
             if cls.est_grande_entreprise(caracteristiques):
                 if caracteristiques.effectif in (
                     CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
