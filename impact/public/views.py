@@ -191,6 +191,7 @@ def calcule_simulation(simulation_form, user):
 
 
 def enrichit_les_donnees_pour_la_simulation(caracteristiques):
+    caracteristiques.entreprise.est_interet_public = False
     caracteristiques.entreprise.societe_mere_en_france = True
     caracteristiques.effectif_permanent = caracteristiques.effectif
     caracteristiques.effectif_outre_mer = (
