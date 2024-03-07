@@ -127,6 +127,10 @@ class Entreprise(TimestampedModel):
         verbose_name="L'entreprise est cotée sur un marché réglementé européen",
         null=True,
     )
+    est_interet_public = models.BooleanField(
+        verbose_name="L'entreprise est d'intérêt public",
+        null=True,
+    )
     appartient_groupe = models.BooleanField(
         verbose_name="L'entreprise fait partie d'un groupe",
         null=True,
@@ -443,6 +447,7 @@ class CaracteristiquesAnnuelles(TimestampedModel):
             and self.tranche_chiffre_affaires
             and self.tranche_bilan
             and self.entreprise.est_cotee is not None
+            and self.entreprise.est_interet_public is not None
             and self.bdese_accord is not None
             and self.systeme_management_energie is not None
             and self.groupe_est_qualifie
