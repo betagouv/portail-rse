@@ -226,6 +226,17 @@ class CSRDReglementation(Reglementation):
                 return "votre chiffre d'affaires est supérieur à 700k€"
 
     @classmethod
+    def est_delegable(cls, caracteristiques):
+        if caracteristiques.entreprise.est_societe_mere:
+            return False
+        elif (
+            cls.est_grande_entreprise(caracteristiques)
+            and caracteristiques.entreprise.est_cotee
+        ):
+            return False
+        return cls.est_grand_groupe(caracteristiques)
+
+    @classmethod
     def calculate_status(
         cls,
         caracteristiques: CaracteristiquesAnnuelles,

@@ -217,6 +217,9 @@ def test_entreprise_non_cotee_bilan_et_ca_superieurs_aux_seuils_grande_entrepris
         "votre bilan est supérieur à 20M€",
         "votre chiffre d'affaires est supérieur à 40M€",
     ]
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
 
 @pytest.mark.parametrize(
@@ -263,6 +266,9 @@ def test_entreprise_non_cotee_bilan_et_effectif_superieurs_aux_seuils_grande_ent
         "votre effectif est supérieur à 250 salariés",
         "votre bilan est supérieur à 20M€",
     ]
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
 
 @pytest.mark.parametrize(
@@ -309,6 +315,9 @@ def test_entreprise_non_cotee_CA_et_effectif_superieurs_aux_seuils_grande_entrep
         "votre effectif est supérieur à 250 salariés",
         "votre chiffre d'affaires est supérieur à 40M€",
     ]
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
 
 @pytest.mark.parametrize(
@@ -516,6 +525,9 @@ def test_entreprise_cotee_ca_et_effectif_plus_de_500_superieurs_aux_seuils_grand
         "votre effectif est supérieur à 500 salariés",
         "votre chiffre d'affaires est supérieur à 40M€",
     ]
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
 
 @pytest.mark.parametrize(
@@ -560,6 +572,9 @@ def test_entreprise_cotee_ca_et_effectif_moins_de_500_superieurs_aux_seuils_gran
         "votre effectif est supérieur à 250 salariés",
         "votre chiffre d'affaires est supérieur à 40M€",
     ]
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
 
 @pytest.mark.parametrize(
@@ -606,6 +621,9 @@ def test_entreprise_cotee_bilan_et_ca_superieurs_aux_seuils_petite_entreprise_ma
         "votre bilan est supérieur à 350k€",
         "votre chiffre d'affaires est supérieur à 700k€",
     ]
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
 
 @pytest.mark.parametrize(
@@ -652,6 +670,9 @@ def test_entreprise_cotee_bilan_et_ca_superieurs_aux_seuils_petite_entreprise_ma
         "votre bilan est supérieur à 350k€",
         "votre chiffre d'affaires est supérieur à 700k€",
     ]
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
 
 @pytest.mark.parametrize(
@@ -700,6 +721,9 @@ def test_entreprise_cotee_effectif_et_ca_superieurs_aux_seuils_petite_entreprise
         "votre effectif est supérieur à 10 salariés",
         "votre chiffre d'affaires est supérieur à 700k€",
     ]
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
 
 @pytest.mark.parametrize(
@@ -746,6 +770,9 @@ def test_entreprise_cotee_effectif_et_ca_superieurs_aux_seuils_petite_entreprise
         "votre effectif est supérieur à 10 salariés",
         "votre chiffre d'affaires est supérieur à 700k€",
     ]
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
 
 @pytest.mark.parametrize(
@@ -794,6 +821,9 @@ def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entrepr
         "votre effectif est supérieur à 10 salariés",
         "votre bilan est supérieur à 350k€",
     ]
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
 
 @pytest.mark.parametrize(
@@ -840,6 +870,9 @@ def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entrepr
         "votre effectif est supérieur à 10 salariés",
         "votre bilan est supérieur à 350k€",
     ]
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
 
 def test_calcule_etat_si_non_soumis(entreprise_factory, alice):
@@ -950,6 +983,9 @@ def test_microentreprise_cotee_societe_mere_grand_groupe_effectif_groupe_superie
         "le bilan du groupe est supérieur à 30M€",
         "le chiffre d'affaires du groupe est supérieur à 60M€",
     ]
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
 
 def test_microentreprise_cotee_societe_mere_grand_groupe_effectif_groupe_inferieur_a_500_soumise_en_2026(
@@ -986,6 +1022,9 @@ def test_microentreprise_cotee_societe_mere_grand_groupe_effectif_groupe_inferie
         "le bilan du groupe est supérieur à 30M€",
         "le chiffre d'affaires du groupe est supérieur à 60M€",
     ]
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
 
 def test_microentreprise_non_cotee_societe_mere_grand_groupe_soumise_en_2026(
@@ -1021,6 +1060,9 @@ def test_microentreprise_non_cotee_societe_mere_grand_groupe_soumise_en_2026(
         "le bilan du groupe est supérieur à 30M€",
         "le chiffre d'affaires du groupe est supérieur à 60M€",
     ]
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
 
 def test_PME_cotee_filiale_grand_groupe_effectif_groupe_superieur_a_500_soumise_en_2025(
@@ -1056,6 +1098,9 @@ def test_PME_cotee_filiale_grand_groupe_effectif_groupe_superieur_a_500_soumise_
         "le bilan du groupe est supérieur à 30M€",
         "le chiffre d'affaires du groupe est supérieur à 60M€",
     ]
+    assert CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
 
 def test_PME_cotee_filiale_grand_groupe_effectif_groupe_inferieur_a_500_soumise_en_2026(
@@ -1091,6 +1136,9 @@ def test_PME_cotee_filiale_grand_groupe_effectif_groupe_inferieur_a_500_soumise_
         "le bilan du groupe est supérieur à 30M€",
         "le chiffre d'affaires du groupe est supérieur à 60M€",
     ]
+    assert CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
 
 def test_PME_non_cotee_filiale_grand_groupe_non_soumise(
@@ -1110,5 +1158,55 @@ def test_PME_non_cotee_filiale_grand_groupe_non_soumise(
     )
 
     assert not CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+
+@pytest.mark.parametrize(
+    "effectif",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+def test_grande_entreprise_cotee_filiale_ne_peut_pas_deleguer(
+    effectif, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        est_cotee=True,
+        appartient_groupe=True,
+        est_societe_mere=False,
+        comptes_consolides=True,
+        effectif=effectif,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    )
+
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+
+def test_grande_entreprise_non_cotee_filiale_peut_deleguer(entreprise_factory):
+    entreprise = entreprise_factory(
+        est_cotee=False,
+        appartient_groupe=True,
+        est_societe_mere=False,
+        comptes_consolides=True,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    )
+
+    assert CSRDReglementation.est_delegable(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
