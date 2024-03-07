@@ -251,9 +251,15 @@ class CSRDReglementation(Reglementation):
         if annee := cls.est_soumis_a_partir_de(caracteristiques):
             criteres = cls.criteres_remplis(caracteristiques)
             justification = ", ".join(criteres[:-1]) + " et " + criteres[-1]
+            if cls.est_delegable(caracteristiques):
+                delegable = (
+                    " Vous pouvez déléguer cette obligation à votre société-mère."
+                )
+            else:
+                delegable = ""
             return ReglementationStatus(
                 status=ReglementationStatus.STATUS_SOUMIS,
-                status_detail=f"Vous êtes soumis à cette réglementation à partir de {annee} sur les données de {annee - 1} car {justification}.",
+                status_detail=f"Vous êtes soumis à cette réglementation à partir de {annee} sur les données de {annee - 1} car {justification}.{delegable}",
                 primary_action=primary_action,
                 prochaine_echeance=annee,
             )

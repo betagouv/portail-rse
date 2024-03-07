@@ -900,7 +900,39 @@ def test_calcule_etat_si_non_soumis(entreprise_factory, alice):
     assert reglementation.primary_action.url == reverse("reglementations:csrd")
 
 
-def test_calcule_etat_si_soumis_en_2027(entreprise_factory, alice):
+def test_calcule_etat_si_soumis_en_2027_et_delegable(entreprise_factory, alice):
+    entreprise = entreprise_factory(
+        est_cotee=True,
+        appartient_groupe=True,
+        est_societe_mere=False,
+        comptes_consolides=True,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    reglementation = CSRDReglementation.calculate_status(
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
+    )
+
+    assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
+    assert (
+        reglementation.status_detail
+        == "Vous êtes soumis à cette réglementation à partir de 2025 sur les données de 2024 car votre société est cotée sur un marché réglementé, l'effectif du groupe est supérieur à 500 salariés, le bilan du groupe est supérieur à 30M€ et le chiffre d'affaires du groupe est supérieur à 60M€. Vous pouvez déléguer cette obligation à votre société-mère."
+    )
+    assert reglementation.prochaine_echeance == 2025
+    assert (
+        reglementation.primary_action.title
+        == "Accéder à l'espace Rapport de Durabilité"
+    )
+    assert reglementation.primary_action.url == reverse("reglementations:csrd")
+
+
+def test_calcule_etat_si_soumis_en_2027_et_non_delegable(entreprise_factory, alice):
     entreprise = entreprise_factory(
         est_cotee=True,
         appartient_groupe=False,
