@@ -50,6 +50,8 @@ class CSRDReglementation(Reglementation):
     def est_soumis_a_partir_de(
         cls, caracteristiques: CaracteristiquesAnnuelles
     ) -> int | None:
+        if not cls.critere_categorie_juridique_sirene(caracteristiques):
+            return
         if cls.est_grand_groupe(caracteristiques):
             if caracteristiques.entreprise.est_societe_mere:
                 if (
@@ -239,6 +241,15 @@ class CSRDReglementation(Reglementation):
         ):
             if cls.est_petite_ou_moyenne_entreprise(caracteristiques):
                 return "votre chiffre d'affaires est supérieur à 700k€"
+
+    @classmethod
+    def critere_categorie_juridique_sirene(cls, caracteristiques):
+        return (
+            caracteristiques.entreprise.categorie_juridique_sirene == 3210
+            or 5100 <= caracteristiques.entreprise.categorie_juridique_sirene <= 6199
+            or 6300 <= caracteristiques.entreprise.categorie_juridique_sirene <= 6499
+            or 8100 <= caracteristiques.entreprise.categorie_juridique_sirene <= 8299
+        )
 
     @classmethod
     def est_delegable(cls, caracteristiques):
