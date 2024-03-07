@@ -53,6 +53,7 @@ def test_caracteristiques_sont_qualifiantes_avec_groupe(
     entreprise_non_qualifiee,
 ):
     entreprise_non_qualifiee.est_cotee = False
+    entreprise_non_qualifiee.est_interet_public = False
     entreprise_non_qualifiee.appartient_groupe = None
     entreprise_non_qualifiee.est_societe_mere = None
     entreprise_non_qualifiee.societe_mere_en_france = None
@@ -143,6 +144,10 @@ def test_caracteristiques_sont_qualifiantes_sans_groupe(
 
     assert not caracteristiques.sont_qualifiantes
 
+    entreprise_non_qualifiee.est_interet_public = False
+
+    assert not caracteristiques.sont_qualifiantes
+
     caracteristiques.date_cloture_exercice = date(2023, 7, 7)
 
     assert not caracteristiques.sont_qualifiantes
@@ -185,6 +190,7 @@ def test_dernieres_caracteristiques_qualifiantes(entreprise_non_qualifiee):
     assert entreprise_non_qualifiee.dernieres_caracteristiques_qualifiantes is None
 
     entreprise_non_qualifiee.est_cotee = False
+    entreprise_non_qualifiee.est_interet_public = False
     entreprise_non_qualifiee.appartient_groupe = False
     entreprise_non_qualifiee.comptes_consolides = False
     entreprise_non_qualifiee.save()

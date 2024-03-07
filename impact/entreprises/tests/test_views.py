@@ -250,6 +250,7 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs(
         societe_mere_en_france=True,
         comptes_consolides=True,
         est_cotee=True,
+        est_interet_public=True,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
@@ -290,6 +291,7 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs(
         form["tranche_bilan"].initial == CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
     )
     assert form["est_cotee"].initial
+    assert form["est_interet_public"].initial
     assert form["appartient_groupe"].initial
     assert (
         form["effectif_groupe"].initial
@@ -341,6 +343,7 @@ def test_page_de_qualification_avec_des_caracteristiques_non_qualifiantes_initia
     assert form["tranche_chiffre_affaires"].initial == caracs.tranche_chiffre_affaires
     assert form["tranche_bilan"].initial == caracs.tranche_bilan
     assert form["est_cotee"].initial == entreprise.est_cotee
+    assert form["est_interet_public"].initial == entreprise.est_interet_public
     assert form["appartient_groupe"].initial == entreprise.appartient_groupe
     assert form["effectif_groupe"].initial == caracs.effectif_groupe
     assert form["effectif_groupe_france"].initial == caracs.effectif_groupe_france
@@ -375,6 +378,7 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
         "est_cotee": True,
+        "est_interet_public": True,
         "appartient_groupe": True,
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         "effectif_groupe_france": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
@@ -410,6 +414,7 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
     assert entreprise_non_qualifiee.denomination == "Entreprise SAS"
     assert entreprise_non_qualifiee.date_cloture_exercice == date(2022, 12, 31)
     assert entreprise_non_qualifiee.est_cotee
+    assert entreprise_non_qualifiee.est_interet_public
     assert entreprise_non_qualifiee.appartient_groupe
     assert entreprise_non_qualifiee.est_societe_mere
     assert entreprise_non_qualifiee.societe_mere_en_france
@@ -475,6 +480,8 @@ def test_qualifie_entreprise_sans_groupe(
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "est_cotee": True,
+        "est_interet_public": True,
         "bdese_accord": True,
         "systeme_management_energie": True,
     }
@@ -487,6 +494,8 @@ def test_qualifie_entreprise_sans_groupe(
     entreprise_non_qualifiee.refresh_from_db()
     assert entreprise_non_qualifiee.denomination == "Entreprise SAS"
     assert entreprise_non_qualifiee.date_cloture_exercice == date(2022, 12, 31)
+    assert entreprise_non_qualifiee.est_cotee
+    assert entreprise_non_qualifiee.est_interet_public
     assert entreprise_non_qualifiee.appartient_groupe is False
     assert entreprise_non_qualifiee.est_societe_mere is None
     assert entreprise_non_qualifiee.societe_mere_en_france is None

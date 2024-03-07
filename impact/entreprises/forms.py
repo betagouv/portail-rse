@@ -49,6 +49,10 @@ class EntrepriseForm(DsfrForm):
         required=False,
         label=Entreprise.est_cotee.field.verbose_name,
     )
+    est_interet_public = forms.BooleanField(
+        required=False,
+        label=Entreprise.est_interet_public.field.verbose_name,
+    )
     appartient_groupe = forms.BooleanField(
         required=False,
         label="L'entreprise fait partie d'un groupe composé d'une société-mère et d'une ou plusieurs filiales",
