@@ -1,6 +1,12 @@
 import pytest
 from django.urls import reverse
 
+from conftest import CODE_AUTRE
+from conftest import CODE_SA
+from conftest import CODE_SA_COOPERATIVE
+from conftest import CODE_SAS
+from conftest import CODE_SCA
+from conftest import CODE_SE
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
 from reglementations.views.base import ReglementationStatus
@@ -184,6 +190,75 @@ def test_n_est_pas_suffisamment_qualifiee_car_comptes_consolides_mais_sans_ca_co
     caracteristiques.tranche_chiffre_affaires_consolide = None
 
     assert not CSRDReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+
+@pytest.mark.parametrize(
+    "categorie_juridique_sirene",
+    [
+        3205,  # Organisation internationale
+        3220,  # Société étrangère non immatriculée au RCS
+        6210,  # GEIE
+        6220,  # GIE
+        6511,  # Sociétés Interprofessionnelles de Soins Ambulatoires
+        6540,  # SCI
+        7490,  # Autre personne morale de droit administratif
+        CODE_AUTRE,  # congrégation
+    ],
+)
+def test_entreprise_hors_categorie_juridique_concernee_sans_interet_public_non_soumise(
+    categorie_juridique_sirene, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        categorie_juridique_sirene=categorie_juridique_sirene,
+        est_cotee=False,
+        est_interet_public=False,
+        appartient_groupe=False,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    )
+
+    assert not CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert not CSRDReglementation.est_soumis_a_partir_de(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+
+@pytest.mark.parametrize(
+    "categorie_juridique_sirene",
+    [
+        3210,  # État, collectivité ou établissement public étranger
+        5191,  # Société de caution mutuelle
+        CODE_SCA,
+        CODE_SA,
+        CODE_SA_COOPERATIVE,
+        CODE_SAS,
+        CODE_SE,
+        6100,  # Caisse d'Épargne et de Prévoyance
+        6316,  # Coopérative d'utilisation de matériel agricole en commun (CUMA)
+        6411,  # Société d'assurance à forme mutuelle
+        8110,  # Régime général de la Sécurité Sociale
+        8290,  # Autre organisme mutualiste
+    ],
+)
+def test_entreprise_categorie_juridique_concernee_soumise(
+    categorie_juridique_sirene, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        categorie_juridique_sirene=categorie_juridique_sirene,
+        est_cotee=False,
+        est_interet_public=False,
+        appartient_groupe=False,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    )
+
+    assert CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
 
 
 @pytest.mark.parametrize(
