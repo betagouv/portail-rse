@@ -467,6 +467,43 @@ def test_entreprise_non_cotee_bilan_et_CA_inferieurs_aux_seuils_grande_entrepris
 
 
 @pytest.mark.parametrize(
+    "bilan",
+    [
+        CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+    ],
+)
+@pytest.mark.parametrize(
+    "ca",
+    [
+        CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
+    ],
+)
+def test_entreprise_non_cotee_avec_interet_public_bilan_et_CA_inferieurs_aux_seuils_grande_entreprise_non_soumise(
+    ca, bilan, entreprise_factory
+):
+    """l'intérêt public d'une PME n'est pas une condition mais empêche une implémentation naive"""
+    entreprise = entreprise_factory(
+        est_cotee=False,
+        est_interet_public=True,
+        appartient_groupe=False,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        tranche_bilan=bilan,
+        tranche_chiffre_affaires=ca,
+    )
+
+    assert not CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert not CSRDReglementation.est_soumis_a_partir_de(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+
+@pytest.mark.parametrize(
     "effectif",
     [
         CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
