@@ -18,6 +18,7 @@ def test_api_fonctionnelle():
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "denomination": "DIRECTION INTERMINISTERIELLE DU NUMERIQUE",
         "categorie_juridique_sirene": 7120,
+        "code_pays_etranger_sirene": None,
     }
 
 
@@ -36,6 +37,7 @@ def test_succes_recherche_comportant_la_raison_sociale(mocker):
                         "nom_raison_sociale": "ENTREPRISE",
                         "tranche_effectif_salarie": "12",
                         "nature_juridique": "5710",
+                        "siege": {"code_pays_etranger": "99139"},
                     }
                 ],
             }
@@ -48,6 +50,7 @@ def test_succes_recherche_comportant_la_raison_sociale(mocker):
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
         "denomination": "ENTREPRISE",
         "categorie_juridique_sirene": 5710,
+        "code_pays_etranger_sirene": 99139,
     }
 
 
@@ -66,6 +69,7 @@ def test_succes_recherche_sans_la_raison_sociale(mocker):
                         "nom_raison_sociale": None,
                         "tranche_effectif_salarie": "12",
                         "nature_juridique": "5710",
+                        "siege": {"code_pays_etranger": None},
                     }
                 ],
             }
@@ -78,6 +82,7 @@ def test_succes_recherche_sans_la_raison_sociale(mocker):
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
         "denomination": "ENTREPRISE",
         "categorie_juridique_sirene": 5710,
+        "code_pays_etranger_sirene": None,
     }
 
 
@@ -175,6 +180,7 @@ def test_pas_de_nature_juridique(mocker):
                         "nom_raison_sociale": None,
                         "tranche_effectif_salarie": "15",
                         "nature_juridique": "",
+                        "siege": {"code_pays_etranger": None},
                     }
                 ],
             }
@@ -188,3 +194,64 @@ def test_pas_de_nature_juridique(mocker):
         "Nature juridique récupérée par l'API recherche entreprise invalide"
     )
     assert infos["categorie_juridique_sirene"] == None
+
+
+def test_pas_de_code_pays_etranger(mocker):
+    # On souhaite être informé s'il est manquant (utilisé dans la réglementation CSRD).
+    SIREN = "123456789"
+
+    class FakeResponse:
+        status_code = 200
+
+        def json(self):
+            return {
+                "total_results": 1,
+                "results": [
+                    {
+                        "nom_complet": "ENTREPRISE",
+                        "nom_raison_sociale": None,
+                        "tranche_effectif_salarie": "15",
+                        "nature_juridique": "5710",
+                        "siege": {},
+                    }
+                ],
+            }
+
+    mocker.patch("requests.get", return_value=FakeResponse())
+    capture_message_mock = mocker.patch("sentry_sdk.capture_message")
+
+    infos = recherche(SIREN)
+
+    capture_message_mock.assert_called_once_with(
+        "Code pays étranger récupéré par l'API recherche entreprise invalide"
+    )
+    assert infos["code_pays_etranger_sirene"] == None
+
+
+def test_code_pays_etranger_vaut_null_car_en_France(mocker):
+    SIREN = "123456789"
+
+    class FakeResponse:
+        status_code = 200
+
+        def json(self):
+            return {
+                "total_results": 1,
+                "results": [
+                    {
+                        "nom_complet": "ENTREPRISE",
+                        "nom_raison_sociale": None,
+                        "tranche_effectif_salarie": "15",
+                        "nature_juridique": "5710",
+                        "siege": {"code_pays_etranger": None},
+                    }
+                ],
+            }
+
+    mocker.patch("requests.get", return_value=FakeResponse())
+    capture_message_mock = mocker.patch("sentry_sdk.capture_message")
+
+    infos = recherche(SIREN)
+
+    assert not capture_message_mock.called
+    assert infos["code_pays_etranger_sirene"] == None
