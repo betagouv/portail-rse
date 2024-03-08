@@ -13,6 +13,8 @@ CODE_SCA = 5310
 CODE_SE = 5800
 CODE_AUTRE = 9240  # congrégation
 
+CODE_PAYS_PORTUGAL = 99139
+
 
 @pytest.fixture
 def alice(django_user_model):

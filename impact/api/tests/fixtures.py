@@ -12,6 +12,7 @@ def mock_api_recherche_entreprises(mocker):
             "denomination": "Entreprise SAS",
             "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
             "categorie_juridique_sirene": 5710,
+            "code_pays_etranger_sirene": None,
         },
     )
 
