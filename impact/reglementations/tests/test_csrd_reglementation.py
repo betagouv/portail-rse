@@ -229,6 +229,37 @@ def test_entreprise_hors_categorie_juridique_concernee_sans_interet_public_non_s
 @pytest.mark.parametrize(
     "categorie_juridique_sirene",
     [
+        3205,  # Organisation internationale
+        3220,  # Société étrangère non immatriculée au RCS
+        6210,  # GEIE
+        6220,  # GIE
+        6511,  # Sociétés Interprofessionnelles de Soins Ambulatoires
+        6540,  # SCI
+        7490,  # Autre personne morale de droit administratif
+        CODE_AUTRE,  # congrégation
+    ],
+)
+def test_entreprise_hors_categorie_juridique_concernee_avec_interet_public_soumise(
+    categorie_juridique_sirene, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        categorie_juridique_sirene=categorie_juridique_sirene,
+        est_cotee=False,
+        est_interet_public=True,
+        appartient_groupe=False,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    )
+
+    assert CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+
+@pytest.mark.parametrize(
+    "categorie_juridique_sirene",
+    [
         3210,  # État, collectivité ou établissement public étranger
         5191,  # Société de caution mutuelle
         CODE_SCA,
