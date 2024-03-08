@@ -1,8 +1,7 @@
+from conftest import CODE_PAYS_PORTUGAL
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import DENOMINATION_MAX_LENGTH
 from public.forms import SimulationForm
-
-CODE_PAYS_PORTUGAL = 99139
 
 
 def test_ignore_bilan_et_ca_consolides_lorsque_pas_de_comptes_consolides():
