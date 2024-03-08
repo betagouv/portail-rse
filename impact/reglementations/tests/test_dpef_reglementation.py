@@ -1,16 +1,15 @@
 import pytest
 from django.urls import reverse
 
+from conftest import CODE_SA
+from conftest import CODE_SAS
+from conftest import CODE_SCA
+from conftest import CODE_SE
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.dpef import DPEFReglementation
 
-
-CODE_SA = 5505
-CODE_SAS = 5710
-CODE_SCA = 5310
-CODE_SE = 5800
 CODE_SCOP = 5458
 CODE_COOPERATIVE_AGRICOLE = 6317
 CODE_ASSURANCE_MUTUELLE = 6411
