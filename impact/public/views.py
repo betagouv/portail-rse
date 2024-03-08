@@ -143,6 +143,9 @@ def calcule_simulation(simulation_form, user):
         entreprise.categorie_juridique_sirene = simulation_form.cleaned_data[
             "categorie_juridique_sirene"
         ]
+        entreprise.code_pays_etranger_sirene = simulation_form.cleaned_data[
+            "code_pays_etranger_sirene"
+        ]
         entreprise.est_cotee = simulation_form.cleaned_data["est_cotee"]
         entreprise.appartient_groupe = simulation_form.cleaned_data["appartient_groupe"]
         entreprise.est_societe_mere = simulation_form.cleaned_data["est_societe_mere"]
@@ -155,6 +158,9 @@ def calcule_simulation(simulation_form, user):
             siren=simulation_form.cleaned_data["siren"],
             categorie_juridique_sirene=simulation_form.cleaned_data[
                 "categorie_juridique_sirene"
+            ],
+            code_pays_etranger_sirene=simulation_form.cleaned_data[
+                "code_pays_etranger_sirene"
             ],
             est_cotee=simulation_form.cleaned_data["est_cotee"],
             appartient_groupe=simulation_form.cleaned_data["appartient_groupe"],
