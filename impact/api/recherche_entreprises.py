@@ -32,7 +32,7 @@ def recherche(siren):
         # https://www.insee.fr/fr/information/2028129
         try:
             categorie_juridique_sirene = int(data["nature_juridique"])
-        except ValueError:
+        except (ValueError, TypeError):
             sentry_sdk.capture_message(
                 "Nature juridique récupérée par l'API recherche entreprise invalide"
             )

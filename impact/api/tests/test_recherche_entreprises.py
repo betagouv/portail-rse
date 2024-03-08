@@ -162,7 +162,8 @@ def test_echec_erreur_de_l_API(mocker):
     )
 
 
-def test_pas_de_nature_juridique(mocker):
+@pytest.mark.parametrize("nature_juridique", ["", None])
+def test_pas_de_nature_juridique(nature_juridique, mocker):
     # On se sert de la catégorie juridique pour certaines réglementations qu'on récupère via la nature juridique renvoyée par l'API.
     # Normalement toutes les entreprises en ont une.
     # On souhaite être informé si ce n'est pas le cas car le diagnostic pour ces réglementations pourrait être faux.
@@ -179,7 +180,7 @@ def test_pas_de_nature_juridique(mocker):
                         "nom_complet": "ENTREPRISE",
                         "nom_raison_sociale": None,
                         "tranche_effectif_salarie": "15",
-                        "nature_juridique": "",
+                        "nature_juridique": nature_juridique,
                         "siege": {"code_pays_etranger": None},
                     }
                 ],
