@@ -79,6 +79,7 @@ def search_and_create_entreprise(siren):
         siren=infos_entreprise["siren"],
         denomination=infos_entreprise["denomination"],
         categorie_juridique_sirene=infos_entreprise["categorie_juridique_sirene"],
+        code_pays_etranger_sirene=infos_entreprise["code_pays_etranger_sirene"],
     )
 
 

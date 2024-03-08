@@ -8,9 +8,11 @@ from freezegun import freeze_time
 import api.exceptions
 from api.tests.fixtures import mock_api_index_egapro  # noqa
 from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
+from conftest import CODE_PAYS_PORTUGAL
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
+from entreprises.views import search_and_create_entreprise
 from habilitations.models import attach_user_to_entreprise
 from habilitations.models import get_habilitation
 from habilitations.models import Habilitation
@@ -28,6 +30,23 @@ def test_get_current_entreprise_avec_une_entreprise_en_session_mais_inexistante_
     assert get_current_entreprise(request) is None
     session = client.session
     assert "entreprise" not in session
+
+
+def test_search_and_create_entreprise(db, mock_api_recherche_entreprises):
+    mock_api_recherche_entreprises.return_value = {
+        "siren": "123456789",
+        "denomination": "Entreprise SAS",
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        "categorie_juridique_sirene": 5710,
+        "code_pays_etranger_sirene": CODE_PAYS_PORTUGAL,
+    }
+
+    search_and_create_entreprise("123456789")
+
+    entreprise = Entreprise.objects.get(siren="123456789")
+    assert entreprise.denomination == "Entreprise SAS"
+    assert entreprise.categorie_juridique_sirene == 5710
+    assert entreprise.code_pays_etranger_sirene == CODE_PAYS_PORTUGAL
 
 
 def _attach_data(siren):
