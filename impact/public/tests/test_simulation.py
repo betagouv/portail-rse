@@ -32,7 +32,7 @@ REGLEMENTATIONS = (
 )
 
 CODE_PAYS_SUEDE = 99104
-CODE_PAYS_PORTUGAL = 99139
+from conftest import CODE_PAYS_PORTUGAL
 
 
 @pytest.fixture
