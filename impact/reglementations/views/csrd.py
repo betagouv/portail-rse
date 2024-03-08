@@ -50,7 +50,10 @@ class CSRDReglementation(Reglementation):
     def est_soumis_a_partir_de(
         cls, caracteristiques: CaracteristiquesAnnuelles
     ) -> int | None:
-        if not cls.critere_categorie_juridique_sirene(caracteristiques):
+        if not (
+            cls.critere_categorie_juridique_sirene(caracteristiques)
+            or caracteristiques.entreprise.est_interet_public
+        ):
             return
         if cls.est_grand_groupe(caracteristiques):
             if caracteristiques.entreprise.est_societe_mere:
