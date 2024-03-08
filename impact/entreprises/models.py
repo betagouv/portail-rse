@@ -111,6 +111,42 @@ def convertit_categorie_juridique(categorie_juridique_sirene):
         return CategorieJuridique.AUTRE
 
 
+def est_dans_EEE(code_pays_etranger):
+    """EEE : Espace économique européen"""
+    return code_pays_etranger in (
+        99109,  # Allemagne
+        99110,  # Autriche
+        99131,  # Belgique
+        99111,  # Bulgarie
+        99254,  # Chypre
+        99119,  # Croatie
+        99101,  # Danemark
+        99134,  # Espagne
+        99106,  # Estonie
+        99105,  # Finlande
+        None,  # France
+        99126,  # Grèce
+        99112,  # Hongrie
+        99136,  # Irlande
+        99102,  # Islande
+        99127,  # Italie
+        99107,  # Lettonie
+        99113,  # Liechtenstein
+        99108,  # Lituanie
+        99137,  # Luxembourg
+        99144,  # Malte
+        99103,  # Norvège
+        99135,  # Pays-Bas
+        99122,  # Pologne
+        99139,  # Portugal
+        99116,  # République tchèque
+        99114,  # Roumanie
+        99117,  # Slovaquie
+        99145,  # Slovénie
+        99104,  # Suède
+    )
+
+
 class Entreprise(TimestampedModel):
     siren = models.CharField(max_length=9, unique=True)
     denomination = models.CharField(max_length=DENOMINATION_MAX_LENGTH)
@@ -172,6 +208,10 @@ class Entreprise(TimestampedModel):
     @property
     def categorie_juridique(self):
         return convertit_categorie_juridique(self.categorie_juridique_sirene)
+
+    @property
+    def est_dans_EEE(self):
+        return est_dans_EEE(self.code_pays_etranger_sirene)
 
     def caracteristiques_annuelles(self, annee):
         try:

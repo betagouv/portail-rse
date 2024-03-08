@@ -13,6 +13,7 @@ from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import CategorieJuridique
 from entreprises.models import convertit_categorie_juridique
 from entreprises.models import Entreprise
+from entreprises.models import est_dans_EEE
 
 
 @pytest.mark.django_db(transaction=True)
@@ -669,3 +670,50 @@ def test_societe_cooperative_est_une_SA():
 
 def test_est_une_SA_cooperative_sans_categorie_juridique_sirene():
     assert CategorieJuridique.est_une_SA_cooperative(None) is None
+
+
+def test_est_dans_EEE():
+    CODES_PAYS_ETRANGERS = [
+        99109,  # Allemagne
+        99110,  # Autriche
+        99131,  # Belgique
+        99111,  # Bulgarie
+        99254,  # Chypre
+        99119,  # Croatie
+        99101,  # Danemark
+        99134,  # Espagne
+        99106,  # Estonie
+        99105,  # Finlande
+        None,  # France
+        99126,  # Grèce
+        99112,  # Hongrie
+        99136,  # Irlande
+        99102,  # Islande
+        99127,  # Italie
+        99107,  # Lettonie
+        99113,  # Liechtenstein
+        99108,  # Lituanie
+        99137,  # Luxembourg
+        99144,  # Malte
+        99103,  # Norvège
+        99135,  # Pays-Bas
+        99122,  # Pologne
+        99139,  # Portugal
+        99116,  # République tchèque
+        99114,  # Roumanie
+        99117,  # Slovaquie
+        99145,  # Slovénie
+        99104,  # Suède
+    ]
+
+    for code_pays_etranger in CODES_PAYS_ETRANGERS:
+        assert est_dans_EEE(code_pays_etranger)
+
+    CODES_PAYS_ETRANGERS = [
+        99212,  # Afghanistan
+        99350,  # Maroc
+        99401,  # Canada
+    ]
+
+    for code_pays_etranger in CODES_PAYS_ETRANGERS:
+        assert not est_dans_EEE(code_pays_etranger)
