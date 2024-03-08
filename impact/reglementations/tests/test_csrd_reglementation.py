@@ -2,6 +2,7 @@ import pytest
 from django.urls import reverse
 
 from conftest import CODE_AUTRE
+from conftest import CODE_PAYS_CANADA
 from conftest import CODE_SA
 from conftest import CODE_SA_COOPERATIVE
 from conftest import CODE_SAS
@@ -1699,5 +1700,278 @@ def test_grande_entreprise_non_cotee_filiale_peut_deleguer(entreprise_factory):
     )
 
     assert CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+
+@pytest.mark.parametrize(
+    "effectif",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "ca",
+    [
+        CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
+    ],
+)
+def test_PME_hors_EEE_bilan_et_CA_superieurs_aux_seuils_et_CA_inferieur_à_100M(
+    effectif,
+    ca,
+    entreprise_factory,
+):
+    entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
+        code_pays_etranger_sirene=CODE_PAYS_CANADA,
+        est_cotee=False,
+        appartient_groupe=False,
+        effectif=effectif,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires=ca,
+    )
+
+    assert not CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+
+@pytest.mark.parametrize(
+    "bilan",
+    [
+        CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+        CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "ca",
+    [
+        CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
+        CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
+    ],
+)
+def test_PME_hors_EEE_bilan_et_CA_superieurs_aux_seuils_et_CA_inferieur_à_100M(
+    bilan,
+    ca,
+    entreprise_factory,
+):
+    entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
+        code_pays_etranger_sirene=CODE_PAYS_CANADA,
+        est_cotee=False,
+        appartient_groupe=False,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
+        tranche_bilan=bilan,
+        tranche_chiffre_affaires=ca,
+    )
+
+    assert not CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+
+@pytest.mark.parametrize(
+    "bilan",
+    [
+        CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+    ],
+)
+def test_PME_hors_EEE_CA_supérieur_à_100M(
+    bilan,
+    entreprise_factory,
+):
+    entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
+        code_pays_etranger_sirene=CODE_PAYS_CANADA,
+        est_cotee=False,
+        appartient_groupe=False,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
+        tranche_bilan=bilan,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    )
+
+    assert CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert (
+        CSRDReglementation.est_soumis_a_partir_de(
+            entreprise.dernieres_caracteristiques_qualifiantes
+        )
+        == 2029
+    )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre siège social est hors EEE",
+        "votre chiffre d'affaires est supérieur à 100M€",
+    ]
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+
+@pytest.mark.parametrize(
+    "bilan",
+    [
+        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+        CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "ca",
+    [
+        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
+        CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
+        CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    ],
+)
+def test_entreprise_hors_EEE_bilan_et_ca_superieurs_aux_seuils_grande_entreprise(
+    bilan,
+    ca,
+    entreprise_factory,
+):
+    entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
+        code_pays_etranger_sirene=CODE_PAYS_CANADA,
+        est_cotee=False,
+        appartient_groupe=False,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
+        tranche_bilan=bilan,
+        tranche_chiffre_affaires=ca,
+    )
+
+    assert CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert (
+        CSRDReglementation.est_soumis_a_partir_de(
+            entreprise.dernieres_caracteristiques_qualifiantes
+        )
+        == 2026
+    )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre siège social est hors EEE",
+        "votre bilan est supérieur à 20M€",
+        "votre chiffre d'affaires est supérieur à 40M€",
+    ]
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+
+@pytest.mark.parametrize(
+    "bilan",
+    [
+        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+        CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "effectif",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+def test_entreprise_hors_EEE_bilan_et_effectifs_superieurs_aux_seuils_grande_entreprise(
+    bilan, effectif, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
+        code_pays_etranger_sirene=CODE_PAYS_CANADA,
+        est_cotee=False,
+        appartient_groupe=False,
+        effectif=effectif,
+        tranche_bilan=bilan,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+    )
+
+    assert CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert (
+        CSRDReglementation.est_soumis_a_partir_de(
+            entreprise.dernieres_caracteristiques_qualifiantes
+        )
+        == 2026
+    )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre siège social est hors EEE",
+        "votre effectif est supérieur à 250 salariés",
+        "votre bilan est supérieur à 20M€",
+    ]
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+
+@pytest.mark.parametrize(
+    "ca",
+    [
+        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
+        CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
+        CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    ],
+)
+@pytest.mark.parametrize(
+    "effectif",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+def test_entreprise_hors_EEE_bilan_et_ca_superieurs_aux_seuils_grande_entreprise(
+    ca, effectif, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
+        code_pays_etranger_sirene=CODE_PAYS_CANADA,
+        est_cotee=False,
+        appartient_groupe=False,
+        effectif=effectif,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires=ca,
+    )
+
+    assert CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert (
+        CSRDReglementation.est_soumis_a_partir_de(
+            entreprise.dernieres_caracteristiques_qualifiantes
+        )
+        == 2026
+    )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre siège social est hors EEE",
+        "votre effectif est supérieur à 250 salariés",
+        "votre chiffre d'affaires est supérieur à 40M€",
+    ]
+    assert not CSRDReglementation.est_delegable(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
