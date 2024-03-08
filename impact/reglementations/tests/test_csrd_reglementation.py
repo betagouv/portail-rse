@@ -281,6 +281,7 @@ def test_entreprise_non_cotee_bilan_et_ca_superieurs_aux_seuils_grande_entrepris
     bilan, ca, entreprise_factory
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=False,
         appartient_groupe=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
@@ -330,6 +331,7 @@ def test_entreprise_non_cotee_bilan_et_effectif_superieurs_aux_seuils_grande_ent
     bilan, effectif, entreprise_factory
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=False,
         appartient_groupe=False,
         effectif=effectif,
@@ -379,6 +381,7 @@ def test_entreprise_non_cotee_CA_et_effectif_superieurs_aux_seuils_grande_entrep
     ca, effectif, entreprise_factory
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=False,
         appartient_groupe=False,
         effectif=effectif,
@@ -427,6 +430,7 @@ def test_entreprise_sans_interet_public_bilan_et_effectif_superieurs_à_500_soum
 ):
     """ce CA et effectif est un sous-ensemble des seuils d'une grande entreprise"""
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=False,
         est_interet_public=False,
         appartient_groupe=False,
@@ -478,6 +482,7 @@ def test_entreprise_sans_interet_public_CA_et_effectif_superieurs_superieurs_à_
 ):
     """ce CA et effectif est un sous-ensemble des seuils d'une grande entreprise"""
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=False,
         est_interet_public=False,
         appartient_groupe=False,
@@ -526,6 +531,7 @@ def test_entreprise_non_cotee_bilan_et_CA_inferieurs_aux_seuils_grande_entrepris
     ca, bilan, entreprise_factory
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=False,
         appartient_groupe=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
@@ -562,6 +568,7 @@ def test_entreprise_non_cotee_avec_interet_public_bilan_et_CA_inferieurs_aux_seu
 ):
     """l'intérêt public d'une PME n'est pas une condition mais empêche une implémentation naive"""
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=False,
         est_interet_public=True,
         appartient_groupe=False,
@@ -598,6 +605,7 @@ def test_entreprise_non_cotee_effectif_et_CA_inferieurs_aux_seuils_grande_entrep
     effectif, ca, entreprise_factory
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=False,
         appartient_groupe=False,
         effectif=effectif,
@@ -633,6 +641,7 @@ def test_entreprise_non_cotee_effectif_et_bilan_inferieurs_aux_seuils_grande_ent
     effectif, bilan, entreprise_factory
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=False,
         appartient_groupe=False,
         effectif=effectif,
@@ -652,6 +661,7 @@ def test_microentreprise_cotee_car_seuil_bilan_et_ca_insuffisants_est_non_soumis
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=True,
         appartient_groupe=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
@@ -671,6 +681,7 @@ def test_microentreprise_cotee_car_seuil_effectif_et_ca_insuffisants_est_non_sou
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=True,
         appartient_groupe=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
@@ -690,6 +701,7 @@ def test_microentreprise_cotee_car_aucun_seuil_suffisant_est_non_soumise(
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=True,
         appartient_groupe=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
@@ -725,6 +737,7 @@ def test_entreprise_cotee_ca_et_effectif_plus_de_500_superieurs_aux_seuils_grand
     ca, effectif, entreprise_factory
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=True,
         est_interet_public=False,
         appartient_groupe=False,
@@ -774,6 +787,7 @@ def test_entreprise_interet_public_ca_et_effectif_plus_de_500_superieurs_aux_seu
     ca, effectif, entreprise_factory
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=False,
         est_interet_public=True,
         appartient_groupe=False,
@@ -822,6 +836,7 @@ def test_entreprise_cotee_ca_et_effectif_moins_de_500_superieurs_aux_seuils_gran
     ca, effectif, entreprise_factory
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=True,
         appartient_groupe=False,
         effectif=effectif,
@@ -871,6 +886,7 @@ def test_entreprise_cotee_bilan_et_ca_superieurs_aux_seuils_petite_entreprise_ma
     bilan, ca, entreprise_factory
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=True,
         appartient_groupe=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
@@ -920,6 +936,7 @@ def test_entreprise_cotee_bilan_et_ca_superieurs_aux_seuils_petite_entreprise_ma
     bilan, ca, entreprise_factory
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=True,
         appartient_groupe=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
@@ -971,6 +988,7 @@ def test_entreprise_cotee_effectif_et_ca_superieurs_aux_seuils_petite_entreprise
     effectif, ca, entreprise_factory
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=True,
         appartient_groupe=False,
         effectif=effectif,
@@ -1020,6 +1038,7 @@ def test_entreprise_cotee_effectif_et_ca_superieurs_aux_seuils_petite_entreprise
     effectif, ca, entreprise_factory
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=True,
         appartient_groupe=False,
         effectif=effectif,
@@ -1071,6 +1090,7 @@ def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entrepr
     effectif, bilan, entreprise_factory
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=True,
         appartient_groupe=False,
         effectif=effectif,
@@ -1120,6 +1140,7 @@ def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entrepr
     effectif, bilan, entreprise_factory
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=True,
         appartient_groupe=False,
         effectif=effectif,
@@ -1150,6 +1171,7 @@ def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entrepr
 
 def test_calcule_etat_si_non_soumis(entreprise_factory, alice):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=False,
         appartient_groupe=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
@@ -1175,6 +1197,7 @@ def test_calcule_etat_si_non_soumis(entreprise_factory, alice):
 
 def test_calcule_etat_si_soumis_en_2027_et_delegable(entreprise_factory, alice):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=True,
         appartient_groupe=True,
         est_societe_mere=False,
@@ -1207,6 +1230,7 @@ def test_calcule_etat_si_soumis_en_2027_et_delegable(entreprise_factory, alice):
 
 def test_calcule_etat_si_soumis_en_2027_et_non_delegable(entreprise_factory, alice):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=True,
         appartient_groupe=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
@@ -1237,6 +1261,7 @@ def test_microentreprise_filiale_grand_groupe_jamais_soumise(
     est_cotee, entreprise_factory
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=est_cotee,
         appartient_groupe=True,
         est_societe_mere=False,
@@ -1258,6 +1283,7 @@ def test_microentreprise_cotee_societe_mere_grand_groupe_effectif_groupe_superie
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=True,
         est_interet_public=False,
         appartient_groupe=True,
@@ -1298,6 +1324,7 @@ def test_microentreprise_cotee_societe_mere_grand_groupe_effectif_groupe_inferie
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=True,
         est_interet_public=False,
         appartient_groupe=True,
@@ -1338,6 +1365,7 @@ def test_microentreprise_avec_interet_public_societe_mere_grand_groupe_effectif_
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=False,
         est_interet_public=True,
         appartient_groupe=True,
@@ -1378,6 +1406,7 @@ def test_microentreprise_avec_interet_public_societe_mere_grand_groupe_effectif_
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=False,
         est_interet_public=True,
         appartient_groupe=True,
@@ -1418,6 +1447,7 @@ def test_microentreprise_non_cotee_sans_interet_public_societe_mere_grand_groupe
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=False,
         appartient_groupe=True,
         est_societe_mere=True,
@@ -1456,6 +1486,7 @@ def test_PME_cotee_filiale_grand_groupe_effectif_groupe_superieur_a_500_soumise_
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=True,
         appartient_groupe=True,
         est_societe_mere=False,
@@ -1494,6 +1525,7 @@ def test_PME_cotee_filiale_grand_groupe_effectif_groupe_inferieur_a_500_soumise_
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=True,
         appartient_groupe=True,
         est_societe_mere=False,
@@ -1532,6 +1564,7 @@ def test_PME_non_cotee_filiale_grand_groupe_non_soumise(
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=False,
         appartient_groupe=True,
         est_societe_mere=False,
@@ -1563,6 +1596,7 @@ def test_grande_entreprise_cotee_filiale_ne_peut_pas_deleguer(
     effectif, entreprise_factory
 ):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=True,
         appartient_groupe=True,
         est_societe_mere=False,
@@ -1582,6 +1616,7 @@ def test_grande_entreprise_cotee_filiale_ne_peut_pas_deleguer(
 
 def test_grande_entreprise_non_cotee_filiale_peut_deleguer(entreprise_factory):
     entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
         est_cotee=False,
         appartient_groupe=True,
         est_societe_mere=False,
