@@ -213,6 +213,10 @@ class Entreprise(TimestampedModel):
     def est_dans_EEE(self):
         return est_dans_EEE(self.code_pays_etranger_sirene)
 
+    @property
+    def est_hors_EEE(self):
+        return not self.est_dans_EEE
+
     def caracteristiques_annuelles(self, annee):
         try:
             return CaracteristiquesAnnuelles.objects.get(
