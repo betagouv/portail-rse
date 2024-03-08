@@ -58,11 +58,21 @@ def recherche(siren):
             effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999
         else:
             effectif = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
+        try:
+            code_pays_etranger = int(data["siege"]["code_pays_etranger"])
+        except TypeError:
+            code_pays_etranger = None
+        except (KeyError, ValueError):
+            sentry_sdk.capture_message(
+                "Code pays étranger récupéré par l'API recherche entreprise invalide"
+            )
+            code_pays_etranger = None
         return {
             "siren": siren,
             "effectif": effectif,
             "denomination": denomination,
             "categorie_juridique_sirene": categorie_juridique_sirene,
+            "code_pays_etranger_sirene": code_pays_etranger,
         }
     elif response.status_code == 429:
         raise TooManyRequestError(TOO_MANY_REQUESTS_ERROR)
