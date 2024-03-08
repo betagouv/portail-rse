@@ -31,6 +31,9 @@ REGLEMENTATIONS = (
     PlanVigilanceReglementation,
 )
 
+CODE_PAYS_SUEDE = 99104
+CODE_PAYS_PORTUGAL = 99139
+
 
 @pytest.fixture
 def entreprise(db, alice, entreprise_factory):
@@ -51,6 +54,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     siren = "000000001"
     denomination = "Entreprise SAS"
     categorie_juridique_sirene = 5200
+    code_pays_etranger_sirene = ""  # France
     effectif = CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
     ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
     bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
@@ -66,6 +70,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
         "siren": siren,
         "denomination": denomination,
         "categorie_juridique_sirene": categorie_juridique_sirene,
+        "code_pays_etranger_sirene": code_pays_etranger_sirene,
         "effectif": effectif,
         "tranche_chiffre_affaires": ca,
         "tranche_bilan": bilan,
@@ -90,6 +95,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     entreprise = Entreprise.objects.get(siren=siren)
     assert entreprise.denomination == denomination
     assert entreprise.categorie_juridique_sirene == categorie_juridique_sirene
+    assert entreprise.code_pays_etranger_sirene is None
     assert entreprise.est_cotee
     assert entreprise.appartient_groupe
     assert entreprise.est_societe_mere
@@ -192,6 +198,7 @@ def test_simulation_par_un_utilisateur_authentifie_sur_une_nouvelle_entreprise(
         "denomination": "Une autre entreprise SAS",
         "siren": "000000002",
         "categorie_juridique_sirene": 5200,
+        "code_pays_etranger_sirene": CODE_PAYS_PORTUGAL,
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
@@ -240,6 +247,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     entreprise = entreprise_factory(
         date_cloture_exercice=date_cloture_dernier_exercice,
         categorie_juridique_sirene=5200,
+        code_pays_etranger_sirene=CODE_PAYS_PORTUGAL,
         est_cotee=True,
         appartient_groupe=True,
         est_societe_mere=True,
@@ -262,11 +270,13 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
     autre_denomination = "Autre dénomination"
     autre_categorie_juridique_sirene = 5300
+    autre_code_pays_etranger_sirene = CODE_PAYS_SUEDE
 
     data = {
         "siren": entreprise.siren,
         "denomination": autre_denomination,
         "categorie_juridique_sirene": autre_categorie_juridique_sirene,
+        "code_pays_etranger_sirene": autre_code_pays_etranger_sirene,
         "effectif": effectif,
         "tranche_chiffre_affaires": ca,
         "tranche_bilan": bilan,
@@ -363,11 +373,13 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
     bilan_consolide = CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
     autre_denomination = "Autre dénomination"
     autre_categorie_juridique_sirene = 5200
+    autre_code_pays_etranger_sirene = CODE_PAYS_SUEDE
 
     data = {
         "siren": entreprise.siren,
         "denomination": autre_denomination,
         "categorie_juridique_sirene": autre_categorie_juridique_sirene,
+        "code_pays_etranger_sirene": autre_code_pays_etranger_sirene,
         "effectif": effectif,
         "tranche_chiffre_affaires": ca,
         "tranche_bilan": bilan,
@@ -385,6 +397,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
     entreprise.refresh_from_db()
     assert entreprise.date_cloture_exercice is None
     assert entreprise.categorie_juridique_sirene != autre_categorie_juridique_sirene
+    assert entreprise.code_pays_etranger_sirene != autre_code_pays_etranger_sirene
     assert entreprise.est_cotee is None
     assert entreprise.appartient_groupe is None
     assert entreprise.est_societe_mere is None
@@ -449,10 +462,12 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
     bilan_consolide = CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
     autre_denomination = "Autre dénomination"
     autre_categorie_juridique_sirene = 5200
+    autre_code_pays_etranger_sirene = CODE_PAYS_PORTUGAL
     data = {
         "denomination": autre_denomination,
         "siren": entreprise.siren,
         "categorie_juridique_sirene": autre_categorie_juridique_sirene,
+        "code_pays_etranger_sirene": autre_code_pays_etranger_sirene,
         "effectif": effectif,
         "tranche_chiffre_affaires": ca,
         "tranche_bilan": bilan,
@@ -471,6 +486,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
     assert entreprise.date_cloture_exercice is None
     assert entreprise.denomination == autre_denomination
     assert entreprise.categorie_juridique_sirene == autre_categorie_juridique_sirene
+    assert entreprise.code_pays_etranger_sirene == autre_code_pays_etranger_sirene
     assert entreprise.est_cotee
     assert entreprise.appartient_groupe
     assert entreprise.est_societe_mere
@@ -491,6 +507,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
     entreprise_simulee = Entreprise(
         siren=entreprise.siren,
         categorie_juridique_sirene=autre_categorie_juridique_sirene,
+        code_pays_etranger_sirene=autre_code_pays_etranger_sirene,
         est_cotee=True,
         est_interet_public=False,
         appartient_groupe=True,

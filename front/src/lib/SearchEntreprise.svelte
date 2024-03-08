@@ -11,9 +11,11 @@
     const sirenFieldName = "siren"
     const denominationFieldName = "denomination"
     const categorieJuridiqueFieldId = "id_categorie_juridique_sirene"
+    const codePaysEtrangerFieldId = "id_code_pays_etranger_sirene"
     const effectifFieldId = "id_effectif"
 
     const categorieJuridiqueField = document.getElementById(categorieJuridiqueFieldId)
+    const codePaysEtrangerField = document.getElementById(codePaysEtrangerFieldId)
     const effectifField = document.getElementById(effectifFieldId)
     const submitButton = document.getElementById(sirenFieldId).closest("form").querySelector("[type=submit]")
 
@@ -47,6 +49,9 @@
             }
             if (categorieJuridiqueField) {
                 categorieJuridiqueField.value = json.categorie_juridique_sirene
+            }
+            if (codePaysEtrangerField) {
+                codePaysEtrangerField.value = json.code_pays_etranger_sirene
             }
             showSimulationFields()
         } else {
