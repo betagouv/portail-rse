@@ -1315,6 +1315,32 @@ def test_calcule_etat_si_soumis_en_2027_et_non_delegable(entreprise_factory, ali
     assert reglementation.primary_action.url == reverse("reglementations:csrd")
 
 
+def test_calcule_etat_si_entreprise_hors_EEE_soumise_en_2029_sous_condition(
+    entreprise_factory, alice
+):
+    entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
+        code_pays_etranger_sirene=CODE_PAYS_CANADA,
+        est_cotee=False,
+        appartient_groupe=False,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    reglementation = CSRDReglementation.calculate_status(
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
+    )
+
+    assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
+    assert (
+        reglementation.status_detail
+        == "Vous êtes soumis à cette réglementation à partir de 2029 sur les données de 2028 si votre société dont le siège social est hors EEE revêt une forme juridique comparable aux sociétés par actions ou aux sociétés à responsabilité limitée, comptabilise un chiffre d'affaires net dans l'Espace économique européen qui excède 150 millions d'euros à la date de clôture des deux derniers exercices consécutifs, ne contrôle ni n'est contrôlée par une autre société et dispose d'une succursale en France dont le chiffre d'affaires net excède 40 millions d'euros."
+    )
+    assert reglementation.prochaine_echeance == 2029
+
+
 @pytest.mark.parametrize("est_cotee", [False, True])
 def test_microentreprise_filiale_grand_groupe_jamais_soumise(
     est_cotee, entreprise_factory

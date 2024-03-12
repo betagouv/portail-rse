@@ -339,17 +339,21 @@ class CSRDReglementation(Reglementation):
             "Accéder à l'espace Rapport de Durabilité",
         )
         if annee := cls.est_soumis_a_partir_de(caracteristiques):
-            criteres = cls.criteres_remplis(caracteristiques)
-            justification = ", ".join(criteres[:-1]) + " et " + criteres[-1]
-            if cls.est_delegable(caracteristiques):
-                delegable = (
-                    " Vous pouvez déléguer cette obligation à votre société-mère."
-                )
+            status_detail = f"Vous êtes soumis à cette réglementation à partir de {annee} sur les données de {annee - 1}"
+            if annee == 2029:
+                conditions = "votre société dont le siège social est hors EEE revêt une forme juridique comparable aux sociétés par actions ou aux sociétés à responsabilité limitée, comptabilise un chiffre d'affaires net dans l'Espace économique européen qui excède 150 millions d'euros à la date de clôture des deux derniers exercices consécutifs, ne contrôle ni n'est contrôlée par une autre société et dispose d'une succursale en France dont le chiffre d'affaires net excède 40 millions d'euros"
+                status_detail += f" si {conditions}."
             else:
-                delegable = ""
+                criteres = cls.criteres_remplis(caracteristiques)
+                justification = ", ".join(criteres[:-1]) + " et " + criteres[-1]
+                status_detail += f" car {justification}."
+                if cls.est_delegable(caracteristiques):
+                    status_detail += (
+                        " Vous pouvez déléguer cette obligation à votre société-mère."
+                    )
             return ReglementationStatus(
                 status=ReglementationStatus.STATUS_SOUMIS,
-                status_detail=f"Vous êtes soumis à cette réglementation à partir de {annee} sur les données de {annee - 1} car {justification}.{delegable}",
+                status_detail=status_detail,
                 primary_action=primary_action,
                 prochaine_echeance=annee,
             )
