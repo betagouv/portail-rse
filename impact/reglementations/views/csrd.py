@@ -157,20 +157,6 @@ class CSRDReglementation(Reglementation):
     @classmethod
     def critere_effectif(cls, caracteristiques):
         if (
-            caracteristiques.entreprise.est_hors_EEE
-            and not caracteristiques.entreprise.appartient_groupe
-        ):
-            if cls.est_grande_entreprise(
-                caracteristiques
-            ) and caracteristiques.effectif in (
-                CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
-                CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
-                CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
-                CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
-                CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
-            ):
-                return "votre effectif est supérieur à 250 salariés"
-        elif (
             caracteristiques.entreprise.est_cotee
             or caracteristiques.entreprise.est_interet_public
         ):
@@ -227,63 +213,31 @@ class CSRDReglementation(Reglementation):
 
     @classmethod
     def critere_bilan(cls, caracteristiques):
-        if (
-            caracteristiques.entreprise.est_hors_EEE
-            and not caracteristiques.entreprise.appartient_groupe
+        if cls.est_grand_groupe(caracteristiques):
+            if caracteristiques.tranche_bilan_consolide in (
+                CaracteristiquesAnnuelles.BILAN_ENTRE_30M_ET_43M,
+                CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+                CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+            ):
+                return "le bilan du groupe est supérieur à 30M€"
+        if caracteristiques.tranche_bilan in (
+            CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+            CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+            CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         ):
-            if cls.est_grande_entreprise(
-                caracteristiques
-            ) and caracteristiques.tranche_bilan in (
-                CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
-                CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
-                CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
-            ):
+            if cls.est_grande_entreprise(caracteristiques):
                 return "votre bilan est supérieur à 20M€"
-        else:
-            if cls.est_grand_groupe(caracteristiques):
-                if caracteristiques.tranche_bilan_consolide in (
-                    CaracteristiquesAnnuelles.BILAN_ENTRE_30M_ET_43M,
-                    CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
-                    CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
-                ):
-                    return "le bilan du groupe est supérieur à 30M€"
-            if caracteristiques.tranche_bilan in (
-                CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
-                CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
-                CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
-            ):
-                if cls.est_grande_entreprise(caracteristiques):
-                    return "votre bilan est supérieur à 20M€"
-                elif cls.est_petite_ou_moyenne_entreprise(caracteristiques):
-                    return "votre bilan est supérieur à 350k€"
-            elif caracteristiques.tranche_bilan in (
-                CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
-                CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
-            ):
-                if cls.est_petite_ou_moyenne_entreprise(caracteristiques):
-                    return "votre bilan est supérieur à 350k€"
+            elif cls.est_petite_ou_moyenne_entreprise(caracteristiques):
+                return "votre bilan est supérieur à 350k€"
+        elif caracteristiques.tranche_bilan in (
+            CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
+            CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        ):
+            if cls.est_petite_ou_moyenne_entreprise(caracteristiques):
+                return "votre bilan est supérieur à 350k€"
 
     @classmethod
     def critere_CA(cls, caracteristiques):
-        if (
-            caracteristiques.entreprise.est_hors_EEE
-            and not caracteristiques.entreprise.appartient_groupe
-        ):
-            if cls.est_grande_entreprise(
-                caracteristiques
-            ) and caracteristiques.tranche_chiffre_affaires in (
-                CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
-                CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
-                CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
-            ):
-                return "votre chiffre d'affaires est supérieur à 40M€"
-            elif (
-                caracteristiques.tranche_chiffre_affaires
-                == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
-            ):
-                return "votre chiffre d'affaires est supérieur à 100M€"
-            else:
-                return
         if cls.est_grand_groupe(caracteristiques):
             if caracteristiques.tranche_chiffre_affaires_consolide in (
                 CaracteristiquesAnnuelles.CA_ENTRE_60M_ET_100M,
