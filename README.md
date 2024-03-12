@@ -1,4 +1,4 @@
-[![test](https://github.com/betagouv/impact/actions/workflows/test.yml/badge.svg)](https://github.com/betagouv/impact/actions/workflows/test.yml)
+[![test](https://github.com/betagouv/portail-rse/actions/workflows/test.yml/badge.svg)](https://github.com/betagouv/portail-rse/actions/workflows/test.yml)
 
 # Portail RSE
 
