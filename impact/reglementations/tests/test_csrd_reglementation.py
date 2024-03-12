@@ -263,7 +263,7 @@ def test_entreprise_hors_categorie_juridique_concernee_avec_interet_public_soumi
 @pytest.mark.parametrize(
     "categorie_juridique_sirene",
     [
-        3210,  # État, collectivité ou établissement public étranger
+        3120,  # Société commerciale étrangère immatriculée au RCS
         5191,  # Société de caution mutuelle
         CODE_SCA,
         CODE_SA,
