@@ -56,8 +56,8 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     categorie_juridique_sirene = 5200
     code_pays_etranger_sirene = ""  # France
     effectif = CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
-    ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
-    bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
+    ca = CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M
+    bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M
     est_cotee = True
     appartient_groupe = True
     est_societe_mere = True
@@ -200,8 +200,8 @@ def test_simulation_par_un_utilisateur_authentifie_sur_une_nouvelle_entreprise(
         "categorie_juridique_sirene": 5200,
         "code_pays_etranger_sirene": CODE_PAYS_PORTUGAL,
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
         "est_cotée": False,
         "appartient_groupe": True,
         "est_societe_mere": True,
@@ -256,8 +256,8 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_MOINS_DE_40M,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_20M,
         bdese_accord=True,
@@ -266,8 +266,8 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     assert entreprise.caracteristiques_actuelles()
 
     effectif = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
-    ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
-    bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
+    ca = CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M
+    bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M
     autre_denomination = "Autre dénomination"
     autre_categorie_juridique_sirene = 5300
     autre_code_pays_etranger_sirene = CODE_PAYS_SUEDE
@@ -306,10 +306,10 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     )
     assert (
         caracteristiques.tranche_chiffre_affaires
-        == CaracteristiquesAnnuelles.CA_MOINS_DE_700K
+        == CaracteristiquesAnnuelles.CA_MOINS_DE_900K
     )
     assert (
-        caracteristiques.tranche_bilan == CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
+        caracteristiques.tranche_bilan == CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K
     )
     assert (
         caracteristiques.tranche_chiffre_affaires_consolide
@@ -367,8 +367,8 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
 
     effectif = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     effectif_groupe = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
-    ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
-    bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
+    ca = CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M
+    bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M
     ca_consolide = CaracteristiquesAnnuelles.CA_100M_ET_PLUS
     bilan_consolide = CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
     autre_denomination = "Autre dénomination"
@@ -456,8 +456,8 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
 
     effectif = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     effectif_groupe = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
-    ca = CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
-    bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
+    ca = CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M
+    bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M
     ca_consolide = CaracteristiquesAnnuelles.CA_100M_ET_PLUS
     bilan_consolide = CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
     autre_denomination = "Autre dénomination"
@@ -589,8 +589,8 @@ def test_simulation_incorrecte(client):
         "denomination": "Entreprise SAS",
         "siren": "000000001",
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
         "appartient_groupe": True,
         "comptes_consolides": True,
     }
@@ -619,8 +619,8 @@ def test_resultats_simulation_en_session_incorrects(client):
         "denomination": "Entreprise SAS",
         "categorie_juridique_sirene": 5200,
         "effectif": "0-19",  # Cette valeur n'existe pas
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
         "est_cotee": False,
         "appartient_groupe": False,
     }

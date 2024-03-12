@@ -20,8 +20,8 @@ def _caracteristiques_suffisamment_qualifiantes_sans_groupe(entreprise_factory):
     entreprise = entreprise_factory(
         siren="000000001",
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
         systeme_management_energie=True,
         appartient_groupe=False,
         comptes_consolides=None,
@@ -36,8 +36,8 @@ def _caracteristiques_suffisamment_qualifiantes_avec_groupe_sans_comptes_consoli
     entreprise = entreprise_factory(
         siren="000000002",
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
         systeme_management_energie=True,
         appartient_groupe=True,
         comptes_consolides=False,
@@ -52,12 +52,12 @@ def _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolide
     entreprise = entreprise_factory(
         siren="000000003",
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
         systeme_management_energie=True,
         appartient_groupe=True,
         comptes_consolides=True,
-        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_20M,
     )
     return entreprise.dernieres_caracteristiques
 
@@ -194,7 +194,7 @@ def test_calcule_statut_moins_de_249_employes_et_petit_bilan(
     effectif, entreprise_factory, alice
 ):
     entreprise = entreprise_factory(
-        effectif=effectif, tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
+        effectif=effectif, tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
@@ -245,18 +245,17 @@ def test_calcule_statut_plus_de_250_employes(effectif, entreprise_factory, alice
 @pytest.mark.parametrize(
     "bilan",
     [
-        CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_25M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_25M_ET_43M,
     ],
 )
 @pytest.mark.parametrize(
     "ca",
     [
-        CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
-        CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
+        CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+        CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
         CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
     ],
 )
@@ -329,7 +328,7 @@ def test_calcule_etat_avec_bilan_et_ca_suffisants(bilan, ca, entreprise_factory,
 def test_calcule_etat_avec_bilan_insuffisant(ca, entreprise_factory, alice):
     entreprise = entreprise_factory(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
         tranche_chiffre_affaires=ca,
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
@@ -353,7 +352,7 @@ def test_calcule_etat_avec_ca_insuffisant(bilan, entreprise_factory, alice):
     entreprise = entreprise_factory(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         tranche_bilan=bilan,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
@@ -462,7 +461,7 @@ def test_calcule_etat_avec_bilan_insuffisant_mais_bilan_consolide_et_ca_suffisan
         appartient_groupe=True,
         comptes_consolides=True,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
         tranche_chiffre_affaires=ca,
         tranche_bilan_consolide=bilan_consolide,
     )

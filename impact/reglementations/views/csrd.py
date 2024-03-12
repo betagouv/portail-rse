@@ -221,20 +221,20 @@ class CSRDReglementation(Reglementation):
             ):
                 return "le bilan du groupe est supérieur à 30M€"
         if caracteristiques.tranche_bilan in (
-            CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+            CaracteristiquesAnnuelles.BILAN_ENTRE_25M_ET_43M,
             CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
             CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         ):
             if cls.est_grande_entreprise(caracteristiques):
-                return "votre bilan est supérieur à 20M€"
+                return "votre bilan est supérieur à 25M€"
             elif cls.est_petite_ou_moyenne_entreprise(caracteristiques):
-                return "votre bilan est supérieur à 350k€"
+                return "votre bilan est supérieur à 450k€"
         elif caracteristiques.tranche_bilan in (
-            CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
-            CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+            CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
+            CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_25M,
         ):
             if cls.est_petite_ou_moyenne_entreprise(caracteristiques):
-                return "votre bilan est supérieur à 350k€"
+                return "votre bilan est supérieur à 450k€"
 
     @classmethod
     def critere_CA(cls, caracteristiques):
@@ -245,20 +245,19 @@ class CSRDReglementation(Reglementation):
             ):
                 return "le chiffre d'affaires du groupe est supérieur à 60M€"
         if caracteristiques.tranche_chiffre_affaires in (
-            CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
             CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
             CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
         ):
             if cls.est_grande_entreprise(caracteristiques):
-                return "votre chiffre d'affaires est supérieur à 40M€"
+                return "votre chiffre d'affaires est supérieur à 50M€"
             elif cls.est_petite_ou_moyenne_entreprise(caracteristiques):
-                return "votre chiffre d'affaires est supérieur à 700k€"
+                return "votre chiffre d'affaires est supérieur à 900k€"
         elif caracteristiques.tranche_chiffre_affaires in (
-            CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-            CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
+            CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
+            CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
         ):
             if cls.est_petite_ou_moyenne_entreprise(caracteristiques):
-                return "votre chiffre d'affaires est supérieur à 700k€"
+                return "votre chiffre d'affaires est supérieur à 900k€"
 
     @classmethod
     def critere_categorie_juridique_sirene(cls, caracteristiques):
@@ -323,12 +322,12 @@ class CSRDReglementation(Reglementation):
         nombre_seuils_non_depasses = 0
         if (
             caracteristiques.tranche_bilan
-            == CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
+            == CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K
         ):
             nombre_seuils_non_depasses += 1
         if (
             caracteristiques.tranche_chiffre_affaires
-            == CaracteristiquesAnnuelles.CA_MOINS_DE_700K
+            == CaracteristiquesAnnuelles.CA_MOINS_DE_900K
         ):
             nombre_seuils_non_depasses += 1
         if caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10:
@@ -339,13 +338,12 @@ class CSRDReglementation(Reglementation):
     def est_grande_entreprise(cls, caracteristiques: CaracteristiquesAnnuelles) -> bool:
         nombre_seuils_depasses = 0
         if caracteristiques.tranche_bilan in (
-            CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+            CaracteristiquesAnnuelles.BILAN_ENTRE_25M_ET_43M,
             CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
             CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         ):
             nombre_seuils_depasses += 1
         if caracteristiques.tranche_chiffre_affaires in (
-            CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
             CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
             CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
         ):

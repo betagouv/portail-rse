@@ -29,8 +29,8 @@ def _caracteristiques_suffisamment_qualifiantes_sans_groupe(entreprise_factory):
         siren="000000001",
         est_cotee=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
         appartient_groupe=False,
     )
     return entreprise.dernieres_caracteristiques
@@ -45,8 +45,8 @@ def _caracteristiques_suffisamment_qualifiantes_avec_groupe_sans_comptes_consoli
         est_cotee=False,
         est_interet_public=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
         appartient_groupe=True,
         comptes_consolides=False,
     )
@@ -62,8 +62,8 @@ def _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolide
         est_cotee=False,
         est_interet_public=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
         appartient_groupe=True,
         comptes_consolides=True,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
@@ -299,7 +299,7 @@ def test_entreprise_categorie_juridique_concernee_soumise(
 @pytest.mark.parametrize(
     "bilan",
     [
-        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_25M_ET_43M,
         CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
         CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
     ],
@@ -307,7 +307,6 @@ def test_entreprise_categorie_juridique_concernee_soumise(
 @pytest.mark.parametrize(
     "ca",
     [
-        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
         CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
         CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     ],
@@ -337,8 +336,8 @@ def test_entreprise_non_cotee_bilan_et_ca_superieurs_aux_seuils_grande_entrepris
     assert CSRDReglementation.criteres_remplis(
         entreprise.dernieres_caracteristiques_qualifiantes
     ) == [
-        "votre bilan est supérieur à 20M€",
-        "votre chiffre d'affaires est supérieur à 40M€",
+        "votre bilan est supérieur à 25M€",
+        "votre chiffre d'affaires est supérieur à 50M€",
     ]
     assert not CSRDReglementation.est_delegable(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -348,7 +347,7 @@ def test_entreprise_non_cotee_bilan_et_ca_superieurs_aux_seuils_grande_entrepris
 @pytest.mark.parametrize(
     "bilan",
     [
-        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_25M_ET_43M,
         CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
         CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
     ],
@@ -373,7 +372,7 @@ def test_entreprise_non_cotee_bilan_et_effectif_superieurs_aux_seuils_grande_ent
         appartient_groupe=False,
         effectif=effectif,
         tranche_bilan=bilan,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
     )
 
     assert CSRDReglementation.est_soumis(
@@ -389,7 +388,7 @@ def test_entreprise_non_cotee_bilan_et_effectif_superieurs_aux_seuils_grande_ent
         entreprise.dernieres_caracteristiques_qualifiantes
     ) == [
         "votre effectif est supérieur à 250 salariés",
-        "votre bilan est supérieur à 20M€",
+        "votre bilan est supérieur à 25M€",
     ]
     assert not CSRDReglementation.est_delegable(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -399,7 +398,6 @@ def test_entreprise_non_cotee_bilan_et_effectif_superieurs_aux_seuils_grande_ent
 @pytest.mark.parametrize(
     "ca",
     [
-        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
         CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
         CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     ],
@@ -423,7 +421,7 @@ def test_entreprise_non_cotee_CA_et_effectif_superieurs_aux_seuils_grande_entrep
         est_cotee=False,
         appartient_groupe=False,
         effectif=effectif,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
         tranche_chiffre_affaires=ca,
     )
 
@@ -440,7 +438,7 @@ def test_entreprise_non_cotee_CA_et_effectif_superieurs_aux_seuils_grande_entrep
         entreprise.dernieres_caracteristiques_qualifiantes
     ) == [
         "votre effectif est supérieur à 250 salariés",
-        "votre chiffre d'affaires est supérieur à 40M€",
+        "votre chiffre d'affaires est supérieur à 50M€",
     ]
     assert not CSRDReglementation.est_delegable(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -450,7 +448,7 @@ def test_entreprise_non_cotee_CA_et_effectif_superieurs_aux_seuils_grande_entrep
 @pytest.mark.parametrize(
     "bilan",
     [
-        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_25M_ET_43M,
         CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
         CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
     ],
@@ -458,15 +456,15 @@ def test_entreprise_non_cotee_CA_et_effectif_superieurs_aux_seuils_grande_entrep
 @pytest.mark.parametrize(
     "effectif",
     [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_entreprise_sans_interet_public_bilan_et_effectif_superieurs_à_500_soumise_en_2026(
+def test_entreprise_sans_interet_public_bilan_et_effectif_superieurs_aux_seuils_grande_entreprise_soumise_en_2026(
     bilan, effectif, entreprise_factory
 ):
-    """ce CA et effectif est un sous-ensemble des seuils d'une grande entreprise"""
     entreprise = entreprise_factory(
         categorie_juridique_sirene=CODE_SA,
         code_pays_etranger_sirene=None,
@@ -475,7 +473,7 @@ def test_entreprise_sans_interet_public_bilan_et_effectif_superieurs_à_500_soum
         appartient_groupe=False,
         effectif=effectif,
         tranche_bilan=bilan,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
     )
 
     assert CSRDReglementation.est_soumis(
@@ -491,7 +489,7 @@ def test_entreprise_sans_interet_public_bilan_et_effectif_superieurs_à_500_soum
         entreprise.dernieres_caracteristiques_qualifiantes
     ) == [
         "votre effectif est supérieur à 250 salariés",
-        "votre bilan est supérieur à 20M€",
+        "votre bilan est supérieur à 25M€",
     ]
     assert not CSRDReglementation.est_delegable(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -501,7 +499,6 @@ def test_entreprise_sans_interet_public_bilan_et_effectif_superieurs_à_500_soum
 @pytest.mark.parametrize(
     "ca",
     [
-        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
         CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
         CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     ],
@@ -516,10 +513,9 @@ def test_entreprise_sans_interet_public_bilan_et_effectif_superieurs_à_500_soum
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_entreprise_sans_interet_public_CA_et_effectif_superieurs_superieurs_à_500_soumise_en_2026(
+def test_entreprise_sans_interet_public_CA_et_effectif_superieurs_aux_seuils_grande_entreprise_soumise_en_2026(
     ca, effectif, entreprise_factory
 ):
-    """ce CA et effectif est un sous-ensemble des seuils d'une grande entreprise"""
     entreprise = entreprise_factory(
         categorie_juridique_sirene=CODE_SA,
         code_pays_etranger_sirene=None,
@@ -527,7 +523,7 @@ def test_entreprise_sans_interet_public_CA_et_effectif_superieurs_superieurs_à_
         est_interet_public=False,
         appartient_groupe=False,
         effectif=effectif,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
         tranche_chiffre_affaires=ca,
     )
 
@@ -544,7 +540,7 @@ def test_entreprise_sans_interet_public_CA_et_effectif_superieurs_superieurs_à_
         entreprise.dernieres_caracteristiques_qualifiantes
     ) == [
         "votre effectif est supérieur à 250 salariés",
-        "votre chiffre d'affaires est supérieur à 40M€",
+        "votre chiffre d'affaires est supérieur à 50M€",
     ]
     assert not CSRDReglementation.est_delegable(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -554,17 +550,17 @@ def test_entreprise_sans_interet_public_CA_et_effectif_superieurs_superieurs_à_
 @pytest.mark.parametrize(
     "bilan",
     [
-        CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_25M,
     ],
 )
 @pytest.mark.parametrize(
     "ca",
     [
-        CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
-        CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
+        CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+        CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
+        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
     ],
 )
 def test_entreprise_non_cotee_bilan_et_CA_inferieurs_aux_seuils_grande_entreprise_non_soumise(
@@ -591,17 +587,17 @@ def test_entreprise_non_cotee_bilan_et_CA_inferieurs_aux_seuils_grande_entrepris
 @pytest.mark.parametrize(
     "bilan",
     [
-        CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_25M,
     ],
 )
 @pytest.mark.parametrize(
     "ca",
     [
-        CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
-        CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
+        CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+        CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
+        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
     ],
 )
 def test_entreprise_non_cotee_avec_interet_public_bilan_et_CA_inferieurs_aux_seuils_grande_entreprise_non_soumise(
@@ -638,9 +634,9 @@ def test_entreprise_non_cotee_avec_interet_public_bilan_et_CA_inferieurs_aux_seu
 @pytest.mark.parametrize(
     "ca",
     [
-        CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
-        CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
+        CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+        CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
+        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
     ],
 )
 def test_entreprise_non_cotee_effectif_et_CA_inferieurs_aux_seuils_grande_entreprise_non_soumise(
@@ -675,9 +671,9 @@ def test_entreprise_non_cotee_effectif_et_CA_inferieurs_aux_seuils_grande_entrep
 @pytest.mark.parametrize(
     "bilan",
     [
-        CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_25M,
     ],
 )
 def test_entreprise_non_cotee_effectif_et_bilan_inferieurs_aux_seuils_grande_entreprise_non_soumise(
@@ -701,7 +697,7 @@ def test_entreprise_non_cotee_effectif_et_bilan_inferieurs_aux_seuils_grande_ent
     )
 
 
-def test_microentreprise_cotee_car_seuil_bilan_et_ca_insuffisants_est_non_soumise(
+def test_microentreprise_cotee_car_seuils_bilan_et_ca_insuffisants_est_non_soumise(
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
@@ -709,9 +705,30 @@ def test_microentreprise_cotee_car_seuil_bilan_et_ca_insuffisants_est_non_soumis
         code_pays_etranger_sirene=None,
         est_cotee=True,
         appartient_groupe=False,
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+    )
+
+    assert not CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert not CSRDReglementation.est_soumis_a_partir_de(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+
+def test_microentreprise_cotee_car_seuils_effectif_et_bilan_insuffisants_est_non_soumise(
+    entreprise_factory,
+):
+    entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
+        code_pays_etranger_sirene=None,
+        est_cotee=True,
+        appartient_groupe=False,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     )
 
     assert not CSRDReglementation.est_soumis(
@@ -731,8 +748,8 @@ def test_microentreprise_cotee_car_seuil_effectif_et_ca_insuffisants_est_non_sou
         est_cotee=True,
         appartient_groupe=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
     )
 
     assert not CSRDReglementation.est_soumis(
@@ -752,8 +769,8 @@ def test_microentreprise_cotee_car_aucun_seuil_suffisant_est_non_soumise(
         est_cotee=True,
         appartient_groupe=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
     )
 
     assert not CSRDReglementation.est_soumis(
@@ -767,7 +784,6 @@ def test_microentreprise_cotee_car_aucun_seuil_suffisant_est_non_soumise(
 @pytest.mark.parametrize(
     "ca",
     [
-        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
         CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
         CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     ],
@@ -790,7 +806,7 @@ def test_entreprise_cotee_ca_et_effectif_plus_de_500_superieurs_aux_seuils_grand
         est_interet_public=False,
         appartient_groupe=False,
         effectif=effectif,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
         tranche_chiffre_affaires=ca,
     )
 
@@ -808,7 +824,7 @@ def test_entreprise_cotee_ca_et_effectif_plus_de_500_superieurs_aux_seuils_grand
     ) == [
         "votre société est cotée sur un marché réglementé",
         "votre effectif est supérieur à 500 salariés",
-        "votre chiffre d'affaires est supérieur à 40M€",
+        "votre chiffre d'affaires est supérieur à 50M€",
     ]
     assert not CSRDReglementation.est_delegable(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -818,7 +834,6 @@ def test_entreprise_cotee_ca_et_effectif_plus_de_500_superieurs_aux_seuils_grand
 @pytest.mark.parametrize(
     "ca",
     [
-        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
         CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
         CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     ],
@@ -841,7 +856,7 @@ def test_entreprise_interet_public_ca_et_effectif_plus_de_500_superieurs_aux_seu
         est_interet_public=True,
         appartient_groupe=False,
         effectif=effectif,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
         tranche_chiffre_affaires=ca,
     )
 
@@ -859,7 +874,7 @@ def test_entreprise_interet_public_ca_et_effectif_plus_de_500_superieurs_aux_seu
     ) == [
         "votre société est d'intérêt public",
         "votre effectif est supérieur à 500 salariés",
-        "votre chiffre d'affaires est supérieur à 40M€",
+        "votre chiffre d'affaires est supérieur à 50M€",
     ]
     assert not CSRDReglementation.est_delegable(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -869,7 +884,6 @@ def test_entreprise_interet_public_ca_et_effectif_plus_de_500_superieurs_aux_seu
 @pytest.mark.parametrize(
     "ca",
     [
-        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
         CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
         CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     ],
@@ -890,7 +904,7 @@ def test_entreprise_cotee_ca_et_effectif_moins_de_500_superieurs_aux_seuils_gran
         est_cotee=True,
         appartient_groupe=False,
         effectif=effectif,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
         tranche_chiffre_affaires=ca,
     )
 
@@ -908,7 +922,7 @@ def test_entreprise_cotee_ca_et_effectif_moins_de_500_superieurs_aux_seuils_gran
     ) == [
         "votre société est cotée sur un marché réglementé",
         "votre effectif est supérieur à 250 salariés",
-        "votre chiffre d'affaires est supérieur à 40M€",
+        "votre chiffre d'affaires est supérieur à 50M€",
     ]
     assert not CSRDReglementation.est_delegable(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -918,9 +932,9 @@ def test_entreprise_cotee_ca_et_effectif_moins_de_500_superieurs_aux_seuils_gran
 @pytest.mark.parametrize(
     "bilan",
     [
-        CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_25M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_25M_ET_43M,
         CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
         CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
     ],
@@ -928,8 +942,8 @@ def test_entreprise_cotee_ca_et_effectif_moins_de_500_superieurs_aux_seuils_gran
 @pytest.mark.parametrize(
     "ca",
     [
-        CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
+        CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
+        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
     ],
 )
 def test_entreprise_cotee_bilan_et_ca_superieurs_aux_seuils_petite_entreprise_mais_ca_inferieur_seuil_grande_entreprise_soumise_en_2027(
@@ -958,8 +972,8 @@ def test_entreprise_cotee_bilan_et_ca_superieurs_aux_seuils_petite_entreprise_ma
         entreprise.dernieres_caracteristiques_qualifiantes
     ) == [
         "votre société est cotée sur un marché réglementé",
-        "votre bilan est supérieur à 350k€",
-        "votre chiffre d'affaires est supérieur à 700k€",
+        "votre bilan est supérieur à 450k€",
+        "votre chiffre d'affaires est supérieur à 900k€",
     ]
     assert not CSRDReglementation.est_delegable(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -969,15 +983,14 @@ def test_entreprise_cotee_bilan_et_ca_superieurs_aux_seuils_petite_entreprise_ma
 @pytest.mark.parametrize(
     "bilan",
     [
-        CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_25M,
     ],
 )
 @pytest.mark.parametrize(
     "ca",
     [
-        CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
+        CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
         CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
         CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
         CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
@@ -1009,8 +1022,8 @@ def test_entreprise_cotee_bilan_et_ca_superieurs_aux_seuils_petite_entreprise_ma
         entreprise.dernieres_caracteristiques_qualifiantes
     ) == [
         "votre société est cotée sur un marché réglementé",
-        "votre bilan est supérieur à 350k€",
-        "votre chiffre d'affaires est supérieur à 700k€",
+        "votre bilan est supérieur à 450k€",
+        "votre chiffre d'affaires est supérieur à 900k€",
     ]
     assert not CSRDReglementation.est_delegable(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -1032,8 +1045,8 @@ def test_entreprise_cotee_bilan_et_ca_superieurs_aux_seuils_petite_entreprise_ma
 @pytest.mark.parametrize(
     "ca",
     [
-        CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
+        CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
+        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
     ],
 )
 def test_entreprise_cotee_effectif_et_ca_superieurs_aux_seuils_petite_entreprise_mais_ca_inferieur_seuil_grande_entreprise_soumise_en_2027(
@@ -1045,7 +1058,7 @@ def test_entreprise_cotee_effectif_et_ca_superieurs_aux_seuils_petite_entreprise
         est_cotee=True,
         appartient_groupe=False,
         effectif=effectif,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
         tranche_chiffre_affaires=ca,
     )
 
@@ -1063,7 +1076,7 @@ def test_entreprise_cotee_effectif_et_ca_superieurs_aux_seuils_petite_entreprise
     ) == [
         "votre société est cotée sur un marché réglementé",
         "votre effectif est supérieur à 10 salariés",
-        "votre chiffre d'affaires est supérieur à 700k€",
+        "votre chiffre d'affaires est supérieur à 900k€",
     ]
     assert not CSRDReglementation.est_delegable(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -1080,8 +1093,7 @@ def test_entreprise_cotee_effectif_et_ca_superieurs_aux_seuils_petite_entreprise
 @pytest.mark.parametrize(
     "ca",
     [
-        CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
+        CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
         CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
         CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
         CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
@@ -1096,7 +1108,7 @@ def test_entreprise_cotee_effectif_et_ca_superieurs_aux_seuils_petite_entreprise
         est_cotee=True,
         appartient_groupe=False,
         effectif=effectif,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
         tranche_chiffre_affaires=ca,
     )
 
@@ -1114,7 +1126,7 @@ def test_entreprise_cotee_effectif_et_ca_superieurs_aux_seuils_petite_entreprise
     ) == [
         "votre société est cotée sur un marché réglementé",
         "votre effectif est supérieur à 10 salariés",
-        "votre chiffre d'affaires est supérieur à 700k€",
+        "votre chiffre d'affaires est supérieur à 900k€",
     ]
     assert not CSRDReglementation.est_delegable(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -1136,8 +1148,8 @@ def test_entreprise_cotee_effectif_et_ca_superieurs_aux_seuils_petite_entreprise
 @pytest.mark.parametrize(
     "bilan",
     [
-        CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_25M,
     ],
 )
 def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entreprise_mais_bilan_inferieur_seuil_grande_entreprise_soumise_en_2027(
@@ -1150,7 +1162,7 @@ def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entrepr
         appartient_groupe=False,
         effectif=effectif,
         tranche_bilan=bilan,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
     )
 
     assert CSRDReglementation.est_soumis(
@@ -1167,7 +1179,7 @@ def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entrepr
     ) == [
         "votre société est cotée sur un marché réglementé",
         "votre effectif est supérieur à 10 salariés",
-        "votre bilan est supérieur à 350k€",
+        "votre bilan est supérieur à 450k€",
     ]
     assert not CSRDReglementation.est_delegable(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -1184,9 +1196,9 @@ def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entrepr
 @pytest.mark.parametrize(
     "bilan",
     [
-        CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_25M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_25M_ET_43M,
         CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
         CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
     ],
@@ -1201,7 +1213,7 @@ def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entrepr
         appartient_groupe=False,
         effectif=effectif,
         tranche_bilan=bilan,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
     )
 
     assert CSRDReglementation.est_soumis(
@@ -1218,7 +1230,7 @@ def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entrepr
     ) == [
         "votre société est cotée sur un marché réglementé",
         "votre effectif est supérieur à 10 salariés",
-        "votre bilan est supérieur à 350k€",
+        "votre bilan est supérieur à 450k€",
     ]
     assert not CSRDReglementation.est_delegable(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -1232,8 +1244,8 @@ def test_calcule_etat_si_non_soumis(entreprise_factory, alice):
         est_cotee=False,
         appartient_groupe=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
@@ -1261,8 +1273,8 @@ def test_calcule_etat_si_soumis_en_2027_et_delegable(entreprise_factory, alice):
         est_societe_mere=False,
         comptes_consolides=True,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
@@ -1293,8 +1305,8 @@ def test_calcule_etat_si_soumis_en_2027_et_non_delegable(entreprise_factory, ali
         est_cotee=True,
         appartient_groupe=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
@@ -1305,7 +1317,7 @@ def test_calcule_etat_si_soumis_en_2027_et_non_delegable(entreprise_factory, ali
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert (
         reglementation.status_detail
-        == "Vous êtes soumis à cette réglementation à partir de 2027 sur les données de 2026 car votre société est cotée sur un marché réglementé, votre effectif est supérieur à 10 salariés et votre bilan est supérieur à 350k€."
+        == "Vous êtes soumis à cette réglementation à partir de 2027 sur les données de 2026 car votre société est cotée sur un marché réglementé, votre effectif est supérieur à 10 salariés et votre bilan est supérieur à 450k€."
     )
     assert reglementation.prochaine_echeance == 2027
     assert (
@@ -1324,7 +1336,7 @@ def test_calcule_etat_si_entreprise_hors_EEE_soumise_en_2029_sous_condition(
         est_cotee=False,
         appartient_groupe=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
@@ -1353,8 +1365,8 @@ def test_microentreprise_filiale_grand_groupe_jamais_soumise(
         est_societe_mere=False,
         comptes_consolides=True,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
@@ -1377,8 +1389,8 @@ def test_microentreprise_cotee_societe_mere_grand_groupe_effectif_groupe_superie
         est_societe_mere=True,
         comptes_consolides=True,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
@@ -1419,8 +1431,8 @@ def test_microentreprise_cotee_societe_mere_grand_groupe_effectif_groupe_inferie
         est_societe_mere=True,
         comptes_consolides=True,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_499,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
@@ -1461,8 +1473,8 @@ def test_microentreprise_avec_interet_public_societe_mere_grand_groupe_effectif_
         est_societe_mere=True,
         comptes_consolides=True,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
@@ -1503,8 +1515,8 @@ def test_microentreprise_avec_interet_public_societe_mere_grand_groupe_effectif_
         est_societe_mere=True,
         comptes_consolides=True,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_499,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
@@ -1544,8 +1556,8 @@ def test_microentreprise_non_cotee_sans_interet_public_societe_mere_grand_groupe
         est_societe_mere=True,
         comptes_consolides=True,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
@@ -1584,8 +1596,8 @@ def test_PME_cotee_filiale_grand_groupe_effectif_groupe_superieur_a_500_soumise_
         est_societe_mere=False,
         comptes_consolides=True,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
@@ -1624,8 +1636,8 @@ def test_PME_cotee_filiale_grand_groupe_effectif_groupe_inferieur_a_500_soumise_
         est_societe_mere=False,
         comptes_consolides=True,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_499,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
@@ -1664,8 +1676,8 @@ def test_PME_non_cotee_filiale_grand_groupe_non_soumise(
         est_societe_mere=False,
         comptes_consolides=True,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
@@ -1698,7 +1710,7 @@ def test_grande_entreprise_cotee_filiale_ne_peut_pas_deleguer(
         comptes_consolides=True,
         effectif=effectif,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
@@ -1719,7 +1731,7 @@ def test_grande_entreprise_non_cotee_filiale_peut_deleguer(entreprise_factory):
         comptes_consolides=True,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
@@ -1741,9 +1753,9 @@ def test_grande_entreprise_non_cotee_filiale_peut_deleguer(entreprise_factory):
 @pytest.mark.parametrize(
     "ca",
     [
-        CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
-        CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
+        CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+        CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
+        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
     ],
 )
 def test_micro_ou_PME_hors_EEE_effectif_et_ca_inferieurs_seuils_grande_entreprise_et_CA_inferieur_à_100M(
@@ -1769,17 +1781,17 @@ def test_micro_ou_PME_hors_EEE_effectif_et_ca_inferieurs_seuils_grande_entrepris
 @pytest.mark.parametrize(
     "bilan",
     [
-        CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_25M,
     ],
 )
 @pytest.mark.parametrize(
     "ca",
     [
-        CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
-        CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
+        CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+        CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
+        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
     ],
 )
 def test_micro_ou_PME_hors_EEE_bilan_et_ca_inferieurs_seuils_grande_entreprise_et_CA_inferieur_à_100M(
@@ -1813,9 +1825,9 @@ def test_micro_ou_PME_hors_EEE_bilan_et_ca_inferieurs_seuils_grande_entreprise_e
 @pytest.mark.parametrize(
     "bilan",
     [
-        CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_25M,
     ],
 )
 def test_micro_ou_PME_hors_EEE_effectif_et_bilan_inferieurs_seuils_grande_entreprise_et_CA_inferieur_à_100M(
@@ -1849,9 +1861,9 @@ def test_micro_ou_PME_hors_EEE_effectif_et_bilan_inferieurs_seuils_grande_entrep
 @pytest.mark.parametrize(
     "bilan",
     [
-        CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_25M,
     ],
 )
 def test_micro_ou_PME_hors_EEE_CA_supérieur_à_100M(
@@ -1886,7 +1898,7 @@ def test_micro_ou_PME_hors_EEE_CA_supérieur_à_100M(
 @pytest.mark.parametrize(
     "bilan",
     [
-        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_25M_ET_43M,
         CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
         CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
     ],
@@ -1894,7 +1906,6 @@ def test_micro_ou_PME_hors_EEE_CA_supérieur_à_100M(
 @pytest.mark.parametrize(
     "ca",
     [
-        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
         CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
         CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     ],
@@ -1927,8 +1938,8 @@ def test_entreprise_hors_EEE_bilan_et_ca_superieurs_aux_seuils_grande_entreprise
         entreprise.dernieres_caracteristiques_qualifiantes
     ) == [
         "votre siège social est hors EEE",
-        "votre bilan est supérieur à 20M€",
-        "votre chiffre d'affaires est supérieur à 40M€",
+        "votre bilan est supérieur à 25M€",
+        "votre chiffre d'affaires est supérieur à 50M€",
     ]
     assert not CSRDReglementation.est_delegable(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -1938,7 +1949,7 @@ def test_entreprise_hors_EEE_bilan_et_ca_superieurs_aux_seuils_grande_entreprise
 @pytest.mark.parametrize(
     "bilan",
     [
-        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_25M_ET_43M,
         CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
         CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
     ],
@@ -1953,7 +1964,7 @@ def test_entreprise_hors_EEE_bilan_et_ca_superieurs_aux_seuils_grande_entreprise
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_entreprise_hors_EEE_bilan_et_effectifs_superieurs_aux_seuils_grande_entreprise(
+def test_entreprise_hors_EEE_bilan_et_effectif_superieurs_aux_seuils_grande_entreprise(
     bilan, effectif, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -1963,7 +1974,7 @@ def test_entreprise_hors_EEE_bilan_et_effectifs_superieurs_aux_seuils_grande_ent
         appartient_groupe=False,
         effectif=effectif,
         tranche_bilan=bilan,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
     )
 
     assert CSRDReglementation.est_soumis(
@@ -1980,7 +1991,7 @@ def test_entreprise_hors_EEE_bilan_et_effectifs_superieurs_aux_seuils_grande_ent
     ) == [
         "votre siège social est hors EEE",
         "votre effectif est supérieur à 250 salariés",
-        "votre bilan est supérieur à 20M€",
+        "votre bilan est supérieur à 25M€",
     ]
     assert not CSRDReglementation.est_delegable(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -1990,7 +2001,6 @@ def test_entreprise_hors_EEE_bilan_et_effectifs_superieurs_aux_seuils_grande_ent
 @pytest.mark.parametrize(
     "ca",
     [
-        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
         CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
         CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     ],
@@ -2005,7 +2015,7 @@ def test_entreprise_hors_EEE_bilan_et_effectifs_superieurs_aux_seuils_grande_ent
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_entreprise_hors_EEE_bilan_et_ca_superieurs_aux_seuils_grande_entreprise(
+def test_entreprise_hors_EEE_ca_et_effectif_superieurs_aux_seuils_grande_entreprise(
     ca, effectif, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -2014,7 +2024,7 @@ def test_entreprise_hors_EEE_bilan_et_ca_superieurs_aux_seuils_grande_entreprise
         est_cotee=False,
         appartient_groupe=False,
         effectif=effectif,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
         tranche_chiffre_affaires=ca,
     )
 
@@ -2032,7 +2042,7 @@ def test_entreprise_hors_EEE_bilan_et_ca_superieurs_aux_seuils_grande_entreprise
     ) == [
         "votre siège social est hors EEE",
         "votre effectif est supérieur à 250 salariés",
-        "votre chiffre d'affaires est supérieur à 40M€",
+        "votre chiffre d'affaires est supérieur à 50M€",
     ]
     assert not CSRDReglementation.est_delegable(
         entreprise.dernieres_caracteristiques_qualifiantes

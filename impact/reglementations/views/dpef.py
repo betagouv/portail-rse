@@ -125,7 +125,8 @@ class DPEFReglementation(Reglementation):
     @classmethod
     def critere_bilan_cotee(cls, caracteristiques):
         if caracteristiques.tranche_bilan in (
-            CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_43M,
+            CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_25M,
+            CaracteristiquesAnnuelles.BILAN_ENTRE_25M_ET_43M,
             CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
             CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         ):

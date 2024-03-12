@@ -276,8 +276,8 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs(
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         effectif_groupe_france=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         effectif_groupe_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         bdese_accord=True,
@@ -304,10 +304,10 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs(
     )
     assert (
         form["tranche_chiffre_affaires"].initial
-        == CaracteristiquesAnnuelles.CA_MOINS_DE_700K
+        == CaracteristiquesAnnuelles.CA_MOINS_DE_900K
     )
     assert (
-        form["tranche_bilan"].initial == CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K
+        form["tranche_bilan"].initial == CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K
     )
     assert form["est_cotee"].initial
     assert form["est_interet_public"].initial
@@ -394,8 +394,8 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
         "est_cotee": True,
         "est_interet_public": True,
         "appartient_groupe": True,
@@ -464,11 +464,11 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
     )
     assert (
         caracteristiques.tranche_chiffre_affaires
-        == CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
+        == CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M
     )
     assert (
         caracteristiques.tranche_bilan
-        == CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
+        == CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M
     )
     assert (
         caracteristiques.tranche_chiffre_affaires_consolide
@@ -497,8 +497,8 @@ def test_qualifie_entreprise_sans_groupe(
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
         "est_cotee": True,
         "est_interet_public": True,
         "bdese_accord": True,
@@ -535,11 +535,11 @@ def test_qualifie_entreprise_sans_groupe(
     assert caracteristiques.effectif_groupe_france is None
     assert (
         caracteristiques.tranche_chiffre_affaires
-        == CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M
+        == CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M
     )
     assert (
         caracteristiques.tranche_bilan
-        == CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M
+        == CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M
     )
     assert caracteristiques.tranche_chiffre_affaires_consolide is None
     assert caracteristiques.tranche_bilan_consolide is None
@@ -596,8 +596,8 @@ def test_qualification_entreprise_en_erreur_car_comptes_consolides_sans_bilan_ou
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
         "appartient_groupe": True,
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         "societe_mere_en_france": True,
@@ -647,8 +647,8 @@ def test_qualification_supprime_les_caracteristiques_annuelles_posterieures_a_la
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
         "bdese_accord": True,
         "systeme_management_energie": True,
     }
