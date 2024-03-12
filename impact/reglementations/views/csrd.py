@@ -309,7 +309,7 @@ class CSRDReglementation(Reglementation):
     @classmethod
     def critere_categorie_juridique_sirene(cls, caracteristiques):
         return (
-            caracteristiques.entreprise.categorie_juridique_sirene == 3210
+            caracteristiques.entreprise.categorie_juridique_sirene == 3120
             or 5100 <= caracteristiques.entreprise.categorie_juridique_sirene <= 6199
             or 6300 <= caracteristiques.entreprise.categorie_juridique_sirene <= 6499
             or 8100 <= caracteristiques.entreprise.categorie_juridique_sirene <= 8299
