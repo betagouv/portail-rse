@@ -3,6 +3,64 @@ from django.db import migrations
 from django.db import models
 
 
+def maj_tranches_ca_et_bilan(apps, schema_editor):
+    """Mise-à-jour des tranches de CA et bilan impactées par le Décret n° 2024-152 du 28 février 2024.
+    Tranches de CA :
+    - la tranche 0-700k est devenue 0-900k
+    - la tranche 700k-12M a disparu
+    - la tranche 12M-40M est devenue 900k-40M
+    Tranches de bilan :
+    - la tranche 0-350k est devenue 0-450k
+    - la tranche 350k-6M a disparu
+    - la tranche 6M-20M est devenue 450k-20M
+    - la tranche 20M-43M a disparu et remplacée par deux nouvelles tranches 20M-25M et 25M-43M
+    """
+    CaracteristiquesAnnuelles = apps.get_model(
+        "entreprises", "CaracteristiquesAnnuelles"
+    )
+    for caracteristiques in CaracteristiquesAnnuelles.objects.all():
+        ca_est_modifie = True
+        ancien_ca = caracteristiques.tranche_chiffre_affaires
+        if ancien_ca == "0-700k":
+            nouveau_ca = "0-900k"
+        elif ancien_ca == "700k-12M":
+            nouveau_ca = None
+        elif ancien_ca == "12M-40M":
+            nouveau_ca = "900k-40M"
+        else:
+            nouveau_ca = ancien_ca
+            ca_est_modifie = False
+
+        bilan_est_modifie = True
+        ancien_bilan = caracteristiques.tranche_bilan
+        if ancien_bilan == "0-350k":
+            nouveau_bilan = "0-450k"
+        elif ancien_bilan == "350k-6M":
+            nouveau_bilan = None
+        elif ancien_bilan == "6M-20M":
+            nouveau_bilan = "450k-20M"
+        elif ancien_bilan == "20M-43M":
+            nouveau_bilan = None
+        else:
+            nouveau_bilan = ancien_bilan
+            bilan_est_modifie = False
+
+        if ca_est_modifie or bilan_est_modifie:
+            print(
+                (
+                    "MODIFICATION",
+                    caracteristiques.entreprise.siren,
+                    caracteristiques.entreprise.denomination,
+                    caracteristiques.id,
+                    f"CA ancien: {ancien_ca} nouveau: {nouveau_ca}",
+                    f"Bilan ancien: {ancien_bilan} nouveau: {nouveau_bilan}",
+                )
+            )
+            caracteristiques.tranche_chiffre_affaires = nouveau_ca
+            caracteristiques.tranche_bilan = nouveau_bilan
+            caracteristiques.save()
+
+
 class Migration(migrations.Migration):
     dependencies = [
         ("entreprises", "0045_entreprise_code_pays_etranger_sirene"),
@@ -43,5 +101,9 @@ class Migration(migrations.Migration):
                 null=True,
                 verbose_name="Chiffre d'affaires",
             ),
+        ),
+        migrations.RunPython(
+            maj_tranches_ca_et_bilan,
+            reverse_code=migrations.RunPython.noop,
         ),
     ]
