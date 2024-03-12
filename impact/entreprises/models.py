@@ -310,16 +310,14 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         (EFFECTIF_10000_ET_PLUS, "10 000 salariés ou plus"),
     ]
 
-    CA_MOINS_DE_700K = "0-700k"
-    CA_ENTRE_700K_ET_12M = "700k-12M"
-    CA_ENTRE_12M_ET_40M = "12M-40M"
+    CA_MOINS_DE_900K = "0-900k"
+    CA_ENTRE_900K_ET_40M = "900k-40M"
     CA_ENTRE_40M_ET_50M = "40M-50M"
     CA_ENTRE_50M_ET_100M = "50M-100M"
     CA_100M_ET_PLUS = "100M+"
     CA_CHOICES = [
-        (CA_MOINS_DE_700K, "entre 0 et 700k€"),
-        (CA_ENTRE_700K_ET_12M, "entre 700k€ et 12M€"),
-        (CA_ENTRE_12M_ET_40M, "entre 12M€ et 40M€"),
+        (CA_MOINS_DE_900K, "entre 0 et 900k€"),
+        (CA_ENTRE_900K_ET_40M, "entre 900k€ et 40M€"),
         (CA_ENTRE_40M_ET_50M, "entre 40M€ et 50M€"),
         (CA_ENTRE_50M_ET_100M, "entre 50M€ et 100M€"),
         (CA_100M_ET_PLUS, "100M€ ou plus"),
@@ -335,17 +333,17 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         (CA_100M_ET_PLUS, "100M€ ou plus"),
     ]
 
-    BILAN_MOINS_DE_350K = "0-350k"
-    BILAN_ENTRE_350K_ET_6M = "350k-6M"
-    BILAN_ENTRE_6M_ET_20M = "6M-20M"
-    BILAN_ENTRE_20M_ET_43M = "20M-43M"
+    BILAN_MOINS_DE_450K = "0-450k"
+    BILAN_ENTRE_450K_ET_20M = "450k-20M"
+    BILAN_ENTRE_20M_ET_25M = "20M-25M"
+    BILAN_ENTRE_25M_ET_43M = "25M-43M"
     BILAN_ENTRE_43M_ET_100M = "43M-100M"
     BILAN_100M_ET_PLUS = "100M+"
     BILAN_CHOICES = [
-        (BILAN_MOINS_DE_350K, "entre 0 et 350k€"),
-        (BILAN_ENTRE_350K_ET_6M, "entre 350k€ et 6M€"),
-        (BILAN_ENTRE_6M_ET_20M, "entre 6M€ et 20M€"),
-        (BILAN_ENTRE_20M_ET_43M, "entre 20M€ et 43M€"),
+        (BILAN_MOINS_DE_450K, "entre 0 et 450k€"),
+        (BILAN_ENTRE_450K_ET_20M, "entre 450k€ et 20M€"),
+        (BILAN_ENTRE_20M_ET_25M, "entre 20M€ et 25M€"),
+        (BILAN_ENTRE_25M_ET_43M, "entre 25M€ et 43M€"),
         (BILAN_ENTRE_43M_ET_100M, "entre 43M€ et 100M€"),
         (BILAN_100M_ET_PLUS, "100M€ ou plus"),
     ]

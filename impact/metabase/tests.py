@@ -69,8 +69,8 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
             effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
             effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
             est_cotee=False,
-            tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_700K,
-            tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_350K,
+            tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+            tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
             bdese_accord=False,
             systeme_management_energie=False,
         )
@@ -85,8 +85,8 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
             effectif_groupe=None,
             effectif_groupe_france=None,
             effectif_groupe_permanent=None,
-            tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_700K_ET_12M,
-            tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_350K_ET_6M,
+            tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
+            tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
             tranche_chiffre_affaires_consolide=None,
             tranche_bilan_consolide=None,
             bdese_accord=True,
@@ -104,8 +104,8 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
             effectif_groupe=None,
             effectif_groupe_france=None,
             effectif_groupe_permanent=None,
-            tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_12M_ET_40M,
-            tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_6M_ET_20M,
+            tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
+            tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_25M,
             tranche_chiffre_affaires_consolide=None,
             tranche_bilan_consolide=None,
             bdese_accord=True,
@@ -140,8 +140,8 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
     assert metabase_entreprise.effectif_permanent == "250-299"
     assert metabase_entreprise.effectif_outre_mer == "0-249"
     assert metabase_entreprise.effectif_groupe is None
-    assert metabase_entreprise.tranche_bilan == "6M-20M"
-    assert metabase_entreprise.tranche_chiffre_affaires == "12M-40M"
+    assert metabase_entreprise.tranche_bilan == "20M-25M"
+    assert metabase_entreprise.tranche_chiffre_affaires == "40M-50M"
     assert metabase_entreprise.tranche_bilan_consolide is None
     assert metabase_entreprise.tranche_chiffre_affaires_consolide is None
     assert metabase_entreprise.bdese_accord is True
