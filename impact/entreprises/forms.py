@@ -52,6 +52,7 @@ class EntrepriseForm(DsfrForm):
     est_interet_public = forms.BooleanField(
         required=False,
         label=Entreprise.est_interet_public.field.verbose_name,
+        help_text=Entreprise.est_interet_public.field.help_text,
     )
     appartient_groupe = forms.BooleanField(
         required=False,

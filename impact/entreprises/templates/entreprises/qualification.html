@@ -40,15 +40,10 @@
                     </fieldset>
                     <fieldset class="fr-fieldset">
                         <legend class="fr-fieldset__legend">
-                            Actionnariat
-                        </legend>
-                        {% include 'snippets/fieldset_element.html' with field=form.est_cotee %}
-                    </fieldset>
-                    <fieldset class="fr-fieldset">
-                        <legend class="fr-fieldset__legend">
                             Intérêt public
                         </legend>
                         {% include 'snippets/fieldset_element.html' with field=form.est_interet_public %}
+                        {% include 'snippets/fieldset_element.html' with field=form.est_cotee %}
                     </fieldset>
                     <fieldset class="fr-fieldset">
                         <legend class="fr-fieldset__legend">
