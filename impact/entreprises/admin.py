@@ -11,9 +11,17 @@ class EntrepriseAdminForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
 
+class CaracteristiquesAdminForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].required = False
+
+
 class CaracteristiquesInline(admin.TabularInline):
     model = CaracteristiquesAnnuelles
     extra = 0
+    form = CaracteristiquesAdminForm
 
 
 class UsersFilter(admin.SimpleListFilter):
