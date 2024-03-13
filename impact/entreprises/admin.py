@@ -9,6 +9,7 @@ from habilitations.admin import HabilitationInline
 class EntrepriseAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields["date_cloture_exercice"].required = False
 
 
 class CaracteristiquesAdminForm(forms.ModelForm):
