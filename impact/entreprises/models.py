@@ -153,6 +153,7 @@ class Entreprise(TimestampedModel):
     date_derniere_qualification = models.DateField(
         verbose_name="Date de la dernière qualification",
         null=True,
+        blank=True,
     )
     categorie_juridique_sirene = models.IntegerField(null=True)
     code_pays_etranger_sirene = models.IntegerField(null=True, blank=True)

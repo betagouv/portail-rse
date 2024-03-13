@@ -81,7 +81,7 @@ class Migration(migrations.Migration):
             model_name="entreprise",
             name="date_derniere_qualification",
             field=models.DateField(
-                null=True, verbose_name="Date de la dernière qualification"
+                blank=True, null=True, verbose_name="Date de la dernière qualification"
             ),
         ),
         migrations.RunPython(
