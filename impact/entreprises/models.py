@@ -324,8 +324,8 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     ]
 
     CA_MOINS_DE_40M = "0-40M"
-    CA_ENTRE_40M_ET_60M = "40-60M"
-    CA_ENTRE_60M_ET_100M = "60-100M"
+    CA_ENTRE_40M_ET_60M = "40M-60M"
+    CA_ENTRE_60M_ET_100M = "60M-100M"
     CA_CONSOLIDE_CHOICES = [
         (CA_MOINS_DE_40M, "entre 0 et 40M€"),
         (CA_ENTRE_40M_ET_60M, "entre 40M€ et 60M€"),
