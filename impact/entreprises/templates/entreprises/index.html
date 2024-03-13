@@ -48,6 +48,7 @@
                                             {% with caracs=entreprise.dernieres_caracteristiques_qualifiantes|default:entreprise.dernieres_caracteristiques %}
                                                 {% if habilitation and habilitation.fonctions %}en tant que {{ habilitation.fonctions }}{% endif %}<br>
                                                 SIREN : <b>{{ entreprise.siren }}</b><br>
+                                                Domiciliation : <b>{% if entreprise.code_pays_etranger_sirene and entreprise.est_hors_EEE %}hors Espace Economique Européen{% else %}dans l'Espace Economique Européen{% endif %}</b><br>
                                                 {% if entreprise.categorie_juridique and entreprise.categorie_juridique.label %}
                                                     Catégorie juridique : <b>{{ entreprise.categorie_juridique.label }}</b><br>
                                                 {% endif %}
@@ -73,6 +74,12 @@
                                                         Chiffre d'affaires consolidé : <b>{{ caracs.get_tranche_chiffre_affaires_consolide_display | display_field }}</b><br>
                                                         Bilan consolidé : <b>{{ caracs.get_tranche_bilan_consolide_display | display_field }}</b><br>
                                                     {% endif %}
+                                                {% endif %}
+                                                {% if entreprise.est_interet_public %}
+                                                    <b>Entreprise d'intérêt public</b><br>
+                                                {% endif %}
+                                                {% if entreprise.est_cotee %}
+                                                    <b>Entreprise cotée sur un marché réglementé européen</b><br>
                                                 {% endif %}
                                                 Accord d'entreprise concernant la BDESE : <b>{{ caracs.bdese_accord | display_field }}</b><br>
                                                 Système de management de l'énergie : <b>{{ caracs.systeme_management_energie | display_field }}</b><br>
