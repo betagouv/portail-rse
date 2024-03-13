@@ -3,6 +3,58 @@ from django.db import migrations
 from django.db import models
 
 
+def maj_tranches_ca_et_bilan(apps, schema_editor):
+    """Mise-à-jour (et simplification) des tranches de CA et bilan consolidés impactées par le Décret n° 2024-152 du 28 février 2024.
+    Tranches de CA consolidé :
+    - la tranche 0-700k, la tranche 700k-12M et la tranche 12M-40M sont devenues la tranche 0-40M
+    - la tranche 40M-50M est devenue 40M-60M
+    - la tranche 50M-100M a disparu et remplacée par la tranche précédente et 60M-100M
+    Tranches de bilan consolidé :
+    - la tranche 0-350k, la tranche 350k-6M et la tranche 6M-20M sont devenues la tranche 0-20M
+    - la tranche 20M-43M a disparu et est remplacée par les tranches 20M-30M et 30M-43M
+    """
+    CaracteristiquesAnnuelles = apps.get_model(
+        "entreprises", "CaracteristiquesAnnuelles"
+    )
+    for caracteristiques in CaracteristiquesAnnuelles.objects.all():
+        ca_consolide_est_modifie = True
+        ancien_ca_consolide = caracteristiques.tranche_chiffre_affaires
+        if ancien_ca_consolide in ("0-700k", "700k-12M", "12M-40M"):
+            nouveau_ca_consolide = "0-40M"
+        elif ancien_ca_consolide == "40M-50M":
+            nouveau_ca_consolide = "40M-60M"
+        elif ancien_ca_consolide == "50M-100M":
+            nouveau_ca_consolide = None
+        else:
+            nouveau_ca_consolide = ancien_ca_consolide
+            ca_consolide_est_modifie = False
+
+        bilan_consolide_est_modifie = True
+        ancien_bilan_consolide = caracteristiques.tranche_bilan
+        if ancien_bilan_consolide in ("0-350k", "350k-6M", "6M-20M"):
+            nouveau_bilan_consolide = "0-20M"
+        elif ancien_bilan_consolide == "20M-43M":
+            nouveau_bilan_consolide = None
+        else:
+            nouveau_bilan_consolide = ancien_bilan_consolide
+            bilan_consolide_est_modifie = False
+
+        if ca_consolide_est_modifie or bilan_consolide_est_modifie:
+            print(
+                (
+                    "MODIFICATION",
+                    caracteristiques.entreprise.siren,
+                    caracteristiques.entreprise.denomination,
+                    caracteristiques.id,
+                    f"CA ancien: {ancien_ca_consolide} nouveau: {nouveau_ca_consolide}",
+                    f"Bilan ancien: {ancien_bilan_consolide} nouveau: {nouveau_bilan_consolide}",
+                )
+            )
+            caracteristiques.tranche_chiffre_affaires_consolide = nouveau_ca_consolide
+            caracteristiques.tranche_bilan_consolide = nouveau_bilan_consolide
+            caracteristiques.save()
+
+
 class Migration(migrations.Migration):
     dependencies = [
         ("entreprises", "0042_alter_caracteristiquesannuelles_effectif_and_more"),
@@ -35,13 +87,17 @@ class Migration(migrations.Migration):
                 choices=[
                     ("", "Sélectionnez une réponse"),
                     ("0-40M", "entre 0 et 40M€"),
-                    ("40-60M", "entre 40M€ et 60M€"),
-                    ("60-100M", "entre 60M€ et 100M€"),
+                    ("40M-60M", "entre 40M€ et 60M€"),
+                    ("60M-100M", "entre 60M€ et 100M€"),
                     ("100M+", "100M€ ou plus"),
                 ],
                 max_length=9,
                 null=True,
                 verbose_name="Chiffre d'affaires consolidé du groupe",
             ),
+        ),
+        migrations.RunPython(
+            maj_tranches_ca_et_bilan,
+            reverse_code=migrations.RunPython.noop,
         ),
     ]
