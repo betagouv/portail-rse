@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="entreprise",
             name="code_pays_etranger_sirene",
-            field=models.IntegerField(null=True),
+            field=models.IntegerField(blank=True, null=True),
         ),
     ]
