@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
 from utils.models import TimestampedModel
+from utils.pays import CODES_PAYS_ETRANGER_SIRENE
 
 DENOMINATION_MAX_LENGTH = 250
 
@@ -111,6 +112,16 @@ def convertit_categorie_juridique(categorie_juridique_sirene):
         return CategorieJuridique.AUTRE
 
 
+def convertit_code_pays(code_pays_etranger_sirene):
+    if code_pays_etranger_sirene:
+        try:
+            return CODES_PAYS_ETRANGER_SIRENE[code_pays_etranger_sirene].capitalize()
+        except KeyError:
+            return None
+    else:
+        return "France"
+
+
 def est_dans_EEE(code_pays_etranger):
     """EEE : Espace économique européen"""
     return code_pays_etranger in (
@@ -210,6 +221,10 @@ class Entreprise(TimestampedModel):
     @property
     def categorie_juridique(self):
         return convertit_categorie_juridique(self.categorie_juridique_sirene)
+
+    @property
+    def pays(self):
+        return convertit_code_pays(self.code_pays_etranger_sirene)
 
     @property
     def est_dans_EEE(self):

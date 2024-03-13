@@ -7,6 +7,7 @@ from freezegun import freeze_time
 
 from api.tests.fixtures import mock_api_bges  # noqa
 from api.tests.fixtures import mock_api_index_egapro  # noqa
+from conftest import CODE_PAYS_PORTUGAL
 from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
@@ -65,10 +66,12 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
             date_cloture_exercice=date_cloture_dernier_exercice,
             date_derniere_qualification=date_derniere_qualification,
             categorie_juridique_sirene=5699,
+            code_pays_etranger_sirene=CODE_PAYS_PORTUGAL,
             effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
             effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
             effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
             est_cotee=False,
+            est_interet_public=False,
             tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
             tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
             bdese_accord=False,
@@ -123,6 +126,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
     assert metabase_entreprise.siren == "000000001"
     assert metabase_entreprise.denomination == "Entreprise A"
     assert metabase_entreprise.categorie_juridique == "SOCIETE_ANONYME"
+    assert metabase_entreprise.pays == "Portugal"
     assert (
         metabase_entreprise.date_cloture_exercice
         == date_cloture_dernier_exercice.replace(
@@ -133,6 +137,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
         metabase_entreprise.date_derniere_qualification == date_derniere_qualification
     )
     assert metabase_entreprise.est_cotee is False
+    assert metabase_entreprise.est_interet_public is False
     assert metabase_entreprise.appartient_groupe is False
     assert metabase_entreprise.societe_mere_en_france is False
     assert metabase_entreprise.comptes_consolides is False

@@ -8,10 +8,13 @@ from django.db import IntegrityError
 from freezegun import freeze_time
 
 from conftest import CODE_AUTRE
+from conftest import CODE_PAYS_CANADA
+from conftest import CODE_PAYS_PORTUGAL
 from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import CategorieJuridique
 from entreprises.models import convertit_categorie_juridique
+from entreprises.models import convertit_code_pays
 from entreprises.models import Entreprise
 from entreprises.models import est_dans_EEE
 
@@ -717,3 +720,10 @@ def test_est_dans_EEE():
 
     for code_pays_etranger in CODES_PAYS_ETRANGERS:
         assert not est_dans_EEE(code_pays_etranger)
+
+
+def test_convertit_code_pays():
+    assert convertit_code_pays(CODE_PAYS_CANADA) == "Canada"
+    assert convertit_code_pays(CODE_PAYS_PORTUGAL) == "Portugal"
+    assert convertit_code_pays(None) == "France"
+    assert convertit_code_pays(11111) == None  # code inexistant actuellement
