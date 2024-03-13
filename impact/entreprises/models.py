@@ -166,6 +166,7 @@ class Entreprise(TimestampedModel):
     )
     est_interet_public = models.BooleanField(
         verbose_name="L'entreprise est d'intérêt public",
+        help_text="Entreprises cotées, établissements de crédit, entreprises d'assurance, mutuelles et unions, institutions de prévoyance et unions, organismes de liquidation (cf. <a href='https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ:L:2013:182:0019:0076:FR:PDF' target='_blank' rel='noopener'>article 2 directive comptable du 26 juin 2013</a>)",
         null=True,
     )
     appartient_groupe = models.BooleanField(

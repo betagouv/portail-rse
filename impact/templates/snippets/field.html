@@ -5,7 +5,7 @@
             <div class="{{ fr_group_class }}{% if field.errors %} {{ fr_group_class }}--error {% endif %}">
                 {{ field }}
                 <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label|safe }}
-                    <span class="fr-hint-text">{{ field.help_text }}</span>
+                    <span class="fr-hint-text">{{ field.help_text|safe }}</span>
                 </label>
                 {% if field.errors %}
                     <p id="{{ field.name }}-error-desc-error" class="fr-error-text">

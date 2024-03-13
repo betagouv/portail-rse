@@ -17,7 +17,9 @@ class Migration(migrations.Migration):
             model_name="entreprise",
             name="est_interet_public",
             field=models.BooleanField(
-                null=True, verbose_name="L'entreprise est d'intérêt public"
+                help_text="Entreprises cotées, établissements de crédit, entreprises d'assurance, mutuelles et unions, institutions de prévoyance et unions, organismes de liquidation (cf. <a href='https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ:L:2013:182:0019:0076:FR:PDF' target='_blank' rel='noopener'>article 2 directive comptable du 26 juin 2013</a>)",
+                null=True,
+                verbose_name="L'entreprise est d'intérêt public",
             ),
         ),
     ]
