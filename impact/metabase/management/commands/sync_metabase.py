@@ -61,6 +61,8 @@ class Command(BaseCommand):
                 categorie_juridique=entreprise.categorie_juridique.name
                 if entreprise.categorie_juridique
                 else None,
+                pays=entreprise.pays,
+                est_interet_public=entreprise.est_interet_public,
                 est_cotee=entreprise.est_cotee,
                 appartient_groupe=entreprise.appartient_groupe,
                 est_societe_mere=entreprise.est_societe_mere,
