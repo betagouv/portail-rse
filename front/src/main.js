@@ -1,5 +1,6 @@
 import ExternalFieldToggle from './lib/ExternalFieldToggle.svelte'
 import GroupeFields from './lib/GroupeFields.svelte'
+import InteretPublicField from './lib/InteretPublicField.svelte'
 import SimulationChange from './lib/SimulationChange.svelte'
 import SearchEntreprise from './lib/SearchEntreprise.svelte'
 
@@ -33,6 +34,14 @@ if (appartientGroupeFieldElement) {
     target: appartientGroupeFieldElement,
   })
 }
+
+const estInteretPublicFieldElement = document.getElementById("svelte-est-interet-public-field")
+if (estInteretPublicFieldElement) {
+  new InteretPublicField({
+    target: estInteretPublicFieldElement,
+  })
+}
+
 
 if (document.getElementById("svelte-simulation-result")) {
   new SimulationChange({
