@@ -163,3 +163,39 @@ def test_erreur_si_comptes_consolides_sans_ca_consolide():
         form.errors["tranche_chiffre_affaires_consolide"][0]
         == "Ce champ est obligatoire lorsque les comptes sont consolidés"
     )
+
+
+def test_erreur_si_effectif_permanent_superieur_a_effectif():
+    data = {
+        "date_cloture_exercice": date(2022, 12, 31),
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+        "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        "est_cotee": False,
+        "appartient_groupe": True,
+        "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "effectif_groupe_france": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        "effectif_groupe_permanent": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        "societe_mere_en_france": True,
+        "comptes_consolides": False,
+        "bdese_accord": True,
+        "systeme_management_energie": True,
+    }
+
+    form = EntrepriseQualificationForm(data=data)
+
+    assert not form.is_valid()
+    assert (
+        form.errors["effectif_permanent"][0]
+        == "L'effectif permanent ne peut pas être supérieur à l'effectif"
+    )
+    assert (
+        form.errors["effectif_groupe_permanent"][0]
+        == "L'effectif permanent du groupe ne peut pas être supérieur à l'effectif du groupe international"
+    )
+    assert (
+        form.errors["effectif_groupe_france"][0]
+        == "L'effectif du groupe France ne peut pas être supérieur à l'effectif du groupe international"
+    )
