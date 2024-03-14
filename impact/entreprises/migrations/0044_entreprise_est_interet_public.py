@@ -3,6 +3,25 @@ from django.db import migrations
 from django.db import models
 
 
+def maj_interet_public(apps, schema_editor):
+    """Mise-à-jour de l'interet public d'une entreprise
+    Une entreprise cotée est forcément d'intérêt public.
+
+    L'intérêt public étant introduit avec la CSRD, certaines entreprises
+    étaient déjà renseignées comme cotée mais sont par défaut sans intérêt
+    public.
+    La migration corrige cet état.
+    """
+    Entreprises = apps.get_model("entreprises", "Entreprise")
+    for entreprise in Entreprises.objects.all():
+        if entreprise.est_cotee:
+            entreprise.est_interet_public = True
+            entreprise.save()
+            print(f"Intérêt public pour {entreprise}")
+        else:
+            print(f"Non cotée : {entreprise}")
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -21,5 +40,9 @@ class Migration(migrations.Migration):
                 null=True,
                 verbose_name="L'entreprise est d'intérêt public",
             ),
+        ),
+        migrations.RunPython(
+            maj_interet_public,
+            reverse_code=migrations.RunPython.noop,
         ),
     ]
