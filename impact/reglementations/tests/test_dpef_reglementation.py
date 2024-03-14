@@ -763,11 +763,37 @@ def test_soumis_si_societe_cotee_et_effectif_groupe_permanent_et_ca_consolide_su
     assert "votre chiffre d'affaires consolidé est supérieur à 40M€" in criteres_remplis
 
 
-def test_calcule_etat_si_soumis_avec_plus_de_deux_critères_remplis(
+def test_calcule_etat_si_soumis_avec_plus_de_deux_critères_remplis_et_remplacée_par_la_CSRD_en_2026(
+    entreprise_factory, alice
+):
+    entreprise = entreprise_factory(
+        est_cotee=False,
+        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+        categorie_juridique_sirene=CODE_SA,
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    reglementation = DPEFReglementation.calculate_status(
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
+    )
+
+    assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
+    assert reglementation.status_detail.startswith(
+        "Vous êtes soumis à cette réglementation car votre entreprise est une Société Anonyme, votre effectif permanent est supérieur à 500 salariés, votre bilan est supérieur à 100M€ et votre chiffre d'affaires est supérieur à 100M€."
+    )
+    assert reglementation.status_detail.endswith(
+        "La DPEF est remplacée par le Rapport de Durabilité dès 2026 sur les données 2025."
+    )
+
+
+def test_calcule_etat_si_soumis_et_remplacée_par_la_CSRD_en_2025(
     entreprise_factory, alice
 ):
     entreprise = entreprise_factory(
         est_cotee=True,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
         effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_25M_ET_43M,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
@@ -780,9 +806,8 @@ def test_calcule_etat_si_soumis_avec_plus_de_deux_critères_remplis(
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
-    assert (
-        reglementation.status_detail
-        == "Vous êtes soumis à cette réglementation car votre entreprise est une Société Anonyme, votre effectif permanent est supérieur à 500 salariés, votre société est cotée sur un marché réglementé, votre bilan est supérieur à 20M€ et votre chiffre d'affaires est supérieur à 40M€."
+    assert reglementation.status_detail.endswith(
+        "La DPEF est remplacée par le Rapport de Durabilité dès 2025 sur les données 2024."
     )
 
 

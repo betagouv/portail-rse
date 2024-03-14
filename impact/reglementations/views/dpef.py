@@ -6,6 +6,7 @@ from entreprises.models import CategorieJuridique
 from entreprises.models import convertit_categorie_juridique
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationStatus
+from reglementations.views.csrd import CSRDReglementation
 
 
 class DPEFReglementation(Reglementation):
@@ -60,6 +61,9 @@ class DPEFReglementation(Reglementation):
             status_detail = (
                 f"Vous êtes soumis à cette réglementation car {justification}."
             )
+            if annee := CSRDReglementation.est_soumis_a_partir_de(caracteristiques):
+                status_detail += f" La DPEF est remplacée par le Rapport de Durabilité dès {annee} sur les données {annee - 1}."
+
         else:
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation."
