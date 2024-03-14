@@ -26,7 +26,7 @@ def _caracteristiques_suffisamment_qualifiantes_sans_groupe(entreprise_factory):
     entreprise = entreprise_factory(
         siren="000000001",
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_40M,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_60M,
         appartient_groupe=False,
         comptes_consolides=None,
     )
@@ -40,7 +40,7 @@ def _caracteristiques_suffisamment_qualifiantes_avec_groupe_sans_comptes_consoli
     entreprise = entreprise_factory(
         siren="000000002",
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_40M,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_60M,
         appartient_groupe=True,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         comptes_consolides=False,
@@ -55,7 +55,7 @@ def _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolide
     entreprise = entreprise_factory(
         siren="000000003",
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_40M,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_60M,
         appartient_groupe=True,
         comptes_consolides=True,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
@@ -176,8 +176,7 @@ def test_calcule_etat_avec_effectif_insuffisant(effectif, entreprise_factory, al
     "ca",
     [
         CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
-        CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
-        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
+        CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
     ],
 )
 def test_calcule_etat_avec_ca_insuffisant(ca, entreprise_factory, alice):

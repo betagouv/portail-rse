@@ -394,8 +394,8 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M,
         "est_cotee": True,
         "est_interet_public": True,
         "appartient_groupe": True,
@@ -464,11 +464,11 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
     )
     assert (
         caracteristiques.tranche_chiffre_affaires
-        == CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M
+        == CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M
     )
     assert (
         caracteristiques.tranche_bilan
-        == CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M
+        == CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M
     )
     assert (
         caracteristiques.tranche_chiffre_affaires_consolide
@@ -497,8 +497,8 @@ def test_qualifie_entreprise_sans_groupe(
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M,
         "est_cotee": True,
         "est_interet_public": True,
         "bdese_accord": True,
@@ -535,11 +535,11 @@ def test_qualifie_entreprise_sans_groupe(
     assert caracteristiques.effectif_groupe_france is None
     assert (
         caracteristiques.tranche_chiffre_affaires
-        == CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M
+        == CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M
     )
     assert (
         caracteristiques.tranche_bilan
-        == CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M
+        == CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M
     )
     assert caracteristiques.tranche_chiffre_affaires_consolide is None
     assert caracteristiques.tranche_bilan_consolide is None
@@ -596,8 +596,8 @@ def test_qualification_entreprise_en_erreur_car_comptes_consolides_sans_bilan_ou
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M,
         "appartient_groupe": True,
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         "societe_mere_en_france": True,
@@ -647,8 +647,8 @@ def test_qualification_supprime_les_caracteristiques_annuelles_posterieures_a_la
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M,
         "bdese_accord": True,
         "systeme_management_energie": True,
     }

@@ -229,9 +229,9 @@ class CSRDReglementation(Reglementation):
                 return "votre bilan est supérieur à 25M€"
             elif cls.est_petite_ou_moyenne_entreprise(caracteristiques):
                 return "votre bilan est supérieur à 450k€"
-        elif caracteristiques.tranche_bilan in (
-            CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
-            CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_25M,
+        elif (
+            caracteristiques.tranche_bilan
+            == CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M
         ):
             if cls.est_petite_ou_moyenne_entreprise(caracteristiques):
                 return "votre bilan est supérieur à 450k€"
@@ -252,9 +252,9 @@ class CSRDReglementation(Reglementation):
                 return "votre chiffre d'affaires est supérieur à 50M€"
             elif cls.est_petite_ou_moyenne_entreprise(caracteristiques):
                 return "votre chiffre d'affaires est supérieur à 900k€"
-        elif caracteristiques.tranche_chiffre_affaires in (
-            CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
-            CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
+        elif (
+            caracteristiques.tranche_chiffre_affaires
+            == CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M
         ):
             if cls.est_petite_ou_moyenne_entreprise(caracteristiques):
                 return "votre chiffre d'affaires est supérieur à 900k€"
