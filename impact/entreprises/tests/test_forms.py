@@ -253,7 +253,7 @@ def test_erreur_si_effectif_superieur_a_effectif_groupe():
     )
 
 
-def test_est_cotee_force_interet_public():
+def test_sans_interet_public_force_non_cotee():
     data = {
         "date_cloture_exercice": date(2022, 12, 31),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
@@ -271,4 +271,5 @@ def test_est_cotee_force_interet_public():
     form = EntrepriseQualificationForm(data=data)
 
     assert form.is_valid(), form.errors
-    assert form.cleaned_data["est_interet_public"] is True
+    assert form.cleaned_data["est_interet_public"] is False
+    assert form.cleaned_data["est_cotee"] is False
