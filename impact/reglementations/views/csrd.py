@@ -294,6 +294,7 @@ class CSRDReglementation(Reglementation):
         if annee := cls.est_soumis_a_partir_de(caracteristiques):
             status_detail = f"Vous êtes soumis à cette réglementation à partir de {annee} sur les données de {annee - 1}"
             if annee == 2029:
+                # Ce cas ne peut arriver que pour les micro et PME sans groupe hors EEE
                 conditions = "votre société dont le siège social est hors EEE revêt une forme juridique comparable aux sociétés par actions ou aux sociétés à responsabilité limitée, comptabilise un chiffre d'affaires net dans l'Espace économique européen qui excède 150 millions d'euros à la date de clôture des deux derniers exercices consécutifs, ne contrôle ni n'est contrôlée par une autre société et dispose d'une succursale en France dont le chiffre d'affaires net excède 40 millions d'euros"
                 status_detail += f" si {conditions}."
             else:
