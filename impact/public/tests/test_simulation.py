@@ -366,7 +366,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
     attach_user_to_entreprise(alice, entreprise, "Présidente")
 
     effectif = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
-    effectif_groupe = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+    effectif_groupe = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     ca = CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M
     bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M
     ca_consolide = CaracteristiquesAnnuelles.CA_100M_ET_PLUS
@@ -455,7 +455,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
     entreprise = entreprise_non_qualifiee
 
     effectif = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
-    effectif_groupe = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+    effectif_groupe = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     ca = CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M
     bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M
     ca_consolide = CaracteristiquesAnnuelles.CA_100M_ET_PLUS
