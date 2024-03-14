@@ -100,6 +100,14 @@ class EntrepriseForm(DsfrForm):
             if tranche_bilan_consolide:
                 self.cleaned_data["tranche_bilan_consolide"] = None
 
+        effectif = self.cleaned_data.get("effectif")
+        effectif_groupe = self.cleaned_data.get("effectif_groupe")
+        if effectif and effectif_groupe and est_superieur(effectif, effectif_groupe):
+            self.add_error(
+                "effectif_groupe",
+                "L'effectif du groupe ne peut pas être inférieur à l'effectif",
+            )
+
         return self.cleaned_data
 
 

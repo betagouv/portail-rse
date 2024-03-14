@@ -149,3 +149,27 @@ def test_erreur_si_comptes_consolides_sans_ca_consolide():
         form.errors["tranche_chiffre_affaires_consolide"][0]
         == "Ce champ est obligatoire lorsque les comptes sont consolidés"
     )
+
+
+def test_erreur_si_effectif_superieur_a_effectif_groupe():
+    data = {
+        "siren": "123456789",
+        "denomination": "Entreprise SAS",
+        "categorie_juridique_sirene": 5710,
+        "code_pays_etranger_sirene": CODE_PAYS_PORTUGAL,
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        "est_cotee": False,
+        "appartient_groupe": True,
+        "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        "comptes_consolides": False,
+    }
+
+    form = SimulationForm(data=data)
+
+    assert not form.is_valid()
+    assert (
+        form.errors["effectif_groupe"][0]
+        == "L'effectif du groupe ne peut pas être inférieur à l'effectif"
+    )
