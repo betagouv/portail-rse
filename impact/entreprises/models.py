@@ -328,49 +328,41 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     ]
 
     CA_MOINS_DE_900K = "0-900k"
-    CA_ENTRE_900K_ET_40M = "900k-40M"
-    CA_ENTRE_40M_ET_50M = "40M-50M"
+    CA_ENTRE_900K_ET_50M = "900k-50M"
     CA_ENTRE_50M_ET_100M = "50M-100M"
     CA_100M_ET_PLUS = "100M+"
     CA_CHOICES = [
         (CA_MOINS_DE_900K, "entre 0 et 900k€"),
-        (CA_ENTRE_900K_ET_40M, "entre 900k€ et 40M€"),
-        (CA_ENTRE_40M_ET_50M, "entre 40M€ et 50M€"),
+        (CA_ENTRE_900K_ET_50M, "entre 900k€ et 50M€"),
         (CA_ENTRE_50M_ET_100M, "entre 50M€ et 100M€"),
         (CA_100M_ET_PLUS, "100M€ ou plus"),
     ]
 
-    CA_MOINS_DE_40M = "0-40M"
-    CA_ENTRE_40M_ET_60M = "40M-60M"
+    CA_MOINS_DE_60M = "0-60M"
     CA_ENTRE_60M_ET_100M = "60M-100M"
     CA_CONSOLIDE_CHOICES = [
-        (CA_MOINS_DE_40M, "entre 0 et 40M€"),
-        (CA_ENTRE_40M_ET_60M, "entre 40M€ et 60M€"),
+        (CA_MOINS_DE_60M, "entre 0 et 60M€"),
         (CA_ENTRE_60M_ET_100M, "entre 60M€ et 100M€"),
         (CA_100M_ET_PLUS, "100M€ ou plus"),
     ]
 
     BILAN_MOINS_DE_450K = "0-450k"
-    BILAN_ENTRE_450K_ET_20M = "450k-20M"
-    BILAN_ENTRE_20M_ET_25M = "20M-25M"
+    BILAN_ENTRE_450K_ET_25M = "450k-25M"
     BILAN_ENTRE_25M_ET_43M = "25M-43M"
     BILAN_ENTRE_43M_ET_100M = "43M-100M"
     BILAN_100M_ET_PLUS = "100M+"
     BILAN_CHOICES = [
         (BILAN_MOINS_DE_450K, "entre 0 et 450k€"),
-        (BILAN_ENTRE_450K_ET_20M, "entre 450k€ et 20M€"),
-        (BILAN_ENTRE_20M_ET_25M, "entre 20M€ et 25M€"),
+        (BILAN_ENTRE_450K_ET_25M, "entre 450k€ et 25M€"),
         (BILAN_ENTRE_25M_ET_43M, "entre 25M€ et 43M€"),
         (BILAN_ENTRE_43M_ET_100M, "entre 43M€ et 100M€"),
         (BILAN_100M_ET_PLUS, "100M€ ou plus"),
     ]
 
-    BILAN_MOINS_DE_20M = "0-20M"
-    BILAN_ENTRE_20M_ET_30M = "20M-30M"
+    BILAN_MOINS_DE_30M = "0-30M"
     BILAN_ENTRE_30M_ET_43M = "30M-43M"
     BILAN_CONSOLIDE_CHOICES = [
-        (BILAN_MOINS_DE_20M, "entre 0 et 20M€"),
-        (BILAN_ENTRE_20M_ET_30M, "entre 20M€ et 30M€"),
+        (BILAN_MOINS_DE_30M, "entre 0 et 30M€"),
         (BILAN_ENTRE_30M_ET_43M, "entre 30M€ et 43M€"),
         (BILAN_ENTRE_43M_ET_100M, "entre 43M€ et 100M€"),
         (BILAN_100M_ET_PLUS, "100M€ ou plus"),

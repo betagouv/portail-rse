@@ -57,7 +57,7 @@ def _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolide
         systeme_management_energie=True,
         appartient_groupe=True,
         comptes_consolides=True,
-        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_20M,
+        tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_30M,
     )
     return entreprise.dernieres_caracteristiques
 
@@ -246,8 +246,7 @@ def test_calcule_statut_plus_de_250_employes(effectif, entreprise_factory, alice
     "bilan",
     [
         CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_20M,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_25M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M,
         CaracteristiquesAnnuelles.BILAN_ENTRE_25M_ET_43M,
     ],
 )
@@ -255,8 +254,7 @@ def test_calcule_statut_plus_de_250_employes(effectif, entreprise_factory, alice
     "ca",
     [
         CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
-        CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_40M,
-        CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
+        CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
     ],
 )
 def test_calcule_etat_avec_bilan_et_ca_trop_faible(

@@ -125,14 +125,12 @@ class DPEFReglementation(Reglementation):
     @classmethod
     def critere_bilan_cotee(cls, caracteristiques):
         if caracteristiques.tranche_bilan in (
-            CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_25M,
             CaracteristiquesAnnuelles.BILAN_ENTRE_25M_ET_43M,
             CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
             CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         ):
             return "votre bilan est supérieur à 20M€"
         elif caracteristiques.tranche_bilan_consolide in (
-            CaracteristiquesAnnuelles.BILAN_ENTRE_20M_ET_30M,
             CaracteristiquesAnnuelles.BILAN_ENTRE_30M_ET_43M,
             CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
             CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
@@ -142,13 +140,11 @@ class DPEFReglementation(Reglementation):
     @classmethod
     def critere_chiffre_affaires_cotee(cls, caracteristiques):
         if caracteristiques.tranche_chiffre_affaires in (
-            CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
             CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
             CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
         ):
             return "votre chiffre d'affaires est supérieur à 40M€"
         elif caracteristiques.tranche_chiffre_affaires_consolide in (
-            CaracteristiquesAnnuelles.CA_ENTRE_40M_ET_50M,
             CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
             CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
         ):
