@@ -815,7 +815,6 @@ def test_calcule_etat_si_non_soumis(entreprise_factory, alice):
 def test_soumis_si_societe_prevoyance_et_effectif_permanent_et_bilan_suffisants(
     effectif_permanent, entreprise_factory
 ):
-    return
     entreprise = entreprise_factory(
         est_cotee=False,
         appartient_groupe=True,
