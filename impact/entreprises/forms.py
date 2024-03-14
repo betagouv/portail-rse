@@ -148,16 +148,55 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
         super().clean()
 
         appartient_groupe = self.cleaned_data.get("appartient_groupe")
+        effectif_groupe = self.cleaned_data.get("effectif_groupe")
+        effectif_groupe_permanent = self.cleaned_data.get("effectif_groupe_permanent")
+        effectif_groupe_france = self.cleaned_data.get("effectif_groupe_france")
         if appartient_groupe:
-            if not self.cleaned_data.get("effectif_groupe_permanent"):
+            if not effectif_groupe_permanent:
                 self.add_error(
                     "effectif_groupe_permanent", ERREUR_CHAMP_MANQUANT_GROUPE
                 )
-            if not self.cleaned_data.get("effectif_groupe_france"):
+            if not effectif_groupe_france:
                 self.add_error("effectif_groupe_france", ERREUR_CHAMP_MANQUANT_GROUPE)
         else:
             self.cleaned_data["effectif_groupe_france"] = None
             self.cleaned_data["effectif_groupe_permanent"] = None
             self.cleaned_data["societe_mere_en_france"] = None
 
+        effectif = self.cleaned_data.get("effectif")
+        effectif_permanent = self.cleaned_data.get("effectif_permanent")
+        if (
+            effectif
+            and effectif_permanent
+            and est_superieur(effectif_permanent, effectif)
+        ):
+            self.add_error(
+                "effectif_permanent",
+                "L'effectif permanent ne peut pas être supérieur à l'effectif",
+            )
+        if (
+            effectif_groupe
+            and effectif_groupe_permanent
+            and est_superieur(effectif_groupe_permanent, effectif_groupe)
+        ):
+            self.add_error(
+                "effectif_groupe_permanent",
+                "L'effectif permanent du groupe ne peut pas être supérieur à l'effectif du groupe international",
+            )
+        if (
+            effectif_groupe
+            and effectif_groupe_france
+            and est_superieur(effectif_groupe_france, effectif_groupe)
+        ):
+            self.add_error(
+                "effectif_groupe_france",
+                "L'effectif du groupe France ne peut pas être supérieur à l'effectif du groupe international",
+            )
+
         return self.cleaned_data
+
+
+def est_superieur(effectif_1, effectif_2):
+    borne_inferieure_1 = int(effectif_1.split("-")[0].strip("+"))
+    borne_inferieure_2 = int(effectif_2.split("-")[0].strip("+"))
+    return borne_inferieure_1 > borne_inferieure_2
