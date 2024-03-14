@@ -201,8 +201,8 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
                 "L'effectif du groupe France ne peut pas être supérieur à l'effectif du groupe international",
             )
 
-        if self.cleaned_data.get("est_cotee"):
-            self.cleaned_data["est_interet_public"] = True
+        if not self.cleaned_data.get("est_interet_public"):
+            self.cleaned_data["est_cotee"] = False
 
         return self.cleaned_data
 
