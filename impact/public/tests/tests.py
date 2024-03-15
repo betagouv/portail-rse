@@ -77,12 +77,12 @@ def test_page_contact(client):
     ["trois", "TROIS", " trois "],
 )
 def test_send_contact_mail_with_valid_captcha(client, captcha, mailoutbox, settings):
-    settings.DEFAULT_FROM_EMAIL = "portail@example.com"
-    settings.CONTACT_EMAIL = "contact@example.com"
+    settings.DEFAULT_FROM_EMAIL = "portail@domaine.test"
+    settings.CONTACT_EMAIL = "contact@domaine.test"
 
     subject = "Bonjour"
     message = "Bonjour Utilisateur"
-    email = "user@example.com"
+    email = "user@domaine.test"
 
     response = client.post(
         "/contact",
@@ -96,8 +96,8 @@ def test_send_contact_mail_with_valid_captcha(client, captcha, mailoutbox, setti
 
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
-    assert mail.from_email == "portail@example.com"
-    assert list(mail.to) == ["contact@example.com"]
+    assert mail.from_email == "portail@domaine.test"
+    assert list(mail.to) == ["contact@domaine.test"]
     assert list(mail.reply_to) == [email]
     assert mail.subject == subject
     assert (
@@ -107,12 +107,12 @@ def test_send_contact_mail_with_valid_captcha(client, captcha, mailoutbox, setti
 
 
 def test_send_contact_mail_with_invalid_captcha(client, mailoutbox, settings):
-    settings.DEFAULT_FROM_EMAIL = "portail@example.com"
-    settings.CONTACT_EMAIL = "contact@example.com"
+    settings.DEFAULT_FROM_EMAIL = "portail@domaine.test"
+    settings.CONTACT_EMAIL = "contact@domaine.test"
 
     subject = "Bonjour"
     message = "Bonjour Utilisateur"
-    email = "user@example.com"
+    email = "user@domaine.test"
     sum = "mauvaise réponse"
 
     response = client.post(
@@ -128,12 +128,12 @@ def test_send_contact_mail_with_invalid_captcha(client, mailoutbox, settings):
 
 
 def test_send_contact_mail_with_numerical_captcha(client, mailoutbox, settings):
-    settings.DEFAULT_FROM_EMAIL = "portail@example.com"
-    settings.CONTACT_EMAIL = "contact@example.com"
+    settings.DEFAULT_FROM_EMAIL = "portail@domaine.test"
+    settings.CONTACT_EMAIL = "contact@domaine.test"
 
     subject = "Bonjour"
     message = "Bonjour Utilisateur"
-    email = "user@example.com"
+    email = "user@domaine.test"
     sum = "3"
 
     response = client.post(
