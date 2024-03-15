@@ -182,6 +182,16 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
                 "effectif_permanent",
                 "L'effectif permanent ne peut pas être supérieur à l'effectif",
             )
+        effectif_outre_mer = self.cleaned_data.get("effectif_outre_mer")
+        if (
+            effectif
+            and effectif_outre_mer
+            and est_superieur(effectif_outre_mer, effectif)
+        ):
+            self.add_error(
+                "effectif_outre_mer",
+                "L'effectif outre-mer ne peut pas être supérieur à l'effectif",
+            )
         if (
             effectif_groupe
             and effectif_groupe_permanent
