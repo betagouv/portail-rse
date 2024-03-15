@@ -30,7 +30,7 @@ def test_create_user_with_real_siren(client, db, mailoutbox):
     data = {
         "prenom": "Alice",
         "nom": "User",
-        "email": "user@example.com",
+        "email": "user@domaine.test",
         "password1": "Passw0rd!123",
         "password2": "Passw0rd!123",
         "siren": "130025265",  #  Dinum
@@ -51,11 +51,11 @@ def test_create_user_with_real_siren(client, db, mailoutbox):
     ]
 
     assert (
-        "Votre compte a bien été créé. Un e-mail de confirmation a été envoyé à user@example.com. Confirmez votre adresse e-mail en cliquant sur le lien reçu avant de vous connecter."
+        "Votre compte a bien été créé. Un e-mail de confirmation a été envoyé à user@domaine.test. Confirmez votre adresse e-mail en cliquant sur le lien reçu avant de vous connecter."
         in response.content.decode("utf-8")
     )
 
-    user = User.objects.get(email="user@example.com")
+    user = User.objects.get(email="user@domaine.test")
     entreprise = Entreprise.objects.get(siren="130025265")
     assert entreprise.denomination == "DIRECTION INTERMINISTERIELLE DU NUMERIQUE"
     assert entreprise.categorie_juridique_sirene == 7120
@@ -63,7 +63,7 @@ def test_create_user_with_real_siren(client, db, mailoutbox):
     assert not CaracteristiquesAnnuelles.objects.filter(entreprise=entreprise)
     assert user.created_at
     assert user.updated_at
-    assert user.email == "user@example.com"
+    assert user.email == "user@domaine.test"
     assert user.prenom == "Alice"
     assert user.nom == "User"
     assert user.acceptation_cgu == True
@@ -76,7 +76,7 @@ def test_create_user_with_real_siren(client, db, mailoutbox):
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
     assert mail.from_email == impact.settings.DEFAULT_FROM_EMAIL
-    assert list(mail.to) == ["user@example.com"]
+    assert list(mail.to) == ["user@domaine.test"]
     assert mail.template_id == impact.settings.SENDINBLUE_CONFIRM_EMAIL_TEMPLATE
     assert mail.merge_global_data == {
         "confirm_email_url": response.wsgi_request.build_absolute_uri(
@@ -96,7 +96,7 @@ def test_create_user_with_invalid_siren(client, db):
     data = {
         "prenom": "Alice",
         "nom": "User",
-        "email": "user@example.com",
+        "email": "user@domaine.test",
         "password1": "Passw0rd!123",
         "password2": "Passw0rd!123",
         "siren": "123456789",  # Invalid
@@ -114,7 +114,7 @@ def test_create_user_with_invalid_siren(client, db):
         in content
     )
 
-    assert not User.objects.filter(email="user@example.com")
+    assert not User.objects.filter(email="user@domaine.test")
     assert not Entreprise.objects.filter(siren="123456789")
 
 
@@ -128,7 +128,7 @@ def test_create_user_but_cant_send_confirm_email(
     data = {
         "prenom": "Alice",
         "nom": "User",
-        "email": "user@example.com",
+        "email": "user@domaine.test",
         "password1": "Passw0rd!123",
         "password2": "Passw0rd!123",
         "siren": "130025265",  #  Dinum
@@ -140,12 +140,12 @@ def test_create_user_but_cant_send_confirm_email(
     response = client.post("/creation", data=data, follow=True)
 
     assert response.status_code == 200
-    user = User.objects.get(email="user@example.com")
+    user = User.objects.get(email="user@domaine.test")
     mock_send_confirm_email.assert_called_once_with(mock.ANY, user)
 
     content = html.unescape(response.content.decode("utf-8"))
     assert (
-        "L'e-mail de confirmation n'a pas pu être envoyé à user@example.com. Contactez-nous si cette adresse est légitime."
+        "L'e-mail de confirmation n'a pas pu être envoyé à user@domaine.test. Contactez-nous si cette adresse est légitime."
         in content
     )
 
@@ -262,7 +262,7 @@ def test_edit_email(client, alice_with_password, mailoutbox):
     data = {
         "prenom": "Bob",
         "nom": "Dylan",
-        "email": "bob@example.com",
+        "email": "bob@domaine.test",
         "reception_actualites": "checked",
         "action": "update-account",
     }
@@ -281,20 +281,20 @@ def test_edit_email(client, alice_with_password, mailoutbox):
 
     content = response.content.decode("utf-8")
     assert (
-        "Votre adresse e-mail a bien été modifiée. Un e-mail de confirmation a été envoyé à bob@example.com. Confirmez votre adresse e-mail en cliquant sur le lien reçu avant de vous reconnecter."
+        "Votre adresse e-mail a bien été modifiée. Un e-mail de confirmation a été envoyé à bob@domaine.test. Confirmez votre adresse e-mail en cliquant sur le lien reçu avant de vous reconnecter."
         in content
     )
 
     alice.refresh_from_db()
     assert alice.prenom == "Bob"
     assert alice.nom == "Dylan"
-    assert alice.email == "bob@example.com"
+    assert alice.email == "bob@domaine.test"
     assert not alice.is_email_confirmed
 
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
     assert mail.from_email == impact.settings.DEFAULT_FROM_EMAIL
-    assert list(mail.to) == ["bob@example.com"]
+    assert list(mail.to) == ["bob@domaine.test"]
     assert mail.template_id == impact.settings.SENDINBLUE_CONFIRM_EMAIL_TEMPLATE
     assert mail.merge_global_data == {
         "confirm_email_url": response.wsgi_request.build_absolute_uri(

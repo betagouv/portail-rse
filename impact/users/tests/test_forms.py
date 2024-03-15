@@ -5,7 +5,7 @@ def test_fail_to_create_user_without_cgu(db):
     data = {
         "prenom": "Alice",
         "nom": "User",
-        "email": "user@example.com",
+        "email": "user@domaine.test",
         "password1": "Passw0rd!123",
         "password2": "Passw0rd!123",
         "siren": "123456789",
@@ -23,7 +23,7 @@ def test_fail_to_create_user_with_invalid_siren(db):
     data = {
         "prenom": "Alice",
         "nom": "User",
-        "email": "user@example.com",
+        "email": "user@domaine.test",
         "password1": "Passw0rd!123",
         "password2": "Passw0rd!123",
         "siren": "123456abc",
@@ -41,7 +41,7 @@ def test_fail_to_create_user_with_weak_password(db):
     data = {
         "prenom": "Alice",
         "nom": "User",
-        "email": "user@example.com",
+        "email": "user@domaine.test",
         "password1": "password",
         "password2": "password",
         "siren": "123456789",
