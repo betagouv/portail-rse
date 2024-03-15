@@ -276,6 +276,35 @@ def test_erreur_si_effectif_superieur_a_effectif_groupe():
     )
 
 
+def test_erreur_si_est_societe_mere_en_France_avec_un_effectif_superieur_a_effectif_groupe_france():
+    data = {
+        "date_cloture_exercice": date(2022, 12, 31),
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+        "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        "est_cotee": False,
+        "appartient_groupe": True,
+        "est_societe_mere": True,
+        "societe_mere_en_france": True,
+        "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "effectif_groupe_france": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
+        "effectif_groupe_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "comptes_consolides": False,
+        "bdese_accord": True,
+        "systeme_management_energie": True,
+    }
+
+    form = EntrepriseQualificationForm(data=data)
+
+    assert not form.is_valid()
+    assert (
+        form.errors["effectif_groupe_france"][0]
+        == "L'effectif du groupe France ne peut pas être inférieur à l'effectif si vous êtes la société mère du groupe et en France"
+    )
+
+
 def test_sans_interet_public_force_non_cotee():
     data = {
         "date_cloture_exercice": date(2022, 12, 31),
