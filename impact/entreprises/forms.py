@@ -202,6 +202,15 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
                 "L'effectif permanent du groupe ne peut pas être supérieur à l'effectif du groupe international",
             )
         if (
+            effectif_permanent
+            and effectif_groupe_permanent
+            and est_superieur(effectif_permanent, effectif_groupe_permanent)
+        ):
+            self.add_error(
+                "effectif_groupe_permanent",
+                "L'effectif permanent du groupe ne peut pas être inférieur à l'effectif permanent",
+            )
+        if (
             effectif_groupe
             and effectif_groupe_france
             and est_superieur(effectif_groupe_france, effectif_groupe)
