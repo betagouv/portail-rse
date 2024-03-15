@@ -210,6 +210,17 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
                 "effectif_groupe_france",
                 "L'effectif du groupe France ne peut pas être supérieur à l'effectif du groupe international",
             )
+        if (
+            effectif
+            and effectif_groupe_france
+            and self.cleaned_data.get("est_societe_mere")
+            and self.cleaned_data.get("societe_mere_en_france")
+            and est_superieur(effectif, effectif_groupe_france)
+        ):
+            self.add_error(
+                "effectif_groupe_france",
+                "L'effectif du groupe France ne peut pas être inférieur à l'effectif si vous êtes la société mère du groupe et en France",
+            )
 
         if not self.cleaned_data.get("est_interet_public"):
             self.cleaned_data["est_cotee"] = False
