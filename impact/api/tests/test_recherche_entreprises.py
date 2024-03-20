@@ -162,6 +162,44 @@ def test_echec_erreur_de_l_API(mocker):
     )
 
 
+def test_entreprise_inexistante_mais_pourtant_retournée_par_l_API(mocker):
+    # Le SIREN ne correspond pas à une entreprise réelle mais l'API répond
+    # comme si l'entreprise existait. Actuellement, le seul cas connu est le siren 0000000000.
+    # On souhaite être informé si ce n'est pas le cas car d'autres cas similaires pourrait être retournés.
+    SIREN = "000000000"
+
+    class FakeResponse:
+        status_code = 200
+
+        def json(self):
+            return {
+                "total_results": 1,
+                "results": [
+                    {
+                        "nom_complet": None,
+                        "nom_raison_sociale": None,
+                        "tranche_effectif_salarie": "15",
+                        "nature_juridique": None,
+                        "nombre_etablissements": 0,
+                        "nombre_etablissements_ouverts": 0,
+                        "siege": {},
+                        "activite_principale": None,
+                    }
+                ],
+            }
+
+    mocker.patch("requests.get", return_value=FakeResponse())
+    capture_message_mock = mocker.patch("sentry_sdk.capture_message")
+
+    with pytest.raises(SirenError) as e:
+        recherche(SIREN)
+
+    assert str(e.value) == "Aucune entreprise ne correspond à ce SIREN."
+    capture_message_mock.assert_called_once_with(
+        "Entreprise inexistante mais retournée par l'API recherche entreprise"
+    )
+
+
 @pytest.mark.parametrize("nature_juridique", ["", None])
 def test_pas_de_nature_juridique(nature_juridique, mocker):
     # On se sert de la catégorie juridique pour certaines réglementations qu'on récupère via la nature juridique renvoyée par l'API.
