@@ -12,6 +12,7 @@ from entreprises.models import CaracteristiquesAnnuelles
 SIREN_NOT_FOUND_ERROR = (
     "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct."
 )
+SIREN_NOT_MATCH_ERROR = "Aucune entreprise ne correspond à ce SIREN."
 TOO_MANY_REQUESTS_ERROR = "Le service est temporairement surchargé. Merci de réessayer."
 SERVER_ERROR = "Le service est actuellement indisponible. Merci de réessayer plus tard."
 
@@ -28,6 +29,12 @@ def recherche(siren):
 
         data = response.json()["results"][0]
         denomination = data["nom_raison_sociale"] or data["nom_complet"]
+        if not denomination:
+            sentry_sdk.capture_message(
+                "Entreprise inexistante mais retournée par l'API recherche entreprise"
+            )
+            raise SirenError(SIREN_NOT_MATCH_ERROR)
+
         # la nature juridique correspond à la nomenclature des catégories juridiques retenue dans a gestion du repertoire Sirene
         # https://www.insee.fr/fr/information/2028129
         try:
