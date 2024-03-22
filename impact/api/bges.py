@@ -1,12 +1,24 @@
 import requests
 import sentry_sdk
 
+from api.exceptions import APIError
+
+BGES_TIMEOUT = 10
+
 
 def last_reporting_year(siren):
-    response = requests.get(
-        "https://bilans-ges.ademe.fr/api/inventories",
-        params={"page": "1", "itemsPerPage": "11", "entity.siren": siren},
-    )
+    try:
+        response = requests.get(
+            "https://bilans-ges.ademe.fr/api/inventories",
+            params={"page": "1", "itemsPerPage": "11", "entity.siren": siren},
+            timeout=BGES_TIMEOUT,
+        )
+    except Exception as e:
+        with sentry_sdk.push_scope() as scope:
+            scope.set_level("info")
+            sentry_sdk.capture_exception(e)
+        raise APIError()
+
     if response.status_code != 200:
         sentry_sdk.capture_message(f"Erreur API bilans-ges ({siren})")
         return
