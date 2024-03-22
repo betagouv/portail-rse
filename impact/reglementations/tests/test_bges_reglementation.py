@@ -179,6 +179,31 @@ def test_calcule_le_statut_si_plus_de_500_employes_sans_bilan_publie(
     mock_api_bges.assert_called_once_with(entreprise.siren)
 
 
+def test_calcule_le_statut_si_soumis_et_erreur_API(
+    mocker, entreprise_factory, alice, mock_api_bges
+):
+    entreprise = entreprise_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    mock_api_bges.side_effect = Exception()
+    capture_message_mock = mocker.patch("sentry_sdk.capture_message")
+
+    with freeze_time("2023-12-15"):
+        reglementation = BGESReglementation.calculate_status(
+            entreprise.dernieres_caracteristiques_qualifiantes, alice
+        )
+
+    assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
+    assert (
+        reglementation.status_detail
+        == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 500 salariés. Suite à un problème technique, les informations concernant votre dernière publication n'ont pas pu être récupérées sur la plateforme Bilans GES. Vérifiez que vous avez publié votre bilan il y a moins de 4 ans."
+    )
+    assert reglementation.primary_action == ACTION_PUBLIER
+    mock_api_bges.assert_called_once_with(entreprise.siren)
+    capture_message_mock.assert_called_once_with("Erreur lors de l'appel API BGES")
+
+
 @pytest.mark.parametrize(
     "effectif",
     [

@@ -1,5 +1,6 @@
 from datetime import date
 
+import sentry_sdk
 from django.conf import settings
 from django.urls import reverse_lazy
 
@@ -67,9 +68,19 @@ class BGESReglementation(Reglementation):
 
         if cls.est_soumis(caracteristiques):
             status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(cls.criteres_remplis(caracteristiques))}."
-            annee_reporting = bges.last_reporting_year(
-                caracteristiques.entreprise.siren
-            )
+            try:
+                annee_reporting = bges.last_reporting_year(
+                    caracteristiques.entreprise.siren
+                )
+            except:
+                status = ReglementationStatus.STATUS_SOUMIS
+                primary_action = cls.PUBLIER_BILAN_PRIMARY_ACTION
+                status_detail += " Suite à un problème technique, les informations concernant votre dernière publication n'ont pas pu être récupérées sur la plateforme Bilans GES. Vérifiez que vous avez publié votre bilan il y a moins de 4 ans."
+                sentry_sdk.capture_message("Erreur lors de l'appel API BGES")
+                return ReglementationStatus(
+                    status, status_detail, primary_action=primary_action
+                )
+
             if not annee_reporting:
                 status = ReglementationStatus.STATUS_A_ACTUALISER
                 primary_action = cls.PUBLIER_BILAN_PRIMARY_ACTION
