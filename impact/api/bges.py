@@ -21,7 +21,7 @@ def last_reporting_year(siren):
 
     if response.status_code != 200:
         sentry_sdk.capture_message(f"Erreur API bilans-ges ({siren})")
-        return
+        raise APIError()
 
     try:
         data = response.json()
