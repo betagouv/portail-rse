@@ -74,9 +74,9 @@ def test_echec_erreur_de_l_api(code_http, mocker):
     mocker.patch("requests.get", return_value=MockedResponse(code_http))
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
-    year = last_reporting_year(SIREN)
+    with pytest.raises(APIError):
+        last_reporting_year(SIREN)
 
-    assert year is None
     capture_message_mock.assert_called_once_with(
         "Erreur API bilans-ges (" + SIREN + ")"
     )
