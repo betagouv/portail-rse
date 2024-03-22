@@ -76,8 +76,7 @@ def test_echec_erreur_de_l_api(code_http, mocker):
     )
 
 
-@pytest.mark.parametrize("code_http", [400, 500])
-def test_echec_l_api_a_change(code_http, mocker):
+def test_echec_l_api_a_change(mocker):
     data = """{"@context": "/api/contexts/Inventory", "autre": "structure"}"""
     mocker.patch("requests.get", return_value=MockedResponse(200, data))
     capture_exception_mock = mocker.patch("sentry_sdk.capture_exception")
