@@ -1,8 +1,11 @@
 import json
 
 import pytest
+from requests.exceptions import Timeout
 
+from api.bges import BGES_TIMEOUT
 from api.bges import last_reporting_year
+from api.exceptions import APIError
 
 SIREN = "123456789"
 
@@ -29,6 +32,7 @@ def test_une_seule_annee_de_publication_trouvee(mocker):
     faked_request.assert_called_once_with(
         "https://bilans-ges.ademe.fr/api/inventories",
         params={"page": "1", "itemsPerPage": "11", "entity.siren": SIREN},
+        timeout=BGES_TIMEOUT,
     )
 
 
@@ -44,6 +48,7 @@ def test_aucune_annee_de_publication(mocker):
     faked_request.assert_called_once_with(
         "https://bilans-ges.ademe.fr/api/inventories",
         params={"page": "1", "itemsPerPage": "11", "entity.siren": SIREN},
+        timeout=BGES_TIMEOUT,
     )
 
 
@@ -60,6 +65,7 @@ def test_deux_annees_de_publication_trouvees(mocker):
     faked_request.assert_called_once_with(
         "https://bilans-ges.ademe.fr/api/inventories",
         params={"page": "1", "itemsPerPage": "11", "entity.siren": SIREN},
+        timeout=BGES_TIMEOUT,
     )
 
 
@@ -85,6 +91,24 @@ def test_echec_l_api_a_change(mocker):
 
     assert year is None
     assert capture_exception_mock.called_once
+
+
+def test_echec_exception_provoquee_par_l_api(mocker):
+    """le Timeout est un cas réel mais l'implémentation attrape toutes les erreurs possibles"""
+    faked_request = mocker.patch("requests.get", side_effect=Timeout)
+    capture_exception_mock = mocker.patch("sentry_sdk.capture_exception")
+
+    with pytest.raises(APIError):
+        last_reporting_year(SIREN)
+
+    faked_request.assert_called_once_with(
+        "https://bilans-ges.ademe.fr/api/inventories",
+        params={"page": "1", "itemsPerPage": "11", "entity.siren": SIREN},
+        timeout=BGES_TIMEOUT,
+    )
+    capture_exception_mock.assert_called_once()
+    args, _ = capture_exception_mock.call_args
+    assert type(args[0]) == Timeout
 
 
 @pytest.mark.network
