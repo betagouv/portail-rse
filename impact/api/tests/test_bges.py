@@ -90,7 +90,7 @@ def test_echec_l_api_a_change(mocker):
     year = last_reporting_year(SIREN)
 
     assert year is None
-    assert capture_exception_mock.called_once
+    capture_exception_mock.assert_called_once()
 
 
 def test_echec_exception_provoquee_par_l_api(mocker):
