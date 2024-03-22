@@ -3,6 +3,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.urls import reverse
 from freezegun import freeze_time
 
+from api.exceptions import APIError
 from api.tests.fixtures import mock_api_bges  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
@@ -186,8 +187,7 @@ def test_calcule_le_statut_si_soumis_et_erreur_API(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     )
     attach_user_to_entreprise(alice, entreprise, "Présidente")
-    mock_api_bges.side_effect = Exception()
-    capture_message_mock = mocker.patch("sentry_sdk.capture_message")
+    mock_api_bges.side_effect = APIError()
 
     with freeze_time("2023-12-15"):
         reglementation = BGESReglementation.calculate_status(
@@ -201,7 +201,6 @@ def test_calcule_le_statut_si_soumis_et_erreur_API(
     )
     assert reglementation.primary_action == ACTION_PUBLIER
     mock_api_bges.assert_called_once_with(entreprise.siren)
-    capture_message_mock.assert_called_once_with("Erreur lors de l'appel API BGES")
 
 
 @pytest.mark.parametrize(
