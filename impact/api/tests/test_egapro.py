@@ -1,9 +1,12 @@
 import json
 
 import pytest
+from requests.exceptions import Timeout
 
+from api.egapro import EGAPRO_TIMEOUT
 from api.egapro import indicateurs_bdese
 from api.egapro import is_index_egapro_published
+from api.exceptions import APIError
 
 SIREN = "123456789"
 
@@ -26,7 +29,8 @@ def test_succes_is_index_egapro_published_avec_declaration(mocker):
 
     assert is_index_egapro_published(SIREN, 2021)
     egapro_request.assert_called_once_with(
-        f"https://egapro.travail.gouv.fr/api/public/declaration/{SIREN}/2021"
+        f"https://egapro.travail.gouv.fr/api/public/declaration/{SIREN}/2021",
+        timeout=EGAPRO_TIMEOUT,
     )
 
 
@@ -41,7 +45,8 @@ def test_succes_is_index_egapro_published_sans_declaration(mocker):
 
     assert not is_index_egapro_published(SIREN, 2020)
     egapro_request.assert_called_once_with(
-        f"https://egapro.travail.gouv.fr/api/public/declaration/{SIREN}/2020"
+        f"https://egapro.travail.gouv.fr/api/public/declaration/{SIREN}/2020",
+        timeout=EGAPRO_TIMEOUT,
     )
 
 
@@ -65,6 +70,23 @@ def test_echec_is_index_egapro_published_erreur_de_l_api(mocker):
     capture_message_mock.assert_called_once_with(
         "Erreur API index EgaPro (is_index_egapro_published)"
     )
+
+
+def test_echec_is_index_egapro_published_exception_provoquee_par_l_api(mocker):
+    """le Timeout est un cas réel mais l'implémentation attrape toutes les erreurs possibles"""
+    faked_request = mocker.patch("requests.get", side_effect=Timeout)
+    capture_exception_mock = mocker.patch("sentry_sdk.capture_exception")
+
+    with pytest.raises(APIError):
+        is_index_egapro_published(SIREN, 2023)
+
+    faked_request.assert_called_once_with(
+        f"https://egapro.travail.gouv.fr/api/public/declaration/{SIREN}/2023",
+        timeout=EGAPRO_TIMEOUT,
+    )
+    capture_exception_mock.assert_called_once()
+    args, _ = capture_exception_mock.call_args
+    assert type(args[0]) == Timeout
 
 
 @pytest.mark.network
@@ -93,7 +115,8 @@ def test_succes_indicateurs_avec_un_seul_objectif_de_progression(mocker):
         "objectifs_progression": "Hautes rémunérations : plus dans le futur",
     }
     egapro_request.assert_called_once_with(
-        f"https://egapro.travail.gouv.fr/api/public/declaration/{SIREN}/2021"
+        f"https://egapro.travail.gouv.fr/api/public/declaration/{SIREN}/2021",
+        timeout=EGAPRO_TIMEOUT,
     )
 
 
@@ -164,3 +187,20 @@ def test_echec_indicateurs_erreur_de_l_api(mocker):
     capture_message_mock.assert_called_once_with(
         "Erreur API index EgaPro (indicateurs)"
     )
+
+
+def test_echec_indicateurs_bdese_exception_provoquee_par_l_api(mocker):
+    """le Timeout est un cas réel mais l'implémentation attrape toutes les erreurs possibles"""
+    faked_request = mocker.patch("requests.get", side_effect=Timeout)
+    capture_exception_mock = mocker.patch("sentry_sdk.capture_exception")
+
+    with pytest.raises(APIError):
+        indicateurs_bdese(SIREN, 2023)
+
+    faked_request.assert_called_once_with(
+        f"https://egapro.travail.gouv.fr/api/public/declaration/{SIREN}/2023",
+        timeout=EGAPRO_TIMEOUT,
+    )
+    capture_exception_mock.assert_called_once()
+    args, _ = capture_exception_mock.call_args
+    assert type(args[0]) == Timeout

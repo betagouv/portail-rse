@@ -2,6 +2,7 @@ from django.conf import settings
 from django.urls import reverse_lazy
 
 from api import egapro
+from api.exceptions import APIError
 from entreprises.models import CaracteristiquesAnnuelles
 from reglementations.models import derniere_annee_a_publier_index_egapro
 from reglementations.models import prochaine_echeance_index_egapro
@@ -63,9 +64,16 @@ class IndexEgaproReglementation(Reglementation):
                 external=True,
             )
             annee = derniere_annee_a_publier_index_egapro()
-            derniere_annee_est_publiee = egapro.is_index_egapro_published(
-                caracteristiques.entreprise.siren, annee
-            )
+            try:
+                derniere_annee_est_publiee = egapro.is_index_egapro_published(
+                    caracteristiques.entreprise.siren, annee
+                )
+            except APIError:
+                return ReglementationStatus(
+                    ReglementationStatus.STATUS_SOUMIS,
+                    f"Vous êtes soumis à cette réglementation car {', '.join(cls.criteres_remplis(caracteristiques))}. Suite à un problème technique, les informations concernant votre dernière publication n'ont pas pu être récupérées sur la plateforme EgaPro. Vous devez calculer et publier votre index chaque année au plus tard le 1er mars.",
+                    primary_action=primary_action,
+                )
             if derniere_annee_est_publiee:
                 status = ReglementationStatus.STATUS_A_JOUR
                 status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(cls.criteres_remplis(caracteristiques))}. Vous avez publié votre index {annee} d'après les données disponibles sur la plateforme Egapro."

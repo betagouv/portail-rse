@@ -12,6 +12,7 @@ from weasyprint import CSS
 from weasyprint import HTML
 
 from api import egapro
+from api.exceptions import APIError
 from entreprises.decorators import entreprise_qualifiee_required
 from entreprises.exceptions import EntrepriseNonQualifieeError
 from entreprises.models import CaracteristiquesAnnuelles
@@ -348,7 +349,10 @@ def bdese_step(request, siren, annee, step):
                 initial=initial,
             )
         else:
-            fetched_data = egapro.indicateurs_bdese(entreprise.siren, annee)
+            try:
+                fetched_data = egapro.indicateurs_bdese(entreprise.siren, annee)
+            except APIError:
+                fetched_data = None
             form = bdese_form_factory(
                 bdese,
                 step,
