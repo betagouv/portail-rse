@@ -3,6 +3,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.urls import reverse
 from freezegun import freeze_time
 
+from api.exceptions import APIError
 from api.tests.fixtures import mock_api_index_egapro  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
@@ -181,4 +182,28 @@ def test_calculate_status_more_than_50_employees(
         == f"Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez publié votre index {annee} d'après les données disponibles sur la plateforme Egapro."
     )
     assert index.prochaine_echeance == "01/03/2024"
+    mock_api_index_egapro.assert_called_once_with(entreprise.siren, annee)
+
+
+def test_calculate_status_more_than_50_employees_with_egapro_API_fails(
+    entreprise_factory, alice, mock_api_index_egapro
+):
+    entreprise = entreprise_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    mock_api_index_egapro.side_effect = APIError
+    with freeze_time("2023-02-28"):
+        annee = derniere_annee_a_publier_index_egapro()
+        index = IndexEgaproReglementation.calculate_status(
+            entreprise.dernieres_caracteristiques_qualifiantes, alice
+        )
+
+    assert index.status == ReglementationStatus.STATUS_SOUMIS
+    assert (
+        index.status_detail
+        == f"Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Suite à un problème technique, les informations concernant votre dernière publication n'ont pas pu être récupérées sur la plateforme EgaPro. Vous devez calculer et publier votre index chaque année au plus tard le 1er mars."
+    )
+    assert index.prochaine_echeance is None
     mock_api_index_egapro.assert_called_once_with(entreprise.siren, annee)

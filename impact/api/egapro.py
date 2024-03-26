@@ -1,6 +1,10 @@
 import requests
 import sentry_sdk
 
+from api.exceptions import APIError
+
+EGAPRO_TIMEOUT = 10
+
 
 def indicateurs_bdese(siren, annee):
     EGAPRO_INDICATEURS = {
@@ -14,8 +18,14 @@ def indicateurs_bdese(siren, annee):
         "nombre_femmes_plus_hautes_remunerations": None,
         "objectifs_progression": None,
     }
-    url = f"https://egapro.travail.gouv.fr/api/public/declaration/{siren}/{annee}"
-    response = requests.get(url)
+    try:
+        url = f"https://egapro.travail.gouv.fr/api/public/declaration/{siren}/{annee}"
+        response = requests.get(url, timeout=EGAPRO_TIMEOUT)
+    except Exception as e:
+        with sentry_sdk.push_scope() as scope:
+            scope.set_level("info")
+            sentry_sdk.capture_exception(e)
+        raise APIError()
 
     match response.status_code:
         case 200:
@@ -53,8 +63,14 @@ def indicateurs_bdese(siren, annee):
 
 
 def is_index_egapro_published(siren, annee):
-    url = f"https://egapro.travail.gouv.fr/api/public/declaration/{siren}/{annee}"
-    response = requests.get(url)
+    try:
+        url = f"https://egapro.travail.gouv.fr/api/public/declaration/{siren}/{annee}"
+        response = requests.get(url, timeout=EGAPRO_TIMEOUT)
+    except Exception as e:
+        with sentry_sdk.push_scope() as scope:
+            scope.set_level("info")
+            sentry_sdk.capture_exception(e)
+        raise APIError()
     match response.status_code:
         case 200:
             return "déclaration" in response.json()

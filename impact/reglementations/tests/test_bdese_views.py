@@ -3,6 +3,7 @@ import html
 import pytest
 from django.urls import reverse
 
+from api.exceptions import APIError
 from entreprises.exceptions import EntrepriseNonQualifieeError
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
@@ -225,6 +226,20 @@ def test_bdese_step_fetch_data(configured_bdese, habilitated_user, client, mocke
     client.force_login(habilitated_user)
 
     fetch_data = mocker.patch("api.egapro.indicateurs_bdese")
+
+    url = bdese_step_url(bdese, 1)
+    client.get(url)
+
+    fetch_data.assert_called_once_with(bdese.entreprise.siren, bdese.annee)
+
+
+def test_bdese_step_fetch_data_works_even_if_API_egapro_fails(
+    configured_bdese, habilitated_user, client, mocker
+):
+    bdese = configured_bdese
+    client.force_login(habilitated_user)
+
+    fetch_data = mocker.patch("api.egapro.indicateurs_bdese", side_effect=APIError)
 
     url = bdese_step_url(bdese, 1)
     client.get(url)
