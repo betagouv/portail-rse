@@ -236,6 +236,10 @@ def test_qualification_page_without_current_qualification(
     )
     context = response.context
     assert context["form"]["date_cloture_exercice"].initial == "2022-12-31"
+    assert (
+        context["form"]["tranche_chiffre_affaires"].initial
+        == CaracteristiquesAnnuelles.CA_MOINS_DE_900K
+    )
     assert not context["form"]["est_societe_mere"].initial
     assert context["form"]["effectif_outre_mer"].initial is None
     assert context["form"]["effectif_groupe"].initial is None
