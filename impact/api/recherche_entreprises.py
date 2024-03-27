@@ -9,6 +9,7 @@ from .exceptions import SirenError
 from .exceptions import TooManyRequestError
 from entreprises.models import CaracteristiquesAnnuelles
 
+RECHERCHE_ENTREPRISE_TIMEOUT = 10
 SIREN_NOT_FOUND_ERROR = (
     "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct."
 )
@@ -19,10 +20,15 @@ SERVER_ERROR = "Le service est actuellement indisponible. Merci de réessayer pl
 
 def recherche(siren):
     # documentation api recherche d'entreprises 1.0.0 https://api.gouv.fr/documentation/api-recherche-entreprises
-    url = (
-        f"https://recherche-entreprises.api.gouv.fr/search?q={siren}&page=1&per_page=1"
-    )
-    response = requests.get(url)
+    try:
+        url = f"https://recherche-entreprises.api.gouv.fr/search?q={siren}&page=1&per_page=1"
+        response = requests.get(url, timeout=RECHERCHE_ENTREPRISE_TIMEOUT)
+    except Exception as e:
+        with sentry_sdk.push_scope() as scope:
+            scope.set_level("info")
+            sentry_sdk.capture_exception(e)
+        raise APIError(SERVER_ERROR)
+
     if response.status_code == 200:
         if not response.json()["total_results"]:
             raise SirenError(SIREN_NOT_FOUND_ERROR)
@@ -87,4 +93,5 @@ def recherche(siren):
         sentry_sdk.capture_message("Requête invalide sur l'API recherche entreprise")
         raise APIError(SERVER_ERROR)
     else:
+        sentry_sdk.capture_message("Erreur API recherche entreprise")
         raise ServerError(SERVER_ERROR)

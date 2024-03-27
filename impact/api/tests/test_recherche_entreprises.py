@@ -1,10 +1,12 @@
 import pytest
+from requests.exceptions import Timeout
 
 from api.exceptions import APIError
 from api.exceptions import ServerError
 from api.exceptions import SirenError
 from api.exceptions import TooManyRequestError
 from api.recherche_entreprises import recherche
+from api.recherche_entreprises import RECHERCHE_ENTREPRISE_TIMEOUT
 from entreprises.models import CaracteristiquesAnnuelles
 
 
@@ -42,7 +44,8 @@ def test_succes_recherche_comportant_la_raison_sociale(mocker):
                 ],
             }
 
-    mocker.patch("requests.get", return_value=FakeResponse())
+    faked_request = mocker.patch("requests.get", return_value=FakeResponse())
+
     infos = recherche(SIREN)
 
     assert infos == {
@@ -52,6 +55,10 @@ def test_succes_recherche_comportant_la_raison_sociale(mocker):
         "categorie_juridique_sirene": 5710,
         "code_pays_etranger_sirene": 99139,
     }
+    faked_request.assert_called_once_with(
+        f"https://recherche-entreprises.api.gouv.fr/search?q={SIREN}&page=1&per_page=1",
+        timeout=RECHERCHE_ENTREPRISE_TIMEOUT,
+    )
 
 
 def test_succes_recherche_sans_la_raison_sociale(mocker):
@@ -111,7 +118,7 @@ def test_succes_pas_de_resultat(mocker):
     )
 
 
-def test_echec_recherche(mocker):
+def test_echec_recherche_requete_api_invalide(mocker):
     SIREN = "123456789"
 
     class FakeResponse:
@@ -153,9 +160,31 @@ def test_echec_erreur_de_l_API(mocker):
         status_code = 500
 
     mocker.patch("requests.get", return_value=FakeResponse())
+    capture_message_mock = mocker.patch("sentry_sdk.capture_message")
+
     with pytest.raises(ServerError) as e:
         recherche(SIREN)
 
+    capture_message_mock.assert_called_once_with("Erreur API recherche entreprise")
+    assert (
+        str(e.value)
+        == "Le service est actuellement indisponible. Merci de réessayer plus tard."
+    )
+
+
+def test_echec_exception_provoquee_par_l_api(mocker):
+    """le Timeout est un cas réel mais l'implémentation attrape toutes les erreurs possibles"""
+    SIREN = "123456789"
+
+    faked_request = mocker.patch("requests.get", side_effect=Timeout)
+    capture_exception_mock = mocker.patch("sentry_sdk.capture_exception")
+
+    with pytest.raises(APIError) as e:
+        recherche(SIREN)
+
+    capture_exception_mock.assert_called_once()
+    args, _ = capture_exception_mock.call_args
+    assert type(args[0]) == Timeout
     assert (
         str(e.value)
         == "Le service est actuellement indisponible. Merci de réessayer plus tard."
