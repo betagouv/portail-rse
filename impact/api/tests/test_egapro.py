@@ -50,11 +50,12 @@ def test_succes_is_index_egapro_published_sans_declaration(mocker):
     )
 
 
-def test_echec_is_index_egapro_published(mocker):
+def test_echec_is_index_egapro_published_requete_api_invalide(mocker):
     mocker.patch("requests.get", return_value=MockedResponse(400))
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
-    is_index_egapro_published(SIREN, 2023)
+    with pytest.raises(APIError):
+        is_index_egapro_published(SIREN, 2023)
 
     capture_message_mock.assert_called_once_with(
         "Requête invalide sur l'API index EgaPro (is_index_egapro_published)"
@@ -65,7 +66,8 @@ def test_echec_is_index_egapro_published_erreur_de_l_api(mocker):
     mocker.patch("requests.get", return_value=MockedResponse(500))
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
-    is_index_egapro_published(SIREN, 2023)
+    with pytest.raises(APIError):
+        is_index_egapro_published(SIREN, 2023)
 
     capture_message_mock.assert_called_once_with(
         "Erreur API index EgaPro (is_index_egapro_published)"
@@ -167,11 +169,12 @@ def test_succes_indicateurs_sans_resultat(mocker):
     }
 
 
-def test_echec_indicateurs(mocker):
+def test_echec_indicateurs_requete_api_invalide(mocker):
     mocker.patch("requests.get", return_value=MockedResponse(400))
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
-    indicateurs_bdese(SIREN, 2023)
+    with pytest.raises(APIError):
+        indicateurs_bdese(SIREN, 2023)
 
     capture_message_mock.assert_called_once_with(
         "Requête invalide sur l'API index EgaPro (indicateurs)"
@@ -182,7 +185,8 @@ def test_echec_indicateurs_erreur_de_l_api(mocker):
     mocker.patch("requests.get", return_value=MockedResponse(500))
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
-    indicateurs_bdese(SIREN, 2023)
+    with pytest.raises(APIError):
+        indicateurs_bdese(SIREN, 2023)
 
     capture_message_mock.assert_called_once_with(
         "Erreur API index EgaPro (indicateurs)"

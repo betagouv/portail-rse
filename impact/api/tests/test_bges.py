@@ -70,7 +70,7 @@ def test_deux_annees_de_publication_trouvees(mocker):
 
 
 @pytest.mark.parametrize("code_http", [400, 500])
-def test_echec_erreur_de_l_api(code_http, mocker):
+def test_echec_l_api_renvoie_un_code_erreur(code_http, mocker):
     mocker.patch("requests.get", return_value=MockedResponse(code_http))
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
@@ -87,10 +87,12 @@ def test_echec_l_api_a_change(mocker):
     mocker.patch("requests.get", return_value=MockedResponse(200, data))
     capture_exception_mock = mocker.patch("sentry_sdk.capture_exception")
 
-    year = last_reporting_year(SIREN)
+    with pytest.raises(APIError):
+        year = last_reporting_year(SIREN)
 
-    assert year is None
     capture_exception_mock.assert_called_once()
+    args, _ = capture_exception_mock.call_args
+    assert type(args[0]) == KeyError
 
 
 def test_echec_exception_provoquee_par_l_api(mocker):

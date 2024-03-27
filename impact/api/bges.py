@@ -34,3 +34,4 @@ def last_reporting_year(siren):
             return last_year
     except Exception as e:
         sentry_sdk.capture_exception(e)
+        raise APIError()
