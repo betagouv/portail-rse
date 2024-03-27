@@ -57,8 +57,10 @@ def indicateurs_bdese(siren, annee):
             sentry_sdk.capture_message(
                 "Requête invalide sur l'API index EgaPro (indicateurs)"
             )
+            raise APIError()
         case _:
             sentry_sdk.capture_message("Erreur API index EgaPro (indicateurs)")
+            raise APIError()
     return bdese_data_from_egapro
 
 
@@ -80,8 +82,10 @@ def is_index_egapro_published(siren, annee):
             sentry_sdk.capture_message(
                 "Requête invalide sur l'API index EgaPro (is_index_egapro_published)"
             )
+            raise APIError()
         case _:
             sentry_sdk.capture_message(
                 "Erreur API index EgaPro (is_index_egapro_published)"
             )
+            raise APIError()
     return False
