@@ -77,9 +77,7 @@ def test_echec_l_api_renvoie_un_code_erreur(code_http, mocker):
     with pytest.raises(APIError):
         last_reporting_year(SIREN)
 
-    capture_message_mock.assert_called_once_with(
-        "Erreur API bilans-ges (" + SIREN + ")"
-    )
+    capture_message_mock.assert_called_once_with("Erreur API bilans-ges")
 
 
 def test_echec_l_api_a_change(mocker):
