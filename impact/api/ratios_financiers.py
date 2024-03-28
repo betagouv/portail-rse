@@ -37,8 +37,7 @@ def dernier_exercice_comptable(siren):
         donnees_financieres["date_cloture_exercice"] = _extrait_date_cloture_extercice(
             fields
         )
-        df = _extrait_chiffres_affaires(fields)
-        donnees_financieres.update(df)
+        donnees_financieres.update(_extrait_chiffres_affaires(fields))
     except IndexError:
         pass
 
@@ -47,8 +46,7 @@ def dernier_exercice_comptable(siren):
         fields = record["fields"]
         date_cloture_exercice = _extrait_date_cloture_extercice(fields)
         if date_cloture_exercice == donnees_financieres["date_cloture_exercice"]:
-            df = _extrait_chiffres_affaires(fields)
-            donnees_financieres.update(df)
+            donnees_financieres.update(_extrait_chiffres_affaires(fields))
     except IndexError:
         pass
     return donnees_financieres
