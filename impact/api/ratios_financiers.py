@@ -36,38 +36,9 @@ def dernier_exercice_comptable(siren):
         donnees_financieres["date_cloture_exercice"] = date.fromisoformat(
             record["fields"]["date_cloture_exercice"]
         )
-        chiffre_affaires = int(record["fields"]["chiffre_d_affaires"])
-        type_bilan = record["fields"]["type_bilan"]
-        if type_bilan in ("C", "S"):  # bilan complet ou simplifié
-            if chiffre_affaires < 900_000:  # 0-900k
-                tranche_chiffre_affaires = CaracteristiquesAnnuelles.CA_MOINS_DE_900K
-            elif chiffre_affaires < 50_000_000:  # 900k-50M
-                tranche_chiffre_affaires = (
-                    CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M
-                )
-            elif chiffre_affaires < 100_000_000:  # 50M-100M
-                tranche_chiffre_affaires = (
-                    CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M
-                )
-            else:  # 100M+
-                tranche_chiffre_affaires = CaracteristiquesAnnuelles.CA_100M_ET_PLUS
-            donnees_financieres["tranche_chiffre_affaires"] = tranche_chiffre_affaires
-        elif type_bilan == "K":  # bilan consolidé
-            if chiffre_affaires < 60_000_000:  # 0-60M
-                tranche_chiffre_affaires_consolide = (
-                    CaracteristiquesAnnuelles.CA_MOINS_DE_60M
-                )
-            elif chiffre_affaires < 100_000_000:  # 60M-100M
-                tranche_chiffre_affaires_consolide = (
-                    CaracteristiquesAnnuelles.CA_ENTRE_60M_ET_100M
-                )
-            else:  # 100M+
-                tranche_chiffre_affaires_consolide = (
-                    CaracteristiquesAnnuelles.CA_100M_ET_PLUS
-                )
-            donnees_financieres[
-                "tranche_chiffre_affaires_consolide"
-            ] = tranche_chiffre_affaires_consolide
+        fields = record["fields"]
+        df = _extrait_chiffres_affaires(fields)
+        donnees_financieres.update(df)
     except IndexError:
         pass
 
@@ -77,43 +48,42 @@ def dernier_exercice_comptable(siren):
             record["fields"]["date_cloture_exercice"]
         )
         if date_cloture_exercice == donnees_financieres["date_cloture_exercice"]:
-            chiffre_affaires = int(record["fields"]["chiffre_d_affaires"])
-            type_bilan = record["fields"]["type_bilan"]
-            if type_bilan in ("C", "S"):  # bilan complet ou simplifié
-                if chiffre_affaires < 900_000:  # 0-900k
-                    tranche_chiffre_affaires = (
-                        CaracteristiquesAnnuelles.CA_MOINS_DE_900K
-                    )
-                elif chiffre_affaires < 50_000_000:  # 900k-50M
-                    tranche_chiffre_affaires = (
-                        CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M
-                    )
-                elif chiffre_affaires < 100_000_000:  # 50M-100M
-                    tranche_chiffre_affaires = (
-                        CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M
-                    )
-                else:  # 100M+
-                    tranche_chiffre_affaires = CaracteristiquesAnnuelles.CA_100M_ET_PLUS
-                donnees_financieres[
-                    "tranche_chiffre_affaires"
-                ] = tranche_chiffre_affaires
-            elif type_bilan == "K":  # bilan consolidé
-                if chiffre_affaires < 60_000_000:  # 0-60M
-                    tranche_chiffre_affaires_consolide = (
-                        CaracteristiquesAnnuelles.CA_MOINS_DE_60M
-                    )
-                elif chiffre_affaires < 100_000_000:  # 60M-100M
-                    tranche_chiffre_affaires_consolide = (
-                        CaracteristiquesAnnuelles.CA_ENTRE_60M_ET_100M
-                    )
-                else:  # 100M+
-                    tranche_chiffre_affaires_consolide = (
-                        CaracteristiquesAnnuelles.CA_100M_ET_PLUS
-                    )
-                donnees_financieres[
-                    "tranche_chiffre_affaires_consolide"
-                ] = tranche_chiffre_affaires_consolide
-
+            fields = record["fields"]
+            df = _extrait_chiffres_affaires(fields)
+            donnees_financieres.update(df)
     except IndexError:
         pass
+    return donnees_financieres
+
+
+def _extrait_chiffres_affaires(fields):
+    donnees_financieres = {}
+    chiffre_affaires = int(fields["chiffre_d_affaires"])
+    type_bilan = fields["type_bilan"]
+    if type_bilan in ("C", "S"):  # bilan complet ou simplifié
+        if chiffre_affaires < 900_000:  # 0-900k
+            tranche_chiffre_affaires = CaracteristiquesAnnuelles.CA_MOINS_DE_900K
+        elif chiffre_affaires < 50_000_000:  # 900k-50M
+            tranche_chiffre_affaires = CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M
+        elif chiffre_affaires < 100_000_000:  # 50M-100M
+            tranche_chiffre_affaires = CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M
+        else:  # 100M+
+            tranche_chiffre_affaires = CaracteristiquesAnnuelles.CA_100M_ET_PLUS
+        donnees_financieres["tranche_chiffre_affaires"] = tranche_chiffre_affaires
+    elif type_bilan == "K":  # bilan consolidé
+        if chiffre_affaires < 60_000_000:  # 0-60M
+            tranche_chiffre_affaires_consolide = (
+                CaracteristiquesAnnuelles.CA_MOINS_DE_60M
+            )
+        elif chiffre_affaires < 100_000_000:  # 60M-100M
+            tranche_chiffre_affaires_consolide = (
+                CaracteristiquesAnnuelles.CA_ENTRE_60M_ET_100M
+            )
+        else:  # 100M+
+            tranche_chiffre_affaires_consolide = (
+                CaracteristiquesAnnuelles.CA_100M_ET_PLUS
+            )
+        donnees_financieres[
+            "tranche_chiffre_affaires_consolide"
+        ] = tranche_chiffre_affaires_consolide
     return donnees_financieres
