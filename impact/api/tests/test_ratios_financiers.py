@@ -2,8 +2,11 @@ import json
 from datetime import date
 
 import pytest
+from requests.exceptions import Timeout
 
+from api.exceptions import APIError
 from api.ratios_financiers import dernier_exercice_comptable
+from api.ratios_financiers import RATIOS_FINANCIERS_TIMEOUT
 from entreprises.models import CaracteristiquesAnnuelles
 
 SIREN = "123456789"
@@ -43,6 +46,15 @@ def test_pas_de_resultat(mocker):
 
     data = dernier_exercice_comptable(SIREN)
 
+    faked_request.assert_called_once_with(
+        "https://data.economie.gouv.fr/api/records/1.0/search/",
+        params={
+            "dataset": "ratios_inpi_bce",
+            "q": f"siren={SIREN}",
+            "sort": "date_cloture_exercice",
+        },
+        timeout=RATIOS_FINANCIERS_TIMEOUT,
+    )
     assert data == {
         "date_cloture_exercice": None,
         "tranche_chiffre_affaires": None,
@@ -96,3 +108,25 @@ def test_bilan_simplifie(mocker):
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
         "tranche_chiffre_affaires_consolide": None,
     }
+
+
+def test_echec_ratio_financiers_exception_provoquee_par_l_api(mocker):
+    """le Timeout est un cas réel mais l'implémentation attrape toutes les erreurs possibles"""
+    faked_request = mocker.patch("requests.get", side_effect=Timeout)
+    capture_exception_mock = mocker.patch("sentry_sdk.capture_exception")
+
+    with pytest.raises(APIError):
+        dernier_exercice_comptable(SIREN)
+
+    faked_request.assert_called_once_with(
+        "https://data.economie.gouv.fr/api/records/1.0/search/",
+        params={
+            "dataset": "ratios_inpi_bce",
+            "q": f"siren={SIREN}",
+            "sort": "date_cloture_exercice",
+        },
+        timeout=RATIOS_FINANCIERS_TIMEOUT,
+    )
+    capture_exception_mock.assert_called_once()
+    args, _ = capture_exception_mock.call_args
+    assert type(args[0]) == Timeout
