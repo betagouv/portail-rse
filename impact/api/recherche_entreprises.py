@@ -1,5 +1,3 @@
-from xmlrpc.client import SERVER_ERROR
-
 import requests
 import sentry_sdk
 
