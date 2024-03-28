@@ -1,3 +1,5 @@
+from datetime import date
+
 import pytest
 from django.urls import reverse
 
@@ -28,6 +30,7 @@ def test_reglementation_info():
 def _caracteristiques_suffisamment_qualifiantes_sans_groupe(entreprise_factory):
     entreprise = entreprise_factory(
         siren="000000001",
+        date_cloture_exercice=date(2023, 12, 31),
         est_cotee=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
@@ -43,6 +46,7 @@ def _caracteristiques_suffisamment_qualifiantes_avec_groupe_sans_comptes_consoli
 ):
     entreprise = entreprise_factory(
         siren="000000002",
+        date_cloture_exercice=date(2023, 12, 31),
         est_cotee=False,
         est_interet_public=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
@@ -60,6 +64,7 @@ def _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolide
 ):
     entreprise = entreprise_factory(
         siren="000000003",
+        date_cloture_exercice=date(2023, 12, 31),
         est_cotee=False,
         est_interet_public=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
@@ -74,7 +79,7 @@ def _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolide
     return entreprise.dernieres_caracteristiques
 
 
-def test_est_suffisamment_qualifiee_sans_groupe(
+def test_est_suffisamment_qualifiee(
     _caracteristiques_suffisamment_qualifiantes_sans_groupe,
     _caracteristiques_suffisamment_qualifiantes_avec_groupe_sans_comptes_consolides,
     _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolides,
@@ -94,6 +99,15 @@ def test_est_suffisamment_qualifiee_sans_groupe(
     )
 
     assert CSRDReglementation.est_suffisamment_qualifiee(caracteristiques)
+
+
+def test_n_est_pas_suffisamment_qualifiee_car_date_cloture_exercice_non_renseignee(
+    _caracteristiques_suffisamment_qualifiantes_sans_groupe,
+):
+    caracteristiques = _caracteristiques_suffisamment_qualifiantes_sans_groupe
+    caracteristiques.date_cloture_exercice = None
+
+    assert not CSRDReglementation.est_suffisamment_qualifiee(caracteristiques)
 
 
 def test_n_est_pas_suffisamment_qualifiee_car_est_cotee_non_renseigne(
@@ -1227,7 +1241,7 @@ def test_calcule_etat_si_non_soumis(entreprise_factory, alice):
     assert reglementation.primary_action.url == reverse("reglementations:csrd")
 
 
-def test_calcule_etat_si_soumis_en_2027_et_delegable(entreprise_factory, alice):
+def test_calcule_etat_si_soumis_en_2025_et_delegable(entreprise_factory, alice):
     entreprise = entreprise_factory(
         categorie_juridique_sirene=CODE_SA,
         code_pays_etranger_sirene=None,
@@ -1251,7 +1265,7 @@ def test_calcule_etat_si_soumis_en_2027_et_delegable(entreprise_factory, alice):
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert (
         reglementation.status_detail
-        == "Vous êtes soumis à cette réglementation à partir de 2025 sur les données de 2024 car votre société est cotée sur un marché réglementé, l'effectif du groupe est supérieur à 500 salariés, le bilan du groupe est supérieur à 30M€ et le chiffre d'affaires du groupe est supérieur à 60M€. Vous pouvez déléguer cette obligation à votre société-mère."
+        == "Vous êtes soumis à cette réglementation à partir de 2025 sur les données de l'exercice comptable 2024 car votre société est cotée sur un marché réglementé, l'effectif du groupe est supérieur à 500 salariés, le bilan du groupe est supérieur à 30M€ et le chiffre d'affaires du groupe est supérieur à 60M€. Vous pouvez déléguer cette obligation à votre société-mère."
     )
     assert reglementation.prochaine_echeance == 2025
     assert (
@@ -1280,7 +1294,7 @@ def test_calcule_etat_si_soumis_en_2027_et_non_delegable(entreprise_factory, ali
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert (
         reglementation.status_detail
-        == "Vous êtes soumis à cette réglementation à partir de 2027 sur les données de 2026 car votre société est cotée sur un marché réglementé, votre effectif est supérieur à 10 salariés et votre bilan est supérieur à 450k€."
+        == "Vous êtes soumis à cette réglementation à partir de 2027 sur les données de l'exercice comptable 2026 car votre société est cotée sur un marché réglementé, votre effectif est supérieur à 10 salariés et votre bilan est supérieur à 450k€."
     )
     assert reglementation.prochaine_echeance == 2027
     assert (
@@ -1311,7 +1325,7 @@ def test_calcule_etat_si_entreprise_hors_EEE_soumise_en_2029_sous_condition(
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert (
         reglementation.status_detail
-        == "Vous êtes soumis à cette réglementation à partir de 2029 sur les données de 2028 si votre société dont le siège social est hors EEE revêt une forme juridique comparable aux sociétés par actions ou aux sociétés à responsabilité limitée, comptabilise un chiffre d'affaires net dans l'Espace économique européen qui excède 150 millions d'euros à la date de clôture des deux derniers exercices consécutifs, ne contrôle ni n'est contrôlée par une autre société et dispose d'une succursale en France dont le chiffre d'affaires net excède 40 millions d'euros."
+        == "Vous êtes soumis à cette réglementation à partir de 2029 sur les données de l'exercice comptable 2028 si votre société dont le siège social est hors EEE revêt une forme juridique comparable aux sociétés par actions ou aux sociétés à responsabilité limitée, comptabilise un chiffre d'affaires net dans l'Espace économique européen qui excède 150 millions d'euros à la date de clôture des deux derniers exercices consécutifs, ne contrôle ni n'est contrôlée par une autre société et dispose d'une succursale en France dont le chiffre d'affaires net excède 40 millions d'euros."
     )
     assert reglementation.prochaine_echeance == 2029
 
@@ -2005,3 +2019,54 @@ def test_entreprise_hors_EEE_ca_et_effectif_superieurs_aux_seuils_grande_entrepr
     assert not CSRDReglementation.est_delegable(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
+
+
+def test_decale_annee_selon_cloture_exercice_comptable():
+    caracteristiques = CaracteristiquesAnnuelles(
+        date_cloture_exercice=date(2023, 12, 31)
+    )
+    assert (
+        CSRDReglementation.decale_annee_selon_cloture_exercice_comptable(
+            2025, caracteristiques
+        )
+        == 2025
+    )
+
+    caracteristiques = CaracteristiquesAnnuelles(
+        date_cloture_exercice=date(2023, 11, 30)
+    )
+    assert (
+        CSRDReglementation.decale_annee_selon_cloture_exercice_comptable(
+            2025, caracteristiques
+        )
+        == 2026
+    )
+
+
+def test_calcule_etat_si_soumis_en_2026_car_exercice_comptable_different_annee_civile(
+    entreprise_factory, alice
+):
+    entreprise = entreprise_factory(
+        date_cloture_exercice=date(2023, 11, 30),
+        categorie_juridique_sirene=CODE_SA,
+        code_pays_etranger_sirene=None,
+        est_cotee=True,
+        appartient_groupe=False,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    )
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+
+    reglementation = CSRDReglementation.calculate_status(
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
+    )
+
+    assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
+    assert reglementation.status_detail.startswith(
+        "Vous êtes soumis à cette réglementation à partir de 2026 sur les données de l'exercice comptable 2024-2025 car"
+    )
+    assert reglementation.status_detail.endswith(
+        "Votre exercice comptable ne correspond pas à une année civile donc l'obligation de déclaration est décalée."
+    )
+    assert reglementation.prochaine_echeance == 2026

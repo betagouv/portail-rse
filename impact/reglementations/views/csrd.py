@@ -19,7 +19,8 @@ class CSRDReglementation(Reglementation):
     @classmethod
     def est_suffisamment_qualifiee(cls, caracteristiques):
         return (
-            caracteristiques.entreprise.est_cotee is not None
+            caracteristiques.date_cloture_exercice is not None
+            and caracteristiques.entreprise.est_cotee is not None
             and caracteristiques.entreprise.est_interet_public is not None
             and caracteristiques.effectif is not None
             and caracteristiques.tranche_bilan is not None
@@ -56,6 +57,7 @@ class CSRDReglementation(Reglementation):
             or caracteristiques.entreprise.est_interet_public
         ):
             return
+        date_cloture_exercice = caracteristiques.date_cloture_exercice
         if cls.est_grand_groupe(caracteristiques):
             if caracteristiques.entreprise.est_societe_mere:
                 if (
@@ -66,9 +68,13 @@ class CSRDReglementation(Reglementation):
                     CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
                     CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
                 ):
-                    return 2025
+                    return cls.decale_annee_selon_cloture_exercice_comptable(
+                        2025, caracteristiques
+                    )
                 else:
-                    return 2026
+                    return cls.decale_annee_selon_cloture_exercice_comptable(
+                        2026, caracteristiques
+                    )
             else:
                 if cls.est_grande_entreprise(caracteristiques):
                     if (
@@ -80,9 +86,13 @@ class CSRDReglementation(Reglementation):
                             CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
                         )
                     ):
-                        return 2025
+                        return cls.decale_annee_selon_cloture_exercice_comptable(
+                            2025, caracteristiques
+                        )
                     else:
-                        return 2026
+                        return cls.decale_annee_selon_cloture_exercice_comptable(
+                            2026, caracteristiques
+                        )
                 elif (
                     caracteristiques.entreprise.est_cotee
                     and cls.est_petite_ou_moyenne_entreprise(caracteristiques)
@@ -92,9 +102,13 @@ class CSRDReglementation(Reglementation):
                         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
                         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
                     ):
-                        return 2025
+                        return cls.decale_annee_selon_cloture_exercice_comptable(
+                            2025, caracteristiques
+                        )
                     else:
-                        return 2026
+                        return cls.decale_annee_selon_cloture_exercice_comptable(
+                            2026, caracteristiques
+                        )
         else:
             if caracteristiques.entreprise.est_dans_EEE:
                 if caracteristiques.entreprise.est_cotee:
@@ -104,11 +118,17 @@ class CSRDReglementation(Reglementation):
                             CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
                             CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
                         ):
-                            return 2025
+                            return cls.decale_annee_selon_cloture_exercice_comptable(
+                                2025, caracteristiques
+                            )
                         else:
-                            return 2026
+                            return cls.decale_annee_selon_cloture_exercice_comptable(
+                                2026, caracteristiques
+                            )
                     elif cls.est_petite_ou_moyenne_entreprise(caracteristiques):
-                        return 2027
+                        return cls.decale_annee_selon_cloture_exercice_comptable(
+                            2027, caracteristiques
+                        )
                 elif caracteristiques.entreprise.est_interet_public:
                     if cls.est_grande_entreprise(caracteristiques):
                         if caracteristiques.effectif in (
@@ -116,19 +136,35 @@ class CSRDReglementation(Reglementation):
                             CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
                             CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
                         ):
-                            return 2025
+                            return cls.decale_annee_selon_cloture_exercice_comptable(
+                                2025, caracteristiques
+                            )
                         else:
-                            return 2026
+                            return cls.decale_annee_selon_cloture_exercice_comptable(
+                                2026, caracteristiques
+                            )
                 elif cls.est_grande_entreprise(caracteristiques):
-                    return 2026
+                    return cls.decale_annee_selon_cloture_exercice_comptable(
+                        2026, caracteristiques
+                    )
             else:
                 if cls.est_grande_entreprise(caracteristiques):
-                    return 2026
+                    return cls.decale_annee_selon_cloture_exercice_comptable(
+                        2026, caracteristiques
+                    )
                 elif (
                     caracteristiques.tranche_chiffre_affaires
                     == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
                 ):
-                    return 2029
+                    return cls.decale_annee_selon_cloture_exercice_comptable(
+                        2029, caracteristiques
+                    )
+
+    @staticmethod
+    def decale_annee_selon_cloture_exercice_comptable(annee, caracteristiques):
+        return (
+            annee if caracteristiques.exercice_comptable_est_annee_civile else annee + 1
+        )
 
     @classmethod
     def criteres_remplis(cls, caracteristiques):
@@ -293,7 +329,12 @@ class CSRDReglementation(Reglementation):
             "Accéder à l'espace Rapport de Durabilité",
         )
         if annee := cls.est_soumis_a_partir_de(caracteristiques):
-            status_detail = f"Vous êtes soumis à cette réglementation à partir de {annee} sur les données de {annee - 1}"
+            exercice_comptable = (
+                f"{annee - 1}"
+                if caracteristiques.exercice_comptable_est_annee_civile
+                else f"{annee - 2}-{annee - 1}"
+            )
+            status_detail = f"Vous êtes soumis à cette réglementation à partir de {annee} sur les données de l'exercice comptable {exercice_comptable}"
             if annee == 2029:
                 # Ce cas ne peut arriver que pour les micro et PME sans groupe hors EEE
                 conditions = "votre société dont le siège social est hors EEE revêt une forme juridique comparable aux sociétés par actions ou aux sociétés à responsabilité limitée, comptabilise un chiffre d'affaires net dans l'Espace économique européen qui excède 150 millions d'euros à la date de clôture des deux derniers exercices consécutifs, ne contrôle ni n'est contrôlée par une autre société et dispose d'une succursale en France dont le chiffre d'affaires net excède 40 millions d'euros"
@@ -306,6 +347,8 @@ class CSRDReglementation(Reglementation):
                     status_detail += (
                         " Vous pouvez déléguer cette obligation à votre société-mère."
                     )
+            if not caracteristiques.exercice_comptable_est_annee_civile:
+                status_detail += " Votre exercice comptable ne correspond pas à une année civile donc l'obligation de déclaration est décalée."
             return ReglementationStatus(
                 status=ReglementationStatus.STATUS_SOUMIS,
                 status_detail=status_detail,

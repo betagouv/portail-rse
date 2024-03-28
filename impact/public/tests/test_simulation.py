@@ -122,6 +122,8 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     # les données servant à la simulation sont celles du formulaire de simulation simplifiée
     # enrichies avec des valeurs par défaut pour les champs manquants
     simulation_caracs = mock_est_soumis.call_args.args[0]
+    assert simulation_caracs.date_cloture_exercice.month == 12
+    assert simulation_caracs.date_cloture_exercice.day == 31
     assert simulation_caracs.entreprise.est_interet_public is False
     assert simulation_caracs.entreprise.societe_mere_en_france
     assert simulation_caracs.effectif_permanent == effectif
@@ -336,6 +338,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     )
     caracteristiques = CaracteristiquesAnnuelles(
         entreprise=entreprise_simulee,
+        date_cloture_exercice=date(date.today().year - 1, 12, 31),
         effectif=effectif,
         effectif_permanent=effectif,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
@@ -420,6 +423,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
         comptes_consolides=True,
     )
     caracteristiques = CaracteristiquesAnnuelles(
+        date_cloture_exercice=date(date.today().year - 1, 12, 31),
         entreprise=entreprise_simulee,
         effectif=effectif,
         effectif_permanent=effectif,
@@ -517,6 +521,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
     )
     caracteristiques = CaracteristiquesAnnuelles(
         entreprise=entreprise_simulee,
+        date_cloture_exercice=date(date.today().year - 1, 12, 31),
         effectif=effectif,
         effectif_permanent=effectif,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,

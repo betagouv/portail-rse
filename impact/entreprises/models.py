@@ -504,3 +504,10 @@ class CaracteristiquesAnnuelles(TimestampedModel):
             and self.systeme_management_energie is not None
             and self.groupe_est_qualifie
         )
+
+    @property
+    def exercice_comptable_est_annee_civile(self):
+        return (
+            self.date_cloture_exercice.month == 12
+            and self.date_cloture_exercice.day == 31
+        )
