@@ -6,7 +6,7 @@ import pytest
 from freezegun import freeze_time
 
 from api.tests.fixtures import mock_api_bges  # noqa
-from api.tests.fixtures import mock_api_index_egapro  # noqa
+from api.tests.fixtures import mock_api_egapro  # noqa
 from conftest import CODE_PAYS_PORTUGAL
 from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
@@ -302,7 +302,7 @@ def test_synchronise_une_entreprise_avec_un_utilisateur(
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_les_reglementations_BDESE(
-    alice, bob, entreprise_factory, bdese_factory, mock_api_index_egapro
+    alice, bob, entreprise_factory, bdese_factory, mock_api_egapro
 ):
     entreprise_non_soumise = entreprise_factory(
         siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
@@ -395,7 +395,7 @@ def test_synchronise_les_reglementations_BDESE(
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_les_reglementations_IndexEgaPro(
-    alice, entreprise_factory, mock_api_index_egapro
+    alice, entreprise_factory, mock_api_egapro
 ):
     entreprise_non_soumise = entreprise_factory(
         siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
@@ -412,11 +412,11 @@ def test_synchronise_les_reglementations_IndexEgaPro(
         entreprise_soumise_a_jour,
     ):
         attach_user_to_entreprise(alice, entreprise, "Présidente")
-    mock_api_index_egapro.side_effect = [False, True]
+    mock_api_egapro.side_effect = [False, True]
 
     Command().handle()
 
-    assert mock_api_index_egapro.call_count == 2
+    assert mock_api_egapro.call_count == 2
     assert MetabaseIndexEgaPro.objects.count() == 3
 
     metabase_index_egapro_entreprise_non_soumise = MetabaseIndexEgaPro.objects.get(
@@ -448,7 +448,7 @@ def test_synchronise_les_reglementations_IndexEgaPro(
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_les_reglementations_BGES(
-    alice, entreprise_factory, mock_api_index_egapro, mock_api_bges
+    alice, entreprise_factory, mock_api_egapro, mock_api_bges
 ):
     entreprise_non_soumise = entreprise_factory(
         siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
@@ -572,7 +572,7 @@ def test_ignore_les_entreprises_inscrites_qui_ne_sont_pas_suffisamment_qualifié
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_l_indicateur_d_impact_nombre_de_reglementations_a_jour(
-    alice, bob, entreprise_factory, bdese_factory, mock_api_index_egapro, mock_api_bges
+    alice, bob, entreprise_factory, bdese_factory, mock_api_egapro, mock_api_bges
 ):
     entreprise_non_soumise = entreprise_factory(
         siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
@@ -595,7 +595,7 @@ def test_synchronise_l_indicateur_d_impact_nombre_de_reglementations_a_jour(
     date_premiere_synchro = date(2020, 11, 28)
     with freeze_time(date_premiere_synchro):
         # une entreprise à jour pour Index Egapo sur 3 soumises
-        mock_api_index_egapro.side_effect = [False, True, False]
+        mock_api_egapro.side_effect = [False, True, False]
         # deux entreprises à jour pour la BDESE sur 3 soumises
         # dont une qui a deux utilisateurs qui ont terminé la mise à jour de leur BDESE personnelle
         bdese_a_actualiser = bdese_factory(
@@ -639,7 +639,7 @@ def test_synchronise_l_indicateur_d_impact_nombre_de_reglementations_a_jour(
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_l_indicateur_d_impact_avec_des_entreprises_soumises_au_BGES(
-    alice, bob, entreprise_factory, bdese_factory, mock_api_index_egapro, mock_api_bges
+    alice, bob, entreprise_factory, bdese_factory, mock_api_egapro, mock_api_bges
 ):
     entreprise_non_soumise = entreprise_factory(
         siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
@@ -659,7 +659,7 @@ def test_synchronise_l_indicateur_d_impact_avec_des_entreprises_soumises_au_BGES
     date_premiere_synchro = date(2020, 11, 28)
     with freeze_time(date_premiere_synchro):
         # aucune entreprise à jour pour Index Egapo sur 2 soumises
-        mock_api_index_egapro.side_effect = [False, False]
+        mock_api_egapro.side_effect = [False, False]
         # aucune entreprise à jour pour BDESE sur 2 soumises
         # une entreprise à jour pour BGES sur 2 soumises
         # la première a un dépôt trop ancien, la deuxième suffisamment récent

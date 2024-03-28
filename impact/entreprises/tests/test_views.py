@@ -6,7 +6,7 @@ from django.urls import reverse
 from freezegun import freeze_time
 
 import api.exceptions
-from api.tests.fixtures import mock_api_index_egapro  # noqa
+from api.tests.fixtures import mock_api_egapro  # noqa
 from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
 from conftest import CODE_PAYS_PORTUGAL
 from entreprises.models import CaracteristiquesAnnuelles
@@ -385,7 +385,7 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
     alice,
     entreprise_non_qualifiee,
     mock_api_recherche_entreprises,
-    mock_api_index_egapro,
+    mock_api_egapro,
 ):
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
     client.force_login(alice)
@@ -488,7 +488,7 @@ def test_qualifie_entreprise_sans_groupe(
     alice,
     entreprise_non_qualifiee,
     mock_api_recherche_entreprises,
-    mock_api_index_egapro,
+    mock_api_egapro,
 ):
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
     client.force_login(alice)
