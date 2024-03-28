@@ -14,7 +14,7 @@ from reglementations.models import BDESEAvecAccord
 
 # Empêche tous les tests de faire des appels api
 @pytest.fixture(autouse=True)
-def mock_request(mock_api_recherche_entreprises, mock_api_egapro, mock_api_bges):
+def mock_api(mock_api_recherche_entreprises, mock_api_egapro, mock_api_bges):
     pass
 
 
