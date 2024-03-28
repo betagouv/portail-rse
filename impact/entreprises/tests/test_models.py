@@ -727,3 +727,15 @@ def test_convertit_code_pays():
     assert convertit_code_pays(CODE_PAYS_PORTUGAL) == "Portugal"
     assert convertit_code_pays(None) == "France"
     assert convertit_code_pays(11111) == None  # code inexistant actuellement
+
+
+def test_exercice_comptable_est_annee_civile():
+    caracteristiques = CaracteristiquesAnnuelles(
+        date_cloture_exercice=date(2023, 7, 7),
+    )
+    assert not caracteristiques.exercice_comptable_est_annee_civile
+
+    caracteristiques = CaracteristiquesAnnuelles(
+        date_cloture_exercice=date(2023, 12, 31),
+    )
+    assert caracteristiques.exercice_comptable_est_annee_civile
