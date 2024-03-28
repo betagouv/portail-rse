@@ -1,6 +1,9 @@
 import pytest
 from django.core.exceptions import ObjectDoesNotExist
 
+from api.tests.fixtures import mock_api_bges  # noqa
+from api.tests.fixtures import mock_api_egapro  # noqa
+from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
 from habilitations.models import get_habilitation
@@ -9,10 +12,10 @@ from reglementations.models import BDESE_50_300
 from reglementations.models import BDESEAvecAccord
 
 
-# Empêche tous les tests de faire des requêtes externes
+# Empêche tous les tests de faire des appels api
 @pytest.fixture(autouse=True)
-def mock_request(mocker):
-    mocker.patch("requests.get")
+def mock_request(mock_api_recherche_entreprises, mock_api_egapro, mock_api_bges):
+    pass
 
 
 @pytest.fixture

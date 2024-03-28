@@ -19,10 +19,19 @@ def mock_api_recherche_entreprises(mocker):
 
 @pytest.fixture
 def mock_api_egapro(mocker):
-    mocker.patch("api.egapro.indicateurs_bdese")
-    return mocker.patch("api.egapro.is_index_egapro_published")
+    mocker.patch(
+        "api.egapro.indicateurs_bdese",
+        return_value={
+            "nombre_femmes_plus_hautes_remunerations": None,
+            "objectifs_progression": None,
+        },
+    )
+    return mocker.patch(
+        "api.egapro.is_index_egapro_published",
+        return_value=False,
+    )
 
 
 @pytest.fixture
 def mock_api_bges(mocker):
-    return mocker.patch("api.bges.last_reporting_year")
+    return mocker.patch("api.bges.last_reporting_year", return_value=None)
