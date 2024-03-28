@@ -33,10 +33,10 @@ def dernier_exercice_comptable(siren):
 
     try:
         record = response.json()["records"][0]
-        donnees_financieres["date_cloture_exercice"] = date.fromisoformat(
-            record["fields"]["date_cloture_exercice"]
-        )
         fields = record["fields"]
+        donnees_financieres["date_cloture_exercice"] = _extrait_date_cloture_extercice(
+            fields
+        )
         df = _extrait_chiffres_affaires(fields)
         donnees_financieres.update(df)
     except IndexError:
@@ -44,16 +44,18 @@ def dernier_exercice_comptable(siren):
 
     try:
         record = response.json()["records"][1]
-        date_cloture_exercice = date.fromisoformat(
-            record["fields"]["date_cloture_exercice"]
-        )
+        fields = record["fields"]
+        date_cloture_exercice = _extrait_date_cloture_extercice(fields)
         if date_cloture_exercice == donnees_financieres["date_cloture_exercice"]:
-            fields = record["fields"]
             df = _extrait_chiffres_affaires(fields)
             donnees_financieres.update(df)
     except IndexError:
         pass
     return donnees_financieres
+
+
+def _extrait_date_cloture_extercice(fields):
+    return date.fromisoformat(fields["date_cloture_exercice"])
 
 
 def _extrait_chiffres_affaires(fields):
