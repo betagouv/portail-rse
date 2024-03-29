@@ -658,3 +658,39 @@ def test_qualification_supprime_les_caracteristiques_annuelles_posterieures_a_la
 
     assert not entreprise.caracteristiques_annuelles(date_cloture_dernier_exercice.year)
     assert entreprise.caracteristiques_annuelles(date_cloture_dernier_exercice.year - 1)
+
+
+def test_succes_api_search_entreprise(client, mock_api_recherche_entreprises):
+    mock_api_recherche_entreprises.return_value = {
+        "siren": "123456789",
+        "denomination": "Entreprise SAS",
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        "categorie_juridique_sirene": 5710,
+        "code_pays_etranger_sirene": CODE_PAYS_PORTUGAL,
+    }
+
+    response = client.get("/api/search-entreprise/123456789")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "siren": "123456789",
+        "denomination": "Entreprise SAS",
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        "categorie_juridique_sirene": 5710,
+        "code_pays_etranger_sirene": CODE_PAYS_PORTUGAL,
+    }
+
+
+def test_echec_api_search_entreprise_car_une_API_externe_est_en_erreur(
+    client, mock_api_recherche_entreprises
+):
+    mock_api_recherche_entreprises.side_effect = api.exceptions.APIError(
+        "Panne serveur"
+    )
+
+    response = client.get("/api/search-entreprise/123456789")
+
+    assert response.status_code == 400
+    assert response.json() == {
+        "error": "Panne serveur",
+    }
