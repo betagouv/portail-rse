@@ -42,13 +42,6 @@
             </li>
         {% endif %}
         {% if status %}
-            {% if status.primary_action %}
-                <li>
-                    <a class="fr-btn" href="{{ status.primary_action.url }}" {% if status.primary_action.external %}target="_blank" rel="noopener"{% endif %}>
-                        {{ status.primary_action.title }}
-                    </a>
-                </li>
-            {% endif %}
             {% for secondary_action in status.secondary_actions %}
                 <li>
                     <a class="fr-btn fr-btn--secondary" href="{{ secondary_action.url }}" {% if secondary_action.external %}target="_blank" rel="noopener"{% endif %}>
