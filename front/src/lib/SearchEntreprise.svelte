@@ -10,54 +10,13 @@
     const sirenFieldId = "id_siren"
     const sirenFieldName = "siren"
     const denominationFieldName = "denomination"
-    const categorieJuridiqueFieldId = "id_categorie_juridique_sirene"
-    const codePaysEtrangerFieldId = "id_code_pays_etranger_sirene"
-    const effectifFieldId = "id_effectif"
-    const trancheChiffreAffairesFieldId = "id_tranche_chiffre_affaires"
-    const appartientGroupeFieldId = "id_appartient_groupe"
-    const comptesConsolidesFieldId = "id_comptes_consolides"
-    const trancheChiffreAffairesConsolideFieldId = "id_tranche_chiffre_affaires_consolide"
-
-    const categorieJuridiqueField = document.getElementById(categorieJuridiqueFieldId)
-    const codePaysEtrangerField = document.getElementById(codePaysEtrangerFieldId)
-    const effectifField = document.getElementById(effectifFieldId)
-    const trancheChiffreAffairesField = document.getElementById(trancheChiffreAffairesFieldId)
-    const appartientGroupeField = document.getElementById(appartientGroupeFieldId)
-    const comptesConsolidesField = document.getElementById(comptesConsolidesFieldId)
-    const trancheChiffreAffairesConsolideField = document.getElementById(trancheChiffreAffairesConsolideFieldId)
     const submitButton = document.getElementById(sirenFieldId).closest("form").querySelector("[type=submit]")
 
-    const simulationFields = document.getElementById("svelte-simulation-fields")
-
-    const showSimulationFields = () => {
-        if (simulationFields) {
-            simulationFields.style.display = "block"
-        }
-    }
-
-    const hideSimulationFields = () => {
-        if (simulationFields) {
-            simulationFields.style.display = "none"
-        }
-    }
-
-    const resetSimulationFields = () => {
-        if (simulationFields) {
-            for(const checkboxField of simulationFields.querySelectorAll('[type="checkbox"]')) {
-                checkboxField.checked = false
-            }
-            for(const selectField of simulationFields.getElementsByTagName("select")) {
-                selectField.value = ""
-            }
-            const event = new Event("change");
-            appartientGroupeField.dispatchEvent(event);
-            comptesConsolidesField.dispatchEvent(event);
-        }
-    }
 
     async function searchEntreprise(siren) {
         if (siren.length !== 9 || isNaN(siren)){
-            hideSimulationFields()
+            const event = new CustomEvent("siren-incorrect")
+            document.dispatchEvent(event)
             throw new Error("Le siren est incorrect.")
         }
         loading = true
@@ -67,36 +26,11 @@
         if (res.ok) {
             loading = false
             submitButton.disabled = false
-            resetSimulationFields()
             denomination = json.denomination
-            if (effectifField) {
-                effectifField.value = json.effectif
-            }
-            if (categorieJuridiqueField) {
-                categorieJuridiqueField.value = json.categorie_juridique_sirene
-            }
-            if (codePaysEtrangerField) {
-                codePaysEtrangerField.value = json.code_pays_etranger_sirene
-            }
-            if (trancheChiffreAffairesField && json.tranche_chiffre_affaires) {
-                //                             ^ si l'API ne renvoie pas de chiffre
-                //                               d'affaires, ne pas préremplir le champ
-                //                               pour garder le label par défaut
-                trancheChiffreAffairesField.value = json.tranche_chiffre_affaires
-            }
-            if (trancheChiffreAffairesConsolideField && json.tranche_chiffre_affaires_consolide) { // si chiffre d'affaires consolidé, alors est un groupe avec compte consolidé
-                appartientGroupeField.checked = true
-                comptesConsolidesField.checked = true
-                trancheChiffreAffairesConsolideField.value = json.tranche_chiffre_affaires_consolide
-                const event = new Event("change");
-                appartientGroupeField.dispatchEvent(event);
-                comptesConsolidesField.dispatchEvent(event);
-            }
-
-            showSimulationFields()
+            const event = new CustomEvent("infos-entreprise", {detail: json})
+            document.dispatchEvent(event)
         } else {
             loading = false
-            hideSimulationFields()
             throw new Error(json['error'])
         }
     }
@@ -104,14 +38,6 @@
     const handleChange = () => {
         submitButton.disabled = true
         promise = searchEntreprise(siren)
-    }
-
-    if (siren) {
-        showSimulationFields()
-    }
-    else {
-        submitButton.disabled = true
-        hideSimulationFields()
     }
 </script>
 

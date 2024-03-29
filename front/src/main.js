@@ -2,6 +2,7 @@ import ExternalFieldToggle from './lib/ExternalFieldToggle.svelte'
 import GroupeFields from './lib/GroupeFields.svelte'
 import InteretPublicField from './lib/InteretPublicField.svelte'
 import SimulationChange from './lib/SimulationChange.svelte'
+import SimulationForm from './lib/SimulationForm.svelte'
 import SearchEntreprise from './lib/SearchEntreprise.svelte'
 
 for (let externalFieldToggle of document.getElementsByClassName("svelte-external-field-toggle")) {
@@ -15,6 +16,7 @@ for (let externalFieldToggle of document.getElementsByClassName("svelte-external
     }
   })
 }
+
 
 const searchEntrepriseElement = document.getElementById("svelte-search-entreprise")
 if (searchEntrepriseElement) {
@@ -42,6 +44,17 @@ if (estInteretPublicFieldElement) {
   })
 }
 
+const SimulationFormElement = document.getElementById("svelte-search-entreprise-in-simulation-form")
+if (SimulationFormElement) {
+  new SimulationForm({
+    target: SimulationFormElement,
+    props: {
+      siren: SimulationFormElement.dataset.siren,
+      denomination: SimulationFormElement.dataset.denomination
+    },
+    hydrate: true,
+  })
+}
 
 if (document.getElementById("svelte-simulation-result")) {
   new SimulationChange({

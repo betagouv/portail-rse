@@ -91,7 +91,7 @@
                 <h5>Recherchez votre entreprise</h5>
                 <form action="{% url 'simulation' %}#svelte-simulation-result" method="post" id="svelte-simulation-form">
                     {% csrf_token %}
-                    <div id="svelte-search-entreprise" data-siren="{{ simulation_form.siren.value|default:'' }}" data-denomination="{{ simulation_form.denomination.value|default:'' }}">
+                    <div id="svelte-search-entreprise-in-simulation-form" data-siren="{{ simulation_form.siren.value|default:'' }}" data-denomination="{{ simulation_form.denomination.value|default:'' }}">
                         {% include 'snippets/siren_field.html' with field=simulation_form.siren %}
                     </div>
                                     <!-- Separateur -->
