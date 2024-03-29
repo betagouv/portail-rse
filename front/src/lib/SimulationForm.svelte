@@ -41,10 +41,10 @@
 
     const resetSimulationFields = () => {
         if (simulationFields) {
-            for(const checkboxField of simulationFields.querySelectorAll('[type="checkbox"]')) {
+            for(let checkboxField of simulationFields.querySelectorAll('[type="checkbox"]')) {
                 checkboxField.checked = false
             }
-            for(const selectField of simulationFields.getElementsByTagName("select")) {
+            for(let selectField of simulationFields.getElementsByTagName("select")) {
                 selectField.value = ""
             }
             const event = new Event("change");
