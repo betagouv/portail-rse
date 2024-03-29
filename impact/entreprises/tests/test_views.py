@@ -7,6 +7,7 @@ from freezegun import freeze_time
 
 import api.exceptions
 from api.tests.fixtures import mock_api_egapro  # noqa
+from api.tests.fixtures import mock_api_ratios_financiers  # noqa
 from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
 from conftest import CODE_PAYS_PORTUGAL
 from entreprises.models import CaracteristiquesAnnuelles
@@ -660,7 +661,9 @@ def test_qualification_supprime_les_caracteristiques_annuelles_posterieures_a_la
     assert entreprise.caracteristiques_annuelles(date_cloture_dernier_exercice.year - 1)
 
 
-def test_succes_api_search_entreprise(client, mock_api_recherche_entreprises):
+def test_succes_api_search_entreprise(
+    client, mock_api_recherche_entreprises, mock_api_ratios_financiers
+):
     mock_api_recherche_entreprises.return_value = {
         "siren": "123456789",
         "denomination": "Entreprise SAS",
@@ -668,9 +671,16 @@ def test_succes_api_search_entreprise(client, mock_api_recherche_entreprises):
         "categorie_juridique_sirene": 5710,
         "code_pays_etranger_sirene": CODE_PAYS_PORTUGAL,
     }
+    mock_api_ratios_financiers.return_value = {
+        "date_cloture_exercice": date(2023, 12, 31),
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+        "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_MOINS_DE_60M,
+    }
 
     response = client.get("/api/search-entreprise/123456789")
 
+    mock_api_recherche_entreprises.assert_called_once_with("123456789")
+    mock_api_ratios_financiers.assert_called_once_with("123456789")
     assert response.status_code == 200
     assert response.json() == {
         "siren": "123456789",
@@ -678,6 +688,9 @@ def test_succes_api_search_entreprise(client, mock_api_recherche_entreprises):
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         "categorie_juridique_sirene": 5710,
         "code_pays_etranger_sirene": CODE_PAYS_PORTUGAL,
+        "date_cloture_exercice": "2023-12-31",
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+        "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_MOINS_DE_60M,
     }
 
 
