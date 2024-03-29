@@ -1,7 +1,7 @@
 import ExternalFieldToggle from './lib/ExternalFieldToggle.svelte'
 import GroupeFields from './lib/GroupeFields.svelte'
 import InteretPublicField from './lib/InteretPublicField.svelte'
-import SimulationChange from './lib/SimulationChange.svelte'
+import SimulationResult from './lib/SimulationResult.svelte'
 import SimulationForm from './lib/SimulationForm.svelte'
 import SearchEntreprise from './lib/SearchEntreprise.svelte'
 
@@ -57,7 +57,7 @@ if (SimulationFormElement) {
 }
 
 if (document.getElementById("svelte-simulation-result")) {
-  new SimulationChange({
+  new SimulationResult({
     target: document.getElementById("svelte-simulation-form")
   })
 }
