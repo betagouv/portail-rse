@@ -10,11 +10,7 @@ RATIOS_FINANCIERS_TIMEOUT = 10
 
 
 def dernier_exercice_comptable(siren):
-    donnees_financieres = {
-        "date_cloture_exercice": None,
-        "tranche_chiffre_affaires": None,
-        "tranche_chiffre_affaires_consolide": None,
-    }
+    donnees_financieres = dernier_exercice_comptable_vide()
     try:
         response = requests.get(
             "https://data.economie.gouv.fr/api/records/1.0/search/",
@@ -50,6 +46,14 @@ def dernier_exercice_comptable(siren):
     except IndexError:
         pass
     return donnees_financieres
+
+
+def dernier_exercice_comptable_vide():
+    return {
+        "date_cloture_exercice": None,
+        "tranche_chiffre_affaires": None,
+        "tranche_chiffre_affaires_consolide": None,
+    }
 
 
 def _extrait_date_cloture_extercice(fields):
