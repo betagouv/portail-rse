@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
 
+import api.ratios_financiers
 import api.recherche_entreprises
 from api.exceptions import APIError
 from entreprises.forms import EntrepriseAttachForm
@@ -215,7 +216,9 @@ def qualification(request, siren):
 
 def search_entreprise(request, siren):
     try:
-        return JsonResponse(api.recherche_entreprises.recherche(siren))
+        infos = api.recherche_entreprises.recherche(siren)
+        infos.update(api.ratios_financiers.dernier_exercice_comptable(siren))
+        return JsonResponse(infos)
     except APIError as exception:
         return JsonResponse(
             {"error": str(exception)},
