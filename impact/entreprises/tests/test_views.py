@@ -1,5 +1,6 @@
 import html
 from datetime import date
+from unittest import mock
 
 import pytest
 from django.urls import reverse
@@ -694,7 +695,7 @@ def test_succes_api_search_entreprise(
     }
 
 
-def test_echec_api_search_entreprise_car_une_API_externe_est_en_erreur(
+def test_echec_api_search_entreprise_car_l_API_recherche_entreprises_est_en_erreur(
     client, mock_api_recherche_entreprises
 ):
     mock_api_recherche_entreprises.side_effect = api.exceptions.APIError(
@@ -706,4 +707,24 @@ def test_echec_api_search_entreprise_car_une_API_externe_est_en_erreur(
     assert response.status_code == 400
     assert response.json() == {
         "error": "Panne serveur",
+    }
+
+
+def test_succes_api_search_entreprise_car_l_API_ratios_financiers_n_est_pas_bloquante_même_si_en_erreur(
+    client, mock_api_recherche_entreprises, mock_api_ratios_financiers
+):
+    mock_api_ratios_financiers.side_effect = api.exceptions.APIError("Panne serveur")
+
+    response = client.get("/api/search-entreprise/123456789")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "siren": mock.ANY,
+        "denomination": mock.ANY,
+        "effectif": mock.ANY,
+        "categorie_juridique_sirene": mock.ANY,
+        "code_pays_etranger_sirene": mock.ANY,
+        "date_cloture_exercice": None,
+        "tranche_chiffre_affaires": None,
+        "tranche_chiffre_affaires_consolide": None,
     }

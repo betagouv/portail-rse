@@ -217,10 +217,13 @@ def qualification(request, siren):
 def search_entreprise(request, siren):
     try:
         infos = api.recherche_entreprises.recherche(siren)
-        infos.update(api.ratios_financiers.dernier_exercice_comptable(siren))
-        return JsonResponse(infos)
     except APIError as exception:
         return JsonResponse(
             {"error": str(exception)},
             status=400,
         )
+    try:
+        infos.update(api.ratios_financiers.dernier_exercice_comptable(siren))
+    except APIError:
+        infos.update(api.ratios_financiers.dernier_exercice_comptable_vide())
+    return JsonResponse(infos)
