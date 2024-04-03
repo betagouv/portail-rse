@@ -665,8 +665,9 @@ def test_qualification_supprime_les_caracteristiques_annuelles_posterieures_a_la
 def test_succes_api_search_entreprise(
     client, mock_api_recherche_entreprises, mock_api_ratios_financiers
 ):
+    siren = "123456789"
     mock_api_recherche_entreprises.return_value = {
-        "siren": "123456789",
+        "siren": siren,
         "denomination": "Entreprise SAS",
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         "categorie_juridique_sirene": 5710,
@@ -678,13 +679,13 @@ def test_succes_api_search_entreprise(
         "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_MOINS_DE_60M,
     }
 
-    response = client.get("/api/search-entreprise/123456789")
+    response = client.get(f"/api/search-entreprise/{siren}")
 
-    mock_api_recherche_entreprises.assert_called_once_with("123456789")
-    mock_api_ratios_financiers.assert_called_once_with("123456789")
+    mock_api_recherche_entreprises.assert_called_once_with(siren)
+    mock_api_ratios_financiers.assert_called_once_with(siren)
     assert response.status_code == 200
     assert response.json() == {
-        "siren": "123456789",
+        "siren": siren,
         "denomination": "Entreprise SAS",
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         "categorie_juridique_sirene": 5710,
