@@ -14,6 +14,7 @@ class DPEFReglementation(Reglementation):
     more_info_url = reverse_lazy("reglementations:fiche_dpef")
     tag = "tag-durabilite"
     summary = "Établir une déclaration de performance extra-financière contenant des informations sociales, environnementales et sociétales."
+    zone = "europe"
 
     CRITERE_EFFECTIF_PERMANENT = "votre effectif permanent est supérieur à 500 salariés"
     CRITERE_EFFECTIF_GROUPE_PERMANENT = (

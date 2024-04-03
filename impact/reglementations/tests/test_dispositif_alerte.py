@@ -17,6 +17,7 @@ def test_reglementation_info():
         info["summary"]
         == "Avoir une procédure interne de recueil et de traitement de ces signalements."
     )
+    assert info["zone"] == "france"
 
 
 def test_est_suffisamment_qualifiee(entreprise_non_qualifiee):

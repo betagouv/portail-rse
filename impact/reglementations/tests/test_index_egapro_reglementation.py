@@ -22,6 +22,7 @@ def test_reglementation_info():
         info["summary"]
         == "Mesurer les écarts de rémunération entre les femmes et les hommes au sein de son entreprise."
     )
+    assert info["zone"] == "france"
 
 
 def test_est_suffisamment_qualifiee(entreprise_non_qualifiee):

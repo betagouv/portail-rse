@@ -21,6 +21,7 @@ def test_reglementation_info():
     assert info["more_info_url"] == reverse("reglementations:fiche_csrd")
     assert info["tag"] == "tag-durabilite"
     assert info["summary"] == "Publier un rapport de durabilité"
+    assert info["zone"] == "europe"
 
 
 @pytest.fixture

@@ -25,6 +25,7 @@ def test_reglementation_info():
         info["summary"]
         == "Constituer une base de données économiques, sociales et environnementales à transmettre à son CSE."
     )
+    assert info["zone"] == "france"
 
 
 def test_est_suffisamment_qualifiee(entreprise_non_qualifiee):
