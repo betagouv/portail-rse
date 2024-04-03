@@ -200,11 +200,18 @@ def qualification(request, siren):
         else:
             try:
                 infos_entreprise = api.recherche_entreprises.recherche(entreprise.siren)
+                infos_entreprise.update(
+                    api.ratios_financiers.dernier_exercice_comptable(entreprise.siren)
+                )
+                if infos_entreprise["tranche_chiffre_affaires_consolide"]:
+                    infos_entreprise["appartient_groupe"] = True
+                    infos_entreprise["comptes_consolides"] = True
             except APIError:
                 infos_entreprise = {}
-            infos_entreprise[
-                "date_cloture_exercice"
-            ] = date_cloture_exercice_par_defaut.isoformat()
+            if not "date_cloture_exercice" in infos_entreprise:
+                infos_entreprise[
+                    "date_cloture_exercice"
+                ] = date_cloture_exercice_par_defaut.isoformat()
         form = EntrepriseQualificationForm(initial=infos_entreprise)
 
     return render(
