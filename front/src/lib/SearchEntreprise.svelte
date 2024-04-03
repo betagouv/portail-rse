@@ -42,6 +42,10 @@
         submitButton.disabled = true
         promise = searchEntreprise(siren)
     }
+
+    if (!siren) {
+        submitButton.disabled = true
+    }
 </script>
 
 <fieldset class="fr-fieldset" aria-label="SIREN de l'entreprise">

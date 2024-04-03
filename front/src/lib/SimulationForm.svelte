@@ -5,7 +5,6 @@
     export let denomination = ""
 
     // defined by django
-    const sirenFieldId = "id_siren"
     const categorieJuridiqueFieldId = "id_categorie_juridique_sirene"
     const codePaysEtrangerFieldId = "id_code_pays_etranger_sirene"
     const effectifFieldId = "id_effectif"
@@ -21,7 +20,6 @@
     const appartientGroupeField = document.getElementById(appartientGroupeFieldId)
     const comptesConsolidesField = document.getElementById(comptesConsolidesFieldId)
     const trancheChiffreAffairesConsolideField = document.getElementById(trancheChiffreAffairesConsolideFieldId)
-    const submitButton = document.getElementById(sirenFieldId).closest("form").querySelector("[type=submit]")
 
     const simulationFields = document.getElementById("svelte-simulation-fields")
 
@@ -91,7 +89,6 @@
         showSimulationFields()
     }
     else {
-        submitButton.disabled = true
         hideSimulationFields()
     }
 </script>
