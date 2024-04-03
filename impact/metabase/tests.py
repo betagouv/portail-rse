@@ -594,7 +594,7 @@ def test_synchronise_l_indicateur_d_impact_nombre_de_reglementations_a_jour(
         attach_user_to_entreprise(alice, entreprise, "Présidente")
     date_premiere_synchro = date(2020, 11, 28)
     with freeze_time(date_premiere_synchro):
-        # une entreprise à jour pour Index Egapo sur 3 soumises
+        # une entreprise à jour pour Index Egapro sur 3 soumises
         mock_api_egapro.side_effect = [False, True, False]
         # deux entreprises à jour pour la BDESE sur 3 soumises
         # dont une qui a deux utilisateurs qui ont terminé la mise à jour de leur BDESE personnelle
@@ -658,7 +658,7 @@ def test_synchronise_l_indicateur_d_impact_avec_des_entreprises_soumises_au_BGES
         attach_user_to_entreprise(alice, entreprise, "Présidente")
     date_premiere_synchro = date(2020, 11, 28)
     with freeze_time(date_premiere_synchro):
-        # aucune entreprise à jour pour Index Egapo sur 2 soumises
+        # aucune entreprise à jour pour Index Egapro sur 2 soumises
         mock_api_egapro.side_effect = [False, False]
         # aucune entreprise à jour pour BDESE sur 2 soumises
         # une entreprise à jour pour BGES sur 2 soumises
