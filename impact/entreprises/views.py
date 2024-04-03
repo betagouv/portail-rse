@@ -175,9 +175,8 @@ def qualification(request, siren):
             or entreprise.dernieres_caracteristiques
         ):
             infos_entreprise = {
-                "date_cloture_exercice": caracs.date_cloture_exercice.isoformat()
-                if caracs.date_cloture_exercice
-                else date_cloture_exercice_par_defaut.isoformat(),
+                "date_cloture_exercice": caracs.date_cloture_exercice
+                or date_cloture_exercice_par_defaut,
                 "effectif": caracs.effectif,
                 "effectif_permanent": caracs.effectif_permanent,
                 "effectif_outre_mer": caracs.effectif_outre_mer,
@@ -211,7 +210,7 @@ def qualification(request, siren):
             if not "date_cloture_exercice" in infos_entreprise:
                 infos_entreprise[
                     "date_cloture_exercice"
-                ] = date_cloture_exercice_par_defaut.isoformat()
+                ] = date_cloture_exercice_par_defaut
         form = EntrepriseQualificationForm(initial=infos_entreprise)
 
     return render(

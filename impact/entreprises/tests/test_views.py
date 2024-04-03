@@ -253,7 +253,7 @@ def test_page_de_qualification_d_une_entreprise_non_qualifiee_pre_remplit_les_ch
     mock_api_ratios_financiers.assert_called_once_with(entreprise_non_qualifiee.siren)
     context = response.context
     # Les champs dont les infos sont récupérées par API sont pré-remplies
-    assert context["form"]["date_cloture_exercice"].initial == date(2023, 6, 30)
+    assert context["form"]["date_cloture_exercice"].initial == "2023-06-30"
     assert (
         context["form"]["effectif"].initial
         == CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
