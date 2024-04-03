@@ -13,6 +13,7 @@ def test_reglementation_info():
     assert info["title"] == "Audit énergétique"
     assert info["more_info_url"] == reverse("reglementations:fiche_audit_energetique")
     assert info["tag"] == "tag-environnement"
+    assert info["zone"] == "france"
 
 
 @pytest.fixture

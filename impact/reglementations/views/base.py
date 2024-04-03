@@ -41,6 +41,7 @@ class Reglementation(ABC):
     title: str
     more_info_url: str
     summary: str
+    zone: str = "france"
 
     @classmethod
     def info(cls):
@@ -49,6 +50,7 @@ class Reglementation(ABC):
             "more_info_url": cls.more_info_url,
             "tag": cls.tag,
             "summary": cls.summary,
+            "zone": cls.zone,
         }
 
     @classmethod

@@ -19,6 +19,7 @@ def test_reglementation_info():
         info["summary"]
         == "Se doter d'un dispositif efficace pour lutter contre la corruption et le trafic d'influence."
     )
+    assert info["zone"] == "france"
 
 
 @pytest.fixture

@@ -14,6 +14,7 @@ class CSRDReglementation(Reglementation):
     more_info_url = reverse_lazy("reglementations:fiche_csrd")
     tag = "tag-durabilite"
     summary = "Publier un rapport de durabilité"
+    zone = "europe"
 
     @classmethod
     def est_suffisamment_qualifiee(cls, caracteristiques):

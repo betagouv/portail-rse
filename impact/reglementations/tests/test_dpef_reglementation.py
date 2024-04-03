@@ -27,6 +27,7 @@ def test_reglementation_info():
         info["summary"]
         == "Établir une déclaration de performance extra-financière contenant des informations sociales, environnementales et sociétales."
     )
+    assert info["zone"] == "europe"
 
 
 @pytest.fixture
