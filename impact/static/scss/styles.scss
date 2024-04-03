@@ -179,6 +179,13 @@
     }
 }
 
+.fr-badge {
+    &.europe {
+        background-color: var(--background-alt-blue-ecume);
+        color: var(--text-action-high-blue-cumulus);
+    }
+}
+
 .reglementation--full:last-child {
     box-shadow: inset 0 0 0 0px var(--background-contrast-grey);
 }
