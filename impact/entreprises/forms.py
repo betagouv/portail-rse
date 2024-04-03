@@ -1,4 +1,5 @@
 import math
+from datetime import date
 
 from django import forms
 from django.core.exceptions import ValidationError
@@ -149,6 +150,16 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
             "systeme_management_energie": forms.CheckboxInput,
             "date_cloture_exercice": DateInput,
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if (
+            "date_cloture_exercice" in self.initial
+            and type(self.initial["date_cloture_exercice"]) == date
+        ):
+            self.initial["date_cloture_exercice"] = self.initial[
+                "date_cloture_exercice"
+            ].isoformat()
 
     def clean(self):
         ERREUR_CHAMP_MANQUANT_GROUPE = (

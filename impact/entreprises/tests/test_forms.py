@@ -365,3 +365,21 @@ def test_est_superieur(effectif):
     assert not est_superieur(effectif, CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS)
     if effectif != CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS:
         assert est_superieur(CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS, effectif)
+
+
+def test_transforme_la_valeur_initiale_de_date_cloture_exercice_en_format_affichable_par_le_navigateur():
+    initial = {
+        "date_cloture_exercice": date(2022, 12, 31),
+    }
+
+    form = EntrepriseQualificationForm(initial=initial)
+
+    assert form.initial["date_cloture_exercice"] == "2022-12-31"
+
+    initial = {
+        "date_cloture_exercice": "2022-12-31",
+    }
+
+    form = EntrepriseQualificationForm(initial=initial)
+
+    assert form.initial["date_cloture_exercice"] == "2022-12-31"
