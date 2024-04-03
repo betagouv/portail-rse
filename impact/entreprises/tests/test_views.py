@@ -219,14 +219,30 @@ def test_qualification_page_is_not_public(client, alice, entreprise_non_qualifie
     assert response.status_code == 403
 
 
-def test_qualification_page_without_current_qualification(
-    client, alice, entreprise_non_qualifiee, mock_api_recherche_entreprises
+def test_page_de_qualification_d_une_entreprise_non_qualifiee_pre_remplit_les_champs_par_api(
+    client,
+    alice,
+    entreprise_non_qualifiee,
+    mock_api_recherche_entreprises,
+    mock_api_ratios_financiers,
 ):
+    mock_api_recherche_entreprises.return_value = {
+        "siren": entreprise_non_qualifiee.siren,
+        "denomination": "Entreprise SAS",
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        "categorie_juridique_sirene": 5710,
+        "code_pays_etranger_sirene": CODE_PAYS_PORTUGAL,
+    }
+    mock_api_ratios_financiers.return_value = {
+        "date_cloture_exercice": date(2023, 6, 30),
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+        "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    }
+
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
     client.force_login(alice)
 
-    with freeze_time(date(2023, 1, 27)):
-        response = client.get(f"/entreprises/{entreprise_non_qualifiee.siren}")
+    response = client.get(f"/entreprises/{entreprise_non_qualifiee.siren}")
 
     assert response.status_code == 200
     content = response.content.decode("utf-8")
@@ -234,16 +250,38 @@ def test_qualification_page_without_current_qualification(
     mock_api_recherche_entreprises.assert_called_once_with(
         entreprise_non_qualifiee.siren
     )
+    mock_api_ratios_financiers.assert_called_once_with(entreprise_non_qualifiee.siren)
     context = response.context
-    assert context["form"]["date_cloture_exercice"].initial == "2022-12-31"
+    # Les champs dont les infos sont récupérées par API sont pré-remplies
+    assert context["form"]["date_cloture_exercice"].initial == date(2023, 6, 30)
+    assert (
+        context["form"]["effectif"].initial
+        == CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
+    )
+    assert (
+        context["form"]["tranche_chiffre_affaires"].initial
+        == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
+    )
+    assert context["form"]["appartient_groupe"].initial
+    assert context["form"]["comptes_consolides"].initial
+    assert (
+        context["form"]["tranche_chiffre_affaires_consolide"].initial
+        == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
+    )
+
+    # Les autres champs restent vides
     assert not context["form"]["est_societe_mere"].initial
     assert context["form"]["effectif_outre_mer"].initial is None
     assert context["form"]["effectif_groupe"].initial is None
     assert context["form"]["effectif_groupe_france"].initial is None
 
 
-def test_qualification_page_without_current_qualification_and_api_unavailable(
-    client, alice, entreprise_non_qualifiee, mock_api_recherche_entreprises
+def test_page_de_qualification_d_une_entreprise_non_qualifiee_avec_erreur_api_non_bloquante(
+    client,
+    alice,
+    entreprise_non_qualifiee,
+    mock_api_recherche_entreprises,
+    mock_api_ratios_financiers,
 ):
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
     client.force_login(alice)
@@ -261,8 +299,12 @@ def test_qualification_page_without_current_qualification_and_api_unavailable(
     assert context["form"]["effectif"].initial is None
 
 
-def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs(
-    client, alice, entreprise_factory, mock_api_recherche_entreprises
+def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs_sans_appel_api(
+    client,
+    alice,
+    entreprise_factory,
+    mock_api_recherche_entreprises,
+    mock_api_ratios_financiers,
 ):
     entreprise = entreprise_factory(
         date_cloture_exercice=date(2022, 6, 30),
@@ -295,6 +337,7 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs(
     content = response.content.decode("utf-8")
     assert "<!-- page qualification entreprise -->" in content
     mock_api_recherche_entreprises.assert_not_called()
+    mock_api_ratios_financiers.assert_not_called()
     context = response.context
 
     form = context["form"]
@@ -341,8 +384,12 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs(
     assert form["systeme_management_energie"].initial
 
 
-def test_page_de_qualification_avec_des_caracteristiques_non_qualifiantes_initialise_les_champs(
-    client, alice, entreprise_factory, mock_api_recherche_entreprises
+def test_page_de_qualification_avec_des_caracteristiques_non_qualifiantes_initialise_les_champs_sans_appel_api(
+    client,
+    alice,
+    entreprise_factory,
+    mock_api_recherche_entreprises,
+    mock_api_ratios_financiers,
 ):
     entreprise = entreprise_factory()
     attach_user_to_entreprise(alice, entreprise, "Présidente")
@@ -356,6 +403,7 @@ def test_page_de_qualification_avec_des_caracteristiques_non_qualifiantes_initia
         response = client.get(f"/entreprises/{entreprise.siren}")
 
     mock_api_recherche_entreprises.assert_not_called()
+    mock_api_ratios_financiers.assert_not_called()
     context = response.context
 
     form = context["form"]
@@ -386,7 +434,6 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
     client,
     alice,
     entreprise_non_qualifiee,
-    mock_api_recherche_entreprises,
     mock_api_egapro,
 ):
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
@@ -415,7 +462,6 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
 
     with freeze_time(date(2023, 10, 25)):
         url = f"/entreprises/{entreprise_non_qualifiee.siren}"
-        response = client.get(url)
         response = client.post(url, data=data, follow=True)
 
     assert response.status_code == 200
@@ -489,7 +535,6 @@ def test_qualifie_entreprise_sans_groupe(
     client,
     alice,
     entreprise_non_qualifiee,
-    mock_api_recherche_entreprises,
     mock_api_egapro,
 ):
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
@@ -550,9 +595,7 @@ def test_qualifie_entreprise_sans_groupe(
     assert caracteristiques.sont_qualifiantes
 
 
-def test_echoue_a_qualifier_l_entreprise(
-    client, alice, entreprise_non_qualifiee, mock_api_recherche_entreprises
-):
+def test_echoue_a_qualifier_l_entreprise(client, alice, entreprise_non_qualifiee):
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
     client.force_login(alice)
     data = {
@@ -561,7 +604,6 @@ def test_echoue_a_qualifier_l_entreprise(
     }
 
     url = f"/entreprises/{entreprise_non_qualifiee.siren}"
-    response = client.get(url)
     response = client.post(url, data=data)
 
     assert response.status_code == 200
