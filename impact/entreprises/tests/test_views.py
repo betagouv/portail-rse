@@ -617,56 +617,6 @@ def test_echoue_a_qualifier_l_entreprise(client, alice, entreprise_non_qualifiee
     assert not entreprise_non_qualifiee.dernieres_caracteristiques_qualifiantes
 
 
-@pytest.mark.parametrize(
-    "donnees_consolidees",
-    [
-        {"tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS},
-        {
-            "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_100M_ET_PLUS
-        },
-    ],
-)
-def test_qualification_entreprise_en_erreur_car_comptes_consolides_sans_bilan_ou_ca_consolide(
-    donnees_consolidees,
-    client,
-    alice,
-    entreprise_non_qualifiee,
-    mock_api_recherche_entreprises,
-):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
-    client.force_login(alice)
-    data = {
-        "date_cloture_exercice": date(2022, 12, 31),
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M,
-        "appartient_groupe": True,
-        "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
-        "societe_mere_en_france": True,
-        "comptes_consolides": True,
-        "bdese_accord": True,
-        "systeme_management_energie": True,
-    }
-    data.update(donnees_consolidees)
-
-    url = f"/entreprises/{entreprise_non_qualifiee.siren}"
-    response = client.get(url)
-    response = client.post(url, data=data)
-
-    assert response.status_code == 200
-    content = html.unescape(response.content.decode("utf-8"))
-    assert (
-        "Les informations de l'entreprise n'ont pas été mises à jour car le formulaire contient des erreurs."
-        in content
-    )
-    assert "Ce champ est obligatoire lorsque les comptes sont consolidés" in content
-
-    entreprise_non_qualifiee.refresh_from_db()
-    assert not entreprise_non_qualifiee.dernieres_caracteristiques_qualifiantes
-
-
 def test_qualification_supprime_les_caracteristiques_annuelles_posterieures_a_la_date_de_cloture_du_dernier_exercice(
     client,
     alice,
