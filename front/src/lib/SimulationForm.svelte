@@ -50,7 +50,6 @@
     }
 
     const updateSimulationFields = (infos) => {
-        console.log(infos)
         resetSimulationFields()
         denomination = infos.denomination
         effectifField.value = infos.effectif
