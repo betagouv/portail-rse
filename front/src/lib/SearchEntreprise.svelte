@@ -32,6 +32,8 @@
             document.dispatchEvent(event)
         } else {
             loading = false
+            const event = new CustomEvent("siren-incorrect")
+            document.dispatchEvent(event)
             throw new Error(json['error'])
         }
     }
