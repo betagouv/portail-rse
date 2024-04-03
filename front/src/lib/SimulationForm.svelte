@@ -6,8 +6,6 @@
 
     // defined by django
     const sirenFieldId = "id_siren"
-    const sirenFieldName = "siren"
-    const denominationFieldName = "denomination"
     const categorieJuridiqueFieldId = "id_categorie_juridique_sirene"
     const codePaysEtrangerFieldId = "id_code_pays_etranger_sirene"
     const effectifFieldId = "id_effectif"

@@ -10,6 +10,7 @@
     const sirenFieldId = "id_siren"
     const sirenFieldName = "siren"
     const denominationFieldName = "denomination"
+
     const submitButton = document.getElementById(sirenFieldId).closest("form").querySelector("[type=submit]")
 
 
