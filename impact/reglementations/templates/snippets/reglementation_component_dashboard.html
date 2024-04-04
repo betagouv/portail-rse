@@ -1,19 +1,13 @@
 <div class="reglementation-grid reglementation-dashboard reglementation--full fr-pb-2w fr-mt-2w {% if status and status.status == status.STATUS_NON_SOUMIS %}reglementation--grey{% endif %}">
     <div class="reglementation-header">
-        <div class="reglementation_badge">
-            <ul class="fr-badges-group">
-                {% if reglementation.zone == "france" %}
-                    <li>
-                        <p class="fr-badge fr-badge--error fr-badge--no-icon {{ reglementation.zone }}">Nationale</p>
-                    </li>
-                {% elif reglementation.zone == "europe" %}
-                    <li>
-                        <p class="fr-badge fr-badge--info fr-badge--no-icon {{ reglementation.zone }}">Européenne</p>
-                    </li>
-                {% endif %}
-            </ul>
-        </div>
-        <!--<span class="fr-icon-info-fill"></span>--><h6 class="reglementation-title {{ reglementation.info.tag }}">{{ reglementation.info.title }}</h6>
+        <h6 class="reglementation-title {{ reglementation.info.tag }}">
+            {{ reglementation.info.title }}
+            {% if reglementation.zone == "france" %}
+                <span title="Réglementation Nationale" class="{{ reglementation.zone }} fr-pl-1w">🇫🇷</span>
+            {% elif reglementation.zone == "europe" %}
+                <span title="Réglementation Européenne" class="{{ reglementation.zone }} fr-pl-1w">🇪🇺</span>
+            {% endif %}
+        </h6>
         {% if status.prochaine_echeance %}
             <p class="fr-text--sm fr-mb-0">Date de prochaine publication : {{ status.prochaine_echeance }}</p>
         {% endif %}
