@@ -2021,12 +2021,12 @@ def test_entreprise_hors_EEE_ca_et_effectif_superieurs_aux_seuils_grande_entrepr
     )
 
 
-def test_decale_annee_selon_cloture_exercice_comptable():
+def test_decale_annee_publication_selon_cloture_exercice_comptable():
     caracteristiques = CaracteristiquesAnnuelles(
         date_cloture_exercice=date(2023, 12, 31)
     )
     assert (
-        CSRDReglementation.decale_annee_selon_cloture_exercice_comptable(
+        CSRDReglementation.decale_annee_publication_selon_cloture_exercice_comptable(
             2025, caracteristiques
         )
         == 2025
@@ -2036,7 +2036,7 @@ def test_decale_annee_selon_cloture_exercice_comptable():
         date_cloture_exercice=date(2023, 11, 30)
     )
     assert (
-        CSRDReglementation.decale_annee_selon_cloture_exercice_comptable(
+        CSRDReglementation.decale_annee_publication_selon_cloture_exercice_comptable(
             2025, caracteristiques
         )
         == 2026
