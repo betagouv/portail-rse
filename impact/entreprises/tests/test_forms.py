@@ -1,6 +1,9 @@
 from datetime import date
 
+import pytest
+
 from entreprises.forms import EntrepriseQualificationForm
+from entreprises.forms import est_superieur
 from entreprises.models import CaracteristiquesAnnuelles
 
 
@@ -280,6 +283,30 @@ def test_erreur_si_effectifs_superieurs_a_effectifs_groupe():
     )
 
 
+def test_ok_si_effectifs_inferieurs_ou_egaux_a_effectifs_groupe():
+    data = {
+        "date_cloture_exercice": date(2022, 12, 31),
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+        "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        "est_cotee": False,
+        "appartient_groupe": True,
+        "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_499,
+        "effectif_groupe_france": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_499,
+        "effectif_groupe_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_499,
+        "societe_mere_en_france": True,
+        "comptes_consolides": False,
+        "bdese_accord": True,
+        "systeme_management_energie": True,
+    }
+
+    form = EntrepriseQualificationForm(data=data)
+
+    assert form.is_valid(), form.errors
+
+
 def test_erreur_si_est_societe_mere_en_France_avec_un_effectif_superieur_a_effectif_groupe_france():
     data = {
         "date_cloture_exercice": date(2022, 12, 31),
@@ -329,3 +356,12 @@ def test_sans_interet_public_force_non_cotee():
     assert form.is_valid(), form.errors
     assert form.cleaned_data["est_interet_public"] is False
     assert form.cleaned_data["est_cotee"] is False
+
+
+@pytest.mark.parametrize(
+    "effectif", [effectif for effectif, _ in CaracteristiquesAnnuelles.EFFECTIF_CHOICES]
+)
+def test_est_superieur(effectif):
+    assert not est_superieur(effectif, CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS)
+    if effectif != CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS:
+        assert est_superieur(CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS, effectif)
