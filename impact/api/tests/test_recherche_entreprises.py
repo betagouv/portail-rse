@@ -130,7 +130,7 @@ def test_echec_recherche_requete_api_invalide(mocker):
         recherche(SIREN)
 
     capture_message_mock.assert_called_once_with(
-        "Requête invalide sur l'API recherche entreprise"
+        "Requête invalide sur l'API recherche entreprises"
     )
     assert (
         str(e.value)
@@ -145,9 +145,14 @@ def test_echec_trop_de_requetes(mocker):
         status_code = 429
 
     mocker.patch("requests.get", return_value=FakeResponse())
+    capture_message_mock = mocker.patch("sentry_sdk.capture_message")
+
     with pytest.raises(TooManyRequestError) as e:
         recherche(SIREN)
 
+    capture_message_mock.assert_called_once_with(
+        "Trop de requêtes sur l'API recherche entreprises"
+    )
     assert (
         str(e.value) == "Le service est temporairement surchargé. Merci de réessayer."
     )
@@ -165,7 +170,7 @@ def test_echec_erreur_de_l_API(mocker):
     with pytest.raises(ServerError) as e:
         recherche(SIREN)
 
-    capture_message_mock.assert_called_once_with("Erreur API recherche entreprise")
+    capture_message_mock.assert_called_once_with("Erreur API recherche entreprises")
     assert (
         str(e.value)
         == "Le service est actuellement indisponible. Merci de réessayer plus tard."
@@ -225,7 +230,7 @@ def test_entreprise_inexistante_mais_pourtant_retournée_par_l_API(mocker):
 
     assert str(e.value) == "Aucune entreprise ne correspond à ce SIREN."
     capture_message_mock.assert_called_once_with(
-        "Entreprise inexistante mais retournée par l'API recherche entreprise"
+        "Entreprise inexistante mais retournée par l'API recherche entreprises"
     )
 
 
@@ -259,7 +264,7 @@ def test_pas_de_nature_juridique(nature_juridique, mocker):
     infos = recherche(SIREN)
 
     capture_message_mock.assert_called_once_with(
-        "Nature juridique récupérée par l'API recherche entreprise invalide"
+        "Nature juridique récupérée par l'API recherche entreprises invalide"
     )
     assert infos["categorie_juridique_sirene"] == None
 
@@ -291,7 +296,7 @@ def test_pas_de_code_pays_etranger(mocker):
     infos = recherche(SIREN)
 
     capture_message_mock.assert_called_once_with(
-        "Code pays étranger récupéré par l'API recherche entreprise invalide"
+        "Code pays étranger récupéré par l'API recherche entreprises invalide"
     )
     assert infos["code_pays_etranger_sirene"] == None
 

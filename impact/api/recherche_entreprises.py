@@ -37,7 +37,7 @@ def recherche(siren):
         denomination = data["nom_raison_sociale"] or data["nom_complet"]
         if not denomination:
             sentry_sdk.capture_message(
-                "Entreprise inexistante mais retournée par l'API recherche entreprise"
+                "Entreprise inexistante mais retournée par l'API recherche entreprises"
             )
             raise SirenError(SIREN_NOT_MATCH_ERROR)
 
@@ -47,7 +47,7 @@ def recherche(siren):
             categorie_juridique_sirene = int(data["nature_juridique"])
         except (ValueError, TypeError):
             sentry_sdk.capture_message(
-                "Nature juridique récupérée par l'API recherche entreprise invalide"
+                "Nature juridique récupérée par l'API recherche entreprises invalide"
             )
             categorie_juridique_sirene = None
         try:
@@ -77,7 +77,7 @@ def recherche(siren):
             code_pays_etranger = None
         except (KeyError, ValueError):
             sentry_sdk.capture_message(
-                "Code pays étranger récupéré par l'API recherche entreprise invalide"
+                "Code pays étranger récupéré par l'API recherche entreprises invalide"
             )
             code_pays_etranger = None
         return {
@@ -88,10 +88,11 @@ def recherche(siren):
             "code_pays_etranger_sirene": code_pays_etranger,
         }
     elif response.status_code == 429:
+        sentry_sdk.capture_message("Trop de requêtes sur l'API recherche entreprises")
         raise TooManyRequestError(TOO_MANY_REQUESTS_ERROR)
     elif response.status_code == 400:
-        sentry_sdk.capture_message("Requête invalide sur l'API recherche entreprise")
+        sentry_sdk.capture_message("Requête invalide sur l'API recherche entreprises")
         raise APIError(SERVER_ERROR)
     else:
-        sentry_sdk.capture_message("Erreur API recherche entreprise")
+        sentry_sdk.capture_message("Erreur API recherche entreprises")
         raise ServerError(SERVER_ERROR)
