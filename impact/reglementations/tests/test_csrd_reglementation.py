@@ -326,7 +326,7 @@ def test_entreprise_categorie_juridique_concernee_soumise(
         CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     ],
 )
-def test_entreprise_non_cotee_bilan_et_ca_superieurs_aux_seuils_grande_entreprises_soumise_en_2026(
+def test_entreprise_non_cotee_bilan_et_ca_superieurs_aux_seuils_grande_entreprises_soumise_en_2025(
     bilan, ca, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -346,7 +346,7 @@ def test_entreprise_non_cotee_bilan_et_ca_superieurs_aux_seuils_grande_entrepris
         CSRDReglementation.est_soumis_a_partir_de(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
-        == 2026
+        == 2025
     )
     assert CSRDReglementation.criteres_remplis(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -377,7 +377,7 @@ def test_entreprise_non_cotee_bilan_et_ca_superieurs_aux_seuils_grande_entrepris
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_entreprise_non_cotee_bilan_et_effectif_superieurs_aux_seuils_grande_entreprise_soumise_en_2026(
+def test_entreprise_non_cotee_bilan_et_effectif_superieurs_aux_seuils_grande_entreprise_soumise_en_2025(
     bilan, effectif, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -397,7 +397,7 @@ def test_entreprise_non_cotee_bilan_et_effectif_superieurs_aux_seuils_grande_ent
         CSRDReglementation.est_soumis_a_partir_de(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
-        == 2026
+        == 2025
     )
     assert CSRDReglementation.criteres_remplis(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -427,7 +427,7 @@ def test_entreprise_non_cotee_bilan_et_effectif_superieurs_aux_seuils_grande_ent
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_entreprise_non_cotee_CA_et_effectif_superieurs_aux_seuils_grande_entreprise_soumise_en_2026(
+def test_entreprise_non_cotee_CA_et_effectif_superieurs_aux_seuils_grande_entreprise_soumise_en_2025(
     ca, effectif, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -447,7 +447,7 @@ def test_entreprise_non_cotee_CA_et_effectif_superieurs_aux_seuils_grande_entrep
         CSRDReglementation.est_soumis_a_partir_de(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
-        == 2026
+        == 2025
     )
     assert CSRDReglementation.criteres_remplis(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -477,7 +477,7 @@ def test_entreprise_non_cotee_CA_et_effectif_superieurs_aux_seuils_grande_entrep
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_entreprise_sans_interet_public_bilan_et_effectif_superieurs_aux_seuils_grande_entreprise_soumise_en_2026(
+def test_entreprise_sans_interet_public_bilan_et_effectif_superieurs_aux_seuils_grande_entreprise_soumise_en_2025(
     bilan, effectif, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -498,7 +498,7 @@ def test_entreprise_sans_interet_public_bilan_et_effectif_superieurs_aux_seuils_
         CSRDReglementation.est_soumis_a_partir_de(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
-        == 2026
+        == 2025
     )
     assert CSRDReglementation.criteres_remplis(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -528,7 +528,7 @@ def test_entreprise_sans_interet_public_bilan_et_effectif_superieurs_aux_seuils_
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_entreprise_sans_interet_public_CA_et_effectif_superieurs_aux_seuils_grande_entreprise_soumise_en_2026(
+def test_entreprise_sans_interet_public_CA_et_effectif_superieurs_aux_seuils_grande_entreprise_soumise_en_2025(
     ca, effectif, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -549,7 +549,7 @@ def test_entreprise_sans_interet_public_CA_et_effectif_superieurs_aux_seuils_gra
         CSRDReglementation.est_soumis_a_partir_de(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
-        == 2026
+        == 2025
     )
     assert CSRDReglementation.criteres_remplis(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -805,7 +805,7 @@ def test_microentreprise_cotee_car_aucun_seuil_suffisant_est_non_soumise(
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_entreprise_cotee_ca_et_effectif_plus_de_500_superieurs_aux_seuils_grande_entreprise_soumise_en_2025(
+def test_entreprise_cotee_ca_et_effectif_plus_de_500_superieurs_aux_seuils_grande_entreprise_soumise_en_2024(
     ca, effectif, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -826,7 +826,7 @@ def test_entreprise_cotee_ca_et_effectif_plus_de_500_superieurs_aux_seuils_grand
         CSRDReglementation.est_soumis_a_partir_de(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
-        == 2025
+        == 2024
     )
     assert CSRDReglementation.criteres_remplis(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -855,7 +855,7 @@ def test_entreprise_cotee_ca_et_effectif_plus_de_500_superieurs_aux_seuils_grand
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_entreprise_interet_public_ca_et_effectif_plus_de_500_superieurs_aux_seuils_grande_entreprise_soumise_en_2025(
+def test_entreprise_interet_public_ca_et_effectif_plus_de_500_superieurs_aux_seuils_grande_entreprise_soumise_en_2024(
     ca, effectif, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -876,7 +876,7 @@ def test_entreprise_interet_public_ca_et_effectif_plus_de_500_superieurs_aux_seu
         CSRDReglementation.est_soumis_a_partir_de(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
-        == 2025
+        == 2024
     )
     assert CSRDReglementation.criteres_remplis(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -904,8 +904,188 @@ def test_entreprise_interet_public_ca_et_effectif_plus_de_500_superieurs_aux_seu
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
     ],
 )
-def test_entreprise_cotee_ca_et_effectif_moins_de_500_superieurs_aux_seuils_grande_entreprise_soumise_en_2026(
+def test_entreprise_cotee_ca_et_effectif_moins_de_500_superieurs_aux_seuils_grande_entreprise_soumise_en_2025(
     ca, effectif, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
+        code_pays_etranger_sirene=None,
+        est_cotee=True,
+        appartient_groupe=False,
+        effectif=effectif,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        tranche_chiffre_affaires=ca,
+    )
+
+    assert CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert (
+        CSRDReglementation.est_soumis_a_partir_de(
+            entreprise.dernieres_caracteristiques_qualifiantes
+        )
+        == 2025
+    )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre société est cotée sur un marché réglementé",
+        "votre effectif est supérieur à 250 salariés",
+        "votre chiffre d'affaires est supérieur à 50M€",
+    ]
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+
+@pytest.mark.parametrize(
+    "bilan",
+    [
+        CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_25M_ET_43M,
+        CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
+        CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+    ],
+)
+def test_entreprise_cotee_bilan_et_ca_superieurs_aux_seuils_petite_entreprise_mais_ca_inferieur_seuil_grande_entreprise_soumise_en_2026(
+    bilan, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
+        code_pays_etranger_sirene=None,
+        est_cotee=True,
+        appartient_groupe=False,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        tranche_bilan=bilan,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
+    )
+
+    assert CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert (
+        CSRDReglementation.est_soumis_a_partir_de(
+            entreprise.dernieres_caracteristiques_qualifiantes
+        )
+        == 2026
+    )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre société est cotée sur un marché réglementé",
+        "votre bilan est supérieur à 450k€",
+        "votre chiffre d'affaires est supérieur à 900k€",
+    ]
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+
+@pytest.mark.parametrize(
+    "ca",
+    [
+        CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
+        CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
+        CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    ],
+)
+def test_entreprise_cotee_bilan_et_ca_superieurs_aux_seuils_petite_entreprise_mais_bilan_inferieur_seuil_grande_entreprise_soumise_en_2026(
+    ca, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
+        code_pays_etranger_sirene=None,
+        est_cotee=True,
+        appartient_groupe=False,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M,
+        tranche_chiffre_affaires=ca,
+    )
+
+    assert CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert (
+        CSRDReglementation.est_soumis_a_partir_de(
+            entreprise.dernieres_caracteristiques_qualifiantes
+        )
+        == 2026
+    )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre société est cotée sur un marché réglementé",
+        "votre bilan est supérieur à 450k€",
+        "votre chiffre d'affaires est supérieur à 900k€",
+    ]
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+
+@pytest.mark.parametrize(
+    "effectif",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
+        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+    ],
+)
+def test_entreprise_cotee_effectif_et_ca_superieurs_aux_seuils_petite_entreprise_mais_ca_inferieur_seuil_grande_entreprise_soumise_en_2026(
+    effectif, entreprise_factory
+):
+    entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
+        code_pays_etranger_sirene=None,
+        est_cotee=True,
+        appartient_groupe=False,
+        effectif=effectif,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
+    )
+
+    assert CSRDReglementation.est_soumis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    assert (
+        CSRDReglementation.est_soumis_a_partir_de(
+            entreprise.dernieres_caracteristiques_qualifiantes
+        )
+        == 2026
+    )
+    assert CSRDReglementation.criteres_remplis(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    ) == [
+        "votre société est cotée sur un marché réglementé",
+        "votre effectif est supérieur à 10 salariés",
+        "votre chiffre d'affaires est supérieur à 900k€",
+    ]
+    assert not CSRDReglementation.est_delegable(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+
+
+@pytest.mark.parametrize(
+    "effectif",
+    [
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+    ],
+)
+@pytest.mark.parametrize(
+    "ca",
+    [
+        CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
+        CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
+        CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    ],
+)
+def test_entreprise_cotee_effectif_et_ca_superieurs_aux_seuils_petite_entreprise_mais_effectif_inferieur_seuil_grande_entreprise_soumise_en_2026(
+    effectif, ca, entreprise_factory
 ):
     entreprise = entreprise_factory(
         categorie_juridique_sirene=CODE_SA,
@@ -930,186 +1110,6 @@ def test_entreprise_cotee_ca_et_effectif_moins_de_500_superieurs_aux_seuils_gran
         entreprise.dernieres_caracteristiques_qualifiantes
     ) == [
         "votre société est cotée sur un marché réglementé",
-        "votre effectif est supérieur à 250 salariés",
-        "votre chiffre d'affaires est supérieur à 50M€",
-    ]
-    assert not CSRDReglementation.est_delegable(
-        entreprise.dernieres_caracteristiques_qualifiantes
-    )
-
-
-@pytest.mark.parametrize(
-    "bilan",
-    [
-        CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_25M_ET_43M,
-        CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
-        CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
-    ],
-)
-def test_entreprise_cotee_bilan_et_ca_superieurs_aux_seuils_petite_entreprise_mais_ca_inferieur_seuil_grande_entreprise_soumise_en_2027(
-    bilan, entreprise_factory
-):
-    entreprise = entreprise_factory(
-        categorie_juridique_sirene=CODE_SA,
-        code_pays_etranger_sirene=None,
-        est_cotee=True,
-        appartient_groupe=False,
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
-        tranche_bilan=bilan,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
-    )
-
-    assert CSRDReglementation.est_soumis(
-        entreprise.dernieres_caracteristiques_qualifiantes
-    )
-    assert (
-        CSRDReglementation.est_soumis_a_partir_de(
-            entreprise.dernieres_caracteristiques_qualifiantes
-        )
-        == 2027
-    )
-    assert CSRDReglementation.criteres_remplis(
-        entreprise.dernieres_caracteristiques_qualifiantes
-    ) == [
-        "votre société est cotée sur un marché réglementé",
-        "votre bilan est supérieur à 450k€",
-        "votre chiffre d'affaires est supérieur à 900k€",
-    ]
-    assert not CSRDReglementation.est_delegable(
-        entreprise.dernieres_caracteristiques_qualifiantes
-    )
-
-
-@pytest.mark.parametrize(
-    "ca",
-    [
-        CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
-        CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
-        CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
-    ],
-)
-def test_entreprise_cotee_bilan_et_ca_superieurs_aux_seuils_petite_entreprise_mais_bilan_inferieur_seuil_grande_entreprise_soumise_en_2027(
-    ca, entreprise_factory
-):
-    entreprise = entreprise_factory(
-        categorie_juridique_sirene=CODE_SA,
-        code_pays_etranger_sirene=None,
-        est_cotee=True,
-        appartient_groupe=False,
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M,
-        tranche_chiffre_affaires=ca,
-    )
-
-    assert CSRDReglementation.est_soumis(
-        entreprise.dernieres_caracteristiques_qualifiantes
-    )
-    assert (
-        CSRDReglementation.est_soumis_a_partir_de(
-            entreprise.dernieres_caracteristiques_qualifiantes
-        )
-        == 2027
-    )
-    assert CSRDReglementation.criteres_remplis(
-        entreprise.dernieres_caracteristiques_qualifiantes
-    ) == [
-        "votre société est cotée sur un marché réglementé",
-        "votre bilan est supérieur à 450k€",
-        "votre chiffre d'affaires est supérieur à 900k€",
-    ]
-    assert not CSRDReglementation.est_delegable(
-        entreprise.dernieres_caracteristiques_qualifiantes
-    )
-
-
-@pytest.mark.parametrize(
-    "effectif",
-    [
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
-        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
-    ],
-)
-def test_entreprise_cotee_effectif_et_ca_superieurs_aux_seuils_petite_entreprise_mais_ca_inferieur_seuil_grande_entreprise_soumise_en_2027(
-    effectif, entreprise_factory
-):
-    entreprise = entreprise_factory(
-        categorie_juridique_sirene=CODE_SA,
-        code_pays_etranger_sirene=None,
-        est_cotee=True,
-        appartient_groupe=False,
-        effectif=effectif,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
-    )
-
-    assert CSRDReglementation.est_soumis(
-        entreprise.dernieres_caracteristiques_qualifiantes
-    )
-    assert (
-        CSRDReglementation.est_soumis_a_partir_de(
-            entreprise.dernieres_caracteristiques_qualifiantes
-        )
-        == 2027
-    )
-    assert CSRDReglementation.criteres_remplis(
-        entreprise.dernieres_caracteristiques_qualifiantes
-    ) == [
-        "votre société est cotée sur un marché réglementé",
-        "votre effectif est supérieur à 10 salariés",
-        "votre chiffre d'affaires est supérieur à 900k€",
-    ]
-    assert not CSRDReglementation.est_delegable(
-        entreprise.dernieres_caracteristiques_qualifiantes
-    )
-
-
-@pytest.mark.parametrize(
-    "effectif",
-    [
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-    ],
-)
-@pytest.mark.parametrize(
-    "ca",
-    [
-        CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
-        CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
-        CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
-    ],
-)
-def test_entreprise_cotee_effectif_et_ca_superieurs_aux_seuils_petite_entreprise_mais_effectif_inferieur_seuil_grande_entreprise_soumise_en_2027(
-    effectif, ca, entreprise_factory
-):
-    entreprise = entreprise_factory(
-        categorie_juridique_sirene=CODE_SA,
-        code_pays_etranger_sirene=None,
-        est_cotee=True,
-        appartient_groupe=False,
-        effectif=effectif,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
-        tranche_chiffre_affaires=ca,
-    )
-
-    assert CSRDReglementation.est_soumis(
-        entreprise.dernieres_caracteristiques_qualifiantes
-    )
-    assert (
-        CSRDReglementation.est_soumis_a_partir_de(
-            entreprise.dernieres_caracteristiques_qualifiantes
-        )
-        == 2027
-    )
-    assert CSRDReglementation.criteres_remplis(
-        entreprise.dernieres_caracteristiques_qualifiantes
-    ) == [
-        "votre société est cotée sur un marché réglementé",
         "votre effectif est supérieur à 10 salariés",
         "votre chiffre d'affaires est supérieur à 900k€",
     ]
@@ -1130,7 +1130,7 @@ def test_entreprise_cotee_effectif_et_ca_superieurs_aux_seuils_petite_entreprise
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entreprise_mais_bilan_inferieur_seuil_grande_entreprise_soumise_en_2027(
+def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entreprise_mais_bilan_inferieur_seuil_grande_entreprise_soumise_en_2026(
     effectif, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -1150,7 +1150,7 @@ def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entrepr
         CSRDReglementation.est_soumis_a_partir_de(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
-        == 2027
+        == 2026
     )
     assert CSRDReglementation.criteres_remplis(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -1180,7 +1180,7 @@ def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entrepr
         CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
     ],
 )
-def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entreprise_mais_effectif_inferieur_seuil_grande_entreprise_soumise_en_2027(
+def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entreprise_mais_effectif_inferieur_seuil_grande_entreprise_soumise_en_2026(
     effectif, bilan, entreprise_factory
 ):
     entreprise = entreprise_factory(
@@ -1200,7 +1200,7 @@ def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entrepr
         CSRDReglementation.est_soumis_a_partir_de(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
-        == 2027
+        == 2026
     )
     assert CSRDReglementation.criteres_remplis(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -1354,7 +1354,7 @@ def test_microentreprise_filiale_grand_groupe_jamais_soumise(
     )
 
 
-def test_microentreprise_cotee_societe_mere_grand_groupe_effectif_groupe_superieur_a_500_soumise_en_2025(
+def test_microentreprise_cotee_societe_mere_grand_groupe_effectif_groupe_superieur_a_500_soumise_en_2024(
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
@@ -1380,7 +1380,7 @@ def test_microentreprise_cotee_societe_mere_grand_groupe_effectif_groupe_superie
         CSRDReglementation.est_soumis_a_partir_de(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
-        == 2025
+        == 2024
     )
     assert CSRDReglementation.criteres_remplis(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -1396,7 +1396,7 @@ def test_microentreprise_cotee_societe_mere_grand_groupe_effectif_groupe_superie
     )
 
 
-def test_microentreprise_cotee_societe_mere_grand_groupe_effectif_groupe_inferieur_a_500_soumise_en_2026(
+def test_microentreprise_cotee_societe_mere_grand_groupe_effectif_groupe_inferieur_a_500_soumise_en_2025(
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
@@ -1422,7 +1422,7 @@ def test_microentreprise_cotee_societe_mere_grand_groupe_effectif_groupe_inferie
         CSRDReglementation.est_soumis_a_partir_de(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
-        == 2026
+        == 2025
     )
     assert CSRDReglementation.criteres_remplis(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -1438,7 +1438,7 @@ def test_microentreprise_cotee_societe_mere_grand_groupe_effectif_groupe_inferie
     )
 
 
-def test_microentreprise_avec_interet_public_societe_mere_grand_groupe_effectif_groupe_superieur_a_500_soumise_en_2025(
+def test_microentreprise_avec_interet_public_societe_mere_grand_groupe_effectif_groupe_superieur_a_500_soumise_en_2024(
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
@@ -1464,7 +1464,7 @@ def test_microentreprise_avec_interet_public_societe_mere_grand_groupe_effectif_
         CSRDReglementation.est_soumis_a_partir_de(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
-        == 2025
+        == 2024
     )
     assert CSRDReglementation.criteres_remplis(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -1480,7 +1480,7 @@ def test_microentreprise_avec_interet_public_societe_mere_grand_groupe_effectif_
     )
 
 
-def test_microentreprise_avec_interet_public_societe_mere_grand_groupe_effectif_groupe_inferieur_a_500_soumise_en_2026(
+def test_microentreprise_avec_interet_public_societe_mere_grand_groupe_effectif_groupe_inferieur_a_500_soumise_en_2025(
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
@@ -1506,7 +1506,7 @@ def test_microentreprise_avec_interet_public_societe_mere_grand_groupe_effectif_
         CSRDReglementation.est_soumis_a_partir_de(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
-        == 2026
+        == 2025
     )
     assert CSRDReglementation.criteres_remplis(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -1522,7 +1522,7 @@ def test_microentreprise_avec_interet_public_societe_mere_grand_groupe_effectif_
     )
 
 
-def test_microentreprise_non_cotee_sans_interet_public_societe_mere_grand_groupe_soumise_en_2026(
+def test_microentreprise_non_cotee_sans_interet_public_societe_mere_grand_groupe_soumise_en_2025(
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
@@ -1547,7 +1547,7 @@ def test_microentreprise_non_cotee_sans_interet_public_societe_mere_grand_groupe
         CSRDReglementation.est_soumis_a_partir_de(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
-        == 2026
+        == 2025
     )
     assert CSRDReglementation.criteres_remplis(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -1562,7 +1562,7 @@ def test_microentreprise_non_cotee_sans_interet_public_societe_mere_grand_groupe
     )
 
 
-def test_PME_cotee_filiale_grand_groupe_effectif_groupe_superieur_a_500_soumise_en_2025(
+def test_PME_cotee_filiale_grand_groupe_effectif_groupe_superieur_a_500_soumise_en_2024(
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
@@ -1587,7 +1587,7 @@ def test_PME_cotee_filiale_grand_groupe_effectif_groupe_superieur_a_500_soumise_
         CSRDReglementation.est_soumis_a_partir_de(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
-        == 2025
+        == 2024
     )
     assert CSRDReglementation.criteres_remplis(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -1602,7 +1602,7 @@ def test_PME_cotee_filiale_grand_groupe_effectif_groupe_superieur_a_500_soumise_
     )
 
 
-def test_PME_cotee_filiale_grand_groupe_effectif_groupe_inferieur_a_500_soumise_en_2026(
+def test_PME_cotee_filiale_grand_groupe_effectif_groupe_inferieur_a_500_soumise_en_2025(
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
@@ -1627,7 +1627,7 @@ def test_PME_cotee_filiale_grand_groupe_effectif_groupe_inferieur_a_500_soumise_
         CSRDReglementation.est_soumis_a_partir_de(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
-        == 2026
+        == 2025
     )
     assert CSRDReglementation.criteres_remplis(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -1860,7 +1860,7 @@ def test_micro_ou_PME_hors_EEE_CA_supérieur_à_100M(
         CSRDReglementation.est_soumis_a_partir_de(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
-        == 2029
+        == 2028
     )
     assert not CSRDReglementation.est_delegable(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -1904,7 +1904,7 @@ def test_entreprise_hors_EEE_bilan_et_ca_superieurs_aux_seuils_grande_entreprise
         CSRDReglementation.est_soumis_a_partir_de(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
-        == 2026
+        == 2025
     )
     assert CSRDReglementation.criteres_remplis(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -1956,7 +1956,7 @@ def test_entreprise_hors_EEE_bilan_et_effectif_superieurs_aux_seuils_grande_entr
         CSRDReglementation.est_soumis_a_partir_de(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
-        == 2026
+        == 2025
     )
     assert CSRDReglementation.criteres_remplis(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -2007,7 +2007,7 @@ def test_entreprise_hors_EEE_ca_et_effectif_superieurs_aux_seuils_grande_entrepr
         CSRDReglementation.est_soumis_a_partir_de(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
-        == 2026
+        == 2025
     )
     assert CSRDReglementation.criteres_remplis(
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -2027,7 +2027,7 @@ def test_decale_annee_publication_selon_cloture_exercice_comptable():
     )
     assert (
         CSRDReglementation.decale_annee_publication_selon_cloture_exercice_comptable(
-            2025, caracteristiques
+            2024, caracteristiques
         )
         == 2025
     )
@@ -2037,9 +2037,39 @@ def test_decale_annee_publication_selon_cloture_exercice_comptable():
     )
     assert (
         CSRDReglementation.decale_annee_publication_selon_cloture_exercice_comptable(
-            2025, caracteristiques
+            2024, caracteristiques
         )
         == 2026
+    )
+
+    caracteristiques = CaracteristiquesAnnuelles(
+        date_cloture_exercice=date(2023, 7, 31)
+    )
+    assert (
+        CSRDReglementation.decale_annee_publication_selon_cloture_exercice_comptable(
+            2024, caracteristiques
+        )
+        == 2026
+    )
+
+    caracteristiques = CaracteristiquesAnnuelles(
+        date_cloture_exercice=date(2023, 6, 30)
+    )
+    assert (
+        CSRDReglementation.decale_annee_publication_selon_cloture_exercice_comptable(
+            2024, caracteristiques
+        )
+        == 2025
+    )
+
+    caracteristiques = CaracteristiquesAnnuelles(
+        date_cloture_exercice=date(2023, 1, 31)
+    )
+    assert (
+        CSRDReglementation.decale_annee_publication_selon_cloture_exercice_comptable(
+            2024, caracteristiques
+        )
+        == 2025
     )
 
 

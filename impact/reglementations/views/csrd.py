@@ -1,3 +1,6 @@
+from datetime import timedelta
+
+from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
@@ -67,9 +70,9 @@ class CSRDReglementation(Reglementation):
                     CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
                     CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
                 ):
-                    return 2025
+                    return 2024
                 else:
-                    return 2026
+                    return 2025
             else:
                 if cls.est_grande_entreprise(caracteristiques):
                     if (
@@ -81,9 +84,9 @@ class CSRDReglementation(Reglementation):
                             CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
                         )
                     ):
-                        return 2025
+                        return 2024
                     else:
-                        return 2026
+                        return 2025
                 elif (
                     caracteristiques.entreprise.est_cotee
                     and cls.est_petite_ou_moyenne_entreprise(caracteristiques)
@@ -93,9 +96,9 @@ class CSRDReglementation(Reglementation):
                         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
                         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
                     ):
-                        return 2025
+                        return 2024
                     else:
-                        return 2026
+                        return 2025
         else:
             if caracteristiques.entreprise.est_dans_EEE:
                 if caracteristiques.entreprise.est_cotee:
@@ -105,11 +108,11 @@ class CSRDReglementation(Reglementation):
                             CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
                             CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
                         ):
-                            return 2025
+                            return 2024
                         else:
-                            return 2026
+                            return 2025
                     elif cls.est_petite_ou_moyenne_entreprise(caracteristiques):
-                        return 2027
+                        return 2026
                 elif caracteristiques.entreprise.est_interet_public:
                     if cls.est_grande_entreprise(caracteristiques):
                         if caracteristiques.effectif in (
@@ -117,19 +120,19 @@ class CSRDReglementation(Reglementation):
                             CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
                             CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
                         ):
-                            return 2025
+                            return 2024
                         else:
-                            return 2026
+                            return 2025
                 elif cls.est_grande_entreprise(caracteristiques):
-                    return 2026
+                    return 2025
             else:
                 if cls.est_grande_entreprise(caracteristiques):
-                    return 2026
+                    return 2025
                 elif (
                     caracteristiques.tranche_chiffre_affaires
                     == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
                 ):
-                    return 2029
+                    return 2028
 
     @classmethod
     def criteres_remplis(cls, caracteristiques):
@@ -300,12 +303,12 @@ class CSRDReglementation(Reglementation):
                 )
             )
             exercice_comptable = (
-                f"{annee - 1}"
+                f"{annee}"
                 if caracteristiques.exercice_comptable_est_annee_civile
-                else f"{annee - 1}-{annee}"
+                else f"{annee}-{annee + 1}"
             )
             status_detail = f"Vous êtes soumis à cette réglementation à partir de {premiere_annee_publication} sur les données de l'exercice comptable {exercice_comptable}"
-            if annee == 2029:
+            if annee == 2028:
                 # Ce cas ne peut arriver que pour les micro et PME sans groupe hors EEE
                 conditions = "votre société dont le siège social est hors EEE revêt une forme juridique comparable aux sociétés par actions ou aux sociétés à responsabilité limitée, comptabilise un chiffre d'affaires net dans l'Espace économique européen qui excède 150 millions d'euros à la date de clôture des deux derniers exercices consécutifs, ne contrôle ni n'est contrôlée par une autre société et dispose d'une succursale en France dont le chiffre d'affaires net excède 40 millions d'euros"
                 status_detail += f" si {conditions}."
@@ -336,9 +339,13 @@ class CSRDReglementation(Reglementation):
     def decale_annee_publication_selon_cloture_exercice_comptable(
         annee, caracteristiques
     ):
-        return (
-            annee if caracteristiques.exercice_comptable_est_annee_civile else annee + 1
+        ouverture_exercice_comptable = (
+            caracteristiques.date_cloture_exercice + timedelta(days=1)
+        ).replace(year=annee)
+        cloture_exercice_comptable = (
+            ouverture_exercice_comptable + relativedelta(months=+12) - timedelta(days=1)
         )
+        return (cloture_exercice_comptable + relativedelta(months=+6)).year
 
     @classmethod
     def est_microentreprise(cls, caracteristiques: CaracteristiquesAnnuelles):
