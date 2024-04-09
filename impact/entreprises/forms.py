@@ -1,3 +1,5 @@
+import math
+
 from django import forms
 from django.core.exceptions import ValidationError
 
@@ -239,5 +241,8 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
 
 def est_superieur(effectif_1, effectif_2):
     borne_inferieure_1 = int(effectif_1.split("-")[0].strip("+"))
-    borne_inferieure_2 = int(effectif_2.split("-")[0].strip("+"))
-    return borne_inferieure_1 > borne_inferieure_2
+    try:
+        borne_superieure_2 = int(effectif_2.split("-")[1])
+    except IndexError:
+        borne_superieure_2 = math.inf
+    return borne_inferieure_1 > borne_superieure_2

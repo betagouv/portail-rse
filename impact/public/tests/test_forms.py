@@ -173,3 +173,23 @@ def test_erreur_si_effectif_superieur_a_effectif_groupe():
         form.errors["effectif_groupe"][0]
         == "L'effectif du groupe ne peut pas être inférieur à l'effectif"
     )
+
+
+def test_ok_si_effectif_egal_a_effectif_groupe():
+    data = {
+        "siren": "123456789",
+        "denomination": "Entreprise SAS",
+        "categorie_juridique_sirene": 5710,
+        "code_pays_etranger_sirene": CODE_PAYS_PORTUGAL,
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        "est_cotee": False,
+        "appartient_groupe": True,
+        "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_499,
+        "comptes_consolides": False,
+    }
+
+    form = SimulationForm(data=data)
+
+    assert form.is_valid(), form.errors
