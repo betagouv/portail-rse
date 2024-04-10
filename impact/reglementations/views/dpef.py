@@ -62,8 +62,10 @@ class DPEFReglementation(Reglementation):
             status_detail = (
                 f"Vous êtes soumis à cette réglementation car {justification}."
             )
-            if annee := CSRDReglementation.est_soumis_a_partir_de(caracteristiques):
-                status_detail += f" La DPEF est remplacée par le Rapport de Durabilité dès {annee} sur les données {annee - 1}."
+            if annee := CSRDReglementation.est_soumis_a_partir_de_l_exercice(
+                caracteristiques
+            ):
+                status_detail += f" La DPEF est remplacée par le Rapport de Durabilité dès l'exercice {annee}."
 
         else:
             status = ReglementationStatus.STATUS_NON_SOUMIS

@@ -238,7 +238,7 @@ def test_entreprise_hors_categorie_juridique_concernee_sans_interet_public_non_s
     assert not CSRDReglementation.est_soumis(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
-    assert not CSRDReglementation.est_soumis_a_partir_de(
+    assert not CSRDReglementation.est_soumis_a_partir_de_l_exercice(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
 
@@ -343,7 +343,7 @@ def test_entreprise_non_cotee_bilan_et_ca_superieurs_aux_seuils_grande_entrepris
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2025
@@ -394,7 +394,7 @@ def test_entreprise_non_cotee_bilan_et_effectif_superieurs_aux_seuils_grande_ent
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2025
@@ -444,7 +444,7 @@ def test_entreprise_non_cotee_CA_et_effectif_superieurs_aux_seuils_grande_entrep
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2025
@@ -495,7 +495,7 @@ def test_entreprise_sans_interet_public_bilan_et_effectif_superieurs_aux_seuils_
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2025
@@ -546,7 +546,7 @@ def test_entreprise_sans_interet_public_CA_et_effectif_superieurs_aux_seuils_gra
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2025
@@ -592,7 +592,7 @@ def test_entreprise_non_cotee_bilan_et_CA_inferieurs_aux_seuils_grande_entrepris
     assert not CSRDReglementation.est_soumis(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
-    assert not CSRDReglementation.est_soumis_a_partir_de(
+    assert not CSRDReglementation.est_soumis_a_partir_de_l_exercice(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
 
@@ -629,7 +629,7 @@ def test_entreprise_non_cotee_avec_interet_public_bilan_et_CA_inferieurs_aux_seu
     assert not CSRDReglementation.est_soumis(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
-    assert not CSRDReglementation.est_soumis_a_partir_de(
+    assert not CSRDReglementation.est_soumis_a_partir_de_l_exercice(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
 
@@ -665,7 +665,7 @@ def test_entreprise_non_cotee_effectif_et_CA_inferieurs_aux_seuils_grande_entrep
     assert not CSRDReglementation.est_soumis(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
-    assert not CSRDReglementation.est_soumis_a_partir_de(
+    assert not CSRDReglementation.est_soumis_a_partir_de_l_exercice(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
 
@@ -701,7 +701,7 @@ def test_entreprise_non_cotee_effectif_et_bilan_inferieurs_aux_seuils_grande_ent
     assert not CSRDReglementation.est_soumis(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
-    assert not CSRDReglementation.est_soumis_a_partir_de(
+    assert not CSRDReglementation.est_soumis_a_partir_de_l_exercice(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
 
@@ -722,7 +722,7 @@ def test_microentreprise_cotee_car_seuils_bilan_et_ca_insuffisants_est_non_soumi
     assert not CSRDReglementation.est_soumis(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
-    assert not CSRDReglementation.est_soumis_a_partir_de(
+    assert not CSRDReglementation.est_soumis_a_partir_de_l_exercice(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
 
@@ -743,7 +743,7 @@ def test_microentreprise_cotee_car_seuils_effectif_et_bilan_insuffisants_est_non
     assert not CSRDReglementation.est_soumis(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
-    assert not CSRDReglementation.est_soumis_a_partir_de(
+    assert not CSRDReglementation.est_soumis_a_partir_de_l_exercice(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
 
@@ -764,7 +764,7 @@ def test_microentreprise_cotee_car_seuil_effectif_et_ca_insuffisants_est_non_sou
     assert not CSRDReglementation.est_soumis(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
-    assert not CSRDReglementation.est_soumis_a_partir_de(
+    assert not CSRDReglementation.est_soumis_a_partir_de_l_exercice(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
 
@@ -785,7 +785,7 @@ def test_microentreprise_cotee_car_aucun_seuil_suffisant_est_non_soumise(
     assert not CSRDReglementation.est_soumis(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
-    assert not CSRDReglementation.est_soumis_a_partir_de(
+    assert not CSRDReglementation.est_soumis_a_partir_de_l_exercice(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
 
@@ -823,7 +823,7 @@ def test_entreprise_cotee_ca_et_effectif_plus_de_500_superieurs_aux_seuils_grand
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2024
@@ -873,7 +873,7 @@ def test_entreprise_interet_public_ca_et_effectif_plus_de_500_superieurs_aux_seu
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2024
@@ -921,7 +921,7 @@ def test_entreprise_cotee_ca_et_effectif_moins_de_500_superieurs_aux_seuils_gran
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2025
@@ -964,7 +964,7 @@ def test_entreprise_cotee_bilan_et_ca_superieurs_aux_seuils_petite_entreprise_ma
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2026
@@ -1006,7 +1006,7 @@ def test_entreprise_cotee_bilan_et_ca_superieurs_aux_seuils_petite_entreprise_ma
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2026
@@ -1052,7 +1052,7 @@ def test_entreprise_cotee_effectif_et_ca_superieurs_aux_seuils_petite_entreprise
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2026
@@ -1101,7 +1101,7 @@ def test_entreprise_cotee_effectif_et_ca_superieurs_aux_seuils_petite_entreprise
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2026
@@ -1147,7 +1147,7 @@ def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entrepr
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2026
@@ -1197,7 +1197,7 @@ def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entrepr
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2026
@@ -1377,7 +1377,7 @@ def test_microentreprise_cotee_societe_mere_grand_groupe_effectif_groupe_superie
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2024
@@ -1419,7 +1419,7 @@ def test_microentreprise_cotee_societe_mere_grand_groupe_effectif_groupe_inferie
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2025
@@ -1461,7 +1461,7 @@ def test_microentreprise_avec_interet_public_societe_mere_grand_groupe_effectif_
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2024
@@ -1503,7 +1503,7 @@ def test_microentreprise_avec_interet_public_societe_mere_grand_groupe_effectif_
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2025
@@ -1544,7 +1544,7 @@ def test_microentreprise_non_cotee_sans_interet_public_societe_mere_grand_groupe
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2025
@@ -1584,7 +1584,7 @@ def test_PME_cotee_filiale_grand_groupe_effectif_groupe_superieur_a_500_soumise_
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2024
@@ -1624,7 +1624,7 @@ def test_PME_cotee_filiale_grand_groupe_effectif_groupe_inferieur_a_500_soumise_
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2025
@@ -1857,7 +1857,7 @@ def test_micro_ou_PME_hors_EEE_CA_supérieur_à_100M(
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2028
@@ -1901,7 +1901,7 @@ def test_entreprise_hors_EEE_bilan_et_ca_superieurs_aux_seuils_grande_entreprise
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2025
@@ -1953,7 +1953,7 @@ def test_entreprise_hors_EEE_bilan_et_effectif_superieurs_aux_seuils_grande_entr
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2025
@@ -2004,7 +2004,7 @@ def test_entreprise_hors_EEE_ca_et_effectif_superieurs_aux_seuils_grande_entrepr
         entreprise.dernieres_caracteristiques_qualifiantes
     )
     assert (
-        CSRDReglementation.est_soumis_a_partir_de(
+        CSRDReglementation.est_soumis_a_partir_de_l_exercice(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
         == 2025
