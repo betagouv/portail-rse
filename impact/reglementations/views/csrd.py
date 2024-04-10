@@ -321,8 +321,7 @@ class CSRDReglementation(Reglementation):
                     status_detail += (
                         " Vous pouvez déléguer cette obligation à votre société-mère."
                     )
-            if not caracteristiques.exercice_comptable_est_annee_civile:
-                status_detail += " Votre exercice comptable ne correspond pas à une année civile donc l'obligation de déclaration est décalée."
+            status_detail += " Vous devez publier le Rapport de Durabilité en même temps que le rapport de gestion."
             return ReglementationStatus(
                 status=ReglementationStatus.STATUS_SOUMIS,
                 status_detail=status_detail,
