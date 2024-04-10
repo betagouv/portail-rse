@@ -49,12 +49,13 @@ class CSRDReglementation(Reglementation):
     @classmethod
     def est_soumis(cls, caracteristiques):
         super().est_soumis(caracteristiques)
-        return bool(cls.est_soumis_a_partir_de(caracteristiques))
+        return bool(cls.est_soumis_a_partir_de_l_exercice(caracteristiques))
 
     @classmethod
-    def est_soumis_a_partir_de(
+    def est_soumis_a_partir_de_l_exercice(
         cls, caracteristiques: CaracteristiquesAnnuelles
     ) -> int | None:
+        """Le premier exercice pour lequel l'entreprise est soumise à cette réglementation est l'exercice ouvert à compter du 1er janvier de l'année renvoyée"""
         if not (
             cls.critere_categorie_juridique_sirene(caracteristiques)
             or caracteristiques.entreprise.est_interet_public
@@ -296,7 +297,7 @@ class CSRDReglementation(Reglementation):
             reverse_lazy("reglementations:csrd"),
             "Accéder à l'espace Rapport de Durabilité",
         )
-        if annee := cls.est_soumis_a_partir_de(caracteristiques):
+        if annee := cls.est_soumis_a_partir_de_l_exercice(caracteristiques):
             premiere_annee_publication = (
                 cls.decale_annee_publication_selon_cloture_exercice_comptable(
                     annee, caracteristiques

@@ -764,7 +764,7 @@ def test_soumis_si_societe_cotee_et_effectif_groupe_permanent_et_ca_consolide_su
     assert "votre chiffre d'affaires consolidé est supérieur à 40M€" in criteres_remplis
 
 
-def test_calcule_etat_si_soumis_avec_plus_de_deux_critères_remplis_et_remplacée_par_la_CSRD_en_2026(
+def test_calcule_etat_si_soumis_avec_plus_de_deux_critères_remplis_et_remplacée_par_la_CSRD_a_partir_de_l_exercice_2025(
     entreprise_factory, alice
 ):
     entreprise = entreprise_factory(
@@ -785,11 +785,11 @@ def test_calcule_etat_si_soumis_avec_plus_de_deux_critères_remplis_et_remplacé
         "Vous êtes soumis à cette réglementation car votre entreprise est une Société Anonyme, votre effectif permanent est supérieur à 500 salariés, votre bilan est supérieur à 100M€ et votre chiffre d'affaires est supérieur à 100M€."
     )
     assert reglementation.status_detail.endswith(
-        "La DPEF est remplacée par le Rapport de Durabilité dès 2026 sur les données 2025."
+        "La DPEF est remplacée par le Rapport de Durabilité dès l'exercice 2025."
     )
 
 
-def test_calcule_etat_si_soumis_et_remplacée_par_la_CSRD_en_2025(
+def test_calcule_etat_si_soumis_et_remplacée_par_la_CSRD_a_partir_de_l_exercice_2024(
     entreprise_factory, alice
 ):
     entreprise = entreprise_factory(
@@ -808,7 +808,7 @@ def test_calcule_etat_si_soumis_et_remplacée_par_la_CSRD_en_2025(
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert reglementation.status_detail.endswith(
-        "La DPEF est remplacée par le Rapport de Durabilité dès 2025 sur les données 2024."
+        "La DPEF est remplacée par le Rapport de Durabilité dès l'exercice 2024."
     )
 
 
