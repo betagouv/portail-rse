@@ -99,7 +99,7 @@ def test_create_user_with_invalid_siren(client, db):
         "email": "user@domaine.test",
         "password1": "Passw0rd!123",
         "password2": "Passw0rd!123",
-        "siren": "123456789",  # Invalid
+        "siren": "000000000",  # Invalid
         "acceptation_cgu": "checked",
         "fonctions": "Présidente",
     }
@@ -109,10 +109,7 @@ def test_create_user_with_invalid_siren(client, db):
     assert response.status_code == 200
 
     content = html.unescape(response.content.decode("utf-8"))
-    assert (
-        "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct."
-        in content
-    )
+    assert "Aucune entreprise ne correspond à ce SIREN." in content
 
     assert not User.objects.filter(email="user@domaine.test")
     assert not Entreprise.objects.filter(siren="123456789")
