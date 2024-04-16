@@ -175,3 +175,6 @@ if SENTRY_DSN:
         send_default_pii=True,
         environment=os.getenv("SENTRY_ENV", "production"),
     )
+
+# API
+API_SIRENE_TOKEN = os.getenv("API_SIRENE_TOKEN")
