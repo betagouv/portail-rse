@@ -228,7 +228,10 @@ def test_entreprise_inexistante_mais_pourtant_retournée_par_l_API(mocker):
     with pytest.raises(SirenError) as e:
         recherche(SIREN)
 
-    assert str(e.value) == "Aucune entreprise ne correspond à ce SIREN."
+    assert (
+        str(e.value)
+        == "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct."
+    )
     capture_message_mock.assert_called_once_with(
         "Entreprise inexistante mais retournée par l'API recherche entreprises"
     )
