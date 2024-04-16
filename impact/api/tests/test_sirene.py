@@ -27,6 +27,46 @@ def test_api_fonctionnelle():
     }
 
 
+def test_succès_avec_résultat(mocker):
+    SIREN = "123456789"
+
+    class FakeResponse:
+        status_code = 200
+
+        def json(self):
+            # la plupart des champs inutilisés de la réponse ont été supprimés
+            return {
+                "header": {"message": "OK", "statut": 200},
+                "uniteLegale": {
+                    "periodesUniteLegale": [
+                        {
+                            "categorieJuridiqueUniteLegale": "5710",
+                            "denominationUniteLegale": "ENTREPRISE",
+                        }
+                    ],
+                    "siren": "123456789",
+                    "trancheEffectifsUniteLegale": "20",
+                },
+            }
+
+    faked_request = mocker.patch("requests.get", return_value=FakeResponse())
+
+    infos = recherche_unite_legale(SIREN)
+
+    assert infos == {
+        "siren": SIREN,
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
+        "denomination": "ENTREPRISE",
+        "categorie_juridique_sirene": 5710,
+        "code_pays_etranger_sirene": None,
+    }
+    faked_request.assert_called_once_with(
+        f"https://api.insee.fr/entreprises/sirene/V3.11/siren/123456789?date={date.today().isoformat()}",
+        headers={"Authorization": mock.ANY},
+        timeout=RECHERCHE_ENTREPRISE_TIMEOUT,
+    )
+
+
 def test_succès_pas_de_résultat(mocker):
     SIREN = "000000000"
 
