@@ -13,7 +13,6 @@ RECHERCHE_ENTREPRISE_TIMEOUT = 10
 SIREN_NOT_FOUND_ERROR = (
     "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct."
 )
-SIREN_NOT_MATCH_ERROR = "Aucune entreprise ne correspond à ce SIREN."
 TOO_MANY_REQUESTS_ERROR = "Le service est temporairement surchargé. Merci de réessayer."
 SERVER_ERROR = "Le service est actuellement indisponible. Merci de réessayer plus tard."
 
@@ -39,7 +38,7 @@ def recherche(siren):
             sentry_sdk.capture_message(
                 "Entreprise inexistante mais retournée par l'API recherche entreprises"
             )
-            raise SirenError(SIREN_NOT_MATCH_ERROR)
+            raise SirenError(SIREN_NOT_FOUND_ERROR)
 
         # la nature juridique correspond à la nomenclature des catégories juridiques retenue dans a gestion du repertoire Sirene
         # https://www.insee.fr/fr/information/2028129
