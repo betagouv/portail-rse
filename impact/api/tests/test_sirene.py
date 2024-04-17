@@ -10,16 +10,8 @@ from api.exceptions import SirenError
 from api.exceptions import TooManyRequestError
 from api.sirene import recherche_unite_legale
 from api.sirene import SIRENE_TIMEOUT
+from api.tests import MockedResponse
 from entreprises.models import CaracteristiquesAnnuelles
-
-
-class MockedResponse:
-    def __init__(self, status_code, json_content=""):
-        self.status_code = status_code
-        self.json_content = json_content
-
-    def json(self):
-        return self.json_content
 
 
 @pytest.mark.network
