@@ -5,17 +5,36 @@ import pytest
 from entreprises.models import CaracteristiquesAnnuelles
 
 
+INFOS_ENTREPRISE = {
+    "siren": "000000001",
+    "denomination": "Entreprise SAS",
+    "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+    "categorie_juridique_sirene": 5710,
+    "code_pays_etranger_sirene": None,
+}
+
+
+@pytest.fixture
+def mock_api_infos_entreprise(mocker):
+    return mocker.patch(
+        "api.infos_entreprise.infos_entreprise",
+        return_value=INFOS_ENTREPRISE,
+    )
+
+
 @pytest.fixture
 def mock_api_recherche_entreprises(mocker):
     return mocker.patch(
         "api.recherche_entreprises.recherche",
-        return_value={
-            "siren": "000000001",
-            "denomination": "Entreprise SAS",
-            "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
-            "categorie_juridique_sirene": 5710,
-            "code_pays_etranger_sirene": None,
-        },
+        return_value=INFOS_ENTREPRISE,
+    )
+
+
+@pytest.fixture
+def mock_api_sirene(mocker):
+    return mocker.patch(
+        "api.sirene.recherche_unite_legale",
+        return_value=INFOS_ENTREPRISE,
     )
 
 

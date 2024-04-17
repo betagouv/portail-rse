@@ -8,6 +8,7 @@ from freezegun import freeze_time
 
 import api.exceptions
 from api.tests.fixtures import mock_api_egapro  # noqa
+from api.tests.fixtures import mock_api_infos_entreprise  # noqa
 from api.tests.fixtures import mock_api_ratios_financiers  # noqa
 from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
 from conftest import CODE_PAYS_PORTUGAL
@@ -655,10 +656,10 @@ def test_qualification_supprime_les_caracteristiques_annuelles_posterieures_a_la
 
 
 def test_succes_api_search_entreprise(
-    client, mock_api_recherche_entreprises, mock_api_ratios_financiers
+    client, mock_api_infos_entreprise, mock_api_ratios_financiers
 ):
     siren = "123456789"
-    mock_api_recherche_entreprises.return_value = {
+    mock_api_infos_entreprise.return_value = {
         "siren": siren,
         "denomination": "Entreprise SAS",
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
@@ -673,7 +674,7 @@ def test_succes_api_search_entreprise(
 
     response = client.get(f"/api/search-entreprise/{siren}")
 
-    mock_api_recherche_entreprises.assert_called_once_with(siren)
+    mock_api_infos_entreprise.assert_called_once_with(siren)
     mock_api_ratios_financiers.assert_called_once_with(siren)
     assert response.status_code == 200
     assert response.json() == {
@@ -688,12 +689,10 @@ def test_succes_api_search_entreprise(
     }
 
 
-def test_echec_api_search_entreprise_car_l_API_recherche_entreprises_est_en_erreur(
-    client, mock_api_recherche_entreprises
+def test_echec_api_search_entreprise_car_l_API_infos_entreprise_est_en_erreur(
+    client, mock_api_infos_entreprise
 ):
-    mock_api_recherche_entreprises.side_effect = api.exceptions.APIError(
-        "Panne serveur"
-    )
+    mock_api_infos_entreprise.side_effect = api.exceptions.APIError("Panne serveur")
 
     response = client.get("/api/search-entreprise/123456789")
 

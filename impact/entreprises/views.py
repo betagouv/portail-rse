@@ -222,7 +222,7 @@ def qualification(request, siren):
 
 def search_entreprise(request, siren):
     try:
-        infos = api.recherche_entreprises.recherche(siren)
+        infos = api.infos_entreprise.infos_entreprise(siren)
     except APIError as exception:
         return JsonResponse(
             {"error": str(exception)},
