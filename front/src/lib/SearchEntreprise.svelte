@@ -3,6 +3,7 @@
 
     export let siren = ""
     export let denomination = ""
+    let entreprises = []
     let loading = false
     let promise = async () => {}
 
@@ -15,21 +16,35 @@
 
 
     async function searchEntreprise(siren) {
-        if (siren.length !== 9 || isNaN(siren)){
+        /*if (siren.length !== 9 || isNaN(siren)){
             const event = new CustomEvent("siren-incorrect")
             document.dispatchEvent(event)
             throw new Error("Le siren est incorrect.")
-        }
+        }*/
         loading = true
-        const res = await fetch("/api/search-entreprise/" + siren)
-        const json = await res.json()
+        //const res = await fetch("/api/search-entreprise/" + siren)
+        //const json = await res.json()
+        const json = [
+            {
+            "siren": "123456789",
+            "effectif": "0-9",
+            "denomination": "entreprise A",
+            "categorie_juridique_sirene": 5308,
+            "code_pays_etranger_sirene": null,
+            },
+            {
+                "siren": "987654321",
+                "effectif": "50-249",
+                "denomination": "entreprise B",
+                "categorie_juridique_sirene": 5800,
+                "code_pays_etranger_sirene": null,
+            }
+        ]
+        entreprises = json
 
-        if (res.ok) {
+        if (true || res.ok) {
             loading = false
             submitButton.disabled = false
-            denomination = json.denomination
-            const event = new CustomEvent("infos-entreprise", {detail: json})
-            document.dispatchEvent(event)
         } else {
             loading = false
             const event = new CustomEvent("siren-incorrect")
@@ -41,6 +56,21 @@
     const handleChange = () => {
         submitButton.disabled = true
         promise = searchEntreprise(siren)
+    }
+
+    const handleSelectionEntreprise = (siren) => {
+        let entrepriseSelectionnee = entreprises[0]
+        for (let entreprise of entreprises ){
+            console.log(entreprise, entreprise.siren, siren)
+            if (entreprise.siren == siren) {
+                entrepriseSelectionnee = entreprise
+                break
+            }
+        }
+        entreprises = [entrepriseSelectionnee]
+        denomination = entreprises[0].denomination
+        const event = new CustomEvent("infos-entreprise", {detail: entreprises[0]})
+        document.dispatchEvent(event)
     }
 
     if (!siren) {
@@ -73,9 +103,15 @@
                 </a>
             </div>
             {#await promise then result}
+            {#if entreprises.length == 1}
                 {#if denomination}
                     <p class="fr-my-2w denomination">Entreprise : {denomination}</p>
                 {/if}
+            {:else if entreprises.length >= 2}
+                    {#each entreprises as entreprise, index (entreprise.siren)}
+                        <button on:click={handleSelectionEntreprise(entreprise.siren)}>{entreprise.denomination} ({entreprise.siren})</button>
+                    {/each}
+            {/if}
             {:catch error}
                 <p class="fr-error-text">{error.message}</p>
             {/await}
