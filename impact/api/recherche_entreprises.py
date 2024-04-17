@@ -1,18 +1,16 @@
 import requests
 import sentry_sdk
 
-from .exceptions import APIError
-from .exceptions import ServerError
-from .exceptions import SirenError
-from .exceptions import TooManyRequestError
+from api.exceptions import APIError
+from api.exceptions import SERVER_ERROR
+from api.exceptions import ServerError
+from api.exceptions import SIREN_NOT_FOUND_ERROR
+from api.exceptions import SirenError
+from api.exceptions import TOO_MANY_REQUESTS_ERROR
+from api.exceptions import TooManyRequestError
 from api.sirene import convertit_tranche_effectif
 
 RECHERCHE_ENTREPRISE_TIMEOUT = 10
-SIREN_NOT_FOUND_ERROR = (
-    "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct."
-)
-TOO_MANY_REQUESTS_ERROR = "Le service est temporairement surchargé. Merci de réessayer."
-SERVER_ERROR = "Le service est actuellement indisponible. Merci de réessayer plus tard."
 
 
 def recherche(siren):
