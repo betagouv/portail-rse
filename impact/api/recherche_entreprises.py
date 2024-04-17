@@ -1,15 +1,19 @@
 import requests
 import sentry_sdk
 
+from api.exceptions import API_ERROR_SENTRY_MESSAGE
 from api.exceptions import APIError
+from api.exceptions import INVALID_REQUEST_SENTRY_MESSAGE
 from api.exceptions import SERVER_ERROR
 from api.exceptions import ServerError
 from api.exceptions import SIREN_NOT_FOUND_ERROR
 from api.exceptions import SirenError
 from api.exceptions import TOO_MANY_REQUESTS_ERROR
+from api.exceptions import TOO_MANY_REQUESTS_SENTRY_MESSAGE
 from api.exceptions import TooManyRequestError
 from api.sirene import convertit_tranche_effectif
 
+NOM_API = "recherche entreprises"
 RECHERCHE_ENTREPRISE_TIMEOUT = 10
 
 
@@ -67,11 +71,11 @@ def recherche(siren):
             "code_pays_etranger_sirene": code_pays_etranger,
         }
     elif response.status_code == 429:
-        sentry_sdk.capture_message("Trop de requêtes sur l'API recherche entreprises")
+        sentry_sdk.capture_message(TOO_MANY_REQUESTS_SENTRY_MESSAGE.format(NOM_API))
         raise TooManyRequestError(TOO_MANY_REQUESTS_ERROR)
     elif response.status_code == 400:
-        sentry_sdk.capture_message("Requête invalide sur l'API recherche entreprises")
+        sentry_sdk.capture_message(INVALID_REQUEST_SENTRY_MESSAGE.format(NOM_API))
         raise APIError(SERVER_ERROR)
     else:
-        sentry_sdk.capture_message("Erreur API recherche entreprises")
+        sentry_sdk.capture_message(API_ERROR_SENTRY_MESSAGE.format(NOM_API))
         raise ServerError(SERVER_ERROR)

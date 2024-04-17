@@ -3,16 +3,19 @@ from datetime import date
 import requests
 import sentry_sdk
 
+from api.exceptions import API_ERROR_SENTRY_MESSAGE
 from api.exceptions import APIError
 from api.exceptions import SERVER_ERROR
 from api.exceptions import ServerError
 from api.exceptions import SIREN_NOT_FOUND_ERROR
 from api.exceptions import SirenError
 from api.exceptions import TOO_MANY_REQUESTS_ERROR
+from api.exceptions import TOO_MANY_REQUESTS_SENTRY_MESSAGE
 from api.exceptions import TooManyRequestError
 from entreprises.models import CaracteristiquesAnnuelles
 from impact.settings import API_SIRENE_TOKEN
 
+NOM_API = "recherche unité légale"
 SIRENE_TIMEOUT = 10
 
 
@@ -50,10 +53,10 @@ def recherche_unite_legale(siren):
     elif response.status_code == 404:
         raise SirenError(SIREN_NOT_FOUND_ERROR)
     elif response.status_code == 429:
-        sentry_sdk.capture_message("Trop de requêtes sur l'API recherche unité légale")
+        sentry_sdk.capture_message(TOO_MANY_REQUESTS_SENTRY_MESSAGE.format(NOM_API))
         raise TooManyRequestError(TOO_MANY_REQUESTS_ERROR)
     else:
-        sentry_sdk.capture_message("Erreur API recherche unité légale")
+        sentry_sdk.capture_message(API_ERROR_SENTRY_MESSAGE.format(NOM_API))
         raise ServerError(SERVER_ERROR)
 
 

@@ -4,6 +4,10 @@ SIREN_NOT_FOUND_ERROR = (
 )
 TOO_MANY_REQUESTS_ERROR = "Le service est temporairement surchargé. Merci de réessayer."
 
+API_ERROR_SENTRY_MESSAGE = "Erreur API {}"
+INVALID_REQUEST_SENTRY_MESSAGE = "Requête invalide sur l'API {}"
+TOO_MANY_REQUESTS_SENTRY_MESSAGE = "Trop de requêtes sur l'API {}"
+
 
 class APIError(Exception):
     pass

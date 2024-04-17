@@ -1,12 +1,15 @@
 import requests
 import sentry_sdk
 
+from api.exceptions import API_ERROR_SENTRY_MESSAGE
 from api.exceptions import APIError
+from api.exceptions import INVALID_REQUEST_SENTRY_MESSAGE
 
 EGAPRO_TIMEOUT = 10
 
 
 def indicateurs_bdese(siren, annee):
+    NOM_API = "index EgaPro (indicateurs)"
     EGAPRO_INDICATEURS = {
         "promotions": "Écart taux promotion",
         "augmentations_et_promotions": "Écart taux d'augmentation",
@@ -54,17 +57,16 @@ def indicateurs_bdese(siren, annee):
         case 404:
             pass
         case 400:
-            sentry_sdk.capture_message(
-                "Requête invalide sur l'API index EgaPro (indicateurs)"
-            )
+            sentry_sdk.capture_message(INVALID_REQUEST_SENTRY_MESSAGE.format(NOM_API))
             raise APIError()
         case _:
-            sentry_sdk.capture_message("Erreur API index EgaPro (indicateurs)")
+            sentry_sdk.capture_message(API_ERROR_SENTRY_MESSAGE.format(NOM_API))
             raise APIError()
     return bdese_data_from_egapro
 
 
 def is_index_egapro_published(siren, annee):
+    NOM_API = "index EgaPro (is_index_egapro_published)"
     try:
         url = f"https://egapro.travail.gouv.fr/api/public/declaration/{siren}/{annee}"
         response = requests.get(url, timeout=EGAPRO_TIMEOUT)
@@ -79,13 +81,9 @@ def is_index_egapro_published(siren, annee):
         case 404:
             pass
         case 400:
-            sentry_sdk.capture_message(
-                "Requête invalide sur l'API index EgaPro (is_index_egapro_published)"
-            )
+            sentry_sdk.capture_message(INVALID_REQUEST_SENTRY_MESSAGE.format(NOM_API))
             raise APIError()
         case _:
-            sentry_sdk.capture_message(
-                "Erreur API index EgaPro (is_index_egapro_published)"
-            )
+            sentry_sdk.capture_message(API_ERROR_SENTRY_MESSAGE.format(NOM_API))
             raise APIError()
     return False

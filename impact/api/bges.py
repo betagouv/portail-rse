@@ -1,8 +1,10 @@
 import requests
 import sentry_sdk
 
+from api.exceptions import API_ERROR_SENTRY_MESSAGE
 from api.exceptions import APIError
 
+NOM_API = "bilans-ges"
 BGES_TIMEOUT = 10
 
 
@@ -20,7 +22,7 @@ def last_reporting_year(siren):
         raise APIError()
 
     if response.status_code != 200:
-        sentry_sdk.capture_message(f"Erreur API bilans-ges")
+        sentry_sdk.capture_message(API_ERROR_SENTRY_MESSAGE.format(NOM_API))
         raise APIError()
 
     try:
