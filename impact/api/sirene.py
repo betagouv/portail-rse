@@ -15,7 +15,7 @@ from api.exceptions import TooManyRequestError
 from entreprises.models import CaracteristiquesAnnuelles
 from impact.settings import API_SIRENE_TOKEN
 
-NOM_API = "recherche unité légale"
+NOM_API = "sirene"
 SIRENE_TIMEOUT = 10
 
 

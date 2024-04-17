@@ -120,9 +120,7 @@ def test_echec_trop_de_requetes(mocker):
     with pytest.raises(TooManyRequestError) as e:
         recherche_unite_legale(SIREN)
 
-    capture_message_mock.assert_called_once_with(
-        "Trop de requêtes sur l'API recherche unité légale"
-    )
+    capture_message_mock.assert_called_once_with("Trop de requêtes sur l'API sirene")
     assert (
         str(e.value) == "Le service est temporairement surchargé. Merci de réessayer."
     )
@@ -140,7 +138,7 @@ def test_echec_erreur_de_l_API(mocker):
     with pytest.raises(ServerError) as e:
         recherche_unite_legale(SIREN)
 
-    capture_message_mock.assert_called_once_with("Erreur API recherche unité légale")
+    capture_message_mock.assert_called_once_with("Erreur API sirene")
     assert (
         str(e.value)
         == "Le service est actuellement indisponible. Merci de réessayer plus tard."
