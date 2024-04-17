@@ -7,16 +7,8 @@ from api.exceptions import SirenError
 from api.exceptions import TooManyRequestError
 from api.recherche_entreprises import recherche
 from api.recherche_entreprises import RECHERCHE_ENTREPRISE_TIMEOUT
+from api.tests import MockedResponse
 from entreprises.models import CaracteristiquesAnnuelles
-
-
-class MockedResponse:
-    def __init__(self, status_code, json_content=""):
-        self.status_code = status_code
-        self.json_content = json_content
-
-    def json(self):
-        return self.json_content
 
 
 @pytest.mark.network
