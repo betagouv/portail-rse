@@ -40,22 +40,7 @@ def recherche_unite_legale(siren):
         categorie_juridique_sirene = int(
             data["periodesUniteLegale"][0]["categorieJuridiqueUniteLegale"]
         )
-        tranche_effectif = int(data["trancheEffectifsUniteLegale"])
-        if tranche_effectif < 11:  # moins de 10 salariés
-            effectif = CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
-        elif tranche_effectif < 21:  # moins de 50 salariés
-            effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49
-        elif tranche_effectif < 32:  # moins de 250 salariés
-            effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
-        # la tranche EFFECTIF_ENTRE_250_ET_299 ne peut pas être trouvée avec l'API
-        elif tranche_effectif < 41:  # moins de 500 salariés
-            effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
-        elif tranche_effectif < 52:  # moins de 5 000 salariés:
-            effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999
-        elif tranche_effectif == 52:
-            effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999
-        else:
-            effectif = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
+        effectif = convertit_tranche_effectif(data["trancheEffectifsUniteLegale"])
 
         return {
             "siren": siren,
@@ -72,3 +57,28 @@ def recherche_unite_legale(siren):
     else:
         sentry_sdk.capture_message("Erreur API recherche unité légale")
         raise ServerError(SERVER_ERROR)
+
+
+def convertit_tranche_effectif(tranche_effectif):
+    # les tranches d'effectif correspondent à celles de l'API Sirene de l'Insee
+    # https://www.sirene.fr/sirene/public/variable/tefen
+    try:
+        tranche_effectif = int(tranche_effectif)
+    except (ValueError, TypeError):
+        tranche_effectif = 0
+    if tranche_effectif < 11:  # moins de 10 salariés
+        effectif = CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
+    elif tranche_effectif < 21:  # moins de 50 salariés
+        effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49
+    elif tranche_effectif < 32:  # moins de 250 salariés
+        effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+    # la tranche EFFECTIF_ENTRE_250_ET_299 ne peut pas être trouvée avec l'API
+    elif tranche_effectif < 41:  # moins de 500 salariés
+        effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
+    elif tranche_effectif < 52:  # moins de 5 000 salariés:
+        effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999
+    elif tranche_effectif == 52:
+        effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999
+    else:
+        effectif = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
+    return effectif

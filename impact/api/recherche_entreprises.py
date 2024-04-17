@@ -5,7 +5,7 @@ from .exceptions import APIError
 from .exceptions import ServerError
 from .exceptions import SirenError
 from .exceptions import TooManyRequestError
-from entreprises.models import CaracteristiquesAnnuelles
+from api.sirene import convertit_tranche_effectif
 
 RECHERCHE_ENTREPRISE_TIMEOUT = 10
 SIREN_NOT_FOUND_ERROR = (
@@ -31,6 +31,7 @@ def recherche(siren):
             raise SirenError(SIREN_NOT_FOUND_ERROR)
 
         data = response.json()["results"][0]
+
         denomination = data["nom_raison_sociale"] or data["nom_complet"]
         if not denomination:
             sentry_sdk.capture_message(
@@ -38,7 +39,7 @@ def recherche(siren):
             )
             raise SirenError(SIREN_NOT_FOUND_ERROR)
 
-        # la nature juridique correspond à la nomenclature des catégories juridiques retenue dans a gestion du repertoire Sirene
+        # la nature juridique correspond à la nomenclature des catégories juridiques retenue dans la gestion du repertoire Sirene
         # https://www.insee.fr/fr/information/2028129
         try:
             categorie_juridique_sirene = int(data["nature_juridique"])
@@ -47,27 +48,9 @@ def recherche(siren):
                 "Nature juridique récupérée par l'API recherche entreprises invalide"
             )
             categorie_juridique_sirene = None
-        try:
-            # les tranches d'effectif correspondent à celles de l'API Sirene de l'Insee
-            # https://www.sirene.fr/sirene/public/variable/tefen
-            tranche_effectif = int(data["tranche_effectif_salarie"])
-        except (ValueError, TypeError):
-            tranche_effectif = 0
-        if tranche_effectif < 11:  # moins de 10 salariés
-            effectif = CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
-        elif tranche_effectif < 21:  # moins de 50 salariés
-            effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49
-        elif tranche_effectif < 32:  # moins de 250 salariés
-            effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
-        # la tranche EFFECTIF_ENTRE_250_ET_299 ne peut pas être trouvée avec l'API
-        elif tranche_effectif < 41:  # moins de 500 salariés
-            effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
-        elif tranche_effectif < 52:  # moins de 5 000 salariés:
-            effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999
-        elif tranche_effectif == 52:
-            effectif = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999
-        else:
-            effectif = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
+
+        effectif = convertit_tranche_effectif(data["tranche_effectif_salarie"])
+
         try:
             code_pays_etranger = int(data["siege"]["code_pays_etranger"])
         except TypeError:
@@ -77,6 +60,7 @@ def recherche(siren):
                 "Code pays étranger récupéré par l'API recherche entreprises invalide"
             )
             code_pays_etranger = None
+
         return {
             "siren": siren,
             "effectif": effectif,
