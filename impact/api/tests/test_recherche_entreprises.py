@@ -10,6 +10,15 @@ from api.recherche_entreprises import RECHERCHE_ENTREPRISE_TIMEOUT
 from entreprises.models import CaracteristiquesAnnuelles
 
 
+class MockedResponse:
+    def __init__(self, status_code, json_content=""):
+        self.status_code = status_code
+        self.json_content = json_content
+
+    def json(self):
+        return self.json_content
+
+
 @pytest.mark.network
 def test_api_fonctionnelle():
     SIREN = "130025265"
@@ -26,25 +35,22 @@ def test_api_fonctionnelle():
 
 def test_succes_recherche_comportant_la_raison_sociale(mocker):
     SIREN = "123456789"
-
-    class FakeResponse:
-        status_code = 200
-
-        def json(self):
-            return {
-                "total_results": 1,
-                "results": [
-                    {
-                        "nom_complet": "entreprise",
-                        "nom_raison_sociale": "ENTREPRISE",
-                        "tranche_effectif_salarie": "12",
-                        "nature_juridique": "5710",
-                        "siege": {"code_pays_etranger": "99139"},
-                    }
-                ],
+    # la plupart des champs inutilisés de la réponse ont été supprimés
+    json_content = {
+        "total_results": 1,
+        "results": [
+            {
+                "nom_complet": "entreprise",
+                "nom_raison_sociale": "ENTREPRISE",
+                "tranche_effectif_salarie": "12",
+                "nature_juridique": "5710",
+                "siege": {"code_pays_etranger": "99139"},
             }
-
-    faked_request = mocker.patch("requests.get", return_value=FakeResponse())
+        ],
+    }
+    faked_request = mocker.patch(
+        "requests.get", return_value=MockedResponse(200, json_content)
+    )
 
     infos = recherche(SIREN)
 
@@ -63,25 +69,20 @@ def test_succes_recherche_comportant_la_raison_sociale(mocker):
 
 def test_succes_recherche_sans_la_raison_sociale(mocker):
     SIREN = "123456789"
-
-    class FakeResponse:
-        status_code = 200
-
-        def json(self):
-            return {
-                "total_results": 1,
-                "results": [
-                    {
-                        "nom_complet": "ENTREPRISE",
-                        "nom_raison_sociale": None,
-                        "tranche_effectif_salarie": "12",
-                        "nature_juridique": "5710",
-                        "siege": {"code_pays_etranger": None},
-                    }
-                ],
+    json_content = {
+        "total_results": 1,
+        "results": [
+            {
+                "nom_complet": "ENTREPRISE",
+                "nom_raison_sociale": None,
+                "tranche_effectif_salarie": "12",
+                "nature_juridique": "5710",
+                "siege": {"code_pays_etranger": None},
             }
+        ],
+    }
+    mocker.patch("requests.get", return_value=MockedResponse(200, json_content))
 
-    mocker.patch("requests.get", return_value=FakeResponse())
     infos = recherche(SIREN)
 
     assert infos == {
@@ -95,20 +96,15 @@ def test_succes_recherche_sans_la_raison_sociale(mocker):
 
 def test_succes_pas_de_resultat(mocker):
     SIREN = "123456789"
+    json_content = {
+        "results": [],
+        "total_results": 0,
+        "page": 1,
+        "per_page": 1,
+        "total_pages": 0,
+    }
+    mocker.patch("requests.get", return_value=MockedResponse(200, json_content))
 
-    class FakeResponse:
-        status_code = 200
-
-        def json(self):
-            return {
-                "results": [],
-                "total_results": 0,
-                "page": 1,
-                "per_page": 1,
-                "total_pages": 0,
-            }
-
-    mocker.patch("requests.get", return_value=FakeResponse())
     with pytest.raises(SirenError) as e:
         recherche(SIREN)
 
@@ -120,12 +116,9 @@ def test_succes_pas_de_resultat(mocker):
 
 def test_echec_recherche_requete_api_invalide(mocker):
     SIREN = "123456789"
-
-    class FakeResponse:
-        status_code = 400
-
-    mocker.patch("requests.get", return_value=FakeResponse())
+    mocker.patch("requests.get", return_value=MockedResponse(400))
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
+
     with pytest.raises(APIError) as e:
         recherche(SIREN)
 
@@ -140,11 +133,7 @@ def test_echec_recherche_requete_api_invalide(mocker):
 
 def test_echec_trop_de_requetes(mocker):
     SIREN = "123456789"
-
-    class FakeResponse:
-        status_code = 429
-
-    mocker.patch("requests.get", return_value=FakeResponse())
+    mocker.patch("requests.get", return_value=MockedResponse(429))
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
     with pytest.raises(TooManyRequestError) as e:
@@ -160,11 +149,7 @@ def test_echec_trop_de_requetes(mocker):
 
 def test_echec_erreur_de_l_API(mocker):
     SIREN = "123456789"
-
-    class FakeResponse:
-        status_code = 500
-
-    mocker.patch("requests.get", return_value=FakeResponse())
+    mocker.patch("requests.get", return_value=MockedResponse(500))
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
     with pytest.raises(ServerError) as e:
@@ -180,8 +165,7 @@ def test_echec_erreur_de_l_API(mocker):
 def test_echec_exception_provoquee_par_l_api(mocker):
     """le Timeout est un cas réel mais l'implémentation attrape toutes les erreurs possibles"""
     SIREN = "123456789"
-
-    faked_request = mocker.patch("requests.get", side_effect=Timeout)
+    mocker.patch("requests.get", side_effect=Timeout)
     capture_exception_mock = mocker.patch("sentry_sdk.capture_exception")
 
     with pytest.raises(APIError) as e:
@@ -201,28 +185,22 @@ def test_entreprise_inexistante_mais_pourtant_retournée_par_l_API(mocker):
     # comme si l'entreprise existait. Actuellement, le seul cas connu est le siren 0000000000.
     # On souhaite être informé si ce n'est pas le cas car d'autres cas similaires pourrait être retournés.
     SIREN = "000000000"
-
-    class FakeResponse:
-        status_code = 200
-
-        def json(self):
-            return {
-                "total_results": 1,
-                "results": [
-                    {
-                        "nom_complet": None,
-                        "nom_raison_sociale": None,
-                        "tranche_effectif_salarie": "15",
-                        "nature_juridique": None,
-                        "nombre_etablissements": 0,
-                        "nombre_etablissements_ouverts": 0,
-                        "siege": {},
-                        "activite_principale": None,
-                    }
-                ],
+    json_content = {
+        "total_results": 1,
+        "results": [
+            {
+                "nom_complet": None,
+                "nom_raison_sociale": None,
+                "tranche_effectif_salarie": "15",
+                "nature_juridique": None,
+                "nombre_etablissements": 0,
+                "nombre_etablissements_ouverts": 0,
+                "siege": {},
+                "activite_principale": None,
             }
-
-    mocker.patch("requests.get", return_value=FakeResponse())
+        ],
+    }
+    mocker.patch("requests.get", return_value=MockedResponse(200, json_content))
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
     with pytest.raises(SirenError) as e:
@@ -243,25 +221,19 @@ def test_pas_de_nature_juridique(nature_juridique, mocker):
     # Normalement toutes les entreprises en ont une.
     # On souhaite être informé si ce n'est pas le cas car le diagnostic pour ces réglementations pourrait être faux.
     SIREN = "123456789"
-
-    class FakeResponse:
-        status_code = 200
-
-        def json(self):
-            return {
-                "total_results": 1,
-                "results": [
-                    {
-                        "nom_complet": "ENTREPRISE",
-                        "nom_raison_sociale": None,
-                        "tranche_effectif_salarie": "15",
-                        "nature_juridique": nature_juridique,
-                        "siege": {"code_pays_etranger": None},
-                    }
-                ],
+    json_content = {
+        "total_results": 1,
+        "results": [
+            {
+                "nom_complet": "ENTREPRISE",
+                "nom_raison_sociale": None,
+                "tranche_effectif_salarie": "15",
+                "nature_juridique": nature_juridique,
+                "siege": {"code_pays_etranger": None},
             }
-
-    mocker.patch("requests.get", return_value=FakeResponse())
+        ],
+    }
+    mocker.patch("requests.get", return_value=MockedResponse(200, json_content))
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
     infos = recherche(SIREN)
@@ -275,25 +247,19 @@ def test_pas_de_nature_juridique(nature_juridique, mocker):
 def test_pas_de_code_pays_etranger(mocker):
     # On souhaite être informé s'il est manquant (utilisé dans la réglementation CSRD).
     SIREN = "123456789"
-
-    class FakeResponse:
-        status_code = 200
-
-        def json(self):
-            return {
-                "total_results": 1,
-                "results": [
-                    {
-                        "nom_complet": "ENTREPRISE",
-                        "nom_raison_sociale": None,
-                        "tranche_effectif_salarie": "15",
-                        "nature_juridique": "5710",
-                        "siege": {},
-                    }
-                ],
+    json_content = {
+        "total_results": 1,
+        "results": [
+            {
+                "nom_complet": "ENTREPRISE",
+                "nom_raison_sociale": None,
+                "tranche_effectif_salarie": "15",
+                "nature_juridique": "5710",
+                "siege": {},
             }
-
-    mocker.patch("requests.get", return_value=FakeResponse())
+        ],
+    }
+    mocker.patch("requests.get", return_value=MockedResponse(200, json_content))
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
     infos = recherche(SIREN)
@@ -306,25 +272,19 @@ def test_pas_de_code_pays_etranger(mocker):
 
 def test_code_pays_etranger_vaut_null_car_en_France(mocker):
     SIREN = "123456789"
-
-    class FakeResponse:
-        status_code = 200
-
-        def json(self):
-            return {
-                "total_results": 1,
-                "results": [
-                    {
-                        "nom_complet": "ENTREPRISE",
-                        "nom_raison_sociale": None,
-                        "tranche_effectif_salarie": "15",
-                        "nature_juridique": "5710",
-                        "siege": {"code_pays_etranger": None},
-                    }
-                ],
+    json_content = {
+        "total_results": 1,
+        "results": [
+            {
+                "nom_complet": "ENTREPRISE",
+                "nom_raison_sociale": None,
+                "tranche_effectif_salarie": "15",
+                "nature_juridique": "5710",
+                "siege": {"code_pays_etranger": None},
             }
-
-    mocker.patch("requests.get", return_value=FakeResponse())
+        ],
+    }
+    mocker.patch("requests.get", return_value=MockedResponse(200, json_content))
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
     infos = recherche(SIREN)
