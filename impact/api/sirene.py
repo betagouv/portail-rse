@@ -13,7 +13,7 @@ from api.exceptions import TooManyRequestError
 from entreprises.models import CaracteristiquesAnnuelles
 from impact.settings import API_SIRENE_TOKEN
 
-RECHERCHE_ENTREPRISE_TIMEOUT = 10
+SIRENE_TIMEOUT = 10
 
 
 def recherche_unite_legale(siren):
@@ -23,7 +23,7 @@ def recherche_unite_legale(siren):
         response = requests.get(
             url,
             headers={"Authorization": f"Bearer {API_SIRENE_TOKEN}"},
-            timeout=RECHERCHE_ENTREPRISE_TIMEOUT,
+            timeout=SIRENE_TIMEOUT,
         )
     except Exception as e:
         with sentry_sdk.push_scope() as scope:
