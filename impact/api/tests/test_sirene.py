@@ -8,8 +8,8 @@ from api.exceptions import APIError
 from api.exceptions import ServerError
 from api.exceptions import SirenError
 from api.exceptions import TooManyRequestError
-from api.sirene import RECHERCHE_ENTREPRISE_TIMEOUT
 from api.sirene import recherche_unite_legale
+from api.sirene import SIRENE_TIMEOUT
 from entreprises.models import CaracteristiquesAnnuelles
 
 
@@ -63,7 +63,7 @@ def test_succès_avec_résultat(mocker):
     faked_request.assert_called_once_with(
         f"https://api.insee.fr/entreprises/sirene/V3.11/siren/123456789?date={date.today().isoformat()}",
         headers={"Authorization": mock.ANY},
-        timeout=RECHERCHE_ENTREPRISE_TIMEOUT,
+        timeout=SIRENE_TIMEOUT,
     )
 
 
@@ -81,7 +81,7 @@ def test_succès_pas_de_résultat(mocker):
     faked_request.assert_called_once_with(
         f"https://api.insee.fr/entreprises/sirene/V3.11/siren/000000000?date={date.today().isoformat()}",
         headers={"Authorization": mock.ANY},
-        timeout=RECHERCHE_ENTREPRISE_TIMEOUT,
+        timeout=SIRENE_TIMEOUT,
     )
     assert (
         str(e.value)
