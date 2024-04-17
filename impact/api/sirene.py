@@ -37,11 +37,28 @@ def recherche_unite_legale(siren):
     if response.status_code == 200:
         data = response.json()["uniteLegale"]
 
-        denomination = data["periodesUniteLegale"][0]["denominationUniteLegale"]
-        categorie_juridique_sirene = int(
-            data["periodesUniteLegale"][0]["categorieJuridiqueUniteLegale"]
+        denomination = (
+            data["periodesUniteLegale"][0]["denominationUniteLegale"]
+            or data["periodesUniteLegale"][0]["nomUniteLegale"]
         )
+
+        try:
+            categorie_juridique_sirene = int(
+                data["periodesUniteLegale"][0]["categorieJuridiqueUniteLegale"]
+            )
+        except (ValueError, TypeError):
+            sentry_sdk.capture_message(
+                "Catégorie juridique récupérée par l'API sirene invalide"
+            )
+            categorie_juridique_sirene = None
+
         effectif = convertit_tranche_effectif(data["trancheEffectifsUniteLegale"])
+
+        # L'API sirene ne renseigne malheureusement pas le code pays étranger (bien récupéré par l'API recherche entreprises)
+        # On souhaite être informé dès qu'il est manquant (utilisé dans la réglementation CSRD).
+        sentry_sdk.capture_message(
+            f"Code pays étranger non récupéré par l'API {NOM_API}"
+        )
 
         return {
             "siren": siren,
