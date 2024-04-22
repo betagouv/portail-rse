@@ -2073,6 +2073,29 @@ def test_decale_annee_publication_selon_cloture_exercice_comptable():
     )
 
 
+def test_decale_annee_publication_selon_cloture_exercice_comptable_le_28_fevrier_bissextile():
+    # Ce cas est arrivé en prod
+    caracteristiques = CaracteristiquesAnnuelles(
+        date_cloture_exercice=date(2024, 2, 28)
+    )
+    assert (
+        CSRDReglementation.decale_annee_publication_selon_cloture_exercice_comptable(
+            2025, caracteristiques
+        )
+        == 2026
+    )
+
+    caracteristiques = CaracteristiquesAnnuelles(
+        date_cloture_exercice=date(2024, 2, 29)
+    )
+    assert (
+        CSRDReglementation.decale_annee_publication_selon_cloture_exercice_comptable(
+            2025, caracteristiques
+        )
+        == 2026
+    )
+
+
 def test_calcule_etat_si_soumis_en_2026_car_exercice_comptable_different_annee_civile(
     entreprise_factory, alice
 ):

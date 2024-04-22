@@ -341,7 +341,9 @@ class CSRDReglementation(Reglementation):
     ):
         ouverture_exercice_comptable = (
             caracteristiques.date_cloture_exercice + timedelta(days=1)
-        ).replace(year=annee)
+        ) + relativedelta(
+            year=annee
+        )  # remplace l'année de la date d'ouverture de l'exercice comptable par la valeur donnée en paramètre (de manière intelligente pour les années bissextiles)
         cloture_exercice_comptable = (
             ouverture_exercice_comptable + relativedelta(months=+12) - timedelta(days=1)
         )
