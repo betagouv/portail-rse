@@ -12,7 +12,6 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 
 import api.infos_entreprise
-import api.ratios_financiers
 from api.exceptions import APIError
 from entreprises.forms import EntrepriseAttachForm
 from entreprises.forms import EntrepriseDetachForm
@@ -199,10 +198,7 @@ def qualification(request, siren):
         else:
             try:
                 infos_entreprise = api.infos_entreprise.infos_entreprise(
-                    entreprise.siren
-                )
-                infos_entreprise.update(
-                    api.ratios_financiers.dernier_exercice_comptable(entreprise.siren)
+                    entreprise.siren, donnees_financieres=True
                 )
                 if infos_entreprise["tranche_chiffre_affaires_consolide"]:
                     infos_entreprise["appartient_groupe"] = True
@@ -224,14 +220,10 @@ def qualification(request, siren):
 
 def search_entreprise(request, siren):
     try:
-        infos = api.infos_entreprise.infos_entreprise(siren)
+        infos = api.infos_entreprise.infos_entreprise(siren, donnees_financieres=True)
     except APIError as exception:
         return JsonResponse(
             {"error": str(exception)},
             status=400,
         )
-    try:
-        infos.update(api.ratios_financiers.dernier_exercice_comptable(siren))
-    except APIError:
-        infos.update(api.ratios_financiers.dernier_exercice_comptable_vide())
     return JsonResponse(infos)
