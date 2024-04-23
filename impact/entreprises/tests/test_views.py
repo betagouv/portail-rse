@@ -10,7 +10,6 @@ import api.exceptions
 from api.tests.fixtures import mock_api_egapro  # noqa
 from api.tests.fixtures import mock_api_infos_entreprise  # noqa
 from api.tests.fixtures import mock_api_ratios_financiers  # noqa
-from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
 from conftest import CODE_PAYS_PORTUGAL
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
@@ -225,10 +224,10 @@ def test_page_de_qualification_d_une_entreprise_non_qualifiee_pre_remplit_les_ch
     client,
     alice,
     entreprise_non_qualifiee,
-    mock_api_recherche_entreprises,
+    mock_api_infos_entreprise,
     mock_api_ratios_financiers,
 ):
-    mock_api_recherche_entreprises.return_value = {
+    mock_api_infos_entreprise.return_value = {
         "siren": entreprise_non_qualifiee.siren,
         "denomination": "Entreprise SAS",
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
@@ -249,9 +248,7 @@ def test_page_de_qualification_d_une_entreprise_non_qualifiee_pre_remplit_les_ch
     assert response.status_code == 200
     content = response.content.decode("utf-8")
     assert "<!-- page qualification entreprise -->" in content
-    mock_api_recherche_entreprises.assert_called_once_with(
-        entreprise_non_qualifiee.siren
-    )
+    mock_api_infos_entreprise.assert_called_once_with(entreprise_non_qualifiee.siren)
     mock_api_ratios_financiers.assert_called_once_with(entreprise_non_qualifiee.siren)
     context = response.context
     # Les champs dont les infos sont récupérées par API sont pré-remplies
@@ -282,13 +279,13 @@ def test_page_de_qualification_d_une_entreprise_non_qualifiee_avec_erreur_api_no
     client,
     alice,
     entreprise_non_qualifiee,
-    mock_api_recherche_entreprises,
+    mock_api_infos_entreprise,
     mock_api_ratios_financiers,
 ):
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
     client.force_login(alice)
 
-    mock_api_recherche_entreprises.side_effect = api.exceptions.APIError("yolo")
+    mock_api_infos_entreprise.side_effect = api.exceptions.APIError("yolo")
 
     with freeze_time(date(2023, 1, 27)):
         response = client.get(f"/entreprises/{entreprise_non_qualifiee.siren}")
@@ -305,7 +302,7 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs_s
     client,
     alice,
     entreprise_factory,
-    mock_api_recherche_entreprises,
+    mock_api_infos_entreprise,
     mock_api_ratios_financiers,
 ):
     entreprise = entreprise_factory(
@@ -338,7 +335,7 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs_s
     assert response.status_code == 200
     content = response.content.decode("utf-8")
     assert "<!-- page qualification entreprise -->" in content
-    mock_api_recherche_entreprises.assert_not_called()
+    mock_api_infos_entreprise.assert_not_called()
     mock_api_ratios_financiers.assert_not_called()
     context = response.context
 
@@ -390,7 +387,7 @@ def test_page_de_qualification_avec_des_caracteristiques_non_qualifiantes_initia
     client,
     alice,
     entreprise_factory,
-    mock_api_recherche_entreprises,
+    mock_api_infos_entreprise,
     mock_api_ratios_financiers,
 ):
     entreprise = entreprise_factory()
@@ -404,7 +401,7 @@ def test_page_de_qualification_avec_des_caracteristiques_non_qualifiantes_initia
     with freeze_time(date(2023, 1, 27)):
         response = client.get(f"/entreprises/{entreprise.siren}")
 
-    mock_api_recherche_entreprises.assert_not_called()
+    mock_api_infos_entreprise.assert_not_called()
     mock_api_ratios_financiers.assert_not_called()
     context = response.context
 
@@ -624,7 +621,7 @@ def test_qualification_supprime_les_caracteristiques_annuelles_posterieures_a_la
     alice,
     entreprise_factory,
     date_cloture_dernier_exercice,
-    mock_api_recherche_entreprises,
+    mock_api_infos_entreprise,
 ):
     """Cas limite
     Ce cas pourrait exister si un utilisateur corrige la date de clôture du dernier exercice en la reculant dans le passé.

@@ -13,7 +13,6 @@ from django.shortcuts import render
 
 import api.infos_entreprise
 import api.ratios_financiers
-import api.recherche_entreprises
 from api.exceptions import APIError
 from entreprises.forms import EntrepriseAttachForm
 from entreprises.forms import EntrepriseDetachForm
@@ -199,7 +198,9 @@ def qualification(request, siren):
             }
         else:
             try:
-                infos_entreprise = api.recherche_entreprises.recherche(entreprise.siren)
+                infos_entreprise = api.infos_entreprise.infos_entreprise(
+                    entreprise.siren
+                )
                 infos_entreprise.update(
                     api.ratios_financiers.dernier_exercice_comptable(entreprise.siren)
                 )
