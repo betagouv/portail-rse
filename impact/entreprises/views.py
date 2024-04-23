@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
 
+import api.infos_entreprise
 import api.ratios_financiers
 import api.recherche_entreprises
 from api.exceptions import APIError
@@ -73,7 +74,7 @@ class _InvalidRequest(Exception):
 
 def search_and_create_entreprise(siren):
     try:
-        infos_entreprise = api.recherche_entreprises.recherche(siren)
+        infos_entreprise = api.infos_entreprise.infos_entreprise(siren)
     except APIError as exception:
         raise exception
     return Entreprise.objects.create(
