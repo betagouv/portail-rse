@@ -1,6 +1,5 @@
 import html
 from datetime import date
-from unittest import mock
 
 import pytest
 from django.urls import reverse
@@ -225,7 +224,6 @@ def test_page_de_qualification_d_une_entreprise_non_qualifiee_pre_remplit_les_ch
     alice,
     entreprise_non_qualifiee,
     mock_api_infos_entreprise,
-    mock_api_ratios_financiers,
 ):
     mock_api_infos_entreprise.return_value = {
         "siren": entreprise_non_qualifiee.siren,
@@ -233,8 +231,6 @@ def test_page_de_qualification_d_une_entreprise_non_qualifiee_pre_remplit_les_ch
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         "categorie_juridique_sirene": 5710,
         "code_pays_etranger_sirene": CODE_PAYS_PORTUGAL,
-    }
-    mock_api_ratios_financiers.return_value = {
         "date_cloture_exercice": date(2023, 6, 30),
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
         "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
@@ -248,8 +244,9 @@ def test_page_de_qualification_d_une_entreprise_non_qualifiee_pre_remplit_les_ch
     assert response.status_code == 200
     content = response.content.decode("utf-8")
     assert "<!-- page qualification entreprise -->" in content
-    mock_api_infos_entreprise.assert_called_once_with(entreprise_non_qualifiee.siren)
-    mock_api_ratios_financiers.assert_called_once_with(entreprise_non_qualifiee.siren)
+    mock_api_infos_entreprise.assert_called_once_with(
+        entreprise_non_qualifiee.siren, donnees_financieres=True
+    )
     context = response.context
     # Les champs dont les infos sont récupérées par API sont pré-remplies
     assert context["form"]["date_cloture_exercice"].initial == "2023-06-30"
@@ -280,7 +277,6 @@ def test_page_de_qualification_d_une_entreprise_non_qualifiee_avec_erreur_api_no
     alice,
     entreprise_non_qualifiee,
     mock_api_infos_entreprise,
-    mock_api_ratios_financiers,
 ):
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
     client.force_login(alice)
@@ -303,7 +299,6 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs_s
     alice,
     entreprise_factory,
     mock_api_infos_entreprise,
-    mock_api_ratios_financiers,
 ):
     entreprise = entreprise_factory(
         date_cloture_exercice=date(2022, 6, 30),
@@ -336,7 +331,6 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs_s
     content = response.content.decode("utf-8")
     assert "<!-- page qualification entreprise -->" in content
     mock_api_infos_entreprise.assert_not_called()
-    mock_api_ratios_financiers.assert_not_called()
     context = response.context
 
     form = context["form"]
@@ -388,7 +382,6 @@ def test_page_de_qualification_avec_des_caracteristiques_non_qualifiantes_initia
     alice,
     entreprise_factory,
     mock_api_infos_entreprise,
-    mock_api_ratios_financiers,
 ):
     entreprise = entreprise_factory()
     attach_user_to_entreprise(alice, entreprise, "Présidente")
@@ -402,7 +395,6 @@ def test_page_de_qualification_avec_des_caracteristiques_non_qualifiantes_initia
         response = client.get(f"/entreprises/{entreprise.siren}")
 
     mock_api_infos_entreprise.assert_not_called()
-    mock_api_ratios_financiers.assert_not_called()
     context = response.context
 
     form = context["form"]
@@ -653,9 +645,7 @@ def test_qualification_supprime_les_caracteristiques_annuelles_posterieures_a_la
     assert entreprise.caracteristiques_annuelles(date_cloture_dernier_exercice.year - 1)
 
 
-def test_succes_api_search_entreprise(
-    client, mock_api_infos_entreprise, mock_api_ratios_financiers
-):
+def test_succes_api_search_entreprise(client, mock_api_infos_entreprise):
     siren = "123456789"
     mock_api_infos_entreprise.return_value = {
         "siren": siren,
@@ -663,8 +653,6 @@ def test_succes_api_search_entreprise(
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         "categorie_juridique_sirene": 5710,
         "code_pays_etranger_sirene": CODE_PAYS_PORTUGAL,
-    }
-    mock_api_ratios_financiers.return_value = {
         "date_cloture_exercice": date(2023, 12, 31),
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
         "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_MOINS_DE_60M,
@@ -672,8 +660,7 @@ def test_succes_api_search_entreprise(
 
     response = client.get(f"/api/search-entreprise/{siren}")
 
-    mock_api_infos_entreprise.assert_called_once_with(siren)
-    mock_api_ratios_financiers.assert_called_once_with(siren)
+    mock_api_infos_entreprise.assert_called_once_with(siren, donnees_financieres=True)
     assert response.status_code == 200
     assert response.json() == {
         "siren": siren,
@@ -697,24 +684,4 @@ def test_echec_api_search_entreprise_car_l_API_infos_entreprise_est_en_erreur(
     assert response.status_code == 400
     assert response.json() == {
         "error": "Panne serveur",
-    }
-
-
-def test_succes_api_search_entreprise_car_l_API_ratios_financiers_n_est_pas_bloquante_même_si_en_erreur(
-    client, mock_api_infos_entreprise, mock_api_ratios_financiers
-):
-    mock_api_ratios_financiers.side_effect = api.exceptions.APIError("Panne serveur")
-
-    response = client.get("/api/search-entreprise/123456789")
-
-    assert response.status_code == 200
-    assert response.json() == {
-        "siren": mock.ANY,
-        "denomination": mock.ANY,
-        "effectif": mock.ANY,
-        "categorie_juridique_sirene": mock.ANY,
-        "code_pays_etranger_sirene": mock.ANY,
-        "date_cloture_exercice": None,
-        "tranche_chiffre_affaires": None,
-        "tranche_chiffre_affaires_consolide": None,
     }
