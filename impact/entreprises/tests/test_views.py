@@ -35,8 +35,8 @@ def test_get_current_entreprise_avec_une_entreprise_en_session_mais_inexistante_
     assert "entreprise" not in session
 
 
-def test_search_and_create_entreprise(db, mock_api_recherche_entreprises):
-    mock_api_recherche_entreprises.return_value = {
+def test_search_and_create_entreprise(db, mock_api_infos_entreprise):
+    mock_api_infos_entreprise.return_value = {
         "siren": "123456789",
         "denomination": "Entreprise SAS",
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
@@ -74,7 +74,7 @@ def test_entreprises_page_for_logged_user(client, alice, entreprise_factory):
     assert "<!-- page entreprises -->" in content
 
 
-def test_create_and_attach_to_entreprise(client, alice, mock_api_recherche_entreprises):
+def test_create_and_attach_to_entreprise(client, alice, mock_api_infos_entreprise):
     client.force_login(alice)
     data = _attach_data("000000001")
 
@@ -105,7 +105,7 @@ def test_attach_to_an_existing_entreprise(client, alice, entreprise_factory):
     assert get_habilitation(alice, entreprise).fonctions == "Présidente"
 
 
-def test_fail_to_create_entreprise(client, alice):
+def test_fail_to_create_entreprise(client, alice, mock_api_infos_entreprise):
     client.force_login(alice)
     data = _attach_data("unvalid")
 
@@ -118,11 +118,12 @@ def test_fail_to_create_entreprise(client, alice):
         "Impossible de créer l'entreprise car les données sont incorrectes." in content
     )
     assert Entreprise.objects.count() == 0
+    assert not mock_api_infos_entreprise.called
 
 
-def test_fail_to_find_entreprise_in_API(client, alice, mock_api_recherche_entreprises):
+def test_fail_to_find_entreprise_in_API(client, alice, mock_api_infos_entreprise):
     client.force_login(alice)
-    mock_api_recherche_entreprises.side_effect = api.exceptions.APIError(
+    mock_api_infos_entreprise.side_effect = api.exceptions.APIError(
         "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct."
     )
     data = _attach_data("000000001")
@@ -703,7 +704,7 @@ def test_echec_api_search_entreprise_car_l_API_infos_entreprise_est_en_erreur(
 
 
 def test_succes_api_search_entreprise_car_l_API_ratios_financiers_n_est_pas_bloquante_même_si_en_erreur(
-    client, mock_api_recherche_entreprises, mock_api_ratios_financiers
+    client, mock_api_infos_entreprise, mock_api_ratios_financiers
 ):
     mock_api_ratios_financiers.side_effect = api.exceptions.APIError("Panne serveur")
 
