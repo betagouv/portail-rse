@@ -1,15 +1,20 @@
+import os
 from datetime import date
 from unittest import mock
 
 import pytest
 from requests.exceptions import Timeout
 
+import impact.settings
 from api.exceptions import APIError
 from api.exceptions import ServerError
 from api.exceptions import SirenError
 from api.exceptions import TooManyRequestError
+from api.sirene import jeton_acces_sirene
 from api.sirene import recherche_unite_legale
+from api.sirene import renouveler_jeton_acces_sirene
 from api.sirene import SIRENE_TIMEOUT
+from api.sirene import TOKEN_PATH
 from api.tests import MockedResponse
 from entreprises.models import CaracteristiquesAnnuelles
 
@@ -189,3 +194,68 @@ def test_pas_de_categorie_juridique(categorie_juridique, mocker):
         "Catégorie juridique récupérée par l'API sirene invalide"
     )
     assert infos["categorie_juridique_sirene"] == None
+
+
+def test_renouvellement_jeton_sirene(mocker):
+    request_post = mocker.patch(
+        "requests.post",
+        return_value=MockedResponse(
+            200,
+            {
+                "access_token": "11111111-2222-3333-4444-555555555555",
+                "scope": "am_application_scope default",
+                "token_type": "Bearer",
+                "expires_in": 603322,
+            },
+        ),
+    )
+    try:
+        os.remove(TOKEN_PATH)
+    except FileNotFoundError:
+        pass
+
+    renouveler_jeton_acces_sirene()
+
+    request_post.assert_called_once_with(
+        "https://api.insee.fr/token",
+        {"grant_type": "client_credentials"},
+        headers={"Authorization": "Basic " + impact.settings.API_INSEE_KEY},
+    )
+    with open(TOKEN_PATH) as f:
+        assert f.read() == "11111111-2222-3333-4444-555555555555"
+
+
+def test_jeton_sirene_présent():
+    with open(TOKEN_PATH, "w") as f:
+        assert f.write("11111111-2222-3333-4444-555555555555")
+
+    assert jeton_acces_sirene() == "11111111-2222-3333-4444-555555555555"
+
+
+def test_jeton_sirene_absent(mocker):
+    try:
+        os.remove(TOKEN_PATH)
+    except FileNotFoundError:
+        pass
+    request_post = mocker.patch(
+        "requests.post",
+        return_value=MockedResponse(
+            200,
+            {
+                "access_token": "11111111-2222-3333-4444-555555555555",
+                "scope": "am_application_scope default",
+                "token_type": "Bearer",
+                "expires_in": 603322,
+            },
+        ),
+    )
+
+    assert jeton_acces_sirene() == "11111111-2222-3333-4444-555555555555"
+
+    request_post.assert_called_once_with(
+        "https://api.insee.fr/token",
+        {"grant_type": "client_credentials"},
+        headers={"Authorization": "Basic " + impact.settings.API_INSEE_KEY},
+    )
+    with open(TOKEN_PATH) as f:
+        assert f.read() == "11111111-2222-3333-4444-555555555555"
