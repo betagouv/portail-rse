@@ -8,9 +8,9 @@ from api.exceptions import APIError
 from api.exceptions import ServerError
 from api.exceptions import SirenError
 from api.exceptions import TooManyRequestError
-from api.sirene import jeton_acces_sirene
+from api.sirene import jeton_acces_insee
 from api.sirene import recherche_unite_legale
-from api.sirene import renouvelle_jeton_acces_sirene
+from api.sirene import renouvelle_jeton_acces_insee
 from api.sirene import SIRENE_TIMEOUT
 from api.tests import MockedResponse
 from entreprises.models import CaracteristiquesAnnuelles
@@ -31,9 +31,9 @@ def test_api_fonctionnelle():
 
 
 @pytest.mark.network
-def test_api_renouvelle_automatiquement_le_jeton_acces_sirene(tmp_path, settings):
+def test_api_renouvelle_automatiquement_le_jeton_acces_insee(tmp_path, settings):
     jeton_expire = "11111111-2222-3333-4444-555555555555"
-    settings.API_INSEE_TOKEN_PATH = tmp_path / "jeton_sirene"
+    settings.API_INSEE_TOKEN_PATH = tmp_path / "jeton_insee"
     settings.API_INSEE_TOKEN_PATH.write_text(jeton_expire)
     SIREN = "130025265"
 
@@ -186,7 +186,7 @@ def test_echec_erreur_de_renouvellement_de_jeton_acces(mocker):
     # un jeton invalide renvoie une 401
     mocker.patch("requests.get", return_value=MockedResponse(401))
     mocker.patch(
-        "api.sirene.renouvelle_jeton_acces_sirene",
+        "api.sirene.renouvelle_jeton_acces_insee",
         side_effect=APIError("Message d'erreur"),
     )
 
@@ -227,8 +227,8 @@ def test_pas_de_categorie_juridique(categorie_juridique, mocker):
     assert infos["categorie_juridique_sirene"] == None
 
 
-def test_renouvelle_jeton_acces_sirene(mocker, tmp_path, settings):
-    settings.API_INSEE_TOKEN_PATH = tmp_path / "jeton_sirene"
+def test_renouvelle_jeton_acces_insee(mocker, tmp_path, settings):
+    settings.API_INSEE_TOKEN_PATH = tmp_path / "jeton_insee"
     request_post = mocker.patch(
         "requests.post",
         return_value=MockedResponse(
@@ -242,7 +242,7 @@ def test_renouvelle_jeton_acces_sirene(mocker, tmp_path, settings):
         ),
     )
 
-    renouvelle_jeton_acces_sirene()
+    renouvelle_jeton_acces_insee()
 
     request_post.assert_called_once_with(
         "https://api.insee.fr/token",
@@ -261,7 +261,7 @@ def test_echec_renouvelle_jeton_exception_provoquee_par_l_api(mocker):
     capture_exception_mock = mocker.patch("sentry_sdk.capture_exception")
 
     with pytest.raises(APIError) as e:
-        renouvelle_jeton_acces_sirene()
+        renouvelle_jeton_acces_insee()
 
     capture_exception_mock.assert_called_once()
     args, _ = capture_exception_mock.call_args
@@ -277,7 +277,7 @@ def test_echec_renouvelle_jeton_erreur_de_l_API(mocker):
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
     with pytest.raises(APIError) as e:
-        renouvelle_jeton_acces_sirene()
+        renouvelle_jeton_acces_insee()
 
     capture_message_mock.assert_called_once_with("Erreur API insee token")
     assert (
@@ -286,17 +286,17 @@ def test_echec_renouvelle_jeton_erreur_de_l_API(mocker):
     )
 
 
-def test_jeton_acces_sirene_présent(mocker, tmp_path, settings):
-    settings.API_INSEE_TOKEN_PATH = tmp_path / "jeton_sirene"
+def test_jeton_acces_insee_présent(mocker, tmp_path, settings):
+    settings.API_INSEE_TOKEN_PATH = tmp_path / "jeton_insee"
     settings.API_INSEE_TOKEN_PATH.write_text("11111111-2222-3333-4444-555555555555")
     request_post = mocker.patch("requests.post")
 
-    assert jeton_acces_sirene() == "11111111-2222-3333-4444-555555555555"
+    assert jeton_acces_insee() == "11111111-2222-3333-4444-555555555555"
     assert not request_post.called
 
 
-def test_jeton_acces_sirene_absent(mocker, tmp_path, settings):
-    settings.API_INSEE_TOKEN_PATH = tmp_path / "jeton_sirene"
+def test_jeton_acces_insee_absent(mocker, tmp_path, settings):
+    settings.API_INSEE_TOKEN_PATH = tmp_path / "jeton_insee"
     assert not settings.API_INSEE_TOKEN_PATH.exists()
     request_post = mocker.patch(
         "requests.post",
@@ -311,7 +311,7 @@ def test_jeton_acces_sirene_absent(mocker, tmp_path, settings):
         ),
     )
 
-    assert jeton_acces_sirene() == "11111111-2222-3333-4444-555555555555"
+    assert jeton_acces_insee() == "11111111-2222-3333-4444-555555555555"
 
     request_post.assert_called_once_with(
         "https://api.insee.fr/token",

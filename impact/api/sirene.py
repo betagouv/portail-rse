@@ -25,7 +25,7 @@ def recherche_unite_legale(siren):
     try:
         response = requests.get(
             url,
-            headers={"Authorization": f"Bearer {jeton_acces_sirene()}"},
+            headers={"Authorization": f"Bearer {jeton_acces_insee()}"},
             timeout=SIRENE_TIMEOUT,
         )
     except Exception as e:
@@ -73,7 +73,7 @@ def recherche_unite_legale(siren):
         sentry_sdk.capture_message(TOO_MANY_REQUESTS_SENTRY_MESSAGE.format(NOM_API))
         raise TooManyRequestError(TOO_MANY_REQUESTS_ERROR)
     elif response.status_code == 401:
-        renouvelle_jeton_acces_sirene()
+        renouvelle_jeton_acces_insee()
         return recherche_unite_legale(siren)
     else:
         sentry_sdk.capture_message(API_ERROR_SENTRY_MESSAGE.format(NOM_API))
@@ -105,15 +105,15 @@ def convertit_tranche_effectif(tranche_effectif):
     return effectif
 
 
-def jeton_acces_sirene():
+def jeton_acces_insee():
     try:
         return settings.API_INSEE_TOKEN_PATH.read_text()
     except FileNotFoundError:
-        renouvelle_jeton_acces_sirene()
-        return jeton_acces_sirene()
+        renouvelle_jeton_acces_insee()
+        return jeton_acces_insee()
 
 
-def renouvelle_jeton_acces_sirene():
+def renouvelle_jeton_acces_insee():
     try:
         response = requests.post(
             "https://api.insee.fr/token",
