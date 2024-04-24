@@ -114,10 +114,21 @@ def jeton_acces_sirene():
 
 
 def renouvelle_jeton_acces_sirene():
-    response = requests.post(
-        "https://api.insee.fr/token",
-        {"grant_type": "client_credentials"},
-        headers={"Authorization": f"Basic {settings.API_INSEE_KEY}"},
-    )
-    jeton = response.json()["access_token"]
-    settings.API_INSEE_TOKEN_PATH.write_text(jeton)
+    try:
+        response = requests.post(
+            "https://api.insee.fr/token",
+            {"grant_type": "client_credentials"},
+            headers={"Authorization": f"Basic {settings.API_INSEE_KEY}"},
+        )
+    except Exception as e:
+        with sentry_sdk.push_scope() as scope:
+            scope.set_level("info")
+            sentry_sdk.capture_exception(e)
+        raise APIError(SERVER_ERROR)
+
+    if response.status_code == 200:
+        jeton = response.json()["access_token"]
+        settings.API_INSEE_TOKEN_PATH.write_text(jeton)
+    else:
+        sentry_sdk.capture_message(API_ERROR_SENTRY_MESSAGE.format("insee token"))
+        raise APIError(SERVER_ERROR)

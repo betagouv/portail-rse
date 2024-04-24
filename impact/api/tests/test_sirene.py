@@ -181,6 +181,21 @@ def test_echec_erreur_de_l_API(mocker):
     )
 
 
+def test_echec_erreur_de_renouvellement_de_jeton_acces(mocker):
+    SIREN = "123456789"
+    # un jeton invalide renvoie une 401
+    mocker.patch("requests.get", return_value=MockedResponse(401))
+    mocker.patch(
+        "api.sirene.renouvelle_jeton_acces_sirene",
+        side_effect=APIError("Message d'erreur"),
+    )
+
+    with pytest.raises(APIError) as e:
+        recherche_unite_legale(SIREN)
+
+    assert str(e.value) == "Message d'erreur"
+
+
 @pytest.mark.parametrize("categorie_juridique", ["", None])
 def test_pas_de_categorie_juridique(categorie_juridique, mocker):
     # On se sert de la catégorie juridique pour certaines réglementations qu'on récupère via la catégorie juridique renvoyée par l'API.
@@ -237,6 +252,37 @@ def test_renouvelle_jeton_acces_sirene(mocker, tmp_path, settings):
     assert (
         settings.API_INSEE_TOKEN_PATH.read_text()
         == "11111111-2222-3333-4444-555555555555"
+    )
+
+
+def test_echec_renouvelle_jeton_exception_provoquee_par_l_api(mocker):
+    """le Timeout est un cas réel mais l'implémentation attrape toutes les erreurs possibles"""
+    request_post = mocker.patch("requests.post", side_effect=Timeout)
+    capture_exception_mock = mocker.patch("sentry_sdk.capture_exception")
+
+    with pytest.raises(APIError) as e:
+        renouvelle_jeton_acces_sirene()
+
+    capture_exception_mock.assert_called_once()
+    args, _ = capture_exception_mock.call_args
+    assert type(args[0]) == Timeout
+    assert (
+        str(e.value)
+        == "Le service est actuellement indisponible. Merci de réessayer plus tard."
+    )
+
+
+def test_echec_renouvelle_jeton_erreur_de_l_API(mocker):
+    request_post = mocker.patch("requests.post", return_value=MockedResponse(500))
+    capture_message_mock = mocker.patch("sentry_sdk.capture_message")
+
+    with pytest.raises(APIError) as e:
+        renouvelle_jeton_acces_sirene()
+
+    capture_message_mock.assert_called_once_with("Erreur API insee token")
+    assert (
+        str(e.value)
+        == "Le service est actuellement indisponible. Merci de réessayer plus tard."
     )
 
 
