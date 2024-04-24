@@ -107,11 +107,11 @@ def jeton_acces_sirene():
         with open(settings.API_INSEE_TOKEN_PATH, "r") as f:
             return f.read()
     except FileNotFoundError:
-        renouveler_jeton_acces_sirene()
+        renouvelle_jeton_acces_sirene()
         return jeton_acces_sirene()
 
 
-def renouveler_jeton_acces_sirene():
+def renouvelle_jeton_acces_sirene():
     response = requests.post(
         "https://api.insee.fr/token",
         {"grant_type": "client_credentials"},
