@@ -19,6 +19,7 @@ jobs:
       SECRET_KEY: fake-secret-key
       DATABASE_URL: sqlite:///db.sqlite3
       METABASE_DATABASE_URL: sqlite:///metabase.sqlite3
+      API_INSEE_KEY: ${{ secrets.API_INSEE_KEY }}
 
     steps:
     - uses: actions/checkout@v3
