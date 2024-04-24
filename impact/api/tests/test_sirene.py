@@ -221,11 +221,13 @@ def test_renouvelle_jeton_acces_sirene(mocker, tmp_path, settings):
     )
 
 
-def test_jeton_acces_sirene_présent(tmp_path, settings):
+def test_jeton_acces_sirene_présent(mocker, tmp_path, settings):
     settings.API_INSEE_TOKEN_PATH = tmp_path / "jeton_sirene"
     settings.API_INSEE_TOKEN_PATH.write_text("11111111-2222-3333-4444-555555555555")
+    request_post = mocker.patch("requests.post")
 
     assert jeton_acces_sirene() == "11111111-2222-3333-4444-555555555555"
+    assert not request_post.called
 
 
 def test_jeton_acces_sirene_absent(mocker, tmp_path, settings):
