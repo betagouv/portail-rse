@@ -104,8 +104,7 @@ def convertit_tranche_effectif(tranche_effectif):
 
 def jeton_acces_sirene():
     try:
-        with open(settings.API_INSEE_TOKEN_PATH, "r") as f:
-            return f.read()
+        return settings.API_INSEE_TOKEN_PATH.read_text()
     except FileNotFoundError:
         renouvelle_jeton_acces_sirene()
         return jeton_acces_sirene()
@@ -118,5 +117,4 @@ def renouvelle_jeton_acces_sirene():
         headers={"Authorization": f"Basic {settings.API_INSEE_KEY}"},
     )
     jeton = response.json()["access_token"]
-    with open(settings.API_INSEE_TOKEN_PATH, "w") as f:
-        f.write(jeton)
+    settings.API_INSEE_TOKEN_PATH.write_text(jeton)
