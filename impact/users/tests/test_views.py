@@ -4,10 +4,10 @@ from datetime import timezone
 from unittest import mock
 
 import pytest
+from django.conf import settings
 from django.urls import reverse
 from freezegun import freeze_time
 
-import impact.settings
 from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
@@ -75,9 +75,9 @@ def test_create_user_with_real_siren(client, db, mailoutbox):
     assert get_habilitation(user, entreprise).fonctions == "Présidente"
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
-    assert mail.from_email == impact.settings.DEFAULT_FROM_EMAIL
+    assert mail.from_email == settings.DEFAULT_FROM_EMAIL
     assert list(mail.to) == ["user@domaine.test"]
-    assert mail.template_id == impact.settings.SENDINBLUE_CONFIRM_EMAIL_TEMPLATE
+    assert mail.template_id == settings.SENDINBLUE_CONFIRM_EMAIL_TEMPLATE
     assert mail.merge_global_data == {
         "confirm_email_url": response.wsgi_request.build_absolute_uri(
             reverse(
@@ -293,9 +293,9 @@ def test_edit_email(client, alice_with_password, mailoutbox):
 
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
-    assert mail.from_email == impact.settings.DEFAULT_FROM_EMAIL
+    assert mail.from_email == settings.DEFAULT_FROM_EMAIL
     assert list(mail.to) == ["bob@domaine.test"]
-    assert mail.template_id == impact.settings.SENDINBLUE_CONFIRM_EMAIL_TEMPLATE
+    assert mail.template_id == settings.SENDINBLUE_CONFIRM_EMAIL_TEMPLATE
     assert mail.merge_global_data == {
         "confirm_email_url": response.wsgi_request.build_absolute_uri(
             reverse(

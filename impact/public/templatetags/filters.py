@@ -1,9 +1,9 @@
 from django import template
+from django.conf import settings
 from django.forms import BooleanField
 from django.forms import ChoiceField
 
 import habilitations.models
-import impact.settings
 
 register = template.Library()
 
@@ -61,7 +61,7 @@ def fr_group_class(field):
 
 @register.filter
 def inline_static_file(path):
-    full_path = impact.settings.STATICFILES_DIRS[0] / path
+    full_path = settings.STATICFILES_DIRS[0] / path
     with open(full_path) as f:
         content = f.read()
     return content

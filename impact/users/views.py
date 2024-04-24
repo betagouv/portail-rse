@@ -1,4 +1,5 @@
 import django.utils.http
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
@@ -12,7 +13,6 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
 
-import impact.settings
 from .forms import UserCreationForm
 from .forms import UserEditionForm
 from .forms import UserPasswordForm
@@ -21,7 +21,6 @@ from api.exceptions import APIError
 from entreprises.models import Entreprise
 from entreprises.views import search_and_create_entreprise
 from habilitations.models import attach_user_to_entreprise
-from impact.settings import SENDINBLUE_CONFIRM_EMAIL_TEMPLATE
 from utils.tokens import check_token
 from utils.tokens import make_token
 from utils.tokens import uidb64
@@ -65,9 +64,9 @@ def creation(request):
 def _send_confirm_email(request, user):
     email = EmailMessage(
         to=[user.email],
-        from_email=impact.settings.DEFAULT_FROM_EMAIL,
+        from_email=settings.DEFAULT_FROM_EMAIL,
     )
-    email.template_id = SENDINBLUE_CONFIRM_EMAIL_TEMPLATE
+    email.template_id = settings.SENDINBLUE_CONFIRM_EMAIL_TEMPLATE
     path = reverse(
         "users:confirm_email",
         kwargs={"uidb64": uidb64(user), "token": make_token(user, "confirm_email")},
