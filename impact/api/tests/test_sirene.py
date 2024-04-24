@@ -30,6 +30,25 @@ def test_api_fonctionnelle():
     }
 
 
+@pytest.mark.network
+def test_api_renouvelle_automatiquement_le_jeton_acces_sirene(tmp_path, settings):
+    jeton_expire = "11111111-2222-3333-4444-555555555555"
+    settings.API_INSEE_TOKEN_PATH = tmp_path / "jeton_sirene"
+    settings.API_INSEE_TOKEN_PATH.write_text(jeton_expire)
+    SIREN = "130025265"
+
+    infos = recherche_unite_legale(SIREN)
+
+    assert settings.API_INSEE_TOKEN_PATH.read_text() != jeton_expire
+    assert infos == {
+        "siren": SIREN,
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "denomination": "DIRECTION INTERMINISTERIELLE DU NUMERIQUE",
+        "categorie_juridique_sirene": 7120,
+        "code_pays_etranger_sirene": None,
+    }
+
+
 def test_succès_avec_résultat_comportant_la_denomination(mocker):
     SIREN = "123456789"
     # la plupart des champs inutilisés de la réponse ont été supprimés
