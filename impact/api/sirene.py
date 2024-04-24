@@ -2,6 +2,7 @@ from datetime import date
 
 import requests
 import sentry_sdk
+from django.conf import settings
 
 from api.exceptions import API_ERROR_SENTRY_MESSAGE
 from api.exceptions import APIError
@@ -13,12 +14,9 @@ from api.exceptions import TOO_MANY_REQUESTS_ERROR
 from api.exceptions import TOO_MANY_REQUESTS_SENTRY_MESSAGE
 from api.exceptions import TooManyRequestError
 from entreprises.models import CaracteristiquesAnnuelles
-from impact.settings import API_INSEE_KEY
-from impact.settings import API_SIRENE_TOKEN
 
 NOM_API = "sirene"
 SIRENE_TIMEOUT = 10
-TOKEN_PATH = "/tmp/jeton_sirene"
 
 
 def recherche_unite_legale(siren):
@@ -27,7 +25,7 @@ def recherche_unite_legale(siren):
     try:
         response = requests.get(
             url,
-            headers={"Authorization": f"Bearer {API_SIRENE_TOKEN}"},
+            headers={"Authorization": f"Bearer {settings.API_SIRENE_TOKEN}"},
             timeout=SIRENE_TIMEOUT,
         )
     except Exception as e:
@@ -106,7 +104,7 @@ def convertit_tranche_effectif(tranche_effectif):
 
 def jeton_acces_sirene():
     try:
-        with open(TOKEN_PATH, "r") as f:
+        with open(settings.API_INSEE_TOKEN_PATH, "r") as f:
             return f.read()
     except FileNotFoundError:
         renouveler_jeton_acces_sirene()
@@ -117,8 +115,8 @@ def renouveler_jeton_acces_sirene():
     response = requests.post(
         "https://api.insee.fr/token",
         {"grant_type": "client_credentials"},
-        headers={"Authorization": f"Basic {API_INSEE_KEY}"},
+        headers={"Authorization": f"Basic {settings.API_INSEE_KEY}"},
     )
     jeton = response.json()["access_token"]
-    with open(TOKEN_PATH, "w") as f:
+    with open(settings.API_INSEE_TOKEN_PATH, "w") as f:
         f.write(jeton)

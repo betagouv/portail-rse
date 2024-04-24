@@ -179,3 +179,4 @@ if SENTRY_DSN:
 # API
 API_SIRENE_TOKEN = os.getenv("API_SIRENE_TOKEN")
 API_INSEE_KEY = os.getenv("API_INSEE_KEY")
+API_INSEE_TOKEN_PATH = "/tmp/jeton_sirene"

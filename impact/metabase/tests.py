@@ -3,6 +3,7 @@ from datetime import datetime
 from datetime import timezone
 
 import pytest
+from django.conf import settings
 from freezegun import freeze_time
 
 from api.tests.fixtures import mock_api_bges  # noqa
@@ -12,7 +13,6 @@ from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from habilitations.models import attach_user_to_entreprise
-from impact.settings import METABASE_DATABASE_NAME
 from metabase.management.commands.sync_metabase import Command
 from metabase.models import BDESE as MetabaseBDESE
 from metabase.models import BGES as MetabaseBGES
@@ -24,6 +24,8 @@ from metabase.models import Utilisateur as MetabaseUtilisateur
 from reglementations.models import BDESE_50_300
 from reglementations.models import derniere_annee_a_remplir_bdese
 from reglementations.tests.conftest import bdese_factory  # noqa
+
+METABASE_DATABASE_NAME = settings.METABASE_DATABASE_NAME
 
 
 def mark_bdese_as_complete(bdese):

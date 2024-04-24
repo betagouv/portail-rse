@@ -1,4 +1,4 @@
-from impact.settings import METABASE_DATABASE_NAME
+from django.conf import settings
 
 
 class MetabaseRouter:
@@ -11,7 +11,7 @@ class MetabaseRouter:
 
     def _db_from_model(self, model):
         if model._meta.app_label in self.route_app_labels:
-            return METABASE_DATABASE_NAME
+            return settings.METABASE_DATABASE_NAME
 
     def db_for_read(self, model, **hints):
         return self._db_from_model(model)
@@ -23,7 +23,7 @@ class MetabaseRouter:
         return None
 
     def allow_migrate(self, db, app_label, model_name=None, **hints):
-        if db == METABASE_DATABASE_NAME:
+        if db == settings.METABASE_DATABASE_NAME:
             return app_label in self.route_app_labels
         elif app_label in self.route_app_labels:
-            return db == METABASE_DATABASE_NAME
+            return db == settings.METABASE_DATABASE_NAME

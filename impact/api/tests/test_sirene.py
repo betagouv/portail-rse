@@ -1,11 +1,9 @@
-import os
 from datetime import date
 from unittest import mock
 
 import pytest
 from requests.exceptions import Timeout
 
-import impact.settings
 from api.exceptions import APIError
 from api.exceptions import ServerError
 from api.exceptions import SirenError
@@ -14,7 +12,6 @@ from api.sirene import jeton_acces_sirene
 from api.sirene import recherche_unite_legale
 from api.sirene import renouveler_jeton_acces_sirene
 from api.sirene import SIRENE_TIMEOUT
-from api.sirene import TOKEN_PATH
 from api.tests import MockedResponse
 from entreprises.models import CaracteristiquesAnnuelles
 
@@ -196,7 +193,8 @@ def test_pas_de_categorie_juridique(categorie_juridique, mocker):
     assert infos["categorie_juridique_sirene"] == None
 
 
-def test_renouvellement_jeton_sirene(mocker):
+def test_renouvellement_jeton_sirene(mocker, tmp_path, settings):
+    settings.API_INSEE_TOKEN_PATH = tmp_path / "jeton_sirene"
     request_post = mocker.patch(
         "requests.post",
         return_value=MockedResponse(
@@ -209,34 +207,30 @@ def test_renouvellement_jeton_sirene(mocker):
             },
         ),
     )
-    try:
-        os.remove(TOKEN_PATH)
-    except FileNotFoundError:
-        pass
 
     renouveler_jeton_acces_sirene()
 
     request_post.assert_called_once_with(
         "https://api.insee.fr/token",
         {"grant_type": "client_credentials"},
-        headers={"Authorization": "Basic " + impact.settings.API_INSEE_KEY},
+        headers={"Authorization": "Basic " + settings.API_INSEE_KEY},
     )
-    with open(TOKEN_PATH) as f:
-        assert f.read() == "11111111-2222-3333-4444-555555555555"
+    assert (
+        settings.API_INSEE_TOKEN_PATH.read_text()
+        == "11111111-2222-3333-4444-555555555555"
+    )
 
 
-def test_jeton_sirene_présent():
-    with open(TOKEN_PATH, "w") as f:
-        assert f.write("11111111-2222-3333-4444-555555555555")
+def test_jeton_sirene_présent(tmp_path, settings):
+    settings.API_INSEE_TOKEN_PATH = tmp_path / "jeton_sirene"
+    settings.API_INSEE_TOKEN_PATH.write_text("11111111-2222-3333-4444-555555555555")
 
     assert jeton_acces_sirene() == "11111111-2222-3333-4444-555555555555"
 
 
-def test_jeton_sirene_absent(mocker):
-    try:
-        os.remove(TOKEN_PATH)
-    except FileNotFoundError:
-        pass
+def test_jeton_sirene_absent(mocker, tmp_path, settings):
+    settings.API_INSEE_TOKEN_PATH = tmp_path / "jeton_sirene"
+    assert not settings.API_INSEE_TOKEN_PATH.exists()
     request_post = mocker.patch(
         "requests.post",
         return_value=MockedResponse(
@@ -255,7 +249,9 @@ def test_jeton_sirene_absent(mocker):
     request_post.assert_called_once_with(
         "https://api.insee.fr/token",
         {"grant_type": "client_credentials"},
-        headers={"Authorization": "Basic " + impact.settings.API_INSEE_KEY},
+        headers={"Authorization": "Basic " + settings.API_INSEE_KEY},
     )
-    with open(TOKEN_PATH) as f:
-        assert f.read() == "11111111-2222-3333-4444-555555555555"
+    assert (
+        settings.API_INSEE_TOKEN_PATH.read_text()
+        == "11111111-2222-3333-4444-555555555555"
+    )
