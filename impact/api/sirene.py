@@ -132,8 +132,14 @@ def renouvelle_jeton_acces_insee():
         raise APIError(SERVER_ERROR)
 
     if response.status_code == 200:
-        jeton = response.json()["access_token"]
-        settings.API_INSEE_TOKEN_PATH.write_text(jeton)
+        try:
+            jeton = response.json()["access_token"]
+            settings.API_INSEE_TOKEN_PATH.write_text(jeton)
+        except Exception as e:
+            with sentry_sdk.push_scope() as scope:
+                scope.set_level("info")
+                sentry_sdk.capture_exception(e)
+            raise APIError(SERVER_ERROR)
     else:
         sentry_sdk.capture_message(API_ERROR_SENTRY_MESSAGE.format("insee token"))
         raise APIError(SERVER_ERROR)
