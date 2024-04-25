@@ -21,11 +21,6 @@ SIRENE_TIMEOUT = 10
 
 def recherche_unite_legale(siren):
     # documentation api sirene 3.11 https://www.sirene.fr/static-resources/htm/sommaire_311.html
-    #
-    # Le code pays est toujours laissé vide actuellement (interprété comme France).
-    # Il est récupérable en utilisant le Nic du siège fourni par l'API. Cela permettrait
-    # de construire le SIRET du siège. Une nouvelle requête POST sur https://api.insee.fr/entreprises/sirene/V3.11/siret
-    # fournirait alors le code pays dans le champ codePaysEtrangerEtablissement.
     url = f"https://api.insee.fr/entreprises/sirene/V3.11/siren/{siren}?date={date.today().isoformat()}"
     try:
         response = requests.get(
@@ -61,6 +56,10 @@ def recherche_unite_legale(siren):
 
         # L'API sirene ne renseigne malheureusement pas le code pays étranger (bien récupéré par l'API recherche entreprises)
         # On souhaite être informé dès qu'il est manquant (utilisé dans la réglementation CSRD).
+        # Il est toujours laissé vide actuellement (interprété comme France).
+        # Il serait récupérable en utilisant le Nic du siège fourni par l'API. Cela permettrait
+        # de construire le SIRET du siège. Une nouvelle requête POST sur https://api.insee.fr/entreprises/sirene/V3.11/siret
+        # fournirait alors le code pays dans le champ codePaysEtrangerEtablissement.
         sentry_sdk.capture_message(
             f"Code pays étranger non récupéré par l'API {NOM_API}"
         )
