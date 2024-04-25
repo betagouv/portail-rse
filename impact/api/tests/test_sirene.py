@@ -272,7 +272,7 @@ def test_echec_renouvelle_jeton_exception_provoquee_par_l_api(mocker):
     )
 
 
-def test_echec_renouvelle_jeton_erreur_de_l_API(mocker):
+def test_echec_renouvelle_jeton_car_erreur_de_l_API(mocker):
     request_post = mocker.patch("requests.post", return_value=MockedResponse(500))
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
@@ -280,6 +280,29 @@ def test_echec_renouvelle_jeton_erreur_de_l_API(mocker):
         renouvelle_jeton_acces_insee()
 
     capture_message_mock.assert_called_once_with("Erreur API insee token")
+    assert (
+        str(e.value)
+        == "Le service est actuellement indisponible. Merci de réessayer plus tard."
+    )
+
+
+def test_echec_renouvelle_jeton_car_erreur_lors_de_l_enregistrement_du_jeton(mocker):
+    request_post = mocker.patch(
+        "requests.post",
+        return_value=MockedResponse(
+            200,
+            {
+                "api": "a changé de format de réponse",
+            },
+        ),
+    )
+    capture_exception_mock = mocker.patch("sentry_sdk.capture_exception")
+
+    with pytest.raises(APIError) as e:
+        renouvelle_jeton_acces_insee()
+
+    capture_exception_mock.assert_called_once()
+    args, _ = capture_exception_mock.call_args
     assert (
         str(e.value)
         == "Le service est actuellement indisponible. Merci de réessayer plus tard."
