@@ -14,6 +14,7 @@
     "@gouvfr/dsfr": "^1.11.0",
     "@sveltejs/vite-plugin-svelte": "^2.0.0",
     "sass": "^1.70.0",
+    "simple-svelte-autocomplete": "^2.5.2",
     "svelte": "^4.2.1",
     "vite": "^4.5.3"
   }

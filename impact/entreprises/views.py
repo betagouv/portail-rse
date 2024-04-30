@@ -219,6 +219,24 @@ def qualification(request, siren):
 
 
 def search_entreprise(request, siren):
+    infos = [
+        {
+            "siren": "889297453",
+            "effectif": "0-9",
+            "denomination": "entreprise A",
+            "categorie_juridique_sirene": 5308,
+            "code_pays_etranger_sirene": None,
+        },
+        {
+            "siren": "987654321",
+            "effectif": "50-249",
+            "denomination": "entreprise B",
+            "categorie_juridique_sirene": 5800,
+            "code_pays_etranger_sirene": None,
+        },
+    ]
+    return JsonResponse(infos, safe=False)
+
     try:
         infos = api.infos_entreprise.infos_entreprise(siren, donnees_financieres=True)
     except APIError as exception:
