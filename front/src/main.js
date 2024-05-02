@@ -4,6 +4,7 @@ import InteretPublicField from './lib/InteretPublicField.svelte'
 import SimulationResult from './lib/SimulationResult.svelte'
 import SimulationForm from './lib/SimulationForm.svelte'
 import SearchEntreprise from './lib/SearchEntreprise.svelte'
+import SeeMoreOrLess from './lib/SeeMoreOrLess.svelte'
 
 for (let externalFieldToggle of document.getElementsByClassName("svelte-external-field-toggle")) {
   new ExternalFieldToggle({
@@ -59,5 +60,12 @@ if (SimulationFormElement) {
 if (document.getElementById("svelte-simulation-result")) {
   new SimulationResult({
     target: document.getElementById("svelte-simulation-form")
+  })
+}
+
+const VoirPlusMoinsElement = document.getElementById("svelte-voir-plus-moins")
+if (VoirPlusMoinsElement) {
+  new SeeMoreOrLess({
+    target: VoirPlusMoinsElement
   })
 }
