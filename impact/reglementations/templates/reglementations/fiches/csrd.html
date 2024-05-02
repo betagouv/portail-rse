@@ -6,14 +6,17 @@
 {% block mise_a_jour %}08/03/2024{% endblock %}
 
 {% block description %}
+    <div id="svelte-voir-plus-moins"></div>
     <p>
         La directive européenne CSRD (Corporate Sustainability Reporting Directive) renforce les obligations de publication d'informations en matière de durabilité à l'égard des entreprises.
         <br><br>
-        Les informations à publier se divisent en trois thématiques spécifiques (l'environnement, le social et la gouvernance) et répondent au principe de double importance ou double matérialité : les informations, évaluées comme matériellement importantes par l'entreprise prennent en compte l'importance du point de vue de l’incidence ("incidences positives ou négatives, réelles ou potentielles, de l’entreprise sur la population ou l’environnement à court, moyen ou long terme"<a href="#note" title="Amène à une note de bas de page référençant la citation">[1]</a>) et l’importance du point de vue financier ("informations considérées comme importantes pour les principaux utilisateurs des informations financières"<a href="#note" title="Amène à une note de bas de page référençant la citation">[1]</a>).
-        <br><br>
-        Afin d'encadrer l'élaboration et publication de telles informations, la CSRD prévoit l'adoption de standards européens de reporting en matière de durabilité, les normes "ESRS" (European Sustainability Reporting Standards), sous la conduite des groupes de travail de l'EFRAG (le groupe consultatif européen sur l’information financière). L'objectif est d'adopter un langage européen unifié relatif aux informations de durabilité, pour permettre une meilleure comparaison de la performance globale des entreprises.
-        <br><br>
-        L'obtention d’informations pertinentes, comparables et fiables est indispensable pour parvenir à une croissance durable et inclusive, ambition du Pacte Vert. Aussi, cette directive prévoit une vérification par un organisme tiers indépendant du rapport, certifiant la véracité des éléments présentés dans le rapport de durabilité. Les informations seront ensuite transmises à la plateforme numérique "ESAP" (European Single Access Point) qui recueillera les données financières et extra-financières des sociétés en vue de réorienter les flux de capitaux vers des investissements durables.
+        Les informations à publier se divisent en trois thématiques spécifiques (l'environnement, le social et la gouvernance) et répondent au principe de double importance ou double matérialité : les informations, évaluées comme matériellement importantes par l'entreprise prennent en compte l'importance du point de vue de l’incidence ("incidences positives ou négatives, réelles ou potentielles, de l’entreprise sur la population ou l’environnement à court, moyen ou long terme"<a href="#note" title="Amène à une note de bas de page référençant la citation">[1]</a>) et l’importance du point de vue financier
+        <span id="svelte-voir-plus-moins-contenu">("informations considérées comme importantes pour les principaux utilisateurs des informations financières"<a href="#note" title="Amène à une note de bas de page référençant la citation">[1]</a>).
+            <br><br>
+            Afin d'encadrer l'élaboration et publication de telles informations, la CSRD prévoit l'adoption de standards européens de reporting en matière de durabilité, les normes "ESRS" (European Sustainability Reporting Standards), sous la conduite des groupes de travail de l'EFRAG (le groupe consultatif européen sur l’information financière). L'objectif est d'adopter un langage européen unifié relatif aux informations de durabilité, pour permettre une meilleure comparaison de la performance globale des entreprises.
+            <br><br>
+            L'obtention d’informations pertinentes, comparables et fiables est indispensable pour parvenir à une croissance durable et inclusive, ambition du Pacte Vert. Aussi, cette directive prévoit une vérification par un organisme tiers indépendant du rapport, certifiant la véracité des éléments présentés dans le rapport de durabilité. Les informations seront ensuite transmises à la plateforme numérique "ESAP" (European Single Access Point) qui recueillera les données financières et extra-financières des sociétés en vue de réorienter les flux de capitaux vers des investissements durables.
+        </span><span id="svelte-voir-plus-moins-label"></span>
     </p>
     <div style="text-align: right">
         {% if user.is_authenticated %}
