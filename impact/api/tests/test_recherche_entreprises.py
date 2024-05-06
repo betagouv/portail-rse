@@ -54,7 +54,7 @@ def test_succes_recherche_comportant_la_raison_sociale(mocker):
         "code_pays_etranger_sirene": 99139,
     }
     faked_request.assert_called_once_with(
-        f"https://recherche-entreprises.api.gouv.fr/search?q={SIREN}&page=1&per_page=1",
+        f"https://recherche-entreprises.api.gouv.fr/search?q={SIREN}&page=1&per_page=1&mtm_campaign=portail-rse",
         timeout=RECHERCHE_ENTREPRISE_TIMEOUT,
     )
 
