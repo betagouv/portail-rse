@@ -218,86 +218,19 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="fr-grid-row fr-grid-row--gutters fr-mb-1w fr-py-6w">
         <div class="fr-container">
             <div class="fr-grid-row fr-grid-row--center">
-                <h2>Réaliser une simulation simplifiée</h2>
-                <p>Effectuez une simulation simplifiée pour connaître les réglementations à laquelle votre entrperise peut être soumise.
-                    Inscrivez-vous ou connectez-vous pour saisir vos critères complets.
-                    <p>
-                    </div>
-                </div>
-                <div class="fr-container">
-                    <div class="fr-grid-row fr-grid-row--gutters fr-pb-6w fr-pt-2w">
-                        <div class="fr-col-lg-4 fr-col-12 fr-col-12">
-                            <div class="simu-steps fr-p-3w">
-                                <h6 class="fr-pb-2w">
-                                    1. J’effectue ma simulation simplifiée
-                                </h6>
-                                <p class="fr-text--sm">
-                                    A l’aide de mon numéro SIREN, je renseigne ma tranche d’effectifs, mon CA et mon bilan pour connaitre rapidement mes obligations.
-                                </p>
-                                <p class="fr-text--sm">
-                                    <span class="fr-icon-info-fill" aria-hidden="true"></span> Cette étape ne vous permet pas de connaitre précisément les réglementations auxquelles votre entreprise est soumise
-                                </p>
-                            </div>
-                        </div>
-                        <div class="fr-col-lg-4 fr-col-12 fr-col-12">
-                            <div class="simu-steps fr-p-3w">
-                                <h6 class="fr-pb-2w">
-                                    2. Je m'inscris
-                                </h6>
-                                <p class="fr-text--sm">
-                                    Je me crée un compte pour accéder au tableau de bord personnalisé de mon entreprise.
-                                </p>
-                                {% if not user.is_authenticated %}
-                                    <a href="{% url 'users:creation' %}" class="fr-btn fr-btn--secondary fr-btn--md">
-                                        M’inscrire sur le Portail RSE
-                                    </a>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="fr-col-lg-4 fr-col-12 fr-col-12">
-                            <div class="simu-steps fr-p-3w">
-                                <h6 class="fr-pb-2w">
-                                    3. J'accède à mon tableau de bord
-                                </h6>
-                                {% if user.is_authenticated and current_entreprise %}
-                                    <p class="fr-text--sm">
-                                        Après inscription, je saisis les caractéristiques de mon entreprise pour accéder à mon tableau de bord. Je peux piloter et suivre mes obligations.
-                                    </p>
-                                    <a href="{% url 'reglementations:tableau_de_bord' current_entreprise.siren %}" class="fr-btn">
-                                        Accéder à mon tableau de bord
-                                    </a>
-                                {% elif user.is_authenticated %}
-                                    <p class="fr-text--sm">
-                                        J'ajoute une entreprise pour accéder à mon tableau de bord. Je peux piloter et suivre mes obligations.
-                                    </p>
-                                    <a href="{% url 'entreprises:entreprises' %}" class="fr-btn">
-                                        Ajouter une entreprise
-                                    </a>
-                                {% else %}
-                                    <p class="fr-text--sm">
-                                        Après inscription, je saisis les caractéristiques de mon entreprise pour accéder à mon tableau de bord. Je peux piloter et suivre mes obligations.
-                                    </p>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="fr-container">
-                    <div class="fr-grid-row fr-grid-row--center">
-                        <a href="{% url 'simulation' %}" class="fr-btn fr-btn--primary">
-                            Faire ma simulation
-                        </a>
-                    </div>
-                </div>
+                <a href="{% url 'simulation' %}" class="fr-btn fr-btn--primary">
+                    Faire ma simulation
+                </a>
             </div>
+        </div>
+    </div>
 
+    <div class="fr-grid-row fr-grid-row--gutters fr-mb-1w fr-pt-6w">
+        <div class="fr-container">
             <!-- Bloc titre, 2 colonnes texte et image -->
-            <div class="fr-grid-row background-g fr-py-6w">
+            <div class="fr-grid-row">
                 <div class="fr-container">
                     <div class="fr-grid-row fr-grid-row--center">
                         <h2>Qui sommes-nous ?</h2>
@@ -319,6 +252,8 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
 
 <!-- page index -->
