@@ -23,27 +23,12 @@
                                     <br><a href="{% url 'users:creation' %}" target="_self" class="fr-link">Inscrivez-vous</a> ou <a href="{% url 'users:login' %}" target="_self" class="fr-link">connectez-vous</a> pour saisir vos critères complets.
                                 {% endif %}
                             </p>
-                        </div>
-                    </div>
-                <!-- Separateur -->
-                    <div class="fr-grid-row">
-                        <div class="fr-col-12">
-                            <hr class="">
-                        </div>
-                    </div>
-                    <div class="fr-grid-row fr-grid-row--center">
-                        <div class="fr-col background-light-grey fr-p-3w">
+
                             <h5>Recherchez votre entreprise</h5>
                             <form action="{% url 'simulation' %}?mtm_campaign=simulation-resultats&mtm_kwd=corps-page#svelte-simulation-result#svelte-simulation-result" method="post" id="svelte-simulation-form">
                                 {% csrf_token %}
                                 <div id="svelte-search-entreprise-in-simulation-form" data-siren="{{ simulation_form.siren.value|default:'' }}" data-denomination="{{ simulation_form.denomination.value|default:'' }}">
                                     {% include 'snippets/siren_field.html' with field=simulation_form.siren %}
-                                </div>
-                                    <!-- Separateur -->
-                                <div class="fr-grid-row">
-                                    <div class="fr-col-12">
-                                        <hr class="">
-                                    </div>
                                 </div>
                                 {{ simulation_form.categorie_juridique_sirene.as_hidden }}
                                 {{ simulation_form.code_pays_etranger_sirene.as_hidden }}
