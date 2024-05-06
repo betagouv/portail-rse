@@ -6,7 +6,7 @@
 
     <div class="fr-container fr-my-12w">
         <div class="fr-grid-row fr-grid-row--center">
-            <div class="fr-col-12 fr-col-md-10 fr-col-lg-8">
+            <div class="fr-col-6">
                 <h1>Création de compte sur Portail RSE</h1>
                 <p>Sauf mention contraire “(optionnel)” dans le label, tous les champs sont obligatoires.</p>
                 <form action="{% url 'users:creation' %}" method="post">
@@ -47,6 +47,9 @@
                 <p>
                     Pour plus d'informations concernant le traitement de vos données à caractère personnel, veuillez consulter notre <a href="{% url 'politique_confidentialite' %}">politique de confidentialité</a>.
                 </p>
+            </div>
+            <div class="fr-col-6" style="vertical-align:middle;">
+                <img src="/static/img/dashboard.png" style="width: 100%;">
             </div>
         </div>
     </div>
