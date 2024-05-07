@@ -91,7 +91,7 @@
                                                 </div>
                                             </li>
                                         {% else %}
-                                            <li><a class="fr-btn fr-icon-lock-line" href="{% url 'users:login' %}?next={{ request.path }}">Se connecter</a></li>
+                                            <li><a class="fr-btn fr-icon-lock-line" href="{% url 'users:login' %}?next={{ request.path }}&mtm_campaign=connexion-menu&mtm_kwd=menu">Se connecter</a></li>
                                         {% endif %}
                                     </ul>
                                 </div>
@@ -112,7 +112,7 @@
                                 {% else %}
                                     <li class="fr-nav__item">
                                         {% url 'simulation' as url_page %}
-                                        <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Simulation</a>
+                                        <a class="fr-nav__link" href="{{ url_page }}?mtm_campaign=simulation-menu&mtm_kwd=menu" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Simulation</a>
                                     </li>
                                 {% endif %}
                                 <li class="fr-nav__item">
@@ -146,7 +146,7 @@
                                         <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Espace Rapport de Durabilité</a>
                                     </li>
                                 {% else %}
-                                    <li class="fr-nav__item"><a class="fr-nav__link" href="{% url 'users:login' %}?next={{ request.path }}" target="_self">Tableau de bord</a></li>
+                                    <li class="fr-nav__item"><a class="fr-nav__link" href="{% url 'users:login' %}?next={{ request.path }}&mtm_campaign=connexion-tableau-bord&mtm_kwd=menu" target="_self">Tableau de bord</a></li>
                                     <li class="fr-nav__item">
                                         {% url 'reglementations:csrd' as url_page %}
                                         <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Espace Rapport de Durabilité</a>
