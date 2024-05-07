@@ -11,7 +11,7 @@
                     {% if user.is_authenticated and current_entreprise %}
                         <a href="{% url 'reglementations:tableau_de_bord' current_entreprise.siren %}" class="fr-btn fr-btn--lg">Accéder à mon tableau de bord</a>
                     {% else %}
-                        <a href="{% url 'simulation' %}" class="fr-btn fr-btn--lg">Faire ma simulation</a>
+                        <a href="{% url 'simulation' %}?mtm_campaign=simulation-cta-principal&mtm_kwd=corps-page" class="fr-btn fr-btn--lg">Faire ma simulation</a>
                     {% endif %}
                 </div>
             </div>
@@ -28,7 +28,7 @@
                             <div class="fr-card__footer">
                                 <ul class="fr-btns-group">
                                     <li>
-                                        <a href="{% url 'simulation' %}" class="fr-btn fr-btn--secondary">
+                                        <a href="{% url 'simulation' %}?mtm_campaign=simulation-carte&mtm_kwd=corps-page" class="fr-btn fr-btn--secondary">
                                             Faire ma simulation
                                         </a>
                                     </li>
@@ -85,7 +85,7 @@
                                                 Accéder à mon tableau de bord
                                             </a>
                                         {% else %}
-                                            <a href="{% url 'users:login' %}?next={{ request.path }}" class="fr-btn fr-btn--secondary">
+                                            <a href="{% url 'users:login' %}?next={{ request.path }}&mtm_campaign=obligations-carte&mtm_kwd=corps-page" class="fr-btn fr-btn--secondary">
                                                 Accéder à mon tableau de bord
                                             </a>
                                         {% endif %}
