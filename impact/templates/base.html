@@ -108,8 +108,7 @@
                         </div>
                         <nav class="fr-nav" id="navigation-494" role="navigation" aria-label="Menu principal">
                             <ul class="fr-nav__list">
-                                {% if user.is_authenticated %}
-                                {% else %}
+                                {% if not user.is_authenticated %}
                                     <li class="fr-nav__item">
                                         {% url 'simulation' as url_page %}
                                         <a class="fr-nav__link" href="{{ url_page }}?mtm_campaign=simulation-menu&mtm_kwd=menu" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Simulation</a>
