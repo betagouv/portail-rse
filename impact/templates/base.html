@@ -113,14 +113,14 @@
                         </div>
                     </div>
                 </div>
-                {% if user.is_authenticated %}
-                    <div class="fr-header__menu fr-modal" id="modal-499" aria-labelledby="button-500">
-                        <div class="fr-container">
-                            <button class="fr-btn--close fr-btn" aria-controls="modal-499" title="Fermer">
-                                Fermer
-                            </button>
-                            <div class="fr-header__menu-links">
-                            </div>
+                <div class="fr-header__menu fr-modal" id="modal-499" aria-labelledby="button-500">
+                    <div class="fr-container">
+                        <button class="fr-btn--close fr-btn" aria-controls="modal-499" title="Fermer">
+                            Fermer
+                        </button>
+                        <div class="fr-header__menu-links">
+                        </div>
+                        {% if user.is_authenticated %}
                             <nav class="fr-nav" id="navigation-494" role="navigation" aria-label="Menu principal">
                                 <ul class="fr-nav__list">
                                     <li class="fr-nav__item">
@@ -154,9 +154,9 @@
                                     </li>
                                 </ul>
                             </nav>
-                        </div>
+                        {% endif %}
                     </div>
-                {% endif %}
+                </div>
             </header>
         {% endblock %}
 
