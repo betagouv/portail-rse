@@ -2,6 +2,19 @@
 {% load static %}
 
 {% block content %}
+    {% if not user.is_authenticated %}
+        <div class="fr-notice fr-notice--info">
+            <div class="fr-container">
+                <div class="fr-notice__body">
+                    <p class="fr-notice__title">
+                        Accédez à l'Espace de Rapport de Durabilité (CSRD) :
+                        <a href="{% url 'reglementations:csrd' %}" title="Espace Rapport de Durabilité">Découvrir</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
     <div class="fr-grid-row fr-py-6w portail-header">
         <did class="fr-container">
             <div class="fr-grid-row fr-grid-row--middle fr-py-2w fr-py-md-16w fr-my-md-4w">

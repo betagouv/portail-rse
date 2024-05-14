@@ -158,18 +158,6 @@
                     </div>
                 {% endif %}
             </header>
-            {% if not user.is_authenticated and request.path == "/" %}
-                <div class="fr-notice fr-notice--info">
-                    <div class="fr-container">
-                        <div class="fr-notice__body">
-                            <p class="fr-notice__title">
-                                Les obligations concernant la mise en place du rapport de durabilité (Directive CSRD) sont disponibles dans le Portail RSE :
-                                <a href="{% url 'reglementations:fiche_csrd' %}" title="Fiche réglementaire sur la CSRD">découvrir</a>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
         {% endblock %}
 
         <main>
