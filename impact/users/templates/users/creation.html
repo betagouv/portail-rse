@@ -19,6 +19,7 @@
                     <div id="svelte-search-entreprise" data-siren="{{ form.siren.value|default:'' }}">
                         {% include 'snippets/siren_field.html' with field=form.siren %}
                     </div>
+                    <div id="svelte-denomination-entreprise" data-denomination="{{ form.denomination.value|default:'' }}"></div>
                     {% include 'snippets/field.html' with field=form.fonctions %}
                     <div class="fr-form-group">
                         <fieldset class="fr-fieldset">
