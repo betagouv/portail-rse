@@ -1,5 +1,8 @@
 <script>
+    import { createEventDispatcher } from 'svelte'
     import spinner from './assets/spinner.svg'
+
+    const dispatch = createEventDispatcher();
 
     export let siren = ""
     export let denomination = ""
@@ -71,9 +74,6 @@
                 </a>
             </div>
             {#await promise then result}
-                {#if denomination}
-                    <p class="fr-my-2w denomination">Entreprise : {denomination}</p>
-                {/if}
             {:catch error}
                 <p class="fr-error-text">{error.message}</p>
             {/await}

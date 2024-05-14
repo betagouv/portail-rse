@@ -1,3 +1,4 @@
+import DenominationEntreprise from './lib/DenominationEntreprise.svelte'
 import ExternalFieldToggle from './lib/ExternalFieldToggle.svelte'
 import GroupeFields from './lib/GroupeFields.svelte'
 import InteretPublicField from './lib/InteretPublicField.svelte'
@@ -60,6 +61,17 @@ if (SimulationFormElement) {
 if (document.getElementById("svelte-simulation-result")) {
   new SimulationResult({
     target: document.getElementById("svelte-simulation-form")
+  })
+}
+
+const denominationEntrepriseElement = document.getElementById("svelte-denomination-entreprise")
+if (denominationEntrepriseElement) {
+  new DenominationEntreprise({
+    target: denominationEntrepriseElement,
+    props: {
+      denomination: denominationEntrepriseElement.dataset.denomination
+    },
+    hydrate: true,
   })
 }
 

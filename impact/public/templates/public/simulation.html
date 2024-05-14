@@ -29,6 +29,9 @@
                                 {{ simulation_form.code_pays_etranger_sirene.as_hidden }}
                                 <div id="svelte-simulation-fields" style="display: none">
                                     <h3>2. Renseignez les informations de votre entreprise</h3>
+
+                                    <div id="svelte-denomination-entreprise" data-denomination="{{ simulation_form.denomination.value|default:'' }}"></div>
+
                                     <div class="fr-grid-row fr-grid-row--gutters fr-pb-4w">
                                         <div class="fr-col-md-4 fr-col-12">
                                             {% include 'snippets/field.html' with field=simulation_form.effectif %}
