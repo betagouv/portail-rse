@@ -57,20 +57,22 @@
                     {% endif %}
                 </div>
                 <div class="fr-col-lg-5 fr-col-12">
-                    <img class="fr-responsive-img" src="/static/img/dashboard.png" alt="" />
-                    {% if reglementations_applicables %}
-                        <h3>En route vers le pilotage de vos réglementations</h3>
-                        <p>
-                            Nous avons besoin d'informations complémentataires pour vérifier vos réglementations applicables.<br>
-                            Connectez-vous pour compléter les caractéristiques de votre entreprise et piloter vos réglementations.
-                        </p>
-                    {% else %}
-                        <h3>Anticipez le pilotage de vos réglementations</h3>
-                        <p>
-                            Connectez-vous pour compléter les caractéristiques de votre entreprise et piloter vos potentielles futures réglementation.
-                        </p>
-                    {% endif %}
-                    <a class="fr-btn" href="{% url 'reglementations:tableau_de_bord' siren %}">C'est parti !</a>
+                    <div class="fr-container fr-p-4w">
+                        <img class="fr-responsive-img fr-p-4w" src="/static/img/dashboard.png" alt="" />
+                        {% if reglementations_applicables %}
+                            <h3>En route vers le pilotage de vos réglementations</h3>
+                            <p>
+                                Nous avons besoin d'informations complémentataires pour vérifier vos réglementations applicables.<br>
+                                Connectez-vous pour compléter les caractéristiques de votre entreprise et piloter vos réglementations.
+                            </p>
+                        {% else %}
+                            <h3>Anticipez le pilotage de vos réglementations</h3>
+                            <p>
+                                Connectez-vous pour compléter les caractéristiques de votre entreprise et piloter vos potentielles futures réglementation.
+                            </p>
+                        {% endif %}
+                        <a class="fr-btn" href="{% url 'reglementations:tableau_de_bord' siren %}">C'est parti !</a>
+                    </div>
                 </div>
             </div>
         </div>
