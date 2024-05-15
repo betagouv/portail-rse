@@ -129,6 +129,7 @@ def resultats_simulation(request):
                 ReglementationStatus.STATUS_SOUMIS,
             )
         ]
+        siren = simulation_form.cleaned_data["siren"]
     else:
         return redirect("simulation")
     return render(
@@ -136,6 +137,7 @@ def resultats_simulation(request):
         "public/resultats_simulation.html",
         {
             "reglementations_applicables": reglementations_applicables,
+            "siren": siren,
         },
     )
 
