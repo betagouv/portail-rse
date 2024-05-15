@@ -13,11 +13,29 @@
             </div>
             <div class="fr-grid-row">
                 <div class="fr-col-8">
-                    {% if reglementations_soumises %}
+                    {% if reglementations_applicables %}
                         <h2>Réglementations applicables à votre entreprise</h2>
-                        {% for reglementation in reglementations_soumises %}
-                            {% include "snippets/reglementation_component.html" with reglementation=reglementation.reglementation status=reglementation.status %}
-                        {% endfor %}
+                        <div class="fr-container">
+                            {% for reglementation in reglementations_applicables %}
+                                <div class="fr-grid-row">
+                                    <div class="fr-col-2">
+                                        {% if reglementation.tag  == "tag-social" %}
+                                            <img class="fr-responsive-img" src="{% static 'img/social-2x3.png' %}" alt="" />
+                                        {% elif reglementation.tag == "tag-environnement" %}
+                                            <img class="fr-responsive-img" src="{% static 'img/environnement-2x3.png' %}" alt="" />
+                                        {% elif reglementation.tag == "tag-gouvernance" %}
+                                            <img class="fr-responsive-img" src="{% static 'img/gouvernance-2x3.png' %}" alt="" />
+                                        {% elif reglementation.tag == "tag-durabilite" %}
+                                            <img class="fr-responsive-img" src="{% static 'img/durable-2x3.png' %}" alt="" />
+                                        {% endif %}
+                                    </div>
+                                    <div class="fr-col-10">
+                                        <h3>{{ reglementation.title }}</h3>
+                                        <p>{{ reglementation.summary }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
                     {% endif %}
                 </div>
                 <div class="fr-col-4" style="vertical-align:middle;">

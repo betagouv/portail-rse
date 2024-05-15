@@ -114,13 +114,12 @@ def simulation(request):
 
 
 def resultats_simulation(request):
-    reglementations_soumises = None
-    reglementations_non_soumises = None
+    reglementations_applicables = None
     simulation_form = SimulationForm(request.session["simulation"])
     if simulation_form.is_valid():
         reglementations = calcule_simulation(simulation_form, request.user)
-        reglementations_soumises = [
-            r
+        reglementations_applicables = [
+            r["reglementation"]
             for r in reglementations
             if r["status"].status
             in (
@@ -130,19 +129,13 @@ def resultats_simulation(request):
                 ReglementationStatus.STATUS_SOUMIS,
             )
         ]
-        reglementations_non_soumises = [
-            r
-            for r in reglementations
-            if r["status"].status == ReglementationStatus.STATUS_NON_SOUMIS
-        ]
     else:
         return redirect("simulation")
     return render(
         request,
         "public/resultats_simulation.html",
         {
-            "reglementations_soumises": reglementations_soumises,
-            "reglementations_non_soumises": reglementations_non_soumises,
+            "reglementations_applicables": reglementations_applicables,
         },
     )
 
