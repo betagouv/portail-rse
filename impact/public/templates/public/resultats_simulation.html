@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Simulation - Portail RSE{% endblock %}
 
@@ -10,71 +11,14 @@
                     <a class="fr-link fr-icon-draft-fill fr-link--icon-left" href="{% url 'simulation' %}">Modifier ma simulation</a>
                 </div>
             </div>
-            <div class="fr-grid-row fr-grid-row--center">
+            <div class="fr-grid-row">
                 <div class="fr-col-8">
-
-                    {% if reglementations_soumises or reglementations_non_soumises %}
-                        <div class="fr-grid-row">
-                            <div class="fr-container fr-py-3w" id="svelte-simulation-result">
-                                <h3>Résultats de votre simulation simplifiée</h3>
-                                <hr>
-                                <div class="simulation-container simulation-soumis fr-mb-2w">
-                                    <h4>Réglementations applicables à votre entreprise</h4>
-                                    {% if reglementations_soumises|length == 0 %}
-                                        Aucune.
-                                    {% endif %}
-                                    {% for reglementation in reglementations_soumises %}
-                                        {% include "snippets/reglementation_component.html" with reglementation=reglementation.reglementation status=reglementation.status %}
-                                    {% endfor %}
-                                </div>
-                                <div class="simulation-container simulation-non-soumis">
-                                    <h4 class="">Votre entreprise ne doit pas répondre à ces obligations</h4>
-                                    {% if reglementations_non_soumises|length == 0 %}
-                                        Aucune.
-                                    {% endif %}
-                                    {% for reglementation in reglementations_non_soumises %}
-                                        {% include "snippets/reglementation_component.html" with reglementation=reglementation.reglementation status=reglementation.status %}
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="fr-grid-row fr-pt-6w fr-pb-12w background-blue">
-                            <div class="fr-container">
-                                <div class="fr-grid-row">
-                                    <div class="fr-col-12">
-                                        {% if user.is_authenticated %}
-                                            <h2>Accéder à mon tableau de bord</h2>
-                                            {% if current_entreprise %}
-                                                <p>
-                                                    Après inscription, je saisis les caractéristiques de mon entreprise pour accéder à mon tableau de bord. Je peux piloter et suivre mes obligations.
-                                                </p>
-                                                <a href="{% url 'reglementations:tableau_de_bord' current_entreprise.siren %}" class="fr-btn">
-                                                    Accéder à mon tableau de bord
-                                                </a>
-                                            {% else %}
-                                                <p>
-                                                    J'ajoute une entreprise pour accéder à mon tableau de bord. Je peux piloter et suivre mes obligations.
-                                                </p>
-                                                <a href="{% url 'entreprises:entreprises' %}" class="fr-btn">
-                                                    Ajouter une entreprise
-                                                </a>
-                                            {% endif %}
-                                        {% else %}
-                                            <h2>2. Inscrivez-vous pour affiner vos réglementations applicables</h2>
-                                            <p>
-                                                Vous souhaitez aller plus loin ? <b>Inscrivez-vous pour affiner vos réglementations applicables.</b><br>
-                                                En vous inscrivant sur Portail RSE, vous pourrez procéder au suivi complet des réglementations qui vous concernent.
-                                            </p>
-                                            <a href="{% url 'users:creation'%}" class="fr-btn fr-btn--lg">
-                                                M’inscrire sur le Portail RSE
-                                            </a>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    {% if reglementations_soumises %}
+                        <h2>Réglementations applicables à votre entreprise</h2>
+                        {% for reglementation in reglementations_soumises %}
+                            {% include "snippets/reglementation_component.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+                        {% endfor %}
                     {% endif %}
-
                 </div>
                 <div class="fr-col-4" style="vertical-align:middle;">
                     <img src="/static/img/simulation.png" style="width: 100%;">
@@ -82,6 +26,5 @@
             </div>
         </div>
     </div>
-
     <!-- page resultats simulation -->
 {% endblock %}
