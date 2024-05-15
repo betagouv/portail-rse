@@ -234,12 +234,6 @@
 .simulation-container {
     padding:1rem;
     border-radius: .375rem;
-    &.simulation-soumis {
-        background-color: var(--background-alt-blue-france);
-    }
-    &.simulation-non-soumis {
-        background-color: var(--background-contrast-grey);
-    }
     .reglementation-grid {
         padding: 1rem 1rem 0.5rem 1rem;
         background-color: var(--background-default-grey);
