@@ -16,7 +16,7 @@ class CSRDReglementation(Reglementation):
     title = "Rapport de Durabilité - CSRD"
     more_info_url = reverse_lazy("reglementations:fiche_csrd")
     tag = "tag-durabilite"
-    summary = "Publier un rapport de durabilité"
+    summary = "Publier un rapport de durabilité."
     zone = "europe"
 
     @classmethod
