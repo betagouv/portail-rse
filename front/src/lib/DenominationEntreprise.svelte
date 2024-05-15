@@ -1,5 +1,5 @@
 <script>
-    export let denomination = undefined
+    export let denomination = "undefined"
 
     document.addEventListener(
         "infos-entreprise",
@@ -9,4 +9,6 @@
     )
 </script>
 
-<h4 class="denomination">{ denomination}</h4>
+<p class="denomination">
+    <span class="denomination-label">{ denomination}</span>
+</p>
