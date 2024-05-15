@@ -116,11 +116,13 @@
     transition: all .2s;
 }
 
-.container-simulation .denomination {
+/* Dénomination de l'entreprise trouvée par une recherche SIREN */
+
+.denomination {
     margin-bottom: 1rem;
 }
 
-.container-simulation .denomination .denomination-label{
+.denomination .denomination-label{
     font-size: 1.5rem;
     line-height: 2.5rem;
     font-weight:700;
