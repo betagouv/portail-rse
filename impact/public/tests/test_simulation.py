@@ -3,7 +3,7 @@ from datetime import date
 from datetime import timedelta
 
 import pytest
-from django.contrib.auth.models import AnonymousUser
+from django.urls import reverse
 
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
@@ -136,38 +136,20 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     assert not simulation_caracs.bdese_accord
     assert not simulation_caracs.systeme_management_energie
 
-    # les statuts des réglementations de cette entreprise sont affichées de manière anonyme (non détaillée)
-    # car l'utilisateur n'est pas authentifié
+    # les réglementations applicables sont affichées sur la page de résultat
+    assert response.status_code == 200
+    assert response.redirect_chain == [(reverse("resultats_simulation"), 302)]
+
     context = response.context
-    reglementations = (
-        context["reglementations_soumises"] + context["reglementations_non_soumises"]
-    )
-    assert len(reglementations) == len(REGLEMENTATIONS)
-    for REGLEMENTATION in REGLEMENTATIONS:
-        index = [
-            reglementation["reglementation"] for reglementation in reglementations
-        ].index(REGLEMENTATION)
-        assert reglementations[index]["status"] == REGLEMENTATION.calculate_status(
-            simulation_caracs, AnonymousUser()
-        )
-
-    content = response.content.decode("utf-8")
+    reglementations_applicables = context["reglementations_applicables"]
     if status_est_soumis:
-        assert (
-            '<p class="fr-badge fr-badge--info fr-badge--no-icon">' in content
-        ), content
-        anonymous_status_detail = "Vous êtes soumis à cette réglementation."
-        assert anonymous_status_detail in content, content
-        assert '<p class="fr-badge">non soumis</p>' not in content, content
+        assert len(reglementations_applicables) == len(REGLEMENTATIONS)
     else:
-        assert '<p class="fr-badge">non soumis</p>' in content, content
-        anonymous_status_detail = "Vous n'êtes pas soumis à cette réglementation."
-        assert anonymous_status_detail in content, content
-        assert (
-            '<p class="fr-badge fr-badge--info fr-badge--no-icon">' not in content
-        ), content
+        assert not reglementations_applicables
 
     content = response.content.decode("utf-8")
+    for reglementation in reglementations_applicables:
+        assert reglementation.title in content
     assert "<!-- page resultats simulation -->" in content
 
 
@@ -263,29 +245,16 @@ def test_simulation_par_un_utilisateur_authentifie_sur_une_nouvelle_entreprise(
 
     response = client.post("/simulation", data=data, follow=True)
 
-    content = response.content.decode("utf-8")
-    context = response.context
-    reglementations = (
-        context["reglementations_soumises"] + context["reglementations_non_soumises"]
-    )
-    if status_est_soumis:
-        assert '<p class="fr-badge fr-badge--info fr-badge--no-icon">' in content
-        anonymous_status_detail = "L'entreprise est soumise à cette réglementation."
-        assert anonymous_status_detail in content, content
-    else:
-        assert '<p class="fr-badge">non soumis</p>' in content
-        anonymous_status_detail = (
-            "L'entreprise n'est pas soumise à cette réglementation."
-        )
-        assert anonymous_status_detail in content, content
+    assert response.status_code == 200
+    assert response.redirect_chain == [(reverse("resultats_simulation"), 302)]
 
 
 def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracteristiques_actuelles_ne_sont_pas_modifiees(
-    client, entreprise_factory
+    client, entreprise_factory, mocker
 ):
     """
     La simulation sur une entreprise déjà enregistrée en base avec des caracteristiques actuelles ne modifie pas ses caractéristiques
-    mais affiche quand même les statuts correspondant aux données utilisées lors de la simulation
+    mais calcule quand même les résultats correspondant aux données utilisées lors de la simulation
     """
     date_cloture_dernier_exercice = date.today() - timedelta(days=1)
     entreprise = entreprise_factory(
@@ -307,26 +276,26 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
         bdese_accord=True,
         systeme_management_energie=True,
     )
-    assert entreprise.caracteristiques_actuelles()
 
-    effectif = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
-    ca = CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M
-    bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M
+    autre_effectif = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
+    autre_ca = CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M
+    autre_bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M
     autre_denomination = "Autre dénomination"
     autre_categorie_juridique_sirene = 5300
     autre_code_pays_etranger_sirene = CODE_PAYS_SUEDE
-
     data = {
         "siren": entreprise.siren,
         "denomination": autre_denomination,
         "categorie_juridique_sirene": autre_categorie_juridique_sirene,
         "code_pays_etranger_sirene": autre_code_pays_etranger_sirene,
-        "effectif": effectif,
-        "tranche_chiffre_affaires": ca,
-        "tranche_bilan": bilan,
+        "effectif": autre_effectif,
+        "tranche_chiffre_affaires": autre_ca,
+        "tranche_bilan": autre_bilan,
         "est_cotee": False,
         "appartient_groupe": False,
     }
+
+    mock_calcule_reglementations = mocker.patch("public.views.calcule_reglementations")
 
     response = client.post("/simulation", data=data, follow=True)
 
@@ -366,45 +335,37 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     assert caracteristiques.bdese_accord
     assert caracteristiques.systeme_management_energie
 
-    context = response.context
-    context = response.context
-    reglementations = (
-        context["reglementations_soumises"] + context["reglementations_non_soumises"]
+    mock_calcule_reglementations.assert_called_once()
+    caracteristiques_simulees = mock_calcule_reglementations.call_args.args[0]
+    assert caracteristiques_simulees.entreprise.siren == data["siren"]
+    assert caracteristiques_simulees.entreprise.denomination == data["denomination"]
+    assert (
+        caracteristiques_simulees.entreprise.categorie_juridique_sirene
+        == data["categorie_juridique_sirene"]
     )
-    entreprise_simulee = Entreprise(
-        siren=entreprise.siren,
-        categorie_juridique_sirene=autre_categorie_juridique_sirene,
-        est_cotee=False,
-        est_interet_public=False,
-        appartient_groupe=False,
+    assert (
+        caracteristiques_simulees.entreprise.code_pays_etranger_sirene
+        == data["code_pays_etranger_sirene"]
     )
-    caracteristiques = CaracteristiquesAnnuelles(
-        entreprise=entreprise_simulee,
-        date_cloture_exercice=date(date.today().year - 1, 12, 31),
-        effectif=effectif,
-        effectif_permanent=effectif,
-        effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        tranche_chiffre_affaires=ca,
-        tranche_bilan=bilan,
-        bdese_accord=False,
-        systeme_management_energie=False,
+    assert caracteristiques_simulees.effectif == data["effectif"]
+    assert (
+        caracteristiques_simulees.tranche_chiffre_affaires
+        == data["tranche_chiffre_affaires"]
     )
-    for REGLEMENTATION in REGLEMENTATIONS:
-        index = [
-            reglementation["reglementation"] for reglementation in reglementations
-        ].index(REGLEMENTATION)
-        status = reglementations[index]["status"]
-        assert status == REGLEMENTATION.calculate_status(
-            caracteristiques, AnonymousUser()
-        ), REGLEMENTATION
+    assert caracteristiques_simulees.tranche_bilan == data["tranche_bilan"]
+    assert caracteristiques_simulees.entreprise.est_cotee == data["est_cotee"]
+    assert (
+        caracteristiques_simulees.entreprise.appartient_groupe
+        == data["appartient_groupe"]
+    )
 
 
 def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_sont_pas_modifiees(
-    client, alice, entreprise_non_qualifiee
+    client, alice, entreprise_non_qualifiee, mocker
 ):
     """
     La simulation sur une entreprise déjà enregistrée en base avec un utilisateur ne crée pas de caractéristique
-    mais affiche quand même les statuts correspondant aux données utilisées lors de la simulation
+    mais calcule quand même les résultats correspondant aux données utilisées lors de la simulation
     """
 
     entreprise = entreprise_non_qualifiee
@@ -419,7 +380,6 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
     autre_denomination = "Autre dénomination"
     autre_categorie_juridique_sirene = 5200
     autre_code_pays_etranger_sirene = CODE_PAYS_SUEDE
-
     data = {
         "siren": entreprise.siren,
         "denomination": autre_denomination,
@@ -437,6 +397,8 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
         "tranche_bilan_consolide": bilan_consolide,
     }
 
+    mock_calcule_reglementations = mocker.patch("public.views.calcule_reglementations")
+
     response = client.post("/simulation", data=data, follow=True)
 
     entreprise.refresh_from_db()
@@ -449,53 +411,54 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
     assert entreprise.comptes_consolides is None
     assert not entreprise.caracteristiques_actuelles()
 
-    context = response.context
-    context = response.context
-    reglementations = (
-        context["reglementations_soumises"] + context["reglementations_non_soumises"]
+    mock_calcule_reglementations.assert_called_once()
+    caracteristiques_simulees = mock_calcule_reglementations.call_args.args[0]
+    assert caracteristiques_simulees.entreprise.siren == data["siren"]
+    assert caracteristiques_simulees.entreprise.denomination == data["denomination"]
+    assert (
+        caracteristiques_simulees.entreprise.categorie_juridique_sirene
+        == data["categorie_juridique_sirene"]
     )
-    entreprise_simulee = Entreprise(
-        siren=entreprise.siren,
-        categorie_juridique_sirene=autre_categorie_juridique_sirene,
-        est_cotee=True,
-        est_interet_public=False,
-        appartient_groupe=True,
-        est_societe_mere=True,
-        societe_mere_en_france=True,
-        comptes_consolides=True,
+    assert (
+        caracteristiques_simulees.entreprise.code_pays_etranger_sirene
+        == data["code_pays_etranger_sirene"]
     )
-    caracteristiques = CaracteristiquesAnnuelles(
-        date_cloture_exercice=date(date.today().year - 1, 12, 31),
-        entreprise=entreprise_simulee,
-        effectif=effectif,
-        effectif_permanent=effectif,
-        effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        effectif_groupe=effectif_groupe,
-        effectif_groupe_france=effectif_groupe,
-        effectif_groupe_permanent=effectif_groupe,
-        tranche_chiffre_affaires=ca,
-        tranche_bilan=bilan,
-        tranche_chiffre_affaires_consolide=ca_consolide,
-        tranche_bilan_consolide=bilan_consolide,
-        bdese_accord=False,
-        systeme_management_energie=False,
+    assert caracteristiques_simulees.effectif == data["effectif"]
+    assert (
+        caracteristiques_simulees.tranche_chiffre_affaires
+        == data["tranche_chiffre_affaires"]
     )
-    for REGLEMENTATION in REGLEMENTATIONS:
-        index = [
-            reglementation["reglementation"] for reglementation in reglementations
-        ].index(REGLEMENTATION)
-        status = reglementations[index]["status"]
-        assert status == REGLEMENTATION.calculate_status(
-            caracteristiques, AnonymousUser()
-        )
+    assert caracteristiques_simulees.tranche_bilan == data["tranche_bilan"]
+    assert caracteristiques_simulees.entreprise.est_cotee == data["est_cotee"]
+    assert (
+        caracteristiques_simulees.entreprise.appartient_groupe
+        == data["appartient_groupe"]
+    )
+    assert (
+        caracteristiques_simulees.entreprise.est_societe_mere
+        == data["est_societe_mere"]
+    )
+    assert caracteristiques_simulees.effectif_groupe == data["effectif_groupe"]
+    assert (
+        caracteristiques_simulees.entreprise.comptes_consolides
+        == data["comptes_consolides"]
+    )
+    assert (
+        caracteristiques_simulees.tranche_chiffre_affaires_consolide
+        == data["tranche_chiffre_affaires_consolide"]
+    )
+    assert (
+        caracteristiques_simulees.tranche_bilan_consolide
+        == data["tranche_bilan_consolide"]
+    )
 
 
 def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristiques_actuelles_sont_enregistrees(
-    client, entreprise_non_qualifiee
+    client, entreprise_non_qualifiee, mocker
 ):
     """
     La simulation sur une entreprise déjà enregistrée en base sans caracteristiques actuelles enregistre les données de simulation
-    et affiche les statuts correspondant aux données utilisées lors de la simulation
+    et calcule les résultats correspondant aux données utilisées lors de la simulation
     """
 
     entreprise = entreprise_non_qualifiee
@@ -526,6 +489,8 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
         "tranche_bilan_consolide": bilan_consolide,
     }
 
+    mock_calcule_reglementations = mocker.patch("public.views.calcule_reglementations")
+
     response = client.post("/simulation", data=data, follow=True)
 
     entreprise.refresh_from_db()
@@ -545,46 +510,46 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
     assert caracteristiques.tranche_chiffre_affaires_consolide == ca_consolide
     assert caracteristiques.tranche_bilan_consolide == bilan_consolide
 
-    context = response.context
-    context = response.context
-    reglementations = (
-        context["reglementations_soumises"] + context["reglementations_non_soumises"]
+    mock_calcule_reglementations.assert_called_once()
+    caracteristiques_simulees = mock_calcule_reglementations.call_args.args[0]
+    assert caracteristiques_simulees.entreprise.siren == data["siren"]
+    assert caracteristiques_simulees.entreprise.denomination == data["denomination"]
+    assert (
+        caracteristiques_simulees.entreprise.categorie_juridique_sirene
+        == data["categorie_juridique_sirene"]
     )
-    entreprise_simulee = Entreprise(
-        siren=entreprise.siren,
-        categorie_juridique_sirene=autre_categorie_juridique_sirene,
-        code_pays_etranger_sirene=autre_code_pays_etranger_sirene,
-        est_cotee=True,
-        est_interet_public=False,
-        appartient_groupe=True,
-        est_societe_mere=True,
-        societe_mere_en_france=True,
-        comptes_consolides=True,
+    assert (
+        caracteristiques_simulees.entreprise.code_pays_etranger_sirene
+        == data["code_pays_etranger_sirene"]
     )
-    caracteristiques = CaracteristiquesAnnuelles(
-        entreprise=entreprise_simulee,
-        date_cloture_exercice=date(date.today().year - 1, 12, 31),
-        effectif=effectif,
-        effectif_permanent=effectif,
-        effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        effectif_groupe=effectif_groupe,
-        effectif_groupe_france=effectif_groupe,
-        effectif_groupe_permanent=effectif_groupe,
-        tranche_chiffre_affaires=ca,
-        tranche_bilan=bilan,
-        tranche_chiffre_affaires_consolide=ca_consolide,
-        tranche_bilan_consolide=bilan_consolide,
-        bdese_accord=False,
-        systeme_management_energie=False,
+    assert caracteristiques_simulees.effectif == data["effectif"]
+    assert (
+        caracteristiques_simulees.tranche_chiffre_affaires
+        == data["tranche_chiffre_affaires"]
     )
-    for REGLEMENTATION in REGLEMENTATIONS:
-        index = [
-            reglementation["reglementation"] for reglementation in reglementations
-        ].index(REGLEMENTATION)
-        status = reglementations[index]["status"]
-        assert status == REGLEMENTATION.calculate_status(
-            caracteristiques, AnonymousUser()
-        )
+    assert caracteristiques_simulees.tranche_bilan == data["tranche_bilan"]
+    assert caracteristiques_simulees.entreprise.est_cotee == data["est_cotee"]
+    assert (
+        caracteristiques_simulees.entreprise.appartient_groupe
+        == data["appartient_groupe"]
+    )
+    assert (
+        caracteristiques_simulees.entreprise.est_societe_mere
+        == data["est_societe_mere"]
+    )
+    assert caracteristiques_simulees.effectif_groupe == data["effectif_groupe"]
+    assert (
+        caracteristiques_simulees.entreprise.comptes_consolides
+        == data["comptes_consolides"]
+    )
+    assert (
+        caracteristiques_simulees.tranche_chiffre_affaires_consolide
+        == data["tranche_chiffre_affaires_consolide"]
+    )
+    assert (
+        caracteristiques_simulees.tranche_bilan_consolide
+        == data["tranche_bilan_consolide"]
+    )
 
 
 def test_should_not_commit_une_entreprise_avec_des_caracteristiques_actuelles_sans_utilisateur(
