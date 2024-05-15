@@ -12,29 +12,39 @@
                 </div>
             </div>
             <div class="fr-grid-row fr-grid-row--top fr-pb-8w">
-                <div class="fr-col-8">
+                <div class="fr-col-7">
                     {% if reglementations_applicables %}
                         <h2>Réglementations applicables à votre entreprise</h2>
                         <div class="fr-container">
-                            {% for reglementation in reglementations_applicables %}
-                                <div class="fr-grid-row">
-                                    <div class="fr-col-2">
-                                        {% if reglementation.tag  == "tag-social" %}
-                                            <img class="fr-responsive-img" src="{% static 'img/social-2x3.png' %}" alt="" />
-                                        {% elif reglementation.tag == "tag-environnement" %}
-                                            <img class="fr-responsive-img" src="{% static 'img/environnement-2x3.png' %}" alt="" />
-                                        {% elif reglementation.tag == "tag-gouvernance" %}
-                                            <img class="fr-responsive-img" src="{% static 'img/gouvernance-2x3.png' %}" alt="" />
-                                        {% elif reglementation.tag == "tag-durabilite" %}
-                                            <img class="fr-responsive-img" src="{% static 'img/durable-2x3.png' %}" alt="" />
-                                        {% endif %}
+                            <div class="fr-grid-row fr-grid-row--gutters">
+                                {% for reglementation in reglementations_applicables %}
+                                    <div class="fr-col-12">
+                                        <div class="fr-card fr-card--horizontal fr-card--horizontal-tier">
+                                            <div class="fr-card__body">
+                                                <div class="fr-card__content">
+                                                    <h3 class="fr-card__title">
+                                                        {{ reglementation.title }}
+                                                    </h3>
+                                                    <p class="fr-card__desc">{{ reglementation.summary }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="fr-card__header">
+                                                <div class="fr-card__img">
+                                                    {% if reglementation.tag  == "tag-social" %}
+                                                        <img class="fr-responsive-img" src="{% static 'img/social-2x3.png' %}" alt="" />
+                                                    {% elif reglementation.tag == "tag-environnement" %}
+                                                        <img class="fr-responsive-img" src="{% static 'img/environnement-2x3.png' %}" alt="" />
+                                                    {% elif reglementation.tag == "tag-gouvernance" %}
+                                                        <img class="fr-responsive-img" src="{% static 'img/gouvernance-2x3.png' %}" alt="" />
+                                                    {% elif reglementation.tag == "tag-durabilite" %}
+                                                        <img class="fr-responsive-img" src="{% static 'img/durable-2x3.png' %}" alt="" />
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="fr-col-10">
-                                        <h3>{{ reglementation.title }}</h3>
-                                        <p>{{ reglementation.summary }}</p>
-                                    </div>
-                                </div>
-                            {% endfor %}
+                                {% endfor %}
+                            </div>
                         </div>
                     {% else %}
                         <h2>Aucune réglementation applicable à votre entreprise</h2>
@@ -46,7 +56,7 @@
                         </div>
                     {% endif %}
                 </div>
-                <div class="fr-col-4">
+                <div class="fr-col-5">
                     <img class="fr-responsive-img" src="/static/img/dashboard.png" alt="" />
                     {% if reglementations_applicables %}
                         <h3>En route vers le pilotage de vos réglementations</h3>
