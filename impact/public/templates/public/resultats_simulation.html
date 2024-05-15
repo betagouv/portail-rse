@@ -11,7 +11,7 @@
                     <a class="fr-link fr-icon-draft-fill fr-link--icon-left" href="{% url 'simulation' %}">Modifier ma simulation</a>
                 </div>
             </div>
-            <div class="fr-grid-row">
+            <div class="fr-grid-row fr-pb-8w">
                 <div class="fr-col-8">
                     {% if reglementations_applicables %}
                         <h2>Réglementations applicables à votre entreprise</h2>
@@ -35,6 +35,14 @@
                                     </div>
                                 </div>
                             {% endfor %}
+                        </div>
+                    {% else %}
+                        <h2>Aucune réglementation applicable à votre entreprise</h2>
+                        <div class="fr-container">
+                            <div class="fr-grid-row fr-grid-row--center">
+                                <img class="fr-responsive-img" src="{% static 'img/piloter.png' %}" alt="" />
+                                <a class="fr-link" href="{% url 'reglementations' %}">Découvrir les réglementations</a>
+                            </div>
                         </div>
                     {% endif %}
                 </div>
