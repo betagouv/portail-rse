@@ -582,6 +582,11 @@ button.rse-organizer--card:hover, .rse-organizer--card:hover {
         background-position: top;
         background-repeat: no-repeat;
     }
+
+    .fr-card.fr-card--simulation .fr-card__content {
+        padding:1rem;
+        padding-left: 1rem;
+    }
 }
 
 @media screen and (max-width: 576px) {
