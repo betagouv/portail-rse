@@ -4,6 +4,27 @@
 
 /* color themes */
 
+:root {
+    --background-dark-blue: var(--blue-ecume-inverted);
+    --blue-ecume-inverted: #171d2f;
+    --btn-text-inverted: #000091;
+    --btn-inverted: var(--blue-france-sun-113-625-inverted);
+    --btn-inverted-hover: var(--blue-france-sun-113-625-hover-inverted);
+    --btn-inverted-active: var(--blue-france-sun-113-625-active-inverted);
+    --blue-france-sun-113-625-inverted: #8585f6;
+    --blue-france-sun-113-625-hover-inverted: #b1b1f9;
+    --blue-france-sun-113-625-active-inverted: #c6c6fb;
+}
+
+:root[data-fr-theme=dark] {
+    --blue-ecume-inverted: #f4f6fe;
+    --blue-france-sun-113-625-inverted: #000091;
+    --blue-france-sun-113-625-hover-inverted: #1212ff;
+    --blue-france-sun-113-625-active-inverted: #2323ff;
+    --btn-text-inverted: #fff;
+}
+
+
 .background-tag-gouvernance {
     background-color: var(--background-contrast-blue-ecume);
 }
@@ -223,7 +244,27 @@
 }
 
 /* Résultat de simulation */
+/* Bloc couleurs inversées */
+.fr-container--inverted {
+    border-radius: 1em;
+    background: var(--blue-ecume-inverted);
+    color:var(--text-inverted-blue-france);
+    h3 {
+        color:var(--text-inverted-blue-france);
+    }
+    .fr-btn {
+        background-color: var(--btn-inverted);
+        color:var(--btn-text-inverted);
+        &:hover {
+            background-color: var(--btn-inverted-hover);
+        }
+        &:active {
+            background-color: var(--btn-inverted-active);
+        }
+    }
+}
 
+/* cartes réglementations */
 @media (min-width: 48em) {
     .fr-card--horizontal-tier.fr-card.fr-card--simulation .fr-card__header {
       flex: 0 0 25%;
