@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Simulation - Portail RSE{% endblock %}
 
@@ -81,7 +82,7 @@
                 </div>
             </div>
             <div class="fr-col-12 fr-col-lg-5">
-                <img  class="fr-responsive-img fr-p-4w" src="/static/img/simulation.png" alt="">
+                <img  class="fr-responsive-img fr-p-4w" src="{% static 'img/simulation.png' %}" alt="">
             </div>
         </div>
     </div>
