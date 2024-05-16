@@ -181,14 +181,6 @@
     grid-column: 1/4;
 }
 
-.reglementation_badge {
-    min-width: 135px;
-    max-width: 135px;
-    .fr-badge {
-        margin: .25rem .5rem.25rem .5rem;
-    }
-}
-
 .fr-badge {
     &.europe {
         background-color: var(--background-alt-blue-ecume);
@@ -241,21 +233,6 @@
     }
 }
 
-.simulation-container {
-    padding:1rem;
-    border-radius: .375rem;
-    .reglementation-grid {
-        padding: 1rem 1rem 0.5rem 1rem;
-        background-color: var(--background-default-grey);
-        border-radius: .375rem;
-        box-shadow: none;
-        margin:0;
-        margin-bottom: .5rem;
-        .reglementation_badge {
-            display: none;
-        }
-    }
-}
 /* Résultat de simulation */
 
 @media (min-width: 48em) {
@@ -588,18 +565,11 @@ button.rse-organizer--card:hover, .rse-organizer--card:hover {
         grid-column: auto;
         grid-row: 4/5;
     }
-    .reglementation_badge {
-        min-width: 135px;
-        grid-row: 1/2;
-    }
     .reglementation_detail {
         grid-row: 3/4;
     }
     .reglementation-title {
         grid-row: 2/3;
-    }
-    .reglementation_badge .fr-badge {
-        margin: 0 0 1rem 0;
     }
     .rse-themes {
         display: grid;
