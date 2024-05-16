@@ -256,6 +256,38 @@
         }
     }
 }
+/* Résultat de simulation */
+
+@media (min-width: 48em) {
+    .fr-card--horizontal-tier.fr-card.fr-card--simulation .fr-card__header {
+      flex: 0 0 25%;
+      width: 25%;
+    }
+  }
+
+.fr-card.fr-card--simulation {
+    border-radius: 1em;
+    overflow: hidden;
+    .fr-card__content {
+        padding:1rem;
+        padding-left: 0rem;
+    }
+    .fr-card__header {
+        padding:1em;
+        overflow: hidden;
+        border-radius: 1em;
+        display:flex;
+        justify-content: center;
+        align-items: center;
+        .fr-card__img {
+            overflow: hidden;
+            border-radius: 1em;
+            aspect-ratio: 1;
+            height: fit-content;
+            max-height: 180px;
+        }
+    }
+}
 
 /* fiches réglementation */
 .fiche-tuiles {
