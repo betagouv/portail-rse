@@ -117,32 +117,6 @@
     color: var(--text-default-info);
 }
 
-/* Simulation */
-
-.simu-steps {
-    background-color: var(--yellow-tournesol-925-125);
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    p {
-        flex-grow: 1;
-    }
-    .fr-btn {
-        justify-self:end;
-        align-self: flex-end;
-    }
-    &.step-check {
-        background-color: var(--green-emeraude-950-100);
-    }
-    h6 {
-        margin-bottom: 0;
-    }
-}
-
-.deprecated {
-    opacity: .5;
-    transition: all .2s;
-}
 
 /* Dénomination de l'entreprise trouvée par une recherche SIREN */
 
