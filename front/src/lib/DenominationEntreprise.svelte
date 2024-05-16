@@ -9,6 +9,8 @@
     )
 </script>
 
+{#if denomination}
 <p class="denomination">
     <span class="denomination-label">{ denomination}</span>
 </p>
+{/if}
