@@ -649,3 +649,16 @@ def test_simulation_en_session_incorrecte(client):
     context = response.context
     simulation_form = context["simulation_form"]
     assert not simulation_form["siren"].value()
+
+
+@pytest.mark.django_db
+def test_pas_de_résultats_de_la_simulation_après_une_déconnexion(client):
+    """
+    La déconnexion vide le contenu de la session donc les données de simulation sont absentes.
+    """
+    response = client.get("/simulation/resultats", follow=True)
+
+    assert response.status_code == 200
+
+    content = response.content.decode("utf-8")
+    assert "<!-- page simulation -->" in content

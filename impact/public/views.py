@@ -114,6 +114,9 @@ def simulation(request):
 
 
 def resultats_simulation(request):
+    if "simulation" not in request.session:
+        return redirect("simulation")
+
     reglementations_applicables = None
     simulation_form = SimulationForm(request.session["simulation"])
     if simulation_form.is_valid():
