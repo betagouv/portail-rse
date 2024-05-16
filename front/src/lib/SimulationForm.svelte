@@ -22,7 +22,6 @@
     const trancheChiffreAffairesConsolideField = document.getElementById(trancheChiffreAffairesConsolideFieldId)
 
     const simulationFields = document.getElementById("svelte-simulation-fields")
-    const simulationResult = document.getElementById("svelte-simulation-result")
 
     const showSimulationFields = () => {
         if (simulationFields) {
@@ -33,9 +32,6 @@
     const hideSimulationFields = () => {
         if (simulationFields) {
             simulationFields.style.display = "none"
-        }
-        if (simulationResult) {
-            simulationResult.style.display = "none"
         }
     }
 

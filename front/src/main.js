@@ -2,7 +2,6 @@ import DenominationEntreprise from './lib/DenominationEntreprise.svelte'
 import ExternalFieldToggle from './lib/ExternalFieldToggle.svelte'
 import GroupeFields from './lib/GroupeFields.svelte'
 import InteretPublicField from './lib/InteretPublicField.svelte'
-import SimulationResult from './lib/SimulationResult.svelte'
 import SimulationForm from './lib/SimulationForm.svelte'
 import SearchEntreprise from './lib/SearchEntreprise.svelte'
 import SeeMoreOrLess from './lib/SeeMoreOrLess.svelte'
@@ -55,12 +54,6 @@ if (SimulationFormElement) {
       denomination: SimulationFormElement.dataset.denomination
     },
     hydrate: true,
-  })
-}
-
-if (document.getElementById("svelte-simulation-result")) {
-  new SimulationResult({
-    target: document.getElementById("svelte-simulation-form")
   })
 }
 
