@@ -1,12 +1,13 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}S'inscrire - Portail RSE{% endblock %}
 
 {% block content %}
 
     <div class="fr-container fr-my-12w">
-        <div class="fr-grid-row fr-grid-row--center">
-            <div class="fr-col-6">
+        <div class="fr-grid-row fr-grid-row--top">
+            <div class="fr-col-lg-7 fr-col-12">
                 <h1>Création de compte sur Portail RSE</h1>
                 <p>Sauf mention contraire “(optionnel)” dans le label, tous les champs sont obligatoires.</p>
                 <form action="{% url 'users:creation' %}" method="post">
@@ -49,8 +50,8 @@
                     Pour plus d'informations concernant le traitement de vos données à caractère personnel, veuillez consulter notre <a href="{% url 'politique_confidentialite' %}">politique de confidentialité</a>.
                 </p>
             </div>
-            <div class="fr-col-6" style="vertical-align:middle;">
-                <img src="/static/img/dashboard.png" style="width: 100%;">
+            <div class="fr-col-lg-5 fr-col-12">
+                <img class="fr-responsive-img" src="{% static 'img/dashboard.png' %}" alt="" />
             </div>
         </div>
     </div>
