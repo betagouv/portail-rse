@@ -84,16 +84,16 @@
                             <div class="fr-header__tools">
                                 <div class="fr-header__tools-links">
                                     <ul class="fr-btns-group">
-                                        <li><a class="fr-btn fr-icon-mail-line" href="{% url 'contact' %}">Contactez-nous</a></li>
+                                        <li><a class="fr-btn fr-icon-mail-fill" href="{% url 'contact' %}">Contactez-nous</a></li>
                                         {% url 'simulation' as url_simulation %}
                                         {% if request.path != url_simulation %}
-                                            <li><a class="fr-btn fr-icon-mail-line" href="{% url 'reglementations' %}">Réglementations RSE</a></li>
+                                            <li><a class="fr-btn fr-icon-file-text-fill" href="{% url 'reglementations' %}">Fiches réglementaires RSE</a></li>
                                         {% endif %}
 
                                         {% if user.is_authenticated %}
-                                            <li><a class="fr-btn fr-icon-building-line" href="{% url 'entreprises:entreprises' %}">{% if user.entreprise_set.count >= 2 %}Mes entreprises{% else %}Mon entreprise{% endif %}</a></li>
+                                            <li><a class="fr-btn fr-icon-building-fill" href="{% url 'entreprises:entreprises' %}">{% if user.entreprise_set.count >= 2 %}Mes entreprises{% else %}Mon entreprise{% endif %}</a></li>
                                             <li class="fr-nav__item header-collapse">
-                                                <button class="fr-btn fr-icon-account-circle-line" aria-expanded="false" aria-controls="menu-header">{{ user.prenom|title }} {{ user.nom|title|first }}.</button>
+                                                <button class="fr-btn fr-icon-account-circle-fill" aria-expanded="false" aria-controls="menu-header">{{ user.prenom|title }} {{ user.nom|title|first }}.</button>
                                                 <div class="fr-collapse fr-menu" id="menu-header">
                                                     <ul class="fr-menu__list">
                                                         <li><a class="fr-nav__link" href="{% url 'users:account' %}" target="_self"><span class="fr-icon-account-circle-fill fr-mr-1w" aria-hidden="true"></span> Mon compte</a></li>
@@ -102,7 +102,7 @@
                                                 </div>
                                             </li>
                                         {% else %}
-                                            <li><a class="fr-btn fr-icon-lock-line" href="{% url 'users:login' %}?next={{ request.path }}&mtm_campaign=connexion-menu&mtm_kwd=menu">Se connecter</a></li>
+                                            <li><a class="fr-btn fr-icon-lock-fill" href="{% url 'users:login' %}?next={{ request.path }}&mtm_campaign=connexion-menu&mtm_kwd=menu">Se connecter</a></li>
                                             {% if request.path != url_simulation %}
                                                 <li><a class="fr-btn fr-btn--primary" href="{% url 'simulation' %}">Vérifier mes obligations</a></li>
                                             {% endif %}
