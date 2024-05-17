@@ -5,7 +5,11 @@
 {% block content %}
     <div class="fr-container fr-my-12w">
         <div class="fr-grid-row fr-grid-row--center">
-            <div class="fr-col-8">
+            <div class="fr-col-6">
+                <h1>Bienvenue sur le Portail RSE !</h1>
+                <div class="fr-mb-3w">
+                    Connectez-vous pour piloter et suivre vos réglementations.
+                </div>
                 {% if form.non_field_errors %}
                     <div class="fr-alert fr-alert--error fr-mb-5w">
                         <h3 class="fr-alert__title">Erreur</h3>
@@ -19,17 +23,22 @@
                     {% csrf_token %}
                     <input type="hidden" name="next" value="{{ next }}">
                     {% include 'snippets/field.html' with field=form.username %}
-                    {% include 'snippets/field.html' with field=form.password %}
-                    <button type="submit" class="fr-btn">Se connecter</button>
+                    {% include 'snippets/field.html' with field=form.password additional_classes="fr-mb-1w" %}
+                    <div>
+                        Mot de passe oublié ? <a href="{% url 'users:password_reset'%}" class="fr-link">Réinitialisez votre mot de passe</a>
+                    </div>
+
+                    <div class="fr-mt-4w">
+                        <button type="submit" class="fr-btn">Se connecter</button>
+                    </div>
+
+                    <div class="background-light-grey fr-py-4w fr-my-4w" style="text-align: center;">
+                        Pas encore de compte ? <a href="{% url 'users:creation'%}?mtm_campaign=creation-connexion&mtm_kwd=corps-page" class="fr-link">Créez votre compte</a><br>
+                    </div>
                 </form>
             </div>
-        </div>
-        <div class="fr-grid-row fr-grid-row--center fr-mt-4w">
-            <div class="fr-col-8">
-                <p>
-                    Vous n'avez pas encore de compte ? <a href="{% url 'users:creation'%}?mtm_campaign=creation-connexion&mtm_kwd=corps-page">Créez votre compte</a><br>
-                    Vous avez oublié votre mot de passe ? <a href="{% url 'users:password_reset'%}">Réinitialisez votre mot de passe</a>
-                </p>
+            <div class="fr-col-6" style="vertical-align:middle;">
+                <img src="/static/img/dashboard.png" style="width: 100%;">
             </div>
         </div>
     </div>
