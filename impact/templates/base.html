@@ -105,26 +105,20 @@
                         </div>
                     </div>
                 </div>
-                <div class="fr-header__menu fr-modal" id="modal-499" aria-labelledby="button-500">
-                    <div class="fr-container">
-                        <button class="fr-btn--close fr-btn" aria-controls="modal-499" title="Fermer">
-                            Fermer
-                        </button>
-                        <div class="fr-header__menu-links">
-                        </div>
-                        <nav class="fr-nav" id="navigation-494" role="navigation" aria-label="Menu principal">
-                            <ul class="fr-nav__list">
-                                {% if not user.is_authenticated %}
+                {% if user.is_authenticated %}
+                    <div class="fr-header__menu fr-modal" id="modal-499" aria-labelledby="button-500">
+                        <div class="fr-container">
+                            <button class="fr-btn--close fr-btn" aria-controls="modal-499" title="Fermer">
+                                Fermer
+                            </button>
+                            <div class="fr-header__menu-links">
+                            </div>
+                            <nav class="fr-nav" id="navigation-494" role="navigation" aria-label="Menu principal">
+                                <ul class="fr-nav__list">
                                     <li class="fr-nav__item">
-                                        {% url 'simulation' as url_page %}
-                                        <a class="fr-nav__link" href="{{ url_page }}?mtm_campaign=simulation-menu&mtm_kwd=menu" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Simulation</a>
+                                        {% url 'reglementations' as url_page %}
+                                        <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Réglementations RSE</a>
                                     </li>
-                                {% endif %}
-                                <li class="fr-nav__item">
-                                    {% url 'reglementations' as url_page %}
-                                    <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Réglementations RSE</a>
-                                </li>
-                                {% if user.is_authenticated %}
                                     {% if user.entreprise_set.count >= 2 %}
                                         <li class="fr-nav__item">
                                             {% url 'reglementations:tableau_de_bord' entreprise.siren as url_page %}
@@ -150,18 +144,24 @@
                                         {% url 'reglementations:csrd' as url_page %}
                                         <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Espace Rapport de Durabilité</a>
                                     </li>
-                                {% else %}
-                                    <li class="fr-nav__item"><a class="fr-nav__link" href="{% url 'users:login' %}?next={{ request.path }}&mtm_campaign=connexion-tableau-bord&mtm_kwd=menu" target="_self">Tableau de bord</a></li>
-                                    <li class="fr-nav__item">
-                                        {% url 'reglementations:csrd' as url_page %}
-                                        <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Espace Rapport de Durabilité</a>
-                                    </li>
-                                {% endif %}
-                            </ul>
-                        </nav>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                {% endif %}
+            </header>
+            {% if not user.is_authenticated %}
+                <div class="fr-notice fr-notice--info">
+                    <div class="fr-container">
+                        <div class="fr-notice__body">
+                            <p class="fr-notice__title">
+                                Les obligations concernant la mise en place du rapport de durabilité (Directive CSRD) sont disponibles dans le Portail RSE :
+                                <a href="{% url 'reglementations:fiche_csrd' %}" title="Fiche réglementaire sur la CSRD">découvrir</a>
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </header>
+            {% endif %}
         {% endblock %}
 
         <main>
