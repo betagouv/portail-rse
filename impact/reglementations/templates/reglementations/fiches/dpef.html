@@ -31,7 +31,7 @@
                             A compter de 2024, la déclaration de performance extra-financière va prendre en nouveau visage pour devenir le rapport de durabilité conformément à la Corporate Sustainability Reporting Directive (dite CSRD). Pour plus d'informations sur le sujet, consulter <a href="{% url 'reglementations:fiche_csrd' %}">notre fiche relative au rapport de durabilité</a>.
                         </p>
                         {% if not user.is_authenticated %}
-                            <a class="fr-btn" href="{% url 'simulation' %}">Vérifier mes obligations en 30 sec</a>
+                            <a class="fr-btn" href="{% url 'simulation' %}?mtm_campaign=simulation-fiche-dpef&mtm_kwd=corps-page">Vérifier mes obligations en 30 sec</a>
                         {% endif %}
                     </div>
                 </div>

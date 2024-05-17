@@ -28,7 +28,7 @@
                             Le bilan de gaz à effet de serre (BGES) s'inscrit dans une politique de stratégie bas carbone. Les acteurs privés comme publics doivent mesurer l'émissions de gaz à effet de serre directes et indirectes découlant de leurs activités afin de construire et mettre en œuvre un plan de transition envisagé pour réduire leurs émissions.
                         </p>
                         {% if not user.is_authenticated %}
-                            <a class="fr-btn" href="{% url 'simulation' %}">Vérifier mes obligations en 30 sec</a>
+                            <a class="fr-btn" href="{% url 'simulation' %}?mtm_campaign=simulation-fiche-bilan-ges&mtm_kwd=corps-page">Vérifier mes obligations en 30 sec</a>
                         {% endif %}
                     </div>
                 </div>

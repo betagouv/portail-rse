@@ -29,7 +29,7 @@
                             Tous les quatre ans, l'entreprise doit auditer au moins 80% de ses factures énergétiques afin de mettre en place une stratégie d'efficacité énergétique pour les activités comprises dans le périmètre audité.
                         </p>
                         {% if not user.is_authenticated %}
-                            <a class="fr-btn" href="{% url 'simulation' %}">Vérifier mes obligations en 30 sec</a>
+                            <a class="fr-btn" href="{% url 'simulation' %}?mtm_campaign=simulation-fiche-audit-energetique&mtm_kwd=corps-page">Vérifier mes obligations en 30 sec</a>
                         {% endif %}
                     </div>
                 </div>
