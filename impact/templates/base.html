@@ -20,6 +20,12 @@
         {% vite_hmr_client %}
         {% vite_asset 'src/main.js' %}
 
+        <style>
+            .texte-important {
+                color: #0063cb;
+            }
+        </style>
+
         {% if "portail-rse.beta" in request.get_host %}
         <!-- Matomo -->
             <script>
