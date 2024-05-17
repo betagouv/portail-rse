@@ -7,7 +7,7 @@
     <div class="fr-container">
         <div class="fr-grid-row fr-pt-2w ">
             <div class="fr-col-12">
-                <a class="fr-link fr-icon-arrow-left-line fr-link--icon-left" href="{% url 'reglementations' %}">Retour à la liste des réglementations</a>
+                <a class="fr-link fr-icon-arrow-left-line fr-link--icon-left" href="{% url 'reglementations' %}">Liste des Fiches réglementataires</a>
             </div>
         </div>
         <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--center fr-pb-6w fr-mt-1v">
@@ -28,6 +28,9 @@
                             <br><br>
                             La BDESE rassemble les informations sur les grandes orientations économiques et sociales de l'entreprise, afin de faciliter le dialogue social. En l'absence d'accord d'entreprise, elle comprend des mentions obligatoires qui varient selon l'effectif de l'entreprise.
                         </p>
+                        {% if not user.is_authenticated %}
+                            <a class="fr-btn" href="{% url 'simulation' %}">Vérifier mes obligations en 30 sec</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
