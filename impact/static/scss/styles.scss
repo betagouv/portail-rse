@@ -40,6 +40,74 @@
     }
 }
 
+/* Overriding header classes & css so we can display buttons in tool links */
+
+.fr-header__tools-links--with-btn {
+    display: none;
+}
+
+.fr-header__menu-links--with-btn .fr-tool-link {
+    --hover: inherit;
+    --active: inherit;
+    background-color: transparent;
+    box-shadow: none;
+    color: var(--text-action-high-blue-france);
+}
+
+.fr-header__menu-links--with-btn .fr-btns-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.fr-header .fr-header__menu-links--with-btns::after {
+    content: "";
+    display: block;
+    height: 1px;
+    margin: .75rem -1rem;
+    width: calc(100% + 2rem);
+}
+
+.fr-header__menu-links--with-btn::after {
+    box-shadow: inset 0 1px 0 0 var(--border-default-grey);
+}
+
+@media (min-width: 62em) {
+    .fr-header__menu-links--with-btn {
+        display: none;
+    }
+    .fr-header__tools-links--with-btn {
+      display: flex;
+      flex-direction: row;
+      gap: .5rem;
+      justify-content: flex-end;
+    }
+    .fr-header__tools-links--with-btn .fr-btns-group {
+      justify-content: flex-end;
+  
+      margin: 0 -.25rem -1rem;
+  
+    }
+    .fr-header__tools-links--with-btn .fr-btns-group > li {
+      align-items: flex-start;
+      display: inline-flex;
+      max-width: 100%;
+      width: auto;
+    }
+    .fr-header__tools-links--with-btn .fr-btns-group .fr-btn {
+        margin-left: .25rem;
+        margin-right: .25rem;
+        max-width: 100%;
+        width: auto;
+    }
+}
+
+.fr-header__tools-links--with-btn .fr-btn.fr-tool-link {
+    --hover: inherit;
+    --active: inherit;
+    background-color: transparent;
+    color: var(--text-action-high-blue-france);
+}
+
 /* colored bgs */
 
 .background-y {

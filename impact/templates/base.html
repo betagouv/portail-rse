@@ -82,18 +82,18 @@
                                 </div>
                             </div>
                             <div class="fr-header__tools">
-                                <div class="fr-header__tools-links">
+                                <div class="fr-header__tools-links--with-btn">
                                     <ul class="fr-btns-group">
-                                        <li><a class="fr-btn fr-icon-mail-fill" href="{% url 'contact' %}">Contactez-nous</a></li>
+                                        <li><a class="fr-btn fr-tool-link fr-icon-mail-fill" href="{% url 'contact' %}">Contactez-nous</a></li>
                                         {% url 'simulation' as url_simulation %}
                                         {% if url_simulation not in request.path %}
-                                            <li><a class="fr-btn fr-icon-file-text-fill" href="{% url 'reglementations' %}">Fiches réglementaires RSE</a></li>
+                                            <li><a class="fr-btn fr-tool-link fr-icon-file-text-fill" href="{% url 'reglementations' %}">Fiches réglementaires RSE</a></li>
                                         {% endif %}
 
                                         {% if user.is_authenticated %}
-                                            <li><a class="fr-btn fr-icon-building-fill" href="{% url 'entreprises:entreprises' %}">{% if user.entreprise_set.count >= 2 %}Mes entreprises{% else %}Mon entreprise{% endif %}</a></li>
+                                            <li><a class="fr-btn fr-tool-link fr-icon-building-fill" href="{% url 'entreprises:entreprises' %}">{% if user.entreprise_set.count >= 2 %}Mes entreprises{% else %}Mon entreprise{% endif %}</a></li>
                                             <li class="fr-nav__item header-collapse">
-                                                <button class="fr-btn fr-icon-account-circle-fill" aria-expanded="false" aria-controls="menu-header">{{ user.prenom|title }} {{ user.nom|title|first }}.</button>
+                                                <button class="fr-btn fr-tool-link fr-icon-account-circle-fill" aria-expanded="false" aria-controls="menu-header">{{ user.prenom|title }} {{ user.nom|title|first }}.</button>
                                                 <div class="fr-collapse fr-menu" id="menu-header">
                                                     <ul class="fr-menu__list">
                                                         <li><a class="fr-nav__link" href="{% url 'users:account' %}" target="_self"><span class="fr-icon-account-circle-fill fr-mr-1w" aria-hidden="true"></span> Mon compte</a></li>
@@ -102,7 +102,7 @@
                                                 </div>
                                             </li>
                                         {% else %}
-                                            <li><a class="fr-btn fr-icon-lock-fill" href="{% url 'users:login' %}?next={{ request.path }}&mtm_campaign=connexion-menu&mtm_kwd=menu">Se connecter</a></li>
+                                            <li><a class="fr-btn fr-btn--secondary fr-icon-lock-fill" href="{% url 'users:login' %}?next={{ request.path }}&mtm_campaign=connexion-menu&mtm_kwd=menu">Se connecter</a></li>
                                             {% if url_simulation not in request.path %}
                                                 <li><a class="fr-btn fr-btn--primary" href="{% url 'simulation' %}">Vérifier mes obligations</a></li>
                                             {% endif %}
@@ -118,43 +118,26 @@
                         <button class="fr-btn--close fr-btn" aria-controls="modal-499" title="Fermer">
                             Fermer
                         </button>
-                        <div class="fr-header__menu-links">
-                        </div>
-                        {% if user.is_authenticated %}
-                            <nav class="fr-nav" id="navigation-494" role="navigation" aria-label="Menu principal">
-                                <ul class="fr-nav__list">
-                                    <li class="fr-nav__item">
-                                        {% url 'reglementations' as url_page %}
-                                        <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Réglementations RSE</a>
-                                    </li>
-                                    {% if user.entreprise_set.count >= 2 %}
-                                        <li class="fr-nav__item">
-                                            {% url 'reglementations:tableau_de_bord' entreprise.siren as url_page %}
-                                            <button class="fr-nav__btn" aria-expanded="false" aria-controls="menu-1" {% if request.path == url_page %} aria-current="page"{% endif %}></span>
-                                            Tableau de bord
-                                        </button>
-                                        <div class="fr-collapse fr-menu" id="menu-1">
-                                            <ul class="fr-menu__list">
-                                                {% for entreprise in user.entreprises %}
-                                                    {% url 'reglementations:tableau_de_bord' entreprise.siren as url_page %}
-                                                    <li><a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Tableau de Bord pour {{ entreprise.denomination }}</a></li>
-                                                {% endfor %}
-                                            </ul>
-                                        </div>
-                                        </li>
-                                    {% else %}
-                                        {% for entreprise in user.entreprises %}
-                                            {% url 'reglementations:tableau_de_bord' entreprise.siren as url_page %}
-                                            <li class="fr-nav__item"><a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Tableau de bord</a></li>
-                                        {% endfor %}
+                        <div class="fr-header__menu-links--with-btn">
+                            <ul class="fr-btns-group">
+                                <li><a class="fr-btn fr-tool-link fr-icon-mail-fill" href="{% url 'contact' %}">Contactez-nous</a></li>
+                                {% url 'simulation' as url_simulation %}
+                                {% if url_simulation not in request.path %}
+                                    <li><a class="fr-btn fr-tool-link fr-icon-file-text-fill" href="{% url 'reglementations' %}">Fiches réglementaires RSE</a></li>
+                                {% endif %}
+
+                                {% if user.is_authenticated %}
+                                    <li><a class="fr-btn fr-tool-link fr-icon-building-fill" href="{% url 'entreprises:entreprises' %}">{% if user.entreprise_set.count >= 2 %}Mes entreprises{% else %}Mon entreprise{% endif %}</a></li>
+                                    <li><a class="fr-btn fr-tool-link fr-icon-account-circle-fill" href="{% url 'users:account' %}" target="_self">Mon compte</a></li>
+                                    <li><a class="fr-btn fr-tool-link fr-icon-lock-unlock-fill" href="{% url 'users:logout' %}" target="_self">Se déconnecter</a></li>
+                                {% else %}
+                                    <li><a class="fr-btn fr-btn--secondary fr-icon-lock-fill" href="{% url 'users:login' %}?next={{ request.path }}">Se connecter</a></li>
+                                    {% if url_simulation not in request.path %}
+                                        <li><a class="fr-btn fr-btn--primary" href="{% url 'simulation' %}">Vérifier mes obligations</a></li>
                                     {% endif %}
-                                    <li class="fr-nav__item">
-                                        {% url 'reglementations:csrd' as url_page %}
-                                        <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Espace Rapport de Durabilité</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        {% endif %}
+                                {% endif %}
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </header>
