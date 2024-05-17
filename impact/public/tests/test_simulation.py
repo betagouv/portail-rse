@@ -167,8 +167,50 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
             '<p class="fr-badge fr-badge--info fr-badge--no-icon">' not in content
         ), content
 
+    content = response.content.decode("utf-8")
+    assert "<!-- page resultats simulation -->" in content
+
+
+@pytest.mark.parametrize("status_est_soumis", [True, False])
+@pytest.mark.django_db
+def test_formulaire_prerempli_avec_la_simulation_précédente(status_est_soumis, client):
+    siren = "000000001"
+    denomination = "Entreprise SAS"
+    categorie_juridique_sirene = 5200
+    code_pays_etranger_sirene = ""  # France
+    effectif = CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
+    ca = CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M
+    bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M
+    est_cotee = True
+    appartient_groupe = True
+    est_societe_mere = True
+    effectif_groupe = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
+    comptes_consolides = True
+    ca_consolide = CaracteristiquesAnnuelles.CA_100M_ET_PLUS
+    bilan_consolide = CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
+
+    data = {
+        "siren": siren,
+        "denomination": denomination,
+        "categorie_juridique_sirene": categorie_juridique_sirene,
+        "code_pays_etranger_sirene": code_pays_etranger_sirene,
+        "effectif": effectif,
+        "tranche_chiffre_affaires": ca,
+        "tranche_bilan": bilan,
+        "est_cotee": est_cotee,
+        "appartient_groupe": appartient_groupe,
+        "est_societe_mere": est_societe_mere,
+        "effectif_groupe": effectif_groupe,
+        "comptes_consolides": comptes_consolides,
+        "tranche_chiffre_affaires_consolide": ca_consolide,
+        "tranche_bilan_consolide": bilan_consolide,
+    }
+
+    response = client.post("/simulation", data=data)
+    response = client.get("/simulation")
+
     # le formulaire est toujours sur la page, avec les bonnes données d'initialisation
-    simulation_form = context["simulation_form"]
+    simulation_form = response.context["simulation_form"]
     assert simulation_form["siren"].value() == siren
     assert simulation_form["denomination"].value() == denomination
     assert (
@@ -615,7 +657,7 @@ def test_simulation_incorrecte(client):
 
 
 @pytest.mark.django_db
-def test_resultats_simulation_en_session_incorrects(client):
+def test_simulation_en_session_incorrecte(client):
     """
     Ce cas peut arriver si les champs de la simulation évoluent. Des données précédemment correctes ne le sont plus.
     """
@@ -638,11 +680,7 @@ def test_resultats_simulation_en_session_incorrects(client):
 
     assert response.status_code == 200
 
-    # le formulaire est sur la page, avec les bonnes données d'initialisation et une erreur sur les champs erronés
+    # le formulaire n'est pas initialisé
     context = response.context
     simulation_form = context["simulation_form"]
-    assert simulation_form.errors["effectif"]
-    assert simulation_form["siren"].value() == "000000001"
-
-    assert not context["reglementations_soumises"]
-    assert not context["reglementations_non_soumises"]
+    assert not simulation_form["siren"].value()
