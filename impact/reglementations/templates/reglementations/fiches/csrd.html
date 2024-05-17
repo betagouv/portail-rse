@@ -22,8 +22,8 @@
         {% if user.is_authenticated %}
             <a class="fr-btn" href="{% url 'reglementations:csrd' %}">Consultez les thèmes du Rapport de Durabilité</a>
         {% else %}
-            <a href="{% url 'simulation' %}" class="fr-btn fr-btn--primary">Faire ma simulation</a>
-            <a class="fr-btn fr-btn--secondary" href="{% url 'reglementations:csrd' %}?mtm_campaign=connexion-csrd&mtm_kwd=corps-page">Connectez-vous pour consulter les thèmes du Rapport de Durabilité</a>
+            <a href="{% url 'simulation' %}" class="fr-btn fr-btn--primary">Vérifier mes obligations en 30 sec</a>
+            <a class="fr-btn fr-btn--secondary" href="{% url 'reglementations:csrd' %}?mtm_campaign=connexion-csrd&mtm_kwd=corps-page">Consulter les thèmes du Rapport de Durabilité</a>
         {% endif %}
     </div>
 {% endblock %}
