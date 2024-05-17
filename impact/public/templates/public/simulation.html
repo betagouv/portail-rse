@@ -10,21 +10,16 @@
                 <div class="fr-container container-simulation">
                     <div class="fr-grid-row fr-grid-row--center">
                         <div class="fr-col">
-                            <h2>Comment connaître mes obligations ?</h2>
+                            <h2>Vérifier mes obligations</h2>
                             <p>
-                                Pour connaître les réglementations auxquelles votre entreprise est soumise, suivez ces 3 étapes :
-                            </p>
-
-                            <h2>1. Simulation simplifiée</h2>
-                            <p>
-                                Effectuez une simulation simplifiée pour connaître les réglementations à laquelle votre entreprise peut être soumise.
-                                {% if user.is_authenticated %}
-                                {% else %}
-                                    <br><a href="{% url 'users:creation' %}" target="_self" class="fr-link">Inscrivez-vous</a> ou <a href="{% url 'users:login' %}" target="_self" class="fr-link">connectez-vous</a> pour saisir vos critères complets.
+                                Effectuez une simulation simplifiée pour connaître les réglementations applicables à votre entreprise.<br>
+                                {% if not user.is_authenticated %}
+                                    <a href="{% url 'users:creation' %}" target="_self" class="fr-link">Inscrivez-vous</a> ou <a href="{% url 'users:login' %}" target="_self" class="fr-link">connectez-vous</a> pour saisir vos critères complets.
                                 {% endif %}
                             </p>
 
-                            <h5>Recherchez votre entreprise</h5>
+                            <h3>1. Recherchez votre entreprise</h3>
+
                             <form action="{% url 'simulation' %}?mtm_campaign=simulation-resultats&mtm_kwd=corps-page" method="post" id="svelte-simulation-form">
                                 {% csrf_token %}
                                 <div id="svelte-search-entreprise-in-simulation-form" data-siren="{{ simulation_form.siren.value|default:'' }}" data-denomination="{{ simulation_form.denomination.value|default:'' }}">
@@ -33,7 +28,7 @@
                                 {{ simulation_form.categorie_juridique_sirene.as_hidden }}
                                 {{ simulation_form.code_pays_etranger_sirene.as_hidden }}
                                 <div id="svelte-simulation-fields" style="display: none">
-                                    <h5>Renseignez les informations de votre entreprise</h5>
+                                    <h3>2. Renseignez les informations de votre entreprise</h3>
                                     <div class="fr-grid-row fr-grid-row--gutters fr-pb-4w">
                                         <div class="fr-col-md-4 fr-col-12">
                                             {% include 'snippets/field.html' with field=simulation_form.effectif %}
