@@ -34,7 +34,7 @@
                     <div class="fr-grid-row fr-grid-row--center">
                         <div class="fr-col background-light-grey fr-p-3w">
                             <h5>Recherchez votre entreprise</h5>
-                            <form action="{% url 'simulation' %}&mtm_kwd=corps-page#svelte-simulation-result#svelte-simulation-result" method="post" id="svelte-simulation-form">
+                            <form action="{% url 'simulation' %}?mtm_campaign=simulation-resultats&mtm_kwd=corps-page#svelte-simulation-result#svelte-simulation-result" method="post" id="svelte-simulation-form">
                                 {% csrf_token %}
                                 <div id="svelte-search-entreprise-in-simulation-form" data-siren="{{ simulation_form.siren.value|default:'' }}" data-denomination="{{ simulation_form.denomination.value|default:'' }}">
                                     {% include 'snippets/siren_field.html' with field=simulation_form.siren %}
