@@ -85,7 +85,11 @@
                                 <div class="fr-header__tools-links">
                                     <ul class="fr-btns-group">
                                         <li><a class="fr-btn fr-icon-mail-line" href="{% url 'contact' %}">Contactez-nous</a></li>
-                                        <li><a class="fr-btn fr-icon-mail-line" href="{% url 'reglementations' %}">Réglementations RSE</a></li>
+                                        {% url 'simulation' as url_simulation %}
+                                        {% if request.path != url_simulation %}
+                                            <li><a class="fr-btn fr-icon-mail-line" href="{% url 'reglementations' %}">Réglementations RSE</a></li>
+                                        {% endif %}
+
                                         {% if user.is_authenticated %}
                                             <li><a class="fr-btn fr-icon-building-line" href="{% url 'entreprises:entreprises' %}">{% if user.entreprise_set.count >= 2 %}Mes entreprises{% else %}Mon entreprise{% endif %}</a></li>
                                             <li class="fr-nav__item header-collapse">
@@ -99,7 +103,9 @@
                                             </li>
                                         {% else %}
                                             <li><a class="fr-btn fr-icon-lock-line" href="{% url 'users:login' %}?next={{ request.path }}&mtm_campaign=connexion-menu&mtm_kwd=menu">Se connecter</a></li>
-                                            <li><a class="fr-btn fr-btn--primary" href="{% url 'simulation' %}">Faire ma simulation</a></li>
+                                            {% if request.path != url_simulation %}
+                                                <li><a class="fr-btn fr-btn--primary" href="{% url 'simulation' %}">Faire ma simulation</a></li>
+                                            {% endif %}
                                         {% endif %}
                                     </ul>
                                 </div>
