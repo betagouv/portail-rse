@@ -91,43 +91,56 @@ def reglementations(request):
 
 def simulation(request):
     simulation_form = SimulationForm(request.POST or None)
-    reglementations_soumises = None
-    reglementations_non_soumises = None
     if request.POST:
         if simulation_form.is_valid():
-            reglementations = calcule_simulation(simulation_form, request.user)
             request.session["simulation"] = simulation_form.cleaned_data
-            return redirect("simulation")
+            return redirect("resultats_simulation")
         else:
             messages.error(
                 request,
                 f"Impossible de finaliser la simulation car le formulaire contient des erreurs.",
             )
     elif request.session.get("simulation"):
-        simulation_form = SimulationForm(request.session["simulation"])
-        if simulation_form.is_valid():
-            reglementations = calcule_simulation(simulation_form, request.user)
-            reglementations_soumises = [
-                r
-                for r in reglementations
-                if r["status"].status
-                in (
-                    ReglementationStatus.STATUS_A_ACTUALISER,
-                    ReglementationStatus.STATUS_EN_COURS,
-                    ReglementationStatus.STATUS_A_JOUR,
-                    ReglementationStatus.STATUS_SOUMIS,
-                )
-            ]
-            reglementations_non_soumises = [
-                r
-                for r in reglementations
-                if r["status"].status == ReglementationStatus.STATUS_NON_SOUMIS
-            ]
+        form = SimulationForm(request.session["simulation"])
+        if form.is_valid():
+            simulation_form = form
     return render(
         request,
         "public/simulation.html",
         {
             "simulation_form": simulation_form,
+        },
+    )
+
+
+def resultats_simulation(request):
+    reglementations_soumises = None
+    reglementations_non_soumises = None
+    simulation_form = SimulationForm(request.session["simulation"])
+    if simulation_form.is_valid():
+        reglementations = calcule_simulation(simulation_form, request.user)
+        reglementations_soumises = [
+            r
+            for r in reglementations
+            if r["status"].status
+            in (
+                ReglementationStatus.STATUS_A_ACTUALISER,
+                ReglementationStatus.STATUS_EN_COURS,
+                ReglementationStatus.STATUS_A_JOUR,
+                ReglementationStatus.STATUS_SOUMIS,
+            )
+        ]
+        reglementations_non_soumises = [
+            r
+            for r in reglementations
+            if r["status"].status == ReglementationStatus.STATUS_NON_SOUMIS
+        ]
+    else:
+        return redirect("simulation")
+    return render(
+        request,
+        "public/resultats_simulation.html",
+        {
             "reglementations_soumises": reglementations_soumises,
             "reglementations_non_soumises": reglementations_non_soumises,
         },
