@@ -36,7 +36,7 @@
                                 <h3 class="fr-card__title">
                                     Mon espace simulation
                                 </h3>
-                                <p class="fr-card__desc">Découvrez en 30 secondes à quelles réglementations votre entreprise est soumise.</p>
+                                <p class="fr-card__desc">Découvrez <b>en 30 secondes</b> à quelles réglementations votre entreprise est soumise.</p>
                             </div>
                             <div class="fr-card__footer">
                                 <ul class="fr-btns-group">
@@ -70,7 +70,7 @@
                                 <ul class="fr-btns-group">
                                     <li>
                                         <a href="{% url 'reglementations' %}" class="fr-btn fr-btn--secondary">
-                                            Consulter les réglementations
+                                            Consulter les fiches réglementaires
                                         </a>
                                     </li>
                                 </ul>
@@ -97,11 +97,11 @@
                                     <li>
                                         {% if user.is_authenticated and current_entreprise %}
                                             <a href="{% url 'reglementations:tableau_de_bord' current_entreprise.siren %}" class="fr-btn fr-btn--secondary">
-                                                Accéder à mon tableau de bord
+                                                Piloter mes obligations
                                             </a>
                                         {% else %}
                                             <a href="{% url 'users:login' %}?next={{ request.path }}&mtm_campaign=obligations-carte&mtm_kwd=corps-page" class="fr-btn fr-btn--secondary">
-                                                Accéder à mon tableau de bord
+                                                Piloter mes obligations
                                             </a>
                                         {% endif %}
                                     </li>
@@ -118,7 +118,6 @@
             </div>
         </div>
     </div>
-        <!-- Bloc titre textes -->
 
     <div class="fr-grid-row fr-py-6w">
         <div class="fr-container">
@@ -145,8 +144,8 @@
             </div>
         </div>
     </div>
-        <!-- Bloc titre textes -->
-    <div class="fr-grid-row background-y fr-py-6w">
+
+    <div class="fr-grid-row background-blue fr-py-6w">
         <div class="fr-container">
             <div class="fr-grid-row">
                 <div class="fr-col-12">
@@ -156,11 +155,11 @@
                     <div class="fr-grid-row">
                         <p class="fr-mt-2w">
                             La Commission européenne définit en 2011 la responsabilité sociétale des entreprises comme <b>« la responsabilité des entreprises vis-à-vis des effets qu'elles exercent sur la société »</b>.
-                            <br>
-                            La norme ISO 26000 définit le périmètre de la RSE autour de sept thématiques centrales :
-
-                                <!-- thématiques -->
                         </p>
+                        <p>
+                            La norme ISO 26000 définit le périmètre de la RSE autour de sept thématiques centrales :
+                        </p>
+                        <!-- thématiques -->
                         <div class="fr-grid-row rse-themes">
                             <div class="rse-theme">
                                 <figure class="fr-content-media" role="group">
@@ -224,7 +223,8 @@
                             </div>
                         </div>
                         <p class="fr-mt-2w">
-                            <b>Des obligations pèsent sur les entreprises afin d'améliorer leur transparence et leur responsabilité.</b> Elles prévoient de se doter de dispositifs extra-financiers pour mesurer leur performance en matière de développement durable, communiquer leurs résultats et en rendre compte aux parties prenantes internes et externes.
+                            <b>Des obligations pèsent sur les entreprises afin d'améliorer leur transparence et leur responsabilité.</b>
+                            Elles prévoient de se doter de dispositifs extra-financiers pour mesurer leur performance en matière de développement durable, communiquer leurs résultats et en rendre compte aux parties prenantes internes et externes.
                         </p>
 
                     </div>
@@ -234,7 +234,7 @@
         <div class="fr-container">
             <div class="fr-grid-row fr-grid-row--center">
                 <a href="{% url 'simulation' %}" class="fr-btn fr-btn--primary">
-                    Tester mon éligibilité en 30 secondes
+                    Vérifier mes obligations en 30 secondes
                 </a>
             </div>
         </div>
@@ -242,7 +242,6 @@
 
     <div class="fr-grid-row fr-grid-row--gutters fr-mb-1w fr-pt-6w">
         <div class="fr-container">
-            <!-- Bloc titre, 2 colonnes texte et image -->
             <div class="fr-grid-row">
                 <div class="fr-container">
                     <div class="fr-grid-row fr-grid-row--center">
