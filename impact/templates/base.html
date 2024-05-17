@@ -86,7 +86,7 @@
                                     <ul class="fr-btns-group">
                                         <li><a class="fr-btn fr-icon-mail-fill" href="{% url 'contact' %}">Contactez-nous</a></li>
                                         {% url 'simulation' as url_simulation %}
-                                        {% if request.path != url_simulation %}
+                                        {% if url_simulation not in request.path %}
                                             <li><a class="fr-btn fr-icon-file-text-fill" href="{% url 'reglementations' %}">Fiches réglementaires RSE</a></li>
                                         {% endif %}
 
@@ -103,7 +103,7 @@
                                             </li>
                                         {% else %}
                                             <li><a class="fr-btn fr-icon-lock-fill" href="{% url 'users:login' %}?next={{ request.path }}&mtm_campaign=connexion-menu&mtm_kwd=menu">Se connecter</a></li>
-                                            {% if request.path != url_simulation %}
+                                            {% if url_simulation not in request.path %}
                                                 <li><a class="fr-btn fr-btn--primary" href="{% url 'simulation' %}">Vérifier mes obligations</a></li>
                                             {% endif %}
                                         {% endif %}
