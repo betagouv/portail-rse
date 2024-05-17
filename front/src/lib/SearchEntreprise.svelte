@@ -51,9 +51,7 @@
 <fieldset class="fr-fieldset" aria-label="SIREN de l'entreprise">
     <div class="fr-fieldset__element">
         <div class="fr-input-group">
-            <label class="fr-label" for="{sirenFieldId}">Votre numéro SIREN
-                <span class="fr-hint-text">Saisissez un numéro SIREN valide, disponible sur le Kbis de votre organisation ou sur l'Annuaire des Entreprises</span>
-            </label>
+            <label class="fr-label" for="{sirenFieldId}">Saisissez le numéro SIREN de votre entreprise</label>
             <div class="fr-col-12 fr-col-sm-6 fr-mt-1w">
                 <div class="fr-search-bar" role="search">
                 {#if ! loading}
