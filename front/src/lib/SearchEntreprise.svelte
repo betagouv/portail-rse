@@ -1,9 +1,6 @@
 <script>
-    import { createEventDispatcher } from 'svelte'
     import spinner from './assets/spinner.svg'
     import DenominationEntreprise from './DenominationEntreprise.svelte';
-
-    const dispatch = createEventDispatcher();
 
     export let siren = ""
     export let denomination = ""
