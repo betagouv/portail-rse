@@ -1,6 +1,7 @@
 <script>
     import { createEventDispatcher } from 'svelte'
     import spinner from './assets/spinner.svg'
+    import DenominationEntreprise from './DenominationEntreprise.svelte';
 
     const dispatch = createEventDispatcher();
 
@@ -14,6 +15,7 @@
     const sirenFieldName = "siren"
     const denominationFieldName = "denomination"
 
+    const denominationEntrepriseElement = document.getElementById("svelte-denomination-entreprise")
     const submitButton = document.getElementById(sirenFieldId).closest("form").querySelector("[type=submit]")
 
 
@@ -80,6 +82,9 @@
             {:catch error}
                 <p class="fr-error-text">{error.message}</p>
             {/await}
+            {#if !denominationEntrepriseElement}
+                <DenominationEntreprise />
+            {/if}
         </div>
     </div>
 </fieldset>
