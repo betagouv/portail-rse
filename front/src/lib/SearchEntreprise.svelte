@@ -49,6 +49,9 @@
     if (!siren) {
         submitButton.disabled = true
     }
+    else if (!denomination) {
+        handleChange()
+    }
 </script>
 
 <fieldset class="fr-fieldset" aria-label="SIREN de l'entreprise">

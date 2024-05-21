@@ -1,5 +1,5 @@
 <script>
-    export let denomination = "undefined"
+    export let denomination = undefined
 
     document.addEventListener(
         "infos-entreprise",

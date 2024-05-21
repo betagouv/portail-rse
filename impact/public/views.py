@@ -94,6 +94,7 @@ def simulation(request):
     if request.POST:
         if simulation_form.is_valid():
             request.session["simulation"] = simulation_form.cleaned_data
+            request.session["siren"] = simulation_form.cleaned_data["siren"]
             return redirect("resultats_simulation")
         else:
             messages.error(

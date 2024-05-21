@@ -211,6 +211,30 @@ def test_formulaire_prerempli_avec_la_simulation_précédente(status_est_soumis,
     assert simulation_form["tranche_bilan_consolide"].value() == bilan_consolide
 
 
+@pytest.mark.django_db
+def test_formulaire_creation_compte_prerempli_avec_le_siren_de_la_simulation_précédente(
+    client,
+):
+    siren = "000000001"
+    data = {
+        "siren": siren,
+        "denomination": "Entreprise SAS",
+        "categorie_juridique_sirene": 5200,
+        "code_pays_etranger_sirene": "",
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M,
+        "est_cotee": False,
+        "appartient_groupe": False,
+    }
+
+    client.post("/simulation", data=data)
+    response = client.get("/creation")
+
+    creation_form = response.context["form"]
+    assert creation_form["siren"].value() == siren
+
+
 @pytest.mark.parametrize("status_est_soumis", [True, False])
 def test_simulation_par_un_utilisateur_authentifie_sur_une_nouvelle_entreprise(
     status_est_soumis, client, entreprise, mocker
