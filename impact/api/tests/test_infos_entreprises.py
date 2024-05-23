@@ -22,6 +22,7 @@ def test_infos_entreprise_succes_api_recherche_entreprises(
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         "categorie_juridique_sirene": 5710,
         "code_pays_etranger_sirene": None,
+        "code_NAF": "01.11Z",
     }
     infos = infos_entreprise(SIREN)
 
@@ -34,6 +35,7 @@ def test_infos_entreprise_succes_api_recherche_entreprises(
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         "categorie_juridique_sirene": 5710,
         "code_pays_etranger_sirene": None,
+        "code_NAF": "01.11Z",
     }
 
 
@@ -47,6 +49,7 @@ def test_infos_entreprise_echec_api_recherche_entreprises_erreur_de_l_api_puis_s
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         "categorie_juridique_sirene": 5710,
         "code_pays_etranger_sirene": None,
+        "code_NAF": "01.11Z",
     }
     infos = infos_entreprise(SIREN)
 
@@ -58,6 +61,7 @@ def test_infos_entreprise_echec_api_recherche_entreprises_erreur_de_l_api_puis_s
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         "categorie_juridique_sirene": 5710,
         "code_pays_etranger_sirene": None,
+        "code_NAF": "01.11Z",
     }
 
 
@@ -99,6 +103,7 @@ def test_infos_entreprise_incluant_les_données_financières(
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         "categorie_juridique_sirene": 5710,
         "code_pays_etranger_sirene": None,
+        "code_NAF": "01.11Z",
     }
     mock_api_ratios_financiers.return_value = {
         "date_cloture_exercice": date(2023, 12, 31),
@@ -116,6 +121,7 @@ def test_infos_entreprise_incluant_les_données_financières(
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         "categorie_juridique_sirene": 5710,
         "code_pays_etranger_sirene": None,
+        "code_NAF": "01.11Z",
         "date_cloture_exercice": date(2023, 12, 31),
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
         "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_MOINS_DE_60M,
@@ -131,6 +137,7 @@ def test_infos_entreprise_echec_de_l_API_ratios_financiers_non_bloquant(
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         "categorie_juridique_sirene": 5710,
         "code_pays_etranger_sirene": None,
+        "code_NAF": "01.11Z",
     }
     mock_api_ratios_financiers.side_effect = APIError("Message d'erreur")
 
@@ -144,6 +151,7 @@ def test_infos_entreprise_echec_de_l_API_ratios_financiers_non_bloquant(
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         "categorie_juridique_sirene": 5710,
         "code_pays_etranger_sirene": None,
+        "code_NAF": "01.11Z",
         "date_cloture_exercice": None,
         "tranche_chiffre_affaires": None,
         "tranche_chiffre_affaires_consolide": None,
