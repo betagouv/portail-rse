@@ -40,7 +40,7 @@ def test_aucune_annee_de_publication(mocker):
 
     year = last_reporting_year(SIREN)
 
-    assert year == None
+    assert year is None
     faked_request.assert_called_once_with(
         "https://bilans-ges.ademe.fr/api/inventories",
         params={"page": "1", "itemsPerPage": "11", "entity.siren": SIREN},

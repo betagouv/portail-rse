@@ -64,7 +64,7 @@ def test_category_field_with_category_type():
         == category_field.category_type
         == CategoryType.PROFESSIONNELLE
     )
-    assert new_category_field.categories == category_field.categories == None
+    assert new_category_field.categories == category_field.categories is None
 
 
 @pytest.mark.django_db(transaction=True)

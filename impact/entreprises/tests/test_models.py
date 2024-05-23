@@ -726,7 +726,7 @@ def test_convertit_code_pays():
     assert convertit_code_pays(CODE_PAYS_CANADA) == "Canada"
     assert convertit_code_pays(CODE_PAYS_PORTUGAL) == "Portugal"
     assert convertit_code_pays(None) == "France"
-    assert convertit_code_pays(11111) == None  # code inexistant actuellement
+    assert convertit_code_pays(11111) is None  # code inexistant actuellement
 
 
 def test_exercice_comptable_est_annee_civile():
