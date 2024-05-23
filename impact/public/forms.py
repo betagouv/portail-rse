@@ -38,6 +38,7 @@ class SimulationForm(EntrepriseForm, forms.ModelForm):
     siren = SirenField()
     categorie_juridique_sirene = forms.IntegerField()
     code_pays_etranger_sirene = forms.IntegerField(required=False)
+    code_NAF = forms.CharField(required=False)
 
     class Meta:
         model = CaracteristiquesAnnuelles

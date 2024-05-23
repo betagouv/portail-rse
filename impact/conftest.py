@@ -47,6 +47,7 @@ def entreprise_non_qualifiee(alice):
         siren="000000001",
         denomination="Entreprise SAS",
         categorie_juridique_sirene=5710,
+        code_NAF="01.11Z",
     )
     return entreprise
 

@@ -158,6 +158,7 @@ def calcule_simulation(simulation_form, user):
         entreprise.code_pays_etranger_sirene = simulation_form.cleaned_data[
             "code_pays_etranger_sirene"
         ]
+        entreprise.code_NAF = simulation_form.cleaned_data["code_NAF"]
         entreprise.est_cotee = simulation_form.cleaned_data["est_cotee"]
         entreprise.appartient_groupe = simulation_form.cleaned_data["appartient_groupe"]
         entreprise.est_societe_mere = simulation_form.cleaned_data["est_societe_mere"]
@@ -174,6 +175,7 @@ def calcule_simulation(simulation_form, user):
             code_pays_etranger_sirene=simulation_form.cleaned_data[
                 "code_pays_etranger_sirene"
             ],
+            code_NAF=simulation_form.cleaned_data["code_NAF"],
             est_cotee=simulation_form.cleaned_data["est_cotee"],
             appartient_groupe=simulation_form.cleaned_data["appartient_groupe"],
             est_societe_mere=simulation_form.cleaned_data["est_societe_mere"],
