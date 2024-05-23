@@ -232,7 +232,7 @@ def test_pas_de_nature_juridique(nature_juridique, mocker):
     capture_message_mock.assert_called_once_with(
         "Nature juridique récupérée par l'API recherche entreprises invalide"
     )
-    assert infos["categorie_juridique_sirene"] == None
+    assert infos["categorie_juridique_sirene"] is None
 
 
 def test_pas_de_code_pays_etranger(mocker):
@@ -259,7 +259,7 @@ def test_pas_de_code_pays_etranger(mocker):
     capture_message_mock.assert_called_once_with(
         "Code pays étranger récupéré par l'API recherche entreprises invalide"
     )
-    assert infos["code_pays_etranger_sirene"] == None
+    assert infos["code_pays_etranger_sirene"] is None
 
 
 def test_code_pays_etranger_vaut_null_car_en_France(mocker):
@@ -283,7 +283,7 @@ def test_code_pays_etranger_vaut_null_car_en_France(mocker):
     infos = recherche(SIREN)
 
     assert not capture_message_mock.called
-    assert infos["code_pays_etranger_sirene"] == None
+    assert infos["code_pays_etranger_sirene"] is None
 
 
 @pytest.mark.parametrize("activite_principale", ["", None])
@@ -306,4 +306,4 @@ def test_pas_d_activite_principale(activite_principale, mocker):
 
     infos = recherche(SIREN)
 
-    assert infos["code_NAF"] == None
+    assert infos["code_NAF"] is None

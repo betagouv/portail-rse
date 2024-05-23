@@ -217,7 +217,7 @@ def test_pas_de_categorie_juridique(categorie_juridique, mocker):
     capture_message_mock.assert_any_call(
         "Catégorie juridique récupérée par l'API sirene invalide"
     )
-    assert infos["categorie_juridique_sirene"] == None
+    assert infos["categorie_juridique_sirene"] is None
 
 
 @pytest.mark.parametrize("activite_principale", ["", None])
@@ -241,7 +241,7 @@ def test_pas_d_activite_principale(activite_principale, mocker):
     mocker.patch("requests.get", return_value=MockedResponse(200, json_content))
     infos = recherche_unite_legale(SIREN)
 
-    assert infos["code_NAF"] == None
+    assert infos["code_NAF"] is None
 
 
 def test_renouvelle_jeton_acces_insee(mocker, tmp_path, settings):

@@ -124,7 +124,7 @@ def test_succes_indicateurs_sans_objectif_de_progression(mocker):
 
     bdese_indicateurs = indicateurs_bdese(SIREN, 2021)
 
-    assert bdese_indicateurs["objectifs_progression"] == None
+    assert bdese_indicateurs["objectifs_progression"] is None
 
 
 def test_succes_indicateurs_avec_tous_les_objectifs_de_progression(mocker):
