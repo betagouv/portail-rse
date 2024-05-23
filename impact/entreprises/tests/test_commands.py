@@ -5,6 +5,7 @@ import api.exceptions
 from entreprises.management.commands.force_categorie_juridique_sirene import (
     Command as CommandCategorieJuridiqueSirene,
 )
+from entreprises.management.commands.force_code_naf import Command as CommandCodeNAF
 from entreprises.management.commands.force_denomination import Command
 from entreprises.models import CaracteristiquesAnnuelles
 
@@ -111,3 +112,47 @@ def test_ne_modifie_pas_la_categorie_juridique_si_deja_remplie(
 
     entreprise_non_qualifiee.refresh_from_db()
     assert entreprise_non_qualifiee.categorie_juridique_sirene == CATEGORIE_DE_REFERENCE
+
+
+@pytest.mark.django_db(transaction=True)
+def test_remplit_le_code_NAF(db, mocker, entreprise_non_qualifiee):
+    entreprise_non_qualifiee.code_naf = ""
+    entreprise_non_qualifiee.save()
+    CODE_NAF = "01.11Z"
+
+    mocker.patch(
+        "api.recherche_entreprises.recherche",
+        return_value={
+            "siren": entreprise_non_qualifiee.siren,
+            "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+            "denomination": "RAISON_SOCIALE",
+            "code_NAF": CODE_NAF,
+        },
+    )
+    CommandCodeNAF().handle()
+
+    entreprise_non_qualifiee.refresh_from_db()
+    assert entreprise_non_qualifiee.code_NAF == CODE_NAF
+
+
+@pytest.mark.django_db(transaction=True)
+def test_ne_modifie_pas_le_code_NAF_si_deja_remplie(
+    db, mocker, entreprise_non_qualifiee
+):
+    entreprise_non_qualifiee.code_NAF = CODE_NAF_ENREGISTRE = "20.41Z"
+    entreprise_non_qualifiee.save()
+    CODE_NAF = "01.11Z"
+
+    mocker.patch(
+        "api.recherche_entreprises.recherche",
+        return_value={
+            "siren": entreprise_non_qualifiee.siren,
+            "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+            "denomination": "RAISON SOCIALE",
+            "code_NAF": CODE_NAF,
+        },
+    )
+    CommandCodeNAF().handle()
+
+    entreprise_non_qualifiee.refresh_from_db()
+    assert entreprise_non_qualifiee.code_NAF == CODE_NAF_ENREGISTRE
