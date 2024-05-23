@@ -6,7 +6,9 @@ from entreprises.management.commands.force_categorie_juridique_sirene import (
     Command as CommandCategorieJuridiqueSirene,
 )
 from entreprises.management.commands.force_code_naf import Command as CommandCodeNAF
-from entreprises.management.commands.force_denomination import Command
+from entreprises.management.commands.force_denomination import (
+    Command as CommandDenomination,
+)
 from entreprises.models import CaracteristiquesAnnuelles
 
 
@@ -24,7 +26,7 @@ def test_remplit_la_denomination(db, mocker, entreprise_non_qualifiee):
             "denomination": RAISON_SOCIALE,
         },
     )
-    Command().handle()
+    CommandDenomination().handle()
 
     entreprise_non_qualifiee.refresh_from_db()
     assert entreprise_non_qualifiee.denomination == RAISON_SOCIALE
@@ -44,7 +46,7 @@ def test_ne_modifie_pas_la_denomination_si_deja_remplie(
             "denomination": "RAISON SOCIALE",
         },
     )
-    Command().handle()
+    CommandDenomination().handle()
 
     entreprise_non_qualifiee.refresh_from_db()
     assert entreprise_non_qualifiee.denomination == RAISON_SOCIALE
