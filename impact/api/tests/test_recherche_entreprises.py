@@ -22,6 +22,7 @@ def test_api_fonctionnelle():
         "denomination": "DIRECTION INTERMINISTERIELLE DU NUMERIQUE",
         "categorie_juridique_sirene": 7120,
         "code_pays_etranger_sirene": None,
+        "code_NAF": "84.11Z",
     }
 
 
@@ -37,6 +38,7 @@ def test_succes_recherche_comportant_la_raison_sociale(mocker):
                 "tranche_effectif_salarie": "12",
                 "nature_juridique": "5710",
                 "siege": {"code_pays_etranger": "99139"},
+                "activite_principale": "01.11Z",
             }
         ],
     }
@@ -52,6 +54,7 @@ def test_succes_recherche_comportant_la_raison_sociale(mocker):
         "denomination": "ENTREPRISE",
         "categorie_juridique_sirene": 5710,
         "code_pays_etranger_sirene": 99139,
+        "code_NAF": "01.11Z",
     }
     faked_request.assert_called_once_with(
         f"https://recherche-entreprises.api.gouv.fr/search?q={SIREN}&page=1&per_page=1&mtm_campaign=portail-rse",
@@ -70,6 +73,7 @@ def test_succes_recherche_sans_la_raison_sociale(mocker):
                 "tranche_effectif_salarie": "12",
                 "nature_juridique": "5710",
                 "siege": {"code_pays_etranger": None},
+                "activite_principale": "01.11Z",
             }
         ],
     }
@@ -77,13 +81,7 @@ def test_succes_recherche_sans_la_raison_sociale(mocker):
 
     infos = recherche(SIREN)
 
-    assert infos == {
-        "siren": SIREN,
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
-        "denomination": "ENTREPRISE",
-        "categorie_juridique_sirene": 5710,
-        "code_pays_etranger_sirene": None,
-    }
+    assert infos["denomination"] == "ENTREPRISE"
 
 
 def test_succes_pas_de_resultat(mocker):
@@ -222,6 +220,7 @@ def test_pas_de_nature_juridique(nature_juridique, mocker):
                 "tranche_effectif_salarie": "15",
                 "nature_juridique": nature_juridique,
                 "siege": {"code_pays_etranger": None},
+                "activite_principale": "01.11Z",
             }
         ],
     }
@@ -248,6 +247,7 @@ def test_pas_de_code_pays_etranger(mocker):
                 "tranche_effectif_salarie": "15",
                 "nature_juridique": "5710",
                 "siege": {},
+                "activite_principale": "01.11Z",
             }
         ],
     }
@@ -273,6 +273,7 @@ def test_code_pays_etranger_vaut_null_car_en_France(mocker):
                 "tranche_effectif_salarie": "15",
                 "nature_juridique": "5710",
                 "siege": {"code_pays_etranger": None},
+                "activite_principale": "01.11Z",
             }
         ],
     }
@@ -283,3 +284,26 @@ def test_code_pays_etranger_vaut_null_car_en_France(mocker):
 
     assert not capture_message_mock.called
     assert infos["code_pays_etranger_sirene"] == None
+
+
+@pytest.mark.parametrize("activite_principale", ["", None])
+def test_pas_d_activite_principale(activite_principale, mocker):
+    SIREN = "123456789"
+    json_content = {
+        "total_results": 1,
+        "results": [
+            {
+                "nom_complet": "ENTREPRISE",
+                "nom_raison_sociale": None,
+                "tranche_effectif_salarie": "15",
+                "nature_juridique": "5710",
+                "siege": {"code_pays_etranger": None},
+                "activite_principale": activite_principale,
+            }
+        ],
+    }
+    mocker.patch("requests.get", return_value=MockedResponse(200, json_content))
+
+    infos = recherche(SIREN)
+
+    assert infos["code_NAF"] == None

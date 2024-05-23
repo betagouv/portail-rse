@@ -63,12 +63,15 @@ def recherche(siren):
             )
             code_pays_etranger = None
 
+        code_NAF = data["activite_principale"] or None
+
         return {
             "siren": siren,
             "effectif": effectif,
             "denomination": denomination,
             "categorie_juridique_sirene": categorie_juridique_sirene,
             "code_pays_etranger_sirene": code_pays_etranger,
+            "code_NAF": code_NAF,
         }
     elif response.status_code == 429:
         sentry_sdk.capture_message(TOO_MANY_REQUESTS_SENTRY_MESSAGE.format(NOM_API))
