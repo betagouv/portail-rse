@@ -55,6 +55,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     denomination = "Entreprise SAS"
     categorie_juridique_sirene = 5200
     code_pays_etranger_sirene = ""  # France
+    code_NAF = "01.11Z"
     effectif = CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
     ca = CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M
     bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M
@@ -71,6 +72,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
         "denomination": denomination,
         "categorie_juridique_sirene": categorie_juridique_sirene,
         "code_pays_etranger_sirene": code_pays_etranger_sirene,
+        "code_NAF": code_NAF,
         "effectif": effectif,
         "tranche_chiffre_affaires": ca,
         "tranche_bilan": bilan,
@@ -96,6 +98,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     assert entreprise.denomination == denomination
     assert entreprise.categorie_juridique_sirene == categorie_juridique_sirene
     assert entreprise.code_pays_etranger_sirene is None
+    assert entreprise.code_NAF == "01.11Z"
     assert entreprise.est_cotee
     assert entreprise.appartient_groupe
     assert entreprise.est_societe_mere
@@ -160,6 +163,7 @@ def test_formulaire_prerempli_avec_la_simulation_précédente(status_est_soumis,
     denomination = "Entreprise SAS"
     categorie_juridique_sirene = 5200
     code_pays_etranger_sirene = ""  # France
+    code_NAF = "01.11Z"
     effectif = CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
     ca = CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M
     bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M
@@ -176,6 +180,7 @@ def test_formulaire_prerempli_avec_la_simulation_précédente(status_est_soumis,
         "denomination": denomination,
         "categorie_juridique_sirene": categorie_juridique_sirene,
         "code_pays_etranger_sirene": code_pays_etranger_sirene,
+        "code_NAF": code_NAF,
         "effectif": effectif,
         "tranche_chiffre_affaires": ca,
         "tranche_bilan": bilan,
@@ -199,6 +204,7 @@ def test_formulaire_prerempli_avec_la_simulation_précédente(status_est_soumis,
         simulation_form["categorie_juridique_sirene"].value()
         == categorie_juridique_sirene
     )
+    assert simulation_form["code_NAF"].value() == code_NAF
     assert simulation_form["effectif"].value() == effectif
     assert simulation_form["tranche_chiffre_affaires"].value() == ca
     assert simulation_form["tranche_bilan"].value() == bilan
@@ -221,6 +227,7 @@ def test_formulaire_creation_compte_prerempli_avec_le_siren_de_la_simulation_pr�
         "denomination": "Entreprise SAS",
         "categorie_juridique_sirene": 5200,
         "code_pays_etranger_sirene": "",
+        "code_NAF": "01.11Z",
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M,
@@ -249,6 +256,7 @@ def test_simulation_par_un_utilisateur_authentifie_sur_une_nouvelle_entreprise(
         "siren": "000000002",
         "categorie_juridique_sirene": 5200,
         "code_pays_etranger_sirene": CODE_PAYS_PORTUGAL,
+        "code_NAF": "01.11Z",
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M,
@@ -285,6 +293,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
         date_cloture_exercice=date_cloture_dernier_exercice,
         categorie_juridique_sirene=5200,
         code_pays_etranger_sirene=CODE_PAYS_PORTUGAL,
+        code_NAF="01.11Z",
         est_cotee=True,
         appartient_groupe=True,
         est_societe_mere=True,
@@ -307,11 +316,13 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     autre_denomination = "Autre dénomination"
     autre_categorie_juridique_sirene = 5300
     autre_code_pays_etranger_sirene = CODE_PAYS_SUEDE
+    autre_code_NAF = "99.00Z"
     data = {
         "siren": entreprise.siren,
         "denomination": autre_denomination,
         "categorie_juridique_sirene": autre_categorie_juridique_sirene,
         "code_pays_etranger_sirene": autre_code_pays_etranger_sirene,
+        "code_NAF": autre_code_NAF,
         "effectif": autre_effectif,
         "tranche_chiffre_affaires": autre_ca,
         "tranche_bilan": autre_bilan,
@@ -326,6 +337,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     entreprise.refresh_from_db()
     assert entreprise.date_cloture_exercice == date_cloture_dernier_exercice
     assert entreprise.categorie_juridique_sirene == 5200
+    assert entreprise.code_NAF == "01.11Z"
     assert entreprise.est_cotee
     assert entreprise.appartient_groupe
     assert entreprise.est_societe_mere
@@ -404,11 +416,13 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
     autre_denomination = "Autre dénomination"
     autre_categorie_juridique_sirene = 5200
     autre_code_pays_etranger_sirene = CODE_PAYS_SUEDE
+    autre_code_NAF = "99.00Z"
     data = {
         "siren": entreprise.siren,
         "denomination": autre_denomination,
         "categorie_juridique_sirene": autre_categorie_juridique_sirene,
         "code_pays_etranger_sirene": autre_code_pays_etranger_sirene,
+        "code_NAF": autre_code_NAF,
         "effectif": effectif,
         "tranche_chiffre_affaires": ca,
         "tranche_bilan": bilan,
@@ -429,6 +443,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
     assert entreprise.date_cloture_exercice is None
     assert entreprise.categorie_juridique_sirene != autre_categorie_juridique_sirene
     assert entreprise.code_pays_etranger_sirene != autre_code_pays_etranger_sirene
+    assert entreprise.code_NAF != autre_code_NAF
     assert entreprise.est_cotee is None
     assert entreprise.appartient_groupe is None
     assert entreprise.est_societe_mere is None
@@ -496,11 +511,13 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
     autre_denomination = "Autre dénomination"
     autre_categorie_juridique_sirene = 5200
     autre_code_pays_etranger_sirene = CODE_PAYS_PORTUGAL
+    autre_code_NAF = "99.00Z"
     data = {
         "denomination": autre_denomination,
         "siren": entreprise.siren,
         "categorie_juridique_sirene": autre_categorie_juridique_sirene,
         "code_pays_etranger_sirene": autre_code_pays_etranger_sirene,
+        "code_NAF": autre_code_NAF,
         "effectif": effectif,
         "tranche_chiffre_affaires": ca,
         "tranche_bilan": bilan,
@@ -522,6 +539,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
     assert entreprise.denomination == autre_denomination
     assert entreprise.categorie_juridique_sirene == autre_categorie_juridique_sirene
     assert entreprise.code_pays_etranger_sirene == autre_code_pays_etranger_sirene
+    assert entreprise.code_NAF == autre_code_NAF
     assert entreprise.est_cotee
     assert entreprise.appartient_groupe
     assert entreprise.est_societe_mere

@@ -7,6 +7,7 @@
     // defined by django
     const categorieJuridiqueFieldId = "id_categorie_juridique_sirene"
     const codePaysEtrangerFieldId = "id_code_pays_etranger_sirene"
+    const codeNAFFieldId = "id_code_NAF"
     const effectifFieldId = "id_effectif"
     const trancheChiffreAffairesFieldId = "id_tranche_chiffre_affaires"
     const appartientGroupeFieldId = "id_appartient_groupe"
@@ -15,6 +16,7 @@
 
     const categorieJuridiqueField = document.getElementById(categorieJuridiqueFieldId)
     const codePaysEtrangerField = document.getElementById(codePaysEtrangerFieldId)
+    const codeNAFField = document.getElementById(codeNAFFieldId)
     const effectifField = document.getElementById(effectifFieldId)
     const trancheChiffreAffairesField = document.getElementById(trancheChiffreAffairesFieldId)
     const appartientGroupeField = document.getElementById(appartientGroupeFieldId)
@@ -55,6 +57,7 @@
         effectifField.value = infos.effectif
         categorieJuridiqueField.value = infos.categorie_juridique_sirene
         codePaysEtrangerField.value = infos.code_pays_etranger_sirene
+        codeNAFField.value = infos.code_NAF
         if (infos.tranche_chiffre_affaires) {
             // si l'API ne renvoie pas de chiffre
             // d'affaires, ne pas préremplir le champ
