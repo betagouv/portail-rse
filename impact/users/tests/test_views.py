@@ -60,6 +60,7 @@ def test_create_user_with_real_siren(client, db, mailoutbox):
     assert entreprise.denomination == "DIRECTION INTERMINISTERIELLE DU NUMERIQUE"
     assert entreprise.categorie_juridique_sirene == 7120
     assert entreprise.code_pays_etranger_sirene is None
+    assert entreprise.code_NAF == "84.11Z"
     assert not CaracteristiquesAnnuelles.objects.filter(entreprise=entreprise)
     assert user.created_at
     assert user.updated_at

@@ -40,6 +40,7 @@ def test_search_and_create_entreprise(db, mock_api_infos_entreprise):
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         "categorie_juridique_sirene": 5710,
         "code_pays_etranger_sirene": CODE_PAYS_PORTUGAL,
+        "code_NAF": "01.11Z",
     }
 
     search_and_create_entreprise("123456789")
@@ -48,6 +49,7 @@ def test_search_and_create_entreprise(db, mock_api_infos_entreprise):
     assert entreprise.denomination == "Entreprise SAS"
     assert entreprise.categorie_juridique_sirene == 5710
     assert entreprise.code_pays_etranger_sirene == CODE_PAYS_PORTUGAL
+    assert entreprise.code_NAF == "01.11Z"
 
 
 def _attach_data(siren):
@@ -88,6 +90,7 @@ def test_create_and_attach_to_entreprise(client, alice, mock_api_infos_entrepris
     assert get_habilitation(alice, entreprise).fonctions == "Présidente"
     assert entreprise.denomination == "Entreprise SAS"
     assert entreprise.categorie_juridique_sirene == 5710
+    assert entreprise.code_NAF == "01.11Z"
 
 
 def test_attach_to_an_existing_entreprise(client, alice, entreprise_factory):
@@ -231,6 +234,7 @@ def test_page_de_qualification_d_une_entreprise_non_qualifiee_pre_remplit_les_ch
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         "categorie_juridique_sirene": 5710,
         "code_pays_etranger_sirene": CODE_PAYS_PORTUGAL,
+        "code_NAF": "01.11Z",
         "date_cloture_exercice": date(2023, 6, 30),
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
         "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
@@ -653,6 +657,7 @@ def test_succes_api_search_entreprise(client, mock_api_infos_entreprise):
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         "categorie_juridique_sirene": 5710,
         "code_pays_etranger_sirene": CODE_PAYS_PORTUGAL,
+        "code_NAF": "01.11Z",
         "date_cloture_exercice": date(2023, 12, 31),
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
         "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_MOINS_DE_60M,
@@ -668,6 +673,7 @@ def test_succes_api_search_entreprise(client, mock_api_infos_entreprise):
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         "categorie_juridique_sirene": 5710,
         "code_pays_etranger_sirene": CODE_PAYS_PORTUGAL,
+        "code_NAF": "01.11Z",
         "date_cloture_exercice": "2023-12-31",
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
         "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_MOINS_DE_60M,

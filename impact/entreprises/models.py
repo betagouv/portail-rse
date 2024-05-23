@@ -168,6 +168,7 @@ class Entreprise(TimestampedModel):
     )
     categorie_juridique_sirene = models.IntegerField(null=True)
     code_pays_etranger_sirene = models.IntegerField(null=True, blank=True)
+    code_NAF = models.CharField(max_length=6, null=True, blank=True)
     date_cloture_exercice = models.DateField(
         verbose_name="Date de clôture du dernier exercice comptable",
         null=True,
