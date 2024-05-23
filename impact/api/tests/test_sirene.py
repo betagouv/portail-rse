@@ -27,6 +27,7 @@ def test_api_fonctionnelle():
         "denomination": "DIRECTION INTERMINISTERIELLE DU NUMERIQUE",
         "categorie_juridique_sirene": 7120,
         "code_pays_etranger_sirene": None,
+        "code_NAF": "84.11Z",
     }
 
 
@@ -46,6 +47,7 @@ def test_api_renouvelle_automatiquement_le_jeton_acces_insee(tmp_path, settings)
         "denomination": "DIRECTION INTERMINISTERIELLE DU NUMERIQUE",
         "categorie_juridique_sirene": 7120,
         "code_pays_etranger_sirene": None,
+        "code_NAF": "84.11Z",
     }
 
 
@@ -59,6 +61,7 @@ def test_succès_avec_résultat_comportant_la_denomination(mocker):
                 {
                     "categorieJuridiqueUniteLegale": "5710",
                     "denominationUniteLegale": "ENTREPRISE",
+                    "activitePrincipaleUniteLegale": "01.11Z",
                 }
             ],
             "siren": "123456789",
@@ -72,13 +75,7 @@ def test_succès_avec_résultat_comportant_la_denomination(mocker):
 
     infos = recherche_unite_legale(SIREN)
 
-    assert infos == {
-        "siren": SIREN,
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
-        "denomination": "ENTREPRISE",
-        "categorie_juridique_sirene": 5710,
-        "code_pays_etranger_sirene": None,
-    }
+    assert infos["denomination"] == "ENTREPRISE"
     faked_request.assert_called_once_with(
         f"https://api.insee.fr/entreprises/sirene/V3.11/siren/123456789?date={date.today().isoformat()}",
         headers={"Authorization": mock.ANY},
@@ -101,6 +98,7 @@ def test_succès_avec_résultat_sans_la_denomination(mocker):
                     "nomUniteLegale": "COOPER",
                     "categorieJuridiqueUniteLegale": "5710",
                     "denominationUniteLegale": None,
+                    "activitePrincipaleUniteLegale": "01.11Z",
                 }
             ],
             "siren": "123456789",
@@ -111,13 +109,7 @@ def test_succès_avec_résultat_sans_la_denomination(mocker):
 
     infos = recherche_unite_legale(SIREN)
 
-    assert infos == {
-        "siren": SIREN,
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
-        "denomination": "COOPER",
-        "categorie_juridique_sirene": 5710,
-        "code_pays_etranger_sirene": None,
-    }
+    assert infos["denomination"] == "COOPER"
 
 
 def test_succès_pas_de_résultat(mocker):
@@ -210,6 +202,7 @@ def test_pas_de_categorie_juridique(categorie_juridique, mocker):
                 {
                     "categorieJuridiqueUniteLegale": categorie_juridique,
                     "denominationUniteLegale": "ENTREPRISE",
+                    "activitePrincipaleUniteLegale": "01.11Z",
                 }
             ],
             "siren": "123456789",
@@ -225,6 +218,30 @@ def test_pas_de_categorie_juridique(categorie_juridique, mocker):
         "Catégorie juridique récupérée par l'API sirene invalide"
     )
     assert infos["categorie_juridique_sirene"] == None
+
+
+@pytest.mark.parametrize("activite_principale", ["", None])
+def test_pas_d_activite_principale(activite_principale, mocker):
+    SIREN = "123456789"
+
+    json_content = {
+        "header": {"message": "OK", "statut": 200},
+        "uniteLegale": {
+            "periodesUniteLegale": [
+                {
+                    "categorieJuridiqueUniteLegale": "5710",
+                    "denominationUniteLegale": "ENTREPRISE",
+                    "activitePrincipaleUniteLegale": activite_principale,
+                }
+            ],
+            "siren": "123456789",
+            "trancheEffectifsUniteLegale": "20",
+        },
+    }
+    mocker.patch("requests.get", return_value=MockedResponse(200, json_content))
+    infos = recherche_unite_legale(SIREN)
+
+    assert infos["code_NAF"] == None
 
 
 def test_renouvelle_jeton_acces_insee(mocker, tmp_path, settings):

@@ -53,6 +53,9 @@ def recherche_unite_legale(siren):
             categorie_juridique_sirene = None
 
         effectif = convertit_tranche_effectif(data["trancheEffectifsUniteLegale"])
+        code_NAF = (
+            data["periodesUniteLegale"][0]["activitePrincipaleUniteLegale"] or None
+        )
 
         # L'API sirene ne renseigne malheureusement pas le code pays étranger (bien récupéré par l'API recherche entreprises)
         # On souhaite être informé dès qu'il est manquant (utilisé dans la réglementation CSRD).
@@ -70,6 +73,7 @@ def recherche_unite_legale(siren):
             "denomination": denomination,
             "categorie_juridique_sirene": categorie_juridique_sirene,
             "code_pays_etranger_sirene": None,
+            "code_NAF": code_NAF,
         }
     elif response.status_code == 404:
         raise SirenError(SIREN_NOT_FOUND_ERROR)
