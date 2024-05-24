@@ -8,6 +8,7 @@ from freezegun import freeze_time
 
 from api.tests.fixtures import mock_api_bges  # noqa
 from api.tests.fixtures import mock_api_egapro  # noqa
+from conftest import CODE_NAF_CEREALES
 from conftest import CODE_PAYS_PORTUGAL
 from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
@@ -69,6 +70,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
             date_derniere_qualification=date_derniere_qualification,
             categorie_juridique_sirene=5699,
             code_pays_etranger_sirene=CODE_PAYS_PORTUGAL,
+            code_NAF=CODE_NAF_CEREALES,
             effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
             effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
             effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
@@ -129,6 +131,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
     assert metabase_entreprise.denomination == "Entreprise A"
     assert metabase_entreprise.categorie_juridique == "SOCIETE_ANONYME"
     assert metabase_entreprise.pays == "Portugal"
+    assert metabase_entreprise.code_NAF == CODE_NAF_CEREALES
     assert (
         metabase_entreprise.date_cloture_exercice
         == date_cloture_dernier_exercice.replace(
