@@ -16,6 +16,8 @@ CODE_AUTRE = 9240  # congrégation
 CODE_PAYS_PORTUGAL = 99139
 CODE_PAYS_CANADA = 99401
 
+CODE_NAF_CEREALES = "01.11Z"
+
 
 @pytest.fixture
 def alice(django_user_model):

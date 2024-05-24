@@ -62,6 +62,7 @@ class Command(BaseCommand):
                 if entreprise.categorie_juridique
                 else None,
                 pays=entreprise.pays,
+                code_NAF=entreprise.code_NAF,
                 est_interet_public=entreprise.est_interet_public,
                 est_cotee=entreprise.est_cotee,
                 appartient_groupe=entreprise.appartient_groupe,

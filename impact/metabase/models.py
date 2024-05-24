@@ -26,6 +26,7 @@ class Entreprise(models.Model):
     date_derniere_qualification = models.DateField(null=True)
     categorie_juridique = models.CharField(max_length=50, null=True)
     pays = models.CharField(max_length=50, null=True)
+    code_NAF = models.CharField(max_length=6, null=True)
     est_interet_public = models.BooleanField(null=True)
     est_cotee = models.BooleanField(null=True)
     appartient_groupe = models.BooleanField(null=True)
