@@ -5,6 +5,7 @@ import pytest
 from requests.exceptions import Timeout
 
 from api.exceptions import APIError
+from api.exceptions import ServerError
 from api.ratios_financiers import dernier_exercice_comptable
 from api.ratios_financiers import RATIOS_FINANCIERS_TIMEOUT
 from api.tests import MockedResponse
@@ -123,3 +124,13 @@ def test_echec_ratio_financiers_exception_provoquee_par_l_api(mocker):
     capture_exception_mock.assert_called_once()
     args, _ = capture_exception_mock.call_args
     assert type(args[0]) == Timeout
+
+
+def test_echec_erreur_de_l_API(mocker):
+    mocker.patch("requests.get", return_value=MockedResponse(500))
+    capture_message_mock = mocker.patch("sentry_sdk.capture_message")
+
+    with pytest.raises(ServerError) as e:
+        dernier_exercice_comptable(SIREN)
+
+    capture_message_mock.assert_called_once_with("Erreur API ratios financiers")

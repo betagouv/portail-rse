@@ -3,9 +3,12 @@ from datetime import date
 import requests
 import sentry_sdk
 
+from api.exceptions import API_ERROR_SENTRY_MESSAGE
 from api.exceptions import APIError
+from api.exceptions import ServerError
 from entreprises.models import CaracteristiquesAnnuelles
 
+NOM_API = "ratios financiers"
 RATIOS_FINANCIERS_TIMEOUT = 10
 
 
@@ -27,24 +30,27 @@ def dernier_exercice_comptable(siren):
             sentry_sdk.capture_exception(e)
         raise APIError()
 
-    try:
-        record = response.json()["records"][0]
-        fields = record["fields"]
-        donnees_financieres["date_cloture_exercice"] = _extrait_date_cloture_exercice(
-            fields
-        )
-        donnees_financieres.update(_extrait_chiffre_affaires(fields))
-    except IndexError:
-        pass
-
-    try:
-        record = response.json()["records"][1]
-        fields = record["fields"]
-        date_cloture_exercice = _extrait_date_cloture_exercice(fields)
-        if date_cloture_exercice == donnees_financieres["date_cloture_exercice"]:
+    if response.status_code == 200:
+        try:
+            record = response.json()["records"][0]
+            fields = record["fields"]
+            donnees_financieres[
+                "date_cloture_exercice"
+            ] = _extrait_date_cloture_exercice(fields)
             donnees_financieres.update(_extrait_chiffre_affaires(fields))
-    except IndexError:
-        pass
+        except IndexError:
+            pass
+        try:
+            record = response.json()["records"][1]
+            fields = record["fields"]
+            date_cloture_exercice = _extrait_date_cloture_exercice(fields)
+            if date_cloture_exercice == donnees_financieres["date_cloture_exercice"]:
+                donnees_financieres.update(_extrait_chiffre_affaires(fields))
+        except IndexError:
+            pass
+    else:
+        sentry_sdk.capture_message(API_ERROR_SENTRY_MESSAGE.format(NOM_API))
+        raise ServerError()
     return donnees_financieres
 
 
