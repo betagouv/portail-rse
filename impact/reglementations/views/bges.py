@@ -12,7 +12,7 @@ from reglementations.views.base import ReglementationStatus
 
 
 class BGESReglementation(Reglementation):
-    title = "BGES et plan de transition"
+    title = "BEGES et Plan de Transition"
     more_info_url = reverse_lazy("reglementations:fiche_bilan_ges")
     tag = "tag-environnement"
     summary = "Mesurer ses émissions de gaz à effet de serre directes et adopter un plan de transition en conséquence."
