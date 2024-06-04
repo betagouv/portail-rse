@@ -28,7 +28,7 @@ ACTION_CONSULTER = ReglementationAction(
 def test_reglementation_info():
     info = BGESReglementation.info()
 
-    assert info["title"] == "BGES et plan de transition"
+    assert info["title"] == "BEGES et Plan de Transition"
     assert info["more_info_url"] == reverse("reglementations:fiche_bilan_ges")
     assert info["tag"] == "tag-environnement"
     assert (
