@@ -304,6 +304,17 @@ def test_synchronise_une_entreprise_avec_un_utilisateur(
     assert metabase_habilitation.fonctions == "Présidente"
     assert not metabase_habilitation.confirmee_le
 
+    date_confirmation = datetime.now()
+    habilitation.confirmed_at = date_confirmation
+    habilitation.save()
+
+    Command().handle()
+
+    assert MetabaseHabilitation.objects.count() == 1
+    metabase_habilitation = MetabaseHabilitation.objects.first()
+
+    assert metabase_habilitation.confirmee_le.date() == date_confirmation.date()
+
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_les_reglementations_BDESE(
