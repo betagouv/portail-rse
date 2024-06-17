@@ -429,5 +429,5 @@ class CSRDReglementation(Reglementation):
 def csrd(request):
     return render(
         request,
-        "reglementations/espace-csrd.html",
+        "reglementations/espace_csrd/index.html",
     )
