@@ -13,4 +13,4 @@ def test_espace_csrd_is_not_public(client, alice):
     response = client.get(url)
 
     assert response.status_code == 200
-    assert response.templates[0].name == "reglementations/espace-csrd.html"
+    assert response.templates[0].name == "reglementations/espace_csrd/index.html"
