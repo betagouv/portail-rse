@@ -3,7 +3,10 @@ from datetime import timedelta
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.http import Http404
+from django.http import HttpResponse
+from django.template.loader import get_template
+from django.template.loader import TemplateDoesNotExist
 from django.urls import reverse_lazy
 
 from entreprises.models import CaracteristiquesAnnuelles
@@ -426,8 +429,23 @@ class CSRDReglementation(Reglementation):
 
 
 @login_required
-def csrd(request):
-    return render(
-        request,
-        "reglementations/espace_csrd/index.html",
-    )
+def csrd(request, phase=0, etape=0, sous_etape=0):
+    if phase:
+        if etape:
+            if sous_etape:
+                template_name = f"reglementations/espace_csrd/phase{phase}_etape{etape}_{sous_etape}.html"
+            else:
+                template_name = (
+                    f"reglementations/espace_csrd/phase{phase}_etape{etape}.html"
+                )
+        else:
+            template_name = f"reglementations/espace_csrd/phase{phase}.html"
+    else:
+        template_name = "reglementations/espace_csrd/index.html"
+
+    try:
+        template = get_template(template_name)
+    except TemplateDoesNotExist:
+        raise Http404
+
+    return HttpResponse(template.render(request=request))
