@@ -11,6 +11,7 @@ https://portail-rse.beta.gouv.fr
 ### Installation du projet
 
 - Installer [`pipenv`](https://pypi.org/project/pipenv/)
+- Créer le fichier de variable d'environnement `.env` à partir du fichier d'exemple `.env.example`. Si nécessaire, il est possible d'activer l'intégration avec Sentry en local en renseignant la variable d'environnement `SENTRY_DSN`.
 - Installer le projet avec :
 
 ```
@@ -31,8 +32,6 @@ pip install pipenv
 
 
 ### Lancement en local
-
-- Créer le fichier de variable d'environnement `.env` à partir du fichier d'exemple `.env.example`. Si nécessaire, il est possible d'activer l'intégration avec Sentry en local en renseignant la variable d'environnement `SENTRY_DSN`.
 
 - Lancer le projet avec :
 
