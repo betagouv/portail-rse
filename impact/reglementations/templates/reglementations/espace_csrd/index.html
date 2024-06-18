@@ -1,1 +1,84 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block title %}Espace CSRD - Introduction à la CSRD{% endblock %}
+
+{% block content %}
+    <div class="fr-notice fr-notice--info">
+        <div class="fr-container">
+            <div class="fr-notice__body">
+                <p class="fr-notice__title">
+                    Attention :
+                </p>
+                <p>
+                    L’ESRS n’impose pas la manière dont le processus d’évaluation de l’importance relative doit être conçu ou mené par l’entreprise. Lorsque l'entreprise omet un point de données dérivé d'une autre législation de l'UE répertoriée dans l'ESRS 2, annexe B. En effet, aucun processus ne conviendrait à tous les types d’activités économiques, de structure organisationnelle, de localisation des opérations ou de chaînes de valeur en amont et en aval de toutes les entreprises appliquant l’ESRS.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="fr-container fr-py-6w">
+        <div class="fr-grid-row">
+            <div class="fr-col-12 fr-col-md-5">
+                <p class="fr-badge fr-badge--info fr-badge--no-icon fr-badge--sm">Introduction à la CSRD</p>
+                <h1>Réaliser le rapport de durabilité</h1>
+                <p>
+                    <b>
+                        En route pour découvrir et réaliser l’ensemble des démarches de réalisation de votre rapport de durabilité de manière didactique et pédagogique.
+                    </b>
+                </p>
+                <button class="fr-btn">
+                    C'est parti !
+                </button>
+            </div>
+            <div class="fr-col-md-2"></div>
+            <div class="fr-col-12 fr-col-md-5">
+                <div>
+                    <img src="{% static 'img/Container - Image CSRD.png' %}" class="fr-responsive-img" alt="[À MODIFIER | vide ou texte alternatif de l’image]" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="background-light-grey">
+        <div class="fr-container fr-py-8w">
+            <h2>Prérequis</h2>
+            <ul>
+                <li>
+                    Avant de démarrer les démarches, nous vous conseillons de vous acculturer sur le sujet en <br>
+                    Consultant<a href="">la fiche réglementaire de la CSRD</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="fr-container fr-py-8w">
+        <h2>Table des matières</h2>
+        <div class="csrd-steps">
+            <!-- TODO La table des matières en composant custom -->
+        </div>
+    </div>
+
+    <div class="csrd-disclaimer">
+        <div class="fr-container fr-py-8w">
+            <div class="fr-grid-row fr-grid-row--gutters">
+                <div class="fr-col-12 fr-col-md-6">
+                    <p>
+                        <b>Attention : </b>
+                    </p>
+                    <p>
+                        L’ESRS n’impose pas la manière dont le processus d’évaluation de l’importance relative doit être conçu ou mené par l’entreprise.
+                    </p>
+                    <p>
+                        Lorsque l'entreprise omet un point de données dérivé d'une autre législation de l'UE répertoriée dans l'ESRS 2, annexe B.
+                    </p>
+                    <p>
+                        En effet, aucun processus ne conviendrait à tous les types d’activités économiques, de structure organisationnelle, de localisation des opérations ou de chaînes de valeur en amont et en aval de toutes les entreprises appliquant l’ESRS.
+                    </p>
+                </div>
+                <div class="fr-col-12 fr-col-md-6">
+                    <em>
+                        Sources : EFRAG - <a href="">European Sustainability Reporting Guidelines 1 Double materiality conceptual guidelines for standard-setting</a>
+                    </em>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
