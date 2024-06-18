@@ -1,85 +1,91 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="fr-container fr-mt-8w">
-        <div class="fr-grid-row">
+    <div class="fr-container fr-py-8w">
+        <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
             {% include "snippets/csrd_menu.html" %}
-            <div class="fr-col-6">
+            <div class="fr-col-12 fr-col-md-6">
                 <p class="fr-badge fr-badge--info fr-badge--no-icon">Phase n°{% block numero_phase %}X{% endblock %}</p>
                 <h1>{% block titre %}Titre de la phase{% endblock %}</h1>
                 <p>{% block intro %}Lorem ipsum dolor sit amet consectetur. Elit semper bibendum imperdiet pharetra tortor id vulputate venenatis. Nunc fringilla cras elementum donec aliquam vitae integer. In turpis fermentum.{% endblock %}</p>
             </div>
-            <div class="fr-col-6">
-                {% block image %}{% endblock %}
+            <div class="fr-col-12 fr-col-md-6">
+                <div>
+                    <img src="{% block illustration %}{% endblock %}" class="fr-responsive-img" alt="" />
+                </div>
             </div>
         </div>
     </div>
-    <div class="fr-container fr-mt-8w">
-        <h2>Prérequis</h2>
-        <ul>
-            {% block prerequis %}
-                <li>Lorem ipsum dolor sit amet consectetur.</li>
-            {% endblock %}
-        </ul>
+    <div class="background-light-grey">
+        <div class="fr-container fr-py-8w">
+            <h2 class="csrd-title--with-icon csrd-requis">Prérequis</h2>
+            <ul class="csrd-list">
+                {% block prerequis %}
+                    <li>Lorem ipsum dolor sit amet consectetur.</li>
+                {% endblock %}
+            </ul>
+        </div>
     </div>
-    <div class="fr-container fr-mt-8w">
-        <h2>Objectifs</h2>
-        <ul>
+    <div class="fr-container fr-py-8w">
+        <h2 class="csrd-title--with-icon csrd-objectif">Objectifs</h2>
+        <ul class="csrd-list">
             {% block objectifs %}
                 <li>Lorem ipsum dolor sit amet consectetur.</li>
             {% endblock %}
         </ul>
     </div>
-    <div class="fr-container fr-mt-8w">
-        <h2>Étapes à réaliser</h2>
-        <div class="fr-grid-row">
-            {% block etapes %}
-                <div class="fr-col-4 fr-pr-1w">
-                    <div class="fr-tile fr-enlarge-link">
-                        <div class="fr-tile__body">
-                            <div class="fr-tile__content">
-                                <h3 class="fr-tile__title">
-                                    <a href="#">Nom de l'étape</a>
-                                </h3>
-                                <p class="fr-tile__desc">Avec détail ou non</p>
-                                <div class="fr-tile__start">
-                                    <p class="fr-badge fr-badge--info fr-badge--no-icon">label badge</p>
+    <div class="background-light-grey">
+        <div class="fr-container fr-py-8w">
+            <h2>Étapes à réaliser</h2>
+            <div class="fr-grid-row fr-grid-row--gutters">
+                {% block etapes %}
+                    <div class="fr-col-12 fr-col-md-4">
+                        <div class="fr-tile fr-enlarge-link">
+                            <div class="fr-tile__body">
+                                <div class="fr-tile__content">
+                                    <h3 class="fr-tile__title">
+                                        <a href="#">Nom de l'étape</a>
+                                    </h3>
+                                    <p class="fr-tile__desc">Avec détail ou non</p>
+                                    <div class="fr-tile__start">
+                                        <p class="fr-badge fr-badge--info fr-badge--no-icon">étape 1</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="fr-col-4 fr-pr-1w">
-                    <div class="fr-tile fr-enlarge-link">
-                        <div class="fr-tile__body">
-                            <div class="fr-tile__content">
-                                <h3 class="fr-tile__title">
-                                    <a href="#">Nom de l'étape</a>
-                                </h3>
-                                <p class="fr-tile__desc">Avec détail ou non</p>
-                                <div class="fr-tile__start">
-                                    <p class="fr-badge fr-badge--info fr-badge--no-icon">label badge</p>
+                    <div class="fr-col-12 fr-col-md-4">
+                        <div class="fr-tile fr-enlarge-link">
+                            <div class="fr-tile__body">
+                                <div class="fr-tile__content">
+                                    <h3 class="fr-tile__title">
+                                        <a href="#">Nom de l'étape</a>
+                                    </h3>
+                                    <p class="fr-tile__desc">Avec détail ou non</p>
+                                    <div class="fr-tile__start">
+                                        <p class="fr-badge fr-badge--info fr-badge--no-icon">étape 2</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="fr-col-4 fr-pr-1w">
-                    <div class="fr-tile fr-enlarge-link">
-                        <div class="fr-tile__body">
-                            <div class="fr-tile__content">
-                                <h3 class="fr-tile__title">
-                                    <a>Nom de l'étape</a>
-                                </h3>
-                                <p class="fr-tile__desc">En construction</p>
-                                <div class="fr-tile__start">
-                                    <p class="fr-badge fr-badge--no-icon">label badge</p>
+                    <div class="fr-col-12 fr-col-md-4">
+                        <div class="fr-tile fr-enlarge-link">
+                            <div class="fr-tile__body">
+                                <div class="fr-tile__content">
+                                    <h3 class="fr-tile__title">
+                                        <a>Nom de l'étape</a>
+                                    </h3>
+                                    <p class="fr-tile__desc">En construction</p>
+                                    <div class="fr-tile__start">
+                                        <p class="fr-badge fr-badge--no-icon">étape 3</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            {% endblock %}
+                {% endblock %}
+            </div>
         </div>
     </div>
     {% block optionnel %}
@@ -95,6 +101,13 @@
             </div>
             <div class="fr-col-6 fr-pl-2w">
                 <p><small><i>Sources : EFRAG - <a href="https://www.efrag.org/Assets/Download?assetUrl=/sites/webpublishing/SiteAssets/Appendix%202.6%20-%20WP%20on%20draft%20ESRG%201.pdf" target="_blank" rel="noopener">European Sustainability Reporting Guidelines 1 Double materiality conceptual guidelines for standard-setting</a></i></small></p>
+            </div>
+        </div>
+    </div>
+    <div class="csrd-action fr-py-4w">
+        <div class="fr-container">
+            <div class="fr-grid-row fr-grid-row--right">
+                <button class="fr-btn">Continuer vers l'étape 1</button>
             </div>
         </div>
     </div>
