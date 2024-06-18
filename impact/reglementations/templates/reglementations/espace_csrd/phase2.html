@@ -1,1 +1,76 @@
-{% extends "base.html" %}
+{% extends "reglementations/espace_csrd/base_phase.html" %}
+{% load static %}
+
+{% block title %}Phase 2/3 : Collecter les données de son entreprise - CSRD - Portail RSE{% endblock %}
+
+{% block titre %}Collecter les données de son entreprise{% endblock %}
+
+{% block intro %}
+    Savoir comment s'y prendre pas à pas pour mettre en place vos actions de collecte de données de votre entreprise à reporter.
+{% endblock %}
+
+{% block illustration %}
+    {% static 'img/espace_csrd/phase2.png' %}
+{% endblock %}
+
+{% block prerequis %}
+    <li>
+        Avoir déterminé ses enjeux de durabilité matériels dans
+        <a href="{% url 'reglementations:csrd_phase' 1 %}" target="_self">la phase 1</a>
+    </li>
+{% endblock %}
+
+{% block objectifs %}
+    <li>Savoir sur quelles données vous devez reporter</li>
+    <li>Rassembler l'ensemble des données exigées pour constituer votre rapport</li>
+{% endblock %}
+
+{% block etapes %}
+    <div class="fr-col-12 fr-col-md-4">
+        <div class="fr-tile fr-enlarge-link">
+            <div class="fr-tile__body">
+                <div class="fr-tile__content">
+                    <h3 class="fr-tile__title">
+                        <a href="{% url 'reglementations:csrd_etape' 2 1 %}">Analyse de la matérialité des informations élémentaires</a>
+                    </h3>
+                    <p class="fr-tile__desc">(Points de données ou data points)</p>
+                    <div class="fr-tile__start">
+                        <p class="fr-badge fr-badge--info fr-badge--no-icon">étape 1</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="fr-col-12 fr-col-md-4">
+        <div class="fr-tile fr-enlarge-link">
+            <div class="fr-tile__body">
+                <div class="fr-tile__content">
+                    <h3 class="fr-tile__title">
+                        <a>Analyse d'écart</a>
+                    </h3>
+                    <p class="fr-tile__desc">En construction</p>
+                    <div class="fr-tile__start">
+                        <p class="fr-badge fr-badge--no-icon">étape 2</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="fr-col-12 fr-col-md-4">
+        <div class="fr-tile fr-enlarge-link">
+            <div class="fr-tile__body">
+                <div class="fr-tile__content">
+                    <h3 class="fr-tile__title">
+                        <a>Collecte des données manquantes</a>
+                    </h3>
+                    <p class="fr-tile__desc">En construction</p>
+                    <div class="fr-tile__start">
+                        <p class="fr-badge fr-badge--no-icon">étape 3</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block optionnel %}{% endblock %}
