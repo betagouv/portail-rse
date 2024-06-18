@@ -1,1 +1,109 @@
 {% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Espace CSRD - Lister ses enjeux de durabilité à partir de l’ESRS 1 AR16{% endblock %}
+
+{% block content %}
+    <!-- TODO la sidebar repliable -->
+    <div class="fr-container">
+        <button class="fr-btn"  data-fr-opened="false" aria-controls="fr-modal-1">
+            Titre de modale simple
+        </button>
+    </div>
+    <dialog aria-labelledby="fr-modal-title-modal-1" role="dialog" id="fr-modal-1" class="fr-modal--lg fr-modal">
+        <div class="fr-container fr-container--fluid fr-container-md">
+            <div class="fr-grid-row fr-grid-row--center">
+                <div class="fr-col-12 fr-col-md-10 fr-col-lg-10">
+                    <div class="fr-modal__body fr-modal--esrs">
+                        <div class="fr-grid-row">
+                            <div class="fr-col-12 fr-col-lg-6 background-light-grey fr-py-2w">
+                                <div class="fr-modal__content">
+                                    <p class="fr-tag fr-mb-1w">Environnement</p>
+                                    <h4>ESRS E3 - Pollution</h4>
+                                    <div class="fr-tabs">
+                                        <ul class="fr-tabs__list" role="tablist" aria-label="[A modifier | nom du système d'onglet]">
+                                            <li role="presentation">
+                                                <button id="tabpanel-404" class="fr-tabs__tab" tabindex="0" role="tab" aria-selected="true" aria-controls="tabpanel-404-panel">Objectifs</button>
+                                            </li>
+                                            <li role="presentation">
+                                                <button id="tabpanel-405" class="fr-tabs__tab" tabindex="-1" role="tab" aria-selected="false" aria-controls="tabpanel-405-panel">Exigences de publication</button>
+                                            </li>
+                                        </ul>
+                                        <div id="tabpanel-404-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel" aria-labelledby="tabpanel-404" tabindex="0">
+                                            <!-- données de test -->
+                                            <p>Contenu 1</p>
+                                        </div>
+                                        <div id="tabpanel-405-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-405" tabindex="0">
+                                            <!-- données de test -->
+                                            <p>La présente norme a pour objectif de préciser les exigences de publication qui permettront aux utilisateurs de la déclaration relative à la durabilité de comprendre :</p>
+                                            <p>
+                                                <ul>
+                                                    <li>
+                                                        <b>(a) l'influence de l'entreprise sur la pollution de l’air, de l’eau et des sols du fait de ses incidences importantes positives et négatives, réelles ou potentielles ; </b>
+                                                    </li>
+                                                    <li>
+                                                        <b>(b) les actions menées en vue de prévenir ou d'atténuer les incidences négatives importantes, réelles ou potentielles, ou en vue de faire face aux risques et de saisir les opportunités, ainsi que le résultat de ces actions ; </b>
+                                                    </li>
+                                                    <li>
+                                                        <b>(c) les plans et la capacité de l’entreprise à adapter sa stratégie et son modèle économique en vue de la transition vers une économie durable, parallèlement aux besoins en matière de prévention, de réduction et d’élimination de la pollution. L’objectif est de créer un environnement exempt de substances toxiques, sans pollution, notamment pour soutenir le plan d’action de l’UE intitulé « Vers une pollution zéro dans l’air, l’eau et les sols » ; </b>
+                                                    </li>
+                                                    <li>
+                                                        <b>(d) la nature, le type et l’ampleur des risques et opportunités importants de l’entreprise qui sont liés, d'une part, aux incidences et aux dépendances de celle-ci en matière de pollution, ainsi que, d'autre part, à la prévention, au contrôle, à l’élimination ou à la réduction de la pollution, y compris lorsque cela résulte de l’application de la réglementation, et la gestion de l’entreprise en la matière ; et ainsi que </b>
+                                                    </li>
+                                                    <li>
+                                                        <b>(e) les incidences financières sur l’entreprise, à court, moyen et long terme, des risques et opportunités importants découlant des incidences et des dépendances de l'entreprise en matière de pollution</b>
+                                                    </li>
+                                                </ul>
+                                            </p>
+                                            <a href="">En savoir plus sur : ESRS E2 - Pollution</a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="fr-col-12 fr-col-lg-6">
+                                <div class="fr-modal__header">
+                                    <button class="fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="fr-modal-1">Fermer</button>
+                                </div>
+                                <div class="fr-container">
+                                    <div class="fr-grid-row">
+                                        <p>
+                                            <strong>
+                                                Choisissez les questions de durabilité qui ont une incidence réelle et potentielle appliquée à votre entreprise
+                                            </strong>
+                                        </p>
+                                        <ul class="esrs-incidences">
+                                            <li><span class="fr-icon-success-line fr-icon--sm"></span> Pollution de l'air</li>
+                                            <li><span class="fr-icon-success-line fr-icon--sm"></span> Pollution des eaux</li>
+                                            <li><span class="fr-icon-success-line fr-icon--sm"></span> Pollution des sols</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </dialog>
+{% endblock %}
+
+{# <div class="fr-nav">
+    <ul class="fr-nav__list" role="tablist" aria-label="esrs-x-tabs">
+        <li class="fr-nav__item" role="presentation">
+            <button id="tabpanel-404" tabindex="0" role="tab" aria-selected="true" aria-controls="tabpanel-404-panel" class="fr-nav__link">accès direct</button>
+        </li>
+        <li class="fr-nav__item">
+            <button id="tabpanel-405" tabindex="0" role="tab" aria-selected="false" aria-controls="tabpanel-405-panel" class="fr-nav__link">accès test</button>
+        </li>
+    </ul>
+</div>
+<div id="tabpanel-404-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel" aria-labelledby="tabpanel-404" tabindex="0">
+    <!-- données de test -->
+   <p>Contenu 1</p>
+</div>
+<div id="tabpanel-405-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-405" tabindex="0">
+    <!-- données de test -->
+    <p>Contenu 2</p>
+</div> #}
