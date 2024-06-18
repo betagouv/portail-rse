@@ -354,13 +354,20 @@
         }
     }
     .esrs-incidences {
+        width: 100%;
         li {
             line-height: 3rem;
             list-style: none;
+            display: flex;
+            width: 100%;
         }
         .fr-icon--sm, .fr-icon {
             color: var(--background-action-high-blue-france);
             margin-right: .5rem;
+        }
+        .theme {
+            display: block;
+            flex-grow: 1;
         }
     }
 }
