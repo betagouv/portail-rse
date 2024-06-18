@@ -329,12 +329,18 @@
     &::before {
         display: inline-block;
         content:" ";
-        background-image: url("../img/Checklist.png");
         width: 2.5rem;
         height: 2.5rem;
         background-size: contain;
         background-repeat: no-repeat;
         background-position: center;
+        margin-right: .5rem;
+    }
+    &.csrd-requis::before {
+        background-image: url("../img/Checklist.png");
+    }
+    &.csrd-objectif::before {
+        background-image: url("../img/Objectif.png");
     }
 }
 
@@ -354,6 +360,14 @@
             left:0px;
             content:" ";
             display: inline-block;
+        }
+    }
+}
+
+.csrd-tiles {
+    .fr-tile--disabled {
+        .fr-tile__title, .fr-tile__detail {
+            color: var(--text-mention-grey);
         }
     }
 }
@@ -457,6 +471,15 @@
     .csrd-phase-3 .csrd-phase--title::before {
         background-image: url("../img/icon-phase3.png");
     }
+}
+
+/* phase */
+
+.csrd-action {
+    position: sticky;
+    bottom: 0px;
+    width: 100%;
+    background-color: var(--background-default-grey);
 }
 
 /* tableau des ESRS */
