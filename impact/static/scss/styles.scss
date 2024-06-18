@@ -323,6 +323,139 @@
     }
 }
 
+.csrd-title--with-icon {
+    position:relative;
+    vertical-align: text-top;
+    &::before {
+        display: inline-block;
+        content:" ";
+        background-image: url("../img/Checklist.png");
+        width: 2.5rem;
+        height: 2.5rem;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+}
+
+.csrd-list {
+    padding: 0px;;
+    li {
+        list-style: none;
+        padding-left: 2rem;
+        position: relative;
+        &::before {
+            position: absolute;
+            background-image: url("../img/success.svg");
+            background-position: center;
+            background-size: contain;
+            width: 20px;
+            height: 20px;
+            left:0px;
+            content:" ";
+            display: inline-block;
+        }
+    }
+}
+
+.csrd-phases {
+    a:hover {
+        text-decoration: underline;
+    }
+    ul li {
+        list-style: none;
+        position: relative;
+        .fr-icon-arrow-right-line {
+            color: var(--background-action-high-blue-france);
+            position:absolute;
+            right:2rem;
+            top:0px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        ul {
+            padding:0px;
+            margin:0px;
+            li {
+                padding:1rem;
+                padding-left: 5.5rem ;
+                margin:0px;
+                background-color: var(--background-default-grey);
+                font-weight: bold;
+                position:relative;
+                line-height: 2rem;
+                &::before {
+                    position: absolute;
+                    left:1.75rem;
+                    width: 2rem;
+                    height: 2rem;
+                    border:2px solid var(--text-default-grey);
+                    border-radius: 100%;
+                    text-align: center;
+                    line-height: 1.75rem;
+                }
+                &.step-1::before {
+                    content:"1";
+                }
+                &.step-2::before {
+                    content:"2"
+                }
+                &.step-3::before {
+                    content:"3";
+                }
+                &.locked::before {
+                    content:" ";
+                    background-image: url("../img/locked.svg");
+                    background-position: center;
+                    background-size: contain;
+                    background-repeat: no-repeat;
+                    border: none;
+                }
+            }
+        }
+    }
+    .fr-badge {
+        display: block;
+    }
+    .csrd-phase--title {
+        background-color: var(--background-alt-blue-france);
+        font-weight: bold;
+        padding:1rem 1.5rem;
+        padding-left: 5.5rem;
+        position: relative;
+        span {
+            font-size: .875em;
+            font-weight: normal;
+            display: block;
+            color: var(--text-mention-grey);
+            line-height: 31px;
+            text-decoration: none !important;
+        }
+        &::before {
+            content:" ";
+            width: 3.5rem;
+            height: 3.5rem;
+            display: inline-block;
+            position: absolute;
+            left:1rem;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+    }
+    .csrd-phase-1 .csrd-phase--title::before {
+        background-image: url("../img/icon-phase1.png");
+    }
+    .csrd-phase-2 .csrd-phase--title::before {
+        background-image: url("../img/icon-phase2.png");
+    }
+    .csrd-phase-3 .csrd-phase--title::before {
+        background-image: url("../img/icon-phase3.png");
+    }
+}
+
 /* tableau des ESRS */
 
 .rse-organizer-titre {
