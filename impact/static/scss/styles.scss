@@ -312,6 +312,59 @@
 
 /* espace CSRD */
 
+/* modal des ESRS */
+
+.fr-modal--esrs {
+    border-radius:.5rem;
+    .fr-tag {
+        padding:4px 6px !important;
+        color: var(--purple-glycine-main-494);
+        background-color: var(--background-alt-grey) !important;
+        font-weight: 500;
+    }
+    h4 {
+        color: var(--text-default-info);
+    }
+    .fr-tabs {
+        box-shadow: none;
+        border:none;
+    }
+    .fr-tabs::before {
+        box-shadow: none;
+    }
+    .fr-tabs__panel {
+        padding:0px;
+        padding-top: 1rem;
+    }
+    .fr-tabs__list {
+        margin: auto;
+        padding: 0px;
+        min-height: auto;
+        border-bottom: 1px solid var(--border-default-grey);
+        .fr-tabs__tab {
+            margin:0px;
+            background-image: none;
+            background-color: var(--background-alt-grey);
+            font-weight: 400;
+            font-size: .825em;
+            border-bottom: 2px solid var(--background-alt-grey);
+        }
+        .fr-tabs__tab[aria-selected="true"]:not(:disabled) {
+            border-bottom: 2px solid var(--background-action-high-blue-france);
+        }
+    }
+    .esrs-incidences {
+        li {
+            line-height: 3rem;
+            list-style: none;
+        }
+        .fr-icon--sm, .fr-icon {
+            color: var(--background-action-high-blue-france);
+            margin-right: .5rem;
+        }
+    }
+}
+
 /* Table des matières */
 
 .csrd-disclaimer {
