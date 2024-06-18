@@ -448,4 +448,10 @@ def csrd(request, phase=0, etape=0, sous_etape=0):
     except TemplateDoesNotExist:
         raise Http404
 
-    return HttpResponse(template.render(request=request))
+    context = {
+        "phase": phase,
+        "etape": etape,
+        "sous_etape": sous_etape,
+    }
+
+    return HttpResponse(template.render(context, request))
