@@ -312,6 +312,35 @@
 
 /* espace CSRD */
 
+/* sticky menu */
+
+.fr-sidemenu--sticky-full-height {
+    max-width: 388px;
+    position: fixed;
+    background-color: var(--background-default-grey);
+    z-index: 999;
+}
+
+.fr-sidemenu {
+    padding-right: 0px;
+    .sidemenu-border-top {
+        border-top: 1px solid var(--border-default-grey);
+    }
+    .fr-sidemenu__btn {
+        border-bottom: 1px solid var(--border-default-grey);
+    }
+    .fr-sidemenu__inner {
+        padding: 0px 1rem;
+    }
+    .fr-sidemenu__title {
+        color: var(--text-default-info);
+        font-size: 1.5rem;
+        padding:.75rem 1rem;
+        margin:0px;
+    }
+}
+
+
 /* modal des ESRS */
 
 .fr-modal--esrs {
