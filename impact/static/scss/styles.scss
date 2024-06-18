@@ -312,6 +312,19 @@
 
 /* espace CSRD */
 
+/* Table des matières */
+
+.csrd-disclaimer {
+    border-top: 1px solid var(--border-default-grey);
+    color: var(--dark-text-disabled-grey, #666); 
+    a, em {
+        color: var(--dark-text-disabled-grey, #666);
+        font-weight: 300;
+    }
+}
+
+/* tableau des ESRS */
+
 .rse-organizer-titre {
     display: flex;
     flex-flow: wrap;
