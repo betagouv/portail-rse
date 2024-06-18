@@ -335,6 +335,10 @@
     .fr-tabs__panel {
         padding:0px;
         padding-top: 1rem;
+        a {
+            color: var(--text-active-blue-france);
+            text-decoration: underline;
+        }
     }
     .fr-tabs__list {
         margin: auto;
@@ -370,6 +374,7 @@
             flex-grow: 1;
         }
     }
+    
 }
 
 /* Table des matières */
