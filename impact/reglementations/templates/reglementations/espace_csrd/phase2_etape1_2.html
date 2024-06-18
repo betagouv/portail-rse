@@ -1,1 +1,74 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block title %}Phase 2/3 : Collecter les données de son entreprise - CSRD - Portail RSE{% endblock %}
+
+{% block content %}
+    {% include "snippets/csrd_menu.html" %}
+    <div class="fr-container fr-py-6w">
+        <div class="csrd-etape">
+            <p class="fr-badge fr-badge--info fr-badge--no-icon">phase 2</p>
+            <div class="csrd-etape__title">
+                Étape 1 - Analyse de la matérialité des informations élémentaires
+            </div>
+        </div>
+        <h1>Sous étape 2 - Sélection des exigences de publication</h1>
+
+        <p>
+            <b>
+                En vous appuyant sur votre liste de vos enjeux ESG prioritaires (ESRS et leurs questions de durabilité) définis lors l’analyse de double matérialité, sélectionner les exigences de publication que vous souhaitez reporter après avoir lu leurs définition et le processus de décision.
+            </b>
+        </p>
+
+        <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
+            <div class="fr-col-12 fr-col-md-6">
+                <h2>Définition des exigences de publication</h2>
+                <p>
+                    Il existe 4 exigences de publication regroupant les datapoints (Points de donnée à reporter) :
+                </p>
+                <ul>
+                    <li>
+                        <b>Gouvernance</b> (GOV)
+                        <button class="fr-btn--tooltip fr-btn" aria-describedby="tooltip-1">Information contextuelle</button>
+                        <span class="fr-tooltip fr-placement" id="tooltip-1" role="tooltip" aria-hidden="true">Les processus, contrôles et procédures utilisés en matière de gouvernance pour contrôler, gérer et surveiller les incidences, les risques et les opportunités</span>
+                    </li>
+                    <li>
+                        <b>Stratégie</b> (SBM)
+                        <button class="fr-btn--tooltip fr-btn" aria-describedby="tooltip-2">Information contextuelle</button>
+                        <span class="fr-tooltip fr-placement" id="tooltip-2" role="tooltip" aria-hidden="true">La manière dont la stratégie et le modèle économique de l’entreprise influent sur ses incidences, risques et opportunités importants, y compris la manière dont l’entreprise gère ces incidences, ces risques et ces opportunités.</span>
+                    </li>
+                    <li>
+                        <b>Gestion des incidences, des risques et des opportunités</b> (IRO)
+                        <button class="fr-btn--tooltip fr-btn" aria-describedby="tooltip-3">Information contextuelle</button>
+                        <span class="fr-tooltip fr-placement" id="tooltip-3" role="tooltip" aria-hidden="true">
+                            Les processus à l’aide desquels l’entreprise :
+                            <ol>
+                                <li>identifie les incidences, les risques et les opportunités et évalue leur importance,</li>
+                                <li>gère les questions de durabilité importantes au moyen de politiques et d’actions</li>
+                            </ol>
+                        </span>
+                    </li>
+                    <li>
+                        <b>Métriques et cibles</b> (MT)
+                        <button class="fr-btn--tooltip fr-btn" aria-describedby="tooltip-4">Information contextuelle</button>
+                        <span class="fr-tooltip fr-placement" id="tooltip-4" role="tooltip" aria-hidden="true">Les performances de l’entreprise, y compris les cibles qu’elle a fixées et les progrès accomplis dans leur réalisation</span>
+                    </li>
+                </ul>
+                <p>
+                    L’ESRS 2 comprend les exigences de publication minimums en ce qui concerne les politiques (MDR-P) et les actions (MDR-A), les exigences de publication minimums en ce qui concerne les métriques (MDR-M) et les cibles (MDR-T).
+                </p>
+            </div>
+            <div class="fr-col-12 fr-col-md-6">
+                <div>
+                    <img src="{% static 'img/espace_csrd/tableau-exigences-publication.png' %}" class="fr-responsive-img" alt="" />
+                </div>
+            </div>
+        </div>
+
+        <h2>Processus de décision pour sélectionner une exigence de publication</h2>
+        <img src="{% static 'img/espace_csrd/processus-de-decision.png' %}" class="fr-responsive-img" alt="" />
+
+
+        {% include "snippets/csrd_precedent_suivant.html" with phase_precedente=2 etape_precedente=1 sous_etape_precedente=1 phase_suivante=3 etape_suivante=0 sous_etape_suivante=0 %}
+
+{% endblock %}
