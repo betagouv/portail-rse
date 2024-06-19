@@ -68,7 +68,7 @@
                 </a>
               </li>
               <li class="fr-sidemenu__item">
-                {% url 'reglementations:csrd_etape' 2 1 as url_page %}
+                {% url 'reglementations:csrd_sous_etape' 2 1 1 as url_page %}
                 <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if request.path == url_page %} aria-current="page"{% endif %}>
                   Étape 1 - Analyser la matérialité des informations élémentaires
                 </a>
@@ -95,7 +95,7 @@
                 </a>
               </li>
               <li class="fr-sidemenu__item">
-                {% url 'reglementations:csrd_etape' 3 1 as url_page %}
+                {% url 'reglementations:csrd_sous_etape' 3 1 1 as url_page %}
                 <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if request.path == url_page %} aria-current="page"{% endif %}>
                   Étape 1 - Structurer son rapport
                 </a>
