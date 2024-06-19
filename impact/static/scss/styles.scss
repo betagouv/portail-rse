@@ -318,6 +318,7 @@
     top:2rem;
     margin:2rem;
     left:2rem;
+    background: var(--background-default-grey);
 }
 
 .fr-sidemenu--sticky-full-height {
@@ -577,6 +578,7 @@
 
 .csrd-action {
     position: sticky;
+    z-index:40;
     bottom: 0px;
     width: 100%;
     background-color: var(--background-default-grey);
