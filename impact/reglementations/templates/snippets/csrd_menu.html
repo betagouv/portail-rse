@@ -17,7 +17,7 @@
       </div>
       <ul class="fr-sidemenu__list">
         <li class="fr-sidemenu__item">
-          <a class="fr-sidemenu__link sidemenu-border-top" href="{% url 'reglementations:csrd' %}" target="_self">
+          <a class="fr-sidemenu__link sidemenu-border-top" href="{% url 'reglementations:csrd' %}" target="_self" {% if request.path == url_page %} aria-current="page"{% endif %}>
             Introduction à la CSRD
           </a>
         </li>
@@ -29,22 +29,25 @@
           <div class="fr-collapse" id="fr-sidemenu-item-1">
             <ul class="fr-sidemenu__list">
               <li class="fr-sidemenu__item">
-                <a class="fr-sidemenu__link" href="{% url 'reglementations:csrd_etape' 1 0 %}" target="_self">
+                {% url 'reglementations:csrd_etape' 1 0 as url_page %}
+                <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if request.path == url_page %} aria-current="page"{% endif %}>
                   Introduction
                 </a>
               </li>
               <li class="fr-sidemenu__item">
-                <a class="fr-sidemenu__link" href="{% url 'reglementations:csrd_etape' 1 1 %}" target="_self">
+                {% url 'reglementations:csrd_etape' 1 1 as url_page %}
+                <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if request.path == url_page %} aria-current="page"{% endif %}>
                   Étape 1 - Comprendre le contexte
                 </a>
               </li>
               <li class="fr-sidemenu__item">
-                <a class="fr-sidemenu__link" href="{% url 'reglementations:csrd_etape' 1 2 %}" target="_self">
+                {% url 'reglementations:csrd_etape' 1 2 as url_page %}
+                <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if request.path == url_page %} aria-current="page"{% endif %}>
                   Étape 2 - Identifier la liste de ses enjeux ESG potentiels
                 </a>
               </li>
               <li class="fr-sidemenu__item">
-                <a class="fr-sidemenu__link" target="_self">
+                <a class="fr-sidemenu__link fr-sidemenu__link--disabled" target="_self">
                   Étape 3 - Sélectionner ses enjeux ESG matériels (En construction)
                 </a>
               </li>
@@ -59,17 +62,19 @@
           <div class="fr-collapse" id="fr-sidemenu-item-3">
             <ul class="fr-sidemenu__list">
               <li class="fr-sidemenu__item">
-                <a class="fr-sidemenu__link" href="{% url 'reglementations:csrd_etape' 2 0 %}" target="_self">
+                {% url 'reglementations:csrd_etape' 2 0 as url_page %}
+                <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if request.path == url_page %} aria-current="page"{% endif %}>
                   Introduction
                 </a>
               </li>
               <li class="fr-sidemenu__item">
-                <a class="fr-sidemenu__link" href="{% url 'reglementations:csrd_etape' 2 1 %}" target="_self">
+                {% url 'reglementations:csrd_etape' 2 1 as url_page %}
+                <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if request.path == url_page %} aria-current="page"{% endif %}>
                   Étape 1 - Analyser la matérialité des informations élémentaires
                 </a>
               </li>
               <li class="fr-sidemenu__item">
-                <a class="fr-sidemenu__link" target="_self">
+                <a class="fr-sidemenu__link fr-sidemenu__link--disabled" target="_self">
                   Étape 2 - Réaliser une analyse d’écart (En construction)
                 </a>
               </li>
@@ -84,22 +89,24 @@
           <div class="fr-collapse" id="fr-sidemenu-item-2">
             <ul class="fr-sidemenu__list">
               <li class="fr-sidemenu__item">
-                <a class="fr-sidemenu__link" href="{% url 'reglementations:csrd_etape' 3 0 %}" target="_self">
+                {% url 'reglementations:csrd_etape' 3 0 as url_page %}
+                <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if request.path == url_page %} aria-current="page"{% endif %}>
                   Introduction
                 </a>
               </li>
               <li class="fr-sidemenu__item">
-                <a class="fr-sidemenu__link" href="{% url 'reglementations:csrd_etape' 3 1 %}" target="_self">
+                {% url 'reglementations:csrd_etape' 3 1 as url_page %}
+                <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if request.path == url_page %} aria-current="page"{% endif %}>
                   Étape 1 - Structurer son rapport
                 </a>
               </li>
               <li class="fr-sidemenu__item">
-                <a class="fr-sidemenu__link" target="_self">
+                <a class="fr-sidemenu__link fr-sidemenu__link--disabled" target="_self">
                   Étape 2 - Valider son rapport (En construction)
                 </a>
               </li>
               <li class="fr-sidemenu__item">
-                <a class="fr-sidemenu__link" target="_self">
+                <a class="fr-sidemenu__link fr-sidemenu__link--disabled" target="_self">
                   Étape 3 - Publier son rapport (En construction)
                 </a>
               </li>
