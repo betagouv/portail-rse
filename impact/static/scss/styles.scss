@@ -14,6 +14,8 @@
     --blue-france-sun-113-625-inverted: #8585f6;
     --blue-france-sun-113-625-hover-inverted: #b1b1f9;
     --blue-france-sun-113-625-active-inverted: #c6c6fb;
+    /* container size */
+    --csrd-width: 800px;
 }
 
 :root[data-fr-theme=dark] {
@@ -312,6 +314,26 @@
 
 /* espace CSRD */
 
+.csrd-etape__title {
+    font-size: 1.5rem;
+    color: var(--text-active-blue-france);
+    font-weight: 700;
+    padding: .25rem 0px;
+}
+
+.csrd--width {
+    max-width: var(--csrd-width);
+}
+
+.csrd-header {
+    margin-top: -7rem;
+    h1 {
+        color: var(--text-active-blue-france);
+        font-size: 2rem;
+        line-height: 1.2em;
+    }
+}
+
 /* sticky menu */
 #csrd-menu {
     position: sticky;
@@ -348,10 +370,6 @@
     .fr-sidemenu__link--disabled {
         color: var(--dark-text-disabled-grey, #666); 
     }
-}
-
-.csrd-header {
-    margin-top: -4rem;
 }
 
 /* modal des ESRS */
@@ -452,11 +470,13 @@
 }
 
 .csrd-list {
-    padding: 0px;;
+    padding: 0px;
+    width: 100%;
     li {
         list-style: none;
         padding-left: 2rem;
         position: relative;
+        font-weight: bold;
         &::before {
             position: absolute;
             background-image: url("../img/success.svg");
