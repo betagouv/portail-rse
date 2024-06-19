@@ -345,6 +345,9 @@
         padding:.75rem 1rem;
         margin:0px;
     }
+    .fr-sidemenu__link--disabled {
+        color: var(--dark-text-disabled-grey, #666); 
+    }
 }
 
 
