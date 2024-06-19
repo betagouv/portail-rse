@@ -626,9 +626,10 @@
     border-radius: .25rem;
     padding: .5rem 1rem;
     padding-bottom: 1rem;
+    background-color: var(--background-alt-grey);
 }
 
-.rse-organizer--header {
+.rse-organizer--header, .rse-organizer--card-title {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -640,6 +641,7 @@
     font-weight: 700;
     line-height: 1.5rem;
     margin-bottom:  .5rem;
+    color: var(--text-mention-grey);
 }
 
 .rse-organizer--content {
