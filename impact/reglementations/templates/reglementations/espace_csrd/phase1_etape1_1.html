@@ -4,24 +4,26 @@
 
 {% block content %}
     {% include "snippets/csrd_menu.html" %}
-    <div class="fr-container fr-py-6w">
-        <div class="csrd-etape">
-            <p class="fr-badge fr-badge--info fr-badge--no-icon">phase 1</p>
-            <div class="csrd-etape__title">
-                Étape 1 - Comprendre le contexte (1/3)
+    <div class="fr-container fr-py-6w csrd-header">
+        <div class="csrd--width">
+            <div class="csrd-etape">
+                <p class="fr-badge fr-badge--info fr-badge--no-icon">phase 1</p>
+                <div class="csrd-etape__title fr-mb-10v">
+                    Étape 1 - Comprendre le contexte (1/3)
+                </div>
             </div>
+            <h1>Sous étape 1 : Activités et relations d'affaires</h1>
+            <h2>Quoi faire ?</h2>
+            <p class="csrd--width">
+                Vérifier les aspects pris en compte en ce qui concerne les activités et les relations d'affaires rapportés à ceux indiqués dans la norme ESRS 2 SBM-1 , tels que :
+                <ul>
+                    <li>L'analyse du plan d'affaires, de la stratégie, des états financiers et, le cas échéant, des autres informations fournies aux investisseurs de l'entreprise le cas échéant, d'autres informations fournies aux investisseurs ;</li>
+                    <li>Les activités, produits/services de l'entreprise et la localisation géographique de ces activités ;</li>
+                    <li>La cartographie des relations d'affaires de l'entreprise et de la chaîne de valeur en amont et/ou en aval, y compris le type et la nature des relations d'affaires ;</li>
+                    <li>L'identification du périmètre des informations à communiquer au-delà de ses propres activités : l'élargissement du périmètre pour refléter les impacts, les risques et les opportunités découlant des relations d'affaires en amont/en aval de la chaîne de valeur.</li>
+                </ul>
+            </p>
         </div>
-        <h1>Sous étape 1 : Activités et relations d'affaires</h1>
-        <h2>Quoi faire ?</h2>
-        <p>
-            Vérifier les aspects pris en compte en ce qui concerne les activités et les relations d'affaires rapportés à ceux indiqués dans la norme ESRS 2 SBM-1 , tels que :
-            <ul class="csrd-list">
-                <li>L'analyse du plan d'affaires, de la stratégie, des états financiers et, le cas échéant, des autres informations fournies aux investisseurs de l'entreprise le cas échéant, d'autres informations fournies aux investisseurs ;</li>
-                <li>Les activités, produits/services de l'entreprise et la localisation géographique de ces activités ;</li>
-                <li>La cartographie des relations d'affaires de l'entreprise et de la chaîne de valeur en amont et/ou en aval, y compris le type et la nature des relations d'affaires ;</li>
-                <li>L'identification du périmètre des informations à communiquer au-delà de ses propres activités : l'élargissement du périmètre pour refléter les impacts, les risques et les opportunités découlant des relations d'affaires en amont/en aval de la chaîne de valeur.</li>
-            </ul>
-        </p>
     </div>
     {% include "snippets/csrd_precedent_suivant.html" with phase_precedente=1 etape_precedente=1 sous_etape_precedente=0 phase_suivante=1 etape_suivante=1 sous_etape_suivante=2 %}
 {% endblock %}
