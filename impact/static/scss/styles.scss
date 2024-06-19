@@ -313,6 +313,12 @@
 /* espace CSRD */
 
 /* sticky menu */
+#csrd-menu {
+    position: sticky;
+    top:2rem;
+    margin:2rem;
+    left:2rem;
+}
 
 .fr-sidemenu--sticky-full-height {
     max-width: 388px;
