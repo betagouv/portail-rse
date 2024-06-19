@@ -1,1 +1,40 @@
 {% extends "base.html" %}
+
+{% block title %}Étape 1/3 : Parties prenantes affectées - CSRD - Portail RSE{% endblock %}
+
+{% block content %}
+    {% include "snippets/csrd_menu.html" %}
+    <div class="fr-container fr-py-6w">
+        <div class="csrd-etape">
+            <p class="fr-badge fr-badge--info fr-badge--no-icon">phase 1</p>
+            <div class="csrd-etape__title">
+                Étape 1 - Comprendre le contexte (3/3)
+            </div>
+        </div>
+        <h1>Sous étape 3 : Parties prenantes affectées</h1>
+        <h2>Quoi faire ?</h2>
+        <ul class="csrd-list">
+            <li>Déterminer quelles sont vos parties prenantes.</li>
+            <li>
+                Consulter les parties prenantes concernées et intégrer leurs points de vue dans le processus d’évaluation de l’importance relative aide l’entreprise à étayer les points de vue des groupes concernés pour déterminer dans quelle mesure les questions de durabilité sont pertinentes pour elles.
+                Par exemple, dialoguer avec les salariés de l'entreprise ou leurs représentants sur les questions de santé et de sécurité. Cela inclut les commentaires reçus des parties prenantes dans le cadre de son engagement continu avec elles dans le cadre des pratiques commerciales de l'entreprise.
+            </li>
+            <li>Coopérer avec vos parties prenantes dans les procédures d’identification et d’évaluation des incidences négatives, réelles et potentielles, qui contribuent à leur tour à la procédure d’évaluation qui vise à identifier les incidences importantes aux fins de l’information en matière de durabilité.</li>
+        </ul>
+        <h2>Qui sont mes parties prenantes ?</h2>
+        <p>
+            Deux principaux groupes de parties prenantes peuvent être identifiés :
+            <ul>
+                <li>
+                    <strong>Parties prenantes concernées</strong> :
+                    parties prenantes qui peuvent être impactées positivement ou négativement par les activités de l'entreprise et par l'intermédiaire de sa chaîne de valeur, et,
+                </li>
+                <li>
+                    <strong>Les utilisateurs des déclarations relatives à la durabilité</strong> :
+                    les principaux utilisateurs des informations financières à usage général (investisseurs existants et potentiels, prêteurs et autres créanciers, y compris les gestionnaires d’actifs, les établissements de crédit ou les entreprises d’assurance) ainsi que les autres utilisateurs des déclarations relatives à la durabilité, y compris des partenaires commerciaux, des syndicats et des partenaires sociaux de l’entreprise, des organisations de la société civile et des organisations non gouvernementales, des pouvoirs publics, des analystes et des chercheurs.
+                </li>
+            </ul>
+        </p>
+    </div>
+    {% include "snippets/csrd_precedent_suivant.html" with phase_precedente=1 etape_precedente=1 sous_etape_precedente=2  phase_suivante=1 etape_suivante=2 sous_etape_suivante=0  %}
+{% endblock %}
