@@ -4,22 +4,24 @@
 
 {% block content %}
     {% include "snippets/csrd_menu.html" %}
-    <div class="fr-container fr-py-6w">
-        <div class="csrd-etape">
-            <p class="fr-badge fr-badge--info fr-badge--no-icon">phase 1</p>
-            <div class="csrd-etape__title">
-                Étape 1 - Comprendre le contexte (2/3)
+    <div class="fr-container fr-py-6w csrd-header">
+        <div class="csrd--width">
+            <div class="csrd-etape">
+                <p class="fr-badge fr-badge--info fr-badge--no-icon">phase 1</p>
+                <div class="csrd-etape__title fr-mb-10v">
+                    Étape 1 - Comprendre le contexte (2/3)
+                </div>
             </div>
+            <h1>Sous étape 2 : Contexte réglementaire et benchmark des pairs</h1>
+            <h2>Quoi faire ?</h2>
+            <p>
+                Vérifier les autres facteurs qui peuvent vous aider à identifier des sources particulières d'impacts, de risques et d'opportunités, tels que :
+                <ul class="csrd-list">
+                    <li>L'analyse du cadre juridique et réglementaire pertinent de l'entreprise ; et</li>
+                    <li>L'analyse des documents publiés, tels que les rapports des médias, l'analyse des pairs, les références sectorielles existantes, d'autres publications sur les tendances générales en matière de développement durable et les articles scientifiques.</li>
+                </ul>
+            </p>
         </div>
-        <h1>Sous étape 2 : Contexte réglementaire et benchmark des pairs</h1>
-        <h2>Quoi faire ?</h2>
-        <p>
-            Vérifier les autres facteurs qui peuvent vous aider à identifier des sources particulières d'impacts, de risques et d'opportunités, tels que :
-            <ul class="csrd-list">
-                <li>L'analyse du cadre juridique et réglementaire pertinent de l'entreprise ; et</li>
-                <li>L'analyse des documents publiés, tels que les rapports des médias, l'analyse des pairs, les références sectorielles existantes, d'autres publications sur les tendances générales en matière de développement durable et les articles scientifiques.</li>
-            </ul>
-        </p>
     </div>
     {% include "snippets/csrd_precedent_suivant.html" with phase_precedente=1 etape_precedente=1 sous_etape_precedente=1 phase_suivante=1 etape_suivante=1 sous_etape_suivante=3 %}
 {% endblock %}
