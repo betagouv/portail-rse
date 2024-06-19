@@ -1,129 +1,113 @@
-<button
-  class="fr-btn fr-btn--secondary"
-  aria-expanded="true"
-  aria-controls="fr-sidemenu-csrd"
->
+<button class="fr-btn fr-btn--secondary" aria-expanded="true" aria-controls="fr-sidemenu-csrd">
   Menu
 </button>
 <nav class="fr-sidemenu fr-sidemenu--sticky-full-height fr-collapse" role="navigation" aria-labelledby="fr-sidemenu-title" id="fr-sidemenu-csrd">
   <div class="fr-sidemenu__inner">
-    <button
-      class="fr-sidemenu__btn"
-      aria-controls="fr-sidemenu-wrapper"
-      aria-expanded="false"
-    >
+    <button class="fr-sidemenu__btn" aria-controls="fr-sidemenu-wrapper" aria-expanded="false">
       Dans cette rubrique
     </button>
     <div class="fr-collapse" id="fr-sidemenu-wrapper">
       <div class="fr-sidemenu__header fr-pt-1w">
-        <button class="fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="fr-sidemenu-csrd">Fermer</button>
+        <button class="fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="fr-sidemenu-csrd">
+          Fermer
+        </button>
       </div>
-      <div class="fr-sidemenu__title" id="fr-sidemenu-title">Table des matières</div>
+      <div class="fr-sidemenu__title" id="fr-sidemenu-title">
+        Table des matières
+      </div>
       <ul class="fr-sidemenu__list">
         <li class="fr-sidemenu__item">
-          <a class="fr-sidemenu__link sidemenu-border-top" href="{% url 'reglementations:csrd' %}" target="_self"
-          >Introduction à la CSRD</a
-            >
-          </li>
-          <!-- Phase 1 -->
-          <li class="fr-sidemenu__item">
-            <button
-              class="fr-sidemenu__btn sidemenu-border-top"
-              aria-expanded="false"
-              aria-controls="fr-sidemenu-item-1"
-            >
-              Phase 1 - Analyser sa double matérialité
-            </button>
-            <div class="fr-collapse" id="fr-sidemenu-item-1">
-              <ul class="fr-sidemenu__list">
-                <li class="fr-sidemenu__item">
-                  <a class="fr-sidemenu__link" href="{% url 'reglementations:csrd_etape' 1 0 %}" target="_self"
-                  >Introduction</a
-                    >
-                  </li>
-                  <li class="fr-sidemenu__item">
-                    <a class="fr-sidemenu__link" href="{% url 'reglementations:csrd_etape' 1 1 %}" target="_self"
-                    >Étape 1 - Comprendre le contexte</a
-                      >
-                    </li>
-                    <li class="fr-sidemenu__item">
-                      <a class="fr-sidemenu__link" href="{% url 'reglementations:csrd_etape' 1 2 %}" target="_self"
-                      >Étape 2 - Identifier la liste de ses enjeux ESG potentiels</a
-                        >
-                      </li>
-                      <li class="fr-sidemenu__item">
-                        <a class="fr-sidemenu__link" target="_self"
-                        >Étape 3 - Sélectionner ses enjeux ESG matériels (En construction)</a
-                          >
-                        </li>
-                      </ul>
-                    </div>
-                  </li>
-          <!-- Phase 2 -->
-                  <li class="fr-sidemenu__item">
-                    <button
-                      class="fr-sidemenu__btn"
-                      aria-expanded="false"
-                      aria-controls="fr-sidemenu-item-3"
-                    >
-                      Phase 2 - Collecter les données de son entreprise
-                    </button>
-                    <div class="fr-collapse" id="fr-sidemenu-item-3">
-                      <ul class="fr-sidemenu__list">
-                        <li class="fr-sidemenu__item">
-                          <a class="fr-sidemenu__link" href="{% url 'reglementations:csrd_etape' 2 0 %}" target="_self"
-                          >Introduction</a
-                            >
-                          </li>
-                          <li class="fr-sidemenu__item">
-                            <a class="fr-sidemenu__link" href="{% url 'reglementations:csrd_etape' 2 1 %}" target="_self"
-                            >Étape 1 - Analyser la matérialité des informations élémentaires</a
-                              >
-                            </li>
-                            <li class="fr-sidemenu__item">
-                              <a class="fr-sidemenu__link" target="_self"
-                              >Étape 2 - Réaliser une analyse d’écart (En construction)</a
-                                >
-                              </li>
-                            </ul>
-                          </div>
-                        </li>
-          <!-- Phase 3 -->
-                        <li class="fr-sidemenu__item">
-                          <button
-                            class="fr-sidemenu__btn"
-                            aria-expanded="false"
-                            aria-controls="fr-sidemenu-item-2"
-                          >
-                            Phase 3 - Rédiger son rapport de durabilité
-                          </button>
-                          <div class="fr-collapse" id="fr-sidemenu-item-2">
-                            <ul class="fr-sidemenu__list">
-                              <li class="fr-sidemenu__item">
-                                <a class="fr-sidemenu__link" href="{% url 'reglementations:csrd_etape' 3 0 %}" target="_self"
-                                >Introduction</a
-                                  >
-                                </li>
-                                <li class="fr-sidemenu__item">
-                                  <a class="fr-sidemenu__link" href="{% url 'reglementations:csrd_etape' 3 1 %}" target="_self"
-                                  >Étape 1 - Structurer son rapport</a
-                                    >
-                                  </li>
-                                  <li class="fr-sidemenu__item">
-                                    <a class="fr-sidemenu__link" target="_self"
-                                    >Étape 2 - Valider son rapport (En construction)</a
-                                      >
-                                    </li>
-                                    <li class="fr-sidemenu__item">
-                                      <a class="fr-sidemenu__link" target="_self"
-                                      >Étape 3 - Publier son rapport (En construction)</a
-                                        >
-                                      </li>
-                                    </ul>
-                                  </div>
-                                </li>
+          <a class="fr-sidemenu__link sidemenu-border-top" href="{% url 'reglementations:csrd' %}" target="_self">
+            Introduction à la CSRD
+          </a>
+        </li>
+        <!-- Phase 1 -->
+        <li class="fr-sidemenu__item">
+          <button class="fr-sidemenu__btn sidemenu-border-top" aria-expanded="false" aria-controls="fr-sidemenu-item-1">
+            Phase 1 - Analyser sa double matérialité
+          </button>
+          <div class="fr-collapse" id="fr-sidemenu-item-1">
+            <ul class="fr-sidemenu__list">
+              <li class="fr-sidemenu__item">
+                <a class="fr-sidemenu__link" href="{% url 'reglementations:csrd_etape' 1 0 %}" target="_self">
+                  Introduction
+                </a>
+              </li>
+              <li class="fr-sidemenu__item">
+                <a class="fr-sidemenu__link" href="{% url 'reglementations:csrd_etape' 1 1 %}" target="_self">
+                  Étape 1 - Comprendre le contexte
+                </a>
+              </li>
+              <li class="fr-sidemenu__item">
+                <a class="fr-sidemenu__link" href="{% url 'reglementations:csrd_etape' 1 2 %}" target="_self">
+                  Étape 2 - Identifier la liste de ses enjeux ESG potentiels
+                </a>
+              </li>
+              <li class="fr-sidemenu__item">
+                <a class="fr-sidemenu__link" target="_self">
+                  Étape 3 - Sélectionner ses enjeux ESG matériels (En construction)
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <!-- Phase 2 -->
+        <li class="fr-sidemenu__item">
+          <button class="fr-sidemenu__btn" aria-expanded="false" aria-controls="fr-sidemenu-item-3">
+            Phase 2 - Collecter les données de son entreprise
+          </button>
+          <div class="fr-collapse" id="fr-sidemenu-item-3">
+            <ul class="fr-sidemenu__list">
+              <li class="fr-sidemenu__item">
+                <a class="fr-sidemenu__link" href="{% url 'reglementations:csrd_etape' 2 0 %}" target="_self">
+                  Introduction
+                </a>
+              </li>
+              <li class="fr-sidemenu__item">
+                <a class="fr-sidemenu__link" href="{% url 'reglementations:csrd_etape' 2 1 %}" target="_self">
+                  Étape 1 - Analyser la matérialité des informations élémentaires
+                </a>
+              </li>
+              <li class="fr-sidemenu__item">
+                <a class="fr-sidemenu__link" target="_self">
+                  Étape 2 - Réaliser une analyse d’écart (En construction)
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <!-- Phase 3 -->
+        <li class="fr-sidemenu__item">
+          <button class="fr-sidemenu__btn" aria-expanded="false" aria-controls="fr-sidemenu-item-2">
+            Phase 3 - Rédiger son rapport de durabilité
+          </button>
+          <div class="fr-collapse" id="fr-sidemenu-item-2">
+            <ul class="fr-sidemenu__list">
+              <li class="fr-sidemenu__item">
+                <a class="fr-sidemenu__link" href="{% url 'reglementations:csrd_etape' 3 0 %}" target="_self">
+                  Introduction
+                </a>
+              </li>
+              <li class="fr-sidemenu__item">
+                <a class="fr-sidemenu__link" href="{% url 'reglementations:csrd_etape' 3 1 %}" target="_self">
+                  Étape 1 - Structurer son rapport
+                </a>
+              </li>
+              <li class="fr-sidemenu__item">
+                <a class="fr-sidemenu__link" target="_self">
+                  Étape 2 - Valider son rapport (En construction)
+                </a>
+              </li>
+              <li class="fr-sidemenu__item">
+                <a class="fr-sidemenu__link" target="_self">
+                  Étape 3 - Publier son rapport (En construction)
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
           <!-- fin -->
-                              </ul>
-                            </div>
-                          </div>
-                        </nav>
+      </ul>
+    </div>
+  </div>
+</nav>
