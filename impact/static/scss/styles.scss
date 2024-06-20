@@ -681,6 +681,13 @@
     background-color: var(--background-default-grey);
 }
 
+.fr-content-media__caption {
+    flex-direction: row;
+    a {
+        display: inline-block;
+    }
+}
+
 /* tableau des ESRS */
 
 .rse-organizer-titre {

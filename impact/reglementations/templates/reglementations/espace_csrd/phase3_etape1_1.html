@@ -5,18 +5,22 @@
 
 {% block content %}
     {% include "snippets/csrd_menu.html" %}
-    <div class="fr-container fr-py-6w">
-        <div class="csrd-etape">
+    <div class="fr-container fr-pt-6w csrd-header">
+        <div class="csrd-etape csrd--width">
             <p class="fr-badge fr-badge--info fr-badge--no-icon">phase 3</p>
             <div class="csrd-etape__title">
                 Étape 1 - Structurer son rapport
             </div>
+            <h1>Sous étape 1 : Se référer à un modèle de rapport</h1>
         </div>
-        <h1>Sous étape 1 : Se référer à un modèle de rapport</h1>
-        <ul class="csrd-list">
-            <li>Appuyez-vous sur l’exemple de structure de rapport pour réaliser un premier plan et draft de votre rapport.</li>
-        </ul>
-        <h2>Exemple de structure de rapport</h2>
+    </div>
+    <div class="fr-container">
+        <div class="csrd--width">
+            <ul class="csrd-list">
+                <li>Appuyez-vous sur l’exemple de structure de rapport pour réaliser un premier plan et draft de votre rapport.</li>
+            </ul>
+            <h2>Exemple de structure de rapport</h2>
+        </div>
         <figure class="fr-content-media" role="group" aria-label="Source : CSRD - Appendice F: Exemple de structure de la déclaration ESRS relative à la durabilité (p41)">
             <div class="fr-content-media__img">
                 <img class="fr-responsive-img fr-ratio-32x9" src="{% static 'img/espace_csrd/structure-rapport.png' %}" alt="[À MODIFIER - vide ou texte alternatif de l’image]" />
