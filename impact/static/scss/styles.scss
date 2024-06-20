@@ -472,11 +472,17 @@
 .csrd-list {
     padding: 0px;
     width: 100%;
+    &.csrd-list--bold {
+        font-weight: bold;
+    }
     li {
         list-style: none;
         padding-left: 2rem;
         position: relative;
-        font-weight: bold;
+        margin-bottom: 1rem;
+        a {
+            color: var(--text-active-blue-france);
+        }
         &::before {
             position: absolute;
             background-image: url("../img/success.svg");
@@ -598,6 +604,10 @@
     .csrd-phase-3 .csrd-phase--title::before {
         background-image: url("../img/icon-phase3.png");
     }
+}
+
+.fr-icon--blue {
+    color:var(--text-active-blue-france);
 }
 
 /* phase */
