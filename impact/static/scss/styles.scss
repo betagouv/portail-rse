@@ -488,6 +488,16 @@
     
 }
 
+.csrd-standards {
+    .fr-card__img {
+        background-color: var(--background-alt-blue-france);
+        padding: 1rem;
+        img {
+            object-fit: contain;
+        }
+    }
+}
+
 /* Table des matières */
 
 .csrd-disclaimer {
