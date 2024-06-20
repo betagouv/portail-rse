@@ -372,6 +372,57 @@
     }
 }
 
+/* ESRS */
+
+.rse-organizer--in-espace-csrd {
+    .rse-organizer--card-title {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto;
+        .fr-badge {
+            grid-column: 1/2;
+            grid-row: 1/2;
+            height: min-content;
+        }
+        b {
+            display: block;
+            grid-column: 1/2;
+            grid-row: 2;
+        }
+        .fr-btn {
+            grid-column: 2/3;
+            grid-row: 1;
+            margin-top: 0px !important;
+        }
+    }
+    .rse-organizer--title {
+        display: inline-flex;
+    }
+    .rse-organizer--title:not(.rse-organizer--general):before {
+        content:" ";
+        width: 1.5rem;
+        height: 1.5rem;
+        display: inline-block;
+        margin-right: .5rem;
+        background: center no-repeat;
+    }
+    .rse-organizer--env {
+        .rse-organizer--title::before {
+            background-image: url("../img/espace_csrd/picto-env.png");
+        }
+    }
+    .rse-organizer--social {
+        .rse-organizer--title::before {
+            background-image: url("../img/espace_csrd/picto-social.png");
+        }
+    }
+    .rse-organizer--gov {
+        .rse-organizer--title::before {
+            background-image: url("../img/espace_csrd/picto-gov.png");
+        }
+    }
+}
+
 /* modal des ESRS */
 
 .fr-modal--esrs {
