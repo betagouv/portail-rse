@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Bilan GES - Portail RSE{% endblock %}
+{% block title %}Bilan EGES - Portail RSE{% endblock %}
 
 {% block content %}
     <div class="fr-container">
@@ -25,7 +25,7 @@
                         <h2 class="fr-mb-1v">Bilan EGES et Plan de Transition</h2>
                         <p class="fr-text--xs">Dernière mise à jour le 03/11/2023</p>
                         <p>
-                            Le bilan de gaz à effet de serre (BGES) s'inscrit dans une politique de stratégie bas carbone. Les acteurs privés comme publics doivent mesurer l'émissions de gaz à effet de serre directes et indirectes découlant de leurs activités afin de construire et mettre en œuvre un plan de transition envisagé pour réduire leurs émissions.
+                            Le Bilan des Emissions de Gaz à Effet de Serre (BEGES) s'inscrit dans une politique de stratégie bas carbone. Les acteurs privés comme publics doivent mesurer les émissions de gaz à effet de serre directes et indirectes découlant de leurs activités afin de construire et mettre en œuvre un plan de transition envisagé pour réduire leurs émissions.
                         </p>
                         {% if not user.is_authenticated %}
                             <a class="fr-btn" href="{% url 'simulation' %}?mtm_campaign=simulation-fiche-bilan-ges&mtm_kwd=corps-page">Vérifier mes obligations en 30 sec</a>
@@ -45,7 +45,7 @@
                                 <h3 class="fr-tile__title">
                                     A quelle fréquence dois-je mettre à jour ce dispositif ?
                                 </h3>
-                                <p class="fr-tile__detail">Le Bilan et le plan de transition sont mis à jour tous les  les 4 ans</p>
+                                <p class="fr-tile__detail">Le BEGES et le Plan de Transition sont mis à jour tous les  les 4 ans pour les entreprises de droit privé et tous les 3 ans pour les personnes morales de droit public. </p>
                             </div>
                         </div>
                         <div class="fr-tile__header">
@@ -80,9 +80,10 @@
                                     Qui sont les destinataires / bénéficiaires du dispositif ?
                                 </h3>
                                 <p class="fr-tile__detail">
-                                    - Le grand public <br>
-                                    - Le ministre chargé de l'environnement <br>
-                                    - L'Agence de l'environnement et de la maîtrise de l'énergie (l'ADEME)
+                                    Les destinaires du BEGES et du Plan de Transition sont: <br>
+                                    - Le grand public; <br>
+                                    - Le Ministre de la Transition écologique et de la Cohésion des territoires; <br>
+                                    - L'Agence de l'Environnement et de la Maîtrise de l'Energie. (ADEME)
                                 </p>
                             </div>
                         </div>
@@ -101,7 +102,7 @@
                                     Quelles entreprises sont concernées ?
                                 </h3>
                                 <p class="fr-tile__detail">
-                                    Toute entreprise ayant son siège social en France ou y disposant d'un ou plusieurs établissements stables qui présente: <br>
+                                    Toute entreprise ayant son siège social en France ou y disposant d'un ou plusieurs établissements stables qui présente: <br> <br>
                                     - soit un effectif en équivalent temps plein supérieur ou égal à 500   ; ou<br>
                                     - soit un effectif en équivalent temps plein supérieur ou égal  à 250 dans les régions et départements d'outre-mer.
                                 </p>
@@ -122,7 +123,7 @@
                                     Que dois-je faire pour me mettre en conformité ?
                                 </h3>
                                 <p class="fr-tile__detail">
-                                    Établir un bilan des émissions de gaz à effet de serre fournissant une évaluation du volume d'émissions directes et indirectes de gaz à effet de serre produit par les activités exercées.
+                                    L'entreprise ou la persnone morale de droit public doit établir un bilan des émissions de gaz à effet de serre fournissant une évaluation du volume d'émissions directes et indirectes de gaz à effet de serre produit par les activités exercées.
                                     <br>
                                     Joindre à ce bilan un plan de transition décrivant les actions et moyens mis en œuvre au cours des années suivant le bilan précédant ainsi que les résultats obtenus.
                                     <b></b>
