@@ -1,1 +1,93 @@
 {% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}Espace CSRD - Découvrez les standards internationaux pour compléter votre liste{% endblock %}
+
+{% block content %}
+    {% include "snippets/csrd_menu.html" %}
+    <div class="fr-container fr-py-6w csrd-header">
+        <div class="csrd--width">
+            <div class="csrd-etape">
+                <p class="fr-badge fr-badge--info fr-badge--no-icon">phase 1</p>
+                <div class="csrd-etape__title fr-mb-10v">
+                    Étape 2 - Identifier la liste des enjeux ESG potentiels
+                </div>
+            </div>
+            <h1>Sous étape 2 : Découvrez les standards internationaux pour compléter votre liste</h1>
+            <ul class="csrd-list csrd-list--bold">
+                <li>Comparer les questions de durabilité sélectionnées avec les standards internationaux liés à votre secteur d’activité pour affiner vos choix.</li>
+            </ul>
+            <div class="background-light-grey fr-p-3w fr-mt-6w">
+                <h6><span class="fr-icon-lightbulb-fill fr-icon--blue"></span> Secteur principal de mon entreprise </h6>
+                <p>
+                    <p class="fr-badge fr-badge--lg fr-badge--info fr-badge--no-icon">01.1 - Cultures non permanente</p>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="fr-container fr-pb-8w csrd-standards">
+        <div class="fr-grid-row fr-grid-row--gutters">
+            <!-- Carte MSCI-->
+            <div class="fr-col-12 fr-col-md-4">
+                <div class="fr-card fr-card--horizontal fr-card--sm">
+                    <div class="fr-card__body">
+                        <div class="fr-card__content">
+                            <h3 class="fr-card__title">
+                                Standards MSCI
+                            </h3>
+                            <div class="fr-card__end">
+                                <a href="#" target="_blank" class="fr-btn fr-icon-external-link-line fr-btn--icon-right">Découvrir</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fr-card__header">
+                        <div class="fr-card__img">
+                            <img class="fr-responsive-img" src="{% static 'img/espace_csrd/MSCI.png' %}" alt="Loo MSCI" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Carte GRI-->
+            <div class="fr-col-12 fr-col-md-4">
+                <div class="fr-card fr-card--horizontal fr-card--sm">
+                    <div class="fr-card__body">
+                        <div class="fr-card__content">
+                            <h3 class="fr-card__title">
+                                Standards GRI
+                            </h3>
+                            <div class="fr-card__end">
+                                <a href="#" target="_blank" class="fr-btn fr-icon-external-link-line fr-btn--icon-right">Découvrir</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fr-card__header">
+                        <div class="fr-card__img">
+                            <img class="fr-responsive-img" src="{% static 'img/espace_csrd/GRI.png' %}" alt="Loo GRI" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Carte SASB-->
+            <div class="fr-col-12 fr-col-md-4">
+                <div class="fr-card fr-card--horizontal fr-card--sm">
+                    <div class="fr-card__body">
+                        <div class="fr-card__content">
+                            <h3 class="fr-card__title">
+                                Standards SASB
+                            </h3>
+                            <div class="fr-card__end">
+                                <a href="#" target="_blank" class="fr-btn fr-icon-external-link-line fr-btn--icon-right">Découvrir</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fr-card__header">
+                        <div class="fr-card__img">
+                            <img class="fr-responsive-img" src="{% static 'img/espace_csrd/SASB.png' %}" alt="Loo SASB" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
