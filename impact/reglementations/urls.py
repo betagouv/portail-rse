@@ -86,18 +86,19 @@ urlpatterns = [
         name="toggle_bdese_completion",
     ),
     path("csrd", views.csrd.csrd, name="csrd"),
+    path("csrd/<str:siren>", views.csrd.csrd, name="csrd"),
     path(
-        "csrd/phase-<int:phase>",
+        "csrd/<str:siren>/phase-<int:phase>",
         views.csrd.csrd,
         name="csrd_phase",
     ),
     path(
-        "csrd/phase-<int:phase>/etape-<int:etape>",
+        "csrd/<str:siren>/phase-<int:phase>/etape-<int:etape>",
         views.csrd.csrd,
         name="csrd_etape",
     ),
     path(
-        "csrd/phase-<int:phase>/etape-<int:etape>-<int:sous_etape>",
+        "csrd/<str:siren>/phase-<int:phase>/etape-<int:etape>-<int:sous_etape>",
         views.csrd.csrd,
         name="csrd_sous_etape",
     ),
