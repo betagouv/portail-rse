@@ -448,6 +448,9 @@
     .fr-tabs__panel {
         padding:0px;
         padding-top: 1rem;
+        ul li {
+            padding-bottom: 1rem;
+        }
         a {
             color: var(--text-active-blue-france);
             text-decoration: underline;
@@ -473,7 +476,7 @@
     .esrs-incidences {
         width: 100%;
         li {
-            line-height: 3rem;
+            margin-bottom: 1rem;
             list-style: none;
             display: flex;
             width: 100%;
