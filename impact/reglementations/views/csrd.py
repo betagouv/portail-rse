@@ -3,13 +3,18 @@ from datetime import timedelta
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.http import HttpResponse
+from django.shortcuts import redirect
 from django.template.loader import get_template
 from django.template.loader import TemplateDoesNotExist
 from django.urls import reverse_lazy
 
 from entreprises.models import CaracteristiquesAnnuelles
+from entreprises.models import Entreprise
+from entreprises.views import get_current_entreprise
+from habilitations.models import is_user_attached_to_entreprise
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
 from reglementations.views.base import ReglementationStatus
@@ -429,17 +434,23 @@ class CSRDReglementation(Reglementation):
 
 
 @login_required
-def csrd(request, phase=0, etape=0, sous_etape=0):
-    if phase:
-        if etape:
-            if sous_etape:
-                template_name = f"reglementations/espace_csrd/phase{phase}_etape{etape}_{sous_etape}.html"
-            else:
-                template_name = (
-                    f"reglementations/espace_csrd/phase{phase}_etape{etape}.html"
-                )
-        else:
-            template_name = f"reglementations/espace_csrd/phase{phase}.html"
+def csrd(request, siren=None, phase=0, etape=0, sous_etape=0):
+    if not siren:
+        entreprise = get_current_entreprise(request)
+        return redirect("reglementations:csrd", siren=entreprise.siren)
+
+    entreprise = Entreprise.objects.get(siren=siren)
+    if not is_user_attached_to_entreprise(request.user, entreprise):
+        raise PermissionDenied
+
+    if sous_etape:
+        template_name = (
+            f"reglementations/espace_csrd/phase{phase}_etape{etape}_{sous_etape}.html"
+        )
+    elif etape:
+        template_name = f"reglementations/espace_csrd/phase{phase}_etape{etape}.html"
+    elif phase:
+        template_name = f"reglementations/espace_csrd/phase{phase}.html"
     else:
         template_name = "reglementations/espace_csrd/index.html"
 
@@ -449,6 +460,7 @@ def csrd(request, phase=0, etape=0, sous_etape=0):
         raise Http404
 
     context = {
+        "siren": entreprise.siren,
         "phase": phase,
         "etape": etape,
         "sous_etape": sous_etape,
