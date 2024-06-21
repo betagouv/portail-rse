@@ -302,7 +302,9 @@ class CSRDReglementation(Reglementation):
         if reglementation_status := super().calculate_status(caracteristiques, user):
             return reglementation_status
         primary_action = ReglementationAction(
-            reverse_lazy("reglementations:csrd"),
+            reverse_lazy(
+                "reglementations:csrd", args=[caracteristiques.entreprise.siren]
+            ),
             "Accéder à l'espace Rapport de Durabilité",
         )
         if annee := cls.est_soumis_a_partir_de_l_exercice(caracteristiques):

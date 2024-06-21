@@ -1238,7 +1238,9 @@ def test_calcule_etat_si_non_soumis(entreprise_factory, alice):
         reglementation.primary_action.title
         == "Accéder à l'espace Rapport de Durabilité"
     )
-    assert reglementation.primary_action.url == reverse("reglementations:csrd")
+    assert reglementation.primary_action.url == reverse(
+        "reglementations:csrd", args=[entreprise.siren]
+    )
 
 
 def test_calcule_etat_si_soumis_en_2025_et_delegable(entreprise_factory, alice):
@@ -1272,7 +1274,9 @@ def test_calcule_etat_si_soumis_en_2025_et_delegable(entreprise_factory, alice):
         reglementation.primary_action.title
         == "Accéder à l'espace Rapport de Durabilité"
     )
-    assert reglementation.primary_action.url == reverse("reglementations:csrd")
+    assert reglementation.primary_action.url == reverse(
+        "reglementations:csrd", args=[entreprise.siren]
+    )
 
 
 def test_calcule_etat_si_soumis_en_2027_et_non_delegable(entreprise_factory, alice):
@@ -1301,7 +1305,9 @@ def test_calcule_etat_si_soumis_en_2027_et_non_delegable(entreprise_factory, ali
         reglementation.primary_action.title
         == "Accéder à l'espace Rapport de Durabilité"
     )
-    assert reglementation.primary_action.url == reverse("reglementations:csrd")
+    assert reglementation.primary_action.url == reverse(
+        "reglementations:csrd", args=[entreprise.siren]
+    )
 
 
 def test_calcule_etat_si_entreprise_hors_EEE_soumise_en_2029_sous_condition(
