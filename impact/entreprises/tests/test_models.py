@@ -14,6 +14,7 @@ from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import CategorieJuridique
 from entreprises.models import convertit_categorie_juridique
+from entreprises.models import convertit_code_NAF
 from entreprises.models import convertit_code_pays
 from entreprises.models import Entreprise
 from entreprises.models import est_dans_EEE
@@ -739,3 +740,24 @@ def test_exercice_comptable_est_annee_civile():
         date_cloture_exercice=date(2023, 12, 31),
     )
     assert caracteristiques.exercice_comptable_est_annee_civile
+
+
+@pytest.mark.django_db(transaction=True)
+def test_secteur_principal_d_une_entreprise():
+    entreprise = Entreprise.objects.create(
+        code_NAF="01.11Z",
+        siren="111111111",
+    )
+
+    assert entreprise.secteur_principal == "01.1 - Cultures non permanentes"
+
+
+def test_convertit_code_NAF():
+    assert convertit_code_NAF("01.11Z") == {
+        "code": "01.1",
+        "label": "Cultures non permanentes",
+    }
+    assert convertit_code_NAF("01.21") == {
+        "code": "01.2",
+        "label": "Cultures permanentes",
+    }

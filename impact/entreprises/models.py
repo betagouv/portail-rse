@@ -7,6 +7,7 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
+from utils.codes_naf import CODES_NAF
 from utils.models import TimestampedModel
 from utils.pays import CODES_PAYS_ETRANGER_SIRENE
 
@@ -122,6 +123,12 @@ def convertit_code_pays(code_pays_etranger_sirene):
         return "France"
 
 
+def convertit_code_NAF(code_NAF):
+    for code, label in CODES_NAF.items():
+        if code_NAF.startswith(code):
+            return {"code": code, "label": label}
+
+
 def est_dans_EEE(code_pays_etranger):
     """EEE : Espace économique européen"""
     return code_pays_etranger in (
@@ -234,6 +241,11 @@ class Entreprise(TimestampedModel):
     @property
     def est_hors_EEE(self):
         return not self.est_dans_EEE
+
+    @property
+    def secteur_principal(self):
+        resultat = convertit_code_NAF(self.code_NAF)
+        return f"""{resultat["code"]} - {resultat["label"]}"""
 
     def caracteristiques_annuelles(self, annee):
         try:
