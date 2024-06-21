@@ -463,6 +463,7 @@ def csrd(request, siren=None, phase=0, etape=0, sous_etape=0):
 
     context = {
         "siren": entreprise.siren,
+        "entreprise": entreprise,
         "phase": phase,
         "etape": etape,
         "sous_etape": sous_etape,
