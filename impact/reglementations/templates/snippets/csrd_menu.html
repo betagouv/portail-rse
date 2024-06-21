@@ -23,26 +23,26 @@
                 </li>
                 <!-- Phase 1 -->
                 <li class="fr-sidemenu__item">
-                    <button class="fr-sidemenu__btn sidemenu-border-top" aria-expanded="false" aria-controls="fr-sidemenu-item-1">
+                    <button class="fr-sidemenu__btn sidemenu-border-top" aria-expanded="{% if phase == 1%}true{% else %}false{% endif %}" aria-controls="fr-sidemenu-item-1">
                         Phase 1 - Analyser sa double matérialité
                     </button>
                     <div class="fr-collapse" id="fr-sidemenu-item-1">
                         <ul class="fr-sidemenu__list">
                             <li class="fr-sidemenu__item">
                                 {% url 'reglementations:csrd_etape' siren 1 0 as url_page %}
-                                <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if request.path == url_page %} aria-current="page"{% endif %}>
+                                <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if phase == 1 and etape == 0 %} aria-current="page"{% endif %}>
                                     Introduction
                                 </a>
                             </li>
                             <li class="fr-sidemenu__item">
                                 {% url 'reglementations:csrd_etape' siren 1 1 as url_page %}
-                                <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if request.path == url_page %} aria-current="page"{% endif %}>
+                                <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if phase == 1 and etape == 1 %} aria-current="page"{% endif %}>
                                     Étape 1 - Comprendre le contexte
                                 </a>
                             </li>
                             <li class="fr-sidemenu__item">
                                 {% url 'reglementations:csrd_etape' siren 1 2 as url_page %}
-                                <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if request.path == url_page %} aria-current="page"{% endif %}>
+                                <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if phase == 1 and etape == 2 %} aria-current="page"{% endif %}>
                                     Étape 2 - Identifier la liste de ses enjeux ESG potentiels
                                 </a>
                             </li>
@@ -56,20 +56,20 @@
                 </li>
                 <!-- Phase 2 -->
                 <li class="fr-sidemenu__item">
-                    <button class="fr-sidemenu__btn" aria-expanded="false" aria-controls="fr-sidemenu-item-3">
+                    <button class="fr-sidemenu__btn" aria-expanded="{% if phase == 2%}true{% else %}false{% endif %}" aria-controls="fr-sidemenu-item-3">
                         Phase 2 - Collecter les données de son entreprise
                     </button>
                     <div class="fr-collapse" id="fr-sidemenu-item-3">
                         <ul class="fr-sidemenu__list">
                             <li class="fr-sidemenu__item">
                                 {% url 'reglementations:csrd_etape' siren 2 0 as url_page %}
-                                <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if request.path == url_page %} aria-current="page"{% endif %}>
+                                <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if phase == 2 and etape == 0 %} aria-current="page"{% endif %}>
                                     Introduction
                                 </a>
                             </li>
                             <li class="fr-sidemenu__item">
                                 {% url 'reglementations:csrd_sous_etape' siren 2 1 1 as url_page %}
-                                <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if request.path == url_page %} aria-current="page"{% endif %}>
+                                <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if phase == 2 and etape == 1 %} aria-current="page"{% endif %}>
                                     Étape 1 - Analyser la matérialité des informations élémentaires
                                 </a>
                             </li>
@@ -88,20 +88,20 @@
                 </li>
                 <!-- Phase 3 -->
                 <li class="fr-sidemenu__item">
-                    <button class="fr-sidemenu__btn" aria-expanded="false" aria-controls="fr-sidemenu-item-2">
+                    <button class="fr-sidemenu__btn" aria-expanded="{% if phase == 3%}true{% else %}false{% endif %}" aria-controls="fr-sidemenu-item-2">
                         Phase 3 - Rédiger son rapport de durabilité
                     </button>
                     <div class="fr-collapse" id="fr-sidemenu-item-2">
                         <ul class="fr-sidemenu__list">
                             <li class="fr-sidemenu__item">
                                 {% url 'reglementations:csrd_etape' siren 3 0 as url_page %}
-                                <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if request.path == url_page %} aria-current="page"{% endif %}>
+                                <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if phase == 3 and etape == 0 %} aria-current="page"{% endif %}>
                                     Introduction
                                 </a>
                             </li>
                             <li class="fr-sidemenu__item">
                                 {% url 'reglementations:csrd_sous_etape' siren 3 1 1 as url_page %}
-                                <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if request.path == url_page %} aria-current="page"{% endif %}>
+                                <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if phase == 3 and etape == 1 %} aria-current="page"{% endif %}>
                                     Étape 1 - Structurer son rapport
                                 </a>
                             </li>
