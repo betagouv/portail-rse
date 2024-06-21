@@ -161,7 +161,9 @@
             </div>
         </div>
     </div>
-    </div>
+
+    {% include "snippets/csrd_precedent_suivant.html" with phase_precedente=1 etape_precedente=2 sous_etape_precedente=0 phase_suivante=1 etape_suivante=2 sous_etape_suivante=2 %}
+
     <!-- Modal ESRS 2 -->
     <dialog aria-labelledby="fr-modal-ESRS2" role="dialog" id="modal-ESRS2" class="fr-modal--lg fr-modal">
         <div class="fr-container fr-container--fluid fr-container-md">
@@ -1320,4 +1322,5 @@
                                                                 </div>
                                                             </div>
                                                         </dialog>
+
 {% endblock %}
