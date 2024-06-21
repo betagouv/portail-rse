@@ -338,9 +338,11 @@
 #csrd-menu {
     position: sticky;
     top:2rem;
-    margin:2rem;
+    margin-top:2rem;
+    margin-left: 2rem;
     left:2rem;
     background: var(--background-default-grey);
+    z-index: 80;
 }
 
 .fr-sidemenu--sticky-full-height {
