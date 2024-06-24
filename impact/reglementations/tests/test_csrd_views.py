@@ -93,7 +93,7 @@ def test_les_etapes_de_la_csrd(etape, client, alice, entreprise_factory):
 
     assert response.status_code == 200
     context = response.context
-    assert context["siren"] == entreprise.siren
+    assert context["entreprise"] == entreprise
     assert "phase" in context
     assert "etape" in context
     assert "sous_etape" in context

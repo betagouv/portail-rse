@@ -16,7 +16,7 @@
 {% block prerequis %}
     <li>
         Avoir reporté l'ensemble de vos données dans
-        <a href="{% url 'reglementations:csrd_phase' siren 2 %}" target="_self">la phase 2</a>
+        <a href="{% url 'reglementations:csrd_phase' entreprise.siren 2 %}" target="_self">la phase 2</a>
     </li>
 {% endblock %}
 
@@ -31,7 +31,7 @@
             <div class="fr-tile__body">
                 <div class="fr-tile__content">
                     <h3 class="fr-tile__title">
-                        <a href="{% url 'reglementations:csrd_sous_etape' siren 3 1 1 %}">Structurer son rapport</a>
+                        <a href="{% url 'reglementations:csrd_sous_etape' entreprise.siren 3 1 1 %}">Structurer son rapport</a>
                     </h3>
                     <div class="fr-tile__start">
                         <p class="fr-badge fr-badge--info fr-badge--no-icon">étape 1</p>
@@ -72,4 +72,4 @@
     </div>
 {% endblock %}
 
-{% block etape_1 %}{% url 'reglementations:csrd_sous_etape' siren 3 1 1 %}{% endblock %}
+{% block etape_1 %}{% url 'reglementations:csrd_sous_etape' entreprise.siren 3 1 1 %}{% endblock %}
