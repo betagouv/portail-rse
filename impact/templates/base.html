@@ -116,6 +116,10 @@
                         </div>
                         {% if user.is_authenticated %}
                             <nav class="fr-nav" id="navigation-494" role="navigation" aria-label="Menu principal">
+                                <ul id="account-mobile" class="fr-menu__list">
+                                    <li><a class="fr-nav__link" href="{% url 'users:account' %}" target="_self"><span class="fr-icon-account-circle-fill fr-mr-1w" aria-hidden="true"></span> Mon compte</a></li>
+                                    <li><a class="fr-nav__link" href="{% url 'users:logout' %}" target="_self"><span class="fr-icon-lock-unlock-fill fr-mr-1w" aria-hidden="true"></span> Se déconnecter</a></li>
+                                </ul>
                                 <ul class="fr-nav__list">
                                     <li class="fr-nav__item">
                                         {% url 'reglementations' as url_page %}
