@@ -1,4 +1,5 @@
 import pytest
+from django.contrib.messages import WARNING
 from django.urls import reverse
 
 from habilitations.models import attach_user_to_entreprise
@@ -38,6 +39,23 @@ def test_espace_csrd_sans_siren_redirige_vers_celui_de_l_entreprise_courante(
 
     assert response.status_code == 302
     assert response.url == f"/csrd/{entreprise.siren}"
+
+
+def test_espace_csrd_sans_siren_et_sans_entreprise(client, alice):
+    # Cas limite où un utilisateur n'est rattaché à aucune entreprise
+    client.force_login(alice)
+
+    url = "/csrd"
+    response = client.get(url, follow=True)
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
+    messages = list(response.context["messages"])
+    assert messages[0].level == WARNING
+    assert (
+        messages[0].message
+        == "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à l'espace Rapport de Durabilité"
+    )
 
 
 @pytest.mark.parametrize(
