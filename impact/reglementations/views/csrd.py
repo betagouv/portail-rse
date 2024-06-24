@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
@@ -439,6 +440,12 @@ class CSRDReglementation(Reglementation):
 def csrd(request, siren=None, phase=0, etape=0, sous_etape=0):
     if not siren:
         entreprise = get_current_entreprise(request)
+        if not entreprise:
+            messages.warning(
+                request,
+                f"Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à l'espace Rapport de Durabilité",
+            )
+            return redirect("entreprises:entreprises")
         return redirect("reglementations:csrd", siren=entreprise.siren)
 
     entreprise = Entreprise.objects.get(siren=siren)
