@@ -16,7 +16,7 @@
 {% block prerequis %}
     <li>
         Avoir déterminé ses enjeux de durabilité matériels dans
-        <a href="{% url 'reglementations:csrd_phase' siren 1 %}" target="_self">la phase 1</a>
+        <a href="{% url 'reglementations:csrd_phase' entreprise.siren 1 %}" target="_self">la phase 1</a>
     </li>
 {% endblock %}
 
@@ -31,7 +31,7 @@
             <div class="fr-tile__body">
                 <div class="fr-tile__content">
                     <h3 class="fr-tile__title">
-                        <a href="{% url 'reglementations:csrd_sous_etape' siren 2 1 1 %}">Analyse de la matérialité des informations élémentaires</a>
+                        <a href="{% url 'reglementations:csrd_sous_etape' entreprise.siren 2 1 1 %}">Analyse de la matérialité des informations élémentaires</a>
                     </h3>
                     <p class="fr-tile__desc">(Points de données ou data points)</p>
                     <div class="fr-tile__start">
@@ -73,4 +73,4 @@
     </div>
 {% endblock %}
 
-{% block etape_1 %}{% url 'reglementations:csrd_sous_etape' siren 2 1 1 %}{% endblock %}
+{% block etape_1 %}{% url 'reglementations:csrd_sous_etape' entreprise.siren 2 1 1 %}{% endblock %}
