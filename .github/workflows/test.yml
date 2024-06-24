@@ -41,4 +41,4 @@ jobs:
     - name: Install dependencies
       run: pipenv install -d
     - name: Run tests
-      run: pipenv run pytest
+      run: pipenv run pytest -m "not network"
