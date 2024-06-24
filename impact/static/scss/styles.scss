@@ -916,6 +916,11 @@ button.rse-organizer--card:hover, .rse-organizer--card:hover {
 }
 
 /* media queries */
+@media screen and (min-width: 992px) {
+#account-mobile { 
+    display: none;
+}
+}
 
 @media screen and (max-width: 992px) {
     .reglementation-grid {
@@ -936,16 +941,7 @@ button.rse-organizer--card:hover, .rse-organizer--card:hover {
     .fiche-img {
         display: none;
     }
-    #menu-header-mobile.fr-collapse {
-        --collapse-max-height: auto;
-        --collapse: 0px;
-        --collapser: auto;
-        max-height: auto;
-        max-height: auto;
-        overflow: auto;
-        transition: visibility .3s;
-        visibility: visible;
-    }
+    
     .dashboard {
         .reglementation-grid {
             display: flex;
