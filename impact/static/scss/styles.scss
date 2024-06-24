@@ -344,14 +344,24 @@
     background: var(--background-default-grey);
     z-index: 80;
 }
-
 .fr-sidemenu--sticky-full-height {
     max-width: 388px;
     position: fixed;
     background-color: var(--background-default-grey);
     z-index: 999;
 }
-
+@media screen and (max-width: 766px) {
+    .fr-sidemenu--sticky-full-height {
+        max-width: 100%;
+        position: fixed;
+        background-color: var(--background-default-grey);
+        z-index: 999;
+        top:0px;
+        left: 0px;
+        right: 0px;
+        bottom:0px;
+    }
+}
 .fr-sidemenu {
     padding-right: 0px;
     .sidemenu-border-top {
@@ -373,7 +383,6 @@
         color: var(--dark-text-disabled-grey, #666); 
     }
 }
-
 /* ESRS */
 
 .rse-organizer--in-espace-csrd {
