@@ -5,15 +5,17 @@
 
 {% block content %}
     {% include "snippets/csrd_menu.html" %}
-    <div class="fr-container fr-py-6w csrd-header">
-        <div class="csrd--width">
-            <div class="csrd-etape">
-                <p class="fr-badge fr-badge--info fr-badge--no-icon">phase 2</p>
-                <div class="csrd-etape__title fr-mb-10v">
-                    Étape 1 - Analyser la matérialité des informations élémentaires
-                </div>
+    <div class="fr-container csrd-header">
+        <div class="csrd-etape">
+            <p class="fr-badge fr-badge--info fr-badge--no-icon">phase 2</p>
+            <div class="csrd-etape__title fr-mb-10v">
+                Étape 1 - Analyser la matérialité des informations élémentaires
             </div>
-            <h1>Sous étape 1 - Comment savoir si une information doit être reportée ?</h1>
+        </div>
+        <h1>Sous étape 1 - Comment savoir si une information doit être reportée ?</h1>
+    </div>
+    <div class="fr-container">
+        <div class="csrd--width">
             <h6><span class="fr-icon-lightbulb-fill fr-icon--blue"></span> Explication</h6>
 
             <p>
@@ -41,6 +43,6 @@
                 </li>
             </ul>
         </div>
-        {% include "snippets/csrd_precedent_suivant.html" with phase_precedente=2 etape_precedente=0 sous_etape_precedente=0 phase_suivante=2 etape_suivante=1 sous_etape_suivante=2 %}
-
+    </div>
+    {% include "snippets/csrd_precedent_suivant.html" with phase_precedente=2 etape_precedente=0 sous_etape_precedente=0 phase_suivante=2 etape_suivante=1 sous_etape_suivante=2 %}
 {% endblock %}

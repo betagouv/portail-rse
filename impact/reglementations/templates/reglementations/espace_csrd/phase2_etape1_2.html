@@ -5,31 +5,25 @@
 
 {% block content %}
     {% include "snippets/csrd_menu.html" %}
-    <div class="fr-container fr-pt-6w csrd-header">
-        <div class="csrd--width">
-            <div class="csrd-etape">
-                <p class="fr-badge fr-badge--info fr-badge--no-icon">phase 2</p>
-                <div class="csrd-etape__title fr-mb-10v">
-                    Étape 1 - Analyser la matérialité des informations élémentaires
-                </div>
+    <div class="fr-container csrd-header">
+        <div class="csrd-etape">
+            <p class="fr-badge fr-badge--info fr-badge--no-icon">phase 2</p>
+            <div class="csrd-etape__title fr-mb-10v">
+                Étape 1 - Analyser la matérialité des informations élémentaires
             </div>
-            <h1>Sous étape 2 - Sélection des exigences de publication</h1>
         </div>
+        <h1>Sous étape 2 - Sélection des exigences de publication</h1>
     </div>
     <div class="fr-container">
         <div class="csrd--width">
-            <p>
-                <b>
-                    En vous appuyant sur votre liste de vos enjeux ESG prioritaires (ESRS et leurs questions de durabilité) définis lors l’analyse de double matérialité, sélectionner les exigences de publication que vous souhaitez reporter après avoir lu leurs définition et le processus de décision.
-                </b>
-            </p>
+            <ul class="csrd-list csrd-list--bold">
+                <li>En vous appuyant sur votre liste de vos enjeux ESG prioritaires (ESRS et leurs questions de durabilité) définis lors l’analyse de double matérialité, sélectionner les exigences de publication que vous souhaitez reporter après avoir lu leurs définition et le processus de décision.</li>
+            </ul>
         </div>
-
         <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
             <div class="fr-col-12 fr-col-md-6">
                 <div class="csrd--width">
-
-                    <h2><span class="fr-icon-lightbulb-fill fr-icon--blue"></span> Définition des exigences de publication</h2>
+                    <h6><span class="fr-icon-lightbulb-fill fr-icon--blue"></span> Définition des exigences de publication</h6>
                     <p>
                         Il existe 4 exigences de publication regroupant les datapoints (Points de donnée à reporter) :
                     </p>
@@ -76,7 +70,7 @@
         </div>
 
         <div class="csrd--width">
-            <h2><span class="fr-icon-lightbulb-fill fr-icon--blue"></span> Processus de décision pour sélectionner une exigence de publication</h2>
+            <h6><span class="fr-icon-lightbulb-fill fr-icon--blue"></span> Processus de décision pour sélectionner une exigence de publication</h6>
         </div>
 
         <figure class="fr-content-media" role="group" aria-label="Schéma du processus de décision permettant de déterminer si un point de données doit être publié ou non">
@@ -86,7 +80,7 @@
         </figure>
 
         <div class="csrd--width">
-            <h2>Liste des exigences de publication par ESRS :</h2>
+            <h6>Liste des exigences de publication par ESRS :</h6>
             <ul>
                 <li><a  class="fr-link fr-link--download" download href="{% static 'CSRD/ESRS-E1/Data-point-ESRS-E1.xlsx' %}">Télécharger le fichier ESRS E1 - Data points (EN) <span class="fr-link__detail">XLSX – 31,2 ko</span></a></li>
                 <li><a  class="fr-link fr-link--download" download href="{% static 'CSRD/ESRS-E2/Data-point-ESRS-E2.xlsx' %}">Télécharger le fichier ESRS E2 - Data points (EN) <span class="fr-link__detail">XLSX – 19 ko</span></a></li>
