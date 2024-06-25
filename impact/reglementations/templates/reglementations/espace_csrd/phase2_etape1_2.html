@@ -5,7 +5,7 @@
 
 {% block content %}
     {% include "snippets/csrd_menu.html" %}
-    <div class="fr-container fr-py-6w csrd-header">
+    <div class="fr-container fr-pt-6w csrd-header">
         <div class="csrd--width">
             <div class="csrd-etape">
                 <p class="fr-badge fr-badge--info fr-badge--no-icon">phase 2</p>
@@ -14,15 +14,21 @@
                 </div>
             </div>
             <h1>Sous étape 2 - Sélection des exigences de publication</h1>
-
+        </div>
+    </div>
+    <div class="fr-container">
+        <div class="csrd--width">
             <p>
                 <b>
                     En vous appuyant sur votre liste de vos enjeux ESG prioritaires (ESRS et leurs questions de durabilité) définis lors l’analyse de double matérialité, sélectionner les exigences de publication que vous souhaitez reporter après avoir lu leurs définition et le processus de décision.
                 </b>
             </p>
+        </div>
 
-            <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
-                <div class="fr-col-12 fr-col-md-6">
+        <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
+            <div class="fr-col-12 fr-col-md-6">
+                <div class="csrd--width">
+
                     <h2><span class="fr-icon-lightbulb-fill fr-icon--blue"></span> Définition des exigences de publication</h2>
                     <p>
                         Il existe 4 exigences de publication regroupant les datapoints (Points de donnée à reporter) :
@@ -59,16 +65,20 @@
                         L’ESRS 2 comprend les exigences de publication minimums en ce qui concerne les politiques (MDR-P) et les actions (MDR-A), les exigences de publication minimums en ce qui concerne les métriques (MDR-M) et les cibles (MDR-T).
                     </p>
                 </div>
-                <div class="fr-col-12 fr-col-md-6">
-                    <div>
-                        <img src="{% static 'img/espace_csrd/tableau-exigences-publication.png' %}" class="fr-responsive-img" alt="capture d'écran partiel d'un tableur contenant des ESRS et leurs caractéristiques" />
-                    </div>
+            </div>
+            <div class="fr-col-12 fr-col-md-6">
+                <div>
+                    <img src="{% static 'img/espace_csrd/tableau-exigences-publication.png' %}" class="fr-responsive-img" alt="capture d'écran partiel d'un tableur contenant des ESRS et leurs caractéristiques" />
                 </div>
             </div>
+        </div>
 
+        <div class="csrd--width">
             <h2><span class="fr-icon-lightbulb-fill fr-icon--blue"></span> Processus de décision pour sélectionner une exigence de publication</h2>
-            <img src="{% static 'img/espace_csrd/processus-de-decision.png' %}" class="fr-responsive-img" alt="schéma du processus de décision permettant de déterminer si un point de données doit être publié ou non" />
+        </div>
+        <img src="{% static 'img/espace_csrd/processus-de-decision.png' %}" class="fr-responsive-img" alt="schéma du processus de décision permettant de déterminer si un point de données doit être publié ou non" />
 
+        <div class="csrd--width">
             <h2>Liste des exigences de publication par ESRS :</h2>
             <ul>
                 <li><a  class="fr-link fr-link--download" download href="{% static 'CSRD/ESRS-E1/Data-point-ESRS-E1.xlsx' %}">Télécharger le fichier ESRS E1 - Data points (EN) <span class="fr-link__detail">XLSX – 31,2 ko</span></a></li>
@@ -82,7 +92,8 @@
                 <li><a  class="fr-link fr-link--download" download href="{% static 'CSRD/ESRS-G1/Data-point-ESRS-G1.xlsx' %}">Télécharger le fichier ESRS G1 - Data points (EN) <span class="fr-link__detail">XLSX – 17,3 ko</span></a></li>
             </ul>
         </div>
+    </div>
 
-        {% include "snippets/csrd_precedent_suivant.html" with phase_precedente=2 etape_precedente=1 sous_etape_precedente=1 phase_suivante=3 etape_suivante=0 sous_etape_suivante=0 %}
+    {% include "snippets/csrd_precedent_suivant.html" with phase_precedente=2 etape_precedente=1 sous_etape_precedente=1 phase_suivante=3 etape_suivante=0 sous_etape_suivante=0 %}
 
 {% endblock %}
