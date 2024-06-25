@@ -87,6 +87,15 @@
     width: fit-content;
 }
 
+/* Overriding dsfr content media class & css so we can display links in media captions */
+
+.fr-content-media__caption {
+    flex-direction: row;
+    a {
+        display: inline-block;
+    }
+}
+
 /* colored bgs */
 
 .background-light-grey {
@@ -692,13 +701,6 @@
     bottom: 0px;
     width: 100%;
     background-color: var(--background-default-grey);
-}
-
-.fr-content-media__caption {
-    flex-direction: row;
-    a {
-        display: inline-block;
-    }
 }
 
 /* tableau des ESRS */
