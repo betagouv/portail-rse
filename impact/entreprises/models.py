@@ -125,7 +125,7 @@ def convertit_code_pays(code_pays_etranger_sirene):
 
 def convertit_code_NAF(code_NAF):
     for code, label in CODES_NAF.items():
-        if code_NAF.startswith(code):
+        if code_NAF and code_NAF.startswith(code):
             return {"code": code, "label": label}
 
 
@@ -245,7 +245,7 @@ class Entreprise(TimestampedModel):
     @property
     def secteur_principal(self):
         resultat = convertit_code_NAF(self.code_NAF)
-        return f"""{resultat["code"]} - {resultat["label"]}"""
+        return f"""{resultat["code"]} - {resultat["label"]}""" if resultat else None
 
     def caracteristiques_annuelles(self, annee):
         try:
