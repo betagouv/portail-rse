@@ -752,6 +752,16 @@ def test_secteur_principal_d_une_entreprise():
     assert entreprise.secteur_principal == "01.1 - Cultures non permanentes"
 
 
+@pytest.mark.django_db(transaction=True)
+def test_secteur_principal_d_une_entreprise_sans_code_NAF_valide():
+    entreprise = Entreprise.objects.create(
+        code_NAF=None,
+        siren="111111111",
+    )
+
+    assert entreprise.secteur_principal is None
+
+
 def test_convertit_code_NAF():
     assert convertit_code_NAF("01.11Z") == {
         "code": "01.1",
@@ -761,3 +771,8 @@ def test_convertit_code_NAF():
         "code": "01.2",
         "label": "Cultures permanentes",
     }
+
+
+def test_convertit_code_NAF_sans_correspondance():
+    assert convertit_code_NAF(None) is None
+    assert convertit_code_NAF("yolo") is None
