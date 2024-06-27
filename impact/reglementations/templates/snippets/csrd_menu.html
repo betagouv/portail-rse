@@ -26,7 +26,7 @@
                     <div class="fr-collapse" id="fr-sidemenu-item-1">
                         <ul class="fr-sidemenu__list">
                             <li class="fr-sidemenu__item">
-                                {% url 'reglementations:csrd_etape' entreprise.entreprise.siren 1 0 as url_page %}
+                                {% url 'reglementations:csrd_etape' entreprise.siren 1 0 as url_page %}
                                 <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if phase == 1 and etape == 0 %} aria-current="page"{% endif %}>
                                     Introduction
                                 </a>
