@@ -90,11 +90,7 @@
 /* Overriding dsfr content media class & css so we can display links in media captions */
 
 .fr-content-media__caption {
-    flex-direction: row;
-    a {
-        display: inline-block;
-        margin: 0 4px;
-    }
+    display: inline-block;
 }
 
 /* colored bgs */
