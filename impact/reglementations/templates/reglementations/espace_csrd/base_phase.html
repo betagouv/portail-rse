@@ -4,12 +4,13 @@
     {% include "snippets/csrd_menu.html" %}
     <div class="fr-container fr-pb-8w">
         <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
-            <div class="fr-col-12 fr-col-md-6">
+            <div class="fr-col-12 fr-col-md-5">
                 <p class="fr-badge fr-badge--info fr-badge--no-icon">phase {{ phase }}</p>
                 <h1>{% block titre %}Titre de la phase{% endblock %}</h1>
                 <p>{% block intro %}Lorem ipsum dolor sit amet consectetur. Elit semper bibendum imperdiet pharetra tortor id vulputate venenatis. Nunc fringilla cras elementum donec aliquam vitae integer. In turpis fermentum.{% endblock %}</p>
             </div>
-            <div class="fr-col-12 fr-col-md-6">
+            <div class="fr-col-md-2"></div>
+            <div class="fr-col-12 fr-col-md-5">
                 <div>
                     <img src="{% block illustration %}{% endblock %}" class="fr-responsive-img" alt="illustration" />
                 </div>
