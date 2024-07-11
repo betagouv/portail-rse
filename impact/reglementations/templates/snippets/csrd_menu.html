@@ -44,8 +44,8 @@
                                 </a>
                             </li>
                             <li class="fr-sidemenu__item">
-                                <a class="fr-sidemenu__link fr-sidemenu__link--disabled" target="_self">
-                                    Étape 3 - Sélectionner ses enjeux ESG matériels (En construction)
+                                <a class="fr-sidemenu__link" href="{% url 'reglementations:csrd_etape' entreprise.siren 1 3 %}" target="_self" {% if phase == 1 and etape == 3 %} aria-current="page"{% endif %}>
+                                    Étape 3 - Sélectionner les enjeux ESG matériels
                                 </a>
                             </li>
                         </ul>
