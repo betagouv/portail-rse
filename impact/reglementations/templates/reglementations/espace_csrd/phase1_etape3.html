@@ -14,5 +14,68 @@
         </div>
         <h1>Introduction</h1>
     </div>
+    <div class="fr-container fr-pb-6w">
+        <div class="csrd--width">
+            <p>
+                Au cours de cette étape, l'entreprise évalue et hiérarchise l’importance relative des impacts matériels, les risques et les opportunités identifiés.
+                La liste finalisée servira de base pour la préparation du rapport de durabilité.
+            </p>
+            <p>
+                Pour éviter des évaluations trop subjectives, il est recommandé de confronter les points de vue de plusieurs fonctions au sein de l’entreprise, en veillant à ce que les personnes consultées aient une expérience professionnelle et des compétences appropriées en lien avec les impacts et leurs effets financiers.
+                Les fonctions Ressources humaines, Environnement, Opérations/Production, Recherche & Développement/Conception, Marketing/Ventes, Finance, Achats, Juridique, ainsi que les représentants des travailleurs, peuvent ainsi apporter une contribution utile à ce processus.
+                Cette démarche revêt également un caractère pédagogique visant à favoriser un alignement interne sur les enjeux prioritaires.
+                Le recours à la bibliographie et aux sources scientifiques est également souhaitable.
+            </p>
+        </div>
+    </div>
+    <div class="background-light-grey">
+        <div class="fr-container fr-py-6w">
+            <h2>Sous étapes à réaliser</h2>
+            <div class="fr-grid-row fr-grid-row--gutters">
+                <div class="fr-col-12 fr-col-md-4">
+                    <div class="fr-tile fr-enlarge-link">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    <a href="{% url 'reglementations:csrd_sous_etape' entreprise.siren 1 3 1 %}">Évaluer la matérialité d'impact</a>
+                                </h3>
+                                <div class="fr-tile__start">
+                                    <p class="fr-badge fr-badge--info fr-badge--no-icon">1</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fr-col-12 fr-col-md-4">
+                    <div class="fr-tile fr-enlarge-link">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    <a href="{% url 'reglementations:csrd_sous_etape' entreprise.siren 1 3 2 %}">Évaluer la matérialité financière</a>
+                                </h3>
+                                <div class="fr-tile__start">
+                                    <p class="fr-badge fr-badge--info fr-badge--no-icon">2</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fr-col-12 fr-col-md-4">
+                    <div class="fr-tile fr-enlarge-link">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    <a href="{% url 'reglementations:csrd_sous_etape' entreprise.siren 1 3 3 %}">Synthétiser les évaluations</a>
+                                </h3>
+                                <div class="fr-tile__start">
+                                    <p class="fr-badge fr-badge--info fr-badge--no-icon">3</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     {% include "snippets/csrd_precedent_suivant.html" with phase_precedente=1 etape_precedente=2 sous_etape_precedente=2 phase_suivante=1 etape_suivante=3 sous_etape_suivante=1 %}
 {% endblock %}
