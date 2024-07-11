@@ -74,10 +74,12 @@
                                 <span class="fr-icon-arrow-right-line fr-icon--sm"></span>
                             </li>
                         </a>
-                        <li class="locked">
-                            Étape 3 - Sélectionner ses enjeux ESG matériels
-                            <p class="fr-badge fr-badge--no-icon fr-badge--sm">En construction</p>
-                        </li>
+                        <a href="{% url 'reglementations:csrd_etape' entreprise.siren 1 3 %}">
+                            <li class="step-3">
+                                Étape 3 - Sélectionner les enjeux ESG matériels
+                                <span class="fr-icon-arrow-right-line fr-icon--sm"></span>
+                            </li>
+                        </a>
                     </ul>
                 </li>
             </ul>

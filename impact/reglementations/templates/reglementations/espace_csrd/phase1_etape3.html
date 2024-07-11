@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Étape 3/3 : Sélectionner les enjeux ESG matériels - CSRD - Portail RSE{% endblock %}
+
+{% block content %}
+    {% include "snippets/csrd_menu.html" %}
+    <div class="fr-container csrd-header">
+        <div class="csrd-etape">
+            <p class="fr-badge fr-badge--info fr-badge--no-icon">phase 1</p>
+            <div class="csrd-etape__title fr-mb-10v">
+                Étape 3 - Sélectionner les enjeux ESG matériels
+            </div>
+        </div>
+        <h1>Introduction</h1>
+    </div>
+    {% include "snippets/csrd_precedent_suivant.html" with phase_precedente=1 etape_precedente=2 sous_etape_precedente=2 phase_suivante=1 etape_suivante=3 sous_etape_suivante=1 %}
+{% endblock %}
