@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Sous étape 1/3 : Évaluer la matérialité d'impact - CSRD - Portail RSE{% endblock %}
 
@@ -12,6 +13,95 @@
             </div>
         </div>
         <h1>Sous étape 1 : Évaluer la matérialité d'impact</h1>
+    </div>
+    <div class="fr-container">
+        <div class="csrd--width">
+            <p>
+                <ul class="csrd-list csrd-list--bold">
+                    <li>Reprenez vos enjeux ESG et évaluez la matérialité d'impact du point de vue de l'incidence négative et positive.</li>
+                </ul>
+            </p>
+            <h6>1. Évaluation de l'incidence positive de ses enjeux de durabilité</h2>
+            <p>
+                Pour les incidences positives, l’importance dépend :
+                <ul>
+                    <li>Pour les incidences réelles, de l’ampleur et de l’étendue de l’incidence ; et</li>
+                    <li>Pour les incidences potentielles, de l’ampleur, de l’étendue et de la probabilité de l’incidence.</li>
+                </ul>
+            </p>
+            <h6>2. Évaluation de l'incidence négative de ses enjeux de durabilité</h2>
+            <p>
+                Un impact négatif est « directement lié » aux opérations, produits ou services de l'entreprise, s'il se produit à n'importe quel niveau des relations commerciales.
+            </p>
+            <p>
+                Pour les incidences négatives, l’importance dépend de 3 facteurs :
+                <ul>
+                    <li>
+                        L’ampleur
+                        <button class="fr-btn--tooltip fr-btn" aria-describedby="tooltip-1">Définition</button>
+                        <span class="fr-tooltip fr-placement" id="tooltip-1" role="tooltip" aria-hidden="true">La gravité de l’incidence négative ou l’effet bénéfique de l’incidence positive sur la population ou l’environnement</span>
+                    </li>
+                    <li>
+                        L’étendue de l’incidence
+                        <button class="fr-btn--tooltip fr-btn" aria-describedby="tooltip-2">Définition</button>
+                        <span class="fr-tooltip fr-placement" id="tooltip-2" role="tooltip" aria-hidden="true">La mesure dans laquelle les incidences négatives ou positives sont répandues. Dans le cas d’une incidence environnementale, l’étendue peut désigner l’importance du dégât causé à l’environnement ou un périmètre géographique. En cas d’incidences sur la population, l’étendue peut désigner le nombre de personnes victimes de l’incidence</span>
+                    </li>
+                    <li>
+                        Le caractère irrémédiable de l’incidence
+                        <button class="fr-btn--tooltip fr-btn" aria-describedby="tooltip-3">Définition</button>
+                        <span class="fr-tooltip fr-placement" id="tooltip-3" role="tooltip" aria-hidden="true">La question de savoir si les incidences négatives peuvent être réparées, et dans quelle mesure, par exemple en rétablissant l’environnement ou les personnes touchées dans leur situation antérieure.</span>
+                    </li>
+                </ul>
+            </p>
+            <p>
+                Dans le cas d’une incidence négative potentielle sur les droits de l’homme, la gravité de l’incidence l’emporte sur sa probabilité.
+            </p>
+        </div>
+        <h6>Outils et bonnes pratiques</h6>
+        <div class="fr-accordions-group">
+            <section class="fr-accordion">
+                <h7 class="fr-accordion__title">
+                    <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-1">Processus de décision principal de la double matérialité</button>
+                </h7>
+                <div class="fr-collapse" id="accordion-1">
+                    <img class="fr-responsive-img" src="{% static 'img/espace_csrd/processus-decision-double-materialite.svg' %}" alt="Schéma décrivant le processus de décision principal de la double matérialité" />
+                </div>
+            </section>
+            <section class="fr-accordion">
+                <h7 class="fr-accordion__title">
+                    <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-2">Voir des exemples d'incidences négatives</button>
+                </h7>
+                <div class="fr-collapse" id="accordion-2">
+                    <ul class="csrd--width">
+                        <li>
+                            Exemple 1 : si l’entreprise utilise dans ses produits du cobalt extrait en faisant travailler des enfants, l’incidence négative (le travail des enfants) est directement associée aux produits de l’entreprise par l’intermédiaire de ses relations d’affaires en amont de sa chaîne de valeur.
+                            Ces relations d’affaires comprennent la fonderie et les négociants de minéraux ainsi que la compagnie minière ayant recours au travail des enfants
+                        </li>
+                        <li>
+                            Exemple 2 : si l’entreprise accorde des prêts financiers à une autre aux fins d’activités professionnelles qui, en violation des normes convenues, entraînent la contamination des eaux et des terres des environs de la zone d’activité, cette incidence négative est directement associée à l’entreprise en raison de sa relation avec l’entreprise à qui elle a accordé des prêts.
+                        </li>
+                    </ul>
+                    <figure class="fr-content-media" role="group" aria-label="Exemple d’une grille d’évaluation d’incidences négatives (Source : EFRAG IG 1 - Materiality Assessment)">
+                        <div class="fr-content-media__img">
+                            <img class="fr-responsive-img" src="{% static 'img/espace_csrd/grille-evaluation-incidence-negative.svg' %}" alt="Exemple d’une grille d’évaluation d’incidences négatives (Source : EFRAG IG 1 - Materiality Assessment)" />
+                        </div>
+                        <figcaption class="fr-content-media__caption">Exemple d’une grille d’évaluation d’incidences négatives (Source : EFRAG IG 1 - Materiality Assessment)</figcaption>
+                    </figure>
+                </div>
+            </section>
+            <section class="fr-accordion">
+                <h7 class="fr-accordion__title">
+                    <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-3">Documents sources</button>
+                </h7>
+                <div class="fr-collapse" id="accordion-3">
+                    <ul>
+                        <li>Définition : CSRD - <a href="{% static 'CSRD/ESRS-1/CSRD-ESRS-1.pdf' %}" target="_blank" rel="noopener">ESRS 1 - 3.4. Importance du point de vue de l'incidence</a></li>
+                        <li>Exemple : EFRAG - <a href="https://www.efrag.org/Assets/Download?assetUrl=/sites/webpublishing/SiteAssets/Appendix%202.6%20-%20WP%20on%20draft%20ESRG%201.pdf" target="_blank" rel="noopener">European Sustainability Reporting Guidelines 1 Double materiality conceptual guidelines for standard-setting</a></li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </div>
     </div>
     {% include "snippets/csrd_precedent_suivant.html" with phase_precedente=1 etape_precedente=3 sous_etape_precedente=0 phase_suivante=1 etape_suivante=3 sous_etape_suivante=2 %}
 {% endblock %}
