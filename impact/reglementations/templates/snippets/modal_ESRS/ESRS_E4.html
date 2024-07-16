@@ -1,0 +1,174 @@
+<dialog aria-labelledby="fr-modal-ESRSE4" role="dialog" id="modal-ESRSE4" class="fr-modal--lg fr-modal">
+    <div class="fr-container fr-container--fluid fr-container-md">
+        <div class="fr-grid-row fr-grid-row--center">
+            <div class="fr-col-12 fr-col-md-10 fr-col-lg-10">
+                <div class="fr-modal__body fr-modal--esrs">
+                    <div class="fr-grid-row">
+                        <div class="fr-col-12 fr-col-lg-6 fr-py-2w">
+                            <div class="fr-modal__content">
+                                <p class="fr-tag fr-mb-1w">Environnement</p>
+                                <h4>ESRS E4 - Biodiversité et écosystèmes</h4>
+                                <div class="fr-container">
+                                    {% if phase == 1 %}
+                                        <div class="fr-grid-row">
+                                            <p>
+                                                <strong>
+                                                    Choisissez les questions de durabilité qui ont une incidence réelle et potentielle appliquée à votre entreprise
+                                                </strong>
+                                            </p>
+                                            <h5>Vecteurs d'incidence directs de la perte de biodiversité</h5>
+                                            <ol>
+                                                <li>
+                                                    Changement climatique
+                                                </li>
+                                                <li>
+                                                    Changement d'affectation des terres, changement d'utilisation de l'eau douce et des mers
+                                                </li>
+                                                <li>
+                                                    Exploitation directe
+                                                </li>
+                                                <li>
+                                                    Espèces exotiques envahissantes
+                                                </li>
+                                                <li>
+                                                    Pollution
+                                                </li>
+                                                <li>
+                                                    Autres
+                                                </li>
+                                            </ol>
+                                            <h5>Incidence sur l'état des espèces</h5>
+                                            <h5>Incidence sur l'étendue et l'état des écosystèmes</h5>
+
+                                            <div class="fr-grid-row fr-grid-row--center background-light-grey fr-p-3w fr-mt-6w">
+                                                <div class="fr-col-2">
+                                                    <span class="fr-icon-info-fill fr-icon--blue"></span>
+                                                </div>
+                                                <div class="fr-col-10">
+                                                    Fonctionnalité bientôt disponible : sélection des questions de durabilité.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fr-col-12 fr-col-lg-6 background-light-grey fr-p-2w">
+                            <div class="fr-modal__header">
+                                <button class="fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="modal-ESRSE4">Fermer</button>
+                            </div>
+                            <h6><span class="fr-icon-lightbulb-fill fr-icon--blue"></span> Conseils et bonnes pratiques</h6>
+                            {% if phase == 1 %}
+                                <p>
+                                    Pour faciliter votre sélection, renseignez-vous sur l'ESRS et les informations à publier dans le cas où cet enjeu serait matériel pour votre entreprise.
+                                </p>
+                            {% elif phase == 2 %}
+                                <p>
+                                    Pour vous aider, associez les abréviations des exigences de publication du tableur avec leur nom dans la rubrique “Exigence de publication” ci-dessous.
+                                </p>
+                            {% endif %}
+                            <div class="fr-accordions-group">
+                                <section class="fr-accordion">
+                                    <h3 class="fr-accordion__title">
+                                        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-objectifs-ESRSE4">Objectifs de l'ESRS</button>
+                                    </h3>
+                                    <div class="fr-collapse" id="accordion-objectifs-ESRSE4">
+                                        <p>
+                                            La présente norme a pour objectif de préciser les exigences de publication qui permettront aux utilisateurs de la déclaration relative à la durabilité de comprendre :
+                                        </p>
+                                        <p>
+                                            <ul>
+                                                <li><b>
+                                                    (a) les incidences positives et négatives importantes, réelles ou potentielles, de l’entreprise sur la biodiversité et les écosystèmes, y compris la mesure dans laquelle elle contribue aux facteurs de perte et de dégradation de la biodiversité et des écosystèmes ;
+                                                </b></li>
+                                                <li><b>
+                                                    (b) les actions menées pour prévenir ou atténuer les incidences négatives importantes, réelles ou potentielles, pour protéger et restaurer la biodiversité et les écosystèmes et pour traiter les risques et opportunités, ainsi que le résultat de ces actions ; et
+                                                </b></li>
+                                                <li><b>
+                                                    (c) les plans et la capacité de l’entreprise pour adapter sa stratégie et son modèle économique, en conformité avec :</b>
+                                                    <ul>
+                                                        <li>
+                                                            i. le respect des limites de la planète en ce qui concerne l’intégrité de labiosphère et le changement de système terrestre ;
+                                                        </li>
+                                                        <li>
+                                                            ii. la vision du cadre mondial de Kunming-Montréal en matière de biodiversité ainsi que ses objectifs et cibles pertinents ;
+                                                        </li>
+                                                        <li>
+                                                            iii. les aspects pertinents de la stratégie de l’UE en faveur de la biodiversité àl’horizon 203077 ;
+                                                        </li>
+                                                        <li>
+                                                            iv. la directive 2009/147/CE du Parlement européen et du Conseil et la directive 92/43/CEE du Conseil (directives « Oiseaux » et « Habitats » de l’UE)78 ; et
+                                                        </li>
+                                                        <li>
+                                                            v. la directive 2008/56/CE du Parlement européen et du Conseil (directive-cadre « Stratégie pour le milieu marin »)79 ;
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                                <li><b>
+                                                    (d) la nature, le type et l’ampleur des risques, dépendances et opportunités importants de l’entreprise liés à la biodiversité et aux écosystèmes, et la manière dont l’entreprise les gère ; ainsi que
+                                                </b></li>
+                                                <li><b>
+                                                    (e) les incidences financières sur l’entreprise, à court, moyen et long terme, des risques et opportunités importants résultant des incidences et dépendances de l’entreprise vis-à-vis de la biodiversité et des écosystèmes."
+                                                </b></li>
+                                            </ul>
+                                        </p>
+                                        <p class="fr-text--sm">
+                                            Les termes « biodiversité » et « diversité biologique » renvoient à la variabilité des organismes vivants de toute origine, y compris, entre autres, les écosystèmes terrestres, d’eau douce, marins et autres écosystèmes aquatiques et les complexes écologiques dont ils font partie.
+                                        </p>
+                                    </div>
+                                </section>
+                                <section class="fr-accordion">
+                                    <h3 class="fr-accordion__title">
+                                        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-exigences-ESRSE4">Exigences de publication</button>
+                                    </h3>
+                                    <div class="fr-collapse" id="accordion-exigences-ESRSE4">
+                                        <h6>ESRS 2</h6>
+                                        <strong>Stratégie</strong>
+                                        <ul>
+                                            <li>
+                                                ESRS 2 SBM-3 – Incidences, risques et opportunités importants et leur lien avec la stratégie et le modèle économique
+                                            </li>
+                                        </ul>
+                                        <strong>Gestion des incidences, risques et opportunités</strong>
+                                        <ul>
+                                            <li>
+                                                ESRS 2 IRO-1 Description des procédures d’identification et d’évaluation des incidences, risques et opportunités importants liés à la biodiversité et aux écosystèmes
+                                            </li>
+                                        </ul>
+                                        <h6>Stratégie</h6>
+                                        <ul>
+                                            <li>E4-1 – Plan de transition et prise en considération de la biodiversité et des écosystèmes dans la stratégie et le modèle économique </li>
+                                        </ul>
+                                        <h6>Gestion des incidences, risques et opportunités
+                                        </h6>
+                                        <ul>
+                                            <li>E4-2 – Politiques liées à la biodiversité et aux écosystèmes </li>
+                                            <li>E4-3 – Actions et ressources liées à la biodiversité et aux écosystèmes </li>
+                                        </ul>
+                                        <h6>Métriques et cibles
+                                        </h6>
+                                        <ul>
+                                            <li>E4-4 – Cibles liées à la biodiversité et aux écosystèmes </li>
+                                            <li>E4-5 – Métriques d’incidence liées à l’altération de la biodiversité et des écosystèmes </li>
+                                            <li>E4-6 – Incidences financières escomptées des risques et opportunités liés à la biodiversité et aux écosystèmes</li>
+                                        </ul>
+                                    </div>
+                                </section>
+                            </div>
+                            <p class="fr-pt-4w">
+                                <a class="fr-link fr-link--download" download="" href="/static/CSRD/ESRS-E4/CSRD-ESRS-E4.pdf">
+                                    Télécharger : ESRS E4 - Biodiversité et écosystèmes <span class="fr-link__detail">PDF – 1,2 mo</span>
+                                </a>
+                                <br>
+                                <br>
+                                <a class="fr-link fr-link--download" download="" href="/static/CSRD/ESRS-E4/Guide-d-application-ANC-ESRS-E4.pdf">
+                                    Télécharger : ESRS E4 - Guide d'application de l'ANC <span class="fr-link__detail">PDF – 6,1 mo</span>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</dialog>

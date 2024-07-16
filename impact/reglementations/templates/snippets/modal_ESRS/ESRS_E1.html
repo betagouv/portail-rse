@@ -1,0 +1,169 @@
+<dialog aria-labelledby="fr-modal-ESRSE1" role="dialog" id="modal-ESRSE1" class="fr-modal--lg fr-modal">
+    <div class="fr-container fr-container--fluid fr-container-md">
+        <div class="fr-grid-row fr-grid-row--center">
+            <div class="fr-col-12 fr-col-md-10 fr-col-lg-10">
+                <div class="fr-modal__body fr-modal--esrs">
+                    <div class="fr-grid-row">
+                        <div class="fr-col-12 fr-col-lg-6 fr-py-2w">
+                            <div class="fr-modal__content">
+                                <p class="fr-tag fr-mb-1w">Environnement</p>
+                                <h4>ESRS E1 - Changement climatique</h4>
+                                <div class="fr-container">
+                                    {% if phase == 1 %}
+                                        <div class="fr-grid-row">
+                                            <p>
+                                                <strong>
+                                                    Choisissez les questions de durabilité qui ont une incidence réelle et potentielle appliquée à votre entreprise
+                                                </strong>
+                                            </p>
+                                            <ol>
+                                                <li>
+                                                    Adaptation au changement climatique
+                                                    <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSE1-soustheme1">
+                                                        Définition annexe
+                                                    </button>
+                                                </li>
+                                                <p class="fr-text--sm fr-collapse" id="ESRSE1-soustheme1">
+                                                    L’adaptation au changement climatique renvoie au processus d’adaptation de l’entreprise au changement climatique réel et attendu
+                                                </p>
+                                                <li>
+                                                    Atténuation du changement climatique
+                                                    <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSE1-soustheme2">
+                                                        Définition annexe
+                                                    </button>
+                                                </li>
+                                                <p class="fr-text--sm fr-collapse" id="ESRSE1-soustheme2">
+                                                    L’atténuation du changement climatique se réfère aux efforts de l’entreprise en faveur du processus général consistant à limiter l’élévation de la température moyenne de la planète à 1,5° C par rapport aux niveaux préindustriels, conformément à l’accord de Paris. La présente norme couvre les exigences de publication liées, notamment, aux sept gaz à effet de serre (GES) que sont le dioxyde de carbone (CO2), le méthane (CH4), le protoxyde d’azote (N2O), les hydrofluorocarbures (HFC), les hydrocarbures perfluorés (PFC), l’hexafluorure de soufre (SF6) et le trifluorure d’azote (NF3). Elle couvre également les exigences de publication portant sur la manière dont l’entreprise gère ses émissions de GES ainsi que les risques de transition qui y sont associés
+                                                </p>
+                                                <li>
+                                                    Energie
+                                                    <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSE1-soustheme3">
+                                                        Définition annexe
+                                                    </button>
+                                                </li>
+                                                <p class="fr-text--sm fr-collapse" id="ESRSE1-soustheme3">
+                                                    Les exigences de publication relatives à l’« énergie » couvrent toutes les formes de production et de consommation d’énergie.
+                                                </p>
+                                            </ol>
+                                            <div class="fr-grid-row fr-grid-row--center background-light-grey fr-p-3w fr-mt-6w">
+                                                <div class="fr-col-2">
+                                                    <span class="fr-icon-info-fill fr-icon--blue"></span>
+                                                </div>
+                                                <div class="fr-col-10">
+                                                    Fonctionnalité bientôt disponible : sélection des questions de durabilité.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fr-col-12 fr-col-lg-6 background-light-grey fr-p-2w">
+                            <div class="fr-modal__header">
+                                <button class="fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="modal-ESRSE1">Fermer</button>
+                            </div>
+                            <h6><span class="fr-icon-lightbulb-fill fr-icon--blue"></span> Conseils et bonnes pratiques</h6>
+                            {% if phase == 1 %}
+                                <p>
+                                    Pour faciliter votre sélection, renseignez-vous sur l'ESRS et les informations à publier dans le cas où cet enjeu serait matériel pour votre entreprise.
+                                </p>
+                            {% elif phase == 2 %}
+                                <p>
+                                    Pour vous aider, associez les abréviations des exigences de publication du tableur avec leur nom dans la rubrique “Exigence de publication” ci-dessous.
+                                </p>
+                            {% endif %}
+                            <div class="fr-accordions-group">
+                                <section class="fr-accordion">
+                                    <h3 class="fr-accordion__title">
+                                        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-objectifs-ESRSE1">Objectifs de l'ESRS</button>
+                                    </h3>
+                                    <div class="fr-collapse" id="accordion-objectifs-ESRSE1">
+                                        <p>
+                                            L’objectif de la présente norme est de préciser les exigences de publication qui permettront aux utilisateurs des déclarations relatives à la durabilité de comprendre :
+                                        </p>
+                                        <ul>
+                                            <li>
+                                                <b>(a) comment l’entreprise influe sur le changement climatique en ce qui concerne les incidences positives et négatives, réelles et potentielles, importantes ;</b>
+                                            </li>
+                                            <li>
+                                                <b>(b) les efforts d’atténuation passés, actuels et futurs de l’entreprise conformément à l’accord de Paris (ou à un accord international plus récent sur le changement climatique) et compatibles avec la limitation réchauffement de la planète à 1,5 °C ;</b>
+                                            </li>
+                                            <li>
+                                                <b>(c) les plans et la capacité de l’entreprise à adapter sa stratégie et son modèle économique en vue de la transition vers une économie durable et à contribuer à limiter le réchauffement de la planète à 1,5 °C ;</b>
+                                            </li>
+                                            <li>
+                                                <b>(d) toute autre action menée par l’entreprise pour prévenir, atténuer ou corriger des incidences négatives, réelles ou potentielles, ainsi que pour traiter les risques et opportunités, et le résultat de cette action ;</b>
+                                            </li>
+                                            <li>
+                                                <b>(e) la nature, le type et l’étendue des risques et opportunités importants de l’entreprise découlant de son incidence sur le changement climatique et de sa dépendance à l’égard celui-ci, ainsi que la manière dont l’entreprise gère ces risques et opportunités ; et</b>
+                                            </li>
+                                            <li>
+                                                <b>(f) les incidences financières pour l’entreprise, à court, moyen et long terme, des risques et des opportunités découlant de l’incidence de l'entreprise sur le changement climatique et de sa dépendance à l'égard de celui-ci.</b>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </section>
+                                <section class="fr-accordion">
+                                    <h3 class="fr-accordion__title">
+                                        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-exigences-ESRSE1">Exigences de publication</button>
+                                    </h3>
+                                    <div class="fr-collapse" id="accordion-exigences-ESRSE1">
+                                        <h6>ESRS 2</h6>
+                                        <strong>Gouvernance</strong>
+                                        <ul>
+                                            <li>
+                                                ESRS 2 GOV-3 – Intégration des performances en matière de durabilité dans les mécanismes incitatifs
+                                            </li>
+                                        </ul>
+                                        <strong>Stratégie</strong>
+                                        <ul>
+                                            <li>
+                                                ESRS 2 SBM-3 – Incidences, risques et opportunités importants et leur interaction avec la stratégie et le modèle économique
+                                            </li>
+                                        </ul>
+                                        <strong>Gestion des incidences, risques et opportunités</strong>
+                                        <ul>
+                                            <li>
+                                                ESRS 2 IRO-1 – Description des processus permettant d’identifier et d’évaluer les incidences, risques et opportunités importants liés au changement climatique
+                                            </li>
+                                        </ul>
+                                        <h6>Gouvernance</h6>
+                                        <ul>
+                                            <li>E1-1 – Plan de transition pour l’atténuation du changement climatique </li>
+                                        </ul>
+                                        <h6>Gestion des incidences, risques et opportunités
+                                        </h6>
+                                        <ul>
+                                            <li>E1-2 – Politiques liées à l’atténuation du changement climatique et à l’adaptation à celui-ci</li>
+                                            <li>E1-3 – Actions et ressources en rapport avec les politiques en matière de changement climatique</li>
+                                        </ul>
+                                        <h6>Métriques et cibles
+                                        </h6>
+                                        <ul>
+                                            <li>E1-4 – Cibles liées à l’atténuation du changement climatique et à l’adaptation à celui-ci</li>
+                                            <li>E1-5 – Consommation d’énergie et mix énergétique</li>
+                                            <li>E1-6 – Émissions brutes de GES de périmètres 1, 2, 3 et émissions totales de GES</li>
+                                            <li>E1-7 – Projets d’absorption et d’atténuation des GES financés au moyen de crédits carbone</li>
+                                            <li>E1-8 – Tarification interne du carbone</li>
+                                            <li>E1-9 – Incidences financières escomptées des risques physiques et de transition importants et opportunités potentielles liées au changement climatique</li>
+                                        </ul>
+                                    </div>
+                                </section>
+                            </div>
+                            <p class="fr-pt-4w">
+                                <a class="fr-link fr-link--download" download="" href="/static/CSRD/ESRS-E1/CSRD-ESRS-E1.pdf">
+                                    Télécharger : ESRS E1 - Changement climatique <span class="fr-link__detail">PDF – 2,2 mo</span>
+                                </a>
+                                <br>
+                                <br>
+                                <a class="fr-link fr-link--download" download="" href="/static/CSRD/ESRS-E1/Guide-d-application-ANC-ESRS-E1.pdf">
+                                    Télécharger : ESRS E1 - Guide d'application de l'ANC <span class="fr-link__detail">PDF – 4 mo</span>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</dialog>

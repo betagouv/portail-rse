@@ -1,0 +1,168 @@
+<dialog aria-labelledby="fr-modal-ESRSS2" role="dialog" id="modal-ESRSS2" class="fr-modal--lg fr-modal">
+    <div class="fr-container fr-container--fluid fr-container-md">
+        <div class="fr-grid-row fr-grid-row--center">
+            <div class="fr-col-12 fr-col-md-10 fr-col-lg-10">
+                <div class="fr-modal__body fr-modal--esrs">
+                    <div class="fr-grid-row">
+                        <div class="fr-col-12 fr-col-lg-6 fr-py-2w">
+                            <div class="fr-modal__content">
+                                <p class="fr-tag fr-mb-1w">Social</p>
+                                <h4>ESRS S2 - Travailleurs de la chaîne de valeurs</h4>
+                                <div class="fr-container">
+                                    {% if phase == 1 %}
+                                        <div class="fr-grid-row">
+                                            <p>
+                                                <strong>
+                                                    Choisissez les questions de durabilité qui ont une incidence réelle et potentielle appliquée à votre entreprise
+                                                </strong>
+                                            </p>
+                                            <h5>Conditions de travail
+                                                <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSS2-soustheme1">Définition annexe</button>
+                                            </h5>
+                                            <p class="fr-text--sm fr-collapse" id="ESRSS2-soustheme1">Par exemple, sécurité de l’emploi, temps de travail, salaire décent, dialogue social, liberté d’association, y compris l’existence de comités d’entreprise, négociation collective, équilibre entre vie professionnelle et vie privée, et santé et sécurité</p>
+                                            <ol>
+                                                <li>Sécurité de l'emploi</li>
+                                                <li>Temps de travail</li>
+                                                <li>Salaires décents</li>
+                                                <li>Dialogue social</li>
+                                                <li>Liberté d'association y compris l'existence de comités d'entreprise</li>
+                                                <li>Négociation collective</li>
+                                                <li>Equilibre entre vie professionnelle et vie privée</li>
+                                                <li>Santé et sécurité</li>
+                                            </ol>
+
+                                            <h5>Egalité de traitement et l’égalité des chances pour tous
+                                                <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSS2-soustheme2">Définition annexe</button>
+                                            </h5>
+                                            <p class="fr-text--sm fr-collapse" id="ESRSS2-soustheme2">Par exemple, égalité de genre et égalité de rémunération pour un travail de valeur égale, formation et développement des compétences, emploi et inclusion des personnes handicapées, mesures de lutte contre la violence et le harcèlement sur le lieu de travail, et diversité</p>
+                                            <ol>
+                                                <li>Egalité de genre et égalité de rémunération pour un travail de valeur égale</li>
+                                                <li>Formation et développement des compétences</li>
+                                                <li>Emploi et inclusion des personnes handicapées</li>
+                                                <li>Mesures de lutte contre la violence et le harcèlement sur le lieu de travail</li>
+                                                <li>Diversité</li>
+                                            </ol>
+
+                                            <h5>Autres droits liés au travail
+                                                <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSS2-soustheme3">Définition annexe</button>
+                                            </h5>
+                                            <p class="fr-text--sm fr-collapse" id="ESRSS2-soustheme3">Par exemple, travail des enfants, travail forcé, logement adéquat, eau et assainissement, et protection de la vie privée</p>
+                                            <ol>
+                                                <li>Travail des enfants</li>
+                                                <li>Travail forcé</li>
+                                                <li>Logement adéquat</li>
+                                                <li>Eau et assainissement</li>
+                                                <li>Protection de la vie privée</li>
+                                            </ol>
+
+                                            <div class="fr-grid-row fr-grid-row--center background-light-grey fr-p-3w fr-mt-6w">
+                                                <div class="fr-col-2">
+                                                    <span class="fr-icon-info-fill fr-icon--blue"></span>
+                                                </div>
+                                                <div class="fr-col-10">
+                                                    Fonctionnalité bientôt disponible : sélection des questions de durabilité.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fr-col-12 fr-col-lg-6 background-light-grey fr-p-2w">
+                            <div class="fr-modal__header">
+                                <button class="fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="modal-ESRSS2">Fermer</button>
+                            </div>
+                            <h6><span class="fr-icon-lightbulb-fill fr-icon--blue"></span> Conseils et bonnes pratiques</h6>
+                            {% if phase == 1 %}
+                                <p>
+                                    Pour faciliter votre sélection, renseignez-vous sur l'ESRS et les informations à publier dans le cas où cet enjeu serait matériel pour votre entreprise.
+                                </p>
+                            {% elif phase == 2 %}
+                                <p>
+                                    Pour vous aider, associez les abréviations des exigences de publication du tableur avec leur nom dans la rubrique “Exigence de publication” ci-dessous.
+                                </p>
+                            {% endif %}
+                            <div class="fr-accordions-group">
+                                <section class="fr-accordion">
+                                    <h3 class="fr-accordion__title">
+                                        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-objectifs-ESRSS2">Objectifs de l'ESRS</button>
+                                    </h3>
+                                    <div class="fr-collapse" id="accordion-objectifs-ESRSS2">
+                                        <p>
+                                            La présente norme a pour objectif de préciser les exigences de publication qui permettront aux utilisateurs de la déclaration relative à la durabilité de comprendre les incidences importantes sur les travailleurs de la chaîne de valeur liées aux activités et à la chaîne de valeur de l’entreprise, y compris celles liées à ses produits ou services et à ses relations d’affaires, ainsi que les risques et opportunités importants qui s’y rapportent, notamment :
+                                        </p>
+                                        <p>
+                                            <ul>
+                                                <li><b>
+                                                    (a) la manière dont l’entreprise influe sur les travailleurs de sa chaîne de valeur, pour ce qui est des incidences positives et négatives importantes, réelles ou potentielles ;
+                                                </b></li>
+                                                <li><b>
+                                                    (b) les actions entreprises pour prévenir, atténuer ou corriger des incidences négatives, réelles ou potentielles, ainsi que pour traiter les risques et les opportunités, et le résultat de ces actions ;
+                                                </b></li>
+                                                <li><b>
+                                                    (c) la nature, le type et l’ampleur des risques et opportunités importants de l’entreprise, y compris ceux qui sont liés à ses incidences sur les travailleurs de la chaîne de valeur et à ses dépendances à l’égard de ceux-ci, et la manière dont l’entreprise les gère ; et
+                                                </b></li>
+                                                <li><b>
+                                                    (d) les incidences financières sur l’entreprise, à court, moyen et long terme, des risques et opportunités importants, y compris celles découlant de ses incidences sur les travailleurs de la chaîne de valeur et de ses dépendances à l’égard de ceux-ci.
+                                                </b></li>
+                                            </ul>
+                                        </p>
+                                        <p class="fr-text--sm">
+                                            La présente norme porte sur tous les travailleurs de la chaîne de valeur en amont ou en aval de l’entreprise concernés ou susceptibles d’être concernés par des incidences importantes de l’entreprise, notamment par les incidences liées aux activités et à la chaîne de valeur de l’entreprise, y compris celles liées à ses produits ou services et à ses relations d’affaires. Elle englobe ainsi tous les travailleurs qui ne relèvent pas de la notion d’ « effectifs de l’entreprise » (les « effectifs de l’entreprise » étant les salariés, les contractants individuels, à savoir les travailleurs indépendants, et les travailleurs mis à disposition par des entreprises tierces exerçant principalement des « activités liées à l’emploi »).
+                                            <br>
+                                            Relèvent, par exemple, du champ d’application de la présente norme :<br>
+                                            (a) les travailleurs de prestataires de services externalisés qui travaillent sur le lieu de travail de l’entreprise (tels que les travailleurs d’entités tierces des secteurs de la restauration ou de la sécurité) ;<br>
+                                            (b) les travailleurs d’un fournisseur ayant conclu un contrat avec l’entreprise qui opèrent dans les locaux de ce fournisseur en appliquant les méthodes de travail de celui-ci ;<br>
+                                            (c) les travailleurs d’une entité «en aval» qui achète des biens ou des services à l’entreprise ;<br>
+                                            (d) les travailleurs d’une entité fournissant des équipements à l’entreprise qui, sur un lieu de travail contrôlé par l’entreprise, réalisent des tâches de maintenance régulière sur l’équipement ainsi fourni (photocopieuses, par exemple), conformément au contrat conclu entre le fournisseur d’équipements et l’entreprise ; et<br>
+                                            (e) les travailleurs plus en amont de la chaîne d’approvisionnement qui extraient les produits de base qui sont ensuite transformés en composants entrant dans les produits de l’entreprise.
+                                        </p>
+                                    </div>
+                                </section>
+                                <section class="fr-accordion">
+                                    <h3 class="fr-accordion__title">
+                                        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-exigences-ESRSS2">Exigences de publication</button>
+                                    </h3>
+                                    <div class="fr-collapse" id="accordion-exigences-ESRSS2">
+                                        <h6>ESRS 2</h6>
+                                        <strong>Stratégie</strong>
+                                        <ul>
+                                            <li>
+                                                ESRS 2 SBM-2 — Intérêts et points de vue des parties intéressées
+                                            </li>
+                                            <li>
+                                                ESRS 2 SBM-3 — Incidences, risques et opportunités importants et interaction avec la stratégie et le modèle économique
+                                            </li>
+                                        </ul>
+                                        <h6>Stratégie</h6>
+                                        <ul>
+                                            <li>S2-1 — Politiques relatives aux travailleurs de la chaîne de valeur </li>
+                                            <li>S2-2 — Processus d’interaction au sujet des incidences avec les travailleurs de la chaîne de valeur </li>
+                                            <li>S2-3 — Procédures visant à remédier aux incidences négatives et canaux permettant aux travailleurs de la chaîne de valeur de faire part de leurs préoccupations </li>
+                                            <li>S2-4 — Actions concernant les incidences importantes sur les travailleurs de la chaîne de valeur, approches visant à gérer les risques importants et à saisir les opportunités importantes concernant les travailleurs de la chaîne de valeur, et efficacité de ces actions </li>
+                                        </ul>
+                                        <h6>Métriques et cibles
+                                        </h6>
+                                        <ul>
+                                            <li>S2-5 — Cibles liées à la gestion des incidences négatives importantes, à la promotion des incidences positives et à la gestion des risques et opportunités importants </li>
+                                        </ul>
+                                    </div>
+                                </section>
+                            </div>
+                            <p class="fr-pt-4w">
+                                <a class="fr-link fr-link--download" download="" href="/static/CSRD/ESRS-S2/CSRD-ESRS-S2.pdf">
+                                    Télécharger : ESRS S2 - Travailleurs de la chaîne de valeurs <span class="fr-link__detail">PDF – 873,9 ko</span>
+                                </a>
+                                <br>
+                                <br>
+                                <a class="fr-link fr-link--download" download="" href="/static/CSRD/ESRS-S2/Guide-d-application-ANC-ESRS-S2-3-4.pdf">
+                                    Télécharger : ESRS S2,3,4 - Guide d'application de l'ANC <span class="fr-link__detail">PDF – 2,8 mo</span>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</dialog>

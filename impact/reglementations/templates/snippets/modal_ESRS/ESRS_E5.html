@@ -1,0 +1,132 @@
+<dialog aria-labelledby="fr-modal-ESRSE5" role="dialog" id="modal-ESRSE5" class="fr-modal--lg fr-modal">
+    <div class="fr-container fr-container--fluid fr-container-md">
+        <div class="fr-grid-row fr-grid-row--center">
+            <div class="fr-col-12 fr-col-md-10 fr-col-lg-10">
+                <div class="fr-modal__body fr-modal--esrs">
+                    <div class="fr-grid-row">
+                        <div class="fr-col-12 fr-col-lg-6 fr-py-2w">
+                            <div class="fr-modal__content">
+                                <p class="fr-tag fr-mb-1w">Environnement</p>
+                                <h4>ESRS E5 - Economie circulaire</h4>
+                                <div class="fr-container">
+                                    {% if phase == 1 %}
+                                        <div class="fr-grid-row">
+                                            <p>
+                                                <strong>
+                                                    Choisissez les questions de durabilité qui ont une incidence réelle et potentielle appliquée à votre entreprise
+                                                </strong>
+                                            </p>
+                                            <ol>
+                                                <li>
+                                                    Ressources entrantes, y compris l’utilisation des ressources
+                                                </li>
+                                                <li>
+                                                    Ressources sortantes liées aux produits et services
+                                                </li>
+                                                <li>
+                                                    Déchets
+                                                </li>
+                                            </ol>
+
+                                            <div class="fr-grid-row fr-grid-row--center background-light-grey fr-p-3w fr-mt-6w">
+                                                <div class="fr-col-2">
+                                                    <span class="fr-icon-info-fill fr-icon--blue"></span>
+                                                </div>
+                                                <div class="fr-col-10">
+                                                    Fonctionnalité bientôt disponible : sélection des questions de durabilité.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fr-col-12 fr-col-lg-6 background-light-grey fr-p-2w">
+                            <div class="fr-modal__header">
+                                <button class="fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="modal-ESRSE5">Fermer</button>
+                            </div>
+                            <h6><span class="fr-icon-lightbulb-fill fr-icon--blue"></span> Conseils et bonnes pratiques</h6>
+                            {% if phase == 1 %}
+                                <p>
+                                    Pour faciliter votre sélection, renseignez-vous sur l'ESRS et les informations à publier dans le cas où cet enjeu serait matériel pour votre entreprise.
+                                </p>
+                            {% elif phase == 2 %}
+                                <p>
+                                    Pour vous aider, associez les abréviations des exigences de publication du tableur avec leur nom dans la rubrique “Exigence de publication” ci-dessous.
+                                </p>
+                            {% endif %}
+                            <div class="fr-accordions-group">
+                                <section class="fr-accordion">
+                                    <h3 class="fr-accordion__title">
+                                        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-objectifs-ESRSE5">Objectifs de l'ESRS</button>
+                                    </h3>
+                                    <div class="fr-collapse" id="accordion-objectifs-ESRSE5">
+                                        <p>
+                                            La présente norme a pour objectif de préciser les exigences de publication qui permettront aux utilisateurs de la déclaration relative à la durabilité de comprendre :
+                                        </p>
+                                        <p>
+                                            <ul>
+                                                <li><b>
+                                                    (a) les incidences positives et négatives importantes, réelles ou potentielles, de l’entreprise sur l’utilisation des ressources, y compris l’utilisation efficace des ressources, le non épuisement des ressources ainsi que l’approvisionnement et l'utilisation durables de ressources renouvelables (ci-après dénommée, dans la présente norme, « utilisation des ressources et économie circulaire ») ;
+                                                </b></li>
+                                                <li><b>
+                                                    (b) les éventuelles actions menées par l’entreprise, et leur résultat, pour éviter ou atténuer les incidences négatives, réelles ou potentielles, résultant de l’utilisation des ressources, notamment les mesures prises pour dissocier sa croissance économique de l’utilisation des matières, et pour traiter les risques et opportunités ;
+                                                </b></li>
+                                                <li><b>
+                                                    (c) les plans et la capacité de l’entreprise pour ce qui est d'adapter sa stratégie et son modèle économique conformément aux principes de l’économie circulaire, y compris, mais sans s’y limiter, la réduction au minimum des déchets, la conservation au maximum de la valeur des produits, des matières et autres ressources et l’amélioration de leur utilisation efficace dans la production et la consommation ;
+                                                </b></li>
+                                                <li><b>
+                                                    (d) la nature, le type et l’étendue des risques et opportunités importants de l’entreprise liés aux incidences et aux dépendances de celle-ci résultant de l’utilisation des ressources et de l’économie circulaire, et la manière dont l’entreprise les gère ; ainsi que
+                                                </b></li>
+                                                <li><b>
+                                                    (e) les incidences financières à court, moyen et long terme sur l’entreprise des risques et opportunités importants résultant des incidences et des dépendances de l’entreprise en ce qui concerne l’utilisation des ressources et l’économie circulaire.
+                                                </b></li>
+                                            </ul>
+                                        </p>
+                                        <p class="fr-text--sm">
+                                            On entend par « économie circulaire », un système économique dans lequel la valeur des produits, des matières et autres ressources dans l’économie est maintenue le plus longtemps possible, en améliorant leur utilisation efficace dans la production et la consommation, réduisant ainsi les incidences environnementales de leur utilisation, et limitant au minimum les déchets et le rejet de substances dangereuses à toutes les étapes de leur cycle de vie, notamment par l’application de la hiérarchie des déchets.<br>
+                                            L’objectif est de maximiser et de préserver la valeur des ressources, des produits et des matières techniques et biologiques en créant un système qui favorise la pérennité, l'utilisation optimale ou le réemploi, le reconditionnement, le remanufacturage, le recyclage et le cycle des nutriments
+                                        </p>
+                                    </div>
+                                </section>
+                                <section class="fr-accordion">
+                                    <h3 class="fr-accordion__title">
+                                        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-exigences-ESRSE5">Exigences de publication</button>
+                                    </h3>
+                                    <div class="fr-collapse" id="accordion-exigences-ESRSE5">
+                                        <h6>ESRS 2</h6>
+                                        <strong>Gestion des incidences, risques et opportunités</strong>
+                                        <ul>
+                                            <li>
+                                                ESRS 2 IRO-1 – Description des procédures d'identification et d’évaluation des incidences, risques et opportunités importants liés à l’utilisation des ressources et à l’économie circulaire
+                                            </li>
+                                        </ul>
+                                        <h6>Gestion des incidences, risques et opportunités
+                                        </h6>
+                                        <ul>
+                                            <li>E5-1 – Politiques en matière d’utilisation des ressources et d’économie circulaire </li>
+                                            <li>E5-2 – Actions et ressources relatives à l’utilisation des ressources et à l’économie circulaire </li>
+                                        </ul>
+                                        <h6>Métriques et cibles
+                                        </h6>
+                                        <ul>
+                                            <li>E5-3– Cibles relatives à l’utilisation des ressources et à l’économie circulaire </li>
+                                            <li>E5-4 – Ressources entrantes </li>
+                                            <li>E5-5 – Ressources sortantes </li>
+                                            <li>E5-6 – Incidences financières escomptées des incidences, risques et opportunités liés à l’utilisation des ressources et à l’économie circulaire</li>
+                                        </ul>
+                                    </div>
+                                </section>
+                            </div>
+                            <p class="fr-pt-4w">
+                                <a class="fr-link fr-link--download" download="" href="/static/CSRD/ESRS-E5/CSRD-ESRS-E5.pdf">
+                                    Télécharger : ESRS E5 - Economie circulaire <span class="fr-link__detail">PDF – 950,8 ko</span>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</dialog>
