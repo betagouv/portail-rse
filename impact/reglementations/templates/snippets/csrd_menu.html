@@ -59,14 +59,12 @@
                     <div class="fr-collapse" id="fr-sidemenu-item-3">
                         <ul class="fr-sidemenu__list">
                             <li class="fr-sidemenu__item">
-                                {% url 'reglementations:csrd_etape' entreprise.siren 2 0 as url_page %}
-                                <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if phase == 2 and etape == 0 %} aria-current="page"{% endif %}>
+                                <a class="fr-sidemenu__link" href="{% url 'reglementations:csrd_etape' entreprise.siren 2 0 %}" target="_self" {% if phase == 2 and etape == 0 %} aria-current="page"{% endif %}>
                                     Introduction
                                 </a>
                             </li>
                             <li class="fr-sidemenu__item">
-                                {% url 'reglementations:csrd_sous_etape' entreprise.siren 2 1 1 as url_page %}
-                                <a class="fr-sidemenu__link" href="{{ url_page }}" target="_self" {% if phase == 2 and etape == 1 %} aria-current="page"{% endif %}>
+                                <a class="fr-sidemenu__link" href="{% url 'reglementations:csrd_etape' entreprise.siren 2 1 %}" target="_self" {% if phase == 2 and etape == 1 %} aria-current="page"{% endif %}>
                                     Étape 1 - Analyser la matérialité des informations élémentaires
                                 </a>
                             </li>
