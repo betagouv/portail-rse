@@ -1,0 +1,167 @@
+<dialog aria-labelledby="fr-modal-ESRSS1" role="dialog" id="modal-ESRSS1" class="fr-modal--lg fr-modal">
+    <div class="fr-container fr-container--fluid fr-container-md">
+        <div class="fr-grid-row fr-grid-row--center">
+            <div class="fr-col-12 fr-col-md-10 fr-col-lg-10">
+                <div class="fr-modal__body fr-modal--esrs">
+                    <div class="fr-grid-row">
+                        <div class="fr-col-12 fr-col-lg-6 fr-py-2w">
+                            <div class="fr-modal__content">
+                                <p class="fr-tag fr-mb-1w">Social</p>
+                                <h4>ESRS S1 - Effectifs de l'entreprise</h4>
+                                <div class="fr-container">
+                                    {% if phase == 1 %}
+                                        <div class="fr-grid-row">
+                                            <p>
+                                                <strong>
+                                                    Choisissez les questions de durabilité qui ont une incidence réelle et potentielle appliquée à votre entreprise
+                                                </strong>
+                                            </p>
+                                            <h5>Conditions de travail
+                                                <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSS1-soustheme1">Définition annexe</button>
+                                            </h5>
+                                            <p class="fr-text--sm fr-collapse" id="ESRSS1-soustheme1">Par exemple, en matière d’égalité des chances, la discrimination à l’embauche et à la promotion à l’égard des femmes peut réduire l’accès de l’entreprise à une main-d’œuvre qualifiée et nuire à sa réputation. À l’inverse, les politiques visant à accroître la représentation des femmes au sein des effectifs et aux niveaux supérieurs de l’encadrement peuvent avoir des incidences positives, telles que l’expansion de la réserve de main-d’œuvre qualifiée et l’amélioration de l’image de marque de l’entreprise.</p>
+                                            <ol>
+                                                <li>Sécurité de l'emploi</li>
+                                                <li>Temps de travail</li>
+                                                <li>Salaires décents</li>
+                                                <li>Dialogue social</li>
+                                                <li>Liberté d'association, existence de comités d'entreprise et droits des travailleurs à l'information, à la consultation et à la participation</li>
+                                                <li>Négociation collective, y compris la proportion de travailleurs couverts par des conventions collectives</li>
+                                                <li>Equilibre entre vie professionnelle et vie privée</li>
+                                                <li>Santé et sécurité</li>
+                                            </ol>
+
+                                            <h5>Égalité de traitement et égalité des chances pour tous</h5>
+                                            <ol>
+                                                <li>Egalité de genre et égalité de rémunération pour un travail de valeur égale</li>
+                                                <li>Formation et développement des compétences</li>
+                                                <li>Emploi et inclusion des personnes handicapées</li>
+                                                <li>Mesures de lutte contre la violence et le harcèlement sur le lieu de travail</li>
+                                                <li>Diversité</li>
+                                            </ol>
+
+                                            <h5>Autres droits liés au travail</h5>
+                                            <ol>
+                                                <li>Travail des enfants</li>
+                                                <li>Travail forcé</li>
+                                                <li>Logement adéquat</li>
+                                                <li>Protection de la vie privée</li>
+                                            </ol>
+
+                                            <div class="fr-grid-row fr-grid-row--center background-light-grey fr-p-3w fr-mt-6w">
+                                                <div class="fr-col-2">
+                                                    <span class="fr-icon-info-fill fr-icon--blue"></span>
+                                                </div>
+                                                <div class="fr-col-10">
+                                                    Fonctionnalité bientôt disponible : sélection des questions de durabilité.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fr-col-12 fr-col-lg-6 background-light-grey fr-p-2w">
+                            <div class="fr-modal__header">
+                                <button class="fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="modal-ESRSS1">Fermer</button>
+                            </div>
+                            <h6><span class="fr-icon-lightbulb-fill fr-icon--blue"></span> Conseils et bonnes pratiques</h6>
+                            {% if phase == 1 %}
+                                <p>
+                                    Pour faciliter votre sélection, renseignez-vous sur l'ESRS et les informations à publier dans le cas où cet enjeu serait matériel pour votre entreprise.
+                                </p>
+                            {% elif phase == 2 %}
+                                <p>
+                                    Pour vous aider, associez les abréviations des exigences de publication du tableur avec leur nom dans la rubrique “Exigence de publication” ci-dessous.
+                                </p>
+                            {% endif %}
+                            <div class="fr-accordions-group">
+                                <section class="fr-accordion">
+                                    <h3 class="fr-accordion__title">
+                                        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-objectifs-ESRSS1">Objectifs de l'ESRS</button>
+                                    </h3>
+                                    <div class="fr-collapse" id="accordion-objectifs-ESRSS1">
+                                        <p>
+                                            La présente norme a pour objectif de préciser les exigences de publication qui permettront aux utilisateurs de la déclaration relative à la durabilité de comprendre les incidences importantes de l’entreprise sur ses effectifs, ainsi que les risques et opportunités importants connexes, notamment :
+                                        </p>
+                                        <p>
+                                            <ul>
+                                                <li><b>
+                                                    (a) la manière dont l’entreprise modules ses effectifs, en termes d’incidences réelles et négatives, réelles ou potentielles ;
+                                                </b></li>
+                                                <li><b>
+                                                    (b) toute mesure prise, et le résultat de ces mesures, pour prévenir, atténuer ou corriger les incidences négatives réelles ou potentielles, et pour faire face aux risques et aux possibilités ;
+                                                </b></li>
+                                                <li><b>
+                                                    (c) la nature, le type et l’ampleur des risques et opportunités importants de l’entreprise qui sont liés à ses incidences et à ses dépendances en matière d’effectifs, et la manière dont l’entreprise les gère ; et
+                                                </b></li>
+                                                <li><b>
+                                                    (d) les effets financiers sur l’entreprise sur les horizons à court, moyen et long terme des risques et opportunités importants découlant des incidences et des dépendances de l’entreprise à l’égard de ses effectifs
+                                                </b></li>
+                                            </ul>
+                                        </p>
+                                        <p class="fr-text--sm">
+                                            La présente norme couvre les effectifs d’une entreprise, qui s’entend comme incluant à la fois les personnes qui sont dans une relation de travail avec l’entreprise (« salariés ») et les personnes qui ne sont pas des salariés qui sont soit des personnes ayant un contrat avec l’entreprise pour fournir de la main-d’œuvre (« travailleurs indépendants »), soit des personnes fournies par des entreprises exerçant principalement des « activités de travail » (code NACE N78).
+                                        </p>
+                                    </div>
+                                </section>
+                                <section class="fr-accordion">
+                                    <h3 class="fr-accordion__title">
+                                        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-exigences-ESRSS1">Exigences de publication</button>
+                                    </h3>
+                                    <div class="fr-collapse" id="accordion-exigences-ESRSS1">
+                                        <h6>ESRS 2</h6>
+                                        <strong>Stratégie</strong>
+                                        <ul>
+                                            <li>
+                                                ESRS 2 SBM-2 — Intérêts et points de vue des parties intéressées
+                                            </li>
+                                            <li>
+                                                ESRS 2 SBM-3 – Incidences, risques et opportunités importants et leur interaction avec la stratégie et le modèle économique
+                                            </li>
+                                        </ul>
+                                        <h6>Gestion des incidences, risques et opportunités
+                                        </h6>
+                                        <ul>
+                                            <li>S1-1 — Politiques liées aux effectifs de l’entreprise </li>
+                                            <li>S1-2 — Processus d’interaction au sujet des incidences avec les effectifs de l’entreprise et leurs représentants </li>
+                                            <li>S1-3 — Procédures de réparation des incidences négatives et canaux permettant aux travailleurs de l’entreprise de faire part de leurs préoccupations </li>
+                                            <li>S1-4 — Actions concernant les incidences importantes, approches visant à atténuer les risques importants et à saisir les opportunités importantes concernant les effectifs de l’entreprise, et efficacité de ces actions et approches </li>
+                                        </ul>
+                                        <h6>Métriques et cibles
+                                        </h6>
+                                        <ul>
+                                            <li>S1-5 — Cibles liées à la gestion des incidences négatives importantes, à la promotion des incidences positives et à la gestion des risques et opportunités importants </li>
+                                            <li>S1-6 — Caractéristiques des salariés de l’entreprise </li>
+                                            <li>S1-7 — Caractéristiques des travailleurs non salariés faisant partie des effectifs de l’entreprise </li>
+                                            <li>S1-8 — Couverture des négociations collectives et dialogue social </li>
+                                            <li>S1-9 — Métriques de diversité o Exigence de publication </li>
+                                            <li>S1-10 — Salaires décents </li>
+                                            <li>S1-11 — Protection sociale </li>
+                                            <li>S1-12 — Personnes handicapées </li>
+                                            <li>S1-13 — Métriques de la formation et du développement des compétences </li>
+                                            <li>S1-14 — Métriques de santé et de sécurité </li>
+                                            <li>S1-15 — Métriques d’équilibre entre vie professionnelle et vie privée </li>
+                                            <li>S1-16 — Métriques de rémunération (écart de rémunération et rémunération totale)</li>
+                                            <li>S1-17 — Cas, plaintes et incidences graves en matière de droits de l’homme </li>
+                                        </ul>
+                                    </div>
+                                </section>
+                            </div>
+                            <p class="fr-pt-4w">
+                                <a class="fr-link fr-link--download" download="" href="/static/CSRD/ESRS-S1/CSRD-ESRS-S1.pdf">
+                                    Télécharger : ESRS S1 - Effectifs de l'entreprise <span class="fr-link__detail">PDF – 1,7 mo</span>
+                                </a>
+                                <br>
+                                <br>
+                                <a class="fr-link fr-link--download" download="" href="/static/CSRD/ESRS-S1/Guide-d-application-ANC-ESRS-S1.pdf">
+                                    Télécharger : ESRS S1 - Guide d'application de l'ANC <span class="fr-link__detail">PDF – 3 mo</span>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</dialog>

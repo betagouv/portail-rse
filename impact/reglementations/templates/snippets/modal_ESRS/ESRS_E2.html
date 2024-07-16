@@ -1,0 +1,147 @@
+<dialog aria-labelledby="fr-modal-ESRSE2" role="dialog" id="modal-ESRSE2" class="fr-modal--lg fr-modal">
+    <div class="fr-container fr-container--fluid fr-container-md">
+        <div class="fr-grid-row fr-grid-row--center">
+            <div class="fr-col-12 fr-col-md-10 fr-col-lg-10">
+                <div class="fr-modal__body fr-modal--esrs">
+                    <div class="fr-grid-row">
+                        <div class="fr-col-12 fr-col-lg-6 fr-py-2w">
+                            <div class="fr-modal__content">
+                                <p class="fr-tag fr-mb-1w">Environnement</p>
+                                <h4>ESRS E2 - Pollution</h4>
+                                <div class="fr-container">
+                                    {% if phase == 1 %}
+                                        <div class="fr-grid-row">
+                                            <p>
+                                                <strong>
+                                                    Choisissez les questions de durabilité qui ont une incidence réelle et potentielle appliquée à votre entreprise
+                                                </strong>
+                                            </p>
+                                            <ol>
+                                                <li>
+                                                    Pollution de l'air
+                                                    <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSE2-soustheme1">Définition annexe</button>
+                                                </li>
+                                                <p class="fr-text--sm fr-collapse" id="ESRSE2-soustheme1">La « pollution de l’air » désigne les émissions dans l’air (air intérieur et air extérieur) dues à l’entreprise, ainsi que la prévention et la réduction de ces émissions</p>
+                                                <li>
+                                                    Pollution des eaux
+                                                    <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSE2-soustheme2">Définition annexe</button>
+                                                </li>
+                                                <p class="fr-text--sm fr-collapse" id="ESRSE2-soustheme2">La « pollution de l’eau » désigne les rejets dans l’eau dus à l’entreprise, ainsi que la prévention et la réduction de ces émissions.</p>
+                                                <li>
+                                                    Pollution des sols
+                                                    <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSE2-soustheme3">Définition annexe</button>
+                                                </li>
+                                                <p class="fr-text--sm fr-collapse" id="ESRSE2-soustheme3">La « pollution des sols » désigne les rejets dans le sol dus à l’entreprise ainsi que là prévention et la réduction de ces émissions</p>
+                                                <li>
+                                                    Pollution des organismes vivants et des ressources alimentaires
+                                                </li>
+                                                <li>
+                                                    Substances préoccupantes
+                                                    <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSE2-soustheme5">Définition annexe</button>
+                                                </li>
+                                                <p class="fr-text--sm fr-collapse" id="ESRSE2-soustheme5">En ce qui concerne les « substances préoccupantes », la présente norme couvre la production, l’utilisation, la distribution et la commercialisation, par l’entreprise, de substances préoccupante</p>
+                                                <li>
+                                                    Substances extrêmement préoccupantes
+                                                </li>
+                                                <li>
+                                                    Microplastiques
+                                                </li>
+                                            </ol>
+
+                                            <div class="fr-grid-row fr-grid-row--center background-light-grey fr-p-3w fr-mt-6w">
+                                                <div class="fr-col-2">
+                                                    <span class="fr-icon-info-fill fr-icon--blue"></span>
+                                                </div>
+                                                <div class="fr-col-10">
+                                                    Fonctionnalité bientôt disponible : sélection des questions de durabilité.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fr-col-12 fr-col-lg-6 background-light-grey fr-p-2w">
+                            <div class="fr-modal__header">
+                                <button class="fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="modal-ESRSE2">Fermer</button>
+                            </div>
+                            <h6><span class="fr-icon-lightbulb-fill fr-icon--blue"></span> Conseils et bonnes pratiques</h6>
+                            {% if phase == 1 %}
+                                <p>
+                                    Pour faciliter votre sélection, renseignez-vous sur l'ESRS et les informations à publier dans le cas où cet enjeu serait matériel pour votre entreprise.
+                                </p>
+                            {% elif phase == 2 %}
+                                <p>
+                                    Pour vous aider, associez les abréviations des exigences de publication du tableur avec leur nom dans la rubrique “Exigence de publication” ci-dessous.
+                                </p>
+                            {% endif %}
+                            <div class="fr-accordions-group">
+                                <section class="fr-accordion">
+                                    <h3 class="fr-accordion__title">
+                                        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-objectifs-ESRSE2">Objectifs de l'ESRS</button>
+                                    </h3>
+                                    <div class="fr-collapse" id="accordion-objectifs-ESRSE2">
+                                        <p>La présente norme a pour objectif de préciser les exigences de publication qui permettront aux utilisateurs de la déclaration relative à la durabilité de comprendre :</p>
+                                        <p>
+                                            <ul>
+                                                <li>
+                                                    <b>(a) l'influence de l'entreprise sur la pollution de l’air, de l’eau et des sols du fait de ses incidences importantes positives et négatives, réelles ou potentielles ;</b>
+                                                </li>
+                                                <li>
+                                                    <b>(b) les actions menées en vue de prévenir ou d'atténuer les incidences négatives importantes, réelles ou potentielles, ou en vue de faire face aux risques et de saisir les opportunités, ainsi que le résultat de ces actions ;</b>
+                                                </li>
+                                                <li>
+                                                    <b>(c) les plans et la capacité de l’entreprise à adapter sa stratégie et son modèle économique en vue de la transition vers une économie durable, parallèlement aux besoins en matière de prévention, de réduction et d’élimination de la pollution. L’objectif est de créer un environnement exempt de substances toxiques, sans pollution, notamment pour soutenir le plan d’action de l’UE intitulé « Vers une pollution zéro dans l’air, l’eau et les sols » ;</b>
+                                                </li>
+                                                <li>
+                                                    <b>(d) la nature, le type et l’ampleur des risques et opportunités importants de l’entreprise qui sont liés, d'une part, aux incidences et aux dépendances de celle-ci en matière de pollution, ainsi que, d'autre part, à la prévention, au contrôle, à l’élimination ou à la réduction de la pollution, y compris lorsque cela résulte de l’application de la réglementation, et la gestion de l’entreprise en la matière ; et ainsi que</b>
+                                                </li>
+                                                <li>
+                                                    <b>(e) les incidences financières sur l’entreprise, à court, moyen et long terme, des risques et opportunités importants découlant des incidences et des dépendances de l'entreprise en matière de pollution</b>
+                                                </li>
+                                            </ul>
+                                        </p>
+                                        <a href="">En savoir plus sur : ESRS E2 - Pollution</a>
+                                    </div>
+                                </section>
+                                <section class="fr-accordion">
+                                    <h3 class="fr-accordion__title">
+                                        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-exigences-ESRSE2">Exigences de publication</button>
+                                    </h3>
+                                    <div class="fr-collapse" id="accordion-exigences-ESRSE2">
+                                        <h6>ESRS 2</h6>
+                                        <strong>Gestion des incidences, risques et opportunités</strong>
+                                        <ul>
+                                            <li>
+                                                ESRS 2 IRO-1 – Description des procédures de recensement et d’évaluation des incidences, risques et opportunités importants en matière de pollution
+                                            </li>
+                                        </ul>
+                                        <h6>Gestion des incidences, risques et opportunités
+                                        </h6>
+                                        <ul>
+                                            <li>E2-1 — Politiques en matière de pollution </li>
+                                            <li>E2-2 – Actions et ressources relatives à la pollution </li>
+                                        </ul>
+                                        <h6>Métriques et cibles
+                                        </h6>
+                                        <ul>
+                                            <li>E2-3 — Cibles liées à la pollution</li>
+                                            <li>E2-4 – Pollution de l’air, de l’eau et des sols</li>
+                                            <li>E2-5 – Substances préoccupantes et substances extrêmement préoccupantes</li>
+                                            <li>E2-6 – Incidences financières escomptées des incidences, risques et opportunités liés à la pollution</li>
+                                        </ul>
+                                    </div>
+                                </section>
+                            </div>
+                            <p class="fr-pt-4w">
+                                <a class="fr-link fr-link--download" download="" href="/static/CSRD/ESRS-E2/CSRD-ESRS-E2.pdf">
+                                    Télécharger : ESRS E2 - Pollution <span class="fr-link__detail">PDF – 931,2 ko</span>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</dialog>

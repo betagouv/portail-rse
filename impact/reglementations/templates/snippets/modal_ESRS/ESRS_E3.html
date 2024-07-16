@@ -1,0 +1,145 @@
+<dialog aria-labelledby="fr-modal-ESRSE3" role="dialog" id="modal-ESRSE3" class="fr-modal--lg fr-modal">
+    <div class="fr-container fr-container--fluid fr-container-md">
+        <div class="fr-grid-row fr-grid-row--center">
+            <div class="fr-col-12 fr-col-md-10 fr-col-lg-10">
+                <div class="fr-modal__body fr-modal--esrs">
+                    <div class="fr-grid-row">
+                        <div class="fr-col-12 fr-col-lg-6 fr-py-2w">
+                            <div class="fr-modal__content">
+                                <p class="fr-tag fr-mb-1w">Environnement</p>
+                                <h4>ESRS E3 - Ressources aquatiques et marines</h4>
+                                <div class="fr-container">
+                                    {% if phase == 1 %}
+                                        <div class="fr-grid-row">
+                                            <p>
+                                                <strong>
+                                                    Choisissez les questions de durabilité qui ont une incidence réelle et potentielle appliquée à votre entreprise
+                                                </strong>
+                                            </p>
+                                            <h5>Eau
+                                                <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSE3-soustheme1">Définition annexe</button>
+                                            </h5>
+                                            <p class="fr-text--sm fr-collapse" id="ESRSE3-soustheme1">Par « eau », on entend que la présente norme couvre les eaux de surface, les eaux souterraines. Elle inclut des exigences de publication relatives à la consommation d’eau dans les activités, produits et services de l’entreprise, ainsi que des informations connexes sur les prélèvements et rejets d’eau.</p>
+                                            <h5>Ressources marines
+                                                <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSE3-soustheme2">Définition annexe</button>
+                                            </h5>
+                                            <p class="fr-text--sm fr-collapse" id="ESRSE3-soustheme2">Par « ressources marines », on entend que la présente norme couvre l’extraction et l’utilisation de ces ressources, ainsi que les activités économiques s’y rapportant.</p>
+
+                                            <ol>
+                                                <li>
+                                                    Consommation d'eau
+                                                </li>
+                                                <li>
+                                                    Prélèvements d'eau
+                                                </li>
+                                                <li>
+                                                    Rejet des eaux
+                                                </li>
+                                                <li>
+                                                    Rejet des eaux dans les océans
+                                                </li>
+                                                <li>
+                                                    Extraction et utilisation des ressources marines
+                                                </li>
+                                            </ol>
+
+                                            <div class="fr-grid-row fr-grid-row--center background-light-grey fr-p-3w fr-mt-6w">
+                                                <div class="fr-col-2">
+                                                    <span class="fr-icon-info-fill fr-icon--blue"></span>
+                                                </div>
+                                                <div class="fr-col-10">
+                                                    Fonctionnalité bientôt disponible : sélection des questions de durabilité.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fr-col-12 fr-col-lg-6 background-light-grey fr-p-2w">
+                            <div class="fr-modal__header">
+                                <button class="fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="modal-ESRSE3">Fermer</button>
+                            </div>
+                            <h6><span class="fr-icon-lightbulb-fill fr-icon--blue"></span> Conseils et bonnes pratiques</h6>
+                            {% if phase == 1 %}
+                                <p>
+                                    Pour faciliter votre sélection, renseignez-vous sur l'ESRS et les informations à publier dans le cas où cet enjeu serait matériel pour votre entreprise.
+                                </p>
+                            {% elif phase == 2 %}
+                                <p>
+                                    Pour vous aider, associez les abréviations des exigences de publication du tableur avec leur nom dans la rubrique “Exigence de publication” ci-dessous.
+                                </p>
+                            {% endif %}
+                            <div class="fr-accordions-group">
+                                <section class="fr-accordion">
+                                    <h3 class="fr-accordion__title">
+                                        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-objectifs-ESRSE3">Objectifs de l'ESRS</button>
+                                    </h3>
+                                    <div class="fr-collapse" id="accordion-objectifs-ESRSE3">
+                                        <p>
+                                            La présente norme a pour objectif de préciser les exigences de publication qui permettront aux utilisateurs de la déclaration relative à la durabilité de comprendre :
+                                        </p>
+                                        <p>
+                                            <ul>
+                                                <li><b>
+                                                    (a) les incidences de l’entreprise sur les ressources aquatiques et marines, notamment les incidences positives et négatives importantes, réelles ou potentielles ;
+                                                </b></li>
+                                                <li><b>
+                                                    (b) les actions menées, et leur résultat, pour prévenir ou atténuer les incidences négatives importantes, réelles ou potentielles, et pour protéger les ressources aquatiques et marines, y compris en ce qui concerne la réduction de la consommation d’eau, et pour traiter les risques et opportunités ;
+                                                </b></li>
+                                                <li><b>
+                                                    (c) si, comment et dans quelle mesure l’entreprise contribue aux ambitions du pacte vert pour l’Europe en faveur d’un air pur, d’une eau propre, de sols sains et de la biodiversité, ainsi qu’à la durabilité de l’économie bleue et des secteurs de la pêche, en tenant compte des éléments suivants : la directive 2000/60/CE du Parlement européen et du Conseil68 (directive-cadre sur l’eau), la directive 2008/56/CE du Parlement européen et du Conseil69 (directive-cadre «stratégie pour le milieu marin»), la directive 2014/89/UE du Parlement européen et du Conseil70 (directive sur la planification de l’espace maritime), les objectifs de développement durable (en particulier l’ODD 6 Eau propre et assainissement et l’ODD 14 Vie aquatique), ainsi que le respect des limites environnementales de la planète (par exemple en ce qui concerne les limites planétaires en matière d’intégrité de la biosphère, d’acidification des océans, d’utilisation de l’eau douce et des flux biogéochimiques) ;
+                                                </b></li>
+                                                <li><b>
+                                                    (d) les plans et la capacité de l’entreprise à adapter sa stratégie et son modèle économique conformément à la promotion de l’utilisation durable de l’eau fondée sur la protection à long terme des ressources en eau disponibles ; la protection des écosystèmes aquatiques et la restauration des habitats d’eau douce et marins ;
+                                                </b></li>
+                                                <li><b>
+                                                    (e) la nature, le type et l’ampleur des risques et opportunités importants de l’entreprise résultant des incidences et des dépendances de cette dernière à l’égard des ressources aquatiques et marines, et la manière dont l’entreprise les gère ; et
+                                                </b></li>
+                                                <li><b>
+                                                    (f) les incidences financières sur l’entreprise, à court, moyen et long terme, des risques et opportunités importants découlant de ses incidences et dépendances à l’égard des ressources aquatiques et marines.
+                                                </b></li>
+                                            </ul>
+                                        </p>
+                                    </div>
+                                </section>
+                                <section class="fr-accordion">
+                                    <h3 class="fr-accordion__title">
+                                        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-exigences-ESRSE3">Exigences de publication</button>
+                                    </h3>
+                                    <div class="fr-collapse" id="accordion-exigences-ESRSE3">
+                                        <h6>ESRS 2</h6>
+                                        <strong>Gestion des incidences, risques et opportunités</strong>
+                                        <ul>
+                                            <li>
+                                                ESRS 2 IRO-1 – Description des procédures d'identification et d’évaluation des incidences, risques et opportunités importants liés aux ressources aquatiques et marines
+                                            </li>
+                                        </ul>
+                                        <h6>Gestion des incidences, risques et opportunités
+                                        </h6>
+                                        <ul>
+                                            <li>E3-1 – Politiques en matière de ressources aquatiques et marines </li>
+                                            <li>E3-2 – Actions et ressources relatives aux ressources aquatiques et marines </li>
+                                        </ul>
+                                        <h6>Métriques et cibles
+                                        </h6>
+                                        <ul>
+                                            <li>E3-3 – Cibles en matière de ressources aquatiques et marines </li>
+                                            <li>E3-4 – Consommation d’eau </li>
+                                            <li>E3-5 – Incidences financières escomptées des incidences, risques et opportunités liés aux ressources aquatiques et marines </li>
+                                        </ul>
+                                    </div>
+                                </section>
+                            </div>
+                            <p class="fr-pt-4w">
+                                <a class="fr-link fr-link--download" download="" href="/static/CSRD/ESRS-E3/CSRD-ESRS-E3.pdf">
+                                    Télécharger : ESRS E3 - Ressources aquatiques et marines <span class="fr-link__detail">PDF – 826 ko</span>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</dialog>

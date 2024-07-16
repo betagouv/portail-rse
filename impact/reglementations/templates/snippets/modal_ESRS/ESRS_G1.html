@@ -1,0 +1,121 @@
+<dialog aria-labelledby="fr-modal-ESRSG1" role="dialog" id="modal-ESRSG1" class="fr-modal--lg fr-modal">
+    <div class="fr-container fr-container--fluid fr-container-md">
+        <div class="fr-grid-row fr-grid-row--center">
+            <div class="fr-col-12 fr-col-md-10 fr-col-lg-10">
+                <div class="fr-modal__body fr-modal--esrs">
+                    <div class="fr-grid-row">
+                        <div class="fr-col-12 fr-col-lg-6 fr-py-2w">
+                            <div class="fr-modal__content">
+                                <p class="fr-tag fr-mb-1w">Gouvernance</p>
+                                <h4>ESRS G1 - Conduite des affaires</h4>
+
+                                <div class="fr-container">
+                                    {% if phase == 1 %}
+                                        <div class="fr-grid-row">
+                                            <p>
+                                                <strong>
+                                                    Choisissez les questions de durabilité qui ont une incidence réelle et potentielle appliquée à votre entreprise
+                                                </strong>
+                                            </p>
+                                            <h5>Culture d’entreprise</h5>
+                                            <h5>Protection des lanceurs d’alerte</h5>
+                                            <h5>Bien-être animal</h5>
+                                            <h5>Engagement politique</h5>
+                                            <h5>Gestion des relations avec les fournisseurs, y compris les pratiques en matière de paiement</h5>
+                                            <h5>Corruption et versement de pots-de-vin</h5>
+                                            <ol>
+                                                <li>Prévention et détection, y compris les formations</li>
+                                                <li>Incidents/Cas</li>
+                                            </ol>
+
+                                            <div class="fr-grid-row fr-grid-row--center background-light-grey fr-p-3w fr-mt-6w">
+                                                <div class="fr-col-2">
+                                                    <span class="fr-icon-info-fill fr-icon--blue"></span>
+                                                </div>
+                                                <div class="fr-col-10">
+                                                    Fonctionnalité bientôt disponible : sélection des questions de durabilité.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="fr-col-12 fr-col-lg-6 background-light-grey fr-p-2w">
+                            <div class="fr-modal__header">
+                                <button class="fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="modal-ESRSG1">Fermer</button>
+                            </div>
+                            <h6><span class="fr-icon-lightbulb-fill fr-icon--blue"></span> Conseils et bonnes pratiques</h6>
+                            {% if phase == 1 %}
+                                <p>
+                                    Pour faciliter votre sélection, renseignez-vous sur l'ESRS et les informations à publier dans le cas où cet enjeu serait matériel pour votre entreprise.
+                                </p>
+                            {% elif phase == 2 %}
+                                <p>
+                                    Pour vous aider, associez les abréviations des exigences de publication du tableur avec leur nom dans la rubrique “Exigence de publication” ci-dessous.
+                                </p>
+                            {% endif %}
+                            <div class="fr-accordions-group">
+                                <section class="fr-accordion">
+                                    <h3 class="fr-accordion__title">
+                                        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-objectifs-ESRSG1">Objectifs de l'ESRS</button>
+                                    </h3>
+                                    <div class="fr-collapse" id="accordion-objectifs-ESRSG1">
+                                        <p>
+                                            La présente norme a pour objectif de préciser les exigences de publication qui permettront aux utilisateurs des déclarations relatives à la durabilité de comprendre la stratégie et la méthode de l’entreprise, ses processus et ses procédures, ainsi que ses résultats en matière de conduite des affaires.
+                                        </p>
+                                    </div>
+                                </section>
+                                <section class="fr-accordion">
+                                    <h3 class="fr-accordion__title">
+                                        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-exigences-ESRSG1">Exigences de publication</button>
+                                    </h3>
+                                    <div class="fr-collapse" id="accordion-exigences-ESRSG1">
+                                        <h6>ESRS 2</h6>
+                                        <strong>Gouvernance</strong>
+                                        <ul>
+                                            <li>
+                                                ESRS 2 GOV-1 – Le rôle des organes d’administration, de direction et de surveillance
+                                            </li>
+                                        </ul>
+                                        <strong>Gestion des incidences, risques et opportunités</strong>
+                                        <ul>
+                                            <li>
+                                                ESRS 2 IRO-1 – Description des procédures d’identification et d’évaluation des incidences, risques et opportunités importants
+                                            </li>
+                                        </ul>
+                                        <h6>Gestion des incidences, risques et opportunités
+                                        </h6>
+                                        <ul>
+                                            <li>G1-1 – Culture d’entreprise et politiques en matière de conduite des affaires </li>
+                                            <li>G1-2 – Gestion des relations avec les fournisseurs </li>
+                                            <li>G1-3 – Prévention et détection de la corruption et des pots-de-vin </li>
+                                        </ul>
+                                        <h6>Métriques et cibles
+                                        </h6>
+                                        <ul>
+                                            <li>G1-4 – Cas avérés de corruption ou versements avérés de pots-de-vin </li>
+                                            <li>G1-5 – Influence politique et activités de lobbying </li>
+                                            <li>G1-6 – Pratiques en matière de paiement </li>
+                                        </ul>
+                                    </div>
+                                </section>
+                            </div>
+                            <p class="fr-pt-4w">
+                                <a class="fr-link fr-link--download" download="" href="/static/CSRD/ESRS-G1/CSRD-ESRS-G1.pdf">
+                                    Télécharger : ESRS G1 - Conduite des affaires <span class="fr-link__detail">PDF – 1 mo</span>
+                                </a>
+                                <br>
+                                <br>
+                                <a class="fr-link fr-link--download" download="" href="/static/CSRD/ESRS-G1/Guide-d-application-ANC-ESRS-G1.pdf">
+                                    Télécharger : ESRS G1 - Guide d'application de l'ANC <span class="fr-link__detail">PDF – 3 mo</span>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</dialog>
