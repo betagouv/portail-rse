@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Sous étape 3 /3 : Synthétiser les évaluations - CSRD - Portail RSE{% endblock %}
 
@@ -12,6 +13,46 @@
             </div>
         </div>
         <h1>Sous étape 3 : Synthétiser les évaluations</h1>
+    </div>
+    <div class="fr-container">
+        <div class="csrd--width">
+            <p>
+                <ul class="csrd-list csrd-list--bold">
+                    <li>
+                        Réunissez les résultats de vos évaluations d'impact et financières et établissez votre matrice de double matérialité.
+                        <button class="fr-btn--tooltip fr-btn" aria-describedby="tooltip-1">Définition</button>
+                        <span class="fr-tooltip fr-placement" id="tooltip-1" role="tooltip" aria-hidden="true">
+                            Pour rappel, La double matérialité est l'union (en termes mathématiques, c'est-à-dire l'union de deux ensembles, et non l'intersection) de la matérialité de l'impact et de la matérialité financière.
+                        </span>
+                    </li>
+                </ul>
+            </p>
+            <h6>Pourquoi synthétiser les évaluations de la matérialité d’impact et financière ?</h6>
+            <p>
+                L'objectif de cette dernière étape est de consolider les résultats des étapes précédentes et d'obtenir la liste des impacts matériels, des risques et des opportunités qui serviront de base à la préparation de la déclaration de durabilité.
+                L'analyse effectuée au niveau du thème/sous-thème ou du sous-sous-thème doit être convertie en impacts, risques et opportunités matériels si cela n'a pas été fait auparavant.
+            </p>
+            <p>
+                Une fois que l'entreprise a évalué les impacts, risques et opportunités individuels sur la base de seuils et de méthodologies appropriés, elle peut agréger les impacts, risques et opportunités matériels qui en résultent à des fins de reporting.
+                L'entreprise peut également valider les résultats de la double matérialité agrégée avec la direction (pour évaluer et valider l'exhaustivité de la liste des impacts, risques et opportunités matériels).
+            </p>
+            <h6>Formaliser sa matrice de double matérialité</h6>
+            <p>
+                Vous ne garderez que les thèmes présents dans la zone la plus foncée pour le reporting des données
+            </p>
+            <figure class="fr-content-media" role="group" aria-label="Probabilité = Probabilité de la matérialité d'impact et financière de l'ESRS. Gravité = Gravité de la matérialité d'impact et financière de l'ESRS.">
+                <div class="fr-content-media__img">
+                    <img class="fr-responsive-img" src="{% static 'img/espace_csrd/matrice-double-materialite.svg' %}" alt="Diagramme d'une matrice de double matérialité permettant de positionner les thèmes sur un axe de probabilité et sur un axe de gravité. La zone la plus foncée correspond aux thèmes présentant à la fois une forte gravité et une forte probabilité." />
+                </div>
+                <figcaption class="fr-content-media__caption">
+                    Légende
+                    <ul>
+                        <li>Probabilité = Probabilité de la matérialité d'impact et financière de l'ESRS.</li>
+                        <li>Gravité = Gravité de la matérialité d'impact et financière de l'ESRS.</li>
+                    </ul>
+                </figcaption>
+            </figure>
+        </div>
     </div>
     {% include "snippets/csrd_precedent_suivant.html" with phase_precedente=1 etape_precedente=3 sous_etape_precedente=2 phase_suivante=2 etape_suivante=0 sous_etape_suivante=0 %}
 {% endblock %}
