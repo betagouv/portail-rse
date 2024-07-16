@@ -31,7 +31,7 @@
             <div class="fr-tile__body">
                 <div class="fr-tile__content">
                     <h3 class="fr-tile__title">
-                        <a href="{% url 'reglementations:csrd_sous_etape' entreprise.siren 3 1 1 %}">Structurer son rapport</a>
+                        <a href="{% url 'reglementations:csrd_etape' entreprise.siren 3 1 %}">Structurer son rapport</a>
                     </h3>
                     <div class="fr-tile__start">
                         <p class="fr-badge fr-badge--info fr-badge--no-icon">étape 1</p>
@@ -72,4 +72,4 @@
     </div>
 {% endblock %}
 
-{% block etape_1 %}{% url 'reglementations:csrd_sous_etape' entreprise.siren 3 1 1 %}{% endblock %}
+{% block etape_1 %}{% url 'reglementations:csrd_etape' entreprise.siren 3 1 %}{% endblock %}
