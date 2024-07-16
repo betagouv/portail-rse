@@ -21,7 +21,7 @@
                     <li>Reprenez vos enjeux ESG et évaluez la matérialité d'impact du point de vue de l'incidence négative et positive.</li>
                 </ul>
             </p>
-            <h6>1. Évaluation de l'incidence positive de ses enjeux de durabilité</h2>
+            <h6>1. Évaluation de l'incidence positive de ses enjeux de durabilité</h6>
             <p>
                 Pour les incidences positives, l’importance dépend :
                 <ul>
@@ -29,7 +29,7 @@
                     <li>Pour les incidences potentielles, de l’ampleur, de l’étendue et de la probabilité de l’incidence.</li>
                 </ul>
             </p>
-            <h6>2. Évaluation de l'incidence négative de ses enjeux de durabilité</h2>
+            <h6>2. Évaluation de l'incidence négative de ses enjeux de durabilité</h6>
             <p>
                 Un impact négatif est « directement lié » aux opérations, produits ou services de l'entreprise, s'il se produit à n'importe quel niveau des relations commerciales.
             </p>
@@ -61,7 +61,10 @@
         <div class="fr-accordions-group">
             <section class="fr-accordion">
                 <h7 class="fr-accordion__title">
-                    <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-1">Processus de décision principal de la double matérialité</button>
+                    <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-1">
+                        <span class="fr-icon-lightbulb-fill"></span>
+                        Processus de décision principal de la double matérialité
+                    </button>
                 </h7>
                 <div class="fr-collapse" id="accordion-1">
                     <img class="fr-responsive-img" src="{% static 'img/espace_csrd/processus-decision-double-materialite.svg' %}" alt="Schéma décrivant le processus de décision principal de la double matérialité" />
@@ -69,7 +72,10 @@
             </section>
             <section class="fr-accordion">
                 <h7 class="fr-accordion__title">
-                    <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-2">Voir des exemples d'incidences négatives</button>
+                    <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-2">
+                        <span class="fr-icon-lightbulb-fill"></span>
+                        Voir des exemples d'incidences négatives
+                    </button>
                 </h7>
                 <div class="fr-collapse" id="accordion-2">
                     <ul class="csrd--width">
@@ -91,7 +97,10 @@
             </section>
             <section class="fr-accordion">
                 <h7 class="fr-accordion__title">
-                    <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-3">Documents sources</button>
+                    <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-3">
+                        <span class="fr-icon-lightbulb-fill"></span>
+                        Documents sources
+                    </button>
                 </h7>
                 <div class="fr-collapse" id="accordion-3">
                     <ul>
@@ -101,7 +110,6 @@
                 </div>
             </section>
         </div>
-    </div>
     </div>
     {% include "snippets/csrd_precedent_suivant.html" with phase_precedente=1 etape_precedente=3 sous_etape_precedente=0 phase_suivante=1 etape_suivante=3 sous_etape_suivante=2 %}
 {% endblock %}
