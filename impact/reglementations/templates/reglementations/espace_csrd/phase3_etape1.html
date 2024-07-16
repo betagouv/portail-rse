@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Étape 1/3 : Structurer son rapport - CSRD - Portail RSE{% endblock %}
+
+{% block content %}
+    {% include "snippets/csrd_menu.html" %}
+    <div class="fr-container csrd-header">
+        <div class="csrd-etape">
+            <p class="fr-badge fr-badge--info fr-badge--no-icon">phase 3</p>
+            <div class="csrd-etape__title fr-mb-10v">
+                Étape 1 - Structurer son rapport
+            </div>
+            <h1>Se référer à un modèle de rapport</h1>
+        </div>
+    </div>
+    <div class="fr-container">
+        <div class="csrd--width">
+            <ul class="csrd-list">
+                <li>Appuyez-vous sur l’exemple de structure de rapport et les exemples de rapports d'entreprise ayant une partie relative à la durabilité pour mettre en forme votre rapport.</li>
+            </ul>
+            <h6>Exemple de structure de rapport</h6>
+        </div>
+        <figure class="fr-content-media" role="group" aria-label="CSRD : ESRS 1 - Appendice F">
+            <div class="fr-content-media__img">
+                <a href="{% static 'img/espace_csrd/structure-rapport.svg' %}">
+                    <img class="fr-responsive-img  fr-ratio-4x3" src="{% static 'img/espace_csrd/structure-rapport.svg' %}" alt="liste des ESRS et de leurs contenus" />
+                </a>
+            </div>
+            <figcaption class="fr-content-media__caption">
+                Source :
+                <a href="{% static 'CSRD/ESRS-1/CSRD-ESRS-1.pdf' %}#%5B%7B%22num%22%3A41%2C%22gen%22%3A0%7D%2C%7B%22name%22%3A%22XYZ%22%7D%2C20%2C774%2C0%5D" target="_blank" rel="noopener">CSRD : ESRS 1 - Appendice F</a>
+            </figcaption>
+        </figure>
+    </div>
+    <div class="background-light-grey">
+        <div class="fr-container fr-py-8w">
+            <h6>Exemples de rapports de durabilité d’entreprise déjà en ligne</h6>
+            <div class="fr-grid-row fr-grid-row--gutters">
+                <div class="fr-col">
+                    <div class="fr-tile fr-tile--sm fr-enlarge-link">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    <a href="https://www.saint-gobain.com/sites/saint-gobain.com/files/media/document/Saint-Gobain-2022-2023-RAI-FR-01.pdf" target="_blank" rel="noopener">Saint-Gobain</a>
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram">
+                                <svg aria-hidden="true" class="fr-artwork" viewBox="0 0 80 80" width="80px" height="80px">
+                                    <use class="fr-artwork-decorative" href="{% static 'dsfr'%}/artwork/pictograms/leisure/book.svg#artwork-decorative"></use>
+                                    <use class="fr-artwork-minor" href="{% static 'dsfr'%}/artwork/pictograms/leisure/book.svg#artwork-minor"></use>
+                                    <use class="fr-artwork-major" href="{% static 'dsfr'%}/artwork/pictograms/leisure/book.svg#artwork-major"></use>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fr-col">
+                    <div class="fr-tile fr-tile--sm fr-enlarge-link">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    <a href="https://assets-finance.hermes.com/s3fs-public/node/pdf_file/2024-03/1711468313/240326_hermes_urd2023_fr.pdf" target="_blank" rel="noopener">Hermès</a>
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram">
+                                <svg aria-hidden="true" class="fr-artwork" viewBox="0 0 80 80" width="80px" height="80px">
+                                    <use class="fr-artwork-decorative" href="{% static 'dsfr'%}/artwork/pictograms/leisure/book.svg#artwork-decorative"></use>
+                                    <use class="fr-artwork-minor" href="{% static 'dsfr'%}/artwork/pictograms/leisure/book.svg#artwork-minor"></use>
+                                    <use class="fr-artwork-major" href="{% static 'dsfr'%}/artwork/pictograms/leisure/book.svg#artwork-major"></use>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fr-col">
+                    <div class="fr-tile fr-tile--sm fr-enlarge-link">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    <a href="https://cdn.urw.com/-/media/Corporate~o~Sites/Unibail-Rodamco-Corporate/Files/Homepage/INVESTORS/Regulated-Information/Registration-Documents/2024_2/20240319-Universal-Registration-Document_FR2.pdf" target="_blank" rel="noopener">URW</a>
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram">
+                                <svg aria-hidden="true" class="fr-artwork" viewBox="0 0 80 80" width="80px" height="80px">
+                                    <use class="fr-artwork-decorative" href="{% static 'dsfr'%}/artwork/pictograms/leisure/book.svg#artwork-decorative"></use>
+                                    <use class="fr-artwork-minor" href="{% static 'dsfr'%}/artwork/pictograms/leisure/book.svg#artwork-minor"></use>
+                                    <use class="fr-artwork-major" href="{% static 'dsfr'%}/artwork/pictograms/leisure/book.svg#artwork-major"></use>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="fr-col">
+                    <div class="fr-tile fr-tile--sm fr-enlarge-link">
+                        <div class="fr-tile__body">
+                            <div class="fr-tile__content">
+                                <h3 class="fr-tile__title">
+                                    <a href="https://publicis-groupe.publispeak.com/document-enregistrement-universel-2023/article/218/" target="_blank" rel="noopener">Publicis Group</a>
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="fr-tile__header">
+                            <div class="fr-tile__pictogram">
+                                <svg aria-hidden="true" class="fr-artwork" viewBox="0 0 80 80" width="80px" height="80px">
+                                    <use class="fr-artwork-decorative" href="{% static 'dsfr'%}/artwork/pictograms/leisure/book.svg#artwork-decorative"></use>
+                                    <use class="fr-artwork-minor" href="{% static 'dsfr'%}/artwork/pictograms/leisure/book.svg#artwork-minor"></use>
+                                    <use class="fr-artwork-major" href="{% static 'dsfr'%}/artwork/pictograms/leisure/book.svg#artwork-major"></use>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="background-blue">
+        <div class="fr-container fr-py-8w">
+            <h5>Vous souhaitez mettre en valeur votre rapport de durabilité sur le Portail RSE ?</h5>
+            <a class="fr-btn fr-btn--secondary" href="{% url 'contact' %}">
+                Contactez-nous
+            </a>
+        </div>
+    </div>
+    {% include "snippets/csrd_precedent_suivant.html" with phase_precedente=3 etape_precedente=0 sous_etape_precedente=0 phase_suivante=0 etape_suivante=0 sous_etape_suivante=0 %}
+{% endblock %}
