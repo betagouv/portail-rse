@@ -74,9 +74,9 @@ def test_espace_csrd_sans_siren_et_sans_entreprise(client, alice):
         "/csrd/{siren}/phase-1/etape-3-2",
         "/csrd/{siren}/phase-1/etape-3-3",
         "/csrd/{siren}/phase-2",
-        "/csrd/{siren}/phase-2/etape-1-1",
-        "/csrd/{siren}/phase-2/etape-1-2",
+        "/csrd/{siren}/phase-2/etape-1",
         "/csrd/{siren}/phase-3",
+        "/csrd/{siren}/phase-3/etape-1",
     ],
 )
 def test_les_etapes_de_la_csrd(etape, client, alice, entreprise_factory):
