@@ -394,6 +394,17 @@
 /* ESRS */
 
 .rse-organizer--in-espace-csrd {
+    &.rse-organizer--exigences {
+        .rse-organizer--card-title {
+            grid-column-gap: .5rem;
+            align-items: center;
+            b {
+                display: block;
+                grid-column: 1/2;
+                grid-row: 1;
+            }
+        }
+    }
     .rse-organizer--card-title {
         display: grid;
         grid-template-columns: 1fr auto;
