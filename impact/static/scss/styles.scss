@@ -340,6 +340,12 @@
     }
 }
 
+.fr-accordion__btn {
+    span {
+        margin-right: .5rem;
+    }
+}
+
 /* sticky menu */
 #csrd-menu {
     position: sticky;
