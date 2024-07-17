@@ -1,5 +1,4 @@
 from datetime import date
-from unittest import mock
 
 import pytest
 from requests.exceptions import Timeout
@@ -71,6 +70,7 @@ def test_succès_avec_résultat_comportant_la_denomination(mocker):
     faked_request = mocker.patch(
         "requests.get", return_value=MockedResponse(200, json_content)
     )
+    mocker.patch("api.sirene.jeton_acces_insee", return_value="JETON")
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
     infos = recherche_unite_legale(SIREN)
@@ -78,7 +78,7 @@ def test_succès_avec_résultat_comportant_la_denomination(mocker):
     assert infos["denomination"] == "ENTREPRISE"
     faked_request.assert_called_once_with(
         f"https://api.insee.fr/entreprises/sirene/V3.11/siren/123456789?date={date.today().isoformat()}",
-        headers={"Authorization": mock.ANY},
+        headers={"Authorization": "Bearer JETON"},
         timeout=SIRENE_TIMEOUT,
     )
     capture_message_mock.assert_called_once_with(
@@ -106,6 +106,7 @@ def test_succès_avec_résultat_sans_la_denomination(mocker):
         },
     }
     mocker.patch("requests.get", return_value=MockedResponse(200, json_content))
+    mocker.patch("api.sirene.jeton_acces_insee", return_value="JETON")
 
     infos = recherche_unite_legale(SIREN)
 
@@ -116,6 +117,7 @@ def test_succès_pas_de_résultat(mocker):
     SIREN = "000000000"
     # un siren non trouvé renvoie une 404
     mocker.patch("requests.get", return_value=MockedResponse(404))
+    mocker.patch("api.sirene.jeton_acces_insee", return_value="JETON")
 
     with pytest.raises(SirenError) as e:
         recherche_unite_legale(SIREN)
@@ -131,6 +133,7 @@ def test_echec_exception_provoquee_par_l_api(mocker):
     SIREN = "123456789"
     mocker.patch("requests.get", side_effect=Timeout)
     capture_exception_mock = mocker.patch("sentry_sdk.capture_exception")
+    mocker.patch("api.sirene.jeton_acces_insee", return_value="JETON")
 
     with pytest.raises(APIError) as e:
         recherche_unite_legale(SIREN)
@@ -147,6 +150,7 @@ def test_echec_exception_provoquee_par_l_api(mocker):
 def test_echec_trop_de_requetes(mocker):
     SIREN = "123456789"
     mocker.patch("requests.get", return_value=MockedResponse(429))
+    mocker.patch("api.sirene.jeton_acces_insee", return_value="JETON")
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
     with pytest.raises(TooManyRequestError) as e:
@@ -161,6 +165,7 @@ def test_echec_trop_de_requetes(mocker):
 def test_echec_erreur_de_l_API(mocker):
     SIREN = "123456789"
     mocker.patch("requests.get", return_value=MockedResponse(500))
+    mocker.patch("api.sirene.jeton_acces_insee", return_value="JETON")
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
     with pytest.raises(ServerError) as e:
@@ -177,6 +182,7 @@ def test_echec_erreur_de_renouvellement_de_jeton_acces(mocker):
     SIREN = "123456789"
     # un jeton invalide renvoie une 401
     mocker.patch("requests.get", return_value=MockedResponse(401))
+    mocker.patch("api.sirene.jeton_acces_insee", return_value="JETON TROP ANCIEN")
     mocker.patch(
         "api.sirene.renouvelle_jeton_acces_insee",
         side_effect=APIError("Message d'erreur"),
@@ -210,6 +216,7 @@ def test_pas_de_categorie_juridique(categorie_juridique, mocker):
         },
     }
     mocker.patch("requests.get", return_value=MockedResponse(200, json_content))
+    mocker.patch("api.sirene.jeton_acces_insee", return_value="JETON")
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
     infos = recherche_unite_legale(SIREN)
@@ -239,6 +246,8 @@ def test_pas_d_activite_principale(activite_principale, mocker):
         },
     }
     mocker.patch("requests.get", return_value=MockedResponse(200, json_content))
+    mocker.patch("api.sirene.jeton_acces_insee", return_value="JETON")
+
     infos = recherche_unite_legale(SIREN)
 
     assert infos["code_NAF"] is None
