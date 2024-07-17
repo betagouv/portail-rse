@@ -42,53 +42,55 @@
             </p>
         </div>
         <h6>Outils et bonnes pratiques</h6>
-        <section class="fr-accordion">
-            <h7 class="fr-accordion__title">
-                <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-1">
-                    <span class="fr-icon-lightbulb-fill"></span>
-                    Processus de décision principal de la double matérialité
-                </button>
-            </h7>
-            <div class="fr-collapse" id="accordion-1">
-                <img class="fr-responsive-img" src="{% static 'img/espace_csrd/processus-decision-double-materialite.svg' %}" alt="Schéma décrivant le processus de décision principal de la double matérialité" />
-            </div>
-        </section>
-        <section class="fr-accordion">
-            <h7 class="fr-accordion__title">
-                <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-2">
-                    <span class="fr-icon-lightbulb-fill"></span>
-                    Voir des exemples d'incidences et dépendances
-                </button>
-            </h7>
-            <div class="fr-collapse" id="accordion-2">
-                <ul class="csrd--width">
-                    <li>
-                        Exemple 1 : Lorsque le modèle économique de l’entreprise dépend d’une ressource naturelle – l’eau, par exemple –, il est susceptible d’être affecté par tout changement intervenant dans la qualité, la disponibilité et la tarification de cette ressource.
-                    </li>
-                    <li>
-                        Exemple 2 : Lorsque les activités de l’entreprise entraînent des incidences négatives, par exemple sur les communautés locales, ces activités pourraient être soumises à une réglementation publique plus stricte et/ou l’incidence pourrait avoir des conséquences sur la réputation.
-                        Celles-ci ont une incidence négative sur la marque de l’entreprise, qui peut se trouver confrontée à des coûts de recrutement plus élevés.
-                    </li>
-                    <li>
-                        Exemple 3 : Lorsque les partenaires commerciaux de l’entreprise font face à des risques importants en matière de durabilité, l’entreprise pourrait être exposée elle aussi aux conséquences qui en découlent.
-                    </li>
-                </ul>
-            </div>
-        </section>
-        <section class="fr-accordion">
-            <h7 class="fr-accordion__title">
-                <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-3">
-                    <span class="fr-icon-lightbulb-fill fr-icon--blue"></span>
-                    Documents sources
-                </button>
-            </h7>
-            <div class="fr-collapse" id="accordion-3">
-                <ul>
-                    <li>Définition : CSRD - <a href="{% static 'CSRD/ESRS-1/CSRD-ESRS-1.pdf' %}" target="_blank" rel="noopener">ESRS 1 - 3.4. Importance du point de vue de l'incidence</a></li>
-                    <li>Exemple : EFRAG - <a href="https://www.efrag.org/Assets/Download?assetUrl=/sites/webpublishing/SiteAssets/Appendix%202.6%20-%20WP%20on%20draft%20ESRG%201.pdf" target="_blank" rel="noopener">European Sustainability Reporting Guidelines 1 Double materiality conceptual guidelines for standard-setting</a></li>
-                </ul>
-            </div>
-        </section>
+        <div class="fr-accordions-group">
+            <section class="fr-accordion">
+                <h7 class="fr-accordion__title">
+                    <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-1">
+                        <span class="fr-icon-lightbulb-fill"></span>
+                        Processus de décision principal de la double matérialité
+                    </button>
+                </h7>
+                <div class="fr-collapse" id="accordion-1">
+                    <img class="fr-responsive-img" src="{% static 'img/espace_csrd/processus-decision-double-materialite.svg' %}" alt="Schéma décrivant le processus de décision principal de la double matérialité" />
+                </div>
+            </section>
+            <section class="fr-accordion">
+                <h7 class="fr-accordion__title">
+                    <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-2">
+                        <span class="fr-icon-lightbulb-fill"></span>
+                        Voir des exemples d'incidences et dépendances
+                    </button>
+                </h7>
+                <div class="fr-collapse" id="accordion-2">
+                    <ul class="csrd--width">
+                        <li>
+                            Exemple 1 : Lorsque le modèle économique de l’entreprise dépend d’une ressource naturelle – l’eau, par exemple –, il est susceptible d’être affecté par tout changement intervenant dans la qualité, la disponibilité et la tarification de cette ressource.
+                        </li>
+                        <li>
+                            Exemple 2 : Lorsque les activités de l’entreprise entraînent des incidences négatives, par exemple sur les communautés locales, ces activités pourraient être soumises à une réglementation publique plus stricte et/ou l’incidence pourrait avoir des conséquences sur la réputation.
+                            Celles-ci ont une incidence négative sur la marque de l’entreprise, qui peut se trouver confrontée à des coûts de recrutement plus élevés.
+                        </li>
+                        <li>
+                            Exemple 3 : Lorsque les partenaires commerciaux de l’entreprise font face à des risques importants en matière de durabilité, l’entreprise pourrait être exposée elle aussi aux conséquences qui en découlent.
+                        </li>
+                    </ul>
+                </div>
+            </section>
+            <section class="fr-accordion">
+                <h7 class="fr-accordion__title">
+                    <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-3">
+                        <span class="fr-icon-lightbulb-fill fr-icon--blue"></span>
+                        Documents sources
+                    </button>
+                </h7>
+                <div class="fr-collapse" id="accordion-3">
+                    <ul>
+                        <li>Définition : CSRD - <a href="{% static 'CSRD/ESRS-1/CSRD-ESRS-1.pdf' %}" target="_blank" rel="noopener">ESRS 1 - 3.4. Importance du point de vue de l'incidence</a></li>
+                        <li>Exemple : EFRAG - <a href="https://www.efrag.org/Assets/Download?assetUrl=/sites/webpublishing/SiteAssets/Appendix%202.6%20-%20WP%20on%20draft%20ESRG%201.pdf" target="_blank" rel="noopener">European Sustainability Reporting Guidelines 1 Double materiality conceptual guidelines for standard-setting</a></li>
+                    </ul>
+                </div>
+            </section>
+        </div>
     </div>
     {% include "snippets/csrd_precedent_suivant.html" with phase_precedente=1 etape_precedente=3 sous_etape_precedente=1 phase_suivante=1 etape_suivante=3 sous_etape_suivante=3 %}
 {% endblock %}
