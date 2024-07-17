@@ -463,6 +463,18 @@
 
 .fr-modal--esrs {
     border-radius:.5rem;
+    .fr-container {
+        li {
+            margin: .5rem 0px;
+        }
+        .fr-text--sm {
+            margin: 0px 0px;
+        }
+        h5 {
+            margin-bottom: 0px;
+            margin-top: 1rem;
+        }
+    }
     .fr-tag {
         padding:4px 6px !important;
         color: var(--purple-glycine-main-494);
