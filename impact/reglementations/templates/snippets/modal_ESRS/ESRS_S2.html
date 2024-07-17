@@ -8,7 +8,7 @@
                             <div class="fr-modal__content">
                                 <p class="fr-tag fr-mb-1w">Social</p>
                                 <h4>ESRS S2 - Travailleurs de la chaîne de valeurs</h4>
-                                <div class="fr-container">
+                                <div class="fr-container--fluid">
                                     {% if phase == 1 %}
                                         <div class="fr-grid-row">
                                             <p>
@@ -54,17 +54,34 @@
                                                 <li>Eau et assainissement</li>
                                                 <li>Protection de la vie privée</li>
                                             </ol>
-
-                                            <div class="fr-grid-row fr-grid-row--center background-light-grey fr-p-3w fr-mt-6w">
-                                                <div class="fr-col-2">
-                                                    <span class="fr-icon-info-fill fr-icon--blue"></span>
-                                                </div>
-                                                <div class="fr-col-10">
-                                                    Fonctionnalité bientôt disponible : sélection des questions de durabilité.
-                                                </div>
-                                            </div>
+                                        </div>
+                                    {% elif phase == 2 %}
+                                        <div class="fr-grid-row">
+                                            <ul class="csrd-list csrd-list--bold">
+                                                <li>
+                                                    Téléchargez les exigences de publication et les datapoints associés, puis choisissez celles à reporter :
+                                                </li>
+                                            </ul>
+                                            <p>
+                                                <a class="fr-link fr-link--download" hreflang="en" download href="/static/CSRD/ESRS-S2/Data-point-ESRS-S2.xlsx">
+                                                    ESRS S2 - Datapoints <span class="fr-link__detail">XLSX – 19,6 ko – Anglais</span>
+                                                </a>
+                                            </p>
                                         </div>
                                     {% endif %}
+                                    <div class="fr-grid-row fr-grid-row--middle background-light-grey fr-p-3w fr-mt-6w">
+                                        <div class="fr-col-2">
+                                            <span class="fr-icon-info-fill fr-icon--blue"></span>
+                                        </div>
+                                        <div class="fr-col-10">
+                                            Fonctionnalité bientôt disponible :
+                                            {% if phase == 1 %}
+                                                sélection des questions de durabilité.
+                                            {% elif phase == 2 %}
+                                                sélection des exigences de publication sur la base des ESRS évalués comme matériels pour votre entreprise.
+                                            {% endif %}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
