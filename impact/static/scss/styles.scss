@@ -123,7 +123,9 @@
         }
     }
 }
-
+.fr-content-media [class^="fr-responsive-img"] {
+    aspect-ratio: auto;
+}
 .fr-responsive-img {
     height: 100%;
     object-fit: contain;
