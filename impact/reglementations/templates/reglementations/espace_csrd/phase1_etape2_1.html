@@ -19,7 +19,7 @@
         <div class="csrd--width">
             <h6>Quoi faire ?</h6>
             <ul class="csrd-list csrd-list--bold">
-                <li>Choisissez les questions de durabilité associées aux ESRS qui ont des incidences réelles et potentielles appliquées à votre entreprise.</li>
+                <li>Choisissez les questions de durabilité associées aux ESRS thématiques qui ont des incidences réelles et potentielles appliquées à votre entreprise.</li>
             </ul>
         </div>
     </div>
@@ -36,6 +36,7 @@
                                 <div class="rse-organizer--card-title">
                                     <p class="fr-badge fr-badge--sm">Obligatoire</p>
                                     <b>ESRS 2 - Informations générales à publier</b>
+                                    <button href="#" class="fr-btn fr-btn--sm fr-icon-eye-fill" title="Ouvre la modale d'information sur l'ESRS 2" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS2"></button>
                                 </div>
                             </div>
                         </div>
@@ -162,6 +163,7 @@
         </div>
     </div>
     {% include "snippets/csrd_precedent_suivant.html" with phase_precedente=1 etape_precedente=2 sous_etape_precedente=0 phase_suivante=1 etape_suivante=2 sous_etape_suivante=2 %}
+    {% include "snippets/modal_ESRS/ESRS_2.html" %}
     {% include "snippets/modal_ESRS/ESRS_E1.html" %}
     {% include "snippets/modal_ESRS/ESRS_E2.html" %}
     {% include "snippets/modal_ESRS/ESRS_E3.html" %}
