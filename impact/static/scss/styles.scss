@@ -402,8 +402,15 @@
 
 /* ESRS */
 
-.esrs-organizer {
-    &.esrs-organizer--exigences {
+.esrs-organizer--container {
+    border-radius: .25rem;
+    padding: .5rem 1rem;
+    padding-bottom: 1rem;
+    background-color: var(--background-alt-grey);
+}
+
+.esrs-organizer--container {
+    &.esrs-organizer--no-badge {
         .esrs-organizer--card-title {
             grid-column-gap: .5rem;
             align-items: center;
@@ -414,13 +421,6 @@
             }
         }
     }
-}
-
-.esrs-organizer--container {
-    border-radius: .25rem;
-    padding: .5rem 1rem;
-    padding-bottom: 1rem;
-    background-color: var(--background-alt-grey);
 }
 
 .esrs-organizer--gov {
