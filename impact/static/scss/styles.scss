@@ -402,9 +402,9 @@
 
 /* ESRS */
 
-.rse-organizer {
-    &.rse-organizer--exigences {
-        .rse-organizer--card-title {
+.esrs-organizer {
+    &.esrs-organizer--exigences {
+        .esrs-organizer--card-title {
             grid-column-gap: .5rem;
             align-items: center;
             b {
@@ -416,44 +416,44 @@
     }
 }
 
-.rse-organizer--container {
+.esrs-organizer--container {
     border-radius: .25rem;
     padding: .5rem 1rem;
     padding-bottom: 1rem;
     background-color: var(--background-alt-grey);
 }
 
-.rse-organizer--gov {
+.esrs-organizer--gov {
     background-color: var(--background-contrast-info);
-    .rse-organizer--title {
+    .esrs-organizer--title {
         color: var(--text-default-info);
     }
-    .rse-organizer--title::before {
+    .esrs-organizer--title::before {
         background: center no-repeat url("../img/espace_csrd/picto-gov.png");
     }
 }
 
-.rse-organizer--env {
+.esrs-organizer--env {
     background-color: var(--background-contrast-green-emeraude);
-    .rse-organizer--title {
+    .esrs-organizer--title {
         color: var(--text-label-green-emeraude);
     }
-    .rse-organizer--title::before {
+    .esrs-organizer--title::before {
         background: center no-repeat url("../img/espace_csrd/picto-env.png");
     }
 }
 
-.rse-organizer--social {
+.esrs-organizer--social {
     background-color: var(--background-contrast-purple-glycine);
-    .rse-organizer--title {
+    .esrs-organizer--title {
         color: var(--text-label-purple-glycine);
     }
-    .rse-organizer--title::before {
+    .esrs-organizer--title::before {
         background: center no-repeat url("../img/espace_csrd/picto-social.png");
     }
 }
 
-.rse-organizer--title {
+.esrs-organizer--title {
     text-transform: uppercase;
     font-size: .875rem;
     font-weight: 700;
@@ -463,7 +463,7 @@
     display: inline-flex;
 }
 
-.rse-organizer--title:not(.rse-organizer--general):before {
+.esrs-organizer--title:not(.esrs-organizer--general):before {
     content:" ";
     width: 1.5rem;
     height: 1.5rem;
@@ -471,13 +471,13 @@
     margin-right: .5rem;
 }
 
-.rse-organizer--content {
+.esrs-organizer--content {
     display: flex;
     flex-direction: column;
     gap: .5rem;
 }
 
-.rse-organizer--card {
+.esrs-organizer--card {
     background-color: var(--background-default-grey);
     border-radius: .25rem;
     padding: .5rem 1rem;
@@ -488,12 +488,12 @@
     width: 100%;
 }
 
-.rse-organizer--card:hover {
+.esrs-organizer--card:hover {
     background-color: var(--background-default-grey-hover);
     background-image: none;
 }
 
-.rse-organizer--card-title {
+.esrs-organizer--card-title {
     display: grid;
     grid-template-columns: 1fr auto;
     grid-template-rows: auto auto;
