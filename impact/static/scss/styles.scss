@@ -433,31 +433,12 @@
             margin-top: 0px !important;
         }
     }
-    .rse-organizer--title {
-        display: inline-flex;
-    }
     .rse-organizer--title:not(.rse-organizer--general):before {
         content:" ";
         width: 1.5rem;
         height: 1.5rem;
         display: inline-block;
         margin-right: .5rem;
-        background: center no-repeat;
-    }
-    .rse-organizer--env {
-        .rse-organizer--title::before {
-            background-image: url("../img/espace_csrd/picto-env.png");
-        }
-    }
-    .rse-organizer--social {
-        .rse-organizer--title::before {
-            background-image: url("../img/espace_csrd/picto-social.png");
-        }
-    }
-    .rse-organizer--gov {
-        .rse-organizer--title::before {
-            background-image: url("../img/espace_csrd/picto-gov.png");
-        }
     }
 }
 
@@ -735,43 +716,12 @@
 
 /* tableau des ESRS */
 
-.rse-organizer {
-    .fr-icon-information-fill {
-        cursor: pointer;
-    }
-    ul {
-        margin: 0px;
-        list-style-type: none;
-        font-weight: bold;
-        li ul {
-            background-color: var(--background-alt-grey);
-            font-weight: normal;
-        }
-    }
-    p {
-        margin: 0px;
-    }
-    .rse-organizer--esrs {
-        display: flex;
-        gap:.5rem;
-        .fr-btn--sm {
-            min-width: 32px;
-            margin-top: .5rem;
-        }
-    }
-}
 
 .rse-organizer--container {
     border-radius: .25rem;
     padding: .5rem 1rem;
     padding-bottom: 1rem;
     background-color: var(--background-alt-grey);
-}
-
-.rse-organizer--header, .rse-organizer--card-title {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
 }
 
 .rse-organizer--title {
@@ -781,6 +731,7 @@
     line-height: 1.5rem;
     margin-bottom:  .5rem;
     color: var(--text-mention-grey);
+    display: inline-flex;
 }
 
 .rse-organizer--content {
@@ -789,7 +740,7 @@
     gap: .5rem;
 }
 
-button.rse-organizer--card,.rse-organizer--card {
+.rse-organizer--card {
     background-color: var(--background-default-grey);
     border-radius: .25rem;
     padding: .5rem 1rem;
@@ -800,20 +751,18 @@ button.rse-organizer--card,.rse-organizer--card {
     width: 100%;
 }
 
-button.rse-organizer--card:hover, .rse-organizer--card:hover {
+.rse-organizer--card:hover {
     background-color: var(--background-default-grey-hover);
     background-image: none;
-}
-
-.rse-organizer--card-disabled.rse-organizer--card:hover {
-    background-color: var(--background-default-grey);
-    cursor: auto;
 }
 
 .rse-organizer--gov {
     background-color: var(--background-contrast-info);
     .rse-organizer--title {
         color: var(--text-default-info);
+    }
+    .rse-organizer--title::before {
+        background: center no-repeat url("../img/espace_csrd/picto-gov.png");
     }
 }
 
@@ -822,12 +771,18 @@ button.rse-organizer--card:hover, .rse-organizer--card:hover {
     .rse-organizer--title {
         color: var(--text-label-green-emeraude);
     }
+    .rse-organizer--title::before {
+        background: center no-repeat url("../img/espace_csrd/picto-env.png");
+    }
 }
 
 .rse-organizer--social {
     background-color: var(--background-contrast-purple-glycine);
     .rse-organizer--title {
         color: var(--text-label-purple-glycine);
+    }
+    .rse-organizer--title::before {
+        background: center no-repeat url("../img/espace_csrd/picto-social.png");
     }
 }
 
