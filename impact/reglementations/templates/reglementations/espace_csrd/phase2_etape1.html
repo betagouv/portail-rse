@@ -134,6 +134,15 @@
                             <div class="esrs-organizer--esrs">
                                 <div class="esrs-organizer--card">
                                     <div class="esrs-organizer--card-title">
+                                        <p class="fr-badge fr-badge--sm">Contexte</p>
+                                        <b>ESRS 1 - Exigences générales</b>
+                                        <button href="#" class="fr-btn fr-btn--sm fr-icon-eye-fill" title="Ouvre la modale d'information sur l'ESRS 1" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS1"></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="esrs-organizer--esrs">
+                                <div class="esrs-organizer--card">
+                                    <div class="esrs-organizer--card-title">
                                         <p class="fr-badge fr-badge--sm">Obligatoire</p>
                                         <b>ESRS 2 - Informations générales à publier</b>
                                         <button href="#" class="fr-btn fr-btn--sm fr-icon-eye-fill" title="Ouvre la modale d'information sur l'ESRS 2" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS2"></button>
@@ -253,6 +262,7 @@
             </div>
         </div>
     </div>
+    {% include "snippets/modal_ESRS/ESRS_1.html" %}
     {% include "snippets/modal_ESRS/ESRS_2.html" %}
     {% include "snippets/modal_ESRS/ESRS_E1.html" %}
     {% include "snippets/modal_ESRS/ESRS_E2.html" %}
