@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.template.loader import get_template
 from django.template.loader import TemplateDoesNotExist
@@ -448,7 +449,7 @@ def csrd(request, siren=None, phase=0, etape=0, sous_etape=0):
             return redirect("entreprises:entreprises")
         return redirect("reglementations:csrd", siren=entreprise.siren)
 
-    entreprise = Entreprise.objects.get(siren=siren)
+    entreprise = get_object_or_404(Entreprise, siren=siren)
     if not is_user_attached_to_entreprise(request.user, entreprise):
         raise PermissionDenied
 

@@ -58,6 +58,15 @@ def test_espace_csrd_sans_siren_et_sans_entreprise(client, alice):
     )
 
 
+def test_espace_csrd_avec_siren_inexistant(client, alice):
+    client.force_login(alice)
+
+    url = "/csrd/yolo"
+    response = client.get(url)
+
+    assert response.status_code == 404
+
+
 @pytest.mark.parametrize(
     "etape",
     [
