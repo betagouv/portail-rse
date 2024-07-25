@@ -330,7 +330,9 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
         "appartient_groupe": False,
     }
 
-    mock_calcule_reglementations = mocker.patch("public.views.calcule_reglementations")
+    mock_est_soumis = mocker.patch(
+        "reglementations.views.base.Reglementation.est_soumis"
+    )
 
     response = client.post("/simulation", data=data, follow=True)
 
@@ -371,8 +373,8 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
     assert caracteristiques.bdese_accord
     assert caracteristiques.systeme_management_energie
 
-    mock_calcule_reglementations.assert_called_once()
-    caracteristiques_simulees = mock_calcule_reglementations.call_args.args[0]
+    assert mock_est_soumis.called
+    caracteristiques_simulees = mock_est_soumis.call_args.args[0]
     assert caracteristiques_simulees.entreprise.siren == data["siren"]
     assert caracteristiques_simulees.entreprise.denomination == data["denomination"]
     assert (
@@ -435,7 +437,9 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
         "tranche_bilan_consolide": bilan_consolide,
     }
 
-    mock_calcule_reglementations = mocker.patch("public.views.calcule_reglementations")
+    mock_est_soumis = mocker.patch(
+        "reglementations.views.base.Reglementation.est_soumis"
+    )
 
     response = client.post("/simulation", data=data, follow=True)
 
@@ -450,8 +454,8 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
     assert entreprise.comptes_consolides is None
     assert not entreprise.caracteristiques_actuelles()
 
-    mock_calcule_reglementations.assert_called_once()
-    caracteristiques_simulees = mock_calcule_reglementations.call_args.args[0]
+    assert mock_est_soumis.called
+    caracteristiques_simulees = mock_est_soumis.call_args.args[0]
     assert caracteristiques_simulees.entreprise.siren == data["siren"]
     assert caracteristiques_simulees.entreprise.denomination == data["denomination"]
     assert (
@@ -530,7 +534,9 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
         "tranche_bilan_consolide": bilan_consolide,
     }
 
-    mock_calcule_reglementations = mocker.patch("public.views.calcule_reglementations")
+    mock_est_soumis = mocker.patch(
+        "reglementations.views.base.Reglementation.est_soumis"
+    )
 
     response = client.post("/simulation", data=data, follow=True)
 
@@ -552,8 +558,8 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_sans_caracteristique
     assert caracteristiques.tranche_chiffre_affaires_consolide == ca_consolide
     assert caracteristiques.tranche_bilan_consolide == bilan_consolide
 
-    mock_calcule_reglementations.assert_called_once()
-    caracteristiques_simulees = mock_calcule_reglementations.call_args.args[0]
+    assert mock_est_soumis.called
+    caracteristiques_simulees = mock_est_soumis.call_args.args[0]
     assert caracteristiques_simulees.entreprise.siren == data["siren"]
     assert caracteristiques_simulees.entreprise.denomination == data["denomination"]
     assert (
