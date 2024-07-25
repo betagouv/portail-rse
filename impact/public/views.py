@@ -12,9 +12,7 @@ from entreprises.views import ActualisationCaracteristiquesAnnuelles
 from entreprises.views import get_current_entreprise
 from public.forms import ContactForm
 from public.forms import SimulationForm
-from reglementations.views import calcule_reglementations
 from reglementations.views import REGLEMENTATIONS
-from reglementations.views.base import ReglementationStatus
 
 
 def index(request):
@@ -118,21 +116,9 @@ def resultats_simulation(request):
     if "simulation" not in request.session:
         return redirect("simulation")
 
-    reglementations_applicables = None
     simulation_form = SimulationForm(request.session["simulation"])
     if simulation_form.is_valid():
-        reglementations = calcule_simulation(simulation_form, request.user)
-        reglementations_applicables = [
-            r["reglementation"]
-            for r in reglementations
-            if r["status"].status
-            in (
-                ReglementationStatus.STATUS_A_ACTUALISER,
-                ReglementationStatus.STATUS_EN_COURS,
-                ReglementationStatus.STATUS_A_JOUR,
-                ReglementationStatus.STATUS_SOUMIS,
-            )
-        ]
+        reglementations_applicables = calcule_simulation(simulation_form)
         siren = simulation_form.cleaned_data["siren"]
     else:
         return redirect("simulation")
@@ -146,7 +132,7 @@ def resultats_simulation(request):
     )
 
 
-def calcule_simulation(simulation_form, user):
+def calcule_simulation(simulation_form):
     if entreprises := Entreprise.objects.filter(
         siren=simulation_form.cleaned_data["siren"]
     ):
@@ -207,7 +193,11 @@ def calcule_simulation(simulation_form, user):
         entreprise.save()
         caracteristiques.save()
     caracteristiques = enrichit_les_donnees_pour_la_simulation(caracteristiques)
-    return calcule_reglementations(caracteristiques, user)
+    return [
+        reglementation
+        for reglementation in REGLEMENTATIONS
+        if reglementation.est_soumis(caracteristiques)
+    ]
 
 
 def enrichit_les_donnees_pour_la_simulation(caracteristiques):
