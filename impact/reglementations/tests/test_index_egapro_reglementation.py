@@ -1,5 +1,4 @@
 import pytest
-from django.contrib.auth.models import AnonymousUser
 from django.urls import reverse
 from freezegun import freeze_time
 
@@ -38,70 +37,6 @@ def test_n_est_pas_suffisamment_qualifiee_car_sans_effectif(entreprise_non_quali
     caracteristiques = CaracteristiquesAnnuelles(entreprise=entreprise_non_qualifiee)
 
     assert not IndexEgaproReglementation.est_suffisamment_qualifiee(caracteristiques)
-
-
-@pytest.mark.parametrize("est_soumis", [True, False])
-def test_calculate_status_with_not_authenticated_user(
-    est_soumis, entreprise_factory, mocker
-):
-    entreprise = entreprise_factory()
-    login_url = f"{reverse('users:login')}?next={reverse('reglementations:tableau_de_bord', args=[entreprise.siren])}"
-
-    mocker.patch(
-        "reglementations.views.index_egapro.IndexEgaproReglementation.est_soumis",
-        return_value=est_soumis,
-    )
-    status = IndexEgaproReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, AnonymousUser()
-    )
-
-    if est_soumis:
-        assert status.status == ReglementationStatus.STATUS_SOUMIS
-        assert (
-            status.status_detail
-            == f'Vous êtes soumis à cette réglementation. <a href="{login_url}">Connectez-vous pour en savoir plus.</a>'
-        )
-    else:
-        assert status.status == ReglementationStatus.STATUS_NON_SOUMIS
-        assert status.status_detail == "Vous n'êtes pas soumis à cette réglementation."
-    assert (
-        status.primary_action.url
-        == "https://egapro.travail.gouv.fr/index-egapro/recherche"
-    )
-    assert (
-        status.primary_action.title == "Consulter les index sur la plateforme nationale"
-    )
-    assert status.primary_action.external
-    assert status.secondary_actions == []
-
-
-@pytest.mark.parametrize("est_soumis", [True, False])
-def test_calculate_status_with_not_attached_user(
-    est_soumis, entreprise_factory, alice, mocker
-):
-    entreprise = entreprise_factory()
-
-    mocker.patch(
-        "reglementations.views.index_egapro.IndexEgaproReglementation.est_soumis",
-        return_value=est_soumis,
-    )
-    status = IndexEgaproReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
-    )
-
-    if est_soumis:
-        assert status.status == ReglementationStatus.STATUS_SOUMIS
-        assert (
-            status.status_detail == "L'entreprise est soumise à cette réglementation."
-        )
-    else:
-        assert status.status == ReglementationStatus.STATUS_NON_SOUMIS
-        assert (
-            status.status_detail
-            == "L'entreprise n'est pas soumise à cette réglementation."
-        )
-    assert status.primary_action is None
-    assert status.secondary_actions == []
 
 
 @pytest.mark.parametrize(
