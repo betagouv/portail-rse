@@ -14,29 +14,42 @@
 
     const denominationEntrepriseElement = document.getElementById("svelte-denomination-entreprise")
     const submitButton = document.getElementById(sirenFieldId).closest("form").querySelector("[type=submit]")
-
+    const isSimulationForm = window.location.pathname.includes("simulation")
+    const sirenTest = "000000001"
+    const infosEntrepriseTest = {
+        "siren": sirenTest,
+        "denomination": "ENTREPRISE TEST",
+    }
 
     async function searchEntreprise(siren) {
         if (siren.length !== 9 || isNaN(siren)){
             const event = new CustomEvent("siren-incorrect")
             document.dispatchEvent(event)
             throw new Error("Le siren est incorrect.")
-        }
-        loading = true
-        const res = await fetch("/api/search-entreprise/" + siren)
-        const json = await res.json()
-
-        if (res.ok) {
-            loading = false
+        } else if (siren === sirenTest && !isSimulationForm){
+            // on permet le rattachement à une entreprise fictive de test pour des utilisateurs potentiels qui n'ont pas d'entreprise
+            // mais qui souhaitent tester le service comme les étudiants par exemple
             submitButton.disabled = false
-            denomination = json.denomination
-            const event = new CustomEvent("infos-entreprise", {detail: json})
+            denomination = infosEntrepriseTest.denomination
+            const event = new CustomEvent("infos-entreprise", {detail: infosEntrepriseTest})
             document.dispatchEvent(event)
         } else {
-            loading = false
-            const event = new CustomEvent("siren-incorrect")
-            document.dispatchEvent(event)
-            throw new Error(json['error'])
+            loading = true
+            const res = await fetch("/api/search-entreprise/" + siren)
+            const json = await res.json()
+
+            if (res.ok) {
+                loading = false
+                submitButton.disabled = false
+                denomination = json.denomination
+                const event = new CustomEvent("infos-entreprise", {detail: json})
+                document.dispatchEvent(event)
+            } else {
+                loading = false
+                const event = new CustomEvent("siren-incorrect")
+                document.dispatchEvent(event)
+                throw new Error(json['error'])
+            }
         }
     }
 
