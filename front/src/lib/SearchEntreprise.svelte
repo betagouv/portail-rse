@@ -14,11 +14,17 @@
 
     const denominationEntrepriseElement = document.getElementById("svelte-denomination-entreprise")
     const submitButton = document.getElementById(sirenFieldId).closest("form").querySelector("[type=submit]")
-    const isSimulationForm = window.location.pathname.includes("simulation")
     const sirenTest = "000000001"
     const infosEntrepriseTest = {
         "siren": sirenTest,
         "denomination": "ENTREPRISE TEST",
+        "effectif": "10000+",
+        "categorie_juridique_sirene": 5505,
+        "code_pays_etranger_sirene": null,
+        "code_NAF": "01.11Z",
+        "date_cloture_exercice": "2023-12-31",
+        "tranche_chiffre_affaires": "100M+",
+        "tranche_chiffre_affaires_consolide": null
     }
 
     async function searchEntreprise(siren) {
@@ -26,9 +32,9 @@
             const event = new CustomEvent("siren-incorrect")
             document.dispatchEvent(event)
             throw new Error("Le siren est incorrect.")
-        } else if (siren === sirenTest && !isSimulationForm){
-            // on permet le rattachement à une entreprise fictive de test pour des utilisateurs potentiels qui n'ont pas d'entreprise
-            // mais qui souhaitent tester le service comme les étudiants par exemple
+        } else if (siren === sirenTest){
+            // on permet la recherche d'une entreprise fictive de test pour des utilisateurs potentiels qui n'ont pas d'entreprise
+            // mais qui souhaitent tester le portail et s'inscrire avec cette entreprise test, comme les étudiants par exemple
             submitButton.disabled = false
             denomination = infosEntrepriseTest.denomination
             const event = new CustomEvent("infos-entreprise", {detail: infosEntrepriseTest})
