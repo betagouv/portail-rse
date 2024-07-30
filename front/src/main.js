@@ -5,6 +5,7 @@ import InteretPublicField from './lib/InteretPublicField.svelte'
 import SimulationForm from './lib/SimulationForm.svelte'
 import SearchEntreprise from './lib/SearchEntreprise.svelte'
 import SeeMoreOrLess from './lib/SeeMoreOrLess.svelte'
+import PasswordValidattion from './lib/PasswordValidattion.svelte'
 
 for (let externalFieldToggle of document.getElementsByClassName("svelte-external-field-toggle")) {
   new ExternalFieldToggle({
@@ -72,5 +73,13 @@ const VoirPlusMoinsElement = document.getElementById("svelte-voir-plus-moins")
 if (VoirPlusMoinsElement) {
   new SeeMoreOrLess({
     target: VoirPlusMoinsElement
+  })
+}
+
+const passwordValidationElement = document.getElementById("svelte-password-validation")
+if (passwordValidationElement) {
+  new PasswordValidattion({
+    target: passwordValidationElement,
+    hydrate: true,
   })
 }
