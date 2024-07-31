@@ -116,7 +116,9 @@ def account(request):
                 messages.success(request, success_message)
                 return redirect("users:account")
             else:
-                error_message = "Votre mot de passe n'a pas été modifié."
+                error_message = (
+                    "La modification a échoué car le formulaire contient des erreurs."
+                )
                 messages.error(request, error_message)
         else:
             account_form = UserEditionForm(request.POST, instance=request.user)
@@ -157,4 +159,12 @@ class PasswordResetConfirmView(BasePasswordResetConfirmView):
         response = super(PasswordResetConfirmView, self).form_valid(form)
         success_message = "Votre mot de passe a été réinitialisé avec succès. Vous pouvez à présent vous connecter."
         messages.success(self.request, success_message)
+        return response
+
+    def form_invalid(self, form):
+        response = super(PasswordResetConfirmView, self).form_invalid(form)
+        error_message = (
+            "La réinitialisation a échoué car le formulaire contient des erreurs."
+        )
+        messages.error(self.request, error_message)
         return response

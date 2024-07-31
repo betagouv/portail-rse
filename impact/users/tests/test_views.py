@@ -360,7 +360,7 @@ def test_edit_different_password(client, alice_with_password):
 
     assert response.status_code == 200
     content = html.unescape(response.content.decode("utf-8"))
-    assert "Votre mot de passe n'a pas été modifié." in content
+    assert "La modification a échoué car le formulaire contient des erreurs." in content
 
     alice_with_password.refresh_from_db()
     assert alice_with_password.check_password("Passw0rd!123")
