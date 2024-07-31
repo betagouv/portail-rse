@@ -13,7 +13,7 @@
                 <form action="{% url 'users:creation' %}" method="post">
                     {% csrf_token %}
                     {% include 'snippets/field.html' with field=form.email %}
-                    <div id="svelte-password-validation">
+                    <div id="svelte-password-validation" data-password1-field-name="password1" data-password2-field-name="password2">
                         {% include 'snippets/field.html' with field=form.password1 %}
                         {% include 'snippets/field.html' with field=form.password2 %}
                     </div>
