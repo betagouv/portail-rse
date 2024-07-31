@@ -1,14 +1,15 @@
 <script>
+    export let password1FieldName
+    export let password2FieldName
+
     let password1 = ""
     let password2 = ""
     let showPassword1 = false
     let showPassword2 = false
 
     // defined by django
-    const password1FieldId = "id_password1"
-    const password1FieldName = "password1"
-    const password2FieldId = "id_password2"
-    const password2FieldName = "password2"
+    const password1FieldId =  `id_${password1FieldName}`
+    const password2FieldId = `id_${password2FieldName}`
     // équivalent de string.punctuation utilisé côté serveur dans password_validation.py
     const specialChars = /[!"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~]/
 
