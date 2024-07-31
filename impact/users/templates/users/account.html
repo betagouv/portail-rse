@@ -34,14 +34,16 @@
                 <form action="{% url 'users:account' %}" method="post" class="fr-mt-4w">
                     {% csrf_token %}
                     <h2 class="fr-h6">Mot de passe</h2>
-                    <fieldset class="fr-fieldset fr-mt-3w" aria-label="Modification du mot de passe">
-                        <div class="fr-fieldset__element">
-                            {% include 'snippets/field.html' with field=password_form.password1 %}
-                        </div>
-                        <div class="fr-fieldset__element">
-                            {% include 'snippets/field.html' with field=password_form.password2 %}
-                        </div>
-                    </fieldset>
+                    <div id="svelte-password-validation" data-password1-field-name="password1" data-password2-field-name="password2">
+                        <fieldset class="fr-fieldset fr-mt-3w" aria-label="Modification du mot de passe">
+                            <div class="fr-fieldset__element">
+                                {% include 'snippets/field.html' with field=password_form.password1 %}
+                            </div>
+                            <div class="fr-fieldset__element">
+                                {% include 'snippets/field.html' with field=password_form.password2 %}
+                            </div>
+                        </fieldset>
+                    </div>
                     <button type="submit" class="fr-btn" name="action" value="update-password">Modifier mon mot de passe</button>
                 </form>
             </div>
