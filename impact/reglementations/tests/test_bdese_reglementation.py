@@ -162,7 +162,7 @@ def test_calculate_status_more_than_50_employees_with_not_habilited_user(
     effectif, bdese_class, entreprise_factory, alice, mocker
 ):
     entreprise = entreprise_factory(effectif=effectif, bdese_accord=False)
-    habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
     annee = derniere_annee_a_remplir_bdese()
 
     status = BDESEReglementation.calculate_status(

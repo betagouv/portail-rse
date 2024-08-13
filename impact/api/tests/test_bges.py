@@ -84,7 +84,7 @@ def test_echec_l_api_a_change(mocker):
     capture_exception_mock = mocker.patch("sentry_sdk.capture_exception")
 
     with pytest.raises(APIError):
-        year = last_reporting_year(SIREN)
+        last_reporting_year(SIREN)
 
     capture_exception_mock.assert_called_once()
     args, _ = capture_exception_mock.call_args
