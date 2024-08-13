@@ -291,7 +291,7 @@ def test_page_de_qualification_d_une_entreprise_non_qualifiee_avec_erreur_api_no
         response = client.get(f"/entreprises/{entreprise_non_qualifiee.siren}")
 
     assert response.status_code == 200
-    content = response.content.decode("utf-8")
+    response.content.decode("utf-8")
 
     context = response.context
     assert context["form"]["date_cloture_exercice"].initial == "2022-12-31"

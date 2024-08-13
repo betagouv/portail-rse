@@ -68,7 +68,7 @@ def bdese_step_url(bdese, step):
 
 def test_bdese_step_introuvable_si_bdese_avec_accord(bdese_avec_accord, alice, client):
     client.force_login(alice)
-    entreprise = bdese_avec_accord.entreprise
+    bdese_avec_accord.entreprise
 
     url = bdese_step_url(bdese_avec_accord, 1)
     response = client.get(url)
