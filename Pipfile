@@ -8,7 +8,7 @@ django = "~=4.2.15"
 gunicorn = "~=22.0.0"
 requests = "~=2.32.0"
 django-weasyprint = "~=2.2.0"
-psycopg2 = "~=2.9.5"
+psycopg = "~=3.2.1"
 dj-database-url = "~=2.1.0"
 whitenoise = "~=6.6.0"
 sentry-sdk = "~=2.8.0"
@@ -22,7 +22,7 @@ pytest-mock = "*"
 freezegun = "*"
 pre-commit = "*"
 honcho = "*"
-exceptiongroup = {version = "*", markers="python_version < '3.11'"}
+exceptiongroup = {version = "~=1.2.2", markers="python_version < '3.11'"}
 
 [requires]
 python_version = "3.10"
