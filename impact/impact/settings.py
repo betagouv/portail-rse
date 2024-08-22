@@ -119,6 +119,24 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
+# Sessions
+# https://docs.djangoproject.com/en/4.2/topics/http/sessions/
+
+# Cookie expiration : 2h
+SESSION_COOKIE_AGE = 2 * 60 * 60
+
+# Via HTTPS only
+SESSION_COOKIE_SECURE = True
+
+# Session expires when browser is closed
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# SameSite :
+# must be "Strict", other sites do not need to see session cookies
+# TO BE CONFIRMED ...
+# see: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value
+# SESSION_COOKIE_SAMESITE = "Strict"
+
 # Django-vite configuration for static files build with vite
 # https://github.com/MrBin99/django-vite
 DJANGO_VITE_ASSETS_PATH = Path(BASE_DIR, "static", "svelte")
