@@ -20,7 +20,7 @@
         {% vite_hmr_client %}
         {% vite_asset 'src/main.js' %}
 
-        {% if "portail-rse.beta" in request.get_host %}
+        {% if matomo_enabled %}
         <!-- Matomo -->
             <script nonce="{{ request.csp_nonce }}">
                 var _paq = window._paq = window._paq || [];
@@ -35,6 +35,7 @@
 
                 // Also send all of the tracking data to the old Matomo server
                 // see https://matomo.org/faq/how-to/how-do-i-send-tracking-requests-to-two-or-more-matomo-servers/
+		// Note FV : does not seem to respond correctly anymore...
                     var oldTracker = 'https://stats.data.gouv.fr/matomo.php';
                     var oldWebsiteId = '274';
                     _paq.push(['addTracker', oldTracker, oldWebsiteId]);

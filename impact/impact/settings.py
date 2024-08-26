@@ -17,7 +17,6 @@ from csp.constants import NONCE
 from csp.constants import SELF
 from csp.constants import UNSAFE_INLINE
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -78,6 +77,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "entreprises.context_processors.current_entreprise",
+                "utils.context_processors.custom_settings",
             ],
         },
     },
@@ -211,6 +211,10 @@ DEFAULT_HOST = "site"
 
 # CNAME of the admin site
 ADMIN_CNAME = os.getenv("ADMIN_CNAME", "admin")
+# Matomo :
+# Matomo can be disabled for DEV environments,
+# and needs a special CSP configuration.
+MATOMO_DISABLED = os.getenv("MATOMO_DISABLED") == "true"
 
 # CSP :
 # https://django-csp.readthedocs.io/en/latest
@@ -258,7 +262,7 @@ CSP_CONFIGURATION = {
         ],
         "style-src": [
             SELF,
-            UNSAFE_INLINE,  # stats iframe
+            UNSAFE_INLINE,  # stats: iframe
         ],
         "connect-src": [
             SELF,
