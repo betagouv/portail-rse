@@ -5,7 +5,7 @@
 {% block content %}
     <div class="fr-container fr-my-8w">
         <h1>Statistiques d'usage</h1>
-        <script src="https://stats.impact.beta.gouv.fr/app/iframeResizer.js"></script>
+        <script src="https://stats.impact.beta.gouv.fr/app/iframeResizer.js" nonce="{{ request.csp_nonce }}"></script>
         <iframe
             id="metabaseIframe"
             src="https://stats.impact.beta.gouv.fr/public/dashboard/f389618e-961a-4fdf-8311-418e6095e102#titled=false&bordered=false"
