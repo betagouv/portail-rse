@@ -16,6 +16,7 @@ import dj_database_url
 from csp.constants import NONCE
 from csp.constants import SELF
 from csp.constants import UNSAFE_INLINE
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -220,30 +221,32 @@ MATOMO_DISABLED = os.getenv("MATOMO_DISABLED") == "true"
 # https://django-csp.readthedocs.io/en/latest
 # - enabled on deployed apps
 # - configuration in v4.0 format
-# - can dynamically switch to "report-only" mode or disabled
-# see : https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/script-src-attr
+# - can dynamically switch to "report-only" mode or disabled with `CSP_MODE` env-var
+# see : https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy
 
 # CSP_MODE : csp | csp-report-only | disabled
-# - enabled, in "normal" mode (defaut)
+# - enabled, in "normal" mode (default)
 # - enabled, in "report-only" mode (fine-tuning, non-blocking)
 # - disabled (dev, if needed)
-CSP_MODE = os.getenv("CSP_MODE", "csp")
+CSP_MODE = os.getenv("CSP_MODE") or "csp"
 
 # CSP configuration base : same for CSP and report-only.
 CSP_CONFIGURATION = {
     "DIRECTIVES": {
-        "default-src": [SELF],
+        "default-src": [
+            SELF,
+            "sentry.incubateur.net",
+        ],
         "script-src": [
             SELF,
+            "stats.portail-rse.beta.gouv.fr",
         ],
         "script-src-attr": [
             SELF,
-            UNSAFE_INLINE,  # stats: iframe
+            "stats.portail-rse.beta.gouv.fr",
         ],
         "frame-src": [
             SELF,
-            # redirection: both domains must be enabled
-            "stats.impact.beta.gouv.fr",
             "stats.portail-rse.beta.gouv.fr",
         ],
         "script-src-elem": [
@@ -251,14 +254,12 @@ CSP_CONFIGURATION = {
             NONCE,
             # matomo :
             "stats.beta.gouv.fr",
-            "stats.data.gouv.fr",
         ],
         "img-src": [
             SELF,
             "data:",  # some images are defined this way
             # matomo :
             "stats.beta.gouv.fr",
-            "stats.data.gouv.fr",
         ],
         "style-src": [
             SELF,
@@ -266,16 +267,22 @@ CSP_CONFIGURATION = {
         ],
         "connect-src": [
             SELF,
+            "sentry.incubateur.net",
             # matomo :
             "stats.beta.gouv.fr",
-            "stats.data.gouv.fr",
         ],
     },
 }
 
 # Report URI : Sentry will log CSP violations to this URI if set
-if CSP_SENTRY_REPORT_URI := os.getenv("CSP_SENTRY_REPORT_URI", ""):
-    CSP_CONFIGURATION["DIRECTIVES"]["report-uri"] = [CSP_SENTRY_REPORT_URI]
+if SENTRY_SECURITY_HEADER_ENDPOINT := os.getenv("SENTRY_SECURITY_HEADER_ENDPOINT", ""):
+    # `report-uri` directive is deprecated in favor of `report-to`
+    # however django-csp CSP internal building is using it.
+    # It seems safer to have both directives defined.
+    CSP_CONFIGURATION["DIRECTIVES"]["report-uri"] = [SENTRY_SECURITY_HEADER_ENDPOINT]
+    # 'report-to' is a reference to a key of the map defined in the `Report-to` HTTP header
+    # (see Sentry setup for value)
+    CSP_CONFIGURATION["DIRECTIVES"]["report-to"] = "csp-endpoint"
 
 # Allows CSP or CSP report-only to run correctly if enabled on a dev environment
 # by adding connections to Svelte websockets and local server.
@@ -283,7 +290,7 @@ if DEBUG:
     CSP_CONFIGURATION["DIRECTIVES"] = {
         k: v + ["ws:", "localhost:*"]
         for k, v in CSP_CONFIGURATION["DIRECTIVES"].items()
-        if k != "report-uri"
+        if k not in ["report-uri", "report-to"]
     }
 
 # Either CSP or CSP report-only is enabled, not both
@@ -293,8 +300,12 @@ match CSP_MODE:
         ...
     case "csp-report-only":
         CONTENT_SECURITY_POLICY_REPORT_ONLY = CSP_CONFIGURATION
-    case "csp" | _:
+    case "csp":
         CONTENT_SECURITY_POLICY = CSP_CONFIGURATION
+    case _:
+        raise ImproperlyConfigured(
+            f"Incorrect CSP_MODE: '{CSP_MODE}' (must be one of: csp | csp-report-only | disabled)."
+        )
 
 if CSP_MODE != "disabled":
     # register django-csp app
