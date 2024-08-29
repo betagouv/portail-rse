@@ -48,8 +48,10 @@ INSTALLED_APPS = [
     "django.contrib.postgres",
     "django_vite",
     "anymail",
+    "django_hosts",
 ]
 MIDDLEWARE = [
+    "django_hosts.middleware.HostsRequestMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -58,6 +60,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_hosts.middleware.HostsResponseMiddleware",
 ]
 ROOT_URLCONF = "impact.urls"
 TEMPLATES = [
@@ -197,3 +200,11 @@ if SENTRY_DSN:
 # API
 API_INSEE_KEY = os.getenv("API_INSEE_KEY")
 API_INSEE_TOKEN_PATH = Path("/tmp/jeton_insee")
+
+# django-hosts :
+# https://django-hosts.readthedocs.io/en/latest/
+ROOT_HOSTCONF = "impact.hosts"
+DEFAULT_HOST = "site"
+
+# CNAME of the admin site
+ADMIN_CNAME = os.getenv("ADMIN_CNAME", "admin")
