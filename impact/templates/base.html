@@ -32,17 +32,6 @@
                     var u="https://stats.beta.gouv.fr/";
                     _paq.push(['setTrackerUrl', u+'matomo.php']);
                     _paq.push(['setSiteId', '16']);
-
-                // Also send all of the tracking data to the old Matomo server
-                // see https://matomo.org/faq/how-to/how-do-i-send-tracking-requests-to-two-or-more-matomo-servers/
-		// Note FV : does not seem to respond correctly anymore...
-                    var oldTracker = 'https://stats.data.gouv.fr/matomo.php';
-                    var oldWebsiteId = '274';
-                    _paq.push(['addTracker', oldTracker, oldWebsiteId]);
-		// This call does not succeed, however the target URL must be authorized
-		// in a CSP script-src-elem directive
-                    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-                    g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
                 })();
             </script>
         <!-- End Matomo Code -->
