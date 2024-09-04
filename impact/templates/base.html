@@ -240,5 +240,18 @@
         <!-- Script en version es6 module et nomodule pour les navigateurs ne le supportant pas -->
         <script type="module" src="{% static 'dsfr/dsfr/dsfr.module.js' %}"></script>
         <script type="text/javascript" nomodule src="{% static 'dsfr/dsfr/dsfr.nomodule.min.js' %}"></script>
+        <script
+            src="https://browser.sentry-cdn.com/8.28.0/bundle.tracing.min.js"
+            integrity="sha384-GVaBBYGuaNuY8QXk8YojAIgLouf6OZ9bSBQRZ69jdPLVgNCZr6yFpW5vU/yXHXRb"
+            crossorigin="anonymous"
+            nonce="{{ request.csp_nonce }}"
+        ></script>
+        <script nonce="{{ request.csp_nonce }}">
+            Sentry.init({
+                dsn: '{{ sentry_dsn }}',
+                environment: '{{ sentry_env }}',
+            });
+        </script>
+
     </body>
 </html>

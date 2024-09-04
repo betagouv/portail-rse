@@ -183,6 +183,7 @@ LOGOUT_REDIRECT_URL = "/"
 
 # Sentry
 SENTRY_DSN = os.getenv("SENTRY_DSN")
+SENTRY_ENV = os.getenv("SENTRY_ENV", "production")
 
 if SENTRY_DSN:
     import sentry_sdk
@@ -198,7 +199,7 @@ if SENTRY_DSN:
         # If you wish to associate users to errors (assuming you are using
         # django.contrib.auth) you may enable sending PII data.
         send_default_pii=True,
-        environment=os.getenv("SENTRY_ENV", "production"),
+        environment=SENTRY_ENV,
     )
 
 # API
@@ -274,24 +275,30 @@ CSP_CONFIGURATION = {
     },
 }
 
-# Report URI : Sentry will log CSP violations to this URI if set
-if SENTRY_SECURITY_HEADER_ENDPOINT := os.getenv("SENTRY_SECURITY_HEADER_ENDPOINT", ""):
-    # `report-uri` directive is deprecated in favor of `report-to`
-    # however django-csp CSP internal building is using it.
-    # It seems safer to have both directives defined.
-    CSP_CONFIGURATION["DIRECTIVES"]["report-uri"] = [SENTRY_SECURITY_HEADER_ENDPOINT]
-    # 'report-to' is a reference to a key of the map defined in the `Report-to` HTTP header
-    # (see Sentry setup for value)
-    CSP_CONFIGURATION["DIRECTIVES"]["report-to"] = "csp-endpoint"
-
 # Allows CSP or CSP report-only to run correctly if enabled on a dev environment
 # by adding connections to Svelte websockets and local server.
+# Note: Sentry must have been properly setup before this section.
 if DEBUG:
     CSP_CONFIGURATION["DIRECTIVES"] = {
         k: v + ["ws:", "localhost:*"]
         for k, v in CSP_CONFIGURATION["DIRECTIVES"].items()
-        if k not in ["report-uri", "report-to"]
     }
+
+# Report URI : Sentry will log CSP violations to this URI if set
+if SENTRY_SECURITY_HEADER_ENDPOINT := os.getenv("SENTRY_SECURITY_HEADER_ENDPOINT", ""):
+    # `report-uri` directive is deprecated in favor of `report-to`
+    # however django-csp CSP internal building is using it.
+    # According to Sentry documentation, the report URI must pass a `sentry_environment`
+    # request parameter for sorting-out CSP reports.
+    # See : https://sentry.incubateur.net/organizations/betagouv/issues/118719/?project=75&query=is%3Aunresolved&referrer=issue-stream&statsPeriod=24h&stream_index=0
+    CSP_CONFIGURATION["DIRECTIVES"]["report-uri"] = [
+        SENTRY_SECURITY_HEADER_ENDPOINT + f"&sentry_environment={SENTRY_ENV}"
+    ]
+    # 'report-to' is a reference to a key of the map defined in the `Report-to` HTTP header
+    # for future compatibility, but is currently *inactive* for most browsers by now (09.2024).
+    # Uncomment when widely supported.
+    # (see Sentry setup for value)
+    # CSP_CONFIGURATION["DIRECTIVES"]["report-to"] = "csp-endpoint"
 
 # Either CSP or CSP report-only is enabled, not both
 match CSP_MODE:
