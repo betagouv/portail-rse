@@ -1,11 +1,9 @@
-import sentry_sdk
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from sib_api_v3_sdk import ApiClient
 from sib_api_v3_sdk import Configuration
 from sib_api_v3_sdk import ContactsApi
 from sib_api_v3_sdk import RequestContactImport
-from sib_api_v3_sdk.rest import ApiException
 
 from users.models import User
 
@@ -41,7 +39,4 @@ class Command(BaseCommand):
         request_contact_import.list_ids = [list_id]
         request_contact_import.update_existing_contacts = True
         request_contact_import.empty_contacts_attributes = True
-        try:
-            api_instance.import_contacts(request_contact_import)
-        except ApiException as e:
-            sentry_sdk.capture_exception(e)
+        api_instance.import_contacts(request_contact_import)
