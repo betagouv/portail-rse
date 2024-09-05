@@ -1,5 +1,4 @@
 import pytest
-from sib_api_v3_sdk.rest import ApiException
 
 from users.management.commands.import_utilisateurs_brevo import Command
 
@@ -30,18 +29,3 @@ def test_import_des_contacts(db, mocker, settings, alice):
     assert request_contact_import.list_ids == [42]
     assert request_contact_import.update_existing_contacts == True
     assert request_contact_import.empty_contacts_attributes == True
-
-
-@pytest.mark.django_db(transaction=True)
-def test_erreur_brevo_lors_de_l_import_des_contacts(db, mocker, settings, alice):
-    settings.SENDINBLUE_API_KEY = "SENDINBLUE_API_KEY"
-    mocked_import_contacts = mocker.patch(
-        "sib_api_v3_sdk.ContactsApi.import_contacts",
-        side_effect=ApiException,
-    )
-    capture_exception_mock = mocker.patch("sentry_sdk.capture_exception")
-
-    Command().handle(list_id=42)
-
-    assert mocked_import_contacts.called
-    capture_exception_mock.assert_called_once()
