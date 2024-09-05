@@ -30,6 +30,13 @@ class Command(BaseCommand):
                     "PORTAIL_RSE_ID": user.id,
                     "PORTAIL_RSE_DATE_INSCRIPTION": f"{user.created_at:%d-%m-%Y}",
                     "EMAIL_CONFIRME": "yes" if user.is_email_confirmed else None,
+                    "ENTREPRISES_NON_QUALIFIEES": ", ".join(
+                        [
+                            entreprise.denomination
+                            for entreprise in user.entreprises
+                            if not entreprise.dernieres_caracteristiques_qualifiantes
+                        ]
+                    ),
                 },
             }
             for user in User.objects.all()
