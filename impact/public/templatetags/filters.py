@@ -22,7 +22,7 @@ def translate_boolean(boolean):
 def display_field(field):
     if field in (None, ""):
         return "non renseigné"
-    elif type(field) == bool:
+    elif isinstance(field, bool):
         return "oui" if field else "non"
     else:
         return field

@@ -153,9 +153,8 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if (
-            "date_cloture_exercice" in self.initial
-            and type(self.initial["date_cloture_exercice"]) == date
+        if "date_cloture_exercice" in self.initial and isinstance(
+            self.initial["date_cloture_exercice"], date
         ):
             self.initial["date_cloture_exercice"] = self.initial[
                 "date_cloture_exercice"

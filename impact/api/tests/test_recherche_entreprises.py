@@ -163,7 +163,7 @@ def test_echec_exception_provoquee_par_l_api(mocker):
 
     capture_exception_mock.assert_called_once()
     args, _ = capture_exception_mock.call_args
-    assert type(args[0]) == Timeout
+    assert isinstance(args[0], Timeout)
     assert (
         str(e.value)
         == "Le service est actuellement indisponible. Merci de réessayer plus tard."

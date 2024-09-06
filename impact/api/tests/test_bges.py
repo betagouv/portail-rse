@@ -88,7 +88,7 @@ def test_echec_l_api_a_change(mocker):
 
     capture_exception_mock.assert_called_once()
     args, _ = capture_exception_mock.call_args
-    assert type(args[0]) == KeyError
+    assert isinstance(args[0], KeyError)
 
 
 def test_echec_exception_provoquee_par_l_api(mocker):
@@ -106,7 +106,7 @@ def test_echec_exception_provoquee_par_l_api(mocker):
     )
     capture_exception_mock.assert_called_once()
     args, _ = capture_exception_mock.call_args
-    assert type(args[0]) == Timeout
+    assert isinstance(args[0], Timeout)
 
 
 @pytest.mark.network
@@ -115,4 +115,4 @@ def test_api_fonctionnelle():
 
     year = last_reporting_year(siren)
 
-    assert year >= 2021
+    assert year and year >= 2021
