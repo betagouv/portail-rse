@@ -11,7 +11,7 @@
       let linkText = document.createTextNode(actionLabel);
       link.appendChild(linkText);
       link.addEventListener("click", () => action());
-      link.href = "javascript: void()";
+      link.href = "javascript: void(0)";
 
       while (label.firstChild) {
         label.removeChild(label.firstChild);
