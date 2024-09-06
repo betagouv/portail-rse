@@ -5,7 +5,7 @@ class DsfrForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for name, field in self.fields.items():
-            if type(field.widget) == forms.widgets.Select:
+            if isinstance(field.widget, forms.widgets.Select):
                 fr_name = "fr-select"
             else:
                 fr_name = "fr-input"

@@ -108,7 +108,7 @@ class CategoryJSONWidget(forms.MultiWidget):
         super().__init__(widgets, attrs)
 
     def decompress(self, value):
-        if type(value) != dict:
+        if not isinstance(value, dict):
             return []
         return [value.get(category) for category in self.categories]
 
@@ -180,7 +180,7 @@ def bdese_form_factory(
             widgets = {
                 boolean_field.name: forms.CheckboxInput
                 for boolean_field in bdese._meta.get_fields()
-                if type(boolean_field) == models.BooleanField
+                if isinstance(boolean_field, models.BooleanField)
             }
 
         def __init__(self, bdese, fetched_data=None, *args, **kwargs):
