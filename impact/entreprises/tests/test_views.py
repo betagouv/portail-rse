@@ -6,9 +6,6 @@ from django.urls import reverse
 from freezegun import freeze_time
 
 import api.exceptions
-from api.tests.fixtures import mock_api_egapro  # noqa
-from api.tests.fixtures import mock_api_infos_entreprise  # noqa
-from api.tests.fixtures import mock_api_ratios_financiers  # noqa
 from conftest import CODE_PAYS_PORTUGAL
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise

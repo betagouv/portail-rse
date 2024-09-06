@@ -3,7 +3,6 @@ from django.urls import reverse
 from freezegun import freeze_time
 
 from api.exceptions import APIError
-from api.tests.fixtures import mock_api_egapro  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
 from reglementations.models import derniere_annee_a_publier_index_egapro

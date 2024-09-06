@@ -1,9 +1,6 @@
 import pytest
 from django.core.exceptions import ObjectDoesNotExist
 
-from api.tests.fixtures import mock_api_bges  # noqa
-from api.tests.fixtures import mock_api_egapro  # noqa
-from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
 from habilitations.models import get_habilitation

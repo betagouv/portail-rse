@@ -6,7 +6,6 @@ from django.contrib.auth.models import AnonymousUser
 from django.urls import reverse
 from freezegun import freeze_time
 
-from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation

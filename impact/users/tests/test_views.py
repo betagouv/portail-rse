@@ -8,7 +8,6 @@ from django.conf import settings
 from django.urls import reverse
 from freezegun import freeze_time
 
-from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from habilitations.models import get_habilitation

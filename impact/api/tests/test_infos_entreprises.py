@@ -5,9 +5,6 @@ import pytest
 from api.exceptions import APIError
 from api.exceptions import SirenError
 from api.infos_entreprise import infos_entreprise
-from api.tests.fixtures import mock_api_ratios_financiers  # noqa
-from api.tests.fixtures import mock_api_recherche_entreprises  # noqa
-from api.tests.fixtures import mock_api_sirene  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
 
 SIREN = "123456789"
