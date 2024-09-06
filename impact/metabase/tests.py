@@ -6,8 +6,6 @@ import pytest
 from django.conf import settings
 from freezegun import freeze_time
 
-from api.tests.fixtures import mock_api_bges  # noqa
-from api.tests.fixtures import mock_api_egapro  # noqa
 from conftest import CODE_NAF_CEREALES
 from conftest import CODE_PAYS_PORTUGAL
 from entreprises.models import ActualisationCaracteristiquesAnnuelles

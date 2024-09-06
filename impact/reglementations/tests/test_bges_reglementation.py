@@ -3,7 +3,6 @@ from django.urls import reverse
 from freezegun import freeze_time
 
 from api.exceptions import APIError
-from api.tests.fixtures import mock_api_bges  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
 from reglementations.views.base import ReglementationAction
