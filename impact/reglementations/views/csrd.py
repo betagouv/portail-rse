@@ -444,7 +444,7 @@ def csrd(request, siren=None, phase=0, etape=0, sous_etape=0):
         if not entreprise:
             messages.warning(
                 request,
-                f"Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à l'espace Rapport de Durabilité",
+                "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à l'espace Rapport de Durabilité",
             )
             return redirect("entreprises:entreprises")
         return redirect("reglementations:csrd", siren=entreprise.siren)

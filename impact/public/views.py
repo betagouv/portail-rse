@@ -97,7 +97,7 @@ def simulation(request):
         else:
             messages.error(
                 request,
-                f"Impossible de finaliser la simulation car le formulaire contient des erreurs.",
+                "Impossible de finaliser la simulation car le formulaire contient des erreurs.",
             )
     elif request.session.get("simulation"):
         form = SimulationForm(request.session["simulation"])

@@ -45,7 +45,7 @@ class PlanVigilanceReglementation(Reglementation):
         elif CategorieJuridique.est_une_SA_cooperative(
             caracteristiques.entreprise.categorie_juridique_sirene
         ):
-            return f"votre entreprise est une Société Anonyme"
+            return "votre entreprise est une Société Anonyme"
 
     @classmethod
     def critere_effectif(cls, caracteristiques):

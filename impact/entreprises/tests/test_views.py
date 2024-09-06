@@ -170,7 +170,7 @@ def test_detach_from_an_entreprise(
 
     data = {"siren": entreprise.siren, "action": "detach"}
 
-    response = client.post(f"/entreprises", data=data, follow=True)
+    response = client.post("/entreprises", data=data, follow=True)
 
     session = client.session
     assert "entreprise" not in session
@@ -192,7 +192,7 @@ def test_fail_to_detach_without_relation_to_an_entreprise(
     client.force_login(alice)
     data = {"siren": entreprise.siren, "action": "detach"}
 
-    response = client.post(f"/entreprises", data=data, follow=True)
+    response = client.post("/entreprises", data=data, follow=True)
 
     assert response.status_code == 200
     assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
@@ -202,7 +202,7 @@ def test_fail_to_detach_to_an_entreprise_which_does_not_exist(client, alice):
     client.force_login(alice)
     data = {"siren": "000000001", "action": "detach"}
 
-    response = client.post(f"/entreprises", data=data, follow=True)
+    response = client.post("/entreprises", data=data, follow=True)
 
     assert response.status_code == 200
     assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
