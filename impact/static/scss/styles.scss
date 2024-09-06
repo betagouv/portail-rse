@@ -102,6 +102,20 @@
     background-color: var(--background-alt-blue-france);
 }
 
+/* l'imitation graphique de lien nécessite l'utilisation de la classe fr-link */
+.mimic-link {
+    cursor: pointer;
+    text-decoration: none;
+    background-image: var(--underline-img),var(--underline-img);
+    background-position: var(--underline-x) 100%,var(--underline-x) calc(100% - var(--underline-thickness));
+    background-repeat: no-repeat,no-repeat;
+    background-size: var(--underline-hover-width) calc(var(--underline-thickness)*2),var(--underline-idle-width) var(--underline-thickness);
+    transition: background-size 0s;
+}
+.mimic-link:active, .mimic-link:hover {
+    --underline-hover-width: var(--underline-max-width);
+}
+
 /* homepage */
 
 .logo-rse {
