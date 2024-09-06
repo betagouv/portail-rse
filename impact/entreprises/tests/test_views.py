@@ -338,7 +338,10 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs_s
     context = response.context
 
     form = context["form"]
-    assert form["date_cloture_exercice"].initial == "2022-06-30"
+
+    # sqlite automatically converts dates to strings,
+    # postgres doesn't (datetime).
+    assert str(form["date_cloture_exercice"].initial) == "2022-06-30"
     assert form["effectif"].initial == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
     assert (
         form["effectif_permanent"].initial
