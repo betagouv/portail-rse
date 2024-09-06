@@ -102,7 +102,7 @@ class DPEFReglementation(Reglementation):
             CategorieJuridique.SOCIETE_EUROPEENNE,
         ):
             if caracteristiques.entreprise.est_cotee:
-                criteres.append(f"votre société est cotée sur un marché réglementé")
+                criteres.append("votre société est cotée sur un marché réglementé")
                 if critere := cls.critere_bilan_cotee(caracteristiques):
                     criteres.append(critere)
                 if critere := cls.critere_chiffre_affaires_cotee(caracteristiques):
