@@ -6,12 +6,12 @@
     const label = document.getElementById("svelte-voir-plus-moins-label")
 
     const newLink = (prefixActionLabel, actionLabel, action) => {
-      let link = document.createElement('a');
+      let link = document.createElement('span');
       link.classList.add("fr-link");
+      link.classList.add("mimic-link");
       let linkText = document.createTextNode(actionLabel);
       link.appendChild(linkText);
       link.addEventListener("click", () => action());
-      link.href = "javascript: void(0)";
 
       while (label.firstChild) {
         label.removeChild(label.firstChild);
