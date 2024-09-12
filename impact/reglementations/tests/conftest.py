@@ -4,9 +4,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
 from habilitations.models import get_habilitation
-from reglementations.models import BDESE_300
-from reglementations.models import BDESE_50_300
-from reglementations.models import BDESEAvecAccord
+from reglementations.models.bdese import BDESE_300
+from reglementations.models.bdese import BDESE_50_300
+from reglementations.models.bdese import BDESEAvecAccord
 
 
 # Empêche tous les tests de faire des appels api

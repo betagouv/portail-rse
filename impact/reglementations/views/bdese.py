@@ -23,11 +23,11 @@ from habilitations.models import is_user_habilited_on_entreprise
 from reglementations.forms.bdese import bdese_configuration_form_factory
 from reglementations.forms.bdese import bdese_form_factory
 from reglementations.forms.bdese import IntroductionDemoForm
-from reglementations.models import annees_a_remplir_bdese
-from reglementations.models import BDESE_300
-from reglementations.models import BDESE_50_300
-from reglementations.models import BDESEAvecAccord
-from reglementations.models import derniere_annee_a_remplir_bdese
+from reglementations.models.bdese import annees_a_remplir_bdese
+from reglementations.models.bdese import BDESE_300
+from reglementations.models.bdese import BDESE_50_300
+from reglementations.models.bdese import BDESEAvecAccord
+from reglementations.models.bdese import derniere_annee_a_remplir_bdese
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
 from reglementations.views.base import ReglementationStatus

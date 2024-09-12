@@ -5,14 +5,14 @@ from django.db.utils import IntegrityError
 from freezegun import freeze_time
 
 from habilitations.models import get_habilitation
-from reglementations.models import annees_a_remplir_bdese
-from reglementations.models import BDESE_300
-from reglementations.models import BDESE_50_300
-from reglementations.models import BDESEAvecAccord
-from reglementations.models import BDESEError
-from reglementations.models import CategoryField
-from reglementations.models import CategoryType
-from reglementations.models import derniere_annee_a_remplir_bdese
+from reglementations.models.bdese import annees_a_remplir_bdese
+from reglementations.models.bdese import BDESE_300
+from reglementations.models.bdese import BDESE_50_300
+from reglementations.models.bdese import BDESEAvecAccord
+from reglementations.models.bdese import BDESEError
+from reglementations.models.bdese import CategoryField
+from reglementations.models.bdese import CategoryType
+from reglementations.models.bdese import derniere_annee_a_remplir_bdese
 
 
 def test_category_field_with_hard_coded_categories():
