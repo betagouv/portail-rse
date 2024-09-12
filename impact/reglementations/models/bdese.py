@@ -1,6 +1,5 @@
 import datetime
 from enum import Enum
-from functools import partial
 from itertools import chain
 
 from django import forms
@@ -157,10 +156,6 @@ class AbstractBDESE(TimestampedModel):
             self._state.adding = True
             self.user = None
             self.save()
-
-
-def bdese_completion_steps_default(steps):
-    return partial(dict, [(step_name, False) for step_name in steps.values()])
 
 
 class BDESEAvecAccord(AbstractBDESE):
