@@ -2,7 +2,7 @@
 from django.db import migrations
 from django.db import models
 
-import reglementations.models
+import reglementations.models.bdese
 
 
 class Migration(migrations.Migration):
@@ -15,9 +15,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="bdese_300",
             name="nombre_unites_absence",
-            field=reglementations.models.CategoryField(
+            field=reglementations.models.bdese.CategoryField(
                 blank=True,
-                category_type=reglementations.models.CategoryType["PROFESSIONNELLE"],
+                category_type=reglementations.models.bdese.CategoryType[
+                    "PROFESSIONNELLE"
+                ],
                 help_text="Ne sont pas comptés parmi les absences : les diverses sortes de congés, les conflits et le service national.",
                 null=True,
                 verbose_name="Nombre d'unités d'absence",
@@ -26,9 +28,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="bdese_300",
             name="nombre_unites_absence_accidents",
-            field=reglementations.models.CategoryField(
+            field=reglementations.models.bdese.CategoryField(
                 blank=True,
-                category_type=reglementations.models.CategoryType["PROFESSIONNELLE"],
+                category_type=reglementations.models.bdese.CategoryType[
+                    "PROFESSIONNELLE"
+                ],
                 null=True,
                 verbose_name="Nombre d'unités d'absence pour accidents du travail et de trajet ou maladies professionnelles",
             ),
@@ -36,9 +40,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="bdese_300",
             name="nombre_unites_absence_autres",
-            field=reglementations.models.CategoryField(
+            field=reglementations.models.bdese.CategoryField(
                 blank=True,
-                category_type=reglementations.models.CategoryType["PROFESSIONNELLE"],
+                category_type=reglementations.models.bdese.CategoryType[
+                    "PROFESSIONNELLE"
+                ],
                 null=True,
                 verbose_name="Nombre d'unités d'absence imputables à d'autres causes",
             ),
@@ -46,9 +52,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="bdese_300",
             name="nombre_unites_absence_conges_autorises",
-            field=reglementations.models.CategoryField(
+            field=reglementations.models.bdese.CategoryField(
                 blank=True,
-                category_type=reglementations.models.CategoryType["PROFESSIONNELLE"],
+                category_type=reglementations.models.bdese.CategoryType[
+                    "PROFESSIONNELLE"
+                ],
                 help_text="(événements familiaux, congés spéciaux pour les femmes …)",
                 null=True,
                 verbose_name="Nombre d'unités d'absence pour congés autorisés",
@@ -57,9 +65,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="bdese_300",
             name="nombre_unites_absence_maladie",
-            field=reglementations.models.CategoryField(
+            field=reglementations.models.bdese.CategoryField(
                 blank=True,
-                category_type=reglementations.models.CategoryType["PROFESSIONNELLE"],
+                category_type=reglementations.models.bdese.CategoryType[
+                    "PROFESSIONNELLE"
+                ],
                 null=True,
                 verbose_name="Nombre d'unités d'absence pour maladie",
             ),
@@ -67,9 +77,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="bdese_300",
             name="nombre_unites_absence_maternite",
-            field=reglementations.models.CategoryField(
+            field=reglementations.models.bdese.CategoryField(
                 blank=True,
-                category_type=reglementations.models.CategoryType["PROFESSIONNELLE"],
+                category_type=reglementations.models.bdese.CategoryType[
+                    "PROFESSIONNELLE"
+                ],
                 null=True,
                 verbose_name="Nombre d'unités d'absence pour maternité",
             ),

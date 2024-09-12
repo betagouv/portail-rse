@@ -2,7 +2,7 @@
 import django.db.models.fields
 from django.db import migrations
 
-import reglementations.models
+import reglementations.models.bdese
 
 
 class Migration(migrations.Migration):
@@ -15,10 +15,10 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="bdese_50_300",
             name="completion_steps",
-            field=reglementations.models.CategoryField(
+            field=reglementations.models.bdese.CategoryField(
                 base_field=django.db.models.fields.BooleanField,
                 categories=["Catégories professionnelles", "Données"],
-                default=reglementations.models.bdese_50_300_completion_steps_default,
+                default=reglementations.models.bdese.bdese_50_300_completion_steps_default,
             ),
         ),
     ]

@@ -2,7 +2,7 @@
 import django.db.models.fields
 from django.db import migrations
 
-import reglementations.models
+import reglementations.models.bdese
 
 
 def rename_categories_professionnelles_step_to_configuration(apps, schema_editor):
@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="bdese_300",
             name="completion_steps",
-            field=reglementations.models.CategoryField(
+            field=reglementations.models.bdese.CategoryField(
                 base_field=django.db.models.fields.BooleanField,
                 categories=[
                     "Configuration",
@@ -54,13 +54,13 @@ class Migration(migrations.Migration):
                     "Transferts commerciaux et financiers",
                     "Environnement",
                 ],
-                default=reglementations.models.bdese_300_completion_steps_default,
+                default=reglementations.models.bdese.bdese_300_completion_steps_default,
             ),
         ),
         migrations.AlterField(
             model_name="bdese_50_300",
             name="completion_steps",
-            field=reglementations.models.CategoryField(
+            field=reglementations.models.bdese.CategoryField(
                 base_field=django.db.models.fields.BooleanField,
                 categories=[
                     "Configuration",
@@ -76,7 +76,7 @@ class Migration(migrations.Migration):
                     "Transferts commerciaux et financiers",
                     "Environnement",
                 ],
-                default=reglementations.models.bdese_50_300_completion_steps_default,
+                default=reglementations.models.bdese.bdese_50_300_completion_steps_default,
             ),
         ),
     ]
