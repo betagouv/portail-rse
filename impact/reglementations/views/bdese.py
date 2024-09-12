@@ -20,9 +20,9 @@ from entreprises.models import Entreprise
 from habilitations.models import get_habilitation
 from habilitations.models import is_user_attached_to_entreprise
 from habilitations.models import is_user_habilited_on_entreprise
-from reglementations.forms import bdese_configuration_form_factory
-from reglementations.forms import bdese_form_factory
-from reglementations.forms import IntroductionDemoForm
+from reglementations.forms.bdese import bdese_configuration_form_factory
+from reglementations.forms.bdese import bdese_form_factory
+from reglementations.forms.bdese import IntroductionDemoForm
 from reglementations.models import annees_a_remplir_bdese
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300

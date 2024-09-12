@@ -3,10 +3,10 @@ import json
 import pytest
 from django import forms
 
-from reglementations.forms import BDESE_300_FIELDS
-from reglementations.forms import BDESE_50_300_FIELDS
-from reglementations.forms import bdese_configuration_form_factory
-from reglementations.forms import bdese_form_factory
+from reglementations.forms.bdese import BDESE_300_FIELDS
+from reglementations.forms.bdese import BDESE_50_300_FIELDS
+from reglementations.forms.bdese import bdese_configuration_form_factory
+from reglementations.forms.bdese import bdese_form_factory
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
 
