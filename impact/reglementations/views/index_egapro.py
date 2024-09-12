@@ -4,8 +4,8 @@ from django.urls import reverse_lazy
 from api import egapro
 from api.exceptions import APIError
 from entreprises.models import CaracteristiquesAnnuelles
-from reglementations.models import derniere_annee_a_publier_index_egapro
-from reglementations.models import prochaine_echeance_index_egapro
+from reglementations.models.index_egapro import derniere_annee_a_publier_index_egapro
+from reglementations.models.index_egapro import prochaine_echeance_index_egapro
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
 from reglementations.views.base import ReglementationStatus

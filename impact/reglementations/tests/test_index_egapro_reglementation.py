@@ -5,7 +5,7 @@ from freezegun import freeze_time
 from api.exceptions import APIError
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
-from reglementations.models import derniere_annee_a_publier_index_egapro
+from reglementations.models.index_egapro import derniere_annee_a_publier_index_egapro
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.index_egapro import IndexEgaproReglementation
 

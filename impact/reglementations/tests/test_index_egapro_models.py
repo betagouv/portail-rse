@@ -2,8 +2,8 @@ from datetime import date
 
 from freezegun import freeze_time
 
-from reglementations.models import derniere_annee_a_publier_index_egapro
-from reglementations.models import prochaine_echeance_index_egapro
+from reglementations.models.index_egapro import derniere_annee_a_publier_index_egapro
+from reglementations.models.index_egapro import prochaine_echeance_index_egapro
 
 
 def test_derniere_annee_a_publier_index_egapro():
