@@ -250,6 +250,7 @@
             Sentry.init({
                 dsn: '{{ sentry_dsn }}',
                 environment: '{{ sentry_env }}',
+                tracesSampleRate: 0.1,
             });
         </script>
 
