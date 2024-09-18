@@ -18,6 +18,9 @@ from django.conf.urls.static import static
 from django.urls import include
 from django.urls import path
 
+if settings.DEBUG_TOOLBAR:
+    from debug_toolbar.toolbar import debug_toolbar_urls
+
 
 def trigger_error(request):
     division_by_zero = 1 / 0  # noqa
@@ -32,3 +35,6 @@ urlpatterns = [
     path("", include("users.urls")),
     path("trigger-error-for-sentry-debug/", trigger_error),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+if settings.DEBUG_TOOLBAR:
+    urlpatterns.extend(debug_toolbar_urls())

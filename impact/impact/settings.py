@@ -318,3 +318,16 @@ if CSP_MODE != "disabled":
     # register django-csp app
     INSTALLED_APPS.append("csp")
     MIDDLEWARE.append("csp.middleware.CSPMiddleware")
+
+if DEBUG_TOOLBAR := os.getenv("DEBUG_TOOLBAR"):
+    INSTALLED_APPS.append("debug_toolbar")
+    INTERNAL_IPS = ["127.0.0.1"]
+
+    # DebugToolbarMiddleware doit être après HostsRequestMiddleware
+    MIDDLEWARE.insert(
+        MIDDLEWARE.index(
+            "django_hosts.middleware.HostsRequestMiddleware",
+        )
+        + 1,
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+    )

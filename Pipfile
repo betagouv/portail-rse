@@ -26,6 +26,7 @@ pytest-mock = "*"
 freezegun = "*"
 pre-commit = "*"
 honcho = "*"
+django-debug-toolbar = "*"
 exceptiongroup = {version = "~=1.2.2", markers="python_version < '3.11'"}
 
 [requires]
