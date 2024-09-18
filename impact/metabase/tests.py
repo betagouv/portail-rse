@@ -20,8 +20,8 @@ from metabase.models import Habilitation as MetabaseHabilitation
 from metabase.models import IndexEgaPro as MetabaseIndexEgaPro
 from metabase.models import Stats as MetabaseStats
 from metabase.models import Utilisateur as MetabaseUtilisateur
-from reglementations.models import BDESE_50_300
-from reglementations.models import derniere_annee_a_remplir_bdese
+from reglementations.models.bdese import BDESE_50_300
+from reglementations.models.bdese import derniere_annee_a_remplir_bdese
 from reglementations.tests.conftest import bdese_factory  # noqa
 
 METABASE_DATABASE_NAME = settings.METABASE_DATABASE_NAME

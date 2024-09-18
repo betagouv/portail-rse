@@ -6,8 +6,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
 from entreprises.models import Entreprise
-from reglementations.models import get_all_personal_bdese
-from reglementations.models import has_official_bdese
+from reglementations.models.bdese import get_all_personal_bdese
+from reglementations.models.bdese import has_official_bdese
 from utils.models import TimestampedModel
 
 FONCTIONS_MAX_LENGTH = 250

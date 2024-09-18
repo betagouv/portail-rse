@@ -3,10 +3,10 @@ from django.urls import reverse
 
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
-from reglementations.models import BDESE_300
-from reglementations.models import BDESE_50_300
-from reglementations.models import BDESEAvecAccord
-from reglementations.models import derniere_annee_a_remplir_bdese
+from reglementations.models.bdese import BDESE_300
+from reglementations.models.bdese import BDESE_50_300
+from reglementations.models.bdese import BDESEAvecAccord
+from reglementations.models.bdese import derniere_annee_a_remplir_bdese
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.bdese import BDESEReglementation
 
@@ -126,7 +126,9 @@ def test_calculate_status_more_than_50_employees_with_habilited_user(
         status.secondary_actions[0].title == f"Télécharger le pdf {annee} (brouillon)"
     )
 
-    mocker.patch("reglementations.models.AbstractBDESE.is_complete", return_value=True)
+    mocker.patch(
+        "reglementations.models.bdese.AbstractBDESE.is_complete", return_value=True
+    )
     status = BDESEReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )

@@ -7,9 +7,9 @@ from api.exceptions import APIError
 from entreprises.exceptions import EntrepriseNonQualifieeError
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
-from reglementations.models import annees_a_remplir_bdese
-from reglementations.models import BDESE_300
-from reglementations.models import BDESE_50_300
+from reglementations.models.bdese import annees_a_remplir_bdese
+from reglementations.models.bdese import BDESE_300
+from reglementations.models.bdese import BDESE_50_300
 from reglementations.tests.test_bdese_forms import configuration_form_data
 from reglementations.views.bdese import get_or_create_bdese
 from reglementations.views.bdese import initialize_bdese_configuration

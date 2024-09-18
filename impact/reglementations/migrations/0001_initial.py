@@ -4,7 +4,7 @@ import django.db.models.fields
 from django.db import migrations
 from django.db import models
 
-import reglementations.models
+import reglementations.models.bdese
 
 
 class Migration(migrations.Migration):
@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "effectif_mensuel",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=[
                             "Janvier",
@@ -122,9 +122,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "effectif_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -132,9 +132,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "effectif_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -258,7 +258,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "effectif_periode_professionnalisation_par_age",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=[
                             "moins de 30 ans",
@@ -272,7 +272,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "effectif_periode_professionnalisation_par_sexe",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=["homme", "femme"],
                         null=True,
@@ -281,7 +281,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "effectif_periode_professionnalisation_par_niveau_initial",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=["niveau I", "niveau II", "niveau III", "niveau IV"],
                         null=True,
@@ -306,7 +306,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_salaries_temps_partiel_par_sexe",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=["homme", "femme"],
                         null=True,
@@ -315,9 +315,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_salaries_temps_partiel_par_qualification",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -505,9 +505,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "evolution_salariale_par_categorie",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -515,15 +515,15 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "evolution_salariale_par_sexe",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True, categories=["homme", "femme"], null=True
                     ),
                 ),
                 (
                     "salaire_base_minimum_par_categorie",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -532,7 +532,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "salaire_base_minimum_par_sexe",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=["homme", "femme"],
                         null=True,
@@ -541,9 +541,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "salaire_moyen_par_categorie",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -552,15 +552,15 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "salaire_moyen_par_sexe",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True, categories=["homme", "femme"], null=True
                     ),
                 ),
                 (
                     "salaire_median_par_categorie",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -569,7 +569,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "salaire_median_par_sexe",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=["homme", "femme"],
                         null=True,
@@ -667,7 +667,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "resultats_globaux",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=["valeur", "volume"],
                         null=True,
@@ -797,7 +797,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "completion_steps",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         base_field=django.db.models.fields.BooleanField,
                         categories=[
                             "Catégories professionnelles",
@@ -813,7 +813,7 @@ class Migration(migrations.Migration):
                             "Transferts commerciaux et financiers",
                             "Environnement",
                         ],
-                        default=reglementations.models.bdese_300_completion_steps_default,
+                        default=reglementations.models.bdese.bdese_300_completion_steps_default,
                     ),
                 ),
                 (
@@ -827,9 +827,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "effectif_total",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         help_text="Tout salarié inscrit à l’effectif au 31/12 quelle que soit la nature de son contrat de travail",
@@ -838,9 +838,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "effectif_permanent",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         help_text="Les salariés à temps plein, inscrits à l’effectif pendant toute l’année considérée et titulaires d’un contrat de travail à durée indéterminée.",
@@ -849,9 +849,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "effectif_cdd",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         help_text="Nombre de salariés titulaires d’un contrat de travail à durée déterminée au 31/12",
@@ -861,9 +861,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "effectif_mensuel_moyen",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         help_text="Somme des effectifs totaux mensuels divisée par 12 (on entend par effectif total tout salarié inscrit à l’effectif au dernier jour du mois considéré)",
@@ -872,9 +872,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "effectif_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -882,9 +882,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "effectif_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -892,7 +892,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "effectif_age",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=[
                             "moins de 30 ans",
@@ -906,7 +906,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "effectif_anciennete",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=[
                             "moins de 10 ans",
@@ -919,9 +919,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "effectif_nationalite_francaise",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -930,9 +930,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "effectif_nationalite_etrangere",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -941,9 +941,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "effectif_qualification_detaillee_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE_DETAILLEE"
                         ],
                         help_text="Répartition de l'effectif total masculin au 31/12 selon une structure de qualification détaillée",
@@ -953,9 +953,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "effectif_qualification_detaillee_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE_DETAILLEE"
                         ],
                         help_text="Répartition de l'effectif total féminin au 31/12 selon une structure de qualification détaillée",
@@ -1025,9 +1025,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_embauches_cdd",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         help_text="dont nombre de contrats de travailleurs saisonniers",
@@ -1045,9 +1045,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "total_departs",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -1056,9 +1056,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_demissions",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -1067,9 +1067,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_licenciements_economiques",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         help_text="dont départs en retraite et préretraite",
@@ -1079,9 +1079,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_licenciements_autres",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -1090,9 +1090,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_fin_cdd",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -1101,9 +1101,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_fin_periode_essai",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         help_text="à ne remplir que si ces départs sont comptabilisés dans le total des départs",
@@ -1113,9 +1113,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_mutations",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -1124,9 +1124,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_departs_volontaires_retraite_preretraite",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         help_text="Distinguer les différents systèmes légaux et conventionnels de toute nature",
@@ -1136,9 +1136,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_deces",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -1156,9 +1156,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_salaries_chomage_partiel",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -1167,9 +1167,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_heures_chomage_partiel_indemnisees",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         help_text="Y compris les heures indemnisées au titre du chômage total en cas d’arrêt de plus de quatre semaines consécutives",
@@ -1179,9 +1179,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_heures_chomage_partiel_non_indemnisees",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -1190,9 +1190,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_salaries_chomage_intemperies",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -1201,9 +1201,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_heures_chomage_intemperies_indemnisees",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -1212,9 +1212,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_heures_chomage_intemperies_non_indemnisees",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -1249,7 +1249,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "montant_formation_continue",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=[
                             "formation interne",
@@ -1264,9 +1264,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_stagiaires_formation_continue_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE_DETAILLEE"
                         ],
                         null=True,
@@ -1275,9 +1275,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_stagiaires_formation_continue_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE_DETAILLEE"
                         ],
                         null=True,
@@ -1286,9 +1286,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_heures_stage_remunerees_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE_DETAILLEE"
                         ],
                         null=True,
@@ -1297,9 +1297,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_heures_stage_remunerees_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE_DETAILLEE"
                         ],
                         null=True,
@@ -1308,9 +1308,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_heures_stage_non_remunerees_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE_DETAILLEE"
                         ],
                         null=True,
@@ -1319,9 +1319,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_heures_stage_non_remunerees_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE_DETAILLEE"
                         ],
                         null=True,
@@ -1371,7 +1371,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_incapacites_permanentes_partielles",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=["français", "étrangers"],
                         null=True,
@@ -1380,7 +1380,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_incapacites_permanentes_totales",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=["français", "étrangers"],
                         null=True,
@@ -1563,9 +1563,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "horaire_hebdomadaire_moyen",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         help_text="Il est possible de remplacer cet indicateur par la somme des heures travaillées durant l'année.",
@@ -1575,9 +1575,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_salaries_repos_compensateur_code_travail",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         help_text="Au sens des dispositions du code du travail et du code rural et de la pêche maritime instituant un repos compensateur en matière d'heures supplémentaires.",
@@ -1587,9 +1587,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_salaries_repos_compensateur_regime_conventionne",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -1598,9 +1598,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_salaries_horaires_individualises",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         help_text="Au sens de l'article L. 3121-48.",
@@ -1610,9 +1610,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_salaries_temps_partiel_20_30_heures",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         help_text="Au sens de l'article L. 3123-1.",
@@ -1622,9 +1622,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_salaries_temps_partiel_autres",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -1633,9 +1633,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_salaries_2_jours_repos_hebdomadaire_consecutifs",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -1644,9 +1644,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_moyen_jours_conges_annuels",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         help_text="Repos compensateur non compris. Cet indicateur peut être calculé sur la dernière période de référence.",
@@ -1656,9 +1656,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_jours_feries_payes",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -1679,9 +1679,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_unites_absence",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         help_text="Ne sont pas comptés parmi les absences : les diverses sortes de congés, les conflits et le service national.",
@@ -1699,9 +1699,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_unites_absence_maladie",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -1710,7 +1710,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_unites_absence_maladie_par_duree",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=["< 3 jours", "de 3 à 90 jours", "> 90 jours"],
                         null=True,
@@ -1719,9 +1719,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_unites_absence_accidents",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -1730,9 +1730,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_unites_absence_maternite",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -1741,9 +1741,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_unites_absence_conges_autorises",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         help_text="(événements familiaux, congés spéciaux pour les femmes …)",
@@ -1753,9 +1753,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_unites_absence_autres",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -1780,7 +1780,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_taches_repetitives",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=["hommes", "femmes"],
                         help_text="Au sens de l'article D. 4163-2",
@@ -1861,7 +1861,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_visites_medicales",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=[
                             "suivi de droit commun",
@@ -1874,7 +1874,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_examens_medicaux",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=[
                             "suivi de droit commun",
@@ -1886,7 +1886,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_examens_medicaux_complementaires",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=["soumis à surveillance", "autres"],
                         null=True,
@@ -1895,7 +1895,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "pourcentage_temps_medecin_du_travail",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=["analyse", "intervention"],
                         null=True,
@@ -1947,9 +1947,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_CDI_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -1958,9 +1958,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_CDI_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -1969,9 +1969,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_CDD_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -1980,9 +1980,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_CDD_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -1991,7 +1991,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "effectif_par_duree_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=[
                             "temps complet",
@@ -2004,7 +2004,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "effectif_par_duree_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=[
                             "temps complet",
@@ -2017,7 +2017,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "effectif_par_organisation_du_travail_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=[
                             "travail posté",
@@ -2031,7 +2031,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "effectif_par_organisation_du_travail_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=[
                             "travail posté",
@@ -2045,9 +2045,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "conges_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2056,9 +2056,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "conges_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2067,7 +2067,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "conges_par_type_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=[
                             "compte épargne-temps",
@@ -2080,7 +2080,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "conges_par_type_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=[
                             "compte épargne-temps",
@@ -2093,9 +2093,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "embauches_CDI_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2104,9 +2104,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "embauches_CDI_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2115,9 +2115,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "embauches_CDD_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2126,9 +2126,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "embauches_CDD_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2137,9 +2137,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "departs_retraite_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2148,9 +2148,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "departs_demission_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2159,9 +2159,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "departs_fin_CDD_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2170,9 +2170,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "departs_licenciement_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2181,9 +2181,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "departs_retraite_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2192,9 +2192,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "departs_demission_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2203,9 +2203,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "departs_fin_CDD_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2214,9 +2214,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "departs_licenciement_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2225,9 +2225,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_promotions_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2236,9 +2236,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_promotions_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2263,9 +2263,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "anciennete_moyenne_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2274,9 +2274,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "anciennete_moyenne_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2285,9 +2285,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "anciennete_moyenne_dans_categorie_profesionnelle_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2296,9 +2296,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "anciennete_moyenne_dans_categorie_profesionnelle_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2307,9 +2307,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "age_moyen_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2318,9 +2318,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "age_moyen_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2342,9 +2342,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "remuneration_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2353,9 +2353,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "remuneration_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2364,7 +2364,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "remuneration_par_age_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=[
                             "moins de 30 ans",
@@ -2378,7 +2378,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "remuneration_par_age_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=[
                             "moins de 30 ans",
@@ -2400,9 +2400,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_moyen_heures_formation_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         help_text="hommes",
@@ -2412,9 +2412,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_moyen_heures_formation_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         help_text="femmes",
@@ -2424,9 +2424,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "action_adaptation_au_poste_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2435,9 +2435,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "action_adaptation_au_poste_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2446,9 +2446,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "action_maintien_emploi_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2457,9 +2457,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "action_maintien_emploi_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2468,9 +2468,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "action_developpement_competences_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2479,9 +2479,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "action_developpement_competences_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2490,7 +2490,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "exposition_risques_pro_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=[
                             "manutentions manuelles de charges",
@@ -2510,7 +2510,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "exposition_risques_pro_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=[
                             "manutentions manuelles de charges",
@@ -2530,7 +2530,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "accidents_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=[
                             "accidents de travail",
@@ -2543,7 +2543,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "accidents_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=[
                             "accidents de travail",
@@ -2638,7 +2638,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "maladies_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=[
                             "nombre d'arrêts de travail",
@@ -2650,7 +2650,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "maladies_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=[
                             "nombre d'arrêts de travail",
@@ -2662,7 +2662,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "maladies_avec_examen_de_reprise_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=[
                             "nombre d'arrêts de travail",
@@ -2675,7 +2675,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "maladies_avec_examen_de_reprise_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=[
                             "nombre d'arrêts de travail",
@@ -2712,9 +2712,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_jours_conges_paternite_pris",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         help_text="Nombre de jours de congés de paternité pris par le salarié par rapport au nombre de jours de congés théoriques",
@@ -2732,9 +2732,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_salaries_temps_partiel_choisi_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2743,9 +2743,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_salaries_temps_partiel_choisi_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2754,9 +2754,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_salaries_temps_partiel_choisi_vers_temps_plein_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2765,9 +2765,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "nombre_salaries_temps_partiel_choisi_vers_temps_plein_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2834,9 +2834,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "evolution_salariale_par_categorie",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2844,15 +2844,15 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "evolution_salariale_par_sexe",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True, categories=["homme", "femme"], null=True
                     ),
                 ),
                 (
                     "salaire_base_minimum_par_categorie",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2861,7 +2861,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "salaire_base_minimum_par_sexe",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=["homme", "femme"],
                         null=True,
@@ -2870,9 +2870,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "salaire_moyen_par_categorie",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2881,15 +2881,15 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "salaire_moyen_par_sexe",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True, categories=["homme", "femme"], null=True
                     ),
                 ),
                 (
                     "salaire_median_par_categorie",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         null=True,
@@ -2898,7 +2898,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "salaire_median_par_sexe",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=["homme", "femme"],
                         null=True,
@@ -2907,9 +2907,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "rapport_masse_salariale_effectif_mensuel_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE_DETAILLEE"
                         ],
                         help_text="Masse salariale annuelle totale, au sens de la déclaration annuelle de salaire",
@@ -2919,9 +2919,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "rapport_masse_salariale_effectif_mensuel_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE_DETAILLEE"
                         ],
                         help_text="Masse salariale annuelle totale, au sens de la déclaration annuelle de salaire",
@@ -2931,9 +2931,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "remuneration_moyenne_decembre_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE_DETAILLEE"
                         ],
                         help_text="base 35 heures",
@@ -2943,9 +2943,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "remuneration_moyenne_decembre_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE_DETAILLEE"
                         ],
                         help_text="base 35 heures",
@@ -2955,9 +2955,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "remuneration_mensuelle_moyenne_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE_DETAILLEE"
                         ],
                         null=True,
@@ -2966,9 +2966,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "remuneration_mensuelle_moyenne_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE_DETAILLEE"
                         ],
                         null=True,
@@ -2977,9 +2977,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "part_primes_non_mensuelle_homme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE_DETAILLEE"
                         ],
                         null=True,
@@ -2988,9 +2988,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "part_primes_non_mensuelle_femme",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE_DETAILLEE"
                         ],
                         null=True,
@@ -3033,7 +3033,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "pourcentage_salaries_primes_de_rendement",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=["primes individuelles", "primes collectives"],
                         null=True,
@@ -3072,9 +3072,9 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "montant_moyen_participation",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
-                        category_type=reglementations.models.CategoryType[
+                        category_type=reglementations.models.bdese.CategoryType[
                             "PROFESSIONNELLE"
                         ],
                         help_text="La participation est envisagée ici au sens du titre II du livre III de la partie III.",
@@ -3209,7 +3209,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "contributions_autres_depenses",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=[
                             "logement",
@@ -3315,7 +3315,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "resultats_globaux",
-                    reglementations.models.CategoryField(
+                    reglementations.models.bdese.CategoryField(
                         blank=True,
                         categories=["valeur", "volume"],
                         null=True,
