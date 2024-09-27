@@ -1,4 +1,4 @@
-<dialog aria-labelledby="fr-modal-ESRSE4" role="dialog" id="modal-ESRSE4" class="fr-modal--lg fr-modal">
+<dialog aria-labelledby="fr-modal-ESRS_E4" role="dialog" id="modal-ESRS_E4" class="fr-modal--lg fr-modal">
     <div class="fr-container fr-container--fluid fr-container-md">
         <div class="fr-grid-row fr-grid-row--center">
             <div class="fr-col-12 fr-col-md-10 fr-col-lg-10">
@@ -8,6 +8,7 @@
                             <div class="fr-modal__content">
                                 <p class="fr-tag fr-mb-1w">Environnement</p>
                                 <h4>ESRS E4 - Biodiversité et écosystèmes</h4>
+
                                 <div class="fr-container--fluid">
                                     {% if phase == 1 %}
                                         <div class="fr-grid-row">
@@ -16,31 +17,9 @@
                                                     Choisissez les enjeux de durabilité qui ont une incidence réelle et potentielle appliquée à votre entreprise
                                                 </strong>
                                             </p>
-                                            <div>
-                                                <h6>A. Vecteurs d'incidence directs de la perte de biodiversité</h6>
-                                                <ol>
-                                                    <li>
-                                                        Changement climatique
-                                                    </li>
-                                                    <li>
-                                                        Changement d'affectation des terres, changement d'utilisation de l'eau douce et des mers
-                                                    </li>
-                                                    <li>
-                                                        Exploitation directe
-                                                    </li>
-                                                    <li>
-                                                        Espèces exotiques envahissantes
-                                                    </li>
-                                                    <li>
-                                                        Pollution
-                                                    </li>
-                                                    <li>
-                                                        Autres
-                                                    </li>
-                                                </ol>
-                                                <h6>B. Incidence sur l'état des espèces</h6>
-                                                <h6>C. Incidence sur l'étendue et l'état des écosystèmes</h6>
-                                            </div>
+
+                                            <div id="selection_enjeux_ESRS_E4" hx-target="this"> Chargement en cours... </div>
+
                                         </div>
                                     {% elif phase == 2 %}
                                         <div class="fr-grid-row">
@@ -56,25 +35,12 @@
                                             </p>
                                         </div>
                                     {% endif %}
-                                    <div class="fr-grid-row fr-grid-row--middle background-light-grey fr-p-3w fr-mt-6w">
-                                        <div class="fr-col-2">
-                                            <span class="fr-icon-info-fill fr-icon--blue"></span>
-                                        </div>
-                                        <div class="fr-col-10">
-                                            Fonctionnalité bientôt disponible :
-                                            {% if phase == 1 %}
-                                                sélection des enjeux de durabilité.
-                                            {% elif phase == 2 %}
-                                                sélection des exigences de publication sur la base des ESRS évalués comme matériels pour votre entreprise.
-                                            {% endif %}
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="fr-col-12 fr-col-lg-6 background-light-grey fr-p-2w">
                             <div class="fr-modal__header">
-                                <button class="fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="modal-ESRSE4">Fermer</button>
+                                <button class="fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="modal-ESRS_E4">Fermer</button>
                             </div>
                             <h6><span class="fr-icon-lightbulb-fill fr-icon--blue"></span> Conseils et bonnes pratiques</h6>
                             {% if phase == 1 %}

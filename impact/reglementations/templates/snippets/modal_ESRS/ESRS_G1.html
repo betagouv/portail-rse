@@ -1,4 +1,4 @@
-<dialog aria-labelledby="fr-modal-ESRSG1" role="dialog" id="modal-ESRSG1" class="fr-modal--lg fr-modal">
+<dialog aria-labelledby="fr-modal-ESRS_G1" role="dialog" id="modal-ESRS_G1" class="fr-modal--lg fr-modal">
     <div class="fr-container fr-container--fluid fr-container-md">
         <div class="fr-grid-row fr-grid-row--center">
             <div class="fr-col-12 fr-col-md-10 fr-col-lg-10">
@@ -16,19 +16,10 @@
                                                     Choisissez les enjeux de durabilité qui ont une incidence réelle et potentielle appliquée à votre entreprise
                                                 </strong>
                                             </p>
-                                            <div>
-                                                <h6>A. Culture d’entreprise</h6>
-                                                <h6>B. Protection des lanceurs d’alerte</h6>
-                                                <h6>C. Bien-être animal</h6>
-                                                <h6>D. Engagement politique</h6>
-                                                <h6>E. Gestion des relations avec les fournisseurs, y compris les pratiques en matière de paiement</h6>
-                                                <h6>F. Corruption et versement de pots-de-vin</h6>
-                                                <ol>
-                                                    <li>Prévention et détection, y compris les formations</li>
-                                                    <li>Incidents/Cas</li>
-                                                </ol>
-                                            </div>
                                         </div>
+
+                                        <div id="selection_enjeux_ESRS_G1" hx-target="this"> Chargement en cours... </div>
+
                                     {% elif phase == 2 %}
                                         <div class="fr-grid-row">
                                             <ul class="csrd-list csrd-list--bold">
@@ -43,25 +34,12 @@
                                             </p>
                                         </div>
                                     {% endif %}
-                                    <div class="fr-grid-row fr-grid-row--middle background-light-grey fr-p-3w fr-mt-6w">
-                                        <div class="fr-col-2">
-                                            <span class="fr-icon-info-fill fr-icon--blue"></span>
-                                        </div>
-                                        <div class="fr-col-10">
-                                            Fonctionnalité bientôt disponible :
-                                            {% if phase == 1 %}
-                                                sélection des enjeux de durabilité.
-                                            {% elif phase == 2 %}
-                                                sélection des exigences de publication sur la base des ESRS évalués comme matériels pour votre entreprise.
-                                            {% endif %}
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="fr-col-12 fr-col-lg-6 background-light-grey fr-p-2w">
                             <div class="fr-modal__header">
-                                <button class="fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="modal-ESRSG1">Fermer</button>
+                                <button class="fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="modal-ESRS_G1">Fermer</button>
                             </div>
                             <h6><span class="fr-icon-lightbulb-fill fr-icon--blue"></span> Conseils et bonnes pratiques</h6>
                             {% if phase == 1 %}

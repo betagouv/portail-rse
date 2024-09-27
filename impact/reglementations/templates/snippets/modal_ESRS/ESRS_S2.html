@@ -1,4 +1,4 @@
-<dialog aria-labelledby="fr-modal-ESRSS2" role="dialog" id="modal-ESRSS2" class="fr-modal--lg fr-modal">
+<dialog aria-labelledby="fr-modal-ESRS_S2" role="dialog" id="modal-ESRS_S2" class="fr-modal--lg fr-modal">
     <div class="fr-container fr-container--fluid fr-container-md">
         <div class="fr-grid-row fr-grid-row--center">
             <div class="fr-col-12 fr-col-md-10 fr-col-lg-10">
@@ -16,46 +16,9 @@
                                                     Choisissez les enjeux de durabilité qui ont une incidence réelle et potentielle appliquée à votre entreprise
                                                 </strong>
                                             </p>
-                                            <div>
-                                                <h6>A. Conditions de travail
-                                                    <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSS2-soustheme1">Définition annexe</button>
-                                                </h6>
-                                                <p class="fr-text--sm fr-collapse" id="ESRSS2-soustheme1">Par exemple, sécurité de l’emploi, temps de travail, salaire décent, dialogue social, liberté d’association, y compris l’existence de comités d’entreprise, négociation collective, équilibre entre vie professionnelle et vie privée, et santé et sécurité</p>
-                                                <ol>
-                                                    <li>Sécurité de l'emploi</li>
-                                                    <li>Temps de travail</li>
-                                                    <li>Salaires décents</li>
-                                                    <li>Dialogue social</li>
-                                                    <li>Liberté d'association y compris l'existence de comités d'entreprise</li>
-                                                    <li>Négociation collective</li>
-                                                    <li>Equilibre entre vie professionnelle et vie privée</li>
-                                                    <li>Santé et sécurité</li>
-                                                </ol>
 
-                                                <h6>B. Egalité de traitement et l’égalité des chances pour tous
-                                                    <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSS2-soustheme2">Définition annexe</button>
-                                                </h6>
-                                                <p class="fr-text--sm fr-collapse" id="ESRSS2-soustheme2">Par exemple, égalité de genre et égalité de rémunération pour un travail de valeur égale, formation et développement des compétences, emploi et inclusion des personnes handicapées, mesures de lutte contre la violence et le harcèlement sur le lieu de travail, et diversité</p>
-                                                <ol>
-                                                    <li>Egalité de genre et égalité de rémunération pour un travail de valeur égale</li>
-                                                    <li>Formation et développement des compétences</li>
-                                                    <li>Emploi et inclusion des personnes handicapées</li>
-                                                    <li>Mesures de lutte contre la violence et le harcèlement sur le lieu de travail</li>
-                                                    <li>Diversité</li>
-                                                </ol>
+                                            <div id="selection_enjeux_ESRS_S2" hx-target="this"> Chargement en cours... </div>
 
-                                                <h6>C. Autres droits liés au travail
-                                                    <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSS2-soustheme3">Définition annexe</button>
-                                                </h6>
-                                                <p class="fr-text--sm fr-collapse" id="ESRSS2-soustheme3">Par exemple, travail des enfants, travail forcé, logement adéquat, eau et assainissement, et protection de la vie privée</p>
-                                                <ol>
-                                                    <li>Travail des enfants</li>
-                                                    <li>Travail forcé</li>
-                                                    <li>Logement adéquat</li>
-                                                    <li>Eau et assainissement</li>
-                                                    <li>Protection de la vie privée</li>
-                                                </ol>
-                                            </div>
                                         </div>
                                     {% elif phase == 2 %}
                                         <div class="fr-grid-row">
@@ -71,25 +34,12 @@
                                             </p>
                                         </div>
                                     {% endif %}
-                                    <div class="fr-grid-row fr-grid-row--middle background-light-grey fr-p-3w fr-mt-6w">
-                                        <div class="fr-col-2">
-                                            <span class="fr-icon-info-fill fr-icon--blue"></span>
-                                        </div>
-                                        <div class="fr-col-10">
-                                            Fonctionnalité bientôt disponible :
-                                            {% if phase == 1 %}
-                                                sélection des enjeux de durabilité.
-                                            {% elif phase == 2 %}
-                                                sélection des exigences de publication sur la base des ESRS évalués comme matériels pour votre entreprise.
-                                            {% endif %}
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="fr-col-12 fr-col-lg-6 background-light-grey fr-p-2w">
                             <div class="fr-modal__header">
-                                <button class="fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="modal-ESRSS2">Fermer</button>
+                                <button class="fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="modal-ESRS_S2">Fermer</button>
                             </div>
                             <h6><span class="fr-icon-lightbulb-fill fr-icon--blue"></span> Conseils et bonnes pratiques</h6>
                             {% if phase == 1 %}
