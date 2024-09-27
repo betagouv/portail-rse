@@ -1,4 +1,5 @@
 from django.urls import path
+from django.urls.conf import include
 from django.views.generic.base import TemplateView
 
 from reglementations import views
@@ -103,3 +104,6 @@ urlpatterns = [
         name="csrd_sous_etape",
     ),
 ]
+
+# Fragments HTMX
+urlpatterns += [path("", include("reglementations.views.fragments.urls"))]
