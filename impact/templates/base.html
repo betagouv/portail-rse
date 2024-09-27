@@ -20,6 +20,8 @@
         {% vite_hmr_client %}
         {% vite_asset 'src/main.js' %}
 
+        <script type="text/javascript" src="{% static 'js/htmx.min.js' %}" nonce="{{ request.csp_nonce }}" defer></script>
+
         {% if matomo_enabled %}
         <!-- Matomo -->
             <script nonce="{{ request.csp_nonce }}">
