@@ -1239,7 +1239,8 @@ def test_calcule_etat_si_non_soumis(entreprise_factory, alice):
         == "Accéder à l'espace Rapport de Durabilité"
     )
     assert reglementation.primary_action.url == reverse(
-        "reglementations:csrd", args=[entreprise.siren]
+        "reglementations:csrd_sous_etape",
+        kwargs={"siren": entreprise.siren, "phase": 1, "etape": 2, "sous_etape": 1},
     )
 
 
@@ -1275,7 +1276,8 @@ def test_calcule_etat_si_soumis_en_2025_et_delegable(entreprise_factory, alice):
         == "Accéder à l'espace Rapport de Durabilité"
     )
     assert reglementation.primary_action.url == reverse(
-        "reglementations:csrd", args=[entreprise.siren]
+        "reglementations:csrd_sous_etape",
+        kwargs={"siren": entreprise.siren, "phase": 1, "etape": 2, "sous_etape": 1},
     )
 
 
@@ -1306,7 +1308,8 @@ def test_calcule_etat_si_soumis_en_2027_et_non_delegable(entreprise_factory, ali
         == "Accéder à l'espace Rapport de Durabilité"
     )
     assert reglementation.primary_action.url == reverse(
-        "reglementations:csrd", args=[entreprise.siren]
+        "reglementations:csrd_sous_etape",
+        kwargs={"siren": entreprise.siren, "phase": 1, "etape": 2, "sous_etape": 1},
     )
 
 

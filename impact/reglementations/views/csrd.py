@@ -1,3 +1,4 @@
+from datetime import datetime
 from datetime import timedelta
 
 from dateutil.relativedelta import relativedelta
@@ -17,6 +18,7 @@ from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
 from habilitations.models import is_user_attached_to_entreprise
+from reglementations.models import RapportCSRD
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
 from reglementations.views.base import ReglementationStatus
@@ -305,7 +307,13 @@ class CSRDReglementation(Reglementation):
             return reglementation_status
         primary_action = ReglementationAction(
             reverse_lazy(
-                "reglementations:csrd", args=[caracteristiques.entreprise.siren]
+                "reglementations:csrd_sous_etape",
+                kwargs={
+                    "siren": caracteristiques.entreprise.siren,
+                    "phase": 1,
+                    "etape": 2,
+                    "sous_etape": 1,
+                },
             ),
             "Accéder à l'espace Rapport de Durabilité",
         )
@@ -469,11 +477,28 @@ def csrd(request, siren=None, phase=0, etape=0, sous_etape=0):
     except TemplateDoesNotExist:
         raise Http404
 
+    # En analysant un peu les requêtes exécutées,
+    # les fetch sur les habilitations et l'entreprise se répètent (requêtes identiques)
+    # un peu de centralisation à faire pour éviter les répétitions dans `utils.middlewares.ExtendUserMiddleware`
+
+    # par ex., on peut récupérer l'habilitation pour cette entreprise, elle est déjà en cache
+    habilitation = request.user.habilitation_set.get(entreprise=entreprise)
+
+    # les prefetch de l'enjeu parent évitent des N+1 au niveau du template
+    csrd, _ = RapportCSRD.objects.prefetch_related(
+        "enjeux", "enjeux__parent"
+    ).get_or_create(
+        entreprise=entreprise,
+        proprietaire=None if habilitation.is_confirmed else request.user,
+        annee=datetime.now().year,
+    )
+
     context = {
         "entreprise": entreprise,
         "phase": phase,
         "etape": etape,
         "sous_etape": sous_etape,
+        "csrd": csrd,
     }
 
     return HttpResponse(template.render(context, request))

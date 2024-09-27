@@ -10,6 +10,7 @@ from reglementations.models import OfficialBDESEAvecAccord
 from reglementations.models import PersonalBDESE_300
 from reglementations.models import PersonalBDESE_50_300
 from reglementations.models import PersonalBDESEAvecAccord
+from reglementations.models.csrd import RapportCSRD
 
 
 class CategoryJSONField(forms.JSONField):
@@ -45,3 +46,8 @@ class PersonalBDESE_Admin(admin.ModelAdmin):
 class OfficialBDESE_Admin(admin.ModelAdmin):
     form = BDESEAdminForm
     list_display = ["entreprise", "annee"]
+
+
+@admin.register(RapportCSRD)
+class RapportCSRDAdmin(admin.ModelAdmin):
+    pass
