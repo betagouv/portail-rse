@@ -1,0 +1,22 @@
+{% load random_tools %}
+{% with widget.value.instance as enjeu %}
+    {% uuid as widget_uuid %}
+    <label for="input-{{ widget_uuid }}">
+        <input type="checkbox" name="{{ widget.name }}" id="input-{{ widget_uuid }}" value="{{ widget.value }}" {% if widget.selected %}checked{% endif %}>
+        <span class="fr-pl-1v">
+            {% if enjeu.parent %}
+                {{ widget.label }}
+            {% else %}
+                <strong>{{ widget.label }}</strong>
+            {% endif %}
+        </span>
+    </label>
+    {% if enjeu.description %}
+        <button type="button" class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="{{ enjeu.esrs }}-{{ widget_uuid }}">
+            Définition annexe
+        </button>
+        <p class="fr-text--sm fr-collapse" id="{{ enjeu.esrs }}-{{ widget_uuid }}">
+            {{ enjeu.description }}
+        </p>
+    {% endif %}
+{% endwith %}
