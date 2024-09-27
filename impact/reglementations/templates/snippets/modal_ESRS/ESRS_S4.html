@@ -1,4 +1,4 @@
-<dialog aria-labelledby="fr-modal-ESRSS4" role="dialog" id="modal-ESRSS4" class="fr-modal--lg fr-modal">
+<dialog aria-labelledby="fr-modal-ESRS_S4" role="dialog" id="modal-ESRS_S4" class="fr-modal--lg fr-modal">
     <div class="fr-container fr-container--fluid fr-container-md">
         <div class="fr-grid-row fr-grid-row--center">
             <div class="fr-col-12 fr-col-md-10 fr-col-lg-10">
@@ -16,28 +16,9 @@
                                                     Choisissez les enjeux de durabilité qui ont une incidence réelle et potentielle appliquée à votre entreprise
                                                 </strong>
                                             </p>
-                                            <div>
-                                                <h6>A. Incidences liées aux informations sur les consommateurs et/ou les utilisateurs finals</h6>
-                                                <ol>
-                                                    <li>Protection de la vie privée</li>
-                                                    <li>Liberté d’expression</li>
-                                                    <li>Accès à l’information (de qualité)</li>
-                                                </ol>
 
-                                                <h6>B. Sécurité des consommateurs et/ou des utilisateurs finals</h6>
-                                                <ol>
-                                                    <li>Santé et sécurité</li>
-                                                    <li>Sécurité de la personne</li>
-                                                    <li>Protection des enfants</li>
-                                                </ol>
+                                            <div id="selection_enjeux_ESRS_S4" hx-target="this"> Chargement en cours... </div>
 
-                                                <h6>C. Inclusion sociale des consommateurs et/ou des utilisateurs finals</h6>
-                                                <ol>
-                                                    <li>Non-discrimination</li>
-                                                    <li>Accès aux produits et services</li>
-                                                    <li>Pratiques de commercialisation responsables</li>
-                                                </ol>
-                                            </div>
                                         </div>
                                     {% elif phase == 2 %}
                                         <div class="fr-grid-row">
@@ -53,25 +34,12 @@
                                             </p>
                                         </div>
                                     {% endif %}
-                                    <div class="fr-grid-row fr-grid-row--middle background-light-grey fr-p-3w fr-mt-6w">
-                                        <div class="fr-col-2">
-                                            <span class="fr-icon-info-fill fr-icon--blue"></span>
-                                        </div>
-                                        <div class="fr-col-10">
-                                            Fonctionnalité bientôt disponible :
-                                            {% if phase == 1 %}
-                                                sélection des enjeux de durabilité.
-                                            {% elif phase == 2 %}
-                                                sélection des exigences de publication sur la base des ESRS évalués comme matériels pour votre entreprise.
-                                            {% endif %}
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="fr-col-12 fr-col-lg-6 background-light-grey fr-p-2w">
                             <div class="fr-modal__header">
-                                <button class="fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="modal-ESRSS4">Fermer</button>
+                                <button class="fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="modal-ESRS_S4">Fermer</button>
                             </div>
                             <h6><span class="fr-icon-lightbulb-fill fr-icon--blue"></span> Conseils et bonnes pratiques</h6>
                             {% if phase == 1 %}

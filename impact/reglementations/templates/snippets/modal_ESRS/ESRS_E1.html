@@ -1,4 +1,4 @@
-<dialog aria-labelledby="fr-modal-ESRSE1" role="dialog" id="modal-ESRSE1" class="fr-modal--lg fr-modal">
+<dialog aria-labelledby="fr-modal-ESRS_E1" role="dialog" id="modal-ESRS_E1" class="fr-modal--lg fr-modal">
     <div class="fr-container fr-container--fluid fr-container-md">
         <div class="fr-grid-row fr-grid-row--center">
             <div class="fr-col-12 fr-col-md-10 fr-col-lg-10">
@@ -16,37 +16,9 @@
                                                     Choisissez les enjeux de durabilité qui ont une incidence réelle et potentielle appliquée à votre entreprise
                                                 </strong>
                                             </p>
-                                            <div>
-                                                <ol>
-                                                    <li>
-                                                        Adaptation au changement climatique
-                                                        <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSE1-soustheme1">
-                                                            Définition annexe
-                                                        </button>
-                                                    </li>
-                                                    <p class="fr-text--sm fr-collapse" id="ESRSE1-soustheme1">
-                                                        L’adaptation au changement climatique renvoie au processus d’adaptation de l’entreprise au changement climatique réel et attendu
-                                                    </p>
-                                                    <li>
-                                                        Atténuation du changement climatique
-                                                        <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSE1-soustheme2">
-                                                            Définition annexe
-                                                        </button>
-                                                    </li>
-                                                    <p class="fr-text--sm fr-collapse" id="ESRSE1-soustheme2">
-                                                        L’atténuation du changement climatique se réfère aux efforts de l’entreprise en faveur du processus général consistant à limiter l’élévation de la température moyenne de la planète à 1,5° C par rapport aux niveaux préindustriels, conformément à l’accord de Paris. La présente norme couvre les exigences de publication liées, notamment, aux sept gaz à effet de serre (GES) que sont le dioxyde de carbone (CO2), le méthane (CH4), le protoxyde d’azote (N2O), les hydrofluorocarbures (HFC), les hydrocarbures perfluorés (PFC), l’hexafluorure de soufre (SF6) et le trifluorure d’azote (NF3). Elle couvre également les exigences de publication portant sur la manière dont l’entreprise gère ses émissions de GES ainsi que les risques de transition qui y sont associés
-                                                    </p>
-                                                    <li>
-                                                        Energie
-                                                        <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSE1-soustheme3">
-                                                            Définition annexe
-                                                        </button>
-                                                    </li>
-                                                    <p class="fr-text--sm fr-collapse" id="ESRSE1-soustheme3">
-                                                        Les exigences de publication relatives à l’« énergie » couvrent toutes les formes de production et de consommation d’énergie.
-                                                    </p>
-                                                </ol>
-                                            </div>
+
+                                            <div id="selection_enjeux_ESRS_E1" hx-target="this"> Chargement en cours... </div>
+
                                         </div>
                                     {% elif phase == 2 %}
                                         <div class="fr-grid-row">
@@ -62,25 +34,14 @@
                                             </p>
                                         </div>
                                     {% endif %}
-                                    <div class="fr-grid-row fr-grid-row--middle background-light-grey fr-p-3w fr-mt-6w">
-                                        <div class="fr-col-2">
-                                            <span class="fr-icon-info-fill fr-icon--blue"></span>
-                                        </div>
-                                        <div class="fr-col-10">
-                                            Fonctionnalité bientôt disponible :
-                                            {% if phase == 1 %}
-                                                sélection des enjeux de durabilité.
-                                            {% elif phase == 2 %}
-                                                sélection des exigences de publication sur la base des ESRS évalués comme matériels pour votre entreprise.
-                                            {% endif %}
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="fr-col-12 fr-col-lg-6 background-light-grey fr-p-2w">
                             <div class="fr-modal__header">
-                                <button class="fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="modal-ESRSE1">Fermer</button>
+                                <button class="fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="modal-ESRS_E1">
+                                    Fermer
+                                </button>
                             </div>
                             <h6><span class="fr-icon-lightbulb-fill fr-icon--blue"></span> Conseils et bonnes pratiques</h6>
                             {% if phase == 1 %}

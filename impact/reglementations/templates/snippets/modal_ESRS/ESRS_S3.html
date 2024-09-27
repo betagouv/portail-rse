@@ -1,4 +1,4 @@
-<dialog aria-labelledby="fr-modal-ESRSS3" role="dialog" id="modal-ESRSS3" class="fr-modal--lg fr-modal">
+<dialog aria-labelledby="fr-modal-ESRS_S3" role="dialog" id="modal-ESRS_S3" class="fr-modal--lg fr-modal">
     <div class="fr-container fr-container--fluid fr-container-md">
         <div class="fr-grid-row fr-grid-row--center">
             <div class="fr-col-12 fr-col-md-10 fr-col-lg-10">
@@ -16,42 +16,9 @@
                                                     Choisissez les enjeux de durabilité qui ont une incidence réelle et potentielle appliquée à votre entreprise
                                                 </strong>
                                             </p>
-                                            <div>
-                                                <h6>
-                                                    A. Droits économiques, sociaux et culturels des communautés
-                                                    <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSS3-soustheme1">Définition annexe</button>
-                                                </h6>
-                                                <p class="fr-text--sm fr-collapse" id="ESRSS3-soustheme1">Par exemple, logement adéquat, alimentation adéquate, eau et assainissement, incidences liées à la terre et à la sécurité</p>
-                                                <ol>
-                                                    <li>Logement adéquat</li>
-                                                    <li>Alimentation adéquate</li>
-                                                    <li>Eau et assainissement</li>
-                                                    <li>Incidences liées à la terre</li>
-                                                    <li>Incidences liées à la sécurité</li>
-                                                </ol>
 
-                                                <h6>
-                                                    B. Droits civils et politiques des communautés
-                                                    <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSS3-soustheme2">Définition annexe</button>
-                                                </h6>
-                                                <p class="fr-text--sm fr-collapse" id="ESRSS3-soustheme2">Par exemple, liberté d’expression, liberté de réunion, incidences sur les défenseurs des droits de l’homme</p>
-                                                <ol>
-                                                    <li>Liberté d’expression</li>
-                                                    <li>Liberté de réunion</li>
-                                                    <li>Incidences sur les défenseurs des droits de l’homme</li>
-                                                </ol>
+                                            <div id="selection_enjeux_ESRS_S3" hx-target="this"> Chargement en cours... </div>
 
-                                                <h6>
-                                                    C. Droits particuliers des peuples autochtones
-                                                    <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSS3-soustheme3">Définition annexe</button>
-                                                </h6>
-                                                <p class="fr-text--sm fr-collapse" id="ESRSS3-soustheme3">Par exemple, consentement préalable, donné librement et en connaissance de cause, autodétermination, droits culturels</p>
-                                                <ol>
-                                                    <li>Consentement préalable, donné librement et en connaissance de cause</li>
-                                                    <li>Auto-détermination</li>
-                                                    <li>Droits culturels</li>
-                                                </ol>
-                                            </div>
                                         </div>
                                     {% elif phase == 2 %}
                                         <div class="fr-grid-row">
@@ -67,25 +34,12 @@
                                             </p>
                                         </div>
                                     {% endif %}
-                                    <div class="fr-grid-row fr-grid-row--middle background-light-grey fr-p-3w fr-mt-6w">
-                                        <div class="fr-col-2">
-                                            <span class="fr-icon-info-fill fr-icon--blue"></span>
-                                        </div>
-                                        <div class="fr-col-10">
-                                            Fonctionnalité bientôt disponible :
-                                            {% if phase == 1 %}
-                                                sélection des enjeux de durabilité.
-                                            {% elif phase == 2 %}
-                                                sélection des exigences de publication sur la base des ESRS évalués comme matériels pour votre entreprise.
-                                            {% endif %}
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="fr-col-12 fr-col-lg-6 background-light-grey fr-p-2w">
                             <div class="fr-modal__header">
-                                <button class="fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="modal-ESRSS3">Fermer</button>
+                                <button class="fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="modal-ESRS_S3">Fermer</button>
                             </div>
                             <h6><span class="fr-icon-lightbulb-fill fr-icon--blue"></span> Conseils et bonnes pratiques</h6>
                             {% if phase == 1 %}

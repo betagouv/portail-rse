@@ -1,0 +1,24 @@
+<form hx-post="{{ request.get_full_path }}" hx-target="#esg_container">
+    {% csrf_token %}
+    <div>
+        {% with form.sections as sections %}
+            {% for enjeu in form.enjeux %}
+                <div class="fr-pl-4v fr-my-1v">
+                    {{ enjeu }}
+                    {% if forloop.counter in sections.0 %}
+                        <div class="fr-ml-2v">
+                    {% endif %}
+
+                    {% if forloop.counter in sections.1 %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% endwith %}
+    </div>
+    <hr class="fr-mt-6v">
+    <button type="submit" class="fr-btn fr-btn--secondary" hx-disabled-elt="this" aria-controls="modal-{{ form.esrs }}">
+        Valider
+    </button>
+</form>
+<!-- fragment enjeux -->
