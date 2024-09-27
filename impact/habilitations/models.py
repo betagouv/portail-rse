@@ -27,6 +27,9 @@ class Habilitation(TimestampedModel):
         null=True,
     )
 
+    def __str__(self):
+        return f"Habilitation : {self.entreprise}, {self.user}"
+
     def confirm(self):
         self.confirmed_at = datetime.now(timezone.utc)
         if not has_official_bdese(self.entreprise):
