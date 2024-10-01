@@ -1,3 +1,4 @@
+from .htmx import is_htmx
 from users.models import User
 
 
@@ -17,5 +18,29 @@ class ExtendUserMiddleware:
         response = self.get_response(request)
 
         # rien après
+
+        return response
+
+
+class HTMXRetargetMiddleware:
+    """
+    Ajoute un entête `HX-Retarget` à la réponse permettant d'affecter une nouvelle cible de rendu HTMX.
+    La nouvelle cible est récupéré via le paramètre de requête `_hx_retarget` si présent.
+    Utile lors des redirections ou les modifications d'entêtes ne sont pas préservées.
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+
+        # uniquement pour les requêtes HTMX et ne doit pas affecter les redirections
+        if not is_htmx(request) or (300 <= response.status_code < 400):
+            return response
+
+        if new_target := request.GET.get("_hx_retarget"):
+            # on applique le changement de cible
+            response["HX-Retarget"] = new_target
 
         return response
