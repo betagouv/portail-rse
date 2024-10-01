@@ -66,6 +66,8 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_hosts.middleware.HostsResponseMiddleware",
+    # middlewares touchant à l'utilisation d'HTMX
+    "utils.middlewares.HTMXRetargetMiddleware",
 ]
 ROOT_URLCONF = "impact.urls"
 TEMPLATES = [

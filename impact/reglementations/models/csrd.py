@@ -122,13 +122,18 @@ class RapportCSRD(TimestampedModel):
 
     def modifiable_par(self, utilisateur: "users.User") -> bool:
         # Vérifie si le rapport CSRD courant est modifiable par un utilisateur donné.
-        return utilisateur and (
-            # l'utilisateur est le propriétaire du rapport (personnel)
-            self.proprietaire == utilisateur
-            # l'utilisateur à une habilitation confirmée pour cette entreprise
-            or utilisateur.habilitations.exclude(confirmed_at=None)
-            .filter(entreprise=self.entreprise)
-            .exists()
+        # tip : un utilisateur anonyme n'a pas d'ID
+        return (
+            utilisateur
+            and utilisateur.id
+            and (
+                # l'utilisateur est le propriétaire du rapport (personnel)
+                self.proprietaire == utilisateur
+                # l'utilisateur à une habilitation confirmée pour cette entreprise
+                or utilisateur.habilitations.exclude(confirmed_at=None)
+                .filter(entreprise=self.entreprise)
+                .exists()
+            )
         )
 
 

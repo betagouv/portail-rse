@@ -1,3 +1,15 @@
+{% load random_tools %}
+
+<div class="fr-toggle fr-toggle--label-left">
+    {% uuid as toggle_id %}
+    <input type="checkbox" id="toggle_creation_enjeu_{{ toggle_id }}" class="fr-toggle__input" aria-expanded="false" aria-describedby="toggle-{{ toggle_id }}-messages" aria-controls="creation_enjeu_{{ toggle_id }}">
+    <label class="fr-toggle__label" for="toggle_creation_enjeu_{{ toggle_id }}">Ajouter un enjeu</label>
+</div>
+
+<div id="creation_enjeu_{{ toggle_id }}" class="fr-collapse" hx-get="{% url 'reglementations:creation_enjeu' csrd.pk form.esrs %}" hx-trigger="click from:#toggle_creation_enjeu_{{ toggle_id }}" hx-target="this">
+    Chargement en cours ...
+</div>
+
 <form hx-post="{{ request.get_full_path }}" hx-target="#esg_container">
     {% csrf_token %}
     <div>
@@ -8,7 +20,6 @@
                     {% if forloop.counter in sections.0 %}
                         <div class="fr-ml-2v">
                     {% endif %}
-
                     {% if forloop.counter in sections.1 %}
                         </div>
                     {% endif %}

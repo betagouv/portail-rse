@@ -1,0 +1,20 @@
+{% load random_tools %}
+<form hx-post="{{ request.get_full_path }}">
+    {% csrf_token %}
+    <div class="fr-input-group {% if form.errors.titre %}fr-input-group--error{% endif %}">
+        <label class="fr-label" for="id_titre">Titre de l'enjeu</label>
+        <input class="fr-input" type="text" id="id_titre" name="titre" value="{{ form.titre.value }}" {% if form.errors.titre %}aria-describedby="titre-desc-error"{% endif %}>
+        {% if form.errors.titre %}
+            <p id="titre-desc-error" class="fr-error-text">
+                {{ form.errors.titre.0 }}
+            </p>
+        {% endif %}
+    </div>
+    <div class="fr-input-group">
+        <label class="fr-label" for="id_details">Description de l'enjeu</label>
+        <input class="fr-input" type="textarea" id="id_details" name="details" value="{{ form.details.value }}">
+    </div>
+    <button type="submit" class="fr-btn">Valider</button>
+</form>
+
+<hr class="fr-mt-6v">
