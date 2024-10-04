@@ -1,122 +1,124 @@
-{% with csrd.nombre_enjeux_par_esrs as nombre_enjeux_par_esrs %}
-    <div class="fr-grid-row fr-grid-row--gutters esrs-organizer">
-        <div class="fr-col-lg-4 fr-col-12">
-            <div class="esrs-organizer--container esrs-organizer--env">
-                <div class="esrs-organizer--header">
-                    <h4 class="esrs-organizer--title">Environnement</h4>
+{% with csrd.nombre_enjeux_selectionnes_par_esrs as nombre_enjeux_selectionnes_par_esrs %}
+    {% with csrd.nombre_enjeux_par_esrs as nombre_enjeux_par_esrs %}
+        <div class="fr-grid-row fr-grid-row--gutters esrs-organizer">
+            <div class="fr-col-lg-4 fr-col-12">
+                <div class="esrs-organizer--container esrs-organizer--env">
+                    <div class="esrs-organizer--header">
+                        <h4 class="esrs-organizer--title">Environnement</h4>
+                    </div>
+                    <div class="esrs-organizer--content">
+                        <div class="esrs-organizer--esrs">
+                            <div class="esrs-organizer--card">
+                                <div class="esrs-organizer--card-title">
+                                    <p class="fr-badge fr-badge--sm {% if nombre_enjeux_par_esrs.ESRS_E1 %}fr-badge--blue-ecume{% endif %}">{{ nombre_enjeux_selectionnes_par_esrs.ESRS_E1|default:0 }}/{{ nombre_enjeux_par_esrs.ESRS_E1|default:0 }} Enjeux de durabilité</p>
+                                    <b>ESRS E1 - Changement climatique</b>
+                                    <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale d'information sur l'ESRS E1" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS_E1" hx-get="{% url "reglementations:selection_enjeux" csrd.pk "ESRS_E1" %}" hx-target="#selection_enjeux_ESRS_E1"></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="esrs-organizer--esrs">
+                            <div class="esrs-organizer--card">
+                                <div class="esrs-organizer--card-title">
+                                    <p class="fr-badge fr-badge--sm {% if nombre_enjeux_selectionnes_par_esrs.ESRS_E2 %}fr-badge--blue-ecume{% endif %}">{{ nombre_enjeux_selectionnes_par_esrs.ESRS_E2|default:0 }}/{{ nombre_enjeux_par_esrs.ESRS_E2|default:0 }} Enjeux de durabilité</p>
+                                    <b>ESRS E2 - Pollution</b>
+                                    <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale d'information sur l'ESRS E2" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS_E2" hx-get="{% url "reglementations:selection_enjeux" csrd.pk "ESRS_E2" %}" hx-target="#selection_enjeux_ESRS_E2" ></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="esrs-organizer--esrs">
+                            <div class="esrs-organizer--card">
+                                <div class="esrs-organizer--card-title">
+                                    <p class="fr-badge fr-badge--sm {% if nombre_enjeux_selectionnes_par_esrs.ESRS_E3 %}fr-badge--blue-ecume{% endif %}">{{ nombre_enjeux_selectionnes_par_esrs.ESRS_E3|default:0 }}/{{ nombre_enjeux_par_esrs.ESRS_E3|default:0 }} Enjeux de durabilité</p>
+                                    <b>ESRS E3 - Eau et ressources marines</b>
+                                    <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale d'information sur l'ESRS E3" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS_E3" hx-get="{% url "reglementations:selection_enjeux" csrd.pk "ESRS_E3" %}" hx-target="#selection_enjeux_ESRS_E3"></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="esrs-organizer--esrs">
+                            <div class="esrs-organizer--card">
+                                <div class="esrs-organizer--card-title">
+                                    <p class="fr-badge fr-badge--sm {% if nombre_enjeux_selectionnes_par_esrs.ESRS_E4 %}fr-badge--blue-ecume{% endif %}">{{ nombre_enjeux_selectionnes_par_esrs.ESRS_E4|default:0 }}/{{ nombre_enjeux_par_esrs.ESRS_E4|default:0 }} Enjeux de durabilité</p>
+                                    <b>ESRS E4 - Biodiversité et écosystèmes</b>
+                                    <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale d'information sur l'ESRS E4" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS_E4" hx-get="{% url "reglementations:selection_enjeux" csrd.pk "ESRS_E4" %}" hx-target="#selection_enjeux_ESRS_E4"></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="esrs-organizer--esrs">
+                            <div class="esrs-organizer--card">
+                                <div class="esrs-organizer--card-title">
+                                    <p class="fr-badge fr-badge--sm {% if nombre_enjeux_selectionnes_par_esrs.ESRS_E5 %}fr-badge--blue-ecume{% endif %}">{{ nombre_enjeux_selectionnes_par_esrs.ESRS_E5|default:0 }}/{{ nombre_enjeux_par_esrs.ESRS_E5|default:0 }} Enjeux de durabilité</p>
+                                    <b>ESRS E5 - Utilisation des ressources et économie circulaire</b>
+                                    <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale d'information sur l'ESRS E5" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS_E5" hx-get="{% url "reglementations:selection_enjeux" csrd.pk "ESRS_E5" %}" hx-target="#selection_enjeux_ESRS_E5"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="esrs-organizer--content">
-                    <div class="esrs-organizer--esrs">
-                        <div class="esrs-organizer--card">
-                            <div class="esrs-organizer--card-title">
-                                <p class="fr-badge fr-badge--sm {% if nombre_enjeux_par_esrs.ESRS_E1 %}fr-badge--blue-ecume{% endif %}">{{ nombre_enjeux_par_esrs.ESRS_E1|default:0 }}/3 Enjeux de durabilité</p>
-                                <b>ESRS E1 - Changement climatique</b>
-                                <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale d'information sur l'ESRS E1" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS_E1" hx-get="{% url "reglementations:selection_enjeux" csrd.pk "ESRS_E1" %}" hx-target="#selection_enjeux_ESRS_E1"></button>
+            </div>
+            <div class="fr-col-lg-4 fr-col-12">
+                <div class="esrs-organizer--container esrs-organizer--social">
+                    <div class="esrs-organizer--header">
+                        <h4 class="esrs-organizer--title">Social</h4>
+                    </div>
+                    <div class="esrs-organizer--content">
+                        <div class="esrs-organizer--esrs">
+                            <div class="esrs-organizer--card">
+                                <div class="esrs-organizer--card-title">
+                                    <p class="fr-badge fr-badge--sm {% if nombre_enjeux_selectionnes_par_esrs.ESRS_S1 %}fr-badge--blue-ecume{% endif %}">{{ nombre_enjeux_selectionnes_par_esrs.ESRS_S1|default:0 }}/{{ nombre_enjeux_par_esrs.ESRS_S1|default:0 }} Enjeux de durabilité</p>
+                                    <b>ESRS S1 - Personnel de l'entreprise</b>
+                                    <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale d'information sur l'ESRS S1" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS_S1" hx-get="{% url "reglementations:selection_enjeux" csrd.pk "ESRS_S1" %}" hx-target="#selection_enjeux_ESRS_S1"></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="esrs-organizer--esrs">
+                            <div class="esrs-organizer--card">
+                                <div class="esrs-organizer--card-title">
+                                    <p class="fr-badge fr-badge--sm {% if nombre_enjeux_selectionnes_par_esrs.ESRS_S2 %}fr-badge--blue-ecume{% endif %}">{{ nombre_enjeux_selectionnes_par_esrs.ESRS_S2|default:0 }}/{{ nombre_enjeux_par_esrs.ESRS_S2|default:0 }} Enjeux de durabilité</p>
+                                    <b>ESRS S2 - Travailleurs de la chaîne de valeur</b>
+                                    <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale d'information sur l'ESRS S2" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS_S2" hx-get="{% url "reglementations:selection_enjeux" csrd.pk "ESRS_S2" %}" hx-target="#selection_enjeux_ESRS_S2"></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="esrs-organizer--esrs">
+                            <div class="esrs-organizer--card">
+                                <div class="esrs-organizer--card-title">
+                                    <p class="fr-badge fr-badge--sm {% if nombre_enjeux_selectionnes_par_esrs.ESRS_S3 %}fr-badge--blue-ecume{% endif %}">{{ nombre_enjeux_selectionnes_par_esrs.ESRS_S3|default:0 }}/{{ nombre_enjeux_par_esrs.ESRS_S3|default:0 }} Enjeux de durabilité</p>
+                                    <b>ESRS S3 - Communautés affectées</b>
+                                    <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale d'information sur l'ESRS S3" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS_S3" hx-get="{% url "reglementations:selection_enjeux" csrd.pk "ESRS_S3" %}" hx-target="#selection_enjeux_ESRS_S3"></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="esrs-organizer--esrs">
+                            <div class="esrs-organizer--card">
+                                <div class="esrs-organizer--card-title">
+                                    <p class="fr-badge fr-badge--sm {% if nombre_enjeux_selectionnes_par_esrs.ESRS_S4 %}fr-badge--blue-ecume{% endif %}">{{ nombre_enjeux_selectionnes_par_esrs.ESRS_S4|default:0 }}/{{ nombre_enjeux_par_esrs.ESRS_S4|default:0 }} Enjeux de durabilité</p>
+                                    <b>ESRS S4 - Consommateurs et utilisateurs finaux</b>
+                                    <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale d'information sur l'ESRS S4" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS_S4" hx-get="{% url "reglementations:selection_enjeux" csrd.pk "ESRS_S4" %}" hx-target="#selection_enjeux_ESRS_S4"></button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="esrs-organizer--esrs">
-                        <div class="esrs-organizer--card">
-                            <div class="esrs-organizer--card-title">
-                                <p class="fr-badge fr-badge--sm {% if nombre_enjeux_par_esrs.ESRS_E2 %}fr-badge--blue-ecume{% endif %}">{{ nombre_enjeux_par_esrs.ESRS_E2|default:0 }}/6 Enjeux de durabilité</p>
-                                <b>ESRS E2 - Pollution</b>
-                                <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale d'information sur l'ESRS E2" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS_E2" hx-get="{% url "reglementations:selection_enjeux" csrd.pk "ESRS_E2" %}" hx-target="#selection_enjeux_ESRS_E2" ></button>
-                            </div>
-                        </div>
+                </div>
+            </div>
+            <div class="fr-col-lg-4 fr-col-12">
+                <div class="esrs-organizer--container esrs-organizer--gov">
+                    <div class="esrs-organizer--header">
+                        <h4 class="esrs-organizer--title">Gouvernance</h4>
                     </div>
-                    <div class="esrs-organizer--esrs">
-                        <div class="esrs-organizer--card">
-                            <div class="esrs-organizer--card-title">
-                                <p class="fr-badge fr-badge--sm {% if nombre_enjeux_par_esrs.ESRS_E3 %}fr-badge--blue-ecume{% endif %}">{{ nombre_enjeux_par_esrs.ESRS_E3|default:0 }}/7 Enjeux de durabilité</p>
-                                <b>ESRS E3 - Eau et ressources marines</b>
-                                <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale d'information sur l'ESRS E3" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS_E3" hx-get="{% url "reglementations:selection_enjeux" csrd.pk "ESRS_E3" %}" hx-target="#selection_enjeux_ESRS_E3"></button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="esrs-organizer--esrs">
-                        <div class="esrs-organizer--card">
-                            <div class="esrs-organizer--card-title">
-                                <p class="fr-badge fr-badge--sm {% if nombre_enjeux_par_esrs.ESRS_E4 %}fr-badge--blue-ecume{% endif %}">{{ nombre_enjeux_par_esrs.ESRS_E4|default:0 }}/9 Enjeux de durabilité</p>
-                                <b>ESRS E4 - Biodiversité et écosystèmes</b>
-                                <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale d'information sur l'ESRS E4" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS_E4" hx-get="{% url "reglementations:selection_enjeux" csrd.pk "ESRS_E4" %}" hx-target="#selection_enjeux_ESRS_E4"></button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="esrs-organizer--esrs">
-                        <div class="esrs-organizer--card">
-                            <div class="esrs-organizer--card-title">
-                                <p class="fr-badge fr-badge--sm {% if nombre_enjeux_par_esrs.ESRS_E5 %}fr-badge--blue-ecume{% endif %}">{{ nombre_enjeux_par_esrs.ESRS_E5|default:0 }}/3 Enjeux de durabilité</p>
-                                <b>ESRS E5 - Utilisation des ressources et économie circulaire</b>
-                                <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale d'information sur l'ESRS E5" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS_E5" hx-get="{% url "reglementations:selection_enjeux" csrd.pk "ESRS_E5" %}" hx-target="#selection_enjeux_ESRS_E5"></button>
+                    <div class="esrs-organizer--content">
+                        <div class="esrs-organizer--esrs">
+                            <div class="esrs-organizer--card">
+                                <div class="esrs-organizer--card-title">
+                                    <p class="fr-badge fr-badge--sm {% if nombre_enjeux_selectionnes_par_esrs.ESRS_G1 %}fr-badge--blue-ecume{% endif %}">{{ nombre_enjeux_selectionnes_par_esrs.ESRS_G1|default:0 }}/{{ nombre_enjeux_par_esrs.ESRS_G1|default:0 }} Enjeux de durabilité</p>
+                                    <b>ESRS G1 - Conduite des affaires</b>
+                                    <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale d'information sur l'ESRS G1" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS_G1" hx-get="{% url "reglementations:selection_enjeux" csrd.pk "ESRS_G1" %}" hx-target="#selection_enjeux_ESRS_G1"></button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="fr-col-lg-4 fr-col-12">
-            <div class="esrs-organizer--container esrs-organizer--social">
-                <div class="esrs-organizer--header">
-                    <h4 class="esrs-organizer--title">Social</h4>
-                </div>
-                <div class="esrs-organizer--content">
-                    <div class="esrs-organizer--esrs">
-                        <div class="esrs-organizer--card">
-                            <div class="esrs-organizer--card-title">
-                                <p class="fr-badge fr-badge--sm {% if nombre_enjeux_par_esrs.ESRS_S1 %}fr-badge--blue-ecume{% endif %}">{{ nombre_enjeux_par_esrs.ESRS_S1|default:0 }}/20 Enjeux de durabilité</p>
-                                <b>ESRS S1 - Personnel de l'entreprise</b>
-                                <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale d'information sur l'ESRS S1" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS_S1" hx-get="{% url "reglementations:selection_enjeux" csrd.pk "ESRS_S1" %}" hx-target="#selection_enjeux_ESRS_S1"></button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="esrs-organizer--esrs">
-                        <div class="esrs-organizer--card">
-                            <div class="esrs-organizer--card-title">
-                                <p class="fr-badge fr-badge--sm {% if nombre_enjeux_par_esrs.ESRS_S2 %}fr-badge--blue-ecume{% endif %}">{{ nombre_enjeux_par_esrs.ESRS_S2|default:0 }}/21 Enjeux de durabilité</p>
-                                <b>ESRS S2 - Travailleurs de la chaîne de valeur</b>
-                                <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale d'information sur l'ESRS S2" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS_S2" hx-get="{% url "reglementations:selection_enjeux" csrd.pk "ESRS_S2" %}" hx-target="#selection_enjeux_ESRS_S2"></button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="esrs-organizer--esrs">
-                        <div class="esrs-organizer--card">
-                            <div class="esrs-organizer--card-title">
-                                <p class="fr-badge fr-badge--sm {% if nombre_enjeux_par_esrs.ESRS_S3 %}fr-badge--blue-ecume{% endif %}">{{ nombre_enjeux_par_esrs.ESRS_S3|default:0 }}/14 Enjeux de durabilité</p>
-                                <b>ESRS S3 - Communautés affectées</b>
-                                <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale d'information sur l'ESRS S3" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS_S3" hx-get="{% url "reglementations:selection_enjeux" csrd.pk "ESRS_S3" %}" hx-target="#selection_enjeux_ESRS_S3"></button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="esrs-organizer--esrs">
-                        <div class="esrs-organizer--card">
-                            <div class="esrs-organizer--card-title">
-                                <p class="fr-badge fr-badge--sm {% if nombre_enjeux_par_esrs.ESRS_S4 %}fr-badge--blue-ecume{% endif %}">{{ nombre_enjeux_par_esrs.ESRS_S4|default:0 }}/12 Enjeux de durabilité</p>
-                                <b>ESRS S4 - Consommateurs et utilisateurs finaux</b>
-                                <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale d'information sur l'ESRS S4" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS_S4" hx-get="{% url "reglementations:selection_enjeux" csrd.pk "ESRS_S4" %}" hx-target="#selection_enjeux_ESRS_S4"></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="fr-col-lg-4 fr-col-12">
-            <div class="esrs-organizer--container esrs-organizer--gov">
-                <div class="esrs-organizer--header">
-                    <h4 class="esrs-organizer--title">Gouvernance</h4>
-                </div>
-                <div class="esrs-organizer--content">
-                    <div class="esrs-organizer--esrs">
-                        <div class="esrs-organizer--card">
-                            <div class="esrs-organizer--card-title">
-                                <p class="fr-badge fr-badge--sm {% if nombre_enjeux_par_esrs.ESRS_G1 %}fr-badge--blue-ecume{% endif %}">{{ nombre_enjeux_par_esrs.ESRS_G1|default:0 }}/8 Enjeux de durabilité</p>
-                                <b>ESRS G1 - Conduite des affaires</b>
-                                <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale d'information sur l'ESRS G1" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS_G1" hx-get="{% url "reglementations:selection_enjeux" csrd.pk "ESRS_G1" %}" hx-target="#selection_enjeux_ESRS_G1"></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% endwith %}
 {% endwith %}
 <!-- fragment esrs -->
