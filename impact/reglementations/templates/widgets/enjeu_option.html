@@ -1,34 +1,46 @@
 {% load random_tools %}
 {% with widget.value.instance as enjeu %}
     {% uuid as widget_uuid %}
-    <label for="input-{{ widget_uuid }}">
-        <input type="checkbox" name="{{ widget.name }}" id="input-{{ widget_uuid }}" value="{{ widget.value }}" {% if widget.selected %}checked{% endif %}>
-        <span class="fr-pl-1v">
-            {% if enjeu.parent %}
-                {{ widget.label }}
-            {% else %}
-                <strong>{{ widget.label }}</strong>
-            {% endif %}
-        </span>
-    </label>
-    {% if enjeu.modifiable %}
-    {% comment %}
-    Les paramètres du formulaire parent le plus proche sont inclus par défaut dans toutes les requêtes HTMX (hors `GET`),
-    `hx-params` permet de contrôler ce qui est envoyé en paramètre lors de l'appel (rien ici).
-    {% endcomment %}
-        <button hx-delete="{% url "reglementations:suppression_enjeu" enjeu.pk %}" hx-params="none" hx-target="this" class="fr-icon-delete-bin-line" title="Suppr"></button>
-    {% endif %}
-    {% if enjeu.description %}
-        <button type="button" class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="{{ enjeu.esrs }}-{{ widget_uuid }}">
-            Définition annexe
-        </button>
-        <p class="fr-text--sm fr-collapse" id="{{ enjeu.esrs }}-{{ widget_uuid }}">
-            {{ enjeu.description }}
-        </p>
-    {% endif %}
-    {% if enjeu.modifiable %}
-        <div>
-            <p class="fr-badge">Enjeu ajouté</p>
+    <div class="selection-enjeu">
+        <div class="selection-enjeu_label">
+            <label for="input-{{ widget_uuid }}">
+                <input type="checkbox" name="{{ widget.name }}" id="input-{{ widget_uuid }}" value="{{ widget.value }}" {% if widget.selected %}checked{% endif %}>
+                <span class="fr-pl-1v grow">
+                    {% if enjeu.parent %}
+                        {{ widget.label }}
+                    {% else %}
+                        <strong>{{ widget.label }}</strong>
+                    {% endif %}
+                </span>
+            </label>
         </div>
-    {% endif %}
+        <div class="selection-enjeu_actions">
+            {% if enjeu.modifiable %}
+                {% comment %}
+                Les paramètres du formulaire parent le plus proche sont inclus par défaut dans toutes les requêtes HTMX (hors `GET`),
+                `hx-params` permet de contrôler ce qui est envoyé en paramètre lors de l'appel (rien ici).
+                {% endcomment %}
+                <button hx-delete="{% url "reglementations:suppression_enjeu" enjeu.pk %}" hx-params="none" hx-target="this" class="fr-icon-delete-bin-line fr-icon--sm" title="Suppr"></button>
+            {% endif %}
+            {% if enjeu.description %}
+                <button type="button" class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="{{ enjeu.esrs }}-{{ widget_uuid }}">
+                    Définition annexe
+                </button>
+            {% endif %}
+        </div>
+        <div class="selection-enjeu_description">
+            {% if enjeu.description %}
+                <p class="fr-text--sm fr-collapse" id="{{ enjeu.esrs }}-{{ widget_uuid }}">
+                    {{ enjeu.description }}
+                </p>
+            {% endif %}
+        </div>
+        <div class="selection-enjeu_ajout">
+            {% if enjeu.modifiable %}
+                <div>
+                    <p class="fr-badge">Enjeu ajouté</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
 {% endwith %}
