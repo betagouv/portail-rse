@@ -109,12 +109,23 @@ class RapportCSRD(TimestampedModel):
         # le rapport CSRD n'a un propriétaire que si c'est un rapport personnel
         return self.pk and not self.proprietaire
 
-    def nombre_enjeux_par_esrs(self):
+    def nombre_enjeux_selectionnes_par_esrs(self):
         # Retourne un dictionnaire de tuples contenant le nombre d'enjeux sélectionnés par ESRS pour ce rapport
         # par ex.: {"ESRS_E1": 2, "ESRS_E4": 5, ...}
         # note : les ESRS sans enjeux selectionnés ne sont pas dans la liste
         return dict(
             self.enjeux.filter(selection=True)
+            .values("esrs")
+            .annotate(cnt=models.Count("esrs"))
+            .values_list("esrs", "cnt")
+        )
+
+    def nombre_enjeux_par_esrs(self):
+        # Retourne un dictionnaire de tuples contenant le nombre total d'enjeux par ESRS pour ce rapport
+        # par ex.: {"ESRS_E1": 2, "ESRS_E4": 5, ...}
+        # note : les ESRS sans enjeux selectionnés ne sont pas dans la liste
+        return dict(
+            self.enjeux.all()
             .values("esrs")
             .annotate(cnt=models.Count("esrs"))
             .values_list("esrs", "cnt")
