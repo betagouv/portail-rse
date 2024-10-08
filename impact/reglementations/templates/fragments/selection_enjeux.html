@@ -10,7 +10,7 @@
     Chargement en cours ...
 </div>
 
-<form hx-post="{{ request.get_full_path }}" hx-target="#esg_container">
+<form hx-post="{% url "reglementations:selection_enjeux" csrd.pk form.esrs %}" hx-target="#esg_container">
     {% csrf_token %}
     <div>
         {% with form.sections as sections %}
