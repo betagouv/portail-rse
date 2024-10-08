@@ -129,3 +129,17 @@ def suppression_enjeu(request, enjeu_id):
         )
         + f"?{params}",
     )
+
+
+def rafraichissement_esg(request, csrd_id):
+    csrd = get_object_or_404(RapportCSRD, pk=csrd_id)
+
+    # FIXME: ça commence à beaucoup se répéter...
+    if not csrd.modifiable_par(request.user):
+        raise PermissionDenied(
+            "L'utilisateur n'a pas les permissions nécessaires pour accéder à ce rapport CSRD"
+        )
+
+    context = {"csrd": csrd}
+
+    return render(request, "fragments/esrs.html", context=context)
