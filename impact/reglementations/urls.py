@@ -88,6 +88,7 @@ urlpatterns = [
     ),
     path("csrd", views.csrd.csrd, name="csrd"),
     path("csrd/<str:siren>", views.csrd.csrd, name="csrd"),
+    path("csrd/<str:siren>/enjeux.xlsx", views.csrd.enjeux_xlsx, name="enjeux_xlsx"),
     path(
         "csrd/<str:siren>/phase-<int:phase>",
         views.csrd.csrd,

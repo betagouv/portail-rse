@@ -19,6 +19,7 @@ django-hosts = "~=6.0"
 # note on django-csp: using v4, v3 conf will soon be incompatible
 django-csp= "~=4.0b1"
 sib-api-v3-sdk = "~=7.6.0"
+openpyxl = "~=3.1.5"
 
 [dev-packages]
 pytest-django = "*"

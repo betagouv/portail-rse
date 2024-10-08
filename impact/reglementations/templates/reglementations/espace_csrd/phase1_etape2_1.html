@@ -16,11 +16,16 @@
         <h1>Sous-étape 1 : Consulter la liste des enjeux de durabilité issue de l'ESRS 1 AR 16</h1>
     </div>
     <div class="fr-container fr-pb-6w">
-        <div class="csrd--width">
-            <h6>Quoi faire ?</h6>
-            <ul class="csrd-list csrd-list--bold">
-                <li>Identifiez les enjeux de durabilité issus des ESRS thématiques, au regard desquels votre entreprise a (ou pourrait avoir) des impacts sur l’environnement et la société ou qui ont ou pourraient avoir des effets financiers sur la position financière, la performance financière et les flux de trésorerie de votre entreprise.</li>
-            </ul>
+        <div class="fr-grid-row fr-grid-row--middle">
+            <div class="fr-col-8">
+                <h6>Quoi faire ?</h6>
+                <ul class="csrd-list csrd-list--bold">
+                    <li>Identifiez les enjeux de durabilité issus des ESRS thématiques, au regard desquels votre entreprise a (ou pourrait avoir) des impacts sur l’environnement et la société ou qui ont ou pourraient avoir des effets financiers sur la position financière, la performance financière et les flux de trésorerie de votre entreprise.</li>
+                </ul>
+            </div>
+            <div class="fr-col-4" style="text-align: right">
+                <a href="{% url "reglementations:enjeux_xlsx" csrd.entreprise.siren %}" class="fr-btn">Télécharger ma liste</a>
+            </div>
         </div>
     </div>
 
