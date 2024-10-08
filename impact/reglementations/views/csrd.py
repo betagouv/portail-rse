@@ -1,5 +1,6 @@
 from datetime import datetime
 from datetime import timedelta
+from tempfile import NamedTemporaryFile
 
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
@@ -13,11 +14,13 @@ from django.shortcuts import redirect
 from django.template.loader import get_template
 from django.template.loader import TemplateDoesNotExist
 from django.urls import reverse_lazy
+from openpyxl import Workbook
 
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
 from habilitations.models import is_user_attached_to_entreprise
+from reglementations.enums import ESRS
 from reglementations.models import RapportCSRD
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
@@ -502,3 +505,43 @@ def csrd(request, siren=None, phase=0, etape=0, sous_etape=0):
     }
 
     return HttpResponse(template.render(context, request))
+
+
+@login_required
+def enjeux_xlsx(request, siren):
+    entreprise = get_object_or_404(Entreprise, siren=siren)
+    habilitation = request.user.habilitation_set.get(entreprise=entreprise)
+    csrd = RapportCSRD.objects.get(
+        entreprise=entreprise,
+        proprietaire=None if habilitation.is_confirmed else request.user,
+        annee=datetime.now().year,
+    )
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet["A1"] = "ESRS"
+    worksheet["B1"] = "Enjeux de durabilité"
+    worksheet["C1"] = "Descriptif"
+    worksheet["D1"] = "Origine"
+    numero_ligne = 2
+    for esrs in ESRS:
+        enjeux = csrd.enjeux_par_esrs(esrs)
+        for enjeu in enjeux:
+            if enjeu.selection:
+                worksheet[f"A{numero_ligne}"] = enjeu.esrs
+                worksheet[f"B{numero_ligne}"] = enjeu.nom
+                worksheet[f"C{numero_ligne}"] = enjeu.description
+                worksheet[f"D{numero_ligne}"] = (
+                    "personnel" if enjeu.modifiable else "AR"
+                )
+                numero_ligne += 1
+
+    with NamedTemporaryFile() as tmp:
+        workbook.save(tmp.name)
+        tmp.seek(0)
+        xlsx_stream = tmp.read()
+    response = HttpResponse(
+        xlsx_stream,
+        content_type="application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet",
+    )
+    response["Content-Disposition"] = 'filename="enjeux_csrd.xlsx"'
+    return response
