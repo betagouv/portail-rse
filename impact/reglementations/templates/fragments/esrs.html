@@ -122,3 +122,8 @@
     {% endwith %}
 {% endwith %}
 <!-- fragment esrs -->
+
+{# après une sélection des enjeux, il est nécessaire de rafraichir le lien de téléchargement #}
+<span id="telechargement-xlsx" hx-swap-oob=true>
+    {% include "./telechargement_xlsx.html" %}
+</span>
