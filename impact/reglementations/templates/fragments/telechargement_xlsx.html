@@ -1,0 +1,5 @@
+{% if csrd.nombre_enjeux_selectionnes %}
+    <a href="{% url 'reglementations:enjeux_xlsx' csrd.entreprise.siren %}" class="fr-btn">Télécharger ma liste</a>
+{% else %}
+    <button class="fr-btn" disabled>Télécharger ma liste</button>
+{% endif %}
