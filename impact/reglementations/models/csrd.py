@@ -134,6 +134,9 @@ class RapportCSRD(TimestampedModel):
             .values_list("esrs", "cnt")
         )
 
+    def nombre_enjeux_selectionnes(self):
+        return self.enjeux.filter(selection=True).count()
+
     def modifiable_par(self, utilisateur: "users.User") -> bool:
         # Vérifie si le rapport CSRD courant est modifiable par un utilisateur donné.
         # tip : un utilisateur anonyme n'a pas d'ID
