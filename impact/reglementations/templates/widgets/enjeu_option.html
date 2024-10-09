@@ -1,7 +1,7 @@
 {% load random_tools %}
 {% with widget.value.instance as enjeu %}
     {% uuid as widget_uuid %}
-    <div class="selection-enjeu">
+    <div class="selection-enjeu fr-mt-2v">
         <div class="selection-enjeu_label">
             <label for="input-{{ widget_uuid }}">
                 <input type="checkbox" name="{{ widget.name }}" id="input-{{ widget_uuid }}" value="{{ widget.value }}" {% if widget.selected %}checked{% endif %}>
@@ -15,18 +15,28 @@
             </label>
         </div>
         <div class="selection-enjeu_actions">
-            {% if enjeu.modifiable %}
+            <div class="fr-container--fluid">
+                <div class="fr-grid-row fr-grid-row--middle fr-grid-row--right">
+                    {% if enjeu.modifiable %}
                 {% comment %}
                 Les paramètres du formulaire parent le plus proche sont inclus par défaut dans toutes les requêtes HTMX (hors `GET`),
                 `hx-params` permet de contrôler ce qui est envoyé en paramètre lors de l'appel (rien ici).
                 {% endcomment %}
-                <button hx-delete="{% url "reglementations:suppression_enjeu" enjeu.pk %}" hx-params="none" hx-target="this" class="fr-icon-delete-bin-line fr-icon--sm" title="Suppr"></button>
-            {% endif %}
-            {% if enjeu.description %}
-                <button type="button" class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="{{ enjeu.esrs }}-{{ widget_uuid }}">
-                    Définition annexe
-                </button>
-            {% endif %}
+                        <div class="fr-col-4">
+                            <button hx-delete="{% url "reglementations:suppression_enjeu" enjeu.pk %}" hx-params="none" hx-target="this" class="fr-icon-delete-bin-line fr-icon--sm" title="Suppr"></button>
+                        </div>
+                    {% endif %}
+                    {% if enjeu.description %}
+                        <div class="fr-col-4">
+                            <button type="button" class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="{{ enjeu.esrs }}-{{ widget_uuid }}">
+                                Définition annexe
+                            </button>
+                        </div>
+                    {% else %}
+                        <div class="fr-col-4"></div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
         <div class="selection-enjeu_description">
             {% if enjeu.description %}
