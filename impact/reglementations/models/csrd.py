@@ -1,6 +1,9 @@
 import django.db.models as models
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
+from django.db.models import F
+from django.db.models import IntegerField
+from django.db.models.query import Cast
 
 from ..enums import EnjeuNormalise
 from ..enums import ENJEUX_NORMALISES
@@ -93,8 +96,6 @@ class RapportCSRD(TimestampedModel):
                 "Impossible de modifier le rapport CSRD officiel en rapport personnel"
             )
 
-        ...
-
     def save(self, *args, **kwargs):
         enjeux = self._init_enjeux()
 
@@ -131,6 +132,9 @@ class RapportCSRD(TimestampedModel):
             .values_list("esrs", "cnt")
         )
 
+    def nombre_enjeux_selectionnes(self):
+        return self.enjeux.filter(selection=True).count()
+
     def modifiable_par(self, utilisateur: "users.User") -> bool:
         # Vérifie si le rapport CSRD courant est modifiable par un utilisateur donné.
         # tip : un utilisateur anonyme n'a pas d'ID
@@ -146,6 +150,15 @@ class RapportCSRD(TimestampedModel):
                 .exists()
             )
         )
+
+    def enjeux_par_esrs(self, esrs):
+        qs = self.enjeux.prefetch_related("enfants")
+        qs = qs.filter(esrs=esrs) if esrs else qs.none()
+        # l'ordre d'affichage (par pk) est inversé selon que l'enjeu est modifiable ou pas
+        qs = qs.annotate(
+            ord=Cast("modifiable", output_field=IntegerField()) * F("pk")
+        ).order_by("-ord", "pk")
+        return qs
 
 
 class EnjeuQuerySet(models.QuerySet):

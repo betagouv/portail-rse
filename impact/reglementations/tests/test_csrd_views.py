@@ -166,3 +166,28 @@ def test_selection_et_deselection_d_enjeux(client, alice, entreprise_non_qualifi
     context = response.context
     assert context["csrd"] == csrd
     assert "<!-- fragment esrs -->" in response.content.decode("utf-8")
+
+
+def test_liste_des_enjeux_csrd(client, alice, entreprise_non_qualifiee):
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    csrd = RapportCSRD.objects.create(
+        proprietaire=alice,
+        entreprise=entreprise_non_qualifiee,
+        annee=f"{datetime.now():%Y}",
+    )
+    enjeux = csrd.enjeux.all()
+    enjeu_adaptation = enjeux[0]
+    enjeu_attenuation = enjeux[1]
+    enjeu_attenuation.selection = True
+    enjeu_attenuation.save()
+    enjeu_energie = enjeux[2]
+    client.force_login(alice)
+
+    response = client.get(
+        f"/csrd/{entreprise_non_qualifiee.siren}/enjeux.xlsx",
+    )
+
+    assert (
+        response["content-type"]
+        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+    )

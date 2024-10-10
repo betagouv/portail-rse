@@ -1,7 +1,4 @@
 from django import forms
-from django.db.models import F
-from django.db.models import IntegerField
-from django.db.models.query import Cast
 
 from reglementations.models.csrd import Enjeu
 from reglementations.models.csrd import RapportCSRD
@@ -25,13 +22,7 @@ class EnjeuxRapportCSRDForm(forms.ModelForm):
         self.esrs = esrs
 
         if self.instance:
-            qs = self.instance.enjeux.prefetch_related("enfants")
-            qs = qs.filter(esrs=self.esrs) if esrs else qs.none()
-            # l'ordre d'affichage (par pk) est inversé selon que l'enjeu est modifiable ou pas
-            qs = qs.annotate(
-                ord=Cast("modifiable", output_field=IntegerField()) * F("pk")
-            ).order_by("-ord", "pk")
-
+            qs = self.instance.enjeux_par_esrs(self.esrs)
             self.fields["enjeux"].queryset = qs
             self.initial = {"enjeux": qs.filter(selection=True)}
 
