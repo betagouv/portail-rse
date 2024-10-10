@@ -19,6 +19,17 @@ def rapport_personnel(alice, entreprise_non_qualifiee):
     )
 
 
+@pytest.fixture
+def rapport_officiel(alice, entreprise_non_qualifiee):
+    # Alice est habilitée à modifier ce rapport officiel
+    entreprise_non_qualifiee.users.add(alice)
+    return RapportCSRD.objects.create(
+        proprietaire=None,
+        entreprise=entreprise_non_qualifiee,
+        annee=f"{datetime.now():%Y}",
+    )
+
+
 def test_clean_rapport_csrd(rapport_personnel):
     # `clean()` contient quelques vérifications pour voir si un modèle est personnel ou principal
     assert not rapport_personnel.est_officiel()
@@ -82,3 +93,28 @@ def test_enjeux_normalises_presents(rapport_personnel):
         ENJEU_CONSOMMATION_EAU.description,
     )
     assert enjeu_consommation_eau.parent == enjeu_ressources_marines
+
+
+def test_rapport_personnel_modifiable_par(rapport_personnel, alice, bob):
+    # un rapport personnel n'est modifiable que par le propriétaire
+
+    assert rapport_personnel.modifiable_par(
+        alice
+    ), "Le rapport CSRD doit être modifiable par Alice"
+    assert not rapport_personnel.modifiable_par(
+        bob
+    ), "Le rapport CSRD ne doit pas être modifiable par Bob"
+
+
+def test_rapport_officiel_modifiable_par(rapport_officiel, alice, bob):
+    # un rapport officiel n'est modifiable que par les utilisateurs habilités de l'entreprise
+
+    # on s'assure qu'Alice est bien habilitée
+    alice.habilitation_set.update(confirmed_at=datetime.now())
+
+    assert rapport_officiel.modifiable_par(
+        alice
+    ), "Le rapport CSRD doit être modifiable par Alice"
+    assert not rapport_officiel.modifiable_par(
+        bob
+    ), "Le rapport CSRD ne doit pas être modifiable par Bob"

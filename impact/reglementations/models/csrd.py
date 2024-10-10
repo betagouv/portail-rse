@@ -141,7 +141,7 @@ class RapportCSRD(TimestampedModel):
                 # l'utilisateur est le propriétaire du rapport (personnel)
                 self.proprietaire == utilisateur
                 # l'utilisateur à une habilitation confirmée pour cette entreprise
-                or utilisateur.habilitations.exclude(confirmed_at=None)
+                or utilisateur.habilitation_set.exclude(confirmed_at=None)
                 .filter(entreprise=self.entreprise)
                 .exists()
             )
