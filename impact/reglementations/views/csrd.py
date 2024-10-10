@@ -511,7 +511,7 @@ def csrd(request, siren=None, phase=0, etape=0, sous_etape=0):
 def enjeux_xlsx(request, siren):
     entreprise = get_object_or_404(Entreprise, siren=siren)
     habilitation = request.user.habilitation_set.get(entreprise=entreprise)
-    csrd = RapportCSRD.objects.get(
+    csrd = RapportCSRD.objects.prefetch_related("enjeux", "enjeux__parent").get(
         entreprise=entreprise,
         proprietaire=None if habilitation.is_confirmed else request.user,
         annee=datetime.now().year,
