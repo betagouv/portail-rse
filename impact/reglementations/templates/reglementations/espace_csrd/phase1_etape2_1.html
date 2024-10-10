@@ -30,9 +30,7 @@
         </div>
     </div>
 
-    <div class="fr-container fr-pb-6w" id="esg_container" hx-get="{% url "reglementations:rafraichissement_esg" csrd.pk %}" hx-trigger="click from:.fr-btn--close, load">
-        {% include "fragments/esrs.html" %}
-    </div>
+    <div class="fr-container fr-pb-6w" id="esg_container" hx-get="{% url "reglementations:rafraichissement_esg" csrd.pk %}" hx-trigger="click from:.fr-btn--close, load"></div>
 
     {% include "snippets/csrd_precedent_suivant.html" with phase_precedente=1 etape_precedente=2 sous_etape_precedente=0 phase_suivante=1 etape_suivante=2 sous_etape_suivante=2 %}
     {% include "snippets/modal_ESRS/ESRS_2.html" %}
