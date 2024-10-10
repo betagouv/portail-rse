@@ -96,8 +96,6 @@ class RapportCSRD(TimestampedModel):
                 "Impossible de modifier le rapport CSRD officiel en rapport personnel"
             )
 
-        ...
-
     def save(self, *args, **kwargs):
         enjeux = self._init_enjeux()
 
