@@ -191,3 +191,40 @@ def test_liste_des_enjeux_csrd(client, alice, entreprise_non_qualifiee):
         response["content-type"]
         == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
     )
+
+
+def test_liste_des_enjeux_csrd_retourne_une_404_si_entreprise_inexistante(
+    client, alice
+):
+    client.force_login(alice)
+
+    response = client.get(
+        f"/csrd/000000001/enjeux.xlsx",
+    )
+
+    assert response.status_code == 404
+
+
+def test_liste_des_enjeux_csrd_retourne_une_404_si_habilitation_inexistante(
+    client, alice, entreprise_non_qualifiee
+):
+    client.force_login(alice)
+
+    response = client.get(
+        f"/csrd/{entreprise_non_qualifiee.siren}/enjeux.xlsx",
+    )
+
+    assert response.status_code == 404
+
+
+def test_liste_des_enjeux_csrd_retourne_une_404_si_csrd_inexistante(
+    client, alice, entreprise_non_qualifiee
+):
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    client.force_login(alice)
+
+    response = client.get(
+        f"/csrd/{entreprise_non_qualifiee.siren}/enjeux.xlsx",
+    )
+
+    assert response.status_code == 404

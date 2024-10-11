@@ -1,11 +1,13 @@
 from datetime import datetime
 from datetime import timedelta
+from functools import wraps
 from tempfile import NamedTemporaryFile
 
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.http import HttpResponse
@@ -507,15 +509,27 @@ def csrd(request, siren=None, phase=0, etape=0, sous_etape=0):
     return HttpResponse(template.render(context, request))
 
 
+def csrd_required(function):
+    @wraps(function)
+    def wrap(request, siren):
+        entreprise = get_object_or_404(Entreprise, siren=siren)
+        try:
+            habilitation = request.user.habilitation_set.get(entreprise=entreprise)
+            csrd = RapportCSRD.objects.prefetch_related("enjeux", "enjeux__parent").get(
+                entreprise=entreprise,
+                proprietaire=None if habilitation.is_confirmed else request.user,
+                annee=datetime.now().year,
+            )
+            return function(request, siren, csrd=csrd)
+        except ObjectDoesNotExist:
+            raise Http404("Ce rapport du durabilité n'existe pas")
+
+    return wrap
+
+
 @login_required
-def enjeux_xlsx(request, siren):
-    entreprise = get_object_or_404(Entreprise, siren=siren)
-    habilitation = request.user.habilitation_set.get(entreprise=entreprise)
-    csrd = RapportCSRD.objects.prefetch_related("enjeux", "enjeux__parent").get(
-        entreprise=entreprise,
-        proprietaire=None if habilitation.is_confirmed else request.user,
-        annee=datetime.now().year,
-    )
+@csrd_required
+def enjeux_xlsx(request, siren, csrd=None):
     workbook = Workbook()
     worksheet = workbook.active
     worksheet["A1"] = "ESRS"
