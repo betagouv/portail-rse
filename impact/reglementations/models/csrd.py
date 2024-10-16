@@ -54,8 +54,11 @@ class RapportCSRD(TimestampedModel):
 
     def _init_enjeux(self):
         # ajoute les enjeux "réglementés" lors de la création de l'instance
-        if self.pk:
+        if self.pk and self.enjeux.filter(modifiable=False).count() >= len(
+            ENJEUX_NORMALISES
+        ):
             # uniquement pour la création initiale de l'objet
+            # on vérifie également que les enjeux normalisés soient créés
             return
 
         # on ajoute les enjeux normalisés des ESRD
@@ -98,6 +101,8 @@ class RapportCSRD(TimestampedModel):
             )
 
     def save(self, *args, **kwargs):
+        # on vérifie si les enjeux réglementaires doivent être ajoutés
+        # (premier enregistrement de l 'objet)
         enjeux = self._init_enjeux()
 
         # on vérifie systématiquement les contraintes métiers avant la sauvegarde
