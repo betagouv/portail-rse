@@ -1,6 +1,7 @@
 import django.db.models as models
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
+from django.db import transaction
 from django.db.models import F
 from django.db.models import IntegerField
 from django.db.models.query import Cast
@@ -104,7 +105,15 @@ class RapportCSRD(TimestampedModel):
         super().save(*args, **kwargs)
 
         if enjeux:
-            self.enjeux.add(*enjeux, bulk=False)
+            # Cette partie gènère un N+1 :
+            # un `bulk_create` aurait été possible si les enjeux n'avait pas de relation parent-enfant.
+            # L'enjeu parent peut ne pas être défini lors de la création de l'enjeu enfant,
+            # ce que Django refusera lors de l'insertion (parent pk=None).
+            # On pourrait imaginer sauvegarder les parents dans un premier temps, mais l'affichage
+            # est en partie basé sur l'ordre naturel d'insertion des enjeux.
+            # C'est sans importance, juste un peu plus long à traiter au niveau DB.
+            with transaction.atomic():
+                self.enjeux.add(*enjeux, bulk=False)
 
     def est_officiel(self):
         # le rapport CSRD n'a un propriétaire que si c'est un rapport personnel
@@ -184,6 +193,8 @@ class Enjeu(TimestampedModel):
 
     nom = models.TextField(verbose_name="nom de l'enjeu")
     description = models.TextField(verbose_name="description de l'enjeu", blank=True)
+
+    # les enjeux réglementés ne sont pas modifiables
     modifiable = models.BooleanField(
         verbose_name="enjeu modifiable par l'utilisateur", default=True
     )
