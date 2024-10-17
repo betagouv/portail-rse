@@ -312,12 +312,10 @@ class CSRDReglementation(Reglementation):
             return reglementation_status
         primary_action = ReglementationAction(
             reverse_lazy(
-                "reglementations:csrd_sous_etape",
+                "reglementations:gestion_csrd",
                 kwargs={
                     "siren": caracteristiques.entreprise.siren,
                     "phase": 1,
-                    "etape": 2,
-                    "sous_etape": 1,
                 },
             ),
             "Accéder à l'espace Rapport de Durabilité",
@@ -451,7 +449,7 @@ class CSRDReglementation(Reglementation):
 
 
 @login_required
-def csrd(request, siren=None, phase=0, etape=0, sous_etape=0):
+def guide_csrd(request, siren=None, phase=0, etape=0, sous_etape=0):
     if not siren:
         entreprise = get_current_entreprise(request)
         if not entreprise:
@@ -482,6 +480,38 @@ def csrd(request, siren=None, phase=0, etape=0, sous_etape=0):
     except TemplateDoesNotExist:
         raise Http404
 
+    context = {
+        "entreprise": entreprise,
+        "phase": phase,
+        "etape": etape,
+        "sous_etape": sous_etape,
+    }
+
+    return HttpResponse(template.render(context, request))
+
+
+@login_required
+def gestion_csrd(request, siren=None, phase=1):
+    if not siren:
+        entreprise = get_current_entreprise(request)
+        if not entreprise:
+            messages.warning(
+                request,
+                "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à l'espace Rapport de Durabilité",
+            )
+            return redirect("entreprises:entreprises")
+        return redirect("reglementations:csrd", siren=entreprise.siren)
+
+    entreprise = get_object_or_404(Entreprise, siren=siren)
+    if not is_user_attached_to_entreprise(request.user, entreprise):
+        raise PermissionDenied
+
+    template_name = f"reglementations/csrd/phase{phase}.html"
+    try:
+        template = get_template(template_name)
+    except TemplateDoesNotExist as e:
+        raise Http404
+
     # En analysant un peu les requêtes exécutées,
     # les fetch sur les habilitations et l'entreprise se répètent (requêtes identiques)
     # un peu de centralisation à faire pour éviter les répétitions dans `utils.middlewares.ExtendUserMiddleware`
@@ -501,9 +531,13 @@ def csrd(request, siren=None, phase=0, etape=0, sous_etape=0):
     context = {
         "entreprise": entreprise,
         "phase": phase,
-        "etape": etape,
-        "sous_etape": sous_etape,
         "csrd": csrd,
+        "annee": 2024,
+        "steps": {
+            1: {"name": "Introduction"},
+            2: {"name": "Sélection des enjeux"},
+            3: {"name": "Matérialité des enjeux"},
+        },
     }
 
     return HttpResponse(template.render(context, request))

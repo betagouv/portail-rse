@@ -9,7 +9,7 @@
                                 <p class="fr-tag fr-mb-1w">Social</p>
                                 <h4>ESRS S3 - Communautés affectées</h4>
                                 <div class="fr-container--fluid">
-                                    {% if phase == 1 %}
+                                    {% if csrd %}
                                         <div class="fr-grid-row">
                                             <p>
                                                 <strong>
@@ -19,6 +19,50 @@
 
                                             <div id="selection_enjeux_ESRS_S3" hx-target="this"> Chargement en cours... </div>
 
+                                        </div>
+                                    {% elif phase == 1 %}
+                                        <div class="fr-grid-row">
+                                            <p>
+                                                <strong>
+                                                    Choisissez les enjeux de durabilité qui ont une incidence réelle et potentielle appliquée à votre entreprise
+                                                </strong>
+                                            </p>
+                                            <div>
+                                                <h6>
+                                                    A. Droits économiques, sociaux et culturels des communautés
+                                                    <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSS3-soustheme1">Définition annexe</button>
+                                                </h6>
+                                                <p class="fr-text--sm fr-collapse" id="ESRSS3-soustheme1">Par exemple, logement adéquat, alimentation adéquate, eau et assainissement, incidences liées à la terre et à la sécurité</p>
+                                                <ol>
+                                                    <li>Logement adéquat</li>
+                                                    <li>Alimentation adéquate</li>
+                                                    <li>Eau et assainissement</li>
+                                                    <li>Incidences liées à la terre</li>
+                                                    <li>Incidences liées à la sécurité</li>
+                                                </ol>
+
+                                                <h6>
+                                                    B. Droits civils et politiques des communautés
+                                                    <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSS3-soustheme2">Définition annexe</button>
+                                                </h6>
+                                                <p class="fr-text--sm fr-collapse" id="ESRSS3-soustheme2">Par exemple, liberté d’expression, liberté de réunion, incidences sur les défenseurs des droits de l’homme</p>
+                                                <ol>
+                                                    <li>Liberté d’expression</li>
+                                                    <li>Liberté de réunion</li>
+                                                    <li>Incidences sur les défenseurs des droits de l’homme</li>
+                                                </ol>
+
+                                                <h6>
+                                                    C. Droits particuliers des peuples autochtones
+                                                    <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSS3-soustheme3">Définition annexe</button>
+                                                </h6>
+                                                <p class="fr-text--sm fr-collapse" id="ESRSS3-soustheme3">Par exemple, consentement préalable, donné librement et en connaissance de cause, autodétermination, droits culturels</p>
+                                                <ol>
+                                                    <li>Consentement préalable, donné librement et en connaissance de cause</li>
+                                                    <li>Auto-détermination</li>
+                                                    <li>Droits culturels</li>
+                                                </ol>
+                                            </div>
                                         </div>
                                     {% elif phase == 2 %}
                                         <div class="fr-grid-row">

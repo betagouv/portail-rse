@@ -9,7 +9,7 @@
                                 <p class="fr-tag fr-mb-1w">Gouvernance</p>
                                 <h4>ESRS G1 - Conduite des affaires</h4>
                                 <div class="fr-container--fluid">
-                                    {% if phase == 1 %}
+                                    {% if csrd %}
                                         <div class="fr-grid-row">
                                             <p>
                                                 <strong>
@@ -19,7 +19,26 @@
                                         </div>
 
                                         <div id="selection_enjeux_ESRS_G1" hx-target="this"> Chargement en cours... </div>
-
+                                    {% elif phase == 1 %}
+                                        <div class="fr-grid-row">
+                                            <p>
+                                                <strong>
+                                                    Choisissez les enjeux de durabilité qui ont une incidence réelle et potentielle appliquée à votre entreprise
+                                                </strong>
+                                            </p>
+                                            <div>
+                                                <h6>A. Culture d’entreprise</h6>
+                                                <h6>B. Protection des lanceurs d’alerte</h6>
+                                                <h6>C. Bien-être animal</h6>
+                                                <h6>D. Engagement politique</h6>
+                                                <h6>E. Gestion des relations avec les fournisseurs, y compris les pratiques en matière de paiement</h6>
+                                                <h6>F. Corruption et versement de pots-de-vin</h6>
+                                                <ol>
+                                                    <li>Prévention et détection, y compris les formations</li>
+                                                    <li>Incidents/Cas</li>
+                                                </ol>
+                                            </div>
+                                        </div>
                                     {% elif phase == 2 %}
                                         <div class="fr-grid-row">
                                             <ul class="csrd-list csrd-list--bold">
