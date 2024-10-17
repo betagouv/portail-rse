@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Matérialité des enjeux{% endblock %}
+
+{% block content %}
+
+    {% include "snippets/csrd_header.html" %}
+
+    <div class="fr-container fr-mb-8w">
+        <div class="fr-grid-row">
+            {% include "snippets/gestion_csrd_menu.html" with active_item=3 %}
+
+            <div class="fr-col">
+                <h2>Matérialité des enjeux</h2>
+                <p>
+                    Vous allez bientôt pouvoir déterminer la matérialité des enjeux sélectionnés.
+                </p>
+            </div>
+        </div>
+    </div>
+    <!-- page gestion CSRD -->
+{% endblock %}
