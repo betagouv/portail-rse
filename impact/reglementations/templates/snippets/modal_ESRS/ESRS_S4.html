@@ -9,7 +9,7 @@
                                 <p class="fr-tag fr-mb-1w">Social</p>
                                 <h4>ESRS S4 - Consommateurs et utilisateurs finaux</h4>
                                 <div class="fr-container--fluid">
-                                    {% if phase == 1 %}
+                                    {% if csrd %}
                                         <div class="fr-grid-row">
                                             <p>
                                                 <strong>
@@ -19,6 +19,36 @@
 
                                             <div id="selection_enjeux_ESRS_S4" hx-target="this"> Chargement en cours... </div>
 
+                                        </div>
+                                    {% elif phase == 1 %}
+                                        <div class="fr-grid-row">
+                                            <p>
+                                                <strong>
+                                                    Choisissez les enjeux de durabilité qui ont une incidence réelle et potentielle appliquée à votre entreprise
+                                                </strong>
+                                            </p>
+                                            <div>
+                                                <h6>A. Incidences liées aux informations sur les consommateurs et/ou les utilisateurs finals</h6>
+                                                <ol>
+                                                    <li>Protection de la vie privée</li>
+                                                    <li>Liberté d’expression</li>
+                                                    <li>Accès à l’information (de qualité)</li>
+                                                </ol>
+
+                                                <h6>B. Sécurité des consommateurs et/ou des utilisateurs finals</h6>
+                                                <ol>
+                                                    <li>Santé et sécurité</li>
+                                                    <li>Sécurité de la personne</li>
+                                                    <li>Protection des enfants</li>
+                                                </ol>
+
+                                                <h6>C. Inclusion sociale des consommateurs et/ou des utilisateurs finals</h6>
+                                                <ol>
+                                                    <li>Non-discrimination</li>
+                                                    <li>Accès aux produits et services</li>
+                                                    <li>Pratiques de commercialisation responsables</li>
+                                                </ol>
+                                            </div>
                                         </div>
                                     {% elif phase == 2 %}
                                         <div class="fr-grid-row">

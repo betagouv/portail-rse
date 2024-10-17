@@ -9,7 +9,7 @@
                                 <p class="fr-tag fr-mb-1w">Environnement</p>
                                 <h4>ESRS E3 - Eau et ressources marines</h4>
                                 <div class="fr-container--fluid">
-                                    {% if phase == 1 %}
+                                    {% if csrd %}
                                         <div class="fr-grid-row">
                                             <p>
                                                 <strong>
@@ -19,6 +19,41 @@
 
                                             <div id="selection_enjeux_ESRS_E3" hx-target="this"> Chargement en cours... </div>
 
+                                        </div>
+                                    {% elif phase == 1 %}
+                                        <div class="fr-grid-row">
+                                            <p>
+                                                <strong>
+                                                    Choisissez les enjeux de durabilité qui ont une incidence réelle et potentielle appliquée à votre entreprise
+                                                </strong>
+                                            </p>
+                                            <div>
+                                                <h6>A. Eau
+                                                    <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSE3-soustheme1">Définition annexe</button>
+                                                </h6>
+                                                <p class="fr-text--sm fr-collapse" id="ESRSE3-soustheme1">Par « eau », on entend que la présente norme couvre les eaux de surface, les eaux souterraines. Elle inclut des exigences de publication relatives à la consommation d’eau dans les activités, produits et services de l’entreprise, ainsi que des informations connexes sur les prélèvements et rejets d’eau.</p>
+                                                <h6>B. Ressources marines
+                                                    <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSE3-soustheme2">Définition annexe</button>
+                                                </h6>
+                                                <p class="fr-text--sm fr-collapse" id="ESRSE3-soustheme2">Par « ressources marines », on entend que la présente norme couvre l’extraction et l’utilisation de ces ressources, ainsi que les activités économiques s’y rapportant.</p>
+                                                <ol>
+                                                    <li>
+                                                        Consommation d'eau
+                                                    </li>
+                                                    <li>
+                                                        Prélèvements d'eau
+                                                    </li>
+                                                    <li>
+                                                        Rejet des eaux
+                                                    </li>
+                                                    <li>
+                                                        Rejet des eaux dans les océans
+                                                    </li>
+                                                    <li>
+                                                        Extraction et utilisation des ressources marines
+                                                    </li>
+                                                </ol>
+                                            </div>
                                         </div>
                                     {% elif phase == 2 %}
                                         <div class="fr-grid-row">

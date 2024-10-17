@@ -9,7 +9,7 @@
                                 <p class="fr-tag fr-mb-1w">Social</p>
                                 <h4>ESRS S1 - Personnel de l'entreprise</h4>
                                 <div class="fr-container--fluid">
-                                    {% if phase == 1 %}
+                                    {% if csrd %}
                                         <div class="fr-grid-row">
                                             <p>
                                                 <strong>
@@ -19,6 +19,47 @@
 
                                             <div id="selection_enjeux_ESRS_S1" hx-target="this"> Chargement en cours... </div>
 
+                                        </div>
+                                    {% elif phase == 1 %}
+                                        <div class="fr-grid-row">
+                                            <p>
+                                                <strong>
+                                                    Choisissez les enjeux de durabilité qui ont une incidence réelle et potentielle appliquée à votre entreprise
+                                                </strong>
+                                            </p>
+                                            <div>
+                                                <h6>A. Conditions de travail
+                                                    <button class="fr-btn--tooltip fr-btn" aria-expanded="false" aria-controls="ESRSS1-soustheme1">Définition annexe</button>
+                                                </h6>
+                                                <p class="fr-text--sm fr-collapse" id="ESRSS1-soustheme1">Par exemple, en matière d’égalité des chances, la discrimination à l’embauche et à la promotion à l’égard des femmes peut réduire l’accès de l’entreprise à une main-d’œuvre qualifiée et nuire à sa réputation. À l’inverse, les politiques visant à accroître la représentation des femmes au sein des effectifs et aux niveaux supérieurs de l’encadrement peuvent avoir des incidences positives, telles que l’expansion de la réserve de main-d’œuvre qualifiée et l’amélioration de l’image de marque de l’entreprise.</p>
+                                                <ol>
+                                                    <li>Sécurité de l'emploi</li>
+                                                    <li>Temps de travail</li>
+                                                    <li>Salaires décents</li>
+                                                    <li>Dialogue social</li>
+                                                    <li>Liberté d'association, existence de comités d'entreprise et droits des travailleurs à l'information, à la consultation et à la participation</li>
+                                                    <li>Négociation collective, y compris la proportion de travailleurs couverts par des conventions collectives</li>
+                                                    <li>Equilibre entre vie professionnelle et vie privée</li>
+                                                    <li>Santé et sécurité</li>
+                                                </ol>
+
+                                                <h6>B. Égalité de traitement et égalité des chances pour tous</h6>
+                                                <ol>
+                                                    <li>Egalité de genre et égalité de rémunération pour un travail de valeur égale</li>
+                                                    <li>Formation et développement des compétences</li>
+                                                    <li>Emploi et inclusion des personnes handicapées</li>
+                                                    <li>Mesures de lutte contre la violence et le harcèlement sur le lieu de travail</li>
+                                                    <li>Diversité</li>
+                                                </ol>
+
+                                                <h6>C. Autres droits liés au travail</h6>
+                                                <ol>
+                                                    <li>Travail des enfants</li>
+                                                    <li>Travail forcé</li>
+                                                    <li>Logement adéquat</li>
+                                                    <li>Protection de la vie privée</li>
+                                                </ol>
+                                            </div>
                                         </div>
                                     {% elif phase == 2 %}
                                         <div class="fr-grid-row">

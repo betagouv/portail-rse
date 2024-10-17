@@ -86,24 +86,29 @@ urlpatterns = [
         views.bdese.toggle_bdese_completion,
         name="toggle_bdese_completion",
     ),
-    path("csrd", views.csrd.csrd, name="csrd"),
-    path("csrd/<str:siren>", views.csrd.csrd, name="csrd"),
-    path("csrd/<str:siren>/enjeux.xlsx", views.csrd.enjeux_xlsx, name="enjeux_xlsx"),
+    path("csrd", views.csrd.guide_csrd, name="csrd"),
+    path("csrd/guide/<str:siren>", views.csrd.guide_csrd, name="csrd"),
     path(
-        "csrd/<str:siren>/phase-<int:phase>",
-        views.csrd.csrd,
+        "csrd/guide/<str:siren>/phase-<int:phase>",
+        views.csrd.guide_csrd,
         name="csrd_phase",
     ),
     path(
-        "csrd/<str:siren>/phase-<int:phase>/etape-<int:etape>",
-        views.csrd.csrd,
+        "csrd/guide/<str:siren>/phase-<int:phase>/etape-<int:etape>",
+        views.csrd.guide_csrd,
         name="csrd_etape",
     ),
     path(
-        "csrd/<str:siren>/phase-<int:phase>/etape-<int:etape>-<int:sous_etape>",
-        views.csrd.csrd,
+        "csrd/guide/<str:siren>/phase-<int:phase>/etape-<int:etape>-<int:sous_etape>",
+        views.csrd.guide_csrd,
         name="csrd_sous_etape",
     ),
+    path(
+        "csrd/<str:siren>/etape-<int:etape>",
+        views.csrd.gestion_csrd,
+        name="gestion_csrd",
+    ),
+    path("csrd/<str:siren>/enjeux.xlsx", views.csrd.enjeux_xlsx, name="enjeux_xlsx"),
 ]
 
 # Fragments HTMX
