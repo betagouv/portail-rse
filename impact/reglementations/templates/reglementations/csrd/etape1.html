@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Introduction{% endblock %}
+
+{% block content %}
+
+    {% include "snippets/csrd_header.html" %}
+
+    <div class="fr-container fr-mb-8w">
+        <div class="fr-grid-row">
+            {% include "snippets/gestion_csrd_menu.html" with active_item=1 %}
+
+            <div class="fr-col">
+                <h2>Introduction</h2>
+                <p>
+                    Vous commencez le remplissage de la CSRD.
+                    <br>
+                    <a href="{% url 'reglementations:csrd' entreprise.siren %}"  class="fr-link" target='_blank'>Comment réaliser son rapport de durabilité de A à Z</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <!-- page gestion CSRD -->
+{% endblock %}
