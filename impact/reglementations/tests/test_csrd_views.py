@@ -1,3 +1,4 @@
+from datetime import date
 from datetime import datetime
 
 import pytest
@@ -155,6 +156,57 @@ def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
     rapport_csrd = RapportCSRD.objects.get(proprietaire=alice, entreprise=entreprise)
     NOMBRE_ENJEUX = 103
     assert len(rapport_csrd.enjeux.all()) == NOMBRE_ENJEUX
+
+
+@pytest.mark.parametrize(
+    "etape",
+    [
+        1,
+        2,
+    ],
+)
+def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_factory):
+    entreprise = entreprise_factory()
+    habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
+    RapportCSRD.objects.create(
+        entreprise=entreprise,
+        proprietaire=alice,
+        annee=date.today().year,
+    )
+    client.force_login(alice)
+    url = "/csrd/{siren}/etape-{etape}".format(siren=entreprise.siren, etape=etape + 1)
+
+    response = client.post(url, follow=True)
+
+    content = response.content.decode("utf-8")
+    assert "<!-- page gestion CSRD -->" in content
+
+    rapport_csrd = RapportCSRD.objects.get(proprietaire=alice, entreprise=entreprise)
+    assert rapport_csrd.etape_validee == etape
+
+
+@pytest.mark.parametrize(
+    "etape",
+    [
+        1,
+        2,
+    ],
+)
+def test_enregistrement_de_l_étape_de_la_csrd_retourne_une_404_si_aucune_CSRD(
+    etape, client, alice, entreprise_factory
+):
+    entreprise = entreprise_factory()
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    client.force_login(alice)
+    url = "/csrd/{siren}/etape-{etape}".format(siren=entreprise.siren, etape=etape + 1)
+
+    response = client.post(url, follow=True)
+
+    assert response.status_code == 404
+    assert (
+        RapportCSRD.objects.filter(proprietaire=alice, entreprise=entreprise).count()
+        == 0
+    )
 
 
 def test_visualisation_des_enjeux(client, alice, entreprise_non_qualifiee):
