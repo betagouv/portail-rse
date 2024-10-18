@@ -7,12 +7,12 @@ from .enjeux import suppression_enjeu
 
 urlpatterns = [
     path(
-        "csrd/fragments/selection_enjeux/<str:csrd_id>/<str:esrs>",
+        "csrd/fragments/selection_enjeux/<int:csrd_id>/<str:esrs>",
         selection_enjeux,
         name="selection_enjeux",
     ),
     path(
-        "csrd/fragments/creation_enjeu/<str:csrd_id>/<str:esrs>",
+        "csrd/fragments/creation_enjeu/<int:csrd_id>/<str:esrs>",
         creation_enjeu,
         name="creation_enjeu",
     ),
@@ -22,7 +22,7 @@ urlpatterns = [
         name="suppression_enjeu",
     ),
     path(
-        "csrd/fragments/rafraichissement_esg/<str:csrd_id>",
+        "csrd/fragments/rafraichissement_esg/<int:csrd_id>",
         rafraichissement_esg,
         name="rafraichissement_esg",
     ),
