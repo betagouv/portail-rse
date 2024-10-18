@@ -1,0 +1,4 @@
+<form action="{% url 'reglementations:gestion_csrd' entreprise.siren prochaine_etape %}" method="post">
+    {% csrf_token %}
+    <button type="submit" name="save_complete" class="fr-btn fr-btn--icon-left fr-icon-checkbox-circle-line">Enregistrer et marquer comme terminé</button>
+</form>
