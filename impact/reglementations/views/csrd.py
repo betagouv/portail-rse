@@ -568,7 +568,7 @@ def csrd_required(function):
             )
             return function(request, siren, csrd=csrd)
         except ObjectDoesNotExist:
-            raise Http404("Ce rapport du durabilité n'existe pas")
+            raise Http404("Ce rapport de durabilité n'existe pas")
 
     return wrap
 
