@@ -12,6 +12,7 @@ from conftest import CODE_SCA
 from conftest import CODE_SE
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
+from reglementations.models import RapportCSRD
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.csrd import CSRDReglementation
 
@@ -2141,3 +2142,70 @@ def test_calcule_etat_si_soumis_en_2026_car_exercice_comptable_different_annee_c
         "Vous devez publier le Rapport de Durabilité en même temps que le rapport de gestion."
     )
     assert reglementation.prochaine_echeance == 2026
+
+
+def test_calcule_etat_avec_CSRD_initialisée(entreprise_factory, alice):
+    entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
+        code_pays_etranger_sirene=None,
+        est_cotee=False,
+        appartient_groupe=False,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+    )
+    habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
+    RapportCSRD.objects.create(
+        entreprise=entreprise,
+        proprietaire=alice,
+        annee=date.today().year,
+    )
+
+    reglementation = CSRDReglementation.calculate_status(
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
+    )
+
+    assert (
+        reglementation.primary_action.title
+        == "Accéder à l'espace Rapport de Durabilité"
+    )
+    assert reglementation.primary_action.url == reverse(
+        "reglementations:gestion_csrd",
+        kwargs={
+            "siren": entreprise.siren,
+            "etape": 1,
+        },
+    )
+
+
+def test_calcule_etat_avec_CSRD_et_étapes_validées(entreprise_factory, alice):
+    entreprise = entreprise_factory(
+        categorie_juridique_sirene=CODE_SA,
+        code_pays_etranger_sirene=None,
+        est_cotee=False,
+        appartient_groupe=False,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+    )
+    habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
+    DEJA_VALIDEE = 2
+    RapportCSRD.objects.create(
+        entreprise=entreprise,
+        proprietaire=alice,
+        annee=date.today().year,
+        etape_validee=DEJA_VALIDEE,
+    )
+
+    reglementation = CSRDReglementation.calculate_status(
+        entreprise.dernieres_caracteristiques_qualifiantes, alice
+    )
+
+    assert reglementation.primary_action.title == "Reprendre ma CSRD"
+    assert reglementation.primary_action.url == reverse(
+        "reglementations:gestion_csrd",
+        kwargs={
+            "siren": entreprise.siren,
+            "etape": DEJA_VALIDEE + 1,
+        },
+    )
