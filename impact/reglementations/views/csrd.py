@@ -520,6 +520,17 @@ def gestion_csrd(request, siren=None, etape=1):
     habilitation = request.user.habilitation_set.get(entreprise=entreprise)
     annee = datetime.now().year
 
+    if request.method == "POST":
+        csrd = get_object_or_404(
+            RapportCSRD,
+            entreprise=entreprise,
+            proprietaire=None if habilitation.is_confirmed else request.user,
+            annee=annee,
+        )
+        csrd.etape_validee = etape - 1
+        csrd.save()
+        redirect("reglementations:gestion_csrd", siren=siren, etape=etape)
+
     # les prefetch de l'enjeu parent évitent des N+1 au niveau du template
     csrd, _ = RapportCSRD.objects.prefetch_related(
         "enjeux", "enjeux__parent"

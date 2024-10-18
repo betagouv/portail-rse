@@ -17,6 +17,9 @@
                     <br>
                     <a href="{% url 'reglementations:csrd' entreprise.siren %}"  class="fr-link" target='_blank'>Comment réaliser son rapport de durabilité de A à Z</a>
                 </p>
+                <p>
+                    {% include "snippets/csrd_submit.html" with prochaine_etape=2 %}
+                </p>
             </div>
         </div>
     </div>
