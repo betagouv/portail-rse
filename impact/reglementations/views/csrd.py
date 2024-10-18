@@ -310,15 +310,28 @@ class CSRDReglementation(Reglementation):
     ) -> ReglementationStatus:
         if reglementation_status := super().calculate_status(caracteristiques, user):
             return reglementation_status
+
+        rapport = rapport_csrd(
+            entreprise=caracteristiques.entreprise,
+            user=user,
+            annee=datetime.today().year,
+        )
+        if rapport and rapport.etape_validee:
+            etape_suivante = rapport.etape_validee + 1
+            label_gestion_csrd = "Reprendre ma CSRD"
+        else:
+            etape_suivante = 1
+            label_gestion_csrd = "Accéder à l'espace Rapport de Durabilité"
+
         primary_action = ReglementationAction(
             reverse_lazy(
                 "reglementations:gestion_csrd",
                 kwargs={
                     "siren": caracteristiques.entreprise.siren,
-                    "etape": 1,
+                    "etape": etape_suivante,
                 },
             ),
-            "Accéder à l'espace Rapport de Durabilité",
+            label_gestion_csrd,
         )
         if annee := cls.est_soumis_a_partir_de_l_exercice(caracteristiques):
             premiere_annee_publication = (
@@ -446,6 +459,18 @@ class CSRDReglementation(Reglementation):
             caracteristiques.entreprise.appartient_groupe
             and nombre_seuils_depasses >= 2
         )
+
+
+def rapport_csrd(user, entreprise, annee):
+    try:
+        habilitation = user.habilitation_set.get(entreprise=entreprise)
+        return RapportCSRD.objects.get(
+            entreprise=entreprise,
+            proprietaire=None if habilitation.is_confirmed else user,
+            annee=annee,
+        )
+    except ObjectDoesNotExist:
+        pass
 
 
 @login_required
