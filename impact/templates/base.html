@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="{% static 'dsfr/dsfr/dsfr.min.css' %}">
         <link rel="stylesheet" href="{% static 'dsfr/utility/icons/icons.css' %}">
         <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+        <link rel="stylesheet" href="{% static 'css/dsfr-theme-tac.min.css' %}">
 
         <meta name="theme-color" content="#000091"><!-- Défini la couleur de thème du navigateur (Safari/Android) -->
         <link rel="apple-touch-icon" href="{% static 'dsfr/favicon/apple-touch-icon.png' %}"><!-- 180×180 -->
@@ -213,7 +214,7 @@
                                 <a class="fr-footer__bottom-link" href="{% url 'stats' %}">Statistiques</a>
                             </li>
                             <li class="fr-footer__bottom-item">
-                                <button id="tarteaucitronManager" class="fr-footer__bottom-link" aria-controls="tarteaucitron" data-fr-opened="false" data-fr-js-modal-button="true">Cookies</button>
+                                <button id="tarteaucitronManager" class="fr-footer__bottom-link" aria-controls="tarteaucitron" data-fr-opened="false" data-fr-js-modal-button="true">Gestion des cookies</button>
                             </li>
                         </ul>
                         <div class="fr-footer__bottom-copy">
@@ -245,8 +246,12 @@
         <script type="text/javascript" src="{% static 'js/tarteaucitron.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
         <script nonce="{{ request.csp_nonce }}">
             tarteaucitron.init({
-                "useExternalCss": false,
+                "useExternalCss": true,
                 "showIcon": false,
+                "removeCredit": true,
+                "moreInfoLink": false,
+                "mandatory": true,
+                "mandatoryCta": false,
             });
         </script>
         {% if matomo_enabled %}
