@@ -546,12 +546,9 @@ def gestion_csrd(request, siren=None, etape=1):
     annee = datetime.now().year
 
     if request.method == "POST":
-        csrd = get_object_or_404(
-            RapportCSRD,
-            entreprise=entreprise,
-            proprietaire=None if habilitation.is_confirmed else request.user,
-            annee=annee,
-        )
+        csrd = rapport_csrd(request.user, entreprise, annee)
+        if not csrd:
+            raise Http404
         csrd.etape_validee = etape - 1
         csrd.save()
         redirect("reglementations:gestion_csrd", siren=siren, etape=etape)
