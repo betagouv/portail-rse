@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="{% static 'dsfr/dsfr/dsfr.min.css' %}">
         <link rel="stylesheet" href="{% static 'dsfr/utility/icons/icons.css' %}">
         <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-        <link rel="stylesheet" href="{% static 'css/dsfr-theme-tac.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/dsfr-theme-tac.css' %}">
 
         <meta name="theme-color" content="#000091"><!-- Défini la couleur de thème du navigateur (Safari/Android) -->
         <link rel="apple-touch-icon" href="{% static 'dsfr/favicon/apple-touch-icon.png' %}"><!-- 180×180 -->
@@ -243,7 +243,7 @@
             });
         </script>
 	<!-- Tarte au citron -->
-        <script type="text/javascript" src="{% static 'js/tarteaucitron.min.js' %}" nonce="{{ request.csp_nonce }}"></script>
+        <script type="text/javascript" src="{% static 'js/tarteaucitron.js' %}" nonce="{{ request.csp_nonce }}"></script>
         <script nonce="{{ request.csp_nonce }}">
             tarteaucitron.init({
                 "useExternalCss": true,
@@ -253,6 +253,8 @@
                 "mandatory": true,
                 "mandatoryCta": false,
             });
+	    // Service Youtube
+            (tarteaucitron.job = tarteaucitron.job || []).push('youtube');
         </script>
         {% if matomo_enabled %}
             <script type="text/javascript" src="{% static 'js/tarteaucitron.matomo.service.js' %}" nonce="{{ request.csp_nonce }}"></script>
