@@ -10,6 +10,9 @@ tarteaucitron.services.matomocloudbeta = {
 	"name": "Matomo (privacy by design)",
 	"uri": "https://matomo.org/faq/general/faq_146/",
 	"needConsent": true,
+	// Décommenter cette ligne bloque le premier affichage de l'encart
+	// on veut pourtant que Matomo soit actif par défaut
+	// "defaultState": true,
 	"cookies": ['_pk_ref', '_pk_cvar', '_pk_id', '_pk_ses', '_pk_hsr', 'mtm_consent', 'matomo_ignore', 'matomo_sessid'],
 	"js": function() {
 		"use strict";
