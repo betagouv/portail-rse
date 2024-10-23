@@ -242,21 +242,21 @@
                 tracesSampleRate: 0.1,
             });
         </script>
-	<!-- Tarte au citron -->
-        <script type="text/javascript" src="{% static 'js/tarteaucitron.js' %}" nonce="{{ request.csp_nonce }}"></script>
-        <script nonce="{{ request.csp_nonce }}">
-            tarteaucitron.init({
-                "useExternalCss": true,
-                "showIcon": false,
-                "removeCredit": true,
-                "moreInfoLink": false,
-                "mandatory": true,
-                "mandatoryCta": false,
-            });
-	    // Service Youtube
-            (tarteaucitron.job = tarteaucitron.job || []).push('youtube');
-        </script>
         {% if matomo_enabled %}
+	<!-- Tarte au citron -->
+            <script type="text/javascript" src="{% static 'js/tarteaucitron.js' %}" nonce="{{ request.csp_nonce }}"></script>
+            <script nonce="{{ request.csp_nonce }}">
+                tarteaucitron.init({
+                    "useExternalCss": true,
+                    "showIcon": false,
+                    "removeCredit": true,
+                    "moreInfoLink": false,
+                    "mandatory": true,
+                    "mandatoryCta": false,
+                });
+	    // Service Youtube
+                (tarteaucitron.job = tarteaucitron.job || []).push('youtube');
+            </script>
             <script type="text/javascript" src="{% static 'js/tarteaucitron.matomo.service.js' %}" nonce="{{ request.csp_nonce }}"></script>
             <script nonce="{{ request.csp_nonce }}">
                 tarteaucitron.user.matomoId = '16';
