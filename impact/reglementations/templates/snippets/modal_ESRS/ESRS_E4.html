@@ -10,7 +10,7 @@
                                 <h4>ESRS E4 - Biodiversité et écosystèmes</h4>
 
                                 <div class="fr-container--fluid">
-                                    {% if phase == 1 %}
+                                    {% if csrd %}
                                         <div class="fr-grid-row">
                                             <p>
                                                 <strong>
@@ -20,6 +20,39 @@
 
                                             <div id="selection_enjeux_ESRS_E4" hx-target="this"> Chargement en cours... </div>
 
+                                        </div>
+                                    {% elif phase == 1 %}
+                                        <div class="fr-grid-row">
+                                            <p>
+                                                <strong>
+                                                    Choisissez les enjeux de durabilité qui ont une incidence réelle et potentielle appliquée à votre entreprise
+                                                </strong>
+                                            </p>
+                                            <div>
+                                                <h6>A. Vecteurs d'incidence directs de la perte de biodiversité</h6>
+                                                <ol>
+                                                    <li>
+                                                        Changement climatique
+                                                    </li>
+                                                    <li>
+                                                        Changement d'affectation des terres, changement d'utilisation de l'eau douce et des mers
+                                                    </li>
+                                                    <li>
+                                                        Exploitation directe
+                                                    </li>
+                                                    <li>
+                                                        Espèces exotiques envahissantes
+                                                    </li>
+                                                    <li>
+                                                        Pollution
+                                                    </li>
+                                                    <li>
+                                                        Autres
+                                                    </li>
+                                                </ol>
+                                                <h6>B. Incidence sur l'état des espèces</h6>
+                                                <h6>C. Incidence sur l'étendue et l'état des écosystèmes</h6>
+                                            </div>
                                         </div>
                                     {% elif phase == 2 %}
                                         <div class="fr-grid-row">

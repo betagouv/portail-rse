@@ -1,0 +1,10 @@
+<div class="csrd-action fr-py-4w">
+    <div class="fr-container">
+        <div class="fr-grid-row fr-grid-row--right">
+            <form action="{% url 'reglementations:gestion_csrd' entreprise.siren prochaine_etape %}" method="post">
+                {% csrf_token %}
+                <button type="submit" name="save_complete" class="fr-btn fr-btn--icon-left fr-icon-checkbox-circle-line">Enregistrer et marquer comme terminé</button>
+            </form>
+        </div>
+    </div>
+</div>

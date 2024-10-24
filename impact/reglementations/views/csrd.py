@@ -310,17 +310,28 @@ class CSRDReglementation(Reglementation):
     ) -> ReglementationStatus:
         if reglementation_status := super().calculate_status(caracteristiques, user):
             return reglementation_status
+
+        rapport = rapport_csrd(
+            entreprise=caracteristiques.entreprise,
+            user=user,
+            annee=datetime.today().year,
+        )
+        if rapport and rapport.etape_validee:
+            etape_suivante = rapport.etape_validee + 1
+            label_gestion_csrd = "Reprendre ma CSRD"
+        else:
+            etape_suivante = 1
+            label_gestion_csrd = "Accéder à l'espace Rapport de Durabilité"
+
         primary_action = ReglementationAction(
             reverse_lazy(
-                "reglementations:csrd_sous_etape",
+                "reglementations:gestion_csrd",
                 kwargs={
                     "siren": caracteristiques.entreprise.siren,
-                    "phase": 1,
-                    "etape": 2,
-                    "sous_etape": 1,
+                    "etape": etape_suivante,
                 },
             ),
-            "Accéder à l'espace Rapport de Durabilité",
+            label_gestion_csrd,
         )
         if annee := cls.est_soumis_a_partir_de_l_exercice(caracteristiques):
             premiere_annee_publication = (
@@ -450,8 +461,20 @@ class CSRDReglementation(Reglementation):
         )
 
 
+def rapport_csrd(user, entreprise, annee):
+    try:
+        habilitation = user.habilitation_set.get(entreprise=entreprise)
+        return RapportCSRD.objects.get(
+            entreprise=entreprise,
+            proprietaire=None if habilitation.is_confirmed else user,
+            annee=annee,
+        )
+    except ObjectDoesNotExist:
+        pass
+
+
 @login_required
-def csrd(request, siren=None, phase=0, etape=0, sous_etape=0):
+def guide_csrd(request, siren=None, phase=0, etape=0, sous_etape=0):
     if not siren:
         entreprise = get_current_entreprise(request)
         if not entreprise:
@@ -482,12 +505,53 @@ def csrd(request, siren=None, phase=0, etape=0, sous_etape=0):
     except TemplateDoesNotExist:
         raise Http404
 
+    context = {
+        "entreprise": entreprise,
+        "phase": phase,
+        "etape": etape,
+        "sous_etape": sous_etape,
+    }
+
+    return HttpResponse(template.render(context, request))
+
+
+@login_required
+def gestion_csrd(request, siren=None, etape=1):
+    if not siren:
+        entreprise = get_current_entreprise(request)
+        if not entreprise:
+            messages.warning(
+                request,
+                "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à l'espace Rapport de Durabilité",
+            )
+            return redirect("entreprises:entreprises")
+        return redirect("reglementations:csrd", siren=entreprise.siren)
+
+    entreprise = get_object_or_404(Entreprise, siren=siren)
+    if not is_user_attached_to_entreprise(request.user, entreprise):
+        raise PermissionDenied
+
+    template_name = f"reglementations/csrd/etape{etape}.html"
+    try:
+        template = get_template(template_name)
+    except TemplateDoesNotExist as e:
+        raise Http404
+
     # En analysant un peu les requêtes exécutées,
     # les fetch sur les habilitations et l'entreprise se répètent (requêtes identiques)
     # un peu de centralisation à faire pour éviter les répétitions dans `utils.middlewares.ExtendUserMiddleware`
 
     # par ex., on peut récupérer l'habilitation pour cette entreprise, elle est déjà en cache
     habilitation = request.user.habilitation_set.get(entreprise=entreprise)
+    annee = datetime.now().year
+
+    if request.method == "POST":
+        csrd = rapport_csrd(request.user, entreprise, annee)
+        if not csrd:
+            raise Http404
+        csrd.etape_validee = etape - 1
+        csrd.save()
+        redirect("reglementations:gestion_csrd", siren=siren, etape=etape)
 
     # les prefetch de l'enjeu parent évitent des N+1 au niveau du template
     csrd, _ = RapportCSRD.objects.prefetch_related(
@@ -495,15 +559,19 @@ def csrd(request, siren=None, phase=0, etape=0, sous_etape=0):
     ).get_or_create(
         entreprise=entreprise,
         proprietaire=None if habilitation.is_confirmed else request.user,
-        annee=datetime.now().year,
+        annee=annee,
     )
 
     context = {
         "entreprise": entreprise,
-        "phase": phase,
         "etape": etape,
-        "sous_etape": sous_etape,
         "csrd": csrd,
+        "annee": annee,
+        "steps": {
+            1: {"name": "Introduction"},
+            2: {"name": "Sélection des enjeux"},
+            3: {"name": "Matérialité des enjeux"},
+        },
     }
 
     return HttpResponse(template.render(context, request))
@@ -522,7 +590,7 @@ def csrd_required(function):
             )
             return function(request, siren, csrd=csrd)
         except ObjectDoesNotExist:
-            raise Http404("Ce rapport du durabilité n'existe pas")
+            raise Http404("Ce rapport de durabilité n'existe pas")
 
     return wrap
 
