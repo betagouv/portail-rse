@@ -1,0 +1,118 @@
+{% if enjeux_par_esg %}
+    <ul>
+        {% for enjeu in enjeux %}
+            <li>{{ enjeu.esrs }} : {{ enjeu.nom }}</li>
+        {% endfor %}
+    </ul>
+
+    <div class="fr-grid-row fr-grid-row--gutters esrs-organizer">
+        <div class="fr-col-lg-4 fr-col-12">
+            <div class="esrs-organizer--container esrs-organizer--no-badge esrs-organizer--env">
+                <div class="esrs-organizer--header">
+                    <h4 class="esrs-organizer--title">Environnement</h4>
+                </div>
+                <div class="esrs-organizer--content">
+                    {% if enjeux_par_esg.environnement|length %}
+                        {% for esrs, enjeux in enjeux_par_esg.environnement.items %}
+                            <div class="esrs-organizer--esrs">
+                                <div class="esrs-organizer--card">
+                                    <div class="esrs-organizer--card-title">
+                                        <b>{{ esrs }}</b>
+                                        <br>
+                                        <ul>
+                                            {% for enjeu in enjeux %}
+                                                <li>{{ enjeu.nom }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="esrs-organizer--esrs">
+                            <div class="esrs-organizer--card">
+                                <div class="esrs-organizer--card-title">
+                                    Aucun enjeu sélectionné
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="fr-col-lg-4 fr-col-12">
+            <div class="esrs-organizer--container esrs-organizer--no-badge esrs-organizer--social">
+                <div class="esrs-organizer--header">
+                    <h4 class="esrs-organizer--title">Social</h4>
+                </div>
+                <div class="esrs-organizer--content">
+                    {% if enjeux_par_esg.social|length %}
+                        {% for esrs, enjeux in enjeux_par_esg.social.items %}
+                            <div class="esrs-organizer--esrs">
+                                <div class="esrs-organizer--card">
+                                    <div class="esrs-organizer--card-title">
+                                        <b>{{ esrs }}</b>
+                                        <br>
+                                        <ul>
+                                            {% for enjeu in enjeux %}
+                                                <li>{{ enjeu.nom }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="esrs-organizer--esrs">
+                            <div class="esrs-organizer--card">
+                                <div class="esrs-organizer--card-title">
+                                    Aucun enjeu sélectionné
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="fr-col-lg-4 fr-col-12">
+            <div class="esrs-organizer--container esrs-organizer--no-badge esrs-organizer--gov">
+                <div class="esrs-organizer--header">
+                    <h4 class="esrs-organizer--title">Gouvernance</h4>
+                </div>
+                <div class="esrs-organizer--content">
+                    {% if enjeux_par_esg.gouvernance|length %}
+                        {% for esrs, enjeux in enjeux_par_esg.gouvernance.items %}
+                            <div class="esrs-organizer--esrs">
+                                <div class="esrs-organizer--card">
+                                    <div class="esrs-organizer--card-title">
+                                        <b>{{ esrs }}</b>
+                                        <br>
+                                        <ul>
+                                            {% for enjeu in enjeux %}
+                                                <li>{{ enjeu.nom }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="esrs-organizer--esrs">
+                            <div class="esrs-organizer--card">
+                                <div class="esrs-organizer--card-title">
+                                    Aucun enjeu sélectionné
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% else %}
+    <p>Aucun enjeu sélectionné</p>
+{% endif %}
+
+<!-- fragment liste des enjeux sélectionnés -->

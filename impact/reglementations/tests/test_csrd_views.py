@@ -254,7 +254,7 @@ def test_selection_et_deselection_d_enjeux(client, alice, entreprise_non_qualifi
     assert "<!-- fragment esrs -->" in response.content.decode("utf-8")
 
 
-def test_liste_des_enjeux_csrd(client, alice, entreprise_non_qualifiee):
+def test_liste_des_enjeux_csrd_au_format_xlsx(client, alice, entreprise_non_qualifiee):
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
     csrd = RapportCSRD.objects.create(
         proprietaire=alice,
@@ -279,7 +279,7 @@ def test_liste_des_enjeux_csrd(client, alice, entreprise_non_qualifiee):
     )
 
 
-def test_liste_des_enjeux_csrd_retourne_une_404_si_entreprise_inexistante(
+def test_liste_des_enjeux_csrd__au_format_xlsx_retourne_une_404_si_entreprise_inexistante(
     client, alice
 ):
     client.force_login(alice)
@@ -291,7 +291,7 @@ def test_liste_des_enjeux_csrd_retourne_une_404_si_entreprise_inexistante(
     assert response.status_code == 404
 
 
-def test_liste_des_enjeux_csrd_retourne_une_404_si_habilitation_inexistante(
+def test_liste_des_enjeux_csrd_au_format_xlsx_retourne_une_404_si_habilitation_inexistante(
     client, alice, entreprise_non_qualifiee
 ):
     client.force_login(alice)
@@ -303,7 +303,7 @@ def test_liste_des_enjeux_csrd_retourne_une_404_si_habilitation_inexistante(
     assert response.status_code == 404
 
 
-def test_liste_des_enjeux_csrd_retourne_une_404_si_csrd_inexistante(
+def test_liste_des_enjeux_csrd_au_format_xlsx_retourne_une_404_si_csrd_inexistante(
     client, alice, entreprise_non_qualifiee
 ):
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
@@ -314,3 +314,32 @@ def test_liste_des_enjeux_csrd_retourne_une_404_si_csrd_inexistante(
     )
 
     assert response.status_code == 404
+
+
+def test_liste_des_enjeux_csrd(client, alice, entreprise_non_qualifiee):
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    csrd = RapportCSRD.objects.create(
+        proprietaire=alice,
+        entreprise=entreprise_non_qualifiee,
+        annee=f"{datetime.now():%Y}",
+    )
+    enjeux = csrd.enjeux.all()
+    enjeu_adaptation = enjeux[0]
+    enjeu_attenuation = enjeux[1]
+    enjeu_attenuation.selection = True
+    enjeu_attenuation.save()
+    enjeu_energie = enjeux[2]
+    client.force_login(alice)
+
+    response = client.get(f"/csrd/fragments/liste_enjeux_selectionnes/{csrd.id}")
+
+    assert response.status_code == 200
+    context = response.context
+    assert context["enjeux_par_esg"] == {
+        "environnement": {"ESRS_E1": [enjeu_attenuation]},
+        "social": {},
+        "gouvernance": {},
+    }
+    assert "<!-- fragment liste des enjeux sélectionnés -->" in response.content.decode(
+        "utf-8"
+    )

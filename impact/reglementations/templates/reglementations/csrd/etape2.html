@@ -39,7 +39,7 @@
                         <a class="fr-tabs__tab fr-tabs__tab--icon-left" target="_blank" href="{% url 'reglementations:csrd_sous_etape' entreprise.siren 1 2 2 %}">S'inspirer de standards internationaux</a>
                     </li>
                     <li role="presentation">
-                        <button id="tabpanel-406" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="-1" role="tab" aria-selected="false" aria-controls="tabpanel-406-panel">Ma liste d'enjeux à analyser</button>
+                        <button id="tabpanel-406" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="-1" role="tab" aria-selected="false" aria-controls="onglet-liste-enjeux" hx-get="{% url 'reglementations:liste_enjeux_selectionnes' csrd.pk %}" hx-target="#onglet-liste-enjeux">Ma liste d'enjeux à analyser</button>
                     </li>
                 </ul>
                 <div id="tabpanel-404-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel" aria-labelledby="tabpanel-404" tabindex="0">

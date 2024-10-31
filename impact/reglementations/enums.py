@@ -21,6 +21,21 @@ class ESRS(models.TextChoices):
 
     ESRS_G1 = "ESRS_G1"
 
+    @classmethod
+    def theme(cls, code):
+        return {
+            cls.ESRS_E1: "environnement",
+            cls.ESRS_E2: "environnement",
+            cls.ESRS_E3: "environnement",
+            cls.ESRS_E4: "environnement",
+            cls.ESRS_E5: "environnement",
+            cls.ESRS_S1: "social",
+            cls.ESRS_S2: "social",
+            cls.ESRS_S3: "social",
+            cls.ESRS_S4: "social",
+            cls.ESRS_G1: "gouvernance",
+        }[code]
+
 
 @dataclass
 class EnjeuNormalise:
