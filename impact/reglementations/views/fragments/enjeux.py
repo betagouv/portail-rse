@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
 import utils.htmx as htmx
+from reglementations.enums import ESRS
 from reglementations.forms.csrd import EnjeuxRapportCSRDForm
 from reglementations.forms.csrd import NouvelEnjeuCSRDForm
 from reglementations.models.csrd import Enjeu
@@ -143,3 +144,26 @@ def rafraichissement_esg(request, csrd_id):
     context = {"csrd": csrd}
 
     return render(request, "fragments/esrs.html", context=context)
+
+
+@login_required
+@require_http_methods(["GET"])
+def liste_enjeux_selectionnes(request, csrd_id):
+    csrd = get_object_or_404(RapportCSRD, pk=csrd_id)
+
+    if not csrd.modifiable_par(request.user):
+        raise PermissionDenied(
+            "L'utilisateur n'a pas les permissions nécessaires pour accéder à ce rapport CSRD"
+        )
+
+    enjeux_par_esg = {"environnement": {}, "social": {}, "gouvernance": {}}
+    for esrs in ESRS:
+        enjeux = []
+        for enjeu in csrd.enjeux_par_esrs(esrs):
+            if enjeu.selection:
+                enjeux.append(enjeu)
+        if enjeux:
+            enjeux_par_esg[ESRS.theme(esrs)][esrs] = enjeux
+    context = {"enjeux_par_esg": enjeux_par_esg}
+
+    return render(request, "fragments/liste_enjeux_selectionnes.html", context=context)
