@@ -22,7 +22,7 @@ def test_api_fonctionnelle():
 
     assert infos == {
         "siren": SIREN,
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
         "denomination": "DIRECTION INTERMINISTERIELLE DU NUMERIQUE",
         "categorie_juridique_sirene": 7120,
         "code_pays_etranger_sirene": None,
@@ -42,7 +42,7 @@ def test_api_renouvelle_automatiquement_le_jeton_acces_insee(tmp_path, settings)
     assert settings.API_INSEE_TOKEN_PATH.read_text() != jeton_expire
     assert infos == {
         "siren": SIREN,
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
         "denomination": "DIRECTION INTERMINISTERIELLE DU NUMERIQUE",
         "categorie_juridique_sirene": 7120,
         "code_pays_etranger_sirene": None,
