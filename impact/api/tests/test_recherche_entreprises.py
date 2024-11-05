@@ -18,7 +18,7 @@ def test_api_fonctionnelle():
 
     assert infos == {
         "siren": SIREN,
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
         "denomination": "DIRECTION INTERMINISTERIELLE DU NUMERIQUE",
         "categorie_juridique_sirene": 7120,
         "code_pays_etranger_sirene": None,
