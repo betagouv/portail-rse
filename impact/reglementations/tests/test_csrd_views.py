@@ -254,6 +254,28 @@ def test_selection_et_deselection_d_enjeux(client, alice, entreprise_non_qualifi
     assert "<!-- fragment esrs -->" in response.content.decode("utf-8")
 
 
+def test_deselection_d_un_enjeu(client, alice, entreprise_non_qualifiee):
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    csrd = RapportCSRD.objects.create(
+        proprietaire=alice,
+        entreprise=entreprise_non_qualifiee,
+        annee=f"{datetime.now():%Y}",
+    )
+    enjeux = csrd.enjeux.all()
+    enjeu = enjeux[0]
+    enjeu.selection = True
+    enjeu.save()
+    client.force_login(alice)
+
+    response = client.post(
+        f"/csrd/fragments/deselection_enjeu/{enjeu.id}",
+    )
+
+    enjeu.refresh_from_db()
+    assert not enjeu.selection
+    assert response.status_code == 200
+
+
 def test_liste_des_enjeux_csrd_au_format_xlsx(client, alice, entreprise_non_qualifiee):
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
     csrd = RapportCSRD.objects.create(

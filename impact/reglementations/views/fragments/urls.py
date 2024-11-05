@@ -1,6 +1,7 @@
 from django.urls import path
 
 from .enjeux import creation_enjeu
+from .enjeux import deselection_enjeu
 from .enjeux import liste_enjeux_selectionnes
 from .enjeux import rafraichissement_esg
 from .enjeux import selection_enjeux
@@ -21,6 +22,11 @@ urlpatterns = [
         "csrd/fragments/suppression_enjeu/<str:enjeu_id>",
         suppression_enjeu,
         name="suppression_enjeu",
+    ),
+    path(
+        "csrd/fragments/deselection_enjeu/<int:enjeu_id>",
+        deselection_enjeu,
+        name="deselection_enjeu",
     ),
     path(
         "csrd/fragments/liste_enjeux_selectionnes/<int:csrd_id>",

@@ -552,6 +552,20 @@
     }
 }
 
+/* pseudo tableau dans les cartes esrs-organizer */
+/* utilisé à la place des fr-col car provoque un affichage des blocs E,S et G
+   les uns en dessous des autres
+*/
+.esrs-organizer--table {
+  display:table;
+  width: 100%;
+}
+
+.esrs-organizer--table-cell {
+  display:table-cell;
+}
+
+
 /* modal des ESRS */
 
 .fr-modal--esrs {
