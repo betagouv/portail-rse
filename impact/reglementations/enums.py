@@ -36,6 +36,21 @@ class ESRS(models.TextChoices):
             cls.ESRS_G1: "gouvernance",
         }[code]
 
+    @classmethod
+    def titre(cls, code):
+        return {
+            cls.ESRS_E1: "ESRS E1 - Changement climatique",
+            cls.ESRS_E2: "ESRS E2 - Pollution",
+            cls.ESRS_E3: "ESRS E3 - Eau et ressources marines",
+            cls.ESRS_E4: "ESRS E4 - Biodiversité et écosystèmes",
+            cls.ESRS_E5: "ESRS E5 - Utilisation des ressources et économie circulaire",
+            cls.ESRS_S1: "ESRS S1 - Personnel de l'entreprise",
+            cls.ESRS_S2: "ESRS S2 - Travailleurs de la chaîne de valeur",
+            cls.ESRS_S3: "ESRS S3 - Communautés affectées",
+            cls.ESRS_S4: "ESRS S4 - Consommateurs et utilisateurs finaux",
+            cls.ESRS_G1: "ESRS G1 - Conduite des affaires",
+        }[code]
+
 
 @dataclass
 class EnjeuNormalise:
