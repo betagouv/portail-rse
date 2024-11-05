@@ -184,7 +184,9 @@ def liste_enjeux_selectionnes(request, csrd_id):
             if enjeu.selection:
                 enjeux.append(enjeu)
         if enjeux:
-            enjeux_par_esg[ESRS.theme(esrs)][ESRS.titre(esrs)] = enjeux
+            theme = ESRS.theme(esrs)
+            titre = ESRS.titre(esrs)
+            enjeux_par_esg[theme][titre] = enjeux
     context = {"enjeux_par_esg": enjeux_par_esg}
 
     return render(request, "fragments/liste_enjeux_selectionnes.html", context=context)
