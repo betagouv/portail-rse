@@ -4,6 +4,7 @@ Fragments HTMX pour la sélection des enjeux par ESRS
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
+from django.shortcuts import HttpResponse
 from django.shortcuts import HttpResponseRedirect
 from django.shortcuts import render
 from django.shortcuts import reverse
@@ -98,6 +99,26 @@ def creation_enjeu(request, csrd_id, esrs):
     else:
         # cas 3 : erreurs dans le formulaire, on reste sur le fragment
         return render(request, template, context=context | {"form": form})
+
+
+@login_required
+@csrf_exempt
+@require_http_methods(["POST"])
+def deselection_enjeu(request, enjeu_id):
+    # note : la vue est "exempté" de CSRF parce que ce fragment est "emboité" dans un formulaire
+    # la session contient donc un token CSRF à vérifier ... qu'on ne veut pas vérifier dans ce cas.
+    enjeu = get_object_or_404(Enjeu, pk=enjeu_id)
+
+    if not enjeu.rapport_csrd.modifiable_par(request.user):
+        raise PermissionDenied(
+            "L'utilisateur n'a pas les permissions nécessaires pour accéder à ce rapport CSRD"
+        )
+
+    enjeu.selection = False
+    enjeu.save()
+
+    # la chaine vide permet la suppression de l'enjeu dans l'interface web
+    return HttpResponse(status=200, content="")
 
 
 @login_required
