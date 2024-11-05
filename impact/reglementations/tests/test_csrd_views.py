@@ -358,7 +358,7 @@ def test_liste_des_enjeux_csrd(client, alice, entreprise_non_qualifiee):
     assert response.status_code == 200
     context = response.context
     assert context["enjeux_par_esg"] == {
-        "environnement": {"ESRS_E1": [enjeu_attenuation]},
+        "environnement": {"ESRS E1 - Changement climatique": [enjeu_attenuation]},
         "social": {},
         "gouvernance": {},
     }
