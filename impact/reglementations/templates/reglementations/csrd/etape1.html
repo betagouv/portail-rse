@@ -13,9 +13,18 @@
             <div class="fr-col">
                 <h2>Introduction</h2>
                 <p>
-                    Vous commencez le remplissage de la CSRD.
+                    Bienvenue dans votre espace de pilotage pour vous aider à la rédaction de votre rapport de durabilité.
                     <br>
-                    <a href="{% url 'reglementations:csrd' entreprise.siren %}"  class="fr-link" target='_blank'>Comment réaliser son rapport de durabilité de A à Z</a>
+                    Cet espace met à votre disposition des outils pour avancer étape par étape dans :
+                    <ol>
+                        <li>L’analyse de double matérialité</li>
+                        <li>La collecte des données</li>
+                        <li>La rédaction du rapport</li>
+                    </ol>
+                    Avant de démarrer le parcours, nous vous invitons à consulter le guide CSRD détaillant ces trois phases.
+                    <a href="{% url 'reglementations:csrd' entreprise.siren %}"  class="fr-link" target='_blank'>Comment réaliser son rapport de durabilité de A à Z ?</a>
+                    <br>
+                    Cet espace sera enrichi progressivement.
                 </p>
                 <p>
                     {% include "snippets/csrd_submit.html" with prochaine_etape=2 %}
