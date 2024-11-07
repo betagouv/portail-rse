@@ -1,6 +1,8 @@
 """
 Fragments HTMX pour la sélection des enjeux par ESRS
 """
+from functools import wraps
+
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
@@ -24,15 +26,39 @@ Vues de fragments HTMX :
 """
 
 
+def csrd_required(function):
+    @wraps(function)
+    def wrap(request, csrd_id, *args, **kwargs):
+        csrd = get_object_or_404(RapportCSRD, id=csrd_id)
+
+        if not csrd.modifiable_par(request.user):
+            raise PermissionDenied(
+                "L'utilisateur n'a pas les permissions nécessaires pour accéder à ce rapport CSRD"
+            )
+        return function(request, csrd_id, *args, **kwargs)
+
+    return wrap
+
+
+def enjeu_required(function):
+    @wraps(function)
+    def wrap(request, enjeu_id, *args, **kwargs):
+        enjeu = get_object_or_404(Enjeu, pk=enjeu_id)
+
+        if not enjeu.rapport_csrd.modifiable_par(request.user):
+            raise PermissionDenied(
+                "L'utilisateur n'a pas les permissions nécessaires pour accéder à ce rapport CSRD"
+            )
+        return function(request, enjeu_id, *args, **kwargs)
+
+    return wrap
+
+
 @login_required
+@csrd_required
 @require_http_methods(["GET", "POST"])
 def selection_enjeux(request, csrd_id, esrs):
-    csrd = get_object_or_404(RapportCSRD, id=csrd_id)
-
-    if not csrd.modifiable_par(request.user):
-        raise PermissionDenied(
-            "L'utilisateur n'a pas les permissions nécessaires pour accéder à ce rapport CSRD"
-        )
+    csrd = RapportCSRD.objects.get(id=csrd_id)
 
     context = {"csrd": csrd}
 
@@ -57,14 +83,10 @@ def selection_enjeux(request, csrd_id, esrs):
 
 
 @login_required
+@csrd_required
 @require_http_methods(["GET", "POST"])
 def creation_enjeu(request, csrd_id, esrs):
-    csrd = get_object_or_404(RapportCSRD, pk=csrd_id)
-
-    if not csrd.modifiable_par(request.user):
-        raise PermissionDenied(
-            "L'utilisateur n'a pas les permissions nécessaires pour accéder à ce rapport CSRD"
-        )
+    csrd = RapportCSRD.objects.get(id=csrd_id)
 
     context = {"csrd": csrd}
     template = "fragments/creation_enjeu.html"
@@ -102,17 +124,13 @@ def creation_enjeu(request, csrd_id, esrs):
 
 
 @login_required
+@enjeu_required
 @csrf_exempt
 @require_http_methods(["POST"])
 def deselection_enjeu(request, enjeu_id):
     # note : la vue est "exempté" de CSRF parce que ce fragment est "emboité" dans un formulaire
     # la session contient donc un token CSRF à vérifier ... qu'on ne veut pas vérifier dans ce cas.
-    enjeu = get_object_or_404(Enjeu, pk=enjeu_id)
-
-    if not enjeu.rapport_csrd.modifiable_par(request.user):
-        raise PermissionDenied(
-            "L'utilisateur n'a pas les permissions nécessaires pour accéder à ce rapport CSRD"
-        )
+    enjeu = Enjeu.objects.get(id=enjeu_id)
 
     enjeu.selection = False
     enjeu.save()
@@ -122,17 +140,13 @@ def deselection_enjeu(request, enjeu_id):
 
 
 @login_required
+@enjeu_required
 @csrf_exempt
 @require_http_methods(["DELETE"])
 def suppression_enjeu(request, enjeu_id):
     # note : la vue est "exempté" de CSRF parce que ce fragment est "emboité" dans un formulaire
     # la session contient donc un token CSRF à vérifier ... qu'on ne veut pas vérifier dans ce cas.
-    enjeu = get_object_or_404(Enjeu, pk=enjeu_id, modifiable=True)
-
-    if not enjeu.rapport_csrd.modifiable_par(request.user):
-        raise PermissionDenied(
-            "L'utilisateur n'a pas les permissions nécessaires pour accéder à ce rapport CSRD"
-        )
+    enjeu = Enjeu.objects.get(id=enjeu_id, modifiable=True)
 
     enjeu.delete()
 
@@ -154,13 +168,7 @@ def suppression_enjeu(request, enjeu_id):
 
 
 def rafraichissement_esg(request, csrd_id):
-    csrd = get_object_or_404(RapportCSRD, pk=csrd_id)
-
-    # FIXME: ça commence à beaucoup se répéter...
-    if not csrd.modifiable_par(request.user):
-        raise PermissionDenied(
-            "L'utilisateur n'a pas les permissions nécessaires pour accéder à ce rapport CSRD"
-        )
+    csrd = RapportCSRD.objects.get(id=csrd_id)
 
     context = {"csrd": csrd}
 
@@ -168,14 +176,10 @@ def rafraichissement_esg(request, csrd_id):
 
 
 @login_required
+@csrd_required
 @require_http_methods(["GET"])
 def liste_enjeux_selectionnes(request, csrd_id):
-    csrd = get_object_or_404(RapportCSRD, pk=csrd_id)
-
-    if not csrd.modifiable_par(request.user):
-        raise PermissionDenied(
-            "L'utilisateur n'a pas les permissions nécessaires pour accéder à ce rapport CSRD"
-        )
+    csrd = RapportCSRD.objects.get(id=csrd_id)
 
     enjeux_par_esg = {"environnement": {}, "social": {}, "gouvernance": {}}
     for esrs in ESRS:
