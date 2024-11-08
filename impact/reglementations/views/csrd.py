@@ -23,6 +23,8 @@ from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
 from habilitations.models import is_user_attached_to_entreprise
 from reglementations.enums import ESRS
+from reglementations.enums import EtapeCSRD
+from reglementations.enums import ETAPES_CSRD
 from reglementations.models import RapportCSRD
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
@@ -317,10 +319,10 @@ class CSRDReglementation(Reglementation):
             annee=datetime.today().year,
         )
         if rapport and rapport.etape_validee:
-            etape_suivante = rapport.etape_validee + 1
+            etape_suivante = EtapeCSRD.id_suivant(rapport.etape_validee)
             label_gestion_csrd = "Reprendre ma CSRD"
         else:
-            etape_suivante = 1
+            etape_suivante = "introduction"
             label_gestion_csrd = "Accéder à l'espace Rapport de Durabilité"
 
         primary_action = ReglementationAction(
@@ -516,7 +518,7 @@ def guide_csrd(request, siren=None, phase=0, etape=0, sous_etape=0):
 
 
 @login_required
-def gestion_csrd(request, siren=None, etape=1):
+def gestion_csrd(request, siren=None, etape="introduction"):
     if not siren:
         entreprise = get_current_entreprise(request)
         if not entreprise:
@@ -531,7 +533,7 @@ def gestion_csrd(request, siren=None, etape=1):
     if not is_user_attached_to_entreprise(request.user, entreprise):
         raise PermissionDenied
 
-    template_name = f"reglementations/csrd/etape{etape}.html"
+    template_name = f"reglementations/csrd/etape-{etape}.html"
     try:
         template = get_template(template_name)
     except TemplateDoesNotExist as e:
@@ -549,7 +551,7 @@ def gestion_csrd(request, siren=None, etape=1):
         csrd = rapport_csrd(request.user, entreprise, annee)
         if not csrd:
             raise Http404
-        csrd.etape_validee = etape - 1
+        csrd.etape_validee = EtapeCSRD.id_precedent(etape)
         csrd.save()
         redirect("reglementations:gestion_csrd", siren=siren, etape=etape)
 
@@ -564,14 +566,10 @@ def gestion_csrd(request, siren=None, etape=1):
 
     context = {
         "entreprise": entreprise,
-        "etape": etape,
+        "etape": EtapeCSRD.get(etape),
         "csrd": csrd,
         "annee": annee,
-        "steps": {
-            1: {"name": "Introduction"},
-            2: {"name": "Sélection des enjeux"},
-            3: {"name": "Matérialité des enjeux"},
-        },
+        "steps": ETAPES_CSRD,
     }
 
     return HttpResponse(template.render(context, request))

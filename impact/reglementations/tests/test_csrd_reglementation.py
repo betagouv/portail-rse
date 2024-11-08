@@ -1244,7 +1244,7 @@ def test_calcule_etat_si_non_soumis(entreprise_factory, alice):
         "reglementations:gestion_csrd",
         kwargs={
             "siren": entreprise.siren,
-            "etape": 1,
+            "etape": "introduction",
         },
     )
 
@@ -1284,7 +1284,7 @@ def test_calcule_etat_si_soumis_en_2025_et_delegable(entreprise_factory, alice):
         "reglementations:gestion_csrd",
         kwargs={
             "siren": entreprise.siren,
-            "etape": 1,
+            "etape": "introduction",
         },
     )
 
@@ -1319,7 +1319,7 @@ def test_calcule_etat_si_soumis_en_2027_et_non_delegable(entreprise_factory, ali
         "reglementations:gestion_csrd",
         kwargs={
             "siren": entreprise.siren,
-            "etape": 1,
+            "etape": "introduction",
         },
     )
 
@@ -2174,7 +2174,7 @@ def test_calcule_etat_avec_CSRD_initialisée(entreprise_factory, alice):
         "reglementations:gestion_csrd",
         kwargs={
             "siren": entreprise.siren,
-            "etape": 1,
+            "etape": "introduction",
         },
     )
 
@@ -2190,7 +2190,7 @@ def test_calcule_etat_avec_CSRD_et_étapes_validées(entreprise_factory, alice):
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
     )
     habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
-    DEJA_VALIDEE = 2
+    DEJA_VALIDEE = "selection-enjeux"
     RapportCSRD.objects.create(
         entreprise=entreprise,
         proprietaire=alice,
@@ -2207,7 +2207,7 @@ def test_calcule_etat_avec_CSRD_et_étapes_validées(entreprise_factory, alice):
         "reglementations:gestion_csrd",
         kwargs={
             "siren": entreprise.siren,
-            "etape": DEJA_VALIDEE + 1,
+            "etape": "analyse-materialite",
         },
     )
 
