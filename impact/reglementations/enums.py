@@ -381,3 +381,47 @@ ENJEUX_NORMALISES = [
         ],
     ),
 ]
+
+
+@dataclass
+class EtapeCSRD:
+    id: str
+    nom: str
+    sous_etapes: dict = field(default_factory=dict)
+    ETAPES_VALIDABLES = ["introduction", "selection-enjeux", "analyse-materialite"]
+
+    @classmethod
+    def id_precedent(cls, id_etape):
+        for index, id in enumerate(cls.ETAPES_VALIDABLES):
+            if id == id_etape:
+                return cls.ETAPES_VALIDABLES[index - 1]
+
+    @classmethod
+    def id_suivant(cls, id_etape):
+        for index, id in enumerate(cls.ETAPES_VALIDABLES):
+            if id == id_etape:
+                return cls.ETAPES_VALIDABLES[index + 1]
+
+    @classmethod
+    def get(cls, id_etape):
+        for etape in ETAPES_CSRD:
+            if etape.id == id_etape:
+                return etape
+            for sous_etape in etape.sous_etapes:
+                if sous_etape.id == id_etape:
+                    return sous_etape
+
+
+ETAPES_CSRD = [
+    EtapeCSRD(id="introduction", nom="Introduction"),
+    EtapeCSRD(
+        id="analyse-double-mat",
+        nom="L’analyse de double matérialité",
+        sous_etapes=[
+            EtapeCSRD(id="selection-enjeux", nom="Liste des enjeux ESG"),
+            EtapeCSRD(
+                id="analyse-materialite", nom="Analyse de la matérialité des enjeux ESG"
+            ),
+        ],
+    ),
+]

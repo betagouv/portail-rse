@@ -6,6 +6,7 @@ from django.contrib.messages import WARNING
 from django.urls import reverse
 
 from habilitations.models import attach_user_to_entreprise
+from reglementations.enums import EtapeCSRD
 from reglementations.models.csrd import Enjeu
 from reglementations.models.csrd import RapportCSRD
 
@@ -123,9 +124,9 @@ def test_guide_de_la_csrd_par_etape(etape, client, alice, entreprise_factory):
 @pytest.mark.parametrize(
     "etape",
     [
-        "/csrd/{siren}/etape-1",
-        "/csrd/{siren}/etape-2",
-        "/csrd/{siren}/etape-3",
+        "/csrd/{siren}/etape-introduction",
+        "/csrd/{siren}/etape-selection-enjeux",
+        "/csrd/{siren}/etape-analyse-materialite",
     ],
 )
 def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
@@ -161,8 +162,8 @@ def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
 @pytest.mark.parametrize(
     "etape",
     [
-        1,
-        2,
+        "introduction",
+        "selection-enjeux",
     ],
 )
 def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_factory):
@@ -174,7 +175,9 @@ def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_
         annee=date.today().year,
     )
     client.force_login(alice)
-    url = "/csrd/{siren}/etape-{etape}".format(siren=entreprise.siren, etape=etape + 1)
+    url = "/csrd/{siren}/etape-{etape}".format(
+        siren=entreprise.siren, etape=EtapeCSRD.id_suivant(etape)
+    )
 
     response = client.post(url, follow=True)
 
@@ -188,8 +191,8 @@ def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_
 @pytest.mark.parametrize(
     "etape",
     [
-        1,
-        2,
+        "introduction",
+        "selection-enjeux",
     ],
 )
 def test_enregistrement_de_l_étape_de_la_csrd_retourne_une_404_si_aucune_CSRD(
@@ -198,7 +201,9 @@ def test_enregistrement_de_l_étape_de_la_csrd_retourne_une_404_si_aucune_CSRD(
     entreprise = entreprise_factory()
     attach_user_to_entreprise(alice, entreprise, "Présidente")
     client.force_login(alice)
-    url = "/csrd/{siren}/etape-{etape}".format(siren=entreprise.siren, etape=etape + 1)
+    url = "/csrd/{siren}/etape-{etape}".format(
+        siren=entreprise.siren, etape=EtapeCSRD.id_suivant(etape)
+    )
 
     response = client.post(url, follow=True)
 

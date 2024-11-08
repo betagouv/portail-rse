@@ -41,7 +41,7 @@ class RapportCSRD(TimestampedModel):
     description = models.TextField(
         verbose_name="description du rapport CSRD", blank=True
     )
-    etape_validee = models.PositiveIntegerField(
+    etape_validee = models.TextField(
         verbose_name="étape validée du rapport CSRD", null=True
     )
 
