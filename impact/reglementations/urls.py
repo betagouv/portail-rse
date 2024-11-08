@@ -104,7 +104,7 @@ urlpatterns = [
         name="csrd_sous_etape",
     ),
     path(
-        "csrd/<str:siren>/etape-<str:etape>",
+        "csrd/<str:siren>/etape-<str:id_etape>",
         views.csrd.gestion_csrd,
         name="gestion_csrd",
     ),

@@ -1244,7 +1244,7 @@ def test_calcule_etat_si_non_soumis(entreprise_factory, alice):
         "reglementations:gestion_csrd",
         kwargs={
             "siren": entreprise.siren,
-            "etape": "introduction",
+            "id_etape": "introduction",
         },
     )
 
@@ -1284,7 +1284,7 @@ def test_calcule_etat_si_soumis_en_2025_et_delegable(entreprise_factory, alice):
         "reglementations:gestion_csrd",
         kwargs={
             "siren": entreprise.siren,
-            "etape": "introduction",
+            "id_etape": "introduction",
         },
     )
 
@@ -1319,7 +1319,7 @@ def test_calcule_etat_si_soumis_en_2027_et_non_delegable(entreprise_factory, ali
         "reglementations:gestion_csrd",
         kwargs={
             "siren": entreprise.siren,
-            "etape": "introduction",
+            "id_etape": "introduction",
         },
     )
 
@@ -2174,7 +2174,7 @@ def test_calcule_etat_avec_CSRD_initialisée(entreprise_factory, alice):
         "reglementations:gestion_csrd",
         kwargs={
             "siren": entreprise.siren,
-            "etape": "introduction",
+            "id_etape": "introduction",
         },
     )
 
@@ -2207,7 +2207,7 @@ def test_calcule_etat_avec_CSRD_et_étapes_validées(entreprise_factory, alice):
         "reglementations:gestion_csrd",
         kwargs={
             "siren": entreprise.siren,
-            "etape": "analyse-materialite",
+            "id_etape": "analyse-materialite",
         },
     )
 
