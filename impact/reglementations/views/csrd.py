@@ -330,7 +330,7 @@ class CSRDReglementation(Reglementation):
                 "reglementations:gestion_csrd",
                 kwargs={
                     "siren": caracteristiques.entreprise.siren,
-                    "etape": etape_suivante,
+                    "id_etape": etape_suivante,
                 },
             ),
             label_gestion_csrd,
@@ -518,7 +518,7 @@ def guide_csrd(request, siren=None, phase=0, etape=0, sous_etape=0):
 
 
 @login_required
-def gestion_csrd(request, siren=None, etape="introduction"):
+def gestion_csrd(request, siren=None, id_etape="introduction"):
     if not siren:
         entreprise = get_current_entreprise(request)
         if not entreprise:
@@ -533,7 +533,7 @@ def gestion_csrd(request, siren=None, etape="introduction"):
     if not is_user_attached_to_entreprise(request.user, entreprise):
         raise PermissionDenied
 
-    template_name = f"reglementations/csrd/etape-{etape}.html"
+    template_name = f"reglementations/csrd/etape-{id_etape}.html"
     try:
         template = get_template(template_name)
     except TemplateDoesNotExist as e:
@@ -551,9 +551,9 @@ def gestion_csrd(request, siren=None, etape="introduction"):
         csrd = rapport_csrd(request.user, entreprise, annee)
         if not csrd:
             raise Http404
-        csrd.etape_validee = EtapeCSRD.id_precedent(etape)
+        csrd.etape_validee = EtapeCSRD.id_precedent(id_etape)
         csrd.save()
-        redirect("reglementations:gestion_csrd", siren=siren, etape=etape)
+        redirect("reglementations:gestion_csrd", siren=siren, id_etape=id_etape)
 
     # les prefetch de l'enjeu parent évitent des N+1 au niveau du template
     csrd, _ = RapportCSRD.objects.prefetch_related(
@@ -566,7 +566,7 @@ def gestion_csrd(request, siren=None, etape="introduction"):
 
     context = {
         "entreprise": entreprise,
-        "etape": EtapeCSRD.get(etape),
+        "etape": EtapeCSRD.get(id_etape),
         "csrd": csrd,
         "annee": annee,
         "steps": ETAPES_CSRD,
