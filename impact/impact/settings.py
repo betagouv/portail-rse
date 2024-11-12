@@ -254,6 +254,10 @@ CSP_CONFIGURATION = {
             SELF,
             "stats.portail-rse.beta.gouv.fr",
         ],
+        "font-src": [
+            SELF,
+            "data:",  # Tarte au citron
+        ],
         "script-src-elem": [
             SELF,
             NONCE,
