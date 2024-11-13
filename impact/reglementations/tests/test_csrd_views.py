@@ -4,6 +4,7 @@ from datetime import datetime
 import pytest
 from django.contrib.messages import WARNING
 from django.urls import reverse
+from pytest_django.asserts import assertTemplateUsed
 
 from habilitations.models import attach_user_to_entreprise
 from reglementations.enums import EtapeCSRD
@@ -146,8 +147,14 @@ def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
     assert response.status_code == 200
     context = response.context
     assert context["entreprise"] == entreprise
-    content = response.content.decode("utf-8")
-    assert "<!-- page gestion CSRD -->" in content
+    if etape.endswith("introduction"):
+        assertTemplateUsed(response, "reglementations/csrd/etape-introduction.html")
+    elif etape.endswith("selection-enjeux"):
+        assertTemplateUsed(response, "reglementations/csrd/etape-selection-enjeux.html")
+    elif etape.endswith("analyse-materialite"):
+        assertTemplateUsed(
+            response, "reglementations/csrd/etape-analyse-materialite.html"
+        )
 
     etape_inexistante = f"/csrd/{entreprise.siren}/etape-4"
     response = client.get(etape_inexistante)
