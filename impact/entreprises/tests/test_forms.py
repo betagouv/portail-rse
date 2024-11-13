@@ -9,6 +9,7 @@ from entreprises.models import CaracteristiquesAnnuelles
 
 def test_ignore_bilan_et_ca_consolides_lorsque_pas_de_comptes_consolides():
     data = {
+        "confirmation_naf": "01.11Z",
         "date_cloture_exercice": date(2022, 12, 31),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
@@ -37,6 +38,7 @@ def test_ignore_bilan_et_ca_consolides_lorsque_pas_de_comptes_consolides():
 
 def test_ignore_effectifs_groupe_societe_mere_et_comptes_consolides_lorsque_pas_de_groupe():
     data = {
+        "confirmation_naf": "01.11Z",
         "date_cloture_exercice": date(2022, 12, 31),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
@@ -72,6 +74,7 @@ def test_ignore_effectifs_groupe_societe_mere_et_comptes_consolides_lorsque_pas_
 
 def test_erreur_si_appartient_groupe_sans_effectif_groupe():
     data = {
+        "confirmation_naf": "01.11Z",
         "date_cloture_exercice": date(2022, 12, 31),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
@@ -110,6 +113,7 @@ def test_erreur_si_appartient_groupe_sans_effectif_groupe():
 
 def test_erreur_si_comptes_consolides_sans_bilan_consolide():
     data = {
+        "confirmation_naf": "01.11Z",
         "date_cloture_exercice": date(2022, 12, 31),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
@@ -140,6 +144,7 @@ def test_erreur_si_comptes_consolides_sans_bilan_consolide():
 
 def test_erreur_si_comptes_consolides_sans_ca_consolide():
     data = {
+        "confirmation_naf": "01.11Z",
         "date_cloture_exercice": date(2022, 12, 31),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
@@ -170,6 +175,7 @@ def test_erreur_si_comptes_consolides_sans_ca_consolide():
 
 def test_erreur_si_les_effectifs_permanents_sont_superieurs_aux_effectifs():
     data = {
+        "confirmation_naf": "01.11Z",
         "date_cloture_exercice": date(2022, 12, 31),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
@@ -202,6 +208,7 @@ def test_erreur_si_les_effectifs_permanents_sont_superieurs_aux_effectifs():
 
 def test_erreur_si_effectif_outre_mer_superieur_a_effectif():
     data = {
+        "confirmation_naf": "01.11Z",
         "date_cloture_exercice": date(2022, 12, 31),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
@@ -225,6 +232,7 @@ def test_erreur_si_effectif_outre_mer_superieur_a_effectif():
 
 def test_erreur_si_effectif_france_superieur_a_effectif_international():
     data = {
+        "confirmation_naf": "01.11Z",
         "date_cloture_exercice": date(2022, 12, 31),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
@@ -253,6 +261,7 @@ def test_erreur_si_effectif_france_superieur_a_effectif_international():
 
 def test_erreur_si_effectifs_superieurs_a_effectifs_groupe():
     data = {
+        "confirmation_naf": "01.11Z",
         "date_cloture_exercice": date(2022, 12, 31),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
@@ -285,6 +294,7 @@ def test_erreur_si_effectifs_superieurs_a_effectifs_groupe():
 
 def test_ok_si_effectifs_inferieurs_ou_egaux_a_effectifs_groupe():
     data = {
+        "confirmation_naf": "01.11Z",
         "date_cloture_exercice": date(2022, 12, 31),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
@@ -309,6 +319,7 @@ def test_ok_si_effectifs_inferieurs_ou_egaux_a_effectifs_groupe():
 
 def test_erreur_si_est_societe_mere_en_France_avec_un_effectif_superieur_a_effectif_groupe_france():
     data = {
+        "confirmation_naf": "01.11Z",
         "date_cloture_exercice": date(2022, 12, 31),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
@@ -338,6 +349,7 @@ def test_erreur_si_est_societe_mere_en_France_avec_un_effectif_superieur_a_effec
 
 def test_sans_interet_public_force_non_cotee():
     data = {
+        "confirmation_naf": "01.11Z",
         "date_cloture_exercice": date(2022, 12, 31),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,

@@ -434,6 +434,7 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
     client.force_login(alice)
     data = {
+        "confirmation_naf": "11.11C",
         "date_cloture_exercice": date(2022, 12, 31),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
@@ -535,6 +536,7 @@ def test_qualifie_entreprise_sans_groupe(
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
     client.force_login(alice)
     data = {
+        "confirmation_naf": "01.11Z",
         "date_cloture_exercice": date(2022, 12, 31),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
@@ -630,6 +632,7 @@ def test_qualification_supprime_les_caracteristiques_annuelles_posterieures_a_la
     attach_user_to_entreprise(alice, entreprise, "Présidente")
     client.force_login(alice)
     data = {
+        "confirmation_naf": "11.11C",
         "date_cloture_exercice": date_cloture_dernier_exercice.replace(
             year=date_cloture_dernier_exercice.year - 1
         ),
