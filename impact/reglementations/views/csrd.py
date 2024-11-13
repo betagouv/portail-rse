@@ -313,11 +313,15 @@ class CSRDReglementation(Reglementation):
         if reglementation_status := super().calculate_status(caracteristiques, user):
             return reglementation_status
 
-        rapport = rapport_csrd(
-            entreprise=caracteristiques.entreprise,
-            user=user,
-            annee=datetime.today().year,
-        )
+        try:
+            rapport = rapport_csrd(
+                entreprise=caracteristiques.entreprise,
+                user=user,
+                annee=datetime.today().year,
+            )
+        except ObjectDoesNotExist:
+            rapport = None
+
         if rapport and rapport.etape_validee:
             etape_suivante = EtapeCSRD.id_suivant(rapport.etape_validee)
             label_gestion_csrd = "Reprendre ma CSRD"
@@ -464,15 +468,16 @@ class CSRDReglementation(Reglementation):
 
 
 def rapport_csrd(user, entreprise, annee):
-    try:
-        habilitation = user.habilitation_set.get(entreprise=entreprise)
-        return RapportCSRD.objects.get(
-            entreprise=entreprise,
-            proprietaire=None if habilitation.is_confirmed else user,
-            annee=annee,
-        )
-    except ObjectDoesNotExist:
-        pass
+    """Cherche un RapportCSRD
+
+    Lève une exception si le RapportCSRD ou l'Habilitation n'existe pas
+    """
+    habilitation = user.habilitation_set.get(entreprise=entreprise)
+    return RapportCSRD.objects.get(
+        entreprise=entreprise,
+        proprietaire=None if habilitation.is_confirmed else user,
+        annee=annee,
+    )
 
 
 @login_required
@@ -548,8 +553,9 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
     annee = datetime.now().year
 
     if request.method == "POST":
-        csrd = rapport_csrd(request.user, entreprise, annee)
-        if not csrd:
+        try:
+            csrd = rapport_csrd(request.user, entreprise, annee)
+        except ObjectDoesNotExist:
             raise Http404
         csrd.etape_validee = EtapeCSRD.id_precedent(id_etape)
         csrd.save()
