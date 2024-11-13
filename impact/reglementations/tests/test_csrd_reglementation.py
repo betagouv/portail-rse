@@ -13,7 +13,6 @@ from conftest import CODE_SE
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
 from reglementations.enums import ESRS
-from reglementations.models import RapportCSRD
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.csrd import CSRDReglementation
 
@@ -2145,25 +2144,9 @@ def test_calcule_etat_si_soumis_en_2026_car_exercice_comptable_different_annee_c
     assert reglementation.prochaine_echeance == 2026
 
 
-def test_calcule_etat_avec_CSRD_initialisée(entreprise_factory, alice):
-    entreprise = entreprise_factory(
-        categorie_juridique_sirene=CODE_SA,
-        code_pays_etranger_sirene=None,
-        est_cotee=False,
-        appartient_groupe=False,
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
-    )
-    habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
-    RapportCSRD.objects.create(
-        entreprise=entreprise,
-        proprietaire=alice,
-        annee=date.today().year,
-    )
-
+def test_calcule_etat_avec_CSRD_initialisée(csrd, alice):
     reglementation = CSRDReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        csrd.entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
     assert (
@@ -2173,40 +2156,26 @@ def test_calcule_etat_avec_CSRD_initialisée(entreprise_factory, alice):
     assert reglementation.primary_action.url == reverse(
         "reglementations:gestion_csrd",
         kwargs={
-            "siren": entreprise.siren,
+            "siren": csrd.entreprise.siren,
             "id_etape": "introduction",
         },
     )
 
 
-def test_calcule_etat_avec_CSRD_et_étapes_validées(entreprise_factory, alice):
-    entreprise = entreprise_factory(
-        categorie_juridique_sirene=CODE_SA,
-        code_pays_etranger_sirene=None,
-        est_cotee=False,
-        appartient_groupe=False,
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
-    )
-    habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
+def test_calcule_etat_avec_CSRD_et_étapes_validées(csrd, alice):
     DEJA_VALIDEE = "selection-enjeux"
-    RapportCSRD.objects.create(
-        entreprise=entreprise,
-        proprietaire=alice,
-        annee=date.today().year,
-        etape_validee=DEJA_VALIDEE,
-    )
+    csrd.etape_validee = DEJA_VALIDEE
+    csrd.save()
 
     reglementation = CSRDReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        csrd.entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
     assert reglementation.primary_action.title == "Reprendre ma CSRD"
     assert reglementation.primary_action.url == reverse(
         "reglementations:gestion_csrd",
         kwargs={
-            "siren": entreprise.siren,
+            "siren": csrd.entreprise.siren,
             "id_etape": "analyse-materialite",
         },
     )
