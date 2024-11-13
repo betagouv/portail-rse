@@ -1,3 +1,5 @@
+from datetime import date
+
 import pytest
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -7,6 +9,7 @@ from habilitations.models import get_habilitation
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
 from reglementations.models import BDESEAvecAccord
+from reglementations.models import RapportCSRD
 
 
 # Empêche tous les tests de faire des appels api
@@ -55,6 +58,25 @@ def bdese_avec_accord(bdese_factory, entreprise_factory, alice):
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499, bdese_accord=True
     )
     return bdese_factory(bdese_class=BDESEAvecAccord, entreprise=entreprise, user=alice)
+
+
+@pytest.fixture
+def csrd(entreprise_factory, alice):
+    entreprise = entreprise_factory(
+        code_pays_etranger_sirene=None,
+        est_cotee=False,
+        appartient_groupe=False,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+    )
+    habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
+    csrd = RapportCSRD.objects.create(
+        entreprise=entreprise,
+        proprietaire=alice,
+        annee=date.today().year,
+    )
+    return csrd
 
 
 @pytest.fixture
