@@ -1,6 +1,4 @@
 from datetime import date
-from datetime import datetime
-from datetime import timezone
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -16,8 +14,6 @@ from api.exceptions import APIError
 from entreprises.forms import EntrepriseAttachForm
 from entreprises.forms import EntrepriseDetachForm
 from entreprises.forms import EntrepriseQualificationForm
-from entreprises.models import ActualisationCaracteristiquesAnnuelles
-from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from habilitations.models import attach_user_to_entreprise
 from habilitations.models import detach_user_from_entreprise
@@ -125,40 +121,10 @@ def qualification(request, siren):
         raise PermissionDenied
 
     if request.POST:
-        form = EntrepriseQualificationForm(data=request.POST)
+        form = EntrepriseQualificationForm(data=request.POST, entreprise=entreprise)
         if form.is_valid():
-            date_cloture_dernier_exercice = form.cleaned_data["date_cloture_exercice"]
-            entreprise.date_cloture_exercice = date_cloture_dernier_exercice
-            entreprise.est_cotee = form.cleaned_data["est_cotee"]
-            entreprise.est_interet_public = form.cleaned_data["est_interet_public"]
-            entreprise.appartient_groupe = form.cleaned_data["appartient_groupe"]
-            entreprise.est_societe_mere = form.cleaned_data["est_societe_mere"]
-            entreprise.societe_mere_en_france = form.cleaned_data[
-                "societe_mere_en_france"
-            ]
-            entreprise.comptes_consolides = form.cleaned_data["comptes_consolides"]
-            entreprise.date_derniere_qualification = datetime.now(tz=timezone.utc)
-            entreprise.save()
-            actualisation = ActualisationCaracteristiquesAnnuelles(
-                date_cloture_dernier_exercice,
-                form.cleaned_data["effectif"],
-                form.cleaned_data["effectif_permanent"],
-                form.cleaned_data["effectif_outre_mer"],
-                form.cleaned_data["effectif_groupe"],
-                form.cleaned_data["effectif_groupe_france"],
-                form.cleaned_data["effectif_groupe_permanent"],
-                form.cleaned_data["tranche_chiffre_affaires"],
-                form.cleaned_data["tranche_bilan"],
-                form.cleaned_data["tranche_chiffre_affaires_consolide"],
-                form.cleaned_data["tranche_bilan_consolide"],
-                form.cleaned_data["bdese_accord"],
-                form.cleaned_data["systeme_management_energie"],
-            )
-            caracteristiques = entreprise.actualise_caracteristiques(actualisation)
-            caracteristiques.save()
-            CaracteristiquesAnnuelles.objects.filter(
-                entreprise=entreprise, annee__gt=date_cloture_dernier_exercice.year
-            ).delete()
+            form.save()
+
             messages.success(
                 request, "Les informations de l'entreprise ont été mises à jour."
             )
@@ -206,11 +172,13 @@ def qualification(request, siren):
                     infos_entreprise["comptes_consolides"] = True
             except APIError:
                 infos_entreprise = {}
-            if not "date_cloture_exercice" in infos_entreprise:
+            if "date_cloture_exercice" not in infos_entreprise:
                 infos_entreprise[
                     "date_cloture_exercice"
                 ] = date_cloture_exercice_par_defaut
-        form = EntrepriseQualificationForm(initial=infos_entreprise)
+        form = EntrepriseQualificationForm(
+            initial=infos_entreprise, entreprise=entreprise
+        )
 
     return render(
         request,

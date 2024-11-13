@@ -3,7 +3,11 @@ from datetime import date
 
 from django import forms
 from django.core.exceptions import ValidationError
+from django.forms.fields import validators
+from django.utils.timezone import datetime
+from django.utils.timezone import timezone
 
+from .models import ActualisationCaracteristiquesAnnuelles
 from .models import CaracteristiquesAnnuelles
 from .models import Entreprise
 from utils.forms import DateInput
@@ -119,6 +123,11 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
         required=False,
         label=Entreprise.societe_mere_en_france.field.verbose_name,
     )
+    confirmation_naf = forms.CharField(
+        label="Code NAF/APE",
+        help_text="Merci de vérifier et confirmer le code APE de votre entreprise",
+        validators=[validators.RegexValidator(regex="^\d{2}\.\d{1,2}[A-Z]$")],
+    )
 
     class Meta:
         model = CaracteristiquesAnnuelles
@@ -152,7 +161,14 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        entreprise = kwargs.pop("entreprise", None)
+
         super().__init__(*args, **kwargs)
+
+        if entreprise:
+            self.entreprise = entreprise
+            self.fields["confirmation_naf"].initial = entreprise.code_NAF
+
         if "date_cloture_exercice" in self.initial and isinstance(
             self.initial["date_cloture_exercice"], date
         ):
@@ -247,6 +263,71 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
             self.cleaned_data["est_cotee"] = False
 
         return self.cleaned_data
+
+    def _update_entreprise(self):
+        if not self.entreprise:
+            raise ValidationError("Entreprise incorrecte")
+
+        self.entreprise.code_NAF = self.cleaned_data["confirmation_naf"]
+        self.entreprise.date_cloture_exercice = self.cleaned_data[
+            "date_cloture_exercice"
+        ]
+        self.entreprise.est_cotee = self.cleaned_data["est_cotee"]
+        self.entreprise.est_interet_public = self.cleaned_data["est_interet_public"]
+        self.entreprise.appartient_groupe = self.cleaned_data["appartient_groupe"]
+        self.entreprise.est_societe_mere = self.cleaned_data["est_societe_mere"]
+        self.entreprise.societe_mere_en_france = self.cleaned_data[
+            "societe_mere_en_france"
+        ]
+        self.entreprise.comptes_consolides = self.cleaned_data["comptes_consolides"]
+        self.entreprise.date_derniere_qualification = datetime.now(tz=timezone.utc)
+        self.entreprise.save()
+
+    def save(self, **_):
+        # On remplace la procédure de sauvegarde de l'objet par une personnalisée
+        # car il y a plusieurs étapes de constructions dans le modèle `Entreprise` :
+        # la sauvegarde ne peut être effectuée directement à partir des champs du formulaire
+
+        # et : normallement `save()` effectue un `clean()` avant d'effectuer des opérations en base
+        # on peut éventuellement s'en passer ici, si on a testé au préalable la validité du formulaire (dans la vue),
+        # mais dans le doute ...
+        if self.errors:
+            raise ValidationError(
+                "Impossible de sauvegarder : le formulaire contient des erreurs."
+            )
+
+        self.entreprise.actualise_caracteristiques(
+            ActualisationCaracteristiquesAnnuelles(
+                date_cloture_exercice=self.cleaned_data["date_cloture_exercice"],
+                effectif=self.cleaned_data["effectif"],
+                effectif_permanent=self.cleaned_data["effectif_permanent"],
+                effectif_outre_mer=self.cleaned_data["effectif_outre_mer"],
+                effectif_groupe=self.cleaned_data["effectif_groupe"],
+                effectif_groupe_france=self.cleaned_data["effectif_groupe_france"],
+                effectif_groupe_permanent=self.cleaned_data[
+                    "effectif_groupe_permanent"
+                ],
+                tranche_chiffre_affaires=self.cleaned_data["tranche_chiffre_affaires"],
+                tranche_bilan=self.cleaned_data["tranche_bilan"],
+                tranche_chiffre_affaires_consolide=self.cleaned_data[
+                    "tranche_chiffre_affaires_consolide"
+                ],
+                tranche_bilan_consolide=self.cleaned_data["tranche_bilan_consolide"],
+                bdese_accord=self.cleaned_data["bdese_accord"],
+                systeme_management_energie=self.cleaned_data[
+                    "systeme_management_energie"
+                ],
+            )
+        ).save()
+
+        # un peu de ménage dans les caractéristiques annuelles obsolètes
+        CaracteristiquesAnnuelles.objects.filter(
+            entreprise=self.entreprise,
+            annee__gt=self.cleaned_data["date_cloture_exercice"].year,
+        ).delete()
+
+        # enfin, on sauvegarde aussi les données de l'entreprise, le tout pour alléger la vue
+        self._update_entreprise()
 
 
 def est_superieur(effectif_1, effectif_2):

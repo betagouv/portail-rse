@@ -18,10 +18,12 @@
                 <h2>{{ entreprise.denomination }}</h2>
                 <p>
                     <span class="fr-tag">SIREN : {{ entreprise.siren }}</span>
+                    <span class="fr-tag">NAF/APE : {{ entreprise.secteur_principal }}</span>
                 </p>
 
                 <form class="fr-mt-6w" action="{% url 'entreprises:qualification' entreprise.siren %}" method="post">
                     {% csrf_token %}
+                    {% include 'snippets/field.html' with field=form.confirmation_naf %}
                     {% include 'snippets/field.html' with field=form.date_cloture_exercice %}
                     <fieldset class="fr-fieldset">
                         <legend class="fr-fieldset__legend">
