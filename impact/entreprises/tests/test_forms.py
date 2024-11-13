@@ -395,3 +395,41 @@ def test_transforme_la_valeur_initiale_de_date_cloture_exercice_en_format_affich
     form = EntrepriseQualificationForm(initial=initial)
 
     assert form.initial["date_cloture_exercice"] == "2022-12-31"
+
+
+@pytest.mark.parametrize(
+    "code,validates",
+    [
+        ("01.11Z", True),
+        ("01.1Z", True),
+        ("A1.11Z", False),
+        ("1111Z", False),
+        ("01.11", False),
+        ("", False),
+    ],
+)
+def test_validation_code_naf(code, validates):
+    data = {
+        "date_cloture_exercice": date(2022, 12, 31),
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        "est_cotee": True,
+        "est_interet_public": False,
+        "appartient_groupe": False,
+        "bdese_accord": True,
+        "systeme_management_energie": True,
+    }
+
+    form = EntrepriseQualificationForm(data=data)
+
+    assert (
+        not form.is_valid()
+    ), "Le code NAF/APE n'est pas fourni et le formulaire est valide"
+
+    data |= {"confirmation_naf": code}
+    form = EntrepriseQualificationForm(data=data)
+
+    assert form.is_valid() == validates, f"Validation incorrecte pour le code : {code}"
