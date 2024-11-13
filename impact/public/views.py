@@ -6,9 +6,9 @@ from django.core.mail import EmailMessage
 from django.shortcuts import redirect
 from django.shortcuts import render
 
+from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
-from entreprises.views import ActualisationCaracteristiquesAnnuelles
 from entreprises.views import get_current_entreprise
 from public.forms import ContactForm
 from public.forms import SimulationForm
