@@ -40,5 +40,13 @@
                 </ul>
             </div>
         </div>
+
+        {% if etape.id == "selection-enjeux" or etape.id == "analyse-materialite" %}
+            <div class="background-light-grey fr-p-3w fr-mt-1w">
+                <span class="fr-icon-lightbulb-fill fr-icon--blue"></span>
+                Comment réaliser une analyse de double matérialité ?
+                <a href="{% url 'reglementations:csrd_etape' entreprise.siren 1 0 %}" class="fr-link" target="_blank">Découvrir</a>
+            </div>
+        {% endif %}
     </nav>
 </div>
