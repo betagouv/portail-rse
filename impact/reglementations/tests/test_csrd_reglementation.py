@@ -12,7 +12,8 @@ from conftest import CODE_SCA
 from conftest import CODE_SE
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
-from reglementations.enums import ESRS
+from reglementations.enums import ThemeESRS
+from reglementations.enums import TitreESRS
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.csrd import CSRDReglementation
 
@@ -2182,12 +2183,12 @@ def test_calcule_etat_avec_CSRD_et_étapes_validées(csrd, alice):
 
 
 def test_themes_ESRS():
-    assert ESRS.theme("ESRS_E2") == "environnement"
-    assert ESRS.theme("ESRS_S3") == "social"
-    assert ESRS.theme("ESRS_G1") == "gouvernance"
+    assert ThemeESRS.ESRS_E2.value == "environnement"
+    assert ThemeESRS.ESRS_S3.value == "social"
+    assert ThemeESRS.ESRS_G1.value == "gouvernance"
 
 
 def test_titres_ESRS():
-    assert ESRS.titre("ESRS_E2") == "ESRS E2 - Pollution"
-    assert ESRS.titre("ESRS_S3") == "ESRS S3 - Communautés affectées"
-    assert ESRS.titre("ESRS_G1") == "ESRS G1 - Conduite des affaires"
+    assert TitreESRS.ESRS_E2.value == "ESRS E2 - Pollution"
+    assert TitreESRS.ESRS_S3.value == "ESRS S3 - Communautés affectées"
+    assert TitreESRS.ESRS_G1.value == "ESRS G1 - Conduite des affaires"

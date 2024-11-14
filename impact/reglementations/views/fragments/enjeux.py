@@ -15,6 +15,8 @@ from django.views.decorators.http import require_http_methods
 
 import utils.htmx as htmx
 from reglementations.enums import ESRS
+from reglementations.enums import ThemeESRS
+from reglementations.enums import TitreESRS
 from reglementations.forms.csrd import EnjeuxRapportCSRDForm
 from reglementations.forms.csrd import NouvelEnjeuCSRDForm
 from reglementations.models.csrd import Enjeu
@@ -188,8 +190,8 @@ def liste_enjeux_selectionnes(request, csrd_id):
             if enjeu.selection:
                 enjeux.append(enjeu)
         if enjeux:
-            theme = ESRS.theme(esrs)
-            titre = ESRS.titre(esrs)
+            theme = ThemeESRS[esrs].value
+            titre = TitreESRS[esrs].value
             enjeux_par_esg[theme][titre] = enjeux
     context = {"enjeux_par_esg": enjeux_par_esg}
 

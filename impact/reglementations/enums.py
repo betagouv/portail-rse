@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from dataclasses import field
+from enum import Enum
 
 import django.db.models as models
 
@@ -21,35 +22,31 @@ class ESRS(models.TextChoices):
 
     ESRS_G1 = "ESRS_G1"
 
-    @classmethod
-    def theme(cls, code):
-        return {
-            cls.ESRS_E1: "environnement",
-            cls.ESRS_E2: "environnement",
-            cls.ESRS_E3: "environnement",
-            cls.ESRS_E4: "environnement",
-            cls.ESRS_E5: "environnement",
-            cls.ESRS_S1: "social",
-            cls.ESRS_S2: "social",
-            cls.ESRS_S3: "social",
-            cls.ESRS_S4: "social",
-            cls.ESRS_G1: "gouvernance",
-        }[code]
 
-    @classmethod
-    def titre(cls, code):
-        return {
-            cls.ESRS_E1: "ESRS E1 - Changement climatique",
-            cls.ESRS_E2: "ESRS E2 - Pollution",
-            cls.ESRS_E3: "ESRS E3 - Eau et ressources marines",
-            cls.ESRS_E4: "ESRS E4 - Biodiversité et écosystèmes",
-            cls.ESRS_E5: "ESRS E5 - Utilisation des ressources et économie circulaire",
-            cls.ESRS_S1: "ESRS S1 - Personnel de l'entreprise",
-            cls.ESRS_S2: "ESRS S2 - Travailleurs de la chaîne de valeur",
-            cls.ESRS_S3: "ESRS S3 - Communautés affectées",
-            cls.ESRS_S4: "ESRS S4 - Consommateurs et utilisateurs finaux",
-            cls.ESRS_G1: "ESRS G1 - Conduite des affaires",
-        }[code]
+class ThemeESRS(Enum):
+    ESRS_E1 = "environnement"
+    ESRS_E2 = "environnement"
+    ESRS_E3 = "environnement"
+    ESRS_E4 = "environnement"
+    ESRS_E5 = "environnement"
+    ESRS_S1 = "social"
+    ESRS_S2 = "social"
+    ESRS_S3 = "social"
+    ESRS_S4 = "social"
+    ESRS_G1 = "gouvernance"
+
+
+class TitreESRS(Enum):
+    ESRS_E1 = "ESRS E1 - Changement climatique"
+    ESRS_E2 = "ESRS E2 - Pollution"
+    ESRS_E3 = "ESRS E3 - Eau et ressources marines"
+    ESRS_E4 = "ESRS E4 - Biodiversité et écosystèmes"
+    ESRS_E5 = "ESRS E5 - Utilisation des ressources et économie circulaire"
+    ESRS_S1 = "ESRS S1 - Personnel de l'entreprise"
+    ESRS_S2 = "ESRS S2 - Travailleurs de la chaîne de valeur"
+    ESRS_S3 = "ESRS S3 - Communautés affectées"
+    ESRS_S4 = "ESRS S4 - Consommateurs et utilisateurs finaux"
+    ESRS_G1 = "ESRS G1 - Conduite des affaires"
 
 
 @dataclass
