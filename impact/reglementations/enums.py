@@ -416,11 +416,13 @@ ETAPES_CSRD = [
     EtapeCSRD(id="introduction", nom="Introduction"),
     EtapeCSRD(
         id="analyse-double-mat",
-        nom="L’analyse de double matérialité",
+        nom="Analyser la double matérialité",
         sous_etapes=[
-            EtapeCSRD(id="selection-enjeux", nom="Liste des enjeux ESG"),
             EtapeCSRD(
-                id="analyse-materialite", nom="Analyse de la matérialité des enjeux ESG"
+                id="selection-enjeux", nom="Identifier la liste de ses enjeux ESG"
+            ),
+            EtapeCSRD(
+                id="analyse-materialite", nom="Sélectionner les enjeux ESG matériels"
             ),
         ],
     ),
