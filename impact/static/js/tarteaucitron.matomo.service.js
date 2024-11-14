@@ -106,6 +106,8 @@ tarteaucitron.services.matomocloudbeta = {
 
     window._paq = window._paq || [];
     window._paq.push(["requireConsent"]);
+    // les pages vues seront toujours trackées  :
+    window._paq.push(["setConsentGiven"]);
     window._paq.push(["setSiteId", tarteaucitron.user.matomoId]);
     window._paq.push([
       "setTrackerUrl",
