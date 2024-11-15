@@ -35,6 +35,7 @@
                                             {% with caracs=entreprise.dernieres_caracteristiques_qualifiantes|default:entreprise.dernieres_caracteristiques %}
                                                 {% if habilitation and habilitation.fonctions %}en tant que {{ habilitation.fonctions }}{% endif %}<br>
                                                 SIREN : <b>{{ entreprise.siren }}</b><br>
+                                                Code NAF/APE : <b>{{ entreprise.code_NAF }}</b> ({{ entreprise.secteur_principal }})<br>
                                                 Domiciliation : <b>{% if entreprise.code_pays_etranger_sirene and entreprise.est_hors_EEE %}hors Espace Economique Européen{% else %}dans l'Espace Economique Européen{% endif %}</b><br>
                                                 {% if entreprise.categorie_juridique and entreprise.categorie_juridique.label %}
                                                     Catégorie juridique : <b>{{ entreprise.categorie_juridique.label }}</b><br>
