@@ -1,17 +1,24 @@
 from dataclasses import dataclass
 from datetime import date
+from datetime import datetime
 from enum import Enum
 from enum import unique
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
+from django.utils import timezone
 
 from utils.codes_naf import CODES_NAF
 from utils.models import TimestampedModel
 from utils.pays import CODES_PAYS_ETRANGER_SIRENE
 
 DENOMINATION_MAX_LENGTH = 250
+
+# Requalification de l'entreprise :
+# les données de l'entreprise doivent être vérifiées
+# si aucune MàJ n'a eu lieu après cette date.
+DATE_REQUALIFICATION = timezone.make_aware(datetime.strptime("2024-11-15", "%Y-%m-%d"))
 
 
 @dataclass
@@ -506,6 +513,8 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     def sont_qualifiantes(self):
         return bool(
             self.date_cloture_exercice
+            and self.entreprise.code_NAF
+            and self.entreprise.updated_at > DATE_REQUALIFICATION
             and self.effectif
             and self.effectif_outre_mer
             and self.effectif_permanent

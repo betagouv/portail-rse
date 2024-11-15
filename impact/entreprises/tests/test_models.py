@@ -63,6 +63,7 @@ def test_caracteristiques_sont_qualifiantes_avec_groupe(
     entreprise_non_qualifiee.est_societe_mere = None
     entreprise_non_qualifiee.societe_mere_en_france = None
     entreprise_non_qualifiee.comptes_consolides = None
+    entreprise_non_qualifiee.code_NAF = None
 
     caracteristiques = CaracteristiquesAnnuelles(
         entreprise=entreprise_non_qualifiee,
@@ -116,7 +117,7 @@ def test_caracteristiques_sont_qualifiantes_avec_groupe(
     entreprise_non_qualifiee.est_societe_mere = False
 
     assert caracteristiques.groupe_est_qualifie
-    assert caracteristiques.sont_qualifiantes
+    assert not caracteristiques.sont_qualifiantes
 
     entreprise_non_qualifiee.comptes_consolides = True
 
@@ -131,13 +132,28 @@ def test_caracteristiques_sont_qualifiantes_avec_groupe(
     )
 
     assert caracteristiques.groupe_est_qualifie
+    assert not caracteristiques.sont_qualifiantes
+
+    entreprise_non_qualifiee.code_NAF = "11.11Z"
+
+    assert caracteristiques.groupe_est_qualifie
     assert caracteristiques.sont_qualifiantes
+
+    with freeze_time("2024-11-14"):
+        # la date de dernière modification avant la date de "requalification" :
+        # les caractéristiques ne doivent pas être qualifiantes.
+        entreprise_non_qualifiee.save()
+
+        assert (
+            not caracteristiques.sont_qualifiantes
+        ), "non qualifiée : MaJ de l'entreprise antérieure à la date de requalification"
 
 
 def test_caracteristiques_sont_qualifiantes_sans_groupe(
     entreprise_non_qualifiee,
 ):
     entreprise_non_qualifiee.appartient_groupe = False
+    entreprise_non_qualifiee.code_NAF = None
 
     caracteristiques = CaracteristiquesAnnuelles(
         entreprise=entreprise_non_qualifiee,
@@ -187,7 +203,20 @@ def test_caracteristiques_sont_qualifiantes_sans_groupe(
 
     caracteristiques.systeme_management_energie = True
 
+    assert not caracteristiques.sont_qualifiantes
+
+    entreprise_non_qualifiee.code_NAF = "11.11Z"
+
     assert caracteristiques.sont_qualifiantes
+
+    with freeze_time("2024-11-14"):
+        # la date de dernière modification avant la date de "requalification" :
+        # les caractéristiques ne doivent pas être qualifiantes.
+        entreprise_non_qualifiee.save()
+
+        assert (
+            not caracteristiques.sont_qualifiantes
+        ), "non qualifiée : MaJ de l'entreprise antérieure à la date de requalification"
 
 
 @pytest.mark.django_db(transaction=True)

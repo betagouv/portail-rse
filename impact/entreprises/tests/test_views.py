@@ -426,12 +426,10 @@ def test_page_de_qualification_avec_des_caracteristiques_non_qualifiantes_initia
 
 
 def test_qualifie_entreprise_appartenant_a_un_groupe(
-    client,
-    alice,
-    entreprise_non_qualifiee,
-    mock_api_egapro,
+    client, alice, entreprise_non_qualifiee, mock_api_egapro, date_requalification
 ):
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+
     client.force_login(alice)
     data = {
         "confirmation_naf": "11.11C",
@@ -646,7 +644,7 @@ def test_qualification_supprime_les_caracteristiques_annuelles_posterieures_a_la
     }
 
     url = f"/entreprises/{entreprise.siren}"
-    response = client.post(url, data=data)
+    client.post(url, data=data)
 
     assert not entreprise.caracteristiques_annuelles(date_cloture_dernier_exercice.year)
     assert entreprise.caracteristiques_annuelles(date_cloture_dernier_exercice.year - 1)
