@@ -28,6 +28,9 @@ tarteaucitron.services.matomocloudbeta = {
       return;
     }
 
+    // Dans cette partie l'utilisateur a accepté les cookies Matomo :
+    // le tracking et la heatmap sont activés
+
     window._paq = window._paq || [];
     window._paq.push(["requireConsent"]);
     window._paq.push(["setConsentGiven"]);
@@ -38,9 +41,10 @@ tarteaucitron.services.matomocloudbeta = {
     ]);
     window._paq.push(["enableLinkTracking"]);
     window._paq.push(["setExcludedQueryParams", ["simulationId", "_csrf"]]);
+
     // L'utilisation des heatmaps nécessite un consentement,
     // car utilisant un cookie pour identifier l'utilisateur.
-    window._paq.push(["HeatmapSessionRecording::enable"]);
+    window._paq.push(["HeatmapSessionRecording.enable"]);
 
     if (tarteaucitron.user.matomoDontTrackPageView !== true) {
       window._paq.push(["trackPageView"]);
@@ -81,6 +85,7 @@ tarteaucitron.services.matomocloudbeta = {
 
       // make Matomo cookie accessible by getting tracker
       Matomo.getTracker();
+      Matomo.HeatmapSessionRecording.enable();
 
       // looping through cookies
       var theCookies = document.cookie.split(";");
@@ -116,6 +121,7 @@ tarteaucitron.services.matomocloudbeta = {
     window._paq.push(["trackPageView"]);
     window._paq.push(["enableLinkTracking"]);
     window._paq.push(["setExcludedQueryParams", ["simulationId", "_csrf"]]);
+    window._paq.push(["HeatmapSessionRecording.disable"]);
 
     if (
       tarteaucitron.user.matomoCustomJSPath === undefined ||
