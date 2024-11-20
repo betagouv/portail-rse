@@ -185,6 +185,21 @@ class EnjeuQuerySet(models.QuerySet):
     def modifiables(self):
         return self.filter(modifiable=True)
 
+    def materiels(self):
+        return self.filter(materiel=True)
+
+    def non_materiels(self):
+        return self.filter(materiel=False)
+
+    def environnement(self):
+        return self.filter(esrs__startswith="ESRS_E")
+
+    def social(self):
+        return self.filter(esrs__startswith="ESRS_S")
+
+    def gouvernance(self):
+        return self.filter(esrs__startswith="ESRS_G")
+
 
 class Enjeu(TimestampedModel):
     rapport_csrd = models.ForeignKey(
@@ -207,6 +222,11 @@ class Enjeu(TimestampedModel):
         verbose_name="enjeu modifiable par l'utilisateur", default=True
     )
     selection = models.BooleanField(verbose_name="selectionné", default=False)
+
+    # l'utilisateur doit explicitement selectionner l'enjeu comme enjeu matériel (nullable)
+    materiel = models.BooleanField(
+        verbose_name="sélectionné comme enjeu matériel", null=True
+    )
 
     class Meta:
         verbose_name = "enjeu ESRS"
