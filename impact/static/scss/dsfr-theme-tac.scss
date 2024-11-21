@@ -1114,5 +1114,9 @@ ul[style="display: block;"] .tarteaucitronLine{
   outline: 2px solid;
   outline-color: var(--focus);
   outline-offset: 2px;
-  z-index: var(--focus-z-index); 
+  z-index: var(--focus-z-index);
+}
+
+.tac_visually-hidden {
+  display: none;
 }
