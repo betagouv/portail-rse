@@ -191,6 +191,9 @@ class EnjeuQuerySet(models.QuerySet):
     def non_materiels(self):
         return self.filter(materiel=False)
 
+    def non_analyses(self):
+        return self.filter(materiel__isnull=True)
+
     def environnement(self):
         return self.filter(esrs__startswith="ESRS_E")
 
