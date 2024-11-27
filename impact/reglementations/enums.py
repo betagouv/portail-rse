@@ -385,7 +385,12 @@ class EtapeCSRD:
     id: str
     nom: str
     sous_etapes: dict = field(default_factory=dict)
-    ETAPES_VALIDABLES = ["introduction", "selection-enjeux", "analyse-materialite"]
+    ETAPES_VALIDABLES = [
+        "introduction",
+        "selection-enjeux",
+        "analyse-materialite",
+        "collection-donnees-entreprise",
+    ]
 
     @classmethod
     def id_precedent(cls, id_etape):
@@ -407,6 +412,7 @@ class EtapeCSRD:
             for sous_etape in etape.sous_etapes:
                 if sous_etape.id == id_etape:
                     return sous_etape
+        raise Exception(f"Étape CSRD inconnue : {id_etape}")
 
 
 ETAPES_CSRD = [
@@ -422,5 +428,9 @@ ETAPES_CSRD = [
                 id="analyse-materialite", nom="Sélectionner les enjeux ESG matériels"
             ),
         ],
+    ),
+    EtapeCSRD(
+        id="collection-donnees-entreprise",
+        nom="Collecter les données de son entreprise",
     ),
 ]
