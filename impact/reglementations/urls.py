@@ -109,6 +109,11 @@ urlpatterns = [
         name="gestion_csrd",
     ),
     path("csrd/<str:siren>/enjeux.xlsx", views.csrd.enjeux_xlsx, name="enjeux_xlsx"),
+    path(
+        "csrd/<str:siren>/enjeux_materiels.xlsx",
+        views.csrd.enjeux_materiels_xlsx,
+        name="enjeux_materiels_xlsx",
+    ),
 ]
 
 # Fragments HTMX
