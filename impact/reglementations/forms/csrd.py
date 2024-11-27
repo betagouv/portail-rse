@@ -1,4 +1,5 @@
 from django import forms
+from django.forms.widgets import RadioSelect
 
 from reglementations.models.csrd import Enjeu
 from reglementations.models.csrd import RapportCSRD
@@ -89,3 +90,31 @@ class NouvelEnjeuCSRDForm(forms.ModelForm):
             nom=self.cleaned_data["titre"],
             description=self.cleaned_data["details"].strip(),
         ).save()
+
+
+class EnjeuxMaterielsRapportCSRDForm(forms.Form):
+    """
+    Formulaire permettant de modifier la matérialité des enjeux :
+     - pas de ModelForm : il est beaucoup plus facile de travailler directement sur un queryset,
+     - pas de widget custom : les radios sont directement affichés dans le gabarit (et l'implémentation de la widget s'avérait difficile à lire).
+    """
+
+    def __init__(self, *args, qs=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if qs:
+            self.qs = qs
+            for enjeu in qs:
+                self.fields[f"enjeu_{enjeu.pk}"] = forms.NullBooleanField(
+                    label=enjeu.nom,
+                    help_text="enjeu personnel" if enjeu.modifiable else None,
+                    required=False,
+                    initial=enjeu.materiel,
+                    widget=RadioSelect(
+                        choices=[(True, "Matériel"), (False, "Non-matériel")]
+                    ),
+                )
+
+    def save(self):
+        for enjeu in self.qs:
+            enjeu.materiel = self.cleaned_data[f"enjeu_{enjeu.pk}"]
+            enjeu.save()
