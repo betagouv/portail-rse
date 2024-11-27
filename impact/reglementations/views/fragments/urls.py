@@ -6,6 +6,11 @@ from .enjeux import liste_enjeux_selectionnes
 from .enjeux import rafraichissement_esg
 from .enjeux import selection_enjeux
 from .enjeux import suppression_enjeu
+from .enjeux_materiels import liste_enjeux_materiels
+from .enjeux_materiels import selection_enjeux_materiels
+from reglementations.views.fragments.enjeux_materiels import (
+    rafraichissement_enjeux_materiels,
+)
 
 urlpatterns = [
     path(
@@ -37,5 +42,21 @@ urlpatterns = [
         "csrd/fragments/rafraichissement_esg/<int:csrd_id>",
         rafraichissement_esg,
         name="rafraichissement_esg",
+    ),
+    # sélection enjeux matériels :
+    path(
+        "csrd/fragments/rafraichissement_enjeux_materiels/<int:csrd_id>",
+        rafraichissement_enjeux_materiels,
+        name="rafraichissement_enjeux_materiels",
+    ),
+    path(
+        "csrd/fragments/selection_enjeux_materiels/<int:csrd_id>/<str:esrs>",
+        selection_enjeux_materiels,
+        name="selection_enjeux_materiels",
+    ),
+    path(
+        "csrd/fragments/liste_enjeux_materiels/<int:csrd_id>",
+        liste_enjeux_materiels,
+        name="liste_enjeux_materiels",
     ),
 ]

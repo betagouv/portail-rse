@@ -7,17 +7,61 @@
     {% include "snippets/csrd_header.html" %}
 
     <div class="fr-container fr-mb-8w">
-        <div class="fr-grid-row">
+        <div class="fr-grid-row fr-pb-6w">
             {% include "snippets/gestion_csrd_menu.html" %}
 
             <div class="fr-col">
                 <h2>Analyser la double matérialité</h2>
                 <h3>{{ etape.nom }}</h3>
                 <p>
-                    Vous allez bientôt pouvoir déterminer la matérialité des enjeux sélectionnés.
+                    Sélectionner les enjeux ESG qui ressortent comme matériels ou non après avoir évalué vos enjeux à analyser.
                 </p>
+                <p>
+                    <a href="{% url "reglementations:csrd_sous_etape" entreprise.siren 1 3 0 %}">En savoir plus sur l'évaluation des enjeux</a>
+                </p>
+
+                <div id="nb-enjeux-non-analyses">
+			<!-- OOB -->
+                </div>
+
+                <div class="fr-container fr-pb-4w">
+                    <div class="fr-grid-row">
+                        <div class="fr-col-12 fr-col-offset-8">
+
+                            <div id="download-enjeux-materiels">
+				<!-- OOB -->
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+		<!-- Onglet etape sélection des enjeux -->
+        <div class="fr-tabs">
+            <ul class="fr-tabs__list fr-tabs__list--justify" role="tablist" aria-label="onglet-etape-2">
+                <li role="presentation">
+                    <button id="bouton-onglet-selection-enjeux-materiels" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="0" role="tab" aria-selected="true" aria-controls="onglet-selection-enjeux-materiels" hx-get="{% url 'reglementations:rafraichissement_enjeux_materiels' csrd.pk %}" hx-target="#esg_container" hx-trigger="click from:.fr-btn--close, click from:#bouton-onglet-selection-enjeux-materiels, load">Sélectionner les enjeux ESG matériels</button>
+                </li>
+                <li role="presentation">
+                    <button id="tabpanel-liste-enjeux-materiels" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="-1" role="tab" aria-selected="false" aria-controls="onglet-liste-enjeux-materiels" hx-get="{% url 'reglementations:liste_enjeux_materiels' csrd.pk %}" hx-target="#onglet-liste-enjeux-materiels">Ma liste d'enjeux matériels</button>
+                </li>
+            </ul>
+            <div id="onglet-selection-enjeux-materiels" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel" aria-labelledby="onglet-selection-enjeux-materiels" tabindex="0">
+                <div class="fr-container fr-pb-6w" id="esg_container"></div>
+            </div>
+            <div id="onglet-liste-enjeux-materiels" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-liste-enjeux-materiels" tabindex="0">
+                <h4>Enjeux sélectionnés</h4>
             </div>
         </div>
     </div>
+
+
+    <p>
+        {% include "snippets/csrd_submit.html" with prochaine_etape="collection-donnees-entreprise" %}
+    </p>
+
     <!-- page gestion CSRD -->
 {% endblock %}

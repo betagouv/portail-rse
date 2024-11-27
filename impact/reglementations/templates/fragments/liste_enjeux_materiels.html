@@ -1,0 +1,145 @@
+<!-- Liste des enjeux matériels -->
+<div class="fr-grid-row fr-grid-row--gutters esrs-organizer">
+
+    <!-- Environnement -->
+    <div class="fr-col-lg-4 fr-col-12">
+        <div class="esrs-organizer--container esrs-organizer--env">
+            <div class="esrs-organizer--header">
+                <h4 class="esrs-organizer--title">Environnement</h4>
+            </div>
+            <div class="esrs-organizer--content">
+                {% if enjeux_environnement %}
+                    {% for enjeux_par_esrs in enjeux_environnement %}
+                        <div class="esrs-organizer--esrs">
+                            <div class="esrs-organizer--card">
+                                <div class="esrs-organizer--card-title">
+                                    <b>{{ enjeux_par_esrs.titre }}</b>
+                                </div>
+                                <div class="esrs-organizer--content">
+                                    {% if enjeux_par_esrs.enjeux %}
+                                        {% if enjeux_par_esrs.nb_materiels %}
+                                            <ul>
+                                                {% for enjeu in enjeux_par_esrs.enjeux %}
+                                                    {% if enjeu.materiel %}
+                                                        <li>
+                                                            {{ enjeu.nom }} {% if enjeu.modifiable %}<span class="fr-badge fr-badge--sm fr-badge--blue-ecume">Enjeu personnel</span> {% endif %}
+                                                        </li>
+                                                    {% endif %}
+                                                {% endfor %}
+                                        {% else %}
+                                            <p class="fr-p-2v">Aucun enjeu matériel</p>
+                                        {% endif %}
+                                        </ul>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="esrs-organizer--esrs">
+                        <div class="esrs-organizer--card">
+                            <div class="esrs-organizer--card-title">
+                                Aucun enjeu selectionné
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Social -->
+    <div class="fr-col-lg-4 fr-col-12">
+        <div class="esrs-organizer--container esrs-organizer--social">
+            <div class="esrs-organizer--header">
+                <h4 class="esrs-organizer--title">Social</h4>
+            </div>
+            <div class="esrs-organizer--content">
+                {% if enjeux_social %}
+                    {% for enjeux_par_esrs in enjeux_social %}
+                        <div class="esrs-organizer--esrs">
+                            <div class="esrs-organizer--card">
+                                <div class="esrs-organizer--card-title">
+                                    <b>{{ enjeux_par_esrs.titre }}</b>
+                                </div>
+                                <div class="esrs-organizer--content">
+                                    {% if enjeux_par_esrs.enjeux %}
+                                        {% if enjeux_par_esrs.nb_materiels %}
+                                            <ul>
+                                                {% for enjeu in enjeux_par_esrs.enjeux %}
+                                                    {% if enjeu.materiel %}
+                                                        <li>
+                                                            {{ enjeu.nom }} {% if enjeu.modifiable %}<span class="fr-badge fr-badge--sm fr-badge--blue-ecume">Enjeu personnel</span> {% endif %}
+                                                        </li>
+                                                    {% endif %}
+                                                {% endfor %}
+                                        {% else %}
+                                            <p class="fr-p-2v">Aucun enjeu matériel</p>
+                                        {% endif %}
+                                        </ul>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="esrs-organizer--esrs">
+                        <div class="esrs-organizer--card">
+                            <div class="esrs-organizer--card-title">
+                                Aucun enjeu selectionné
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Gouvernance -->
+    <div class="fr-col-lg-4 fr-col-12">
+        <div class="esrs-organizer--container esrs-organizer--gov">
+            <div class="esrs-organizer--header">
+                <h4 class="esrs-organizer--title">Gouvernance</h4>
+            </div>
+            <div class="esrs-organizer--content">
+                {% if enjeux_gouvernance %}
+                    {% for enjeux_par_esrs in enjeux_gouvernance %}
+                        <div class="esrs-organizer--esrs">
+                            <div class="esrs-organizer--card">
+                                <div class="esrs-organizer--card-title">
+                                    <b>{{ enjeux_par_esrs.titre }}</b>
+                                </div>
+                                <div class="esrs-organizer--content">
+                                    {% if enjeux_par_esrs.enjeux %}
+                                        {% if enjeux_par_esrs.nb_materiels %}
+                                            <ul>
+                                                {% for enjeu in enjeux_par_esrs.enjeux %}
+                                                    {% if enjeu.materiel %}
+                                                        <li>
+                                                            {{ enjeu.nom }} {% if enjeu.modifiable %}<span class="fr-badge fr-badge--sm fr-badge--blue-ecume">Enjeu personnel</span> {% endif %}
+                                                        </li>
+                                                    {% endif %}
+                                                {% endfor %}
+                                        {% else %}
+                                            <p class="fr-p-2v">Aucun enjeu matériel</p>
+                                        {% endif %}
+                                        </ul>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="esrs-organizer--esrs">
+                        <div class="esrs-organizer--card">
+                            <div class="esrs-organizer--card-title">
+                                Aucun enjeu selectionné
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
