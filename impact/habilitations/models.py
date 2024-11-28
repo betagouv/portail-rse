@@ -10,6 +10,7 @@ from reglementations.models import get_all_personal_bdese
 from reglementations.models import has_official_bdese
 from utils.models import TimestampedModel
 
+FONCTIONS_MIN_LENGTH = 3
 FONCTIONS_MAX_LENGTH = 250
 
 
