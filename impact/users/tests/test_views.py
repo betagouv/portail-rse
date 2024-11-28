@@ -10,6 +10,8 @@ from freezegun import freeze_time
 
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
+from habilitations.models import FONCTIONS_MAX_LENGTH
+from habilitations.models import FONCTIONS_MIN_LENGTH
 from habilitations.models import get_habilitation
 from users.models import User
 from utils.tokens import make_token
@@ -203,6 +205,46 @@ def test_fail_to_confirm_email_due_to_invalid_user(client, alice):
 
     alice.refresh_from_db()
     assert not alice.is_email_confirmed
+
+
+def test_echec_de_creation_car_fonctions_trop_courte(client, db):
+    data = {
+        "prenom": "Alice",
+        "nom": "User",
+        "email": "user@domaine.test",
+        "password2": "Passw0rd!123",
+        "password1": "Passw0rd!123",
+        "siren": "130025265",  #  Dinum
+        "acceptation_cgu": "checked",
+        "reception_actualites": "checked",
+        "fonctions": "A" * (FONCTIONS_MIN_LENGTH - 1),
+    }
+
+    response = client.post("/creation", data=data, follow=True)
+
+    assert response.status_code == 200
+    assert not User.objects.filter(email="user@domaine.test")
+    assert not Entreprise.objects.filter(siren="123456789")
+
+
+def test_echec_de_creation_car_fonctions_trop_longue(client, db):
+    data = {
+        "prenom": "Alice",
+        "nom": "User",
+        "email": "user@domaine.test",
+        "password2": "Passw0rd!123",
+        "password1": "Passw0rd!123",
+        "siren": "130025265",  #  Dinum
+        "acceptation_cgu": "checked",
+        "reception_actualites": "checked",
+        "fonctions": "A" * (FONCTIONS_MAX_LENGTH + 1),
+    }
+
+    response = client.post("/creation", data=data, follow=True)
+
+    assert response.status_code == 200
+    assert not User.objects.filter(email="user@domaine.test")
+    assert not Entreprise.objects.filter(siren="123456789")
 
 
 def test_account_page_is_not_public(client):
