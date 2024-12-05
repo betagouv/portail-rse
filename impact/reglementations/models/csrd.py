@@ -53,7 +53,7 @@ class RapportCSRD(TimestampedModel):
         indexes = [models.Index(fields=["annee"])]
 
     def __str__(self):
-        return f"CRSD {self.annee} - {self.entreprise}"
+        return f"CSRD {self.annee} - {self.entreprise}"
 
     def _init_enjeux(self):
         # ajoute les enjeux "réglementés" lors de la création de l'instance
