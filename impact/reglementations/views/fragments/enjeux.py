@@ -1,6 +1,7 @@
 """
 Fragments HTMX pour la sélection des enjeux par ESRS
 """
+import logging
 from functools import wraps
 
 from django.contrib.auth.decorators import login_required
@@ -26,6 +27,10 @@ from reglementations.models.csrd import RapportCSRD
 Vues de fragments HTMX :
     Optimisation du format et de la taille des réponses.
 """
+
+# Il est utile d'avoir un logger pour les fragments HTMX,
+# si on veut avoir une trace des erreurs de formulaires par ex.
+logger = logging.getLogger(__name__)
 
 
 def csrd_required(function):
@@ -61,7 +66,6 @@ def enjeu_required(function):
 @require_http_methods(["GET", "POST"])
 def selection_enjeux(request, csrd_id, esrs):
     csrd = RapportCSRD.objects.get(id=csrd_id)
-
     context = {"csrd": csrd}
 
     if request.method == "GET":
@@ -76,6 +80,10 @@ def selection_enjeux(request, csrd_id, esrs):
 
     if form.is_valid():
         form.save()
+    else:
+        # pas de retour d'erreurs de formulaire :
+        # les erreurs peuvent être "silencieuses"
+        logger.error("Erreur(s) lors du traitement du formulaire : %s", form.errors)
 
     return render(
         request,
@@ -122,6 +130,8 @@ def creation_enjeu(request, csrd_id, esrs):
         )
     else:
         # cas 3 : erreurs dans le formulaire, on reste sur le fragment
+        logger.error("Erreur(s) lors du traitement du formulaire : %s", form.errors)
+
         return render(request, template, context=context | {"form": form})
 
 

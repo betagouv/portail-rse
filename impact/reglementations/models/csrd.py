@@ -89,19 +89,22 @@ class RapportCSRD(TimestampedModel):
         # La vérification du rapport officiel pourrait être faite par une contrainte (complexe)
         # en base de données, mais le fait d'utiliser une validation métier vérifiable
         # à tout moment est plus simple et plus lisible.
-        already_exists = RapportCSRD.objects.filter(
+        rapport_officiel = RapportCSRD.objects.filter(
             proprietaire=None, entreprise=self.entreprise
-        ).exists()
+        )
 
-        if not self.proprietaire and already_exists:
+        # éviter la duplication avec le rapport officiel existant
+        if not self.pk and not self.proprietaire and rapport_officiel.exists():
             raise ValidationError(
                 "Il existe déjà un rapport CSRD officiel pour cette entreprise"
             )
 
-        if self.pk and already_exists and self.proprietaire:
-            raise ValidationError(
-                "Impossible de modifier le rapport CSRD officiel en rapport personnel"
-            )
+        # éviter de transformer un rapport personnel en rapport principal
+        if self.pk and self.proprietaire and rapport_officiel.exists():
+            if rapport_officiel.first().pk == self.pk:
+                raise ValidationError(
+                    "Impossible de modifier le rapport CSRD officiel en rapport personnel"
+                )
 
     def save(self, *args, **kwargs):
         # on vérifie si les enjeux réglementaires doivent être ajoutés
