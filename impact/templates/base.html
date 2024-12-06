@@ -58,7 +58,7 @@
                                         <li><a class="fr-btn fr-tool-link fr-icon-mail-fill" href="{% url 'contact' %}">Contactez-nous</a></li>
                                         {% url 'simulation' as url_simulation %}
                                         {% if url_simulation not in request.path and not user.is_authenticated %}
-                                            <li><a class="fr-btn fr-tool-link fr-icon-file-text-fill" href="{% url 'reglementations' %}">Fiches réglementaires RSE</a></li>
+                                            <li><a class="fr-btn fr-tool-link fr-icon-file-text-fill" href="https://portail-rse.beta.gouv.fr/fiches-reglementaires">Fiches réglementaires RSE</a></li>
                                         {% endif %}
 
                                         {% if user.is_authenticated %}
