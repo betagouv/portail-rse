@@ -541,7 +541,7 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
     template_name = f"reglementations/csrd/etape-{id_etape}.html"
     try:
         template = get_template(template_name)
-    except TemplateDoesNotExist as e:
+    except TemplateDoesNotExist:
         raise Http404
 
     # En analysant un peu les requêtes exécutées,
@@ -578,6 +578,17 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
         "steps": ETAPES_CSRD,
     }
 
+    match EtapeCSRD.get(id_etape).id:
+        ## légèrement plus lisible qu'un `if`
+        case "collection-donnees-entreprise":
+            nb_enjeux_non_analyses = csrd.enjeux.selectionnes().non_analyses().count()
+            context |= {
+                "can_download": nb_enjeux_non_analyses
+                != csrd.enjeux.selectionnes().count(),
+                "nb_enjeux_non_analyses": nb_enjeux_non_analyses,
+            }
+        # à compléter au besoin
+
     return HttpResponse(template.render(context, request))
 
 
@@ -602,15 +613,36 @@ def csrd_required(function):
 @login_required
 @csrd_required
 def enjeux_xlsx(request, siren, csrd=None):
+    return _build_xlsx(csrd.enjeux, csrd=csrd)
+
+
+@login_required
+@csrd_required
+def enjeux_materiels_xlsx(request, siren, csrd=None):
+    return _build_xlsx(csrd.enjeux, csrd=csrd, materiels=True)
+
+
+def _build_xlsx(enjeux, csrd=None, materiels=False):
+    # construit le fichier XLS pour :
+    # - les enjeux sélectionnés
+    # - les enjeux analysés (matériels ou non)
     workbook = Workbook()
     worksheet = workbook.active
     worksheet["A1"] = "ESRS"
     worksheet["B1"] = "Enjeux de durabilité"
     worksheet["C1"] = "Descriptif"
     worksheet["D1"] = "Origine"
+
+    if materiels:
+        worksheet["E1"] = "Materialité"
+
     numero_ligne = 2
     for esrs in ESRS:
         enjeux = csrd.enjeux_par_esrs(esrs)
+
+        if materiels:
+            enjeux = enjeux.filter(materiel__isnull=False)
+
         for enjeu in enjeux:
             if enjeu.selection:
                 worksheet[f"A{numero_ligne}"] = enjeu.esrs
@@ -619,15 +651,24 @@ def enjeux_xlsx(request, siren, csrd=None):
                 worksheet[f"D{numero_ligne}"] = (
                     "personnel" if enjeu.modifiable else "AR"
                 )
+
+                if materiels:
+                    worksheet[f"E{numero_ligne}"] = (
+                        "Matériel" if enjeu.materiel else "Non-matériel"
+                    )
+
                 numero_ligne += 1
 
     with NamedTemporaryFile() as tmp:
         workbook.save(tmp.name)
         tmp.seek(0)
         xlsx_stream = tmp.read()
+
     response = HttpResponse(
         xlsx_stream,
         content_type="application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet",
     )
-    response["Content-Disposition"] = 'filename="enjeux_csrd.xlsx"'
+    filename = "enjeux_csrd.xlsx" if not materiels else "enjeux_csrd_materiels.xlsx"
+    response["Content-Disposition"] = f"filename='{filename}'"
+
     return response

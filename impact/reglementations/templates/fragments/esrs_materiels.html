@@ -1,0 +1,147 @@
+<!-- Sélection des enjeux matériels -->
+<div class="fr-grid-row fr-grid-row--gutters esrs-organizer">
+    <div class="fr-col-lg-4 fr-col-12">
+        <div class="esrs-organizer--container esrs-organizer--env">
+            <div class="esrs-organizer--header">
+                <h4 class="esrs-organizer--title">Environnement</h4>
+            </div>
+            <div class="esrs-organizer--content">
+                {% if enjeux_environnement %}
+                    {% for enjeux_par_esrs in enjeux_environnement %}
+                        <div class="esrs-organizer--esrs">
+                            <div class="esrs-organizer--card">
+                                <div class="esrs-organizer--card-title">
+                                    <p class="fr-badge fr-badge--sm">{{ enjeux_par_esrs.analyses }}/{{ enjeux_par_esrs.a_analyser }} Enjeux analysés</p>
+                                    <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale de sélection des enjeux matériels" aria-hidden="true" data-fr-opened="false" aria-controls="selection-modal" hx-get="{% url "reglementations:selection_enjeux_materiels" csrd.pk enjeux_par_esrs.esrs %}" hx-target="#selection_enjeux_materiels" ></button>
+                                </div>
+                                <div class="esrs-organizer--content">
+                                    <b>{{ enjeux_par_esrs.titre }}</b>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="esrs-organizer--esrs">
+                        <div class="esrs-organizer--card">
+                            <div class="esrs-organizer--card-title">
+                                Aucun enjeu selectionné
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="fr-col-lg-4 fr-col-12">
+        <div class="esrs-organizer--container esrs-organizer--social">
+            <div class="esrs-organizer--header">
+                <h4 class="esrs-organizer--title">Social</h4>
+            </div>
+            <div class="esrs-organizer--content">
+                {% if enjeux_social %}
+                    {% for enjeux_par_esrs in enjeux_social %}
+                        <div class="esrs-organizer--esrs">
+                            <div class="esrs-organizer--card">
+                                <div class="esrs-organizer--card-title">
+                                    <p class="fr-badge fr-badge--sm">{{ enjeux_par_esrs.analyses }}/{{ enjeux_par_esrs.a_analyser }} Enjeux analysés</p>
+                                    <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale de sélection des enjeux matériels" aria-hidden="true" data-fr-opened="false" aria-controls="selection-modal" hx-get="{% url "reglementations:selection_enjeux_materiels" csrd.pk enjeux_par_esrs.esrs %}" hx-target="#selection_enjeux_materiels" ></button>
+                                </div>
+                                <div class="esrs-organizer--content">
+                                    <b>{{ enjeux_par_esrs.titre }}</b>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="esrs-organizer--esrs">
+                        <div class="esrs-organizer--card">
+                            <div class="esrs-organizer--card-title">
+                                Aucun enjeu selectionné
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="fr-col-lg-4 fr-col-12">
+        <div class="esrs-organizer--container esrs-organizer--gov">
+            <div class="esrs-organizer--header">
+                <h4 class="esrs-organizer--title">Gouvernance</h4>
+            </div>
+            <div class="esrs-organizer--content">
+                {% if enjeux_gouvernance %}
+                    {% for enjeux_par_esrs in enjeux_gouvernance %}
+                        <div class="esrs-organizer--esrs">
+                            <div class="esrs-organizer--card">
+                                <div class="esrs-organizer--card-title">
+                                    <p class="fr-badge fr-badge--sm">{{ enjeux_par_esrs.analyses }}/{{ enjeux_par_esrs.a_analyser }} Enjeux analysés</p>
+                                    <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale de sélection des enjeux matériels" aria-hidden="true" data-fr-opened="false" aria-controls="selection-modal" hx-get="{% url "reglementations:selection_enjeux_materiels" csrd.pk enjeux_par_esrs.esrs %}" hx-target="#selection_enjeux_materiels" ></button>
+                                </div>
+                                <div class="esrs-organizer--content">
+                                    <b>{{ enjeux_par_esrs.titre }}</b>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="esrs-organizer--esrs">
+                        <div class="esrs-organizer--card">
+                            <div class="esrs-organizer--card-title">
+                                Aucun enjeu selectionné
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<dialog aria-labelledby="fr-modal-title-modal" role="dialog" id="selection-modal" class="fr-modal--lg fr-modal">
+    <div class="fr-container fr-container--fluid fr-container-md">
+        <div class="fr-grid-row fr-grid-row--center">
+            <div class="fr-col-12 fr-col-md-10">
+                <div class="fr-modal__body fr-modal--esrs background-light-grey">
+                    <div class="fr-modal__header">
+                        <button id="close-modal" class="fr-btn--close fr-btn" title="Fermer la fenêtre modale" aria-controls="selection-modal" target="_self">Fermer</button>
+                    </div>
+                    <div class="fr-modal__content">
+
+                        <div id="selection_enjeux_materiels">
+                            <p>Chargement en cours...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</dialog>
+
+<div hx-get="{% url "reglementations:rafraichissement_enjeux_materiels" csrd.pk %}" hx-target="#esg_container" hx-trigger="click from:#close-modal, formValidated from:body">
+
+</div>
+
+
+<!-- HTMX OOBs -->
+
+<div id="download-enjeux-materiels" hx-swap-oob=true>
+    {% if can_download %}
+        <a class="fr-btn fr-btn--icon-left fr-icon-download-line fr-my-1w" href="{% url 'reglementations:enjeux_materiels_xlsx' csrd.entreprise.siren %}">
+            Liste d'enjeux à évaluer (XLSX)
+        </a>
+    {% else %}
+        <button class="fr-btn fr-btn--icon-left fr-icon-download-line fr-my-1w" disabled>
+            Liste d'enjeux à évaluer (XLSX)
+        </button>
+    {% endif %}
+</div>
+
+
+<div id="nb-enjeux-non-analyses" hx-swap-oob=true>
+    {% if nb_enjeux_non_analyses %}
+        <div class="fr-alert fr-alert--info fr-mb-2w fr-mr-2w">
+            <p class="fr-alert__description">Il vous reste {{ nb_enjeux_non_analyses }} enjeu{{ nb_enjeux_non_analyses|pluralize:"x"}} à analyser.</p>
+        </div>
+    {% endif %}
+</div>

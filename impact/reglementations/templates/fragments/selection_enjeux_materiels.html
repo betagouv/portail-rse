@@ -1,0 +1,40 @@
+{% load random_tools %}
+
+<p class="fr-tag fr-mb-1w">{{ theme }}</p>
+<h4 id="fr-modal-title-modal">{{ titre }}</h4>
+
+<h5>
+    Définissez les enjeux ressortant comme matériels et non-matériels, puis validez pour pouvoir télécharger les données.
+</h5>
+
+<form hx-post="{% url 'reglementations:selection_enjeux_materiels' csrd.pk esrs %}">
+    {% csrf_token %}
+
+    {% for field in form.visible_fields %}
+        <div class="fr-container">
+            <div class="fr-grid-row">
+                <div class="fr-col-8">
+                    <p>
+                        <strong>{{ field.label }}</strong>
+                        {% if field.help_text %}<br><span class="fr-badge fr-badge--sm fr-badge--blue-ecume">{{ field.help_text }}</span> {% endif %}
+                    </p>
+                </div>
+                <div class="fr-col">
+                    <fieldset class="fr-fieldset" id="radio-inline" aria-labelledby="radio-inline-legend radio-inline-messages">
+                        {% for radio in field %}
+                            <div class="fr-fieldset__element fr-fieldset__element--inline">
+                                <div class="fr-radio-group">
+                                    {{ radio.tag }}
+                                    <label class="fr-label" for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </fieldset>
+                </div>
+            </div>
+            <hr>
+        </div>
+    {% endfor %}
+
+    <button type="submit" class="fr-btn fr-btn--secondary" hx-disabled-elt="this" aria-controls="selection-modal">Valider</button>
+</form>

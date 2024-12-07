@@ -10,7 +10,7 @@
                         <div class="esrs-organizer--esrs">
                             <div class="esrs-organizer--card">
                                 <div class="esrs-organizer--card-title">
-                                    <p class="fr-badge fr-badge--sm {% if nombre_enjeux_par_esrs.ESRS_E1 %}fr-badge--blue-ecume{% endif %}">{{ nombre_enjeux_selectionnes_par_esrs.ESRS_E1|default:0 }}/{{ nombre_enjeux_par_esrs.ESRS_E1|default:0 }} Enjeux de durabilité</p>
+                                    <p class="fr-badge fr-badge--sm {% if nombre_enjeux_selectionnes_par_esrs.ESRS_E1 %}fr-badge--blue-ecume{% endif %}">{{ nombre_enjeux_selectionnes_par_esrs.ESRS_E1|default:0 }}/{{ nombre_enjeux_par_esrs.ESRS_E1|default:0 }} Enjeux de durabilité</p>
                                     <b>ESRS E1 - Changement climatique</b>
                                     <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale d'information sur l'ESRS E1" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS_E1" hx-get="{% url "reglementations:selection_enjeux" csrd.pk "ESRS_E1" %}" hx-target="#selection_enjeux_ESRS_E1"></button>
                                 </div>

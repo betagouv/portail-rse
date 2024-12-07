@@ -89,19 +89,22 @@ class RapportCSRD(TimestampedModel):
         # La vérification du rapport officiel pourrait être faite par une contrainte (complexe)
         # en base de données, mais le fait d'utiliser une validation métier vérifiable
         # à tout moment est plus simple et plus lisible.
-        already_exists = RapportCSRD.objects.filter(
+        rapport_officiel = RapportCSRD.objects.filter(
             proprietaire=None, entreprise=self.entreprise
-        ).exists()
+        )
 
-        if not self.proprietaire and already_exists:
+        # éviter la duplication avec le rapport officiel existant
+        if not self.pk and not self.proprietaire and rapport_officiel.exists():
             raise ValidationError(
                 "Il existe déjà un rapport CSRD officiel pour cette entreprise"
             )
 
-        if self.pk and already_exists and self.proprietaire:
-            raise ValidationError(
-                "Impossible de modifier le rapport CSRD officiel en rapport personnel"
-            )
+        # éviter de transformer un rapport personnel en rapport principal
+        if self.pk and self.proprietaire and rapport_officiel.exists():
+            if rapport_officiel.first().pk == self.pk:
+                raise ValidationError(
+                    "Impossible de modifier le rapport CSRD officiel en rapport personnel"
+                )
 
     def save(self, *args, **kwargs):
         # on vérifie si les enjeux réglementaires doivent être ajoutés
@@ -185,6 +188,24 @@ class EnjeuQuerySet(models.QuerySet):
     def modifiables(self):
         return self.filter(modifiable=True)
 
+    def materiels(self):
+        return self.filter(materiel=True)
+
+    def non_materiels(self):
+        return self.filter(materiel=False)
+
+    def non_analyses(self):
+        return self.filter(materiel__isnull=True)
+
+    def environnement(self):
+        return self.filter(esrs__startswith="ESRS_E")
+
+    def social(self):
+        return self.filter(esrs__startswith="ESRS_S")
+
+    def gouvernance(self):
+        return self.filter(esrs__startswith="ESRS_G")
+
 
 class Enjeu(TimestampedModel):
     rapport_csrd = models.ForeignKey(
@@ -207,6 +228,11 @@ class Enjeu(TimestampedModel):
         verbose_name="enjeu modifiable par l'utilisateur", default=True
     )
     selection = models.BooleanField(verbose_name="selectionné", default=False)
+
+    # l'utilisateur doit explicitement selectionner l'enjeu comme enjeu matériel (nullable)
+    materiel = models.BooleanField(
+        verbose_name="sélectionné comme enjeu matériel", null=True
+    )
 
     class Meta:
         verbose_name = "enjeu ESRS"

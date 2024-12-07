@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Collection des données de l'entreprise{% endblock %}
+
+{% block content %}
+
+    {% include "snippets/csrd_header.html" %}
+
+    <div class="fr-container fr-mb-8w">
+        <div class="fr-grid-row fr-pb-6w">
+            {% include "snippets/gestion_csrd_menu.html" %}
+
+            <div class="fr-col">
+                <h2>{{ etape.nom }}</h2>
+                <p>
+                    Étape en préparation : vous pourrez bientôt télécharger vos données matérielles et non-matérielles.
+                </p>
+                <p>
+                    <a href="{% url "reglementations:csrd_sous_etape" entreprise.siren 2 0 0 %}">En savoir plus sur les démarches de collecte des données</a>
+                </p>
+
+                {% if nb_enjeux_non_analyses %}
+                    <div class="fr-alert fr-alert--info fr-mb-2w">
+                        <p class="fr-alert__description">Il vous reste {{ nb_enjeux_non_analyses }} enjeu{{ nb_enjeux_non_analyses|pluralize:"x"}} à analyser.</p>
+                    </div>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+{% endblock %}
