@@ -123,25 +123,7 @@
                                             <li class="fr-nav__item"><a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Tableau de bord</a></li>
                                         {% endfor %}
                                     {% endif %}
-                                    {% if user.entreprise_set.count >= 2 %}
-                                        <li class="fr-nav__item">
-                                            {% url 'reglementations:csrd' entreprise.siren as csrd_path %}
-                                            <button class="fr-nav__btn" aria-expanded="false" aria-controls="menu-2" {% if request.path == csrd_path %} aria-current="page"{% endif %}>
-                                                Espace Rapport de Durabilité
-                                            </button>
-                                            <div class="fr-collapse fr-menu" id="menu-2">
-                                                <ul class="fr-menu__list">
-                                                    {% for entreprise in user.entreprises %}
-                                                        {% url 'reglementations:csrd' entreprise.siren as csrd_path %}
-                                                        <li><a class="fr-nav__link" href="{{ csrd_path }}" target="_self"{% if request.path == csrd_path %} aria-current="page"{% endif %}>{{ entreprise.denomination }}</a></li>
-                                                    {% endfor %}
-                                                </ul>
-                                            </div>
-                                        </li>
-                                    {% elif user.entreprise_set.count == 1 %}
-                                        {% url 'reglementations:csrd' user.entreprise_set.first.siren as csrd_path %}
-                                        <li class="fr-nav__item"><a class="fr-nav__link" href="{{ csrd_path }}" target="_self"{% if request.path == csrd_path %} aria-current="page"{% endif %}>Espace Rapport de Durabilité</a></li>
-                                    {% endif %}
+                                    <li class="fr-nav__item"><a class="fr-nav__link" href="https://portail-rse.beta.gouv.fr/realiser-le-rapport-de-durabilite/" target="_self"{% if request.path == csrd_path %} aria-current="page"{% endif %}>Espace Rapport de Durabilité</a></li>
                                 </ul>
                             </nav>
                         {% endif %}
