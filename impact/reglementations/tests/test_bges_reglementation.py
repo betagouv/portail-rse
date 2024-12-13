@@ -1,5 +1,4 @@
 import pytest
-from django.urls import reverse
 from freezegun import freeze_time
 
 from api.exceptions import APIError
@@ -27,7 +26,10 @@ def test_reglementation_info():
     info = BGESReglementation.info()
 
     assert info["title"] == "BEGES et Plan de Transition"
-    assert info["more_info_url"] == reverse("reglementations:fiche_bilan_ges")
+    assert (
+        info["more_info_url"]
+        == "https://portail-rse.beta.gouv.fr/fiches-reglementaires/bilan-eges-et-plan-de-transition/"
+    )
     assert info["tag"] == "tag-environnement"
     assert (
         info["summary"]

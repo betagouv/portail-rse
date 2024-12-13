@@ -40,7 +40,7 @@ class BDESEReglementation(Reglementation):
     TYPE_SUPERIEUR_500 = 4
 
     title = "Base de données économiques, sociales et environnementales (BDESE)"
-    more_info_url = reverse_lazy("reglementations:fiche_bdese")
+    more_info_url = "https://portail-rse.beta.gouv.fr/fiches-reglementaires/base-de-donnees-economiques-sociales-et-environnementales/"
     tag = "tag-social"
     summary = "Constituer une base de données économiques, sociales et environnementales à transmettre à son CSE."
 

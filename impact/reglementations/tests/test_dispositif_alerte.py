@@ -1,5 +1,4 @@
 import pytest
-from django.urls import reverse
 
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
@@ -11,7 +10,10 @@ def test_reglementation_info():
     info = DispositifAlerteReglementation.info()
 
     assert info["title"] == "Dispositif d’alerte"
-    assert info["more_info_url"] == reverse("reglementations:fiche_dispositif_alerte")
+    assert (
+        info["more_info_url"]
+        == "https://portail-rse.beta.gouv.fr/fiches-reglementaires/dispositif-dalerte/"
+    )
     assert info["tag"] == "tag-gouvernance"
     assert (
         info["summary"]

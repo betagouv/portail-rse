@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.urls import reverse_lazy
 
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import CategorieJuridique
@@ -10,7 +9,9 @@ from reglementations.views.base import ReglementationStatus
 
 class PlanVigilanceReglementation(Reglementation):
     title = "Plan de vigilance"
-    more_info_url = reverse_lazy("reglementations:fiche_plan_vigilance")
+    more_info_url = (
+        "https://portail-rse.beta.gouv.fr/fiches-reglementaires/plan-de-vigilance/"
+    )
     tag = "tag-gouvernance"
     summary = "Établir un plan de vigilance pour prévenir des risques d’atteintes aux droits humains et à l’environnement liés à l'activité des sociétés mères et entreprises donneuses d'ordre."
 

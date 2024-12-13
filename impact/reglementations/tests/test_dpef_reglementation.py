@@ -1,5 +1,4 @@
 import pytest
-from django.urls import reverse
 
 from conftest import CODE_SA
 from conftest import CODE_SAS
@@ -21,7 +20,10 @@ def test_reglementation_info():
     info = DPEFReglementation.info()
 
     assert info["title"] == "Déclaration de Performance Extra-Financière"
-    assert info["more_info_url"] == reverse("reglementations:fiche_dpef")
+    assert (
+        info["more_info_url"]
+        == "https://portail-rse.beta.gouv.fr/fiches-reglementaires/declaration-de-performance-extra-financiere/"
+    )
     assert info["tag"] == "tag-durabilite"
     assert (
         info["summary"]

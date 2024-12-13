@@ -22,7 +22,10 @@ def test_reglementation_info():
     info = CSRDReglementation.info()
 
     assert info["title"] == "Rapport de Durabilité - CSRD"
-    assert info["more_info_url"] == reverse("reglementations:fiche_csrd")
+    assert (
+        info["more_info_url"]
+        == "https://portail-rse.beta.gouv.fr/fiches-reglementaires/rapport-de-durabilite-csrd/"
+    )
     assert info["tag"] == "tag-durabilite"
     assert info["summary"] == "Publier un rapport de durabilité."
     assert info["zone"] == "europe"

@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.urls import reverse_lazy
 
 from api import egapro
 from api.exceptions import APIError
@@ -13,7 +12,7 @@ from reglementations.views.base import ReglementationStatus
 
 class IndexEgaproReglementation(Reglementation):
     title = "Index de l’égalité professionnelle"
-    more_info_url = reverse_lazy("reglementations:fiche_index_egapro")
+    more_info_url = "https://portail-rse.beta.gouv.fr/fiches-reglementaires/index-egalite-professionnelle/"
     tag = "tag-social"
     summary = "Mesurer les écarts de rémunération entre les femmes et les hommes au sein de son entreprise."
 

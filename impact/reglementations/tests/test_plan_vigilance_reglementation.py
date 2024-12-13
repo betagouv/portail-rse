@@ -1,5 +1,4 @@
 import pytest
-from django.urls import reverse
 
 from conftest import CODE_AUTRE
 from conftest import CODE_SA
@@ -17,7 +16,10 @@ def test_reglementation_info():
     info = PlanVigilanceReglementation.info()
 
     assert info["title"] == "Plan de vigilance"
-    assert info["more_info_url"] == reverse("reglementations:fiche_plan_vigilance")
+    assert (
+        info["more_info_url"]
+        == "https://portail-rse.beta.gouv.fr/fiches-reglementaires/plan-de-vigilance/"
+    )
     assert info["tag"] == "tag-gouvernance"
     assert (
         info["summary"]
