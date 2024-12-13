@@ -339,3 +339,9 @@ if DEBUG_TOOLBAR := os.getenv("DEBUG_TOOLBAR"):
         + 1,
         "debug_toolbar.middleware.DebugToolbarMiddleware",
     )
+
+# Sites-faciles:
+# URL of sites-faciles instance for Portail RSE
+SITES_FACILES_BASE_URL = os.getenv(
+    "SITES_FACILES_BASE_URL", "https://portail-rse.beta.gouv.fr"
+)
