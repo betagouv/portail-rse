@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.urls import reverse_lazy
 
 from entreprises.models import CaracteristiquesAnnuelles
 from reglementations.views.base import Reglementation
@@ -9,7 +8,9 @@ from reglementations.views.base import ReglementationStatus
 
 class AuditEnergetiqueReglementation(Reglementation):
     title = "Audit énergétique"
-    more_info_url = reverse_lazy("reglementations:fiche_audit_energetique")
+    more_info_url = (
+        "https://portail-rse.beta.gouv.fr/fiches-reglementaires/audit-energetique/"
+    )
     tag = "tag-environnement"
     summary = "Evaluer la performance énergétique de son entreprise."
 

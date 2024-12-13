@@ -18,7 +18,10 @@ def test_reglementation_info():
         info["title"]
         == "Base de données économiques, sociales et environnementales (BDESE)"
     )
-    assert info["more_info_url"] == reverse("reglementations:fiche_bdese")
+    assert (
+        info["more_info_url"]
+        == "https://portail-rse.beta.gouv.fr/fiches-reglementaires/base-de-donnees-economiques-sociales-et-environnementales/"
+    )
     assert info["tag"] == "tag-social"
     assert (
         info["summary"]

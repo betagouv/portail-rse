@@ -1,5 +1,4 @@
 import pytest
-from django.urls import reverse
 from freezegun import freeze_time
 
 from api.exceptions import APIError
@@ -14,7 +13,10 @@ def test_reglementation_info():
     info = IndexEgaproReglementation.info()
 
     assert info["title"] == "Index de l’égalité professionnelle"
-    assert info["more_info_url"] == reverse("reglementations:fiche_index_egapro")
+    assert (
+        info["more_info_url"]
+        == "https://portail-rse.beta.gouv.fr/fiches-reglementaires/index-egalite-professionnelle/"
+    )
     assert info["tag"] == "tag-social"
     assert (
         info["summary"]

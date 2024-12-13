@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.urls import reverse_lazy
 
 from entreprises.models import CaracteristiquesAnnuelles
 from reglementations.views.base import Reglementation
@@ -8,7 +7,7 @@ from reglementations.views.base import ReglementationStatus
 
 class DispositifAntiCorruption(Reglementation):
     title = "Dispositif anti-corruption"
-    more_info_url = reverse_lazy("reglementations:fiche_dispositif_anticorruption")
+    more_info_url = "https://portail-rse.beta.gouv.fr/fiches-reglementaires/dispositif-anti-corruption/"
     tag = "tag-gouvernance"
     summary = "Se doter d'un dispositif efficace pour lutter contre la corruption et le trafic d'influence."
 

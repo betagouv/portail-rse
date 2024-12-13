@@ -1,7 +1,6 @@
 from datetime import date
 
 from django.conf import settings
-from django.urls import reverse_lazy
 
 from api import bges
 from api.exceptions import APIError
@@ -13,7 +12,7 @@ from reglementations.views.base import ReglementationStatus
 
 class BGESReglementation(Reglementation):
     title = "BEGES et Plan de Transition"
-    more_info_url = reverse_lazy("reglementations:fiche_bilan_ges")
+    more_info_url = "https://portail-rse.beta.gouv.fr/fiches-reglementaires/bilan-eges-et-plan-de-transition/"
     tag = "tag-environnement"
     summary = "Mesurer ses émissions de gaz à effet de serre directes et adopter un plan de transition en conséquence."
 

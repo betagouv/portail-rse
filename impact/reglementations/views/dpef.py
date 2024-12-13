@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.urls import reverse_lazy
 
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import CategorieJuridique
@@ -11,7 +10,7 @@ from reglementations.views.csrd import CSRDReglementation
 
 class DPEFReglementation(Reglementation):
     title = "Déclaration de Performance Extra-Financière"
-    more_info_url = reverse_lazy("reglementations:fiche_dpef")
+    more_info_url = "https://portail-rse.beta.gouv.fr/fiches-reglementaires/declaration-de-performance-extra-financiere/"
     tag = "tag-durabilite"
     summary = "Établir une déclaration de performance extra-financière contenant des informations sociales, environnementales et sociétales."
     zone = "europe"

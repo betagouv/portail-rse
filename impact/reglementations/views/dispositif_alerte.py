@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.urls import reverse_lazy
 
 from entreprises.models import CaracteristiquesAnnuelles
 from reglementations.views.base import Reglementation
@@ -8,7 +7,9 @@ from reglementations.views.base import ReglementationStatus
 
 class DispositifAlerteReglementation(Reglementation):
     title = "Dispositif d’alerte"
-    more_info_url = reverse_lazy("reglementations:fiche_dispositif_alerte")
+    more_info_url = (
+        "https://portail-rse.beta.gouv.fr/fiches-reglementaires/dispositif-dalerte/"
+    )
     tag = "tag-gouvernance"
     summary = (
         "Avoir une procédure interne de recueil et de traitement de ces signalements."
