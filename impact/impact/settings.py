@@ -153,6 +153,14 @@ COOKIE_DOMAIN = os.getenv("COOKIE_DOMAIN", "")
 # see: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value
 # SESSION_COOKIE_SAMESITE = "Strict"
 
+# Everything is SSL in production :
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+
+# CSRF should be used with secure cookies if SSL is available
+if not DEBUG:
+    CSRF_COOKIE_SECURE = True
+
 # Django-vite configuration for static files build with vite
 # https://github.com/MrBin99/django-vite
 DJANGO_VITE_ASSETS_PATH = Path(BASE_DIR, "static", "svelte")
