@@ -142,6 +142,8 @@ SESSION_COOKIE_SECURE = True
 # Session expires when browser is closed
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
+COOKIE_DOMAIN = os.getenv("COOKIE_DOMAIN", "")
+
 # SameSite :
 # must be "Strict", other sites do not need to see session cookies
 # TO BE CONFIRMED ...
