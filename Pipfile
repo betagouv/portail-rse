@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "~=4.2.17"
+django = "~=5.1.4"
 gunicorn = "~=23.0.0"
 requests = "~=2.32.0"
 django-weasyprint = "~=2.3.0"
@@ -28,7 +28,7 @@ freezegun = "*"
 pre-commit = "*"
 honcho = "*"
 django-debug-toolbar = "*"
-exceptiongroup = {version = "~=1.2.2", markers="python_version < '3.11'"}
+exceptiongroup = {version = "~=1.2.2", markers="python_version < '3.13'"}
 
 [requires]
-python_version = "3.10"
+python_version = "3.12.8"
