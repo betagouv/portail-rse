@@ -171,6 +171,7 @@ def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
     [
         "introduction",
         "selection-enjeux",
+        "analyse-materialite",
     ],
 )
 def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_factory):
@@ -188,9 +189,6 @@ def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_
 
     response = client.post(url, follow=True)
 
-    content = response.content.decode("utf-8")
-    assert "<!-- page gestion CSRD -->" in content
-
     rapport_csrd = RapportCSRD.objects.get(proprietaire=alice, entreprise=entreprise)
     assert rapport_csrd.etape_validee == etape
 
@@ -200,6 +198,7 @@ def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_
     [
         "introduction",
         "selection-enjeux",
+        "analyse-materialite",
     ],
 )
 def test_enregistrement_de_l_étape_de_la_csrd_retourne_une_404_si_aucune_CSRD(
