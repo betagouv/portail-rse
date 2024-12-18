@@ -188,6 +188,7 @@ def test_étape_inexistante_de_la_csrd(client, alice, entreprise_factory):
         "introduction",
         "selection-enjeux",
         "analyse-materialite",
+        "collection-donnees-entreprise",
     ],
 )
 def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_factory):
@@ -215,6 +216,7 @@ def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_
         "introduction",
         "selection-enjeux",
         "analyse-materialite",
+        "collection-donnees-entreprise",
     ],
 )
 def test_enregistrement_de_l_étape_de_la_csrd_retourne_une_404_si_aucune_CSRD(
