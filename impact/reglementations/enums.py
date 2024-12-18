@@ -390,6 +390,7 @@ class EtapeCSRD:
         "selection-enjeux",
         "analyse-materialite",
         "collection-donnees-entreprise",
+        "redaction-rapport-durabilite",
     ]
 
     @classmethod
