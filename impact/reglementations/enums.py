@@ -433,4 +433,8 @@ ETAPES_CSRD = [
         id="collection-donnees-entreprise",
         nom="Collecter les données de son entreprise",
     ),
+    EtapeCSRD(
+        id="redaction-rapport-durabilite",
+        nom="Rédiger son rapport de durabilité",
+    ),
 ]

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Collection des données de l'entreprise{% endblock %}
+
+{% block content %}
+
+    {% include "snippets/csrd_header.html" %}
+
+    <div class="fr-container fr-mb-8w">
+        <div class="fr-grid-row fr-pb-6w">
+            {% include "snippets/gestion_csrd_menu.html" %}
+
+            <div class="fr-col">
+                <h2>{{ etape.nom }}</h2>
+                <p>
+                    Étape en préparation : vous pourrez bientôt enregistrer le lien de téléchargement de votre Rapport de Durabilité.
+                </p>
+            </div>
+
+        </div>
+
+{% endblock %}

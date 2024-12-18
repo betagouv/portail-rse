@@ -129,6 +129,7 @@ def test_guide_de_la_csrd_par_etape(etape, client, alice, entreprise_factory):
         "/csrd/{siren}/etape-selection-enjeux",
         "/csrd/{siren}/etape-analyse-materialite",
         "/csrd/{siren}/etape-collection-donnees-entreprise",
+        "/csrd/{siren}/etape-redaction-rapport-durabilite",
     ],
 )
 def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
@@ -159,6 +160,10 @@ def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
     elif etape.endswith("collection-donnees-entreprise"):
         assertTemplateUsed(
             response, "reglementations/csrd/etape-collection-donnees-entreprise.html"
+        )
+    elif etape.endswith("redaction-rapport-durabilite"):
+        assertTemplateUsed(
+            response, "reglementations/csrd/etape-redaction-rapport-durabilite.html"
         )
 
     rapport_csrd = RapportCSRD.objects.get(proprietaire=alice, entreprise=entreprise)
