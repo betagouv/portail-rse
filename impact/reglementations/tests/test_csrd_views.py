@@ -156,14 +156,20 @@ def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
             response, "reglementations/csrd/etape-analyse-materialite.html"
         )
 
-    etape_inexistante = f"/csrd/{entreprise.siren}/etape-4"
-    response = client.get(etape_inexistante)
-
-    assert response.status_code == 404
-
     rapport_csrd = RapportCSRD.objects.get(proprietaire=alice, entreprise=entreprise)
     NOMBRE_ENJEUX = 103
     assert len(rapport_csrd.enjeux.all()) == NOMBRE_ENJEUX
+
+
+def test_étape_inexistante_de_la_csrd(client, alice, entreprise_factory):
+    entreprise = entreprise_factory()
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    client.force_login(alice)
+    etape_inexistante = f"/csrd/{entreprise.siren}/etape-4"
+
+    response = client.get(etape_inexistante)
+
+    assert response.status_code == 404
 
 
 @pytest.mark.parametrize(
