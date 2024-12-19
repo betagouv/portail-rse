@@ -682,9 +682,8 @@ def xlsx_response(stream, filename):
 @login_required
 @csrd_required
 def datapoints_xlsx(request, siren, csrd=None):
-    enjeux = csrd.enjeux.filter(materiel=True)
-    esrs_materielles = set((enjeu.esrs for enjeu in enjeux))
-    esrs_a_supprimer = set(ESRS.values).difference(esrs_materielles)
+    materiel = request.GET.get("materiel", True) != "false"
+    esrs_a_supprimer = _esrs_materiel_a_supprimer(csrd, materiel)
     workbook = load_workbook("impact/static/CSRD/ESRS_Data_Points_EFRAG.xlsx")
     for esrs in esrs_a_supprimer:
         if esrs not in ("ESRS_1", "ESRS_2"):
@@ -696,5 +695,21 @@ def datapoints_xlsx(request, siren, csrd=None):
         tmp.seek(0)
         xlsx_stream = tmp.read()
 
-    filename = "datapoints_csrd.xlsx"
+    filename = (
+        "datapoints_csrd_materiels.xlsx"
+        if materiel
+        else "datapoints_csrd_non_materiels.xlsx"
+    )
     return xlsx_response(xlsx_stream, filename)
+
+
+def _esrs_materiel_a_supprimer(csrd, materiel):
+    enjeux_materiels = csrd.enjeux.filter(materiel=True)
+    esrs_materiels = set((enjeu.esrs for enjeu in enjeux_materiels))
+    if materiel:
+        esrs_a_supprimer = set(ESRS.values) - esrs_materiels
+    else:
+        esrs_non_materiels = set(ESRS.values) - esrs_materiels
+        esrs_a_supprimer = set(ESRS.values) - esrs_non_materiels
+
+    return esrs_a_supprimer

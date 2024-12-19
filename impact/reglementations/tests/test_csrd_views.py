@@ -398,7 +398,9 @@ def test_liste_des_enjeux_csrd(client, alice, entreprise_non_qualifiee):
     )
 
 
-def test_datapoints_csrd_au_format_xlsx(client, alice, entreprise_non_qualifiee):
+def test_datapoints_pour_enjeux_materiels_au_format_xlsx(
+    client, alice, entreprise_non_qualifiee
+):
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
     csrd = RapportCSRD.objects.create(
         proprietaire=alice,
@@ -426,6 +428,40 @@ def test_datapoints_csrd_au_format_xlsx(client, alice, entreprise_non_qualifiee)
     assert "Index" in noms_onglet
     assert "ESRS 2" in noms_onglet
     assert "ESRS2 MDR" in noms_onglet
+    assert "ESRS G1" not in noms_onglet
+
+
+def test_datapoints_pour_enjeux_non_materiels_au_format_xlsx(
+    client, alice, entreprise_non_qualifiee
+):
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    csrd = RapportCSRD.objects.create(
+        proprietaire=alice,
+        entreprise=entreprise_non_qualifiee,
+        annee=f"{datetime.now():%Y}",
+    )
+    enjeux = csrd.enjeux.all()
+    enjeu_attenuation = enjeux[1]
+    enjeu_attenuation.materiel = True
+    enjeu_attenuation.save()
+    esrs_materielle = enjeu_attenuation.esrs
+    client.force_login(alice)
+
+    response = client.get(
+        f"/csrd/{entreprise_non_qualifiee.siren}/datapoints.xlsx?materiel=false",
+    )
+
+    assert (
+        response["content-type"]
+        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+    )
+    workbook = load_workbook(filename=BytesIO(response.content))
+    noms_onglet = workbook.get_sheet_names()
+    assert esrs_materielle.replace("_", " ") not in noms_onglet
+    assert "Index" in noms_onglet
+    assert "ESRS 2" in noms_onglet
+    assert "ESRS2 MDR" in noms_onglet
+    assert "ESRS G1" in noms_onglet
 
 
 def test_datapoints_csrd__au_format_xlsx_retourne_une_404_si_entreprise_inexistante(
