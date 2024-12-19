@@ -13,7 +13,11 @@
             <div class="fr-col">
                 <h2>{{ etape.nom }}</h2>
                 <p>
-                    Étape en préparation : vous pourrez bientôt télécharger vos données matérielles et non-matérielles.
+                    Télécharger vos données ESG matérielles et non matérielles.
+                    <ul>
+                        <li><a href="{% url 'reglementations:datapoints_xlsx' csrd.entreprise.siren %}">ESRS contenant des enjeux matériels</a></li>
+                        <li><a href="{% url 'reglementations:datapoints_xlsx' csrd.entreprise.siren %}?materiel=false">ESRS sans enjeux matériels</a></li>
+                    </ul>
                 </p>
                 <p>
                     <a href="{{ sites_faciles_base_url }}/realiser-le-rapport-de-durabilite/collecter-les-donnees-de-son-entreprise/" target="_blank">En savoir plus sur les démarches de collecte des données</a>
