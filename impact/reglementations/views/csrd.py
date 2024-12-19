@@ -16,6 +16,7 @@ from django.shortcuts import redirect
 from django.template.loader import get_template
 from django.template.loader import TemplateDoesNotExist
 from django.urls import reverse_lazy
+from openpyxl import load_workbook
 from openpyxl import Workbook
 
 from entreprises.models import CaracteristiquesAnnuelles
@@ -671,4 +672,30 @@ def _build_xlsx(enjeux, csrd=None, materiels=False):
     filename = "enjeux_csrd.xlsx" if not materiels else "enjeux_csrd_materiels.xlsx"
     response["Content-Disposition"] = f"filename='{filename}'"
 
+    return response
+
+
+@login_required
+@csrd_required
+def datapoints_xlsx(request, siren, csrd=None):
+    enjeux = csrd.enjeux.filter(materiel=True)
+    esrs_materielles = set((enjeu.esrs for enjeu in enjeux))
+    esrs_a_supprimer = set(ESRS.values).difference(esrs_materielles)
+    workbook = load_workbook("impact/static/CSRD/ESRS_Data_Points_EFRAG.xlsx")
+    for esrs in esrs_a_supprimer:
+        if esrs not in ("ESRS_1", "ESRS_2"):
+            titre_onglet = esrs.replace("_", " ")
+            workbook.remove(workbook[titre_onglet])
+
+    with NamedTemporaryFile() as tmp:
+        workbook.save(tmp.name)
+        tmp.seek(0)
+        xlsx_stream = tmp.read()
+
+    response = HttpResponse(
+        xlsx_stream,
+        content_type="application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet",
+    )
+    filename = "datapoints_csrd.xlsx"
+    response["Content-Disposition"] = f"filename={filename}"
     return response
