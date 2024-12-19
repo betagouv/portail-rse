@@ -660,18 +660,18 @@ def _build_xlsx(enjeux, csrd=None, materiels=False):
 
                 numero_ligne += 1
 
+    filename = "enjeux_csrd.xlsx" if not materiels else "enjeux_csrd_materiels.xlsx"
+    return _xlsx_response(workbook, filename)
+
+
+def _xlsx_response(workbook, filename):
     with NamedTemporaryFile() as tmp:
         workbook.save(tmp.name)
         tmp.seek(0)
         xlsx_stream = tmp.read()
 
-    filename = "enjeux_csrd.xlsx" if not materiels else "enjeux_csrd_materiels.xlsx"
-    return xlsx_response(xlsx_stream, filename)
-
-
-def xlsx_response(stream, filename):
     response = HttpResponse(
-        stream,
+        xlsx_stream,
         content_type="application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet",
     )
     response["Content-Disposition"] = f"filename={filename}"
@@ -689,17 +689,12 @@ def datapoints_xlsx(request, siren, csrd=None):
         titre_onglet = esrs.replace("_", " ")
         workbook.remove(workbook[titre_onglet])
 
-    with NamedTemporaryFile() as tmp:
-        workbook.save(tmp.name)
-        tmp.seek(0)
-        xlsx_stream = tmp.read()
-
     filename = (
         "datapoints_csrd_materiels.xlsx"
         if materiel
         else "datapoints_csrd_non_materiels.xlsx"
     )
-    return xlsx_response(xlsx_stream, filename)
+    return _xlsx_response(workbook, filename)
 
 
 def _esrs_materiel_a_supprimer(csrd, materiel):
