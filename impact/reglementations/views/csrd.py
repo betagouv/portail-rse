@@ -16,6 +16,7 @@ from django.shortcuts import redirect
 from django.template.loader import get_template
 from django.template.loader import TemplateDoesNotExist
 from django.urls import reverse_lazy
+from openpyxl import load_workbook
 from openpyxl import Workbook
 
 from entreprises.models import CaracteristiquesAnnuelles
@@ -659,6 +660,11 @@ def _build_xlsx(enjeux, csrd=None, materiels=False):
 
                 numero_ligne += 1
 
+    filename = "enjeux_csrd.xlsx" if not materiels else "enjeux_csrd_materiels.xlsx"
+    return _xlsx_response(workbook, filename)
+
+
+def _xlsx_response(workbook, filename):
     with NamedTemporaryFile() as tmp:
         workbook.save(tmp.name)
         tmp.seek(0)
@@ -668,7 +674,40 @@ def _build_xlsx(enjeux, csrd=None, materiels=False):
         xlsx_stream,
         content_type="application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet",
     )
-    filename = "enjeux_csrd.xlsx" if not materiels else "enjeux_csrd_materiels.xlsx"
-    response["Content-Disposition"] = f"filename='{filename}'"
+    response["Content-Disposition"] = f"filename={filename}"
 
     return response
+
+
+@login_required
+@csrd_required
+def datapoints_xlsx(request, siren, csrd=None):
+    materiel = request.GET.get("materiel", True) != "false"
+    esrs_a_supprimer = _esrs_materiel_a_supprimer(csrd, materiel)
+    workbook = load_workbook("impact/static/CSRD/ESRS_Data_Points_EFRAG.xlsx")
+    for esrs in esrs_a_supprimer:
+        titre_onglet = esrs.replace("_", " ")
+        workbook.remove(workbook[titre_onglet])
+
+    filename = (
+        "datapoints_csrd_materiels.xlsx"
+        if materiel
+        else "datapoints_csrd_non_materiels.xlsx"
+    )
+    return _xlsx_response(workbook, filename)
+
+
+def _esrs_materiel_a_supprimer(csrd, materiel):
+    enjeux_materiels = csrd.enjeux.filter(materiel=True)
+    esrs_materiels = set((enjeu.esrs for enjeu in enjeux_materiels))
+    tous_les_esrs = set(ESRS.values)
+    if materiel:
+        esrs_a_supprimer = tous_les_esrs - esrs_materiels
+    else:
+        esrs_non_materiels = tous_les_esrs - esrs_materiels
+        esrs_a_supprimer = tous_les_esrs - esrs_non_materiels
+
+    # ne pas supprimer ESRS_1 et ESRS_2 car ils n'existent pas dans le fichier .xlsx
+    esrs_a_supprimer -= set(("ESRS_1", "ESRS_2"))
+
+    return esrs_a_supprimer
