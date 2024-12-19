@@ -686,9 +686,8 @@ def datapoints_xlsx(request, siren, csrd=None):
     esrs_a_supprimer = _esrs_materiel_a_supprimer(csrd, materiel)
     workbook = load_workbook("impact/static/CSRD/ESRS_Data_Points_EFRAG.xlsx")
     for esrs in esrs_a_supprimer:
-        if esrs not in ("ESRS_1", "ESRS_2"):
-            titre_onglet = esrs.replace("_", " ")
-            workbook.remove(workbook[titre_onglet])
+        titre_onglet = esrs.replace("_", " ")
+        workbook.remove(workbook[titre_onglet])
 
     with NamedTemporaryFile() as tmp:
         workbook.save(tmp.name)
@@ -711,5 +710,8 @@ def _esrs_materiel_a_supprimer(csrd, materiel):
     else:
         esrs_non_materiels = set(ESRS.values) - esrs_materiels
         esrs_a_supprimer = set(ESRS.values) - esrs_non_materiels
+
+    # ne pas supprimer ESRS_1 et ESRS_2 car ils n'existent pas dans le fichier .xlsx
+    esrs_a_supprimer -= set(("ESRS_1", "ESRS_2"))
 
     return esrs_a_supprimer
