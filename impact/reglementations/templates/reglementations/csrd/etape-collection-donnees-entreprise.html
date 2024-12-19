@@ -13,10 +13,16 @@
             <div class="fr-col">
                 <h2>{{ etape.nom }}</h2>
                 <p>
-                    Télécharger vos données ESG matérielles et non matérielles.
+                    Télécharger vos données ESG matérielles et non matérielles :
                     <ul>
-                        <li><a href="{% url 'reglementations:datapoints_xlsx' csrd.entreprise.siren %}">ESRS contenant des enjeux matériels</a></li>
-                        <li><a href="{% url 'reglementations:datapoints_xlsx' csrd.entreprise.siren %}?materiel=false">ESRS sans enjeux matériels</a></li>
+                        <li>
+                            <a class="fr-link fr-link--download" download
+                               href="{% url 'reglementations:datapoints_xlsx' csrd.entreprise.siren %}">ESRS contenant des enjeux matériels</a>
+                        </li>
+                        <li>
+                            <a class="fr-link fr-link--download" download
+                               href="{% url 'reglementations:datapoints_xlsx' csrd.entreprise.siren %}?materiel=false">ESRS sans enjeux matériels</a>
+                        </li>
                     </ul>
                 </p>
                 <p>
