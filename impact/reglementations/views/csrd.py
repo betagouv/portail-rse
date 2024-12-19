@@ -665,12 +665,16 @@ def _build_xlsx(enjeux, csrd=None, materiels=False):
         tmp.seek(0)
         xlsx_stream = tmp.read()
 
+    filename = "enjeux_csrd.xlsx" if not materiels else "enjeux_csrd_materiels.xlsx"
+    return xlsx_response(xlsx_stream, filename)
+
+
+def xlsx_response(stream, filename):
     response = HttpResponse(
-        xlsx_stream,
+        stream,
         content_type="application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet",
     )
-    filename = "enjeux_csrd.xlsx" if not materiels else "enjeux_csrd_materiels.xlsx"
-    response["Content-Disposition"] = f"filename='{filename}'"
+    response["Content-Disposition"] = f"filename={filename}"
 
     return response
 
@@ -692,10 +696,5 @@ def datapoints_xlsx(request, siren, csrd=None):
         tmp.seek(0)
         xlsx_stream = tmp.read()
 
-    response = HttpResponse(
-        xlsx_stream,
-        content_type="application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet",
-    )
     filename = "datapoints_csrd.xlsx"
-    response["Content-Disposition"] = f"filename={filename}"
-    return response
+    return xlsx_response(xlsx_stream, filename)
