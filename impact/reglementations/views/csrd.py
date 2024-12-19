@@ -700,11 +700,12 @@ def datapoints_xlsx(request, siren, csrd=None):
 def _esrs_materiel_a_supprimer(csrd, materiel):
     enjeux_materiels = csrd.enjeux.filter(materiel=True)
     esrs_materiels = set((enjeu.esrs for enjeu in enjeux_materiels))
+    tous_les_esrs = set(ESRS.values)
     if materiel:
-        esrs_a_supprimer = set(ESRS.values) - esrs_materiels
+        esrs_a_supprimer = tous_les_esrs - esrs_materiels
     else:
-        esrs_non_materiels = set(ESRS.values) - esrs_materiels
-        esrs_a_supprimer = set(ESRS.values) - esrs_non_materiels
+        esrs_non_materiels = tous_les_esrs - esrs_materiels
+        esrs_a_supprimer = tous_les_esrs - esrs_non_materiels
 
     # ne pas supprimer ESRS_1 et ESRS_2 car ils n'existent pas dans le fichier .xlsx
     esrs_a_supprimer -= set(("ESRS_1", "ESRS_2"))
