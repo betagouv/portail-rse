@@ -30,10 +30,10 @@ def _grouper_enjeux_par_esrs(enjeux):
             {
                 "titre": TitreESRS[esrs].value,
                 "esrs": esrs,
-                "analyses": len(enjeux.filter(esrs=esrs, materiel__isnull=False)),
+                "analyses": len(enjeux.analyses().filter(esrs=esrs)),
                 "a_analyser": len(enjeux_),
                 "enjeux": enjeux_,
-                "nb_materiels": len(enjeux.filter(esrs=esrs, materiel=True)),
+                "nb_materiels": len(enjeux.materiels().filter(esrs=esrs)),
             }
         )
 
@@ -46,7 +46,7 @@ def _grouper_enjeux_par_esrs(enjeux):
 def rafraichissement_enjeux_materiels(request, csrd_id):
     csrd = get_object_or_404(RapportCSRD, id=csrd_id)
     enjeux_selectionnes = csrd.enjeux.selectionnes()
-    enjeux_non_analyses = enjeux_selectionnes.non_analyses()
+    enjeux_non_analyses = csrd.enjeux.non_analyses()
 
     context = {
         "csrd": csrd,
