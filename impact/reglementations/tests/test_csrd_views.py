@@ -409,6 +409,7 @@ def test_datapoints_pour_enjeux_materiels_au_format_xlsx(
     )
     enjeux = csrd.enjeux.all()
     enjeu_attenuation = enjeux[1]
+    enjeu_attenuation.selection = True
     enjeu_attenuation.materiel = True
     enjeu_attenuation.save()
     esrs_materielle = enjeu_attenuation.esrs
@@ -441,11 +442,23 @@ def test_datapoints_pour_enjeux_non_materiels_au_format_xlsx(
         annee=f"{datetime.now():%Y}",
     )
     enjeux = csrd.enjeux.all()
+
+    # enjeu de l'ESRS_E1:
     enjeu_attenuation = enjeux[1]
+    enjeu_attenuation.selection = True
     enjeu_attenuation.materiel = True
     enjeu_attenuation.save()
     esrs_materielle = enjeu_attenuation.esrs
     client.force_login(alice)
+
+    # note : les enjeux affichés dans le fichier "non-matériels"
+    # doivent au préalable avoir été sélectionnés
+
+    # enjeu de l'ESRS_G1:
+    enjeux_G1 = enjeux.filter(esrs="ESRS_G1").first()
+    enjeux_G1.selection = True
+    enjeux_G1.materiel = False  # et pas None
+    enjeux_G1.save()
 
     response = client.get(
         f"/csrd/{entreprise_non_qualifiee.siren}/datapoints.xlsx?materiel=false",
@@ -456,7 +469,7 @@ def test_datapoints_pour_enjeux_non_materiels_au_format_xlsx(
         == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
-    noms_onglet = workbook.get_sheet_names()
+    noms_onglet = workbook.sheetnames
     assert esrs_materielle.replace("_", " ") not in noms_onglet
     assert "Index" in noms_onglet
     assert "ESRS 2" in noms_onglet

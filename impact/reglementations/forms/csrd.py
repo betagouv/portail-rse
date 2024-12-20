@@ -25,13 +25,17 @@ class EnjeuxRapportCSRDForm(forms.ModelForm):
         if self.instance:
             qs = self.instance.enjeux_par_esrs(self.esrs)
             self.fields["enjeux"].queryset = qs
-            self.initial = {"enjeux": qs.filter(selection=True)}
+            self.initial = {"enjeux": qs.selectionnes()}
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
         for enjeu in self.instance.enjeux.filter(esrs=self.esrs):
             enjeu.selection = enjeu in self.cleaned_data["enjeux"]
+            if not enjeu.selection:
+                # si un enjeu n'est pas sélectionné, il ne peut pas être analysé
+                # (raz éventuelle de l'analyse si on déselectionne l'enjeu)
+                enjeu.materiel = None
             enjeu.save()
 
     def sections(self):
