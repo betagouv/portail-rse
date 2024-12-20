@@ -409,6 +409,7 @@ def test_datapoints_pour_enjeux_materiels_au_format_xlsx(
     )
     enjeux = csrd.enjeux.all()
     enjeu_attenuation = enjeux[1]
+    enjeu_attenuation.selection = True
     enjeu_attenuation.materiel = True
     enjeu_attenuation.save()
     esrs_materielle = enjeu_attenuation.esrs
@@ -442,6 +443,7 @@ def test_datapoints_pour_enjeux_non_materiels_au_format_xlsx(
     )
     enjeux = csrd.enjeux.all()
     enjeu_attenuation = enjeux[1]
+    enjeu_attenuation.selection = True
     enjeu_attenuation.materiel = True
     enjeu_attenuation.save()
     esrs_materielle = enjeu_attenuation.esrs
