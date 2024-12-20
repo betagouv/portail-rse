@@ -271,6 +271,8 @@ CSP_CONFIGURATION = {
             "data:",  # some images are defined this way
             # matomo :
             "stats.beta.gouv.fr",
+            # S3 scaleway :
+            "sites-faciles.s3.fr-par.scw.cloud",
         ],
         "style-src": [
             SELF,
