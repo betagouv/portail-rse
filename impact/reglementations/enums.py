@@ -390,6 +390,7 @@ class EtapeCSRD:
         "selection-enjeux",
         "analyse-materialite",
         "collection-donnees-entreprise",
+        "redaction-rapport-durabilite",
     ]
 
     @classmethod
@@ -432,5 +433,9 @@ ETAPES_CSRD = [
     EtapeCSRD(
         id="collection-donnees-entreprise",
         nom="Collecter les données de son entreprise",
+    ),
+    EtapeCSRD(
+        id="redaction-rapport-durabilite",
+        nom="Rédiger son rapport de durabilité",
     ),
 ]

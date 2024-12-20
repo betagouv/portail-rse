@@ -16,6 +16,7 @@ from django.shortcuts import redirect
 from django.template.loader import get_template
 from django.template.loader import TemplateDoesNotExist
 from django.urls import reverse_lazy
+from openpyxl import load_workbook
 from openpyxl import Workbook
 
 from entreprises.models import CaracteristiquesAnnuelles
@@ -581,7 +582,7 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
     match EtapeCSRD.get(id_etape).id:
         ## légèrement plus lisible qu'un `if`
         case "collection-donnees-entreprise":
-            nb_enjeux_non_analyses = csrd.enjeux.selectionnes().non_analyses().count()
+            nb_enjeux_non_analyses = csrd.enjeux.non_analyses().count()
             context |= {
                 "can_download": nb_enjeux_non_analyses
                 != csrd.enjeux.selectionnes().count(),
@@ -659,6 +660,11 @@ def _build_xlsx(enjeux, csrd=None, materiels=False):
 
                 numero_ligne += 1
 
+    filename = "enjeux_csrd.xlsx" if not materiels else "enjeux_csrd_materiels.xlsx"
+    return _xlsx_response(workbook, filename)
+
+
+def _xlsx_response(workbook, filename):
     with NamedTemporaryFile() as tmp:
         workbook.save(tmp.name)
         tmp.seek(0)
@@ -668,7 +674,42 @@ def _build_xlsx(enjeux, csrd=None, materiels=False):
         xlsx_stream,
         content_type="application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet",
     )
-    filename = "enjeux_csrd.xlsx" if not materiels else "enjeux_csrd_materiels.xlsx"
-    response["Content-Disposition"] = f"filename='{filename}'"
+    response["Content-Disposition"] = f"filename={filename}"
 
     return response
+
+
+@login_required
+@csrd_required
+def datapoints_xlsx(request, _, csrd=None):
+    materiel = request.GET.get("materiel", True) != "false"
+    esrs_a_supprimer = _esrs_materiel_a_supprimer(csrd, materiel)
+    workbook = load_workbook("impact/static/CSRD/ESRS_Data_Points_EFRAG.xlsx")
+    for esrs in esrs_a_supprimer:
+        titre_onglet = esrs.replace("_", " ")
+        workbook.remove(workbook[titre_onglet])
+
+    filename = (
+        "datapoints_csrd_materiels.xlsx"
+        if materiel
+        else "datapoints_csrd_non_materiels.xlsx"
+    )
+    return _xlsx_response(workbook, filename)
+
+
+def _esrs_materiel_a_supprimer(csrd: RapportCSRD, materiel: bool):
+    tous_les_esrs = set(ESRS.values)
+
+    if materiel:
+        enjeux_materiels = csrd.enjeux.materiels()
+        esrs_materiels = set((enjeu.esrs for enjeu in enjeux_materiels))
+        esrs_a_supprimer = tous_les_esrs - esrs_materiels
+    else:
+        enjeux_non_materiels = csrd.enjeux.non_materiels()
+        esrs_non_materiels = set((enjeu.esrs for enjeu in enjeux_non_materiels))
+        esrs_a_supprimer = tous_les_esrs - esrs_non_materiels
+
+    # ne pas supprimer ESRS_1 et ESRS_2 car ils n'existent pas dans le fichier .xlsx
+    esrs_a_supprimer -= set(("ESRS_1", "ESRS_2"))
+
+    return esrs_a_supprimer

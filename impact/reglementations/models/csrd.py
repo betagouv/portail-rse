@@ -189,13 +189,16 @@ class EnjeuQuerySet(models.QuerySet):
         return self.filter(modifiable=True)
 
     def materiels(self):
-        return self.filter(materiel=True)
+        return self.selectionnes().filter(materiel=True)
 
     def non_materiels(self):
-        return self.filter(materiel=False)
+        return self.selectionnes().filter(materiel=False)
+
+    def analyses(self):
+        return self.selectionnes().filter(materiel__isnull=False)
 
     def non_analyses(self):
-        return self.filter(materiel__isnull=True)
+        return self.selectionnes().filter(materiel__isnull=True)
 
     def environnement(self):
         return self.filter(esrs__startswith="ESRS_E")

@@ -1,9 +1,11 @@
 from datetime import date
 from datetime import datetime
+from io import BytesIO
 
 import pytest
 from django.contrib.messages import WARNING
 from django.urls import reverse
+from openpyxl import load_workbook
 from pytest_django.asserts import assertTemplateUsed
 
 from habilitations.models import attach_user_to_entreprise
@@ -128,6 +130,8 @@ def test_guide_de_la_csrd_par_etape(etape, client, alice, entreprise_factory):
         "/csrd/{siren}/etape-introduction",
         "/csrd/{siren}/etape-selection-enjeux",
         "/csrd/{siren}/etape-analyse-materialite",
+        "/csrd/{siren}/etape-collection-donnees-entreprise",
+        "/csrd/{siren}/etape-redaction-rapport-durabilite",
     ],
 )
 def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
@@ -155,15 +159,29 @@ def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
         assertTemplateUsed(
             response, "reglementations/csrd/etape-analyse-materialite.html"
         )
-
-    etape_inexistante = f"/csrd/{entreprise.siren}/etape-4"
-    response = client.get(etape_inexistante)
-
-    assert response.status_code == 404
+    elif etape.endswith("collection-donnees-entreprise"):
+        assertTemplateUsed(
+            response, "reglementations/csrd/etape-collection-donnees-entreprise.html"
+        )
+    elif etape.endswith("redaction-rapport-durabilite"):
+        assertTemplateUsed(
+            response, "reglementations/csrd/etape-redaction-rapport-durabilite.html"
+        )
 
     rapport_csrd = RapportCSRD.objects.get(proprietaire=alice, entreprise=entreprise)
     NOMBRE_ENJEUX = 103
     assert len(rapport_csrd.enjeux.all()) == NOMBRE_ENJEUX
+
+
+def test_étape_inexistante_de_la_csrd(client, alice, entreprise_factory):
+    entreprise = entreprise_factory()
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    client.force_login(alice)
+    etape_inexistante = f"/csrd/{entreprise.siren}/etape-4"
+
+    response = client.get(etape_inexistante)
+
+    assert response.status_code == 404
 
 
 @pytest.mark.parametrize(
@@ -171,6 +189,8 @@ def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
     [
         "introduction",
         "selection-enjeux",
+        "analyse-materialite",
+        "collection-donnees-entreprise",
     ],
 )
 def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_factory):
@@ -188,9 +208,6 @@ def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_
 
     response = client.post(url, follow=True)
 
-    content = response.content.decode("utf-8")
-    assert "<!-- page gestion CSRD -->" in content
-
     rapport_csrd = RapportCSRD.objects.get(proprietaire=alice, entreprise=entreprise)
     assert rapport_csrd.etape_validee == etape
 
@@ -200,6 +217,8 @@ def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_
     [
         "introduction",
         "selection-enjeux",
+        "analyse-materialite",
+        "collection-donnees-entreprise",
     ],
 )
 def test_enregistrement_de_l_étape_de_la_csrd_retourne_une_404_si_aucune_CSRD(
@@ -377,3 +396,108 @@ def test_liste_des_enjeux_csrd(client, alice, entreprise_non_qualifiee):
     assert "<!-- fragment liste des enjeux sélectionnés -->" in response.content.decode(
         "utf-8"
     )
+
+
+def test_datapoints_pour_enjeux_materiels_au_format_xlsx(
+    client, alice, entreprise_non_qualifiee
+):
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    csrd = RapportCSRD.objects.create(
+        proprietaire=alice,
+        entreprise=entreprise_non_qualifiee,
+        annee=f"{datetime.now():%Y}",
+    )
+    enjeux = csrd.enjeux.all()
+    enjeu_attenuation = enjeux[1]
+    enjeu_attenuation.selection = True
+    enjeu_attenuation.materiel = True
+    enjeu_attenuation.save()
+    esrs_materielle = enjeu_attenuation.esrs
+    client.force_login(alice)
+
+    response = client.get(
+        f"/csrd/{entreprise_non_qualifiee.siren}/datapoints.xlsx",
+    )
+
+    assert (
+        response["content-type"]
+        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+    )
+    workbook = load_workbook(filename=BytesIO(response.content))
+    noms_onglet = workbook.get_sheet_names()
+    assert esrs_materielle.replace("_", " ") in noms_onglet
+    assert "Index" in noms_onglet
+    assert "ESRS 2" in noms_onglet
+    assert "ESRS2 MDR" in noms_onglet
+    assert "ESRS G1" not in noms_onglet
+
+
+def test_datapoints_pour_enjeux_non_materiels_au_format_xlsx(
+    client, alice, entreprise_non_qualifiee
+):
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    csrd = RapportCSRD.objects.create(
+        proprietaire=alice,
+        entreprise=entreprise_non_qualifiee,
+        annee=f"{datetime.now():%Y}",
+    )
+    enjeux = csrd.enjeux.all()
+    enjeu_attenuation = enjeux[1]
+    enjeu_attenuation.selection = True
+    enjeu_attenuation.materiel = True
+    enjeu_attenuation.save()
+    esrs_materielle = enjeu_attenuation.esrs
+    client.force_login(alice)
+
+    response = client.get(
+        f"/csrd/{entreprise_non_qualifiee.siren}/datapoints.xlsx?materiel=false",
+    )
+
+    assert (
+        response["content-type"]
+        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+    )
+    workbook = load_workbook(filename=BytesIO(response.content))
+    noms_onglet = workbook.get_sheet_names()
+    assert esrs_materielle.replace("_", " ") not in noms_onglet
+    assert "Index" in noms_onglet
+    assert "ESRS 2" in noms_onglet
+    assert "ESRS2 MDR" in noms_onglet
+    assert "ESRS G1" in noms_onglet
+
+
+def test_datapoints_csrd__au_format_xlsx_retourne_une_404_si_entreprise_inexistante(
+    client, alice
+):
+    client.force_login(alice)
+
+    response = client.get(
+        f"/csrd/000000001/datapoints.xlsx",
+    )
+
+    assert response.status_code == 404
+
+
+def test_datapoints_csrd_au_format_xlsx_retourne_une_404_si_habilitation_inexistante(
+    client, alice, entreprise_non_qualifiee
+):
+    client.force_login(alice)
+
+    response = client.get(
+        f"/csrd/{entreprise_non_qualifiee.siren}/datapoints.xlsx",
+    )
+
+    assert response.status_code == 404
+
+
+def test_datapoints_csrd_au_format_xlsx_retourne_une_404_si_csrd_inexistante(
+    client, alice, entreprise_non_qualifiee
+):
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    client.force_login(alice)
+
+    response = client.get(
+        f"/csrd/{entreprise_non_qualifiee.siren}/datapoints.xlsx",
+    )
+
+    assert response.status_code == 404

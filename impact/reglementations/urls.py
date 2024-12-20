@@ -114,6 +114,11 @@ urlpatterns = [
         views.csrd.enjeux_materiels_xlsx,
         name="enjeux_materiels_xlsx",
     ),
+    path(
+        "csrd/<str:siren>/datapoints.xlsx",
+        views.csrd.datapoints_xlsx,
+        name="datapoints_xlsx",
+    ),
 ]
 
 # Fragments HTMX
