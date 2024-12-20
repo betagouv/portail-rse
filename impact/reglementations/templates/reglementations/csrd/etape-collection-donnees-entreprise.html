@@ -12,19 +12,49 @@
 
             <div class="fr-col">
                 <h2>{{ etape.nom }}</h2>
-                <p>
-                    Télécharger vos données ESG matérielles et non matérielles :
-                    <ul>
-                        <li>
-                            <a class="fr-link fr-link--download" download
-                               href="{% url 'reglementations:datapoints_xlsx' csrd.entreprise.siren %}">ESRS contenant des enjeux matériels</a>
-                        </li>
-                        <li>
-                            <a class="fr-link fr-link--download" download
-                               href="{% url 'reglementations:datapoints_xlsx' csrd.entreprise.siren %}?materiel=false">ESRS sans enjeux matériels</a>
-                        </li>
-                    </ul>
-                </p>
+                <h3>Analyse de la matérialité des informations élémentaires (points de données ou « data points »)</h3>
+
+                <p>La phase 1 "analyse de double matérialité" vous a permis de déterminer vos enjeux de durabilité matériels. Cette phase 2 vous permet de déterminer les indicateurs pertinents sur lesquels vous allez reporter, puis collecter les données exigées.</p>
+
+                <p>La matérialité des informations s’appréhende en fonction des critères suivants : (i) l’importance de l’information élémentaire pour décrire l’enjeu ou (ii) son utilité pour répondre aux besoins des utilisateurs.</p>
+
+
+                <div class="fr-container">
+                    <div class="fr-grid-row fr-grid-row--middle">
+                        <div class="fr-col-8">
+                            <h6>Que faire ?</h6>
+                            <ul class="csrd-list csrd-list--bold">
+                                <li>Téléchargez les exigences de publications des ESRS de vos enjeux ESG prioritaires, puis sélectionnez les points de données à reporter.
+                                    <div>
+                                        <a class="fr-link fr-link--download" download
+                                           href="{% url 'reglementations:datapoints_xlsx' csrd.entreprise.siren %}">Exigences de publication matérielles</a>
+                                    </div>
+                                </li>
+                                <li>Complétez, si pertinent, votre analyse avec les exigences de publication des autres ESRS.
+                                    <div>
+                                        <a class="fr-link fr-link--download" download
+                                           href="{% url 'reglementations:datapoints_xlsx' csrd.entreprise.siren %}?materiel=false">Exigences de publication non-matérielles</a>
+                                    </div>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+
+                <p>Pour vous aidez, vous pouvez consulter le logigramme permettant de déterminer les informations à inclure au titre des ESRS.</p>
+
+                <div class="fr-accordions-group fr-mb-4w">
+                    <section class="fr-accordion">
+                        <h3 class="fr-accordion__title">
+                            <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-114">Consulter le logigramme</button>
+                        </h3>
+                        <div class="fr-collapse" id="accordion-114">
+                            <img class="fr-responsive-img" src="https://sites-faciles.s3.fr-par.scw.cloud/sites-faciles/images/processus-decision-point-de-donnee.original.svg" alt="">
+                        </div>
+                    </section>
+                </div>
+
                 <p>
                     <a href="{{ sites_faciles_base_url }}/realiser-le-rapport-de-durabilite/collecter-les-donnees-de-son-entreprise/" target="_blank">En savoir plus sur les démarches de collecte des données</a>
                 </p>
