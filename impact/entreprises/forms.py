@@ -126,7 +126,7 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
     confirmation_naf = forms.CharField(
         label="Code NAF/APE",
         help_text="Merci de vérifier et confirmer le code APE de votre entreprise",
-        validators=[validators.RegexValidator(regex="^\d{2}\.\d{1,2}[A-Z]$")],
+        validators=[validators.RegexValidator(regex=r"^\d{2}\.\d{1,2}[A-Z]$")],
     )
 
     class Meta:
