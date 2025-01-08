@@ -22,6 +22,9 @@ class RapportCSRDQuerySet(models.QuerySet):
     def personnels(self):
         return self.exclude(proprietaire=None)
 
+    def publies(self):
+        return self.exclude(lien_rapport="")
+
 
 class RapportCSRD(TimestampedModel):
     entreprise = models.ForeignKey(
@@ -43,6 +46,9 @@ class RapportCSRD(TimestampedModel):
     )
     etape_validee = models.TextField(
         verbose_name="étape validée du rapport CSRD", null=True
+    )
+    lien_rapport = models.URLField(
+        verbose_name="lien du rapport CSRD publié", blank=True
     )
 
     objects = RapportCSRDQuerySet.as_manager()
@@ -179,6 +185,9 @@ class RapportCSRD(TimestampedModel):
             ord=Cast("modifiable", output_field=IntegerField()) * F("pk")
         ).order_by("-ord", "pk")
         return qs
+
+    def est_publie(self):
+        return bool(self.lien_rapport)
 
 
 class EnjeuQuerySet(models.QuerySet):
