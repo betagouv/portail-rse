@@ -13,26 +13,39 @@
 
             <div class="fr-col">
                 <h2>{{ etape.nom }}</h2>
+
+                <h3>Publier son rapport</h3>
+
                 <p>
-                    Une fois validé et publié, partager le lien de publication de votre rapport publié pour valider la mise en conformité de votre CSRD.
+                    La phase 2 "collecte des données" vous a permis de compléter vos indicateurs de durabilité. Après les avoir mis en forme et certifiés par un commissaire aux comptes ou un organisme tiers indépendant, vous devez publier votre rapport de durabilité sur votre site internet.
                 </p>
 
+                <div class="fr-container fr-pb-4w">
+                    <div class="fr-grid-row fr-grid-row--middle">
+                        <div class="fr-col-8">
+                            <h6>Que faire ?</h6>
+                            <ul class="csrd-list csrd-list--bold">
+                                <li>
+                                    Après avoir publié votre rapport de durabilité sur votre site internet, insérez le lien URL pour mettre à jour le statut de votre rapport de durabilité sur votre tableau de bord.
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="fr-col-4 col-right">
+                            <span id="telechargement-xlsx">
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <p>
+                    <a href="{{ sites_faciles_base_url }}/realiser-le-rapport-de-durabilite/rediger-son-rapport-de-durabilite/" target="_blank">Découvrir comment rédiger son rapport de durabilité</a>
+                </p>
                 <hr>
 
                 <div class="fr-container">
-                    {% for rapport in rapports_csrd %}
-                        <div class="fr-grid-row fr-mb-2w">
-                            <div class="fr-col">Rapport de durabilité {{ rapport.annee }}</div>
-                            <div class="fr-col">
-                                {% if rapport.lien_rapport %}
-                                    <span class="fr-badge fr-badge--blue-ecume">Publié</span>
-                                {% else %}
-                                    <span class="fr-badge">Non-publié</span>
-                                {% endif %}
-                            </div>
-                            <div class="fr-col">TODO: lien</div>
-                        </div>
-                    {% endfor %}
+                    <div hx-target="this">
+                        {% include "fragments/lien_rapport.html" %}
+                    </div>
                 </div>
 
             </div>

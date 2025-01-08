@@ -26,6 +26,7 @@ from habilitations.models import is_user_attached_to_entreprise
 from reglementations.enums import ESRS
 from reglementations.enums import EtapeCSRD
 from reglementations.enums import ETAPES_CSRD
+from reglementations.forms.csrd import LienRapportCSRDForm
 from reglementations.models import RapportCSRD
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
@@ -569,7 +570,7 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
                 pk=csrd_id, entreprise=entreprise
             )
         except RapportCSRD.DoesNotExist:
-            # par ex. : l'utilisateur à selectionné une autre entreprise
+            # par ex. : l'utilisateur a selectionné une autre entreprise
             request.session.pop("rapport_csrd_courant")
 
     if not request.session.get("rapport_csrd_courant"):
@@ -582,8 +583,11 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
             annee=annee,
         )
 
-    # on récupère les rapports si plusieurs existants
-    rapports_csrd = RapportCSRD.objects.filter(entreprise=entreprise).order_by("annee")
+    # on récupère les rapports si plusieurs existants, pour permettre une sélection
+    rapports_csrd = RapportCSRD.objects.filter(
+        entreprise=entreprise,
+        proprietaire=None if habilitation.is_confirmed else request.user,
+    ).order_by("annee")
 
     context = {
         "entreprise": entreprise,
@@ -603,7 +607,8 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
                 != csrd.enjeux.selectionnes().count(),
                 "nb_enjeux_non_analyses": nb_enjeux_non_analyses,
             }
-        # à compléter au besoin
+        case "redaction-rapport-durabilite":
+            context |= {"form": LienRapportCSRDForm(instance=csrd)}
 
     return HttpResponse(template.render(context, request))
 
