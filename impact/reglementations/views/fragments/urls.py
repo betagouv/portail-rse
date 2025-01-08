@@ -8,6 +8,7 @@ from .enjeux import selection_enjeux
 from .enjeux import suppression_enjeu
 from .enjeux_materiels import liste_enjeux_materiels
 from .enjeux_materiels import selection_enjeux_materiels
+from .rapport import selection_rapport
 from reglementations.views.fragments.enjeux_materiels import (
     rafraichissement_enjeux_materiels,
 )
@@ -58,5 +59,10 @@ urlpatterns = [
         "csrd/fragments/liste_enjeux_materiels/<int:csrd_id>",
         liste_enjeux_materiels,
         name="liste_enjeux_materiels",
+    ),
+    path(
+        "csrd/fragments/rapport/selection_rapport/<int:csrd_id>",
+        selection_rapport,
+        name="selection_rapport",
     ),
 ]

@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Collection des données de l'entreprise{% endblock %}
+{% block title %}Enregistrement du rapport de durabilité{% endblock %}
 
 {% block content %}
-
-    {% include "snippets/csrd_header.html" %}
+    <div id="csrd_header">
+        {% include "snippets/csrd_header.html" %}
+    </div>
 
     <div class="fr-container fr-mb-8w">
         <div class="fr-grid-row fr-pb-6w">
@@ -13,8 +14,27 @@
             <div class="fr-col">
                 <h2>{{ etape.nom }}</h2>
                 <p>
-                    Étape en préparation : vous pourrez bientôt enregistrer le lien de téléchargement de votre Rapport de Durabilité.
+                    Une fois validé et publié, partager le lien de publication de votre rapport publié pour valider la mise en conformité de votre CSRD.
                 </p>
+
+                <hr>
+
+                <div class="fr-container">
+                    {% for rapport in rapports_csrd %}
+                        <div class="fr-grid-row fr-mb-2w">
+                            <div class="fr-col">Rapport de durabilité {{ rapport.annee }}</div>
+                            <div class="fr-col">
+                                {% if rapport.lien_rapport %}
+                                    <span class="fr-badge fr-badge--blue-ecume">Publié</span>
+                                {% else %}
+                                    <span class="fr-badge">Non-publié</span>
+                                {% endif %}
+                            </div>
+                            <div class="fr-col">TODO: lien</div>
+                        </div>
+                    {% endfor %}
+                </div>
+
             </div>
 
         </div>
