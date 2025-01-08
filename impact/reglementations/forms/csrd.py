@@ -122,3 +122,17 @@ class EnjeuxMaterielsRapportCSRDForm(forms.Form):
         for enjeu in self.qs:
             enjeu.materiel = self.cleaned_data[f"enjeu_{enjeu.pk}"]
             enjeu.save()
+
+
+class LienRapportCSRDForm(forms.ModelForm):
+    lien_rapport = forms.URLField()
+
+    class Meta:
+        model = RapportCSRD
+        fields = ["lien_rapport"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["lien_rapport"].widget.attrs.update(
+            {"class": "fr-input", "placeholder": "URL du rapport CSRD"}
+        )

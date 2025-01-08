@@ -1,0 +1,30 @@
+<div class="fr-summary fr-mb-2w">
+    <div class="fr-summary__title">
+        <div class="fr-col">
+            <h3 class="fr-text--lg fr-mb-0">Rapport de durabilité {{ csrd.annee }}</h3>
+        </div>
+    </div>
+    <div class="fr-summary__content fr-grid-row fr-grid-row--middle">
+        <div class="fr-col-3">
+            {% if csrd.lien_rapport %}
+                <span class="fr-badge fr-badge--success">Enregistré</span>
+            {% else %}
+                <span class="fr-badge">Non-enregistré</span>
+            {% endif %}
+        </div>
+
+        <div class="fr-col-9">
+            <form hx-post="{% url 'reglementations:soumettre_lien_rapport' csrd_id=form.instance.pk %}"
+                  class="fr-grid-row">
+                <div class="fr-col">
+                    {% csrf_token %}
+                    {{ form.lien_rapport }}
+                </div>
+                <div class="fr-col-auto">
+                    <button class="fr-btn fr-icon-checkbox-circle-line fr-btn--icon"></button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
