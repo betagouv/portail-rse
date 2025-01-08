@@ -3,7 +3,21 @@
         <div class="fr-col-12 fr-col-md-6">
             <p class="fr-badge fr-badge--info fr-badge--no-icon">{{ csrd.entreprise.denomination }}</p>
             <br>
-            <h1>Rapport de durabilité {{ annee }}</h1>
+            <h1>Rapport de durabilité {{ csrd.annee }}</h1>
+            {% if rapports_csrd.count > 1 %}
+                <div class="fr-mb-2w">
+                    Rapports CSRD disponibles&#8239;:&nbsp;
+                    {% for rapport in rapports_csrd %}
+                        <span class="fr-ml-1w">
+                            {% if rapport.pk == csrd.pk %}
+                                <strong>{{ rapport.annee }}</strong>
+                            {% else %}
+                                <a href="#" hx-post="{% url 'reglementations:selection_rapport' csrd_id=rapport.pk %}" hx-target="body">{{ rapport.annee }}</a>
+                            {% endif %}
+                        </span>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>

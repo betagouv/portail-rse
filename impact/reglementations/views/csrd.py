@@ -562,14 +562,28 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
         csrd.save()
         redirect("reglementations:gestion_csrd", siren=siren, id_etape=id_etape)
 
-    # les prefetch de l'enjeu parent évitent des N+1 au niveau du template
-    csrd, _ = RapportCSRD.objects.prefetch_related(
-        "enjeux", "enjeux__parent"
-    ).get_or_create(
-        entreprise=entreprise,
-        proprietaire=None if habilitation.is_confirmed else request.user,
-        annee=annee,
-    )
+    # on vérifie si on a sélectionné une année manuellement
+    if csrd_id := request.session.get("rapport_csrd_courant"):
+        try:
+            csrd = RapportCSRD.objects.prefetch_related("enjeux", "enjeux__parent").get(
+                pk=csrd_id, entreprise=entreprise
+            )
+        except RapportCSRD.DoesNotExist:
+            # par ex. : l'utilisateur à selectionné une autre entreprise
+            request.session.pop("rapport_csrd_courant")
+
+    if not request.session.get("rapport_csrd_courant"):
+        # les prefetch de l'enjeu parent évitent des N+1 au niveau du template
+        csrd, _ = RapportCSRD.objects.prefetch_related(
+            "enjeux", "enjeux__parent"
+        ).get_or_create(
+            entreprise=entreprise,
+            proprietaire=None if habilitation.is_confirmed else request.user,
+            annee=annee,
+        )
+
+    # on récupère les rapports si plusieurs existants
+    rapports_csrd = RapportCSRD.objects.filter(entreprise=entreprise).order_by("annee")
 
     context = {
         "entreprise": entreprise,
@@ -577,6 +591,7 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
         "csrd": csrd,
         "annee": annee,
         "steps": ETAPES_CSRD,
+        "rapports_csrd": rapports_csrd,
     }
 
     match EtapeCSRD.get(id_etape).id:
