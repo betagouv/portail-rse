@@ -29,7 +29,7 @@
                             <div class="esrs-organizer--card">
                                 <div class="esrs-organizer--card-title">
                                     <p class="fr-badge fr-badge--sm {% if nombre_enjeux_selectionnes_par_esrs.ESRS_E3 %}fr-badge--blue-ecume{% endif %}">{{ nombre_enjeux_selectionnes_par_esrs.ESRS_E3|default:0 }}/{{ nombre_enjeux_par_esrs.ESRS_E3|default:0 }} Enjeux de durabilité</p>
-                                    <b>ESRS E3 - Eau et ressources marines</b>
+                                    <b>ESRS E3 - Ressources hydriques et marines</b>
                                     <button class="fr-btn fr-btn--sm fr-icon-edit-fill" title="Ouvre la modale d'information sur l'ESRS E3" aria-hidden="true" data-fr-opened="false" aria-controls="modal-ESRS_E3" hx-get="{% url "reglementations:selection_enjeux" csrd.pk "ESRS_E3" %}" hx-target="#selection_enjeux_ESRS_E3"></button>
                                 </div>
                             </div>
