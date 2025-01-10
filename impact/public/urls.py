@@ -18,4 +18,5 @@ urlpatterns = [
     path("contact", views.contact, name="contact"),
     path("reglementations", views.reglementations, name="reglementations"),
     path("stats", views.stats, name="stats"),
+    path("liens-menu", views.fragment_liens_menu, name="fragment_liens_menu"),
 ]
