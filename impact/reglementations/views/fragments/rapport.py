@@ -27,13 +27,17 @@ def selection_rapport(request, csrd_id):
 def soumettre_lien_rapport(request, csrd_id):
     csrd = get_object_or_404(RapportCSRD, pk=csrd_id)
     form = LienRapportCSRDForm(instance=csrd, data=request.POST)
+    # les erreurs de format sont captées sur l'input du formulaire coté frontend
+    status = 400
 
     if form.is_valid():
         form.save()
+        status = 200
 
     return render(
         request,
         template_name="fragments/lien_rapport.html",
+        status=status,
         context={
             "csrd": csrd,
             "form": form,
