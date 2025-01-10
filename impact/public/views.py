@@ -28,6 +28,10 @@ def index(request):
     return render(request, "public/index.html")
 
 
+def fragment_liens_menu(request):
+    return render(request, "snippets/boutons_menu.html")
+
+
 def mentions_legales(request):
     return render(request, "public/mentions-legales.html")
 

@@ -2,6 +2,7 @@ import html
 
 import pytest
 from django.urls import reverse
+from pytest_django.asserts import assertTemplateUsed
 
 from habilitations.models import attach_user_to_entreprise
 from reglementations.views import REGLEMENTATIONS
@@ -192,3 +193,23 @@ def test_page_publique_des_reglementations(client):
     assert context["reglementations"] == REGLEMENTATIONS
     for REGLEMENTATION in REGLEMENTATIONS:
         assert REGLEMENTATION.title in content
+
+
+def test_fragments_liens_menu_si_visiteur_non_connecté(client):
+    response = client.get("/liens-menu")
+
+    assert response.status_code == 200
+    assertTemplateUsed(response, "snippets/boutons_menu.html")
+    content = response.content.decode("utf-8")
+    assert "Se connecter" in content
+
+
+def test_fragments_liens_menu_si_visiteur_non_connecté(client, alice):
+    client.force_login(alice)
+
+    response = client.get("/liens-menu")
+
+    assert response.status_code == 200
+    assertTemplateUsed(response, "snippets/boutons_menu.html")
+    content = response.content.decode("utf-8")
+    assert "Alice" in content
