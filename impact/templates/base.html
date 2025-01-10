@@ -68,7 +68,13 @@
                                                 <div class="fr-collapse fr-menu" id="menu-header">
                                                     <ul class="fr-menu__list">
                                                         <li><a class="fr-nav__link" href="{% url 'users:account' %}" target="_self"><span class="fr-icon-account-circle-fill fr-mr-1w" aria-hidden="true"></span> Mon compte</a></li>
-                                                        <li><a class="fr-nav__link" href="{% url 'users:logout' %}" target="_self"><span class="fr-icon-lock-unlock-fill fr-mr-1w" aria-hidden="true"></span> Se déconnecter</a></li>
+                                                        <li>
+                                                            <form>
+                                                                {% csrf_token %}
+                                                                <a class="fr-nav__link" href="#" hx-post="{% url 'users:logout' %}" hx-target="body">
+                                                                    <span class="fr-icon-lock-unlock-fill fr-mr-1w" aria-hidden="true"></span> Se déconnecter</a>
+                                                            </form>
+                                                        </li>
                                                     </ul>
                                                 </div>
                                             </li>
