@@ -8,7 +8,7 @@
                 <div class="fr-mb-2w">
                     Rapports CSRD disponibles&#8239;:&nbsp;
                     {% for rapport in rapports_csrd %}
-                        <span class="fr-ml-1w">
+                        <span class="fr-ml-1w" id="_selection_{{ rapport.annee }}">
                             {% if rapport.pk == csrd.pk %}
                                 <strong>{{ rapport.annee }}</strong>
                             {% else %}
