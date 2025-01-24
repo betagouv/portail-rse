@@ -25,7 +25,7 @@ def dernier_exercice_comptable(siren):
             timeout=RATIOS_FINANCIERS_TIMEOUT,
         )
     except Exception as e:
-        with sentry_sdk.push_scope() as scope:
+        with sentry_sdk.new_scope() as scope:
             scope.set_level("info")
             sentry_sdk.capture_exception(e)
         raise APIError()

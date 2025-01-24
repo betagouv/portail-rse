@@ -25,7 +25,7 @@ def indicateurs_bdese(siren, annee):
         url = f"https://egapro.travail.gouv.fr/api/public/declaration/{siren}/{annee}"
         response = requests.get(url, timeout=EGAPRO_TIMEOUT)
     except Exception as e:
-        with sentry_sdk.push_scope() as scope:
+        with sentry_sdk.new_scope() as scope:
             scope.set_level("info")
             sentry_sdk.capture_exception(e)
         raise APIError()
@@ -71,7 +71,7 @@ def is_index_egapro_published(siren, annee):
         url = f"https://egapro.travail.gouv.fr/api/public/declaration/{siren}/{annee}"
         response = requests.get(url, timeout=EGAPRO_TIMEOUT)
     except Exception as e:
-        with sentry_sdk.push_scope() as scope:
+        with sentry_sdk.new_scope() as scope:
             scope.set_level("info")
             sentry_sdk.capture_exception(e)
         raise APIError()

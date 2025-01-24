@@ -29,7 +29,7 @@ def recherche_unite_legale(siren):
             timeout=SIRENE_TIMEOUT,
         )
     except Exception as e:
-        with sentry_sdk.push_scope() as scope:
+        with sentry_sdk.new_scope() as scope:
             scope.set_level("info")
             sentry_sdk.capture_exception(e)
         raise APIError(SERVER_ERROR)
@@ -129,7 +129,7 @@ def renouvelle_jeton_acces_insee():
             headers={"Authorization": f"Basic {settings.API_INSEE_KEY}"},
         )
     except Exception as e:
-        with sentry_sdk.push_scope() as scope:
+        with sentry_sdk.new_scope() as scope:
             scope.set_level("info")
             sentry_sdk.capture_exception(e)
         raise APIError(SERVER_ERROR)
@@ -139,7 +139,7 @@ def renouvelle_jeton_acces_insee():
             jeton = response.json()["access_token"]
             settings.API_INSEE_TOKEN_PATH.write_text(jeton)
         except Exception as e:
-            with sentry_sdk.push_scope() as scope:
+            with sentry_sdk.new_scope() as scope:
                 scope.set_level("info")
                 sentry_sdk.capture_exception(e)
             raise APIError(SERVER_ERROR)

@@ -23,7 +23,7 @@ def recherche(siren):
         url = f"https://recherche-entreprises.api.gouv.fr/search?q={siren}&page=1&per_page=1&mtm_campaign=portail-rse"
         response = requests.get(url, timeout=RECHERCHE_ENTREPRISE_TIMEOUT)
     except Exception as e:
-        with sentry_sdk.push_scope() as scope:
+        with sentry_sdk.new_scope() as scope:
             scope.set_level("info")
             sentry_sdk.capture_exception(e)
         raise APIError(SERVER_ERROR)
