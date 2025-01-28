@@ -87,7 +87,7 @@ def selection_enjeux_materiels(request, csrd_id, esrs):
 
     form = EnjeuxMaterielsRapportCSRDForm(request.POST, qs=qs)
 
-    if form.is_valid():
+    if form.is_valid() and not csrd.bloque:
         form.save()
 
     response = render(

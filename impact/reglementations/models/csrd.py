@@ -50,6 +50,9 @@ class RapportCSRD(TimestampedModel):
     lien_rapport = models.URLField(
         verbose_name="lien du rapport CSRD publié", blank=True
     )
+    bloque = models.BooleanField(
+        verbose_name="rapport bloqué après publication", default=False
+    )
 
     objects = RapportCSRDQuerySet.as_manager()
 
@@ -120,7 +123,20 @@ class RapportCSRD(TimestampedModel):
 
         # on vérifie systématiquement les contraintes métiers avant la sauvegarde
         self.clean()
+
+        # on vérifie si le rapport est actuellement bloqué, auquel cas seuls l'URL de publication
+        # et la date de modification sont mis à jour
+        kwargs |= (
+            {"update_fields": ["lien_rapport", "updated_at", "bloque"]}
+            if self.bloque
+            else {}
+        )
+
         super().save(*args, **kwargs)
+
+        if self.bloque:
+            # plus d'autres modifications possibles si le rapport est bloqué
+            return
 
         if enjeux:
             # Cette partie gènère un N+1 :
@@ -188,6 +204,7 @@ class RapportCSRD(TimestampedModel):
         return qs
 
     def est_publie(self):
+        # utilisé pour déterminer si le rapport est modifiable ou pas
         return bool(self.lien_rapport)
 
 
