@@ -28,6 +28,9 @@ class EnjeuxRapportCSRDForm(forms.ModelForm):
             self.initial = {"enjeux": qs.selectionnes()}
 
     def save(self, *args, **kwargs):
+        if self.instance.bloque:
+            return
+
         super().save(*args, **kwargs)
 
         for enjeu in self.instance.enjeux.filter(esrs=self.esrs):
@@ -136,3 +139,9 @@ class LienRapportCSRDForm(forms.ModelForm):
         self.fields["lien_rapport"].widget.attrs.update(
             {"class": "fr-input", "placeholder": "URL du rapport CSRD"}
         )
+
+    def clean(self):
+        if self.cleaned_data.get("lien_rapport"):
+            self.instance.bloque = True
+
+        return self.cleaned_data
