@@ -12,17 +12,26 @@
             {% include "snippets/gestion_csrd_menu.html" %}
 
             <div class="fr-col">
-                <h2>Analyser la double matérialité</h2>
-                <h3>{{ etape.nom }}</h3>
+                <h2>Phase 1 - Analyser la double matérialité</h2>
+                <h3>Étape 3 - {{ etape.nom }}</h3>
+
                 <p>
-                    Sélectionner les enjeux ESG qui ressortent comme matériels ou non après avoir évalué vos enjeux à analyser.
+                    Après avoir finalisé la liste de vos enjeux ESG, vous devez évaluer et hiérarchiser l’importance relative des impacts matériels, risques et opportunités identifiés.
+                    L’évaluation est réalisée du point de vue de la matérialité d’impact et de la matérialité financière.
                 </p>
-                <p>
-                    <a href="{{ sites_faciles_base_url }}/realiser-le-rapport-de-durabilite/analyser-la-double-materialite/etape-3-selectionner-les-enjeux-esg-materiels/" target="_blank">En savoir plus sur l'évaluation des enjeux</a>
-                </p>
+                <div class="fr-grid-row fr-grid-row--right">
+                    <a class="fr-link fr-icon-lightbulb-fill fr-link--icon-left" href="{{ sites_faciles_base_url }}/realiser-le-rapport-de-durabilite/analyser-la-double-materialite/etape-3-selectionner-les-enjeux-esg-materiels/">En savoir plus : Étape 3 - Sélectionner les enjeux ESG matériels </a>
+                </div>
+
+                <h4 class="fr-pt-6w">Sous-étape 3 : Synthétiser les évaluations</h4>
+
+                <h6>Que faire ?</h6>
+                <ul class="csrd-list csrd-list--bold">
+                    <li>Reprenez la liste de vos enjeux ESG après les avoir évalués. Indiquez s’ils sont matériels ou non matériels. </li>
+                </ul>
 
                 <div id="nb-enjeux-non-analyses">
-			<!-- OOB -->
+            <!-- OOB -->
                 </div>
 
                 <div class="fr-container fr-pb-4w">
@@ -58,7 +67,6 @@
             </div>
         </div>
     </div>
-
 
     <p>
         {% include "snippets/csrd_submit.html" with prochaine_etape="collection-donnees-entreprise" %}
