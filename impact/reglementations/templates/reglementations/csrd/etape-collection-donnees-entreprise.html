@@ -12,38 +12,49 @@
             {% include "snippets/gestion_csrd_menu.html" %}
 
             <div class="fr-col">
-                <h2>{{ etape.nom }}</h2>
-                <h3>Analyse de la matérialité des informations élémentaires (points de données ou « data points »)</h3>
+                <h2>Phase 2 - {{ etape.nom }}</h2>
 
-                <p>La phase 1 "analyse de double matérialité" vous a permis de déterminer vos enjeux de durabilité matériels. Cette phase 2 vous permet de déterminer les indicateurs pertinents sur lesquels vous allez reporter, puis collecter les données exigées.</p>
-
-                <p>La matérialité des informations s’appréhende en fonction des critères suivants : (i) l’importance de l’information élémentaire pour décrire l’enjeu ou (ii) son utilité pour répondre aux besoins des utilisateurs.</p>
-
-
-                <div class="fr-container">
-                    <div class="fr-grid-row fr-grid-row--middle">
-                        <div class="fr-col-8">
-                            <h6>Que faire ?</h6>
-                            <ul class="csrd-list csrd-list--bold">
-                                <li>Téléchargez les exigences de publications des ESRS de vos enjeux ESG prioritaires, puis sélectionnez les points de données à reporter.
-                                    <div>
-                                        <a class="fr-link fr-link--download" download
-                                           href="{% url 'reglementations:datapoints_xlsx' csrd.entreprise.siren %}">Exigences de publication matérielles</a>
-                                    </div>
-                                </li>
-                                <li>Complétez, si pertinent, votre analyse avec les exigences de publication des autres ESRS.
-                                    <div>
-                                        <a class="fr-link fr-link--download" download
-                                           href="{% url 'reglementations:datapoints_xlsx' csrd.entreprise.siren %}?materiel=false">Exigences de publication non-matérielles</a>
-                                    </div>
-                                </li>
-                            </ul>
-
-                        </div>
+                <div class="fr-callout">
+                    <p class="fr-callout__text">
+                        La phase 1 "analyse de double matérialité" vous a permis de déterminer vos enjeux de durabilité matériels.
+                        Cette phase 2 vous permet de déterminer les indicateurs pertinents sur lesquels vous allez reporter, puis collecter les données exigées.
+                    </p>
+                    <div class="fr-grid-row fr-grid-row--right fr-pt-3w">
+                        <a class="fr-link fr-icon-lightbulb-fill fr-link--icon-left" href="{{ sites_faciles_base_url }}/realiser-le-rapport-de-durabilite/collecter-les-donnees-de-son-entreprise/">En savoir plus : Phase 2 – Collecter les données de son entreprise</a>
                     </div>
                 </div>
 
-                <p>Pour vous aidez, vous pouvez consulter le logigramme permettant de déterminer les informations à inclure au titre des ESRS.</p>
+                <h3>Étape 1 - Analyser la matérialité des informations élémentaires</h2>
+
+                <p>
+                    En vous appuyant sur la liste de vos enjeux ESG prioritaires définis lors de l’analyse de double matérialité, sélectionnez les points de données que vous devez reporter après avoir lu leur définition et appliqué le processus de décision.
+                </p>
+                <p>
+                    La matérialité des informations s’appréhende en fonction des critères suivants : (i) l’importance de l’information élémentaire pour décrire l’enjeu ou (ii) son utilité pour répondre aux besoins des utilisateurs.
+                </p>
+                <div class="fr-grid-row fr-grid-row--right fr-pb-4w">
+                    <a class="fr-link fr-icon-lightbulb-fill fr-link--icon-left" href="{{ sites_faciles_base_url }}/realiser-le-rapport-de-durabilite/collecter-les-donnees-de-son-entreprise/etape-1-analyser-la-materialite-des-informations-elementaires/">En savoir plus : Étape 1 - Analyser la matérialité des informations élémentaires</a>
+                </div>
+
+                <h6>Que faire ?</h6>
+                <ul class="csrd-list csrd-list--bold">
+                    <li>Téléchargez les exigences de publications des ESRS de vos enjeux ESG prioritaires, puis sélectionnez les points de données à reporter.
+                        <div>
+                            <a class="fr-link fr-link--download" download
+                               href="{% url 'reglementations:datapoints_xlsx' csrd.entreprise.siren %}">Exigences de publication matérielles</a>
+                        </div>
+                    </li>
+                    <li>Complétez, si pertinent, votre analyse avec les exigences de publication des autres ESRS.
+                        <div>
+                            <a class="fr-link fr-link--download" download
+                               href="{% url 'reglementations:datapoints_xlsx' csrd.entreprise.siren %}?materiel=false">Exigences de publication non-matérielles</a>
+                        </div>
+                    </li>
+                </ul>
+
+                <p>
+                    Pour vous aidez, vous pouvez consulter le logigramme permettant de déterminer les informations à inclure au titre des ESRS.
+                </p>
 
                 <div class="fr-accordions-group fr-mb-4w">
                     <section class="fr-accordion">
@@ -55,17 +66,6 @@
                         </div>
                     </section>
                 </div>
-
-                <p>
-                    <a href="{{ sites_faciles_base_url }}/realiser-le-rapport-de-durabilite/collecter-les-donnees-de-son-entreprise/" target="_blank">En savoir plus sur les démarches de collecte des données</a>
-                </p>
-
-                {% if nb_enjeux_non_analyses %}
-                    <div class="fr-alert fr-alert--info fr-mb-2w">
-                        <p class="fr-alert__description">Il vous reste {{ nb_enjeux_non_analyses }} enjeu{{ nb_enjeux_non_analyses|pluralize:"x"}} à analyser.</p>
-                    </div>
-                {% endif %}
-
             </div>
 
         </div>
