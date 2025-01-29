@@ -1,5 +1,9 @@
 {% if csrd.nombre_enjeux_selectionnes %}
-    <a href="{% url 'reglementations:enjeux_xlsx' csrd.entreprise.siren %}" class="fr-btn">Télécharger ma liste<span class="fr-icon-arrow-down-fill" aria-hidden="true"></span></a>
+    <a class="fr-btn fr-btn--icon-left fr-icon-download-line fr-my-1w" href="{% url 'reglementations:enjeux_xlsx' csrd.entreprise.siren %}">
+        Télécharger ma liste d'enjeux à analyser (XLSX)
+    </a>
 {% else %}
-    <button class="fr-btn fr-icon-arrow-down-fill fr-btn--icon-right" disabled>Télécharger ma liste</button>
+    <button class="fr-btn fr-btn--icon-left fr-icon-download-line fr-my-1w" disabled>
+        Télécharger ma liste d'enjeux à analyser (XLSX)
+    </button>
 {% endif %}
