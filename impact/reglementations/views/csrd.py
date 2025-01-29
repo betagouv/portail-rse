@@ -326,10 +326,10 @@ class CSRDReglementation(Reglementation):
 
         if rapport and rapport.etape_validee:
             etape_suivante = EtapeCSRD.id_suivant(rapport.etape_validee)
-            label_gestion_csrd = "Reprendre ma CSRD"
+            label_gestion_csrd = "Reprendre l’actualisation de mon rapport"
         else:
             etape_suivante = "introduction"
-            label_gestion_csrd = "Accéder à l'espace Rapport de Durabilité"
+            label_gestion_csrd = "Actualiser mon Rapport de Durabilité"
 
         primary_action = ReglementationAction(
             reverse_lazy(
@@ -373,6 +373,7 @@ class CSRDReglementation(Reglementation):
                 prochaine_echeance=premiere_annee_publication,
             )
         else:
+            primary_action.title = "Tester un Rapport de Durabilité"
             return ReglementationStatus(
                 status=ReglementationStatus.STATUS_NON_SOUMIS,
                 status_detail="Vous n'êtes pas soumis à cette réglementation.",
