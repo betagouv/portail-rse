@@ -1239,10 +1239,7 @@ def test_calcule_etat_si_non_soumis(entreprise_factory, alice):
     assert (
         reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation."
     )
-    assert (
-        reglementation.primary_action.title
-        == "Accéder à l'espace Rapport de Durabilité"
-    )
+    assert reglementation.primary_action.title == "Tester un Rapport de Durabilité"
     assert reglementation.primary_action.url == reverse(
         "reglementations:gestion_csrd",
         kwargs={
@@ -1279,10 +1276,7 @@ def test_calcule_etat_si_soumis_en_2025_et_delegable(entreprise_factory, alice):
         == "Vous êtes soumis à cette réglementation à partir de 2025 sur les données de l'exercice comptable 2024 car votre société est cotée sur un marché réglementé, l'effectif du groupe est supérieur à 500 salariés, le bilan du groupe est supérieur à 30M€ et le chiffre d'affaires du groupe est supérieur à 60M€. Vous pouvez déléguer cette obligation à votre société-mère. Vous devez publier le Rapport de Durabilité en même temps que le rapport de gestion."
     )
     assert reglementation.prochaine_echeance == 2025
-    assert (
-        reglementation.primary_action.title
-        == "Accéder à l'espace Rapport de Durabilité"
-    )
+    assert reglementation.primary_action.title == "Actualiser mon Rapport de Durabilité"
     assert reglementation.primary_action.url == reverse(
         "reglementations:gestion_csrd",
         kwargs={
@@ -1314,10 +1308,7 @@ def test_calcule_etat_si_soumis_en_2027_et_non_delegable(entreprise_factory, ali
         == "Vous êtes soumis à cette réglementation à partir de 2027 sur les données de l'exercice comptable 2026 car votre société est cotée sur un marché réglementé, votre effectif est supérieur à 10 salariés et votre bilan est supérieur à 450k€. Vous devez publier le Rapport de Durabilité en même temps que le rapport de gestion."
     )
     assert reglementation.prochaine_echeance == 2027
-    assert (
-        reglementation.primary_action.title
-        == "Accéder à l'espace Rapport de Durabilité"
-    )
+    assert reglementation.primary_action.title == "Actualiser mon Rapport de Durabilité"
     assert reglementation.primary_action.url == reverse(
         "reglementations:gestion_csrd",
         kwargs={
@@ -2153,10 +2144,7 @@ def test_calcule_etat_avec_CSRD_initialisée(csrd, alice):
         csrd.entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
-    assert (
-        reglementation.primary_action.title
-        == "Accéder à l'espace Rapport de Durabilité"
-    )
+    assert reglementation.primary_action.title == "Actualiser mon Rapport de Durabilité"
     assert reglementation.primary_action.url == reverse(
         "reglementations:gestion_csrd",
         kwargs={
@@ -2175,7 +2163,10 @@ def test_calcule_etat_avec_CSRD_et_étapes_validées(csrd, alice):
         csrd.entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
-    assert reglementation.primary_action.title == "Reprendre ma CSRD"
+    assert (
+        reglementation.primary_action.title
+        == "Reprendre l’actualisation de mon rapport"
+    )
     assert reglementation.primary_action.url == reverse(
         "reglementations:gestion_csrd",
         kwargs={

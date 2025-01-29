@@ -63,12 +63,9 @@ def bdese_avec_accord(bdese_factory, entreprise_factory, alice):
 @pytest.fixture
 def csrd(entreprise_factory, alice):
     entreprise = entreprise_factory(
-        code_pays_etranger_sirene=None,
-        est_cotee=False,
-        appartient_groupe=False,
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
-        tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
-        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     )
     habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
     csrd = RapportCSRD.objects.create(
