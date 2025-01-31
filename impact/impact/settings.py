@@ -51,9 +51,11 @@ INSTALLED_APPS = [
     "django.contrib.postgres",
     "django_vite",
     "anymail",
+    "corsheaders",
     "django_hosts",
 ]
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django_hosts.middleware.HostsRequestMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -349,3 +351,7 @@ if DEBUG_TOOLBAR := os.getenv("DEBUG_TOOLBAR"):
 SITES_FACILES_BASE_URL = os.getenv(
     "SITES_FACILES_BASE_URL", "https://portail-rse.beta.gouv.fr"
 )
+
+# Élargissement autorisation CORS pour sites-faciles
+# sert pour le menu qui est téléchargé depuis le site de gestion
+CORS_ALLOWED_ORIGINS = [SITES_FACILES_BASE_URL]
