@@ -99,11 +99,11 @@
                                                 </ul>
                                             </div>
                                         </li>
+                                    {% elif current_entreprise %}
+                                        {% url 'reglementations:tableau_de_bord' current_entreprise.siren as url_page %}
+                                        <li class="fr-nav__item"><a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Tableau de bord</a></li>
                                     {% else %}
-                                        {% for entreprise in user.entreprises %}
-                                            {% url 'reglementations:tableau_de_bord' entreprise.siren as url_page %}
-                                            <li class="fr-nav__item"><a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Tableau de bord</a></li>
-                                        {% endfor %}
+                                        <li class="fr-nav__item"><a class="fr-nav__link" href="{% url 'reglementations:tableau_de_bord' %}">Tableau de bord</a></li>
                                     {% endif %}
                                     <li class="fr-nav__item"><a class="fr-nav__link" href="https://portail-rse.beta.gouv.fr/csrd/" target="_self"{% if request.path == csrd_path %} aria-current="page"{% endif %}>Espace CSRD</a></li>
                                 </ul>
