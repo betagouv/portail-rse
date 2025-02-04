@@ -17,17 +17,75 @@ from habilitations.models import Habilitation
 from habilitations.models import is_user_attached_to_entreprise
 
 
+@pytest.mark.django_db()
+def test_get_current_entreprise_avec_une_entreprise_en_session(
+    client, entreprise_factory
+):
+    siren = "123456789"
+    entreprise = entreprise_factory(siren=siren)
+    session = client.session
+    session["entreprise"] = siren
+    session.save()
+
+    request = client.get("/").wsgi_request
+
+    assert get_current_entreprise(request) == entreprise
+
+
+@pytest.mark.django_db()
 def test_get_current_entreprise_avec_une_entreprise_en_session_mais_inexistante_en_base(
-    client, alice
+    client,
 ):
     session = client.session
     session["entreprise"] = "123456789"
     session.save()
+
     request = client.get("/").wsgi_request
 
     assert get_current_entreprise(request) is None
     session = client.session
     assert "entreprise" not in session
+
+
+@pytest.mark.django_db()
+def test_get_current_entreprise_sans_entreprise_en_session(client):
+    request = client.get("/").wsgi_request
+
+    assert get_current_entreprise(request) is None
+
+
+def test_get_current_entreprise_avec_utilisateur_rattache_a_une_entreprise(
+    client, alice, entreprise_factory
+):
+    entreprise = entreprise_factory()
+    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    client.force_login(alice)
+
+    request = client.get("/").wsgi_request
+
+    assert get_current_entreprise(request) == entreprise
+
+
+def test_get_current_entreprise_avec_utilisateur_rattache_a_plusieurs_entreprise(
+    client, alice, entreprise_factory
+):
+    entreprise1 = entreprise_factory(siren="000000001")
+    entreprise2 = entreprise_factory(siren="000000002")
+    attach_user_to_entreprise(alice, entreprise1, "Présidente")
+    attach_user_to_entreprise(alice, entreprise2, "Présidente")
+    client.force_login(alice)
+
+    request = client.get("/").wsgi_request
+
+    assert get_current_entreprise(request) == entreprise1
+
+
+def test_get_current_entreprise_avec_utilisateur_sans_entreprise(client, alice):
+    client.force_login(alice)
+
+    request = client.get("/").wsgi_request
+
+    assert get_current_entreprise(request) is None
 
 
 def test_search_and_create_entreprise(db, mock_api_infos_entreprise):
