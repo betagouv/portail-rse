@@ -355,3 +355,4 @@ SITES_FACILES_BASE_URL = os.getenv(
 # Élargissement autorisation CORS pour sites-faciles
 # sert pour le menu qui est téléchargé depuis le site de gestion
 CORS_ALLOWED_ORIGINS = [SITES_FACILES_BASE_URL]
+CORS_ALLOW_CREDENTIALS = True
