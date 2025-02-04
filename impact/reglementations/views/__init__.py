@@ -9,6 +9,7 @@ from django.urls import reverse_lazy
 
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
+from entreprises.views import get_current_entreprise
 from habilitations.models import is_user_attached_to_entreprise
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
 from reglementations.views.base import ReglementationStatus
@@ -35,7 +36,17 @@ REGLEMENTATIONS = [
 
 
 @login_required
-def tableau_de_bord(request, siren):
+def tableau_de_bord(request, siren=None):
+    if not siren:
+        entreprise = get_current_entreprise(request)
+        if not entreprise:
+            messages.warning(
+                request,
+                "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à votre tableau de bord",
+            )
+            return redirect("entreprises:entreprises")
+        return redirect("reglementations:tableau_de_bord", siren=entreprise.siren)
+
     entreprise = get_object_or_404(Entreprise, siren=siren)
     if not is_user_attached_to_entreprise(request.user, entreprise):
         raise PermissionDenied
