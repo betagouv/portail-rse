@@ -71,6 +71,11 @@ urlpatterns = [
         name="fiche_plan_vigilance",
     ),
     path(
+        "tableau-de-bord",
+        views.tableau_de_bord,
+        name="tableau_de_bord",
+    ),
+    path(
         "tableau-de-bord/<str:siren>",
         views.tableau_de_bord,
         name="tableau_de_bord",

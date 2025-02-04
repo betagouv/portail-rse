@@ -3,6 +3,7 @@ from datetime import timedelta
 
 import pytest
 from django.contrib.auth.models import AnonymousUser
+from django.contrib.messages import WARNING
 from django.urls import reverse
 from freezegun import freeze_time
 
@@ -149,3 +150,41 @@ def test_tableau_de_bord_entreprise_qualifiee_dans_le_passe(
         f"Les réglementations affichées sont basées sur des informations de l'exercice comptable {date_cloture_dernier_exercice.year}."
         in content
     ), content
+
+
+def test_tableau_de_bord_sans_siren_redirige_vers_celui_de_l_entreprise_courante(
+    client, entreprise, alice
+):
+    client.force_login(alice)
+
+    url = "/tableau-de-bord"
+    response = client.get(url)
+
+    assert response.status_code == 302
+    assert response.url == f"/tableau-de-bord/{entreprise.siren}"
+
+
+def test_tableau_de_bord_sans_siren_et_sans_entreprise(client, alice):
+    # Cas limite où un utilisateur n'est rattaché à aucune entreprise
+    client.force_login(alice)
+
+    url = "/tableau-de-bord"
+    response = client.get(url, follow=True)
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
+    messages = list(response.context["messages"])
+    assert messages[0].level == WARNING
+    assert (
+        messages[0].message
+        == "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à votre tableau de bord"
+    )
+
+
+def test_tableau_de_bord_avec_siren_inexistant(client, alice):
+    client.force_login(alice)
+
+    url = "/tableau-de-bord/yolo"
+    response = client.get(url)
+
+    assert response.status_code == 404
