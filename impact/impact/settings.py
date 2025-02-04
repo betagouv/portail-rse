@@ -184,7 +184,7 @@ SENDINBLUE_CONFIRM_EMAIL_TEMPLATE = 1
 # Users
 AUTH_USER_MODEL = "users.User"
 LOGIN_URL = "/connexion"
-LOGIN_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/tableau-de-bord"
 LOGOUT_REDIRECT_URL = "/"
 
 # Sentry
