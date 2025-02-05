@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.core.mail import EmailMessage
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.urls import reverse
 
 from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
@@ -29,7 +30,11 @@ def index(request):
 
 
 def fragment_liens_menu(request):
-    return render(request, "snippets/boutons_menu.html")
+    return render(
+        request,
+        "snippets/boutons_menu.html",
+        {"redirect_path": reverse("reglementations")},
+    )
 
 
 def mentions_legales(request):
