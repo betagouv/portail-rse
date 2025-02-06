@@ -148,6 +148,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 COOKIE_DOMAIN = os.getenv("COOKIE_DOMAIN", "")
 CSRF_COOKIE_DOMAIN = COOKIE_DOMAIN
 CSRF_COOKIE_SAMESITE = None
+SESSION_COOKIE_SAMESITE = None
 
 # SameSite :
 # must be "Strict", other sites do not need to see session cookies
