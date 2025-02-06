@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 
 import dj_database_url
+from corsheaders.defaults import default_headers
 from csp.constants import NONCE
 from csp.constants import SELF
 from csp.constants import UNSAFE_INLINE
@@ -356,3 +357,4 @@ SITES_FACILES_BASE_URL = os.getenv(
 # sert pour le menu qui est téléchargé depuis le site de gestion
 CORS_ALLOWED_ORIGINS = [SITES_FACILES_BASE_URL]
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = (*default_headers, "hx-current-url")
