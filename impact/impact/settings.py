@@ -357,4 +357,17 @@ SITES_FACILES_BASE_URL = os.getenv(
 # sert pour le menu qui est téléchargé depuis le site de gestion
 CORS_ALLOWED_ORIGINS = [SITES_FACILES_BASE_URL]
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_HEADERS = (*default_headers, "hx-current-url")
+
+# liste des en-têtes HTMX : https://htmx.org/reference/#headers
+HTMX_REQUEST_HEADERS = (
+    "hx-boosted",
+    "hx-current-url",
+    "hx-history-restore-request",
+    "hx-prompt",
+    "hx-request",
+    "hx-trigger-name",
+    "hx-target",
+    "hx-trigger",
+)
+
+CORS_ALLOW_HEADERS = (*default_headers, *HTMX_REQUEST_HEADERS)
