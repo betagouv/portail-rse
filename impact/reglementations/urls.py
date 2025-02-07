@@ -91,23 +91,6 @@ urlpatterns = [
         views.bdese.toggle_bdese_completion,
         name="toggle_bdese_completion",
     ),
-    path("csrd", views.csrd.guide_csrd, name="csrd"),
-    path("csrd/guide/<str:siren>", views.csrd.guide_csrd, name="csrd"),
-    path(
-        "csrd/guide/<str:siren>/phase-<int:phase>",
-        views.csrd.guide_csrd,
-        name="csrd_phase",
-    ),
-    path(
-        "csrd/guide/<str:siren>/phase-<int:phase>/etape-<int:etape>",
-        views.csrd.guide_csrd,
-        name="csrd_etape",
-    ),
-    path(
-        "csrd/guide/<str:siren>/phase-<int:phase>/etape-<int:etape>-<int:sous_etape>",
-        views.csrd.guide_csrd,
-        name="csrd_sous_etape",
-    ),
     path(
         "csrd/<str:siren>/etape-<str:id_etape>",
         views.csrd.gestion_csrd,
