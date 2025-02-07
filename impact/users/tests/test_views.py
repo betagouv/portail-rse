@@ -247,6 +247,22 @@ def test_echec_de_creation_car_fonctions_trop_longue(client, db):
     assert not Entreprise.objects.filter(siren="123456789")
 
 
+def test_la_déconnexion_renvoie_vers_le_site_vitrine(client, alice):
+    client.force_login(alice)
+
+    response = client.get("/deconnexion")
+
+    assert response.status_code == 302
+    assert response.url == settings.SITES_FACILES_BASE_URL
+
+
+def test_la_déconnexion_renvoie_vers_le_site_vitrine_même_si_non_connecté(client):
+    response = client.get("/deconnexion")
+
+    assert response.status_code == 302
+    assert response.url == settings.SITES_FACILES_BASE_URL
+
+
 def test_account_page_is_not_public(client):
     response = client.get("/mon-compte")
 

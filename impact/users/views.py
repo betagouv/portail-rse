@@ -101,6 +101,18 @@ def confirm_email(request, uidb64, token):
     return redirect("/")
 
 
+def deconnexion(request):
+    """Déconnexion par méthode GET
+
+    La déconnexion django5 utilise uniquement la méthode POST.
+    Cependant, sa réutilisation sur le site vitrine pose des problèmes d'autorisation
+    (CORS et CSRF).
+    https://docs.djangoproject.com/en/5.1/topics/auth/default/#django.contrib.auth.logout
+    """
+    logout(request)
+    return redirect(settings.SITES_FACILES_BASE_URL)
+
+
 @login_required()
 def account(request):
     account_form = UserEditionForm(instance=request.user)
