@@ -256,6 +256,7 @@ def test_visualisation_des_enjeux(client, alice, entreprise_non_qualifiee):
 
 
 def test_selection_et_deselection_d_enjeux(client, alice, entreprise_non_qualifiee):
+    # update : les enjeux sont désormais sélectionnés par défaut
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
     csrd = RapportCSRD.objects.create(
         proprietaire=alice,
@@ -265,8 +266,8 @@ def test_selection_et_deselection_d_enjeux(client, alice, entreprise_non_qualifi
     enjeux = csrd.enjeux.all()
     enjeu_adaptation = enjeux[0]
     enjeu_attenuation = enjeux[1]
-    enjeu_attenuation.selection = True
-    enjeu_attenuation.save()
+    # enjeu_attenuation.selection = False
+    # enjeu_attenuation.save()
     enjeu_energie = enjeux[2]
     client.force_login(alice)
 
@@ -278,9 +279,12 @@ def test_selection_et_deselection_d_enjeux(client, alice, entreprise_non_qualifi
     enjeu_adaptation.refresh_from_db()
     enjeu_attenuation.refresh_from_db()
     enjeu_energie.refresh_from_db()
-    assert [enjeu_adaptation, enjeu_energie] == list(Enjeu.objects.selectionnes())
+
+    assert [enjeu_attenuation] == list(Enjeu.objects.filter(selection=False))
     assert response.status_code == 200
+
     context = response.context
+
     assert context["csrd"] == csrd
     assert "<!-- fragment esrs -->" in response.content.decode("utf-8")
 
@@ -377,22 +381,30 @@ def test_liste_des_enjeux_csrd(client, alice, entreprise_non_qualifiee):
         annee=f"{datetime.now():%Y}",
     )
     enjeux = csrd.enjeux.all()
-    enjeu_adaptation = enjeux[0]
-    enjeu_attenuation = enjeux[1]
-    enjeu_attenuation.selection = True
-    enjeu_attenuation.save()
-    enjeu_energie = enjeux[2]
-    client.force_login(alice)
 
+    enjeu_attenuation = enjeux[1]
+    enjeu_attenuation.selection = False
+    enjeu_attenuation.save()
+
+    assert (
+        enjeux.filter(selection=False).count() == 1
+    ), "Un des enjeux doit être désélectionné"
+
+    client.force_login(alice)
     response = client.get(f"/csrd/fragments/liste_enjeux_selectionnes/{csrd.id}")
 
     assert response.status_code == 200
+
     context = response.context
-    assert context["enjeux_par_esg"] == {
-        "environnement": {"ESRS E1 - Changement climatique": [enjeu_attenuation]},
-        "social": {},
-        "gouvernance": {},
-    }
+
+    assert (
+        len(
+            context["enjeux_par_esg"]["environnement"][
+                "ESRS E1 - Changement climatique"
+            ]
+        )
+        == 2
+    ), "Un des enjeux doit être désélectionné"
     assert "<!-- fragment liste des enjeux sélectionnés -->" in response.content.decode(
         "utf-8"
     )

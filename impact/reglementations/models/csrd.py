@@ -81,6 +81,7 @@ class RapportCSRD(TimestampedModel):
                     description=enjeu.description,
                     parent=parent,
                     modifiable=False,
+                    selection=True,
                 )
                 tmp_enjeux.append(ne)
 
