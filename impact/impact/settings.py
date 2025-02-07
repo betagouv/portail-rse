@@ -189,11 +189,17 @@ DEFAULT_FROM_EMAIL = "ne-pas-repondre@portail-rse.beta.gouv.fr"
 CONTACT_EMAIL = os.getenv("CONTACT_EMAIL")
 SENDINBLUE_CONFIRM_EMAIL_TEMPLATE = 1
 
+# Sites-faciles:
+# URL of sites-faciles instance for Portail RSE
+SITES_FACILES_BASE_URL = os.getenv(
+    "SITES_FACILES_BASE_URL", "https://portail-rse.beta.gouv.fr"
+)
+
 # Users
 AUTH_USER_MODEL = "users.User"
 LOGIN_URL = "/connexion"
 LOGIN_REDIRECT_URL = "/tableau-de-bord"
-LOGOUT_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = SITES_FACILES_BASE_URL
 
 # Sentry
 SENTRY_DSN = os.getenv("SENTRY_DSN")
@@ -351,12 +357,6 @@ if DEBUG_TOOLBAR := os.getenv("DEBUG_TOOLBAR"):
         + 1,
         "debug_toolbar.middleware.DebugToolbarMiddleware",
     )
-
-# Sites-faciles:
-# URL of sites-faciles instance for Portail RSE
-SITES_FACILES_BASE_URL = os.getenv(
-    "SITES_FACILES_BASE_URL", "https://portail-rse.beta.gouv.fr"
-)
 
 # Élargissement autorisation CORS pour sites-faciles
 # sert pour le menu qui est téléchargé depuis le site de gestion
