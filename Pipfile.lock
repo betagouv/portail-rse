@@ -351,12 +351,12 @@
         },
         "django": {
             "hashes": [
-                "sha256:19bbca786df50b9eca23cee79d495facf55c8f5c54c529d9bf1fe7b5ea086af3",
-                "sha256:c46eb936111fffe6ec4bc9930035524a8be98ec2f74d8a0ff351226a3e52f459"
+                "sha256:1e39eafdd1b185e761d9fab7a9f0b9fa00af1b37b25ad980a8aa0dac13535690",
+                "sha256:8d203400bc2952fbfb287c2bbda630297d654920c72a73cc82a9ad7926feaad5"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.10'",
-            "version": "==5.1.5"
+            "version": "==5.1.6"
         },
         "django-anymail": {
             "extras": [
@@ -803,6 +803,7 @@
                 "sha256:f815fcc2b2a457977724bad97fb4854022980f51ce7b136925e336b530545ae1",
                 "sha256:fc39f5c27f962ec8660d8d20c24762431131b5d8c672b44b0a54cf2b5bcde9b9"
             ],
+            "markers": "python_version >= '3.8'",
             "version": "==0.2.3.post1"
         }
     },
