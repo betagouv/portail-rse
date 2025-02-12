@@ -266,8 +266,6 @@ def test_selection_et_deselection_d_enjeux(client, alice, entreprise_non_qualifi
     enjeux = csrd.enjeux.all()
     enjeu_adaptation = enjeux[0]
     enjeu_attenuation = enjeux[1]
-    # enjeu_attenuation.selection = False
-    # enjeu_attenuation.save()
     enjeu_energie = enjeux[2]
     client.force_login(alice)
 
@@ -482,6 +480,7 @@ def test_datapoints_pour_enjeux_non_materiels_au_format_xlsx(
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     noms_onglet = workbook.sheetnames
+
     assert esrs_materielle.replace("_", " ") not in noms_onglet
     assert "Index" in noms_onglet
     assert "ESRS 2" in noms_onglet
