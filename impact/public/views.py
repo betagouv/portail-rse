@@ -31,7 +31,7 @@ def index(request):
 def fragment_liens_menu(request):
     return render(
         request,
-        "snippets/boutons_menu.html",
+        "snippets/entete_page.html",
     )
 
 
