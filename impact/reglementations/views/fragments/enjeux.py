@@ -203,6 +203,6 @@ def liste_enjeux_selectionnes(request, csrd_id):
             theme = ThemeESRS[esrs].value
             titre = TitreESRS[esrs].value
             enjeux_par_esg[theme][titre] = enjeux
-    context = {"enjeux_par_esg": enjeux_par_esg}
+    context = {"enjeux_par_esg": enjeux_par_esg, "csrd": csrd}
 
     return render(request, "fragments/liste_enjeux_selectionnes.html", context=context)
