@@ -203,10 +203,6 @@ class RapportCSRD(TimestampedModel):
         ).order_by("-ord", "pk")
         return qs
 
-    def est_publie(self):
-        # utilisé pour déterminer si le rapport est modifiable ou pas
-        return bool(self.lien_rapport)
-
 
 class EnjeuQuerySet(models.QuerySet):
     def selectionnes(self):

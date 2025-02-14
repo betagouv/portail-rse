@@ -14,7 +14,7 @@
         <label class="fr-label" for="id_details">Description de l'enjeu</label>
         <input class="fr-input" type="textarea" id="id_details" name="details" value="{{ form.details.value }}">
     </div>
-    <button type="submit" class="fr-btn">Valider</button>
+    <button type="submit" class="fr-btn" {% if csrd.bloque %}disabled{% endif %}>Valider</button>
 </form>
 
 <hr class="fr-mt-6v">
