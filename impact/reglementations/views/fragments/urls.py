@@ -36,7 +36,7 @@ urlpatterns = [
         name="deselection_enjeu",
     ),
     path(
-        "csrd/fragments/liste_enjeux_selectionnes/<int:csrd_id>",
+        "csrd/fragments/liste_enjeux_selectionnes/<int:csrd_id>/<int:selection>",
         liste_enjeux_selectionnes,
         name="liste_enjeux_selectionnes",
     ),

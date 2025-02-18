@@ -1,0 +1,8 @@
+{% if request.htmx %}
+    <span id="nb-enjeux-selectionnes" hx-swap-oob=true>
+        {{ csrd.nombre_enjeux_selectionnes }}
+    </span>
+    <span id="nb-enjeux-non-selectionnes" hx-swap-oob=true>
+        {{ csrd.nombre_enjeux_non_selectionnes }}
+    </span>
+{% endif %}
