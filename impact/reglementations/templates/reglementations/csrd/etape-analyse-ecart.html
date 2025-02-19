@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}{{ etape.nom }}{% endblock %}
+
+{% block content %}
+    <div id="csrd_header">
+        {% include "snippets/csrd_header.html" %}
+    </div>
+
+    <div class="fr-container fr-mb-8w">
+        <div class="fr-grid-row fr-pb-6w">
+            {% include "snippets/gestion_csrd_menu.html" %}
+
+            <div class="fr-col">
+                <h2>Phase 2 - Collecter les données de son entreprise</h2>
+                <h3>Étape 2 - {{ etape.nom }}</h3>
+
+                <p>
+                    L'analyse d'écart consiste à comparer les pratiques et les informations actuellement disponibles dans une organisation avec les attentes de divulgation spécifiques définies par les ESRS.
+                    Cette étape vous permet d’identifier les données déjà disponibles au sein de votre entreprise.
+                </p>
+                <div class="fr-grid-row fr-grid-row--right fr-pb-4w">
+                    <a class="fr-link fr-icon-lightbulb-fill fr-link--icon-left" href="{{ sites_faciles_base_url }}/realiser-le-rapport-de-durabilite/collecter-les-donnees-de-son-entreprise/etape-2-realiser-une-analyse-decart/" target="_blank" rel="noopener noreferrer">En savoir plus : Étape 2 - Réaliser une analyse d'écart</a>
+                </div>
+
+                <h6>Que faire ?</h6>
+                <ul class="csrd-list csrd-list--bold">
+                    <li>Téléversez vos documents publics susceptibles de contenir des informations relatives aux ESRS.</li>
+                    <li>Après analyse de l’IA, téléchargez les données classifiées par ESRS pour vous aider à rédiger votre rapport de durabilité.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <p>
+        {% include "snippets/csrd_submit.html" with prochaine_etape="redaction-rapport-durabilite" %}
+    </p>
+{% endblock %}
