@@ -131,6 +131,7 @@ def test_guide_de_la_csrd_par_etape(etape, client, alice, entreprise_factory):
         "/csrd/{siren}/etape-selection-enjeux",
         "/csrd/{siren}/etape-analyse-materialite",
         "/csrd/{siren}/etape-collection-donnees-entreprise",
+        "/csrd/{siren}/etape-analyse-ecart",
         "/csrd/{siren}/etape-redaction-rapport-durabilite",
     ],
 )
@@ -163,6 +164,8 @@ def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
         assertTemplateUsed(
             response, "reglementations/csrd/etape-collection-donnees-entreprise.html"
         )
+    elif etape.endswith("analyse-ecart"):
+        assertTemplateUsed(response, "reglementations/csrd/etape-analyse-ecart.html")
     elif etape.endswith("redaction-rapport-durabilite"):
         assertTemplateUsed(
             response, "reglementations/csrd/etape-redaction-rapport-durabilite.html"
@@ -191,6 +194,7 @@ def test_étape_inexistante_de_la_csrd(client, alice, entreprise_factory):
         "selection-enjeux",
         "analyse-materialite",
         "collection-donnees-entreprise",
+        "analyse-ecart",
     ],
 )
 def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_factory):
@@ -219,6 +223,7 @@ def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_
         "selection-enjeux",
         "analyse-materialite",
         "collection-donnees-entreprise",
+        "analyse-ecart",
     ],
 )
 def test_enregistrement_de_l_étape_de_la_csrd_retourne_une_404_si_aucune_CSRD(
