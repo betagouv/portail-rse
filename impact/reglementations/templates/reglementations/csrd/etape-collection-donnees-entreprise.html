@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Collection des données de l'entreprise{% endblock %}
+{% block title %}{{ etape.nom }}{% endblock %}
 
 {% block content %}
     <div id="csrd_header">
@@ -12,7 +12,7 @@
             {% include "snippets/gestion_csrd_menu.html" %}
 
             <div class="fr-col">
-                <h2>Phase 2 - {{ etape.nom }}</h2>
+                <h2>Phase 2 - Collecter les données de son entreprise</h2>
 
                 <div class="fr-callout">
                     <p class="fr-callout__text">
@@ -24,7 +24,7 @@
                     </div>
                 </div>
 
-                <h3>Étape 1 - Analyser la matérialité des informations élémentaires</h2>
+                <h3>Étape 1 - {{ etape.nom }}</h2>
 
                 <p>
                     En vous appuyant sur la liste de vos enjeux ESG prioritaires définis lors de l’analyse de double matérialité, sélectionnez les points de données que vous devez reporter après avoir lu leur définition et appliqué le processus de décision.
@@ -71,6 +71,6 @@
         </div>
 
         <p>
-            {% include "snippets/csrd_submit.html" with prochaine_etape="redaction-rapport-durabilite" %}
+            {% include "snippets/csrd_submit.html" with prochaine_etape="analyse-ecart" %}
         </p>
 {% endblock %}
