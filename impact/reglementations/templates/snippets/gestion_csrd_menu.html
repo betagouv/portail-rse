@@ -9,8 +9,13 @@
                             <li class="fr-sidemenu__item">
                                 <button
                                     class="fr-sidemenu__btn"
-                                    aria-expanded="true"
                                     aria-controls="fr-sidemenu-item-{{ step.id }}"
+                                    {% if etape in step.sous_etapes %}
+                                        aria-expanded="true"
+                                        aria-current="true"
+                                    {% else %}
+                                        aria-expanded="false"
+                                    {% endif %}
                                 >
                                     {{ step.nom }}
                                 </button>
