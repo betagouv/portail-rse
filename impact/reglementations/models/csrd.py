@@ -178,6 +178,9 @@ class RapportCSRD(TimestampedModel):
     def nombre_enjeux_selectionnes(self):
         return self.enjeux.filter(selection=True).count()
 
+    def nombre_enjeux_non_selectionnes(self):
+        return self.enjeux.filter(selection=False).count()
+
     def modifiable_par(self, utilisateur: "users.User") -> bool:
         # Vérifie si le rapport CSRD courant est modifiable par un utilisateur donné.
         # tip : un utilisateur anonyme n'a pas d'ID
@@ -207,6 +210,9 @@ class RapportCSRD(TimestampedModel):
 class EnjeuQuerySet(models.QuerySet):
     def selectionnes(self):
         return self.filter(selection=True)
+
+    def non_selectionnes(self):
+        return self.filter(selection=False)
 
     def modifiables(self):
         return self.filter(modifiable=True)

@@ -22,7 +22,7 @@
                                         {% for enjeu in enjeux %}
                                             <div class="esrs-organizer--table" id="enjeu-selectionne-{{ enjeu.id }}">
                                                 <p class="esrs-organizer--table-cell">{{ enjeu.nom }}</p>
-                                                {% if not csrd.bloque %}
+                                                {% if not csrd.bloque and selection %}
                                                     <div class="esrs-organizer--table-cell col-right">
                                                         <button hx-post="{% url 'reglementations:deselection_enjeu' enjeu.id %}" hx-params="none" hx-target="#enjeu-selectionne-{{ enjeu.id }}" hx-swap="outerHTML" class="fr-icon-delete-bin-line fr-icon--sm col-right" title="Désélectionner cet enjeu" ></button>
                                                     </div>
@@ -62,7 +62,7 @@
                                         {% for enjeu in enjeux %}
                                             <div class="esrs-organizer--table" id="enjeu-selectionne-{{ enjeu.id }}">
                                                 <p class="esrs-organizer--table-cell">{{ enjeu.nom }}</p>
-                                                {% if not csrd.bloque %}
+                                                {% if not csrd.bloque and selection %}
                                                     <div class="esrs-organizer--table-cell col-right">
                                                         <button hx-post="{% url 'reglementations:deselection_enjeu' enjeu.id %}" hx-params="none" hx-target="#enjeu-selectionne-{{ enjeu.id }}" hx-swap="outerHTML" class="fr-icon-delete-bin-line fr-icon--sm col-right" title="Désélectionner cet enjeu"></button>
                                                     </div>
@@ -102,7 +102,7 @@
                                         {% for enjeu in enjeux %}
                                             <div class="esrs-organizer--table" id="enjeu-selectionne-{{ enjeu.id }}">
                                                 <p class="esrs-organizer--table-cell">{{ enjeu.nom }}</p>
-                                                {% if not csrd.bloque %}
+                                                {% if not csrd.bloque and selection %}
                                                     <div class="esrs-organizer--table-cell col-right">
                                                         <button hx-post="{% url 'reglementations:deselection_enjeu' enjeu.id %}" hx-params="none" hx-target="#enjeu-selectionne-{{ enjeu.id }}" hx-swap="outerHTML" class="fr-icon-delete-bin-line fr-icon--sm col-right" title="Désélectionner cet enjeu"></button>
                                                     </div>
@@ -132,5 +132,7 @@
 {% else %}
     <p>Aucun enjeu sélectionné</p>
 {% endif %}
+
+{% include "snippets/tab_maj_nombre_enjeux.html" %}
 
 <!-- fragment liste des enjeux sélectionnés -->

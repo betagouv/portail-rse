@@ -389,7 +389,7 @@ def test_liste_des_enjeux_csrd(client, alice, entreprise_non_qualifiee):
     ), "Un des enjeux doit être désélectionné"
 
     client.force_login(alice)
-    response = client.get(f"/csrd/fragments/liste_enjeux_selectionnes/{csrd.id}")
+    response = client.get(f"/csrd/fragments/liste_enjeux_selectionnes/{csrd.id}/1")
 
     assert response.status_code == 200
 

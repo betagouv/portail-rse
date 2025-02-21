@@ -7,7 +7,6 @@ from functools import wraps
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
-from django.shortcuts import HttpResponse
 from django.shortcuts import HttpResponseRedirect
 from django.shortcuts import render
 from django.shortcuts import reverse
@@ -66,7 +65,11 @@ def enjeu_required(function):
 @require_http_methods(["GET", "POST"])
 def selection_enjeux(request, csrd_id, esrs):
     csrd = RapportCSRD.objects.get(id=csrd_id)
-    context = {"csrd": csrd}
+    # le nombre d'enjeux selectionnés et non-selectionnés sera modifié via OOB
+    context = {
+        "csrd": csrd,
+        "htmx": True,
+    }
 
     if request.method == "GET":
         return render(
@@ -143,12 +146,14 @@ def deselection_enjeu(request, enjeu_id):
     # note : la vue est "exempté" de CSRF parce que ce fragment est "emboité" dans un formulaire
     # la session contient donc un token CSRF à vérifier ... qu'on ne veut pas vérifier dans ce cas.
     enjeu = Enjeu.objects.get(id=enjeu_id)
-
     enjeu.selection = False
     enjeu.save()
 
+    context = {"csrd": enjeu.rapport_csrd}
+
+    # ce snippet est vide, à part une MAJ des décomptes dans les tabs effectuées par OOB
     # la chaine vide permet la suppression de l'enjeu dans l'interface web
-    return HttpResponse(status=200, content="")
+    return render(request, "snippets/tab_maj_nombre_enjeux.html", context=context)
 
 
 @login_required
@@ -181,7 +186,6 @@ def suppression_enjeu(request, enjeu_id):
 
 def rafraichissement_esg(request, csrd_id):
     csrd = RapportCSRD.objects.get(id=csrd_id)
-
     context = {"csrd": csrd}
 
     return render(request, "fragments/esrs.html", context=context)
@@ -190,19 +194,25 @@ def rafraichissement_esg(request, csrd_id):
 @login_required
 @csrd_required
 @require_http_methods(["GET"])
-def liste_enjeux_selectionnes(request, csrd_id):
+def liste_enjeux_selectionnes(request, csrd_id, selection):
+    # le paramètre de sélection permet de retourner soit les enjeux selectionnés (1), soit ceux non-selectionnés (0)
     csrd = RapportCSRD.objects.get(id=csrd_id)
-
     enjeux_par_esg = {"environnement": {}, "social": {}, "gouvernance": {}}
+
     for esrs in ESRS:
         enjeux = []
         for enjeu in csrd.enjeux_par_esrs(esrs):
-            if enjeu.selection:
+            if enjeu.selection == bool(selection):
                 enjeux.append(enjeu)
         if enjeux:
             theme = ThemeESRS[esrs].value
             titre = TitreESRS[esrs].value
             enjeux_par_esg[theme][titre] = enjeux
-    context = {"enjeux_par_esg": enjeux_par_esg, "csrd": csrd}
+
+    context = {
+        "enjeux_par_esg": enjeux_par_esg,
+        "csrd": csrd,
+        "selection": bool(selection),
+    }
 
     return render(request, "fragments/liste_enjeux_selectionnes.html", context=context)
