@@ -44,3 +44,15 @@ class HTMXRetargetMiddleware:
             response["HX-Retarget"] = new_target
 
         return response
+
+
+class HTMXRequestMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        request.htmx = request.headers.get("HX-Request") == "true"
+
+        response = self.get_response(request)
+
+        return response
