@@ -13,6 +13,7 @@ from django.http import Http404
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
+from django.shortcuts import render
 from django.template.loader import get_template
 from django.template.loader import TemplateDoesNotExist
 from django.urls import reverse_lazy
@@ -26,7 +27,9 @@ from habilitations.models import is_user_attached_to_entreprise
 from reglementations.enums import ESRS
 from reglementations.enums import EtapeCSRD
 from reglementations.enums import ETAPES_CSRD
+from reglementations.forms.csrd import DocumentAnalyseIAForm
 from reglementations.forms.csrd import LienRapportCSRDForm
+from reglementations.models import DocumentAnalyseIA
 from reglementations.models import RapportCSRD
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
@@ -734,3 +737,23 @@ def _esrs_materiel_a_supprimer(csrd: RapportCSRD, materiel: bool):
     esrs_a_supprimer -= set(("ESRS_1", "ESRS_2"))
 
     return esrs_a_supprimer
+
+
+def upload(request):
+    if request.method == "POST":
+        form = DocumentAnalyseIAForm(data=request.POST, files=request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect("reglementations:upload")
+        else:
+            print(form.errors)
+    else:
+        form = DocumentAnalyseIAForm()
+
+    documents = DocumentAnalyseIA.objects.all()
+
+    return render(
+        request,
+        "reglementations/csrd/upload.html",
+        {"form": form, "documents": documents},
+    )
