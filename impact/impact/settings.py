@@ -107,6 +107,41 @@ DATABASES = {
 
 DATABASE_ROUTERS = ["impact.db_routers.MetabaseRouter"]
 
+# Storages
+MEDIA_ROOT = Path(BASE_DIR, "media")
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+    "entreprises": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "OPTIONS": {
+            "location": Path(MEDIA_ROOT, "entreprises"),
+        },
+    },
+}
+if os.getenv("S3_STORAGE"):
+    access_key = os.getenv("SCALEWAY_S3_ACCESS_KEY")
+    secret_key = os.getenv("SCALEWAY_S3_SECRET_KEY")
+    if not access_key or not secret_key:
+        raise ImproperlyConfigured("Missing S3 credentials")
+    region_name = os.getenv("SCALEWAY_S3_BUCKET_REGION")
+    bucket_name = os.getenv("SCALEWAY_S3_BUCKET_NAME")
+    STORAGES["entreprises"] = {
+        "BACKEND": "storages.backends.s3.S3Storage",
+        "OPTIONS": {
+            "access_key": access_key,
+            "secret_key": secret_key,
+            "bucket_name": bucket_name,
+            "region_name": region_name,
+            "endpoint_url": f"https://s3.{region_name}.scw.cloud",
+            "location": "entreprises",
+        },
+    }
+
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
