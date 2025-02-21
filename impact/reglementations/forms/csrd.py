@@ -1,6 +1,7 @@
 from django import forms
 from django.forms.widgets import RadioSelect
 
+from reglementations.models.csrd import DocumentAnalyseIA
 from reglementations.models.csrd import Enjeu
 from reglementations.models.csrd import RapportCSRD
 
@@ -145,3 +146,13 @@ class LienRapportCSRDForm(forms.ModelForm):
             self.instance.bloque = True
 
         return self.cleaned_data
+
+
+class DocumentAnalyseIAForm(forms.ModelForm):
+    class Meta:
+        model = DocumentAnalyseIA
+        fields = ["rapport_csrd", "fichier"]
+        labels = {"fichier": "Ajouter un fichier"}
+        help_texts = {
+            "fichier": "Sélectionnez des documents contenant des <b>données publiques</b> susceptibles de répondre à vos exigences ESRS.<br>Taille maximale : <b>50 Mo</b>. Format supporté : <b>PDF</b>. Langue du document : <b>Français</b>."
+        }

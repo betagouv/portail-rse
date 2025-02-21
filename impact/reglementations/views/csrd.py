@@ -27,6 +27,7 @@ from habilitations.models import is_user_attached_to_entreprise
 from reglementations.enums import ESRS
 from reglementations.enums import EtapeCSRD
 from reglementations.enums import ETAPES_CSRD
+from reglementations.forms.csrd import DocumentAnalyseIAForm
 from reglementations.forms.csrd import LienRapportCSRDForm
 from reglementations.models import RapportCSRD
 from reglementations.views.base import Reglementation
@@ -612,6 +613,11 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
                 "can_download": nb_enjeux_non_analyses
                 != csrd.enjeux.selectionnes().count(),
                 "nb_enjeux_non_analyses": nb_enjeux_non_analyses,
+            }
+        case "analyse-ecart":
+            context |= {
+                "form": DocumentAnalyseIAForm(),
+                "documents": csrd.documents,
             }
         case "redaction-rapport-durabilite":
             context |= {"form": LienRapportCSRDForm(instance=csrd)}
