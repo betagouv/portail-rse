@@ -1,5 +1,6 @@
 import django.db.models as models
 from django.core.exceptions import ValidationError
+from django.core.files.storage import storages
 from django.core.validators import MinValueValidator
 from django.db import transaction
 from django.db.models import F
@@ -289,3 +290,21 @@ def rapport_csrd_personnel(entreprise, proprietaire):  # ajouter l'année ?
     return RapportCSRD.objects.filter(
         entreprise=entreprise, proprietaire=proprietaire
     ).first()
+
+
+def select_storage():
+    return storages["entreprises"]
+
+
+def entreprise_directory_path(instance, filename):
+    return f"000000001/{filename}"
+    return f"{instance.rapport_csrd.entreprise.siren}/{instance.rapport_csrd.annee}/{filename}"
+
+
+class DocumentAnalyseIA(TimestampedModel):
+    rapport_csrd = models.ForeignKey(
+        "RapportCSRD", on_delete=models.CASCADE, related_name="documents"
+    )
+    fichier = models.FileField(
+        storage=select_storage, upload_to=entreprise_directory_path
+    )

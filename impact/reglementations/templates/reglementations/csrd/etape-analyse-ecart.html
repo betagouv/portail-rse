@@ -30,6 +30,66 @@
                 </ul>
             </div>
         </div>
+
+        <div>
+            <form enctype="multipart/form-data" action="{% url 'reglementations:ajout_document' csrd.id %}" method="post">
+                {% csrf_token %}
+                {% include 'snippets/field.html' with field=form.fichier %}
+                <button type="submit" class="fr-btn fr-btn--icon-left fr-icon-upload-2-line">Envoyer</button>
+            </form>
+        </div>
+
+        <div class="fr-alert fr-alert--warning">
+            <h3 class="fr-alert__title">Veillez à ne pas ajouter de données personnelles.</h3>
+            <p>Pour plus d'informations, veuillez consulter nos Conditions Générales d'Utilisation</p>
+        </div>
+        <div class="fr-table" id="table-md-component">
+            <div class="fr-table__wrapper">
+                <div class="fr-table__container">
+                    <div class="fr-table__content">
+                        <table id="table-md">
+                            <caption>
+                                Mes fichiers
+                            </caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">
+                                        Nom du fichier
+                                    </th>
+                                    <th scope="col">
+                                        Date d'ajout
+                                    </th>
+                                    <th scope="col">
+                                        Statut
+                                    </th>
+                                    <th scope="col">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for document in documents.all %}
+                                    <tr id="table-md-row-key-1" data-row-key="1">
+                                        <td>
+                                            {{ document.fichier.url }}
+                                        </td>
+                                        <td>
+                                            {{ document.created_at }}
+                                        </td>
+                                        <td>
+                                            Lorem [...] elit ut.
+                                        </td>
+                                        <td>
+                                            Lorem [...] elit ut.
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <p>

@@ -2,6 +2,7 @@ from django import template
 from django.conf import settings
 from django.forms import BooleanField
 from django.forms import ChoiceField
+from django.forms import FileField
 
 import habilitations.models
 
@@ -55,6 +56,8 @@ def fr_group_class(field):
         return "fr-checkbox-group"
     elif isinstance(field.field, ChoiceField):
         return "fr-select-group"
+    elif isinstance(field.field, FileField):
+        return "fr-upload-group"
     else:
         return "fr-input-group"
 
