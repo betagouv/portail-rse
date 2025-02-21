@@ -1,0 +1,12 @@
+<form action="{% url 'reglementations:upload' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.fichier }}
+    <button type="submit">Enregistrer</button>
+</form>
+
+<h1>Documents</h1>
+<ul>
+    {% for document in documents %}
+        <li>{{ document.fichier.url }}</li>
+    {% endfor %}
+</ul>

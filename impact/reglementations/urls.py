@@ -124,6 +124,11 @@ urlpatterns = [
         views.csrd.datapoints_xlsx,
         name="datapoints_xlsx",
     ),
+    path(
+        "csrd/upload",
+        views.csrd.upload,
+        name="upload",
+    ),
 ]
 
 # Fragments HTMX
