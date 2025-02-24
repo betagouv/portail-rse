@@ -130,7 +130,7 @@ def test_guide_de_la_csrd_par_etape(etape, client, alice, entreprise_factory):
         "/csrd/{siren}/etape-introduction",
         "/csrd/{siren}/etape-selection-enjeux",
         "/csrd/{siren}/etape-analyse-materialite",
-        "/csrd/{siren}/etape-collection-donnees-entreprise",
+        "/csrd/{siren}/etape-selection-informations",
         "/csrd/{siren}/etape-analyse-ecart",
         "/csrd/{siren}/etape-redaction-rapport-durabilite",
     ],
@@ -160,9 +160,9 @@ def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
         assertTemplateUsed(
             response, "reglementations/csrd/etape-analyse-materialite.html"
         )
-    elif etape.endswith("collection-donnees-entreprise"):
+    elif etape.endswith("selection-informations"):
         assertTemplateUsed(
-            response, "reglementations/csrd/etape-collection-donnees-entreprise.html"
+            response, "reglementations/csrd/etape-selection-informations.html"
         )
     elif etape.endswith("analyse-ecart"):
         assertTemplateUsed(response, "reglementations/csrd/etape-analyse-ecart.html")
@@ -193,7 +193,7 @@ def test_étape_inexistante_de_la_csrd(client, alice, entreprise_factory):
         "introduction",
         "selection-enjeux",
         "analyse-materialite",
-        "collection-donnees-entreprise",
+        "selection-informations",
         "analyse-ecart",
     ],
 )
@@ -222,7 +222,7 @@ def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_
         "introduction",
         "selection-enjeux",
         "analyse-materialite",
-        "collection-donnees-entreprise",
+        "selection-informations",
         "analyse-ecart",
     ],
 )
