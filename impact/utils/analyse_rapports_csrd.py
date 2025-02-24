@@ -21,10 +21,8 @@ def analyse_rapports_csrd():
         RapportCSRD.objects.filter(etape_validee="analyse-materialite").count(),
     )
     print(
-        "Nombre rapports étape collection-donnees-entreprise validée : ",
-        RapportCSRD.objects.filter(
-            etape_validee="collection-donnees-entreprise"
-        ).count(),
+        "Nombre rapports étape selection-informations validée : ",
+        RapportCSRD.objects.filter(etape_validee="selection-informations").count(),
     )
     print(
         "Nombre rapports étape redaction-rapport-durabilite validée : ",

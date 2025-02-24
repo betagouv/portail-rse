@@ -389,7 +389,7 @@ class EtapeCSRD:
         "introduction",
         "selection-enjeux",
         "analyse-materialite",
-        "collection-donnees-entreprise",
+        "selection-informations",
         "analyse-ecart",
         "redaction-rapport-durabilite",
     ]
@@ -436,7 +436,7 @@ ETAPES_CSRD = [
         nom="Collecter les données de son entreprise",
         sous_etapes=[
             EtapeCSRD(
-                id="collection-donnees-entreprise",  # TODO : renommer en materialite-informations-elementaires ? Nécessite une migration en bdd car l'id est stocké dans le field etape_validee de RapportCSRD
+                id="selection-informations",
                 nom="Analyser la matérialité des informations élémentaires",
             ),
             EtapeCSRD(

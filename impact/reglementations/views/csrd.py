@@ -602,7 +602,7 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
 
     match EtapeCSRD.get(id_etape).id:
         ## légèrement plus lisible qu'un `if`
-        case "collection-donnees-entreprise":
+        case "selection-informations":
             nb_enjeux_non_analyses = csrd.enjeux.non_analyses().count()
             context |= {
                 "can_download": nb_enjeux_non_analyses
