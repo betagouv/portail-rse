@@ -32,4 +32,4 @@ django-debug-toolbar = "*"
 exceptiongroup = {version = "~=1.2.2", markers="python_version < '3.13'"}
 
 [requires]
-python_version = "3.12.8"
+python_version = "3.12"
