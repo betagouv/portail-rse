@@ -25,7 +25,7 @@ def recherche_unite_legale(siren):
     try:
         response = requests.get(
             url,
-            headers={"X-INSEE-Api-Key-Integration": settings.API_INSEE_KEY},
+            headers={"X-INSEE-Api-Key-Integration": settings.API_SIRENE_KEY},
             timeout=SIRENE_TIMEOUT,
         )
     except Exception as e:

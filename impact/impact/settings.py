@@ -212,7 +212,7 @@ if SENTRY_DSN:
     )
 
 # API
-API_INSEE_KEY = os.getenv("API_INSEE_KEY")
+API_SIRENE_KEY = os.getenv("API_SIRENE_KEY")
 
 # django-hosts :
 # https://django-hosts.readthedocs.io/en/latest/
