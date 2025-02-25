@@ -213,7 +213,6 @@ if SENTRY_DSN:
 
 # API
 API_INSEE_KEY = os.getenv("API_INSEE_KEY")
-API_INSEE_TOKEN_PATH = Path("/tmp/jeton_insee")
 
 # django-hosts :
 # https://django-hosts.readthedocs.io/en/latest/
