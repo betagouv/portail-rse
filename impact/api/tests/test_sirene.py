@@ -46,7 +46,7 @@ def test_succès_avec_résultat_comportant_la_denomination(mocker, settings):
             "trancheEffectifsUniteLegale": "20",
         },
     }
-    settings.API_INSEE_KEY = api_insee_key
+    settings.API_SIRENE_KEY = api_insee_key
     faked_request = mocker.patch(
         "requests.get", return_value=MockedResponse(200, json_content)
     )
