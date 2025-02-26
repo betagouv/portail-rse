@@ -80,9 +80,6 @@ def recherche_unite_legale(siren):
     elif response.status_code == 429:
         sentry_sdk.capture_message(TOO_MANY_REQUESTS_SENTRY_MESSAGE.format(NOM_API))
         raise TooManyRequestError(TOO_MANY_REQUESTS_ERROR)
-    elif response.status_code == 401:
-        renouvelle_jeton_acces_insee()
-        return recherche_unite_legale(siren)
     else:
         sentry_sdk.capture_message(API_ERROR_SENTRY_MESSAGE.format(NOM_API))
         raise ServerError(SERVER_ERROR)
