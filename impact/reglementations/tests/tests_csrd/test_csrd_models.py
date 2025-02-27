@@ -3,8 +3,8 @@ from datetime import datetime
 import pytest
 from django.core.exceptions import ValidationError
 
-from ..models import RapportCSRD
 from reglementations.enums import ENJEUX_NORMALISES
+from reglementations.models import RapportCSRD
 
 # Fixtures :
 # voir pour pull-up éventuel, au besoin
