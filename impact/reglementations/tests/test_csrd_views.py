@@ -9,6 +9,7 @@ from openpyxl import load_workbook
 from pytest_django.asserts import assertTemplateUsed
 
 from habilitations.models import attach_user_to_entreprise
+from reglementations.enums import EtapeCSRD
 from reglementations.models.csrd import Enjeu
 from reglementations.models.csrd import RapportCSRD
 
@@ -123,20 +124,10 @@ def test_guide_de_la_csrd_par_etape(etape, client, alice, entreprise_factory):
     assert response.status_code == 404
 
 
-@pytest.mark.parametrize(
-    "etape",
-    [
-        "/csrd/{siren}/etape-introduction",
-        "/csrd/{siren}/etape-selection-enjeux",
-        "/csrd/{siren}/etape-analyse-materialite",
-        "/csrd/{siren}/etape-selection-informations",
-        "/csrd/{siren}/etape-analyse-ecart",
-        "/csrd/{siren}/etape-redaction-rapport-durabilite",
-    ],
-)
+@pytest.mark.parametrize("etape", EtapeCSRD.ETAPES_VALIDABLES)
 def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
     entreprise = entreprise_factory()
-    url = etape.format(siren=entreprise.siren)
+    url = "/csrd/{siren}/etape-{etape}".format(siren=entreprise.siren, etape=etape)
 
     response = client.get(url)
 
@@ -186,16 +177,10 @@ def test_étape_inexistante_de_la_csrd(client, alice, entreprise_factory):
     assert response.status_code == 404
 
 
-@pytest.mark.parametrize(
-    "etape",
-    [
-        "introduction",
-        "selection-enjeux",
-        "analyse-materialite",
-        "selection-informations",
-        "analyse-ecart",
-    ],
-)
+ETAPES_ENREGISTRABLES = EtapeCSRD.ETAPES_VALIDABLES[:-1]
+
+
+@pytest.mark.parametrize("etape", ETAPES_ENREGISTRABLES)
 def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_factory):
     entreprise = entreprise_factory()
     habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
@@ -213,16 +198,7 @@ def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_
     assert rapport_csrd.etape_validee == etape
 
 
-@pytest.mark.parametrize(
-    "etape",
-    [
-        "introduction",
-        "selection-enjeux",
-        "analyse-materialite",
-        "selection-informations",
-        "analyse-ecart",
-    ],
-)
+@pytest.mark.parametrize("etape", ETAPES_ENREGISTRABLES)
 def test_enregistrement_de_l_étape_de_la_csrd_retourne_une_404_si_aucune_CSRD(
     etape, client, alice, entreprise_factory
 ):
