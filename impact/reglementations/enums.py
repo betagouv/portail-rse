@@ -395,12 +395,6 @@ class EtapeCSRD:
     ]
 
     @classmethod
-    def id_precedent(cls, id_etape):
-        for index, id in enumerate(cls.ETAPES_VALIDABLES):
-            if id == id_etape:
-                return cls.ETAPES_VALIDABLES[index - 1]
-
-    @classmethod
     def id_suivant(cls, id_etape):
         for index, id in enumerate(cls.ETAPES_VALIDABLES):
             if id == id_etape:
