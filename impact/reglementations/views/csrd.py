@@ -734,3 +734,18 @@ def _esrs_materiel_a_supprimer(csrd: RapportCSRD, materiel: bool):
     esrs_a_supprimer -= set(("ESRS_1", "ESRS_2"))
 
     return esrs_a_supprimer
+
+
+def resultat_analyse_IA(request, id_document):
+    try:
+        document = DocumentAnalyseIA.objects.get(id_document)
+    except ObjectDoesNotExist:
+        raise Http404("Ce document n'existe pas")
+
+    if request.data["status"] == "success":
+        document.resultat_csv = request.data["resultat_csv"]
+    else:
+        document.erreur = request.data["message"]
+    document.save()
+
+    return HttpResponse()

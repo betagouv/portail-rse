@@ -289,3 +289,8 @@ def rapport_csrd_personnel(entreprise, proprietaire):  # ajouter l'année ?
     return RapportCSRD.objects.filter(
         entreprise=entreprise, proprietaire=proprietaire
     ).first()
+
+
+class DocumentAnalyseIA(TimestampedModel):
+    resultat_csv = models.TextField()
+    erreur = models.CharField(max_length=144)
