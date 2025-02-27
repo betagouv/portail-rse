@@ -9,7 +9,6 @@ from openpyxl import load_workbook
 from pytest_django.asserts import assertTemplateUsed
 
 from habilitations.models import attach_user_to_entreprise
-from reglementations.enums import EtapeCSRD
 from reglementations.models.csrd import Enjeu
 from reglementations.models.csrd import RapportCSRD
 
@@ -206,9 +205,7 @@ def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_
         annee=date.today().year,
     )
     client.force_login(alice)
-    url = "/csrd/{siren}/etape-{etape}".format(
-        siren=entreprise.siren, etape=EtapeCSRD.id_suivant(etape)
-    )
+    url = "/csrd/{siren}/etape-{etape}".format(siren=entreprise.siren, etape=etape)
 
     response = client.post(url, follow=True)
 
@@ -232,9 +229,7 @@ def test_enregistrement_de_l_étape_de_la_csrd_retourne_une_404_si_aucune_CSRD(
     entreprise = entreprise_factory()
     attach_user_to_entreprise(alice, entreprise, "Présidente")
     client.force_login(alice)
-    url = "/csrd/{siren}/etape-{etape}".format(
-        siren=entreprise.siren, etape=EtapeCSRD.id_suivant(etape)
-    )
+    url = "/csrd/{siren}/etape-{etape}".format(siren=entreprise.siren, etape=etape)
 
     response = client.post(url, follow=True)
 
