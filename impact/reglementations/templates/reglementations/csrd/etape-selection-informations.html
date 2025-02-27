@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Collection des données de l'entreprise{% endblock %}
+{% block title %}{{ etape.nom }}{% endblock %}
 
 {% block content %}
     <div id="csrd_header">
@@ -12,7 +12,7 @@
             {% include "snippets/gestion_csrd_menu.html" %}
 
             <div class="fr-col">
-                <h2>Phase 2 - {{ etape.nom }}</h2>
+                <h2>Phase 2 - Collecter les données de son entreprise</h2>
 
                 <div class="fr-callout">
                     <p class="fr-callout__text">
@@ -71,6 +71,6 @@
         </div>
 
         <p>
-            {% include "snippets/csrd_submit.html" with prochaine_etape="redaction-rapport-durabilite" %}
+            {% include "snippets/csrd_submit.html" %}
         </p>
 {% endblock %}

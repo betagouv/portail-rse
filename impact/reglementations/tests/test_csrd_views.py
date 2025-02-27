@@ -124,19 +124,10 @@ def test_guide_de_la_csrd_par_etape(etape, client, alice, entreprise_factory):
     assert response.status_code == 404
 
 
-@pytest.mark.parametrize(
-    "etape",
-    [
-        "/csrd/{siren}/etape-introduction",
-        "/csrd/{siren}/etape-selection-enjeux",
-        "/csrd/{siren}/etape-analyse-materialite",
-        "/csrd/{siren}/etape-collection-donnees-entreprise",
-        "/csrd/{siren}/etape-redaction-rapport-durabilite",
-    ],
-)
+@pytest.mark.parametrize("etape", EtapeCSRD.ETAPES_VALIDABLES)
 def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
     entreprise = entreprise_factory()
-    url = etape.format(siren=entreprise.siren)
+    url = "/csrd/{siren}/etape-{etape}".format(siren=entreprise.siren, etape=etape)
 
     response = client.get(url)
 
@@ -159,10 +150,12 @@ def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
         assertTemplateUsed(
             response, "reglementations/csrd/etape-analyse-materialite.html"
         )
-    elif etape.endswith("collection-donnees-entreprise"):
+    elif etape.endswith("selection-informations"):
         assertTemplateUsed(
-            response, "reglementations/csrd/etape-collection-donnees-entreprise.html"
+            response, "reglementations/csrd/etape-selection-informations.html"
         )
+    elif etape.endswith("analyse-ecart"):
+        assertTemplateUsed(response, "reglementations/csrd/etape-analyse-ecart.html")
     elif etape.endswith("redaction-rapport-durabilite"):
         assertTemplateUsed(
             response, "reglementations/csrd/etape-redaction-rapport-durabilite.html"
@@ -184,15 +177,10 @@ def test_étape_inexistante_de_la_csrd(client, alice, entreprise_factory):
     assert response.status_code == 404
 
 
-@pytest.mark.parametrize(
-    "etape",
-    [
-        "introduction",
-        "selection-enjeux",
-        "analyse-materialite",
-        "collection-donnees-entreprise",
-    ],
-)
+ETAPES_ENREGISTRABLES = EtapeCSRD.ETAPES_VALIDABLES[:-1]
+
+
+@pytest.mark.parametrize("etape", ETAPES_ENREGISTRABLES)
 def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_factory):
     entreprise = entreprise_factory()
     habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
@@ -202,9 +190,7 @@ def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_
         annee=date.today().year,
     )
     client.force_login(alice)
-    url = "/csrd/{siren}/etape-{etape}".format(
-        siren=entreprise.siren, etape=EtapeCSRD.id_suivant(etape)
-    )
+    url = "/csrd/{siren}/etape-{etape}".format(siren=entreprise.siren, etape=etape)
 
     response = client.post(url, follow=True)
 
@@ -212,24 +198,14 @@ def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_
     assert rapport_csrd.etape_validee == etape
 
 
-@pytest.mark.parametrize(
-    "etape",
-    [
-        "introduction",
-        "selection-enjeux",
-        "analyse-materialite",
-        "collection-donnees-entreprise",
-    ],
-)
+@pytest.mark.parametrize("etape", ETAPES_ENREGISTRABLES)
 def test_enregistrement_de_l_étape_de_la_csrd_retourne_une_404_si_aucune_CSRD(
     etape, client, alice, entreprise_factory
 ):
     entreprise = entreprise_factory()
     attach_user_to_entreprise(alice, entreprise, "Présidente")
     client.force_login(alice)
-    url = "/csrd/{siren}/etape-{etape}".format(
-        siren=entreprise.siren, etape=EtapeCSRD.id_suivant(etape)
-    )
+    url = "/csrd/{siren}/etape-{etape}".format(siren=entreprise.siren, etape=etape)
 
     response = client.post(url, follow=True)
 
