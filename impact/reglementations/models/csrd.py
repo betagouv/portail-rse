@@ -296,9 +296,9 @@ def entreprise_directory_path(instance, filename):
 
 
 class DocumentAnalyseIA(TimestampedModel):
-    # rapport_csrd = models.ForeignKey(
-    #     "RapportCSRD", on_delete=models.CASCADE, related_name="documents"
-    # )
+    rapport_csrd = models.ForeignKey(
+        "RapportCSRD", on_delete=models.CASCADE, related_name="documents"
+    )
     fichier = models.FileField(
         storage=select_storage, upload_to=entreprise_directory_path
     )

@@ -615,6 +615,11 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
                 != csrd.enjeux.selectionnes().count(),
                 "nb_enjeux_non_analyses": nb_enjeux_non_analyses,
             }
+        case "analyse-ecart":
+            context |= {
+                "form": DocumentAnalyseIAForm(),
+                "documents": csrd.documents,
+            }
         case "redaction-rapport-durabilite":
             context |= {"form": LienRapportCSRDForm(instance=csrd)}
 

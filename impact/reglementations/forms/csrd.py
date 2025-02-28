@@ -151,4 +151,8 @@ class LienRapportCSRDForm(forms.ModelForm):
 class DocumentAnalyseIAForm(forms.ModelForm):
     class Meta:
         model = DocumentAnalyseIA
-        fields = ["fichier"]
+        fields = ["rapport_csrd", "fichier"]
+        labels = {"fichier": "Ajouter un fichier"}
+        help_texts = {
+            "fichier": "Sélectionnez des documents contenant des <b>données publiques</b> susceptibles de répondre à vos exigences ESRS.<br>Taille maximale : <b>50 Mo</b>. Format supporté : <b>PDF</b>. Langue du document : <b>Français</b>."
+        }
