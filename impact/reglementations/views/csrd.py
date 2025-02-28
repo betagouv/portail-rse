@@ -725,12 +725,15 @@ def _esrs_materiel_a_supprimer(csrd: RapportCSRD, materiel: bool):
         enjeux_materiels = csrd.enjeux.materiels()
         esrs_materiels = set((enjeu.esrs for enjeu in enjeux_materiels))
         esrs_a_supprimer = tous_les_esrs - esrs_materiels
+        esrs_a_supprimer.discard("ESRS_2")
     else:
         enjeux_non_materiels = csrd.enjeux.non_materiels()
         esrs_non_materiels = set((enjeu.esrs for enjeu in enjeux_non_materiels))
+        # pour les enjeux non-matériels, ESRS_2 et ESRS_2_MDR sont à supprimer
         esrs_a_supprimer = tous_les_esrs - esrs_non_materiels
+        esrs_a_supprimer |= {"ESRS2_MDR", "ESRS_2"}
 
-    # ne pas supprimer ESRS_1 et ESRS_2 car ils n'existent pas dans le fichier .xlsx
-    esrs_a_supprimer -= set(("ESRS_1", "ESRS_2"))
+    # ne pas supprimer ESRS_1 car il n'existe pas dans le fichier .xlsx
+    esrs_a_supprimer.discard("ESRS_1")
 
     return esrs_a_supprimer
