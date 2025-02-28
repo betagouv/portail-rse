@@ -483,9 +483,9 @@ def test_datapoints_pour_enjeux_non_materiels_au_format_xlsx(
 
     assert esrs_materielle.replace("_", " ") not in noms_onglet
     assert "Index" in noms_onglet
-    assert "ESRS 2" in noms_onglet
-    assert "ESRS2 MDR" in noms_onglet
     assert "ESRS G1" in noms_onglet
+    assert "ESRS 2" not in noms_onglet
+    assert "ESRS2 MDR" not in noms_onglet
 
 
 def test_datapoints_csrd__au_format_xlsx_retourne_une_404_si_entreprise_inexistante(
