@@ -27,6 +27,7 @@ from reglementations.enums import ESRS
 from reglementations.enums import EtapeCSRD
 from reglementations.enums import ETAPES_CSRD
 from reglementations.forms.csrd import LienRapportCSRDForm
+from reglementations.models import DocumentAnalyseIA
 from reglementations.models import RapportCSRD
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
@@ -738,14 +739,14 @@ def _esrs_materiel_a_supprimer(csrd: RapportCSRD, materiel: bool):
 
 def resultat_analyse_IA(request, id_document):
     try:
-        document = DocumentAnalyseIA.objects.get(id_document)
+        document = DocumentAnalyseIA.objects.get(id=id_document)
     except ObjectDoesNotExist:
         raise Http404("Ce document n'existe pas")
 
-    if request.data["status"] == "success":
+    status = request.GET.get("status")
+    document.erreur = status
+    if status == "success":
         document.resultat_csv = request.data["resultat_csv"]
-    else:
-        document.erreur = request.data["message"]
     document.save()
 
     return HttpResponse()

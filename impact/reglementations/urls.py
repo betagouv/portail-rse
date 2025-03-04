@@ -125,7 +125,7 @@ urlpatterns = [
         name="datapoints_xlsx",
     ),
     path(
-        "ESRS-predict/<str:id_document>",
+        "ESRS-predict/<int:id_document>",
         views.csrd.resultat_analyse_IA,
         name="resultat_analyse_IA",
     ),

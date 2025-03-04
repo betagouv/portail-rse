@@ -8,7 +8,6 @@ from reglementations.models import DocumentAnalyseIA
 class Command(BaseCommand):
     def handle(self, *args, **options):
         url = f"{settings.IA_BASE_URL}/run-task"
-        print(url)
         for document in DocumentAnalyseIA.objects.all():
             if (
                 document.erreur != "ok" or True
