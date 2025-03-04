@@ -293,5 +293,5 @@ def rapport_csrd_personnel(entreprise, proprietaire):  # ajouter l'année ?
 
 class DocumentAnalyseIA(TimestampedModel):
     resultat_csv = models.TextField()
-    erreur = models.CharField(max_length=144)
+    etat = models.CharField(max_length=144)
     url = "http://127.0.0.1:8000/static/ARC/CharteEngagementsAchats.pdf"

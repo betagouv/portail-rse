@@ -746,7 +746,7 @@ def resultat_analyse_IA(request, id_document):
         raise Http404("Ce document n'existe pas")
 
     status = request.POST.get("status")
-    document.erreur = status
+    document.etat = status
     if status == "success":
         document.resultat_csv = request.data["resultat_csv"]
     document.save()
