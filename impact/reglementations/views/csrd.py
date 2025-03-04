@@ -16,6 +16,7 @@ from django.shortcuts import redirect
 from django.template.loader import get_template
 from django.template.loader import TemplateDoesNotExist
 from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_exempt
 from openpyxl import load_workbook
 from openpyxl import Workbook
 
@@ -737,16 +738,17 @@ def _esrs_materiel_a_supprimer(csrd: RapportCSRD, materiel: bool):
     return esrs_a_supprimer
 
 
+@csrf_exempt
 def resultat_analyse_IA(request, id_document):
     try:
         document = DocumentAnalyseIA.objects.get(id=id_document)
     except ObjectDoesNotExist:
         raise Http404("Ce document n'existe pas")
 
-    status = request.GET.get("status")
+    status = request.POST.get("status")
     document.erreur = status
     if status == "success":
         document.resultat_csv = request.data["resultat_csv"]
     document.save()
 
-    return HttpResponse()
+    return HttpResponse("OK")
