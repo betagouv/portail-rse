@@ -470,6 +470,12 @@ def test_datapoints_pour_enjeux_non_materiels_au_format_xlsx(
     enjeux_G1.materiel = False  # et pas None
     enjeux_G1.save()
 
+    # les enjeux étant sélectionnés par défaut, on décoche certains ceux de l'ESRS E3
+    # pour s'assurer que l'onglet de cet ESRS apparait bien dans le fichier des enjeux non-matériels.
+    for enjeu_esrs_e3 in enjeux.filter(esrs="ESRS_E3"):
+        enjeu_esrs_e3.selection = False
+        enjeu_esrs_e3.save()
+
     response = client.get(
         f"/csrd/{entreprise_non_qualifiee.siren}/datapoints.xlsx?materiel=false",
     )
@@ -487,6 +493,11 @@ def test_datapoints_pour_enjeux_non_materiels_au_format_xlsx(
     assert "ESRS 2" not in noms_onglet
     assert "ESRS2 MDR" not in noms_onglet
 
+    # Vérification de la présence des ESRS non-selectionnés
+    assert (
+        "ESRS E3" in noms_onglet
+    ), "les enjeux non-sélectionnés doivent apparaitre dans le fichier"
+
 
 def test_datapoints_csrd__au_format_xlsx_retourne_une_404_si_entreprise_inexistante(
     client, alice
@@ -494,7 +505,7 @@ def test_datapoints_csrd__au_format_xlsx_retourne_une_404_si_entreprise_inexista
     client.force_login(alice)
 
     response = client.get(
-        f"/csrd/000000001/datapoints.xlsx",
+        "/csrd/000000001/datapoints.xlsx",
     )
 
     assert response.status_code == 404
