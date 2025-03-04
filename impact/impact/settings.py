@@ -347,6 +347,8 @@ if DEBUG_TOOLBAR := os.getenv("DEBUG_TOOLBAR"):
         "debug_toolbar.middleware.DebugToolbarMiddleware",
     )
 
+IA_BASE_URL = os.getenv("IA_BASE_URL")
+
 # Sites-faciles:
 # URL of sites-faciles instance for Portail RSE
 SITES_FACILES_BASE_URL = os.getenv(
