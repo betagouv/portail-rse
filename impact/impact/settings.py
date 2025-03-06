@@ -249,6 +249,7 @@ if SENTRY_DSN:
 
 # API
 API_SIRENE_KEY = os.getenv("API_SIRENE_KEY")
+IA_BASE_URL = os.getenv("IA_BASE_URL")
 
 # django-hosts :
 # https://django-hosts.readthedocs.io/en/latest/

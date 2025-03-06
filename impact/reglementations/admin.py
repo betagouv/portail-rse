@@ -10,6 +10,7 @@ from reglementations.models import OfficialBDESEAvecAccord
 from reglementations.models import PersonalBDESE_300
 from reglementations.models import PersonalBDESE_50_300
 from reglementations.models import PersonalBDESEAvecAccord
+from reglementations.models.csrd import DocumentAnalyseIA
 from reglementations.models.csrd import RapportCSRD
 
 
@@ -50,4 +51,9 @@ class OfficialBDESE_Admin(admin.ModelAdmin):
 
 @admin.register(RapportCSRD)
 class RapportCSRDAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(DocumentAnalyseIA)
+class DocumentAnalyseIA_Admin(admin.ModelAdmin):
     pass
