@@ -129,6 +129,11 @@ urlpatterns = [
         views.csrd.resultat_analyse_IA,
         name="resultat_analyse_IA",
     ),
+    path(
+        "ESRS-predict/<int:id_document>/start",
+        views.csrd.lance_analyse_IA,
+        name="lance_analyse_IA",
+    ),
 ]
 
 # Fragments HTMX
