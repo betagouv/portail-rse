@@ -124,6 +124,11 @@ urlpatterns = [
         views.csrd.datapoints_xlsx,
         name="datapoints_xlsx",
     ),
+    path(
+        "ESRS-predict/<int:id_document>",
+        views.csrd.resultat_analyse_IA,
+        name="resultat_analyse_IA",
+    ),
 ]
 
 # Fragments HTMX

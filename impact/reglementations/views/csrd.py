@@ -3,6 +3,7 @@ from datetime import timedelta
 from functools import wraps
 from tempfile import NamedTemporaryFile
 
+import requests
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib import messages
@@ -17,6 +18,7 @@ from django.shortcuts import redirect
 from django.template.loader import get_template
 from django.template.loader import TemplateDoesNotExist
 from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_exempt
 from openpyxl import load_workbook
 from openpyxl import Workbook
 
@@ -29,6 +31,7 @@ from reglementations.enums import EtapeCSRD
 from reglementations.enums import ETAPES_CSRD
 from reglementations.forms.csrd import DocumentAnalyseIAForm
 from reglementations.forms.csrd import LienRapportCSRDForm
+from reglementations.models import DocumentAnalyseIA
 from reglementations.models import RapportCSRD
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
@@ -751,3 +754,30 @@ def _esrs_materiel_a_supprimer(csrd: RapportCSRD, materiel: bool):
     esrs_a_supprimer.discard("ESRS_1")
 
     return esrs_a_supprimer
+
+
+def lance_analyse_IA():
+    url = f"{settings.IA_BASE_URL}/run-task"
+    for document in DocumentAnalyseIA.objects.all():
+        if document.etat != "ok":
+            response = requests.post(
+                url, {"document_id": document.id, "url": document.fichier.url}
+            )
+            document.etat = response.json()["status"]
+            document.save()
+
+
+@csrf_exempt
+def resultat_analyse_IA(request, id_document):
+    try:
+        document = DocumentAnalyseIA.objects.get(id=id_document)
+    except ObjectDoesNotExist:
+        raise Http404("Ce document n'existe pas")
+
+    status = request.POST.get("status")
+    document.etat = status
+    if status == "success":
+        document.resultat_csv = request.POST["resultat_csv"]
+    document.save()
+
+    return HttpResponse("OK")
