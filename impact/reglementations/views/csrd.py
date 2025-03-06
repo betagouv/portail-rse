@@ -756,15 +756,22 @@ def _esrs_materiel_a_supprimer(csrd: RapportCSRD, materiel: bool):
     return esrs_a_supprimer
 
 
-def lance_analyse_IA():
+def lance_analyse_IA(request, id_document):
     url = f"{settings.IA_BASE_URL}/run-task"
-    for document in DocumentAnalyseIA.objects.all():
-        if document.etat != "ok":
-            response = requests.post(
-                url, {"document_id": document.id, "url": document.fichier.url}
-            )
-            document.etat = response.json()["status"]
-            document.save()
+    try:
+        document = DocumentAnalyseIA.objects.get(id=id_document)
+    except ObjectDoesNotExist:
+        raise Http404("Ce document n'existe pas")
+
+    if document.etat != "success":
+        response = requests.post(
+            url, {"document_id": document.id, "url": document.fichier.url}
+        )
+        document.etat = response.json()["status"]
+        document.save()
+
+    referer = request.META.get("HTTP_REFERER")
+    return redirect(referer)
 
 
 @csrf_exempt
