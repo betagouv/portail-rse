@@ -109,11 +109,13 @@
                 </div>
             </div>
             <div id="onglet-resultats-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="onglet-resultats" tabindex="0">
-                {% for document in documents.all %}
-                    {% if document.etat == "success" %}
+                {% if csrd.documents_analyses %}
+                    {% for document in csrd.documents_analyses %}
                         {{ document.fichier.name }}<br />
-                    {% endif %}
-                {% endfor %}
+                    {% endfor %}
+                {% else %}
+                    Aucun document analysé.
+                {% endif %}
             </div>
         </div>
     </div>
