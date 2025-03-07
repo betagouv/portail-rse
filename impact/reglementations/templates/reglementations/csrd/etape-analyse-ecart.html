@@ -45,11 +45,11 @@
                     <form enctype="multipart/form-data" action="{% url 'reglementations:ajout_document' csrd.id %}" method="post">
                         {% csrf_token %}
                         {% include 'snippets/field.html' with field=form.fichier %}
-                        <button type="submit" class="fr-btn fr-btn--icon-left fr-icon-upload-2-line">Envoyer</button>
+                        <button type="submit" class="fr-btn fr-btn--icon-left fr-icon-upload-2-line fr-mt-1w">Envoyer</button>
                     </form>
                 </div>
 
-                <div class="fr-alert fr-alert--warning">
+                <div class="fr-alert fr-alert--warning fr-my-3w">
                     <h3 class="fr-alert__title">Veillez à ne pas ajouter de données personnelles.</h3>
                     <p>Pour plus d'informations, veuillez consulter nos Conditions Générales d'Utilisation</p>
                 </div>
