@@ -784,7 +784,7 @@ def resultat_analyse_IA(request, id_document):
     status = request.POST.get("status")
     document.etat = status
     if status == "success":
-        document.resultat_csv = request.POST["resultat_csv"]
+        document.resultat_csv = request.POST["resultat_json"]
     document.save()
 
     return HttpResponse("OK")
