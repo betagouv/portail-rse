@@ -4,6 +4,7 @@ import pytest
 from django.core.exceptions import ValidationError
 
 from reglementations.enums import ENJEUX_NORMALISES
+from reglementations.models import DocumentAnalyseIA
 from reglementations.models import RapportCSRD
 
 # Fixtures :
@@ -149,3 +150,17 @@ def test_rapport_csrd_bloque_non_modifiable(rapport_officiel):
     assert (
         rapport_officiel.lien_rapport == "https://example.com/nouveau"
     ), "Seul le lien_rapport devrait être modifiable"
+
+
+def test_rapport_csrd_avec_documents(rapport_personnel):
+    document_1 = DocumentAnalyseIA.objects.create(rapport_csrd=rapport_personnel)
+    document_2 = DocumentAnalyseIA.objects.create(
+        rapport_csrd=rapport_personnel, etat="en attente"
+    )
+
+    assert list(rapport_personnel.documents_analyses) == []
+
+    document_2.etat = "success"
+    document_2.save()
+
+    assert list(rapport_personnel.documents_analyses) == [document_2]
