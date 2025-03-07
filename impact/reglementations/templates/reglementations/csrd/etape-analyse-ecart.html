@@ -98,6 +98,10 @@
                                                             <button type="submit" class="fr-btn fr-btn--icon-left fr-icon-play-circle-line">Lancer une analyse</button>
                                                         </form>
                                                     {% endif %}
+                                                    {% if document.etat == "success" %}
+                                                        <a class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-down-line"
+                                                           href="{% url 'reglementations:csv_analyse_IA' document.id %}">Télécharger le résultat</a>
+                                                    {% endif %}
                                                 </td>
                                             </tr>
                                         {% endfor %}
