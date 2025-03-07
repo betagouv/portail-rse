@@ -802,3 +802,14 @@ def csv_analyse_IA(request, id_document):
     )
     response["Content-Disposition"] = f"filename=resultats_analyse_ia.csv"
     return response
+
+
+def synthese_resultat_IA_xlsx(request, id_csrd):
+    try:
+        csrd = RapportCSRD.objects.get(id=id_csrd)
+    except ObjectDoesNotExist:
+        raise Http404("Ce document n'existe pas")
+
+    workbook = Workbook()
+    worksheet = workbook.active
+    return _xlsx_response(workbook, "synthese_resultats.xlsx")

@@ -114,9 +114,8 @@
             </div>
             <div id="onglet-resultats-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="onglet-resultats" tabindex="0">
                 {% if csrd.documents_analyses %}
-                    {% for document in csrd.documents_analyses %}
-                        {{ document.fichier.name }}<br />
-                    {% endfor %}
+                    <a class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-down-line"
+                       href="{% url 'reglementations:synthese_resultats_IA' csrd.id %}">Télécharger la synthèse des résultats (xlsx)</a>
                 {% else %}
                     Aucun document analysé.
                 {% endif %}
