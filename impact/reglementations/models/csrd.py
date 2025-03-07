@@ -207,6 +207,10 @@ class RapportCSRD(TimestampedModel):
         ).order_by("-ord", "pk")
         return qs
 
+    @property
+    def documents_analyses(self):
+        return self.documents.filter(etat__exact="success")
+
 
 class EnjeuQuerySet(models.QuerySet):
     def selectionnes(self):
