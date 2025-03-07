@@ -10,6 +10,7 @@ from pytest_django.asserts import assertTemplateUsed
 
 from habilitations.models import attach_user_to_entreprise
 from reglementations.enums import EtapeCSRD
+from reglementations.models.csrd import DocumentAnalyseIA
 from reglementations.models.csrd import Enjeu
 from reglementations.models.csrd import RapportCSRD
 
@@ -507,6 +508,40 @@ def test_datapoints_csrd_au_format_xlsx_retourne_une_404_si_csrd_inexistante(
 
     response = client.get(
         f"/csrd/{entreprise_non_qualifiee.siren}/datapoints.xlsx",
+    )
+
+    assert response.status_code == 404
+
+
+def test_resultats_ia_d_un_document_au_format_csv(
+    client, alice, entreprise_non_qualifiee
+):
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    csrd = RapportCSRD.objects.create(
+        proprietaire=alice,
+        entreprise=entreprise_non_qualifiee,
+        annee=f"{datetime.now():%Y}",
+    )
+    document = DocumentAnalyseIA.objects.create(
+        rapport_csrd=csrd, etat="success", resultat_csv="RESULTATS"
+    )
+    client.force_login(alice)
+
+    response = client.get(
+        f"/ESRS-predict/{document.id}/resultats.csv",
+    )
+
+    assert response.content.decode("utf-8") == "RESULTATS"
+    assert response["content-type"] == "text/csv"
+
+
+def test_resultats_ia_d_un_document_au_format_csv_retourne_une_404_si_document_inexistant(
+    client, alice
+):
+    client.force_login(alice)
+
+    response = client.get(
+        f"/ESRS-predict/42/resultats.csv",
     )
 
     assert response.status_code == 404
