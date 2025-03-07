@@ -31,70 +31,89 @@
             </div>
         </div>
 
-        <div>
-            <form enctype="multipart/form-data" action="{% url 'reglementations:ajout_document' csrd.id %}" method="post">
-                {% csrf_token %}
-                {% include 'snippets/field.html' with field=form.fichier %}
-                <button type="submit" class="fr-btn fr-btn--icon-left fr-icon-upload-2-line">Envoyer</button>
-            </form>
-        </div>
+        <div class="fr-tabs">
+            <ul class="fr-tabs__list" role="tablist" aria-label="onglets-analyse-ecart">
+                <li role="presentation">
+                    <button id="onglet-fichiers" class="fr-tabs__tab fr-icon-file-fill fr-tabs__tab--icon-left" tabindex="0" role="tab" aria-selected="true" aria-controls="onglet-fichiers-panel">Vos fichiers ({{ documents.count }})</button>
+                </li>
+                <li role="presentation">
+                    <button id="onglet-resultats" class="fr-tabs__tab fr-icon-line-chart-fill fr-tabs__tab--icon-left" tabindex="-1" role="tab" aria-selected="false" aria-controls="onglet-resultats-panel">Résultats de l'analyse</button>
+                </li>
+            </ul>
+            <div id="onglet-fichiers-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel" aria-labelledby="onglet-fichiers" tabindex="0">
+                <div>
+                    <form enctype="multipart/form-data" action="{% url 'reglementations:ajout_document' csrd.id %}" method="post">
+                        {% csrf_token %}
+                        {% include 'snippets/field.html' with field=form.fichier %}
+                        <button type="submit" class="fr-btn fr-btn--icon-left fr-icon-upload-2-line">Envoyer</button>
+                    </form>
+                </div>
 
-        <div class="fr-alert fr-alert--warning">
-            <h3 class="fr-alert__title">Veillez à ne pas ajouter de données personnelles.</h3>
-            <p>Pour plus d'informations, veuillez consulter nos Conditions Générales d'Utilisation</p>
-        </div>
-        <div class="fr-table" id="table-md-component">
-            <div class="fr-table__wrapper">
-                <div class="fr-table__container">
-                    <div class="fr-table__content">
-                        <table id="table-md">
-                            <caption>
-                                Mes fichiers
-                            </caption>
-                            <thead>
-                                <tr>
-                                    <th scope="col">
-                                        Nom du fichier
-                                    </th>
-                                    <th scope="col">
-                                        Date d'ajout
-                                    </th>
-                                    <th scope="col">
-                                        Statut
-                                    </th>
-                                    <th scope="col">
-                                        Actions
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for document in documents.all %}
-                                    <tr id="table-md-row-key-1" data-row-key="1">
-                                        <td>
-                                            {{ document.fichier.name }}
-                                        </td>
-                                        <td>
-                                            {{ document.created_at }}
-                                        </td>
-                                        <td>
-                                            {% if document.etat %}
-                                                {{ document.etat }}
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {% if not document.etat %}
-                                                <form action="{% url 'reglementations:lance_analyse_IA' document.id %}">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="fr-btn fr-btn--icon-left fr-icon-play-circle-line">Lancer une analyse</button>
-                                                </form>
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                <div class="fr-alert fr-alert--warning">
+                    <h3 class="fr-alert__title">Veillez à ne pas ajouter de données personnelles.</h3>
+                    <p>Pour plus d'informations, veuillez consulter nos Conditions Générales d'Utilisation</p>
+                </div>
+                <div class="fr-table" id="table-md-component">
+                    <div class="fr-table__wrapper">
+                        <div class="fr-table__container">
+                            <div class="fr-table__content">
+                                <table id="table-md">
+                                    <caption>
+                                        Mes fichiers
+                                    </caption>
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">
+                                                Nom du fichier
+                                            </th>
+                                            <th scope="col">
+                                                Date d'ajout
+                                            </th>
+                                            <th scope="col">
+                                                Statut
+                                            </th>
+                                            <th scope="col">
+                                                Actions
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for document in documents.all %}
+                                            <tr id="table-md-row-key-1" data-row-key="1">
+                                                <td>
+                                                    {{ document.fichier.name }}
+                                                </td>
+                                                <td>
+                                                    {{ document.created_at }}
+                                                </td>
+                                                <td>
+                                                    {% if document.etat %}
+                                                        {{ document.etat }}
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if not document.etat %}
+                                                        <form action="{% url 'reglementations:lance_analyse_IA' document.id %}">
+                                                            {% csrf_token %}
+                                                            <button type="submit" class="fr-btn fr-btn--icon-left fr-icon-play-circle-line">Lancer une analyse</button>
+                                                        </form>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
+            <div id="onglet-resultats-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="onglet-resultats" tabindex="0">
+                {% for document in documents.all %}
+                    {% if document.etat == "success" %}
+                        {{ document.fichier.name }}<br />
+                    {% endif %}
+                {% endfor %}
             </div>
         </div>
     </div>
