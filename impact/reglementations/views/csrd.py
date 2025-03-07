@@ -788,3 +788,17 @@ def resultat_analyse_IA(request, id_document):
     document.save()
 
     return HttpResponse("OK")
+
+
+def csv_analyse_IA(request, id_document):
+    try:
+        document = DocumentAnalyseIA.objects.get(id=id_document)
+    except ObjectDoesNotExist:
+        raise Http404("Ce document n'existe pas")
+
+    response = HttpResponse(
+        document.resultat_csv,
+        content_type="text/csv",
+    )
+    response["Content-Disposition"] = f"filename=resultats_analyse_ia.csv"
+    return response

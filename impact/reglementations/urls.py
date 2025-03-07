@@ -134,6 +134,11 @@ urlpatterns = [
         views.csrd.lance_analyse_IA,
         name="lance_analyse_IA",
     ),
+    path(
+        "ESRS-predict/<int:id_document>/resultats.csv",
+        views.csrd.csv_analyse_IA,
+        name="csv_analyse_IA",
+    ),
 ]
 
 # Fragments HTMX
