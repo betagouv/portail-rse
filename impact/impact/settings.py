@@ -130,6 +130,9 @@ if os.getenv("S3_STORAGE"):
         raise ImproperlyConfigured("Missing S3 credentials")
     region_name = os.getenv("SCALEWAY_S3_BUCKET_REGION")
     bucket_name = os.getenv("SCALEWAY_S3_BUCKET_NAME")
+    endpoint_url = os.getenv(
+        "SCALEWAY_S3_ENDPOINT_URL", f"https://s3.{region_name}.scw.cloud"
+    )
     STORAGES["entreprises"] = {
         "BACKEND": "storages.backends.s3.S3Storage",
         "OPTIONS": {
@@ -137,7 +140,7 @@ if os.getenv("S3_STORAGE"):
             "secret_key": secret_key,
             "bucket_name": bucket_name,
             "region_name": region_name,
-            "endpoint_url": f"https://s3.{region_name}.scw.cloud",
+            "endpoint_url": endpoint_url,
             "location": "entreprises",
         },
     }
