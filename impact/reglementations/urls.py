@@ -135,9 +135,9 @@ urlpatterns = [
         name="lance_analyse_IA",
     ),
     path(
-        "ESRS-predict/<int:id_document>/resultats.csv",
-        views.csrd.csv_analyse_IA,
-        name="csv_analyse_IA",
+        "ESRS-predict/<int:id_document>/resultats.xlsx",
+        views.csrd.resultat_IA_xlsx,
+        name="resultat_IA_xlsx",
     ),
     path(
         "ESRS-predict/<int:id_csrd>/synthese_resultats.xlsx",

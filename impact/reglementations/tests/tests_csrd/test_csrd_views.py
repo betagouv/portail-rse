@@ -513,7 +513,7 @@ def test_datapoints_csrd_au_format_xlsx_retourne_une_404_si_csrd_inexistante(
     assert response.status_code == 404
 
 
-def test_resultats_ia_d_un_document_au_format_csv(
+def test_resultats_ia_d_un_document_au_format_xlsx(
     client, alice, entreprise_non_qualifiee
 ):
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
@@ -523,16 +523,52 @@ def test_resultats_ia_d_un_document_au_format_csv(
         annee=f"{datetime.now():%Y}",
     )
     document = DocumentAnalyseIA.objects.create(
-        rapport_csrd=csrd, etat="success", resultat_csv="RESULTATS"
+        rapport_csrd=csrd,
+        etat="success",
+        resultat_csv="""{
+  "ESRS E1": [
+    {
+      "PAGES": 1,
+      "TEXTS": "A"
+    }
+  ],
+  "ESRS E2": [
+    {
+      "PAGES": 6,
+      "TEXTS": "B"
+    },
+    {
+      "PAGES": 7,
+      "TEXTS": "C"
+    }
+  ]
+  }""",
     )
     client.force_login(alice)
 
     response = client.get(
-        f"/ESRS-predict/{document.id}/resultats.csv",
+        f"/ESRS-predict/{document.id}/resultats.xlsx",
     )
 
-    assert response.content.decode("utf-8") == "RESULTATS"
-    assert response["content-type"] == "text/csv"
+    assert response["Content-Disposition"] == "filename=resultats.xlsx"
+    assert (
+        response["content-type"]
+        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+    )
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook.active
+    assert onglet["A1"].value == "ESRS"
+    assert onglet["B1"].value == "PAGE"
+    assert onglet["C1"].value == "PHRASE"
+    assert onglet["A2"].value == "ESRS E1"
+    assert onglet["B2"].value == 1
+    assert onglet["C2"].value == "A"
+    assert onglet["A3"].value == "ESRS E2"
+    assert onglet["B3"].value == 6
+    assert onglet["C3"].value == "B"
+    assert onglet["A4"].value == "ESRS E2"
+    assert onglet["B4"].value == 7
+    assert onglet["C4"].value == "C"
 
 
 def test_resultats_ia_d_un_document_au_format_csv_retourne_une_404_si_document_inexistant(
@@ -565,7 +601,7 @@ def test_resultats_ia_de_l_ensemble_des_documents_au_format_xlsx(
         f"/ESRS-predict/{csrd.id}/synthese_resultats.xlsx",
     )
 
-    assert response["Content-Disposition"] == f"filename=synthese_resultats.xlsx"
+    assert response["Content-Disposition"] == "filename=synthese_resultats.xlsx"
     assert (
         response["content-type"]
         == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"

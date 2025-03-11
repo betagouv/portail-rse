@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 from datetime import timedelta
 from functools import wraps
@@ -790,18 +791,23 @@ def resultat_analyse_IA(request, id_document):
     return HttpResponse("OK")
 
 
-def csv_analyse_IA(request, id_document):
+def resultat_IA_xlsx(request, id_document):
     try:
         document = DocumentAnalyseIA.objects.get(id=id_document)
     except ObjectDoesNotExist:
         raise Http404("Ce document n'existe pas")
 
-    response = HttpResponse(
-        document.resultat_csv,
-        content_type="text/csv",
-    )
-    response["Content-Disposition"] = f"filename=resultats_analyse_ia.csv"
-    return response
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet["A1"] = "ESRS"
+    worksheet["B1"] = "PAGE"
+    worksheet["C1"] = "PHRASE"
+    data = json.loads(document.resultat_csv)
+    for esrs, lignes in data.items():
+        for ligne in lignes:
+            worksheet.append([esrs, ligne["PAGES"], ligne["TEXTS"]])
+
+    return _xlsx_response(workbook, "resultats.xlsx")
 
 
 def synthese_resultat_IA_xlsx(request, id_csrd):
