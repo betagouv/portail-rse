@@ -818,4 +818,15 @@ def synthese_resultat_IA_xlsx(request, id_csrd):
 
     workbook = Workbook()
     worksheet = workbook.active
+    worksheet["A1"] = "ESRS"
+    worksheet["B1"] = "FICHIER"
+    worksheet["C1"] = "PAGE"
+    worksheet["D1"] = "PHRASE"
+    for document in csrd.documents_analyses:
+        data = json.loads(document.resultat_json)
+        for esrs, lignes in data.items():
+            for ligne in lignes:
+                worksheet.append(
+                    [esrs, document.fichier.name, ligne["PAGES"], ligne["TEXTS"]]
+                )
     return _xlsx_response(workbook, "synthese_resultats.xlsx")

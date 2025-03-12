@@ -592,9 +592,31 @@ def test_resultats_ia_de_l_ensemble_des_documents_au_format_xlsx(
         entreprise=entreprise_non_qualifiee,
         annee=f"{datetime.now():%Y}",
     )
-    document = DocumentAnalyseIA.objects.create(
-        rapport_csrd=csrd, etat="success", resultat_json="{}"
+    DocumentAnalyseIA.objects.create(
+        rapport_csrd=csrd,
+        etat="success",
+        resultat_json="""{
+  "ESRS E1": [
+    {
+      "PAGES": 1,
+      "TEXTS": "A"
+    }
+  ]
+  }""",
     )
+    DocumentAnalyseIA.objects.create(
+        rapport_csrd=csrd,
+        etat="success",
+        resultat_json="""{
+  "ESRS E2": [
+    {
+      "PAGES": 6,
+      "TEXTS": "B"
+    }
+  ]
+  }""",
+    )
+
     client.force_login(alice)
 
     response = client.get(
@@ -606,6 +628,18 @@ def test_resultats_ia_de_l_ensemble_des_documents_au_format_xlsx(
         response["content-type"]
         == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
     )
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook.active
+    assert onglet["A1"].value == "ESRS"
+    assert onglet["B1"].value == "FICHIER"
+    assert onglet["C1"].value == "PAGE"
+    assert onglet["D1"].value == "PHRASE"
+    assert onglet["A2"].value == "ESRS E1"
+    assert onglet["C2"].value == 1
+    assert onglet["D2"].value == "A"
+    assert onglet["A3"].value == "ESRS E2"
+    assert onglet["C3"].value == 6
+    assert onglet["D3"].value == "B"
 
 
 def test_resultats_ia_de_l_ensemble_des_documents_retourne_une_404_si_csrd_inexistant(
