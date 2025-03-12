@@ -411,7 +411,7 @@ def test_datapoints_pour_enjeux_materiels_au_format_xlsx(
         == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
-    noms_onglet = workbook.get_sheet_names()
+    noms_onglet = workbook.sheetnames
     assert esrs_materielle.replace("_", " ") in noms_onglet
     assert "Index" in noms_onglet
     assert "ESRS 2" in noms_onglet
