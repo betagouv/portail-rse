@@ -802,12 +802,24 @@ def resultat_IA_xlsx(request, id_document):
     worksheet["A1"] = "ESRS"
     worksheet["B1"] = "PAGE"
     worksheet["C1"] = "PHRASE"
-    data = json.loads(document.resultat_json)
-    for esrs, lignes in data.items():
-        for ligne in lignes:
-            worksheet.append([esrs, ligne["PAGES"], ligne["TEXTS"]])
-
+    _ajoute_ligne_resultat_ia(worksheet, document, False)
     return _xlsx_response(workbook, "resultats.xlsx")
+
+
+def _ajoute_ligne_resultat_ia(worksheet, document, avec_nom_fichier):
+    data = json.loads(document.resultat_json)
+    for esrs, contenus in data.items():
+        for contenu in contenus:
+            if avec_nom_fichier:
+                ligne = [
+                    esrs,
+                    document.fichier.name,
+                    contenu["PAGES"],
+                    contenu["TEXTS"],
+                ]
+            else:
+                ligne = [esrs, contenu["PAGES"], contenu["TEXTS"]]
+            worksheet.append(ligne)
 
 
 def synthese_resultat_IA_xlsx(request, id_csrd):
@@ -823,10 +835,5 @@ def synthese_resultat_IA_xlsx(request, id_csrd):
     worksheet["C1"] = "PAGE"
     worksheet["D1"] = "PHRASE"
     for document in csrd.documents_analyses:
-        data = json.loads(document.resultat_json)
-        for esrs, lignes in data.items():
-            for ligne in lignes:
-                worksheet.append(
-                    [esrs, document.fichier.name, ligne["PAGES"], ligne["TEXTS"]]
-                )
+        _ajoute_ligne_resultat_ia(worksheet, document, True)
     return _xlsx_response(workbook, "synthese_resultats.xlsx")
