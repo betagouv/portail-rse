@@ -312,5 +312,5 @@ class DocumentAnalyseIA(TimestampedModel):
     fichier = models.FileField(
         storage=select_storage, upload_to=entreprise_directory_path
     )
-    resultat_csv = models.TextField(null=True)
+    resultat_json = models.JSONField(null=True)
     etat = models.CharField(max_length=144, null=True)
