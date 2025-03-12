@@ -525,7 +525,7 @@ def test_resultats_ia_d_un_document_au_format_xlsx(
     document = DocumentAnalyseIA.objects.create(
         rapport_csrd=csrd,
         etat="success",
-        resultat_csv="""{
+        resultat_json="""{
   "ESRS E1": [
     {
       "PAGES": 1,
@@ -593,7 +593,7 @@ def test_resultats_ia_de_l_ensemble_des_documents_au_format_xlsx(
         annee=f"{datetime.now():%Y}",
     )
     document = DocumentAnalyseIA.objects.create(
-        rapport_csrd=csrd, etat="success", resultat_csv="RESULTATS"
+        rapport_csrd=csrd, etat="success", resultat_json="{}"
     )
     client.force_login(alice)
 
