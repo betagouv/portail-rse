@@ -785,7 +785,7 @@ def resultat_analyse_IA(request, id_document):
     status = request.POST.get("status")
     document.etat = status
     if status == "success":
-        document.resultat_csv = request.POST["resultat_json"]
+        document.resultat_json = request.POST["resultat_json"]
     document.save()
 
     return HttpResponse("OK")
@@ -802,7 +802,7 @@ def resultat_IA_xlsx(request, id_document):
     worksheet["A1"] = "ESRS"
     worksheet["B1"] = "PAGE"
     worksheet["C1"] = "PHRASE"
-    data = json.loads(document.resultat_csv)
+    data = json.loads(document.resultat_json)
     for esrs, lignes in data.items():
         for ligne in lignes:
             worksheet.append([esrs, ligne["PAGES"], ligne["TEXTS"]])
