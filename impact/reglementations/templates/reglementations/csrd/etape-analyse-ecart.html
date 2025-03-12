@@ -53,64 +53,69 @@
                     <h3 class="fr-alert__title">Veillez à ne pas ajouter de données personnelles.</h3>
                     <p>Pour plus d'informations, veuillez consulter nos Conditions Générales d'Utilisation</p>
                 </div>
-                <div class="fr-table" id="table-md-component">
-                    <div class="fr-table__wrapper">
-                        <div class="fr-table__container">
-                            <div class="fr-table__content">
-                                <table id="table-md">
-                                    <caption>
-                                        Mes fichiers
-                                    </caption>
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">
-                                                Nom du fichier
-                                            </th>
-                                            <th scope="col">
-                                                Date d'ajout
-                                            </th>
-                                            <th scope="col">
-                                                Statut
-                                            </th>
-                                            <th scope="col">
-                                                Actions
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for document in documents.all %}
-                                            <tr id="table-md-row-key-1" data-row-key="1">
-                                                <td>
-                                                    {{ document.fichier.name }}
-                                                </td>
-                                                <td>
-                                                    {{ document.created_at }}
-                                                </td>
-                                                <td>
-                                                    {% if document.etat %}
-                                                        {{ document.etat }}
-                                                    {% endif %}
-                                                </td>
-                                                <td>
-                                                    {% if not document.etat %}
-                                                        <form action="{% url 'reglementations:lance_analyse_IA' document.id %}">
-                                                            {% csrf_token %}
-                                                            <button type="submit" class="fr-btn fr-btn--icon-left fr-icon-play-circle-line">Lancer une analyse</button>
-                                                        </form>
-                                                    {% endif %}
-                                                    {% if document.etat == "success" %}
-                                                        <a class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-down-line"
-                                                           href="{% url 'reglementations:resultat_IA_xlsx' document.id %}">Télécharger le résultat</a>
-                                                    {% endif %}
-                                                </td>
+                {% if documents.count %}
+                    <div class="fr-table" id="table-md-component">
+                        <div class="fr-table__wrapper">
+                            <div class="fr-table__container">
+                                <div class="fr-table__content">
+                                    <table id="table-md">
+                                        <caption>
+                                            Mes fichiers
+                                        </caption>
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">
+                                                    Nom du fichier
+                                                </th>
+                                                <th scope="col">
+                                                    Date d'ajout
+                                                </th>
+                                                <th scope="col">
+                                                    Statut
+                                                </th>
+                                                <th scope="col">
+                                                    Actions
+                                                </th>
                                             </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            {% for document in documents.all %}
+                                                <tr id="table-md-row-key-1" data-row-key="1">
+                                                    <td>
+                                                        {{ document.fichier.name }}
+                                                    </td>
+                                                    <td>
+                                                        {{ document.created_at }}
+                                                    </td>
+                                                    <td>
+                                                        {% if document.etat %}
+                                                            {{ document.etat }}
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {% if not document.etat %}
+                                                            <form action="{% url 'reglementations:lance_analyse_IA' document.id %}">
+                                                                {% csrf_token %}
+                                                                <button type="submit" class="fr-btn fr-btn--icon-left fr-icon-play-circle-line">Lancer une analyse</button>
+                                                            </form>
+                                                        {% endif %}
+                                                        {% if document.etat == "success" %}
+                                                            <a class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-down-line"
+                                                               href="{% url 'reglementations:resultat_IA_xlsx' document.id %}">Télécharger le résultat</a>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                {% else %}
+                    <h4>Mes fichiers</h4>
+                    <b>Aucun document ajouté.</b>
+                {% endif %}
             </div>
             <div id="onglet-resultats-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="onglet-resultats" tabindex="0">
                 {% if csrd.documents_analyses %}
