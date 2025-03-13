@@ -862,9 +862,10 @@ def _ajoute_ligne_resultat_ia(worksheet, document, avec_nom_fichier):
 
 
 @login_required
-def synthese_resultat_IA_xlsx(request, id_csrd):
+@csrd_required
+def synthese_resultat_IA_xlsx(request, csrd_id):
     try:
-        csrd = RapportCSRD.objects.get(id=id_csrd)
+        csrd = RapportCSRD.objects.get(id=csrd_id)
     except ObjectDoesNotExist:
         raise Http404("Ce document n'existe pas")
 
