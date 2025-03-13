@@ -49,6 +49,11 @@
     }
 }
 
+/* Texte d'erreur, sans l'icône d'erreur à gauche */
+.text-error-color-no-decoration {
+        color: var(--text-default-error);
+}
+
 /* custom nav */
 
 .header-collapse {
