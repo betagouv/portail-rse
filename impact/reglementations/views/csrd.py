@@ -20,6 +20,7 @@ from django.template.loader import get_template
 from django.template.loader import TemplateDoesNotExist
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 from openpyxl import load_workbook
 from openpyxl import Workbook
 
@@ -755,6 +756,20 @@ def _esrs_materiel_a_supprimer(csrd: RapportCSRD, materiel: bool):
     esrs_a_supprimer.discard("ESRS_1")
 
     return esrs_a_supprimer
+
+
+@login_required
+@require_http_methods(["POST"])
+def ajout_document(request, csrd_id):
+    data = {**request.POST}
+    data["rapport_csrd"] = csrd_id
+    form = DocumentAnalyseIAForm(data=data, files=request.FILES)
+    if form.is_valid():
+        form.save()
+        referer = request.META.get("HTTP_REFERER")
+        return redirect(referer)
+    else:
+        print(form.errors)
 
 
 def lance_analyse_IA(request, id_document):
