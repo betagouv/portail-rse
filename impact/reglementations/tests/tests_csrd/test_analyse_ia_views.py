@@ -2,6 +2,7 @@ from datetime import datetime
 from io import BytesIO
 
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.urls import reverse
 from openpyxl import load_workbook
 
 from habilitations.models import attach_user_to_entreprise
@@ -17,10 +18,16 @@ def test_ajout_document_par_utilisateur_autorise(client, csrd):
     response = client.post(
         f"/csrd/{csrd.id}/ajout_document",
         {"fichier": fichier},
-        headers={"referer": "http://domain.test/connexion"},
     )
 
     assert response.status_code == 302
+    assert response.url == reverse(
+        "reglementations:gestion_csrd",
+        kwargs={
+            "siren": csrd.entreprise.siren,
+            "id_etape": "analyse-ecart",
+        },
+    )
     assert csrd.documents.count() == 1
 
 
@@ -32,7 +39,6 @@ def test_ajout_document_par_utilisateur_non_autorise(client, csrd, bob):
     response = client.post(
         f"/csrd/{csrd.id}/ajout_document",
         {"fichier": fichier},
-        headers={"referer": "http://domain.test/connexion"},
     )
 
     assert response.status_code == 403
@@ -46,7 +52,6 @@ def test_ajout_document_sur_csrd_inexistante(client, alice):
     response = client.post(
         f"/csrd/42/ajout_document",
         {"fichier": fichier},
-        headers={"referer": "http://domain.test/connexion"},
     )
 
     assert response.status_code == 404
