@@ -85,7 +85,7 @@
                                                         {{ document.fichier.name }}
                                                     </td>
                                                     <td>
-                                                        {{ document.created_at }}
+                                                        {{ document.created_at|date:"d b Y" }}
                                                     </td>
                                                     <td>
                                                         {% if document.etat %}
@@ -106,7 +106,7 @@
                                                     </td>
                                                     <td>
                                                         {% if not document.etat %}
-                                                            <form action="{% url 'reglementations:lance_analyse_IA' document.id %}">
+                                                            <form action="{% url 'reglementations:lance_analyse_IA' document.id %}" class="inline">
                                                                 {% csrf_token %}
                                                                 <button type="submit" class="fr-btn fr-btn--icon-left fr-icon-play-circle-line">Lancer une analyse</button>
                                                             </form>
@@ -115,6 +115,10 @@
                                                             <a class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-down-line"
                                                                href="{% url 'reglementations:resultat_IA_xlsx' document.id %}">Télécharger le résultat</a>
                                                         {% endif %}
+
+                                                        <a class="fr-btn fr-btn--secondary fr-btn--icon--sm fr-btn--icon-left"
+                                                           href="{{ document.fichier.url }}" target="_blank"></a>
+
                                                     </td>
                                                 </tr>
                                             {% endfor %}
