@@ -93,10 +93,14 @@
                                                                 <p class="fr-badge">En attente de traitement</p>
                                                             {% elif document.etat in "text_processed,analysis_complete" %}
                                                                 <p class="fr-badge fr-badge--new">En cours de traitement</p>
+                                                                {% if document.message %}
+                                                                    <p class="fr-text--sm">{{ document.message }}</p>
+                                                                {% endif %}
                                                             {% elif document.etat == "success" %}
                                                                 <p class="fr-badge fr-badge--success">Traité</p>
                                                             {% elif document.etat == "error" %}
                                                                 <p class="fr-badge fr-badge--error">Traitement impossible</p>
+                                                                <p class="fr-text--sm text-error-color-no-decoration">{{ document.message }}</p>
                                                             {% endif %}
                                                         {% endif %}
                                                     </td>
