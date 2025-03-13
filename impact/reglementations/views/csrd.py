@@ -810,6 +810,7 @@ def resultat_analyse_IA(request, id_document):
     return HttpResponse("OK")
 
 
+@login_required
 def resultat_IA_xlsx(request, id_document):
     try:
         document = DocumentAnalyseIA.objects.get(id=id_document)
@@ -841,6 +842,7 @@ def _ajoute_ligne_resultat_ia(worksheet, document, avec_nom_fichier):
             worksheet.append(ligne)
 
 
+@login_required
 def synthese_resultat_IA_xlsx(request, id_csrd):
     try:
         csrd = RapportCSRD.objects.get(id=id_csrd)
