@@ -531,12 +531,23 @@ def test_serveur_ia_poste_l_avancement_de_l_analyse(
         f"/ESRS-predict/{document.id}",
         {
             "status": "processing",
-            "msg": "ok",
         },
     )
 
     document.refresh_from_db()
     assert document.etat == "processing"
+
+    response = client.post(
+        f"/ESRS-predict/{document.id}",
+        {
+            "status": "error",
+            "msg": "MESSAGE",
+        },
+    )
+
+    document.refresh_from_db()
+    assert document.etat == "error"
+    assert document.message == "MESSAGE"
 
 
 def test_serveur_ia_poste_la_reussite_de_l_analyse(
