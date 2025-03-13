@@ -125,6 +125,11 @@ urlpatterns = [
         name="datapoints_xlsx",
     ),
     path(
+        "csrd/<int:csrd_id>/ajout_document",
+        views.csrd.ajout_document,
+        name="ajout_document",
+    ),
+    path(
         "ESRS-predict/<int:id_document>",
         views.csrd.resultat_analyse_IA,
         name="resultat_analyse_IA",
