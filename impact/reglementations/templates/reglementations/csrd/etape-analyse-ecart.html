@@ -91,12 +91,12 @@
                                                         {% if document.etat %}
                                                             {% if document.etat == "processing" %}
                                                                 <p class="fr-badge">En attente de traitement</p>
-                                                            {% elif document.etat in "processing,text_processed,analysis_complete" %}
+                                                            {% elif document.etat in "text_processed,analysis_complete" %}
                                                                 <p class="fr-badge fr-badge--new">En cours de traitement</p>
                                                             {% elif document.etat == "success" %}
                                                                 <p class="fr-badge fr-badge--success">Traité</p>
                                                             {% elif document.etat == "error" %}
-                                                                <p class="fr-badge fr-badge-error">Traitement impossible</p>
+                                                                <p class="fr-badge fr-badge--error">Traitement impossible</p>
                                                             {% endif %}
                                                         {% endif %}
                                                     </td>
