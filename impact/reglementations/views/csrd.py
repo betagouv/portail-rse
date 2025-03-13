@@ -791,13 +791,10 @@ def ajout_document(request, csrd_id):
 @login_required
 @document_required
 def lance_analyse_IA(request, id_document):
-    url = f"{settings.IA_BASE_URL}/run-task"
-    try:
-        document = DocumentAnalyseIA.objects.get(id=id_document)
-    except ObjectDoesNotExist:
-        raise Http404("Ce document n'existe pas")
+    document = DocumentAnalyseIA.objects.get(id=id_document)
 
     if document.etat != "success":
+        url = f"{settings.IA_BASE_URL}/run-task"
         response = requests.post(
             url, {"document_id": document.id, "url": document.fichier.url}
         )
@@ -831,10 +828,7 @@ def resultat_analyse_IA(request, id_document):
 @login_required
 @document_required
 def resultat_IA_xlsx(request, id_document):
-    try:
-        document = DocumentAnalyseIA.objects.get(id=id_document)
-    except ObjectDoesNotExist:
-        raise Http404("Ce document n'existe pas")
+    document = DocumentAnalyseIA.objects.get(id=id_document)
 
     workbook = Workbook()
     worksheet = workbook.active
@@ -864,10 +858,7 @@ def _ajoute_ligne_resultat_ia(worksheet, document, avec_nom_fichier):
 @login_required
 @csrd_required
 def synthese_resultat_IA_xlsx(request, csrd_id):
-    try:
-        csrd = RapportCSRD.objects.get(id=csrd_id)
-    except ObjectDoesNotExist:
-        raise Http404("Ce document n'existe pas")
+    csrd = RapportCSRD.objects.get(id=csrd_id)
 
     workbook = Workbook()
     worksheet = workbook.active
