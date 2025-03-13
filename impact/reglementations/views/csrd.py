@@ -38,6 +38,7 @@ from reglementations.models import RapportCSRD
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
 from reglementations.views.base import ReglementationStatus
+from reglementations.views.fragments.decorators import csrd_required
 
 
 class CSRDReglementation(Reglementation):
@@ -630,7 +631,7 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
     return HttpResponse(template.render(context, request))
 
 
-def csrd_required(function):
+def csrd_required_with_enjeux(function):
     @wraps(function)
     def wrap(request, siren):
         entreprise = get_object_or_404(Entreprise, siren=siren)
@@ -649,13 +650,13 @@ def csrd_required(function):
 
 
 @login_required
-@csrd_required
+@csrd_required_with_enjeux
 def enjeux_xlsx(request, siren, csrd=None):
     return _build_xlsx(csrd.enjeux, csrd=csrd)
 
 
 @login_required
-@csrd_required
+@csrd_required_with_enjeux
 def enjeux_materiels_xlsx(request, siren, csrd=None):
     return _build_xlsx(csrd.enjeux, csrd=csrd, materiels=True)
 
@@ -717,7 +718,7 @@ def _xlsx_response(workbook, filename):
 
 
 @login_required
-@csrd_required
+@csrd_required_with_enjeux
 def datapoints_xlsx(request, _, csrd=None):
     materiel = request.GET.get("materiel", True) != "false"
     esrs_a_supprimer = _esrs_materiel_a_supprimer(csrd, materiel)
@@ -759,6 +760,7 @@ def _esrs_materiel_a_supprimer(csrd: RapportCSRD, materiel: bool):
 
 
 @login_required
+@csrd_required
 @require_http_methods(["POST"])
 def ajout_document(request, csrd_id):
     data = {**request.POST}
@@ -766,10 +768,10 @@ def ajout_document(request, csrd_id):
     form = DocumentAnalyseIAForm(data=data, files=request.FILES)
     if form.is_valid():
         form.save()
-        referer = request.META.get("HTTP_REFERER")
-        return redirect(referer)
     else:
         print(form.errors)
+    referer = request.META.get("HTTP_REFERER")
+    return redirect(referer)
 
 
 def lance_analyse_IA(request, id_document):
