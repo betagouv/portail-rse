@@ -571,13 +571,13 @@ def test_resultats_ia_d_un_document_au_format_xlsx(
     assert onglet["C4"].value == "C"
 
 
-def test_resultats_ia_d_un_document_au_format_csv_retourne_une_404_si_document_inexistant(
+def test_resultats_ia_d_un_document_au_format_xlsx_retourne_une_404_si_document_inexistant(
     client, alice
 ):
     client.force_login(alice)
 
     response = client.get(
-        f"/ESRS-predict/42/resultats.csv",
+        f"/ESRS-predict/42/resultats.xlsx",
     )
 
     assert response.status_code == 404
