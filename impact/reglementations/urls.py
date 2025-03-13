@@ -145,7 +145,7 @@ urlpatterns = [
         name="resultat_IA_xlsx",
     ),
     path(
-        "ESRS-predict/<int:id_csrd>/synthese_resultats.xlsx",
+        "ESRS-predict/<int:csrd_id>/synthese_resultats.xlsx",
         views.csrd.synthese_resultat_IA_xlsx,
         name="synthese_resultats_IA",
     ),
