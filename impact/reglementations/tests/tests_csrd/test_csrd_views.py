@@ -513,6 +513,77 @@ def test_datapoints_csrd_au_format_xlsx_retourne_une_404_si_csrd_inexistante(
     assert response.status_code == 404
 
 
+def test_serveur_ia_poste_l_avancement_de_l_analyse(
+    client, alice, entreprise_non_qualifiee
+):
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    csrd = RapportCSRD.objects.create(
+        proprietaire=alice,
+        entreprise=entreprise_non_qualifiee,
+        annee=f"{datetime.now():%Y}",
+    )
+    document = DocumentAnalyseIA.objects.create(
+        rapport_csrd=csrd,
+    )
+    client.force_login(alice)
+
+    response = client.post(
+        f"/ESRS-predict/{document.id}",
+        {
+            "status": "processing",
+            "msg": "ok",
+        },
+    )
+
+    document.refresh_from_db()
+    assert document.etat == "processing"
+
+
+def test_serveur_ia_poste_la_reussite_de_l_analyse(
+    client, alice, entreprise_non_qualifiee
+):
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    csrd = RapportCSRD.objects.create(
+        proprietaire=alice,
+        entreprise=entreprise_non_qualifiee,
+        annee=f"{datetime.now():%Y}",
+    )
+    RESULTATS = """{
+  "ESRS E1": [
+    {
+      "PAGES": 1,
+      "TEXTS": "A"
+    }
+  ],
+  "ESRS E2": [
+    {
+      "PAGES": 6,
+      "TEXTS": "B"
+    },
+    {
+      "PAGES": 7,
+      "TEXTS": "C"
+    }
+  ]
+  }"""
+    document = DocumentAnalyseIA.objects.create(
+        rapport_csrd=csrd,
+    )
+    client.force_login(alice)
+
+    response = client.post(
+        f"/ESRS-predict/{document.id}",
+        {
+            "status": "success",
+            "resultat_json": RESULTATS,
+        },
+    )
+
+    document.refresh_from_db()
+    assert document.etat == "success"
+    assert document.resultat_json == RESULTATS
+
+
 def test_resultats_ia_d_un_document_au_format_xlsx(
     client, alice, entreprise_non_qualifiee
 ):
