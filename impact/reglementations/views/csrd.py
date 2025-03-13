@@ -16,6 +16,7 @@ from django.http import Http404
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
+from django.shortcuts import render
 from django.template.loader import get_template
 from django.template.loader import TemplateDoesNotExist
 from django.urls import reverse_lazy
@@ -596,17 +597,22 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
             annee=annee,
         )
 
+    context = _contexte_d_etape(id_etape, csrd)
+    return HttpResponse(template.render(context, request))
+
+
+def _contexte_d_etape(id_etape, csrd, form=None):
     # on récupère les rapports si plusieurs existants, pour permettre une sélection
     rapports_csrd = RapportCSRD.objects.filter(
-        entreprise=entreprise,
-        proprietaire=None if habilitation.is_confirmed else request.user,
+        entreprise=csrd.entreprise,
+        proprietaire=csrd.proprietaire,
     ).order_by("annee")
 
     context = {
-        "entreprise": entreprise,
+        "entreprise": csrd.entreprise,
         "etape": EtapeCSRD.get(id_etape),
         "csrd": csrd,
-        "annee": annee,
+        "annee": datetime.now().year,
         "steps": ETAPES_CSRD,
         "rapports_csrd": rapports_csrd,
     }
@@ -622,13 +628,13 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
             }
         case "analyse-ecart":
             context |= {
-                "form": DocumentAnalyseIAForm(),
+                "form": form or DocumentAnalyseIAForm(),
                 "documents": csrd.documents,
             }
         case "redaction-rapport-durabilite":
             context |= {"form": LienRapportCSRDForm(instance=csrd)}
 
-    return HttpResponse(template.render(context, request))
+    return context
 
 
 def csrd_required_with_enjeux(function):
@@ -763,15 +769,22 @@ def _esrs_materiel_a_supprimer(csrd: RapportCSRD, materiel: bool):
 @csrd_required
 @require_http_methods(["POST"])
 def ajout_document(request, csrd_id):
+    id_etape = "analyse-ecart"
+    csrd = RapportCSRD.objects.get(id=csrd_id)
     data = {**request.POST}
     data["rapport_csrd"] = csrd_id
     form = DocumentAnalyseIAForm(data=data, files=request.FILES)
     if form.is_valid():
         form.save()
+        return redirect(
+            "reglementations:gestion_csrd",
+            siren=csrd.entreprise.siren,
+            id_etape=id_etape,
+        )
     else:
-        print(form.errors)
-    referer = request.META.get("HTTP_REFERER")
-    return redirect(referer)
+        context = _contexte_d_etape(id_etape, csrd, form)
+        template_name = f"reglementations/csrd/etape-{id_etape}.html"
+        return render(request, template_name, context)
 
 
 def lance_analyse_IA(request, id_document):
