@@ -40,6 +40,7 @@ from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.decorators import csrd_required
+from reglementations.views.decorators import document_required
 
 
 class CSRDReglementation(Reglementation):
@@ -788,6 +789,7 @@ def ajout_document(request, csrd_id):
 
 
 @login_required
+@document_required
 def lance_analyse_IA(request, id_document):
     url = f"{settings.IA_BASE_URL}/run-task"
     try:
@@ -827,6 +829,7 @@ def resultat_analyse_IA(request, id_document):
 
 
 @login_required
+@document_required
 def resultat_IA_xlsx(request, id_document):
     try:
         document = DocumentAnalyseIA.objects.get(id=id_document)
