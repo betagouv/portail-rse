@@ -1,6 +1,8 @@
 from datetime import datetime
 from io import BytesIO
 
+from django.conf import settings
+from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from openpyxl import load_workbook
@@ -8,6 +10,7 @@ from openpyxl import load_workbook
 from habilitations.models import attach_user_to_entreprise
 from reglementations.models.csrd import DocumentAnalyseIA
 from reglementations.models.csrd import RapportCSRD
+from utils.mock_response import MockedResponse
 
 
 def test_ajout_document_par_utilisateur_autorise(client, csrd):
@@ -56,6 +59,55 @@ def test_ajout_document_sur_csrd_inexistante(client, alice):
 
     assert response.status_code == 404
     assert DocumentAnalyseIA.objects.count() == 0
+
+
+def test_ordre_d_analyse_IA_par_le_serveur(
+    client, mocker, alice, entreprise_non_qualifiee
+):
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    csrd = RapportCSRD.objects.create(
+        proprietaire=alice,
+        entreprise=entreprise_non_qualifiee,
+        annee=f"{datetime.now():%Y}",
+    )
+    document = DocumentAnalyseIA.objects.create(
+        rapport_csrd=csrd, fichier=ContentFile("pdf file data", name="fichier.pdf")
+    )
+    client.force_login(alice)
+    ia_request = mocker.patch(
+        "requests.post", return_value=MockedResponse(200, {"status": "processing"})
+    )
+    response = client.post(
+        f"/ESRS-predict/{document.id}/start",
+    )
+
+    ia_request.assert_called_once_with(
+        f"{settings.IA_BASE_URL}/run-task",
+        {"document_id": document.id, "url": document.fichier.url},
+    )
+    document.refresh_from_db()
+    assert document.etat == "processing"
+
+
+def test_ordre_d_analyse_IA_par_le_serveur_redirige_vers_la_connexion_si_non_connecté(
+    client, mocker, alice, entreprise_non_qualifiee
+):
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    csrd = RapportCSRD.objects.create(
+        proprietaire=alice,
+        entreprise=entreprise_non_qualifiee,
+        annee=f"{datetime.now():%Y}",
+    )
+    document = DocumentAnalyseIA.objects.create(
+        rapport_csrd=csrd, fichier=ContentFile("pdf file data", name="fichier.pdf")
+    )
+
+    response = client.post(
+        f"/ESRS-predict/{document.id}/start",
+    )
+
+    assert response.status_code == 302
+    assert not document.etat
 
 
 def test_serveur_ia_poste_l_avancement_de_l_analyse(
