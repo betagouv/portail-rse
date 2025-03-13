@@ -787,6 +787,7 @@ def ajout_document(request, csrd_id):
         return render(request, template_name, context)
 
 
+@login_required
 def lance_analyse_IA(request, id_document):
     url = f"{settings.IA_BASE_URL}/run-task"
     try:
@@ -801,8 +802,10 @@ def lance_analyse_IA(request, id_document):
         document.etat = response.json()["status"]
         document.save()
 
-    referer = request.META.get("HTTP_REFERER")
-    return redirect(referer)
+    id_etape = "analyse-ecart"
+    context = _contexte_d_etape(id_etape, document.rapport_csrd)
+    template_name = f"reglementations/csrd/etape-{id_etape}.html"
+    return render(request, template_name, context)
 
 
 @csrf_exempt
