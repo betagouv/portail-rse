@@ -9,7 +9,7 @@ from reglementations.enums import ThemeESRS
 from reglementations.enums import TitreESRS
 from reglementations.forms.csrd import EnjeuxMaterielsRapportCSRDForm
 from reglementations.models.csrd import RapportCSRD
-from reglementations.views.fragments.decorators import csrd_required
+from reglementations.views.decorators import csrd_required
 
 
 def _grouper_enjeux_par_esrs(enjeux):
