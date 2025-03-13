@@ -7,12 +7,6 @@ from reglementations.models.csrd import Enjeu
 from reglementations.models.csrd import RapportCSRD
 
 
-"""
-Décorateurs spécifiques aux fragments de l'espace CSRD.
-Essentiellement pour les protections des vues.
-"""
-
-
 def csrd_required(function):
     @wraps(function)
     def wrap(request, csrd_id, *args, **kwargs):

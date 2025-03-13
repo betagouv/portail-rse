@@ -38,7 +38,7 @@ from reglementations.models import RapportCSRD
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
 from reglementations.views.base import ReglementationStatus
-from reglementations.views.fragments.decorators import csrd_required
+from reglementations.views.decorators import csrd_required
 
 
 class CSRDReglementation(Reglementation):
