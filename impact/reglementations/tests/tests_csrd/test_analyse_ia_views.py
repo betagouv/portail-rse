@@ -205,6 +205,28 @@ def test_resultats_ia_d_un_document_au_format_xlsx_retourne_une_404_si_document_
     assert response.status_code == 404
 
 
+def test_resultats_ia_d_un_document_au_format_xlsx_redirige_vers_la_connexion_si_non_connecté(
+    client, alice, entreprise_non_qualifiee
+):
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    csrd = RapportCSRD.objects.create(
+        proprietaire=alice,
+        entreprise=entreprise_non_qualifiee,
+        annee=f"{datetime.now():%Y}",
+    )
+    document = DocumentAnalyseIA.objects.create(
+        rapport_csrd=csrd,
+        etat="success",
+        resultat_json="""{}""",
+    )
+
+    response = client.get(
+        f"/ESRS-predict/{document.id}/resultats.xlsx",
+    )
+
+    assert response.status_code == 302
+
+
 def test_resultats_ia_de_l_ensemble_des_documents_au_format_xlsx(
     client, alice, entreprise_non_qualifiee
 ):
@@ -270,7 +292,24 @@ def test_resultats_ia_de_l_ensemble_des_documents_retourne_une_404_si_csrd_inexi
     client.force_login(alice)
 
     response = client.get(
-        f"/ESRS-predict/42/synthese_resultats.xlsx",
+        "/ESRS-predict/42/synthese_resultats.xlsx",
     )
 
     assert response.status_code == 404
+
+
+def test_resultats_ia_de_l_ensemble_des_documents_redirige_vers_la_connexion_si_non_connecté(
+    client, alice, entreprise_non_qualifiee
+):
+    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    csrd = RapportCSRD.objects.create(
+        proprietaire=alice,
+        entreprise=entreprise_non_qualifiee,
+        annee=f"{datetime.now():%Y}",
+    )
+
+    response = client.get(
+        f"/ESRS-predict/{csrd.id}/synthese_resultats.xlsx",
+    )
+
+    assert response.status_code == 302
