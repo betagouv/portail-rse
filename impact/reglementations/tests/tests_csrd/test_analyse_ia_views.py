@@ -93,7 +93,7 @@ def test_suppression_document_inexistant(client, document, alice):
     assert DocumentAnalyseIA.objects.count() == 1
 
 
-def test_ordre_d_analyse_IA_par_le_serveur(client, mocker, document):
+def test_lancement_d_analyse_IA(client, mocker, document):
     utilisateur = document.rapport_csrd.proprietaire
     client.force_login(utilisateur)
     ia_request = mocker.patch(
@@ -112,7 +112,7 @@ def test_ordre_d_analyse_IA_par_le_serveur(client, mocker, document):
     assert document.etat == "processing"
 
 
-def test_ordre_d_analyse_IA_par_le_serveur_redirige_vers_la_connexion_si_non_connecté(
+def test_lancement_d_anlyse_IA_redirige_vers_la_connexion_si_non_connecté(
     client, mocker, document
 ):
     response = client.post(
@@ -123,7 +123,7 @@ def test_ordre_d_analyse_IA_par_le_serveur_redirige_vers_la_connexion_si_non_con
     assert not document.etat
 
 
-def test_serveur_ia_poste_l_avancement_de_l_analyse(client, document):
+def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse(client, document):
     utilisateur = document.rapport_csrd.proprietaire
     client.force_login(utilisateur)
 
@@ -150,7 +150,7 @@ def test_serveur_ia_poste_l_avancement_de_l_analyse(client, document):
     assert document.message == "MESSAGE"
 
 
-def test_serveur_ia_poste_la_reussite_de_l_analyse(client, document):
+def test_serveur_IA_envoie_le_resultat_de_l_analyse(client, document):
     RESULTATS = """{
   "ESRS E1": [
     {
@@ -185,7 +185,7 @@ def test_serveur_ia_poste_la_reussite_de_l_analyse(client, document):
     assert document.resultat_json == RESULTATS
 
 
-def test_resultats_ia_d_un_document_au_format_xlsx(client, csrd):
+def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(client, csrd):
     document = DocumentAnalyseIA.objects.create(
         rapport_csrd=csrd,
         etat="success",
@@ -235,9 +235,7 @@ def test_resultats_ia_d_un_document_au_format_xlsx(client, csrd):
     assert onglet["C4"].value == "C"
 
 
-def test_resultats_ia_d_un_document_au_format_xlsx_retourne_une_404_si_document_inexistant(
-    client, alice
-):
+def test_telechargement_des_resultats_IA_d_un_document_inexistant(client, alice):
     client.force_login(alice)
 
     response = client.get(
@@ -247,7 +245,7 @@ def test_resultats_ia_d_un_document_au_format_xlsx_retourne_une_404_si_document_
     assert response.status_code == 404
 
 
-def test_resultats_ia_d_un_document_au_format_xlsx_redirige_vers_la_connexion_si_non_connecté(
+def test_telechargement_des_resultats_IA_d_un_document_redirige_vers_la_connexion_si_non_connecté(
     client, document
 ):
     response = client.get(
@@ -257,7 +255,9 @@ def test_resultats_ia_d_un_document_au_format_xlsx_redirige_vers_la_connexion_si
     assert response.status_code == 302
 
 
-def test_resultats_ia_de_l_ensemble_des_documents_au_format_xlsx(client, csrd):
+def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_xlsx(
+    client, csrd
+):
     DocumentAnalyseIA.objects.create(
         rapport_csrd=csrd,
         etat="success",
@@ -308,7 +308,7 @@ def test_resultats_ia_de_l_ensemble_des_documents_au_format_xlsx(client, csrd):
     assert onglet["D3"].value == "B"
 
 
-def test_resultats_ia_de_l_ensemble_des_documents_retourne_une_404_si_csrd_inexistant(
+def test_telechargement_des_resultats_IA_de_l_ensemble_des_documents_d_un_rapport_csrd_inexistant(
     client, alice
 ):
     client.force_login(alice)
@@ -320,7 +320,7 @@ def test_resultats_ia_de_l_ensemble_des_documents_retourne_une_404_si_csrd_inexi
     assert response.status_code == 404
 
 
-def test_resultats_ia_de_l_ensemble_des_documents_redirige_vers_la_connexion_si_non_connecté(
+def test_telechargement_des_resultats_IA_de_l_ensemble_des_documents_redirige_vers_la_connexion_si_non_connecté(
     client, csrd
 ):
     response = client.get(

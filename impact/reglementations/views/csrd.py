@@ -807,7 +807,7 @@ def suppression_document(request, id_document):
 @login_required
 @document_required
 @require_http_methods(["POST"])
-def lance_analyse_IA(request, id_document):
+def lancement_analyse_IA(request, id_document):
     document = DocumentAnalyseIA.objects.get(id=id_document)
 
     if document.etat != "success":
@@ -827,7 +827,7 @@ def lance_analyse_IA(request, id_document):
 
 
 @csrf_exempt
-def resultat_analyse_IA(request, id_document):
+def etat_analyse_IA(request, id_document):
     try:
         document = DocumentAnalyseIA.objects.get(id=id_document)
     except ObjectDoesNotExist:
