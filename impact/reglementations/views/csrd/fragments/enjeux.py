@@ -18,8 +18,8 @@ from reglementations.forms.csrd import EnjeuxRapportCSRDForm
 from reglementations.forms.csrd import NouvelEnjeuCSRDForm
 from reglementations.models.csrd import Enjeu
 from reglementations.models.csrd import RapportCSRD
-from reglementations.views.decorators import csrd_required
-from reglementations.views.decorators import enjeu_required
+from reglementations.views.csrd.decorators import csrd_required
+from reglementations.views.csrd.decorators import enjeu_required
 
 
 """
