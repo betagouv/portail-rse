@@ -806,6 +806,7 @@ def suppression_document(request, id_document):
 
 @login_required
 @document_required
+@require_http_methods(["POST"])
 def lance_analyse_IA(request, id_document):
     document = DocumentAnalyseIA.objects.get(id=id_document)
 
@@ -818,9 +819,11 @@ def lance_analyse_IA(request, id_document):
         document.save()
 
     id_etape = "analyse-ecart"
-    context = _contexte_d_etape(id_etape, document.rapport_csrd)
-    template_name = f"reglementations/csrd/etape-{id_etape}.html"
-    return render(request, template_name, context)
+    return redirect(
+        "reglementations:gestion_csrd",
+        siren=document.rapport_csrd.entreprise.siren,
+        id_etape=id_etape,
+    )
 
 
 @csrf_exempt
