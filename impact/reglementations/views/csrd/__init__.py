@@ -1,1 +1,1 @@
-from .csrd import *  # noqa
+from .csrd import CSRDReglementation  # noqa
