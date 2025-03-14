@@ -105,18 +105,26 @@ def resultat_IA_xlsx(request, id_document):
     document = DocumentAnalyseIA.objects.get(id=id_document)
 
     workbook = Workbook()
-    worksheet = workbook.active
-    worksheet["A1"] = "ESRS"
-    worksheet["B1"] = "PAGE"
-    worksheet["C1"] = "PHRASE"
-    _ajoute_ligne_resultat_ia(worksheet, document, False)
+    worksheet_trouvees = workbook.active
+    worksheet_trouvees.title = "Phrases trouvées"
+    worksheet_non_trouvees = workbook.create_sheet("Non trouvées")
+    for worksheet in [worksheet_trouvees, worksheet_non_trouvees]:
+        worksheet["A1"] = "ESRS"
+        worksheet["B1"] = "PAGE"
+        worksheet["C1"] = "PHRASE"
+    _ajoute_ligne_resultat_ia(workbook, document, False)
     return _xlsx_response(workbook, "resultats.xlsx")
 
 
-def _ajoute_ligne_resultat_ia(worksheet, document, avec_nom_fichier):
+def _ajoute_ligne_resultat_ia(workbook, document, avec_nom_fichier):
     data = json.loads(document.resultat_json)
     for esrs, contenus in data.items():
         for contenu in contenus:
+            worksheet = (
+                workbook["Non trouvées"]
+                if esrs == "Non ESRS"
+                else workbook["Phrases trouvées"]
+            )
             if avec_nom_fichier:
                 ligne = [
                     esrs,
@@ -135,11 +143,14 @@ def synthese_resultat_IA_xlsx(request, csrd_id):
     csrd = RapportCSRD.objects.get(id=csrd_id)
 
     workbook = Workbook()
-    worksheet = workbook.active
-    worksheet["A1"] = "ESRS"
-    worksheet["B1"] = "FICHIER"
-    worksheet["C1"] = "PAGE"
-    worksheet["D1"] = "PHRASE"
+    worksheet_trouvees = workbook.active
+    worksheet_trouvees.title = "Phrases trouvées"
+    worksheet_non_trouvees = workbook.create_sheet("Non trouvées")
+    for worksheet in [worksheet_trouvees, worksheet_non_trouvees]:
+        worksheet["A1"] = "ESRS"
+        worksheet["B1"] = "FICHIER"
+        worksheet["C1"] = "PAGE"
+        worksheet["D1"] = "PHRASE"
     for document in csrd.documents_analyses:
-        _ajoute_ligne_resultat_ia(worksheet, document, True)
+        _ajoute_ligne_resultat_ia(workbook, document, True)
     return _xlsx_response(workbook, "synthese_resultats.xlsx")
