@@ -1,15 +1,11 @@
-from datetime import datetime
 from io import BytesIO
 
 from django.conf import settings
-from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from openpyxl import load_workbook
 
-from habilitations.models import attach_user_to_entreprise
 from reglementations.models.csrd import DocumentAnalyseIA
-from reglementations.models.csrd import RapportCSRD
 from utils.mock_response import MockedResponse
 
 
@@ -97,22 +93,13 @@ def test_suppression_document_inexistant(client, document, alice):
     assert DocumentAnalyseIA.objects.count() == 1
 
 
-def test_ordre_d_analyse_IA_par_le_serveur(
-    client, mocker, alice, entreprise_non_qualifiee
-):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
-    csrd = RapportCSRD.objects.create(
-        proprietaire=alice,
-        entreprise=entreprise_non_qualifiee,
-        annee=f"{datetime.now():%Y}",
-    )
-    document = DocumentAnalyseIA.objects.create(
-        rapport_csrd=csrd, fichier=ContentFile("pdf file data", name="fichier.pdf")
-    )
-    client.force_login(alice)
+def test_ordre_d_analyse_IA_par_le_serveur(client, mocker, document):
+    utilisateur = document.rapport_csrd.proprietaire
+    client.force_login(utilisateur)
     ia_request = mocker.patch(
         "requests.post", return_value=MockedResponse(200, {"status": "processing"})
     )
+
     response = client.post(
         f"/ESRS-predict/{document.id}/start",
     )
@@ -126,18 +113,8 @@ def test_ordre_d_analyse_IA_par_le_serveur(
 
 
 def test_ordre_d_analyse_IA_par_le_serveur_redirige_vers_la_connexion_si_non_connecté(
-    client, mocker, alice, entreprise_non_qualifiee
+    client, mocker, document
 ):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
-    csrd = RapportCSRD.objects.create(
-        proprietaire=alice,
-        entreprise=entreprise_non_qualifiee,
-        annee=f"{datetime.now():%Y}",
-    )
-    document = DocumentAnalyseIA.objects.create(
-        rapport_csrd=csrd, fichier=ContentFile("pdf file data", name="fichier.pdf")
-    )
-
     response = client.post(
         f"/ESRS-predict/{document.id}/start",
     )
@@ -146,19 +123,9 @@ def test_ordre_d_analyse_IA_par_le_serveur_redirige_vers_la_connexion_si_non_con
     assert not document.etat
 
 
-def test_serveur_ia_poste_l_avancement_de_l_analyse(
-    client, alice, entreprise_non_qualifiee
-):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
-    csrd = RapportCSRD.objects.create(
-        proprietaire=alice,
-        entreprise=entreprise_non_qualifiee,
-        annee=f"{datetime.now():%Y}",
-    )
-    document = DocumentAnalyseIA.objects.create(
-        rapport_csrd=csrd,
-    )
-    client.force_login(alice)
+def test_serveur_ia_poste_l_avancement_de_l_analyse(client, document):
+    utilisateur = document.rapport_csrd.proprietaire
+    client.force_login(utilisateur)
 
     response = client.post(
         f"/ESRS-predict/{document.id}",
@@ -183,15 +150,7 @@ def test_serveur_ia_poste_l_avancement_de_l_analyse(
     assert document.message == "MESSAGE"
 
 
-def test_serveur_ia_poste_la_reussite_de_l_analyse(
-    client, alice, entreprise_non_qualifiee
-):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
-    csrd = RapportCSRD.objects.create(
-        proprietaire=alice,
-        entreprise=entreprise_non_qualifiee,
-        annee=f"{datetime.now():%Y}",
-    )
+def test_serveur_ia_poste_la_reussite_de_l_analyse(client, document):
     RESULTATS = """{
   "ESRS E1": [
     {
@@ -210,10 +169,8 @@ def test_serveur_ia_poste_la_reussite_de_l_analyse(
     }
   ]
   }"""
-    document = DocumentAnalyseIA.objects.create(
-        rapport_csrd=csrd,
-    )
-    client.force_login(alice)
+    utilisateur = document.rapport_csrd.proprietaire
+    client.force_login(utilisateur)
 
     response = client.post(
         f"/ESRS-predict/{document.id}",
@@ -228,15 +185,7 @@ def test_serveur_ia_poste_la_reussite_de_l_analyse(
     assert document.resultat_json == RESULTATS
 
 
-def test_resultats_ia_d_un_document_au_format_xlsx(
-    client, alice, entreprise_non_qualifiee
-):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
-    csrd = RapportCSRD.objects.create(
-        proprietaire=alice,
-        entreprise=entreprise_non_qualifiee,
-        annee=f"{datetime.now():%Y}",
-    )
+def test_resultats_ia_d_un_document_au_format_xlsx(client, csrd):
     document = DocumentAnalyseIA.objects.create(
         rapport_csrd=csrd,
         etat="success",
@@ -259,7 +208,7 @@ def test_resultats_ia_d_un_document_au_format_xlsx(
   ]
   }""",
     )
-    client.force_login(alice)
+    client.force_login(csrd.proprietaire)
 
     response = client.get(
         f"/ESRS-predict/{document.id}/resultats.xlsx",
@@ -299,20 +248,8 @@ def test_resultats_ia_d_un_document_au_format_xlsx_retourne_une_404_si_document_
 
 
 def test_resultats_ia_d_un_document_au_format_xlsx_redirige_vers_la_connexion_si_non_connecté(
-    client, alice, entreprise_non_qualifiee
+    client, document
 ):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
-    csrd = RapportCSRD.objects.create(
-        proprietaire=alice,
-        entreprise=entreprise_non_qualifiee,
-        annee=f"{datetime.now():%Y}",
-    )
-    document = DocumentAnalyseIA.objects.create(
-        rapport_csrd=csrd,
-        etat="success",
-        resultat_json="""{}""",
-    )
-
     response = client.get(
         f"/ESRS-predict/{document.id}/resultats.xlsx",
     )
@@ -320,15 +257,7 @@ def test_resultats_ia_d_un_document_au_format_xlsx_redirige_vers_la_connexion_si
     assert response.status_code == 302
 
 
-def test_resultats_ia_de_l_ensemble_des_documents_au_format_xlsx(
-    client, alice, entreprise_non_qualifiee
-):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
-    csrd = RapportCSRD.objects.create(
-        proprietaire=alice,
-        entreprise=entreprise_non_qualifiee,
-        annee=f"{datetime.now():%Y}",
-    )
+def test_resultats_ia_de_l_ensemble_des_documents_au_format_xlsx(client, csrd):
     DocumentAnalyseIA.objects.create(
         rapport_csrd=csrd,
         etat="success",
@@ -354,7 +283,7 @@ def test_resultats_ia_de_l_ensemble_des_documents_au_format_xlsx(
   }""",
     )
 
-    client.force_login(alice)
+    client.force_login(csrd.proprietaire)
 
     response = client.get(
         f"/ESRS-predict/{csrd.id}/synthese_resultats.xlsx",
@@ -392,15 +321,8 @@ def test_resultats_ia_de_l_ensemble_des_documents_retourne_une_404_si_csrd_inexi
 
 
 def test_resultats_ia_de_l_ensemble_des_documents_redirige_vers_la_connexion_si_non_connecté(
-    client, alice, entreprise_non_qualifiee
+    client, csrd
 ):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
-    csrd = RapportCSRD.objects.create(
-        proprietaire=alice,
-        entreprise=entreprise_non_qualifiee,
-        annee=f"{datetime.now():%Y}",
-    )
-
     response = client.get(
         f"/ESRS-predict/{csrd.id}/synthese_resultats.xlsx",
     )
