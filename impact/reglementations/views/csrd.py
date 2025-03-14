@@ -777,6 +777,7 @@ def ajout_document(request, csrd_id):
     form = DocumentAnalyseIAForm(data=data, files=request.FILES)
     if form.is_valid():
         form.save()
+        messages.success(request, "Document ajouté")
         return redirect(
             "reglementations:gestion_csrd",
             siren=csrd.entreprise.siren,
@@ -786,6 +787,21 @@ def ajout_document(request, csrd_id):
         context = _contexte_d_etape(id_etape, csrd, form)
         template_name = f"reglementations/csrd/etape-{id_etape}.html"
         return render(request, template_name, context)
+
+
+@login_required
+@document_required
+@require_http_methods(["POST"])
+def suppression_document(request, id_document):
+    document = DocumentAnalyseIA.objects.get(id=id_document)
+    document.delete()
+    messages.success(request, "Document supprimé")
+    id_etape = "analyse-ecart"
+    return redirect(
+        "reglementations:gestion_csrd",
+        siren=document.rapport_csrd.entreprise.siren,
+        id_etape=id_etape,
+    )
 
 
 @login_required

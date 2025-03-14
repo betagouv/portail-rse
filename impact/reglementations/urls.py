@@ -130,6 +130,11 @@ urlpatterns = [
         name="ajout_document",
     ),
     path(
+        "csrd/<int:id_document>/suppression",
+        views.csrd.suppression_document,
+        name="suppression_document",
+    ),
+    path(
         "ESRS-predict/<int:id_document>",
         views.csrd.resultat_analyse_IA,
         name="resultat_analyse_IA",

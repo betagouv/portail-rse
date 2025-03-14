@@ -61,6 +61,42 @@ def test_ajout_document_sur_csrd_inexistante(client, alice):
     assert DocumentAnalyseIA.objects.count() == 0
 
 
+def test_suppression_document_par_utilisateur_autorise(client, document):
+    utilisateur = document.rapport_csrd.proprietaire
+    client.force_login(utilisateur)
+
+    response = client.post(f"/csrd/{document.id}/suppression")
+
+    assert response.status_code == 302
+    assert response.url == reverse(
+        "reglementations:gestion_csrd",
+        kwargs={
+            "siren": document.rapport_csrd.entreprise.siren,
+            "id_etape": "analyse-ecart",
+        },
+    )
+    assert DocumentAnalyseIA.objects.count() == 0
+
+
+def test_suppression_document_par_utilisateur_non_autorise(client, document, bob):
+    assert bob != document.rapport_csrd.proprietaire
+    client.force_login(bob)
+
+    response = client.post(f"/csrd/{document.id}/suppression")
+
+    assert response.status_code == 403
+    assert DocumentAnalyseIA.objects.count() == 1
+
+
+def test_suppression_document_inexistant(client, document, alice):
+    client.force_login(alice)
+
+    response = client.post(f"/csrd/42/suppression")
+
+    assert response.status_code == 404
+    assert DocumentAnalyseIA.objects.count() == 1
+
+
 def test_ordre_d_analyse_IA_par_le_serveur(
     client, mocker, alice, entreprise_non_qualifiee
 ):
