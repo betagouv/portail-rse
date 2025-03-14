@@ -2,6 +2,7 @@ from datetime import date
 
 import pytest
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.base import ContentFile
 
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
@@ -10,6 +11,7 @@ from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
 from reglementations.models import BDESEAvecAccord
 from reglementations.models import RapportCSRD
+from reglementations.models.csrd import DocumentAnalyseIA
 
 
 # Empêche tous les tests de faire des appels api
@@ -74,6 +76,14 @@ def csrd(entreprise_factory, alice):
         annee=date.today().year,
     )
     return csrd
+
+
+@pytest.fixture
+def document(csrd):
+    document = DocumentAnalyseIA.objects.create(
+        rapport_csrd=csrd, fichier=ContentFile("pdf file data", name="fichier.pdf")
+    )
+    return document
 
 
 @pytest.fixture

@@ -74,13 +74,16 @@
                                                     Statut
                                                 </th>
                                                 <th scope="col">
-                                                    Actions
+                                                    Action principale
+                                                </th>
+                                                <th scope="col">
+                                                    Actions secondaires
                                                 </th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {% for document in documents.all %}
-                                                <tr id="table-md-row-key-1" data-row-key="1">
+                                                <tr>
                                                     <td>
                                                         {{ document.fichier.name }}
                                                     </td>
@@ -106,19 +109,28 @@
                                                     </td>
                                                     <td>
                                                         {% if not document.etat %}
-                                                            <form action="{% url 'reglementations:lance_analyse_IA' document.id %}" class="inline">
+                                                            <form action="{% url 'reglementations:lance_analyse_IA' document.id %}">
                                                                 {% csrf_token %}
-                                                                <button type="submit" class="fr-btn fr-btn--icon-left fr-icon-play-circle-line">Lancer une analyse</button>
+                                                                <button type="submit" class="fr-btn fr-btn--sm fr-btn--icon-left fr-icon-play-circle-line">Lancer une analyse</button>
                                                             </form>
+                                                        {% elif document.etat == "success" %}
+                                                            <a class="fr-btn fr-btn--sm fr-btn--icon-left fr-icon-download-line" href="{% url 'reglementations:resultat_IA_xlsx' document.id %}" title="Télécharger le résultat">Télécharger le résultat</a>
                                                         {% endif %}
-                                                        {% if document.etat == "success" %}
-                                                            <a class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-down-line"
-                                                               href="{% url 'reglementations:resultat_IA_xlsx' document.id %}">Télécharger le résultat</a>
-                                                        {% endif %}
-
-                                                        <a class="fr-btn fr-btn--secondary fr-btn--icon--sm fr-btn--icon-left"
-                                                           href="{{ document.fichier.url }}" target="_blank"></a>
-
+                                                    </td>
+                                                    <td>
+                                                        <!-- les règles d'utilisation et l'implémentation du dsfr ne permettent pas d'avoir un groupe de boutons avec des icônes seules et du texte mélangés -->
+                                                        <!-- <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--sm fr-btns-group--icon-left"> -->
+                                                        <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--sm">
+                                                            <li>
+                                                                <a class="fr-btn fr-btn--secondary fr-icon-external-link-line" title="Voir le document dans un nouvel onglet" href="{{ document.fichier.url }}" target="_blank">Voir le document dans un nouvel onglet</a>
+                                                            </li>
+                                                            <li>
+                                                                <form action="{% url 'reglementations:suppression_document' document.id %}" method="post">
+                                                                    {% csrf_token %}
+                                                                    <button type="submit" class="fr-btn fr-btn--secondary fr-icon-delete-line" title="Supprimer le document">Supprimer le document</button>
+                                                                </form>
+                                                            </li>
+                                                        </ul>
                                                     </td>
                                                 </tr>
                                             {% endfor %}
@@ -135,8 +147,8 @@
             </div>
             <div id="onglet-resultats-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="onglet-resultats" tabindex="0">
                 {% if csrd.documents_analyses %}
-                    <a class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-down-line"
-                       href="{% url 'reglementations:synthese_resultats_IA' csrd.id %}">Télécharger la synthèse des résultats (xlsx)</a>
+                    <a class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-download-line"
+                       href="{% url 'reglementations:synthese_resultats_IA' csrd.id %}">Télécharger la synthèse de tous les résultats (xlsx)</a>
                 {% else %}
                     Aucun document analysé.
                 {% endif %}
