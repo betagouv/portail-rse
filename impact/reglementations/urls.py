@@ -157,4 +157,4 @@ urlpatterns = [
 ]
 
 # Fragments HTMX
-urlpatterns += [path("", include("reglementations.views.fragments.urls"))]
+urlpatterns += [path("", include("reglementations.views.csrd.fragments.urls"))]
