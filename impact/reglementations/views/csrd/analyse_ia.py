@@ -51,6 +51,7 @@ def ajout_document(request, csrd_id):
 def suppression_document(request, id_document):
     document = DocumentAnalyseIA.objects.get(id=id_document)
     document.delete()
+    document.fichier.delete(save=False)
     messages.success(request, "Document supprimé")
     id_etape = "analyse-ecart"
     return redirect(
