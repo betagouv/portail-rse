@@ -42,7 +42,7 @@ def ajout_document(request, csrd_id):
     else:
         context = _contexte_d_etape(id_etape, csrd, form)
         template_name = f"reglementations/csrd/etape-{id_etape}.html"
-        return render(request, template_name, context)
+        return render(request, template_name, context, status=400)
 
 
 @login_required
