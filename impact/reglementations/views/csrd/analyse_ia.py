@@ -16,6 +16,7 @@ from openpyxl import Workbook
 from reglementations.forms.csrd import DocumentAnalyseIAForm
 from reglementations.models import DocumentAnalyseIA
 from reglementations.models import RapportCSRD
+from reglementations.views.csrd.csrd import _contexte_d_etape
 from reglementations.views.csrd.csrd import _xlsx_response
 from reglementations.views.csrd.decorators import csrd_required
 from reglementations.views.csrd.decorators import document_required

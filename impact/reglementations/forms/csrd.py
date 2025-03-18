@@ -1,4 +1,6 @@
 from django import forms
+from django.core.validators import FileExtensionValidator
+from django.forms import FileField
 from django.forms.widgets import RadioSelect
 
 from reglementations.models.csrd import DocumentAnalyseIA
@@ -149,6 +151,8 @@ class LienRapportCSRDForm(forms.ModelForm):
 
 
 class DocumentAnalyseIAForm(forms.ModelForm):
+    fichier = FileField(validators=[FileExtensionValidator(["pdf"])])
+
     class Meta:
         model = DocumentAnalyseIA
         fields = ["rapport_csrd", "fichier"]
