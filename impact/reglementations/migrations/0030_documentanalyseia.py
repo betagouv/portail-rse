@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
                     "fichier",
                     models.FileField(
                         storage=reglementations.models.csrd.select_storage,
-                        upload_to=reglementations.models.csrd.entreprise_directory_path,
+                        upload_to=reglementations.models.csrd.upload_path,
                     ),
                 ),
                 ("resultat_csv", models.TextField(null=True)),
