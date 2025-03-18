@@ -7,8 +7,8 @@ from api.exceptions import SirenError
 from api.exceptions import TooManyRequestError
 from api.recherche_entreprises import recherche
 from api.recherche_entreprises import RECHERCHE_ENTREPRISE_TIMEOUT
-from api.tests import MockedResponse
 from entreprises.models import CaracteristiquesAnnuelles
+from utils.mock_response import MockedResponse
 
 
 @pytest.mark.network

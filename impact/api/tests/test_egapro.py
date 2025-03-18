@@ -7,7 +7,7 @@ from api.egapro import EGAPRO_TIMEOUT
 from api.egapro import indicateurs_bdese
 from api.egapro import is_index_egapro_published
 from api.exceptions import APIError
-from api.tests import MockedResponse
+from utils.mock_response import MockedResponse
 
 SIREN = "123456789"
 

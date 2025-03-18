@@ -8,8 +8,8 @@ from api.exceptions import APIError
 from api.exceptions import ServerError
 from api.ratios_financiers import dernier_exercice_comptable
 from api.ratios_financiers import RATIOS_FINANCIERS_TIMEOUT
-from api.tests import MockedResponse
 from entreprises.models import CaracteristiquesAnnuelles
+from utils.mock_response import MockedResponse
 
 
 SIREN = "123456789"
