@@ -116,10 +116,10 @@ STORAGES = {
     "staticfiles": {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
-    "entreprises": {
+    "analyse_ia": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
         "OPTIONS": {
-            "location": Path(MEDIA_ROOT, "entreprises"),
+            "location": Path(MEDIA_ROOT, "analyse_ia"),
         },
     },
 }
@@ -133,7 +133,7 @@ if os.getenv("S3_STORAGE"):
     endpoint_url = os.getenv(
         "SCALEWAY_S3_ENDPOINT_URL", f"https://s3.{region_name}.scw.cloud"
     )
-    STORAGES["entreprises"] = {
+    STORAGES["analyse_ia"] = {
         "BACKEND": "storages.backends.s3.S3Storage",
         "OPTIONS": {
             "access_key": access_key,
@@ -141,7 +141,7 @@ if os.getenv("S3_STORAGE"):
             "bucket_name": bucket_name,
             "region_name": region_name,
             "endpoint_url": endpoint_url,
-            "location": "entreprises",
+            "location": "analyse_ia",
         },
     }
 
