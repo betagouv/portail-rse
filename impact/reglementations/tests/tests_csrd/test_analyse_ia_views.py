@@ -57,6 +57,20 @@ def test_ajout_document_sur_csrd_inexistante(client, alice):
     assert DocumentAnalyseIA.objects.count() == 0
 
 
+def test_ajout_document_sans_extension_pdf(client, csrd):
+    utilisateur = csrd.proprietaire
+    client.force_login(utilisateur)
+    fichier = SimpleUploadedFile("test.odt", b"libre office writer data")
+
+    response = client.post(
+        f"/csrd/{csrd.id}/ajout_document",
+        {"fichier": fichier},
+    )
+
+    assert response.status_code == 200
+    assert csrd.documents.count() == 0
+
+
 def test_suppression_document_par_utilisateur_autorise(client, document):
     utilisateur = document.rapport_csrd.proprietaire
     client.force_login(utilisateur)
