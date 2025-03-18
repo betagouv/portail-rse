@@ -9,8 +9,8 @@ from api.exceptions import SirenError
 from api.exceptions import TooManyRequestError
 from api.sirene import recherche_unite_legale
 from api.sirene import SIRENE_TIMEOUT
-from api.tests import MockedResponse
 from entreprises.models import CaracteristiquesAnnuelles
+from utils.mock_response import MockedResponse
 
 
 @pytest.mark.network

@@ -6,7 +6,8 @@ from requests.exceptions import Timeout
 from api.bges import BGES_TIMEOUT
 from api.bges import last_reporting_year
 from api.exceptions import APIError
-from api.tests import MockedResponse
+from utils.mock_response import MockedResponse
+
 
 SIREN = "123456789"
 
