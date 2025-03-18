@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "5d351ed2c380fc4020816a523097fd76172d824b435cff6a8f94d8c5566c7ab0"
+            "sha256": "abc11352cb70ece6a77ed8b429736f94c7f101a99647b3e75bad24001f48690f"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -446,6 +446,14 @@
             "markers": "python_version >= '3.8'",
             "version": "==2.0.0"
         },
+        "filetype": {
+            "hashes": [
+                "sha256:66b56cd6474bf41d8c54660347d37afcc3f7d1970648de365c102ef77548aadb",
+                "sha256:7ce71b6880181241cf7ac8697a2f1eb6a8bd9b429f7ad6d27b8db9ba5f1c2d25"
+            ],
+            "index": "pypi",
+            "version": "==1.2.0"
+        },
         "fonttools": {
             "extras": [
                 "woff"
@@ -736,7 +744,7 @@
                 "sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d",
                 "sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8"
             ],
-            "markers": "python_version >= '3.8'",
+            "markers": "python_version < '3.13'",
             "version": "==4.12.2"
         },
         "urllib3": {

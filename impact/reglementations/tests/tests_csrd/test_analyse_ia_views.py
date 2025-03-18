@@ -9,10 +9,13 @@ from reglementations.models.csrd import DocumentAnalyseIA
 from utils.mock_response import MockedResponse
 
 
+CONTENU_PDF = b"%PDF-1.4\n%\xd3\xeb\xe9\xe1\n1 0 obj\n<</Title (CharteEngagements"
+
+
 def test_ajout_document_par_utilisateur_autorise(client, csrd):
     utilisateur = csrd.proprietaire
     client.force_login(utilisateur)
-    fichier = SimpleUploadedFile("test.pdf", b"pdf file data")
+    fichier = SimpleUploadedFile("test.pdf", CONTENU_PDF)
 
     response = client.post(
         f"/csrd/{csrd.id}/ajout_document",
@@ -33,7 +36,7 @@ def test_ajout_document_par_utilisateur_autorise(client, csrd):
 def test_ajout_document_par_utilisateur_non_autorise(client, csrd, bob):
     assert bob != csrd.proprietaire
     client.force_login(bob)
-    fichier = SimpleUploadedFile("test.pdf", b"pdf file data")
+    fichier = SimpleUploadedFile("test.pdf", CONTENU_PDF)
 
     response = client.post(
         f"/csrd/{csrd.id}/ajout_document",
@@ -46,7 +49,7 @@ def test_ajout_document_par_utilisateur_non_autorise(client, csrd, bob):
 
 def test_ajout_document_sur_csrd_inexistante(client, alice):
     client.force_login(alice)
-    fichier = SimpleUploadedFile("test.pdf", b"pdf file data")
+    fichier = SimpleUploadedFile("test.pdf", CONTENU_PDF)
 
     response = client.post(
         f"/csrd/42/ajout_document",
@@ -67,7 +70,21 @@ def test_ajout_document_sans_extension_pdf(client, csrd):
         {"fichier": fichier},
     )
 
-    assert response.status_code == 200
+    assert response.status_code == 400
+    assert csrd.documents.count() == 0
+
+
+def test_ajout_document_dont_le_contenu_n_est_pas_du_pdf(client, csrd):
+    utilisateur = csrd.proprietaire
+    client.force_login(utilisateur)
+    fichier = SimpleUploadedFile("test.pdf", b"pas un pdf")
+
+    response = client.post(
+        f"/csrd/{csrd.id}/ajout_document",
+        {"fichier": fichier},
+    )
+
+    assert response.status_code == 400
     assert csrd.documents.count() == 0
 
 
