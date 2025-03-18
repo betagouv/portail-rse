@@ -1,4 +1,6 @@
+import filetype
 from django import forms
+from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from django.forms import FileField
 from django.forms.widgets import RadioSelect
@@ -150,13 +152,22 @@ class LienRapportCSRDForm(forms.ModelForm):
         return self.cleaned_data
 
 
+def validate_pdf_content(value):
+    kind = filetype.guess(value)
+    if (not kind) or kind.extension != "pdf":
+        raise ValidationError(
+            "Le fichier %(value)s n'est pas un pdf.",
+            params={"value": value},
+        )
+
+
 class DocumentAnalyseIAForm(forms.ModelForm):
-    fichier = FileField(validators=[FileExtensionValidator(["pdf"])])
+    fichier = FileField(
+        validators=[FileExtensionValidator(["pdf"]), validate_pdf_content],
+        help_text="Sélectionnez des documents contenant des <b>données publiques</b> susceptibles de répondre à vos exigences ESRS.<br>Taille maximale : <b>50 Mo</b>. Format supporté : <b>PDF</b>. Langue du document : <b>Français</b>.",
+    )
 
     class Meta:
         model = DocumentAnalyseIA
         fields = ["rapport_csrd", "fichier"]
         labels = {"fichier": "Ajouter un fichier"}
-        help_texts = {
-            "fichier": "Sélectionnez des documents contenant des <b>données publiques</b> susceptibles de répondre à vos exigences ESRS.<br>Taille maximale : <b>50 Mo</b>. Format supporté : <b>PDF</b>. Langue du document : <b>Français</b>."
-        }
