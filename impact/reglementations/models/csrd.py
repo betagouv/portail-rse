@@ -1,3 +1,6 @@
+import os
+from uuid import uuid4
+
 import django.db.models as models
 from django.core.exceptions import ValidationError
 from django.core.files.storage import storages
@@ -297,24 +300,42 @@ def rapport_csrd_personnel(entreprise, proprietaire):  # ajouter l'année ?
 
 
 def select_storage():
-    return storages["entreprises"]
+    return storages["analyse_ia"]
 
 
-def entreprise_directory_path(instance, filename):
-    return f"000000001/{filename}"
-    return f"{instance.rapport_csrd.entreprise.siren}/{instance.rapport_csrd.annee}/{filename}"
+def upload_path(instance, filename):
+    return str(uuid4())
 
 
 class DocumentAnalyseIA(TimestampedModel):
     rapport_csrd = models.ForeignKey(
         "RapportCSRD", on_delete=models.CASCADE, related_name="documents"
     )
-    fichier = models.FileField(
-        storage=select_storage, upload_to=entreprise_directory_path
+    fichier = models.FileField(storage=select_storage, upload_to=upload_path)
+    nom = models.CharField(max_length=255, verbose_name="nom d'origine")
+    resultat_json = models.JSONField(
+        null=True, verbose_name="résultat de l'analyse IA au format JSON"
     )
-    resultat_json = models.JSONField(null=True)
-    etat = models.CharField(max_length=144, null=True)
-    message = models.CharField(max_length=144, null=True)
+    etat = models.CharField(
+        max_length=144,
+        null=True,
+        verbose_name="dernier état connu du traitement d'analyse IA envoyé par le serveur IA",
+    )
+    message = models.CharField(
+        max_length=144,
+        null=True,
+        verbose_name="éventuel message précisant l'état envoyé par le serveur IA",
+    )
+
+    class Meta:
+        verbose_name = "document analyse IA"
+        verbose_name_plural = "documents analyse IA"
 
     def __str__(self):
-        return f"DocumentAnalyseIA {self.id} - {self.fichier.name}"
+        return f"DocumentAnalyseIA {self.id} - {self.nom}"
+
+    def save(self, *args, **kwargs):
+        # Enregistre le nom d'origine du fichier avant qu'il ne soit modifié lors du stockage sur le S3
+        if not self.nom:
+            self.nom = os.path.basename(self.fichier.name)
+        super().save(*args, **kwargs)

@@ -130,7 +130,7 @@ def _ajoute_ligne_resultat_ia(workbook, document, avec_nom_fichier):
             if avec_nom_fichier:
                 ligne = [
                     esrs,
-                    document.fichier.name,
+                    document.nom,
                     contenu["PAGES"],
                     contenu["TEXTS"],
                 ]

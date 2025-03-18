@@ -56,4 +56,9 @@ class RapportCSRDAdmin(admin.ModelAdmin):
 
 @admin.register(DocumentAnalyseIA)
 class DocumentAnalyseIA_Admin(admin.ModelAdmin):
-    pass
+    list_display = ["nom", "rapport_csrd"]
+    search_fields = (
+        "nom",
+        "rapport_csrd__entreprise__denomination",
+        "rapport_csrd__entreprise__siren",
+    )

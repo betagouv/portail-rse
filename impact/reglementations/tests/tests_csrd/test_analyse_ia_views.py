@@ -31,6 +31,7 @@ def test_ajout_document_par_utilisateur_autorise(client, csrd):
         },
     )
     assert csrd.documents.count() == 1
+    assert csrd.documents.first().nom == "test.pdf"
 
 
 def test_ajout_document_par_utilisateur_non_autorise(client, csrd, bob):
