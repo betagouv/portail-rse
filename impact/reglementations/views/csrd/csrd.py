@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 from datetime import timedelta
 from functools import wraps
@@ -623,11 +624,46 @@ def _contexte_d_etape(id_etape, csrd, form=None):
             context |= {
                 "form": form or DocumentAnalyseIAForm(),
                 "documents": csrd.documents,
+                "stats_synthese": _grouper_phrases_par_esrs(csrd),
             }
         case "redaction-rapport-durabilite":
             context |= {"form": LienRapportCSRDForm(instance=csrd)}
 
     return context
+
+
+def _grouper_phrases_par_esrs(csrd):
+    resultat = {
+        "phrases_environnement": {},
+        "phrases_social": {},
+        "phrases_gouvernance": {},
+    }
+    data = {}
+    for document in csrd.documents_analyses:
+        for esrs, phrases in json.loads(document.resultat_json).items():
+            if esrs == "Non ESRS":
+                break
+
+            if esrs.startswith("ESRS E"):
+                type_esg = "phrases_environnement"
+            elif esrs.startswith("ESRS S"):
+                type_esg = "phrases_social"
+            elif esrs.startswith("ESRS G"):
+                type_esg = "phrases_gouvernance"
+
+            if esrs in resultat[type_esg]:
+                resultat[type_esg][esrs]["nombre_phrases"] += len(phrases)
+            else:
+                resultat[type_esg][esrs] = {
+                    "titre": esrs,
+                    "nombre_phrases": len(phrases),
+                }
+
+    for nom_phase in ("phrases_environnement", "phrases_social", "phrases_gouvernance"):
+        resultat[nom_phase] = sorted(
+            resultat[nom_phase].values(), key=lambda d: d["titre"]
+        )
+    return resultat
 
 
 def csrd_required_with_enjeux(function):

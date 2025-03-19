@@ -149,6 +149,102 @@
                 {% if csrd.documents_analyses %}
                     <a class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-download-line"
                        href="{% url 'reglementations:synthese_resultats_IA' csrd.id %}">Télécharger la synthèse de tous les résultats (xlsx)</a>
+
+                    <h4 class="fr-mt-4w">Résultats par ESRS</h4>
+
+                    <div class="fr-container fr-pb-6w">
+
+                        <div class="fr-grid-row fr-grid-row--gutters esrs-organizer">
+                            <div class="fr-col-lg-4 fr-col-12">
+                                <div class="esrs-organizer--container esrs-organizer--env">
+                                    <div class="esrs-organizer--header">
+                                        <h4 class="esrs-organizer--title">Environnement</h4>
+                                    </div>
+
+                                    <div class="esrs-organizer--content">
+                                        {% if stats_synthese.phrases_environnement %}
+                                            {% for phrases_par_esrs in stats_synthese.phrases_environnement %}
+                                                <div class="esrs-organizer--esrs">
+                                                    <div class="esrs-organizer--card">
+                                                        <div class="esrs-organizer--card-title">
+                                                            <p class="fr-badge fr-badge--sm">{{ phrases_par_esrs.nombre_phrases }} phrases pertinentes détectées</p>
+                                                            <b>{{ phrases_par_esrs.titre }}</b>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <div class="esrs-organizer--esrs">
+                                                <div class="esrs-organizer--card">
+                                                    <div class="esrs-organizer--card-title">
+                                                        Aucune phrase pertinente trouvée
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="fr-col-lg-4 fr-col-12">
+                                <div class="esrs-organizer--container esrs-organizer--social">
+                                    <div class="esrs-organizer--header">
+                                        <h4 class="esrs-organizer--title">Social</h4>
+                                    </div>
+                                    <div class="esrs-organizer--content">
+                                        {% if stats_synthese.phrases_social %}
+                                            {% for phrases_par_esrs in stats_synthese.phrases_social %}
+                                                <div class="esrs-organizer--esrs">
+                                                    <div class="esrs-organizer--card">
+                                                        <div class="esrs-organizer--card-title">
+                                                            <p class="fr-badge fr-badge--sm">{{ phrases_par_esrs.nombre_phrases }} phrases pertinentes détectées</p>
+                                                            <b>{{ phrases_par_esrs.titre }}</b>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <div class="esrs-organizer--esrs">
+                                                <div class="esrs-organizer--card">
+                                                    <div class="esrs-organizer--card-title">
+                                                        Aucune phrase pertinente trouvée
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="fr-col-lg-4 fr-col-12">
+                                <div class="esrs-organizer--container esrs-organizer--gov">
+                                    <div class="esrs-organizer--header">
+                                        <h4 class="esrs-organizer--title">Gouvernance</h4>
+                                    </div>
+                                    <div class="esrs-organizer--content">
+                                        {% if stats_synthese.phrases_gouvernance %}
+                                            {% for phrases_par_esrs in stats_synthese.phrases_gouvernance %}
+                                                <div class="esrs-organizer--esrs">
+                                                    <div class="esrs-organizer--card">
+                                                        <div class="esrs-organizer--card-title">
+                                                            <p class="fr-badge fr-badge--sm">{{ phrases_par_esrs.nombre_phrases }} phrases pertinentes détectées</p>
+                                                            <b>{{ phrases_par_esrs.titre }}</b>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        {% else %}
+                                            <div class="esrs-organizer--esrs">
+                                                <div class="esrs-organizer--card">
+                                                    <div class="esrs-organizer--card-title">
+                                                        Aucune phrase pertinente trouvée
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 {% else %}
                     Aucun document analysé.
                 {% endif %}
