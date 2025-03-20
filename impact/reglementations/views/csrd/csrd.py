@@ -624,7 +624,7 @@ def _contexte_d_etape(id_etape, csrd, form=None):
             context |= {
                 "form": form or DocumentAnalyseIAForm(),
                 "documents": csrd.documents,
-                "stats_synthese": _grouper_phrases_par_esrs(csrd),
+                "stats_synthese": grouper_phrases_par_esrs(csrd),
             }
         case "redaction-rapport-durabilite":
             context |= {"form": LienRapportCSRDForm(instance=csrd)}
@@ -632,13 +632,14 @@ def _contexte_d_etape(id_etape, csrd, form=None):
     return context
 
 
-def _grouper_phrases_par_esrs(csrd):
+def grouper_phrases_par_esrs(csrd):
     resultat = {
         "phrases_environnement": {},
         "phrases_social": {},
         "phrases_gouvernance": {},
     }
-    data = {}
+    nb_phrases_pertinentes_detectees = 0
+    esrs_thematiques_detectees = set()
     for document in csrd.documents_analyses:
         for esrs, phrases in json.loads(document.resultat_json).items():
             if esrs == "Non ESRS":
@@ -659,10 +660,16 @@ def _grouper_phrases_par_esrs(csrd):
                     "nombre_phrases": len(phrases),
                 }
 
+            esrs_thematiques_detectees.add(esrs)
+            nb_phrases_pertinentes_detectees += len(phrases)
+
     for nom_phase in ("phrases_environnement", "phrases_social", "phrases_gouvernance"):
         resultat[nom_phase] = sorted(
             resultat[nom_phase].values(), key=lambda d: d["titre"]
         )
+    resultat["nb_phrases_pertinentes_detectees"] = nb_phrases_pertinentes_detectees
+    resultat["nb_documents_analyses"] = csrd.documents_analyses.count()
+    resultat["nb_esrs_thematiques_detectees"] = len(esrs_thematiques_detectees)
     return resultat
 
 
