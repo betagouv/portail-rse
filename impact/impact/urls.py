@@ -28,13 +28,17 @@ def trigger_error(request):
 
 # note : admin site path is in a distinct file for `django-hosts`
 
-urlpatterns = [
-    path("", include("public.urls")),
-    path("", include("entreprises.urls")),
-    path("", include("reglementations.urls")),
-    path("", include("users.urls")),
-    path("trigger-error-for-sentry-debug/", trigger_error),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns = (
+    [
+        path("", include("public.urls")),
+        path("", include("entreprises.urls")),
+        path("", include("reglementations.urls")),
+        path("", include("users.urls")),
+        path("trigger-error-for-sentry-debug/", trigger_error),
+    ]
+    + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+)
 
 if settings.DEBUG_TOOLBAR:
     urlpatterns.extend(debug_toolbar_urls())
