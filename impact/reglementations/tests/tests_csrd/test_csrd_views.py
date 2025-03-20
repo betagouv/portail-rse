@@ -10,8 +10,10 @@ from pytest_django.asserts import assertTemplateUsed
 
 from habilitations.models import attach_user_to_entreprise
 from reglementations.enums import EtapeCSRD
+from reglementations.models.csrd import DocumentAnalyseIA
 from reglementations.models.csrd import Enjeu
 from reglementations.models.csrd import RapportCSRD
+from reglementations.views.csrd.csrd import grouper_phrases_par_esrs
 
 
 def test_l_espace_csrd_n_est_pas_public(client, alice, entreprise_factory):
@@ -160,6 +162,9 @@ def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
             "phrases_environnement": [],
             "phrases_social": [],
             "phrases_gouvernance": [],
+            "nb_phrases_pertinentes_detectees": 0,
+            "nb_documents_analyses": 0,
+            "nb_esrs_thematiques_detectees": 0,
         }
     elif etape.endswith("redaction-rapport-durabilite"):
         assertTemplateUsed(
@@ -169,6 +174,83 @@ def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
     rapport_csrd = RapportCSRD.objects.get(proprietaire=alice, entreprise=entreprise)
     NOMBRE_ENJEUX = 103
     assert len(rapport_csrd.enjeux.all()) == NOMBRE_ENJEUX
+
+
+def test_grouper_phrases_par_esrs(client, csrd):
+    DocumentAnalyseIA.objects.create(
+        rapport_csrd=csrd,
+        etat="success",
+        resultat_json="""{
+  "ESRS E1": [
+    {
+      "PAGES": 1,
+      "TEXTS": "A"
+    },
+    {
+      "PAGES": 1,
+      "TEXTS": "B"
+    }
+  ],
+  "Non ESRS": [
+    {
+      "PAGES": 4,
+      "TEXTS": "C"
+    }
+  ]
+  }""",
+    )
+    DocumentAnalyseIA.objects.create(
+        rapport_csrd=csrd,
+        etat="success",
+        resultat_json="""{
+  "ESRS E2": [
+    {
+      "PAGES": 6,
+      "TEXTS": "D"
+    }
+  ],
+  "ESRS S3": [
+    {
+      "PAGES": 7,
+      "TEXTS": "E"
+    }
+  ],
+  "Non ESRS": [
+    {
+      "PAGES": 8,
+      "TEXTS": "F"
+    }
+  ]
+  }""",
+    )
+    DocumentAnalyseIA.objects.create(
+        rapport_csrd=csrd, etat="error", resultat_json=None
+    )
+
+    stats = grouper_phrases_par_esrs(csrd)
+
+    assert stats == {
+        "phrases_environnement": [
+            {
+                "nombre_phrases": 2,
+                "titre": "ESRS E1",
+            },
+            {
+                "nombre_phrases": 1,
+                "titre": "ESRS E2",
+            },
+        ],
+        "phrases_social": [
+            {
+                "nombre_phrases": 1,
+                "titre": "ESRS S3",
+            },
+        ],
+        "phrases_gouvernance": [],
+        "nb_phrases_pertinentes_detectees": 4,
+        "nb_documents_analyses": 2,
+        "nb_esrs_thematiques_detectees": 3,
+    }
 
 
 def test_étape_inexistante_de_la_csrd(client, alice, entreprise_factory):
