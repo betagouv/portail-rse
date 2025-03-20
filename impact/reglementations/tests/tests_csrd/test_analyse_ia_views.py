@@ -1,6 +1,5 @@
 from io import BytesIO
 
-import pytest
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
@@ -8,13 +7,6 @@ from openpyxl import load_workbook
 
 from reglementations.models.csrd import DocumentAnalyseIA
 from utils.mock_response import MockedResponse
-
-# Empêche les tests de faire des uploads de fichier
-@pytest.fixture(autouse=True)
-def use_in_memory_storage(settings):
-    settings.STORAGES["analyse_ia"] = {
-        "BACKEND": "django.core.files.storage.InMemoryStorage",
-    }
 
 
 CONTENU_PDF = b"%PDF-1.4\n%\xd3\xeb\xe9\xe1\n1 0 obj\n<</Title (CharteEngagements"

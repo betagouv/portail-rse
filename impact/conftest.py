@@ -19,6 +19,19 @@ CODE_PAYS_CANADA = 99401
 CODE_NAF_CEREALES = "01.11Z"
 
 
+# Empêche tous les tests de faire des uploads de fichier en remplaçant le default storage par un InMemoryStorage
+@pytest.fixture(autouse=True)
+def use_in_memory_storage(settings):
+    settings.STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.InMemoryStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
+
+
 @pytest.fixture
 def alice(django_user_model):
     alice = django_user_model.objects.create(
