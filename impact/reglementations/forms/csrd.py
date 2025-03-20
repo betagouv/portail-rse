@@ -10,6 +10,9 @@ from reglementations.models.csrd import Enjeu
 from reglementations.models.csrd import RapportCSRD
 
 
+MAX_UPLOAD_SIZE = 50 * 1024 * 1024
+
+
 class EnjeuxMultipleWidget(forms.CheckboxSelectMultiple):
     option_template_name = "widgets/enjeu_option.html"
 
@@ -161,9 +164,20 @@ def validate_pdf_content(value):
         )
 
 
+def validate_file_size(value):
+    if value.size > MAX_UPLOAD_SIZE:
+        raise ValidationError(
+            "La taille du fichier dépasse la taille maximale autorisée"
+        )
+
+
 class DocumentAnalyseIAForm(forms.ModelForm):
     fichier = FileField(
-        validators=[FileExtensionValidator(["pdf"]), validate_pdf_content],
+        validators=[
+            FileExtensionValidator(["pdf"]),
+            validate_pdf_content,
+            validate_file_size,
+        ],
         help_text="Sélectionnez des documents contenant des <b>données publiques</b> susceptibles de répondre à vos exigences ESRS.<br>Taille maximale : <b>50 Mo</b>. Format supporté : <b>PDF</b>. Langue du document : <b>Français</b>.",
     )
 
