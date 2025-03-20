@@ -109,6 +109,7 @@ DATABASE_ROUTERS = ["impact.db_routers.MetabaseRouter"]
 
 # Storages
 MEDIA_ROOT = Path(BASE_DIR, "media")
+MEDIA_URL = "media/"
 STORAGES = {
     "default": {
         "BACKEND": "django.core.files.storage.FileSystemStorage",
