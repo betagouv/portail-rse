@@ -10,12 +10,16 @@ NOM_API = "analyse IA"
 ANALYSE_IA_TIMEOUT = 10
 
 
-def lancement_analyse(document_id, document_url):
+def lancement_analyse(document_id, document_url, callback_url):
     try:
         url = f"{settings.API_ANALYSE_IA_BASE_URL}/run-task"
         response = requests.post(
             url,
-            {"document_id": document_id, "url": document_url},
+            {
+                "document_id": document_id,
+                "document_url": document_url,
+                "callback_url": callback_url,
+            },
             headers={"Authorization": f"Bearer {settings.API_ANALYSE_IA_TOKEN}"},
             timeout=ANALYSE_IA_TIMEOUT,
         )
