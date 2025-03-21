@@ -5,10 +5,12 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.mail import EmailMessage
 from django.http import Http404
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from openpyxl import Workbook
@@ -98,9 +100,29 @@ def etat_analyse_IA(request, id_document):
         document.message = message
     if status == "success":
         document.resultat_json = request.POST["resultat_json"]
+        _envoi_resultat_ia_email(request, document)
     document.save()
 
     return HttpResponse("OK")
+
+
+def _envoi_resultat_ia_email(request, document):
+    email = EmailMessage(
+        to=[request.user.email],
+        from_email=settings.DEFAULT_FROM_EMAIL,
+    )
+    email.template_id = settings.BREVO_RESULTAT_ANALYSE_IA_TEMPLATE
+    path = reverse(
+        "reglementations:gestion_csrd",
+        kwargs={
+            "siren": document.rapport_csrd.entreprise.siren,
+            "id_etape": "analyse-ecart",
+        },
+    )
+    email.merge_global_data = {
+        "resultat_ia_url": request.build_absolute_uri(path),
+    }
+    email.send()
 
 
 @login_required
