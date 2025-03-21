@@ -166,7 +166,9 @@ def test_lancement_d_anlyse_IA_erreur_API(client, mock_api_analyse_ia, document)
     assert message_erreur in content
 
 
-def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse(client, document):
+def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse(
+    client, document, mailoutbox
+):
     utilisateur = document.rapport_csrd.proprietaire
     client.force_login(utilisateur)
 
@@ -179,6 +181,14 @@ def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse(client, document):
 
     document.refresh_from_db()
     assert document.etat == "processing"
+    assert len(mailoutbox) == 0
+
+
+def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse(
+    client, document, mailoutbox
+):
+    utilisateur = document.rapport_csrd.proprietaire
+    client.force_login(utilisateur)
 
     response = client.post(
         f"/ESRS-predict/{document.id}",
@@ -191,6 +201,11 @@ def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse(client, document):
     document.refresh_from_db()
     assert document.etat == "error"
     assert document.message == "MESSAGE"
+    assert len(mailoutbox) == 1
+    mail = mailoutbox[0]
+    assert mail.from_email == settings.DEFAULT_FROM_EMAIL
+    assert list(mail.to) == [utilisateur.email]
+    assert mail.template_id == settings.BREVO_RESULTAT_ANALYSE_IA_TEMPLATE
 
 
 def test_serveur_IA_envoie_le_resultat_de_l_analyse(client, document, mailoutbox):
