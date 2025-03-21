@@ -108,7 +108,7 @@ def etat_analyse_IA(request, id_document):
 
 def _envoi_resultat_ia_email(request, document):
     email = EmailMessage(
-        to=[request.user.email],
+        to=[document.rapport_csrd.proprietaire.email],
         from_email=settings.DEFAULT_FROM_EMAIL,
     )
     email.template_id = settings.BREVO_RESULTAT_ANALYSE_IA_TEMPLATE
