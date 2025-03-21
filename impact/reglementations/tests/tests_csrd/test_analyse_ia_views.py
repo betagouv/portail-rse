@@ -133,7 +133,18 @@ def test_lancement_d_analyse_IA(client, mock_api_analyse_ia, document):
         f"/ESRS-predict/{document.id}/start",
     )
 
-    mock_api_analyse_ia.assert_called_once_with(document.id, document.fichier.url)
+    callback_url = response.wsgi_request.build_absolute_uri(
+        reverse(
+            "reglementations:etat_analyse_IA",
+            kwargs={
+                "id_document": document.id,
+            },
+        )
+    )
+
+    mock_api_analyse_ia.assert_called_once_with(
+        document.id, document.fichier.url, callback_url
+    )
     document.refresh_from_db()
     assert document.etat == "processing"
 

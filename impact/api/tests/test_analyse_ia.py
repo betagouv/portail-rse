@@ -8,6 +8,7 @@ from utils.mock_response import MockedResponse
 
 DOCUMENT_ID = 1
 DOCUMENT_URL = "https://document.test"
+CALLBACK_URL = "https://callback.test"
 
 
 def test_succès_lancement_analyse(mocker, settings):
@@ -20,12 +21,16 @@ def test_succès_lancement_analyse(mocker, settings):
         "requests.post", return_value=MockedResponse(200, json_content)
     )
 
-    etat = lancement_analyse(DOCUMENT_ID, DOCUMENT_URL)
+    etat = lancement_analyse(DOCUMENT_ID, DOCUMENT_URL, CALLBACK_URL)
 
     assert etat == "processing"
     faked_request.assert_called_once_with(
         f"{API_ANALYSE_IA_BASE_URL}/run-task",
-        {"document_id": DOCUMENT_ID, "url": DOCUMENT_URL},
+        {
+            "document_id": DOCUMENT_ID,
+            "document_url": DOCUMENT_URL,
+            "callback_url": CALLBACK_URL,
+        },
         headers={"Authorization": f"Bearer {API_ANALYSE_IA_TOKEN}"},
         timeout=ANALYSE_IA_TIMEOUT,
     )
@@ -37,7 +42,7 @@ def test_echec_exception_provoquee_par_l_api(mocker):
     capture_exception_mock = mocker.patch("sentry_sdk.capture_exception")
 
     with pytest.raises(APIError) as e:
-        lancement_analyse(DOCUMENT_ID, DOCUMENT_URL)
+        lancement_analyse(DOCUMENT_ID, DOCUMENT_URL, CALLBACK_URL)
 
     capture_exception_mock.assert_called_once()
     args, _ = capture_exception_mock.call_args
@@ -53,7 +58,7 @@ def test_echec_erreur_de_l_API(mocker):
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
     with pytest.raises(APIError) as e:
-        lancement_analyse(DOCUMENT_ID, DOCUMENT_URL)
+        lancement_analyse(DOCUMENT_ID, DOCUMENT_URL, CALLBACK_URL)
 
     capture_message_mock.assert_called_once_with("Erreur API analyse IA")
     assert (
@@ -69,7 +74,7 @@ def test_succès_lancement_analyse_mais_status_manquant(mocker):
     )
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
-    etat = lancement_analyse(DOCUMENT_ID, DOCUMENT_URL)
+    etat = lancement_analyse(DOCUMENT_ID, DOCUMENT_URL, CALLBACK_URL)
 
     assert etat == "inconnu"
     capture_message_mock.assert_called_once_with(

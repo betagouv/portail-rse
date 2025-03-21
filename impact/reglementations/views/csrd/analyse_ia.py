@@ -72,7 +72,17 @@ def lancement_analyse_IA(request, id_document):
 
     if document.etat != "success":
         try:
-            etat = analyse_ia.lancement_analyse(document.id, document.fichier.url)
+            callback_url = request.build_absolute_uri(
+                reverse(
+                    "reglementations:etat_analyse_IA",
+                    kwargs={
+                        "id_document": document.id,
+                    },
+                )
+            )
+            etat = analyse_ia.lancement_analyse(
+                document.id, document.fichier.url, callback_url
+            )
             document.etat = etat
             document.save()
         except APIError as exception:
