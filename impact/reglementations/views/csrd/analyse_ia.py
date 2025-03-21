@@ -99,6 +99,7 @@ def etat_analyse_IA(request, id_document):
         document.message = message
     if status == "success":
         document.resultat_json = request.POST["resultat_json"]
+    if status in ("success", "error"):
         _envoi_resultat_ia_email(request, document)
     document.save()
 
