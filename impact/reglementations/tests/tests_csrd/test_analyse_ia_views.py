@@ -170,7 +170,6 @@ def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse(
     client, document, mailoutbox
 ):
     utilisateur = document.rapport_csrd.proprietaire
-    client.force_login(utilisateur)
 
     response = client.post(
         f"/ESRS-predict/{document.id}",
@@ -188,7 +187,6 @@ def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse(
     client, document, mailoutbox
 ):
     utilisateur = document.rapport_csrd.proprietaire
-    client.force_login(utilisateur)
 
     response = client.post(
         f"/ESRS-predict/{document.id}",
