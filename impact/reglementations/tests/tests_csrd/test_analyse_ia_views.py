@@ -126,7 +126,9 @@ def test_suppression_document_inexistant(client, document, alice):
 
 
 def test_lancement_d_analyse_IA(client, mocker, document, settings):
-    settings.API_ANALYSE_IA_BASE_URL = API_ANALYSE_IA_BASE_URL = "https://analyse-ia.test"
+    settings.API_ANALYSE_IA_BASE_URL = (
+        API_ANALYSE_IA_BASE_URL
+    ) = "https://analyse-ia.test"
     settings.API_ANALYSE_IA_TOKEN = API_ANALYSE_IA_TOKEN = "TOKEN"
     utilisateur = document.rapport_csrd.proprietaire
     client.force_login(utilisateur)
@@ -185,7 +187,7 @@ def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse(client, document):
     assert document.message == "MESSAGE"
 
 
-def test_serveur_IA_envoie_le_resultat_de_l_analyse(client, document):
+def test_serveur_IA_envoie_le_resultat_de_l_analyse(client, document, mailoutbox):
     RESULTATS = """{
   "ESRS E1": [
     {
@@ -218,6 +220,23 @@ def test_serveur_IA_envoie_le_resultat_de_l_analyse(client, document):
     document.refresh_from_db()
     assert document.etat == "success"
     assert document.resultat_json == RESULTATS
+
+    assert len(mailoutbox) == 1
+    mail = mailoutbox[0]
+    assert mail.from_email == settings.DEFAULT_FROM_EMAIL
+    assert list(mail.to) == [utilisateur.email]
+    assert mail.template_id == settings.BREVO_RESULTAT_ANALYSE_IA_TEMPLATE
+    assert mail.merge_global_data == {
+        "resultat_ia_url": response.wsgi_request.build_absolute_uri(
+            reverse(
+                "reglementations:gestion_csrd",
+                kwargs={
+                    "siren": document.rapport_csrd.entreprise.siren,
+                    "id_etape": "analyse-ecart",
+                },
+            )
+        )
+    }
 
 
 def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(client, csrd):
