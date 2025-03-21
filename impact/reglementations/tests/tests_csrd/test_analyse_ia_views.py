@@ -125,7 +125,9 @@ def test_suppression_document_inexistant(client, document, alice):
     assert DocumentAnalyseIA.objects.count() == 1
 
 
-def test_lancement_d_analyse_IA(client, mocker, document):
+def test_lancement_d_analyse_IA(client, mocker, document, settings):
+    settings.IA_BASE_URL = IA_BASE_URL = "https://analyse-ia.test"
+    settings.IA_API_TOKEN = IA_API_TOKEN = "TOKEN"
     utilisateur = document.rapport_csrd.proprietaire
     client.force_login(utilisateur)
     ia_request = mocker.patch(
@@ -137,8 +139,9 @@ def test_lancement_d_analyse_IA(client, mocker, document):
     )
 
     ia_request.assert_called_once_with(
-        f"{settings.IA_BASE_URL}/run-task",
+        f"{IA_BASE_URL}/run-task",
         {"document_id": document.id, "url": document.fichier.url},
+        headers={"Authorization": f"Bearer {IA_API_TOKEN}"},
     )
     document.refresh_from_db()
     assert document.etat == "processing"
