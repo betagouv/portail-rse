@@ -207,3 +207,8 @@ def mock_api_egapro(mocker):
 @pytest.fixture
 def mock_api_bges(mocker):
     return mocker.patch("api.bges.last_reporting_year", return_value=None)
+
+
+@pytest.fixture
+def mock_api_analyse_ia(mocker):
+    return mocker.patch("api.analyse_ia.lancement_analyse", return_value="processing")
