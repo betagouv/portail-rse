@@ -5,8 +5,8 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from openpyxl import load_workbook
 
+from api.exceptions import APIError
 from reglementations.models.csrd import DocumentAnalyseIA
-from utils.mock_response import MockedResponse
 
 
 CONTENU_PDF = b"%PDF-1.4\n%\xd3\xeb\xe9\xe1\n1 0 obj\n<</Title (CharteEngagements"
@@ -125,32 +125,21 @@ def test_suppression_document_inexistant(client, document, alice):
     assert DocumentAnalyseIA.objects.count() == 1
 
 
-def test_lancement_d_analyse_IA(client, mocker, document, settings):
-    settings.API_ANALYSE_IA_BASE_URL = (
-        API_ANALYSE_IA_BASE_URL
-    ) = "https://analyse-ia.test"
-    settings.API_ANALYSE_IA_TOKEN = API_ANALYSE_IA_TOKEN = "TOKEN"
+def test_lancement_d_analyse_IA(client, mock_api_analyse_ia, document):
     utilisateur = document.rapport_csrd.proprietaire
     client.force_login(utilisateur)
-    ia_request = mocker.patch(
-        "requests.post", return_value=MockedResponse(200, {"status": "processing"})
-    )
 
     response = client.post(
         f"/ESRS-predict/{document.id}/start",
     )
 
-    ia_request.assert_called_once_with(
-        f"{API_ANALYSE_IA_BASE_URL}/run-task",
-        {"document_id": document.id, "url": document.fichier.url},
-        headers={"Authorization": f"Bearer {API_ANALYSE_IA_TOKEN}"},
-    )
+    mock_api_analyse_ia.assert_called_once_with(document.id, document.fichier.url)
     document.refresh_from_db()
     assert document.etat == "processing"
 
 
 def test_lancement_d_anlyse_IA_redirige_vers_la_connexion_si_non_connecté(
-    client, mocker, document
+    client, mock_api_analyse_ia, document
 ):
     response = client.post(
         f"/ESRS-predict/{document.id}/start",
@@ -158,6 +147,23 @@ def test_lancement_d_anlyse_IA_redirige_vers_la_connexion_si_non_connecté(
 
     assert response.status_code == 302
     assert not document.etat
+    assert not mock_api_analyse_ia.called
+
+
+def test_lancement_d_anlyse_IA_erreur_API(client, mock_api_analyse_ia, document):
+    message_erreur = (
+        "Le service est actuellement indisponible. Merci de réessayer plus tard."
+    )
+    mock_api_analyse_ia.side_effect = APIError(message_erreur)
+    utilisateur = document.rapport_csrd.proprietaire
+    client.force_login(utilisateur)
+
+    response = client.post(f"/ESRS-predict/{document.id}/start", follow=True)
+
+    document.refresh_from_db()
+    assert not document.etat
+    content = response.content.decode("utf-8")
+    assert message_erreur in content
 
 
 def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse(client, document):

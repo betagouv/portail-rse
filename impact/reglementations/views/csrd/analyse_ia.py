@@ -1,6 +1,5 @@
 import json
 
-import requests
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -15,6 +14,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from openpyxl import Workbook
 
+from api import analyse_ia
+from api.exceptions import APIError
 from reglementations.forms.csrd import DocumentAnalyseIAForm
 from reglementations.models import DocumentAnalyseIA
 from reglementations.models import RapportCSRD
@@ -70,14 +71,12 @@ def lancement_analyse_IA(request, id_document):
     document = DocumentAnalyseIA.objects.get(id=id_document)
 
     if document.etat != "success":
-        url = f"{settings.API_ANALYSE_IA_BASE_URL}/run-task"
-        response = requests.post(
-            url,
-            {"document_id": document.id, "url": document.fichier.url},
-            headers={"Authorization": f"Bearer {settings.API_ANALYSE_IA_TOKEN}"},
-        )
-        document.etat = response.json()["status"]
-        document.save()
+        try:
+            etat = analyse_ia.lancement_analyse(document.id, document.fichier.url)
+            document.etat = etat
+            document.save()
+        except APIError as exception:
+            messages.error(request, exception)
 
     id_etape = "analyse-ecart"
     return redirect(
