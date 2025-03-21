@@ -68,11 +68,11 @@ def lancement_analyse_IA(request, id_document):
     document = DocumentAnalyseIA.objects.get(id=id_document)
 
     if document.etat != "success":
-        url = f"{settings.IA_BASE_URL}/run-task"
+        url = f"{settings.API_ANALYSE_IA_BASE_URL}/run-task"
         response = requests.post(
             url,
             {"document_id": document.id, "url": document.fichier.url},
-            headers={"Authorization": f"Bearer {settings.IA_API_TOKEN}"},
+            headers={"Authorization": f"Bearer {settings.API_ANALYSE_IA_TOKEN}"},
         )
         document.etat = response.json()["status"]
         document.save()
