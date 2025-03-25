@@ -28,7 +28,7 @@
         {% endwith %}
     </div>
     <hr class="fr-mt-6v">
-    <button type="submit" class="fr-btn fr-btn--secondary" hx-disabled-elt="this" aria-controls="modal-{{ form.esrs }}">
+    <button type="submit" class="fr-btn fr-btn--secondary" hx-disabled-elt="this" aria-controls="modal-{{ form.esrs }}" {% if csrd.bloque %}disabled{% endif %}>
         Valider
     </button>
 </form>

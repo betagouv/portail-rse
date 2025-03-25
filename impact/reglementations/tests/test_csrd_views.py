@@ -124,19 +124,10 @@ def test_guide_de_la_csrd_par_etape(etape, client, alice, entreprise_factory):
     assert response.status_code == 404
 
 
-@pytest.mark.parametrize(
-    "etape",
-    [
-        "/csrd/{siren}/etape-introduction",
-        "/csrd/{siren}/etape-selection-enjeux",
-        "/csrd/{siren}/etape-analyse-materialite",
-        "/csrd/{siren}/etape-collection-donnees-entreprise",
-        "/csrd/{siren}/etape-redaction-rapport-durabilite",
-    ],
-)
+@pytest.mark.parametrize("etape", EtapeCSRD.ETAPES_VALIDABLES)
 def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
     entreprise = entreprise_factory()
-    url = etape.format(siren=entreprise.siren)
+    url = "/csrd/{siren}/etape-{etape}".format(siren=entreprise.siren, etape=etape)
 
     response = client.get(url)
 
@@ -159,10 +150,12 @@ def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
         assertTemplateUsed(
             response, "reglementations/csrd/etape-analyse-materialite.html"
         )
-    elif etape.endswith("collection-donnees-entreprise"):
+    elif etape.endswith("selection-informations"):
         assertTemplateUsed(
-            response, "reglementations/csrd/etape-collection-donnees-entreprise.html"
+            response, "reglementations/csrd/etape-selection-informations.html"
         )
+    elif etape.endswith("analyse-ecart"):
+        assertTemplateUsed(response, "reglementations/csrd/etape-analyse-ecart.html")
     elif etape.endswith("redaction-rapport-durabilite"):
         assertTemplateUsed(
             response, "reglementations/csrd/etape-redaction-rapport-durabilite.html"
@@ -184,15 +177,10 @@ def test_étape_inexistante_de_la_csrd(client, alice, entreprise_factory):
     assert response.status_code == 404
 
 
-@pytest.mark.parametrize(
-    "etape",
-    [
-        "introduction",
-        "selection-enjeux",
-        "analyse-materialite",
-        "collection-donnees-entreprise",
-    ],
-)
+ETAPES_ENREGISTRABLES = EtapeCSRD.ETAPES_VALIDABLES[:-1]
+
+
+@pytest.mark.parametrize("etape", ETAPES_ENREGISTRABLES)
 def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_factory):
     entreprise = entreprise_factory()
     habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
@@ -202,9 +190,7 @@ def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_
         annee=date.today().year,
     )
     client.force_login(alice)
-    url = "/csrd/{siren}/etape-{etape}".format(
-        siren=entreprise.siren, etape=EtapeCSRD.id_suivant(etape)
-    )
+    url = "/csrd/{siren}/etape-{etape}".format(siren=entreprise.siren, etape=etape)
 
     response = client.post(url, follow=True)
 
@@ -212,24 +198,14 @@ def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_
     assert rapport_csrd.etape_validee == etape
 
 
-@pytest.mark.parametrize(
-    "etape",
-    [
-        "introduction",
-        "selection-enjeux",
-        "analyse-materialite",
-        "collection-donnees-entreprise",
-    ],
-)
+@pytest.mark.parametrize("etape", ETAPES_ENREGISTRABLES)
 def test_enregistrement_de_l_étape_de_la_csrd_retourne_une_404_si_aucune_CSRD(
     etape, client, alice, entreprise_factory
 ):
     entreprise = entreprise_factory()
     attach_user_to_entreprise(alice, entreprise, "Présidente")
     client.force_login(alice)
-    url = "/csrd/{siren}/etape-{etape}".format(
-        siren=entreprise.siren, etape=EtapeCSRD.id_suivant(etape)
-    )
+    url = "/csrd/{siren}/etape-{etape}".format(siren=entreprise.siren, etape=etape)
 
     response = client.post(url, follow=True)
 
@@ -256,6 +232,7 @@ def test_visualisation_des_enjeux(client, alice, entreprise_non_qualifiee):
 
 
 def test_selection_et_deselection_d_enjeux(client, alice, entreprise_non_qualifiee):
+    # update : les enjeux sont désormais sélectionnés par défaut
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
     csrd = RapportCSRD.objects.create(
         proprietaire=alice,
@@ -265,8 +242,6 @@ def test_selection_et_deselection_d_enjeux(client, alice, entreprise_non_qualifi
     enjeux = csrd.enjeux.all()
     enjeu_adaptation = enjeux[0]
     enjeu_attenuation = enjeux[1]
-    enjeu_attenuation.selection = True
-    enjeu_attenuation.save()
     enjeu_energie = enjeux[2]
     client.force_login(alice)
 
@@ -278,9 +253,12 @@ def test_selection_et_deselection_d_enjeux(client, alice, entreprise_non_qualifi
     enjeu_adaptation.refresh_from_db()
     enjeu_attenuation.refresh_from_db()
     enjeu_energie.refresh_from_db()
-    assert [enjeu_adaptation, enjeu_energie] == list(Enjeu.objects.selectionnes())
+
+    assert [enjeu_attenuation] == list(Enjeu.objects.filter(selection=False))
     assert response.status_code == 200
+
     context = response.context
+
     assert context["csrd"] == csrd
     assert "<!-- fragment esrs -->" in response.content.decode("utf-8")
 
@@ -377,22 +355,30 @@ def test_liste_des_enjeux_csrd(client, alice, entreprise_non_qualifiee):
         annee=f"{datetime.now():%Y}",
     )
     enjeux = csrd.enjeux.all()
-    enjeu_adaptation = enjeux[0]
-    enjeu_attenuation = enjeux[1]
-    enjeu_attenuation.selection = True
-    enjeu_attenuation.save()
-    enjeu_energie = enjeux[2]
-    client.force_login(alice)
 
-    response = client.get(f"/csrd/fragments/liste_enjeux_selectionnes/{csrd.id}")
+    enjeu_attenuation = enjeux[1]
+    enjeu_attenuation.selection = False
+    enjeu_attenuation.save()
+
+    assert (
+        enjeux.filter(selection=False).count() == 1
+    ), "Un des enjeux doit être désélectionné"
+
+    client.force_login(alice)
+    response = client.get(f"/csrd/fragments/liste_enjeux_selectionnes/{csrd.id}/1")
 
     assert response.status_code == 200
+
     context = response.context
-    assert context["enjeux_par_esg"] == {
-        "environnement": {"ESRS E1 - Changement climatique": [enjeu_attenuation]},
-        "social": {},
-        "gouvernance": {},
-    }
+
+    assert (
+        len(
+            context["enjeux_par_esg"]["environnement"][
+                "ESRS E1 - Changement climatique"
+            ]
+        )
+        == 2
+    ), "Un des enjeux doit être désélectionné"
     assert "<!-- fragment liste des enjeux sélectionnés -->" in response.content.decode(
         "utf-8"
     )
@@ -460,6 +446,12 @@ def test_datapoints_pour_enjeux_non_materiels_au_format_xlsx(
     enjeux_G1.materiel = False  # et pas None
     enjeux_G1.save()
 
+    # les enjeux étant sélectionnés par défaut, on décoche certains ceux de l'ESRS E3
+    # pour s'assurer que l'onglet de cet ESRS apparait bien dans le fichier des enjeux non-matériels.
+    for enjeu_esrs_e3 in enjeux.filter(esrs="ESRS_E3"):
+        enjeu_esrs_e3.selection = False
+        enjeu_esrs_e3.save()
+
     response = client.get(
         f"/csrd/{entreprise_non_qualifiee.siren}/datapoints.xlsx?materiel=false",
     )
@@ -470,11 +462,17 @@ def test_datapoints_pour_enjeux_non_materiels_au_format_xlsx(
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     noms_onglet = workbook.sheetnames
+
     assert esrs_materielle.replace("_", " ") not in noms_onglet
     assert "Index" in noms_onglet
-    assert "ESRS 2" in noms_onglet
-    assert "ESRS2 MDR" in noms_onglet
     assert "ESRS G1" in noms_onglet
+    assert "ESRS 2" not in noms_onglet
+    assert "ESRS2 MDR" not in noms_onglet
+
+    # Vérification de la présence des ESRS non-selectionnés
+    assert (
+        "ESRS E3" in noms_onglet
+    ), "les enjeux non-sélectionnés doivent apparaitre dans le fichier"
 
 
 def test_datapoints_csrd__au_format_xlsx_retourne_une_404_si_entreprise_inexistante(
@@ -483,7 +481,7 @@ def test_datapoints_csrd__au_format_xlsx_retourne_une_404_si_entreprise_inexista
     client.force_login(alice)
 
     response = client.get(
-        f"/csrd/000000001/datapoints.xlsx",
+        "/csrd/000000001/datapoints.xlsx",
     )
 
     assert response.status_code == 404

@@ -1,0 +1,108 @@
+{% load absolute_url %}
+
+<div class="fr-header__body">
+    <div class="fr-container">
+        <div class="fr-header__body-row">
+            <div class="fr-header__brand fr-enlarge-link">
+                <div class="fr-header__brand-top">
+                    <div class="fr-header__logo">
+                        <p class="fr-logo">
+                            République
+                            <br>Française
+                        </p>
+                    </div>
+                    <div class="fr-header__navbar">
+                        <button class="fr-btn--menu fr-btn" data-fr-opened="false" aria-controls="modal-499" aria-haspopup="menu" id="button-500" title="Menu">
+                            Menu
+                        </button>
+                    </div>
+                </div>
+                <div class="fr-header__service">
+                    <a href="https://portail-rse.beta.gouv.fr/" title="Accueil - Portail RSE">
+                        <p class="fr-header__service-title">
+                            Portail RSE <span class="fr-badge fr-badge--sm fr-badge--green-emeraude">BETA</span>
+                        </p>
+                    </a>
+                    <p class="fr-header__service-tagline">Un chemin unique pour connaître et répondre à ses obligations RSE</p>
+                </div>
+            </div>
+            <div class="fr-header__tools">
+                <div class="fr-header__tools-links with-btns">
+                    <ul class="fr-btns-group">
+                        <li><a class="fr-btn fr-tool-link fr-icon-mail-fill" href="{% absolute_url 'contact' %}">Contactez-nous</a></li>
+                        {% url 'simulation' as url_simulation %}
+                        {% if url_simulation not in request.path and not user.is_authenticated %}
+                            <li><a class="fr-btn fr-tool-link fr-icon-file-text-fill" href="https://portail-rse.beta.gouv.fr/fiches-reglementaires">Fiches réglementaires RSE</a></li>
+                        {% endif %}
+                        {% if user.is_authenticated %}
+                            <li><a class="fr-btn fr-tool-link fr-icon-building-fill" href="{% absolute_url 'entreprises:entreprises' %}">{% if user.entreprise_set.count >= 2 %}Mes entreprises{% else %}Mon entreprise{% endif %}</a></li>
+                            <li class="fr-nav__item header-collapse">
+                                <button class="fr-btn fr-tool-link fr-icon-account-circle-fill" aria-expanded="false" aria-controls="menu-header">{{ user.prenom|title }} {{ user.nom|title|first }}.</button>
+                                <div class="fr-collapse fr-menu" id="menu-header">
+                                    <ul class="fr-menu__list">
+                                        <li><a class="fr-nav__link" href="{% absolute_url 'users:account' %}" target="_self"><span class="fr-icon-account-circle-fill fr-mr-1w" aria-hidden="true"></span> Mon compte</a></li>
+                                        <li>
+                                            <a class="fr-nav__link" href="{% absolute_url 'users:logout' %}"><span class="fr-icon-lock-unlock-fill fr-mr-1w" aria-hidden="true"></span> Se déconnecter</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        {% else %}
+                            <li><a class="fr-btn fr-btn--secondary fr-icon-lock-fill" href="{% absolute_url 'users:login' %}?mtm_campaign=connexion-menu&mtm_kwd=menu">Se connecter</a></li>
+                            {% if url_simulation not in request.path %}
+                                <li><a class="fr-btn fr-btn--primary fr-btn--tool-links" href="{% absolute_url 'simulation' %}?mtm_campaign=simulation-menu&mtm_kwd=menu">Vérifier mes obligations</a></li>
+                            {% endif %}
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="fr-header__menu fr-modal" id="modal-499" aria-labelledby="button-500">
+    <div class="fr-container">
+        <button class="fr-btn--close fr-btn" aria-controls="modal-499" title="Fermer">
+            Fermer
+        </button>
+        <div class="fr-header__menu-links with-btns">
+        </div>
+        {% if user.is_authenticated %}
+            <nav class="fr-nav" id="navigation-494" role="navigation" aria-label="Menu principal">
+                <ul id="account-mobile" class="fr-menu__list">
+                    <li><a class="fr-nav__link" href="{% absolute_url 'users:account' %}" target="_self"><span class="fr-icon-account-circle-fill fr-mr-1w" aria-hidden="true"></span> Mon compte</a></li>
+                    <li>
+                        <a class="fr-nav__link" href="{% absolute_url 'users:logout' %}"><span class="fr-icon-lock-unlock-fill fr-mr-1w" aria-hidden="true"></span> Se déconnecter</a>
+                    </li>
+                </ul>
+                <ul class="fr-nav__list">
+                    <li class="fr-nav__item">
+                        {% absolute_url 'reglementations' as url_page %}
+                        <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Réglementations RSE</a>
+                    </li>
+                    {% if user.entreprise_set.count >= 2 %}
+                        <li class="fr-nav__item">
+                            {% absolute_url 'reglementations:tableau_de_bord' current_entreprise.siren as url_page %}
+                            <button class="fr-nav__btn" aria-expanded="false" aria-controls="menu-1" {% if request.path == url_page %} aria-current="page"{% endif %}>
+                                Tableau de bord
+                            </button>
+                            <div class="fr-collapse fr-menu" id="menu-1">
+                                <ul class="fr-menu__list">
+                                    {% for entreprise in user.entreprises %}
+                                        {% absolute_url 'reglementations:tableau_de_bord' entreprise.siren as url_page %}
+                                        <li><a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>{{ entreprise.denomination }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </li>
+                    {% elif current_entreprise %}
+                        {% absolute_url 'reglementations:tableau_de_bord' current_entreprise.siren as url_page %}
+                        <li class="fr-nav__item"><a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Tableau de bord</a></li>
+                    {% else %}
+                        <li class="fr-nav__item"><a class="fr-nav__link" href="{% absolute_url 'reglementations:tableau_de_bord' %}">Tableau de bord</a></li>
+                    {% endif %}
+                    <li class="fr-nav__item"><a class="fr-nav__link" href="https://portail-rse.beta.gouv.fr/csrd/" target="_self"{% if request.path == csrd_path %} aria-current="page"{% endif %}>Espace CSRD</a></li>
+                </ul>
+            </nav>
+        {% endif %}
+    </div>
+</div>

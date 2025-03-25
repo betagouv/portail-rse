@@ -70,6 +70,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_hosts.middleware.HostsResponseMiddleware",
     # middlewares touchant à l'utilisation d'HTMX
+    "utils.middlewares.HTMXRequestMiddleware",
     "utils.middlewares.HTMXRetargetMiddleware",
 ]
 ROOT_URLCONF = "impact.urls"
@@ -220,8 +221,7 @@ if SENTRY_DSN:
     )
 
 # API
-API_INSEE_KEY = os.getenv("API_INSEE_KEY")
-API_INSEE_TOKEN_PATH = Path("/tmp/jeton_insee")
+API_SIRENE_KEY = os.getenv("API_SIRENE_KEY")
 
 # django-hosts :
 # https://django-hosts.readthedocs.io/en/latest/
@@ -366,3 +366,6 @@ SITES_FACILES_BASE_URL = os.getenv(
 CORS_ALLOWED_ORIGINS = [SITES_FACILES_BASE_URL]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = (*default_headers, "hx-current-url")
+
+# Activation de la feature analyse d'écart (IA) sur l'espace de gestion csrd
+ETAPE_ANALYSE_ECART_ACTIVEE = os.getenv("ETAPE_ANALYSE_ECART_ACTIVEE") == "true"

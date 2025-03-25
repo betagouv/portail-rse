@@ -7,6 +7,7 @@ from .forms import PasswordResetForm
 from .forms import SetPasswordForm
 from .views import account
 from .views import creation
+from .views import deconnexion
 from .views import PasswordResetConfirmView
 from .views import PasswordResetView
 from users.views import confirm_email
@@ -20,7 +21,7 @@ urlpatterns = [
         ),
         name="login",
     ),
-    path("deconnexion", auth_views.LogoutView.as_view(), name="logout"),
+    path("deconnexion", deconnexion, name="logout"),
     path("creation", creation, name="creation"),
     path(
         "mot-de-passe-oublie",

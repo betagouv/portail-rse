@@ -118,3 +118,34 @@ def test_rapport_officiel_modifiable_par(rapport_officiel, alice, bob):
     assert not rapport_officiel.modifiable_par(
         bob
     ), "Le rapport CSRD ne doit pas être modifiable par Bob"
+
+
+def test_rapport_csrd_bloque_non_modifiable(rapport_officiel):
+    rapport_officiel.description = "Description modifiée"
+
+    rapport_officiel.save()
+    rapport_officiel.refresh_from_db()
+
+    assert (
+        rapport_officiel.description == "Description modifiée"
+    ), "Le rapport CSRD doit être modifiable (non-bloqué)"
+
+    # vérifie que le rapport CSRD n'est plus modifiable après publication du rapport
+    rapport_officiel.bloque = True
+    rapport_officiel.lien_rapport = "https://exemple.com/rapport"
+
+    initial_description = rapport_officiel.description
+
+    # tente de modifier le rapport sur des champs bloqués
+    rapport_officiel.description = "Nouvelle description"
+    rapport_officiel.lien_rapport = "https://example.com/nouveau"
+
+    rapport_officiel.save()
+    rapport_officiel.refresh_from_db()
+
+    assert (
+        rapport_officiel.description == initial_description
+    ), "Le rapport CSRD ne devrait pas être modifié (bloqué)"
+    assert (
+        rapport_officiel.lien_rapport == "https://example.com/nouveau"
+    ), "Seul le lien_rapport devrait être modifiable"

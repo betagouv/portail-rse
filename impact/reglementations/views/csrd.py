@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import PermissionDenied
+from django.db.models import Q
 from django.http import Http404
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -560,9 +561,13 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
             csrd = rapport_csrd(request.user, entreprise, annee)
         except ObjectDoesNotExist:
             raise Http404
-        csrd.etape_validee = EtapeCSRD.id_precedent(id_etape)
+        csrd.etape_validee = id_etape
         csrd.save()
-        redirect("reglementations:gestion_csrd", siren=siren, id_etape=id_etape)
+        return redirect(
+            "reglementations:gestion_csrd",
+            siren=siren,
+            id_etape=EtapeCSRD.id_suivant(id_etape),
+        )
 
     # on vérifie si on a sélectionné une année manuellement
     if csrd_id := request.session.get("rapport_csrd_courant"):
@@ -601,7 +606,7 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
 
     match EtapeCSRD.get(id_etape).id:
         ## légèrement plus lisible qu'un `if`
-        case "collection-donnees-entreprise":
+        case "selection-informations":
             nb_enjeux_non_analyses = csrd.enjeux.non_analyses().count()
             context |= {
                 "can_download": nb_enjeux_non_analyses
@@ -725,12 +730,18 @@ def _esrs_materiel_a_supprimer(csrd: RapportCSRD, materiel: bool):
         enjeux_materiels = csrd.enjeux.materiels()
         esrs_materiels = set((enjeu.esrs for enjeu in enjeux_materiels))
         esrs_a_supprimer = tous_les_esrs - esrs_materiels
+        esrs_a_supprimer.discard("ESRS_2")
     else:
-        enjeux_non_materiels = csrd.enjeux.non_materiels()
+        # les enjeux non-analysés doivent aussi être dans ce document (comme non-matériels)
+        enjeux_non_materiels = csrd.enjeux.filter(
+            Q(materiel=False) | Q(selection=False)
+        )
         esrs_non_materiels = set((enjeu.esrs for enjeu in enjeux_non_materiels))
+        # pour les enjeux non-matériels, ESRS_2 et ESRS_2_MDR sont à supprimer
         esrs_a_supprimer = tous_les_esrs - esrs_non_materiels
+        esrs_a_supprimer |= {"ESRS2_MDR", "ESRS_2"}
 
-    # ne pas supprimer ESRS_1 et ESRS_2 car ils n'existent pas dans le fichier .xlsx
-    esrs_a_supprimer -= set(("ESRS_1", "ESRS_2"))
+    # ne pas supprimer ESRS_1 car il n'existe pas dans le fichier .xlsx
+    esrs_a_supprimer.discard("ESRS_1")
 
     return esrs_a_supprimer

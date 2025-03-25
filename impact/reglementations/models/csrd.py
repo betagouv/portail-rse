@@ -50,6 +50,9 @@ class RapportCSRD(TimestampedModel):
     lien_rapport = models.URLField(
         verbose_name="lien du rapport CSRD publié", blank=True
     )
+    bloque = models.BooleanField(
+        verbose_name="rapport bloqué après publication", default=False
+    )
 
     objects = RapportCSRDQuerySet.as_manager()
 
@@ -81,6 +84,7 @@ class RapportCSRD(TimestampedModel):
                     description=enjeu.description,
                     parent=parent,
                     modifiable=False,
+                    selection=True,
                 )
                 tmp_enjeux.append(ne)
 
@@ -119,7 +123,20 @@ class RapportCSRD(TimestampedModel):
 
         # on vérifie systématiquement les contraintes métiers avant la sauvegarde
         self.clean()
+
+        # on vérifie si le rapport est actuellement bloqué, auquel cas seuls l'URL de publication
+        # et la date de modification sont mis à jour
+        kwargs |= (
+            {"update_fields": ["lien_rapport", "updated_at", "bloque"]}
+            if self.bloque
+            else {}
+        )
+
         super().save(*args, **kwargs)
+
+        if self.bloque:
+            # plus d'autres modifications possibles si le rapport est bloqué
+            return
 
         if enjeux:
             # Cette partie gènère un N+1 :
@@ -161,6 +178,9 @@ class RapportCSRD(TimestampedModel):
     def nombre_enjeux_selectionnes(self):
         return self.enjeux.filter(selection=True).count()
 
+    def nombre_enjeux_non_selectionnes(self):
+        return self.enjeux.filter(selection=False).count()
+
     def modifiable_par(self, utilisateur: "users.User") -> bool:
         # Vérifie si le rapport CSRD courant est modifiable par un utilisateur donné.
         # tip : un utilisateur anonyme n'a pas d'ID
@@ -186,13 +206,13 @@ class RapportCSRD(TimestampedModel):
         ).order_by("-ord", "pk")
         return qs
 
-    def est_publie(self):
-        return bool(self.lien_rapport)
-
 
 class EnjeuQuerySet(models.QuerySet):
     def selectionnes(self):
         return self.filter(selection=True)
+
+    def non_selectionnes(self):
+        return self.filter(selection=False)
 
     def modifiables(self):
         return self.filter(modifiable=True)

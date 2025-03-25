@@ -1,6 +1,6 @@
 <div class="fr-container fr-mt-8w">
     <div class="fr-grid-row">
-        <div class="fr-col-12 fr-col-md-6">
+        <div class="fr-col-12">
             <p class="fr-badge fr-badge--info fr-badge--no-icon">{{ csrd.entreprise.denomination }}</p>
             <br>
             <h1>Rapport de durabilité {{ csrd.annee }}</h1>
@@ -8,14 +8,29 @@
                 <div class="fr-mb-2w">
                     Rapports CSRD disponibles&#8239;:&nbsp;
                     {% for rapport in rapports_csrd %}
-                        <span class="fr-ml-1w">
+                        <span class="fr-ml-1w" id="_selection_{{ rapport.annee }}">
                             {% if rapport.pk == csrd.pk %}
                                 <strong>{{ rapport.annee }}</strong>
                             {% else %}
-                                <a href="#" hx-post="{% url 'reglementations:selection_rapport' csrd_id=rapport.pk %}" hx-target="body">{{ rapport.annee }}</a>
+                                <a href="#"
+                                   hx-post="{% url 'reglementations:selection_rapport' csrd_id=rapport.pk %}"
+                                   hx-target="body">{{ rapport.annee }}</a>
                             {% endif %}
                         </span>
                     {% endfor %}
+                </div>
+            {% endif %}
+            {% if csrd.bloque %}
+                <div class="fr-alert fr-alert--info fr-mb-2w">
+                    <h3 class="fr-alert__title">Rapport CSRD publié</h3>
+                    <p>
+                        Ce rapport CSRD a déjà été publié. Il n'est par conséquent plus modifiable.
+                    </p>
+                    {% if csrd.lien_rapport %}
+                        <p>
+                            <a href="{{ csrd.lien_rapport }}" target="_blank">Voir le rapport publié</a>
+                        </p>
+                    {% endif %}
                 </div>
             {% endif %}
         </div>

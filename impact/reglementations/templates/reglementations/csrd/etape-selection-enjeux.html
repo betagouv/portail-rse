@@ -53,20 +53,26 @@
                     <a class="fr-tabs__tab fr-tabs__tab--icon-left" target="_blank" href="{% url 'reglementations:csrd_sous_etape' entreprise.siren 1 2 2 %}">S'inspirer de standards internationaux</a>
                 </li>
                 <li role="presentation">
-                    <button id="tabpanel-406" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="-1" role="tab" aria-selected="false" aria-controls="onglet-liste-enjeux" hx-get="{% url 'reglementations:liste_enjeux_selectionnes' csrd.pk %}" hx-target="#onglet-liste-enjeux">Ma liste d'enjeux à analyser</button>
+                    <button id="tabpanel-selectionnes" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="1" role="tab" aria-selected="false" aria-controls="onglet-liste-enjeux-selectionnes" hx-get="{% url 'reglementations:liste_enjeux_selectionnes' csrd.pk 1 %}" hx-target="#onglet-liste-enjeux-selectionnes">(<span id="nb-enjeux-selectionnes">{{ nb_enjeux_selectionnes }}</span>) Ma liste d'enjeux à analyser</button>
+                </li>
+                <li role="presentation">
+                    <button id="tabpanel-non-selectionnes" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="-1" role="tab" aria-selected="false" aria-controls="onglet-liste-enjeux-non-selectionnes" hx-get="{% url 'reglementations:liste_enjeux_selectionnes' csrd.pk 0 %}" hx-target="#onglet-liste-enjeux-non-selectionnes">(<span id="nb-enjeux-non-selectionnes">{{ nb_enjeux_non_selectionnes }}</span>) Enjeux exclus</button>
                 </li>
             </ul>
             <div id="onglet-ajout-enjeux" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel" aria-labelledby="onglet-ajout-enjeux" tabindex="0">
                 <div class="fr-container fr-pb-6w" id="esg_container"></div>
             </div>
-            <div id="onglet-liste-enjeux" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-406" tabindex="0">
+            <div id="onglet-liste-enjeux-selectionnes" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-selectionnes" tabindex="0">
                 <h4>Enjeux sélectionnés</h4>
+            </div>
+            <div id="onglet-liste-enjeux-non-selectionnes" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-non-selectionnes" tabindex="0">
+                <h4>Enjeux non-sélectionnés</h4>
             </div>
         </div>
     </div>
 
     <p>
-        {% include "snippets/csrd_submit.html" with prochaine_etape="analyse-materialite" %}
+        {% include "snippets/csrd_submit.html" %}
     </p>
 
     {% include "snippets/modal_ESRS/ESRS_2.html" %}

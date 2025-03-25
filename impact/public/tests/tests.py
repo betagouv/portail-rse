@@ -195,21 +195,21 @@ def test_page_publique_des_reglementations(client):
         assert REGLEMENTATION.title in content
 
 
-def test_fragments_liens_menu_si_visiteur_non_connecté(client):
+def test_fragments_entete_de_page_si_visiteur_non_connecté(client):
     response = client.get("/liens-menu")
 
     assert response.status_code == 200
-    assertTemplateUsed(response, "snippets/boutons_menu.html")
+    assertTemplateUsed(response, "snippets/entete_page.html")
     content = response.content.decode("utf-8")
     assert "Se connecter" in content
 
 
-def test_fragments_liens_menu_si_visiteur_non_connecté(client, alice):
+def test_fragments_entete_de_page_si_visiteur_non_connecté(client, alice):
     client.force_login(alice)
 
     response = client.get("/liens-menu")
 
     assert response.status_code == 200
-    assertTemplateUsed(response, "snippets/boutons_menu.html")
+    assertTemplateUsed(response, "snippets/entete_page.html")
     content = response.content.decode("utf-8")
     assert "Alice" in content
