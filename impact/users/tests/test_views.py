@@ -79,7 +79,7 @@ def test_create_user_with_real_siren(client, db, mailoutbox):
     mail = mailoutbox[0]
     assert mail.from_email == settings.DEFAULT_FROM_EMAIL
     assert list(mail.to) == ["user@domaine.test"]
-    assert mail.template_id == settings.SENDINBLUE_CONFIRM_EMAIL_TEMPLATE
+    assert mail.template_id == settings.BREVO_CONFIRMATION_EMAIL_TEMPLATE
     assert mail.merge_global_data == {
         "confirm_email_url": response.wsgi_request.build_absolute_uri(
             reverse(
@@ -353,7 +353,7 @@ def test_edit_email(client, alice_with_password, mailoutbox):
     mail = mailoutbox[0]
     assert mail.from_email == settings.DEFAULT_FROM_EMAIL
     assert list(mail.to) == ["bob@domaine.test"]
-    assert mail.template_id == settings.SENDINBLUE_CONFIRM_EMAIL_TEMPLATE
+    assert mail.template_id == settings.BREVO_CONFIRMATION_EMAIL_TEMPLATE
     assert mail.merge_global_data == {
         "confirm_email_url": response.wsgi_request.build_absolute_uri(
             reverse(
