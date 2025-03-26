@@ -53,7 +53,7 @@ def test_ajout_document_sur_csrd_inexistante(client, alice):
     fichier = SimpleUploadedFile("test.pdf", CONTENU_PDF)
 
     response = client.post(
-        f"/csrd/42/ajout_document",
+        "/csrd/42/ajout_document",
         {"fichier": fichier},
     )
 
@@ -119,7 +119,7 @@ def test_suppression_document_par_utilisateur_non_autorise(client, document, bob
 def test_suppression_document_inexistant(client, document, alice):
     client.force_login(alice)
 
-    response = client.post(f"/csrd/42/suppression")
+    response = client.post("/csrd/42/suppression")
 
     assert response.status_code == 404
     assert DocumentAnalyseIA.objects.count() == 1
@@ -177,12 +177,12 @@ def test_lancement_d_anlyse_IA_erreur_API(client, mock_api_analyse_ia, document)
     assert message_erreur in content
 
 
-def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse(
+def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_1(
     client, document, mailoutbox
 ):
-    utilisateur = document.rapport_csrd.proprietaire
+    # utilisateur = document.rapport_csrd.proprietaire
 
-    response = client.post(
+    client.post(
         f"/ESRS-predict/{document.id}",
         {
             "status": "processing",
@@ -194,12 +194,12 @@ def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse(
     assert len(mailoutbox) == 0
 
 
-def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse(
+def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_2(
     client, document, mailoutbox
 ):
     utilisateur = document.rapport_csrd.proprietaire
 
-    response = client.post(
+    client.post(
         f"/ESRS-predict/{document.id}",
         {
             "status": "error",
@@ -336,7 +336,7 @@ def test_telechargement_des_resultats_IA_d_un_document_inexistant(client, alice)
     client.force_login(alice)
 
     response = client.get(
-        f"/ESRS-predict/42/resultats.xlsx",
+        "/ESRS-predict/42/resultats.xlsx",
     )
 
     assert response.status_code == 404
