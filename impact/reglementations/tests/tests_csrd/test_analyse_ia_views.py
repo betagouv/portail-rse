@@ -131,6 +131,7 @@ def test_lancement_d_analyse_IA(client, mock_api_analyse_ia, document):
 
     response = client.post(
         f"/ESRS-predict/{document.id}/start",
+        follow=True,
     )
 
     callback_url = response.wsgi_request.build_absolute_uri(
@@ -147,6 +148,8 @@ def test_lancement_d_analyse_IA(client, mock_api_analyse_ia, document):
     )
     document.refresh_from_db()
     assert document.etat == "processing"
+    assert response.status_code == 200
+    assert "L'analyse a bien été lancée." in response.content.decode("utf-8")
 
 
 def test_lancement_d_anlyse_IA_redirige_vers_la_connexion_si_non_connecté(

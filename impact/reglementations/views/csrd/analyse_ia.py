@@ -85,6 +85,10 @@ def lancement_analyse_IA(request, id_document):
             )
             document.etat = etat
             document.save()
+            messages.success(
+                request,
+                "L'analyse a bien été lancée. Celle-ci peut prendre entre quelques secondes et quelques heures. Vous recevrez un email lorsque les résultats seront disponibles.",
+            )
         except APIError as exception:
             messages.error(request, exception)
 
