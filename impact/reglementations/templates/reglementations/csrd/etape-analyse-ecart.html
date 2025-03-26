@@ -149,16 +149,8 @@
             <div id="onglet-resultats-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="onglet-resultats" tabindex="0">
                 <div class="fr-container">
                     {% if csrd.documents_analyses %}
-                        <div class="fr-grid-row fr-grid-row--center fr-pb-4w">
-
-                            <a class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-download-line"
-                               href="{% url 'reglementations:synthese_resultats_IA' csrd.id %}">Télécharger la synthèse de tous les résultats (xlsx)</a>
-
-                        </div>
                         <div class="fr-grid-row fr-grid-row--gutters fr-pb-4w">
                             <div class="fr-col">
-
-
                                 <div class="fr-tile">
                                     <div class="fr-tile__body">
                                         <div class="fr-tile__content">
@@ -221,6 +213,12 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="fr-grid-row fr-grid-row--center fr-pb-4w">
+
+                            <a class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-download-line"
+                               href="{% url 'reglementations:synthese_resultats_IA' csrd.id %}">Télécharger la synthèse de tous les résultats (xlsx)</a>
+
                         </div>
                         <div class="fr-grid-row">
                             <h4>Résultats par ESRS</h4>
