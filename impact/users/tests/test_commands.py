@@ -18,7 +18,7 @@ def test_import_des_contacts(
         siren="222222222", denomination="Coopérative"
     )
     attach_user_to_entreprise(alice, entreprise_qualifiee, "Présidente")
-    settings.SENDINBLUE_API_KEY = "SENDINBLUE_API_KEY"
+    settings.BREVO_API_KEY = "BREVO_API_KEY"
     mocked_import_contacts = mocker.patch(
         "sib_api_v3_sdk.ContactsApi.import_contacts",
     )
