@@ -10,7 +10,7 @@ from users.models import User
 
 def _client_api():
     configuration = Configuration()
-    configuration.api_key["api-key"] = settings.SENDINBLUE_API_KEY
+    configuration.api_key["api-key"] = settings.BREVO_API_KEY
     return ApiClient(configuration)
 
 

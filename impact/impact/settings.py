@@ -206,13 +206,13 @@ STATICFILES_DIRS = (Path(BASE_DIR, "static"),)
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Email
-SENDINBLUE_API_KEY = os.getenv("SENDINBLUE_API_KEY")
+BREVO_API_KEY = os.getenv("BREVO_API_KEY")
 EMAIL_BACKEND = (
-    "anymail.backends.sendinblue.EmailBackend"
-    if SENDINBLUE_API_KEY
+    "anymail.backends.brevo.EmailBackend"
+    if BREVO_API_KEY
     else "django.core.mail.backends.console.EmailBackend"
 )
-ANYMAIL = {"SENDINBLUE_API_KEY": SENDINBLUE_API_KEY}
+ANYMAIL = {"BREVO_API_KEY": BREVO_API_KEY}
 DEFAULT_FROM_EMAIL = "ne-pas-repondre@portail-rse.beta.gouv.fr"
 CONTACT_EMAIL = os.getenv("CONTACT_EMAIL")
 BREVO_CONFIRMATION_EMAIL_TEMPLATE = 1
