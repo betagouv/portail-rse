@@ -66,7 +66,7 @@ def _send_confirm_email(request, user):
         to=[user.email],
         from_email=settings.DEFAULT_FROM_EMAIL,
     )
-    email.template_id = settings.SENDINBLUE_CONFIRM_EMAIL_TEMPLATE
+    email.template_id = settings.BREVO_CONFIRMATION_EMAIL_TEMPLATE
     path = reverse(
         "users:confirm_email",
         kwargs={"uidb64": uidb64(user), "token": make_token(user, "confirm_email")},
