@@ -320,6 +320,8 @@ def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(client, cs
     assert onglet["A4"].value == "ESRS E2"
     assert onglet["B4"].value == 7
     assert onglet["C4"].value == "C"
+    onglet = workbook["Source"]
+    assert onglet["A1"].value == "généré par https://portail-rse.beta.gouv.fr"
 
 
 def test_telechargement_des_resultats_IA_d_un_document_inexistant(client, alice):
@@ -393,6 +395,8 @@ def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_x
     assert onglet["A3"].value == "ESRS E2"
     assert onglet["C3"].value == 6
     assert onglet["D3"].value == "B"
+    onglet = workbook["Source"]
+    assert onglet["A1"].value == "généré par https://portail-rse.beta.gouv.fr"
 
 
 def test_telechargement_des_resultats_IA_de_l_ensemble_des_documents_d_un_rapport_csrd_inexistant(

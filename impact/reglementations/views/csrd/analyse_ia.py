@@ -151,6 +151,7 @@ def resultat_IA_xlsx(request, id_document):
     worksheet["B1"] = "PAGE"
     worksheet["C1"] = "PHRASE"
     _ajoute_ligne_resultat_ia(worksheet, document, False)
+    _ajoute_source(workbook)
     return _xlsx_response(workbook, "resultats.xlsx")
 
 
@@ -170,6 +171,11 @@ def _ajoute_ligne_resultat_ia(worksheet, document, avec_nom_fichier):
             worksheet.append(ligne)
 
 
+def _ajoute_source(workbook):
+    worksheet_source = workbook.create_sheet("Source")
+    worksheet_source["A1"] = "généré par https://portail-rse.beta.gouv.fr"
+
+
 @login_required
 @csrd_required
 def synthese_resultat_IA_xlsx(request, csrd_id):
@@ -184,4 +190,5 @@ def synthese_resultat_IA_xlsx(request, csrd_id):
     worksheet["D1"] = "PHRASE"
     for document in csrd.documents_analyses:
         _ajoute_ligne_resultat_ia(worksheet, document, True)
+    _ajoute_source(workbook)
     return _xlsx_response(workbook, "synthese_resultats.xlsx")
