@@ -419,3 +419,84 @@ def test_telechargement_des_resultats_IA_de_l_ensemble_des_documents_redirige_ve
     )
 
     assert response.status_code == 302
+
+
+def test_telechargement_des_resultats_par_ESRS_au_format_xlsx(client, csrd):
+    DocumentAnalyseIA.objects.create(
+        rapport_csrd=csrd,
+        etat="success",
+        resultat_json="""{
+  "ESRS E1": [
+    {
+      "PAGES": 1,
+      "TEXTS": "A"
+    }
+  ],
+  "ESRS E2": [
+    {
+      "PAGES": 4,
+      "TEXTS": "B"
+    }
+  ]
+  }""",
+    )
+    DocumentAnalyseIA.objects.create(
+        rapport_csrd=csrd,
+        etat="success",
+        resultat_json="""{
+  "ESRS E2": [
+    {
+      "PAGES": 6,
+      "TEXTS": "C"
+    }
+  ]
+  }""",
+    )
+
+    client.force_login(csrd.proprietaire)
+
+    response = client.get(
+        f"/ESRS-predict/{csrd.id}/E2",
+    )
+
+    assert response["Content-Disposition"] == "filename=resultats_ESRS_E2.xlsx"
+    assert (
+        response["content-type"]
+        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+    )
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook.active
+    assert onglet["A1"].value == "ESRS"
+    assert onglet["B1"].value == "FICHIER"
+    assert onglet["C1"].value == "PAGE"
+    assert onglet["D1"].value == "PHRASE"
+    assert onglet["A2"].value == "ESRS E2"
+    assert onglet["C2"].value == 4
+    assert onglet["D2"].value == "B"
+    assert onglet["A3"].value == "ESRS E2"
+    assert onglet["C3"].value == 6
+    assert onglet["D3"].value == "C"
+    onglet = workbook["Source"]
+    assert onglet["A1"].value == "généré par https://portail-rse.beta.gouv.fr"
+
+
+def test_telechargement_des_resultats_IA__par_ESRS_d_un_rapport_csrd_inexistant(
+    client, alice
+):
+    client.force_login(alice)
+
+    response = client.get(
+        "/ESRS-predict/42/E2",
+    )
+
+    assert response.status_code == 404
+
+
+def test_telechargement_des_resultats_IA_par_ESRS_redirige_vers_la_connexion_si_non_connecté(
+    client, csrd
+):
+    response = client.get(
+        f"/ESRS-predict/{csrd.id}/E2",
+    )
+
+    assert response.status_code == 302

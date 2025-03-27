@@ -150,25 +150,26 @@ def resultat_IA_xlsx(request, id_document):
     worksheet["A1"] = "ESRS"
     worksheet["B1"] = "PAGE"
     worksheet["C1"] = "PHRASE"
-    _ajoute_ligne_resultat_ia(worksheet, document, False)
+    _ajoute_ligne_resultat_ia(worksheet, document, False, None)
     _ajoute_source(workbook)
     return _xlsx_response(workbook, "resultats.xlsx")
 
 
-def _ajoute_ligne_resultat_ia(worksheet, document, avec_nom_fichier):
+def _ajoute_ligne_resultat_ia(worksheet, document, avec_nom_fichier, contrainte_esrs):
     data = json.loads(document.resultat_json)
     for esrs, contenus in data.items():
         for contenu in contenus:
-            if avec_nom_fichier:
-                ligne = [
-                    esrs,
-                    document.nom,
-                    contenu["PAGES"],
-                    contenu["TEXTS"],
-                ]
-            else:
-                ligne = [esrs, contenu["PAGES"], contenu["TEXTS"]]
-            worksheet.append(ligne)
+            if (not contrainte_esrs) or contrainte_esrs in esrs:
+                if avec_nom_fichier:
+                    ligne = [
+                        esrs,
+                        document.nom,
+                        contenu["PAGES"],
+                        contenu["TEXTS"],
+                    ]
+                else:
+                    ligne = [esrs, contenu["PAGES"], contenu["TEXTS"]]
+                worksheet.append(ligne)
 
 
 def _ajoute_source(workbook):
@@ -189,6 +190,24 @@ def synthese_resultat_IA_xlsx(request, csrd_id):
     worksheet["C1"] = "PAGE"
     worksheet["D1"] = "PHRASE"
     for document in csrd.documents_analyses:
-        _ajoute_ligne_resultat_ia(worksheet, document, True)
+        _ajoute_ligne_resultat_ia(worksheet, document, True, None)
     _ajoute_source(workbook)
     return _xlsx_response(workbook, "synthese_resultats.xlsx")
+
+
+@login_required
+@csrd_required
+def synthese_resultat_IA_par_ESRS_xlsx(request, csrd_id, code_esrs):
+    csrd = RapportCSRD.objects.get(id=csrd_id)
+
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = "Phrases relatives aux ESRS"
+    worksheet["A1"] = "ESRS"
+    worksheet["B1"] = "FICHIER"
+    worksheet["C1"] = "PAGE"
+    worksheet["D1"] = "PHRASE"
+    for document in csrd.documents_analyses:
+        _ajoute_ligne_resultat_ia(worksheet, document, True, code_esrs)
+    _ajoute_source(workbook)
+    return _xlsx_response(workbook, f"resultats_ESRS_{code_esrs}.xlsx")

@@ -234,16 +234,19 @@ def test_grouper_phrases_par_esrs(client, csrd):
             {
                 "nombre_phrases": 2,
                 "titre": "ESRS E1",
+                "code_esrs": "E1",
             },
             {
                 "nombre_phrases": 1,
                 "titre": "ESRS E2",
+                "code_esrs": "E2",
             },
         ],
         "phrases_social": [
             {
                 "nombre_phrases": 1,
                 "titre": "ESRS S3",
+                "code_esrs": "S3",
             },
         ],
         "phrases_gouvernance": [],
