@@ -96,10 +96,8 @@
                                                     </td>
                                                     <td>
                                                         {% if document.etat %}
-                                                            {% if document.etat == "processing" %}
-                                                                <p class="fr-badge">En attente de traitement</p>
-                                                            {% elif document.etat in "text_processed,analysis_complete" %}
-                                                                <p class="fr-badge fr-badge--new">En cours de traitement</p>
+                                                            {% if document.etat in "processing,text_processed,analysis_complete" %}
+                                                                <p class="fr-badge fr-badge--new">En cours d'analyse</p>
                                                                 {% if document.message %}
                                                                     <p class="fr-text--sm">{{ document.message }}</p>
                                                                 {% endif %}
