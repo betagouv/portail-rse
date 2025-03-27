@@ -160,7 +160,7 @@
                                             <h3 class="fr-tile__title">
                                                 {{ stats_synthese.nb_documents_analyses }}
                                             </h3>
-                                            <p class="fr-tile__desc">documents analysés</p>
+                                            <p class="fr-tile__desc">document{{ stats_synthese.nb_documents_analyses|pluralize }} analysé{{ stats_synthese.nb_documents_analyses|pluralize }}</p>
                                         </div>
                                     </div>
                                     <div class="fr-tile__header">
@@ -181,7 +181,7 @@
                                             <h3 class="fr-tile__title">
                                                 {{ stats_synthese.nb_phrases_pertinentes_detectees }}
                                             </h3>
-                                            <p class="fr-tile__desc">phrases pertinentes détectées</p>
+                                            <p class="fr-tile__desc">phrase{{ stats_synthese.nb_phrases_pertinentes_detectees|pluralize }} pertinente{{ stats_synthese.nb_phrases_pertinentes_detectees|pluralize }} détectée{{ stats_synthese.nb_phrases_pertinentes_detectees|pluralize }}</p>
                                         </div>
                                     </div>
                                     <div class="fr-tile__header">
@@ -202,7 +202,7 @@
                                             <h3 class="fr-tile__title">
                                                 {{ stats_synthese.nb_esrs_thematiques_detectees }}
                                             </h3>
-                                            <p class="fr-tile__desc">ESRS thématiques détectés</p>
+                                            <p class="fr-tile__desc">ESRS thématique{{ stats_synthese.nb_esrs_thematiques_detectees|pluralize }} détecté{{ stats_synthese.nb_esrs_thematiques_detectees|pluralize }}</p>
                                         </div>
                                     </div>
                                     <div class="fr-tile__header">
@@ -240,7 +240,7 @@
                                                         <div class="esrs-organizer--esrs">
                                                             <div class="esrs-organizer--card">
                                                                 <div class="esrs-organizer--card-title">
-                                                                    <p class="fr-badge fr-badge--sm">{{ phrases_par_esrs.nombre_phrases }} phrases pertinentes</p>
+                                                                    <p class="fr-badge fr-badge--sm">{{ phrases_par_esrs.nombre_phrases }} phrase{{ phrases_par_esrs.nombre_phrases|pluralize }} pertinente{{ phrases_par_esrs.nombre_phrases|pluralize }}</p>
                                                                     <b>{{ phrases_par_esrs.titre }}</b>
                                                                     <a class="fr-btn fr-btn--sm fr-btn--secondary fr-icon-download-line" title="Télécharger le tableur contenant les phrases correspondant à cet ESRS" href="{% url 'reglementations:synthese_resultats_IA_par_ESRS' csrd.id phrases_par_esrs.code_esrs %}" target="_blank">Télécharger le tableur contenant les phrases correspondant à cet ESRS</a>
                                                                 </div>
@@ -270,7 +270,7 @@
                                                         <div class="esrs-organizer--esrs">
                                                             <div class="esrs-organizer--card">
                                                                 <div class="esrs-organizer--card-title">
-                                                                    <p class="fr-badge fr-badge--sm">{{ phrases_par_esrs.nombre_phrases }} phrases pertinentes</p>
+                                                                    <p class="fr-badge fr-badge--sm">{{ phrases_par_esrs.nombre_phrases }} phrase{{ phrases_par_esrs.nombre_phrases|pluralize }} pertinente{{ phrases_par_esrs.nombre_phrases|pluralize }}</p>
                                                                     <b>{{ phrases_par_esrs.titre }}</b>
                                                                     <a class="fr-btn fr-btn--sm fr-btn--secondary fr-icon-download-line" title="Télécharger le tableur contenant les phrases correspondant à cet ESRS" href="{% url 'reglementations:synthese_resultats_IA_par_ESRS' csrd.id phrases_par_esrs.code_esrs %}" target="_blank">Télécharger le tableur contenant les phrases correspondant à cet ESRS</a>
                                                                 </div>
@@ -300,7 +300,7 @@
                                                         <div class="esrs-organizer--esrs">
                                                             <div class="esrs-organizer--card">
                                                                 <div class="esrs-organizer--card-title">
-                                                                    <p class="fr-badge fr-badge--sm">{{ phrases_par_esrs.nombre_phrases }} phrases pertinentes</p>
+                                                                    <p class="fr-badge fr-badge--sm">{{ phrases_par_esrs.nombre_phrases }} phrase{{ phrases_par_esrs.nombre_phrases|pluralize }} pertinente{{ phrases_par_esrs.nombre_phrases|pluralize }}</p>
                                                                     <b>{{ phrases_par_esrs.titre }}</b>
                                                                     <a class="fr-btn fr-btn--sm fr-btn--secondary fr-icon-download-line" title="Télécharger le tableur contenant les phrases correspondant à cet ESRS" href="{% url 'reglementations:synthese_resultats_IA_par_ESRS' csrd.id phrases_par_esrs.code_esrs %}" target="_blank">Télécharger le tableur contenant les phrases correspondant à cet ESRS</a>
                                                                 </div>
