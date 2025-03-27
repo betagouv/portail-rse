@@ -356,6 +356,12 @@ def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_x
       "PAGES": 1,
       "TEXTS": "A"
     }
+   ],
+    "Non ESRS": [
+    {
+      "PAGES": 22,
+      "TEXTS": "X"
+    }
   ]
   }""",
     )
@@ -436,6 +442,12 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx(client, csrd):
     {
       "PAGES": 4,
       "TEXTS": "B"
+    }
+  ],
+  "Non ESRS": [
+    {
+      "PAGES": 22,
+      "TEXTS": "X"
     }
   ]
   }""",

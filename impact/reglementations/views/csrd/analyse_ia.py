@@ -159,7 +159,9 @@ def _ajoute_ligne_resultat_ia(worksheet, document, avec_nom_fichier, contrainte_
     data = json.loads(document.resultat_json)
     for esrs, contenus in data.items():
         for contenu in contenus:
-            if (not contrainte_esrs) or contrainte_esrs in esrs:
+            if esrs != "Non ESRS" and (
+                (not contrainte_esrs) or contrainte_esrs in esrs
+            ):
                 if avec_nom_fichier:
                     ligne = [
                         esrs,
