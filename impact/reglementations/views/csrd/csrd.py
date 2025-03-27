@@ -658,6 +658,7 @@ def grouper_phrases_par_esrs(csrd):
                 resultat[type_esg][esrs] = {
                     "titre": esrs,
                     "nombre_phrases": len(phrases),
+                    "code_esrs": esrs[5:7],
                 }
 
             esrs_thematiques_detectees.add(esrs)
