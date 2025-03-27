@@ -146,6 +146,7 @@ def resultat_IA_xlsx(request, id_document):
 
     workbook = Workbook()
     worksheet = workbook.active
+    worksheet.title = "Phrases relatives aux ESRS"
     worksheet["A1"] = "ESRS"
     worksheet["B1"] = "PAGE"
     worksheet["C1"] = "PHRASE"
@@ -176,6 +177,7 @@ def synthese_resultat_IA_xlsx(request, csrd_id):
 
     workbook = Workbook()
     worksheet = workbook.active
+    worksheet.title = "Phrases relatives aux ESRS"
     worksheet["A1"] = "ESRS"
     worksheet["B1"] = "FICHIER"
     worksheet["C1"] = "PAGE"
