@@ -20,6 +20,7 @@ jobs:
       DATABASE_URL: sqlite:///db.sqlite3
       METABASE_DATABASE_URL: sqlite:///metabase.sqlite3
       API_SIRENE_KEY: ${{ secrets.API_SIRENE_KEY }}
+      ETAPE_ANALYSE_ECART_ACTIVEE: true
 
     steps:
     - uses: actions/checkout@v3
