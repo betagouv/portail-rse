@@ -35,18 +35,6 @@ def fragment_liens_menu(request):
     )
 
 
-def mentions_legales(request):
-    return render(request, "public/mentions-legales.html")
-
-
-def politique_confidentialite(request):
-    return render(request, "public/politique-confidentialite.html")
-
-
-def cgu(request):
-    return render(request, "public/cgu.html")
-
-
 def stats(request):
     return render(request, "public/stats.html")
 

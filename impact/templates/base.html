@@ -57,19 +57,15 @@
                             </a>
                         </div>
                         <div class="fr-footer__content">
-                            <p>
-                                Un chemin unique pour connaitre et répondre à ses obligations RSE.<br>
-                                Le Portail RSE est développé par la <a href="https://www.entreprises.gouv.fr/fr/la-direction-generale-des-entreprises-dge" target="_blank" rel="noopener">Direction Générale des Entreprises (DGE)</a> en lien avec BetaGouv et la Direction Interministérielle du Numérique (DINUM).
-                            </p>
                             <ul class="fr-footer__content-list">
-                                <li class="fr-footer__content-item">
-                                    <a class="fr-footer__content-link" target="_blank" href="https://legifrance.gouv.fr">legifrance.gouv.fr</a>
-                                </li>
                                 <li class="fr-footer__content-item">
                                     <a class="fr-footer__content-link" target="_blank" href="https://www.info.gouv.fr">info.gouv.fr</a>
                                 </li>
                                 <li class="fr-footer__content-item">
                                     <a class="fr-footer__content-link" target="_blank" href="https://service-public.fr">service-public.fr</a>
+                                </li>
+                                <li class="fr-footer__content-item">
+                                    <a class="fr-footer__content-link" target="_blank" href="https://legifrance.gouv.fr">legifrance.gouv.fr</a>
                                 </li>
                                 <li class="fr-footer__content-item">
                                     <a class="fr-footer__content-link" target="_blank" href="https://data.gouv.fr">data.gouv.fr</a>
@@ -80,19 +76,16 @@
                     <div class="fr-footer__bottom">
                         <ul class="fr-footer__bottom-list">
                             <li class="fr-footer__bottom-item">
-                                <span class="fr-footer__bottom-link">Accessibilité : non conforme</span>
-                            </li>
-                            <li class="fr-footer__bottom-item">
-                                <a class="fr-footer__bottom-link" href="{% url 'mentions_legales' %}">Mentions légales</a>
-                            </li>
-                            <li class="fr-footer__bottom-item">
-                                <a class="fr-footer__bottom-link" href="{% url 'politique_confidentialite' %}">Politique de confidentialité</a>
-                            </li>
-                            <li class="fr-footer__bottom-item">
-                                <a class="fr-footer__bottom-link" href="{% url 'cgu' %}">CGU</a>
-                            </li>
-                            <li class="fr-footer__bottom-item">
                                 <a class="fr-footer__bottom-link" href="{% url 'stats' %}">Statistiques</a>
+                            </li>
+                            <li class="fr-footer__bottom-item">
+                                <a class="fr-footer__bottom-link" href="{{ sites_faciles_base_url }}/conditions-generales-d-utilisation/">CGU</a>
+                            </li>
+                            <li class="fr-footer__bottom-item">
+                                <a class="fr-footer__bottom-link" href="{{ sites_faciles_base_url }}/mentions-legales/">Mentions légales</a>
+                            </li>
+                            <li class="fr-footer__bottom-item">
+                                <a class="fr-footer__bottom-link" href="{{ sites_faciles_base_url }}/politique-de-confidentialite/">Politique de confidentialité</a>
                             </li>
                             <li class="fr-footer__bottom-item">
                                 <button id="tarteaucitronManager" class="fr-footer__bottom-link" aria-controls="tarteaucitron" data-fr-opened="false" data-fr-js-modal-button="true">Gestion des cookies</button>

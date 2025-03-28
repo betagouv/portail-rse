@@ -150,30 +150,6 @@ def test_send_contact_mail_with_numerical_captcha(client, mailoutbox, settings):
     assert len(mailoutbox) == 0
 
 
-def test_page_mentions_legales(client):
-    response = client.get("/mentions-legales")
-
-    assert response.status_code == 200
-    content = response.content.decode("utf-8")
-    assert "<!-- page mentions legales -->" in content
-
-
-def test_page_politique_confidentialite(client):
-    response = client.get("/politique-confidentialite")
-
-    assert response.status_code == 200
-    content = response.content.decode("utf-8")
-    assert "<!-- page politique de confidentialite -->" in content
-
-
-def test_page_cgu(client):
-    response = client.get("/cgu")
-
-    assert response.status_code == 200
-    content = response.content.decode("utf-8")
-    assert "<!-- page cgu -->" in content
-
-
 def test_page_stats(client):
     response = client.get("/stats")
 
