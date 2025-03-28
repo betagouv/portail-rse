@@ -625,7 +625,8 @@ def contexte_d_etape(id_etape, csrd, form=None):
                 "form": form or DocumentAnalyseIAForm(),
                 "documents": csrd.documents,
                 "stats_synthese": grouper_phrases_par_esrs(csrd),
-                "onglet_resultats_actif": csrd.documents_analyses.exists(),
+                "onglet_resultats_actif": csrd.documents_analyses.exists()
+                and not csrd.documents_non_analyses.exists(),
             }
         case "redaction-rapport-durabilite":
             context |= {"form": LienRapportCSRDForm(instance=csrd)}

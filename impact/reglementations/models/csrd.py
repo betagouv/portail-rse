@@ -214,6 +214,10 @@ class RapportCSRD(TimestampedModel):
     def documents_analyses(self):
         return self.documents.filter(etat__exact="success")
 
+    @property
+    def documents_non_analyses(self):
+        return self.documents.filter(etat__isnull=True)
+
 
 class EnjeuQuerySet(models.QuerySet):
     def selectionnes(self):

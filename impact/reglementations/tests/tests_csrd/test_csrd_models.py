@@ -159,6 +159,7 @@ def test_rapport_csrd_avec_documents(rapport_personnel):
     )
 
     assert list(rapport_personnel.documents_analyses) == []
+    assert list(rapport_personnel.documents_non_analyses) == [document_1]
 
     document_2.etat = "success"
     document_2.save()
