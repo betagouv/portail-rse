@@ -3,7 +3,6 @@ from dataclasses import field
 from enum import Enum
 
 import django.db.models as models
-from django.conf import settings
 
 
 class ESRS(models.TextChoices):
@@ -386,24 +385,14 @@ class EtapeCSRD:
     id: str
     nom: str
     sous_etapes: dict = field(default_factory=dict)
-    ETAPES_VALIDABLES = (
-        [
-            "introduction",
-            "selection-enjeux",
-            "analyse-materialite",
-            "selection-informations",
-            "analyse-ecart",
-            "redaction-rapport-durabilite",
-        ]
-        if settings.ETAPE_ANALYSE_ECART_ACTIVEE
-        else [
-            "introduction",
-            "selection-enjeux",
-            "analyse-materialite",
-            "selection-informations",
-            "redaction-rapport-durabilite",
-        ]
-    )
+    ETAPES_VALIDABLES = [
+        "introduction",
+        "selection-enjeux",
+        "analyse-materialite",
+        "selection-informations",
+        "analyse-ecart",
+        "redaction-rapport-durabilite",
+    ]
 
     @classmethod
     def id_suivant(cls, id_etape):
@@ -422,26 +411,19 @@ class EtapeCSRD:
         raise Exception(f"Étape CSRD inconnue : {id_etape}")
 
 
-phase2 = (
-    EtapeCSRD(
-        id="collection-donnees",
-        nom="Collecter les données de son entreprise",
-        sous_etapes=[
-            EtapeCSRD(
-                id="selection-informations",
-                nom="Analyser la matérialité des informations élémentaires",
-            ),
-            EtapeCSRD(
-                id="analyse-ecart",
-                nom="Réaliser une analyse d’écart",
-            ),
-        ],
-    )
-    if settings.ETAPE_ANALYSE_ECART_ACTIVEE
-    else EtapeCSRD(
-        id="selection-informations",
-        nom="Collecter les données de son entreprise",
-    )
+phase2 = EtapeCSRD(
+    id="collection-donnees",
+    nom="Collecter les données de son entreprise",
+    sous_etapes=[
+        EtapeCSRD(
+            id="selection-informations",
+            nom="Analyser la matérialité des informations élémentaires",
+        ),
+        EtapeCSRD(
+            id="analyse-ecart",
+            nom="Réaliser une analyse d’écart",
+        ),
+    ],
 )
 
 ETAPES_CSRD = [

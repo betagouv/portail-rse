@@ -393,6 +393,3 @@ SITES_FACILES_BASE_URL = os.getenv(
 CORS_ALLOWED_ORIGINS = [SITES_FACILES_BASE_URL]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = (*default_headers, "hx-current-url")
-
-# Activation de la feature analyse d'écart (IA) sur l'espace de gestion csrd
-ETAPE_ANALYSE_ECART_ACTIVEE = os.getenv("ETAPE_ANALYSE_ECART_ACTIVEE") == "true"
