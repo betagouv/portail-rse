@@ -32,13 +32,13 @@
             </div>
         </div>
 
-        <div class="fr-tabs">
+        <div class="fr-tabs" id="onglets">
             <ul class="fr-tabs__list" role="tablist" aria-label="onglets-analyse-ecart">
                 <li role="presentation">
-                    <button id="onglet-fichiers" class="fr-tabs__tab fr-icon-file-fill fr-tabs__tab--icon-left" tabindex="0" role="tab" aria-selected="true" aria-controls="onglet-fichiers-panel">Vos fichiers ({{ documents.count }})</button>
+                    <button id="onglet-fichiers" class="fr-tabs__tab fr-icon-file-fill fr-tabs__tab--icon-left" tabindex="{% if onglet_resultats_actif %}-1{% else %}0{% endif %}" role="tab" aria-selected="{% if onglet_resultats_actif %}false{% else %}true{% endif %}" aria-controls="onglet-fichiers-panel">Vos fichiers ({{ documents.count }})</button>
                 </li>
                 <li role="presentation">
-                    <button id="onglet-resultats" class="fr-tabs__tab fr-icon-line-chart-fill fr-tabs__tab--icon-left" tabindex="-1" role="tab" aria-selected="false" aria-controls="onglet-resultats-panel">Résultats de l'analyse</button>
+                    <button id="onglet-resultats" class="fr-tabs__tab fr-icon-line-chart-fill fr-tabs__tab--icon-left" tabindex="{% if onglet_resultats_actif %}0{% else %}-1{% endif %}" role="tab" aria-selected="{% if onglet_resultats_actif %}true{% else %}false{% endif %}" aria-controls="onglet-resultats-panel">Résultats de l'analyse</button>
                 </li>
             </ul>
             <div id="onglet-fichiers-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel" aria-labelledby="onglet-fichiers" tabindex="0">

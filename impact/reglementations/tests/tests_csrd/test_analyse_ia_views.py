@@ -269,6 +269,7 @@ def test_serveur_IA_envoie_le_resultat_de_l_analyse(client, document, mailoutbox
                 },
             )
         )
+        + "#onglets"
     }
 
 

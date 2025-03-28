@@ -19,8 +19,8 @@ from api.exceptions import APIError
 from reglementations.forms.csrd import DocumentAnalyseIAForm
 from reglementations.models import DocumentAnalyseIA
 from reglementations.models import RapportCSRD
-from reglementations.views.csrd.csrd import _contexte_d_etape
 from reglementations.views.csrd.csrd import _xlsx_response
+from reglementations.views.csrd.csrd import contexte_d_etape
 from reglementations.views.csrd.decorators import csrd_required
 from reglementations.views.csrd.decorators import document_required
 
@@ -43,7 +43,7 @@ def ajout_document(request, csrd_id):
             id_etape=id_etape,
         )
     else:
-        context = _contexte_d_etape(id_etape, csrd, form)
+        context = contexte_d_etape(id_etape, csrd, form)
         template_name = f"reglementations/csrd/etape-{id_etape}.html"
         return render(request, template_name, context, status=400)
 
@@ -134,7 +134,7 @@ def _envoi_resultat_ia_email(request, document):
         },
     )
     email.merge_global_data = {
-        "resultat_ia_url": request.build_absolute_uri(path),
+        "resultat_ia_url": f"{request.build_absolute_uri(path)}#onglets",
     }
     email.send()
 
