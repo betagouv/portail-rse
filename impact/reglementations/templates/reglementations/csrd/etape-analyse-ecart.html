@@ -96,7 +96,7 @@
                                                     </td>
                                                     <td>
                                                         {% if document.etat %}
-                                                            {% if document.etat in "processing,text_processed,analysis_complete" %}
+                                                            {% if document.etat in "pending,processing,text_processed,analysis_complete" %}
                                                                 <p class="fr-badge fr-badge--new">En cours d'analyse</p>
                                                                 {% if document.message %}
                                                                     <p class="fr-text--sm">{{ document.message }}</p>

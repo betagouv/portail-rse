@@ -155,7 +155,7 @@ def test_rapport_csrd_bloque_non_modifiable(rapport_officiel):
 def test_rapport_csrd_avec_documents(rapport_personnel):
     document_1 = DocumentAnalyseIA.objects.create(rapport_csrd=rapport_personnel)
     document_2 = DocumentAnalyseIA.objects.create(
-        rapport_csrd=rapport_personnel, etat="en attente"
+        rapport_csrd=rapport_personnel, etat="pending"
     )
 
     assert list(rapport_personnel.documents_analyses) == []

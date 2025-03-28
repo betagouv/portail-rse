@@ -147,7 +147,7 @@ def test_lancement_d_analyse_IA(client, mock_api_analyse_ia, document):
         document.id, document.fichier.url, callback_url
     )
     document.refresh_from_db()
-    assert document.etat == "processing"
+    assert document.etat == "pending"
     assert response.status_code == 200
     assert "L'analyse a bien été lancée." in response.content.decode("utf-8")
 

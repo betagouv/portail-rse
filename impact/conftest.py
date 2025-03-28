@@ -211,4 +211,4 @@ def mock_api_bges(mocker):
 
 @pytest.fixture
 def mock_api_analyse_ia(mocker):
-    return mocker.patch("api.analyse_ia.lancement_analyse", return_value="processing")
+    return mocker.patch("api.analyse_ia.lancement_analyse", return_value="pending")
