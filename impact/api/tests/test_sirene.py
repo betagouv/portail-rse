@@ -29,7 +29,7 @@ def test_api_fonctionnelle():
 
 
 def test_succès_avec_résultat_comportant_la_denomination(mocker, settings):
-    api_insee_key = "test-key"
+    api_sirene_key = "test-key"
     SIREN = "123456789"
     # la plupart des champs inutilisés de la réponse ont été supprimés
     json_content = {
@@ -46,7 +46,7 @@ def test_succès_avec_résultat_comportant_la_denomination(mocker, settings):
             "trancheEffectifsUniteLegale": "20",
         },
     }
-    settings.API_SIRENE_KEY = api_insee_key
+    settings.API_SIRENE_KEY = api_sirene_key
     faked_request = mocker.patch(
         "requests.get", return_value=MockedResponse(200, json_content)
     )
@@ -57,7 +57,7 @@ def test_succès_avec_résultat_comportant_la_denomination(mocker, settings):
     assert infos["denomination"] == "ENTREPRISE"
     faked_request.assert_called_once_with(
         f"https://api.insee.fr/api-sirene/3.11/siren/123456789?date={date.today().isoformat()}",
-        headers={"X-INSEE-Api-Key-Integration": api_insee_key},
+        headers={"X-INSEE-Api-Key-Integration": api_sirene_key},
         timeout=SIRENE_TIMEOUT,
     )
     capture_message_mock.assert_called_once_with(
