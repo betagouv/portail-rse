@@ -591,11 +591,11 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
             annee=annee,
         )
 
-    context = _contexte_d_etape(id_etape, csrd)
+    context = contexte_d_etape(id_etape, csrd)
     return HttpResponse(template.render(context, request))
 
 
-def _contexte_d_etape(id_etape, csrd, form=None):
+def contexte_d_etape(id_etape, csrd, form=None):
     # on récupère les rapports si plusieurs existants, pour permettre une sélection
     rapports_csrd = RapportCSRD.objects.filter(
         entreprise=csrd.entreprise,
@@ -625,6 +625,7 @@ def _contexte_d_etape(id_etape, csrd, form=None):
                 "form": form or DocumentAnalyseIAForm(),
                 "documents": csrd.documents,
                 "stats_synthese": grouper_phrases_par_esrs(csrd),
+                "onglet_resultats_actif": csrd.documents_analyses.exists(),
             }
         case "redaction-rapport-durabilite":
             context |= {"form": LienRapportCSRDForm(instance=csrd)}
