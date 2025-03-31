@@ -28,6 +28,7 @@ from habilitations.models import is_user_attached_to_entreprise
 from reglementations.enums import ESRS
 from reglementations.enums import EtapeCSRD
 from reglementations.enums import ETAPES_CSRD
+from reglementations.enums import TitreESRS
 from reglementations.forms.csrd import DocumentAnalyseIAForm
 from reglementations.forms.csrd import LienRapportCSRDForm
 from reglementations.models import RapportCSRD
@@ -653,17 +654,18 @@ def grouper_phrases_par_esrs(csrd):
                 type_esg = "phrases_social"
             elif esrs.startswith("ESRS G"):
                 type_esg = "phrases_gouvernance"
+            titre_esrs = normaliser_titre_esrs(esrs)
 
-            if esrs in resultat[type_esg]:
-                resultat[type_esg][esrs]["nombre_phrases"] += len(phrases)
+            if titre_esrs in resultat[type_esg]:
+                resultat[type_esg][titre_esrs]["nombre_phrases"] += len(phrases)
             else:
-                resultat[type_esg][esrs] = {
-                    "titre": esrs,
+                resultat[type_esg][titre_esrs] = {
+                    "titre": titre_esrs,
                     "nombre_phrases": len(phrases),
                     "code_esrs": esrs[5:7],
                 }
 
-            esrs_thematiques_detectees.add(esrs)
+            esrs_thematiques_detectees.add(titre_esrs)
             nb_phrases_pertinentes_detectees += len(phrases)
 
     for nom_phase in ("phrases_environnement", "phrases_social", "phrases_gouvernance"):
@@ -674,6 +676,11 @@ def grouper_phrases_par_esrs(csrd):
     resultat["nb_documents_analyses"] = csrd.documents_analyses.count()
     resultat["nb_esrs_thematiques_detectees"] = len(esrs_thematiques_detectees)
     return resultat
+
+
+def normaliser_titre_esrs(titre_esrs):
+    underscored_esrs = titre_esrs[:7].replace(" ", "_")
+    return TitreESRS[underscored_esrs].value
 
 
 def csrd_required_with_enjeux(function):
