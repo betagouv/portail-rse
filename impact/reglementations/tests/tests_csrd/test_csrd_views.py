@@ -203,13 +203,13 @@ def test_grouper_phrases_par_esrs(client, csrd):
         rapport_csrd=csrd,
         etat="success",
         resultat_json="""{
-  "ESRS E2": [
+  "ESRS E2 - Pollution": [
     {
       "PAGES": 6,
       "TEXTS": "D"
     }
   ],
-  "ESRS S3": [
+  "ESRS S3 : Communautés affectées": [
     {
       "PAGES": 7,
       "TEXTS": "E"
@@ -233,19 +233,19 @@ def test_grouper_phrases_par_esrs(client, csrd):
         "phrases_environnement": [
             {
                 "nombre_phrases": 2,
-                "titre": "ESRS E1",
+                "titre": "ESRS E1 - Changement climatique",
                 "code_esrs": "E1",
             },
             {
                 "nombre_phrases": 1,
-                "titre": "ESRS E2",
+                "titre": "ESRS E2 - Pollution",
                 "code_esrs": "E2",
             },
         ],
         "phrases_social": [
             {
                 "nombre_phrases": 1,
-                "titre": "ESRS S3",
+                "titre": "ESRS S3 - Communautés affectées",
                 "code_esrs": "S3",
             },
         ],

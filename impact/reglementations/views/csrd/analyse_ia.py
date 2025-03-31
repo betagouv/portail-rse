@@ -21,6 +21,7 @@ from reglementations.models import DocumentAnalyseIA
 from reglementations.models import RapportCSRD
 from reglementations.views.csrd.csrd import contexte_d_etape
 from reglementations.views.csrd.csrd import xlsx_response
+from reglementations.views.csrd.csrd import normaliser_titre_esrs
 from reglementations.views.csrd.decorators import csrd_required
 from reglementations.views.csrd.decorators import document_required
 
@@ -164,13 +165,17 @@ def _ajoute_ligne_resultat_ia(worksheet, document, avec_nom_fichier, contrainte_
             ):
                 if avec_nom_fichier:
                     ligne = [
-                        esrs,
+                        normaliser_titre_esrs(esrs),
                         document.nom,
                         contenu["PAGES"],
                         contenu["TEXTS"],
                     ]
                 else:
-                    ligne = [esrs, contenu["PAGES"], contenu["TEXTS"]]
+                    ligne = [
+                        normaliser_titre_esrs(esrs),
+                        contenu["PAGES"],
+                        contenu["TEXTS"],
+                    ]
                 worksheet.append(ligne)
 
 

@@ -284,7 +284,7 @@ def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(client, cs
       "TEXTS": "A"
     }
   ],
-  "ESRS E2": [
+  "ESRS E2 : Pollution": [
     {
       "PAGES": 6,
       "TEXTS": "B"
@@ -312,13 +312,13 @@ def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(client, cs
     assert onglet["A1"].value == "ESRS"
     assert onglet["B1"].value == "PAGE"
     assert onglet["C1"].value == "PHRASE"
-    assert onglet["A2"].value == "ESRS E1"
+    assert onglet["A2"].value == "ESRS E1 - Changement climatique"
     assert onglet["B2"].value == 1
     assert onglet["C2"].value == "A"
-    assert onglet["A3"].value == "ESRS E2"
+    assert onglet["A3"].value == "ESRS E2 - Pollution"
     assert onglet["B3"].value == 6
     assert onglet["C3"].value == "B"
-    assert onglet["A4"].value == "ESRS E2"
+    assert onglet["A4"].value == "ESRS E2 - Pollution"
     assert onglet["B4"].value == 7
     assert onglet["C4"].value == "C"
     onglet = workbook["Source"]
@@ -396,10 +396,10 @@ def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_x
     assert onglet["B1"].value == "FICHIER"
     assert onglet["C1"].value == "PAGE"
     assert onglet["D1"].value == "PHRASE"
-    assert onglet["A2"].value == "ESRS E1"
+    assert onglet["A2"].value == "ESRS E1 - Changement climatique"
     assert onglet["C2"].value == 1
     assert onglet["D2"].value == "A"
-    assert onglet["A3"].value == "ESRS E2"
+    assert onglet["A3"].value == "ESRS E2 - Pollution"
     assert onglet["C3"].value == 6
     assert onglet["D3"].value == "B"
     onglet = workbook["Source"]
@@ -483,10 +483,10 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx(client, csrd):
     assert onglet["B1"].value == "FICHIER"
     assert onglet["C1"].value == "PAGE"
     assert onglet["D1"].value == "PHRASE"
-    assert onglet["A2"].value == "ESRS E2"
+    assert onglet["A2"].value == "ESRS E2 - Pollution"
     assert onglet["C2"].value == 4
     assert onglet["D2"].value == "B"
-    assert onglet["A3"].value == "ESRS E2"
+    assert onglet["A3"].value == "ESRS E2 - Pollution"
     assert onglet["C3"].value == 6
     assert onglet["D3"].value == "C"
     onglet = workbook["Source"]
