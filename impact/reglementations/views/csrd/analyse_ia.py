@@ -19,8 +19,8 @@ from api.exceptions import APIError
 from reglementations.forms.csrd import DocumentAnalyseIAForm
 from reglementations.models import DocumentAnalyseIA
 from reglementations.models import RapportCSRD
-from reglementations.views.csrd.csrd import _xlsx_response
 from reglementations.views.csrd.csrd import contexte_d_etape
+from reglementations.views.csrd.csrd import xlsx_response
 from reglementations.views.csrd.decorators import csrd_required
 from reglementations.views.csrd.decorators import document_required
 
@@ -152,7 +152,7 @@ def resultat_IA_xlsx(request, id_document):
     worksheet["C1"] = "PHRASE"
     _ajoute_ligne_resultat_ia(worksheet, document, False, None)
     _ajoute_source(workbook)
-    return _xlsx_response(workbook, "resultats.xlsx")
+    return xlsx_response(workbook, "resultats.xlsx")
 
 
 def _ajoute_ligne_resultat_ia(worksheet, document, avec_nom_fichier, contrainte_esrs):
@@ -194,7 +194,7 @@ def synthese_resultat_IA_xlsx(request, csrd_id):
     for document in csrd.documents_analyses:
         _ajoute_ligne_resultat_ia(worksheet, document, True, None)
     _ajoute_source(workbook)
-    return _xlsx_response(workbook, "synthese_resultats.xlsx")
+    return xlsx_response(workbook, "synthese_resultats.xlsx")
 
 
 @login_required
@@ -212,4 +212,4 @@ def synthese_resultat_IA_par_ESRS_xlsx(request, csrd_id, code_esrs):
     for document in csrd.documents_analyses:
         _ajoute_ligne_resultat_ia(worksheet, document, True, code_esrs)
     _ajoute_source(workbook)
-    return _xlsx_response(workbook, f"resultats_ESRS_{code_esrs}.xlsx")
+    return xlsx_response(workbook, f"resultats_ESRS_{code_esrs}.xlsx")

@@ -744,10 +744,10 @@ def _build_xlsx(enjeux, csrd=None, materiels=False):
                 numero_ligne += 1
 
     filename = "enjeux_csrd.xlsx" if not materiels else "enjeux_csrd_materiels.xlsx"
-    return _xlsx_response(workbook, filename)
+    return xlsx_response(workbook, filename)
 
 
-def _xlsx_response(workbook, filename):
+def xlsx_response(workbook, filename):
     with NamedTemporaryFile() as tmp:
         workbook.save(tmp.name)
         tmp.seek(0)
@@ -777,7 +777,7 @@ def datapoints_xlsx(request, _, csrd=None):
         if materiel
         else "datapoints_csrd_non_materiels.xlsx"
     )
-    return _xlsx_response(workbook, filename)
+    return xlsx_response(workbook, filename)
 
 
 def _esrs_materiel_a_supprimer(csrd: RapportCSRD, materiel: bool):
