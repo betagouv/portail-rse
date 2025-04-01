@@ -189,17 +189,15 @@ def _ajoute_source(workbook):
 @csrd_required
 def synthese_resultat_IA_xlsx(request, csrd_id):
     csrd = RapportCSRD.objects.get(id=csrd_id)
-
-    workbook = Workbook()
-    worksheet = workbook.active
-    worksheet.title = "Phrases relatives aux ESRS"
+    chemin_xlsx = "impact/reglementations/views/csrd/xlsx/template_synthese_ESG.xlsx"
+    workbook = load_workbook(chemin_xlsx)
+    worksheet = workbook["Phrases relatives aux ESRS"]
     worksheet["A1"] = "ESRS"
     worksheet["B1"] = "FICHIER"
     worksheet["C1"] = "PAGE"
     worksheet["D1"] = "PHRASE"
     for document in csrd.documents_analyses:
         _ajoute_ligne_resultat_ia(worksheet, document, True, None)
-    _ajoute_source(workbook)
     return xlsx_response(workbook, "synthese_resultats.xlsx")
 
 
