@@ -478,7 +478,9 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx(client, csrd):
         == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
-    onglet = workbook.active
+    onglet = workbook[">>>"]
+    assert onglet["C14"].value == "ESRS E2 - Pollution"
+    onglet = workbook["Phrases relatives aux ESRS"]
     assert onglet["A1"].value == "ESRS"
     assert onglet["B1"].value == "FICHIER"
     assert onglet["C1"].value == "PAGE"
@@ -489,8 +491,6 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx(client, csrd):
     assert onglet["A3"].value == "ESRS E2 - Pollution"
     assert onglet["C3"].value == 6
     assert onglet["D3"].value == "C"
-    onglet = workbook["Source"]
-    assert onglet["A1"].value == "généré par https://portail-rse.beta.gouv.fr"
 
 
 def test_telechargement_des_resultats_IA__par_ESRS_d_un_rapport_csrd_inexistant(
