@@ -8,6 +8,7 @@ from .enjeux import selection_enjeux
 from .enjeux import suppression_enjeu
 from .enjeux_materiels import liste_enjeux_materiels
 from .enjeux_materiels import selection_enjeux_materiels
+from .fichier_ia import statut_analyse_ia
 from .rapport import selection_rapport
 from .rapport import soumettre_lien_rapport
 from reglementations.views.csrd.fragments.enjeux_materiels import (
@@ -70,5 +71,10 @@ urlpatterns = [
         "csrd/fragments/rapport/soumettre_lien_rapport/<int:csrd_id>",
         soumettre_lien_rapport,
         name="soumettre_lien_rapport",
+    ),
+    path(
+        "csrd/fragments/fichier_ia/<int:id_document>",
+        statut_analyse_ia,
+        name="statut_analyse_ia",
     ),
 ]
