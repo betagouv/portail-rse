@@ -12,6 +12,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from openpyxl import load_workbook
 from openpyxl import Workbook
 
 from api import analyse_ia
@@ -206,15 +207,17 @@ def synthese_resultat_IA_xlsx(request, csrd_id):
 @csrd_required
 def synthese_resultat_IA_par_ESRS_xlsx(request, csrd_id, code_esrs):
     csrd = RapportCSRD.objects.get(id=csrd_id)
-
-    workbook = Workbook()
-    worksheet = workbook.active
-    worksheet.title = "Phrases relatives aux ESRS"
+    chemin_xlsx = (
+        f"impact/reglementations/views/csrd/xlsx/template_synthese_{code_esrs[0]}.xlsx"
+    )
+    workbook = load_workbook(chemin_xlsx)
+    worksheet = workbook[">>>"]
+    worksheet["C14"] = normalise_titre_esrs(f"ESRS {code_esrs}")
+    worksheet = workbook["Phrases relatives aux ESRS"]
     worksheet["A1"] = "ESRS"
     worksheet["B1"] = "FICHIER"
     worksheet["C1"] = "PAGE"
     worksheet["D1"] = "PHRASE"
     for document in csrd.documents_analyses:
         _ajoute_ligne_resultat_ia(worksheet, document, True, code_esrs)
-    _ajoute_source(workbook)
     return xlsx_response(workbook, f"resultats_ESRS_{code_esrs}.xlsx")
