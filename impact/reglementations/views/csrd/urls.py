@@ -12,26 +12,8 @@ from reglementations.views.csrd.csrd import datapoints_xlsx
 from reglementations.views.csrd.csrd import enjeux_materiels_xlsx
 from reglementations.views.csrd.csrd import enjeux_xlsx
 from reglementations.views.csrd.csrd import gestion_csrd
-from reglementations.views.csrd.csrd import guide_csrd
 
 urlpatterns = [
-    path("csrd", guide_csrd, name="csrd"),
-    path("csrd/guide/<str:siren>", guide_csrd, name="csrd"),
-    path(
-        "csrd/guide/<str:siren>/phase-<int:phase>",
-        guide_csrd,
-        name="csrd_phase",
-    ),
-    path(
-        "csrd/guide/<str:siren>/phase-<int:phase>/etape-<int:etape>",
-        guide_csrd,
-        name="csrd_etape",
-    ),
-    path(
-        "csrd/guide/<str:siren>/phase-<int:phase>/etape-<int:etape>-<int:sous_etape>",
-        guide_csrd,
-        name="csrd_sous_etape",
-    ),
     path(
         "csrd/<str:siren>/etape-<str:id_etape>",
         gestion_csrd,
