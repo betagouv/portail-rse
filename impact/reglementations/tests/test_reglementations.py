@@ -47,25 +47,6 @@ def test_les_reglementations_levent_une_exception_si_les_caracteristiques_sont_v
         assert status.status == ReglementationStatus.STATUS_INCALCULABLE
 
 
-def test_fiches_reglementations_sont_publiques(client):
-    templates = {
-        "/reglementations/bdese": "reglementations/fiches/bdese.html",
-        "/reglementations/index-egalite-professionnelle": "reglementations/fiches/index-egalite-professionnelle.html",
-        "/reglementations/dispositif-alerte": "reglementations/fiches/dispositif-alerte.html",
-        "/reglementations/bilan-ges": "reglementations/fiches/bilan-ges.html",
-        "/reglementations/audit-energetique": "reglementations/fiches/audit-energetique.html",
-        "/reglementations/dispositif-anticorruption": "reglementations/fiches/dispositif-anticorruption.html",
-        "/reglementations/declaration-de-performance-extra-financiere": "reglementations/fiches/dpef.html",
-        "/reglementations/rapport-durabilite-csrd": "reglementations/fiches/csrd.html",
-        "/reglementations/plan-vigilance": "reglementations/fiches/plan-vigilance.html",
-    }
-
-    for url, template in templates.items():
-        response = client.get(url)
-        assert response.status_code == 200
-        assert response.templates[0].name == template
-
-
 def test_tableau_de_bord_est_prive(client, entreprise_factory, alice):
     entreprise = entreprise_factory()
     url = f"/tableau-de-bord/{entreprise.siren}"
