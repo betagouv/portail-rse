@@ -3,7 +3,6 @@ from datetime import datetime
 from io import BytesIO
 
 import pytest
-from django.contrib.messages import WARNING
 from django.urls import reverse
 from openpyxl import load_workbook
 from pytest_django.asserts import assertTemplateUsed
@@ -14,116 +13,6 @@ from reglementations.models.csrd import DocumentAnalyseIA
 from reglementations.models.csrd import Enjeu
 from reglementations.models.csrd import RapportCSRD
 from reglementations.views.csrd.csrd import grouper_phrases_par_esrs
-
-
-def test_l_espace_csrd_n_est_pas_public(client, alice, entreprise_factory):
-    entreprise = entreprise_factory()
-
-    url = f"/csrd/guide/{entreprise.siren}"
-    response = client.get(url)
-
-    assert response.status_code == 302
-    connexion_url = reverse("users:login")
-    assert response.url == f"{connexion_url}?next={url}"
-
-    client.force_login(alice)
-    response = client.get(url)
-
-    assert response.status_code == 403
-
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
-    response = client.get(url)
-
-    assert response.status_code == 200
-    assert response.templates[0].name == "reglementations/espace_csrd/index.html"
-
-
-def test_espace_csrd_sans_siren_redirige_vers_celui_de_l_entreprise_courante(
-    client, alice, entreprise_factory
-):
-    entreprise = entreprise_factory()
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
-    client.force_login(alice)
-
-    url = "/csrd"
-    response = client.get(url)
-
-    assert response.status_code == 302
-    assert response.url == f"/csrd/guide/{entreprise.siren}"
-
-
-def test_espace_csrd_sans_siren_et_sans_entreprise(client, alice):
-    # Cas limite où un utilisateur n'est rattaché à aucune entreprise
-    client.force_login(alice)
-
-    url = "/csrd"
-    response = client.get(url, follow=True)
-
-    assert response.status_code == 200
-    assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
-    messages = list(response.context["messages"])
-    assert messages[0].level == WARNING
-    assert (
-        messages[0].message
-        == "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à l'espace Rapport de Durabilité"
-    )
-
-
-def test_espace_csrd_avec_siren_inexistant(client, alice):
-    client.force_login(alice)
-
-    url = "/csrd/yolo"
-    response = client.get(url)
-
-    assert response.status_code == 404
-
-
-@pytest.mark.parametrize(
-    "etape",
-    [
-        "/csrd/guide/{siren}/phase-1",
-        "/csrd/guide/{siren}/phase-1/etape-1",
-        "/csrd/guide/{siren}/phase-1/etape-1-1",
-        "/csrd/guide/{siren}/phase-1/etape-1-1",
-        "/csrd/guide/{siren}/phase-1/etape-1-3",
-        "/csrd/guide/{siren}/phase-1/etape-2",
-        "/csrd/guide/{siren}/phase-1/etape-2-1",
-        "/csrd/guide/{siren}/phase-1/etape-2-2",
-        "/csrd/guide/{siren}/phase-1/etape-3",
-        "/csrd/guide/{siren}/phase-1/etape-3-1",
-        "/csrd/guide/{siren}/phase-1/etape-3-2",
-        "/csrd/guide/{siren}/phase-1/etape-3-3",
-        "/csrd/guide/{siren}/phase-2",
-        "/csrd/guide/{siren}/phase-2/etape-1",
-        "/csrd/guide/{siren}/phase-3",
-        "/csrd/guide/{siren}/phase-3/etape-1",
-    ],
-)
-def test_guide_de_la_csrd_par_etape(etape, client, alice, entreprise_factory):
-    entreprise = entreprise_factory()
-    url = etape.format(siren=entreprise.siren)
-
-    response = client.get(url)
-
-    assert response.status_code == 302
-    connexion_url = reverse("users:login")
-    assert response.url == f"{connexion_url}?next={url}"
-
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
-    client.force_login(alice)
-    response = client.get(url)
-
-    assert response.status_code == 200
-    context = response.context
-    assert context["entreprise"] == entreprise
-    assert "phase" in context
-    assert "etape" in context
-    assert "sous_etape" in context
-
-    etape_inexistante = f"/csrd/guide/{entreprise.siren}/phase-4/etape-1"
-    response = client.get(etape_inexistante)
-
-    assert response.status_code == 404
 
 
 @pytest.mark.parametrize("etape", EtapeCSRD.ETAPES_VALIDABLES)

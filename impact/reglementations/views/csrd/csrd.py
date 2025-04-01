@@ -487,48 +487,6 @@ def rapport_csrd(user, entreprise, annee):
 
 
 @login_required
-def guide_csrd(request, siren=None, phase=0, etape=0, sous_etape=0):
-    if not siren:
-        entreprise = get_current_entreprise(request)
-        if not entreprise:
-            messages.warning(
-                request,
-                "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à l'espace Rapport de Durabilité",
-            )
-            return redirect("entreprises:entreprises")
-        return redirect("reglementations:csrd", siren=entreprise.siren)
-
-    entreprise = get_object_or_404(Entreprise, siren=siren)
-    if not is_user_attached_to_entreprise(request.user, entreprise):
-        raise PermissionDenied
-
-    if sous_etape:
-        template_name = (
-            f"reglementations/espace_csrd/phase{phase}_etape{etape}_{sous_etape}.html"
-        )
-    elif etape:
-        template_name = f"reglementations/espace_csrd/phase{phase}_etape{etape}.html"
-    elif phase:
-        template_name = f"reglementations/espace_csrd/phase{phase}.html"
-    else:
-        template_name = "reglementations/espace_csrd/index.html"
-
-    try:
-        template = get_template(template_name)
-    except TemplateDoesNotExist:
-        raise Http404
-
-    context = {
-        "entreprise": entreprise,
-        "phase": phase,
-        "etape": etape,
-        "sous_etape": sous_etape,
-    }
-
-    return HttpResponse(template.render(context, request))
-
-
-@login_required
 def gestion_csrd(request, siren=None, id_etape="introduction"):
     if not siren:
         entreprise = get_current_entreprise(request)
