@@ -20,7 +20,7 @@ from csp.constants import UNSAFE_INLINE
 from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -31,7 +31,9 @@ SECRET_KEY = os.environ["SECRET_KEY"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "0.0.0.0,127.0.0.1").split(",")
+ROOT_URLCONF = "impact.urls"
+WSGI_APPLICATION = "impact.wsgi.application"
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "0.0.0.0,127.0.0.1").split(",")
 
 # Application definition
 INSTALLED_APPS = [
@@ -53,11 +55,9 @@ INSTALLED_APPS = [
     "django_vite",
     "anymail",
     "corsheaders",
-    "django_hosts",
 ]
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
-    "django_hosts.middleware.HostsRequestMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -68,12 +68,10 @@ MIDDLEWARE = [
     "utils.middlewares.ExtendUserMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django_hosts.middleware.HostsResponseMiddleware",
     # middlewares touchant à l'utilisation d'HTMX
     "utils.middlewares.HTMXRequestMiddleware",
     "utils.middlewares.HTMXRetargetMiddleware",
 ]
-ROOT_URLCONF = "impact.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -91,7 +89,6 @@ TEMPLATES = [
         },
     },
 ]
-WSGI_APPLICATION = "impact.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -205,58 +202,17 @@ STATICFILES_DIRS = (Path(BASE_DIR, "static"),)
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Email
-BREVO_API_KEY = os.getenv("BREVO_API_KEY")
-EMAIL_BACKEND = (
-    "anymail.backends.brevo.EmailBackend"
-    if BREVO_API_KEY
-    else "django.core.mail.backends.console.EmailBackend"
-)
-ANYMAIL = {"BREVO_API_KEY": BREVO_API_KEY}
-DEFAULT_FROM_EMAIL = "ne-pas-repondre@portail-rse.beta.gouv.fr"
-CONTACT_EMAIL = os.getenv("CONTACT_EMAIL")
-BREVO_CONFIRMATION_EMAIL_TEMPLATE = 1
-BREVO_RESULTAT_ANALYSE_IA_TEMPLATE = 65
-
 # Users
 AUTH_USER_MODEL = "users.User"
 LOGIN_URL = "/connexion"
 LOGIN_REDIRECT_URL = "/tableau-de-bord"
 LOGOUT_REDIRECT_URL = "/"
 
-# Sentry
-SENTRY_DSN = os.getenv("SENTRY_DSN")
-SENTRY_ENV = os.getenv("SENTRY_ENV", "production")
-
-if SENTRY_DSN:
-    import sentry_sdk
-    from sentry_sdk.integrations.django import DjangoIntegration
-
-    sentry_sdk.init(
-        dsn=SENTRY_DSN,
-        integrations=[DjangoIntegration()],
-        # Set traces_sample_rate to 1.0 to capture 100%
-        # of transactions for performance monitoring.
-        # We recommend adjusting this value in production.
-        traces_sample_rate=0.1,
-        # If you wish to associate users to errors (assuming you are using
-        # django.contrib.auth) you may enable sending PII data.
-        send_default_pii=True,
-        environment=SENTRY_ENV,
-    )
-
 # API
 API_SIRENE_KEY = os.getenv("API_SIRENE_KEY")
 API_ANALYSE_IA_BASE_URL = os.getenv("API_ANALYSE_IA_BASE_URL")
 API_ANALYSE_IA_TOKEN = os.getenv("API_ANALYSE_IA_TOKEN", "")
 
-# django-hosts :
-# https://django-hosts.readthedocs.io/en/latest/
-ROOT_HOSTCONF = "impact.hosts"
-DEFAULT_HOST = "site"
-
-# CNAME of the admin site
-ADMIN_CNAME = os.getenv("ADMIN_CNAME", "admin")
 # Matomo :
 # Matomo can be disabled for DEV environments,
 # and needs a special CSP configuration.
@@ -325,30 +281,6 @@ CSP_CONFIGURATION = {
     },
 }
 
-# Allows CSP or CSP report-only to run correctly if enabled on a dev environment
-# by adding connections to Svelte websockets and local server.
-# Note: Sentry must have been properly setup before this section.
-if DEBUG:
-    CSP_CONFIGURATION["DIRECTIVES"] = {
-        k: v + ["ws:", "localhost:*"]
-        for k, v in CSP_CONFIGURATION["DIRECTIVES"].items()
-    }
-
-# Report URI : Sentry will log CSP violations to this URI if set
-if SENTRY_SECURITY_HEADER_ENDPOINT := os.getenv("SENTRY_SECURITY_HEADER_ENDPOINT", ""):
-    # `report-uri` directive is deprecated in favor of `report-to`
-    # however django-csp CSP internal building is using it.
-    # According to Sentry documentation, the report URI must pass a `sentry_environment`
-    # request parameter for sorting-out CSP reports.
-    # See : https://sentry.incubateur.net/organizations/betagouv/issues/118719/?project=75&query=is%3Aunresolved&referrer=issue-stream&statsPeriod=24h&stream_index=0
-    CSP_CONFIGURATION["DIRECTIVES"]["report-uri"] = [
-        SENTRY_SECURITY_HEADER_ENDPOINT + f"&sentry_environment={SENTRY_ENV}"
-    ]
-    # 'report-to' is a reference to a key of the map defined in the `Report-to` HTTP header
-    # for future compatibility, but is currently *inactive* for most browsers by now (09.2024).
-    # Uncomment when widely supported.
-    # (see Sentry setup for value)
-    # CSP_CONFIGURATION["DIRECTIVES"]["report-to"] = "csp-endpoint"
 
 # Either CSP or CSP report-only is enabled, not both
 match CSP_MODE:
@@ -369,18 +301,6 @@ if CSP_MODE != "disabled":
     INSTALLED_APPS.append("csp")
     MIDDLEWARE.append("csp.middleware.CSPMiddleware")
 
-if DEBUG_TOOLBAR := os.getenv("DEBUG_TOOLBAR"):
-    INSTALLED_APPS.append("debug_toolbar")
-    INTERNAL_IPS = ["127.0.0.1"]
-
-    # DebugToolbarMiddleware doit être après HostsRequestMiddleware
-    MIDDLEWARE.insert(
-        MIDDLEWARE.index(
-            "django_hosts.middleware.HostsRequestMiddleware",
-        )
-        + 1,
-        "debug_toolbar.middleware.DebugToolbarMiddleware",
-    )
 
 # Sites-faciles:
 # URL of sites-faciles instance for Portail RSE
