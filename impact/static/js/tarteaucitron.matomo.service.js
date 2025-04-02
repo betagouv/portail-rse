@@ -85,7 +85,11 @@ tarteaucitron.services.matomocloudbeta = {
 
       // make Matomo cookie accessible by getting tracker
       Matomo.getTracker();
-      Matomo.HeatmapSessionRecording.enable();
+
+      // Matomo heatmap est optionnel et peut être désactivé par l'utilisateur (consentement)
+      if (Matomo.HeatmapSessionRecording) {
+        Matomo.HeatmapSessionRecording.enable();
+      }
 
       // looping through cookies
       var theCookies = document.cookie.split(";");
