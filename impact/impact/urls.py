@@ -18,9 +18,6 @@ from django.conf.urls.static import static
 from django.urls import include
 from django.urls import path
 
-if settings.DEBUG_TOOLBAR:
-    from debug_toolbar.toolbar import debug_toolbar_urls
-
 
 def trigger_error(request):
     division_by_zero = 1 / 0  # noqa
@@ -40,5 +37,16 @@ urlpatterns = (
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 )
 
-if settings.DEBUG_TOOLBAR:
-    urlpatterns.extend(debug_toolbar_urls())
+try:
+    if settings.DEBUG_TOOLBAR:
+        from debug_toolbar.toolbar import debug_toolbar_urls
+
+        urlpatterns.extend(debug_toolbar_urls())
+except Exception:
+    pass
+
+if settings.DEBUG:
+    # l'URL d'admin est accessible pour l'environnement de dev
+    from django.contrib import admin
+
+    urlpatterns.append(path("", admin.site.urls))
