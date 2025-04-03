@@ -74,14 +74,6 @@ def contact(request):
     return render(request, "public/contact.html", {"form": form})
 
 
-def reglementations(request):
-    return render(
-        request,
-        "public/reglementations.html",
-        {"reglementations": REGLEMENTATIONS},
-    )
-
-
 def simulation(request):
     simulation_form = SimulationForm(request.POST or None)
     if request.POST:

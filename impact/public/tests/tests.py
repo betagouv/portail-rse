@@ -5,7 +5,6 @@ from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed
 
 from habilitations.models import attach_user_to_entreprise
-from reglementations.views import REGLEMENTATIONS
 
 
 def test_page_index_pour_un_visiteur_anonyme(client):
@@ -156,19 +155,6 @@ def test_page_stats(client):
     assert response.status_code == 200
     content = response.content.decode("utf-8")
     assert "<!-- page stats -->" in content
-
-
-def test_page_publique_des_reglementations(client):
-    response = client.get("/reglementations")
-
-    assert response.status_code == 200
-
-    content = response.content.decode("utf-8")
-    context = response.context
-    assert not context.get("entreprise")
-    assert context["reglementations"] == REGLEMENTATIONS
-    for REGLEMENTATION in REGLEMENTATIONS:
-        assert REGLEMENTATION.title in content
 
 
 def test_fragments_entete_de_page_si_visiteur_non_connecté(client):
