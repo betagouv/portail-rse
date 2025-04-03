@@ -13,7 +13,7 @@ from reglementations.enums import EtapeCSRD
 from reglementations.models.csrd import DocumentAnalyseIA
 from reglementations.models.csrd import Enjeu
 from reglementations.models.csrd import RapportCSRD
-from reglementations.views.csrd.csrd import grouper_phrases_par_esrs
+from reglementations.views.csrd.csrd import resume_resultats_analyse_ia
 
 
 def test_l_espace_csrd_n_est_pas_public(client, alice, entreprise_factory):
@@ -176,7 +176,7 @@ def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
     assert len(rapport_csrd.enjeux.all()) == NOMBRE_ENJEUX
 
 
-def test_grouper_phrases_par_esrs(client, csrd):
+def test_resume_resultats_analyse_ia(client, csrd):
     DocumentAnalyseIA.objects.create(
         rapport_csrd=csrd,
         etat="success",
@@ -227,7 +227,7 @@ def test_grouper_phrases_par_esrs(client, csrd):
         rapport_csrd=csrd, etat="error", resultat_json=None
     )
 
-    stats = grouper_phrases_par_esrs(csrd)
+    stats = resume_resultats_analyse_ia(csrd)
 
     assert stats == {
         "phrases_environnement": [

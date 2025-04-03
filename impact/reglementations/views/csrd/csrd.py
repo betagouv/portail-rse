@@ -625,7 +625,7 @@ def contexte_d_etape(id_etape, csrd, form=None):
             context |= {
                 "form": form or DocumentAnalyseIAForm(),
                 "documents": csrd.documents,
-                "stats_synthese": grouper_phrases_par_esrs(csrd),
+                "stats_synthese": resume_resultats_analyse_ia(csrd),
                 "onglet_resultats_actif": csrd.documents_analyses.exists()
                 and not csrd.documents_non_analyses.exists(),
             }
@@ -635,7 +635,7 @@ def contexte_d_etape(id_etape, csrd, form=None):
     return context
 
 
-def grouper_phrases_par_esrs(csrd):
+def resume_resultats_analyse_ia(csrd):
     resultat = {
         "phrases_environnement": {},
         "phrases_social": {},
@@ -654,7 +654,7 @@ def grouper_phrases_par_esrs(csrd):
                 type_esg = "phrases_social"
             elif esrs.startswith("ESRS G"):
                 type_esg = "phrases_gouvernance"
-            titre_esrs = normaliser_titre_esrs(esrs)
+            titre_esrs = normalise_titre_esrs(esrs)
 
             if titre_esrs in resultat[type_esg]:
                 resultat[type_esg][titre_esrs]["nombre_phrases"] += len(phrases)
@@ -678,7 +678,7 @@ def grouper_phrases_par_esrs(csrd):
     return resultat
 
 
-def normaliser_titre_esrs(titre_esrs):
+def normalise_titre_esrs(titre_esrs):
     underscored_esrs = titre_esrs[:7].replace(" ", "_")
     return TitreESRS[underscored_esrs].value
 
