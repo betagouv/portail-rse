@@ -15,7 +15,7 @@
         <link rel="icon" href="{% static 'dsfr/favicon/favicon.svg' %}" type="image/svg+xml">
         <link rel="shortcut icon" href="{% static 'dsfr/favicon/favicon.ico' %}" type="image/x-icon"><!-- 32×32 -->
         <link rel="manifest" href="{% static 'dsfr/favicon/manifest.webmanifest' %}" crossorigin="use-credentials">
-        <link rel="canonical" href="{{ request.scheme }}{{ request.get_host }}{{ request.path }}">
+        <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
 
         <title>{% block title %}Portail RSE{% endblock %}</title>
 
