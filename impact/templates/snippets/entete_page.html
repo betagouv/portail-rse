@@ -76,8 +76,7 @@
                 </ul>
                 <ul class="fr-nav__list">
                     <li class="fr-nav__item">
-                        {% absolute_url 'reglementations' as url_page %}
-                        <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Réglementations RSE</a>
+                        <a class="fr-nav__link" href="{{ sites_faciles_base_url }}/fiches-reglementaires" target="_self"{% if request.path == "/fiches-reglementaires" %} aria-current="page"{% endif %}>Réglementations RSE</a>
                     </li>
                     {% if user.entreprise_set.count >= 2 %}
                         <li class="fr-nav__item">
