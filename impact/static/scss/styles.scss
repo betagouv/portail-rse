@@ -25,28 +25,6 @@
 }
 
 
-.background-tag-gouvernance {
-    background-color: var(--background-contrast-blue-ecume);
-}
-.background-tag-social {
-    background-color: var(--background-contrast-purple-glycine);
-    .fr-tile {
-    box-shadow: inset 0 0 0 0px var(--border-default-grey),inset 0 -.25rem 0 0 var(--purple-glycine-main-494);
-    }
-}
-.background-tag-environnement {
-    background-color: var(--background-contrast-green-emeraude);
-    .fr-tile {
-    box-shadow: inset 0 0 0 0px var(--border-default-grey),inset 0 -.25rem 0 0 var(--green-emeraude-main-632);
-    }
-}
-.background-tag-durabilite {
-    background-color: var(--background-contrast-yellow-moutarde);
-    .fr-tile {
-    box-shadow: inset 0 0 0 0px var(--border-default-grey),inset 0 -.25rem 0 0 var(--yellow-moutarde-main-679);
-    }
-}
-
 /* Texte d'erreur, sans l'icône d'erreur à gauche */
 .text-error-color-no-decoration {
         color: var(--text-default-error);
@@ -88,12 +66,6 @@
     padding: .5rem 1rem;
     width: -moz-fit-content;
     width: fit-content;
-}
-
-/* Overriding dsfr content media class & css so we can display links in media captions */
-
-.fr-content-media__caption {
-    display: inline-block;
 }
 
 /* colored bgs */
@@ -347,20 +319,6 @@
     }
 }
 
-/* fiches réglementation */
-.fiche-tuiles {
-    .fr-tile__body {
-        justify-content: start;
-    }
-    .fr-tile ol li,.fr-tile__detail, .fr-tile ul li {
-        text-align: left;
-        display: block;
-    }
-    .fr-tile__detail {
-        font-size: 1rem;
-    }
-}
-
 /* espace CSRD */
 
 .fr-accordion__btn {
@@ -369,56 +327,40 @@
     }
 }
 
-/* sticky menu */
-#csrd-menu {
+.csrd-list {
+    padding: 0px;
+    width: 100%;
+    &.csrd-list--bold {
+        font-weight: bold;
+    }
+    li {
+        list-style: none;
+        padding-left: 2rem;
+        position: relative;
+        margin-bottom: 1rem;
+        a {
+            color: var(--text-active-blue-france);
+        }
+        &::before {
+            position: absolute;
+            background-image: url("../dsfr/artwork/pictograms/system/success.svg");
+            background-position: center;
+            background-size: contain;
+            width: 20px;
+            height: 20px;
+            left:0px;
+            content:" ";
+            display: inline-block;
+        }
+    }
+}
+
+.csrd-action {
     position: sticky;
-    top:2rem;
-    margin-top:2rem;
-    margin-left: 2rem;
-    left:2rem;
-    background: var(--background-default-grey);
-    z-index: 80;
-}
-.fr-sidemenu--sticky-full-height {
-    max-width: 388px;
-    position: fixed;
+    z-index:40;
+    bottom: 0px;
+    width: 100%;
     background-color: var(--background-default-grey);
-    z-index: 999;
-}
-@media screen and (max-width: 766px) {
-    .fr-sidemenu--sticky-full-height {
-        max-width: 100%;
-        position: fixed;
-        background-color: var(--background-default-grey);
-        z-index: 999;
-        top:0px;
-        left: 0px;
-        right: 0px;
-        bottom:0px;
-    }
-}
-.sidemenu-csrd {
-    &.fr-sidemenu {
-        padding-right: 0px;
-        .sidemenu-border-top {
-            border-top: 1px solid var(--border-default-grey);
-        }
-        .fr-sidemenu__btn {
-            border-bottom: 1px solid var(--border-default-grey);
-        }
-        .fr-sidemenu__inner {
-            padding: 0px 1rem;
-        }
-        .fr-sidemenu__title {
-            color: var(--text-default-info);
-            font-size: 1.5rem;
-            padding:.75rem 1rem;
-            margin:0px;
-        }
-        .fr-sidemenu__link--disabled {
-            color: var(--dark-text-disabled-grey, #666); 
-        }
-    }
 }
 
 /* ESRS */
@@ -628,49 +570,8 @@
     
 }
 
-
-/* Table des matières */
-
-.csrd-list {
-    padding: 0px;
-    width: 100%;
-    &.csrd-list--bold {
-        font-weight: bold;
-    }
-    li {
-        list-style: none;
-        padding-left: 2rem;
-        position: relative;
-        margin-bottom: 1rem;
-        a {
-            color: var(--text-active-blue-france);
-        }
-        &::before {
-            position: absolute;
-            background-image: url("../dsfr/artwork/pictograms/system/success.svg");
-            background-position: center;
-            background-size: contain;
-            width: 20px;
-            height: 20px;
-            left:0px;
-            content:" ";
-            display: inline-block;
-        }
-    }
-}
-
 .fr-icon--blue {
     color:var(--text-active-blue-france);
-}
-
-/* phase */
-
-.csrd-action {
-    position: sticky;
-    z-index:40;
-    bottom: 0px;
-    width: 100%;
-    background-color: var(--background-default-grey);
 }
 
 /* dashboard */
