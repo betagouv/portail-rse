@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 from django.conf import settings
 from django.contrib import messages
@@ -189,7 +190,9 @@ def _ajoute_source(workbook):
 @csrd_required
 def synthese_resultat_IA_xlsx(request, csrd_id):
     csrd = RapportCSRD.objects.get(id=csrd_id)
-    chemin_xlsx = "impact/reglementations/views/csrd/xlsx/template_synthese_ESG.xlsx"
+    chemin_xlsx = Path(
+        settings.BASE_DIR, "reglementations/views/csrd/xlsx/template_synthese_ESG.xlsx"
+    )
     workbook = load_workbook(chemin_xlsx)
     worksheet = workbook["Phrases relatives aux ESRS"]
     worksheet["A1"] = "ESRS"
@@ -205,8 +208,9 @@ def synthese_resultat_IA_xlsx(request, csrd_id):
 @csrd_required
 def synthese_resultat_IA_par_ESRS_xlsx(request, csrd_id, code_esrs):
     csrd = RapportCSRD.objects.get(id=csrd_id)
-    chemin_xlsx = (
-        f"impact/reglementations/views/csrd/xlsx/template_synthese_{code_esrs[0]}.xlsx"
+    chemin_xlsx = Path(
+        settings.BASE_DIR,
+        f"reglementations/views/csrd/xlsx/template_synthese_{code_esrs[0]}.xlsx",
     )
     workbook = load_workbook(chemin_xlsx)
     worksheet = workbook[">>>"]
