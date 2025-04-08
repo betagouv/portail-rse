@@ -189,10 +189,6 @@ def synthese_resultat_IA_xlsx(request, csrd_id):
     )
     workbook = load_workbook(chemin_xlsx)
     worksheet = workbook["Phrases relatives aux ESRS"]
-    worksheet["A1"] = "ESRS"
-    worksheet["B1"] = "FICHIER"
-    worksheet["C1"] = "PAGE"
-    worksheet["D1"] = "PHRASE"
     for document in csrd.documents_analyses:
         _ajoute_ligne_resultat_ia(worksheet, document, True, None)
     return xlsx_response(workbook, "synthese_resultats.xlsx")
@@ -210,10 +206,6 @@ def synthese_resultat_IA_par_ESRS_xlsx(request, csrd_id, code_esrs):
     worksheet = workbook[">>>"]
     worksheet["C14"] = normalise_titre_esrs(f"ESRS {code_esrs}")
     worksheet = workbook["Phrases relatives aux ESRS"]
-    worksheet["A1"] = "ESRS"
-    worksheet["B1"] = "FICHIER"
-    worksheet["C1"] = "PAGE"
-    worksheet["D1"] = "PHRASE"
     for document in csrd.documents_analyses:
         _ajoute_ligne_resultat_ia(worksheet, document, True, code_esrs)
     return xlsx_response(workbook, f"resultats_ESRS_{code_esrs}.xlsx")
