@@ -396,9 +396,9 @@ def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_x
     assert onglet["C14"].value == "Synthèse générique"
     onglet = workbook["Phrases relatives aux ESRS"]
     assert onglet["A1"].value == "ESRS"
-    assert onglet["B1"].value == "FICHIER"
-    assert onglet["C1"].value == "PAGE"
-    assert onglet["D1"].value == "PHRASE"
+    assert onglet["B1"].value == "Fichier"
+    assert onglet["C1"].value == "Page"
+    assert onglet["D1"].value == "Phrase"
     assert onglet["A2"].value == "ESRS E1 - Changement climatique"
     assert onglet["C2"].value == 1
     assert onglet["D2"].value == "A"
@@ -483,9 +483,9 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx(client, csrd):
     assert onglet["C14"].value == "ESRS E2 - Pollution"
     onglet = workbook["Phrases relatives aux ESRS"]
     assert onglet["A1"].value == "ESRS"
-    assert onglet["B1"].value == "FICHIER"
-    assert onglet["C1"].value == "PAGE"
-    assert onglet["D1"].value == "PHRASE"
+    assert onglet["B1"].value == "Fichier"
+    assert onglet["C1"].value == "Page"
+    assert onglet["D1"].value == "Phrase"
     assert onglet["A2"].value == "ESRS E2 - Pollution"
     assert onglet["C2"].value == 4
     assert onglet["D2"].value == "B"
