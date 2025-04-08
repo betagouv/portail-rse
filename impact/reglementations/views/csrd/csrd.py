@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 from datetime import timedelta
 from functools import wraps
+from pathlib import Path
 from tempfile import NamedTemporaryFile
 
 from dateutil.relativedelta import relativedelta
@@ -732,7 +733,8 @@ def xlsx_response(workbook, filename):
 def datapoints_xlsx(request, _, csrd=None):
     materiel = request.GET.get("materiel", True) != "false"
     esrs_a_supprimer = _esrs_materiel_a_supprimer(csrd, materiel)
-    workbook = load_workbook("impact/static/CSRD/ESRS_Data_Points_EFRAG.xlsx")
+    chemin_xlsx = Path(settings.BASE_DIR, "static/CSRD/ESRS_Data_Points_EFRAG.xlsx")
+    workbook = load_workbook(chemin_xlsx)
     for esrs in esrs_a_supprimer:
         titre_onglet = esrs.replace("_", " ")
         workbook.remove(workbook[titre_onglet])
