@@ -14,7 +14,6 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from openpyxl import load_workbook
-from openpyxl import Workbook
 
 from api import analyse_ia
 from api.exceptions import APIError
@@ -147,14 +146,14 @@ def _envoi_resultat_ia_email(request, document):
 def resultat_IA_xlsx(request, id_document):
     document = DocumentAnalyseIA.objects.get(id=id_document)
 
-    workbook = Workbook()
-    worksheet = workbook.active
-    worksheet.title = "Phrases relatives aux ESRS"
-    worksheet["A1"] = "ESRS"
-    worksheet["B1"] = "PAGE"
-    worksheet["C1"] = "PHRASE"
-    _ajoute_ligne_resultat_ia(worksheet, document, False, None)
-    _ajoute_source(workbook)
+    chemin_xlsx = Path(
+        settings.BASE_DIR, "reglementations/views/csrd/xlsx/template_synthese_ESG.xlsx"
+    )
+    workbook = load_workbook(chemin_xlsx)
+    worksheet = workbook[">>>"]
+    worksheet["C14"] = ""
+    worksheet = workbook["Phrases relatives aux ESRS"]
+    _ajoute_ligne_resultat_ia(worksheet, document, True, None)
     return xlsx_response(workbook, "resultats.xlsx")
 
 
@@ -179,11 +178,6 @@ def _ajoute_ligne_resultat_ia(worksheet, document, avec_nom_fichier, contrainte_
                         contenu["TEXTS"],
                     ]
                 worksheet.append(ligne)
-
-
-def _ajoute_source(workbook):
-    worksheet_source = workbook.create_sheet("Source")
-    worksheet_source["A1"] = "généré par https://portail-rse.beta.gouv.fr"
 
 
 @login_required

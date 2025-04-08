@@ -308,21 +308,22 @@ def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(client, cs
         == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
-    onglet = workbook.active
+    onglet = workbook[">>>"]
+    assert not onglet["C14"].value
+    onglet = workbook["Phrases relatives aux ESRS"]
     assert onglet["A1"].value == "ESRS"
-    assert onglet["B1"].value == "PAGE"
-    assert onglet["C1"].value == "PHRASE"
+    assert onglet["B1"].value == "Fichier"
+    assert onglet["C1"].value == "Page"
+    assert onglet["D1"].value == "Phrase"
     assert onglet["A2"].value == "ESRS E1 - Changement climatique"
-    assert onglet["B2"].value == 1
-    assert onglet["C2"].value == "A"
+    assert onglet["C2"].value == 1
+    assert onglet["D2"].value == "A"
     assert onglet["A3"].value == "ESRS E2 - Pollution"
-    assert onglet["B3"].value == 6
-    assert onglet["C3"].value == "B"
+    assert onglet["C3"].value == 6
+    assert onglet["D3"].value == "B"
     assert onglet["A4"].value == "ESRS E2 - Pollution"
-    assert onglet["B4"].value == 7
-    assert onglet["C4"].value == "C"
-    onglet = workbook["Source"]
-    assert onglet["A1"].value == "généré par https://portail-rse.beta.gouv.fr"
+    assert onglet["C4"].value == 7
+    assert onglet["D4"].value == "C"
 
 
 def test_telechargement_des_resultats_IA_d_un_document_inexistant(client, alice):
