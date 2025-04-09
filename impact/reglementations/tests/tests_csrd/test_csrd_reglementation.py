@@ -11,7 +11,7 @@ from conftest import CODE_SAS
 from conftest import CODE_SCA
 from conftest import CODE_SE
 from entreprises.models import CaracteristiquesAnnuelles
-from habilitations.models import attach_user_to_entreprise
+from habilitations.models import Habilitation
 from reglementations.enums import ThemeESRS
 from reglementations.enums import TitreESRS
 from reglementations.views.base import ReglementationStatus
@@ -477,6 +477,7 @@ def test_entreprise_non_cotee_CA_et_effectif_superieurs_aux_seuils_grande_entrep
     "effectif",
     [
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
@@ -1229,7 +1230,7 @@ def test_calcule_etat_si_non_soumis(entreprise_factory, alice):
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = CSRDReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
@@ -1264,7 +1265,7 @@ def test_calcule_etat_si_soumis_en_2025_et_delegable(entreprise_factory, alice):
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = CSRDReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
@@ -1296,7 +1297,7 @@ def test_calcule_etat_si_soumis_en_2027_et_non_delegable(entreprise_factory, ali
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = CSRDReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
@@ -1330,7 +1331,7 @@ def test_calcule_etat_si_entreprise_hors_EEE_soumise_en_2029_sous_condition(
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = CSRDReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
@@ -2123,7 +2124,7 @@ def test_calcule_etat_si_soumis_en_2026_car_exercice_comptable_different_annee_c
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = CSRDReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice

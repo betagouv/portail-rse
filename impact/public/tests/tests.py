@@ -4,7 +4,7 @@ import pytest
 from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed
 
-from habilitations.models import attach_user_to_entreprise
+from habilitations.models import Habilitation
 
 
 def test_page_index_pour_un_visiteur_anonyme(client):
@@ -19,7 +19,7 @@ def test_redirection_de_la_page_index_vers_ses_reglementations_si_l_utilisateur_
     client, alice, entreprise_factory
 ):
     entreprise = entreprise_factory()
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
 
     response = client.get(
