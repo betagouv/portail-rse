@@ -8,7 +8,7 @@ from django.urls import reverse
 from openpyxl import load_workbook
 from pytest_django.asserts import assertTemplateUsed
 
-from habilitations.models import attach_user_to_entreprise
+from habilitations.models import Habilitation
 from reglementations.enums import EtapeCSRD
 from reglementations.models.csrd import DocumentAnalyseIA
 from reglementations.models.csrd import Enjeu
@@ -27,7 +27,7 @@ def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
     connexion_url = reverse("users:login")
     assert response.url == f"{connexion_url}?next={url}"
 
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
     response = client.get(url)
 
@@ -148,7 +148,7 @@ def test_resume_resultats_analyse_ia(client, csrd):
 
 def test_étape_inexistante_de_la_csrd(client, alice, entreprise_factory):
     entreprise = entreprise_factory()
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
     etape_inexistante = f"/csrd/{entreprise.siren}/etape-4"
 
@@ -163,7 +163,7 @@ ETAPES_ENREGISTRABLES = EtapeCSRD.ETAPES_VALIDABLES[:-1]
 @pytest.mark.parametrize("etape", ETAPES_ENREGISTRABLES)
 def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_factory):
     entreprise = entreprise_factory()
-    habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
+    habilitation = Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     RapportCSRD.objects.create(
         entreprise=entreprise,
         proprietaire=alice,
@@ -183,7 +183,7 @@ def test_enregistrement_de_l_étape_de_la_csrd_retourne_une_404_si_aucune_CSRD(
     etape, client, alice, entreprise_factory
 ):
     entreprise = entreprise_factory()
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
     url = "/csrd/{siren}/etape-{etape}".format(siren=entreprise.siren, etape=etape)
 
@@ -197,7 +197,7 @@ def test_enregistrement_de_l_étape_de_la_csrd_retourne_une_404_si_aucune_CSRD(
 
 
 def test_visualisation_des_enjeux(client, alice, entreprise_non_qualifiee):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
     csrd = RapportCSRD.objects.create(
         proprietaire=alice,
         entreprise=entreprise_non_qualifiee,
@@ -213,7 +213,7 @@ def test_visualisation_des_enjeux(client, alice, entreprise_non_qualifiee):
 
 def test_selection_et_deselection_d_enjeux(client, alice, entreprise_non_qualifiee):
     # update : les enjeux sont désormais sélectionnés par défaut
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
     csrd = RapportCSRD.objects.create(
         proprietaire=alice,
         entreprise=entreprise_non_qualifiee,
@@ -244,7 +244,7 @@ def test_selection_et_deselection_d_enjeux(client, alice, entreprise_non_qualifi
 
 
 def test_deselection_d_un_enjeu(client, alice, entreprise_non_qualifiee):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
     csrd = RapportCSRD.objects.create(
         proprietaire=alice,
         entreprise=entreprise_non_qualifiee,
@@ -266,7 +266,7 @@ def test_deselection_d_un_enjeu(client, alice, entreprise_non_qualifiee):
 
 
 def test_liste_des_enjeux_csrd_au_format_xlsx(client, alice, entreprise_non_qualifiee):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
     csrd = RapportCSRD.objects.create(
         proprietaire=alice,
         entreprise=entreprise_non_qualifiee,
@@ -317,7 +317,7 @@ def test_liste_des_enjeux_csrd_au_format_xlsx_retourne_une_404_si_habilitation_i
 def test_liste_des_enjeux_csrd_au_format_xlsx_retourne_une_404_si_csrd_inexistante(
     client, alice, entreprise_non_qualifiee
 ):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
     client.force_login(alice)
 
     response = client.get(
@@ -328,7 +328,7 @@ def test_liste_des_enjeux_csrd_au_format_xlsx_retourne_une_404_si_csrd_inexistan
 
 
 def test_liste_des_enjeux_csrd(client, alice, entreprise_non_qualifiee):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
     csrd = RapportCSRD.objects.create(
         proprietaire=alice,
         entreprise=entreprise_non_qualifiee,
@@ -367,7 +367,7 @@ def test_liste_des_enjeux_csrd(client, alice, entreprise_non_qualifiee):
 def test_datapoints_pour_enjeux_materiels_au_format_xlsx(
     client, alice, entreprise_non_qualifiee
 ):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
     csrd = RapportCSRD.objects.create(
         proprietaire=alice,
         entreprise=entreprise_non_qualifiee,
@@ -401,7 +401,7 @@ def test_datapoints_pour_enjeux_materiels_au_format_xlsx(
 def test_datapoints_pour_enjeux_non_materiels_au_format_xlsx(
     client, alice, entreprise_non_qualifiee
 ):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
     csrd = RapportCSRD.objects.create(
         proprietaire=alice,
         entreprise=entreprise_non_qualifiee,
@@ -482,7 +482,7 @@ def test_datapoints_csrd_au_format_xlsx_retourne_une_404_si_habilitation_inexist
 def test_datapoints_csrd_au_format_xlsx_retourne_une_404_si_csrd_inexistante(
     client, alice, entreprise_non_qualifiee
 ):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
     client.force_login(alice)
 
     response = client.get(
@@ -496,7 +496,7 @@ def test_le_lien_analyse_d_écart_redirige_vers_l_étape_analyse_d_ecart_de_la_c
     client, alice, entreprise_factory
 ):
     entreprise = entreprise_factory()
-    habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
+    habilitation = Habilitation.ajouter(entreprise, alice, "Présidente")
     RapportCSRD.objects.create(
         entreprise=entreprise,
         proprietaire=alice,

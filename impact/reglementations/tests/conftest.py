@@ -5,8 +5,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.base import ContentFile
 
 from entreprises.models import CaracteristiquesAnnuelles
-from habilitations.models import attach_user_to_entreprise
 from habilitations.models import get_habilitation
+from habilitations.models import Habilitation
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
 from reglementations.models import BDESEAvecAccord
@@ -40,7 +40,7 @@ def bdese_factory(entreprise_factory, date_cloture_dernier_exercice):
             try:
                 get_habilitation(user, entreprise)
             except ObjectDoesNotExist:
-                attach_user_to_entreprise(user, entreprise, "Président·e")
+                Habilitation.ajouter(entreprise, user, fonctions="Président·e")
             bdese = bdese_class.personals.create(
                 entreprise=entreprise, annee=annee, user=user
             )
@@ -69,7 +69,7 @@ def csrd(entreprise_factory, alice):
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     )
-    habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     csrd = RapportCSRD.objects.create(
         entreprise=entreprise,
         proprietaire=alice,
@@ -95,7 +95,7 @@ def grande_entreprise(entreprise_factory):
 
 @pytest.fixture
 def habilitated_user(bdese, alice):
-    attach_user_to_entreprise(alice, bdese.entreprise, "Présidente")
+    Habilitation.ajouter(bdese.entreprise, alice, fonctions="Présidente")
     habilitation = get_habilitation(alice, bdese.entreprise)
     habilitation.confirm()
     habilitation.save()
@@ -104,5 +104,5 @@ def habilitated_user(bdese, alice):
 
 @pytest.fixture
 def not_habilitated_user(bdese, bob):
-    attach_user_to_entreprise(bob, bdese.entreprise, "Testeur")
+    Habilitation.ajouter(bdese.entreprise, bob, fonctions="Testeur")
     return bob
