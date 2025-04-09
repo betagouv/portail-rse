@@ -4,7 +4,6 @@ from datetime import datetime
 from datetime import timezone
 
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import MaxLengthValidator
 from django.core.validators import MinLengthValidator
 from django.db import models
@@ -21,7 +20,7 @@ FONCTIONS_MAX_LENGTH = 250
 logger = logging.getLogger(__name__)
 
 
-class HabilitationManager(models.Manager):
+class HabilitationQueryset(models.QuerySet):
     def parEntreprise(self, entreprise):
         return self.filter(entreprise=entreprise)
 
@@ -30,6 +29,9 @@ class HabilitationManager(models.Manager):
 
     def parRole(self, role):
         return self.filter(role=role)
+
+    def pour(self, entreprise, utilisateur):
+        return self.get(user=utilisateur, entreprise=entreprise)
 
 
 class Habilitation(TimestampedModel):
@@ -75,7 +77,7 @@ class Habilitation(TimestampedModel):
         null=True,
     )
 
-    objects = HabilitationManager()
+    objects = HabilitationQueryset.as_manager()
 
     class Meta:
         constraints = [
@@ -165,18 +167,9 @@ def get_habilitation(user, entreprise):
     )
 
 
-def is_user_attached_to_entreprise(user, entreprise):
-    warnings.warn("fonctionnalité dépréciée")
-    try:
-        get_habilitation(user, entreprise)
-        return True
-    except (ObjectDoesNotExist, TypeError):
-        return False
-
-
 def is_user_habilited_on_entreprise(user, entreprise):
     warnings.warn("fonctionnalité dépréciée")
     return (
-        is_user_attached_to_entreprise(user, entreprise)
+        Habilitation.existe(entreprise, user)
         and get_habilitation(user, entreprise).is_confirmed
     )

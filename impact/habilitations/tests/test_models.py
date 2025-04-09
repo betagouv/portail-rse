@@ -30,7 +30,7 @@ def test_retirer_habilitation(alice, entreprise_factory):
 @pytest.mark.parametrize(
     "role", [UserRole.PROPRIETAIRE, UserRole.LECTEUR, UserRole.EDITEUR]
 )
-def test_ajouter_habilitation_with_different_roles(alice, entreprise_factory, role):
+def test_ajouter_habilitation_avec_differents_roles(alice, entreprise_factory, role):
     entreprise = entreprise_factory()
     Habilitation.ajouter(entreprise, alice, role, "présidente")
 
