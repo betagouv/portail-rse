@@ -1,0 +1,57 @@
+<form action="{% url 'simulation' %}?mtm_campaign=simulation-resultats&mtm_kwd=corps-page" method="post" id="svelte-simulation-form">
+    {% csrf_token %}
+    <div id="svelte-search-entreprise-in-simulation-form" data-siren="{{ simulation_form.siren.value|default:'' }}" data-denomination="{{ simulation_form.denomination.value|default:'' }}">
+        {% include 'snippets/siren_field.html' with field=simulation_form.siren %}
+    </div>
+    {{ simulation_form.categorie_juridique_sirene.as_hidden }}
+    {{ simulation_form.code_pays_etranger_sirene.as_hidden }}
+    {{ simulation_form.code_NAF.as_hidden }}
+    <div id="svelte-simulation-fields" style="display: none">
+        <h3>2. Renseignez les informations de votre entreprise</h3>
+
+        <div id="svelte-denomination-entreprise" data-denomination="{{ simulation_form.denomination.value|default:'' }}"></div>
+
+        <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--bottom fr-pb-4w">
+            <div class="fr-col-md-4 fr-col-12">
+                {% include 'snippets/field.html' with field=simulation_form.effectif %}
+            </div>
+            <div class="fr-col-md-4 fr-col-12">
+                {% include 'snippets/field.html' with field=simulation_form.tranche_chiffre_affaires %}
+            </div>
+            <div class="fr-col-md-4 fr-col-12">
+                {% include 'snippets/field.html' with field=simulation_form.tranche_bilan %}
+            </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters fr-pb-4w">
+            <div class="fr-col-12">
+                {% include 'snippets/field.html' with field=simulation_form.est_cotee %}
+            </div>
+        </div>
+        <fieldset class="fr-fieldset">
+            <legend class="fr-fieldset__legend">
+                Groupe d'entreprises
+            </legend>
+            {% include 'snippets/fieldset_element.html' with field=simulation_form.appartient_groupe fieldset_id="svelte-appartient-groupe-field" %}
+            <div id="svelte-groupe-fields" class="fr-col-12">
+                {% include 'snippets/fieldset_element.html' with field=simulation_form.est_societe_mere %}
+                {% include 'snippets/fieldset_element.html' with field=simulation_form.comptes_consolides id="svelte-avec-comptes-consolides-field" %}
+                <div class="fr-grid-row fr-grid-row--bottom">
+                    <div class="fr-col-lg-4 fr-col-12 fr-col-12 fr-my-2w">
+                        {% include 'snippets/fieldset_element.html' with field=simulation_form.effectif_groupe %}
+                    </div>
+                    <div id="svelte-comptes-consolides-fields" class="fr-col-lg-8 fr-col-12">
+                        <div class="fr-grid-row fr-grid-row--bottom">
+                            <div class="fr-col-lg-6 fr-col-12 fr-my-2w">
+                                {% include 'snippets/fieldset_element.html' with field=simulation_form.tranche_chiffre_affaires_consolide %}
+                            </div>
+                            <div class="fr-col-lg-6 fr-col-12 fr-my-2w">
+                                {% include 'snippets/fieldset_element.html' with field=simulation_form.tranche_bilan_consolide %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <input type="submit" value="Vérifier mes obligations" class="fr-btn">
+    </div>
+</form>
