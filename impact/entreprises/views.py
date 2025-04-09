@@ -16,9 +16,7 @@ from entreprises.forms import EntrepriseDetachForm
 from entreprises.forms import EntrepriseQualificationForm
 from entreprises.models import Entreprise
 from entreprises.models import SIREN_ENTREPRISE_TEST
-from habilitations.models import attach_user_to_entreprise
-from habilitations.models import detach_user_from_entreprise
-from habilitations.models import is_user_attached_to_entreprise
+from habilitations.models import Habilitation
 
 
 def get_current_entreprise(request):
@@ -48,7 +46,7 @@ def index(request):
                 siren = form.cleaned_data["siren"]
                 try:
                     entreprise = Entreprise.objects.get(siren=siren)
-                    detach_user_from_entreprise(request.user, entreprise)
+                    Habilitation.retirer(entreprise, request.user)
                     entreprise_in_session = request.session.get("entreprise")
                     if entreprise_in_session == entreprise.siren:
                         del request.session["entreprise"]
@@ -90,15 +88,15 @@ def attach(request):
                 entreprise = entreprises[0]
             else:
                 entreprise = search_and_create_entreprise(siren)
-            if is_user_attached_to_entreprise(request.user, entreprise):
+            if Habilitation.existe(entreprise, request.user):
                 raise _InvalidRequest(
                     "Impossible d'ajouter cette entreprise. Vous y êtes déjà rattaché·e."
                 )
             else:
-                attach_user_to_entreprise(
-                    request.user,
+                Habilitation.ajouter(
                     entreprise,
-                    form.cleaned_data["fonctions"],
+                    request.user,
+                    fonctions=form.cleaned_data["fonctions"],
                 )
         else:
             raise _InvalidRequest(
@@ -118,7 +116,7 @@ def attach(request):
 @login_required
 def qualification(request, siren):
     entreprise = get_object_or_404(Entreprise, siren=siren)
-    if not is_user_attached_to_entreprise(request.user, entreprise):
+    if not Habilitation.existe(entreprise, request.user):
         raise PermissionDenied
 
     if request.POST:
