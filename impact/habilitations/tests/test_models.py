@@ -1,29 +1,41 @@
-from datetime import datetime
-from datetime import timezone
+import pytest
 
-from freezegun import freeze_time
-
-from habilitations.models import attach_user_to_entreprise
-from habilitations.models import get_habilitation
-from habilitations.models import is_user_attached_to_entreprise
+from habilitations.models import Habilitation
+from habilitations.models import UserRole
 
 
-def test_habilitation(alice, entreprise_factory):
+@pytest.mark.django_db
+def test_ajouter_habilitation(alice, entreprise_factory):
     entreprise = entreprise_factory()
-    assert not is_user_attached_to_entreprise(alice, entreprise)
+    Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE, "présidente")
 
-    created_at = datetime(2023, 1, 27, 16, 1, tzinfo=timezone.utc)
-    with freeze_time(created_at):
-        attach_user_to_entreprise(alice, entreprise, "présidente")
+    habilitation = Habilitation.objects.pour(entreprise, alice)
 
-    assert entreprise in alice.entreprises.all()
-    habilitation = get_habilitation(alice, entreprise)
-    assert habilitation.fonctions == "présidente"
-    assert habilitation.created_at == created_at
+    assert habilitation, "Il devrait exister une habilitation"
+    assert habilitation.fonctions == "présidente", "La fonction est incorrecte"
+    assert habilitation.role == UserRole.PROPRIETAIRE, "Le rôle est incorrect"
 
-    confirmed_at = datetime(2023, 2, 14, 8, 15, tzinfo=timezone.utc)
-    with freeze_time(confirmed_at):
-        habilitation.confirm()
 
-    assert habilitation.is_confirmed
-    assert habilitation.confirmed_at == confirmed_at
+@pytest.mark.django_db
+def test_retirer_habilitation(alice, entreprise_factory):
+    entreprise = entreprise_factory()
+    Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE, "présidente")
+    Habilitation.retirer(entreprise, alice)
+
+    with pytest.raises(Habilitation.DoesNotExist):
+        Habilitation.objects.pour(entreprise, alice)
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "role", [UserRole.PROPRIETAIRE, UserRole.LECTEUR, UserRole.EDITEUR]
+)
+def test_ajouter_habilitation_with_different_roles(alice, entreprise_factory, role):
+    entreprise = entreprise_factory()
+    Habilitation.ajouter(entreprise, alice, role, "présidente")
+
+    habilitation = Habilitation.objects.pour(entreprise, alice)
+
+    assert habilitation, "Il devrait exister une habilitation"
+    assert habilitation.fonctions == "présidente", "La fonction est incorrecte"
+    assert habilitation.role == role, "Le rôle est incorrect"
