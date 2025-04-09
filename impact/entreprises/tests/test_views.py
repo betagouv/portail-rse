@@ -13,10 +13,7 @@ from entreprises.models import Entreprise
 from entreprises.models import SIREN_ENTREPRISE_TEST
 from entreprises.views import get_current_entreprise
 from entreprises.views import search_and_create_entreprise
-from habilitations.models import attach_user_to_entreprise
-from habilitations.models import get_habilitation
 from habilitations.models import Habilitation
-from habilitations.models import is_user_attached_to_entreprise
 
 
 @pytest.mark.django_db()
@@ -60,7 +57,7 @@ def test_get_current_entreprise_avec_utilisateur_rattache_a_une_entreprise(
     client, alice, entreprise_factory
 ):
     entreprise = entreprise_factory()
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
 
     request = client.get("/").wsgi_request
@@ -73,8 +70,8 @@ def test_get_current_entreprise_avec_utilisateur_rattache_a_plusieurs_entreprise
 ):
     entreprise1 = entreprise_factory(siren="000000001")
     entreprise2 = entreprise_factory(siren="000000002")
-    attach_user_to_entreprise(alice, entreprise1, "Présidente")
-    attach_user_to_entreprise(alice, entreprise2, "Présidente")
+    Habilitation.ajouter(entreprise1, alice, fonctions="Présidente")
+    Habilitation.ajouter(entreprise2, alice, fonctions="Présidente")
     client.force_login(alice)
 
     request = client.get("/").wsgi_request
@@ -121,7 +118,7 @@ def test_entreprises_page_requires_login(client):
 
 def test_entreprises_page_for_logged_user(client, alice, entreprise_factory):
     entreprise = entreprise_factory()
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
 
     response = client.get("/entreprises")
@@ -144,7 +141,10 @@ def test_create_and_attach_to_entreprise(client, alice, mock_api_infos_entrepris
     assert "L'entreprise a été ajoutée." in content
 
     entreprise = Entreprise.objects.get(siren="000000001")
-    assert get_habilitation(alice, entreprise).fonctions == "Présidente"
+
+    assert Habilitation.objects.pour(entreprise, alice).fonctions == "Présidente"
+    assert Habilitation.objects.pour(entreprise, alice).fonctions == "Présidente"
+
     assert entreprise.denomination == "Entreprise SAS"
     assert entreprise.categorie_juridique_sirene == 5710
     assert entreprise.code_NAF == "01.11Z"
@@ -160,7 +160,7 @@ def test_attach_to_an_existing_entreprise(client, alice, entreprise_factory):
     assert response.status_code == 200
     assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
     assert entreprise in alice.entreprises
-    assert get_habilitation(alice, entreprise).fonctions == "Présidente"
+    assert Habilitation.objects.pour(entreprise, alice).fonctions == "Présidente"
 
 
 def test_fail_to_create_entreprise(client, alice, mock_api_infos_entreprise):
@@ -199,7 +199,7 @@ def test_fail_to_find_entreprise_in_API(client, alice, mock_api_infos_entreprise
 
 def test_fail_because_already_existing_habilitation(client, alice, entreprise_factory):
     entreprise = entreprise_factory()
-    attach_user_to_entreprise(alice, entreprise, "DG")
+    Habilitation.ajouter(entreprise, alice, fonctions="DG")
     client.force_login(alice)
     data = _attach_data(entreprise.siren)
 
@@ -218,7 +218,7 @@ def test_detach_from_an_entreprise(
     is_entreprise_in_session, client, alice, entreprise_factory
 ):
     entreprise = entreprise_factory()
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
     session = client.session
     if is_entreprise_in_session:
@@ -234,7 +234,7 @@ def test_detach_from_an_entreprise(
     assert response.status_code == 200
     assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
     assert entreprise not in alice.entreprises
-    assert not is_user_attached_to_entreprise(alice, entreprise)
+    assert not Habilitation.objects.parEntreprise(entreprise).parUtilisateur(alice)
     content = html.unescape(response.content.decode("utf-8"))
     assert (
         f"Votre compte n'êtes plus rattaché à l'entreprise {entreprise.denomination}"
@@ -297,7 +297,7 @@ def test_page_de_qualification_d_une_entreprise_non_qualifiee_pre_remplit_les_ch
         "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     }
 
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
     client.force_login(alice)
 
     response = client.get(f"/entreprises/{entreprise_non_qualifiee.siren}")
@@ -339,7 +339,7 @@ def test_page_de_qualification_d_une_entreprise_non_qualifiee_avec_erreur_api_no
     entreprise_non_qualifiee,
     mock_api_infos_entreprise,
 ):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
     client.force_login(alice)
 
     mock_api_infos_entreprise.side_effect = api.exceptions.APIError("yolo")
@@ -382,7 +382,7 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs_s
         bdese_accord=True,
         systeme_management_energie=True,
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
 
     with freeze_time(date(2023, 1, 27)):
@@ -448,7 +448,7 @@ def test_page_de_qualification_avec_des_caracteristiques_non_qualifiantes_initia
     mock_api_infos_entreprise,
 ):
     entreprise = entreprise_factory()
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     caracs = entreprise.dernieres_caracteristiques_qualifiantes
     caracs.date_cloture_exercice = None
     caracs.save()
@@ -488,7 +488,7 @@ def test_page_de_qualification_avec_des_caracteristiques_non_qualifiantes_initia
 def test_qualifie_entreprise_appartenant_a_un_groupe(
     client, alice, entreprise_non_qualifiee, mock_api_egapro, date_requalification
 ):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
 
     client.force_login(alice)
     data = {
@@ -591,7 +591,7 @@ def test_qualifie_entreprise_sans_groupe(
     entreprise_non_qualifiee,
     mock_api_egapro,
 ):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
     client.force_login(alice)
     data = {
         "confirmation_naf": "01.11Z",
@@ -651,7 +651,7 @@ def test_qualifie_entreprise_sans_groupe(
 
 
 def test_echoue_a_qualifier_l_entreprise(client, alice, entreprise_non_qualifiee):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
     client.force_login(alice)
     data = {
         "effectif": "yolo",
@@ -687,7 +687,7 @@ def test_qualification_supprime_les_caracteristiques_annuelles_posterieures_a_la
     assert not entreprise.caracteristiques_annuelles(
         date_cloture_dernier_exercice.year - 1
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
     data = {
         "confirmation_naf": "11.11C",
