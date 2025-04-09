@@ -18,7 +18,7 @@ from entreprises.exceptions import EntrepriseNonQualifieeError
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from habilitations.models import get_habilitation
-from habilitations.models import is_user_attached_to_entreprise
+from habilitations.models import Habilitation
 from habilitations.models import is_user_habilited_on_entreprise
 from reglementations.forms import bdese_configuration_form_factory
 from reglementations.forms import bdese_form_factory
@@ -230,7 +230,7 @@ class BDESEReglementation(Reglementation):
     def _select_bdese(bdese_class, annee, entreprise, user):
         if (
             user
-            and is_user_attached_to_entreprise(user, entreprise)
+            and Habilitation.existe(entreprise, user)
             and not is_user_habilited_on_entreprise(user, entreprise)
         ):
             bdese = bdese_class.personals.filter(
@@ -246,7 +246,7 @@ class BDESEReglementation(Reglementation):
 @entreprise_qualifiee_required
 def bdese_pdf(request, siren, annee):
     entreprise = Entreprise.objects.get(siren=siren)
-    if not is_user_attached_to_entreprise(request.user, entreprise):
+    if not Habilitation.existe(entreprise, request.user):
         raise PermissionDenied
 
     bdese = get_or_create_bdese(entreprise, annee, request.user)
@@ -295,7 +295,7 @@ def _pdf_template_path_from_bdese(bdese):
 @entreprise_qualifiee_required
 def bdese_step(request, siren, annee, step):
     entreprise = Entreprise.objects.get(siren=siren)
-    if not is_user_attached_to_entreprise(request.user, entreprise):
+    if not Habilitation.existe(entreprise, request.user):
         raise PermissionDenied
 
     bdese = get_or_create_bdese(entreprise, annee, request.user)
@@ -485,7 +485,7 @@ def initialize_bdese_configuration(bdese: BDESE_300 | BDESE_50_300) -> dict:
 @entreprise_qualifiee_required
 def toggle_bdese_completion(request, siren, annee):
     entreprise = Entreprise.objects.get(siren=siren)
-    if not is_user_attached_to_entreprise(request.user, entreprise):
+    if not Habilitation.existe(entreprise, request.user):
         raise PermissionDenied
 
     bdese = get_or_create_bdese(entreprise, annee, request.user)
