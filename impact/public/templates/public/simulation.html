@@ -19,10 +19,8 @@
                             </p>
 
                             <h3>1. Recherchez votre entreprise</h3>
-
-
+                            {% include "snippets/recherche_entreprise.html" %}
                             {% include "fragments/simulation_form.html" %}
-
                         </div>
                     </div>
                 </div>
@@ -32,5 +30,46 @@
             </div>
         </div>
     </div>
+
+    <script nonce="{{ request.csp_nonce }}">
+        // Script permettant d'afficher ou cacher certains champs du formulaire de simulation
+        // qui ne concernent que les groupes d'entreprise
+        const appartientGroupeId = "id_appartient_groupe" // defini par django
+        const groupeFieldsId = "svelte-groupe-fields"
+        const etablitComptesConsolidesId = "id_comptes_consolides" // defini par django
+        const comptesConsolidesFieldsId = "svelte-comptes-consolides-fields"
+
+        let appartientGroupeField
+        let groupeFields
+        let etablitComptesConsolidesField
+        let comptesConsolidesFields
+
+        const displayGroupeFields = () => {
+            groupeFields.style.display = appartientGroupeField.checked ? "block" : "none"
+        }
+
+        const displayComptesConsolidesFields = () => {
+            comptesConsolidesFields.style.display = etablitComptesConsolidesField.checked ? "block" : "none"
+        }
+
+        const makeDynamicFields = () => {
+            appartientGroupeField.addEventListener("click", displayGroupeFields)
+            etablitComptesConsolidesField.addEventListener("click", displayComptesConsolidesFields)
+            displayGroupeFields()
+            displayComptesConsolidesFields()
+        }
+
+        document.addEventListener("htmx:load", () => {
+            // Le formulaire est remplacé dans le DOM par une requête htmx
+            // Il faut donc récupérer les nouveaux éléments du formulaire mis à jour et les rendre dynamiques
+            appartientGroupeField = document.getElementById(appartientGroupeId)
+            groupeFields = document.getElementById(groupeFieldsId)
+            etablitComptesConsolidesField = document.getElementById(etablitComptesConsolidesId)
+            comptesConsolidesFields = document.getElementById(comptesConsolidesFieldsId)
+            if (appartientGroupeField && etablitComptesConsolidesField) {
+                makeDynamicFields()
+            }
+        })
+    </script>
     <!-- page simulation -->
 {% endblock %}
