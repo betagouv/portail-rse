@@ -145,31 +145,9 @@ class Habilitation(TimestampedModel):
         return bool(self.confirmed_at)
 
 
-def attach_user_to_entreprise(user, entreprise, fonctions):
-    warnings.warn("fonctionnalité dépréciée: utiliser Habilitation.ajouter()")
-    return Habilitation.objects.create(
-        user=user,
-        entreprise=entreprise,
-        fonctions=fonctions,
-    )
-
-
-def detach_user_from_entreprise(user, entreprise):
-    warnings.warn("fonctionnalité dépréciée: utiliser Habilitation.retirer()")
-    get_habilitation(user, entreprise).delete()
-
-
-def get_habilitation(user, entreprise):
-    warnings.warn("fonctionnalité dépréciée")
-    return Habilitation.objects.get(
-        user=user,
-        entreprise=entreprise,
-    )
-
-
 def is_user_habilited_on_entreprise(user, entreprise):
     warnings.warn("fonctionnalité dépréciée")
     return (
         Habilitation.existe(entreprise, user)
-        and get_habilitation(user, entreprise).is_confirmed
+        and Habilitation.pour(entreprise, user).is_confirmed
     )
