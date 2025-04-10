@@ -44,13 +44,15 @@
             document.getElementById("svelte-comptes-consolides-fields").style.display = document.getElementById("id_comptes_consolides").checked ? "block" : "none"
         }
 
-        const callback = function(elt){
+        const majChampsRepliables = () => {
             document.getElementById("id_appartient_groupe").addEventListener("click", displayGroupeFields)
             document.getElementById("id_comptes_consolides").addEventListener("click", displayComptesConsolidesFields)
+            displayGroupeFields()
+            displayComptesConsolidesFields()
         }
 
         document.addEventListener("htmx:load", function() {
-            htmx.onLoad(callback)
+            htmx.onLoad(majChampsRepliables)
         })
     </script>
     <!-- page simulation -->
