@@ -6,6 +6,8 @@ from django.core.mail import EmailMessage
 from django.shortcuts import redirect
 from django.shortcuts import render
 
+import api.infos_entreprise
+from api.exceptions import APIError
 from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
@@ -96,6 +98,38 @@ def simulation(request):
         {
             "simulation_form": simulation_form,
         },
+    )
+
+
+def preremplissage_formulaire_simulation(request, siren):
+    if siren == "000000001":
+        # Entreprise test
+        infos = {
+            "siren": siren,
+            "denomination": "ENTREPRISE TEST",
+            "effectif": "10000+",
+            "categorie_juridique_sirene": 5505,
+            "code_NAF": "01.11Z",
+            "tranche_chiffre_affaires": "100M+",
+            "tranche_bilan": "100M+",
+        }
+    else:
+        try:
+            infos = api.infos_entreprise.infos_entreprise(
+                siren, donnees_financieres=True
+            )
+            if infos.get("tranche_chiffre_affaires_consolide"):
+                # L'entreprise appartient à un groupe et établit des comptes consolidés
+                infos["appartient_groupe"] = True
+                infos["comptes_consolides"] = True
+        except APIError as exception:
+            print(exception)
+            infos = {}
+    simulation_form = SimulationForm(initial=infos)
+    return render(
+        request,
+        "fragments/simulation_form.html",
+        context={"simulation_form": simulation_form},
     )
 
 
