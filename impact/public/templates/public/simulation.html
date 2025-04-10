@@ -20,7 +20,7 @@
 
                             <h3>1. Recherchez votre entreprise</h3>
 
-
+                            {% include "snippets/recherche_entreprise.html" %}
                             {% include "fragments/simulation_form.html" %}
 
                         </div>
@@ -32,5 +32,17 @@
             </div>
         </div>
     </div>
+
+    <script nonce="{{ request.csp_nonce }}">
+        const displayGroupeFields = () => {
+            console.log("displayGroupeFields")
+            document.getElementById("svelte-groupe-fields").style.display = document.getElementById("id_appartient_groupe").checked ? "block" : "none"
+        }
+
+        const displayComptesConsolidesFields = () => {
+            console.log("displayComptesConsolidesFields")
+            document.getElementById("svelte-comptes-consolides-fields").style.display = document.getElementById("id_comptes_consolides").checked ? "block" : "none"
+        }
+    </script>
     <!-- page simulation -->
 {% endblock %}

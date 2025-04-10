@@ -196,3 +196,19 @@ def search_entreprise(request, siren):
             status=400,
         )
     return JsonResponse(infos)
+
+
+def recherche_entreprise(request):
+    entreprises = []
+    if request.GET.get("recherche"):
+        # TODO: implémenter une vraie recherche par nom avec l'API recherche entreprises et Sirene
+        entreprises = [
+            {"siren": "000000001", "denomination": "Entreprise Test 1"},
+            {"siren": "889297453", "denomination": "YAAL COOP"},
+            {"siren": "552032534", "denomination": "DANONE"},
+        ]
+    return render(
+        request,
+        "fragments/resultats_recherche_entreprise.html",
+        context={"entreprises": entreprises},
+    )
