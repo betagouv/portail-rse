@@ -1,0 +1,20 @@
+{% load static %}
+<div class="fr-input-group">
+    <label class="fr-label" for="id_recherche">Saisissez le nom ou le numéro SIREN de votre entreprise
+        <span class="fr-hint-text">par exemple : "Boucherie Sanzot" ou "130025265"</span>
+    </label>
+    <div class="fr-search-bar" role="search">
+        <input type="search" name="recherche" class="fr-input" id="id_recherche"
+               hx-get="{% url 'entreprises:recherche_entreprise' %}"
+               hx-trigger="input changed delay:500ms, keyup[key=='Enter'], load"
+               hx-target="#resultats-recherche-entreprise"
+               hx-indicator=".htmx-indicator"
+               value="{{ simulation_form.siren.value|default:'' }}">
+        <button type="button" class="fr-btn" title="Rechercher">
+            Rechercher
+        </button>
+        <img src="{% static 'img/spinner.svg' %}" width="40" alt="Spinner d'attente" class="htmx-indicator">
+    </div>
+</div>
+
+<div id="resultats-recherche-entreprise"></div>

@@ -1,0 +1,29 @@
+{% load static %}
+{% if entreprises %}
+    <h4>Sélectionnez votre entreprise ou précisez votre recherche</h4>
+    {% for entreprise in entreprises %}
+        <div class="fr-tile fr-tile--no-icon fr-tile--horizontal fr-mb-2w"
+             hx-get="{% url 'preremplissage_formulaire_simulation' entreprise.siren %}"
+             hx-trigger="click"
+             hx-target="#svelte-simulation-form"
+             hx-swap="outerHTML"
+             hx-indicator=".htmx-indicator">
+            <div class="fr-tile__body">
+                <div class="fr-tile__content">
+                    <h3 class="fr-tile__title">
+                        {{ entreprise.denomination }}
+                    </h3>
+                    <div class="fr-tile__start">
+                        <p class="fr-badge">{{ entreprise.siren }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    <p>
+        <a class="fr-link" target="_blank" rel="noopener noreferrer" href="https://annuaire-entreprises.data.gouv.fr/">
+            Vous ne trouvez pas votre entreprise ? Trouvez votre SIREN sur l'Annuaire des entreprises
+        </a>
+    </p>
+    <img src="{% static 'img/spinner.svg' %}" width="40" alt="Spinner d'attente" class="htmx-indicator">
+{% endif %}

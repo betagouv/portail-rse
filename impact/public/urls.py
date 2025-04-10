@@ -6,6 +6,11 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("simulation", views.simulation, name="simulation"),
     path(
+        "simulation/fragments/preremplissage-formulaire-simulation/<str:siren>",
+        views.preremplissage_formulaire_simulation,
+        name="preremplissage_formulaire_simulation",
+    ),
+    path(
         "simulation/resultats", views.resultats_simulation, name="resultats_simulation"
     ),
     path("contact", views.contact, name="contact"),
