@@ -43,6 +43,15 @@
             console.log("displayComptesConsolidesFields")
             document.getElementById("svelte-comptes-consolides-fields").style.display = document.getElementById("id_comptes_consolides").checked ? "block" : "none"
         }
+
+        const callback = function(elt){
+            document.getElementById("id_appartient_groupe").addEventListener("click", displayGroupeFields)
+            document.getElementById("id_comptes_consolides").addEventListener("click", displayComptesConsolidesFields)
+        }
+
+        document.addEventListener("htmx:load", function() {
+            htmx.onLoad(callback)
+        })
     </script>
     <!-- page simulation -->
 {% endblock %}
