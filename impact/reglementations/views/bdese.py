@@ -17,7 +17,6 @@ from entreprises.decorators import entreprise_qualifiee_required
 from entreprises.exceptions import EntrepriseNonQualifieeError
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
-from habilitations.models import get_habilitation
 from habilitations.models import Habilitation
 from habilitations.models import is_user_habilited_on_entreprise
 from reglementations.forms import bdese_configuration_form_factory
@@ -441,7 +440,7 @@ def get_or_create_bdese(
         )
 
     bdese_type = BDESEReglementation.bdese_type(caracteristiques)
-    habilitation = get_habilitation(user, entreprise)
+    habilitation = Habilitation.pour(entreprise, user)
     if bdese_type == BDESEReglementation.TYPE_AVEC_ACCORD:
         bdese_class = BDESEAvecAccord
     elif bdese_type in (
