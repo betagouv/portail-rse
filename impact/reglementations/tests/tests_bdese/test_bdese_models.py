@@ -4,7 +4,7 @@ from django.db import models
 from django.db.utils import IntegrityError
 from freezegun import freeze_time
 
-from habilitations.models import get_habilitation
+from habilitations.models import Habilitation
 from reglementations.models import annees_a_remplir_bdese
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
@@ -213,7 +213,7 @@ def test_personal_bdese_is_copied_to_official_bdese_when_habilitation_is_confirm
     with pytest.raises(ObjectDoesNotExist):
         assert bdese.__class__.officials.get(entreprise=bdese.entreprise)
 
-    habilitation = get_habilitation(alice, bdese.entreprise)
+    habilitation = Habilitation.pour(bdese.entreprise, alice)
     habilitation.confirm()
 
     assert bdese.__class__.personals.get(entreprise=bdese.entreprise)
@@ -235,7 +235,7 @@ def test_personal_bdese_is_not_copied_to_official_bdese_if_already_exists(
     personal_bdese.categories_professionnelles = CATEGORIES_PROFESSIONNELLES
     personal_bdese.save()
 
-    habilitation = get_habilitation(alice, grande_entreprise)
+    habilitation = Habilitation.pour(grande_entreprise, alice)
     habilitation.confirm()
 
     official_bdese = official_bdese.__class__.officials.get(
