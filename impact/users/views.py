@@ -20,7 +20,7 @@ from .models import User
 from api.exceptions import APIError
 from entreprises.models import Entreprise
 from entreprises.views import search_and_create_entreprise
-from habilitations.models import attach_user_to_entreprise
+from habilitations.models import Habilitation
 from utils.tokens import check_token
 from utils.tokens import make_token
 from utils.tokens import uidb64
@@ -37,10 +37,10 @@ def creation(request):
                 else:
                     entreprise = search_and_create_entreprise(siren)
                 user = form.save()
-                attach_user_to_entreprise(
-                    user,
+                Habilitation.ajouter(
                     entreprise,
-                    form.cleaned_data["fonctions"],
+                    user,
+                    fonctions=form.cleaned_data["fonctions"],
                 )
                 if _send_confirm_email(request, user):
                     success_message = f"Votre compte a bien été créé. Un e-mail de confirmation a été envoyé à {user.email}. Confirmez votre adresse e-mail en cliquant sur le lien reçu avant de vous connecter."
