@@ -62,3 +62,4 @@ class DocumentAnalyseIA_Admin(admin.ModelAdmin):
         "rapport_csrd__entreprise__denomination",
         "rapport_csrd__entreprise__siren",
     )
+    readonly_fields = ("nombre_de_phrases_pertinentes",)

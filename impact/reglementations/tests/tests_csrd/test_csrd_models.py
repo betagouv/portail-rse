@@ -160,8 +160,35 @@ def test_rapport_csrd_avec_documents(rapport_personnel):
 
     assert list(rapport_personnel.documents_analyses) == []
     assert list(rapport_personnel.documents_non_analyses) == [document_1]
+    assert document_1.nombre_de_phrases_pertinentes == 0
+    assert document_2.nombre_de_phrases_pertinentes == 0
 
     document_2.etat = "success"
+    document_2.resultat_json = """{
+    "ESRS E1": [
+      {
+        "PAGES": 1,
+        "TEXTS": "A"
+      },
+      {
+        "PAGES": 2,
+        "TEXTS": "B"
+      }
+    ],
+    "ESRS E2": [
+      {
+        "PAGES": 4,
+        "TEXTS": "C"
+      }
+    ],
+    "Non ESRS": [
+      {
+        "PAGES": 22,
+        "TEXTS": "X"
+      }
+    ]
+    }"""
     document_2.save()
 
     assert list(rapport_personnel.documents_analyses) == [document_2]
+    assert document_2.nombre_de_phrases_pertinentes == 3

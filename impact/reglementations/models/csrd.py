@@ -1,3 +1,4 @@
+import json
 import os
 from uuid import uuid4
 
@@ -345,3 +346,15 @@ class DocumentAnalyseIA(TimestampedModel):
         if not self.nom:
             self.nom = os.path.basename(self.fichier.name)
         super().save(*args, **kwargs)
+
+    @property
+    def nombre_de_phrases_pertinentes(self):
+        try:
+            data = json.loads(self.resultat_json)
+        except TypeError:  # cas d'un fichier non traité
+            return 0
+        quantite = 0
+        for esrs, phrases in data.items():
+            if "Non ESRS" not in esrs:
+                quantite += len(phrases)
+        return quantite
