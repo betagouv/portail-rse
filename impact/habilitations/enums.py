@@ -1,6 +1,7 @@
 from django.db import models
 
+
 class UserRole(models.TextChoices):
-    PROPRIETAIRE = 'propriétaire', 'Propriétaire'
-    EDITEUR = 'éditeur', 'Éditeur'
-    LECTEUR = 'lecteur', 'Lecteur'
+    PROPRIETAIRE = "proprietaire", "Propriétaire"
+    EDITEUR = "editeur", "Éditeur"
+    LECTEUR = "lecteur", "Lecteur"
