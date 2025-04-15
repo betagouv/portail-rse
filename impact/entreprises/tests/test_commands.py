@@ -19,7 +19,7 @@ def test_remplit_la_denomination(db, mocker, entreprise_non_qualifiee):
     RAISON_SOCIALE = "RAISON SOCIALE"
 
     mocker.patch(
-        "api.recherche_entreprises.recherche",
+        "api.recherche_entreprises.recherche_par_siren",
         return_value={
             "siren": entreprise_non_qualifiee.siren,
             "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
@@ -39,7 +39,7 @@ def test_ne_modifie_pas_la_denomination_si_deja_remplie(
     RAISON_SOCIALE = entreprise_non_qualifiee.denomination
 
     mocker.patch(
-        "api.recherche_entreprises.recherche",
+        "api.recherche_entreprises.recherche_par_siren",
         return_value={
             "siren": entreprise_non_qualifiee.siren,
             "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
@@ -58,7 +58,8 @@ def test_erreur_de_l_api(capsys, db, mocker, entreprise_non_qualifiee):
     entreprise_non_qualifiee.save()
 
     mocker.patch(
-        "api.recherche_entreprises.recherche", side_effect=api.exceptions.APIError
+        "api.recherche_entreprises.recherche_par_siren",
+        side_effect=api.exceptions.APIError,
     )
     call_command("force_denomination")
 
@@ -76,7 +77,7 @@ def test_remplit_la_categorie_juridique(db, mocker, entreprise_non_qualifiee):
     CATEGORIE_JURIDIQUE_SIRENE = 5555
 
     mocker.patch(
-        "api.recherche_entreprises.recherche",
+        "api.recherche_entreprises.recherche_par_siren",
         return_value={
             "siren": entreprise_non_qualifiee.siren,
             "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
@@ -102,7 +103,7 @@ def test_ne_modifie_pas_la_categorie_juridique_si_deja_remplie(
     CATEGORIE_JURIDIQUE_SIRENE = 5555
 
     mocker.patch(
-        "api.recherche_entreprises.recherche",
+        "api.recherche_entreprises.recherche_par_siren",
         return_value={
             "siren": entreprise_non_qualifiee.siren,
             "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
@@ -123,7 +124,7 @@ def test_remplit_le_code_NAF(db, mocker, entreprise_non_qualifiee):
     CODE_NAF = "01.11Z"
 
     mocker.patch(
-        "api.recherche_entreprises.recherche",
+        "api.recherche_entreprises.recherche_par_siren",
         return_value={
             "siren": entreprise_non_qualifiee.siren,
             "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
@@ -146,7 +147,7 @@ def test_ne_modifie_pas_le_code_NAF_si_deja_remplie(
     CODE_NAF = "01.11Z"
 
     mocker.patch(
-        "api.recherche_entreprises.recherche",
+        "api.recherche_entreprises.recherche_par_siren",
         return_value={
             "siren": entreprise_non_qualifiee.siren,
             "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,

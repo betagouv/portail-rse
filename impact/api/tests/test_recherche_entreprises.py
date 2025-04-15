@@ -5,8 +5,8 @@ from api.exceptions import APIError
 from api.exceptions import ServerError
 from api.exceptions import SirenError
 from api.exceptions import TooManyRequestError
-from api.recherche_entreprises import recherche
 from api.recherche_entreprises import RECHERCHE_ENTREPRISE_TIMEOUT
+from api.recherche_entreprises import recherche_par_siren
 from entreprises.models import CaracteristiquesAnnuelles
 from utils.mock_response import MockedResponse
 
@@ -14,7 +14,7 @@ from utils.mock_response import MockedResponse
 @pytest.mark.network
 def test_api_fonctionnelle():
     SIREN = "130025265"
-    infos = recherche(SIREN)
+    infos = recherche_par_siren(SIREN)
 
     assert infos == {
         "siren": SIREN,
@@ -46,7 +46,7 @@ def test_succes_recherche_comportant_la_raison_sociale(mocker):
         "requests.get", return_value=MockedResponse(200, json_content)
     )
 
-    infos = recherche(SIREN)
+    infos = recherche_par_siren(SIREN)
 
     assert infos == {
         "siren": SIREN,
@@ -79,7 +79,7 @@ def test_succes_recherche_sans_la_raison_sociale(mocker):
     }
     mocker.patch("requests.get", return_value=MockedResponse(200, json_content))
 
-    infos = recherche(SIREN)
+    infos = recherche_par_siren(SIREN)
 
     assert infos["denomination"] == "ENTREPRISE"
 
@@ -96,7 +96,7 @@ def test_succes_pas_de_resultat(mocker):
     mocker.patch("requests.get", return_value=MockedResponse(200, json_content))
 
     with pytest.raises(SirenError) as e:
-        recherche(SIREN)
+        recherche_par_siren(SIREN)
 
     assert (
         str(e.value)
@@ -110,7 +110,7 @@ def test_echec_recherche_requete_api_invalide(mocker):
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
     with pytest.raises(APIError) as e:
-        recherche(SIREN)
+        recherche_par_siren(SIREN)
 
     capture_message_mock.assert_called_once_with(
         "Requête invalide sur l'API recherche entreprises"
@@ -127,7 +127,7 @@ def test_echec_trop_de_requetes(mocker):
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
     with pytest.raises(TooManyRequestError) as e:
-        recherche(SIREN)
+        recherche_par_siren(SIREN)
 
     capture_message_mock.assert_called_once_with(
         "Trop de requêtes sur l'API recherche entreprises"
@@ -143,7 +143,7 @@ def test_echec_erreur_de_l_API(mocker):
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
     with pytest.raises(ServerError) as e:
-        recherche(SIREN)
+        recherche_par_siren(SIREN)
 
     capture_message_mock.assert_called_once_with("Erreur API recherche entreprises")
     assert (
@@ -159,7 +159,7 @@ def test_echec_exception_provoquee_par_l_api(mocker):
     capture_exception_mock = mocker.patch("sentry_sdk.capture_exception")
 
     with pytest.raises(APIError) as e:
-        recherche(SIREN)
+        recherche_par_siren(SIREN)
 
     capture_exception_mock.assert_called_once()
     args, _ = capture_exception_mock.call_args
@@ -194,7 +194,7 @@ def test_entreprise_inexistante_mais_pourtant_retournée_par_l_API(mocker):
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
     with pytest.raises(SirenError) as e:
-        recherche(SIREN)
+        recherche_par_siren(SIREN)
 
     assert (
         str(e.value)
@@ -227,7 +227,7 @@ def test_pas_de_nature_juridique(nature_juridique, mocker):
     mocker.patch("requests.get", return_value=MockedResponse(200, json_content))
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
-    infos = recherche(SIREN)
+    infos = recherche_par_siren(SIREN)
 
     capture_message_mock.assert_called_once_with(
         "Nature juridique récupérée par l'API recherche entreprises invalide"
@@ -254,7 +254,7 @@ def test_pas_de_code_pays_etranger(mocker):
     mocker.patch("requests.get", return_value=MockedResponse(200, json_content))
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
-    infos = recherche(SIREN)
+    infos = recherche_par_siren(SIREN)
 
     capture_message_mock.assert_called_once_with(
         "Code pays étranger récupéré par l'API recherche entreprises invalide"
@@ -280,7 +280,7 @@ def test_code_pays_etranger_vaut_null_car_en_France(mocker):
     mocker.patch("requests.get", return_value=MockedResponse(200, json_content))
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
-    infos = recherche(SIREN)
+    infos = recherche_par_siren(SIREN)
 
     assert not capture_message_mock.called
     assert infos["code_pays_etranger_sirene"] is None
@@ -304,6 +304,6 @@ def test_pas_d_activite_principale(activite_principale, mocker):
     }
     mocker.patch("requests.get", return_value=MockedResponse(200, json_content))
 
-    infos = recherche(SIREN)
+    infos = recherche_par_siren(SIREN)
 
     assert infos["code_NAF"] is None

@@ -17,7 +17,7 @@ NOM_API = "recherche entreprises"
 RECHERCHE_ENTREPRISE_TIMEOUT = 10
 
 
-def recherche(siren):
+def recherche_par_siren(siren):
     # documentation api recherche d'entreprises 1.0.0 https://api.gouv.fr/documentation/api-recherche-entreprises
     try:
         url = f"https://recherche-entreprises.api.gouv.fr/search?q={siren}&page=1&per_page=1&mtm_campaign=portail-rse"

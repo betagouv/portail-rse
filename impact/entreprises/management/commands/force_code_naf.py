@@ -31,6 +31,6 @@ class Command(BaseCommand):
 
 
 def maj(entreprise):
-    infos_entreprise = api.recherche_entreprises.recherche(entreprise.siren)
+    infos_entreprise = api.recherche_entreprises.recherche_par_siren(entreprise.siren)
     entreprise.code_NAF = infos_entreprise["code_NAF"]
     entreprise.save()

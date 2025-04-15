@@ -164,7 +164,7 @@ def mock_api_infos_entreprise(mocker):
 @pytest.fixture
 def mock_api_recherche_entreprises(mocker):
     return mocker.patch(
-        "api.recherche_entreprises.recherche",
+        "api.recherche_entreprises.recherche_par_siren",
         return_value=INFOS_ENTREPRISE,
     )
 
