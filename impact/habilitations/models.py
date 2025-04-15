@@ -1,10 +1,13 @@
+import logging
 import warnings
 from datetime import datetime
 from datetime import timezone
 
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.validators import MaxLengthValidator
+from django.core.validators import MinLengthValidator
 from django.db import models
+from django.db.utils import IntegrityError
 
 from .enums import UserRole
 from entreprises.models import Entreprise
@@ -14,9 +17,10 @@ from utils.models import TimestampedModel
 
 FONCTIONS_MIN_LENGTH = 3
 FONCTIONS_MAX_LENGTH = 250
+logger = logging.getLogger(__name__)
 
 
-class HabilitationManager(models.Manager):
+class HabilitationQueryset(models.QuerySet):
     def parEntreprise(self, entreprise):
         return self.filter(entreprise=entreprise)
 
@@ -25,6 +29,9 @@ class HabilitationManager(models.Manager):
 
     def parRole(self, role):
         return self.filter(role=role)
+
+    def pour(self, entreprise, utilisateur):
+        return self.get(user=utilisateur, entreprise=entreprise)
 
 
 class Habilitation(TimestampedModel):
@@ -55,6 +62,10 @@ class Habilitation(TimestampedModel):
     fonctions = models.CharField(
         verbose_name="fonction(s) dans la société",
         max_length=FONCTIONS_MAX_LENGTH,
+        validators=[
+            MinLengthValidator(FONCTIONS_MIN_LENGTH),
+            MaxLengthValidator(FONCTIONS_MAX_LENGTH),
+        ],
         null=True,
         blank=True,
     )
@@ -66,18 +77,56 @@ class Habilitation(TimestampedModel):
         null=True,
     )
 
-    objects = HabilitationManager()
+    objects = HabilitationQueryset.as_manager()
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["role", "entreprise", "user"],
-                name="unique_role_entreprise_user",
+                fields=["entreprise", "user"],
+                name="unique_entreprise_user",
             )
         ]
 
     def __str__(self):
         return f"Habilitation : {self.entreprise}, {self.user}, {self.role}"
+
+    @classmethod
+    def ajouter(
+        cls, entreprise, utilisateur, role=UserRole.PROPRIETAIRE, fonctions=None
+    ):
+        h = cls(user=utilisateur, entreprise=entreprise, role=role)
+        if fonctions:
+            h.fonctions = fonctions
+        try:
+            h.save()
+            return h
+        except IntegrityError:
+            logger.warning(
+                "Une habilitation existe déjà: entreprise=%s, utilisateur=%s",
+                entreprise,
+                utilisateur,
+            )
+
+    @classmethod
+    def retirer(cls, entreprise, utilisateur):
+        try:
+            cls.objects.get(entreprise=entreprise, user=utilisateur).delete()
+        except Habilitation.DoesNotExist:
+            logger.warning(
+                "Il n'y a pas d'habilitation pour: entreprise=%s, utilisateur=%s",
+                entreprise,
+                utilisateur,
+            )
+
+    @classmethod
+    def existe(cls, entreprise, utilisateur) -> bool:
+        return cls.objects.filter(entreprise=entreprise, user=utilisateur).exists()
+
+    @classmethod
+    def pour(cls, entreprise, utilisateur):
+        return cls.objects.pour(entreprise, utilisateur)
+
+    # Méthodes dépréciées : confirmation de l'habilitation
 
     def confirm(self):
         warnings.warn("fonctionnalité dépréciée")
@@ -96,40 +145,9 @@ class Habilitation(TimestampedModel):
         return bool(self.confirmed_at)
 
 
-def attach_user_to_entreprise(user, entreprise, fonctions):
-    warnings.warn("fonctionnalité dépréciée")
-    return Habilitation.objects.create(
-        user=user,
-        entreprise=entreprise,
-        fonctions=fonctions,
-    )
-
-
-def detach_user_from_entreprise(user, entreprise):
-    warnings.warn("fonctionnalité dépréciée")
-    get_habilitation(user, entreprise).delete()
-
-
-def get_habilitation(user, entreprise):
-    warnings.warn("fonctionnalité dépréciée")
-    return Habilitation.objects.get(
-        user=user,
-        entreprise=entreprise,
-    )
-
-
-def is_user_attached_to_entreprise(user, entreprise):
-    warnings.warn("fonctionnalité dépréciée")
-    try:
-        get_habilitation(user, entreprise)
-        return True
-    except (ObjectDoesNotExist, TypeError):
-        return False
-
-
 def is_user_habilited_on_entreprise(user, entreprise):
     warnings.warn("fonctionnalité dépréciée")
     return (
-        is_user_attached_to_entreprise(user, entreprise)
-        and get_habilitation(user, entreprise).is_confirmed
+        Habilitation.existe(entreprise, user)
+        and Habilitation.pour(entreprise, user).is_confirmed
     )

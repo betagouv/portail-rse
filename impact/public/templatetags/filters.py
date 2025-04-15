@@ -87,4 +87,4 @@ def model_field_type(model_field):
 
 @register.filter
 def habilitation(user, entreprise):
-    return habilitations.models.get_habilitation(user, entreprise)
+    return habilitations.models.Habilitation.pour(entreprise, user)

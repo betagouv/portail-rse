@@ -2,7 +2,7 @@ import pytest
 from django.urls import reverse
 
 from entreprises.models import CaracteristiquesAnnuelles
-from habilitations.models import attach_user_to_entreprise
+from habilitations.models import Habilitation
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
 from reglementations.models import BDESEAvecAccord
@@ -60,7 +60,7 @@ def test_calculate_status_less_than_50_employees(
         effectif=effectif,
         bdese_accord=bdese_accord,
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     status = BDESEReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
@@ -91,7 +91,7 @@ def test_calculate_status_more_than_50_employees_with_habilited_user(
     effectif, bdese_class, entreprise_factory, alice, mocker
 ):
     entreprise = entreprise_factory(effectif=effectif, bdese_accord=False)
-    habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
+    habilitation = Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     habilitation.confirm()
     habilitation.save()
     annee = derniere_annee_a_remplir_bdese()
@@ -165,7 +165,7 @@ def test_calculate_status_more_than_50_employees_with_not_habilited_user(
     effectif, bdese_class, entreprise_factory, alice, mocker
 ):
     entreprise = entreprise_factory(effectif=effectif, bdese_accord=False)
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     annee = derniere_annee_a_remplir_bdese()
 
     status = BDESEReglementation.calculate_status(
@@ -205,7 +205,7 @@ def test_calculate_status_with_bdese_accord_with_not_habilited_user(
     effectif, alice, entreprise_factory, mocker
 ):
     entreprise = entreprise_factory(effectif=effectif, bdese_accord=True)
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     annee = derniere_annee_a_remplir_bdese()
 
     status = BDESEReglementation.calculate_status(
@@ -264,7 +264,7 @@ def test_calculate_status_with_bdese_accord_with_habilited_user(
     effectif, alice, entreprise_factory, mocker
 ):
     entreprise = entreprise_factory(effectif=effectif, bdese_accord=True)
-    habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
+    habilitation = Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     habilitation.confirm()
     habilitation.save()
     annee = derniere_annee_a_remplir_bdese()
