@@ -7,6 +7,7 @@ from api.exceptions import SirenError
 from api.exceptions import TooManyRequestError
 from api.recherche_entreprises import RECHERCHE_ENTREPRISE_TIMEOUT
 from api.recherche_entreprises import recherche_par_siren
+from api.recherche_entreprises import recherche_textuelle
 from entreprises.models import CaracteristiquesAnnuelles
 from utils.mock_response import MockedResponse
 
@@ -309,3 +310,19 @@ def test_recherche_par_siren_pas_d_activite_principale(activite_principale, mock
     infos = recherche_par_siren(SIREN)
 
     assert infos["code_NAF"] is None
+
+
+@pytest.mark.network
+def test_api_recherche_textuelle_fonctionnelle():
+    RECHERCHE = "DANONE"
+
+    entreprises = recherche_textuelle(RECHERCHE)
+
+    assert entreprises[0] == {
+        "siren": "552032534",
+        "denomination": "DANONE",
+    }
+    assert len(entreprises) == 5
+
+
+# TODO: ajouter des tests sur pas de résultat trouvé et les erreurs API

@@ -162,6 +162,19 @@ def mock_api_infos_entreprise(mocker):
 
 
 @pytest.fixture
+def mock_api_recherche_par_nom_ou_siren(mocker):
+    entreprises = [
+        {"siren": "000000001", "denomination": "Entreprise Test 1"},
+        {"siren": "889297453", "denomination": "YAAL COOP"},
+        {"siren": "552032534", "denomination": "DANONE"},
+    ]
+    return mocker.patch(
+        "api.infos_entreprise.recherche_par_nom_ou_siren",
+        return_value=entreprises,
+    )
+
+
+@pytest.fixture
 def mock_api_recherche_entreprises(mocker):
     return mocker.patch(
         "api.recherche_entreprises.recherche_par_siren",
