@@ -16,9 +16,10 @@ from api.sirene import convertit_tranche_effectif
 NOM_API = "recherche entreprises"
 RECHERCHE_ENTREPRISE_TIMEOUT = 10
 
+# documentation api recherche d'entreprises 1.0.0 https://www.data.gouv.fr/fr/dataservices/api-recherche-dentreprises/
+
 
 def recherche_par_siren(siren):
-    # documentation api recherche d'entreprises 1.0.0 https://api.gouv.fr/documentation/api-recherche-entreprises
     try:
         url = f"https://recherche-entreprises.api.gouv.fr/search?q={siren}&page=1&per_page=1&mtm_campaign=portail-rse"
         response = requests.get(url, timeout=RECHERCHE_ENTREPRISE_TIMEOUT)
@@ -82,3 +83,41 @@ def recherche_par_siren(siren):
     else:
         sentry_sdk.capture_message(API_ERROR_SENTRY_MESSAGE.format(NOM_API))
         raise ServerError(SERVER_ERROR)
+
+
+def recherche_textuelle(recherche):
+    url = "https://recherche-entreprises.api.gouv.fr/search"
+    params = {
+        "q": recherche,
+        "minimal": True,
+        "page": 1,
+        "per_page": 5,
+        "mtm_campaign": "portail-rse",
+    }
+
+    try:
+        response = requests.get(
+            url, params=params, timeout=RECHERCHE_ENTREPRISE_TIMEOUT
+        )
+    except Exception as e:
+        with sentry_sdk.new_scope() as scope:
+            scope.set_level("info")
+            sentry_sdk.capture_exception(e)
+        raise APIError(SERVER_ERROR)
+
+    if response.status_code == 200:
+        if not response.json()["total_results"]:
+            entreprises = []
+        else:
+            resultats = response.json()["results"]
+            entreprises = [
+                {
+                    "siren": resultat["siren"],
+                    "denomination": resultat["nom_raison_sociale"]
+                    or resultat["nom_complet"],
+                }
+                for resultat in resultats
+            ]
+        return entreprises
+
+    # TODO: gérer les autres statuts

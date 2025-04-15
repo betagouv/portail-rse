@@ -20,3 +20,9 @@ def infos_entreprise(siren, donnees_financieres=False):
         except APIError:
             infos.update(api.ratios_financiers.dernier_exercice_comptable_vide())
     return infos
+
+
+def recherche_par_nom_ou_siren(recherche):
+    # TODO: ajouter un fallback sur l'API Sirene
+    entreprises = api.recherche_entreprises.recherche_textuelle(recherche)
+    return entreprises

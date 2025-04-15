@@ -4,6 +4,7 @@ from datetime import date
 import pytest
 from django.urls import reverse
 from freezegun import freeze_time
+from pytest_django.asserts import assertTemplateUsed
 
 import api.exceptions
 from conftest import CODE_PAYS_PORTUGAL
@@ -750,3 +751,26 @@ def test_echec_api_search_entreprise_car_l_API_infos_entreprise_est_en_erreur(
     assert response.json() == {
         "error": "Panne serveur",
     }
+
+
+def test_recherche_entreprise_avec_resultats(
+    client, mock_api_recherche_par_nom_ou_siren
+):
+    entreprises = [
+        {"siren": "000000001", "denomination": "Entreprise Test 1"},
+        {"siren": "889297453", "denomination": "YAAL COOP"},
+        {"siren": "552032534", "denomination": "DANONE"},
+    ]
+    mock_api_recherche_par_nom_ou_siren.return_value = entreprises
+    recherche = "Entreprise SAS"
+
+    response = client.get(
+        "/entreprises/fragments/recherche-entreprise",
+        query_params={"recherche": recherche},
+    )
+
+    mock_api_recherche_par_nom_ou_siren.assert_called_once_with(recherche)
+    assert response.status_code == 200
+    context = response.context
+    assert context["entreprises"] == entreprises
+    assertTemplateUsed(response, "fragments/resultats_recherche_entreprise.html")
