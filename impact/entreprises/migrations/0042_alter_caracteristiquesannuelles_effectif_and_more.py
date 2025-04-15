@@ -38,7 +38,9 @@ def maj_effectif_0_49(apps, schema_editor):
 
 def nouvel_effectif(entreprise):
     try:
-        infos_entreprise = api.recherche_entreprises.recherche(entreprise.siren)
+        infos_entreprise = api.recherche_entreprises.recherche_par_siren(
+            entreprise.siren
+        )
         if infos_entreprise["effectif"] == "0-9":
             return "0-9"
         else:

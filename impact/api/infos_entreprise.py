@@ -7,7 +7,7 @@ from api.exceptions import SirenError
 
 def infos_entreprise(siren, donnees_financieres=False):
     try:
-        infos = api.recherche_entreprises.recherche(siren)
+        infos = api.recherche_entreprises.recherche_par_siren(siren)
     except SirenError:
         raise
     except APIError:

@@ -25,7 +25,7 @@ class Command(BaseCommand):
 
 
 def maj(entreprise):
-    infos_entreprise = api.recherche_entreprises.recherche(entreprise.siren)
+    infos_entreprise = api.recherche_entreprises.recherche_par_siren(entreprise.siren)
     entreprise.categorie_juridique_sirene = infos_entreprise[
         "categorie_juridique_sirene"
     ]

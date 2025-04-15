@@ -4,7 +4,7 @@ import time
 from django.db import migrations
 from django.db import models
 
-from api.recherche_entreprises import recherche
+from api.recherche_entreprises import recherche_par_siren
 from entreprises.models import CaracteristiquesAnnuelles as Caracs
 
 
@@ -20,7 +20,7 @@ def supprime_la_tranche_50_299(apps, schema_editor):
 
 
 def devine_effectif(siren):
-    resultats = recherche(siren)
+    resultats = recherche_par_siren(siren)
     time.sleep(
         1 / 5
     )  # attendre après un appel à API entreprise pour éviter de dépasser le quota (7 appels / seconde)
