@@ -12,7 +12,7 @@ class Command(BaseCommand):
                 print(f"IGNORE: {entreprise.siren} {entreprise.denomination}")
             else:
                 try:
-                    infos_entreprise = api.recherche_entreprises.recherche(
+                    infos_entreprise = api.recherche_entreprises.recherche_par_siren(
                         entreprise.siren
                     )
                     entreprise.denomination = infos_entreprise["denomination"]
