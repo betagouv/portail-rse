@@ -3,6 +3,7 @@ from datetime import datetime
 from io import BytesIO
 
 import pytest
+from django.contrib.messages import WARNING
 from django.urls import reverse
 from openpyxl import load_workbook
 from pytest_django.asserts import assertTemplateUsed
@@ -489,3 +490,55 @@ def test_datapoints_csrd_au_format_xlsx_retourne_une_404_si_csrd_inexistante(
     )
 
     assert response.status_code == 404
+
+
+def test_le_lien_analyse_d_écart_redirige_vers_l_étape_analyse_d_ecart_de_la_csrd(
+    client, alice, entreprise_factory
+):
+    entreprise = entreprise_factory()
+    habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
+    RapportCSRD.objects.create(
+        entreprise=entreprise,
+        proprietaire=alice,
+        annee=date.today().year,
+    )
+    client.force_login(alice)
+    url = "/csrd/etape-analyse-ecart"
+
+    response = client.get(url, follow=True)
+
+    assert response.status_code == 200
+    redirect_url = reverse(
+        "reglementations:gestion_csrd", args=[entreprise.siren, "analyse-ecart"]
+    )
+    assert response.redirect_chain == [(redirect_url, 302)]
+
+
+def test_lien_analyse_d_écart_redirige_vers_la_page_d_ajout_d_entreprise_si_l_utilisateur_n_a_pas_d_entreprise(
+    client, alice
+):
+    client.force_login(alice)
+    url = "/csrd/etape-analyse-ecart"
+
+    response = client.get(url, follow=True)
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
+    messages = list(response.context["messages"])
+    assert messages[0].level == WARNING
+    assert (
+        messages[0].message
+        == "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à l'espace Rapport de Durabilité",
+    )
+
+
+def test_lien_analyse_d_écart_redirige_vers_la_page_de_connexion_si_l_utilisateur_n_est_pas_connecté(
+    client,
+):
+    url = "/csrd/etape-analyse-ecart"
+
+    response = client.get(url, follow=True)
+
+    assert response.status_code == 200
+    connexion_url = reverse("users:login")
+    assert response.redirect_chain == [(f"{connexion_url}?next={url}", 302)]

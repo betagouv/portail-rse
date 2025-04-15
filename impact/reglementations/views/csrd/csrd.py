@@ -498,7 +498,9 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
                 "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à l'espace Rapport de Durabilité",
             )
             return redirect("entreprises:entreprises")
-        return redirect("reglementations:csrd", siren=entreprise.siren)
+        return redirect(
+            "reglementations:gestion_csrd", siren=entreprise.siren, id_etape=id_etape
+        )
 
     entreprise = get_object_or_404(Entreprise, siren=siren)
     if not is_user_attached_to_entreprise(request.user, entreprise):

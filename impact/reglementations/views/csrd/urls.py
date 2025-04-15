@@ -15,6 +15,11 @@ from reglementations.views.csrd.csrd import gestion_csrd
 
 urlpatterns = [
     path(
+        "csrd/etape-<str:id_etape>",
+        gestion_csrd,
+        name="gestion_csrd",
+    ),
+    path(
         "csrd/<str:siren>/etape-<str:id_etape>",
         gestion_csrd,
         name="gestion_csrd",
