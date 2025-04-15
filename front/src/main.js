@@ -2,7 +2,6 @@ import DenominationEntreprise from './lib/DenominationEntreprise.svelte'
 import ExternalFieldToggle from './lib/ExternalFieldToggle.svelte'
 import GroupeFields from './lib/GroupeFields.svelte'
 import InteretPublicField from './lib/InteretPublicField.svelte'
-import SimulationForm from './lib/SimulationForm.svelte'
 import SearchEntreprise from './lib/SearchEntreprise.svelte'
 import SeeMoreOrLess from './lib/SeeMoreOrLess.svelte'
 import PasswordValidattion from './lib/PasswordValidattion.svelte'
@@ -43,18 +42,6 @@ const estInteretPublicFieldElement = document.getElementById("svelte-est-interet
 if (estInteretPublicFieldElement) {
   new InteretPublicField({
     target: estInteretPublicFieldElement,
-  })
-}
-
-const SimulationFormElement = document.getElementById("svelte-search-entreprise-in-simulation-form")
-if (SimulationFormElement) {
-  new SimulationForm({
-    target: SimulationFormElement,
-    props: {
-      siren: SimulationFormElement.dataset.siren,
-      denomination: SimulationFormElement.dataset.denomination
-    },
-    hydrate: true,
   })
 }
 
