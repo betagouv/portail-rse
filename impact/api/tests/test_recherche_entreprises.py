@@ -12,7 +12,7 @@ from utils.mock_response import MockedResponse
 
 
 @pytest.mark.network
-def test_api_fonctionnelle():
+def test_api_recherche_par_siren_fonctionnelle():
     SIREN = "130025265"
     infos = recherche_par_siren(SIREN)
 
@@ -26,7 +26,7 @@ def test_api_fonctionnelle():
     }
 
 
-def test_succes_recherche_comportant_la_raison_sociale(mocker):
+def test_succes_recherche_par_siren_comportant_la_raison_sociale(mocker):
     SIREN = "123456789"
     # la plupart des champs inutilisés de la réponse ont été supprimés
     json_content = {
@@ -62,7 +62,7 @@ def test_succes_recherche_comportant_la_raison_sociale(mocker):
     )
 
 
-def test_succes_recherche_sans_la_raison_sociale(mocker):
+def test_succes_recherche_par_siren_sans_la_raison_sociale(mocker):
     SIREN = "123456789"
     json_content = {
         "total_results": 1,
@@ -84,7 +84,7 @@ def test_succes_recherche_sans_la_raison_sociale(mocker):
     assert infos["denomination"] == "ENTREPRISE"
 
 
-def test_succes_pas_de_resultat(mocker):
+def test_succes_recherche_par_siren_pas_de_resultat(mocker):
     SIREN = "123456789"
     json_content = {
         "results": [],
@@ -104,7 +104,7 @@ def test_succes_pas_de_resultat(mocker):
     )
 
 
-def test_echec_recherche_requete_api_invalide(mocker):
+def test_echec_recherche_par_siren_requete_api_invalide(mocker):
     SIREN = "123456789"
     mocker.patch("requests.get", return_value=MockedResponse(400))
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
@@ -121,7 +121,7 @@ def test_echec_recherche_requete_api_invalide(mocker):
     )
 
 
-def test_echec_trop_de_requetes(mocker):
+def test_echec_recherche_par_siren_trop_de_requetes(mocker):
     SIREN = "123456789"
     mocker.patch("requests.get", return_value=MockedResponse(429))
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
@@ -137,7 +137,7 @@ def test_echec_trop_de_requetes(mocker):
     )
 
 
-def test_echec_erreur_de_l_API(mocker):
+def test_echec_recherche_par_siren_erreur_de_l_API(mocker):
     SIREN = "123456789"
     mocker.patch("requests.get", return_value=MockedResponse(500))
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
@@ -152,7 +152,7 @@ def test_echec_erreur_de_l_API(mocker):
     )
 
 
-def test_echec_exception_provoquee_par_l_api(mocker):
+def test_echec_recherche_par_siren_exception_provoquee_par_l_api(mocker):
     """le Timeout est un cas réel mais l'implémentation attrape toutes les erreurs possibles"""
     SIREN = "123456789"
     mocker.patch("requests.get", side_effect=Timeout)
@@ -170,7 +170,9 @@ def test_echec_exception_provoquee_par_l_api(mocker):
     )
 
 
-def test_entreprise_inexistante_mais_pourtant_retournée_par_l_API(mocker):
+def test_entreprise_inexistante_mais_pourtant_retournée_par_l_API_recherche_par_siren(
+    mocker,
+):
     # Le SIREN ne correspond pas à une entreprise réelle mais l'API répond
     # comme si l'entreprise existait. Actuellement, le seul cas connu est le siren 0000000000.
     # On souhaite être informé si ce n'est pas le cas car d'autres cas similaires pourrait être retournés.
@@ -206,7 +208,7 @@ def test_entreprise_inexistante_mais_pourtant_retournée_par_l_API(mocker):
 
 
 @pytest.mark.parametrize("nature_juridique", ["", None])
-def test_pas_de_nature_juridique(nature_juridique, mocker):
+def test_recherche_par_siren_pas_de_nature_juridique(nature_juridique, mocker):
     # On se sert de la catégorie juridique pour certaines réglementations qu'on récupère via la nature juridique renvoyée par l'API.
     # Normalement toutes les entreprises en ont une.
     # On souhaite être informé si ce n'est pas le cas car le diagnostic pour ces réglementations pourrait être faux.
@@ -235,7 +237,7 @@ def test_pas_de_nature_juridique(nature_juridique, mocker):
     assert infos["categorie_juridique_sirene"] is None
 
 
-def test_pas_de_code_pays_etranger(mocker):
+def test_recherche_par_siren_pas_de_code_pays_etranger(mocker):
     # On souhaite être informé s'il est manquant (utilisé dans la réglementation CSRD).
     SIREN = "123456789"
     json_content = {
@@ -262,7 +264,7 @@ def test_pas_de_code_pays_etranger(mocker):
     assert infos["code_pays_etranger_sirene"] is None
 
 
-def test_code_pays_etranger_vaut_null_car_en_France(mocker):
+def test_recherche_par_siren_code_pays_etranger_vaut_null_car_en_France(mocker):
     SIREN = "123456789"
     json_content = {
         "total_results": 1,
@@ -287,7 +289,7 @@ def test_code_pays_etranger_vaut_null_car_en_France(mocker):
 
 
 @pytest.mark.parametrize("activite_principale", ["", None])
-def test_pas_d_activite_principale(activite_principale, mocker):
+def test_recherche_par_siren_pas_d_activite_principale(activite_principale, mocker):
     SIREN = "123456789"
     json_content = {
         "total_results": 1,
