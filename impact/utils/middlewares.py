@@ -7,6 +7,8 @@ class ExtendUserMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
+        request.habilitations = []
+        request.entreprises = []
         if request.user.is_authenticated:
             # on ajoute les habilitations et les entreprises de l'utilisateur
             # pour éviter d'effectuer des requêtes supplementaires
@@ -14,6 +16,9 @@ class ExtendUserMiddleware:
             request.user = User.objects.prefetch_related(
                 "entreprise_set", "habilitation_set"
             ).get(pk=request.user.pk)
+            # on ajoute des raccourcis vers les habilitations et entreprises de l'utilisateur
+            request.habilitations = request.user.habilitation_set.all()
+            request.entreprises = request.user.entreprise_set.all()
 
         response = self.get_response(request)
 
