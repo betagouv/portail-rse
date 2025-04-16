@@ -11,9 +11,9 @@ SIREN = "123456789"
 
 
 def test_infos_entreprise_succes_api_recherche_entreprises(
-    mock_api_recherche_entreprises, mock_api_sirene, mock_api_ratios_financiers
+    mock_api_recherche_par_siren, mock_api_sirene, mock_api_ratios_financiers
 ):
-    mock_api_recherche_entreprises.return_value = {
+    mock_api_recherche_par_siren.return_value = {
         "siren": SIREN,
         "denomination": "Entreprise SAS",
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
@@ -23,7 +23,7 @@ def test_infos_entreprise_succes_api_recherche_entreprises(
     }
     infos = infos_entreprise(SIREN)
 
-    mock_api_recherche_entreprises.assert_called_once_with(SIREN)
+    mock_api_recherche_par_siren.assert_called_once_with(SIREN)
     assert not mock_api_sirene.called
     assert not mock_api_ratios_financiers.called
     assert infos == {
@@ -37,9 +37,9 @@ def test_infos_entreprise_succes_api_recherche_entreprises(
 
 
 def test_infos_entreprise_echec_api_recherche_entreprises_erreur_de_l_api_puis_succes_api_sirene(
-    mock_api_recherche_entreprises, mock_api_sirene
+    mock_api_recherche_par_siren, mock_api_sirene
 ):
-    mock_api_recherche_entreprises.side_effect = APIError
+    mock_api_recherche_par_siren.side_effect = APIError
     mock_api_sirene.return_value = {
         "siren": SIREN,
         "denomination": "Entreprise SAS",
@@ -50,7 +50,7 @@ def test_infos_entreprise_echec_api_recherche_entreprises_erreur_de_l_api_puis_s
     }
     infos = infos_entreprise(SIREN)
 
-    mock_api_recherche_entreprises.assert_called_once_with(SIREN)
+    mock_api_recherche_par_siren.assert_called_once_with(SIREN)
     mock_api_sirene.assert_called_once_with(SIREN)
     assert infos == {
         "siren": SIREN,
@@ -63,22 +63,22 @@ def test_infos_entreprise_echec_api_recherche_entreprises_erreur_de_l_api_puis_s
 
 
 def test_infos_entreprise_echec_api_recherche_entreprises_siren_invalide(
-    mock_api_recherche_entreprises, mock_api_sirene
+    mock_api_recherche_par_siren, mock_api_sirene
 ):
-    mock_api_recherche_entreprises.side_effect = SirenError("Message d'erreur")
+    mock_api_recherche_par_siren.side_effect = SirenError("Message d'erreur")
 
     with pytest.raises(SirenError) as e:
         infos_entreprise(SIREN)
 
-    mock_api_recherche_entreprises.assert_called_once_with(SIREN)
+    mock_api_recherche_par_siren.assert_called_once_with(SIREN)
     assert not mock_api_sirene.called
     assert str(e.value) == "Message d'erreur"
 
 
 def test_infos_entreprise_echec_api_recherche_entreprises_et_api_sirene(
-    mock_api_recherche_entreprises, mock_api_sirene
+    mock_api_recherche_par_siren, mock_api_sirene
 ):
-    mock_api_recherche_entreprises.side_effect = APIError(
+    mock_api_recherche_par_siren.side_effect = APIError(
         "Message d'erreur recherche entreprises"
     )
     mock_api_sirene.side_effect = APIError("Message d'erreur sirene")
@@ -86,15 +86,15 @@ def test_infos_entreprise_echec_api_recherche_entreprises_et_api_sirene(
     with pytest.raises(APIError) as e:
         infos_entreprise(SIREN)
 
-    mock_api_recherche_entreprises.assert_called_once_with(SIREN)
+    mock_api_recherche_par_siren.assert_called_once_with(SIREN)
     mock_api_sirene.assert_called_once_with(SIREN)
     assert str(e.value) == "Message d'erreur sirene"
 
 
 def test_infos_entreprise_incluant_les_données_financières(
-    mock_api_recherche_entreprises, mock_api_ratios_financiers
+    mock_api_recherche_par_siren, mock_api_ratios_financiers
 ):
-    mock_api_recherche_entreprises.return_value = {
+    mock_api_recherche_par_siren.return_value = {
         "siren": SIREN,
         "denomination": "Entreprise SAS",
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
@@ -110,7 +110,7 @@ def test_infos_entreprise_incluant_les_données_financières(
 
     infos = infos_entreprise(SIREN, donnees_financieres=True)
 
-    mock_api_recherche_entreprises.assert_called_once_with(SIREN)
+    mock_api_recherche_par_siren.assert_called_once_with(SIREN)
     mock_api_ratios_financiers.assert_called_once_with(SIREN)
     assert infos == {
         "siren": SIREN,
@@ -126,9 +126,9 @@ def test_infos_entreprise_incluant_les_données_financières(
 
 
 def test_infos_entreprise_echec_de_l_API_ratios_financiers_non_bloquant(
-    mock_api_recherche_entreprises, mock_api_ratios_financiers
+    mock_api_recherche_par_siren, mock_api_ratios_financiers
 ):
-    mock_api_recherche_entreprises.return_value = {
+    mock_api_recherche_par_siren.return_value = {
         "siren": SIREN,
         "denomination": "Entreprise SAS",
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
@@ -140,7 +140,7 @@ def test_infos_entreprise_echec_de_l_API_ratios_financiers_non_bloquant(
 
     infos = infos_entreprise(SIREN, donnees_financieres=True)
 
-    mock_api_recherche_entreprises.assert_called_once_with(SIREN)
+    mock_api_recherche_par_siren.assert_called_once_with(SIREN)
     mock_api_ratios_financiers.assert_called_once_with(SIREN)
     assert infos == {
         "siren": SIREN,
