@@ -119,5 +119,12 @@ def recherche_textuelle(recherche):
                 for resultat in resultats
             ]
         return entreprises
-
-    # TODO: gérer les autres statuts
+    elif response.status_code == 429:
+        sentry_sdk.capture_message(TOO_MANY_REQUESTS_SENTRY_MESSAGE.format(NOM_API))
+        raise TooManyRequestError(TOO_MANY_REQUESTS_ERROR)
+    elif response.status_code == 400:
+        sentry_sdk.capture_message(INVALID_REQUEST_SENTRY_MESSAGE.format(NOM_API))
+        raise APIError(SERVER_ERROR)
+    else:
+        sentry_sdk.capture_message(API_ERROR_SENTRY_MESSAGE.format(NOM_API))
+        raise ServerError(SERVER_ERROR)

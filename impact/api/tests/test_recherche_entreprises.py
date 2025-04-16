@@ -325,4 +325,84 @@ def test_api_recherche_textuelle_fonctionnelle():
     assert len(entreprises) == 5
 
 
-# TODO: ajouter des tests sur pas de résultat trouvé et les erreurs API
+def test_api_recherche_textuelle_pas_de_resultat(mocker):
+    RECHERCHE = "DANONE"
+
+    json_content = {
+        "results": [],
+        "total_results": 0,
+        "page": 1,
+        "per_page": 5,
+        "total_pages": 0,
+    }
+    mocker.patch("requests.get", return_value=MockedResponse(200, json_content))
+
+    entreprises = recherche_textuelle(RECHERCHE)
+
+    assert entreprises == []
+
+
+def test_echec_recherche_textuelle_requete_api_invalide(mocker):
+    RECHERCHE = "DANONE"
+    mocker.patch("requests.get", return_value=MockedResponse(400))
+    capture_message_mock = mocker.patch("sentry_sdk.capture_message")
+
+    with pytest.raises(APIError) as e:
+        recherche_textuelle(RECHERCHE)
+
+    capture_message_mock.assert_called_once_with(
+        "Requête invalide sur l'API recherche entreprises"
+    )
+    assert (
+        str(e.value)
+        == "Le service est actuellement indisponible. Merci de réessayer plus tard."
+    )
+
+
+def test_echec_recherche_textuelle_trop_de_requetes(mocker):
+    RECHERCHE = "DANONE"
+    mocker.patch("requests.get", return_value=MockedResponse(429))
+    capture_message_mock = mocker.patch("sentry_sdk.capture_message")
+
+    with pytest.raises(TooManyRequestError) as e:
+        recherche_textuelle(RECHERCHE)
+
+    capture_message_mock.assert_called_once_with(
+        "Trop de requêtes sur l'API recherche entreprises"
+    )
+    assert (
+        str(e.value) == "Le service est temporairement surchargé. Merci de réessayer."
+    )
+
+
+def test_echec_recherche_textuelle_erreur_de_l_API(mocker):
+    RECHERCHE = "DANONE"
+    mocker.patch("requests.get", return_value=MockedResponse(500))
+    capture_message_mock = mocker.patch("sentry_sdk.capture_message")
+
+    with pytest.raises(ServerError) as e:
+        recherche_textuelle(RECHERCHE)
+
+    capture_message_mock.assert_called_once_with("Erreur API recherche entreprises")
+    assert (
+        str(e.value)
+        == "Le service est actuellement indisponible. Merci de réessayer plus tard."
+    )
+
+
+def test_echec_recherche_par_siren_exception_provoquee_par_l_api(mocker):
+    """le Timeout est un cas réel mais l'implémentation attrape toutes les erreurs possibles"""
+    RECHERCHE = "DANONE"
+    mocker.patch("requests.get", side_effect=Timeout)
+    capture_exception_mock = mocker.patch("sentry_sdk.capture_exception")
+
+    with pytest.raises(APIError) as e:
+        recherche_textuelle(RECHERCHE)
+
+    capture_exception_mock.assert_called_once()
+    args, _ = capture_exception_mock.call_args
+    assert isinstance(args[0], Timeout)
+    assert (
+        str(e.value)
+        == "Le service est actuellement indisponible. Merci de réessayer plus tard."
+    )
