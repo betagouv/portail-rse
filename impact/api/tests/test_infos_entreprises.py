@@ -5,9 +5,16 @@ import pytest
 from api.exceptions import APIError
 from api.exceptions import SirenError
 from api.infos_entreprise import infos_entreprise
+from api.infos_entreprise import recherche_par_nom_ou_siren
 from entreprises.models import CaracteristiquesAnnuelles
 
 SIREN = "123456789"
+RECHERCHE = "Danone"
+ENTREPRISES_TROUVEES = [
+    {"siren": "000000001", "denomination": "Entreprise Test 1"},
+    {"siren": "889297453", "denomination": "YAAL COOP"},
+    {"siren": "552032534", "denomination": "DANONE"},
+]
 
 
 def test_infos_entreprise_succes_api_recherche_entreprises(
@@ -153,3 +160,14 @@ def test_infos_entreprise_echec_de_l_API_ratios_financiers_non_bloquant(
         "tranche_chiffre_affaires": None,
         "tranche_chiffre_affaires_consolide": None,
     }
+
+
+def test_recherche_par_nom_ou_siren_succes_api_recherche_entreprises(
+    mock_api_recherche_textuelle,
+):
+    mock_api_recherche_textuelle.return_value = ENTREPRISES_TROUVEES
+
+    entreprises = recherche_par_nom_ou_siren(RECHERCHE)
+
+    mock_api_recherche_textuelle.assert_called_once_with(RECHERCHE)
+    assert entreprises == ENTREPRISES_TROUVEES
