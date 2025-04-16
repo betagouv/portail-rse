@@ -41,3 +41,8 @@ def mock_api_ratios_financiers(mocker):
             "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_MOINS_DE_60M,
         },
     )
+
+
+@pytest.fixture
+def mock_api_recherche_textuelle(mocker):
+    return mocker.patch("api.recherche_entreprises.recherche_textuelle")
