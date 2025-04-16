@@ -104,7 +104,7 @@ def test_tableau_de_bord_avec_utilisateur_authentifié(client, entreprise):
 
 
 def test_tableau_de_bord_entreprise_non_qualifiee_redirige_vers_la_qualification(
-    client, alice, entreprise_non_qualifiee, mock_api_recherche_entreprises
+    client, alice, entreprise_non_qualifiee, mock_api_infos_entreprise
 ):
     attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
     client.force_login(alice)

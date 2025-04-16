@@ -121,7 +121,7 @@ def test_create_user_with_invalid_siren(client, db):
 
 
 def test_create_user_but_cant_send_confirm_email(
-    client, db, mailoutbox, mocker, mock_api_recherche_entreprises
+    client, db, mailoutbox, mocker, mock_api_infos_entreprise
 ):
     mock_send_confirm_email = mocker.patch(
         "users.views._send_confirm_email", return_value=False
