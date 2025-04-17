@@ -190,11 +190,15 @@ COOKIE_DOMAIN = os.getenv("COOKIE_DOMAIN", "")
 
 # Django-vite configuration for static files build with vite
 # https://github.com/MrBin99/django-vite
-DJANGO_VITE_ASSETS_PATH = Path(BASE_DIR, "static", "svelte")
-DJANGO_VITE_DEV_MODE = DEBUG
-DJANGO_VITE_MANIFEST_PATH = Path(DJANGO_VITE_ASSETS_PATH, "manifest.json")
-DJANGO_VITE_DEV_SERVER_PORT = 5173
-DJANGO_VITE_STATIC_URL_PREFIX = "svelte"
+DJANGO_VITE = {
+    "default": {
+        "dev_mode": DEBUG,
+        "manifest_path": Path(BASE_DIR, "static/svelte/manifest.json"),
+        "dev_server_port": 5173,
+        "static_url_prefix": "svelte",
+    }
+}
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
