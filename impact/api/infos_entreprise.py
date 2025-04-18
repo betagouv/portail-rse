@@ -12,7 +12,7 @@ def infos_entreprise(siren, donnees_financieres=False):
         raise
     except APIError:
         # utilise l'API Sirene en fallback
-        infos = api.sirene.recherche_unite_legale(siren)
+        infos = api.sirene.recherche_unite_legale_par_siren(siren)
 
     if donnees_financieres:
         try:

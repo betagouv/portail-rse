@@ -7,16 +7,16 @@ from api.exceptions import APIError
 from api.exceptions import ServerError
 from api.exceptions import SirenError
 from api.exceptions import TooManyRequestError
-from api.sirene import recherche_unite_legale
+from api.sirene import recherche_unite_legale_par_siren
 from api.sirene import SIRENE_TIMEOUT
 from entreprises.models import CaracteristiquesAnnuelles
 from utils.mock_response import MockedResponse
 
 
 @pytest.mark.network
-def test_api_fonctionnelle():
+def test_api_recherche_unite_legale_par_siren_fonctionnelle():
     SIREN = "130025265"
-    infos = recherche_unite_legale(SIREN)
+    infos = recherche_unite_legale_par_siren(SIREN)
 
     assert infos == {
         "siren": SIREN,
@@ -28,7 +28,9 @@ def test_api_fonctionnelle():
     }
 
 
-def test_succès_avec_résultat_comportant_la_denomination(mocker, settings):
+def test_recherche_par_siren_succès_avec_résultat_comportant_la_denomination(
+    mocker, settings
+):
     api_sirene_key = "test-key"
     SIREN = "123456789"
     # la plupart des champs inutilisés de la réponse ont été supprimés
@@ -52,7 +54,7 @@ def test_succès_avec_résultat_comportant_la_denomination(mocker, settings):
     )
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
-    infos = recherche_unite_legale(SIREN)
+    infos = recherche_unite_legale_par_siren(SIREN)
 
     assert infos["denomination"] == "ENTREPRISE"
     faked_request.assert_called_once_with(
@@ -65,7 +67,7 @@ def test_succès_avec_résultat_comportant_la_denomination(mocker, settings):
     )
 
 
-def test_succès_avec_résultat_sans_la_denomination(mocker):
+def test_recherche_par_siren_succès_avec_résultat_sans_la_denomination(mocker):
     SIREN = "478464803"
     # un entrepreneur individuel n'a pas de dénomination mais a un nom
     # le nom complet renvoyé par l'API recherche entreprises est plus complet que le nom
@@ -86,18 +88,18 @@ def test_succès_avec_résultat_sans_la_denomination(mocker):
     }
     mocker.patch("requests.get", return_value=MockedResponse(200, json_content))
 
-    infos = recherche_unite_legale(SIREN)
+    infos = recherche_unite_legale_par_siren(SIREN)
 
     assert infos["denomination"] == "COOPER"
 
 
-def test_succès_pas_de_résultat(mocker):
+def test_recherche_par_siren_succès_pas_de_résultat(mocker):
     SIREN = "000000000"
     # un siren non trouvé renvoie une 404
     mocker.patch("requests.get", return_value=MockedResponse(404))
 
     with pytest.raises(SirenError) as e:
-        recherche_unite_legale(SIREN)
+        recherche_unite_legale_par_siren(SIREN)
 
     assert (
         str(e.value)
@@ -105,14 +107,14 @@ def test_succès_pas_de_résultat(mocker):
     )
 
 
-def test_echec_exception_provoquee_par_l_api(mocker):
+def test_recherche_par_siren_echec_exception_provoquee_par_l_api(mocker):
     """le Timeout est un cas réel mais l'implémentation attrape toutes les erreurs possibles"""
     SIREN = "123456789"
     mocker.patch("requests.get", side_effect=Timeout)
     capture_exception_mock = mocker.patch("sentry_sdk.capture_exception")
 
     with pytest.raises(APIError) as e:
-        recherche_unite_legale(SIREN)
+        recherche_unite_legale_par_siren(SIREN)
 
     capture_exception_mock.assert_called_once()
     args, _ = capture_exception_mock.call_args
@@ -123,13 +125,13 @@ def test_echec_exception_provoquee_par_l_api(mocker):
     )
 
 
-def test_echec_trop_de_requetes(mocker):
+def test_recherche_par_siren_echec_trop_de_requetes(mocker):
     SIREN = "123456789"
     mocker.patch("requests.get", return_value=MockedResponse(429))
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
     with pytest.raises(TooManyRequestError) as e:
-        recherche_unite_legale(SIREN)
+        recherche_unite_legale_par_siren(SIREN)
 
     capture_message_mock.assert_called_once_with("Trop de requêtes sur l'API sirene")
     assert (
@@ -137,13 +139,13 @@ def test_echec_trop_de_requetes(mocker):
     )
 
 
-def test_echec_erreur_de_l_API(mocker):
+def test_recherche_par_siren_echec_erreur_de_l_API(mocker):
     SIREN = "123456789"
     mocker.patch("requests.get", return_value=MockedResponse(500))
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
     with pytest.raises(ServerError) as e:
-        recherche_unite_legale(SIREN)
+        recherche_unite_legale_par_siren(SIREN)
 
     capture_message_mock.assert_called_once_with("Erreur API sirene")
     assert (
@@ -176,7 +178,7 @@ def test_pas_de_categorie_juridique(categorie_juridique, mocker):
     mocker.patch("requests.get", return_value=MockedResponse(200, json_content))
     capture_message_mock = mocker.patch("sentry_sdk.capture_message")
 
-    infos = recherche_unite_legale(SIREN)
+    infos = recherche_unite_legale_par_siren(SIREN)
 
     capture_message_mock.assert_any_call(
         "Catégorie juridique récupérée par l'API sirene invalide"
@@ -204,6 +206,6 @@ def test_pas_d_activite_principale(activite_principale, mocker):
     }
     mocker.patch("requests.get", return_value=MockedResponse(200, json_content))
 
-    infos = recherche_unite_legale(SIREN)
+    infos = recherche_unite_legale_par_siren(SIREN)
 
     assert infos["code_NAF"] is None
