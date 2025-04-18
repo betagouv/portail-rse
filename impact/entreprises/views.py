@@ -201,7 +201,8 @@ def search_entreprise(request, siren):
 def recherche_entreprise(request):
     entreprises = []
     erreur = None
-    if recherche := request.GET.get("recherche"):
+    recherche = request.GET.get("recherche")
+    if recherche:
         try:
             entreprises = api.infos_entreprise.recherche_par_nom_ou_siren(recherche)
         except APIError as e:
@@ -209,5 +210,5 @@ def recherche_entreprise(request):
     return render(
         request,
         "fragments/resultats_recherche_entreprise.html",
-        context={"entreprises": entreprises, "erreur": erreur},
+        context={"entreprises": entreprises, "erreur": erreur, "recherche": recherche},
     )
