@@ -390,7 +390,7 @@ def test_echec_recherche_textuelle_erreur_de_l_API(mocker):
     )
 
 
-def test_echec_recherche_par_siren_exception_provoquee_par_l_api(mocker):
+def test_echec_recherche_textuelle_exception_provoquee_par_l_api(mocker):
     """le Timeout est un cas réel mais l'implémentation attrape toutes les erreurs possibles"""
     RECHERCHE = "DANONE"
     mocker.patch("requests.get", side_effect=Timeout)
