@@ -32,6 +32,7 @@ urlpatterns = (
     [
         path("", include("public.urls")),
         path("", include("entreprises.urls")),
+        path("", include("habilitations.urls")),
         path("", include("reglementations.urls")),
         path("", include("users.urls")),
         path("trigger-error-for-sentry-debug/", trigger_error),
