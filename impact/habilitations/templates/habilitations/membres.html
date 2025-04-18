@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Membres de l'entreprise - Portail RSE{% endblock %}
+
+{% block content %}
+
+    <div class="fr-container fr-my-4w">
+        <h2>Membres {% if entreprise.denomination %}liés à {{ entreprise.denomination }}{% endif %}</h2>
+
+        <ul>
+            {% for habilitation in entreprise.habilitation_set.all %}
+                <li>{{ habilitation.user.email }}</li>
+            {% endfor %}
+        </ul>
+
+    </div>
+{% endblock %}
