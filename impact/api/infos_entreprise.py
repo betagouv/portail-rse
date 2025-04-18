@@ -23,6 +23,8 @@ def infos_entreprise(siren, donnees_financieres=False):
 
 
 def recherche_par_nom_ou_siren(recherche):
-    # TODO: ajouter un fallback sur l'API Sirene
-    entreprises = api.recherche_entreprises.recherche_textuelle(recherche)
+    try:
+        entreprises = api.recherche_entreprises.recherche_textuelle(recherche)
+    except APIError:
+        entreprises = api.sirene.recherche_unites_legales_par_nom_ou_siren(recherche)
     return entreprises

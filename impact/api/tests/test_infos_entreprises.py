@@ -52,6 +52,11 @@ def mock_api_recherche_textuelle(mocker):
     return mocker.patch("api.recherche_entreprises.recherche_textuelle")
 
 
+@pytest.fixture
+def mock_api_recherche_unites_legales_par_nom_ou_siren(mocker):
+    return mocker.patch("api.sirene.recherche_unites_legales_par_nom_ou_siren")
+
+
 def test_infos_entreprise_succes_api_recherche_entreprises(
     mock_api_recherche_par_siren, mock_api_sirene, mock_api_ratios_financiers
 ):
@@ -89,7 +94,7 @@ def test_infos_entreprise_echec_api_recherche_entreprises_siren_invalide(
     assert str(e.value) == "Message d'erreur"
 
 
-def test_infos_entreprise_echec_api_recherche_entreprises_et_api_sirene(
+def test_infos_entreprise_echecs_api_recherche_entreprises_et_api_sirene(
     mock_api_recherche_par_siren, mock_api_sirene
 ):
     mock_api_recherche_par_siren.side_effect = APIError(
@@ -135,7 +140,7 @@ def test_infos_entreprise_echec_de_l_API_ratios_financiers_non_bloquant(
 
 
 def test_recherche_par_nom_ou_siren_succes_api_recherche_entreprises(
-    mock_api_recherche_textuelle,
+    mock_api_recherche_textuelle, mock_api_recherche_unites_legales_par_nom_ou_siren
 ):
     mock_api_recherche_textuelle.return_value = ENTREPRISES_TROUVEES
 
@@ -143,3 +148,41 @@ def test_recherche_par_nom_ou_siren_succes_api_recherche_entreprises(
 
     mock_api_recherche_textuelle.assert_called_once_with(RECHERCHE)
     assert entreprises == ENTREPRISES_TROUVEES
+    assert not mock_api_recherche_unites_legales_par_nom_ou_siren.called
+
+
+def test_recherche_par_nom_ou_siren_echec_api_recherche_entreprises_erreur_de_l_api_puis_succes_api_sirene(
+    mock_api_recherche_textuelle, mock_api_recherche_unites_legales_par_nom_ou_siren
+):
+    mock_api_recherche_textuelle.side_effect = APIError()
+    mock_api_recherche_unites_legales_par_nom_ou_siren.return_value = (
+        ENTREPRISES_TROUVEES
+    )
+
+    entreprises = recherche_par_nom_ou_siren(RECHERCHE)
+
+    mock_api_recherche_textuelle.assert_called_once_with(RECHERCHE)
+    mock_api_recherche_unites_legales_par_nom_ou_siren.assert_called_once_with(
+        RECHERCHE
+    )
+    assert entreprises == ENTREPRISES_TROUVEES
+
+
+def test_recherche_par_nom_ou_siren_echecs_api_recherche_entreprises_et_api_sirene(
+    mock_api_recherche_textuelle, mock_api_recherche_unites_legales_par_nom_ou_siren
+):
+    mock_api_recherche_textuelle.side_effect = APIError(
+        "Message d'erreur recherche entreprises"
+    )
+    mock_api_recherche_unites_legales_par_nom_ou_siren.side_effect = APIError(
+        "Message d'erreur sirene"
+    )
+
+    with pytest.raises(APIError) as e:
+        entreprises = recherche_par_nom_ou_siren(RECHERCHE)
+
+    mock_api_recherche_textuelle.assert_called_once_with(RECHERCHE)
+    mock_api_recherche_unites_legales_par_nom_ou_siren.assert_called_once_with(
+        RECHERCHE
+    )
+    assert str(e.value) == "Message d'erreur sirene"
