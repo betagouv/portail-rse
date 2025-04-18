@@ -774,3 +774,23 @@ def test_recherche_entreprise_avec_resultats(
     context = response.context
     assert context["entreprises"] == entreprises
     assertTemplateUsed(response, "fragments/resultats_recherche_entreprise.html")
+
+
+def test_recherche_entreprise_erreur_API(client, mock_api_recherche_par_nom_ou_siren):
+    mock_api_recherche_par_nom_ou_siren.side_effect = api.exceptions.APIError(
+        "Panne serveur"
+    )
+    recherche = "Entreprise SAS"
+
+    response = client.get(
+        "/entreprises/fragments/recherche-entreprise",
+        query_params={"recherche": recherche},
+    )
+
+    assert response.status_code == 200
+    context = response.context
+    assert context["entreprises"] == []
+    assert context["erreur"] == "Panne serveur"
+    assertTemplateUsed(response, "fragments/resultats_recherche_entreprise.html")
+    content = response.content.decode("utf-8")
+    assert "Panne serveur" in content
