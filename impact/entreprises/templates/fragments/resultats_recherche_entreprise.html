@@ -26,4 +26,6 @@
         </a>
     </p>
     <img src="{% static 'img/spinner.svg' %}" width="40" alt="Spinner d'attente" class="htmx-indicator">
+{% elif erreur %}
+    <p class="fr-error-text">{{ erreur }}</p>
 {% endif %}
