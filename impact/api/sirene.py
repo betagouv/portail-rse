@@ -108,3 +108,47 @@ def convertit_tranche_effectif(tranche_effectif):
     else:
         effectif = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     return effectif
+
+
+def recherche_unites_legales_par_nom_ou_siren(recherche):
+    url = "https://api.insee.fr/api-sirene/3.11/siren"
+    params = {
+        "q": f"periode(denominationUniteLegale:{recherche}) OR siren:{recherche}",
+        "date": date.today().isoformat(),
+        "champs": "siren,denominationUniteLegale",
+        "nombre": 5,
+    }
+
+    try:
+        response = requests.get(
+            url,
+            params=params,
+            headers={"X-INSEE-Api-Key-Integration": settings.API_SIRENE_KEY},
+            timeout=SIRENE_TIMEOUT,
+        )
+    except Exception as e:
+        with sentry_sdk.new_scope() as scope:
+            scope.set_level("info")
+            sentry_sdk.capture_exception(e)
+        raise APIError(SERVER_ERROR)
+
+    if response.status_code == 200:
+        resultats = response.json()["unitesLegales"]
+        entreprises = [
+            {
+                "siren": resultat["siren"],
+                "denomination": resultat["periodesUniteLegale"][0][
+                    "denominationUniteLegale"
+                ],
+            }
+            for resultat in resultats
+        ]
+        return entreprises
+    elif response.status_code == 404:
+        return []
+    elif response.status_code == 429:
+        sentry_sdk.capture_message(TOO_MANY_REQUESTS_SENTRY_MESSAGE.format(NOM_API))
+        raise TooManyRequestError(TOO_MANY_REQUESTS_ERROR)
+    else:
+        sentry_sdk.capture_message(API_ERROR_SENTRY_MESSAGE.format(NOM_API))
+        raise ServerError(SERVER_ERROR)
