@@ -39,7 +39,7 @@ def mock_api_recherche_par_siren(mocker):
 
 @pytest.fixture
 def mock_api_sirene(mocker):
-    return mocker.patch("api.sirene.recherche_unite_legale")
+    return mocker.patch("api.sirene.recherche_unite_legale_par_siren")
 
 
 @pytest.fixture

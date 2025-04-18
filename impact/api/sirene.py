@@ -19,7 +19,7 @@ NOM_API = "sirene"
 SIRENE_TIMEOUT = 10
 
 
-def recherche_unite_legale(siren):
+def recherche_unite_legale_par_siren(siren):
     # documentation api sirene 3.11 https://www.sirene.fr/static-resources/documentation/sommaire_311.html
     url = f"https://api.insee.fr/api-sirene/3.11/siren/{siren}?date={date.today().isoformat()}"
     try:
