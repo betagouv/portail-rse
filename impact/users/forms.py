@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 
 from .models import User
 from entreprises.forms import SirenField
+from entreprises.models import Entreprise
 from habilitations.models import FONCTIONS_MAX_LENGTH
 from habilitations.models import FONCTIONS_MIN_LENGTH
 from utils.forms import DsfrForm
@@ -91,6 +92,11 @@ class UserCreationForm(UserPasswordForm):
         labels = {
             "reception_actualites": "Je souhaite recevoir les actualités du Portail RSE (optionnel)",
         }
+
+    def clean_siren(self):
+        siren = self.cleaned_data.get("siren")
+        if Entreprise.objects.filter(siren=siren):
+            raise forms.ValidationError("Cette entreprise existe déjà.")
 
 
 class UserEditionForm(DsfrForm, forms.ModelForm):
