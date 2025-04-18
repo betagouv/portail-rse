@@ -8,6 +8,7 @@ from api.exceptions import ServerError
 from api.exceptions import SirenError
 from api.exceptions import TooManyRequestError
 from api.sirene import recherche_unite_legale_par_siren
+from api.sirene import recherche_unites_legales_par_nom_ou_siren
 from api.sirene import SIRENE_TIMEOUT
 from entreprises.models import CaracteristiquesAnnuelles
 from utils.mock_response import MockedResponse
@@ -70,7 +71,7 @@ def test_recherche_par_siren_succès_avec_résultat_comportant_la_denomination(
 def test_recherche_par_siren_succès_avec_résultat_sans_la_denomination(mocker):
     SIREN = "478464803"
     # un entrepreneur individuel n'a pas de dénomination mais a un nom
-    # le nom complet renvoyé par l'API recherche entreprises est plus complet que le nom
+    # le nom complet renvoyé par l'API sirene est plus complet que le nom
     json_content = {
         "header": {"message": "OK", "statut": 200},
         "uniteLegale": {
@@ -158,7 +159,7 @@ def test_recherche_par_siren_echec_erreur_de_l_API(mocker):
 def test_pas_de_categorie_juridique(categorie_juridique, mocker):
     # On se sert de la catégorie juridique pour certaines réglementations qu'on récupère via la catégorie juridique renvoyée par l'API.
     # Normalement toutes les entreprises en ont une.
-    # Comme pour l'API recherche entreprises on souhaite être informé si ce n'est pas le cas car le diagnostic pour ces réglementations pourrait être faux.
+    # Comme pour l'API sirene on souhaite être informé si ce n'est pas le cas car le diagnostic pour ces réglementations pourrait être faux.
     SIREN = "123456789"
 
     json_content = {
@@ -209,3 +210,73 @@ def test_pas_d_activite_principale(activite_principale, mocker):
     infos = recherche_unite_legale_par_siren(SIREN)
 
     assert infos["code_NAF"] is None
+
+
+@pytest.mark.network
+def test_api_recherche_par_nom_ou_siren_fonctionnelle():
+    RECHERCHE = "DANONE"
+
+    entreprises = recherche_unites_legales_par_nom_ou_siren(RECHERCHE)
+
+    assert entreprises[0] == {
+        "siren": "552032534",
+        "denomination": "DANONE",
+    }
+    assert len(entreprises) == 5
+
+
+def test_api_recherche_par_nom_ou_siren_pas_de_resultat(mocker):
+    RECHERCHE = "DANONE"
+
+    mocker.patch("requests.get", return_value=MockedResponse(404))
+
+    entreprises = recherche_unites_legales_par_nom_ou_siren(RECHERCHE)
+
+    assert entreprises == []
+
+
+def test_echec_recherche_par_nom_ou_siren_trop_de_requetes(mocker):
+    RECHERCHE = "DANONE"
+    mocker.patch("requests.get", return_value=MockedResponse(429))
+    capture_message_mock = mocker.patch("sentry_sdk.capture_message")
+
+    with pytest.raises(TooManyRequestError) as e:
+        recherche_unites_legales_par_nom_ou_siren(RECHERCHE)
+
+    capture_message_mock.assert_called_once_with("Trop de requêtes sur l'API sirene")
+    assert (
+        str(e.value) == "Le service est temporairement surchargé. Merci de réessayer."
+    )
+
+
+def test_echec_recherche_par_nom_ou_siren_erreur_de_l_API(mocker):
+    RECHERCHE = "DANONE"
+    mocker.patch("requests.get", return_value=MockedResponse(500))
+    capture_message_mock = mocker.patch("sentry_sdk.capture_message")
+
+    with pytest.raises(ServerError) as e:
+        recherche_unites_legales_par_nom_ou_siren(RECHERCHE)
+
+    capture_message_mock.assert_called_once_with("Erreur API sirene")
+    assert (
+        str(e.value)
+        == "Le service est actuellement indisponible. Merci de réessayer plus tard."
+    )
+
+
+def test_echec_recherche_par_nom_ou_siren_exception_provoquee_par_l_api(mocker):
+    """le Timeout est un cas réel mais l'implémentation attrape toutes les erreurs possibles"""
+    RECHERCHE = "DANONE"
+    mocker.patch("requests.get", side_effect=Timeout)
+    capture_exception_mock = mocker.patch("sentry_sdk.capture_exception")
+
+    with pytest.raises(APIError) as e:
+        recherche_unites_legales_par_nom_ou_siren(RECHERCHE)
+
+    capture_exception_mock.assert_called_once()
+    args, _ = capture_exception_mock.call_args
+    assert isinstance(args[0], Timeout)
+    assert (
+        str(e.value)
+        == "Le service est actuellement indisponible. Merci de réessayer plus tard."
+    )
