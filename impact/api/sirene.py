@@ -14,6 +14,7 @@ from api.exceptions import TOO_MANY_REQUESTS_ERROR
 from api.exceptions import TOO_MANY_REQUESTS_SENTRY_MESSAGE
 from api.exceptions import TooManyRequestError
 from entreprises.models import CaracteristiquesAnnuelles
+from utils.codes_naf import CODES_NAF
 
 NOM_API = "sirene"
 SIRENE_TIMEOUT = 10
@@ -115,7 +116,7 @@ def recherche_unites_legales_par_nom_ou_siren(recherche):
     params = {
         "q": f"periode(denominationUniteLegale:{recherche}) OR siren:{recherche}",
         "date": date.today().isoformat(),
-        "champs": "siren,denominationUniteLegale",
+        "champs": "siren,denominationUniteLegale,activitePrincipaleUniteLegale",
         "nombre": 5,
     }
 
@@ -140,6 +141,9 @@ def recherche_unites_legales_par_nom_ou_siren(recherche):
                 "denomination": resultat["periodesUniteLegale"][0][
                     "denominationUniteLegale"
                 ],
+                "activite": convertit_code_NAF(
+                    resultat["periodesUniteLegale"][0]["activitePrincipaleUniteLegale"]
+                ),
             }
             for resultat in resultats
         ]
@@ -152,3 +156,7 @@ def recherche_unites_legales_par_nom_ou_siren(recherche):
     else:
         sentry_sdk.capture_message(API_ERROR_SENTRY_MESSAGE.format(NOM_API))
         raise ServerError(SERVER_ERROR)
+
+
+def convertit_code_NAF(code_NAF):
+    return CODES_NAF.get(code_NAF[:4], "")

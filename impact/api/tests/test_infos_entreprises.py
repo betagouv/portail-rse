@@ -24,9 +24,21 @@ INFOS_FINANCIERES = {
 }
 RECHERCHE = "Danone"
 ENTREPRISES_TROUVEES = [
-    {"siren": "000000001", "denomination": "Entreprise Test 1"},
-    {"siren": "889297453", "denomination": "YAAL COOP"},
-    {"siren": "552032534", "denomination": "DANONE"},
+    {
+        "siren": "000000001",
+        "denomination": "Entreprise Test 1",
+        "activité": "Cultures non permanentes",
+    },
+    {
+        "siren": "889297453",
+        "denomination": "YAAL COOP",
+        "activité": "Programmation, conseil et autres activités informatiques",
+    },
+    {
+        "siren": "552032534",
+        "denomination": "DANONE",
+        "activité": "Activités des sièges sociaux",
+    },
 ]
 
 

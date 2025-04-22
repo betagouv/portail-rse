@@ -321,6 +321,7 @@ def test_api_recherche_textuelle_fonctionnelle():
     assert entreprises[0] == {
         "siren": "552032534",
         "denomination": "DANONE",
+        "activite": "Activités des sièges sociaux",
     }
     assert len(entreprises) == 5
 
