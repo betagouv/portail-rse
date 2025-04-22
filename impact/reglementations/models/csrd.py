@@ -105,7 +105,7 @@ class RapportCSRD(TimestampedModel):
         # en base de données, mais le fait d'utiliser une validation métier vérifiable
         # à tout moment est plus simple et plus lisible.
         rapport_officiel = RapportCSRD.objects.filter(
-            proprietaire=None, entreprise=self.entreprise
+            proprietaire=None, entreprise=self.entreprise, annee=self.annee
         )
 
         # éviter la duplication avec le rapport officiel existant
