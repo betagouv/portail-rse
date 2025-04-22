@@ -2,6 +2,7 @@ from datetime import datetime
 
 import pytest
 from django.core.exceptions import ValidationError
+from django.db.utils import IntegrityError
 
 from reglementations.enums import ENJEUX_NORMALISES
 from reglementations.models import DocumentAnalyseIA
@@ -63,6 +64,68 @@ def test_clean_rapport_csrd(rapport_personnel):
         match="Il existe déjà un rapport CSRD officiel pour cette entreprise",
     ):
         rapport_personnel.clean()
+
+
+def test_impossible_de_creer_plusieurs_rapports_personnels_pour_les_mêmes_proprietaire_entreprise_et_annee(
+    entreprise_factory, alice
+):
+    entreprise = entreprise_factory()
+    RapportCSRD.objects.create(
+        entreprise=entreprise,
+        proprietaire=alice,  # rapport personnel 2024
+        annee=2024,
+    )
+
+    with pytest.raises(IntegrityError):
+        RapportCSRD.objects.create(
+            entreprise=entreprise,
+            proprietaire=alice,
+            annee=2024,
+        )
+
+
+def test_impossible_de_creer_plusieurs_rapports_officiels_pour_les_mêmes_entreprise_et_annee(
+    entreprise_factory, alice
+):
+    entreprise = entreprise_factory()
+    RapportCSRD.objects.create(
+        entreprise=entreprise,
+        proprietaire=None,  # rapport officiel 2024 sans propriétaire
+        annee=2024,
+    )
+
+    with pytest.raises(ValidationError):
+        RapportCSRD.objects.create(
+            entreprise=entreprise,
+            proprietaire=None,
+            annee=2024,
+        )
+
+
+def test_possible_de_creer_plusieurs_rapports_officiels_et_personnels_pour_des_annees_differentes(
+    entreprise_factory, alice
+):
+    entreprise = entreprise_factory()
+    RapportCSRD.objects.create(
+        entreprise=entreprise,
+        proprietaire=None,  # rapport officiel 2024
+        annee=2024,
+    )
+    RapportCSRD.objects.create(
+        entreprise=entreprise,
+        proprietaire=None,  # rapport officiel 2025
+        annee=2025,
+    )
+    RapportCSRD.objects.create(
+        entreprise=entreprise,
+        proprietaire=alice,  # rapport personnel 2024
+        annee=2024,
+    )
+    RapportCSRD.objects.create(
+        entreprise=entreprise,
+        proprietaire=alice,  # rapport personnel 2025
+        annee=2025,
+    )
 
 
 def test_enjeux_normalises_presents(rapport_personnel):
