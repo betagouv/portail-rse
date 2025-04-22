@@ -10,6 +10,7 @@ import api.exceptions
 from conftest import CODE_PAYS_PORTUGAL
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
+from entreprises.models import SIREN_ENTREPRISE_TEST
 from entreprises.views import get_current_entreprise
 from entreprises.views import search_and_create_entreprise
 from habilitations.models import attach_user_to_entreprise
@@ -794,3 +795,25 @@ def test_recherche_entreprise_erreur_API(client, mock_api_recherche_par_nom_ou_s
     assertTemplateUsed(response, "fragments/resultats_recherche_entreprise.html")
     content = response.content.decode("utf-8")
     assert "Panne serveur" in content
+
+
+def test_recherche_entreprise_avec_siren_entreprise_test(
+    client, mock_api_recherche_par_nom_ou_siren
+):
+    recherche = SIREN_ENTREPRISE_TEST
+
+    response = client.get(
+        "/entreprises/fragments/recherche-entreprise",
+        query_params={"recherche": recherche},
+    )
+
+    assert not mock_api_recherche_par_nom_ou_siren.called
+    assert response.status_code == 200
+    context = response.context
+    assert context["entreprises"] == [
+        {
+            "siren": SIREN_ENTREPRISE_TEST,
+            "denomination": "ENTREPRISE TEST",
+            "activite": "Cultures non permanentes",
+        }
+    ]

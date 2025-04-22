@@ -21,6 +21,12 @@ DENOMINATION_MAX_LENGTH = 250
 DATE_REQUALIFICATION = timezone.make_aware(datetime.strptime("2024-11-15", "%Y-%m-%d"))
 
 
+# on permet l'utilisation d'une entreprise fictive de test créée manuellement en base
+# pour des utilisateurs potentiels qui n'ont pas d'entreprise mais qui souhaitent tester le portail
+# et s'inscrire avec cette entreprise test, comme les étudiants par exemple
+SIREN_ENTREPRISE_TEST = "000000001"
+
+
 @dataclass
 class ActualisationCaracteristiquesAnnuelles:
     date_cloture_exercice: date
