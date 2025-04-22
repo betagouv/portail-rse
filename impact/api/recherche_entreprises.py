@@ -11,6 +11,7 @@ from api.exceptions import SirenError
 from api.exceptions import TOO_MANY_REQUESTS_ERROR
 from api.exceptions import TOO_MANY_REQUESTS_SENTRY_MESSAGE
 from api.exceptions import TooManyRequestError
+from api.sirene import convertit_code_NAF
 from api.sirene import convertit_tranche_effectif
 
 NOM_API = "recherche entreprises"
@@ -115,6 +116,7 @@ def recherche_textuelle(recherche):
                     "siren": resultat["siren"],
                     "denomination": resultat["nom_raison_sociale"]
                     or resultat["nom_complet"],
+                    "activite": convertit_code_NAF(resultat["activite_principale"]),
                 }
                 for resultat in resultats
             ]
