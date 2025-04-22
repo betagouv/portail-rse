@@ -1,10 +1,12 @@
 {% load random_tools %}
 
-<div class="fr-toggle fr-toggle--label-left">
-    {% uuid as toggle_id %}
-    <input type="checkbox" id="toggle_creation_enjeu_{{ toggle_id }}" class="fr-toggle__input" aria-expanded="false" aria-describedby="toggle-{{ toggle_id }}-messages" aria-controls="creation_enjeu_{{ toggle_id }}">
-    <label class="fr-toggle__label" for="toggle_creation_enjeu_{{ toggle_id }}">Ajouter un enjeu</label>
-</div>
+{% if est_editeur %}
+    <div class="fr-toggle fr-toggle--label-left">
+        {% uuid as toggle_id %}
+        <input type="checkbox" id="toggle_creation_enjeu_{{ toggle_id }}" class="fr-toggle__input" aria-expanded="false" aria-describedby="toggle-{{ toggle_id }}-messages" aria-controls="creation_enjeu_{{ toggle_id }}">
+        <label class="fr-toggle__label" for="toggle_creation_enjeu_{{ toggle_id }}">Ajouter un enjeu</label>
+    </div>
+{% endif %}
 
 <div id="creation_enjeu_{{ toggle_id }}" class="fr-collapse" hx-get="{% url 'reglementations:creation_enjeu' csrd.pk form.esrs %}" hx-trigger="click from:#toggle_creation_enjeu_{{ toggle_id }}" hx-target="this">
     Chargement en cours ...
@@ -27,9 +29,11 @@
             {% endfor %}
         {% endwith %}
     </div>
-    <hr class="fr-mt-6v">
-    <button type="submit" class="fr-btn fr-btn--secondary" hx-disabled-elt="this" aria-controls="modal-{{ form.esrs }}" {% if csrd.bloque %}disabled{% endif %}>
-        Valider
-    </button>
+    {% if est_editeur %}
+        <hr class="fr-mt-6v">
+        <button type="submit" class="fr-btn fr-btn--secondary" hx-disabled-elt="this" aria-controls="modal-{{ form.esrs }}" {% if csrd.bloque %}disabled{% endif %}>
+            Valider
+        </button>
+    {% endif %}
 </form>
 <!-- fragment enjeux -->

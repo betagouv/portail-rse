@@ -42,21 +42,24 @@
                 </li>
             </ul>
             <div id="onglet-fichiers-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel" aria-labelledby="onglet-fichiers" tabindex="0">
-                <div>
-                    <form enctype="multipart/form-data" action="{% url 'reglementations:ajout_document' csrd.id %}" method="post">
-                        {% csrf_token %}
-                        {% include 'snippets/field.html' with field=form.fichier %}
-                        <button type="submit" class="fr-btn fr-btn--icon-left fr-icon-upload-2-line fr-mt-1w">Envoyer</button>
-                    </form>
-                </div>
+                {% if est_editeur %}
+                    <div>
+                        <form enctype="multipart/form-data" action="{% url 'reglementations:ajout_document' csrd.id %}" method="post">
+                            {% csrf_token %}
+                            {% include 'snippets/field.html' with field=form.fichier %}
+                            <button type="submit" class="fr-btn fr-btn--icon-left fr-icon-upload-2-line fr-mt-1w">Envoyer</button>
+                        </form>
+                    </div>
 
-                <div class="fr-alert fr-alert--warning fr-my-3w">
-                    <h3 class="fr-alert__title">Veillez à ne pas ajouter de données personnelles.</h3>
-                    <p>
-                        Pour plus d'informations, veuillez consulter
-                        <a title="Voir les Conditions Générales d'Utilisation" href="{{ sites_faciles_base_url }}/conditions-generales-d-utilisation/" target="_blank">nos Conditions Générales d'Utilisation</a>
-                    </p>
-                </div>
+                    <div class="fr-alert fr-alert--warning fr-my-3w">
+                        <h3 class="fr-alert__title">Veillez à ne pas ajouter de données personnelles.</h3>
+                        <p>
+                            Pour plus d'informations, veuillez consulter
+                            <a title="Voir les Conditions Générales d'Utilisation" href="{{ sites_faciles_base_url }}/conditions-generales-d-utilisation/" target="_blank">nos Conditions Générales d'Utilisation</a>
+                        </p>
+                    </div>
+                {% endif %}
+
                 {% if documents.count %}
                     <div class="fr-table" id="table-md-component">
                         <div class="fr-table__wrapper">
@@ -126,12 +129,17 @@
                                                             <li>
                                                                 <a class="fr-btn fr-btn--secondary fr-icon-external-link-line" title="Voir le document dans un nouvel onglet" href="{{ document.fichier.url }}" target="_blank">Voir le document dans un nouvel onglet</a>
                                                             </li>
-                                                            <li>
-                                                                <form action="{% url 'reglementations:suppression_document' document.id %}" method="post">
-                                                                    {% csrf_token %}
-                                                                    <button type="submit" class="fr-btn fr-btn--secondary fr-icon-delete-line" title="Supprimer le document">Supprimer le document</button>
-                                                                </form>
-                                                            </li>
+                                                            {% if est_editeur %}
+                                                                <li>
+                                                                    <form action="{% url 'reglementations:suppression_document' document.id %}" method="post">
+                                                                        {% csrf_token %}
+                                                                        <button type="submit" class="fr-btn fr-btn--secondary fr-icon-delete-line" title="Supprimer le document">Supprimer le document</button>
+                                                                    </form>
+                                                                </li>
+                                                            {% else %}
+							            {# Une répétition est parfois plus claire qu'un fragment dynamique #}
+                                                                <button disabled type="button" class="fr-btn fr-btn--secondary fr-icon-delete-line" title="Supprimer le document">Supprimer le document</button>
+                                                            {% endif %}
                                                         </ul>
                                                     </td>
                                                 </tr>
