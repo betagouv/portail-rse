@@ -4,7 +4,9 @@
     <div class="selection-enjeu fr-mt-2v">
         <div class="selection-enjeu_label">
             <label for="input-{{ widget_uuid }}">
-                <input type="checkbox" name="{{ widget.name }}" id="input-{{ widget_uuid }}" value="{{ widget.value }}" {% if widget.selected %}checked{% endif %}>
+                {% if widget.est_editeur %}
+                    <input type="checkbox" name="{{ widget.name }}" id="input-{{ widget_uuid }}" value="{{ widget.value }}" {% if widget.selected %}checked{% endif %}>
+                {% endif %}
                 <span class="fr-pl-1v grow">
                     {% if enjeu.parent %}
                         {{ widget.label }}

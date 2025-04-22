@@ -5,16 +5,32 @@ from django.core.validators import FileExtensionValidator
 from django.forms import FileField
 from django.forms.widgets import RadioSelect
 
+from habilitations.enums import UserRole
 from reglementations.models.csrd import DocumentAnalyseIA
 from reglementations.models.csrd import Enjeu
 from reglementations.models.csrd import RapportCSRD
-
 
 MAX_UPLOAD_SIZE = 50 * 1024 * 1024
 
 
 class EnjeuxMultipleWidget(forms.CheckboxSelectMultiple):
     option_template_name = "widgets/enjeu_option.html"
+
+    # contexte additionnel : voir formulaire
+    est_editeur = False
+
+    def create_option(
+        self, name, value, label, selected, index, subindex=None, attrs=None
+    ):
+        # Appelle la méthode parente pour obtenir le contexte de base de l'option
+        option_context = super().create_option(
+            name, value, label, selected, index, subindex=subindex, attrs=attrs
+        )
+
+        # Cette variable sera directement accessible dans enjeu_option.html
+        option_context["est_editeur"] = self.est_editeur
+
+        return option_context
 
 
 class EnjeuxRapportCSRDForm(forms.ModelForm):
@@ -26,7 +42,7 @@ class EnjeuxRapportCSRDForm(forms.ModelForm):
         model = RapportCSRD
         fields = ["enjeux"]
 
-    def __init__(self, *args, esrs: str = None, **kwargs):
+    def __init__(self, *args, esrs: str = None, est_editeur=False, **kwargs):
         super().__init__(*args, **kwargs)
         self.esrs = esrs
 
@@ -34,6 +50,11 @@ class EnjeuxRapportCSRDForm(forms.ModelForm):
             qs = self.instance.enjeux_par_esrs(self.esrs)
             self.fields["enjeux"].queryset = qs
             self.initial = {"enjeux": qs.selectionnes()}
+
+            # les widgets ne disposent que d'un sous-ensemble du contexte passé à la requête :
+            # pour pouvoir modifier dynamiquement les checkboxes en fonction du rôle, on est obligé
+            # "d'embarquer" les éléments de contexte dans l'objet cible.
+            self.fields["enjeux"].widget.est_editeur = est_editeur
 
     def save(self, *args, **kwargs):
         if self.instance.bloque:
@@ -114,7 +135,7 @@ class EnjeuxMaterielsRapportCSRDForm(forms.Form):
      - pas de widget custom : les radios sont directement affichés dans le gabarit (et l'implémentation de la widget s'avérait difficile à lire).
     """
 
-    def __init__(self, *args, qs=None, **kwargs):
+    def __init__(self, *args, qs=None, role=None, **kwargs):
         super().__init__(*args, **kwargs)
         if qs:
             self.qs = qs
@@ -128,6 +149,9 @@ class EnjeuxMaterielsRapportCSRDForm(forms.Form):
                         choices=[(True, "Matériel"), (False, "Non-matériel")]
                     ),
                 )
+                # désactivation selon les droits passés par la vue
+                if not UserRole.autorise(role, UserRole.EDITEUR):
+                    self.fields[f"enjeu_{enjeu.pk}"].widget.attrs["disabled"] = True
 
     def save(self):
         for enjeu in self.qs:
@@ -142,11 +166,16 @@ class LienRapportCSRDForm(forms.ModelForm):
         model = RapportCSRD
         fields = ["lien_rapport"]
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, role=None, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["lien_rapport"].widget.attrs.update(
-            {"class": "fr-input", "placeholder": "URL du rapport CSRD"}
-        )
+
+        attrs = {"class": "fr-input", "placeholder": "URL du rapport CSRD"}
+
+        # désactivation selon les droits passés par la vue
+        if not UserRole.autorise(role, UserRole.EDITEUR):
+            attrs |= {"disabled": True}
+
+        self.fields["lien_rapport"].widget.attrs.update(attrs)
 
     def clean(self):
         if self.cleaned_data.get("lien_rapport"):
