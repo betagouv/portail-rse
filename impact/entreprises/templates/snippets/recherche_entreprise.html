@@ -10,9 +10,6 @@
                hx-target="#htmx-resultats-recherche-entreprise"
                hx-indicator=".htmx-indicator"
                value="{{ simulation_form.siren.value|default:'' }}">
-        <button type="button" class="fr-btn" title="Rechercher">
-            Rechercher
-        </button>
         <img src="{% static 'img/spinner.svg' %}" width="40" alt="Spinner d'attente" class="htmx-indicator">
     </div>
 </div>
