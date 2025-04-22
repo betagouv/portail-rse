@@ -17,6 +17,9 @@ class UserRole(models.TextChoices):
 
     @classmethod
     def autorise(cls, role, *roles):
+        if not role:
+            return False
+
         # définition des "poids" : du plus important au plus faible
         poids = [cls.PROPRIETAIRE, cls.EDITEUR, cls.LECTEUR]
         for r in roles:
