@@ -20,9 +20,11 @@
                     {% csrf_token %}
                     {{ form.lien_rapport }}
                 </div>
-                <div class="fr-col-auto">
-                    <button class="fr-btn fr-icon-checkbox-circle-line fr-btn--icon"></button>
-                </div>
+                {% if est_editeur %}
+                    <div class="fr-col-auto">
+                        <button class="fr-btn fr-icon-checkbox-circle-line fr-btn--icon"></button>
+                    </div>
+                {% endif %}
             </form>
         </div>
 

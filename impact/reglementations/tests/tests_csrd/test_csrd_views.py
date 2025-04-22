@@ -496,7 +496,7 @@ def test_le_lien_analyse_d_écart_redirige_vers_l_étape_analyse_d_ecart_de_la_c
     client, alice, entreprise_factory
 ):
     entreprise = entreprise_factory()
-    habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation(user=alice, entreprise=entreprise, fonctions="Présidente").save()
     RapportCSRD.objects.create(
         entreprise=entreprise,
         proprietaire=alice,
@@ -528,7 +528,7 @@ def test_lien_analyse_d_écart_redirige_vers_la_page_d_ajout_d_entreprise_si_l_u
     assert messages[0].level == WARNING
     assert (
         messages[0].message
-        == "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à l'espace Rapport de Durabilité",
+        == "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à l'espace Rapport de Durabilité"
     )
 
 

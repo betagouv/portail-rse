@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
+from habilitations.models import Habilitation
 from reglementations.forms.csrd import LienRapportCSRDForm
 from reglementations.models.csrd import RapportCSRD
 
@@ -26,7 +27,8 @@ def selection_rapport(request, csrd_id):
 @require_http_methods(["POST"])
 def soumettre_lien_rapport(request, csrd_id):
     csrd = get_object_or_404(RapportCSRD, pk=csrd_id)
-    form = LienRapportCSRDForm(instance=csrd, data=request.POST)
+    role = Habilitation.role_pour(csrd.entreprise, request.user)
+    form = LienRapportCSRDForm(instance=csrd, data=request.POST, role=role)
     # les erreurs de format sont captées sur l'input du formulaire coté frontend
     status = 400
 

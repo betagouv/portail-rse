@@ -11,6 +11,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
 import utils.htmx as htmx
+from habilitations.enums import UserRole
+from habilitations.models import Habilitation
 from reglementations.enums import ESRS
 from reglementations.enums import ThemeESRS
 from reglementations.enums import TitreESRS
@@ -43,11 +45,20 @@ def selection_enjeux(request, csrd_id, esrs):
         "htmx": True,
     }
 
+    est_editeur = (
+        Habilitation.role_pour(csrd.entreprise, request.user) >= UserRole.EDITEUR
+    )
+
     if request.method == "GET":
         return render(
             request,
             template_name="fragments/selection_enjeux.html",
-            context=context | {"form": EnjeuxRapportCSRDForm(instance=csrd, esrs=esrs)},
+            context=context
+            | {
+                "form": EnjeuxRapportCSRDForm(
+                    instance=csrd, esrs=esrs, est_editeur=est_editeur
+                )
+            },
         )
 
     # Dans un fragment, l'utilisation du Post/Redirect/Get n'est pas nécessaire (XHR)
