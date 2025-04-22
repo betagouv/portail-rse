@@ -6,13 +6,15 @@ from django.urls import reverse
 from openpyxl import load_workbook
 
 from api.exceptions import APIError
-from habilitations.models import attach_user_to_entreprise
+from habilitations.models import Habilitation
 from reglementations.models.csrd import DocumentAnalyseIA
 from reglementations.models.csrd import RapportCSRD
 from reglementations.views.csrd.analyse_ia import envoie_resultat_ia_email
 
 
 CONTENU_PDF = b"%PDF-1.4\n%\xd3\xeb\xe9\xe1\n1 0 obj\n<</Title (CharteEngagements"
+
+# pour CI
 
 
 def test_ajout_document_par_utilisateur_autorise(client, csrd):
@@ -307,10 +309,14 @@ def test_envoie_resultat_ia_email_aux_utilisateurs_habilités_d_un_rapport_offic
     entreprise_factory, alice, bob, mailoutbox
 ):
     entreprise = entreprise_factory()
-    habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente habilitée")
+    habilitation = Habilitation(
+        user=alice, entreprise=entreprise, fonctions="Présidente habilitée"
+    )
     habilitation.confirm()
     habilitation.save()
-    attach_user_to_entreprise(bob, entreprise, "Salarié non habilité")
+    Habilitation(
+        user=bob, entreprise=entreprise, fonctions="Salarié non habilité"
+    ).save()
     # Alice est habilitée sur l'entreprise mais pas Bob
     rapport_csrd_officiel = RapportCSRD.objects.create(
         entreprise=entreprise,

@@ -77,15 +77,21 @@ def selection_enjeux_materiels(request, csrd_id, esrs):
         "theme": ThemeESRS[esrs].value,
         "titre": TitreESRS[esrs].value,
     }
+    # On ajoute le rôle de l'utilisateur au formulaire
+    if roles := [
+        h.role for h in request.habilitations if h.entreprise == csrd.entreprise
+    ]:
+        [role] = roles
 
     if request.method == "GET":
         return render(
             request,
             template_name=template_name,
-            context=context | {"form": EnjeuxMaterielsRapportCSRDForm(qs=qs)},
+            context=context
+            | {"form": EnjeuxMaterielsRapportCSRDForm(qs=qs, role=role)},
         )
 
-    form = EnjeuxMaterielsRapportCSRDForm(request.POST, qs=qs)
+    form = EnjeuxMaterielsRapportCSRDForm(request.POST, qs=qs, role=role)
 
     if form.is_valid() and not csrd.bloque:
         form.save()

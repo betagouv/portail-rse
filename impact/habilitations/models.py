@@ -90,6 +90,53 @@ class Habilitation(TimestampedModel):
     def __str__(self):
         return f"Habilitation : {self.entreprise}, {self.user}, {self.role}"
 
+    def __eq__(self, h):
+        # pour une utilisation avec `in`
+        return (
+            isinstance(h, Habilitation)
+            and self.entreprise_id == h.entreprise_id
+            and self.user_id == h.user_id
+            and self.role == h.role
+        )
+
+    def __hash__(self):
+        # pas de `__eq__` sans `__hash__`
+        # `self.pk` inutile à cause de la contrainte d'intégrité
+        return hash((self.user_id, self.entreprise_id, self.role))
+
+    # comparaisons des habilitations en fonction des rôles
+    # uniquement pour les habilitations d'un même tuple (entreprise,utilisateur)
+
+    def _same_origin(self, other):
+        return (
+            isinstance(other, Habilitation)
+            and self.entreprise == other.entreprise
+            and self.user == other.user
+        )
+
+    # Les méthodes de comparaison suivantes ne sont valides que pour
+    # des habilitations concernant le même utilisateur et la même entreprise.
+
+    def __lt__(self, other):
+        if not self._same_origin(other):
+            return NotImplemented
+        return self.role < other.role
+
+    def __le__(self, other):
+        if not self._same_origin(other):
+            return NotImplemented
+        return self.role <= other.role
+
+    def __gt__(self, other):
+        if not self._same_origin(other):
+            return NotImplemented
+        return self.role > other.role
+
+    def __ge__(self, other):
+        if not self._same_origin(other):
+            return NotImplemented
+        return self.role >= other.role
+
     @classmethod
     def ajouter(
         cls, entreprise, utilisateur, role=UserRole.PROPRIETAIRE, fonctions=None
