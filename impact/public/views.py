@@ -11,6 +11,7 @@ from api.exceptions import APIError
 from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
+from entreprises.models import SIREN_ENTREPRISE_TEST
 from entreprises.views import get_current_entreprise
 from public.forms import ContactForm
 from public.forms import SimulationForm
@@ -102,10 +103,9 @@ def simulation(request):
 
 
 def preremplissage_formulaire_simulation(request, siren):
-    if siren == "000000001":
-        # Entreprise test
+    if siren == SIREN_ENTREPRISE_TEST:
         infos = {
-            "siren": siren,
+            "siren": SIREN_ENTREPRISE_TEST,
             "denomination": "ENTREPRISE TEST",
             "effectif": "10000+",
             "categorie_juridique_sirene": 5505,

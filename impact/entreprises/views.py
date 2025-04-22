@@ -15,6 +15,7 @@ from entreprises.forms import EntrepriseAttachForm
 from entreprises.forms import EntrepriseDetachForm
 from entreprises.forms import EntrepriseQualificationForm
 from entreprises.models import Entreprise
+from entreprises.models import SIREN_ENTREPRISE_TEST
 from habilitations.models import attach_user_to_entreprise
 from habilitations.models import detach_user_from_entreprise
 from habilitations.models import is_user_attached_to_entreprise
@@ -202,7 +203,15 @@ def recherche_entreprise(request):
     entreprises = []
     erreur = None
     recherche = request.GET.get("recherche")
-    if recherche:
+    if recherche == SIREN_ENTREPRISE_TEST:
+        entreprises = [
+            {
+                "siren": SIREN_ENTREPRISE_TEST,
+                "denomination": "ENTREPRISE TEST",
+                "activite": "Cultures non permanentes",
+            }
+        ]
+    elif recherche:
         try:
             entreprises = api.infos_entreprise.recherche_par_nom_ou_siren(recherche)
         except APIError as e:
