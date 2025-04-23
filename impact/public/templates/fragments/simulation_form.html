@@ -1,59 +1,65 @@
-<form action="{% url 'simulation' %}" method="post" id="htmx-simulation-form">
-    {% csrf_token %}
-    {{ simulation_form.siren.as_hidden }}
-    {{ simulation_form.denomination.as_hidden }}
-    {{ simulation_form.categorie_juridique_sirene.as_hidden }}
-    {{ simulation_form.code_pays_etranger_sirene.as_hidden }}
-    {{ simulation_form.code_NAF.as_hidden }}
+<div id="htmx-simulation-form">
+    <h3>1. Recherchez votre entreprise</h3>
+
+    {% include "snippets/recherche_entreprise.html" %}
 
     {% if simulation_form.siren.value %}
-        <h3>2. Renseignez les informations de votre entreprise</h3>
+        <form action="{% url 'simulation' %}" method="post">
+            {% csrf_token %}
+            {{ simulation_form.siren.as_hidden }}
+            {{ simulation_form.denomination.as_hidden }}
+            {{ simulation_form.categorie_juridique_sirene.as_hidden }}
+            {{ simulation_form.code_pays_etranger_sirene.as_hidden }}
+            {{ simulation_form.code_NAF.as_hidden }}
 
-        <p class="denomination">
-            <span class="denomination-label">{{ simulation_form.denomination.value|default:'' }}</span>
-        </p>
+            <h3>2. Renseignez les informations de votre entreprise</h3>
 
-        <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--bottom fr-pb-4w">
-            <div class="fr-col-md-4 fr-col-12">
-                {% include 'snippets/field.html' with field=simulation_form.effectif %}
+            <p class="denomination">
+                <span class="denomination-label">{{ simulation_form.denomination.value|default:'' }}</span>
+            </p>
+
+            <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--bottom fr-pb-4w">
+                <div class="fr-col-md-4 fr-col-12">
+                    {% include 'snippets/field.html' with field=simulation_form.effectif %}
+                </div>
+                <div class="fr-col-md-4 fr-col-12">
+                    {% include 'snippets/field.html' with field=simulation_form.tranche_chiffre_affaires %}
+                </div>
+                <div class="fr-col-md-4 fr-col-12">
+                    {% include 'snippets/field.html' with field=simulation_form.tranche_bilan %}
+                </div>
             </div>
-            <div class="fr-col-md-4 fr-col-12">
-                {% include 'snippets/field.html' with field=simulation_form.tranche_chiffre_affaires %}
+            <div class="fr-grid-row fr-grid-row--gutters fr-pb-4w">
+                <div class="fr-col-12">
+                    {% include 'snippets/field.html' with field=simulation_form.est_cotee %}
+                </div>
             </div>
-            <div class="fr-col-md-4 fr-col-12">
-                {% include 'snippets/field.html' with field=simulation_form.tranche_bilan %}
-            </div>
-        </div>
-        <div class="fr-grid-row fr-grid-row--gutters fr-pb-4w">
-            <div class="fr-col-12">
-                {% include 'snippets/field.html' with field=simulation_form.est_cotee %}
-            </div>
-        </div>
-        <fieldset class="fr-fieldset">
-            <legend class="fr-fieldset__legend">
-                Groupe d'entreprises
-            </legend>
-            {% include 'snippets/fieldset_element.html' with field=simulation_form.appartient_groupe %}
-            <div id="js-groupe-fields" class="fr-col-12">
-                {% include 'snippets/fieldset_element.html' with field=simulation_form.est_societe_mere %}
-                {% include 'snippets/fieldset_element.html' with field=simulation_form.comptes_consolides %}
-                <div class="fr-grid-row fr-grid-row--bottom">
-                    <div class="fr-col-lg-4 fr-col-12 fr-col-12 fr-my-2w">
-                        {% include 'snippets/fieldset_element.html' with field=simulation_form.effectif_groupe %}
-                    </div>
-                    <div id="js-comptes-consolides-fields" class="fr-col-lg-8 fr-col-12">
-                        <div class="fr-grid-row fr-grid-row--bottom">
-                            <div class="fr-col-lg-6 fr-col-12 fr-my-2w">
-                                {% include 'snippets/fieldset_element.html' with field=simulation_form.tranche_chiffre_affaires_consolide %}
-                            </div>
-                            <div class="fr-col-lg-6 fr-col-12 fr-my-2w">
-                                {% include 'snippets/fieldset_element.html' with field=simulation_form.tranche_bilan_consolide %}
+            <fieldset class="fr-fieldset">
+                <legend class="fr-fieldset__legend">
+                    Groupe d'entreprises
+                </legend>
+                {% include 'snippets/fieldset_element.html' with field=simulation_form.appartient_groupe %}
+                <div id="js-groupe-fields" class="fr-col-12">
+                    {% include 'snippets/fieldset_element.html' with field=simulation_form.est_societe_mere %}
+                    {% include 'snippets/fieldset_element.html' with field=simulation_form.comptes_consolides %}
+                    <div class="fr-grid-row fr-grid-row--bottom">
+                        <div class="fr-col-lg-4 fr-col-12 fr-col-12 fr-my-2w">
+                            {% include 'snippets/fieldset_element.html' with field=simulation_form.effectif_groupe %}
+                        </div>
+                        <div id="js-comptes-consolides-fields" class="fr-col-lg-8 fr-col-12">
+                            <div class="fr-grid-row fr-grid-row--bottom">
+                                <div class="fr-col-lg-6 fr-col-12 fr-my-2w">
+                                    {% include 'snippets/fieldset_element.html' with field=simulation_form.tranche_chiffre_affaires_consolide %}
+                                </div>
+                                <div class="fr-col-lg-6 fr-col-12 fr-my-2w">
+                                    {% include 'snippets/fieldset_element.html' with field=simulation_form.tranche_bilan_consolide %}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </fieldset>
-        <input type="submit" value="Vérifier mes obligations" class="fr-btn">
+            </fieldset>
+            <input type="submit" value="Vérifier mes obligations" class="fr-btn">
+        </form>
     {% endif %}
-</form>
+</div>
