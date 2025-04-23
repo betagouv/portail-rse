@@ -150,7 +150,7 @@ class EnjeuxMaterielsRapportCSRDForm(forms.Form):
                     ),
                 )
                 # désactivation selon les droits passés par la vue
-                if not UserRole.autorise(role, UserRole.EDITEUR):
+                if role and role < UserRole.EDITEUR:
                     self.fields[f"enjeu_{enjeu.pk}"].widget.attrs["disabled"] = True
 
     def save(self):
@@ -172,7 +172,7 @@ class LienRapportCSRDForm(forms.ModelForm):
         attrs = {"class": "fr-input", "placeholder": "URL du rapport CSRD"}
 
         # désactivation selon les droits passés par la vue
-        if not UserRole.autorise(role, UserRole.EDITEUR):
+        if role and role < UserRole.EDITEUR:
             attrs |= {"disabled": True}
 
         self.fields["lien_rapport"].widget.attrs.update(attrs)
