@@ -6,7 +6,10 @@ from django.urls import reverse
 from openpyxl import load_workbook
 
 from api.exceptions import APIError
+from habilitations.models import attach_user_to_entreprise
 from reglementations.models.csrd import DocumentAnalyseIA
+from reglementations.models.csrd import RapportCSRD
+from reglementations.views.csrd.analyse_ia import envoie_resultat_ia_email
 
 
 CONTENU_PDF = b"%PDF-1.4\n%\xd3\xeb\xe9\xe1\n1 0 obj\n<</Title (CharteEngagements"
@@ -183,8 +186,6 @@ def test_lancement_d_anlyse_IA_erreur_API(client, mock_api_analyse_ia, document)
 def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_1(
     client, document, mailoutbox
 ):
-    # utilisateur = document.rapport_csrd.proprietaire
-
     client.post(
         f"/ESRS-predict/{document.id}",
         {
@@ -200,8 +201,6 @@ def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_1(
 def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_2(
     client, document, mailoutbox
 ):
-    utilisateur = document.rapport_csrd.proprietaire
-
     client.post(
         f"/ESRS-predict/{document.id}",
         {
@@ -216,7 +215,7 @@ def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_2(
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
     assert mail.from_email == settings.DEFAULT_FROM_EMAIL
-    assert list(mail.to) == [utilisateur.email]
+    assert list(mail.to) == [document.rapport_csrd.proprietaire.email]
     assert mail.template_id == settings.BREVO_RESULTAT_ANALYSE_IA_TEMPLATE
 
 
@@ -239,8 +238,6 @@ def test_serveur_IA_envoie_le_resultat_de_l_analyse(client, document, mailoutbox
     }
   ]
   }"""
-    utilisateur = document.rapport_csrd.proprietaire
-    client.force_login(utilisateur)
 
     response = client.post(
         f"/ESRS-predict/{document.id}",
@@ -257,7 +254,7 @@ def test_serveur_IA_envoie_le_resultat_de_l_analyse(client, document, mailoutbox
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
     assert mail.from_email == settings.DEFAULT_FROM_EMAIL
-    assert list(mail.to) == [utilisateur.email]
+    assert list(mail.to) == [document.rapport_csrd.proprietaire.email]
     assert mail.template_id == settings.BREVO_RESULTAT_ANALYSE_IA_TEMPLATE
     assert mail.merge_global_data == {
         "resultat_ia_url": response.wsgi_request.build_absolute_uri(
@@ -271,6 +268,61 @@ def test_serveur_IA_envoie_le_resultat_de_l_analyse(client, document, mailoutbox
         )
         + "#onglets"
     }
+
+
+def test_envoie_resultat_ia_email_non_bloquant(client, document, mocker):
+    mocker.patch(
+        "reglementations.views.csrd.analyse_ia.envoie_resultat_ia_email",
+        side_effect=Exception,
+    )
+    capture_exception_mock = mocker.patch("sentry_sdk.capture_exception")
+
+    RESULTATS = """{
+  "ESRS E1": [
+    {
+      "PAGES": 1,
+      "TEXTS": "A"
+    }
+  ]
+  }"""
+
+    response = client.post(
+        f"/ESRS-predict/{document.id}",
+        {
+            "status": "success",
+            "resultat_json": RESULTATS,
+        },
+    )
+
+    document.refresh_from_db()
+    assert document.etat == "success"
+    assert document.resultat_json == RESULTATS
+
+    capture_exception_mock.assert_called_once()
+    args, _ = capture_exception_mock.call_args
+    assert isinstance(args[0], Exception)
+
+
+def test_envoie_resultat_ia_email_aux_utilisateurs_habilités_d_un_rapport_officiel(
+    entreprise_factory, alice, bob, mailoutbox
+):
+    entreprise = entreprise_factory()
+    habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente habilitée")
+    habilitation.confirm()
+    habilitation.save()
+    attach_user_to_entreprise(bob, entreprise, "Salarié non habilité")
+    # Alice est habilitée sur l'entreprise mais pas Bob
+    rapport_csrd_officiel = RapportCSRD.objects.create(
+        entreprise=entreprise,
+        annee=2025,
+    )
+    document = DocumentAnalyseIA.objects.create(rapport_csrd=rapport_csrd_officiel)
+
+    envoie_resultat_ia_email(document, "https://resultats-ia.example")
+
+    assert len(mailoutbox) == 1
+    mail = mailoutbox[0]
+    assert list(mail.to) == [alice.email]
 
 
 def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(client, csrd):
