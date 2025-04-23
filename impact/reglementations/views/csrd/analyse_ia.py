@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 
+import sentry_sdk
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -115,28 +116,45 @@ def etat_analyse_IA(request, id_document):
         document.message = message
     if status == "success":
         document.resultat_json = request.POST["resultat_json"]
-    if status in ("success", "error"):
-        _envoi_resultat_ia_email(request, document)
     document.save()
+    if status in ("success", "error"):
+        path = reverse(
+            "reglementations:gestion_csrd",
+            kwargs={
+                "siren": document.rapport_csrd.entreprise.siren,
+                "id_etape": "analyse-ecart",
+            },
+        )
+        try:
+            envoie_resultat_ia_email(
+                document, f"{request.build_absolute_uri(path)}#onglets"
+            )
+        except Exception as e:
+            with sentry_sdk.new_scope() as scope:
+                scope.set_level("info")
+                sentry_sdk.capture_exception(e)
 
     return HttpResponse("OK")
 
 
-def _envoi_resultat_ia_email(request, document):
+def envoie_resultat_ia_email(document, resultat_ia_url):
+    if proprietaire := document.rapport_csrd.proprietaire:
+        destinataires = [proprietaire.email]
+    else:
+        destinataires = [
+            utilisateur.email
+            for utilisateur in document.rapport_csrd.entreprise.users.filter(
+                habilitation__confirmed_at__isnull=False
+            )
+        ]
     email = EmailMessage(
-        to=[document.rapport_csrd.proprietaire.email],
+        to=destinataires,
         from_email=settings.DEFAULT_FROM_EMAIL,
     )
     email.template_id = settings.BREVO_RESULTAT_ANALYSE_IA_TEMPLATE
-    path = reverse(
-        "reglementations:gestion_csrd",
-        kwargs={
-            "siren": document.rapport_csrd.entreprise.siren,
-            "id_etape": "analyse-ecart",
-        },
-    )
+
     email.merge_global_data = {
-        "resultat_ia_url": f"{request.build_absolute_uri(path)}#onglets",
+        "resultat_ia_url": resultat_ia_url,
     }
     email.send()
 
