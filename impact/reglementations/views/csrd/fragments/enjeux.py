@@ -1,7 +1,6 @@
 """
 Fragments HTMX pour la sélection des enjeux par ESRS
 """
-
 import logging
 
 from django.contrib.auth.decorators import login_required
@@ -11,9 +10,9 @@ from django.shortcuts import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
-from habilitations.models import Habilitation
 import utils.htmx as htmx
 from habilitations.enums import UserRole
+from habilitations.models import Habilitation
 from reglementations.enums import ESRS
 from reglementations.enums import ThemeESRS
 from reglementations.enums import TitreESRS
@@ -46,10 +45,8 @@ def selection_enjeux(request, csrd_id, esrs):
         "htmx": True,
     }
     est_editeur = (
-        Habilitation(
-            entreprise=csrd.entreprise, user=request.user, role=UserRole.EDITEUR
-        )
-        in request.habilitations
+        Habilitation.pour(entreprise=csrd.entreprise, utilisateur=request.user).role
+        == UserRole.EDITEUR
     )
 
     if request.method == "GET":
