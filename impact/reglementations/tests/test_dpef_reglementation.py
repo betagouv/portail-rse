@@ -5,7 +5,7 @@ from conftest import CODE_SAS
 from conftest import CODE_SCA
 from conftest import CODE_SE
 from entreprises.models import CaracteristiquesAnnuelles
-from habilitations.models import attach_user_to_entreprise
+from habilitations.models import Habilitation
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.dpef import DPEFReglementation
 
@@ -776,7 +776,7 @@ def test_calcule_etat_si_soumis_avec_plus_de_deux_critères_remplis_et_remplacé
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
         categorie_juridique_sirene=CODE_SA,
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = DPEFReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
@@ -802,7 +802,7 @@ def test_calcule_etat_si_soumis_et_remplacée_par_la_CSRD_a_partir_de_l_exercice
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
         categorie_juridique_sirene=CODE_SA,
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = DPEFReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
@@ -820,7 +820,7 @@ def test_calcule_etat_si_non_soumis(entreprise_factory, alice):
         effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = DPEFReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice

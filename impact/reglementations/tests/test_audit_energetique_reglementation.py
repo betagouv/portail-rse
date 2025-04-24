@@ -1,7 +1,7 @@
 import pytest
 
 from entreprises.models import CaracteristiquesAnnuelles
-from habilitations.models import attach_user_to_entreprise
+from habilitations.models import Habilitation
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
 from reglementations.views.base import ReglementationStatus
 
@@ -199,7 +199,7 @@ def test_calcule_statut_moins_de_249_employes_et_petit_bilan(
     entreprise = entreprise_factory(
         effectif=effectif, tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = AuditEnergetiqueReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
@@ -224,7 +224,7 @@ def test_calcule_statut_moins_de_249_employes_et_petit_bilan(
 )
 def test_calcule_statut_plus_de_250_employes(effectif, entreprise_factory, alice):
     entreprise = entreprise_factory(effectif=effectif)
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = AuditEnergetiqueReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
@@ -268,7 +268,7 @@ def test_calcule_etat_avec_bilan_et_ca_trop_faible(
         tranche_bilan=bilan,
         tranche_chiffre_affaires=ca,
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = AuditEnergetiqueReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
@@ -298,7 +298,7 @@ def test_calcule_etat_avec_bilan_et_ca_suffisants(bilan, ca, entreprise_factory,
         tranche_bilan=bilan,
         tranche_chiffre_affaires=ca,
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = AuditEnergetiqueReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
@@ -332,7 +332,7 @@ def test_calcule_etat_avec_bilan_insuffisant(ca, entreprise_factory, alice):
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
         tranche_chiffre_affaires=ca,
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = AuditEnergetiqueReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
@@ -355,7 +355,7 @@ def test_calcule_etat_avec_ca_insuffisant(bilan, entreprise_factory, alice):
         tranche_bilan=bilan,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = AuditEnergetiqueReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
@@ -397,7 +397,7 @@ def test_calcule_etat_avec_effectif_bilan_et_ca_suffisants(
         tranche_bilan=bilan,
         tranche_chiffre_affaires=ca,
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = AuditEnergetiqueReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
@@ -427,7 +427,7 @@ def test_calcule_etat_avec_bilan_et_ca_suffisants_mais_systeme_management_energi
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
         systeme_management_energie=True,
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = AuditEnergetiqueReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
@@ -466,7 +466,7 @@ def test_calcule_etat_avec_bilan_insuffisant_mais_bilan_consolide_et_ca_suffisan
         tranche_chiffre_affaires=ca,
         tranche_bilan_consolide=bilan_consolide,
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = AuditEnergetiqueReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
