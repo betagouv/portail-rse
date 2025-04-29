@@ -7,11 +7,126 @@
     <div class="fr-container fr-my-4w">
         <h2>Membres {% if entreprise.denomination %}liés à {{ entreprise.denomination }}{% endif %}</h2>
 
-        <ul>
-            {% for habilitation in entreprise.habilitation_set.all %}
-                <li>{{ habilitation.user.email }}</li>
-            {% endfor %}
-        </ul>
+        <div class="fr-alert fr-alert--info">
+            <h3 class="fr-alert__title">Modification des droits</h3>
+            <ul>
+                <li>La modification des droits n'est possible que par les utilisateurs propriétaires</li>
+                <li>Une modification des droits est effective à l'ouverture d'une nouvelle session de l'utilisateur concerné</li>
+                <li>Pour l'entreprise <strong>{{ entreprise }}</strong>, vous avez l'habilitation : TODO</li>
+            </ul>
+        </div>
+
+
+        <div class="fr-my-4w">
+            <h3>Propriétaires</h3>
+            {% if habilitations.proprietaire %}
+                <div class="fr-table--sm fr-table fr-table" id="table-sm-component">
+                    <div class="fr-table__wrapper">
+                        <div class="fr-table__container">
+                            <div class="fr-table__content">
+                                <table id="table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Nom</th>
+                                            <th scope="col">Prénom</th>
+                                            <th scope="col">E-mail</th>
+                                            <th scope="col">Droits</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for user in habilitations.proprietaire %}
+                                            <tr>
+                                                <td>{{ user.nom }}</td>
+                                                <td>{{ user.prenom }}</td>
+                                                <td>{{ user.email }}</td>
+                                                <td>XXX</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            {% else %}
+                Aucun propriétaire
+            {% endif %}
+        </div>
+
+        <div class="fr-my-4w">
+            <h3>Éditeurs</h3>
+            {% if habilitations.editeur %}
+                <div class="fr-table--sm fr-table fr-table" id="table-sm-component">
+                    <div class="fr-table__wrapper">
+                        <div class="fr-table__container">
+                            <div class="fr-table__content">
+                                <table id="table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Nom</th>
+                                            <th scope="col">Prénom</th>
+                                            <th scope="col">E-mail</th>
+                                            <th scope="col">Droits</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for user in habilitations.editeur %}
+                                            <tr>
+                                                <td>{{ user.nom }}</td>
+                                                <td>{{ user.prenom }}</td>
+                                                <td>{{ user.email }}</td>
+                                                <td>XXX</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                Aucun éditeur
+            {% endif %}
+        </div>
+
+        <div class="fr-my-4w">
+            <h3>Lecteurs</h3>
+            {% if habilitations.lecteur %}
+                <div class="fr-table--sm fr-table fr-table" id="table-sm-component">
+                    <div class="fr-table__wrapper">
+                        <div class="fr-table__container">
+                            <div class="fr-table__content">
+                                <table id="table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Nom</th>
+                                            <th scope="col">Prénom</th>
+                                            <th scope="col">E-mail</th>
+                                            <th scope="col">Droits</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for user in habilitations.lecteur %}
+                                            <tr>
+                                                <td>{{ user.nom }}</td>
+                                                <td>{{ user.prenom }}</td>
+                                                <td>{{ user.email }}</td>
+                                                <td>XXX</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                Aucun éditeur
+            {% endif %}
+        </div>
+
+
 
     </div>
 {% endblock %}
