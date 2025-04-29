@@ -12,6 +12,7 @@ from django.views.decorators.http import require_http_methods
 
 import utils.htmx as htmx
 from habilitations.enums import UserRole
+from habilitations.models import Habilitation
 from reglementations.enums import ESRS
 from reglementations.enums import ThemeESRS
 from reglementations.enums import TitreESRS
@@ -43,12 +44,9 @@ def selection_enjeux(request, csrd_id, esrs):
         "csrd": csrd,
         "htmx": True,
     }
-    est_editeur = bool(
-        [
-            h
-            for h in request.habilitations
-            if (h.entreprise == csrd.entreprise and h.role == UserRole.EDITEUR)
-        ]
+    est_editeur = (
+        Habilitation.pour(entreprise=csrd.entreprise, utilisateur=request.user).role
+        == UserRole.EDITEUR
     )
 
     if request.method == "GET":
