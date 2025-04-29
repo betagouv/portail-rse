@@ -779,6 +779,25 @@ def test_recherche_entreprise_avec_resultats(
     context = response.context
     assert context["nombre_resultats"] == nombre_resultats
     assert context["entreprises"] == entreprises
+    assert context["recherche"] == recherche
+    assert context["erreur"] == None
+    assertTemplateUsed(response, "fragments/resultats_recherche_entreprise.html")
+
+
+def test_recherche_entreprise_moins_de_3_caractères(
+    client, mock_api_recherche_par_nom_ou_siren
+):
+    recherche = "En"
+
+    response = client.get(
+        "/entreprises/fragments/recherche-entreprise",
+        query_params={"recherche": recherche},
+    )
+
+    assert not mock_api_recherche_par_nom_ou_siren.called
+    assert response.status_code == 200
+    context = response.context
+    assert context["recherche"] == recherche
     assertTemplateUsed(response, "fragments/resultats_recherche_entreprise.html")
 
 
@@ -795,8 +814,6 @@ def test_recherche_entreprise_erreur_API(client, mock_api_recherche_par_nom_ou_s
 
     assert response.status_code == 200
     context = response.context
-    assert context["nombre_resultats"] == 0
-    assert context["entreprises"] == []
     assert context["erreur"] == "Panne serveur"
     assertTemplateUsed(response, "fragments/resultats_recherche_entreprise.html")
     content = response.content.decode("utf-8")

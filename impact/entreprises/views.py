@@ -213,7 +213,7 @@ def recherche_entreprise(request):
                 "activite": "Cultures non permanentes",
             }
         ]
-    elif recherche:
+    elif len(recherche) >= 3:
         try:
             resultats = api.infos_entreprise.recherche_par_nom_ou_siren(recherche)
             nombre_resultats = resultats["nombre_resultats"]
