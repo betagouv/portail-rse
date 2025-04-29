@@ -3,7 +3,16 @@
     <p class="fr-error-text">{{ erreur }}</p>
 {% elif recherche %}
     {% if entreprises %}
-        <h4>Sélectionnez votre entreprise ou précisez votre recherche</h4>
+        <div class="fr-label">Sélectionnez votre entreprise ou précisez votre recherche</div>
+        <p class="fr-info-text fr-mb-1w">
+            {% if nombre_resultats == 1 %}
+                1 entreprise trouvée
+            {% elif nombre_resultats <= 5 %}
+                {{ entreprises|length }} entreprises trouvées
+            {% else %}
+                {{ entreprises|length }} résultats affichés sur {{ nombre_resultats }} trouvés
+            {% endif %}
+        </p>
         {% for entreprise in entreprises %}
             <div class="fr-tile fr-tile--sm fr-tile--no-icon fr-tile--horizontal fr-enlarge-link fr-mb-1w"
                  hx-get="{% url 'preremplissage_formulaire_simulation' entreprise.siren %}"
@@ -26,7 +35,7 @@
     {% else %}
         <p class="fr-error-text">Aucun résultat trouvé</p>
     {% endif %}
-    <p>
+    <p class="fr-mt-1w">
         <a class="fr-link" target="_blank" rel="noopener noreferrer" href="https://annuaire-entreprises.data.gouv.fr/">
             Vous ne trouvez pas votre entreprise ? Trouvez votre SIREN sur l'Annuaire des entreprises
         </a>

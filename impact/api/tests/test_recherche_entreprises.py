@@ -316,14 +316,17 @@ def test_recherche_par_siren_pas_d_activite_principale(activite_principale, mock
 def test_api_recherche_textuelle_fonctionnelle():
     RECHERCHE = "DANONE"
 
-    entreprises = recherche_textuelle(RECHERCHE)
+    resultats = recherche_textuelle(RECHERCHE)
 
+    entreprises = resultats["entreprises"]
     assert entreprises[0] == {
         "siren": "552032534",
         "denomination": "DANONE",
         "activite": "Activités des sièges sociaux",
     }
     assert len(entreprises) == 5
+    nombre_resultats = resultats["nombre_resultats"]
+    assert nombre_resultats > 5
 
 
 def test_api_recherche_textuelle_pas_de_resultat(mocker):
@@ -338,9 +341,12 @@ def test_api_recherche_textuelle_pas_de_resultat(mocker):
     }
     mocker.patch("requests.get", return_value=MockedResponse(200, json_content))
 
-    entreprises = recherche_textuelle(RECHERCHE)
+    resultats = recherche_textuelle(RECHERCHE)
 
-    assert entreprises == []
+    assert resultats == {
+        "nombre_resultats": 0,
+        "entreprises": [],
+    }
 
 
 def test_echec_recherche_textuelle_requete_api_invalide(mocker):

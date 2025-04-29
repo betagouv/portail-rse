@@ -134,6 +134,7 @@ def recherche_unites_legales_par_nom_ou_siren(recherche):
         raise APIError(SERVER_ERROR)
 
     if response.status_code == 200:
+        nombre_resultats = response.json()["header"]["total"]
         resultats = response.json()["unitesLegales"]
         entreprises = [
             {
@@ -147,9 +148,15 @@ def recherche_unites_legales_par_nom_ou_siren(recherche):
             }
             for resultat in resultats
         ]
-        return entreprises
+        return {
+            "nombre_resultats": nombre_resultats,
+            "entreprises": entreprises,
+        }
     elif response.status_code == 404:
-        return []
+        return {
+            "nombre_resultats": 0,
+            "entreprises": [],
+        }
     elif response.status_code == 429:
         sentry_sdk.capture_message(TOO_MANY_REQUESTS_SENTRY_MESSAGE.format(NOM_API))
         raise TooManyRequestError(TOO_MANY_REQUESTS_ERROR)

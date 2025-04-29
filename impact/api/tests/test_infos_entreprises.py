@@ -40,6 +40,10 @@ ENTREPRISES_TROUVEES = [
         "activité": "Activités des sièges sociaux",
     },
 ]
+RESULTATS_RECHERCHE = {
+    "nombre_resultats": 3,
+    "entreprises": ENTREPRISES_TROUVEES,
+}
 
 
 @pytest.fixture
@@ -154,12 +158,12 @@ def test_infos_entreprise_echec_de_l_API_ratios_financiers_non_bloquant(
 def test_recherche_par_nom_ou_siren_succes_api_recherche_entreprises(
     mock_api_recherche_textuelle, mock_api_recherche_unites_legales_par_nom_ou_siren
 ):
-    mock_api_recherche_textuelle.return_value = ENTREPRISES_TROUVEES
+    mock_api_recherche_textuelle.return_value = RESULTATS_RECHERCHE
 
-    entreprises = recherche_par_nom_ou_siren(RECHERCHE)
+    resultats = recherche_par_nom_ou_siren(RECHERCHE)
 
     mock_api_recherche_textuelle.assert_called_once_with(RECHERCHE)
-    assert entreprises == ENTREPRISES_TROUVEES
+    assert resultats == RESULTATS_RECHERCHE
     assert not mock_api_recherche_unites_legales_par_nom_ou_siren.called
 
 
@@ -168,16 +172,16 @@ def test_recherche_par_nom_ou_siren_echec_api_recherche_entreprises_erreur_de_l_
 ):
     mock_api_recherche_textuelle.side_effect = APIError()
     mock_api_recherche_unites_legales_par_nom_ou_siren.return_value = (
-        ENTREPRISES_TROUVEES
+        RESULTATS_RECHERCHE
     )
 
-    entreprises = recherche_par_nom_ou_siren(RECHERCHE)
+    resultats = recherche_par_nom_ou_siren(RECHERCHE)
 
     mock_api_recherche_textuelle.assert_called_once_with(RECHERCHE)
     mock_api_recherche_unites_legales_par_nom_ou_siren.assert_called_once_with(
         RECHERCHE
     )
-    assert entreprises == ENTREPRISES_TROUVEES
+    assert resultats == RESULTATS_RECHERCHE
 
 
 def test_recherche_par_nom_ou_siren_echecs_api_recherche_entreprises_et_api_sirene(
@@ -191,7 +195,7 @@ def test_recherche_par_nom_ou_siren_echecs_api_recherche_entreprises_et_api_sire
     )
 
     with pytest.raises(APIError) as e:
-        entreprises = recherche_par_nom_ou_siren(RECHERCHE)
+        resultats = recherche_par_nom_ou_siren(RECHERCHE)
 
     mock_api_recherche_textuelle.assert_called_once_with(RECHERCHE)
     mock_api_recherche_unites_legales_par_nom_ou_siren.assert_called_once_with(
