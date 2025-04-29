@@ -107,9 +107,7 @@ def recherche_textuelle(recherche):
         raise APIError(SERVER_ERROR)
 
     if response.status_code == 200:
-        if not response.json()["total_results"]:
-            entreprises = []
-        else:
+        if nombre_resultats := response.json()["total_results"]:
             resultats = response.json()["results"]
             entreprises = [
                 {
@@ -120,7 +118,13 @@ def recherche_textuelle(recherche):
                 }
                 for resultat in resultats
             ]
-        return entreprises
+        else:
+            nombre_resultats = 0
+            entreprises = []
+        return {
+            "nombre_resultats": nombre_resultats,
+            "entreprises": entreprises,
+        }
     elif response.status_code == 429:
         sentry_sdk.capture_message(TOO_MANY_REQUESTS_SENTRY_MESSAGE.format(NOM_API))
         raise TooManyRequestError(TOO_MANY_REQUESTS_ERROR)

@@ -24,7 +24,7 @@ def infos_entreprise(siren, donnees_financieres=False):
 
 def recherche_par_nom_ou_siren(recherche):
     try:
-        entreprises = api.recherche_entreprises.recherche_textuelle(recherche)
+        resultats = api.recherche_entreprises.recherche_textuelle(recherche)
     except APIError:
-        entreprises = api.sirene.recherche_unites_legales_par_nom_ou_siren(recherche)
-    return entreprises
+        resultats = api.sirene.recherche_unites_legales_par_nom_ou_siren(recherche)
+    return resultats

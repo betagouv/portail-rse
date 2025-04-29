@@ -216,14 +216,17 @@ def test_pas_d_activite_principale(activite_principale, mocker):
 def test_api_recherche_par_nom_ou_siren_fonctionnelle():
     RECHERCHE = "DANONE"
 
-    entreprises = recherche_unites_legales_par_nom_ou_siren(RECHERCHE)
+    resultats = recherche_unites_legales_par_nom_ou_siren(RECHERCHE)
 
+    entreprises = resultats["entreprises"]
     assert entreprises[0] == {
         "siren": "552032534",
         "denomination": "DANONE",
         "activite": "Activités des sièges sociaux",
     }
     assert len(entreprises) == 5
+    nombre_resultats = resultats["nombre_resultats"]
+    assert nombre_resultats > 5
 
 
 def test_api_recherche_par_nom_ou_siren_pas_de_resultat(mocker):
@@ -231,9 +234,12 @@ def test_api_recherche_par_nom_ou_siren_pas_de_resultat(mocker):
 
     mocker.patch("requests.get", return_value=MockedResponse(404))
 
-    entreprises = recherche_unites_legales_par_nom_ou_siren(RECHERCHE)
+    resultats = recherche_unites_legales_par_nom_ou_siren(RECHERCHE)
 
-    assert entreprises == []
+    assert resultats == {
+        "nombre_resultats": 0,
+        "entreprises": [],
+    }
 
 
 def test_echec_recherche_par_nom_ou_siren_trop_de_requetes(mocker):

@@ -757,12 +757,16 @@ def test_echec_api_search_entreprise_car_l_API_infos_entreprise_est_en_erreur(
 def test_recherche_entreprise_avec_resultats(
     client, mock_api_recherche_par_nom_ou_siren
 ):
+    nombre_resultats = 3
     entreprises = [
         {"siren": "000000001", "denomination": "Entreprise Test 1"},
         {"siren": "889297453", "denomination": "YAAL COOP"},
         {"siren": "552032534", "denomination": "DANONE"},
     ]
-    mock_api_recherche_par_nom_ou_siren.return_value = entreprises
+    mock_api_recherche_par_nom_ou_siren.return_value = {
+        "nombre_resultats": nombre_resultats,
+        "entreprises": entreprises,
+    }
     recherche = "Entreprise SAS"
 
     response = client.get(
@@ -773,6 +777,7 @@ def test_recherche_entreprise_avec_resultats(
     mock_api_recherche_par_nom_ou_siren.assert_called_once_with(recherche)
     assert response.status_code == 200
     context = response.context
+    assert context["nombre_resultats"] == nombre_resultats
     assert context["entreprises"] == entreprises
     assertTemplateUsed(response, "fragments/resultats_recherche_entreprise.html")
 
@@ -790,6 +795,7 @@ def test_recherche_entreprise_erreur_API(client, mock_api_recherche_par_nom_ou_s
 
     assert response.status_code == 200
     context = response.context
+    assert context["nombre_resultats"] == 0
     assert context["entreprises"] == []
     assert context["erreur"] == "Panne serveur"
     assertTemplateUsed(response, "fragments/resultats_recherche_entreprise.html")
@@ -810,6 +816,7 @@ def test_recherche_entreprise_avec_siren_entreprise_test(
     assert not mock_api_recherche_par_nom_ou_siren.called
     assert response.status_code == 200
     context = response.context
+    assert context["nombre_resultats"] == 1
     assert context["entreprises"] == [
         {
             "siren": SIREN_ENTREPRISE_TEST,

@@ -164,6 +164,7 @@ def mock_api_infos_entreprise(mocker):
 
 @pytest.fixture
 def mock_api_recherche_par_nom_ou_siren(mocker):
+    nombre_resultats = 3
     entreprises = [
         {
             "siren": "000000001",
@@ -183,7 +184,7 @@ def mock_api_recherche_par_nom_ou_siren(mocker):
     ]
     return mocker.patch(
         "api.infos_entreprise.recherche_par_nom_ou_siren",
-        return_value=entreprises,
+        return_value={"nombre_resultats": nombre_resultats, "entreprises": entreprises},
     )
 
 
