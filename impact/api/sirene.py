@@ -17,7 +17,7 @@ from entreprises.models import CaracteristiquesAnnuelles
 from utils.codes_naf import CODES_NAF
 
 NOM_API = "sirene"
-SIRENE_TIMEOUT = 10
+SIRENE_TIMEOUT = 3
 
 
 def recherche_unite_legale_par_siren(siren):

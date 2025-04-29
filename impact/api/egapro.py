@@ -5,7 +5,7 @@ from api.exceptions import API_ERROR_SENTRY_MESSAGE
 from api.exceptions import APIError
 from api.exceptions import INVALID_REQUEST_SENTRY_MESSAGE
 
-EGAPRO_TIMEOUT = 10
+EGAPRO_TIMEOUT = 3
 
 
 def indicateurs_bdese(siren, annee):
