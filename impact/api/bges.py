@@ -5,7 +5,7 @@ from api.exceptions import API_ERROR_SENTRY_MESSAGE
 from api.exceptions import APIError
 
 NOM_API = "bilans-ges"
-BGES_TIMEOUT = 10
+BGES_TIMEOUT = 3
 
 
 def last_reporting_year(siren):

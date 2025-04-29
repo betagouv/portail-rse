@@ -15,7 +15,7 @@ from api.sirene import convertit_code_NAF
 from api.sirene import convertit_tranche_effectif
 
 NOM_API = "recherche entreprises"
-RECHERCHE_ENTREPRISE_TIMEOUT = 10
+RECHERCHE_ENTREPRISE_TIMEOUT = 3
 
 # documentation api recherche d'entreprises 1.0.0 https://www.data.gouv.fr/fr/dataservices/api-recherche-dentreprises/
 

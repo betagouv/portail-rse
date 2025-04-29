@@ -9,7 +9,7 @@ from api.exceptions import ServerError
 from entreprises.models import CaracteristiquesAnnuelles
 
 NOM_API = "ratios financiers"
-RATIOS_FINANCIERS_TIMEOUT = 10
+RATIOS_FINANCIERS_TIMEOUT = 3
 
 
 def dernier_exercice_comptable(siren):

@@ -7,7 +7,7 @@ from api.exceptions import APIError
 from api.exceptions import SERVER_ERROR
 
 NOM_API = "analyse IA"
-ANALYSE_IA_TIMEOUT = 10
+ANALYSE_IA_TIMEOUT = 3
 
 
 def lancement_analyse(document_id, document_url, callback_url):
