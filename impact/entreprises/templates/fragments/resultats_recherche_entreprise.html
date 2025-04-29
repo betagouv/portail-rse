@@ -5,7 +5,7 @@
     {% if entreprises %}
         <h4>Sélectionnez votre entreprise ou précisez votre recherche</h4>
         {% for entreprise in entreprises %}
-            <div class="fr-tile fr-tile--no-icon fr-tile--horizontal fr-enlarge-link fr-mb-2w"
+            <div class="fr-tile fr-tile--sm fr-tile--no-icon fr-tile--horizontal fr-enlarge-link fr-mb-1w"
                  hx-get="{% url 'preremplissage_formulaire_simulation' entreprise.siren %}"
                  hx-trigger="click"
                  hx-target="#htmx-simulation-form"
@@ -13,14 +13,11 @@
                  hx-indicator=".htmx-indicator">
                 <div class="fr-tile__body">
                     <div class="fr-tile__content">
-                        <h3 class="fr-tile__title">
-                            {{ entreprise.denomination }}
-                        </h3>
-                        <div class="fr-tile__start">
-                            <p class="fr-badge">{{ entreprise.siren }}</p>
-                        </div>
-                        <p class="fr-tile__detail">
-                            <span class="fr-icon-briefcase-line fr-icon--sm fr-mr-2v" aria-hidden="true"></span> {{ entreprise.activite }}
+                        <p class="fr-badge fr-badge--sm">{{ entreprise.siren }}</p>
+                        <p class= "fr-text--bold">{{ entreprise.denomination }}</p>
+                        <p>
+                            <span class="fr-icon-briefcase-line fr-icon--sm fr-mr-2v" aria-hidden="true"></span>
+                            {{ entreprise.activite }}
                         </p>
                     </div>
                 </div>
