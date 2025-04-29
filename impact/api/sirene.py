@@ -35,55 +35,56 @@ def recherche_unite_legale_par_siren(siren):
             sentry_sdk.capture_exception(e)
         raise APIError(SERVER_ERROR)
 
-    if response.status_code == 200:
-        data = response.json()["uniteLegale"]
+    match response.status_code:
+        case 200:
+            data = response.json()["uniteLegale"]
 
-        denomination = (
-            data["periodesUniteLegale"][0]["denominationUniteLegale"]
-            or data["periodesUniteLegale"][0]["nomUniteLegale"]
-        )
-
-        try:
-            categorie_juridique_sirene = int(
-                data["periodesUniteLegale"][0]["categorieJuridiqueUniteLegale"]
+            denomination = (
+                data["periodesUniteLegale"][0]["denominationUniteLegale"]
+                or data["periodesUniteLegale"][0]["nomUniteLegale"]
             )
-        except (ValueError, TypeError):
+
+            try:
+                categorie_juridique_sirene = int(
+                    data["periodesUniteLegale"][0]["categorieJuridiqueUniteLegale"]
+                )
+            except (ValueError, TypeError):
+                sentry_sdk.capture_message(
+                    "Catégorie juridique récupérée par l'API sirene invalide"
+                )
+                categorie_juridique_sirene = None
+
+            effectif = convertit_tranche_effectif(data["trancheEffectifsUniteLegale"])
+            code_NAF = (
+                data["periodesUniteLegale"][0]["activitePrincipaleUniteLegale"] or None
+            )
+
+            # L'API sirene ne renseigne malheureusement pas le code pays étranger (bien récupéré par l'API recherche entreprises)
+            # On souhaite être informé dès qu'il est manquant (utilisé dans la réglementation CSRD).
+            # Il est toujours laissé vide actuellement (interprété comme France).
+            # Il serait récupérable en utilisant le Nic du siège fourni par l'API. Cela permettrait
+            # de construire le SIRET du siège. Une nouvelle requête POST sur https://api.insee.fr/entreprises/sirene/V3.11/siret
+            # fournirait alors le code pays dans le champ codePaysEtrangerEtablissement.
             sentry_sdk.capture_message(
-                "Catégorie juridique récupérée par l'API sirene invalide"
+                f"Code pays étranger non récupéré par l'API {NOM_API}"
             )
-            categorie_juridique_sirene = None
 
-        effectif = convertit_tranche_effectif(data["trancheEffectifsUniteLegale"])
-        code_NAF = (
-            data["periodesUniteLegale"][0]["activitePrincipaleUniteLegale"] or None
-        )
-
-        # L'API sirene ne renseigne malheureusement pas le code pays étranger (bien récupéré par l'API recherche entreprises)
-        # On souhaite être informé dès qu'il est manquant (utilisé dans la réglementation CSRD).
-        # Il est toujours laissé vide actuellement (interprété comme France).
-        # Il serait récupérable en utilisant le Nic du siège fourni par l'API. Cela permettrait
-        # de construire le SIRET du siège. Une nouvelle requête POST sur https://api.insee.fr/entreprises/sirene/V3.11/siret
-        # fournirait alors le code pays dans le champ codePaysEtrangerEtablissement.
-        sentry_sdk.capture_message(
-            f"Code pays étranger non récupéré par l'API {NOM_API}"
-        )
-
-        return {
-            "siren": siren,
-            "effectif": effectif,
-            "denomination": denomination,
-            "categorie_juridique_sirene": categorie_juridique_sirene,
-            "code_pays_etranger_sirene": None,
-            "code_NAF": code_NAF,
-        }
-    elif response.status_code == 404:
-        raise SirenError(SIREN_NOT_FOUND_ERROR)
-    elif response.status_code == 429:
-        sentry_sdk.capture_message(TOO_MANY_REQUESTS_SENTRY_MESSAGE.format(NOM_API))
-        raise TooManyRequestError(TOO_MANY_REQUESTS_ERROR)
-    else:
-        sentry_sdk.capture_message(API_ERROR_SENTRY_MESSAGE.format(NOM_API))
-        raise ServerError(SERVER_ERROR)
+            return {
+                "siren": siren,
+                "effectif": effectif,
+                "denomination": denomination,
+                "categorie_juridique_sirene": categorie_juridique_sirene,
+                "code_pays_etranger_sirene": None,
+                "code_NAF": code_NAF,
+            }
+        case 404:
+            raise SirenError(SIREN_NOT_FOUND_ERROR)
+        case 429:
+            sentry_sdk.capture_message(TOO_MANY_REQUESTS_SENTRY_MESSAGE.format(NOM_API))
+            raise TooManyRequestError(TOO_MANY_REQUESTS_ERROR)
+        case _:
+            sentry_sdk.capture_message(API_ERROR_SENTRY_MESSAGE.format(NOM_API))
+            raise ServerError(SERVER_ERROR)
 
 
 def convertit_tranche_effectif(tranche_effectif):
@@ -133,36 +134,39 @@ def recherche_unites_legales_par_nom_ou_siren(recherche):
             sentry_sdk.capture_exception(e)
         raise APIError(SERVER_ERROR)
 
-    if response.status_code == 200:
-        nombre_resultats = response.json()["header"]["total"]
-        resultats = response.json()["unitesLegales"]
-        entreprises = [
-            {
-                "siren": resultat["siren"],
-                "denomination": resultat["periodesUniteLegale"][0][
-                    "denominationUniteLegale"
-                ],
-                "activite": convertit_code_NAF(
-                    resultat["periodesUniteLegale"][0]["activitePrincipaleUniteLegale"]
-                ),
+    match response.status_code:
+        case 200:
+            nombre_resultats = response.json()["header"]["total"]
+            resultats = response.json()["unitesLegales"]
+            entreprises = [
+                {
+                    "siren": resultat["siren"],
+                    "denomination": resultat["periodesUniteLegale"][0][
+                        "denominationUniteLegale"
+                    ],
+                    "activite": convertit_code_NAF(
+                        resultat["periodesUniteLegale"][0][
+                            "activitePrincipaleUniteLegale"
+                        ]
+                    ),
+                }
+                for resultat in resultats
+            ]
+            return {
+                "nombre_resultats": nombre_resultats,
+                "entreprises": entreprises,
             }
-            for resultat in resultats
-        ]
-        return {
-            "nombre_resultats": nombre_resultats,
-            "entreprises": entreprises,
-        }
-    elif response.status_code == 404:
-        return {
-            "nombre_resultats": 0,
-            "entreprises": [],
-        }
-    elif response.status_code == 429:
-        sentry_sdk.capture_message(TOO_MANY_REQUESTS_SENTRY_MESSAGE.format(NOM_API))
-        raise TooManyRequestError(TOO_MANY_REQUESTS_ERROR)
-    else:
-        sentry_sdk.capture_message(API_ERROR_SENTRY_MESSAGE.format(NOM_API))
-        raise ServerError(SERVER_ERROR)
+        case 404:
+            return {
+                "nombre_resultats": 0,
+                "entreprises": [],
+            }
+        case 429:
+            sentry_sdk.capture_message(TOO_MANY_REQUESTS_SENTRY_MESSAGE.format(NOM_API))
+            raise TooManyRequestError(TOO_MANY_REQUESTS_ERROR)
+        case _:
+            sentry_sdk.capture_message(API_ERROR_SENTRY_MESSAGE.format(NOM_API))
+            raise ServerError(SERVER_ERROR)
 
 
 def convertit_code_NAF(code_NAF):
