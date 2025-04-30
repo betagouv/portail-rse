@@ -54,6 +54,7 @@
             {% endif %}
         </div>
 
+{% comment %}
         <div class="fr-my-4w">
             <h3>Éditeurs</h3>
             {% if habilitations.editeur %}
@@ -125,8 +126,17 @@
                 Aucun éditeur
             {% endif %}
         </div>
+{% endcomment %}
 
+        <div class="fr-my-4w">
+            <h3>Inviter un nouveau membre</h3>
+            La personne recevra un e-mail l'invitant à vous rejoindre pour gérer {{ entreprise.denomination }} ensemble.
 
-
+            <form method="post">
+                {% csrf_token %}
+                {{ form }}
+                <button type="submit" class="fr-btn fr-mt-2w">Inviter</button>
+            </form>
+        </div>
     </div>
 {% endblock %}
