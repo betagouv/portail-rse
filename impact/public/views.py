@@ -103,15 +103,16 @@ def simulation(request):
 
 
 def preremplissage_formulaire_simulation(request, siren):
+    erreur = False
     if siren == SIREN_ENTREPRISE_TEST:
         infos = {
             "siren": SIREN_ENTREPRISE_TEST,
             "denomination": "ENTREPRISE TEST",
-            "effectif": "10000+",
+            "effectif": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
             "categorie_juridique_sirene": 5505,
             "code_NAF": "01.11Z",
-            "tranche_chiffre_affaires": "100M+",
-            "tranche_bilan": "100M+",
+            "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+            "tranche_bilan": CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         }
     else:
         try:
@@ -122,14 +123,20 @@ def preremplissage_formulaire_simulation(request, siren):
                 # L'entreprise appartient à un groupe et établit des comptes consolidés
                 infos["appartient_groupe"] = True
                 infos["comptes_consolides"] = True
-        except APIError as exception:
-            print(exception)
+        except APIError as e:
+            # Ce cas est actuellement bloquant pour la suite de la simulation car certaines données sont récupérées par l'API
+            # sans que l'utilisateur ne puisse voir/modifier cette donnée par soucis de simplicité (par ex la denomination).
+            # Depuis l'ajout de la recherche d'entreprise par nom ou siren en première étape de la simulation,
+            # cette donnée pourrait éventuellement être récupérée lors de l'appel API de recherche puis transmise à cette vue.
+            # On pourrait alors simplifier cet appel API pour ne chercher que la donnée financière éventuelle
+            # et le rendre non bloquant pour la simulation
+            erreur = str(e)
             infos = {}
     simulation_form = SimulationForm(initial=infos)
     return render(
         request,
         "fragments/simulation_form.html",
-        context={"simulation_form": simulation_form},
+        context={"simulation_form": simulation_form, "erreur": erreur},
     )
 
 

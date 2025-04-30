@@ -4,9 +4,12 @@ from datetime import timedelta
 
 import pytest
 from django.urls import reverse
+from pytest_django.asserts import assertTemplateUsed
 
+import api.exceptions
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
+from entreprises.models import SIREN_ENTREPRISE_TEST
 from habilitations.models import attach_user_to_entreprise
 from public.views import should_commit
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
@@ -710,3 +713,93 @@ def test_pas_de_résultats_de_la_simulation_après_une_déconnexion(client):
 
     content = response.content.decode("utf-8")
     assert "<!-- page simulation -->" in content
+
+
+def test_preremplissage_simulation(client, mock_api_infos_entreprise):
+    siren = "123456789"
+    infos_entreprise = mock_api_infos_entreprise.return_value
+
+    response = client.get(
+        f"/simulation/fragments/preremplissage-formulaire-simulation/{siren}"
+    )
+
+    mock_api_infos_entreprise.assert_called_once_with(siren, donnees_financieres=True)
+    assert response.status_code == 200
+    assertTemplateUsed(response, "fragments/simulation_form.html")
+    context = response.context
+    assert not context["erreur"]
+    # le formulaire est prérempli les données d'API
+    simulation_form = response.context["simulation_form"]
+    assert simulation_form["siren"].value() == infos_entreprise["siren"]
+    assert simulation_form["denomination"].value() == infos_entreprise["denomination"]
+    assert (
+        simulation_form["categorie_juridique_sirene"].value()
+        == infos_entreprise["categorie_juridique_sirene"]
+    )
+    assert simulation_form["code_NAF"].value() == infos_entreprise["code_NAF"]
+    assert simulation_form["effectif"].value() == infos_entreprise["effectif"]
+    assert (
+        simulation_form["tranche_chiffre_affaires"].value()
+        == infos_entreprise["tranche_chiffre_affaires"]
+    )
+    assert (
+        simulation_form["appartient_groupe"].value()
+        == infos_entreprise["appartient_groupe"]
+    )
+    assert (
+        simulation_form["comptes_consolides"].value()
+        == infos_entreprise["comptes_consolides"]
+    )
+    assert (
+        simulation_form["tranche_chiffre_affaires_consolide"].value()
+        == infos_entreprise["tranche_chiffre_affaires_consolide"]
+    )
+
+
+def test_preremplissage_simulation_erreur_API(client, mock_api_infos_entreprise):
+    siren = "123456789"
+    mock_api_infos_entreprise.side_effect = api.exceptions.APIError("Panne serveur")
+
+    response = client.get(
+        f"/simulation/fragments/preremplissage-formulaire-simulation/{siren}"
+    )
+
+    assert response.status_code == 200
+    context = response.context
+    assert context["erreur"] == "Panne serveur"
+    content = response.content.decode("utf-8")
+    assert "Panne serveur" in content
+
+
+def test_preremplissage_simulation_avec_entreprise_test(
+    client, mock_api_infos_entreprise
+):
+    siren = SIREN_ENTREPRISE_TEST
+
+    response = client.get(
+        f"/simulation/fragments/preremplissage-formulaire-simulation/{siren}"
+    )
+
+    assert not mock_api_infos_entreprise.called
+    assert response.status_code == 200
+    context = response.context
+    assert not context["erreur"]
+    # le formulaire est prérempli avec des données de test
+    simulation_form = response.context["simulation_form"]
+    assert simulation_form["siren"].value() == SIREN_ENTREPRISE_TEST
+    assert simulation_form["denomination"].value() == "ENTREPRISE TEST"
+    assert simulation_form["categorie_juridique_sirene"].value() == 5505
+    assert simulation_form["code_NAF"].value() == "01.11Z"
+    assert (
+        simulation_form["effectif"].value()
+        == CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
+    )
+    assert (
+        simulation_form["tranche_chiffre_affaires"].value()
+        == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
+    )
+    assert (
+        simulation_form["tranche_bilan"].value()
+        == CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
+    )
+    assert not simulation_form["appartient_groupe"].value()
