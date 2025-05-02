@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
+from habilitations.models import Habilitation
 from reglementations.enums import ThemeESRS
 from reglementations.enums import TitreESRS
 from reglementations.forms.csrd import EnjeuxMaterielsRapportCSRDForm
@@ -77,15 +78,18 @@ def selection_enjeux_materiels(request, csrd_id, esrs):
         "theme": ThemeESRS[esrs].value,
         "titre": TitreESRS[esrs].value,
     }
+    # On ajoute le rôle de l'utilisateur au formulaire
+    role = Habilitation.role_pour(csrd.entreprise, request.user)
 
     if request.method == "GET":
         return render(
             request,
             template_name=template_name,
-            context=context | {"form": EnjeuxMaterielsRapportCSRDForm(qs=qs)},
+            context=context
+            | {"form": EnjeuxMaterielsRapportCSRDForm(qs=qs, role=role)},
         )
 
-    form = EnjeuxMaterielsRapportCSRDForm(request.POST, qs=qs)
+    form = EnjeuxMaterielsRapportCSRDForm(request.POST, qs=qs, role=role)
 
     if form.is_valid() and not csrd.bloque:
         form.save()

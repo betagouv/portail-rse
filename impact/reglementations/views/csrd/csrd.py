@@ -25,6 +25,7 @@ from openpyxl import Workbook
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
+from habilitations.enums import UserRole
 from habilitations.models import Habilitation
 from reglementations.enums import ESRS
 from reglementations.enums import EtapeCSRD
@@ -503,10 +504,15 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
         )
 
     entreprise = get_object_or_404(Entreprise, siren=siren)
-    if not Habilitation.existe(entreprise, request.user):
+
+    try:
+        role = Habilitation.role_pour(entreprise, request.user)
+    except Habilitation.DoesNotExist:
         raise PermissionDenied
 
+    annee = datetime.now().year
     template_name = f"reglementations/csrd/etape-{id_etape}.html"
+
     try:
         template = get_template(template_name)
     except TemplateDoesNotExist:
@@ -517,7 +523,7 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
     # un peu de centralisation à faire pour éviter les répétitions dans `utils.middlewares.ExtendUserMiddleware`
 
     # par ex., on peut récupérer l'habilitation pour cette entreprise, elle est déjà en cache
-    habilitation = request.user.habilitation_set.get(entreprise=entreprise)
+    # habilitation = request.user.habilitation_set.get(entreprise=entreprise)
     annee = datetime.now().year
 
     if request.method == "POST":
@@ -544,13 +550,30 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
             request.session.pop("rapport_csrd_courant")
 
     if not request.session.get("rapport_csrd_courant"):
+        if role == UserRole.LECTEUR and not RapportCSRD.objects.filter(
+            entreprise=entreprise
+        ):
+            # aucun rapport existant pour cette entreprise, les lecteurs sont exclus
+            messages.warning(
+                request,
+                "Aucun Rapport CSRD n'a encore été créé pour cette entreprise. Vous ne pouvez pas accéder à cette section en tant que lecteur.",
+            )
+            # Rediriger vers une page appropriée, par exemple le tableau de bord de l'entreprise
+            return redirect("reglementations:tableau_de_bord", siren=siren)
+
         # les prefetch de l'enjeu parent évitent des N+1 au niveau du template
         csrd, _ = RapportCSRD.objects.prefetch_related(
             "enjeux", "enjeux__parent"
         ).get_or_create(
             entreprise=entreprise,
-            proprietaire=None if habilitation.is_confirmed else request.user,
+            proprietaire=None,  # if habilitation.is_confirmed else request.user,
             annee=annee,
+        )
+
+    if Habilitation.role_pour(entreprise, request.user) == UserRole.LECTEUR:
+        messages.warning(
+            request,
+            "Ce rapport CSRD ne vous est accessible qu'en lecture seule.",
         )
 
     context = contexte_d_etape(id_etape, csrd)

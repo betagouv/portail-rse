@@ -35,6 +35,7 @@
             <hr>
         </div>
     {% endfor %}
-
-    <button type="submit" class="fr-btn fr-btn--secondary" hx-disabled-elt="this" aria-controls="selection-modal" {% if csrd.bloque %}disabled{% endif %}>Valider</button>
+    {% if est_editeur %}
+        <button type="submit" class="fr-btn fr-btn--secondary" hx-disabled-elt="this" aria-controls="selection-modal" {% if csrd.bloque %}disabled{% endif %}>Valider</button>
+    {% endif %}
 </form>
