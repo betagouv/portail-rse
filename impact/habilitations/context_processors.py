@@ -14,6 +14,6 @@ def habilitation(request):
         if h.entreprise.siren == siren_courant:
             ctx |= {"role_utilisateur": h.role}
             for role in UserRole.values:
-                ctx |= {f"est_{role}": UserRole.autorise(h.role, role)}
+                ctx |= {f"est_{role}": UserRole(h.role) >= UserRole(role)}
 
     return ctx

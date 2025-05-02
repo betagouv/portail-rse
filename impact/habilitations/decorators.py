@@ -49,7 +49,9 @@ def role(*required_roles):
                     "L'utilisateur n'a pas d'habilitation pour l'entreprise courante."
                 )
 
-            if not UserRole.autorise(habilitation.role, *required_roles):
+            if habilitation.role and not UserRole.autorise(
+                UserRole(habilitation.role), *required_roles
+            ):
                 return HttpResponseForbidden("L'utilisateur n'a pas le rôle requis.")
 
             # Si tout est OK, exécuter la vue originale
