@@ -1,3 +1,4 @@
+from habilitations.models import Habilitation
 from users.forms import InvitationForm
 from users.forms import UserCreationForm
 
@@ -60,11 +61,31 @@ def test_fail_to_create_user_with_weak_password(db):
     ]
 
 
-def test_échec_lors_de_la_création_car_l_entreprise_existe_déjà(
+def test_succès_lors_de_la_création_même_si_l_entreprise_existe_déjà(
     db, entreprise_non_qualifiee
 ):
     data = {
         "prenom": "Alice",
+        "nom": "User",
+        "email": "user@domaine.test",
+        "password1": "Passw0rd!123",
+        "password2": "Passw0rd!123",
+        "siren": entreprise_non_qualifiee.siren,
+        "acceptation_cgu": "checked",
+        "fonctions": "Présidente",
+    }
+
+    bound_form = UserCreationForm(data)
+
+    assert bound_form.is_valid()
+
+
+def test_échec_lors_de_la_création_car_un_propriétaire_de_l_entreprise_existe_déjà(
+    db, alice, entreprise_non_qualifiee
+):
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
+    data = {
+        "prenom": "Bob",
         "nom": "User",
         "email": "user@domaine.test",
         "password1": "password",
@@ -78,7 +99,7 @@ def test_échec_lors_de_la_création_car_l_entreprise_existe_déjà(
 
     assert not bound_form.is_valid()
     assert bound_form.errors["siren"] == [
-        "Cette entreprise existe déjà.",
+        "Cette entreprise a déjà au moins un propriétaire.",
     ]
 
 
