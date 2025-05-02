@@ -459,9 +459,57 @@ def test_can_not_login_if_email_is_not_confirmed(client, alice_with_password):
 
 
 def test_page_invitation(client):
-    response = client.get("/invitation")
+    response = client.get(
+        "/invitation", {"siren": 123456789, "email": "alice@portail.example"}
+    )
 
     assert response.status_code == 200
     assertTemplateUsed(response, "users/creation.html")
     content = response.content.decode("utf-8")
+    assert "123456789" in content, content
+    assert "alice@portail.example" in content, content
     assert "Vous avez été invité" in content, content
+
+
+def test_creation_d_un_utilisateur_après_une_invitation(
+    client, db, entreprise_factory, mailoutbox
+):
+    entreprise = entreprise_factory(siren="130025265")  # Dinum
+    data = {
+        "prenom": "Alice",
+        "nom": "User",
+        "email": "user@domaine.test",
+        "password1": "Passw0rd!123",
+        "password2": "Passw0rd!123",
+        "siren": entreprise.siren,
+        "acceptation_cgu": "checked",
+        "reception_actualites": "checked",
+        "fonctions": "Présidente",
+    }
+
+    response = client.post("/invitation", data=data, follow=True)
+
+    assert response.status_code == 200
+    reglementation_url = reverse(
+        "reglementations:tableau_de_bord", kwargs={"siren": entreprise.siren}
+    )
+    assert response.redirect_chain == [
+        (reglementation_url, 302),
+        (f"{reverse('users:login')}?next={reglementation_url}", 302),
+    ]
+
+    user = User.objects.get(email="user@domaine.test")
+    entreprise = Entreprise.objects.get(siren="130025265")
+    assert user.created_at
+    assert user.updated_at
+    assert user.email == "user@domaine.test"
+    assert user.prenom == "Alice"
+    assert user.nom == "User"
+    assert user.acceptation_cgu == True
+    assert user.reception_actualites == True
+    assert user.check_password("Passw0rd!123")
+    assert user.is_email_confirmed == True
+    assert user in entreprise.users.all()
+    assert user.uidb64
+    assert Habilitation.pour(entreprise, user).fonctions == "Présidente"
+    assert len(mailoutbox) == 0
