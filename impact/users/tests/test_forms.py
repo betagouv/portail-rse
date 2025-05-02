@@ -101,6 +101,13 @@ def test_échec_lors_de_la_création_car_un_propriétaire_de_l_entreprise_existe
     assert bound_form.errors["siren"] == [
         "Cette entreprise a déjà au moins un propriétaire.",
     ]
+    assert bound_form.proprietaires_presents == [alice]
+    assert (
+        bound_form.message_erreur_proprietaires()
+        == "Il existe déjà un propriétaire sur cette entreprise. Contactez la personne dans l'entreprise qui possède ce compte ("
+        + alice.email
+        + ")."
+    )
 
 
 def test_succès_lors_de_l_invitation(db, entreprise_non_qualifiee):

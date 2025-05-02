@@ -86,6 +86,7 @@ class UserCreationForm(UserPasswordForm):
         label="J’ai lu et j’accepte les CGU (Conditions Générales d'utilisation)",
         required=True,
     )
+    proprietaires_presents = []
 
     class Meta:
         model = User
@@ -98,11 +99,19 @@ class UserCreationForm(UserPasswordForm):
         siren = self.cleaned_data.get("siren")
         if entreprises := Entreprise.objects.filter(siren=siren):
             entreprise = entreprises[0]
-            if Habilitation.objects.filter(entreprise=entreprise):
+            if habilitations := Habilitation.objects.filter(entreprise=entreprise):
+                self.proprietaires_presents = [
+                    habilitation.user for habilitation in habilitations
+                ]
                 raise forms.ValidationError(
                     "Cette entreprise a déjà au moins un propriétaire."
                 )
         return siren
+
+    def message_erreur_proprietaires(self):
+        proprio = self.proprietaires_presents[0]
+        message = f"Il existe déjà un propriétaire sur cette entreprise. Contactez la personne dans l'entreprise qui possède ce compte ({proprio.email})."
+        return message
 
 
 class InvitationForm(UserCreationForm):

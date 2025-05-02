@@ -53,9 +53,14 @@ def creation(request):
             except APIError as exception:
                 messages.error(request, exception)
         else:
-            messages.error(
-                request, "La création a échoué car le formulaire contient des erreurs."
-            )
+            if proprietaires_presents := form.proprietaires_presents:
+                proprio = proprietaires_presents[0]
+                messages.error(request, form.message_erreur_proprietaires())
+            else:
+                messages.error(
+                    request,
+                    "La création a échoué car le formulaire contient des erreurs.",
+                )
     else:
         siren = request.session.get("siren")
         form = UserCreationForm(initial={"siren": siren})
