@@ -1,5 +1,6 @@
 import html
 
+from django.conf import settings
 from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed
 
@@ -32,12 +33,13 @@ def test_page_membres_d_une_entreprise_nécessite_d_être_connecté(
     assert response.redirect_chain == [(redirect_url, 302)]
 
 
-def test_invitation_a_devenir_membre(client, alice, entreprise_factory):
+def test_invitation_a_devenir_membre(client, alice, entreprise_factory, mailoutbox):
     entreprise = entreprise_factory()
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
+    EMAIL_INVITE = "bob@bob.test"
     data = {
-        "email": "bob@bob.test",
+        "email": EMAIL_INVITE,
     }
     url = f"/droits/{entreprise.siren}"
 
@@ -49,3 +51,8 @@ def test_invitation_a_devenir_membre(client, alice, entreprise_factory):
     assert response.redirect_chain == [(redirect_url, 302)]
     content = html.unescape(response.content.decode("utf-8"))
     assert "L'invitation a été envoyée." in content
+    assert len(mailoutbox) == 1
+    mail = mailoutbox[0]
+    assert mail.from_email == settings.DEFAULT_FROM_EMAIL
+    assert list(mail.to) == [EMAIL_INVITE]
+    assert mail.template_id == settings.BREVO_INVITATION_TEMPLATE
