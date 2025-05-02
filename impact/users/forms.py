@@ -10,6 +10,7 @@ from entreprises.forms import SirenField
 from entreprises.models import Entreprise
 from habilitations.models import FONCTIONS_MAX_LENGTH
 from habilitations.models import FONCTIONS_MIN_LENGTH
+from habilitations.models import Habilitation
 from utils.forms import DsfrForm
 
 
@@ -95,8 +96,12 @@ class UserCreationForm(UserPasswordForm):
 
     def clean_siren(self):
         siren = self.cleaned_data.get("siren")
-        if Entreprise.objects.filter(siren=siren):
-            raise forms.ValidationError("Cette entreprise existe déjà.")
+        if entreprises := Entreprise.objects.filter(siren=siren):
+            entreprise = entreprises[0]
+            if Habilitation.objects.filter(entreprise=entreprise):
+                raise forms.ValidationError(
+                    "Cette entreprise a déjà au moins un propriétaire."
+                )
         return siren
 
 
