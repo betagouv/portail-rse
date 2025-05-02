@@ -101,6 +101,13 @@ def confirm_email(request, uidb64, token):
     return redirect("/")
 
 
+def invitation(request):
+    form = UserCreationForm()
+    return render(
+        request, "users/creation.html", {"form": form, "creation_par_invitation": True}
+    )
+
+
 def deconnexion(request):
     """Déconnexion par méthode GET
 

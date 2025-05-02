@@ -7,6 +7,7 @@ import pytest
 from django.conf import settings
 from django.urls import reverse
 from freezegun import freeze_time
+from pytest_django.asserts import assertTemplateUsed
 
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
@@ -455,3 +456,12 @@ def test_can_not_login_if_email_is_not_confirmed(client, alice_with_password):
         "Merci de confirmer votre adresse e-mail en cliquant sur le lien reçu avant de vous connecter."
         in content
     ), content
+
+
+def test_page_invitation(client):
+    response = client.get("/invitation")
+
+    assert response.status_code == 200
+    assertTemplateUsed(response, "users/creation.html")
+    content = response.content.decode("utf-8")
+    assert "Vous avez été invité" in content, content
