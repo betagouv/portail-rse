@@ -8,6 +8,7 @@ from .forms import SetPasswordForm
 from .views import account
 from .views import creation
 from .views import deconnexion
+from .views import invitation
 from .views import PasswordResetConfirmView
 from .views import PasswordResetView
 from users.views import confirm_email
@@ -23,6 +24,7 @@ urlpatterns = [
     ),
     path("deconnexion", deconnexion, name="logout"),
     path("creation", creation, name="creation"),
+    path("invitation", invitation, name="invitation"),
     path(
         "mot-de-passe-oublie",
         PasswordResetView.as_view(
