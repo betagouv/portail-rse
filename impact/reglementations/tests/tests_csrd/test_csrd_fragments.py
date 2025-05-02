@@ -9,28 +9,24 @@ Fragments HTMX pour la gestion de l'espace CSRD
 """
 
 
-def _rapport_csrd_personnel(entreprise_non_qualifiee, alice, annee=now().year):
+def _rapport_csrd_officiel(entreprise_non_qualifiee, alice, annee=now().year):
     entreprise_non_qualifiee.users.add(alice)
-    rapport = RapportCSRD(
-        entreprise=entreprise_non_qualifiee, proprietaire=alice, annee=annee
-    )
+    rapport = RapportCSRD(entreprise=entreprise_non_qualifiee, annee=annee)
     rapport.save()
     return rapport
 
 
 @pytest.fixture
 def rapport_csrd_courant(entreprise_non_qualifiee, alice):
-    return _rapport_csrd_personnel(entreprise_non_qualifiee, alice)
+    return _rapport_csrd_officiel(entreprise_non_qualifiee, alice)
 
 
 @pytest.fixture
 def rapport_csrd_precedent(entreprise_non_qualifiee, alice):
-    return _rapport_csrd_personnel(
-        entreprise_non_qualifiee, alice, annee=now().year - 1
-    )
+    return _rapport_csrd_officiel(entreprise_non_qualifiee, alice, annee=now().year - 1)
 
 
-def test_soumission_lien_rapport(client, rapport_csrd_courant):
+def test_soumission_lien_rapport(client, rapport_csrd_courant, alice):
     # vérifie que la saisie du lien est bien effectuée
     url = reverse(
         "reglementations:soumettre_lien_rapport",
@@ -41,7 +37,8 @@ def test_soumission_lien_rapport(client, rapport_csrd_courant):
     # avec un lien de rapport incorrect
     data = {"lien_rapport": "foo"}
 
-    client.force_login(user=rapport_csrd_courant.proprietaire)
+    # plus de proprietaire
+    client.force_login(user=alice)
     response = client.post(url, data=data, follow=True)
 
     assert (
@@ -63,7 +60,10 @@ def test_soumission_lien_rapport(client, rapport_csrd_courant):
 
 
 def test_presence_annee_precedente(
-    client, rapport_csrd_courant, rapport_csrd_precedent
+    client,
+    rapport_csrd_courant,
+    rapport_csrd_precedent,  # noqa
+    alice,
 ):
     # vérifie si l'affichage du sélecteur contient bien les deux années (courant et précédente)
     url = reverse(
@@ -73,7 +73,7 @@ def test_presence_annee_precedente(
             "id_etape": "redaction-rapport-durabilite",
         },
     )
-    client.force_login(user=rapport_csrd_courant.proprietaire)
+    client.force_login(user=alice)
     response = client.get(url)
     body = response.content.decode("utf-8")
 
@@ -82,7 +82,9 @@ def test_presence_annee_precedente(
     assert f"_selection_{now().year-1}" in body
 
 
-def test_selection_annee_rapport(client, rapport_csrd_courant, rapport_csrd_precedent):
+def test_selection_annee_rapport(
+    client, rapport_csrd_courant, rapport_csrd_precedent, alice
+):
     # verifie que la selection de l'annee est bien effectuée (session)
     url = reverse(
         "reglementations:gestion_csrd",
@@ -91,7 +93,7 @@ def test_selection_annee_rapport(client, rapport_csrd_courant, rapport_csrd_prec
             "id_etape": "redaction-rapport-durabilite",
         },
     )
-    client.force_login(user=rapport_csrd_courant.proprietaire)
+    client.force_login(user=alice)
     client.get(url)
 
     # aucun element de session enregistre pour le rapport CSRD : on utilise le rapport courant

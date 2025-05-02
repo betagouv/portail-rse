@@ -61,7 +61,8 @@ def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
             response, "reglementations/csrd/etape-redaction-rapport-durabilite.html"
         )
 
-    rapport_csrd = RapportCSRD.objects.get(proprietaire=alice, entreprise=entreprise)
+    # les rapports CSRD n'ont plus de propriétaires
+    rapport_csrd = RapportCSRD.objects.get(entreprise=entreprise)
     NOMBRE_ENJEUX = 103
     assert len(rapport_csrd.enjeux.all()) == NOMBRE_ENJEUX
 
