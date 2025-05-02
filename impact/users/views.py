@@ -13,6 +13,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
 
+from .forms import InvitationForm
 from .forms import UserCreationForm
 from .forms import UserEditionForm
 from .forms import UserPasswordForm
@@ -102,7 +103,28 @@ def confirm_email(request, uidb64, token):
 
 
 def invitation(request):
-    form = UserCreationForm()
+    if request.method == "POST":
+        form = InvitationForm(request.POST)
+        if form.is_valid():
+            siren = form.cleaned_data["siren"]
+            entreprises = Entreprise.objects.filter(siren=siren)
+            entreprise = entreprises[0]
+            user = form.save()
+            user.is_email_confirmed = True
+            user.save()
+            Habilitation.ajouter(
+                entreprise,
+                user,
+                fonctions=form.cleaned_data["fonctions"],
+            )
+            return redirect("reglementations:tableau_de_bord", siren)
+        else:
+            messages.error(
+                request, "La création a échoué car le formulaire contient des erreurs."
+            )
+    else:
+        initial = {(k, v) for k, v in request.GET.items()}
+        form = InvitationForm(initial=initial)
     return render(
         request, "users/creation.html", {"form": form, "creation_par_invitation": True}
     )
