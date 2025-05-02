@@ -97,6 +97,17 @@ class UserCreationForm(UserPasswordForm):
         siren = self.cleaned_data.get("siren")
         if Entreprise.objects.filter(siren=siren):
             raise forms.ValidationError("Cette entreprise existe déjà.")
+        return siren
+
+
+class InvitationForm(UserCreationForm):
+    def clean_siren(self):
+        siren = self.cleaned_data.get("siren")
+        if Entreprise.objects.filter(siren=siren).count() != 1:
+            raise forms.ValidationError(
+                "Cette entreprise n'existe plus dans Portail-RSE."
+            )
+        return siren
 
 
 class UserEditionForm(DsfrForm, forms.ModelForm):
