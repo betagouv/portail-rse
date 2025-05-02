@@ -9,7 +9,7 @@
         <div
             {% if document.etat in "pending,processing,text_processed,analysis_complete" %}
                 hx-get="{% url 'reglementations:statut_analyse_ia' document.id %}" {# URL de la vue qui renvoie ce fragment #}
-                hx-trigger="every 1s" {# Déclencheur toutes les secondes #}
+                hx-trigger="every 5s" {# Déclencheur toutes les 5 secondes #}
             {% endif %}>
             {% if document.etat in "pending,processing,text_processed,analysis_complete" %}
                 <p class="fr-badge fr-badge--new">En cours d'analyse</p>
@@ -22,8 +22,6 @@
             {% elif document.etat == "error" %}
                 <p class="fr-badge fr-badge--error">Traitement impossible</p>
                 <p class="fr-text--sm text-error-color-no-decoration">{{ document.message }}</p>
-            {% else %}
-			{# <p class="fr-text--sm">Prêt pour analyse.</p> #}
             {% endif %}
         </div>
     </td>
