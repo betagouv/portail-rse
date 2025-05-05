@@ -102,11 +102,40 @@ def test_échec_lors_de_la_création_car_un_propriétaire_de_l_entreprise_existe
         "Cette entreprise a déjà au moins un propriétaire.",
     ]
     assert bound_form.proprietaires_presents == [alice]
+
+
+def test_message_si_l_entreprise_a_un_ou_des_propriétaires(
+    db, alice, bob, entreprise_non_qualifiee
+):
+    alice.email = "alice.cooper@mail.example"
+    alice.save()
+    bob.email = "bob@domaine.test"
+    bob.save()
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
+    data = {
+        "prenom": "Carole",
+        "nom": "User",
+        "email": "user@domaine.test",
+        "password1": "password",
+        "password2": "password",
+        "siren": entreprise_non_qualifiee.siren,
+        "acceptation_cgu": "checked",
+        "fonctions": "Présidente",
+    }
+
+    bound_form = UserCreationForm(data)
+
     assert (
         bound_form.message_erreur_proprietaires()
-        == "Il existe déjà un propriétaire sur cette entreprise. Contactez la personne dans l'entreprise qui possède ce compte ("
-        + alice.email
-        + ")."
+        == "Il existe déjà un propriétaire sur cette entreprise. Contactez la personne concernée (a**********r@mail.example)."
+    )
+
+    Habilitation.ajouter(entreprise_non_qualifiee, bob, fonctions="Présidente")
+    bound_form = UserCreationForm(data)
+
+    assert (
+        bound_form.message_erreur_proprietaires()
+        == "Il existe déjà des propriétaires sur cette entreprise. Contactez une des personnes concernées (a**********r@mail.example, b*b@domaine.test)."
     )
 
 

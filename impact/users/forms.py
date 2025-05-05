@@ -109,9 +109,26 @@ class UserCreationForm(UserPasswordForm):
         return siren
 
     def message_erreur_proprietaires(self):
-        proprio = self.proprietaires_presents[0]
-        message = f"Il existe déjà un propriétaire sur cette entreprise. Contactez la personne dans l'entreprise qui possède ce compte ({proprio.email})."
+        if len(self.proprietaires_presents) == 1:
+            email_cache = cache_partiellement_un_email(
+                self.proprietaires_presents[0].email
+            )
+            message = f"Il existe déjà un propriétaire sur cette entreprise. Contactez la personne concernée ({email_cache})."
+        else:
+            emails_caches = ", ".join(
+                [
+                    cache_partiellement_un_email(proprietaire.email)
+                    for proprietaire in self.proprietaires_presents
+                ]
+            )
+            message = f"Il existe déjà des propriétaires sur cette entreprise. Contactez une des personnes concernées ({emails_caches})."
         return message
+
+
+def cache_partiellement_un_email(email):
+    nom, domaine = email.split("@")
+    etoiles = "*" * (len(nom) - 2)
+    return f"{nom[0]}{etoiles}{nom[-1]}@{domaine}"
 
 
 class InvitationForm(UserCreationForm):
