@@ -17,7 +17,12 @@
                     <p class="fr-text--sm">{{ document.message }}</p>
                 {% endif %}
             {% elif document.etat == "success" %}
-                <p class="fr-badge fr-badge--success">Traité</p>
+		{# MaJ du deuxième onglet en fin de traitement #}
+                <p class="fr-badge fr-badge--success"
+                   {% if request.htmx %}
+                       hx-trigger="load" hx-get="" hx-target="#onglet-resultats-panel" hx-select="#onglet-resultats-panel"
+                   {% endif %}
+                >Traité</p>
 			{# Pas d'attributs hx-* ici, le polling s'arrête #}
             {% elif document.etat == "error" %}
                 <p class="fr-badge fr-badge--error">Traitement impossible</p>
