@@ -156,6 +156,7 @@ class RapportCSRD(TimestampedModel):
 
     def est_officiel(self):
         # le rapport CSRD n'a un propriétaire que si c'est un rapport personnel
+        # FIXME : à déprécier une fois les habilitations en place
         return self.pk and not self.proprietaire
 
     def nombre_enjeux_selectionnes_par_esrs(self):
@@ -189,6 +190,7 @@ class RapportCSRD(TimestampedModel):
     def modifiable_par(self, utilisateur: "users.User") -> bool:
         # Vérifie si le rapport CSRD courant est modifiable par un utilisateur donné.
         # tip : un utilisateur anonyme n'a pas d'ID
+        # FIXME : à déprécier une fois les habilitations en place
         return (
             utilisateur
             and utilisateur.id
@@ -218,6 +220,11 @@ class RapportCSRD(TimestampedModel):
     @property
     def documents_non_analyses(self):
         return self.documents.filter(etat__isnull=True)
+
+    @property
+    def est_termine(self):
+        # on peut considérer un rapport CSRD comme terminé une fois son rapport publié
+        return bool(self.lien_rapport) and self.bloque
 
 
 class EnjeuQuerySet(models.QuerySet):
