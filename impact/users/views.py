@@ -130,11 +130,18 @@ def invitation(request):
             )
     else:
         invitation = Invitation.objects.get(id=request.GET["invitation"])
-        initial = {
-            "email": invitation.email,
-            "siren": invitation.entreprise.siren,
-            "code": invitation.code,
-        }
+        if invitation.est_expiree:
+            messages.error(
+                request,
+                "L'invitation est expirée. Vous devez demander une nouvelle invitation à un des responsables de l'entreprise sur Portail-RSE.",
+            )
+            initial = {}
+        else:
+            initial = {
+                "email": invitation.email,
+                "siren": invitation.entreprise.siren,
+                "code": invitation.code,
+            }
         form = InvitationForm(initial=initial)
     return render(
         request, "users/creation.html", {"form": form, "creation_par_invitation": True}
