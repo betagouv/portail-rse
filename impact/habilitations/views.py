@@ -9,9 +9,12 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
 
+from .enums import UserRole
 from .forms import InvitationForm
 from .models import Habilitation
 from entreprises.models import Entreprise
+from invitations.models import cree_code_invitation
+from invitations.models import Invitation
 
 
 @login_required()
@@ -19,7 +22,14 @@ def index(request, siren):
     entreprise = get_object_or_404(Entreprise, siren=siren)
     if request.POST:
         form = InvitationForm(request.POST)
-        _envoi_email_d_invitation(request, entreprise, form.cleaned_data["email"])
+        email = form.cleaned_data["email"]
+        Invitation.objects.create(
+            entreprise=entreprise,
+            email=email,
+            code=cree_code_invitation(),
+            role=UserRole.PROPRIETAIRE.value,
+        )
+        _envoi_email_d_invitation(request, entreprise, email)
         messages.success(
             request,
             "L'invitation a été envoyée.",
