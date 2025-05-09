@@ -40,6 +40,7 @@ def index(request, siren):
     context = {
         "entreprise": entreprise,
         "habilitation": Habilitation.pour(entreprise, request.user),
+        "invitations": Invitation.objects.filter(entreprise=entreprise),
         "form": InvitationForm(),
     }
 
