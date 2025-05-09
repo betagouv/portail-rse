@@ -234,6 +234,11 @@ LOGIN_URL = "/connexion"
 LOGIN_REDIRECT_URL = "/tableau-de-bord"
 LOGOUT_REDIRECT_URL = "/"
 
+# Invitations
+INVITATION_MAX_AGE = int(
+    os.getenv("INVITATION_MAX_AGE", 60 * 60 * 24 * 10)
+)  # en secondes, 10 jours par défaut
+
 # Sentry
 SENTRY_DSN = os.getenv("SENTRY_DSN")
 SENTRY_ENV = os.getenv("SENTRY_ENV", "production")
