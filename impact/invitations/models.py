@@ -37,9 +37,7 @@ class Invitation(TimestampedModel):
 
     @property
     def est_expiree(self):
-        return self.created_at + timedelta(
-            seconds=settings.INVITATION_MAX_AGE
-        ) <= datetime.now(tz=timezone.utc)
+        return self.date_expiration <= datetime.now(tz=timezone.utc)
 
 
 def cree_code_invitation():
