@@ -140,6 +140,7 @@ def invitation(request):
             initial = {
                 "email": invitation.email,
                 "siren": invitation.entreprise.siren,
+                "id_invitation": invitation.id,
                 "code": invitation.code,
             }
         form = InvitationForm(initial=initial)
