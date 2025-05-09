@@ -132,6 +132,8 @@ def cache_partiellement_un_email(email):
 
 
 class InvitationForm(UserCreationForm):
+    code = forms.CharField(widget=forms.HiddenInput())
+
     def clean_siren(self):
         siren = self.cleaned_data.get("siren")
         if Entreprise.objects.filter(siren=siren).count() != 1:
