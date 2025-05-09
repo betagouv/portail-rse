@@ -22,28 +22,42 @@ def index(request, siren):
     entreprise = get_object_or_404(Entreprise, siren=siren)
     if request.POST:
         form = InvitationForm(request.POST)
-        email = form.cleaned_data["email"]
-        invitation = Invitation.objects.create(
-            entreprise=entreprise,
-            email=email,
-            code=cree_code_invitation(),
-            role=UserRole.PROPRIETAIRE.value,
-        )
-        _envoi_email_d_invitation(request, invitation)
-        messages.success(
-            request,
-            "L'invitation a été envoyée.",
-        )
-        return redirect(
-            reverse("habilitations:membres_entreprise", args=[entreprise.siren])
-        )
-    context = {
-        "entreprise": entreprise,
-        "habilitation": Habilitation.pour(entreprise, request.user),
-        "invitations": Invitation.objects.filter(entreprise=entreprise),
-        "form": InvitationForm(),
-    }
+        if form.is_valid():
+            email = form.cleaned_data["email"]
+            invitation = Invitation.objects.create(
+                entreprise=entreprise,
+                email=email,
+                code=cree_code_invitation(),
+                role=UserRole.PROPRIETAIRE.value,
+            )
+            _envoi_email_d_invitation(request, invitation)
+            messages.success(
+                request,
+                "L'invitation a été envoyée.",
+            )
+            return redirect(
+                reverse("habilitations:membres_entreprise", args=[entreprise.siren])
+            )
+        else:
+            messages.error(
+                request,
+                "L'invitation a échoué car le formulaire contient des erreurs.",
+            )
+            context = {
+                "form": form,
+            }
+    else:
+        context = {
+            "form": InvitationForm(),
+        }
 
+    context.update(
+        {
+            "entreprise": entreprise,
+            "habilitation": Habilitation.pour(entreprise, request.user),
+            "invitations": Invitation.objects.filter(entreprise=entreprise),
+        }
+    )
     # organisation des membres par habilitations
     habilitations = defaultdict(list)
     for h in entreprise.habilitation_set.all().order_by("user__nom"):
