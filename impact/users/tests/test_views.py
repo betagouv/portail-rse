@@ -506,6 +506,7 @@ def test_creation_d_un_utilisateur_après_une_invitation(
         entreprise=entreprise, email="alice@portail.example", code=CODE
     )
     data = {
+        "id_invitation": invitation.id,
         "code": CODE,
         "prenom": "Alice",
         "nom": "User",
