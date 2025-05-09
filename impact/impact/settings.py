@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "api",
     "entreprises",
     "habilitations",
+    "invitations",
     "metabase",
     "public",
     "reglementations",

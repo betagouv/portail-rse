@@ -5,6 +5,8 @@ from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed
 
 from habilitations.models import Habilitation
+from invitations.models import CODE_MAX_LENGTH
+from invitations.models import Invitation
 
 
 def test_page_membres_d_une_entreprise(client, alice, entreprise_factory):
@@ -48,6 +50,11 @@ def test_invitation_a_devenir_membre(client, alice, entreprise_factory, mailoutb
     redirect_url = (
         f"""{reverse("habilitations:membres_entreprise", args=[entreprise.siren])}"""
     )
+    invitations = Invitation.objects.filter(entreprise=entreprise, email=EMAIL_INVITE)
+    assert len(invitations) == 1
+    invitation = invitations[0]
+    assert len(invitation.code) == CODE_MAX_LENGTH
+    assert invitation.role == "proprietaire"
     assert response.redirect_chain == [(redirect_url, 302)]
     content = html.unescape(response.content.decode("utf-8"))
     assert "L'invitation a été envoyée." in content
