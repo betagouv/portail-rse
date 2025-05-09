@@ -1270,7 +1270,7 @@ def test_calcule_etat_si_soumis_en_2025_et_delegable(entreprise_factory, alice):
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
-    assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
+    assert reglementation.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
         reglementation.status_detail
         == "Vous êtes soumis à cette réglementation à partir de 2025 sur les données de l'exercice comptable 2024 car votre société est cotée sur un marché réglementé, l'effectif du groupe est supérieur à 500 salariés, le bilan du groupe est supérieur à 30M€ et le chiffre d'affaires du groupe est supérieur à 60M€. Vous pouvez déléguer cette obligation à votre société-mère. Vous devez publier le Rapport de Durabilité en même temps que le rapport de gestion."
@@ -1302,7 +1302,8 @@ def test_calcule_etat_si_soumis_en_2029_et_non_delegable(entreprise_factory, ali
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
-    assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
+    assert reglementation.status == ReglementationStatus.STATUS_A_ACTUALISER
+
     assert (
         reglementation.status_detail
         == "Vous êtes soumis à cette réglementation à partir de 2029 sur les données de l'exercice comptable 2028 car votre société est cotée sur un marché réglementé, votre effectif est supérieur à 10 salariés et votre bilan est supérieur à 450k€. Vous devez publier le Rapport de Durabilité en même temps que le rapport de gestion."
@@ -1336,7 +1337,7 @@ def test_calcule_etat_si_entreprise_hors_EEE_soumise_en_2029_sous_condition(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
-    assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
+    assert reglementation.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
         reglementation.status_detail
         == "Vous êtes soumis à cette réglementation à partir de 2029 sur les données de l'exercice comptable 2028 si votre société dont le siège social est hors EEE revêt une forme juridique comparable aux sociétés par actions ou aux sociétés à responsabilité limitée, comptabilise un chiffre d'affaires net dans l'Espace économique européen qui excède 150 millions d'euros à la date de clôture des deux derniers exercices consécutifs, ne contrôle ni n'est contrôlée par une autre société et dispose d'une succursale en France dont le chiffre d'affaires net excède 40 millions d'euros. Vous devez publier le Rapport de Durabilité en même temps que le rapport de gestion."
@@ -2129,7 +2130,7 @@ def test_calcule_etat_si_soumis_en_2026_car_exercice_comptable_different_annee_c
         entreprise.dernieres_caracteristiques_qualifiantes, alice
     )
 
-    assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
+    assert reglementation.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert reglementation.status_detail.startswith(
         "Vous êtes soumis à cette réglementation à partir de 2026 sur les données de l'exercice comptable 2024-2025 car"
     )
