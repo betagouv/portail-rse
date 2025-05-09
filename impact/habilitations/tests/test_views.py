@@ -35,7 +35,9 @@ def test_page_membres_d_une_entreprise_nécessite_d_être_connecté(
     assert response.redirect_chain == [(redirect_url, 302)]
 
 
-def test_invitation_a_devenir_membre(client, alice, entreprise_factory, mailoutbox):
+def test_succès_invitation_a_devenir_membre(
+    client, alice, entreprise_factory, mailoutbox
+):
     entreprise = entreprise_factory()
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
@@ -63,3 +65,25 @@ def test_invitation_a_devenir_membre(client, alice, entreprise_factory, mailoutb
     assert mail.from_email == settings.DEFAULT_FROM_EMAIL
     assert list(mail.to) == [EMAIL_INVITE]
     assert mail.template_id == settings.BREVO_INVITATION_TEMPLATE
+
+
+def test_erreur_invitation_a_devenir_membre_car_email_incorrect(
+    client, alice, entreprise_factory, mailoutbox
+):
+    entreprise = entreprise_factory()
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
+    client.force_login(alice)
+    EMAIL_INVITE = "bob"
+    data = {
+        "email": EMAIL_INVITE,
+    }
+    url = f"/droits/{entreprise.siren}"
+
+    response = client.post(url, data=data, follow=True)
+
+    invitations = Invitation.objects.filter(entreprise=entreprise, email=EMAIL_INVITE)
+    assert len(invitations) == 0
+    assert len(mailoutbox) == 0
+    assert response.status_code == 200
+    content = html.unescape(response.content.decode("utf-8"))
+    assert "L'invitation a échoué car le formulaire contient des erreurs." in content
