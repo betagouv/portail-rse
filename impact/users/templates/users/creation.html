@@ -18,6 +18,10 @@
                 <p>Sauf mention contraire “(optionnel)” dans le label, tous les champs sont obligatoires.</p>
                 <form action="{% if creation_par_invitation %}{% url 'users:invitation' %}{% else %}{% url 'users:creation' %}{% endif %}" method="post">
                     {% csrf_token %}
+
+                    {% if creation_par_invitation %}
+                        {{ form.code }}
+                    {% endif %}
                     {% include 'snippets/field.html' with field=form.email %}
                     <div id="svelte-password-validation" data-password1-field-name="password1" data-password2-field-name="password2">
                         {% include 'snippets/field.html' with field=form.password1 %}

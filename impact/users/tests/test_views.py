@@ -14,6 +14,7 @@ from entreprises.models import Entreprise
 from habilitations.models import FONCTIONS_MAX_LENGTH
 from habilitations.models import FONCTIONS_MIN_LENGTH
 from habilitations.models import Habilitation
+from invitations.models import Invitation
 from users.models import User
 from utils.tokens import make_token
 from utils.tokens import uidb64
@@ -458,10 +459,13 @@ def test_can_not_login_if_email_is_not_confirmed(client, alice_with_password):
     ), content
 
 
-def test_page_invitation(client):
-    response = client.get(
-        "/invitation", {"siren": 123456789, "email": "alice@portail.example"}
+def test_page_invitation(client, entreprise_factory):
+    entreprise = entreprise_factory(siren="130025265")  # Dinum
+    CODE = "1234567890"
+    invitation = Invitation.objects.create(
+        entreprise=entreprise, email="alice@portail.example", code=CODE
     )
+    response = client.get("/invitation", {"invitation": invitation.id, "code": CODE})
 
     assert response.status_code == 200
     assertTemplateUsed(response, "users/creation.html")
@@ -475,7 +479,12 @@ def test_creation_d_un_utilisateur_après_une_invitation(
     client, db, entreprise_factory, mailoutbox
 ):
     entreprise = entreprise_factory(siren="130025265")  # Dinum
+    CODE = "1234567890"
+    invitation = Invitation.objects.create(
+        entreprise=entreprise, email="alice@portail.example", code=CODE
+    )
     data = {
+        "code": CODE,
         "prenom": "Alice",
         "nom": "User",
         "email": "user@domaine.test",

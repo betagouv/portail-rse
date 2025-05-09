@@ -64,7 +64,7 @@ def _envoi_email_d_invitation(request, invitation):
     path = reverse(
         "users:invitation",
     )
-    url = f"{request.build_absolute_uri(path)}?siren={invitation.entreprise.siren}&email={invitation.email}"
+    url = f"{request.build_absolute_uri(path)}?invitation={invitation.id}&code={invitation.code}"
     email.merge_global_data = {
         "denomination_entreprise": invitation.entreprise.denomination,
         "invitation_url": url,
