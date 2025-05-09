@@ -32,6 +32,10 @@ class Invitation(TimestampedModel):
     )
 
     @property
+    def date_expiration(self):
+        return self.created_at + timedelta(seconds=settings.INVITATION_MAX_AGE)
+
+    @property
     def est_expiree(self):
         return self.created_at + timedelta(
             seconds=settings.INVITATION_MAX_AGE

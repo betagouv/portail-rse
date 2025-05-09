@@ -138,14 +138,14 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">E-mail</th>
-                                        <th scope="col">Date d'invitation</th>
+                                        <th scope="col">Date d'expiration de l'invitation</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for invitation in invitations %}
                                         <tr>
                                             <td>{{ invitation.email }}</td>
-                                            <td>{{ invitation.created_at }}</td>
+                                            <td>{{ invitation.date_expiration }}</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
