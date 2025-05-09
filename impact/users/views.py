@@ -22,6 +22,7 @@ from api.exceptions import APIError
 from entreprises.models import Entreprise
 from entreprises.views import search_and_create_entreprise
 from habilitations.models import Habilitation
+from invitations.models import Invitation
 from utils.tokens import check_token
 from utils.tokens import make_token
 from utils.tokens import uidb64
@@ -128,7 +129,12 @@ def invitation(request):
                 request, "La création a échoué car le formulaire contient des erreurs."
             )
     else:
-        initial = {(k, v) for k, v in request.GET.items()}
+        invitation = Invitation.objects.get(id=request.GET["invitation"])
+        initial = {
+            "email": invitation.email,
+            "siren": invitation.entreprise.siren,
+            "code": invitation.code,
+        }
         form = InvitationForm(initial=initial)
     return render(
         request, "users/creation.html", {"form": form, "creation_par_invitation": True}
