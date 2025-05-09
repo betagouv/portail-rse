@@ -165,7 +165,7 @@
 
         <form method="post">
             {% csrf_token %}
-            {{ form }}
+            {% include 'snippets/field.html' with field=form.email %}
             <button type="submit" class="fr-btn fr-mt-2w">Inviter</button>
         </form>
     </div>
