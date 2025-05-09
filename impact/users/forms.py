@@ -11,6 +11,7 @@ from entreprises.models import Entreprise
 from habilitations.models import FONCTIONS_MAX_LENGTH
 from habilitations.models import FONCTIONS_MIN_LENGTH
 from habilitations.models import Habilitation
+from invitations.models import Invitation
 from utils.forms import DsfrForm
 
 
@@ -133,6 +134,7 @@ def cache_partiellement_un_email(email):
 
 class InvitationForm(UserCreationForm):
     code = forms.CharField(widget=forms.HiddenInput())
+    id_invitation = forms.IntegerField(widget=forms.HiddenInput())
 
     def clean_siren(self):
         siren = self.cleaned_data.get("siren")
@@ -141,6 +143,17 @@ class InvitationForm(UserCreationForm):
                 "Cette entreprise n'existe plus dans Portail-RSE."
             )
         return siren
+
+    def _post_clean(self):
+        super()._post_clean()
+        code = self.cleaned_data.get("code")
+        id_invitation = self.cleaned_data.get("id_invitation")
+        if invitations := Invitation.objects.filter(id=id_invitation, code=code):
+            invitation = invitations[0]
+            if invitation.est_expiree:
+                self.add_error("id_invitation", "Cette invitation est expirée.")
+        else:
+            self.add_error("code", "Cette invitation n'existe plus dans Portail-RSE.")
 
 
 class UserEditionForm(DsfrForm, forms.ModelForm):

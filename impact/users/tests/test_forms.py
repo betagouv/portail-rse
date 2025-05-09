@@ -1,4 +1,9 @@
+from datetime import timedelta
+
+from freezegun import freeze_time
+
 from habilitations.models import Habilitation
+from invitations.models import Invitation
 from users.forms import InvitationForm
 from users.forms import UserCreationForm
 
@@ -140,7 +145,12 @@ def test_message_si_l_entreprise_a_un_ou_des_propriétaires(
 
 
 def test_succès_lors_de_l_invitation(db, entreprise_non_qualifiee):
+    invitation = Invitation.objects.create(
+        entreprise=entreprise_non_qualifiee, email="user@domaine.test", code="CODE"
+    )
     data = {
+        "id_invitation": invitation.id,
+        "code": "CODE",
         "prenom": "Alice",
         "nom": "User",
         "email": "user@domaine.test",
@@ -160,6 +170,8 @@ def test_erreur_lors_de_l_invitation_car_l_entreprise_n_existe_pas(
     db, entreprise_non_qualifiee
 ):
     data = {
+        "id_invitation": "123",
+        "code": "CODE",
         "prenom": "Alice",
         "nom": "User",
         "email": "user@domaine.test",
@@ -175,4 +187,83 @@ def test_erreur_lors_de_l_invitation_car_l_entreprise_n_existe_pas(
     assert not bound_form.is_valid()
     assert bound_form.errors["siren"] == [
         "Cette entreprise n'existe plus dans Portail-RSE.",
+    ]
+
+
+def test_erreur_lors_de_l_invitation_car_l_invitation_n_existe_pas(
+    db, entreprise_non_qualifiee
+):
+    data = {
+        "id_invitation": "123",
+        "code": "CODE",
+        "prenom": "Alice",
+        "nom": "User",
+        "email": "user@domaine.test",
+        "password1": "Passw0rd!123",
+        "password2": "Passw0rd!123",
+        "siren": entreprise_non_qualifiee.siren,
+        "acceptation_cgu": "checked",
+        "fonctions": "Présidente",
+    }
+
+    bound_form = InvitationForm(data)
+
+    assert not bound_form.is_valid()
+    assert bound_form.errors["code"] == [
+        "Cette invitation n'existe plus dans Portail-RSE.",
+    ]
+
+
+def test_erreur_lors_de_l_invitation_car_l_invitation_a_expirée(
+    db, entreprise_non_qualifiee
+):
+    invitation = Invitation.objects.create(
+        entreprise=entreprise_non_qualifiee, email="user@domaine.test", code="CODE"
+    )
+    data = {
+        "id_invitation": invitation.id,
+        "code": "CODE",
+        "prenom": "Alice",
+        "nom": "User",
+        "email": "user@domaine.test",
+        "password1": "Passw0rd!123",
+        "password2": "Passw0rd!123",
+        "siren": entreprise_non_qualifiee.siren,
+        "acceptation_cgu": "checked",
+        "fonctions": "Présidente",
+    }
+
+    with freeze_time(invitation.date_expiration + timedelta(1)):
+        bound_form = InvitationForm(data)
+
+        assert not bound_form.is_valid()
+        assert bound_form.errors["id_invitation"] == [
+            "Cette invitation est expirée.",
+        ]
+
+
+def test_erreur_lors_de_l_invitation_car_le_code_ne_correspond_pas(
+    db, entreprise_non_qualifiee
+):
+    invitation = Invitation.objects.create(
+        entreprise=entreprise_non_qualifiee, email="user@domaine.test", code="CODE"
+    )
+    data = {
+        "id_invitation": invitation.id,
+        "code": "AUTRE",
+        "prenom": "Alice",
+        "nom": "User",
+        "email": "user@domaine.test",
+        "password1": "Passw0rd!123",
+        "password2": "Passw0rd!123",
+        "siren": entreprise_non_qualifiee.siren,
+        "acceptation_cgu": "checked",
+        "fonctions": "Présidente",
+    }
+
+    bound_form = InvitationForm(data)
+
+    assert not bound_form.is_valid()
+    assert bound_form.errors["code"] == [
+        "Cette invitation n'existe plus dans Portail-RSE.",
     ]
