@@ -335,6 +335,16 @@ class CSRDReglementation(Reglementation):
             etape_suivante = "introduction"
             label_gestion_csrd = "Actualiser mon Rapport de Durabilité"
 
+        # on considère que la publication du rapport est la dernière étape
+        rapport_termine = rapport and rapport.est_termine
+
+        if rapport_termine:
+            statut_courant = ReglementationStatus.STATUS_A_JOUR
+        elif not rapport:
+            statut_courant = ReglementationStatus.STATUS_A_ACTUALISER
+        else:
+            statut_courant = ReglementationStatus.STATUS_EN_COURS
+
         primary_action = ReglementationAction(
             reverse_lazy(
                 "reglementations:gestion_csrd",
@@ -371,8 +381,11 @@ class CSRDReglementation(Reglementation):
                         " Vous pouvez déléguer cette obligation à votre société-mère."
                     )
             status_detail += " Vous devez publier le Rapport de Durabilité en même temps que le rapport de gestion."
+            # notes (FV):
+            # AMA, ces aspects sont métiers et devraient êtres rattaché à l'objet métier correspondant
+            # c.a.d `RapportCSRD`
             return ReglementationStatus(
-                status=ReglementationStatus.STATUS_SOUMIS,
+                status=statut_courant,
                 status_detail=status_detail,
                 primary_action=primary_action,
                 prochaine_echeance=premiere_annee_publication,
