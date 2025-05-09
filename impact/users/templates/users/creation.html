@@ -20,7 +20,19 @@
                     {% csrf_token %}
 
                     {% if creation_par_invitation %}
+                        {{ form.id_invitation }}
                         {{ form.code }}
+
+                        {% for erreur, messages in form.errors.items %}
+                            {% if erreur == "code" or erreur == "id_invitation"  %}
+                                <p class="fr-error-text">
+                                    {% for message in messages %}
+                                        {{message}}
+                                    {% endfor %}
+                                </p>
+                            {% endif %}
+                        {% endfor %}
+
                     {% endif %}
                     {% include 'snippets/field.html' with field=form.email %}
                     <div id="svelte-password-validation" data-password1-field-name="password1" data-password2-field-name="password2">
