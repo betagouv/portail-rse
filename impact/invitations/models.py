@@ -1,6 +1,10 @@
 import random
 import string
+from datetime import datetime
+from datetime import timedelta
+from datetime import timezone
 
+from django.conf import settings
 from django.db import models
 
 from entreprises.models import Entreprise
@@ -26,6 +30,12 @@ class Invitation(TimestampedModel):
         verbose_name="Role (droits)",
         max_length=20,
     )
+
+    @property
+    def est_expiree(self):
+        return self.created_at + timedelta(
+            seconds=settings.INVITATION_MAX_AGE
+        ) <= datetime.now(tz=timezone.utc)
 
 
 def cree_code_invitation():

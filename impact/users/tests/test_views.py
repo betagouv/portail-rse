@@ -1,5 +1,6 @@
 import html
 from datetime import datetime
+from datetime import timedelta
 from datetime import timezone
 from unittest import mock
 
@@ -473,6 +474,27 @@ def test_page_invitation(client, entreprise_factory):
     assert "123456789" in content, content
     assert "alice@portail.example" in content, content
     assert "Vous avez été invité" in content, content
+
+
+def test_erreur_page_invitation_car_invitation_expirée(client, entreprise_factory):
+    entreprise = entreprise_factory(siren="130025265")  # Dinum
+    CODE = "1234567890"
+    now = datetime(2025, 5, 9, 14, 30, tzinfo=timezone.utc)
+    with freeze_time(now):
+        invitation = Invitation.objects.create(
+            entreprise=entreprise, email="alice@portail.example", code=CODE
+        )
+
+    with freeze_time(now + timedelta(settings.INVITATION_MAX_AGE + 1)):
+        response = client.get(
+            "/invitation", {"invitation": invitation.id, "code": CODE}
+        )
+
+    assert response.status_code == 200
+    assertTemplateUsed(response, "users/creation.html")
+    content = response.content.decode("utf-8")
+    assert "123456789" not in content
+    assert "L'invitation est expirée" in content, content
 
 
 def test_creation_d_un_utilisateur_après_une_invitation(
