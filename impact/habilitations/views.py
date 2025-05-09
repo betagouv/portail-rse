@@ -23,13 +23,13 @@ def index(request, siren):
     if request.POST:
         form = InvitationForm(request.POST)
         email = form.cleaned_data["email"]
-        Invitation.objects.create(
+        invitation = Invitation.objects.create(
             entreprise=entreprise,
             email=email,
             code=cree_code_invitation(),
             role=UserRole.PROPRIETAIRE.value,
         )
-        _envoi_email_d_invitation(request, entreprise, email)
+        _envoi_email_d_invitation(request, invitation)
         messages.success(
             request,
             "L'invitation a été envoyée.",
@@ -54,18 +54,18 @@ def index(request, siren):
     return render(request, "habilitations/membres.html", context)
 
 
-def _envoi_email_d_invitation(request, entreprise, email):
+def _envoi_email_d_invitation(request, invitation):
     email = EmailMessage(
-        to=[email],
+        to=[invitation.email],
         from_email=settings.DEFAULT_FROM_EMAIL,
     )
     email.template_id = settings.BREVO_INVITATION_TEMPLATE
     path = reverse(
         "users:invitation",
     )
-    url = f"{request.build_absolute_uri(path)}?siren={entreprise.siren}&email={email}"
+    url = f"{request.build_absolute_uri(path)}?siren={invitation.entreprise.siren}&email={invitation.email}"
     email.merge_global_data = {
-        "denomination_entreprise": entreprise.denomination,
+        "denomination_entreprise": invitation.entreprise.denomination,
         "invitation_url": url,
     }
     email.send()
