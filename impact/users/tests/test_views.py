@@ -545,3 +545,9 @@ def test_creation_d_un_utilisateur_après_une_invitation(
     assert user.uidb64
     assert Habilitation.pour(entreprise, user).fonctions == "Présidente"
     assert len(mailoutbox) == 0
+    assert (
+        Invitation.objects.filter(
+            entreprise=entreprise, email="user@domaine.test"
+        ).count()
+        == 0
+    )
