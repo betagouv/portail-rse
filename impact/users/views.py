@@ -123,6 +123,7 @@ def invitation(request):
                 user,
                 fonctions=form.cleaned_data["fonctions"],
             )
+            Invitation.objects.filter(entreprise=entreprise, email=user.email).delete()
             return redirect("reglementations:tableau_de_bord", siren)
         else:
             messages.error(
