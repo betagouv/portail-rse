@@ -12,7 +12,7 @@
             <ul>
                 <li>La modification des droits n'est possible que par les utilisateurs propriétaires</li>
                 <li>Une modification des droits est effective à l'ouverture d'une nouvelle session de l'utilisateur concerné</li>
-                <li>Pour l'entreprise <strong>{{ entreprise }}</strong>, vous avez l'habilitation : {{ habilitation.role }}</li>
+                <li>Pour l'entreprise <strong>{{ entreprise.denomination }}</strong> (siren : {{ entreprise.siren }}), vous avez l'habilitation : {{ habilitation.role }}</li>
             </ul>
         </div>
 
@@ -126,46 +126,49 @@
         </div>
 {% endcomment %}
 
-        <h3>Invitations</h3>
-        {% if invitations %}
-            <div class="fr-table--sm fr-table fr-table" id="table-sm-component">
-                <div class="fr-table__wrapper">
-                    <div class="fr-table__container">
-                        <div class="fr-table__content">
-                            <table id="table-sm">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">E-mail</th>
-                                        <th scope="col">Date d'expiration de l'invitation</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for invitation in invitations %}
-                                        <tr>
-                                            <td>{{ invitation.email }}</td>
-                                            <td>{{ invitation.date_expiration }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+        <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6">
+                <h3>Invités</h3>
+                {% if invitations %}
+                    <div class="fr-table--sm fr-table fr-table" id="table-sm-component">
+                        <div class="fr-table__wrapper">
+                            <div class="fr-table__container">
+                                <div class="fr-table__content">
+                                    <table id="table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">E-mail</th>
+                                                <th scope="col">Expiration de l'invitation</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for invitation in invitations %}
+                                                <tr>
+                                                    <td>{{ invitation.email }}</td>
+                                                    <td>{{ invitation.date_expiration|date:"d b Y" }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                {% else %}
+                    Aucune invitation en cours
+                {% endif %}
             </div>
-        {% else %}
-            Aucune invitation
-        {% endif %}
+            <div class="fr-col-6 fr-col-lg-4">
+                <h3>Inviter un nouveau membre</h3>
+                La personne recevra un e-mail l'invitant à vous rejoindre pour gérer {{ entreprise.denomination }} ensemble.
 
-
-
-        <h3>Inviter un nouveau membre</h3>
-        La personne recevra un e-mail l'invitant à vous rejoindre pour gérer {{ entreprise.denomination }} ensemble.
-
-        <form method="post">
-            {% csrf_token %}
-            {% include 'snippets/field.html' with field=form.email %}
-            <button type="submit" class="fr-btn fr-mt-2w">Inviter</button>
-        </form>
+                <form method="post">
+                    {% csrf_token %}
+                    {% include 'snippets/field.html' with field=form.email %}
+                    <button type="submit" class="fr-btn fr-mt-2w">Inviter</button>
+                </form>
+            </div>
+        </div>
     </div>
-    </div>
+
 {% endblock %}
