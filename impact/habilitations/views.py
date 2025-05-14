@@ -24,17 +24,7 @@ def index(request, siren):
         form = InvitationForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data["email"]
-            invitation = Invitation.objects.create(
-                entreprise=entreprise,
-                email=email,
-                code=cree_code_invitation(),
-                role=UserRole.PROPRIETAIRE.value,
-            )
-            _envoi_email_d_invitation(request, invitation)
-            messages.success(
-                request,
-                "L'invitation a été envoyée.",
-            )
+            _cree_invitation(request, entreprise, email)
             return redirect(
                 reverse("habilitations:membres_entreprise", args=[entreprise.siren])
             )
@@ -69,7 +59,21 @@ def index(request, siren):
     return render(request, "habilitations/membres.html", context)
 
 
-def _envoi_email_d_invitation(request, invitation):
+def _cree_invitation(request, entreprise, email):
+    invitation = Invitation.objects.create(
+        entreprise=entreprise,
+        email=email,
+        code=cree_code_invitation(),
+        role=UserRole.PROPRIETAIRE.value,
+    )
+    _envoie_email_d_invitation(request, invitation)
+    messages.success(
+        request,
+        "L'invitation a été envoyée.",
+    )
+
+
+def _envoie_email_d_invitation(request, invitation):
     email = EmailMessage(
         to=[invitation.email],
         from_email=settings.DEFAULT_FROM_EMAIL,
