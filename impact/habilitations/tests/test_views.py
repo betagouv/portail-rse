@@ -35,6 +35,36 @@ def test_page_membres_d_une_entreprise_nécessite_d_être_connecté(
     assert response.redirect_chain == [(redirect_url, 302)]
 
 
+def test_une_invitation_a_devenir_membre_pour_un_compte_existant_est_activée_directement(
+    client, alice, bob, entreprise_factory, mailoutbox
+):
+    entreprise = entreprise_factory()
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
+    client.force_login(alice)
+    data = {
+        "email": bob.email,
+    }
+    url = f"/droits/{entreprise.siren}"
+
+    response = client.post(url, data=data, follow=True)
+
+    redirect_url = (
+        f"""{reverse("habilitations:membres_entreprise", args=[entreprise.siren])}"""
+    )
+    assert (
+        Invitation.objects.filter(entreprise=entreprise, email=bob.email).count() == 0
+    )
+    assert Habilitation.objects.filter(entreprise=entreprise, user=bob).first()
+    assert response.redirect_chain == [(redirect_url, 302)]
+    content = html.unescape(response.content.decode("utf-8"))
+    assert "L'utilisateur a été ajouté." in content
+    assert len(mailoutbox) == 1
+    mail = mailoutbox[0]
+    assert mail.from_email == settings.DEFAULT_FROM_EMAIL
+    assert list(mail.to) == [bob.email]
+    assert mail.template_id == settings.BREVO_AJOUT_MEMBRE_TEMPLATE
+
+
 def test_succès_invitation_a_devenir_membre(
     client, alice, entreprise_factory, mailoutbox
 ):
