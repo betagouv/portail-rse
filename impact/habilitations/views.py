@@ -3,6 +3,7 @@ from collections import defaultdict
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import EmailMessage
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
@@ -15,6 +16,7 @@ from .models import Habilitation
 from entreprises.models import Entreprise
 from invitations.models import cree_code_invitation
 from invitations.models import Invitation
+from users.models import User
 
 
 @login_required()
@@ -24,7 +26,11 @@ def index(request, siren):
         form = InvitationForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data["email"]
-            _cree_invitation(request, entreprise, email)
+            try:
+                utilisateur = User.objects.get(email=email)
+                _ajoute_membre(request, entreprise, utilisateur)
+            except ObjectDoesNotExist:
+                _cree_invitation(request, entreprise, email)
             return redirect(
                 reverse("habilitations:membres_entreprise", args=[entreprise.siren])
             )
@@ -57,6 +63,29 @@ def index(request, siren):
     context |= {"habilitations": habilitations}
 
     return render(request, "habilitations/membres.html", context)
+
+
+def _ajoute_membre(request, entreprise, utilisateur):
+    Habilitation.objects.create(entreprise=entreprise, user=utilisateur)
+    _envoie_email_d_ajout(request, entreprise, utilisateur)
+    messages.success(
+        request,
+        "L'utilisateur a été ajouté.",
+    )
+
+
+def _envoie_email_d_ajout(request, entreprise, utilisateur):
+    email = EmailMessage(
+        to=[utilisateur.email],
+        from_email=settings.DEFAULT_FROM_EMAIL,
+    )
+    email.template_id = settings.BREVO_AJOUT_MEMBRE_TEMPLATE
+    url = f"""{reverse("habilitations:membres_entreprise", args=[entreprise.siren])}"""
+    email.merge_global_data = {
+        "denomination_entreprise": entreprise.denomination,
+        "membres_url": url,
+    }
+    email.send()
 
 
 def _cree_invitation(request, entreprise, email):
