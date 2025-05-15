@@ -99,7 +99,7 @@ class CSRDReglementation(Reglementation):
                 ):
                     return 2024
                 else:
-                    return 2025
+                    return 2027
             else:
                 if cls.est_grande_entreprise(caracteristiques):
                     if (
@@ -113,7 +113,7 @@ class CSRDReglementation(Reglementation):
                     ):
                         return 2024
                     else:
-                        return 2025
+                        return 2027
                 elif (
                     caracteristiques.entreprise.est_cotee
                     and cls.est_petite_ou_moyenne_entreprise(caracteristiques)
@@ -125,7 +125,7 @@ class CSRDReglementation(Reglementation):
                     ):
                         return 2024
                     else:
-                        return 2025
+                        return 2027
         else:
             if caracteristiques.entreprise.est_dans_EEE:
                 if caracteristiques.entreprise.est_cotee:
@@ -137,9 +137,9 @@ class CSRDReglementation(Reglementation):
                         ):
                             return 2024
                         else:
-                            return 2025
+                            return 2027
                     elif cls.est_petite_ou_moyenne_entreprise(caracteristiques):
-                        return 2026
+                        return 2028
                 elif caracteristiques.entreprise.est_interet_public:
                     if cls.est_grande_entreprise(caracteristiques):
                         if caracteristiques.effectif in (
@@ -149,15 +149,14 @@ class CSRDReglementation(Reglementation):
                         ):
                             return 2024
                         else:
-                            return 2025
+                            return 2027
                 elif cls.est_grande_entreprise(caracteristiques):
-                    return 2025
+                    return 2027
             else:
                 if cls.est_grande_entreprise(caracteristiques):
-                    return 2025
-                elif (
-                    caracteristiques.tranche_chiffre_affaires
-                    == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
+                    return 2027
+                elif cls.est_micro_ou_petite_entreprise_hors_EEE_consideree_comme_soumise(
+                    caracteristiques
                 ):
                     return 2028
 
@@ -358,8 +357,9 @@ class CSRDReglementation(Reglementation):
                 else f"{annee}-{annee + 1}"
             )
             status_detail = f"Vous êtes soumis à cette réglementation à partir de {premiere_annee_publication} sur les données de l'exercice comptable {exercice_comptable}"
-            if annee == 2028:
-                # Ce cas ne peut arriver que pour les micro et PME sans groupe hors EEE
+            if cls.est_micro_ou_petite_entreprise_hors_EEE_consideree_comme_soumise(
+                caracteristiques
+            ):
                 conditions = "votre société dont le siège social est hors EEE revêt une forme juridique comparable aux sociétés par actions ou aux sociétés à responsabilité limitée, comptabilise un chiffre d'affaires net dans l'Espace économique européen qui excède 150 millions d'euros à la date de clôture des deux derniers exercices consécutifs, ne contrôle ni n'est contrôlée par une autre société et dispose d'une succursale en France dont le chiffre d'affaires net excède 40 millions d'euros"
                 status_detail += f" si {conditions}."
             else:
@@ -472,6 +472,28 @@ class CSRDReglementation(Reglementation):
         return (
             caracteristiques.entreprise.appartient_groupe
             and nombre_seuils_depasses >= 2
+        )
+
+    @classmethod
+    def est_micro_ou_petite_entreprise_hors_EEE_consideree_comme_soumise(
+        cls, caracteristiques: CaracteristiquesAnnuelles
+    ) -> bool:
+        """
+        Si une entreprise hors EEE est une grande entreprise ou fait partie d'un grand groupe elle est soumise à la CSRD comme les entreprise EEE.
+        Sinon, elle n'est soumise que dans les conditions cumulatives suivantes :
+        - Revêt une forme juridique comparable aux sociétés par actions et aux sociétés à responsabilité limitée ;
+        - Comptabilise un chiffre d'affaires net dans l'Espace économique européen qui excède 150 millions d'euros, à la date de clôture des deux derniers exercices consécutifs ;
+        - Ne contrôle ni n'est contrôlée par une autre société
+        - Dispose d'une succursale en France dont le chiffre d'affaires net excède 40 millions d'euros
+        On approxime ce cas très à la marge sur le portail en considérant qu'elle est soumise dès lors que son CA est supérieur à 100M€ (il n'y a pas de seuil à 150M€ dans les tranches actuelles)
+        mais on précisera les conditions exactes dans le détail de l'explication donnée à l'utilisateur.
+        """
+        return (
+            not caracteristiques.entreprise.est_dans_EEE
+            and not cls.est_grand_groupe(caracteristiques)
+            and not cls.est_grande_entreprise(caracteristiques)
+            and caracteristiques.tranche_chiffre_affaires
+            == CaracteristiquesAnnuelles.CA_100M_ET_PLUS
         )
 
 
