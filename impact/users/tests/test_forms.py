@@ -132,7 +132,7 @@ def test_message_si_l_entreprise_a_un_ou_des_propriétaires(
 
     assert (
         bound_form.message_erreur_proprietaires()
-        == "Il existe déjà un propriétaire sur cette entreprise. Contactez la personne concernée (a**********r@mail.example)."
+        == "Il existe déjà un propriétaire sur cette entreprise. Contactez la personne concernée (a**********r@mail.example) ou notre support (contact@portail-rse.beta.gouv.fr)."
     )
 
     Habilitation.ajouter(entreprise_non_qualifiee, bob, fonctions="Présidente")
@@ -140,7 +140,7 @@ def test_message_si_l_entreprise_a_un_ou_des_propriétaires(
 
     assert (
         bound_form.message_erreur_proprietaires()
-        == "Il existe déjà des propriétaires sur cette entreprise. Contactez une des personnes concernées (a**********r@mail.example, b*b@domaine.test)."
+        == "Il existe déjà des propriétaires sur cette entreprise. Contactez une des personnes concernées (a**********r@mail.example, b*b@domaine.test) ou notre support (contact@portail-rse.beta.gouv.fr)."
     )
 
 
