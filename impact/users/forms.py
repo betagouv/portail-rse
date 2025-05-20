@@ -114,7 +114,7 @@ class UserCreationForm(UserPasswordForm):
             email_cache = cache_partiellement_un_email(
                 self.proprietaires_presents[0].email
             )
-            message = f"Il existe déjà un propriétaire sur cette entreprise. Contactez la personne concernée ({email_cache})."
+            message = f"Il existe déjà un propriétaire sur cette entreprise. Contactez la personne concernée ({email_cache}) ou notre support (contact@portail-rse.beta.gouv.fr)."
         else:
             emails_caches = ", ".join(
                 [
@@ -122,7 +122,7 @@ class UserCreationForm(UserPasswordForm):
                     for proprietaire in self.proprietaires_presents
                 ]
             )
-            message = f"Il existe déjà des propriétaires sur cette entreprise. Contactez une des personnes concernées ({emails_caches})."
+            message = f"Il existe déjà des propriétaires sur cette entreprise. Contactez une des personnes concernées ({emails_caches}) ou notre support (contact@portail-rse.beta.gouv.fr)."
         return message
 
 
