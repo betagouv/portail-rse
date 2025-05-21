@@ -173,7 +173,8 @@ def test_fail_to_create_entreprise(client, alice, mock_api_infos_entreprise):
     content = response.content.decode("utf-8")
     content = html.unescape(response.content.decode("utf-8"))
     assert (
-        "Impossible de créer l'entreprise car les données sont incorrectes." in content
+        "Impossible d'ajouter cette entreprise car les données sont incorrectes."
+        in content
     )
     assert Entreprise.objects.count() == 0
     assert not mock_api_infos_entreprise.called
@@ -780,8 +781,14 @@ def test_recherche_entreprise_avec_resultats(
     assert context["nombre_resultats"] == nombre_resultats
     assert context["entreprises"] == entreprises
     assert context["recherche"] == recherche
-    assert context["erreur"] == None
+    assert context["erreur_recherche_entreprise"] == None
     assertTemplateUsed(response, "fragments/resultats_recherche_entreprise.html")
+    content = response.content.decode("utf-8")
+    for entreprise in entreprises:
+        assert (
+            reverse("entreprises:preremplissage_siren", args=[entreprise["siren"]])
+            in content
+        )
 
 
 def test_recherche_entreprise_moins_de_3_caractères(
@@ -814,7 +821,7 @@ def test_recherche_entreprise_erreur_API(client, mock_api_recherche_par_nom_ou_s
 
     assert response.status_code == 200
     context = response.context
-    assert context["erreur"] == "Panne serveur"
+    assert context["erreur_recherche_entreprise"] == "Panne serveur"
     assertTemplateUsed(response, "fragments/resultats_recherche_entreprise.html")
     content = response.content.decode("utf-8")
     assert "Panne serveur" in content
@@ -841,3 +848,46 @@ def test_recherche_entreprise_avec_siren_entreprise_test(
             "activite": "Cultures non permanentes",
         }
     ]
+
+
+def test_recherche_entreprise_avec_htmx_fragment_renseigné(
+    client, mock_api_recherche_par_nom_ou_siren
+):
+    siren = "889297453"
+    nombre_resultats = 1
+    entreprises = [
+        {"siren": siren, "denomination": "YAAL COOP"},
+    ]
+    mock_api_recherche_par_nom_ou_siren.return_value = {
+        "nombre_resultats": nombre_resultats,
+        "entreprises": entreprises,
+    }
+    recherche = "Entreprise SAS"
+    htmx_fragment_view_name = "preremplissage_formulaire_simulation"
+
+    response = client.get(
+        "/entreprises/fragments/recherche-entreprise",
+        query_params={
+            "recherche": recherche,
+            "htmx_fragment_view_name": htmx_fragment_view_name,
+        },
+    )
+
+    mock_api_recherche_par_nom_ou_siren.assert_called_once_with(recherche)
+    assert response.status_code == 200
+    context = response.context
+    assert context["htmx_fragment_view_name"] == htmx_fragment_view_name
+    content = response.content.decode("utf-8")
+    assert reverse(htmx_fragment_view_name, args=[siren]) in content
+
+
+def test_preremplissage_siren(client):
+    siren = "123456789"
+
+    response = client.get(f"/entreprises/fragments/preremplissage-siren/{siren}")
+
+    assert response.status_code == 200
+    assertTemplateUsed(response, "fragments/siren_field.html")
+    context = response.context
+    siren_form = response.context["form"]
+    assert siren_form["siren"].value() == siren

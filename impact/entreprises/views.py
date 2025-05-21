@@ -14,6 +14,7 @@ from api.exceptions import APIError
 from entreprises.forms import EntrepriseAttachForm
 from entreprises.forms import EntrepriseDetachForm
 from entreprises.forms import EntrepriseQualificationForm
+from entreprises.forms import SirenForm
 from entreprises.models import Entreprise
 from entreprises.models import SIREN_ENTREPRISE_TEST
 from habilitations.models import attach_user_to_entreprise
@@ -102,7 +103,7 @@ def attach(request):
                 )
         else:
             raise _InvalidRequest(
-                "Impossible de créer l'entreprise car les données sont incorrectes."
+                "Impossible d'ajouter cette entreprise car les données sont incorrectes."
             )
     except (_InvalidRequest, APIError) as exception:
         messages.error(
@@ -202,7 +203,7 @@ def search_entreprise(request, siren):
 def recherche_entreprise(request):
     nombre_resultats = 0
     entreprises = []
-    erreur = None
+    erreur_recherche_entreprise = None
     recherche = request.GET.get("recherche")
     if recherche == SIREN_ENTREPRISE_TEST:
         nombre_resultats = 1
@@ -219,14 +220,24 @@ def recherche_entreprise(request):
             nombre_resultats = resultats["nombre_resultats"]
             entreprises = resultats["entreprises"]
         except APIError as e:
-            erreur = str(e)
+            erreur_recherche_entreprise = str(e)
     return render(
         request,
         "fragments/resultats_recherche_entreprise.html",
         context={
             "nombre_resultats": nombre_resultats,
             "entreprises": entreprises,
-            "erreur": erreur,
+            "erreur_recherche_entreprise": erreur_recherche_entreprise,
             "recherche": recherche,
+            "htmx_fragment_view_name": request.GET.get("htmx_fragment_view_name"),
         },
+    )
+
+
+def preremplissage_siren(request, siren):
+    form = SirenForm(data={"siren": siren})
+    return render(
+        request,
+        "fragments/siren_field.html",
+        context={"form": form},
     )
