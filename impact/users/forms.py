@@ -149,6 +149,12 @@ class InvitationForm(UserCreationForm):
             invitation = invitations[0]
             if invitation.est_expiree:
                 self.add_error("id_invitation", "Cette invitation est expirée.")
+            email = self.cleaned_data.get("email")
+            if invitation.email != email:
+                self.add_error(
+                    "email",
+                    "L'e-mail ne correspond pas à l'invitation.",
+                )
         else:
             self.add_error("code", "Cette invitation n'existe plus dans Portail-RSE.")
 

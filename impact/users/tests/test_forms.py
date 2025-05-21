@@ -267,3 +267,31 @@ def test_erreur_lors_de_l_invitation_car_le_code_ne_correspond_pas(
     assert bound_form.errors["code"] == [
         "Cette invitation n'existe plus dans Portail-RSE.",
     ]
+
+
+def test_erreur_lors_de_l_invitation_car_l_email_ne_correspond_pas(
+    db, entreprise_non_qualifiee
+):
+    invitation = Invitation.objects.create(
+        entreprise=entreprise_non_qualifiee, email="user@domaine.test", code="CODE"
+    )
+    data = {
+        "id_invitation": invitation.id,
+        "code": "CODE",
+        "prenom": "Alice",
+        "nom": "User",
+        "email": "autre@email.test",
+        "password1": "Passw0rd!123",
+        "password2": "Passw0rd!123",
+        "siren": entreprise_non_qualifiee.siren,
+        "acceptation_cgu": "checked",
+        "fonctions": "Présidente",
+    }
+
+    bound_form = InvitationForm(data)
+
+    assert not bound_form.is_valid()
+    print(bound_form.errors)
+    assert bound_form.errors["email"] == [
+        "L'e-mail ne correspond pas à l'invitation.",
+    ]

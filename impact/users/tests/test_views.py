@@ -510,7 +510,7 @@ def test_creation_d_un_utilisateur_après_une_invitation(
         "code": CODE,
         "prenom": "Alice",
         "nom": "User",
-        "email": "user@domaine.test",
+        "email": "alice@portail.example",
         "password1": "Passw0rd!123",
         "password2": "Passw0rd!123",
         "siren": entreprise.siren,
@@ -530,11 +530,10 @@ def test_creation_d_un_utilisateur_après_une_invitation(
         (f"{reverse('users:login')}?next={reglementation_url}", 302),
     ]
 
-    user = User.objects.get(email="user@domaine.test")
+    user = User.objects.get(email="alice@portail.example")
     entreprise = Entreprise.objects.get(siren="130025265")
     assert user.created_at
     assert user.updated_at
-    assert user.email == "user@domaine.test"
     assert user.prenom == "Alice"
     assert user.nom == "User"
     assert user.acceptation_cgu == True
@@ -547,7 +546,7 @@ def test_creation_d_un_utilisateur_après_une_invitation(
     assert len(mailoutbox) == 0
     assert (
         Invitation.objects.filter(
-            entreprise=entreprise, email="user@domaine.test"
+            entreprise=entreprise, email="alice@portail.example"
         ).count()
         == 0
     )
