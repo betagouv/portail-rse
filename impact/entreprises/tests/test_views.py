@@ -211,6 +211,25 @@ def test_fail_because_already_existing_habilitation(client, alice, entreprise_fa
     )
 
 
+def test_échec_car_déjà_un_propriétaire_présent_sur_l_entreprise(
+    client, alice, bob, entreprise_factory
+):
+    entreprise = entreprise_factory()
+    Habilitation.ajouter(entreprise, alice, fonctions="DG")
+    client.force_login(bob)
+    data = _attach_data(entreprise.siren)
+
+    response = client.post("/entreprises", data=data, follow=True)
+
+    assert Habilitation.objects.count() == 1
+    assert response.status_code == 200
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        "Impossible d'ajouter cette entreprise. Il existe déjà un propriétaire sur cette entreprise. Contactez la personne concernée (a***e@portail-rse.test) ou notre support (contact@portail-rse.beta.gouv.fr)."
+        in content
+    )
+
+
 @pytest.mark.parametrize("is_entreprise_in_session", [True, False])
 def test_detach_from_an_entreprise(
     is_entreprise_in_session, client, alice, entreprise_factory
