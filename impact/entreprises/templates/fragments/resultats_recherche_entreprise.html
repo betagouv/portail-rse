@@ -40,5 +40,7 @@
             Vous ne trouvez pas votre entreprise ? Trouvez votre SIREN sur l'Annuaire des entreprises
         </a>
     </p>
-    <img src="{% static 'img/spinner.svg' %}" width="40" alt="Spinner d'attente" class="htmx-indicator">
+    {% if entreprises and entreprises|length > 2 %}
+        <img src="{% static 'img/spinner.svg' %}" width="40" alt="Spinner d'attente" class="htmx-indicator">
+    {% endif %}
 {% endif %}
