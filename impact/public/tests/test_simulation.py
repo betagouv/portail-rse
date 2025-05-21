@@ -721,7 +721,7 @@ def test_preremplissage_simulation(client, mock_api_infos_entreprise):
     assert response.status_code == 200
     assertTemplateUsed(response, "fragments/simulation_form.html")
     context = response.context
-    assert not context["erreur"]
+    assert not context["erreur_recherche_entreprise"]
     # le formulaire est prérempli les données d'API
     simulation_form = response.context["simulation_form"]
     assert simulation_form["siren"].value() == infos_entreprise["siren"]
@@ -760,7 +760,7 @@ def test_preremplissage_simulation_erreur_API(client, mock_api_infos_entreprise)
 
     assert response.status_code == 200
     context = response.context
-    assert context["erreur"] == "Panne serveur"
+    assert context["erreur_recherche_entreprise"] == "Panne serveur"
     content = response.content.decode("utf-8")
     assert "Panne serveur" in content
 
@@ -777,7 +777,7 @@ def test_preremplissage_simulation_avec_entreprise_test(
     assert not mock_api_infos_entreprise.called
     assert response.status_code == 200
     context = response.context
-    assert not context["erreur"]
+    assert not context["erreur_recherche_entreprise"]
     # le formulaire est prérempli avec des données de test
     simulation_form = response.context["simulation_form"]
     assert simulation_form["siren"].value() == SIREN_ENTREPRISE_TEST
