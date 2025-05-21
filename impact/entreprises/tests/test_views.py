@@ -173,7 +173,8 @@ def test_fail_to_create_entreprise(client, alice, mock_api_infos_entreprise):
     content = response.content.decode("utf-8")
     content = html.unescape(response.content.decode("utf-8"))
     assert (
-        "Impossible de créer l'entreprise car les données sont incorrectes." in content
+        "Impossible d'ajouter cette entreprise car les données sont incorrectes."
+        in content
     )
     assert Entreprise.objects.count() == 0
     assert not mock_api_infos_entreprise.called

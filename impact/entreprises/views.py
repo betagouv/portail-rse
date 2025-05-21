@@ -118,7 +118,7 @@ def attach(request):
                 )
         else:
             raise _InvalidRequest(
-                "Impossible de créer l'entreprise car les données sont incorrectes."
+                "Impossible d'ajouter cette entreprise car les données sont incorrectes."
             )
     except (_InvalidRequest, APIError) as exception:
         messages.error(
