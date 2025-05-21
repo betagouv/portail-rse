@@ -111,20 +111,22 @@ class UserCreationForm(UserPasswordForm):
         return siren
 
     def message_erreur_proprietaires(self):
-        if len(self.proprietaires_presents) == 1:
-            email_cache = cache_partiellement_un_email(
-                self.proprietaires_presents[0].email
-            )
-            message = f"Il existe déjà un propriétaire sur cette entreprise. Contactez la personne concernée ({email_cache}) ou notre support (contact@portail-rse.beta.gouv.fr)."
-        else:
-            emails_caches = ", ".join(
-                [
-                    cache_partiellement_un_email(proprietaire.email)
-                    for proprietaire in self.proprietaires_presents
-                ]
-            )
-            message = f"Il existe déjà des propriétaires sur cette entreprise. Contactez une des personnes concernées ({emails_caches}) ou notre support (contact@portail-rse.beta.gouv.fr)."
-        return message
+        return message_erreur_proprietaires(self.proprietaires_presents)
+
+
+def message_erreur_proprietaires(proprietaires_presents):
+    if len(proprietaires_presents) == 1:
+        email_cache = cache_partiellement_un_email(proprietaires_presents[0].email)
+        message = f"Il existe déjà un propriétaire sur cette entreprise. Contactez la personne concernée ({email_cache}) ou notre support (contact@portail-rse.beta.gouv.fr)."
+    else:
+        emails_caches = ", ".join(
+            [
+                cache_partiellement_un_email(proprietaire.email)
+                for proprietaire in proprietaires_presents
+            ]
+        )
+        message = f"Il existe déjà des propriétaires sur cette entreprise. Contactez une des personnes concernées ({emails_caches}) ou notre support (contact@portail-rse.beta.gouv.fr)."
+    return message
 
 
 class InvitationForm(UserCreationForm):
