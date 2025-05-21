@@ -14,6 +14,7 @@ from api.exceptions import APIError
 from entreprises.forms import EntrepriseAttachForm
 from entreprises.forms import EntrepriseDetachForm
 from entreprises.forms import EntrepriseQualificationForm
+from entreprises.forms import SirenForm
 from entreprises.models import Entreprise
 from entreprises.models import SIREN_ENTREPRISE_TEST
 from habilitations.models import Habilitation
@@ -243,5 +244,15 @@ def recherche_entreprise(request):
             "entreprises": entreprises,
             "erreur_recherche_entreprise": erreur_recherche_entreprise,
             "recherche": recherche,
+            "htmx_fragment_view_name": request.GET.get("htmx_fragment_view_name"),
         },
+    )
+
+
+def preremplissage_siren(request, siren):
+    form = SirenForm(data={"siren": siren})
+    return render(
+        request,
+        "fragments/siren_field.html",
+        context={"form": form},
     )

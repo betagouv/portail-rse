@@ -26,9 +26,7 @@
                     </div>
                     {% include 'snippets/field.html' with field=form.prenom %}
                     {% include 'snippets/field.html' with field=form.nom %}
-                    <div id="svelte-search-entreprise" data-siren="{{ form.siren.value|default:'' }}">
-                        {% include 'snippets/siren_field.html' with field=form.siren %}
-                    </div>
+                    {% include 'fragments/siren_field.html' %}
                     {% include 'snippets/field.html' with field=form.fonctions %}
                     <div class="fr-form-group">
                         <fieldset class="fr-fieldset">

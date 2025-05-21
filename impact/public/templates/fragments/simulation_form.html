@@ -1,7 +1,7 @@
-<div id="htmx-simulation-form">
+<div id="htmx-preremplissage-target">
     <h3>1. Recherchez votre entreprise</h3>
 
-    {% include "snippets/recherche_entreprise.html" %}
+    {% include "snippets/recherche_entreprise.html" with htmx_fragment_view_name="preremplissage_formulaire_simulation" %}
 
     {% if form.siren.value %}
         <form action="{% url 'simulation' %}" method="post">
