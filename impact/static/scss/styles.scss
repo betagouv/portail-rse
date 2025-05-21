@@ -2,6 +2,18 @@
     --ul-type: none;
 }
 
+/* htmx */
+/* https://htmx.org/docs/#indicators */
+.htmx-indicator{
+    display:none;
+}
+.htmx-request .htmx-indicator{
+    display:inline;
+}
+.htmx-request.htmx-indicator{
+    display:inline;
+}
+
 /* color themes */
 
 :root {
