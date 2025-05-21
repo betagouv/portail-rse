@@ -789,7 +789,7 @@ def test_recherche_entreprise_avec_resultats(
     assert context["nombre_resultats"] == nombre_resultats
     assert context["entreprises"] == entreprises
     assert context["recherche"] == recherche
-    assert context["erreur"] == None
+    assert context["erreur_recherche_entreprise"] == None
     assertTemplateUsed(response, "fragments/resultats_recherche_entreprise.html")
 
 
@@ -823,7 +823,7 @@ def test_recherche_entreprise_erreur_API(client, mock_api_recherche_par_nom_ou_s
 
     assert response.status_code == 200
     context = response.context
-    assert context["erreur"] == "Panne serveur"
+    assert context["erreur_recherche_entreprise"] == "Panne serveur"
     assertTemplateUsed(response, "fragments/resultats_recherche_entreprise.html")
     content = response.content.decode("utf-8")
     assert "Panne serveur" in content

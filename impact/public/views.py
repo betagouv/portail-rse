@@ -99,7 +99,7 @@ def simulation(request):
 
 
 def preremplissage_formulaire_simulation(request, siren):
-    erreur = False
+    erreur_recherche_entreprise = False
     if siren == SIREN_ENTREPRISE_TEST:
         infos = {
             "siren": SIREN_ENTREPRISE_TEST,
@@ -126,13 +126,16 @@ def preremplissage_formulaire_simulation(request, siren):
             # cette donnée pourrait éventuellement être récupérée lors de l'appel API de recherche puis transmise à cette vue.
             # On pourrait alors simplifier cet appel API pour ne chercher que la donnée financière éventuelle
             # et le rendre non bloquant pour la simulation
-            erreur = str(e)
+            erreur_recherche_entreprise = str(e)
             infos = {}
     simulation_form = SimulationForm(initial=infos)
     return render(
         request,
         "fragments/simulation_form.html",
-        context={"simulation_form": simulation_form, "erreur": erreur},
+        context={
+            "simulation_form": simulation_form,
+            "erreur_recherche_entreprise": erreur_recherche_entreprise,
+        },
     )
 
 

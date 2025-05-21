@@ -1,6 +1,6 @@
 {% load static %}
-{% if erreur %}
-    <p class="fr-error-text">{{ erreur }}</p>
+{% if erreur_recherche_entreprise %}
+    <p class="fr-error-text">{{ erreur_recherche_entreprise }}</p>
 {% elif recherche|length >= 3 %}
     {% if entreprises %}
         <div class="fr-label">Sélectionnez votre entreprise ou précisez votre recherche</div>
