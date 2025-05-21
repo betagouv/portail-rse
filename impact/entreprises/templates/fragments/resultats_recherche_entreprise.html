@@ -14,10 +14,11 @@
             {% endif %}
         </p>
         {% for entreprise in entreprises %}
+            {% firstof htmx_fragment_view_name "entreprises:preremplissage_siren" as view_name %}
             <div class="fr-tile fr-tile--sm fr-tile--no-icon fr-tile--horizontal fr-enlarge-link fr-mb-1w"
-                 hx-get="{% url 'preremplissage_formulaire_simulation' entreprise.siren %}"
+                 hx-get="{% url view_name entreprise.siren %}"
                  hx-trigger="click"
-                 hx-target="#htmx-simulation-form"
+                 hx-target="#htmx-preremplissage-target"
                  hx-swap="outerHTML"
                  hx-indicator=".htmx-indicator">
                 <div class="fr-tile__body">
