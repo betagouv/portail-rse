@@ -93,7 +93,7 @@ def simulation(request):
         request,
         "public/simulation.html",
         {
-            "simulation_form": simulation_form,
+            "form": simulation_form,
         },
     )
 
@@ -133,7 +133,7 @@ def preremplissage_formulaire_simulation(request, siren):
         request,
         "fragments/simulation_form.html",
         context={
-            "simulation_form": simulation_form,
+            "form": simulation_form,
             "erreur_recherche_entreprise": erreur_recherche_entreprise,
         },
     )
