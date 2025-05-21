@@ -9,7 +9,7 @@
                hx-trigger="input changed delay:500ms, keyup[key=='Enter']"
                hx-target="#htmx-resultats-recherche-entreprise"
                hx-indicator=".htmx-indicator"
-               value="{{ simulation_form.siren.value|default:'' }}">
+               value="{{ form.siren.value|default:'' }}">
         <img src="{% static 'img/spinner.svg' %}" width="40" alt="Spinner d'attente" class="htmx-indicator">
     </div>
 </div>
