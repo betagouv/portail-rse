@@ -6,6 +6,7 @@
     <div class="fr-search-bar" role="search">
         <input type="search" name="recherche" class="fr-input" id="id_recherche"
                hx-get="{% url 'entreprises:recherche_entreprise' %}"
+               hx-vals='{"htmx_fragment_view_name": "{{ htmx_fragment_view_name }}"}'
                hx-trigger="input changed delay:500ms, keyup[key=='Enter']"
                hx-target="#htmx-resultats-recherche-entreprise"
                hx-indicator=".htmx-indicator"

@@ -1,0 +1,4 @@
+<div id="htmx-preremplissage-target">
+    {% include "snippets/recherche_entreprise.html" with htmx_fragment_view_name="entreprises:preremplissage_siren" %}
+    {{ form.siren.as_hidden }}
+</div>
