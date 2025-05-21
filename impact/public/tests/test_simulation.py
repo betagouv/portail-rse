@@ -194,7 +194,7 @@ def test_formulaire_prerempli_avec_la_simulation_précédente(status_est_soumis,
     response = client.get("/simulation")
 
     # le formulaire est toujours sur la page, avec les bonnes données d'initialisation
-    simulation_form = response.context["simulation_form"]
+    simulation_form = response.context["form"]
     assert simulation_form["siren"].value() == siren
     assert simulation_form["denomination"].value() == denomination
     assert (
@@ -692,7 +692,7 @@ def test_simulation_en_session_incorrecte(client):
 
     # le formulaire n'est pas initialisé
     context = response.context
-    simulation_form = context["simulation_form"]
+    simulation_form = context["form"]
     assert not simulation_form["siren"].value()
 
 
@@ -723,7 +723,7 @@ def test_preremplissage_simulation(client, mock_api_infos_entreprise):
     context = response.context
     assert not context["erreur_recherche_entreprise"]
     # le formulaire est prérempli les données d'API
-    simulation_form = response.context["simulation_form"]
+    simulation_form = response.context["form"]
     assert simulation_form["siren"].value() == infos_entreprise["siren"]
     assert simulation_form["denomination"].value() == infos_entreprise["denomination"]
     assert (
@@ -779,7 +779,7 @@ def test_preremplissage_simulation_avec_entreprise_test(
     context = response.context
     assert not context["erreur_recherche_entreprise"]
     # le formulaire est prérempli avec des données de test
-    simulation_form = response.context["simulation_form"]
+    simulation_form = response.context["form"]
     assert simulation_form["siren"].value() == SIREN_ENTREPRISE_TEST
     assert simulation_form["denomination"].value() == "ENTREPRISE TEST"
     assert simulation_form["categorie_juridique_sirene"].value() == 5505
