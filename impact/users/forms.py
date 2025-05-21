@@ -12,6 +12,7 @@ from habilitations.models import FONCTIONS_MAX_LENGTH
 from habilitations.models import FONCTIONS_MIN_LENGTH
 from habilitations.models import Habilitation
 from invitations.models import Invitation
+from utils.emails import cache_partiellement_un_email
 from utils.forms import DsfrForm
 
 
@@ -124,12 +125,6 @@ class UserCreationForm(UserPasswordForm):
             )
             message = f"Il existe déjà des propriétaires sur cette entreprise. Contactez une des personnes concernées ({emails_caches}) ou notre support (contact@portail-rse.beta.gouv.fr)."
         return message
-
-
-def cache_partiellement_un_email(email):
-    nom, domaine = email.split("@")
-    etoiles = "*" * (len(nom) - 2)
-    return f"{nom[0]}{etoiles}{nom[-1]}@{domaine}"
 
 
 class InvitationForm(UserCreationForm):
