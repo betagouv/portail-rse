@@ -3,7 +3,6 @@ import ExternalFieldToggle from './lib/ExternalFieldToggle.svelte'
 import GroupeFields from './lib/GroupeFields.svelte'
 import InteretPublicField from './lib/InteretPublicField.svelte'
 import SearchEntreprise from './lib/SearchEntreprise.svelte'
-import SeeMoreOrLess from './lib/SeeMoreOrLess.svelte'
 import PasswordValidattion from './lib/PasswordValidattion.svelte'
 
 for (let externalFieldToggle of document.getElementsByClassName("svelte-external-field-toggle")) {
@@ -53,13 +52,6 @@ if (denominationEntrepriseElement) {
       denomination: denominationEntrepriseElement.dataset.denomination
     },
     hydrate: true,
-  })
-}
-
-const VoirPlusMoinsElement = document.getElementById("svelte-voir-plus-moins")
-if (VoirPlusMoinsElement) {
-  new SeeMoreOrLess({
-    target: VoirPlusMoinsElement
   })
 }
 
