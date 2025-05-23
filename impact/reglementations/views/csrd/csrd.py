@@ -543,13 +543,15 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
             # par ex. : l'utilisateur a selectionné une autre entreprise
             request.session.pop("rapport_csrd_courant")
 
+    # la suppression de la notion de propriétaire implique une gestion des droits
+    # par ex. un lecteur ne pourra pas créer de rapport CSRD
     if not request.session.get("rapport_csrd_courant"):
         # les prefetch de l'enjeu parent évitent des N+1 au niveau du template
         csrd, _ = RapportCSRD.objects.prefetch_related(
             "enjeux", "enjeux__parent"
         ).get_or_create(
             entreprise=entreprise,
-            proprietaire=None if habilitation.is_confirmed else request.user,
+            proprietaire=None,  # if habilitation.is_confirmed else request.user,
             annee=annee,
         )
 
