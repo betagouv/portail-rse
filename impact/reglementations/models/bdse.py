@@ -120,7 +120,7 @@ class AbstractBDESE(TimestampedModel):
         return [
             field.name
             for field in cls._meta.get_fields()
-            if type(field) == CategoryField
+            if type(field) is CategoryField
         ]
 
     def mark_step_as_complete(self, step: int):

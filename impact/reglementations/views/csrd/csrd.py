@@ -25,6 +25,7 @@ from openpyxl import Workbook
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
+from habilitations.enums import UserRole
 from habilitations.models import Habilitation
 from reglementations.enums import ESRS
 from reglementations.enums import EtapeCSRD
@@ -516,8 +517,7 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
     # les fetch sur les habilitations et l'entreprise se répètent (requêtes identiques)
     # un peu de centralisation à faire pour éviter les répétitions dans `utils.middlewares.ExtendUserMiddleware`
 
-    # par ex., on peut récupérer l'habilitation pour cette entreprise, elle est déjà en cache
-    habilitation = request.user.habilitation_set.get(entreprise=entreprise)
+    role = Habilitation.role_pour(entreprise, request.user)
     annee = datetime.now().year
 
     if request.method == "POST":
@@ -543,15 +543,37 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
             # par ex. : l'utilisateur a selectionné une autre entreprise
             request.session.pop("rapport_csrd_courant")
 
+    # la suppression de la notion de propriétaire implique une gestion des droits
+    # par ex. un lecteur ne pourra pas créer de rapport CSRD
     if not request.session.get("rapport_csrd_courant"):
-        # les prefetch de l'enjeu parent évitent des N+1 au niveau du template
-        csrd, _ = RapportCSRD.objects.prefetch_related(
-            "enjeux", "enjeux__parent"
-        ).get_or_create(
-            entreprise=entreprise,
-            proprietaire=None if habilitation.is_confirmed else request.user,
-            annee=annee,
-        )
+        # un lecteur ou un éditeur ne peuvent pas créer de rapport CSRD
+        if role == UserRole.PROPRIETAIRE:
+            # les prefetch de l'enjeu parent évitent des N+1 au niveau du template
+            csrd, _ = RapportCSRD.objects.prefetch_related(
+                "enjeux", "enjeux__parent"
+            ).get_or_create(
+                entreprise=entreprise,
+                proprietaire=None,  # sera supprimé ultérieurement
+                annee=annee,
+            )
+        else:
+            # si l'utilisateur n'est pas propriétaire, il ne peut que consulter
+            # ou modifier un rapport existant
+            csrd = RapportCSRD.objects.filter(
+                entreprise=entreprise, proprietaire=None, annee=annee
+            )
+            if not csrd.exists():
+                # pas de rapport existant créé par un propriétaire :
+                # on notifie et on bloque l'accès
+                messages.warning(
+                    request,
+                    "Il n'y a pas encore de rapport CSRD créé pour cette année (possible uniquement en ayant le rôle propriétaire).",
+                )
+                return redirect("reglementations:tableau_de_bord", siren=siren)
+
+            # on récupére le rapport officiel,
+            # la gestion des droits de modification éventuels est au niveau du template
+            csrd = csrd.first()
 
     context = contexte_d_etape(id_etape, csrd)
     return HttpResponse(template.render(context, request))
