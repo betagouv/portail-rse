@@ -9,8 +9,9 @@ from invitations.models import CODE_MAX_LENGTH
 from invitations.models import Invitation
 
 
-def test_page_membres_d_une_entreprise(client, alice, entreprise_factory):
+def test_page_membres_d_une_entreprise(client, alice, bob, entreprise_factory):
     entreprise = entreprise_factory()
+    Habilitation.ajouter(entreprise, bob, fonctions="Présidente")
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
 
@@ -33,6 +34,23 @@ def test_page_membres_d_une_entreprise_nécessite_d_être_connecté(
 
     redirect_url = f"""{reverse("users:login")}?next={url}"""
     assert response.redirect_chain == [(redirect_url, 302)]
+
+
+def test_page_membres_d_une_entreprise_n_affiche_pas_les_utilisateurs_non_confirmés(
+    client, alice, bob, entreprise_factory
+):
+    entreprise = entreprise_factory()
+    bob.is_email_confirmed = False
+    bob.save()
+    Habilitation.ajouter(entreprise, bob, fonctions="Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
+    client.force_login(alice)
+
+    response = client.get(f"/droits/{entreprise.siren}")
+
+    assert response.status_code == 200
+    content = response.content.decode("utf-8")
+    assert bob.email not in content
 
 
 def test_une_invitation_a_devenir_membre_pour_un_compte_existant_est_activée_directement(

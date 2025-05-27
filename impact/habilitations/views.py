@@ -57,7 +57,7 @@ def index(request, siren):
     # organisation des membres par habilitations
     habilitations = defaultdict(list)
     for h in entreprise.habilitation_set.all().order_by("user__nom"):
-        if h.entreprise == entreprise:
+        if h.entreprise == entreprise and h.user.is_email_confirmed:
             habilitations[h.role].append(h.user)
 
     context |= {"habilitations": habilitations}
