@@ -9,12 +9,14 @@ from users.models import User
 
 
 @pytest.mark.django_db(transaction=True)
-def test_nettoie_entreprise_test_supprime_ses_utilisateurs(
+def test_nettoie_entreprise_test_supprime_ses_utilisateurs_sauf_le_contact(
     db, mocker, entreprise_factory, alice, bob
 ):
     entreprise = entreprise_factory(siren="000000001")
     Habilitation.ajouter(entreprise, alice)
     Habilitation.ajouter(entreprise, bob)
+    contact = User.objects.create(email=settings.SUPPORT_EMAIL)
+    Habilitation.ajouter(entreprise, contact)
     autre_entreprise = entreprise_factory(siren="123456789")
     Habilitation.ajouter(autre_entreprise, alice)
     Habilitation.ajouter(autre_entreprise, bob)
@@ -22,9 +24,9 @@ def test_nettoie_entreprise_test_supprime_ses_utilisateurs(
     Command().handle()
 
     entreprise.refresh_from_db()
-    assert entreprise.habilitation_set.count() == 0
+    assert entreprise.habilitation_set.count() == 1  # uniquement contact
     autre_entreprise.refresh_from_db()
-    assert autre_entreprise.habilitation_set.count() == 2
+    assert autre_entreprise.habilitation_set.count() == 2  # alice et bob
 
 
 @pytest.mark.django_db(transaction=True)
