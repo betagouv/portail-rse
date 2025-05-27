@@ -81,9 +81,11 @@ def _envoie_email_d_ajout(request, entreprise, utilisateur):
     )
     email.template_id = settings.BREVO_AJOUT_MEMBRE_TEMPLATE
     url = f"""{reverse("habilitations:membres_entreprise", args=[entreprise.siren])}"""
+    inviteur = request.user
     email.merge_global_data = {
         "denomination_entreprise": entreprise.denomination,
         "membres_url": url,
+        "inviteur": f"{inviteur.prenom} {inviteur.nom}",
     }
     email.send()
 
