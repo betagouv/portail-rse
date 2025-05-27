@@ -87,6 +87,7 @@ def test_succès_invitation_a_devenir_membre(
     invitation = invitations[0]
     assert len(invitation.code) == CODE_MAX_LENGTH
     assert invitation.role == "proprietaire"
+    assert invitation.inviteur == alice
     assert response.redirect_chain == [(redirect_url, 302)]
     content = html.unescape(response.content.decode("utf-8"))
     assert "L'invitation a été envoyée." in content

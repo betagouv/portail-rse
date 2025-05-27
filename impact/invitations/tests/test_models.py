@@ -39,3 +39,16 @@ def test_invitation_expirée(db, entreprise_non_qualifiee):
 
     with freeze_time(now + timedelta(seconds=settings.INVITATION_MAX_AGE + 1)):
         assert invitation.est_expiree
+
+
+def test_inviteur_supprimé_après_la_creation_de_l_invitation(
+    db, alice, entreprise_non_qualifiee
+):
+    invitation = Invitation.objects.create(
+        entreprise=entreprise_non_qualifiee, email="bob@domaine.test", inviteur=alice
+    )
+
+    alice.delete()
+
+    invitation.refresh_from_db()
+    assert invitation.inviteur is None
