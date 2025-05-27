@@ -94,6 +94,7 @@ def _cree_invitation(request, entreprise, email):
         email=email,
         code=cree_code_invitation(),
         role=UserRole.PROPRIETAIRE.value,
+        inviteur=request.user,
     )
     _envoie_email_d_invitation(request, invitation)
     messages.success(
@@ -115,5 +116,6 @@ def _envoie_email_d_invitation(request, invitation):
     email.merge_global_data = {
         "denomination_entreprise": invitation.entreprise.denomination,
         "invitation_url": url,
+        "inviteur": f"{invitation.inviteur.prenom} {invitation.inviteur.nom}",
     }
     email.send()
