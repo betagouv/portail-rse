@@ -6,84 +6,79 @@
 
     <div class="fr-container fr-my-4w">
 
-        <div class="fr-my-4w">
-            <h3>Membres {% if entreprise.denomination %}liés à {{ entreprise.denomination }}{% endif %}</h3>
-            {% if habilitations.proprietaire %}
-                <div class="fr-table--sm fr-table fr-table" id="table-sm-component">
-                    <div class="fr-table__wrapper">
-                        <div class="fr-table__container">
-                            <div class="fr-table__content">
-                                <table id="table-sm">
-                                    <thead>
+        <h2>Membres de l'entreprise {% if entreprise.denomination %}{{ entreprise.denomination }}{% endif %}</h3>
+        {% if habilitations.proprietaire %}
+            <div class="fr-table--sm fr-table fr-table" id="table-sm-component">
+                <div class="fr-table__wrapper">
+                    <div class="fr-table__container">
+                        <div class="fr-table__content">
+                            <table id="table-sm">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Nom</th>
+                                        <th scope="col">Prénom</th>
+                                        <th scope="col">E-mail</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in habilitations.proprietaire %}
                                         <tr>
-                                            <th scope="col">Nom</th>
-                                            <th scope="col">Prénom</th>
-                                            <th scope="col">E-mail</th>
+                                            <td>{{ user.nom }}</td>
+                                            <td>{{ user.prenom }}</td>
+                                            <td>{{ user.email }}</td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for user in habilitations.proprietaire %}
-                                            <tr>
-                                                <td>{{ user.nom }}</td>
-                                                <td>{{ user.prenom }}</td>
-                                                <td>{{ user.email }}</td>
-                                            </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
+            </div>
 
-            {% else %}
-                Aucun propriétaire
-            {% endif %}
-        </div>
+        {% else %}
+            Aucun propriétaire
+        {% endif %}
 
-        <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col-6">
-                <h3>Invités</h3>
-                {% if invitations %}
-                    <div class="fr-table--sm fr-table fr-table" id="table-sm-component">
-                        <div class="fr-table__wrapper">
-                            <div class="fr-table__container">
-                                <div class="fr-table__content">
-                                    <table id="table-sm">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">E-mail</th>
-                                                <th scope="col">Expiration de l'invitation</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for invitation in invitations %}
-                                                <tr>
-                                                    <td>{{ invitation.email }}</td>
-                                                    <td>{{ invitation.date_expiration|date:"d b Y" }}</td>
-                                                </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+        {% if invitations %}
+            <h3>Invités</h3>
+            <div class="fr-table--sm fr-table fr-table" id="table-sm-component">
+                <div class="fr-table__wrapper">
+                    <div class="fr-table__container">
+                        <div class="fr-table__content">
+                            <table id="table-sm">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">E-mail</th>
+                                        <th scope="col">Expiration de l'invitation</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for invitation in invitations %}
+                                        <tr>
+                                            <td>{{ invitation.email }}</td>
+                                            <td>{{ invitation.date_expiration|date:"d F Y" }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                {% else %}
-                    Aucune invitation en cours
-                {% endif %}
+                </div>
             </div>
-            <div class="fr-col-6 fr-col-lg-4">
-                <h3>Inviter un nouveau membre</h3>
-                La personne recevra un e-mail l'invitant à vous rejoindre pour gérer {{ entreprise.denomination }} ensemble.
+        {% endif %}
 
-                <form method="post">
-                    {% csrf_token %}
-                    {% include 'snippets/field.html' with field=form.email %}
-                    <button type="submit" class="fr-btn fr-mt-2w">Inviter</button>
-                </form>
-            </div>
-        </div>
+        <h3>Inviter un nouveau membre</h3>
+
+        <p>
+            La personne recevra un e-mail d'invitation pour créer son compte et rejoindre l'entreprise {{ entreprise.denomination }}.
+            Si elle possède déjà un compte utilisateur sur le Portail RSE, elle sera directement ajoutée dans les membres de l'entreprise.
+        </p>
+
+        <form method="post">
+            {% csrf_token %}
+            {% include 'snippets/field.html' with field=form.email %}
+            <button type="submit" class="fr-btn">Inviter</button>
+        </form>
     </div>
 
 {% endblock %}
