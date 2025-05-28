@@ -61,12 +61,13 @@ def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
             response, "reglementations/csrd/etape-redaction-rapport-durabilite.html"
         )
 
-    rapport_csrd = RapportCSRD.objects.get(proprietaire=alice, entreprise=entreprise)
+    # note : plus de rapport personnels => pas de proprietaire
+    rapport_csrd = RapportCSRD.objects.get(entreprise=entreprise)
     NOMBRE_ENJEUX = 103
     assert len(rapport_csrd.enjeux.all()) == NOMBRE_ENJEUX
 
 
-def test_resume_resultats_analyse_ia(client, csrd):
+def test_resume_resultats_analyse_ia(csrd):
     DocumentAnalyseIA.objects.create(
         rapport_csrd=csrd,
         etat="success",
@@ -163,7 +164,7 @@ ETAPES_ENREGISTRABLES = EtapeCSRD.ETAPES_VALIDABLES[:-1]
 @pytest.mark.parametrize("etape", ETAPES_ENREGISTRABLES)
 def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_factory):
     entreprise = entreprise_factory()
-    habilitation = Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     RapportCSRD.objects.create(
         entreprise=entreprise,
         proprietaire=alice,
@@ -172,7 +173,7 @@ def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_
     client.force_login(alice)
     url = "/csrd/{siren}/etape-{etape}".format(siren=entreprise.siren, etape=etape)
 
-    response = client.post(url, follow=True)
+    client.post(url, follow=True)
 
     rapport_csrd = RapportCSRD.objects.get(proprietaire=alice, entreprise=entreprise)
     assert rapport_csrd.etape_validee == etape
@@ -296,7 +297,7 @@ def test_liste_des_enjeux_csrd__au_format_xlsx_retourne_une_404_si_entreprise_in
     client.force_login(alice)
 
     response = client.get(
-        f"/csrd/000000001/enjeux.xlsx",
+        "/csrd/000000001/enjeux.xlsx",
     )
 
     assert response.status_code == 404
@@ -496,7 +497,7 @@ def test_le_lien_analyse_d_écart_redirige_vers_l_étape_analyse_d_ecart_de_la_c
     client, alice, entreprise_factory
 ):
     entreprise = entreprise_factory()
-    habilitation = Habilitation.ajouter(entreprise, alice, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     RapportCSRD.objects.create(
         entreprise=entreprise,
         proprietaire=alice,
@@ -528,7 +529,7 @@ def test_lien_analyse_d_écart_redirige_vers_la_page_d_ajout_d_entreprise_si_l_u
     assert messages[0].level == WARNING
     assert (
         messages[0].message
-        == "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à l'espace Rapport de Durabilité",
+        == "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à l'espace Rapport de Durabilité"
     )
 
 
