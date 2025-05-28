@@ -57,7 +57,8 @@ def bdese_avec_accord(bdese_factory, entreprise_factory, alice):
     entreprise = entreprise_factory(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499, bdese_accord=True
     )
-    return bdese_factory(bdese_class=BDESEAvecAccord, entreprise=entreprise, user=alice)
+    entreprise.users.add(alice)
+    return bdese_factory(bdese_class=BDESEAvecAccord, entreprise=entreprise, user=None)
 
 
 @pytest.fixture
@@ -70,7 +71,7 @@ def csrd(entreprise_factory, alice):
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     csrd = RapportCSRD.objects.create(
         entreprise=entreprise,
-        proprietaire=alice,
+        proprietaire=None,
         annee=date.today().year,
     )
     return csrd
