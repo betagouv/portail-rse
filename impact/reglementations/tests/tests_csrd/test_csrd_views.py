@@ -496,7 +496,7 @@ def test_le_lien_analyse_d_écart_redirige_vers_l_étape_analyse_d_ecart_de_la_c
     client, alice, entreprise_factory
 ):
     entreprise = entreprise_factory()
-    habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
+    habilitation = Habilitation.ajouter(entreprise, alice, "Présidente")
     RapportCSRD.objects.create(
         entreprise=entreprise,
         proprietaire=alice,
