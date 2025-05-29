@@ -14,9 +14,9 @@ from reglementations.views.csrd.analyse_ia import envoie_resultat_ia_email
 CONTENU_PDF = b"%PDF-1.4\n%\xd3\xeb\xe9\xe1\n1 0 obj\n<</Title (CharteEngagements"
 
 
-def test_ajout_document_par_utilisateur_autorise(client, csrd):
-    utilisateur = csrd.proprietaire
-    client.force_login(utilisateur)
+def test_ajout_document_par_utilisateur_autorise(client, csrd, alice):
+    # alice est déjà liée à l'entreprise qui a cette csrd
+    client.force_login(alice)
     fichier = SimpleUploadedFile("test.pdf", CONTENU_PDF)
 
     response = client.post(
@@ -37,7 +37,6 @@ def test_ajout_document_par_utilisateur_autorise(client, csrd):
 
 
 def test_ajout_document_par_utilisateur_non_autorise(client, csrd, bob):
-    assert bob != csrd.proprietaire
     client.force_login(bob)
     fichier = SimpleUploadedFile("test.pdf", CONTENU_PDF)
 
@@ -63,9 +62,9 @@ def test_ajout_document_sur_csrd_inexistante(client, alice):
     assert DocumentAnalyseIA.objects.count() == 0
 
 
-def test_ajout_document_sans_extension_pdf(client, csrd):
-    utilisateur = csrd.proprietaire
-    client.force_login(utilisateur)
+def test_ajout_document_sans_extension_pdf(client, csrd, alice):
+    # alice est déjà liée à l'entreprise qui a cette csrd
+    client.force_login(alice)
     fichier = SimpleUploadedFile("test.odt", b"libre office writer data")
 
     response = client.post(
@@ -77,9 +76,9 @@ def test_ajout_document_sans_extension_pdf(client, csrd):
     assert csrd.documents.count() == 0
 
 
-def test_ajout_document_dont_le_contenu_n_est_pas_du_pdf(client, csrd):
-    utilisateur = csrd.proprietaire
-    client.force_login(utilisateur)
+def test_ajout_document_dont_le_contenu_n_est_pas_du_pdf(client, csrd, alice):
+    # alice est déjà liée à l'entreprise qui a cette csrd
+    client.force_login(alice)
     fichier = SimpleUploadedFile("test.pdf", b"pas un pdf")
 
     response = client.post(
@@ -91,9 +90,9 @@ def test_ajout_document_dont_le_contenu_n_est_pas_du_pdf(client, csrd):
     assert csrd.documents.count() == 0
 
 
-def test_suppression_document_par_utilisateur_autorise(client, document):
-    utilisateur = document.rapport_csrd.proprietaire
-    client.force_login(utilisateur)
+def test_suppression_document_par_utilisateur_autorise(client, document, alice):
+    # alice est déjà liée à l'entreprise qui a cette csrd
+    client.force_login(alice)
 
     response = client.post(f"/csrd/{document.id}/suppression")
 
@@ -127,9 +126,9 @@ def test_suppression_document_inexistant(client, document, alice):
     assert DocumentAnalyseIA.objects.count() == 1
 
 
-def test_lancement_d_analyse_IA(client, mock_api_analyse_ia, document):
-    utilisateur = document.rapport_csrd.proprietaire
-    client.force_login(utilisateur)
+def test_lancement_d_analyse_IA(client, mock_api_analyse_ia, document, alice):
+    # alice est déjà liée à l'entreprise qui a cette csrd
+    client.force_login(alice)
 
     response = client.post(
         f"/ESRS-predict/{document.id}/start",
@@ -166,13 +165,12 @@ def test_lancement_d_anlyse_IA_redirige_vers_la_connexion_si_non_connecté(
     assert not mock_api_analyse_ia.called
 
 
-def test_lancement_d_anlyse_IA_erreur_API(client, mock_api_analyse_ia, document):
+def test_lancement_d_anlyse_IA_erreur_API(client, mock_api_analyse_ia, document, alice):
     message_erreur = (
         "Le service est actuellement indisponible. Merci de réessayer plus tard."
     )
     mock_api_analyse_ia.side_effect = APIError(message_erreur)
-    utilisateur = document.rapport_csrd.proprietaire
-    client.force_login(utilisateur)
+    client.force_login(alice)
 
     response = client.post(f"/ESRS-predict/{document.id}/start", follow=True)
 
@@ -198,7 +196,7 @@ def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_1(
 
 
 def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_2(
-    client, document, mailoutbox
+    client, document, mailoutbox, alice
 ):
     client.post(
         f"/ESRS-predict/{document.id}",
@@ -214,11 +212,11 @@ def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_2(
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
     assert mail.from_email == settings.DEFAULT_FROM_EMAIL
-    assert list(mail.to) == [document.rapport_csrd.proprietaire.email]
+    assert list(mail.to) == [alice.email]
     assert mail.template_id == settings.BREVO_RESULTAT_ANALYSE_IA_TEMPLATE
 
 
-def test_serveur_IA_envoie_le_resultat_de_l_analyse(client, document, mailoutbox):
+def test_serveur_IA_envoie_le_resultat_de_l_analyse(client, document, mailoutbox, alice):
     RESULTATS = """{
   "ESRS E1": [
     {
@@ -253,7 +251,7 @@ def test_serveur_IA_envoie_le_resultat_de_l_analyse(client, document, mailoutbox
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
     assert mail.from_email == settings.DEFAULT_FROM_EMAIL
-    assert list(mail.to) == [document.rapport_csrd.proprietaire.email]
+    assert list(mail.to) == [alice.email]
     assert mail.template_id == settings.BREVO_RESULTAT_ANALYSE_IA_TEMPLATE
     assert mail.merge_global_data == {
         "resultat_ia_url": response.wsgi_request.build_absolute_uri(
@@ -302,29 +300,7 @@ def test_envoie_resultat_ia_email_non_bloquant(client, document, mocker):
     assert isinstance(args[0], Exception)
 
 
-def test_envoie_resultat_ia_email_aux_utilisateurs_habilités_d_un_rapport_officiel(
-    entreprise_factory, alice, bob, mailoutbox
-):
-    entreprise = entreprise_factory()
-    habilitation = Habilitation.ajouter(entreprise, alice, "Présidente habilitée")
-    habilitation.confirm()
-    habilitation.save()
-    Habilitation.ajouter(entreprise, bob, "Salarié non habilité")
-    # Alice est habilitée sur l'entreprise mais pas Bob
-    rapport_csrd_officiel = RapportCSRD.objects.create(
-        entreprise=entreprise,
-        annee=2025,
-    )
-    document = DocumentAnalyseIA.objects.create(rapport_csrd=rapport_csrd_officiel)
-
-    envoie_resultat_ia_email(document, "https://resultats-ia.example")
-
-    assert len(mailoutbox) == 1
-    mail = mailoutbox[0]
-    assert list(mail.to) == [alice.email]
-
-
-def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(client, csrd):
+def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(client, csrd, alice):
     document = DocumentAnalyseIA.objects.create(
         rapport_csrd=csrd,
         etat="success",
@@ -347,7 +323,7 @@ def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(client, cs
   ]
   }""",
     )
-    client.force_login(csrd.proprietaire)
+    client.force_login(alice)
 
     response = client.get(
         f"/ESRS-predict/{document.id}/resultats.xlsx",
@@ -398,7 +374,7 @@ def test_telechargement_des_resultats_IA_d_un_document_redirige_vers_la_connexio
 
 
 def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_xlsx(
-    client, csrd
+    client, csrd, alice
 ):
     DocumentAnalyseIA.objects.create(
         rapport_csrd=csrd,
@@ -431,7 +407,7 @@ def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_x
   }""",
     )
 
-    client.force_login(csrd.proprietaire)
+    client.force_login(alice)
 
     response = client.get(
         f"/ESRS-predict/{csrd.id}/synthese_resultats.xlsx",
@@ -480,7 +456,7 @@ def test_telechargement_des_resultats_IA_de_l_ensemble_des_documents_redirige_ve
     assert response.status_code == 302
 
 
-def test_telechargement_des_resultats_par_ESRS_au_format_xlsx(client, csrd):
+def test_telechargement_des_resultats_par_ESRS_au_format_xlsx(client, csrd, alice):
     DocumentAnalyseIA.objects.create(
         rapport_csrd=csrd,
         etat="success",
@@ -518,7 +494,7 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx(client, csrd):
   }""",
     )
 
-    client.force_login(csrd.proprietaire)
+    client.force_login(alice)
 
     response = client.get(
         f"/ESRS-predict/{csrd.id}/E2",
