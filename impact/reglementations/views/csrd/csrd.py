@@ -519,7 +519,7 @@ def rapport_csrd(user, entreprise, annee):
     habilitation = user.habilitation_set.get(entreprise=entreprise)
     return RapportCSRD.objects.get(
         entreprise=entreprise,
-        proprietaire=None if habilitation.is_confirmed else user,
+        proprietaire=None,
         annee=annee,
     )
 
