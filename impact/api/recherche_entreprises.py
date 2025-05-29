@@ -97,6 +97,12 @@ def recherche_textuelle(recherche):
         "mtm_campaign": "portail-rse",
     }
 
+    # les résultats en retour de l'API ne sont pas forcément tous "propres"
+    def _filtre_resultats(resultats):
+        return [
+            resultat for resultat in resultats if resultat.get("activite_principale")
+        ]
+
     try:
         response = requests.get(
             url, params=params, timeout=RECHERCHE_ENTREPRISE_TIMEOUT
@@ -110,7 +116,7 @@ def recherche_textuelle(recherche):
     match response.status_code:
         case 200:
             if nombre_resultats := response.json()["total_results"]:
-                resultats = response.json()["results"]
+                resultats = _filtre_resultats(response.json()["results"])
                 entreprises = [
                     {
                         "siren": resultat["siren"],
