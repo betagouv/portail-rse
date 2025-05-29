@@ -323,7 +323,6 @@ class CSRDReglementation(Reglementation):
         try:
             rapport = rapport_csrd(
                 entreprise=caracteristiques.entreprise,
-                user=user,
                 annee=datetime.today().year,
             )
         except ObjectDoesNotExist:
@@ -511,12 +510,11 @@ class CSRDReglementation(Reglementation):
         )
 
 
-def rapport_csrd(user, entreprise, annee):
+def rapport_csrd(entreprise, annee):
     """Cherche un RapportCSRD
 
-    Lève une exception si le RapportCSRD ou l'Habilitation n'existe pas
+    Lève une exception si le RapportCSRD n'existe pas
     """
-    habilitation = user.habilitation_set.get(entreprise=entreprise)
     return RapportCSRD.objects.get(
         entreprise=entreprise,
         proprietaire=None,
@@ -557,7 +555,7 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
 
     if request.method == "POST":
         try:
-            csrd = rapport_csrd(request.user, entreprise, annee)
+            csrd = rapport_csrd(entreprise, annee)
         except ObjectDoesNotExist:
             raise Http404
         csrd.etape_validee = id_etape

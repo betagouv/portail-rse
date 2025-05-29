@@ -165,7 +165,7 @@ ETAPES_ENREGISTRABLES = EtapeCSRD.ETAPES_VALIDABLES[:-1]
 def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_factory):
     entreprise = entreprise_factory()
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
-    RapportCSRD.objects.create(
+    rapport_csrd = RapportCSRD.objects.create(
         entreprise=entreprise,
         annee=date.today().year,
     )
