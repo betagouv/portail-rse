@@ -44,4 +44,8 @@ class Command(BaseCommand):
         request_contact_import.list_ids = [list_id]
         request_contact_import.update_existing_contacts = True
         request_contact_import.empty_contacts_attributes = True
+
+        # TODO : vérifier l'existence de la liste, sinon kaboom
+        # mais ... ListAPI n'est directement disponible
+        # désactivation temporaire du cron
         api_instance.import_contacts(request_contact_import)
