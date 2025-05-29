@@ -14,8 +14,11 @@ from reglementations.views.csrd.analyse_ia import envoie_resultat_ia_email
 CONTENU_PDF = b"%PDF-1.4\n%\xd3\xeb\xe9\xe1\n1 0 obj\n<</Title (CharteEngagements"
 
 
+# note : les rapports CSRD sont uniquement officiels désormais
+# Alice est l'utilisateur propriétaire rattaché aux entreprises de test
+
+
 def test_ajout_document_par_utilisateur_autorise(client, csrd, alice):
-    # alice est déjà liée à l'entreprise qui a cette csrd
     client.force_login(alice)
     fichier = SimpleUploadedFile("test.pdf", CONTENU_PDF)
 
@@ -63,7 +66,6 @@ def test_ajout_document_sur_csrd_inexistante(client, alice):
 
 
 def test_ajout_document_sans_extension_pdf(client, csrd, alice):
-    # alice est déjà liée à l'entreprise qui a cette csrd
     client.force_login(alice)
     fichier = SimpleUploadedFile("test.odt", b"libre office writer data")
 
@@ -77,7 +79,6 @@ def test_ajout_document_sans_extension_pdf(client, csrd, alice):
 
 
 def test_ajout_document_dont_le_contenu_n_est_pas_du_pdf(client, csrd, alice):
-    # alice est déjà liée à l'entreprise qui a cette csrd
     client.force_login(alice)
     fichier = SimpleUploadedFile("test.pdf", b"pas un pdf")
 
@@ -91,7 +92,6 @@ def test_ajout_document_dont_le_contenu_n_est_pas_du_pdf(client, csrd, alice):
 
 
 def test_suppression_document_par_utilisateur_autorise(client, document, alice):
-    # alice est déjà liée à l'entreprise qui a cette csrd
     client.force_login(alice)
 
     response = client.post(f"/csrd/{document.id}/suppression")
@@ -108,7 +108,6 @@ def test_suppression_document_par_utilisateur_autorise(client, document, alice):
 
 
 def test_suppression_document_par_utilisateur_non_autorise(client, document, bob):
-    assert bob != document.rapport_csrd.proprietaire
     client.force_login(bob)
 
     response = client.post(f"/csrd/{document.id}/suppression")
@@ -127,7 +126,6 @@ def test_suppression_document_inexistant(client, document, alice):
 
 
 def test_lancement_d_analyse_IA(client, mock_api_analyse_ia, document, alice):
-    # alice est déjà liée à l'entreprise qui a cette csrd
     client.force_login(alice)
 
     response = client.post(
