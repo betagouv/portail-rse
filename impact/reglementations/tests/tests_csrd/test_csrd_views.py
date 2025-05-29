@@ -165,9 +165,8 @@ ETAPES_ENREGISTRABLES = EtapeCSRD.ETAPES_VALIDABLES[:-1]
 def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_factory):
     entreprise = entreprise_factory()
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
-    RapportCSRD.objects.create(
+    rapport_csrd = RapportCSRD.objects.create(
         entreprise=entreprise,
-        proprietaire=alice,
         annee=date.today().year,
     )
     client.force_login(alice)
@@ -175,7 +174,7 @@ def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_
 
     client.post(url, follow=True)
 
-    rapport_csrd = RapportCSRD.objects.get(proprietaire=alice, entreprise=entreprise)
+    rapport_csrd.refresh_from_db()
     assert rapport_csrd.etape_validee == etape
 
 
