@@ -294,7 +294,35 @@ def test_erreur_lors_de_l_invitation_car_l_email_ne_correspond_pas(
     bound_form = InvitationForm(data)
 
     assert not bound_form.is_valid()
-    print(bound_form.errors)
     assert bound_form.errors["email"] == [
         "L'e-mail ne correspond pas à l'invitation.",
+    ]
+
+
+def test_erreur_lors_de_l_invitation_car_l_entreprise_ne_correspond_pas(
+    db, entreprise_factory
+):
+    entreprise = entreprise_factory(siren="000000001")
+    autre_entreprise = entreprise_factory(siren="000000002")
+    invitation = Invitation.objects.create(
+        entreprise=entreprise, email="user@domaine.test"
+    )
+    data = {
+        "id_invitation": invitation.id,
+        "code": "CODE",
+        "prenom": "Alice",
+        "nom": "User",
+        "email": "user@domaine.test",
+        "password1": "Passw0rd!123",
+        "password2": "Passw0rd!123",
+        "siren": autre_entreprise.siren,
+        "acceptation_cgu": "checked",
+        "fonctions": "Présidente",
+    }
+
+    bound_form = InvitationForm(data)
+
+    assert not bound_form.is_valid()
+    assert bound_form.errors["siren"] == [
+        "L'entreprise ne correspond pas à l'invitation.",
     ]

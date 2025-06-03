@@ -158,6 +158,12 @@ class InvitationForm(UserCreationForm):
                     "email",
                     "L'e-mail ne correspond pas à l'invitation.",
                 )
+            siren = self.cleaned_data.get("siren")
+            if invitation.entreprise.siren != siren:
+                self.add_error(
+                    "siren",
+                    "L'entreprise ne correspond pas à l'invitation.",
+                )
         else:
             self.add_error("code", "Cette invitation n'existe plus dans Portail-RSE.")
 
