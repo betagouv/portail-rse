@@ -51,6 +51,7 @@ class SimulationForm(EntrepriseForm, forms.ModelForm):
             "tranche_bilan_consolide",
         ]
         labels = {
+            "effectif": "Effectif",
             "effectif_groupe": "Effectif du groupe",
         }
         help_texts = {
