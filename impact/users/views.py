@@ -109,6 +109,18 @@ def confirm_email(request, uidb64, token):
 
 
 def invitation(request, id_invitation, code):
+    try:
+        invitation = Invitation.objects.get(id=id_invitation)
+    except Invitation.DoesNotExist:
+        messages.error(request, "Cette invitation n'existe pas.")
+        return redirect("/")
+    if invitation.est_expiree:
+        messages.error(
+            request,
+            "L'invitation est expirée. Vous devez demander une nouvelle invitation à un des propriétaires de l'entreprise sur Portail-RSE.",
+        )
+        return redirect("/")
+
     if request.method == "POST":
         form = InvitationForm(request.POST)
         if form.is_valid():
@@ -130,18 +142,6 @@ def invitation(request, id_invitation, code):
                 request, "La création a échoué car le formulaire contient des erreurs."
             )
     else:
-        try:
-            invitation = Invitation.objects.get(id=id_invitation)
-        except Invitation.DoesNotExist:
-            messages.error(request, "Cette invitation n'existe pas.")
-            return redirect("/")
-        if invitation.est_expiree:
-            messages.error(
-                request,
-                "L'invitation est expirée. Vous devez demander une nouvelle invitation à un des propriétaires de l'entreprise sur Portail-RSE.",
-            )
-            return redirect("/")
-
         initial = {
             "email": invitation.email,
             "siren": invitation.entreprise.siren,
