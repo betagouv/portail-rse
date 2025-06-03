@@ -477,6 +477,20 @@ def test_page_invitation(client, entreprise_factory):
     assert "Vous avez été invité" in content, content
 
 
+def test_erreur_page_invitation_car_invitation_n_existe_pas(client, entreprise_factory):
+    entreprise = entreprise_factory(siren="130025265")  # Dinum
+    now = datetime(2025, 5, 9, 14, 30, tzinfo=timezone.utc)
+
+    response = client.get(
+        "/invitation", {"invitation": "42", "code": "CODE"}, follow=True
+    )
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [("/", 302)]
+    content = html.unescape(response.content.decode("utf-8"))
+    assert "Cette invitation n'existe pas." in content, content
+
+
 def test_erreur_page_invitation_car_invitation_expirée(client, entreprise_factory):
     entreprise = entreprise_factory(siren="130025265")  # Dinum
     now = datetime(2025, 5, 9, 14, 30, tzinfo=timezone.utc)
@@ -488,12 +502,12 @@ def test_erreur_page_invitation_car_invitation_expirée(client, entreprise_facto
 
     with freeze_time(now + timedelta(settings.INVITATION_MAX_AGE + 1)):
         response = client.get(
-            "/invitation", {"invitation": invitation.id, "code": CODE}
+            "/invitation", {"invitation": invitation.id, "code": CODE}, follow=True
         )
 
     assert response.status_code == 200
-    assertTemplateUsed(response, "users/creation.html")
-    content = response.content.decode("utf-8")
+    assert response.redirect_chain == [("/", 302)]
+    content = html.unescape(response.content.decode("utf-8"))
     assert CODE not in content
     assert "L'invitation est expirée" in content, content
 
