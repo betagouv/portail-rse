@@ -134,14 +134,6 @@ class InvitationForm(UserCreationForm):
     code = forms.CharField(widget=forms.HiddenInput())
     id_invitation = forms.IntegerField(widget=forms.HiddenInput())
 
-    def clean_siren(self):
-        siren = self.cleaned_data.get("siren")
-        if Entreprise.objects.filter(siren=siren).count() != 1:
-            raise forms.ValidationError(
-                "Cette entreprise n'existe plus dans Portail-RSE."
-            )
-        return siren
-
     def _post_clean(self):
         super()._post_clean()
         code = self.cleaned_data.get("code")
