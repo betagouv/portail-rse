@@ -130,20 +130,24 @@ def invitation(request):
                 request, "La création a échoué car le formulaire contient des erreurs."
             )
     else:
-        invitation = Invitation.objects.get(id=request.GET["invitation"])
+        try:
+            invitation = Invitation.objects.get(id=request.GET["invitation"])
+        except Invitation.DoesNotExist:
+            messages.error(request, "Cette invitation n'existe pas.")
+            return redirect("/")
         if invitation.est_expiree:
             messages.error(
                 request,
                 "L'invitation est expirée. Vous devez demander une nouvelle invitation à un des propriétaires de l'entreprise sur Portail-RSE.",
             )
-            initial = {}
-        else:
-            initial = {
-                "email": invitation.email,
-                "siren": invitation.entreprise.siren,
-                "id_invitation": invitation.id,
-                "code": make_token(invitation, "invitation"),
-            }
+            return redirect("/")
+
+        initial = {
+            "email": invitation.email,
+            "siren": invitation.entreprise.siren,
+            "id_invitation": invitation.id,
+            "code": make_token(invitation, "invitation"),
+        }
         form = InvitationForm(initial=initial)
     return render(
         request, "users/creation.html", {"form": form, "creation_par_invitation": True}
