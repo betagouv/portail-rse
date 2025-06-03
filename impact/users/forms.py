@@ -146,26 +146,23 @@ class InvitationForm(UserCreationForm):
         super()._post_clean()
         code = self.cleaned_data.get("code")
         id_invitation = self.cleaned_data.get("id_invitation")
-        if invitations := Invitation.objects.filter(id=id_invitation):
-            invitation = invitations[0]
-            if invitation.est_expiree:
-                self.add_error("id_invitation", "Cette invitation est expirée.")
-            if not check_token(invitation, "invitation", code):
-                self.add_error("code", "Cette invitation est incorrecte.")
-            email = self.cleaned_data.get("email")
-            if invitation.email != email:
-                self.add_error(
-                    "email",
-                    "L'e-mail ne correspond pas à l'invitation.",
-                )
-            siren = self.cleaned_data.get("siren")
-            if invitation.entreprise.siren != siren:
-                self.add_error(
-                    "siren",
-                    "L'entreprise ne correspond pas à l'invitation.",
-                )
-        else:
-            self.add_error("code", "Cette invitation n'existe plus dans Portail-RSE.")
+        invitation = Invitation.objects.get(id=id_invitation)
+        if invitation.est_expiree:
+            self.add_error("id_invitation", "Cette invitation est expirée.")
+        if not check_token(invitation, "invitation", code):
+            self.add_error("code", "Cette invitation est incorrecte.")
+        email = self.cleaned_data.get("email")
+        if invitation.email != email:
+            self.add_error(
+                "email",
+                "L'e-mail ne correspond pas à l'invitation.",
+            )
+        siren = self.cleaned_data.get("siren")
+        if invitation.entreprise.siren != siren:
+            self.add_error(
+                "siren",
+                "L'entreprise ne correspond pas à l'invitation.",
+            )
 
 
 class UserEditionForm(DsfrForm, forms.ModelForm):

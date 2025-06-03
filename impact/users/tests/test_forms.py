@@ -192,30 +192,6 @@ def test_erreur_lors_de_l_invitation_car_l_entreprise_n_existe_pas(
     ]
 
 
-def test_erreur_lors_de_l_invitation_car_l_invitation_n_existe_pas(
-    db, entreprise_non_qualifiee
-):
-    data = {
-        "id_invitation": "123",
-        "code": "CODE",
-        "prenom": "Alice",
-        "nom": "User",
-        "email": "user@domaine.test",
-        "password1": "Passw0rd!123",
-        "password2": "Passw0rd!123",
-        "siren": entreprise_non_qualifiee.siren,
-        "acceptation_cgu": "checked",
-        "fonctions": "Présidente",
-    }
-
-    bound_form = InvitationForm(data)
-
-    assert not bound_form.is_valid()
-    assert bound_form.errors["code"] == [
-        "Cette invitation n'existe plus dans Portail-RSE.",
-    ]
-
-
 def test_erreur_lors_de_l_invitation_car_l_invitation_a_expirée(
     db, entreprise_non_qualifiee
 ):
