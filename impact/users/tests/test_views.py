@@ -467,7 +467,7 @@ def test_page_invitation(client, entreprise_factory):
     )
     CODE = make_token(invitation, "invitation")
 
-    response = client.get("/invitation", {"invitation": invitation.id, "code": CODE})
+    response = client.get(f"/invitation/{invitation.id}/{CODE}")
 
     assert response.status_code == 200
     assertTemplateUsed(response, "users/creation.html")
@@ -481,9 +481,7 @@ def test_erreur_page_invitation_car_invitation_n_existe_pas(client, entreprise_f
     entreprise = entreprise_factory(siren="130025265")  # Dinum
     now = datetime(2025, 5, 9, 14, 30, tzinfo=timezone.utc)
 
-    response = client.get(
-        "/invitation", {"invitation": "42", "code": "CODE"}, follow=True
-    )
+    response = client.get(f"/invitation/42/CODE", follow=True)
 
     assert response.status_code == 200
     assert response.redirect_chain == [("/", 302)]
@@ -501,9 +499,7 @@ def test_erreur_page_invitation_car_invitation_expirée(client, entreprise_facto
     CODE = make_token(invitation, "invitation")
 
     with freeze_time(now + timedelta(settings.INVITATION_MAX_AGE + 1)):
-        response = client.get(
-            "/invitation", {"invitation": invitation.id, "code": CODE}, follow=True
-        )
+        response = client.get(f"/invitation/{invitation.id}/{CODE}", follow=True)
 
     assert response.status_code == 200
     assert response.redirect_chain == [("/", 302)]
@@ -534,7 +530,9 @@ def test_creation_d_un_utilisateur_après_une_invitation(
         "fonctions": "Présidente",
     }
 
-    response = client.post("/invitation", data=data, follow=True)
+    response = client.post(
+        f"/invitation/{invitation.id}/{CODE}", data=data, follow=True
+    )
 
     assert response.status_code == 200
     reglementation_url = reverse(
