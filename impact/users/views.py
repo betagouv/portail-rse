@@ -142,7 +142,7 @@ def invitation(request):
                 "email": invitation.email,
                 "siren": invitation.entreprise.siren,
                 "id_invitation": invitation.id,
-                "code": invitation.code,
+                "code": make_token(invitation, "invitation"),
             }
         form = InvitationForm(initial=initial)
     return render(

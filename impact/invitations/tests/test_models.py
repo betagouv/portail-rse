@@ -5,14 +5,7 @@ from datetime import timezone
 from django.conf import settings
 from freezegun import freeze_time
 
-from invitations.models import CODE_MAX_LENGTH
-from invitations.models import cree_code_invitation
 from invitations.models import Invitation
-
-
-def test_cree_code_invitation():
-    assert len(cree_code_invitation()) == CODE_MAX_LENGTH
-    assert cree_code_invitation() != cree_code_invitation()
 
 
 def test_date_d_expiration_d_une_invitation(db, entreprise_non_qualifiee):
