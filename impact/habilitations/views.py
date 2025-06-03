@@ -110,11 +110,12 @@ def _envoie_email_d_invitation(request, invitation):
         from_email=settings.DEFAULT_FROM_EMAIL,
     )
     email.template_id = settings.BREVO_INVITATION_TEMPLATE
+    code = make_token(invitation, "invitation")
     path = reverse(
         "users:invitation",
+        args=[invitation.id, code],
     )
-    code = make_token(invitation, "invitation")
-    url = f"{request.build_absolute_uri(path)}?invitation={invitation.id}&code={code}"
+    url = f"{request.build_absolute_uri(path)}"
     email.merge_global_data = {
         "denomination_entreprise": invitation.entreprise.denomination,
         "invitation_url": url,
