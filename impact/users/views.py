@@ -108,7 +108,7 @@ def confirm_email(request, uidb64, token):
     return redirect("/")
 
 
-def invitation(request):
+def invitation(request, id_invitation, code):
     if request.method == "POST":
         form = InvitationForm(request.POST)
         if form.is_valid():
@@ -131,7 +131,7 @@ def invitation(request):
             )
     else:
         try:
-            invitation = Invitation.objects.get(id=request.GET["invitation"])
+            invitation = Invitation.objects.get(id=id_invitation)
         except Invitation.DoesNotExist:
             messages.error(request, "Cette invitation n'existe pas.")
             return redirect("/")

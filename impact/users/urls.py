@@ -24,7 +24,7 @@ urlpatterns = [
     ),
     path("deconnexion", deconnexion, name="logout"),
     path("creation", creation, name="creation"),
-    path("invitation", invitation, name="invitation"),
+    path("invitation/<int:id_invitation>/<str:code>", invitation, name="invitation"),
     path(
         "mot-de-passe-oublie",
         PasswordResetView.as_view(

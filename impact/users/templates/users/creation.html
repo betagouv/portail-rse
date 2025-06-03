@@ -16,7 +16,7 @@
                     </p>
                 {% endif %}
                 <p>Sauf mention contraire “(optionnel)” dans le label, tous les champs sont obligatoires.</p>
-                <form action="{% if creation_par_invitation %}{% url 'users:invitation' %}{% else %}{% url 'users:creation' %}{% endif %}" method="post">
+                <form action="{% if creation_par_invitation %}{% url 'users:invitation' form.id_invitation.value form.code.value %}{% else %}{% url 'users:creation' %}{% endif %}" method="post">
                     {% csrf_token %}
 
                     {% if creation_par_invitation %}
