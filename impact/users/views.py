@@ -134,7 +134,7 @@ def invitation(request):
         if invitation.est_expiree:
             messages.error(
                 request,
-                "L'invitation est expirée. Vous devez demander une nouvelle invitation à un des responsables de l'entreprise sur Portail-RSE.",
+                "L'invitation est expirée. Vous devez demander une nouvelle invitation à un des propriétaires de l'entreprise sur Portail-RSE.",
             )
             initial = {}
         else:
