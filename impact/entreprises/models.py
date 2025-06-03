@@ -403,7 +403,7 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     effectif = models.CharField(
         max_length=9,
         choices=[BLANK_CHOICE] + EFFECTIF_CHOICES,
-        verbose_name="Effectif",
+        verbose_name="Effectif code du travail",
         help_text="Nombre de salariés (notamment CDI, CDD et salariés à temps partiel) de l'entreprise au prorata de leur temps de présence au cours des douze mois précédents (cf. <a href='https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000006072050/LEGISCTA000006177833/#LEGISCTA000006177833' target='_blank' rel='noopener'>articles L.1111-2 et L.1111-3 du Code du Travail</a>)",
         null=True,
     )
