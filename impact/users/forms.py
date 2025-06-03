@@ -14,6 +14,7 @@ from habilitations.models import Habilitation
 from invitations.models import Invitation
 from utils.emails import cache_partiellement_un_email
 from utils.forms import DsfrForm
+from utils.tokens import check_token
 
 
 class LoginForm(DsfrForm, AuthenticationForm):
@@ -145,10 +146,12 @@ class InvitationForm(UserCreationForm):
         super()._post_clean()
         code = self.cleaned_data.get("code")
         id_invitation = self.cleaned_data.get("id_invitation")
-        if invitations := Invitation.objects.filter(id=id_invitation, code=code):
+        if invitations := Invitation.objects.filter(id=id_invitation):
             invitation = invitations[0]
             if invitation.est_expiree:
                 self.add_error("id_invitation", "Cette invitation est expirée.")
+            if not check_token(invitation, "invitation", code):
+                self.add_error("code", "Cette invitation est incorrecte.")
             email = self.cleaned_data.get("email")
             if invitation.email != email:
                 self.add_error(

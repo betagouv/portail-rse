@@ -6,6 +6,7 @@ from habilitations.models import Habilitation
 from invitations.models import Invitation
 from users.forms import InvitationForm
 from users.forms import UserCreationForm
+from utils.tokens import make_token
 
 
 def test_fail_to_create_user_without_cgu(db):
@@ -146,11 +147,12 @@ def test_message_si_l_entreprise_a_un_ou_des_propriétaires(
 
 def test_succès_lors_de_l_invitation(db, entreprise_non_qualifiee):
     invitation = Invitation.objects.create(
-        entreprise=entreprise_non_qualifiee, email="user@domaine.test", code="CODE"
+        entreprise=entreprise_non_qualifiee,
+        email="user@domaine.test",
     )
     data = {
         "id_invitation": invitation.id,
-        "code": "CODE",
+        "code": make_token(invitation, "invitation"),
         "prenom": "Alice",
         "nom": "User",
         "email": "user@domaine.test",
@@ -218,11 +220,12 @@ def test_erreur_lors_de_l_invitation_car_l_invitation_a_expirée(
     db, entreprise_non_qualifiee
 ):
     invitation = Invitation.objects.create(
-        entreprise=entreprise_non_qualifiee, email="user@domaine.test", code="CODE"
+        entreprise=entreprise_non_qualifiee,
+        email="user@domaine.test",
     )
     data = {
         "id_invitation": invitation.id,
-        "code": "CODE",
+        "code": make_token(invitation, "invitation"),
         "prenom": "Alice",
         "nom": "User",
         "email": "user@domaine.test",
@@ -246,7 +249,7 @@ def test_erreur_lors_de_l_invitation_car_le_code_ne_correspond_pas(
     db, entreprise_non_qualifiee
 ):
     invitation = Invitation.objects.create(
-        entreprise=entreprise_non_qualifiee, email="user@domaine.test", code="CODE"
+        entreprise=entreprise_non_qualifiee, email="user@domaine.test"
     )
     data = {
         "id_invitation": invitation.id,
@@ -265,7 +268,7 @@ def test_erreur_lors_de_l_invitation_car_le_code_ne_correspond_pas(
 
     assert not bound_form.is_valid()
     assert bound_form.errors["code"] == [
-        "Cette invitation n'existe plus dans Portail-RSE.",
+        "Cette invitation est incorrecte.",
     ]
 
 
@@ -273,7 +276,7 @@ def test_erreur_lors_de_l_invitation_car_l_email_ne_correspond_pas(
     db, entreprise_non_qualifiee
 ):
     invitation = Invitation.objects.create(
-        entreprise=entreprise_non_qualifiee, email="user@domaine.test", code="CODE"
+        entreprise=entreprise_non_qualifiee, email="user@domaine.test"
     )
     data = {
         "id_invitation": invitation.id,
