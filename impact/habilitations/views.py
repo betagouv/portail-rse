@@ -14,9 +14,9 @@ from .enums import UserRole
 from .forms import InvitationForm
 from .models import Habilitation
 from entreprises.models import Entreprise
-from invitations.models import cree_code_invitation
 from invitations.models import Invitation
 from users.models import User
+from utils.tokens import make_token
 
 
 @login_required()
@@ -94,7 +94,6 @@ def _cree_invitation(request, entreprise, email):
     invitation = Invitation.objects.create(
         entreprise=entreprise,
         email=email,
-        code=cree_code_invitation(),
         role=UserRole.PROPRIETAIRE.value,
         inviteur=request.user,
     )
@@ -114,7 +113,8 @@ def _envoie_email_d_invitation(request, invitation):
     path = reverse(
         "users:invitation",
     )
-    url = f"{request.build_absolute_uri(path)}?invitation={invitation.id}&code={invitation.code}"
+    code = make_token(invitation, "invitation")
+    url = f"{request.build_absolute_uri(path)}?invitation={invitation.id}&code={code}"
     email.merge_global_data = {
         "denomination_entreprise": invitation.entreprise.denomination,
         "invitation_url": url,
