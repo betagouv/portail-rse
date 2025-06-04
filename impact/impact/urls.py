@@ -34,6 +34,7 @@ urlpatterns = (
         path("", include("entreprises.urls")),
         path("", include("reglementations.urls")),
         path("", include("users.urls")),
+        path("", include("vsme.urls")),
         path("trigger-error-for-sentry-debug/", trigger_error),
     ]
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
