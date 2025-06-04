@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ titre }}{% endblock %}
+
+{% block content %}
+    {% include "snippets/entete.html" %}
+
+    <div class="fr-container fr-mb-8w">
+        <div class="fr-grid-row fr-pb-6w">
+            {% include "snippets/menu.html" %}
+            <div class="fr-col">
+                <h2>Module de base</h2>
+                <div class="fr-callout">
+                    <p class="fr-callout__text">
+                        Le <b>Module de base</b> de la norme VSME constitue le <b>point d’entrée essentiel</b> pour les PME et microentreprises qui souhaitent structurer leur reporting ESG. Il permet de répondre aux demandes croissantes d’informations de durabilité tout en restant simple, proportionné et accessible.<br> Ce module est basé sur une logique d’<b>applicabilité</b> (et non d’analyse de matérialité), ce qui signifie que l’entreprise <b>ne publie que ce qui la concerne</b>.
+                    </p>
+                    <p class="fr-callout__text">
+                        Ce socle permet d’intégrer la durabilité dans votre stratégie et vos communications tout en réduisant les efforts liés aux questionnaires multiples.
+                    </p>
+                </div>
+
+	{# section 2 #}
+                <div class="fr-mt-5w">
+                    <h2>Que faire ?</h2>
+                    <ul>
+                        <li><b>Téléchargez le modèle Excel fourni par l’EFRAG</b> et commencez par l’onglet “Informations générales” (B1) ;</li>
+                        <li><a href={% static "/docs/vsme/VSME-Digital-Template-1.0.0.xlsx" %}>Template VSME</a></li>
+                        <li><b>Décrivez vos engagements</b> dans les politiques, pratiques et initiatives (B2) ;</li>
+                        <li><b>Renseignez les indicateurs de base</b> (B3 à B11) liés à l’environnement (ex. : consommation d’énergie), au social (ex. : nombre d’employés), et à la gouvernance (ex. : mécanismes de surveillance) ;</li>
+                        <li><b>Utilisez le principe “si applicable”</b> pour ne compléter que les champs pertinents selon vos activités.</li>
+                    </ul>
+                </div>
+
+    	{# section 3 #}
+                <div class="fr-mt-5w">
+                    <h2>Liste des exigences de publication par module</h2>
+                    <div class="fr-grid-row fr-grid-row--gutters esrs-organizer">
+
+                        <div class="fr-col-12">
+                            <div class="esrs-organizer--container">
+                                <div class="esrs-organizer--header">
+                                    <h4 class="esrs-organizer--title esrs-organizer--general">Général</h4>
+                                </div>
+                                <div class="esrs-organizer--content">
+                                    <div class="esrs-organizer--esrs">
+                                        <div class="esrs-organizer--card">
+                                            <div class="esrs-organizer--card-title">
+                                                <p class="fr-badge fr-badge--sm">General information</p>
+                                                <b>B1 – Basis for preparation </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="esrs-organizer--esrs">
+                                        <div class="esrs-organizer--card">
+                                            <div class="esrs-organizer--card-title">
+                                                <p class="fr-badge fr-badge--sm">General information</p>
+                                                <b>B2 – Practices, policies and future initiatives for transitioning towards a more sustainable
+                                                    economy</b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="fr-col-lg-4 fr-col-12">
+                            <div class="esrs-organizer--container esrs-organizer--no-badge esrs-organizer--env">
+                                <div class="esrs-organizer--header">
+                                    <h4 class="esrs-organizer--title">Environnement</h4>
+                                </div>
+                                <div class="esrs-organizer--content">
+                                    <div class="esrs-organizer--esrs">
+                                        <div class="esrs-organizer--card">
+                                            <div class="esrs-organizer--card-title">
+                                                <b>B3 – Energy and greenhouse gas emissions </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="esrs-organizer--esrs">
+                                        <div class="esrs-organizer--card">
+                                            <div class="esrs-organizer--card-title">
+                                                <b>B4 – Pollution of air, water and soil </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="esrs-organizer--esrs">
+                                        <div class="esrs-organizer--card">
+                                            <div class="esrs-organizer--card-title">
+                                                <b>B5 – Biodiversity </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="esrs-organizer--esrs">
+                                        <div class="esrs-organizer--card">
+                                            <div class="esrs-organizer--card-title">
+                                                <b>B6 – Water </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="esrs-organizer--esrs">
+                                        <div class="esrs-organizer--card">
+                                            <div class="esrs-organizer--card-title">
+                                                <b>B7 – Resource use, circular economy and waste management </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="fr-col-lg-4 fr-col-12">
+                            <div class="esrs-organizer--container esrs-organizer--no-badge esrs-organizer--social">
+                                <div class="esrs-organizer--header">
+                                    <h4 class="esrs-organizer--title">Social</h4>
+                                </div>
+                                <div class="esrs-organizer--content">
+                                    <div class="esrs-organizer--esrs">
+                                        <div class="esrs-organizer--card">
+                                            <div class="esrs-organizer--card-title">
+                                                <b>B8 – Workforce – General characteristics </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="esrs-organizer--esrs">
+                                        <div class="esrs-organizer--card">
+                                            <div class="esrs-organizer--card-title">
+                                                <b>B9 – Workforce – Health and safety </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="esrs-organizer--esrs">
+                                        <div class="esrs-organizer--card">
+                                            <div class="esrs-organizer--card-title">
+                                                <b>B10 – Workforce – Remuneration, collective bargaining and training </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="fr-col-lg-4 fr-col-12">
+                            <div class="esrs-organizer--container esrs-organizer--no-badge esrs-organizer--gov">
+                                <div class="esrs-organizer--header">
+                                    <h4 class="esrs-organizer--title">Gouvernance</h4>
+                                </div>
+                                <div class="esrs-organizer--content">
+                                    <div class="esrs-organizer--esrs">
+                                        <div class="esrs-organizer--card">
+                                            <div class="esrs-organizer--card-title">
+                                                <b>B11 – Convictions and fines for corruption and bribery </b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

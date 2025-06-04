@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ titre }}{% endblock %}
+
+{% block content %}
+  {% include "snippets/entete.html" %}
+
+  <div class="fr-container fr-mb-8w">
+    <div class="fr-grid-row fr-pb-6w">
+      {% include "snippets/menu.html" %}
+      <div class="fr-col">
+        <h2>Module de base</h2>
+        <div class="fr-callout">
+          <p class="fr-callout__text">
+            Le <b>Module complet</b> s’adresse aux PME qui doivent répondre à des <b>demandes ESG avancées</b> émanant d’investisseurs, de banques, ou de grands clients.<br> Il complète le module de base avec des <b>données enrichies</b> et des <b>exigences sectorielles ou réglementaires spécifiques</b> (comme celles de la SFDR ou du Pilier 3 bancaire).
+          </p>
+          <p class="fr-callout__text">
+            Ce module est particulièrement utile pour les entreprises déjà engagées dans une démarche RSE structurée ou soumises à des questionnaires ESG complexes.
+          </p>
+        </div>
+
+	{# section 2 #}
+        <div class="fr-mt-5w">
+          <h2>Que faire ?</h2>
+          <ul>
+            <li><b>Assurez-vous d’avoir complété le module de base</b>, qui est un prérequis obligatoire ;<br></li>
+            <li><b>Identifiez les points de données supplémentaires à compléter</b> (C2 à C7) en fonction des demandes de vos partenaires (clients, banques, investisseurs…) ;</li>
+            <li><a href={% static "/docs/vsme/VSME-Digital-Template-1.0.0.xlsx" %}>Template VSME</a><br></li>
+            <li><b>Documentez vos objectifs de réduction des émissions de GES</b>, vos initiatives en faveur des droits humains, ou encore vos politiques d’achats responsables ;<br></li>
+            <li><b>Préparez-vous à justifier certaines données chiffrées ou engagements</b>, avec des pièces justificatives, objectifs de suivi ou liens vers des politiques internes ;<br></li>
+            <li><b>Utilisez les fonctions avancées du modèle numérique VSME</b> (menus déroulants, calculs automatiques, convertisseur carburant…) pour gagner en précision</li>
+          </ul>
+        </div>
+
+    	{# section 3 #}
+        <div class="fr-mt-5w">
+          <h2>Liste des exigences de publication par module</h2>
+          <div class="fr-grid-row fr-grid-row--gutters esrs-organizer">
+
+            <div class="fr-col-12">
+              <div class="esrs-organizer--container">
+                <div class="esrs-organizer--header">
+                  <h4 class="esrs-organizer--title esrs-organizer--general">Général</h4>
+                </div>
+                <div class="esrs-organizer--content">
+                  <div class="esrs-organizer--esrs">
+                    <div class="esrs-organizer--card">
+                      <div class="esrs-organizer--card-title">
+                        <p class="fr-badge fr-badge--sm">General information</p>
+                        <b>C1 – Strategy: Business Model and Sustainability – Related Initiatives </b>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="esrs-organizer--esrs">
+                    <div class="esrs-organizer--card">
+                      <div class="esrs-organizer--card-title">
+                        <p class="fr-badge fr-badge--sm">General information</p>
+                        <b>C2 – Description of practices, policies and future initiatives for transitioning towards a more
+                          sustainable economy </b>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="fr-col-lg-4 fr-col-12">
+              <div class="esrs-organizer--container esrs-organizer--no-badge esrs-organizer--env">
+                <div class="esrs-organizer--header">
+                  <h4 class="esrs-organizer--title">Environnement</h4>
+                </div>
+                <div class="esrs-organizer--content">
+                  <div class="esrs-organizer--esrs">
+                    <div class="esrs-organizer--card">
+                      <div class="esrs-organizer--card-title">
+                        <b>C3 – GHG reduction targets and climate transition </b>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="esrs-organizer--esrs">
+                    <div class="esrs-organizer--card">
+                      <div class="esrs-organizer--card-title">
+                        <b>C4 – Climate risks  </b>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="fr-col-lg-4 fr-col-12">
+              <div class="esrs-organizer--container esrs-organizer--no-badge esrs-organizer--social">
+                <div class="esrs-organizer--header">
+                  <h4 class="esrs-organizer--title">Social</h4>
+                </div>
+                <div class="esrs-organizer--content">
+                  <div class="esrs-organizer--esrs">
+                    <div class="esrs-organizer--card">
+                      <div class="esrs-organizer--card-title">
+                        <b>C5 – Additional (general) workforce characteristics  </b>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="esrs-organizer--esrs">
+                    <div class="esrs-organizer--card">
+                      <div class="esrs-organizer--card-title">
+                        <b>C6 – Additional own workforce information - Human rights policies and processes  </b>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="esrs-organizer--esrs">
+                    <div class="esrs-organizer--card">
+                      <div class="esrs-organizer--card-title">
+                        <b>C7 – Severe negative human rights incidents </b>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="fr-col-lg-4 fr-col-12">
+              <div class="esrs-organizer--container esrs-organizer--no-badge esrs-organizer--gov">
+                <div class="esrs-organizer--header">
+                  <h4 class="esrs-organizer--title">Gouvernance</h4>
+                </div>
+                <div class="esrs-organizer--content">
+                  <div class="esrs-organizer--esrs">
+                    <div class="esrs-organizer--card">
+                      <div class="esrs-organizer--card-title">
+                        <b>C8 – Revenues from certain sectors and exclusion from EU reference benchmarks  </b>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="esrs-organizer--content">
+                  <div class="esrs-organizer--esrs">
+                    <div class="esrs-organizer--card">
+                      <div class="esrs-organizer--card-title">
+                        <b>C9 – Gender diversity ratio in the governance body  </b>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+{% endblock %}
