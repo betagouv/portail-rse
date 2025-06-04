@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ titre }}{% endblock %}
+
+{% block content %}
+  {% include "snippets/entete.html" %}
+
+  <div class="fr-container fr-mb-8w">
+    <div class="fr-grid-row fr-pb-6w">
+      {% include "snippets/menu.html" %}
+      <div class="fr-col">
+        <h2>Introduction</h2>
+        <p>
+          Bienvenue dans votre espace de pilotage pour vous aider à la rédaction de votre rapport volontaire de durabilité.
+          Vous y trouverez toute la documentation utile pour vous familiariser avec les VSME (Voluntary reporting standard for SMEs).
+        </p>
+
+        <div class="fr-alert fr-alert--info">
+          <p>
+            Cet espace est en cours de construction. Il sera enrichi dans les prochains mois avec pour ambition de pouvoir compléter les indicateurs VSME directement depuis votre tableau de bord.
+          </p>
+        </div>
+
+	{# section 2 #}
+        <div class="fr-pt-5w">
+          <h2>Contexte</h2>
+          <p>L'objectif de cette norme volontaire est d’aider les micro, petites et moyennes entreprises à :</p>
+        </div>
+
+        <div class="fr-container">
+          <div class="fr-grid-row fr-grid-row--gutters">
+
+            <div class="fr-col-12 fr-col-md-6">
+              <div class="fr-card">
+                <div class="fr-card__body">
+                  <div class="fr-card__content">
+                    <h3 class="fr-card__title">
+                      Fournir des informations répondant aux besoins en données des grandes entreprises demandant des informations de durabilité à leurs fournisseurs
+                    </h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="fr-col-12 fr-col-md-6">
+              <div class="fr-card">
+                <div class="fr-card__body">
+                  <div class="fr-card__content">
+                    <h3 class="fr-card__title">
+                      Fournir des informations répondant aux besoins en données des banques et des investisseurs, facilitant ainsi l’accès au financement pour les entreprises
+                    </h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+
+            <div class="fr-col-12 fr-col-md-6">
+              <div class="fr-card">
+                <div class="fr-card__body">
+                  <div class="fr-card__content">
+                    <h3 class="fr-card__title">
+                      Améliorer la gestion des enjeux de durabilité auxquels elles sont confrontées
+                    </h3>
+                    <p class="fr-card__desc" data-block-key="6gxsi">C’est-à-dire les défis environnementaux et sociaux tels que la pollution, la santé et la sécurité des travailleurs. Cela soutiendra leur croissance compétitive et renforcera leur résilience à court, moyen et long terme</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="fr-col-12 fr-col-md-6">
+              <div class="fr-card">
+                <div class="fr-card__body">
+                  <div class="fr-card__content">
+                    <h3 class="fr-card__title">
+                      Contribuer à une économie plus durable et inclusive
+                    </h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+    	{# section 3 #}
+        <div class="fr-mt-5w">
+          <p>
+            Ce travail s’inscrit hors du champ de la directive CSRD. Il répond à un besoin du marché de disposer d’un point de référence commun que les PME puissent utiliser pour répondre aux demandes croissantes en matière de données de durabilité de la part de leurs partenaires commerciaux, tout en abaissant les barrières à l’entrée au reporting de durabilité pour les PME non cotées.
+          </p>
+          <p>
+            L’ambition principale est que la norme VSME devienne une base pour les prêteurs, investisseurs et autres partenaires de la chaîne de valeur lorsqu’ils définissent leurs demandes en données ESG à l’égard des PME. En pratique, cela signifie que, selon son acceptation par le marché, la norme VSME est censée réduire la multiplicité actuelle des demandes ESG (qui représentent un coût important pour les PME) en remplaçant les questionnaires non coordonnés par un standard unique.</p>
+          <p>
+            Source : <a href="https://www.efrag.org/sites/default/files/sites/webpublishing/SiteAssets/VSME%20Basis%20for%20Conclusions.pdf">EFRAG Cover Letter for the VSME</a>
+          </p>
+        </div>
+
+	{# section 4 #}
+        <div class="fr-mt-5w fr-pt-2w fr-container"  style="background: var(--background-alt-blue-france);">
+          <h2>Liens utiles</h2>
+
+          <section class="fr-accordion">
+            <h3 class="fr-accordion__title">
+              <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-1">
+                Template VSME
+              </button>
+            </h3>
+            <div class="fr-collapse" id="accordion-1">
+              <a href={% static "/docs/vsme/VSME-Digital-Template-1.0.0.xlsx" %}>Téléchargez l'Excel pour commencer votre reporting</a>
+            </div>
+          </section>
+
+          <section class="fr-accordion">
+            <h3 class="fr-accordion__title">
+              <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-2">
+                Standard VSME
+              </button>
+            </h3>
+            <div class="fr-collapse" id="accordion-2">
+              <a href="https://www.efrag.org/sites/default/files/sites/webpublishing/SiteAssets/VSME%20Standard.pdf">Consultez les standards pour réaliser votre reporting</a>
+            </div>
+          </section>
+
+          <section class="fr-accordion">
+            <h3 class="fr-accordion__title">
+              <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-3">
+                Documents sources
+              </button>
+            </h3>
+            <div class="fr-collapse" id="accordion-3">
+              <p>
+                <a href="https://www.efrag.org/en/vsme-digital-template-and-xbrl-taxonomy">Documents relatifs au template VSME</a>
+              </p>
+              <p>
+                <a href="https://www.efrag.org/en/projects/voluntary-reporting-standard-for-smes-vsme/concluded?page=documents">Documents relatifs aux standards VSME</a>
+              </p>
+            </div>
+          </section>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
