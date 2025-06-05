@@ -34,7 +34,6 @@ class Entreprise(models.Model):
     societe_mere_en_france = models.BooleanField(null=True)
     comptes_consolides = models.BooleanField(null=True)
     effectif = models.CharField(max_length=9, null=True)
-    effectif_permanent = models.CharField(max_length=9, null=True)
     effectif_outre_mer = models.CharField(max_length=9, null=True)
     effectif_groupe = models.CharField(max_length=9, null=True)
     effectif_groupe_france = models.CharField(max_length=9, null=True)

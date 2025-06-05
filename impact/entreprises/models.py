@@ -32,7 +32,6 @@ class ActualisationCaracteristiquesAnnuelles:
     date_cloture_exercice: date
     effectif: str
     effectif_securite_sociale: str
-    effectif_permanent: str
     effectif_outre_mer: str
     effectif_groupe: str
     effectif_groupe_france: str
@@ -294,7 +293,6 @@ class Entreprise(TimestampedModel):
         caracteristiques.effectif_securite_sociale = (
             actualisation.effectif_securite_sociale
         )
-        caracteristiques.effectif_permanent = actualisation.effectif_permanent
         caracteristiques.effectif_outre_mer = actualisation.effectif_outre_mer
         caracteristiques.effectif_groupe = actualisation.effectif_groupe
         caracteristiques.effectif_groupe_france = actualisation.effectif_groupe_france
@@ -431,13 +429,6 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         help_text="Nombre de salariés (notamment CDI, CDD et salariés à temps partiel) au prorata de leur temps de présence au cours des douze mois précédents (cf. articles <a href='https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000051287151' target='_blank' rel='noopener'>L130-1</a> et <a href='https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000041455619' target='_blank' rel='noopener'>R130-1</a> du code de la sécurité sociale",
         null=True,
     )
-    effectif_permanent = models.CharField(
-        max_length=9,
-        choices=[BLANK_CHOICE] + EFFECTIF_CHOICES,
-        verbose_name="Effectif permanent",
-        help_text="Nombre moyen de salariés à temps plein, titulaires d'un contrat à durée indéterminée employés par l'entreprise au cours de l'exercice comptable",
-        null=True,
-    )
     effectif_outre_mer = models.CharField(
         max_length=9,
         choices=[BLANK_CHOICE] + EFFECTIF_OUTRE_MER_CHOICES,
@@ -548,7 +539,6 @@ class CaracteristiquesAnnuelles(TimestampedModel):
             and self.effectif
             and self.effectif_securite_sociale
             and self.effectif_outre_mer
-            and self.effectif_permanent
             and self.tranche_chiffre_affaires
             and self.tranche_bilan
             and self.entreprise.est_cotee is not None
