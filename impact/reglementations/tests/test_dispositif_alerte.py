@@ -25,7 +25,7 @@ def test_reglementation_info():
 def test_est_suffisamment_qualifiee(entreprise_non_qualifiee):
     caracteristiques = CaracteristiquesAnnuelles(
         entreprise=entreprise_non_qualifiee,
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+        effectif_securite_sociale=CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_MOINS_DE_10,
     )
 
     assert DispositifAlerteReglementation.est_suffisamment_qualifiee(caracteristiques)
@@ -40,14 +40,16 @@ def test_n_est_pas_suffisamment_qualifiee_car_sans_effectif(entreprise_non_quali
 
 
 @pytest.mark.parametrize(
-    "effectif",
+    "effectif_securite_sociale",
     [
-        CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_10_ET_49,
+        CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_MOINS_DE_10,
+        CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_10_ET_49,
     ],
 )
-def test_calculate_status_less_than_50_employees(effectif, entreprise_factory, alice):
-    entreprise = entreprise_factory(effectif=effectif)
+def test_calculate_status_less_than_50_employees(
+    effectif_securite_sociale, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(effectif_securite_sociale=effectif_securite_sociale)
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = DispositifAlerteReglementation.calculate_status(
@@ -61,18 +63,17 @@ def test_calculate_status_less_than_50_employees(effectif, entreprise_factory, a
 
 
 @pytest.mark.parametrize(
-    "effectif",
+    "effectif_securite_sociale",
     [
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
-        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249,
+        CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_250_ET_499,
+        CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_500_ET_PLUS,
     ],
 )
-def test_calculate_status_more_than_50_employees(effectif, entreprise_factory, alice):
-    entreprise = entreprise_factory(effectif=effectif)
+def test_calculate_status_more_than_50_employees(
+    effectif_securite_sociale, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(effectif_securite_sociale=effectif_securite_sociale)
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = DispositifAlerteReglementation.calculate_status(
