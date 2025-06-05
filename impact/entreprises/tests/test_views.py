@@ -391,7 +391,6 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs_s
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         effectif_securite_sociale=CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         effectif_groupe_france=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         effectif_groupe_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
@@ -423,10 +422,6 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs_s
     assert (
         form["effectif_securite_sociale"].initial
         == CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249
-    )
-    assert (
-        form["effectif_permanent"].initial
-        == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
     )
     assert (
         form["tranche_chiffre_affaires"].initial
@@ -520,7 +515,6 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
         "date_cloture_exercice": date(2022, 12, 31),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_securite_sociale": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M,
@@ -574,10 +568,6 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
         == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     )
     assert (
-        caracteristiques.effectif_permanent
-        == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
-    )
-    assert (
         caracteristiques.effectif_outre_mer
         == CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
     )
@@ -627,7 +617,6 @@ def test_qualifie_entreprise_sans_groupe(
         "date_cloture_exercice": date(2022, 12, 31),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_securite_sociale": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M,
@@ -657,10 +646,6 @@ def test_qualifie_entreprise_sans_groupe(
     )
     assert (
         caracteristiques.effectif_securite_sociale
-        == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
-    )
-    assert (
-        caracteristiques.effectif_permanent
         == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     )
     assert (
@@ -730,7 +715,6 @@ def test_qualification_supprime_les_caracteristiques_annuelles_posterieures_a_la
         ),
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_securite_sociale": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "effectif_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M,
