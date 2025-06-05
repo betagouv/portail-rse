@@ -77,9 +77,6 @@ class Command(BaseCommand):
                 societe_mere_en_france=entreprise.societe_mere_en_france,
                 comptes_consolides=entreprise.comptes_consolides,
                 effectif=caracteristiques.effectif if caracteristiques else None,
-                effectif_permanent=(
-                    caracteristiques.effectif_permanent if caracteristiques else None
-                ),
                 effectif_outre_mer=(
                     caracteristiques.effectif_outre_mer if caracteristiques else None
                 ),
