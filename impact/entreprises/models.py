@@ -31,6 +31,7 @@ SIREN_ENTREPRISE_TEST = "000000001"
 class ActualisationCaracteristiquesAnnuelles:
     date_cloture_exercice: date
     effectif: str
+    effectif_securite_sociale: str
     effectif_permanent: str
     effectif_outre_mer: str
     effectif_groupe: str
@@ -290,6 +291,9 @@ class Entreprise(TimestampedModel):
         caracteristiques.entreprise = self
         caracteristiques.date_cloture_exercice = actualisation.date_cloture_exercice
         caracteristiques.effectif = actualisation.effectif
+        caracteristiques.effectif_securite_sociale = (
+            actualisation.effectif_securite_sociale
+        )
         caracteristiques.effectif_permanent = actualisation.effectif_permanent
         caracteristiques.effectif_outre_mer = actualisation.effectif_outre_mer
         caracteristiques.effectif_groupe = actualisation.effectif_groupe

@@ -89,8 +89,8 @@ def entreprise_factory(db, date_cloture_dernier_exercice):
         societe_mere_en_france=False,
         comptes_consolides=False,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
-        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         effectif_securite_sociale=CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_MOINS_DE_10,
+        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         effectif_groupe_france=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
@@ -120,6 +120,7 @@ def entreprise_factory(db, date_cloture_dernier_exercice):
         actualisation = ActualisationCaracteristiquesAnnuelles(
             date_cloture_exercice,
             effectif,
+            effectif_securite_sociale,
             effectif_permanent,
             effectif_outre_mer,
             effectif_groupe if appartient_groupe else None,
