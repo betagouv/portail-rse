@@ -70,7 +70,6 @@ def test_caracteristiques_sont_qualifiantes_avec_groupe(
         date_cloture_exercice=date(2023, 7, 7),
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         effectif_securite_sociale=CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_MOINS_DE_10,
-        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
@@ -184,10 +183,6 @@ def test_caracteristiques_sont_qualifiantes_sans_groupe(
 
     assert not caracteristiques.sont_qualifiantes
 
-    caracteristiques.effectif_permanent = CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
-
-    assert not caracteristiques.sont_qualifiantes
-
     caracteristiques.effectif_outre_mer = (
         CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
     )
@@ -239,7 +234,6 @@ def test_dernieres_caracteristiques_qualifiantes(entreprise_non_qualifiee):
         date_cloture_exercice=date(2023, 7, 7),
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         effectif_securite_sociale=CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_MOINS_DE_10,
-        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         effectif_groupe=None,
         effectif_groupe_france=None,
@@ -282,7 +276,6 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
     effectif_securite_sociale = (
         CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_MOINS_DE_10
     )
-    effectif_permanent = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299
     effectif_outre_mer = CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
     effectif_groupe = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     effectif_groupe_france = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
@@ -299,7 +292,6 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
         date_cloture_exercice,
         effectif,
         effectif_securite_sociale,
-        effectif_permanent,
         effectif_outre_mer,
         effectif_groupe,
         effectif_groupe_france,
@@ -321,7 +313,6 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
     assert caracteristiques.annee == 2023
     assert caracteristiques.effectif == effectif
     assert caracteristiques.effectif_securite_sociale == effectif_securite_sociale
-    assert caracteristiques.effectif_permanent == effectif_permanent
     assert caracteristiques.effectif_groupe_permanent == effectif_groupe_permanent
     assert caracteristiques.effectif_outre_mer == effectif_outre_mer
     assert caracteristiques.effectif_groupe == effectif_groupe
@@ -342,7 +333,6 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
     nouvel_effectif_securite_sociale = (
         CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_500_ET_PLUS
     )
-    nouvel_effectif_permanent = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
     nouvel_effectif_outre_mer = CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS
     nouvel_effectif_groupe = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999
     nouvel_effectif_groupe_international = (
@@ -364,7 +354,6 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
         date_cloture_exercice,
         nouvel_effectif,
         nouvel_effectif_securite_sociale,
-        nouvel_effectif_permanent,
         nouvel_effectif_outre_mer,
         nouvel_effectif_groupe,
         nouvel_effectif_groupe_international,
@@ -391,7 +380,6 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
         nouvelles_caracteristiques.effectif_securite_sociale
         == nouvel_effectif_securite_sociale
     )
-    assert nouvelles_caracteristiques.effectif_permanent == nouvel_effectif_permanent
     assert nouvelles_caracteristiques.effectif_outre_mer == nouvel_effectif_outre_mer
     assert nouvelles_caracteristiques.effectif_groupe == nouvel_effectif_groupe
     assert (
@@ -438,7 +426,6 @@ def test_actualise_caracteristiques_conserve_attributs_entreprise_non_commités(
         date_cloture_exercice=entreprise.date_cloture_exercice,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         effectif_securite_sociale=CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_MOINS_DE_10,
-        effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         effectif_groupe_france=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
@@ -503,7 +490,6 @@ def test_caracteristiques_actuelles_selon_la_date_de_cloture(entreprise_non_qual
             date(annee, 6, 30),
             effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
             effectif_securite_sociale=None,
-            effectif_permanent=None,
             effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
             effectif_groupe=None,
             effectif_groupe_france=None,
