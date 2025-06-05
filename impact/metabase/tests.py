@@ -70,6 +70,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
             code_pays_etranger_sirene=CODE_PAYS_PORTUGAL,
             code_NAF=CODE_NAF_CEREALES,
             effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+            effectif_securite_sociale=CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_MOINS_DE_10,
             effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
             effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
             est_cotee=False,
@@ -85,6 +86,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
                 year=date_cloture_dernier_exercice.year + 1
             ),
             effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+            effectif_securite_sociale=CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249,
             effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
             effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
             effectif_groupe=None,
@@ -104,6 +106,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
                 year=date_cloture_dernier_exercice.year + 2
             ),
             effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+            effectif_securite_sociale=CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249,
             effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
             effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
             effectif_groupe=None,
