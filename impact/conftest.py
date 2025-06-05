@@ -121,7 +121,6 @@ def entreprise_factory(db, date_cloture_dernier_exercice):
             date_cloture_exercice,
             effectif,
             effectif_securite_sociale,
-            effectif_permanent,
             effectif_outre_mer,
             effectif_groupe if appartient_groupe else None,
             effectif_groupe_france if appartient_groupe else None,

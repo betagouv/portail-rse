@@ -135,7 +135,6 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
             "date_cloture_exercice",
             "effectif",
             "effectif_securite_sociale",
-            "effectif_permanent",
             "effectif_outre_mer",
             "effectif_groupe",
             "effectif_groupe_france",
@@ -201,16 +200,6 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
             self.cleaned_data["societe_mere_en_france"] = None
 
         effectif = self.cleaned_data.get("effectif")
-        effectif_permanent = self.cleaned_data.get("effectif_permanent")
-        if (
-            effectif
-            and effectif_permanent
-            and est_superieur(effectif_permanent, effectif)
-        ):
-            self.add_error(
-                "effectif_permanent",
-                "L'effectif permanent ne peut pas être supérieur à l'effectif",
-            )
         effectif_outre_mer = self.cleaned_data.get("effectif_outre_mer")
         if (
             effectif
@@ -229,15 +218,6 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
             self.add_error(
                 "effectif_groupe_permanent",
                 "L'effectif permanent du groupe ne peut pas être supérieur à l'effectif du groupe international",
-            )
-        if (
-            effectif_permanent
-            and effectif_groupe_permanent
-            and est_superieur(effectif_permanent, effectif_groupe_permanent)
-        ):
-            self.add_error(
-                "effectif_groupe_permanent",
-                "L'effectif permanent du groupe ne peut pas être inférieur à l'effectif permanent",
             )
         if (
             effectif_groupe
@@ -304,7 +284,6 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
                 effectif_securite_sociale=self.cleaned_data[
                     "effectif_securite_sociale"
                 ],
-                effectif_permanent=self.cleaned_data["effectif_permanent"],
                 effectif_outre_mer=self.cleaned_data["effectif_outre_mer"],
                 effectif_groupe=self.cleaned_data["effectif_groupe"],
                 effectif_groupe_france=self.cleaned_data["effectif_groupe_france"],
