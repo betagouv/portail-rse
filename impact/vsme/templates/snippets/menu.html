@@ -3,7 +3,7 @@
         <div class="fr-sidemenu__inner">
             <button class="fr-sidemenu__btn" hidden aria-controls="fr-sidemenu-wrapper" aria-expanded="false">Dans cette rubrique</button>
             <div class="fr-collapse" id="fr-sidemenu-wrapper">
-                <ul class="fr-sidemenu__list">
+                <ul class="fr-sidemenu__list" hx-boost="true">
                     {% for etape,titre in etapes.items %}
                         <li class="fr-sidemenu__item {% if etape_courante == etape.0 %}fr-sidemenu__item--active{% endif %}">
                             <a class="fr-sidemenu__link" href="{% url 'vsme:etape_vsme' siren=siren etape=etape %}" target="_self" {% if etape_courante == etape %}aria-current="page"{% endif %}>
