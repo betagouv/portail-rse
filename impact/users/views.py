@@ -13,6 +13,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
 
+from .forms import InvitationForm
 from .forms import UserCreationForm
 from .forms import UserEditionForm
 from .forms import UserPasswordForm
@@ -21,6 +22,7 @@ from api.exceptions import APIError
 from entreprises.models import Entreprise
 from entreprises.views import search_and_create_entreprise
 from habilitations.models import Habilitation
+from invitations.models import Invitation
 from utils.tokens import check_token
 from utils.tokens import make_token
 from utils.tokens import uidb64
@@ -52,9 +54,14 @@ def creation(request):
             except APIError as exception:
                 messages.error(request, exception)
         else:
-            messages.error(
-                request, "La création a échoué car le formulaire contient des erreurs."
-            )
+            if proprietaires_presents := form.proprietaires_presents:
+                proprio = proprietaires_presents[0]
+                messages.error(request, form.message_erreur_proprietaires())
+            else:
+                messages.error(
+                    request,
+                    "La création a échoué car le formulaire contient des erreurs.",
+                )
     else:
         siren = request.session.get("siren")
         form = UserCreationForm(initial={"siren": siren})
@@ -99,6 +106,52 @@ def confirm_email(request, uidb64, token):
     fail_message = "Le lien de confirmation est invalide."
     messages.error(request, fail_message)
     return redirect("/")
+
+
+def invitation(request, id_invitation, code):
+    try:
+        invitation = Invitation.objects.get(id=id_invitation)
+    except Invitation.DoesNotExist:
+        messages.error(request, "Cette invitation n'existe pas.")
+        return redirect("/")
+    if invitation.est_expiree:
+        messages.error(
+            request,
+            "L'invitation est expirée. Vous devez demander une nouvelle invitation à un des propriétaires de l'entreprise sur Portail-RSE.",
+        )
+        return redirect("/")
+
+    if request.method == "POST":
+        form = InvitationForm(request.POST)
+        if form.is_valid():
+            siren = form.cleaned_data["siren"]
+            entreprises = Entreprise.objects.filter(siren=siren)
+            entreprise = entreprises[0]
+            user = form.save()
+            user.is_email_confirmed = True
+            user.save()
+            Habilitation.ajouter(
+                entreprise,
+                user,
+                fonctions=form.cleaned_data["fonctions"],
+            )
+            Invitation.objects.filter(entreprise=entreprise, email=user.email).delete()
+            return redirect("reglementations:tableau_de_bord", siren)
+        else:
+            messages.error(
+                request, "La création a échoué car le formulaire contient des erreurs."
+            )
+    else:
+        initial = {
+            "email": invitation.email,
+            "siren": invitation.entreprise.siren,
+            "id_invitation": invitation.id,
+            "code": make_token(invitation, "invitation"),
+        }
+        form = InvitationForm(initial=initial)
+    return render(
+        request, "users/creation.html", {"form": form, "creation_par_invitation": True}
+    )
 
 
 def deconnexion(request):
