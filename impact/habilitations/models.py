@@ -180,24 +180,30 @@ class Habilitation(TimestampedModel):
     # Méthodes dépréciées : confirmation de l'habilitation
 
     def confirm(self):
-        warnings.warn("fonctionnalité dépréciée")
+        warnings.warn("fonctionnalité dépréciée : confirmation de l'habilitation")
         self.confirmed_at = datetime.now(timezone.utc)
         if not has_official_bdese(self.entreprise):
             for bdese in get_all_personal_bdese(self.entreprise, self.user):
                 bdese.officialize()
 
     def unconfirm(self):
-        warnings.warn("fonctionnalité dépréciée")
+        warnings.warn(
+            "fonctionnalité dépréciée : annulation de la confirmation de l'habilitation"
+        )
         self.confirmed_at = None
 
     @property
     def is_confirmed(self):
-        warnings.warn("fonctionnalité dépréciée")
+        warnings.warn(
+            "fonctionnalité dépréciée : vérification de la confirmation de l'habilitation"
+        )
         return bool(self.confirmed_at)
 
 
 def is_user_habilited_on_entreprise(user, entreprise):
-    warnings.warn("fonctionnalité dépréciée")
+    warnings.warn(
+        "fonctionnalité dépréciée : habilitation d'un utilisateur (utiliser `pour` ou `role_pour`)"
+    )
     return (
         Habilitation.existe(entreprise, user)
         and Habilitation.pour(entreprise, user).is_confirmed

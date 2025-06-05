@@ -1,4 +1,5 @@
 import datetime
+import warnings
 from enum import Enum
 from functools import partial
 from itertools import chain
@@ -120,7 +121,7 @@ class AbstractBDESE(TimestampedModel):
         return [
             field.name
             for field in cls._meta.get_fields()
-            if type(field) == CategoryField
+            if type(field) is CategoryField
         ]
 
     def mark_step_as_complete(self, step: int):
@@ -2765,6 +2766,7 @@ def get_all_official_bdese(entreprise):
 
 
 def get_all_personal_bdese(entreprise, user):
+    warnings.warn("Déprécié : les BDESE sont désormais uniquement officielles")
     bdese_50_300 = BDESE_50_300.personals.filter(entreprise=entreprise, user=user)
     bdese_300 = BDESE_300.personals.filter(entreprise=entreprise, user=user)
     bdese_avec_accord = BDESEAvecAccord.personals.filter(

@@ -38,7 +38,7 @@ def test_bdese_is_not_public(client, alice, grande_entreprise):
         (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499, BDESE_300),
     ],
 )
-def test_yearly_personal_bdese_is_created_at_first_authorized_request(
+def test_yearly_official_bdese_is_created_at_first_authorized_request(
     effectif, bdese_class, client, alice, entreprise_factory
 ):
     entreprise = entreprise_factory(effectif=effectif)
@@ -51,14 +51,14 @@ def test_yearly_personal_bdese_is_created_at_first_authorized_request(
     response = client.get(url)
 
     assert response.status_code == 302
-    bdese_2021 = bdese_class.personals.get(entreprise=entreprise, annee=2021)
-    assert bdese_2021.user == alice
+    bdese_2021 = bdese_class.officials.get(entreprise=entreprise, annee=2021)
+    assert bdese_2021.user is None
 
     url = f"/bdese/{entreprise.siren}/2022/1"
     response = client.get(url)
 
-    bdese_2022 = bdese_class.personals.get(entreprise=entreprise, annee=2022)
-    assert bdese_2022.user == alice
+    bdese_2022 = bdese_class.officials.get(entreprise=entreprise, annee=2022)
+    assert bdese_2022.user is None
     assert bdese_2021 != bdese_2022
 
 
