@@ -161,6 +161,7 @@ def qualification(request, siren):
                 "date_cloture_exercice": caracs.date_cloture_exercice
                 or date_cloture_exercice_par_defaut,
                 "effectif": caracs.effectif,
+                "effectif_securite_sociale": caracs.effectif_securite_sociale,
                 "effectif_permanent": caracs.effectif_permanent,
                 "effectif_outre_mer": caracs.effectif_outre_mer,
                 "tranche_chiffre_affaires": caracs.tranche_chiffre_affaires,

@@ -134,6 +134,7 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
         fields = [
             "date_cloture_exercice",
             "effectif",
+            "effectif_securite_sociale",
             "effectif_permanent",
             "effectif_outre_mer",
             "effectif_groupe",
@@ -300,6 +301,9 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
             ActualisationCaracteristiquesAnnuelles(
                 date_cloture_exercice=self.cleaned_data["date_cloture_exercice"],
                 effectif=self.cleaned_data["effectif"],
+                effectif_securite_sociale=self.cleaned_data[
+                    "effectif_securite_sociale"
+                ],
                 effectif_permanent=self.cleaned_data["effectif_permanent"],
                 effectif_outre_mer=self.cleaned_data["effectif_outre_mer"],
                 effectif_groupe=self.cleaned_data["effectif_groupe"],
