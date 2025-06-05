@@ -335,6 +335,19 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         (EFFECTIF_10000_ET_PLUS, "10 000 salariés ou plus"),
     ]
 
+    EFFECTIF_SECURITE_SOCIALE_MOINS_DE_10 = "0-9"
+    EFFECTIF_SECURITE_SOCIALE_ENTRE_10_ET_49 = "10-49"
+    EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249 = "50-249"
+    EFFECTIF_SECURITE_SOCIALE_ENTRE_250_ET_499 = "250-499"
+    EFFECTIF_SECURITE_SOCIALE_500_ET_PLUS = "500+"
+    EFFECTIF_SECURITE_SOCIALE_CHOICES = [
+        (EFFECTIF_SECURITE_SOCIALE_MOINS_DE_10, "entre 0 et 9 salariés"),
+        (EFFECTIF_SECURITE_SOCIALE_ENTRE_10_ET_49, "entre 10 et 49 salariés"),
+        (EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249, "entre 50 et 299 salariés"),
+        (EFFECTIF_SECURITE_SOCIALE_ENTRE_250_ET_499, "entre 250 et 499 salariés"),
+        (EFFECTIF_SECURITE_SOCIALE_500_ET_PLUS, "500 ou plus"),
+    ]
+
     EFFECTIF_OUTRE_MER_MOINS_DE_250 = "0-249"
     EFFECTIF_OUTRE_MER_250_ET_PLUS = "250+"
     EFFECTIF_OUTRE_MER_CHOICES = [
@@ -405,6 +418,13 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         choices=[BLANK_CHOICE] + EFFECTIF_CHOICES,
         verbose_name="Effectif code du travail",
         help_text="Nombre de salariés (notamment CDI, CDD et salariés à temps partiel) de l'entreprise au prorata de leur temps de présence au cours des douze mois précédents (cf. <a href='https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000006072050/LEGISCTA000006177833/#LEGISCTA000006177833' target='_blank' rel='noopener'>articles L.1111-2 et L.1111-3 du Code du Travail</a>)",
+        null=True,
+    )
+    effectif_securite_sociale = models.CharField(
+        max_length=9,
+        choices=[BLANK_CHOICE] + EFFECTIF_SECURITE_SOCIALE_CHOICES,
+        verbose_name="Effectif sécurité sociale",
+        help_text="Nombre de salariés (notamment CDI, CDD et salariés à temps partiel) au prorata de leur temps de présence au cours des douze mois précédents (cf. articles <a href='https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000051287151' target='_blank' rel='noopener'>L130-1</a> et <a href='https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000041455619' target='_blank' rel='noopener'>R130-1</a> du code de la sécurité sociale",
         null=True,
     )
     effectif_permanent = models.CharField(
@@ -522,6 +542,7 @@ class CaracteristiquesAnnuelles(TimestampedModel):
             and self.entreprise.code_NAF
             and self.entreprise.updated_at > DATE_REQUALIFICATION
             and self.effectif
+            and self.effectif_securite_sociale
             and self.effectif_outre_mer
             and self.effectif_permanent
             and self.tranche_chiffre_affaires
