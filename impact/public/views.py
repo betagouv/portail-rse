@@ -200,6 +200,7 @@ def calcule_simulation(simulation_form):
     actualisation = ActualisationCaracteristiquesAnnuelles(
         date_cloture_exercice=date_cloture_exercice,
         effectif=simulation_form.cleaned_data["effectif"],
+        effectif_securite_sociale=None,
         effectif_permanent=None,
         effectif_outre_mer=None,
         effectif_groupe=simulation_form.cleaned_data["effectif_groupe"],
@@ -231,6 +232,7 @@ def calcule_simulation(simulation_form):
 def enrichit_les_donnees_pour_la_simulation(caracteristiques):
     caracteristiques.entreprise.est_interet_public = False
     caracteristiques.entreprise.societe_mere_en_france = True
+    caracteristiques.effectif_securite_sociale = caracteristiques.effectif
     caracteristiques.effectif_permanent = caracteristiques.effectif
     caracteristiques.effectif_outre_mer = (
         CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
