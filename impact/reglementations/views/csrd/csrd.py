@@ -52,7 +52,7 @@ class CSRDReglementation(Reglementation):
             caracteristiques.date_cloture_exercice is not None
             and caracteristiques.entreprise.est_cotee is not None
             and caracteristiques.entreprise.est_interet_public is not None
-            and caracteristiques.effectif is not None
+            and caracteristiques.effectif_securite_sociale is not None
             and caracteristiques.tranche_bilan is not None
             and caracteristiques.tranche_chiffre_affaires is not None
             and caracteristiques.entreprise.appartient_groupe is not None
@@ -105,12 +105,8 @@ class CSRDReglementation(Reglementation):
                 if cls.est_grande_entreprise(caracteristiques):
                     if (
                         caracteristiques.entreprise.est_cotee
-                        and caracteristiques.effectif
-                        in (
-                            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
-                            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
-                            CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
-                        )
+                        and caracteristiques.effectif_securite_sociale
+                        == CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_500_ET_PLUS
                     ):
                         return 2024
                     else:
@@ -131,10 +127,9 @@ class CSRDReglementation(Reglementation):
             if caracteristiques.entreprise.est_dans_EEE:
                 if caracteristiques.entreprise.est_cotee:
                     if cls.est_grande_entreprise(caracteristiques):
-                        if caracteristiques.effectif in (
-                            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
-                            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
-                            CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+                        if (
+                            caracteristiques.effectif_securite_sociale
+                            == CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_500_ET_PLUS
                         ):
                             return 2024
                         else:
@@ -143,10 +138,9 @@ class CSRDReglementation(Reglementation):
                         return 2028
                 elif caracteristiques.entreprise.est_interet_public:
                     if cls.est_grande_entreprise(caracteristiques):
-                        if caracteristiques.effectif in (
-                            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
-                            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
-                            CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+                        if (
+                            caracteristiques.effectif_securite_sociale
+                            == CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_500_ET_PLUS
                         ):
                             return 2024
                         else:
@@ -193,15 +187,14 @@ class CSRDReglementation(Reglementation):
             or caracteristiques.entreprise.est_interet_public
         ):
             if cls.est_grande_entreprise(caracteristiques):
-                if caracteristiques.effectif in (
-                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
-                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
-                    CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+                if (
+                    caracteristiques.effectif_securite_sociale
+                    == CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_500_ET_PLUS
                 ):
                     return "votre effectif est supérieur à 500 salariés"
-                elif caracteristiques.effectif in (
-                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
-                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+                elif (
+                    caracteristiques.effectif_securite_sociale
+                    == CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_250_ET_499
                 ):
                     return "votre effectif est supérieur à 250 salariés"
             if cls.est_grand_groupe(caracteristiques):
@@ -218,18 +211,15 @@ class CSRDReglementation(Reglementation):
                     return "l'effectif du groupe est supérieur à 250 salariés"
             if cls.est_petite_ou_moyenne_entreprise(caracteristiques):
                 if (
-                    caracteristiques.effectif
-                    != CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
+                    caracteristiques.effectif_securite_sociale
+                    != CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_MOINS_DE_10
                 ):
                     return "votre effectif est supérieur à 10 salariés"
         else:
             if cls.est_grande_entreprise(caracteristiques):
-                if caracteristiques.effectif in (
-                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
-                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
-                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
-                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
-                    CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+                if caracteristiques.effectif_securite_sociale in (
+                    CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_250_ET_499,
+                    CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_500_ET_PLUS,
                 ):
                     return "votre effectif est supérieur à 250 salariés"
             if caracteristiques.entreprise.est_societe_mere and cls.est_grand_groupe(
@@ -425,7 +415,10 @@ class CSRDReglementation(Reglementation):
             == CaracteristiquesAnnuelles.CA_MOINS_DE_900K
         ):
             nombre_seuils_non_depasses += 1
-        if caracteristiques.effectif == CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10:
+        if (
+            caracteristiques.effectif_securite_sociale
+            == CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_MOINS_DE_10
+        ):
             nombre_seuils_non_depasses += 1
         return nombre_seuils_non_depasses >= 2
 
@@ -443,12 +436,9 @@ class CSRDReglementation(Reglementation):
             CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
         ):
             nombre_seuils_depasses += 1
-        if caracteristiques.effectif in (
-            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
-            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
-            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
-            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
-            CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        if caracteristiques.effectif_securite_sociale in (
+            CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_250_ET_499,
+            CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_500_ET_PLUS,
         ):
             nombre_seuils_depasses += 1
         return nombre_seuils_depasses >= 2
