@@ -9,28 +9,9 @@ from freezegun import freeze_time
 
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
-from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
+from reglementations.views import REGLEMENTATIONS
 from reglementations.views.base import InsuffisammentQualifieeError
 from reglementations.views.base import ReglementationStatus
-from reglementations.views.bdese import BDESEReglementation
-from reglementations.views.bges import BGESReglementation
-from reglementations.views.csrd import CSRDReglementation
-from reglementations.views.dispositif_alerte import DispositifAlerteReglementation
-from reglementations.views.dispositif_anticorruption import DispositifAntiCorruption
-from reglementations.views.index_egapro import IndexEgaproReglementation
-from reglementations.views.plan_vigilance import PlanVigilanceReglementation
-
-
-REGLEMENTATIONS = (
-    CSRDReglementation,
-    BDESEReglementation,
-    IndexEgaproReglementation,
-    DispositifAlerteReglementation,
-    BGESReglementation,
-    AuditEnergetiqueReglementation,
-    DispositifAntiCorruption,
-    PlanVigilanceReglementation,
-)
 
 
 def test_les_reglementations_levent_une_exception_si_les_caracteristiques_sont_vides(
