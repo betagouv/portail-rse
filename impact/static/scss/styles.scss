@@ -761,3 +761,33 @@
     }
 }
 
+
+// communs
+
+.rse-list {
+    padding: 0px;
+    width: 100%;
+    &.csrd-list--bold {
+        font-weight: bold;
+    }
+    li {
+        list-style: none;
+        padding-left: 2rem;
+        position: relative;
+        margin-bottom: 1rem;
+        a {
+            color: var(--text-active-blue-france);
+        }
+        &::before {
+            position: absolute;
+            background-image: url("../dsfr/artwork/pictograms/system/success.svg");
+            background-position: center;
+            background-size: contain;
+            width: 20px;
+            height: 20px;
+            left:0px;
+            content:" ";
+            display: inline-block;
+        }
+    }
+}
