@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "metabase",
     "public",
     "reglementations",
+    "vsme",
     "users",
     "utils",
     "django.contrib.admin",

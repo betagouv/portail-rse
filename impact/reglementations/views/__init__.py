@@ -11,6 +11,7 @@ from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
 from habilitations.models import is_user_attached_to_entreprise
+from reglementations.utils import VSMEReglementation
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.bdese import BDESEReglementation
@@ -22,6 +23,7 @@ from reglementations.views.index_egapro import IndexEgaproReglementation
 from reglementations.views.plan_vigilance import PlanVigilanceReglementation
 
 REGLEMENTATIONS = [
+    VSMEReglementation,
     CSRDReglementation,
     BDESEReglementation,
     IndexEgaproReglementation,
