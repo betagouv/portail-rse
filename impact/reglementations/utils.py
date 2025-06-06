@@ -26,7 +26,7 @@ class VSMEReglementation(Reglementation):
     title = "Standard volontaire européen - VSME"
     more_info_url = "https://portail-rse.beta.gouv.fr/csrd/vsme-pme/"
     tag = "tag-social"
-    summary = "TODO: description des VSME"
+    summary = ""
     zone = "europe"
 
     @classmethod
@@ -58,12 +58,12 @@ class VSMEReglementation(Reglementation):
                     "etape": "introduction",
                 },
             ),
-            "Standard volontaire européen - VSME",
+            "Découvrir la démarche VSME",
         )
 
         return ReglementationStatus(
             status=ReglementationStatus.STATUS_NON_SOUMIS,
-            status_detail="Vous n'êtes pas soumis à cette réglementation.",
+            status_detail="Cette norme est volontaire et recommandée pour les entreprises qui souhaitent mieux structurer leurs informations de durabilité.",
             primary_action=primary_action,
         )
 
