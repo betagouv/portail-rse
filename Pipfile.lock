@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f41743da6afed3fc140369df38cfde3e1fcb77454fa38cb664372e2980b2e44b"
+            "sha256": "ee86e9e8879dc5cc9001651a517719e1a5b2c6385cd35fcc82a5050be8c635c7"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -26,19 +26,19 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:491a4f1f2ae64f8e45a9d97896684dde5d8d14d8ab5083d4545ab3cb6a9b005e",
-                "sha256:809945a62d8bea5bbb4e85261530b6481c08aa21579864aa885cb8fd0768ee17"
+                "sha256:25d0717489c658f7ae6c3c7f0f7e1b4d611b30b2f08f0fcef6455ac6864a8768",
+                "sha256:6467909c1ae01ff67981f021bb2568592211765ec8a9a1d2c4529191e46c3541"
             ],
             "markers": "python_version >= '3.9'",
-            "version": "==1.38.31"
+            "version": "==1.38.33"
         },
         "botocore": {
             "hashes": [
-                "sha256:50daef3457ebcab25daaa28a087986575510529bdc3cc784f86e8cb187f7a4ff",
-                "sha256:6c2767fac62a3b564c7bba7da4724b79351102a19fb491ed24ae9e2627d9f30b"
+                "sha256:ad25233e93dcebe95809b1f9393c1f11a639696327793d166295fb78dd7bc597",
+                "sha256:dbe8fea9d0426c644c89ef2018ead886ccbcc22901a02b377b4e65ce1cb69a2b"
             ],
             "markers": "python_version >= '3.9'",
-            "version": "==1.38.31"
+            "version": "==1.38.33"
         },
         "brotli": {
             "hashes": [
@@ -367,12 +367,12 @@
         },
         "django": {
             "hashes": [
-                "sha256:19c9b771e9cf4de91101861aadd2daaa159bcf10698ca909c5755c88e70ccb84",
-                "sha256:73e5d191421d177803dbd5495d94bc7d06d156df9561f4eea9e11b4994c07137"
+                "sha256:3bcdbd40e4d4623b5e04f59c28834323f3086df583058e65ebce99f9982385ce",
+                "sha256:e48091f364007068728aca938e7450fbfe3f2217079bfd2b8af45122585acf64"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.10'",
-            "version": "==5.1.10"
+            "version": "==5.1.11"
         },
         "django-anymail": {
             "hashes": [
