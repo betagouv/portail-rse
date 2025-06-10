@@ -35,7 +35,6 @@ class ActualisationCaracteristiquesAnnuelles:
     effectif_outre_mer: str
     effectif_groupe: str
     effectif_groupe_france: str
-    effectif_groupe_permanent: str
     tranche_chiffre_affaires: str
     tranche_bilan: str
     tranche_chiffre_affaires_consolide: str
@@ -296,9 +295,6 @@ class Entreprise(TimestampedModel):
         caracteristiques.effectif_outre_mer = actualisation.effectif_outre_mer
         caracteristiques.effectif_groupe = actualisation.effectif_groupe
         caracteristiques.effectif_groupe_france = actualisation.effectif_groupe_france
-        caracteristiques.effectif_groupe_permanent = (
-            actualisation.effectif_groupe_permanent
-        )
         caracteristiques.tranche_chiffre_affaires = (
             actualisation.tranche_chiffre_affaires
         )
@@ -453,14 +449,6 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         null=True,
         blank=True,
     )
-    effectif_groupe_permanent = models.CharField(
-        max_length=9,
-        choices=[BLANK_CHOICE] + EFFECTIF_GROUPE_CHOICES,
-        verbose_name="Effectif permanent du groupe",
-        help_text="Nombre moyen de salariés à temps plein, titulaires d'un contrat à durée indéterminée employés par le groupe au cours de l'exercice comptable en incluant les filiales directes ou indirectes étrangères",
-        null=True,
-        blank=True,
-    )
     tranche_chiffre_affaires = models.CharField(
         verbose_name="Chiffre d'affaires",
         max_length=9,
@@ -523,7 +511,6 @@ class CaracteristiquesAnnuelles(TimestampedModel):
             return bool(
                 self.effectif_groupe
                 and self.effectif_groupe_france
-                and self.effectif_groupe_permanent
                 and self.entreprise.est_societe_mere is not None
                 and self.entreprise.societe_mere_en_france is not None
                 and self.entreprise.comptes_consolides is not None

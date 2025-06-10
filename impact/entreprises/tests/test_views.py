@@ -393,7 +393,6 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs_s
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         effectif_groupe_france=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
-        effectif_groupe_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
@@ -440,10 +439,6 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs_s
     assert (
         form["effectif_groupe_france"].initial
         == CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
-    )
-    assert (
-        form["effectif_groupe_permanent"].initial
-        == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999
     )
     assert form["est_societe_mere"].initial
     assert form["societe_mere_en_france"].initial
@@ -523,7 +518,6 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
         "appartient_groupe": True,
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         "effectif_groupe_france": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
-        "effectif_groupe_permanent": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
         "est_societe_mere": True,
         "societe_mere_en_france": True,
         "comptes_consolides": True,
@@ -574,10 +568,6 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
     assert (
         caracteristiques.effectif_groupe
         == CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
-    )
-    assert (
-        caracteristiques.effectif_groupe_permanent
-        == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999
     )
     assert (
         caracteristiques.effectif_groupe_france

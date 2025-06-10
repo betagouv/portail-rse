@@ -37,7 +37,6 @@ class Entreprise(models.Model):
     effectif_outre_mer = models.CharField(max_length=9, null=True)
     effectif_groupe = models.CharField(max_length=9, null=True)
     effectif_groupe_france = models.CharField(max_length=9, null=True)
-    effectif_groupe_permanent = models.CharField(max_length=9, null=True)
     tranche_chiffre_affaires = models.CharField(max_length=9, null=True)
     tranche_bilan = models.CharField(max_length=9, null=True)
     tranche_chiffre_affaires_consolide = models.CharField(max_length=9, null=True)

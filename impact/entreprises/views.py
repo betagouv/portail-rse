@@ -170,7 +170,6 @@ def qualification(request, siren):
                 "appartient_groupe": entreprise.appartient_groupe,
                 "effectif_groupe": caracs.effectif_groupe,
                 "effectif_groupe_france": caracs.effectif_groupe_france,
-                "effectif_groupe_permanent": caracs.effectif_groupe_permanent,
                 "est_societe_mere": entreprise.est_societe_mere,
                 "societe_mere_en_france": entreprise.societe_mere_en_france,
                 "comptes_consolides": entreprise.comptes_consolides,
