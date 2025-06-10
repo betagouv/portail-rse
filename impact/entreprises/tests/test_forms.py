@@ -163,6 +163,30 @@ def test_erreur_si_comptes_consolides_sans_ca_consolide():
     )
 
 
+def test_erreur_si_effectif_code_securite_sociale_superieur_a_effectif():
+    data = {
+        "confirmation_naf": "01.11Z",
+        "date_cloture_exercice": date(2022, 12, 31),
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "effectif_securite_sociale": CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_250_ET_499,
+        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        "est_cotee": False,
+        "appartient_groupe": False,
+        "bdese_accord": True,
+        "systeme_management_energie": True,
+    }
+
+    form = EntrepriseQualificationForm(data=data)
+
+    assert not form.is_valid()
+    assert (
+        form.errors["effectif_securite_sociale"][0]
+        == "L'effectif au sens de la Sécurité Sociale ne peut pas être supérieur à l'effectif au sens du code du travail"
+    )
+
+
 def test_erreur_si_effectif_outre_mer_superieur_a_effectif():
     data = {
         "confirmation_naf": "01.11Z",
