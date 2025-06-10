@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 django = "~=5.1.10"
 gunicorn = "~=23.0.0"
-requests = "~=2.32.0"
+requests = "~=2.32.4"
 django-weasyprint = "~=2.4.0"
 psycopg = "~=3.2.1"
 dj-database-url = "~=2.3.0"
