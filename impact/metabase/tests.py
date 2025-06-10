@@ -91,7 +91,6 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
             effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
             effectif_groupe=None,
             effectif_groupe_france=None,
-            effectif_groupe_permanent=None,
             tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
             tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M,
             tranche_chiffre_affaires_consolide=None,
@@ -110,7 +109,6 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
             effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
             effectif_groupe=None,
             effectif_groupe_france=None,
-            effectif_groupe_permanent=None,
             tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
             tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
             tranche_chiffre_affaires_consolide=None,
@@ -169,7 +167,6 @@ def test_synchronise_une_entreprise_qualifiee_appartenant_a_un_groupe(
         comptes_consolides=True,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         effectif_groupe_france=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        effectif_groupe_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_MOINS_DE_60M,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_30M,
     )
@@ -188,10 +185,6 @@ def test_synchronise_une_entreprise_qualifiee_appartenant_a_un_groupe(
     )
     assert (
         metabase_entreprise.effectif_groupe_france
-        == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
-    )
-    assert (
-        metabase_entreprise.effectif_groupe_permanent
         == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     )
     assert (
@@ -235,7 +228,6 @@ def test_synchronise_une_entreprise_sans_caracteristiques_annuelles():
     assert metabase_entreprise.date_cloture_exercice is None
     assert metabase_entreprise.effectif is None
     assert metabase_entreprise.effectif_groupe is None
-    assert metabase_entreprise.effectif_groupe_permanent is None
     assert metabase_entreprise.tranche_chiffre_affaires is None
     assert metabase_entreprise.tranche_bilan is None
     assert metabase_entreprise.bdese_accord is None
