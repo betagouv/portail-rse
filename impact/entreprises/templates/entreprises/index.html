@@ -41,7 +41,8 @@
                                                     Catégorie juridique : <b>{{ entreprise.categorie_juridique.label }}</b><br>
                                                 {% endif %}
                                                 Date de clôture du dernier exercice : <b>{{ caracs.date_cloture_exercice | display_field }}</b><br>
-                                                Effectif : <b>{{ caracs.get_effectif_display | display_field }}</b><br>
+                                                Effectif (au sens du code du travail) : <b>{{ caracs.get_effectif_display | display_field }}</b><br>
+                                                Effectif (au sens du code de la Sécurité Sociale) : <b>{{ caracs.get_effectif_securite_sociale_display | display_field }}</b><br>
                                                 Chiffre d'affaires : <b>{{ caracs.get_tranche_chiffre_affaires_display | display_field }}</b><br>
                                                 Bilan : <b>{{ caracs.get_tranche_bilan_display | display_field }}</b><br>
                                                 Appartient à un groupe d'entreprise : <b>{{ entreprise.appartient_groupe | display_field }}</b><br>
