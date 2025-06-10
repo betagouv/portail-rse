@@ -193,7 +193,17 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
             self.cleaned_data["societe_mere_en_france"] = None
 
         effectif = self.cleaned_data.get("effectif")
+        effectif_securite_sociale = self.cleaned_data.get("effectif_securite_sociale")
         effectif_outre_mer = self.cleaned_data.get("effectif_outre_mer")
+        if (
+            effectif
+            and effectif_securite_sociale
+            and est_superieur(effectif_securite_sociale, effectif)
+        ):
+            self.add_error(
+                "effectif_securite_sociale",
+                "L'effectif au sens de la Sécurité Sociale ne peut pas être supérieur à l'effectif au sens du code du travail",
+            )
         if (
             effectif
             and effectif_outre_mer
