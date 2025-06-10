@@ -55,7 +55,6 @@
                                                     {% endif %}
                                                     Effectif du groupe international : <b>{{ caracs.get_effectif_groupe_display | display_field }}</b><br>
                                                     Effectif du groupe France : <b>{{ caracs.get_effectif_groupe_france_display | display_field }}</b><br>
-                                                    Effectif permanent du groupe : <b>{{ caracs.get_effectif_groupe_france_display | display_field }}</b><br>
                                                     Établit des comptes consolidés : <b>{{ entreprise.comptes_consolides | display_field }}</b><br>
                                                     {% if entreprise.comptes_consolides %}
                                                         Chiffre d'affaires consolidé : <b>{{ caracs.get_tranche_chiffre_affaires_consolide_display | display_field }}</b><br>

@@ -204,7 +204,6 @@ def calcule_simulation(simulation_form):
         effectif_outre_mer=None,
         effectif_groupe=simulation_form.cleaned_data["effectif_groupe"],
         effectif_groupe_france=None,
-        effectif_groupe_permanent=None,
         tranche_chiffre_affaires=simulation_form.cleaned_data[
             "tranche_chiffre_affaires"
         ],
@@ -237,7 +236,6 @@ def enrichit_les_donnees_pour_la_simulation(caracteristiques):
     )
     if caracteristiques.entreprise.appartient_groupe:
         caracteristiques.effectif_groupe_france = caracteristiques.effectif_groupe
-        caracteristiques.effectif_groupe_permanent = caracteristiques.effectif_groupe
     caracteristiques.bdese_accord = False
     caracteristiques.systeme_management_energie = False
     return caracteristiques
