@@ -79,9 +79,6 @@ class Command(BaseCommand):
                 effectif_groupe_france=caracteristiques.effectif_groupe_france
                 if caracteristiques
                 else None,
-                effectif_groupe_permanent=caracteristiques.effectif_groupe_permanent
-                if caracteristiques
-                else None,
                 tranche_chiffre_affaires=caracteristiques.tranche_chiffre_affaires
                 if caracteristiques
                 else None,

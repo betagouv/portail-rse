@@ -100,13 +100,6 @@ def test_caracteristiques_sont_qualifiantes_avec_groupe(
     assert not caracteristiques.groupe_est_qualifie
     assert not caracteristiques.sont_qualifiantes
 
-    caracteristiques.effectif_groupe_permanent = (
-        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
-    )
-
-    assert not caracteristiques.groupe_est_qualifie
-    assert not caracteristiques.sont_qualifiantes
-
     caracteristiques.effectif_groupe_france = (
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     )
@@ -237,7 +230,6 @@ def test_dernieres_caracteristiques_qualifiantes(entreprise_non_qualifiee):
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         effectif_groupe=None,
         effectif_groupe_france=None,
-        effectif_groupe_permanent=None,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
         tranche_chiffre_affaires_consolide=None,
@@ -279,7 +271,6 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
     effectif_outre_mer = CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
     effectif_groupe = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     effectif_groupe_france = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
-    effectif_groupe_permanent = CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999
     tranche_chiffre_affaires = CaracteristiquesAnnuelles.CA_MOINS_DE_900K
     tranche_bilan = CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K
     tranche_chiffre_affaires_consolide = CaracteristiquesAnnuelles.CA_MOINS_DE_60M
@@ -295,7 +286,6 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
         effectif_outre_mer,
         effectif_groupe,
         effectif_groupe_france,
-        effectif_groupe_permanent,
         tranche_chiffre_affaires,
         tranche_bilan,
         tranche_chiffre_affaires_consolide,
@@ -313,7 +303,6 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
     assert caracteristiques.annee == 2023
     assert caracteristiques.effectif == effectif
     assert caracteristiques.effectif_securite_sociale == effectif_securite_sociale
-    assert caracteristiques.effectif_groupe_permanent == effectif_groupe_permanent
     assert caracteristiques.effectif_outre_mer == effectif_outre_mer
     assert caracteristiques.effectif_groupe == effectif_groupe
     assert caracteristiques.effectif_groupe_france == effectif_groupe_france
@@ -338,9 +327,6 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
     nouvel_effectif_groupe_international = (
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999
     )
-    nouvel_effectif_groupe_permanent = (
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
-    )
     nouvelle_tranche_chiffre_affaires = CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M
     nouvelle_tranche_bilan = CaracteristiquesAnnuelles.BILAN_ENTRE_25M_ET_43M
     nouvelle_tranche_chiffre_affaires_consolide = (
@@ -357,7 +343,6 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
         nouvel_effectif_outre_mer,
         nouvel_effectif_groupe,
         nouvel_effectif_groupe_international,
-        nouvel_effectif_groupe_permanent,
         nouvelle_tranche_chiffre_affaires,
         nouvelle_tranche_bilan,
         nouvelle_tranche_chiffre_affaires_consolide,
@@ -385,10 +370,6 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
     assert (
         nouvelles_caracteristiques.effectif_groupe_france
         == nouvel_effectif_groupe_international
-    )
-    assert (
-        nouvelles_caracteristiques.effectif_groupe_permanent
-        == nouvel_effectif_groupe_permanent
     )
     assert (
         nouvelles_caracteristiques.tranche_chiffre_affaires
@@ -429,7 +410,6 @@ def test_actualise_caracteristiques_conserve_attributs_entreprise_non_commités(
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         effectif_groupe_france=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
-        effectif_groupe_permanent=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
@@ -493,7 +473,6 @@ def test_caracteristiques_actuelles_selon_la_date_de_cloture(entreprise_non_qual
             effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
             effectif_groupe=None,
             effectif_groupe_france=None,
-            effectif_groupe_permanent=None,
             tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
             tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
             tranche_chiffre_affaires_consolide=None,
