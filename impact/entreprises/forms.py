@@ -138,7 +138,6 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
             "effectif_outre_mer",
             "effectif_groupe",
             "effectif_groupe_france",
-            "effectif_groupe_permanent",
             "tranche_chiffre_affaires",
             "tranche_bilan",
             "tranche_chiffre_affaires_consolide",
@@ -185,18 +184,12 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
 
         appartient_groupe = self.cleaned_data.get("appartient_groupe")
         effectif_groupe = self.cleaned_data.get("effectif_groupe")
-        effectif_groupe_permanent = self.cleaned_data.get("effectif_groupe_permanent")
         effectif_groupe_france = self.cleaned_data.get("effectif_groupe_france")
         if appartient_groupe:
-            if not effectif_groupe_permanent:
-                self.add_error(
-                    "effectif_groupe_permanent", ERREUR_CHAMP_MANQUANT_GROUPE
-                )
             if not effectif_groupe_france:
                 self.add_error("effectif_groupe_france", ERREUR_CHAMP_MANQUANT_GROUPE)
         else:
             self.cleaned_data["effectif_groupe_france"] = None
-            self.cleaned_data["effectif_groupe_permanent"] = None
             self.cleaned_data["societe_mere_en_france"] = None
 
         effectif = self.cleaned_data.get("effectif")
@@ -209,15 +202,6 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
             self.add_error(
                 "effectif_outre_mer",
                 "L'effectif outre-mer ne peut pas être supérieur à l'effectif",
-            )
-        if (
-            effectif_groupe
-            and effectif_groupe_permanent
-            and est_superieur(effectif_groupe_permanent, effectif_groupe)
-        ):
-            self.add_error(
-                "effectif_groupe_permanent",
-                "L'effectif permanent du groupe ne peut pas être supérieur à l'effectif du groupe international",
             )
         if (
             effectif_groupe
@@ -287,9 +271,6 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
                 effectif_outre_mer=self.cleaned_data["effectif_outre_mer"],
                 effectif_groupe=self.cleaned_data["effectif_groupe"],
                 effectif_groupe_france=self.cleaned_data["effectif_groupe_france"],
-                effectif_groupe_permanent=self.cleaned_data[
-                    "effectif_groupe_permanent"
-                ],
                 tranche_chiffre_affaires=self.cleaned_data["tranche_chiffre_affaires"],
                 tranche_bilan=self.cleaned_data["tranche_bilan"],
                 tranche_chiffre_affaires_consolide=self.cleaned_data[
