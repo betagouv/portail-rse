@@ -143,6 +143,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
     assert metabase_entreprise.societe_mere_en_france is False
     assert metabase_entreprise.comptes_consolides is False
     assert metabase_entreprise.effectif == "300-499"
+    assert metabase_entreprise.effectif_securite_sociale == "50-249"
     assert metabase_entreprise.effectif_outre_mer == "0-249"
     assert metabase_entreprise.effectif_groupe is None
     assert metabase_entreprise.tranche_bilan == "43M-100M"
@@ -225,6 +226,7 @@ def test_synchronise_une_entreprise_sans_caracteristiques_annuelles():
     assert metabase_entreprise.siren == "000000001"
     assert metabase_entreprise.date_cloture_exercice is None
     assert metabase_entreprise.effectif is None
+    assert metabase_entreprise.effectif_securite_sociale is None
     assert metabase_entreprise.effectif_groupe is None
     assert metabase_entreprise.tranche_chiffre_affaires is None
     assert metabase_entreprise.tranche_bilan is None
