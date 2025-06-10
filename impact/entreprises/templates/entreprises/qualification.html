@@ -29,8 +29,11 @@
                         <legend class="fr-fieldset__legend">
                             Effectifs
                         </legend>
-                        {% include 'snippets/fieldset_element.html' with field=form.effectif %}
+                        <div class="fr-ml-1w fr-mb-2w">
+                            (Pour plus de précisions, consulter <a href="https://travail-emploi.gouv.fr/les-regles-de-decompte-des-effectifs" target='_blank' rel='noopener'>les règles de décompte des effectifs</a>)
+                        </div>
                         {% include 'snippets/fieldset_element.html' with field=form.effectif_securite_sociale %}
+                        {% include 'snippets/fieldset_element.html' with field=form.effectif %}
                         {% include 'snippets/fieldset_element.html' with field=form.effectif_outre_mer %}
                     </fieldset>
                     <fieldset class="fr-fieldset">
