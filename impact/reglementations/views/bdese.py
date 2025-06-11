@@ -20,7 +20,6 @@ from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from habilitations.enums import UserRole
 from habilitations.models import Habilitation
-from habilitations.models import is_user_habilited_on_entreprise
 from reglementations.forms import bdese_configuration_form_factory
 from reglementations.forms import bdese_form_factory
 from reglementations.forms import IntroductionDemoForm
@@ -98,11 +97,11 @@ class BDESEReglementation(Reglementation):
             cls._match_bdese_existante,
             cls._match_sans_bdese,
         ]:
-            if reglementation_status := match(caracteristiques, user):
+            if reglementation_status := match(caracteristiques):
                 return reglementation_status
 
     @classmethod
-    def _match_non_soumis(cls, caracteristiques, user):
+    def _match_non_soumis(cls, caracteristiques):
         if not cls.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation."
@@ -120,12 +119,12 @@ class BDESEReglementation(Reglementation):
             )
 
     @classmethod
-    def _match_avec_accord(cls, caracteristiques, user):
+    def _match_avec_accord(cls, caracteristiques):
         if cls.bdese_type(caracteristiques) == cls.TYPE_AVEC_ACCORD:
             annee = derniere_annee_a_remplir_bdese()
             entreprise = caracteristiques.entreprise
-            bdese = cls._select_bdese(BDESEAvecAccord, annee, entreprise, user)
-            if bdese and bdese.is_complete:
+            bdese = BDESEAvecAccord.officials.filter(entreprise=entreprise, annee=annee)
+            if bdese and bdese[0].is_complete:
                 status = ReglementationStatus.STATUS_A_JOUR
                 primary_action_title = f"Marquer ma BDESE {annee} comme non actualisée"
             else:
@@ -147,7 +146,7 @@ class BDESEReglementation(Reglementation):
             )
 
     @classmethod
-    def _match_bdese_existante(cls, caracteristiques, user):
+    def _match_bdese_existante(cls, caracteristiques):
         if cls.bdese_type(caracteristiques) == cls.TYPE_INFERIEUR_300:
             bdese_class = BDESE_50_300
         else:
@@ -155,11 +154,11 @@ class BDESEReglementation(Reglementation):
 
         annee = derniere_annee_a_remplir_bdese()
         entreprise = caracteristiques.entreprise
-        bdese = cls._select_bdese(bdese_class, annee, entreprise, user)
+        bdese = bdese_class.officials.filter(entreprise=entreprise, annee=annee)
         if not bdese:
             return
 
-        if bdese.is_complete:
+        if bdese[0].is_complete:
             status = ReglementationStatus.STATUS_A_JOUR
             status_detail = f"Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez actualisé votre BDESE {annee} sur la plateforme."
             primary_action = ReglementationAction(
@@ -208,7 +207,7 @@ class BDESEReglementation(Reglementation):
         )
 
     @classmethod
-    def _match_sans_bdese(cls, caracteristiques, user):
+    def _match_sans_bdese(cls, caracteristiques):
         annee = derniere_annee_a_remplir_bdese()
         status = ReglementationStatus.STATUS_A_ACTUALISER
         status_detail = "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Nous allons vous aider à la remplir."
@@ -226,21 +225,6 @@ class BDESEReglementation(Reglementation):
             primary_action=primary_action,
             secondary_actions=secondary_actions,
         )
-
-    @staticmethod
-    def _select_bdese(bdese_class, annee, entreprise, user):
-        if (
-            user
-            and Habilitation.existe(entreprise, user)
-            and not is_user_habilited_on_entreprise(user, entreprise)
-        ):
-            bdese = bdese_class.personals.filter(
-                entreprise=entreprise, annee=annee, user=user
-            )
-        else:
-            bdese = bdese_class.officials.filter(entreprise=entreprise, annee=annee)
-
-        return bdese[0] if bdese else None
 
     @classmethod
     def classe_entreprise(cls, entreprise):
@@ -404,15 +388,6 @@ def bdese_step(request, siren, annee, step):
                 step,
                 fetched_data=fetched_data,
             )
-
-    if (
-        not is_user_habilited_on_entreprise(request.user, entreprise)
-        and entreprise.users.count() >= 2
-    ):
-        messages.info(
-            request,
-            "Plusieurs utilisateurs sont liés à cette entreprise. Les informations que vous remplissez ne sont pas partagées avec les autres utilisateurs tant que vous n'êtes pas habilités.",
-        )
 
     return render(
         request,
