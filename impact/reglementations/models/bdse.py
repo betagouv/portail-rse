@@ -159,6 +159,12 @@ class AbstractBDESE(TimestampedModel):
             self.user = None
             self.save()
 
+    def nb_etapes_completees(self) -> int:
+        # utilisé pour le tri des BDESE principales
+        if not hasattr(self, "completion_steps"):
+            return 0
+        return sum(step for step in self.completion_steps.values() if step)
+
 
 def bdese_completion_steps_default(steps):
     return partial(dict, [(step_name, False) for step_name in steps.values()])
