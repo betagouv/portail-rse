@@ -260,7 +260,7 @@ def bdese_pdf(request, siren, annee):
         BDESEReglementation.classe_entreprise(entreprise),
         entreprise=entreprise,
         annee=annee,
-        user=None,
+        user=None,  # à supprimer une fois les documents personnels supprimés de la bdd
     )
 
     if bdese.is_bdese_avec_accord:
