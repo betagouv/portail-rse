@@ -11,8 +11,6 @@ from django.db.utils import IntegrityError
 
 from .enums import UserRole
 from entreprises.models import Entreprise
-from reglementations.models import get_all_personal_bdese
-from reglementations.models import has_official_bdese
 from utils.models import TimestampedModel
 
 FONCTIONS_MIN_LENGTH = 3
@@ -216,9 +214,6 @@ class Habilitation(TimestampedModel):
     def confirm(self):
         warnings.warn("fonctionnalité dépréciée : confirmation de l'habilitation")
         self.confirmed_at = datetime.now(timezone.utc)
-        if not has_official_bdese(self.entreprise):
-            for bdese in get_all_personal_bdese(self.entreprise, self.user):
-                bdese.officialize()
 
     def unconfirm(self):
         warnings.warn(

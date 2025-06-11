@@ -3,13 +3,8 @@ from django.contrib import admin
 
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
+from reglementations.models import BDESEAvecAccord
 from reglementations.models import CategoryType
-from reglementations.models import OfficialBDESE_300
-from reglementations.models import OfficialBDESE_50_300
-from reglementations.models import OfficialBDESEAvecAccord
-from reglementations.models import PersonalBDESE_300
-from reglementations.models import PersonalBDESE_50_300
-from reglementations.models import PersonalBDESEAvecAccord
 from reglementations.models.csrd import DocumentAnalyseIA
 from reglementations.models.csrd import RapportCSRD
 
@@ -36,17 +31,12 @@ class BDESEAdminForm(forms.ModelForm):
         }
 
 
-@admin.register(PersonalBDESE_300, PersonalBDESE_50_300, PersonalBDESEAvecAccord)
-class PersonalBDESE_Admin(admin.ModelAdmin):
+@admin.register(BDESE_300, BDESE_50_300, BDESEAvecAccord)
+class BDESE_Admin(admin.ModelAdmin):
     form = BDESEAdminForm
     list_display = ["entreprise", "annee", "user"]
-    list_filter = (("user", admin.RelatedOnlyFieldListFilter),)
-
-
-@admin.register(OfficialBDESE_300, OfficialBDESE_50_300, OfficialBDESEAvecAccord)
-class OfficialBDESE_Admin(admin.ModelAdmin):
-    form = BDESEAdminForm
-    list_display = ["entreprise", "annee"]
+    list_filter = (("user", admin.EmptyFieldListFilter),)
+    search_fields = ("user__email", "entreprise__denomination", "entreprise__siren")
 
 
 @admin.register(RapportCSRD)
