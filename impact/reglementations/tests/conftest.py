@@ -11,6 +11,7 @@ from reglementations.models import BDESEAvecAccord
 from reglementations.models import RapportCSRD
 from reglementations.models.csrd import DocumentAnalyseIA
 
+
 # Empêche tous les tests de faire des appels api
 @pytest.fixture(autouse=True)
 def mock_api(mock_api_infos_entreprise, mock_api_egapro, mock_api_bges):
@@ -26,11 +27,15 @@ def bdese_factory(entreprise_factory, date_cloture_dernier_exercice, alice):
     ):
         if not entreprise:
             entreprise = entreprise_factory(
-                effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
-                if bdese_class == BDESE_50_300
-                else CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+                effectif=(
+                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+                    if bdese_class == BDESE_50_300
+                    else CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
+                ),
+                bdese_accord=True if bdese_class == BDESEAvecAccord else False,
             )
-        return bdese_class.officials.create(entreprise=entreprise, annee=annee)
+        bdese = bdese_class.objects.create(entreprise=entreprise, annee=annee)
+        return bdese
 
     return create_bdese
 
@@ -41,14 +46,8 @@ def bdese(request, bdese_factory):
 
 
 @pytest.fixture
-def bdese_avec_accord(bdese_factory, entreprise_factory, alice):
-    entreprise = entreprise_factory(
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499, bdese_accord=True
-    )
-
-    bdese = bdese_factory(bdese_class=BDESEAvecAccord, entreprise=entreprise)
-    bdese.entreprise.users.add(alice)
-    return bdese
+def bdese_avec_accord(bdese_factory):
+    return bdese_factory(bdese_class=BDESEAvecAccord)
 
 
 @pytest.fixture
