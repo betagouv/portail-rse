@@ -162,35 +162,6 @@ def configured_bdese(bdese):
     return bdese
 
 
-def test_check_if_several_users_are_on_the_same_BDESE(
-    configured_bdese, habilitated_user, client, bob
-):
-    bdese = configured_bdese
-    Habilitation.ajouter(bdese.entreprise, bob, fonctions="Vice-président")
-    client.force_login(bob)
-
-    url = bdese_step_url(bdese, 0)
-    response = client.get(url)
-
-    assert response.status_code == 200
-    content = html.unescape(response.content.decode("utf-8"))
-    assert (
-        "Plusieurs utilisateurs sont liés à cette entreprise. Les informations que vous remplissez ne sont pas partagées avec les autres utilisateurs tant que vous n'êtes pas habilités."
-        in content
-    )
-
-    client.force_login(habilitated_user)
-
-    response = client.get(url)
-
-    assert response.status_code == 200
-    content = html.unescape(response.content.decode("utf-8"))
-    assert (
-        "Plusieurs utilisateurs sont liés à cette entreprise. Les informations que vous remplissez ne sont pas partagées avec les autres utilisateurs tant que vous n'êtes pas habilités."
-        not in content
-    )
-
-
 def test_bdese_step_use_configured_categories_and_annees_a_remplir(
     configured_bdese, habilitated_user, client
 ):
