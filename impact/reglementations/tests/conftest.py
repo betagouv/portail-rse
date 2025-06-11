@@ -1,7 +1,6 @@
 from datetime import date
 
 import pytest
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.base import ContentFile
 
 from entreprises.models import CaracteristiquesAnnuelles
@@ -23,25 +22,16 @@ def bdese_factory(entreprise_factory, date_cloture_dernier_exercice):
     def create_bdese(
         bdese_class=BDESE_300,
         entreprise=None,
-        user=None,
         annee=date_cloture_dernier_exercice.year,
     ):
         if not entreprise:
             entreprise = entreprise_factory(
                 effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
                 if bdese_class == BDESE_50_300
-                else CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
+                else CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
+                bdese_accord=True if bdese_class == BDESEAvecAccord else False,
             )
-        if not user:
-            bdese = bdese_class.officials.create(entreprise=entreprise, annee=annee)
-        else:
-            try:
-                Habilitation.pour(entreprise, user)
-            except ObjectDoesNotExist:
-                Habilitation.ajouter(entreprise, user, fonctions="Président·e")
-            bdese = bdese_class.personals.create(
-                entreprise=entreprise, annee=annee, user=user
-            )
+        bdese = bdese_class.objects.create(entreprise=entreprise, annee=annee)
         return bdese
 
     return create_bdese
@@ -53,12 +43,8 @@ def bdese(request, bdese_factory):
 
 
 @pytest.fixture
-def bdese_avec_accord(bdese_factory, entreprise_factory, alice):
-    entreprise = entreprise_factory(
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499, bdese_accord=True
-    )
-    entreprise.users.add(alice)
-    return bdese_factory(bdese_class=BDESEAvecAccord, entreprise=entreprise, user=None)
+def bdese_avec_accord(bdese_factory):
+    return bdese_factory(bdese_class=BDESEAvecAccord)
 
 
 @pytest.fixture
