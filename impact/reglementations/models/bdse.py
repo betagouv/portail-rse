@@ -1,7 +1,6 @@
 import datetime
 import warnings
 from enum import Enum
-from functools import partial
 from itertools import chain
 
 from django import forms
@@ -164,10 +163,6 @@ class AbstractBDESE(TimestampedModel):
         if not hasattr(self, "completion_steps"):
             return 0
         return sum(step for step in self.completion_steps.values() if step)
-
-
-def bdese_completion_steps_default(steps):
-    return partial(dict, [(step_name, False) for step_name in steps.values()])
 
 
 class BDESEAvecAccord(AbstractBDESE):
