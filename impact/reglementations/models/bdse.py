@@ -1,7 +1,5 @@
 import datetime
-import warnings
 from enum import Enum
-from itertools import chain
 
 from django import forms
 from django.conf import settings
@@ -71,6 +69,9 @@ class CategoryField(models.JSONField):
         return super().formfield(**defaults)
 
 
+# Pour des raisons historiques ([ADR 2023-03-01 Habilitation](https://github.com/betagouv/portail-rse/blob/main/doc/ADR/2023-03-01%20Habilitation.md))
+# il existe toujours en base des BDESE personnelles appartenant à des utilisateurs mais celles-ci ne sont plus utilisées depuis la fusion des documents personnels et officiels
+# Elles pourront être supprimées de la base une fois la fusion définitivement validée et il n'y aura plus besoin de manager PersonalManager et OfficialManager
 class PersonalManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(user__isnull=False)
@@ -81,24 +82,24 @@ class OfficialManager(models.Manager):
         return super().get_queryset().filter(user__isnull=True)
 
 
-class AlreadyOfficialError(Exception):
-    pass
-
-
 class BDESEError(Exception):
     pass
 
 
 class AbstractBDESE(TimestampedModel):
     objects = models.Manager()  # The default manager.
-    personals = PersonalManager()
-    officials = OfficialManager()
+    personals = (
+        PersonalManager()
+    )  # à supprimer une fois la fusion des documents personnels et officiels définitivement validée
+    officials = (
+        OfficialManager()
+    )  # à supprimer une fois la fusion des documents personnels et officiels définitivement validée
 
     annee = models.IntegerField()
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True
-    )
+    )  # à supprimer une fois la fusion des documents personnels et officiels définitivement validée
     categories_professionnelles = models.JSONField(
         verbose_name="Catégories professionnelles",
         help_text="Une structure de qualification détaillée en trois postes minimum",
@@ -148,16 +149,6 @@ class AbstractBDESE(TimestampedModel):
     def is_bdese_avec_accord(self):
         return isinstance(self, BDESEAvecAccord)
 
-    def officialize(self):
-        if not self.user:
-            raise AlreadyOfficialError()
-        else:
-            # https://docs.djangoproject.com/en/4.1/topics/db/queries/#copying-model-instances
-            self.pk = None
-            self._state.adding = True
-            self.user = None
-            self.save()
-
 
 class BDESEAvecAccord(AbstractBDESE):
     class Meta:
@@ -165,7 +156,7 @@ class BDESEAvecAccord(AbstractBDESE):
             models.UniqueConstraint(
                 fields=["entreprise", "user", "annee"],
                 name="uniques_PersonalBDESEAvecAccord",
-            ),
+            ),  # à supprimer une fois la fusion des documents personnels et officiels définitivement validée
             models.UniqueConstraint(
                 fields=["entreprise", "annee"],
                 name="uniques_OfficialBDESEAvecAccord",
@@ -2697,82 +2688,3 @@ class BDESE_50_300(AbstractBDESE):
         null=True,
         blank=True,
     )
-
-
-class PersonalBDESEAvecAccord(BDESEAvecAccord):
-    class Meta:
-        proxy = True
-        verbose_name = "BDESE personnelle avec accord d'entreprise"
-        verbose_name_plural = "BDESE personnelles avec accord d'entreprise"
-
-    objects = PersonalManager()
-
-
-class OfficialBDESEAvecAccord(BDESEAvecAccord):
-    class Meta:
-        proxy = True
-        verbose_name = "BDESE officielle avec accord d'entreprise"
-        verbose_name_plural = "BDESE officielles avec accord d'entreprise"
-
-    objects = OfficialManager()
-
-
-class PersonalBDESE_300(BDESE_300):
-    class Meta:
-        proxy = True
-        verbose_name = "BDESE personnelle plus de 300 salariés"
-        verbose_name_plural = "BDESE personnelles plus de 300 salariés"
-
-    objects = PersonalManager()
-
-
-class OfficialBDESE_300(BDESE_300):
-    class Meta:
-        proxy = True
-        verbose_name = "BDESE officielle plus de 300 salariés"
-        verbose_name_plural = "BDESE officielles plus de 300 salariés"
-
-    objects = OfficialManager()
-
-
-class PersonalBDESE_50_300(BDESE_50_300):
-    class Meta:
-        proxy = True
-        verbose_name = "BDESE personnelle 50 à 300 salariés"
-        verbose_name_plural = "BDESE personnelles 50 à 300 salariés"
-
-    objects = PersonalManager()
-
-
-class OfficialBDESE_50_300(BDESE_50_300):
-    class Meta:
-        proxy = True
-        verbose_name = "BDESE officielle 50 à 300 salariés"
-        verbose_name_plural = "BDESE officielles 50 à 300 salariés"
-
-    objects = OfficialManager()
-
-
-def get_all_official_bdese(entreprise):
-    bdese_50_300 = BDESE_50_300.officials.filter(entreprise=entreprise)
-    bdese_300 = BDESE_300.officials.filter(entreprise=entreprise)
-    bdese_avec_accord = BDESEAvecAccord.officials.filter(entreprise=entreprise)
-    return chain(bdese_50_300, bdese_300, bdese_avec_accord)
-
-
-def get_all_personal_bdese(entreprise, user):
-    warnings.warn("Déprécié : les BDESE sont désormais uniquement officielles")
-    bdese_50_300 = BDESE_50_300.personals.filter(entreprise=entreprise, user=user)
-    bdese_300 = BDESE_300.personals.filter(entreprise=entreprise, user=user)
-    bdese_avec_accord = BDESEAvecAccord.personals.filter(
-        entreprise=entreprise, user=user
-    )
-    return chain(bdese_50_300, bdese_300, bdese_avec_accord)
-
-
-def has_official_bdese(entreprise: Entreprise) -> bool:
-    try:
-        next(get_all_official_bdese(entreprise))
-        return True
-    except StopIteration:
-        return False
