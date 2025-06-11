@@ -68,8 +68,9 @@ def bdese_step_url(bdese, step):
 
 
 def test_bdese_step_introuvable_si_bdese_avec_accord(bdese_avec_accord, alice, client):
+    entreprise = bdese_avec_accord.entreprise
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
-    bdese_avec_accord.entreprise
 
     url = bdese_step_url(bdese_avec_accord, 1)
     response = client.get(url)
@@ -355,9 +356,11 @@ def test_get_pdf_redirige_vers_la_qualification_si_manquante(
 
 
 def test_get_pdf_introuvable_si_bdese_avec_accord(bdese_avec_accord, alice, client):
+    entreprise = bdese_avec_accord.entreprise
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
 
-    url = f"/bdese/{bdese_avec_accord.entreprise.siren}/{bdese_avec_accord.annee}/pdf"
+    url = f"/bdese/{entreprise.siren}/{bdese_avec_accord.annee}/pdf"
     response = client.get(url)
 
     assert response.status_code == 404
@@ -711,8 +714,9 @@ def _test_initialize_official_bdese_configuration_only_with_other_official_bdese
 
 
 def test_toggle_bdese_completion(client, bdese_avec_accord, alice):
-    client.force_login(alice)
     entreprise = bdese_avec_accord.entreprise
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
+    client.force_login(alice)
     url = (
         f"/bdese/{entreprise.siren}/{bdese_avec_accord.annee}/actualiser-desactualiser"
     )
