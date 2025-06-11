@@ -82,7 +82,7 @@ class Reglementation(models.Model):
 
 
 class BDESE(Reglementation):
-    utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE, null=True)
+    pass
 
 
 class IndexEgaPro(Reglementation):
