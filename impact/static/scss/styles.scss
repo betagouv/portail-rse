@@ -37,6 +37,12 @@
 }
 
 
+/* imitation graphique de zone cliquable */
+.clickable {
+    cursor: pointer;
+}
+
+
 /* Texte d'erreur, sans l'icône d'erreur à gauche */
 .text-error-color-no-decoration {
         color: var(--text-default-error);
