@@ -29,15 +29,26 @@ class Migration(migrations.Migration):
                         annee=annee, entreprise=entreprise
                     ).order_by("-updated_at")
 
-                    if hasattr(clazz, "is_configured"):
-                        # - `is_configured` est une propriété
-                        # - True = 1, False = 0 pour `sorted`, d'ou `reverse`
-                        bdese_personnelles = sorted(
-                            bdese_personnelles,
-                            key=lambda b: b.is_configured,
-                            reverse=True,
-                        )
-                    print("nb de BDESE personnelles:", len(bdese_personnelles))
+                    def _sort_fn(bdese):
+                        # fonction de tri des BDESE :
+                        # les critères ne sont pas de simples champs SQL
+                        # on peut utiliser +/- pour des critères numériques pour simuler le ASC/DESC SQL
+                        base_criteria = ()
+
+                        if hasattr(clazz, "is_configured"):
+                            base_criteria += (0 if bdese.is_configured else 1,)
+
+                        if hasattr(clazz, "nb_etapes_completees"):
+                            base_criteria += (-bdese.nb_etapes_completees(),)
+
+                        # worst-case scenario :
+                        # si impossible de définir une priorité / pertinence (complétion)
+                        # alors on prends la maj la plus récente
+                        base_criteria += (-int(bdese.updated_at.timestamp()),)
+
+                        return base_criteria
+
+                    bdese_personnelles = sorted(bdese_personnelles, key=_sort_fn)
 
                     if premiere_bdese := bdese_personnelles[0]:
                         print("BDESE principale:", premiere_bdese)
