@@ -40,7 +40,6 @@ def test_ajout_document_par_utilisateur_autorise(client, csrd, alice):
 
 
 def test_ajout_document_par_utilisateur_non_autorise(client, csrd, bob):
-    # assert bob != csrd.proprietaire
     client.force_login(bob)
     fichier = SimpleUploadedFile("test.pdf", CONTENU_PDF)
 
