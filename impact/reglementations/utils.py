@@ -2,7 +2,6 @@ from django.conf import settings
 from django.urls.base import reverse_lazy
 
 from entreprises.models import CaracteristiquesAnnuelles
-from reglementations.views.base import InsuffisammentQualifieeError
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
 from reglementations.views.base import ReglementationStatus
@@ -32,7 +31,7 @@ class VSMEReglementation(Reglementation):
 
     @classmethod
     def est_suffisamment_qualifiee(cls, caracteristiques):
-        return caracteristiques.effectif is not None
+        return True
 
     @classmethod
     def criteres_remplis(cls, caracteristiques):
@@ -40,8 +39,7 @@ class VSMEReglementation(Reglementation):
 
     @classmethod
     def est_soumis(cls, caracteristiques):
-        if not cls.est_suffisamment_qualifiee(caracteristiques):
-            raise InsuffisammentQualifieeError
+        return False
 
     @classmethod
     def calculate_status(

@@ -9,21 +9,24 @@ from freezegun import freeze_time
 
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import attach_user_to_entreprise
+from reglementations.utils import VSMEReglementation
 from reglementations.views import REGLEMENTATIONS
 from reglementations.views.base import InsuffisammentQualifieeError
 from reglementations.views.base import ReglementationStatus
 
 
-def test_les_reglementations_levent_une_exception_si_les_caracteristiques_sont_vides(
+def test_les_reglementations_obligatoires_levent_une_exception_si_les_caracteristiques_sont_vides(
     entreprise_non_qualifiee,
 ):
     caracteristiques = CaracteristiquesAnnuelles(entreprise=entreprise_non_qualifiee)
+    REGLEMENTATIONS_RECOMMANDEES = [VSMEReglementation]
 
     for reglementation in REGLEMENTATIONS:
-        with pytest.raises(InsuffisammentQualifieeError):
-            reglementation.est_soumis(caracteristiques)
-        status = reglementation.calculate_status(caracteristiques, AnonymousUser())
-        assert status.status == ReglementationStatus.STATUS_INCALCULABLE
+        if reglementation not in REGLEMENTATIONS_RECOMMANDEES:
+            with pytest.raises(InsuffisammentQualifieeError):
+                reglementation.est_soumis(caracteristiques)
+            status = reglementation.calculate_status(caracteristiques, AnonymousUser())
+            assert status.status == ReglementationStatus.STATUS_INCALCULABLE
 
 
 def test_tableau_de_bord_est_prive(client, entreprise_factory, alice):
