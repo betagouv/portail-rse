@@ -1,7 +1,6 @@
 from datetime import date
 
 import pytest
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.base import ContentFile
 
 from entreprises.models import CaracteristiquesAnnuelles
@@ -19,30 +18,19 @@ def mock_api(mock_api_infos_entreprise, mock_api_egapro, mock_api_bges):
 
 
 @pytest.fixture
-def bdese_factory(entreprise_factory, date_cloture_dernier_exercice):
+def bdese_factory(entreprise_factory, date_cloture_dernier_exercice, alice):
     def create_bdese(
         bdese_class=BDESE_300,
         entreprise=None,
-        user=None,
         annee=date_cloture_dernier_exercice.year,
     ):
         if not entreprise:
             entreprise = entreprise_factory(
                 effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
                 if bdese_class == BDESE_50_300
-                else CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
+                else CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
             )
-        if not user:
-            bdese = bdese_class.officials.create(entreprise=entreprise, annee=annee)
-        else:
-            try:
-                Habilitation.pour(entreprise, user)
-            except ObjectDoesNotExist:
-                Habilitation.ajouter(entreprise, user, fonctions="Président·e")
-            bdese = bdese_class.personals.create(
-                entreprise=entreprise, annee=annee, user=user
-            )
-        return bdese
+        return bdese_class.officials.create(entreprise=entreprise, annee=annee)
 
     return create_bdese
 
@@ -57,8 +45,10 @@ def bdese_avec_accord(bdese_factory, entreprise_factory, alice):
     entreprise = entreprise_factory(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499, bdese_accord=True
     )
-    entreprise.users.add(alice)
-    return bdese_factory(bdese_class=BDESEAvecAccord, entreprise=entreprise, user=None)
+
+    bdese = bdese_factory(bdese_class=BDESEAvecAccord, entreprise=entreprise)
+    bdese.entreprise.users.add(alice)
+    return bdese
 
 
 @pytest.fixture
@@ -71,7 +61,6 @@ def csrd(entreprise_factory, alice):
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     csrd = RapportCSRD.objects.create(
         entreprise=entreprise,
-        proprietaire=None,
         annee=date.today().year,
     )
     return csrd
