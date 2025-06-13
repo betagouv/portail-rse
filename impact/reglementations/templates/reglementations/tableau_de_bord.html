@@ -52,12 +52,7 @@
             {% endif %}
             {% if reglementations_recommandees %}
                 <div class="fr-my-4w fr-grid-row fr-grid-row--gutters dashboard-category dashboard--recommandees">
-                    <div class="dashboard-category-header">
-                        <h4>Réglementations recommandées ({{reglementations_recommandees|length}})</h4>
-                        <p class="fr-text--xs">
-                            Ces réglementations sont volontaires et recommandées pour les entreprises qui souhaitent mieux structurer leurs informations de durabilité.
-                        </p>
-                    </div>
+                    <h4>Réglementations recommandées ({{reglementations_recommandees|length}})</h4>
                     <div class="dashboard-list">
                         {% for reglementation in reglementations_recommandees %}
                             {% include "snippets/reglementation_component_dashboard.html" with reglementation=reglementation.reglementation status=reglementation.status %}
