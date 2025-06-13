@@ -85,6 +85,11 @@ def tableau_de_bord(request, siren=None):
             for r in reglementations
             if r["status"].status == ReglementationStatus.STATUS_NON_SOUMIS
         ]
+        reglementations_recommandees = [
+            r
+            for r in reglementations
+            if r["status"].status == ReglementationStatus.STATUS_RECOMMANDE
+        ]
         return render(
             request,
             "reglementations/tableau_de_bord.html",
@@ -95,6 +100,7 @@ def tableau_de_bord(request, siren=None):
                 "reglementations_a_jour": reglementations_a_jour,
                 "reglementations_soumises": reglementations_soumises,
                 "reglementations_non_soumises": reglementations_non_soumises,
+                "reglementations_recommandees": reglementations_recommandees,
             },
         )
     else:
