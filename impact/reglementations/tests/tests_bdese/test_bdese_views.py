@@ -38,7 +38,7 @@ def test_bdese_is_not_public(client, alice, grande_entreprise):
         (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499, BDESE_300),
     ],
 )
-def test_yearly_official_bdese_is_created_at_first_authorized_request(
+def test_yearly_bdese_is_created_at_first_authorized_request(
     effectif, bdese_class, client, alice, entreprise_factory
 ):
     entreprise = entreprise_factory(effectif=effectif)
@@ -627,9 +627,10 @@ def test_save_bdese_configuration_for_a_new_year(
 
 
 @pytest.mark.parametrize("bdese_class", [BDESE_50_300, BDESE_300])
-def test_initialize_personal_bdese_configuration_only_with_other_personal_bdeses(
+def _test_initialize_personal_bdese_configuration_only_with_other_personal_bdeses(
     bdese_class, bdese_factory, alice
 ):
+    # note : suppression de ce test à confirmer, mais semble désormais obsolète
     official_bdese = bdese_factory(bdese_class=bdese_class, annee=2021)
     official_bdese.categories_professionnelles = ["A", "B", "C"]
     if official_bdese.is_bdese_300:
@@ -644,7 +645,7 @@ def test_initialize_personal_bdese_configuration_only_with_other_personal_bdeses
     official_bdese.save()
 
     new_bdese = bdese_factory(
-        bdese_class, entreprise=official_bdese.entreprise, user=alice, annee=2022
+        bdese_class, entreprise=official_bdese.entreprise, annee=2022
     )
     initial = initialize_bdese_configuration(new_bdese)
 
@@ -683,10 +684,12 @@ def test_initialize_personal_bdese_configuration_only_with_other_personal_bdeses
 
 
 @pytest.mark.parametrize("bdese_class", [BDESE_50_300, BDESE_300])
-def test_initialize_official_bdese_configuration_only_with_other_official_bdeses(
-    bdese_class, bdese_factory, alice
+def _test_initialize_official_bdese_configuration_only_with_other_official_bdeses(
+    # note : suppression de ce test à confirmer, mais semble désormais obsolète
+    bdese_class,
+    bdese_factory,
 ):
-    personal_bdese = bdese_factory(bdese_class=bdese_class, user=alice, annee=2021)
+    personal_bdese = bdese_factory(bdese_class=bdese_class, annee=2021)
     personal_bdese.categories_professionnelles = ["A", "B", "C"]
     if personal_bdese.is_bdese_300:
         personal_bdese.categories_professionnelles_detaillees = [
