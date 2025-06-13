@@ -45,8 +45,8 @@ class DispositifAlerteReglementation(Reglementation):
 
         if cls.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_SOUMIS
-            status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(cls.criteres_remplis(caracteristiques))}."
+            status_detail = f"Vous êtes soumis à cette norme car {', '.join(cls.criteres_remplis(caracteristiques))}."
         else:
             status = ReglementationStatus.STATUS_NON_SOUMIS
-            status_detail = "Vous n'êtes pas soumis à cette réglementation."
+            status_detail = "Vous n'êtes pas soumis à cette norme."
         return ReglementationStatus(status, status_detail)

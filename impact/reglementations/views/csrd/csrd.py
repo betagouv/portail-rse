@@ -366,7 +366,7 @@ class CSRDReglementation(Reglementation):
                 if caracteristiques.exercice_comptable_est_annee_civile
                 else f"{annee}-{annee + 1}"
             )
-            status_detail = f"Vous êtes soumis à cette réglementation à partir de {premiere_annee_publication} sur les données de l'exercice comptable {exercice_comptable}"
+            status_detail = f"Vous êtes soumis à cette norme à partir de {premiere_annee_publication} sur les données de l'exercice comptable {exercice_comptable}"
             if cls.est_micro_ou_petite_entreprise_hors_EEE_consideree_comme_soumise(
                 caracteristiques
             ):
@@ -394,7 +394,7 @@ class CSRDReglementation(Reglementation):
             primary_action.title = "Tester un Rapport de Durabilité"
             return ReglementationStatus(
                 status=ReglementationStatus.STATUS_NON_SOUMIS,
-                status_detail="Vous n'êtes pas soumis à cette réglementation.",
+                status_detail="Vous n'êtes pas soumis à cette norme.",
                 primary_action=primary_action,
             )
 
