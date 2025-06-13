@@ -26,6 +26,7 @@ class ReglementationStatus:
     STATUS_A_JOUR = 2
     STATUS_SOUMIS = 3
     STATUS_NON_SOUMIS = 4
+    STATUS_RECOMMANDE = 5
     STATUS_INCALCULABLE = 1000
 
     status: int

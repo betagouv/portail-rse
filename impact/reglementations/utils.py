@@ -64,7 +64,7 @@ class VSMEReglementation(Reglementation):
         )
 
         return ReglementationStatus(
-            status=ReglementationStatus.STATUS_NON_SOUMIS,
+            status=ReglementationStatus.STATUS_RECOMMANDE,
             status_detail="Cette norme est volontaire et recommandée pour les entreprises qui souhaitent mieux structurer leurs informations de durabilité.",
             primary_action=primary_action,
         )

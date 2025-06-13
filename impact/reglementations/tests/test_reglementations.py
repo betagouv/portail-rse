@@ -69,6 +69,7 @@ def test_tableau_de_bord_avec_utilisateur_authentifié(client, entreprise):
         + context["reglementations_a_jour"]
         + context["reglementations_soumises"]
         + context["reglementations_non_soumises"]
+        + context["reglementations_recommandees"]
     )
     assert len(reglementations) == len(REGLEMENTATIONS)
     for REGLEMENTATION in REGLEMENTATIONS:

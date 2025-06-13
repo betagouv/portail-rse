@@ -616,6 +616,13 @@
     }
 }
 
+.dashboard--recommandees {
+    background-color: var(--background-alt-yellow-tournesol);
+    h4 {
+        color: var(--text-label-yellow-tournesol);
+    }
+}
+
 .dashboard {
     .reglementation-grid {
         display: grid;
