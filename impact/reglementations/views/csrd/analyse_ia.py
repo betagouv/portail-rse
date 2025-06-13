@@ -138,15 +138,11 @@ def etat_analyse_IA(request, id_document):
 
 
 def envoie_resultat_ia_email(document, resultat_ia_url):
-    if proprietaire := document.rapport_csrd.proprietaire:
-        destinataires = [proprietaire.email]
-    else:
-        destinataires = [
-            utilisateur.email
-            for utilisateur in document.rapport_csrd.entreprise.users.filter(
-                habilitation__confirmed_at__isnull=False
-            )
-        ]
+    destinataires = [
+        utilisateur.email
+        for utilisateur in document.rapport_csrd.entreprise.users.all()
+    ]
+
     email = EmailMessage(
         to=destinataires,
         from_email=settings.DEFAULT_FROM_EMAIL,

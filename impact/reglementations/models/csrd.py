@@ -1,5 +1,6 @@
 import json
 import os
+import warnings
 from uuid import uuid4
 
 import django.db.models as models
@@ -156,6 +157,7 @@ class RapportCSRD(TimestampedModel):
 
     def est_officiel(self):
         # le rapport CSRD n'a un propriétaire que si c'est un rapport personnel
+        warnings.warn("déprécié: tous les rapports sont officiels")
         return self.pk and not self.proprietaire
 
     def nombre_enjeux_selectionnes_par_esrs(self):
@@ -185,22 +187,6 @@ class RapportCSRD(TimestampedModel):
 
     def nombre_enjeux_non_selectionnes(self):
         return self.enjeux.filter(selection=False).count()
-
-    def modifiable_par(self, utilisateur: "users.User") -> bool:
-        # Vérifie si le rapport CSRD courant est modifiable par un utilisateur donné.
-        # tip : un utilisateur anonyme n'a pas d'ID
-        return (
-            utilisateur
-            and utilisateur.id
-            and (
-                # l'utilisateur est le propriétaire du rapport (personnel)
-                self.proprietaire == utilisateur
-                # l'utilisateur à une habilitation confirmée pour cette entreprise
-                or utilisateur.habilitation_set.exclude(confirmed_at=None)
-                .filter(entreprise=self.entreprise)
-                .exists()
-            )
-        )
 
     def enjeux_par_esrs(self, esrs):
         qs = self.enjeux.prefetch_related("enfants")
