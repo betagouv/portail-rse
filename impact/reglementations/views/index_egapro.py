@@ -53,7 +53,7 @@ class IndexEgaproReglementation(Reglementation):
         if not cls.est_soumis(caracteristiques):
             return ReglementationStatus(
                 status=ReglementationStatus.STATUS_NON_SOUMIS,
-                status_detail="Vous n'êtes pas soumis à cette réglementation.",
+                status_detail="Vous n'êtes pas soumis à cette norme.",
                 primary_action=cls.NON_SOUMIS_PRIMARY_ACTION,
             )
         else:
@@ -70,15 +70,15 @@ class IndexEgaproReglementation(Reglementation):
             except APIError:
                 return ReglementationStatus(
                     ReglementationStatus.STATUS_SOUMIS,
-                    f"Vous êtes soumis à cette réglementation car {', '.join(cls.criteres_remplis(caracteristiques))}. Suite à un problème technique, les informations concernant votre dernière publication n'ont pas pu être récupérées sur la plateforme EgaPro. Vous devez calculer et publier votre index chaque année au plus tard le 1er mars.",
+                    f"Vous êtes soumis à cette norme car {', '.join(cls.criteres_remplis(caracteristiques))}. Suite à un problème technique, les informations concernant votre dernière publication n'ont pas pu être récupérées sur la plateforme EgaPro. Vous devez calculer et publier votre index chaque année au plus tard le 1er mars.",
                     primary_action=primary_action,
                 )
             if derniere_annee_est_publiee:
                 status = ReglementationStatus.STATUS_A_JOUR
-                status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(cls.criteres_remplis(caracteristiques))}. Vous avez publié votre index {annee} d'après les données disponibles sur la plateforme Egapro."
+                status_detail = f"Vous êtes soumis à cette norme car {', '.join(cls.criteres_remplis(caracteristiques))}. Vous avez publié votre index {annee} d'après les données disponibles sur la plateforme Egapro."
             else:
                 status = ReglementationStatus.STATUS_A_ACTUALISER
-                status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(cls.criteres_remplis(caracteristiques))}. Vous n'avez pas encore publié votre index {annee} sur la plateforme Egapro. Vous devez calculer et publier votre index chaque année au plus tard le 1er mars."
+                status_detail = f"Vous êtes soumis à cette norme car {', '.join(cls.criteres_remplis(caracteristiques))}. Vous n'avez pas encore publié votre index {annee} sur la plateforme Egapro. Vous devez calculer et publier votre index chaque année au plus tard le 1er mars."
             return ReglementationStatus(
                 status,
                 status_detail,

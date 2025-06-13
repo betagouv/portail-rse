@@ -104,7 +104,7 @@ class BDESEReglementation(Reglementation):
     def _match_non_soumis(cls, caracteristiques, user):
         if not cls.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_NON_SOUMIS
-            status_detail = "Vous n'êtes pas soumis à cette réglementation."
+            status_detail = "Vous n'êtes pas soumis à cette norme."
             entreprise = caracteristiques.entreprise
             annee = derniere_annee_a_remplir_bdese()
             primary_action = ReglementationAction(
@@ -131,7 +131,7 @@ class BDESEReglementation(Reglementation):
                 status = ReglementationStatus.STATUS_A_ACTUALISER
                 primary_action_title = f"Marquer ma BDESE {annee} comme actualisée"
 
-            status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(cls.criteres_remplis(caracteristiques))}. Vous avez un accord d'entreprise spécifique. Veuillez vous y référer."
+            status_detail = f"Vous êtes soumis à cette norme car {', '.join(cls.criteres_remplis(caracteristiques))}. Vous avez un accord d'entreprise spécifique. Veuillez vous y référer."
             primary_action = ReglementationAction(
                 reverse_lazy(
                     "reglementations:toggle_bdese_completion",
@@ -160,7 +160,7 @@ class BDESEReglementation(Reglementation):
 
         if bdese.is_complete:
             status = ReglementationStatus.STATUS_A_JOUR
-            status_detail = f"Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez actualisé votre BDESE {annee} sur la plateforme."
+            status_detail = f"Vous êtes soumis à cette norme car votre effectif est supérieur à 50 salariés. Vous avez actualisé votre BDESE {annee} sur la plateforme."
             primary_action = ReglementationAction(
                 reverse_lazy(
                     "reglementations:bdese_pdf",
@@ -180,7 +180,7 @@ class BDESEReglementation(Reglementation):
             ]
         else:
             status = ReglementationStatus.STATUS_EN_COURS
-            status_detail = f"Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez démarré le remplissage de votre BDESE {annee} sur la plateforme."
+            status_detail = f"Vous êtes soumis à cette norme car votre effectif est supérieur à 50 salariés. Vous avez démarré le remplissage de votre BDESE {annee} sur la plateforme."
             primary_action = ReglementationAction(
                 reverse_lazy(
                     "reglementations:bdese_step",
@@ -210,7 +210,7 @@ class BDESEReglementation(Reglementation):
     def _match_sans_bdese(cls, caracteristiques, user):
         annee = derniere_annee_a_remplir_bdese()
         status = ReglementationStatus.STATUS_A_ACTUALISER
-        status_detail = "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Nous allons vous aider à la remplir."
+        status_detail = "Vous êtes soumis à cette norme car votre effectif est supérieur à 50 salariés. Nous allons vous aider à la remplir."
         primary_action = ReglementationAction(
             reverse_lazy(
                 "reglementations:bdese_step",
@@ -474,9 +474,9 @@ def initialize_bdese_configuration(bdese: BDESE_300 | BDESE_50_300) -> dict:
                 "categories_professionnelles": _bdese.categories_professionnelles
             }
             if _bdese.is_bdese_300:
-                initial[
-                    "categories_professionnelles_detaillees"
-                ] = _bdese.categories_professionnelles_detaillees
+                initial["categories_professionnelles_detaillees"] = (
+                    _bdese.categories_professionnelles_detaillees
+                )
                 initial["niveaux_hierarchiques"] = _bdese.niveaux_hierarchiques
             return initial
 

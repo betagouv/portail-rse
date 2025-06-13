@@ -85,7 +85,7 @@ class AuditEnergetiqueReglementation(Reglementation):
 
         if cls.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_SOUMIS
-            status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(cls.criteres_remplis(caracteristiques))}."
+            status_detail = f"Vous êtes soumis à cette norme car {', '.join(cls.criteres_remplis(caracteristiques))}."
             status_detail += " Vous devez réaliser un audit énergétique si vous remplissez l'une des conditions suivantes lors des deux derniers exercices comptables : soit votre effectif est supérieur à 250 salariés, soit votre bilan (ou bilan consolidé) est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
             primary_action = ReglementationAction(
                 "https://audit-energie.ademe.fr/",
@@ -94,7 +94,7 @@ class AuditEnergetiqueReglementation(Reglementation):
             )
         else:
             status = ReglementationStatus.STATUS_NON_SOUMIS
-            status_detail = "Vous n'êtes pas soumis à cette réglementation"
+            status_detail = "Vous n'êtes pas soumis à cette norme"
             if caracteristiques.systeme_management_energie:
                 status_detail += " si le système de management de l'énergie est certifié conforme à la norme ISO 50001."
             else:

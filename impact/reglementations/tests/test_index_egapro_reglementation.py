@@ -58,7 +58,7 @@ def test_calculate_status_less_than_50_employees(
     )
 
     assert index.status == ReglementationStatus.STATUS_NON_SOUMIS
-    assert index.status_detail == "Vous n'êtes pas soumis à cette réglementation."
+    assert index.status_detail == "Vous n'êtes pas soumis à cette norme."
     assert (
         index.primary_action.url
         == "https://egapro.travail.gouv.fr/index-egapro/recherche"
@@ -97,7 +97,7 @@ def test_calculate_status_more_than_50_employees(
     assert index.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
         index.status_detail
-        == f"Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous n'avez pas encore publié votre index {annee} sur la plateforme Egapro. Vous devez calculer et publier votre index chaque année au plus tard le 1er mars."
+        == f"Vous êtes soumis à cette norme car votre effectif est supérieur à 50 salariés. Vous n'avez pas encore publié votre index {annee} sur la plateforme Egapro. Vous devez calculer et publier votre index chaque année au plus tard le 1er mars."
     )
     assert index.prochaine_echeance == "01/03/2023"
     assert index.primary_action.url == "https://egapro.travail.gouv.fr/"
@@ -116,7 +116,7 @@ def test_calculate_status_more_than_50_employees(
     assert index.status == ReglementationStatus.STATUS_A_JOUR
     assert (
         index.status_detail
-        == f"Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez publié votre index {annee} d'après les données disponibles sur la plateforme Egapro."
+        == f"Vous êtes soumis à cette norme car votre effectif est supérieur à 50 salariés. Vous avez publié votre index {annee} d'après les données disponibles sur la plateforme Egapro."
     )
     assert index.prochaine_echeance == "01/03/2024"
     mock_api_egapro.assert_called_once_with(entreprise.siren, annee)
@@ -140,7 +140,7 @@ def test_calculate_status_more_than_50_employees_with_egapro_API_fails(
     assert index.status == ReglementationStatus.STATUS_SOUMIS
     assert (
         index.status_detail
-        == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Suite à un problème technique, les informations concernant votre dernière publication n'ont pas pu être récupérées sur la plateforme EgaPro. Vous devez calculer et publier votre index chaque année au plus tard le 1er mars."
+        == "Vous êtes soumis à cette norme car votre effectif est supérieur à 50 salariés. Suite à un problème technique, les informations concernant votre dernière publication n'ont pas pu être récupérées sur la plateforme EgaPro. Vous devez calculer et publier votre index chaque année au plus tard le 1er mars."
     )
     assert index.prochaine_echeance is None
     mock_api_egapro.assert_called_once_with(entreprise.siren, annee)
