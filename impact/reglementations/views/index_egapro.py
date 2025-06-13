@@ -87,11 +87,3 @@ class IndexEgaproReglementation(Reglementation):
                 ).strftime("%d/%m/%Y"),
                 primary_action=primary_action,
             )
-
-    @classmethod
-    def calculate_status_for_anonymous_user(
-        cls, caracteristiques: CaracteristiquesAnnuelles
-    ):
-        return super().calculate_status_for_anonymous_user(
-            caracteristiques, primary_action=cls.NON_SOUMIS_PRIMARY_ACTION
-        )

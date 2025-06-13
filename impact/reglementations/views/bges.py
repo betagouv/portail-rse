@@ -100,14 +100,6 @@ class BGESReglementation(Reglementation):
         )
 
     @classmethod
-    def calculate_status_for_anonymous_user(
-        cls, caracteristiques: CaracteristiquesAnnuelles
-    ):
-        return super().calculate_status_for_anonymous_user(
-            caracteristiques, primary_action=cls.CONSULTER_BILANS_PRIMARY_ACTION
-        )
-
-    @classmethod
     def publication_est_recente(cls, annee_reporting):
         """une entreprise doit publier son bilan GES tous les quatre ans"""
         DELAI_MAX_PUBLICATION = 4
