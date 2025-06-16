@@ -452,7 +452,6 @@ def _bdese_step_context(form, entreprise, annee, bdese, step):
 def get_or_create_bdese(
     entreprise: Entreprise,
     annee: int,
-    user: settings.AUTH_USER_MODEL,
 ) -> BDESE_300 | BDESE_50_300 | BDESEAvecAccord:
     caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
     if not caracteristiques:
@@ -462,7 +461,6 @@ def get_or_create_bdese(
         )
 
     bdese_type = BDESEReglementation.bdese_type(caracteristiques)
-    habilitation = Habilitation.pour(entreprise, user)
 
     # TODO: à remonter niveau métier ?
     if bdese_type == BDESEReglementation.TYPE_AVEC_ACCORD:
@@ -475,14 +473,7 @@ def get_or_create_bdese(
     else:
         bdese_class = BDESE_50_300
 
-    if habilitation.is_confirmed:
-        bdese, _ = bdese_class.officials.get_or_create(
-            entreprise=entreprise, annee=annee
-        )
-    else:
-        bdese, _ = bdese_class.personals.get_or_create(
-            entreprise=entreprise, annee=annee, user=user
-        )
+    bdese, _ = bdese_class.officials.get_or_create(entreprise=entreprise, annee=annee)
 
     return bdese
 
@@ -511,13 +502,7 @@ def toggle_bdese_completion(request, siren, annee):
     if not Habilitation.existe(entreprise, request.user):
         raise PermissionDenied
 
-    # à cette étape, on ne peut réutiliser qu'une BDESE principale
-    bdese = get_object_or_404(
-        BDESEReglementation.classe_entreprise(entreprise),
-        entreprise=entreprise,
-        annee=annee,
-        user=None,
-    )
+    bdese = get_or_create_bdese(entreprise, annee)
 
     if bdese.is_bdese_avec_accord:
         bdese.toggle_completion()

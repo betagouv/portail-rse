@@ -10,6 +10,7 @@ from habilitations.models import Habilitation
 from reglementations.models import annees_a_remplir_bdese
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
+from reglementations.models import BDESEAvecAccord
 from reglementations.tests.tests_bdese.test_bdese_forms import configuration_form_data
 from reglementations.views.bdese import get_or_create_bdese
 from reglementations.views.bdese import initialize_bdese_configuration
@@ -745,10 +746,26 @@ def test_toggle_bdese_completion_redirige_vers_la_qualification_si_manquante(
     assert response.url == reverse("entreprises:qualification", args=[entreprise.siren])
 
 
-def test_get_or_create_bdese_avec_une_entreprise_non_qualifiee(
-    entreprise_non_qualifiee, alice
+def test_toggle_bdese_completion_sans_bdese_existante(
+    client, entreprise_factory, alice
 ):
-    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
+    client.force_login(alice)
+    entreprise = entreprise_factory(bdese_accord=True)
+    Habilitation.ajouter(entreprise=entreprise, utilisateur=alice)
+    url = f"/bdese/{entreprise.siren}/2025/actualiser-desactualiser"
 
+    response = client.get(url, follow=True)
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [
+        (reverse("reglementations:tableau_de_bord", args=[entreprise.siren]), 302)
+    ]
+    bdese_avec_accord = BDESEAvecAccord.objects.get(entreprise=entreprise)
+    assert bdese_avec_accord.is_complete
+
+
+def test_get_or_create_bdese_avec_une_entreprise_non_qualifiee(
+    entreprise_non_qualifiee,
+):
     with pytest.raises(EntrepriseNonQualifieeError):
-        get_or_create_bdese(entreprise_non_qualifiee, 2023, alice)
+        get_or_create_bdese(entreprise_non_qualifiee, 2023)
