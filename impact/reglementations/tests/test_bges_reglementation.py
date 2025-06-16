@@ -87,7 +87,9 @@ def test_calcule_le_statut_si_moins_de_500_employes(
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
-    assert reglementation.status_detail == "Vous n'êtes pas soumis à cette norme."
+    assert (
+        reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation."
+    )
     assert reglementation.primary_action == ACTION_CONSULTER
     assert not mock_api_bges.called
 
@@ -115,7 +117,7 @@ def test_calcule_le_statut_si_plus_de_500_employes_sans_bilan_publie(
     assert reglementation.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
         reglementation.status_detail
-        == "Vous êtes soumis à cette norme car votre effectif est supérieur à 500 salariés. Vous n'avez pas encore publié votre bilan sur la plateforme Bilans GES."
+        == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 500 salariés. Vous n'avez pas encore publié votre bilan sur la plateforme Bilans GES."
     )
     assert reglementation.primary_action == ACTION_PUBLIER
     mock_api_bges.assert_called_once_with(entreprise.siren)
@@ -138,7 +140,7 @@ def test_calcule_le_statut_si_soumis_et_erreur_API(
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert (
         reglementation.status_detail
-        == "Vous êtes soumis à cette norme car votre effectif est supérieur à 500 salariés. Suite à un problème technique, les informations concernant votre dernière publication n'ont pas pu être récupérées sur la plateforme Bilans GES. Vérifiez que vous avez publié votre bilan il y a moins de 4 ans."
+        == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 500 salariés. Suite à un problème technique, les informations concernant votre dernière publication n'ont pas pu être récupérées sur la plateforme Bilans GES. Vérifiez que vous avez publié votre bilan il y a moins de 4 ans."
     )
     assert reglementation.primary_action == ACTION_PUBLIER
     mock_api_bges.assert_called_once_with(entreprise.siren)
@@ -167,7 +169,7 @@ def test_calcule_le_statut_si_plus_de_500_employes_bilan_publie_trop_vieux(
     assert reglementation.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
         reglementation.status_detail
-        == "Vous êtes soumis à cette norme car votre effectif est supérieur à 500 salariés. Le dernier bilan publié sur la plateforme Bilans GES concerne l'année 2015."
+        == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 500 salariés. Le dernier bilan publié sur la plateforme Bilans GES concerne l'année 2015."
     )
     assert reglementation.primary_action == ACTION_PUBLIER
     mock_api_bges.assert_called_once_with(entreprise.siren)
@@ -196,7 +198,7 @@ def test_calcule_le_statut_si_plus_de_500_employes_bilan_publie_recent(
     assert reglementation.status == ReglementationStatus.STATUS_A_JOUR
     assert (
         reglementation.status_detail
-        == "Vous êtes soumis à cette norme car votre effectif est supérieur à 500 salariés. Vous avez publié un bilan 2022 sur la plateforme Bilans GES."
+        == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 500 salariés. Vous avez publié un bilan 2022 sur la plateforme Bilans GES."
     )
     assert reglementation.primary_action == ACTION_CONSULTER
     mock_api_bges.assert_called_once_with(entreprise.siren)
@@ -220,7 +222,7 @@ def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer_sans_bilan_publie
     assert reglementation.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
         reglementation.status_detail
-        == "Vous êtes soumis à cette norme car votre effectif outre-mer est supérieur à 250 salariés. Vous n'avez pas encore publié votre bilan sur la plateforme Bilans GES."
+        == "Vous êtes soumis à cette réglementation car votre effectif outre-mer est supérieur à 250 salariés. Vous n'avez pas encore publié votre bilan sur la plateforme Bilans GES."
     )
     assert reglementation.primary_action == ACTION_PUBLIER
     mock_api_bges.assert_called_once_with(entreprise.siren)
@@ -244,7 +246,7 @@ def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer_bilan_publie_trop
     assert reglementation.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
         reglementation.status_detail
-        == "Vous êtes soumis à cette norme car votre effectif outre-mer est supérieur à 250 salariés. Le dernier bilan publié sur la plateforme Bilans GES concerne l'année 2015."
+        == "Vous êtes soumis à cette réglementation car votre effectif outre-mer est supérieur à 250 salariés. Le dernier bilan publié sur la plateforme Bilans GES concerne l'année 2015."
     )
     assert reglementation.primary_action == ACTION_PUBLIER
     mock_api_bges.assert_called_once_with(entreprise.siren)
@@ -268,7 +270,7 @@ def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer_bilan_publie_rece
     assert reglementation.status == ReglementationStatus.STATUS_A_JOUR
     assert (
         reglementation.status_detail
-        == "Vous êtes soumis à cette norme car votre effectif outre-mer est supérieur à 250 salariés. Vous avez publié un bilan 2022 sur la plateforme Bilans GES."
+        == "Vous êtes soumis à cette réglementation car votre effectif outre-mer est supérieur à 250 salariés. Vous avez publié un bilan 2022 sur la plateforme Bilans GES."
     )
     assert reglementation.primary_action == ACTION_CONSULTER
     mock_api_bges.assert_called_once_with(entreprise.siren)

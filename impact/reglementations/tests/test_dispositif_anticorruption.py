@@ -168,7 +168,9 @@ def test_calcule_etat_avec_effectif_insuffisant(effectif, entreprise_factory, al
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
-    assert reglementation.status_detail == "Vous n'êtes pas soumis à cette norme."
+    assert (
+        reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation."
+    )
 
 
 @pytest.mark.parametrize(
@@ -190,7 +192,9 @@ def test_calcule_etat_avec_ca_insuffisant(ca, entreprise_factory, alice):
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
-    assert reglementation.status_detail == "Vous n'êtes pas soumis à cette norme."
+    assert (
+        reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation."
+    )
 
 
 @pytest.mark.parametrize(
@@ -217,7 +221,7 @@ def test_calcule_etat_seuils_effectif_et_ca_suffisants(
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert (
         reglementation.status_detail
-        == "Vous êtes soumis à cette norme car votre effectif est supérieur à 500 salariés et votre chiffre d'affaires est supérieur à 100 millions d'euros."
+        == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 500 salariés et votre chiffre d'affaires est supérieur à 100 millions d'euros."
     )
 
 
@@ -247,7 +251,7 @@ def test_calcule_etat_seuils_effectif_et_ca_consolide_suffisants(
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert (
         reglementation.status_detail
-        == "Vous êtes soumis à cette norme car votre effectif est supérieur à 500 salariés et votre chiffre d'affaires consolidé est supérieur à 100 millions d'euros."
+        == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 500 salariés et votre chiffre d'affaires consolidé est supérieur à 100 millions d'euros."
     )
 
 
@@ -270,7 +274,7 @@ def test_calcule_etat_seuils_effectif_ca_et_ca_consolide_suffisants(
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert (
         reglementation.status_detail
-        == "Vous êtes soumis à cette norme car votre effectif est supérieur à 500 salariés et votre chiffre d'affaires est supérieur à 100 millions d'euros."
+        == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 500 salariés et votre chiffre d'affaires est supérieur à 100 millions d'euros."
     )
 
 
@@ -300,7 +304,7 @@ def test_calcule_etat_seuils_effectif_groupe_et_ca_suffisants(
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert (
         reglementation.status_detail
-        == "Vous êtes soumis à cette norme car l'effectif du groupe est supérieur à 500 salariés et votre chiffre d'affaires est supérieur à 100 millions d'euros."
+        == "Vous êtes soumis à cette réglementation car l'effectif du groupe est supérieur à 500 salariés et votre chiffre d'affaires est supérieur à 100 millions d'euros."
     )
 
 
@@ -328,4 +332,6 @@ def test_calcule_etat_seuils_effectif_groupe_et_ca_suffisants_mais_siege_social_
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
-    assert reglementation.status_detail == "Vous n'êtes pas soumis à cette norme."
+    assert (
+        reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation."
+    )
