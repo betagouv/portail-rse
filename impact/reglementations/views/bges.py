@@ -66,7 +66,7 @@ class BGESReglementation(Reglementation):
             return reglementation_status
 
         if cls.est_soumis(caracteristiques):
-            status_detail = f"Vous êtes soumis à cette norme car {', '.join(cls.criteres_remplis(caracteristiques))}."
+            status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(cls.criteres_remplis(caracteristiques))}."
             try:
                 annee_reporting = bges.last_reporting_year(
                     caracteristiques.entreprise.siren
@@ -93,7 +93,7 @@ class BGESReglementation(Reglementation):
                 status_detail += f" Vous avez publié un bilan {annee_reporting} sur la plateforme Bilans GES."
         else:
             status = ReglementationStatus.STATUS_NON_SOUMIS
-            status_detail = "Vous n'êtes pas soumis à cette norme."
+            status_detail = "Vous n'êtes pas soumis à cette réglementation."
             primary_action = cls.CONSULTER_BILANS_PRIMARY_ACTION
         return ReglementationStatus(
             status, status_detail, primary_action=primary_action

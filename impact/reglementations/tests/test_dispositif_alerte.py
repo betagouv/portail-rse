@@ -55,7 +55,9 @@ def test_calculate_status_less_than_50_employees(effectif, entreprise_factory, a
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
-    assert reglementation.status_detail == "Vous n'êtes pas soumis à cette norme."
+    assert (
+        reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation."
+    )
 
 
 @pytest.mark.parametrize(
@@ -80,5 +82,5 @@ def test_calculate_status_more_than_50_employees(effectif, entreprise_factory, a
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert (
         reglementation.status_detail
-        == "Vous êtes soumis à cette norme car votre effectif est supérieur à 50 salariés."
+        == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés."
     )

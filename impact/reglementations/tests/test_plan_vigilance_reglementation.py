@@ -146,7 +146,9 @@ def test_calcule_statut_moins_de_5000_employes(effectif, entreprise_factory, ali
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
-    assert reglementation.status_detail == "Vous n'êtes pas soumis à cette norme."
+    assert (
+        reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation."
+    )
     assert not reglementation.primary_action
 
 
@@ -178,7 +180,9 @@ def test_calcule_statut_societe_mere_francaise_moins_de_5000_employes_dans_le_gr
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
-    assert reglementation.status_detail == "Vous n'êtes pas soumis à cette norme."
+    assert (
+        reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation."
+    )
     assert not reglementation.primary_action
 
 
@@ -195,7 +199,9 @@ def test_calcule_statut_autre_statut_juridique(entreprise_factory, alice):
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
-    assert reglementation.status_detail == "Vous n'êtes pas soumis à cette norme."
+    assert (
+        reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation."
+    )
     assert not reglementation.primary_action
 
 
@@ -224,7 +230,7 @@ def test_critere_categorie_juridique_si_categorie_juridique_SA_SCA_ou_SE(
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert reglementation.status_detail.startswith(
-        f"Vous êtes soumis à cette norme car {categorie_juridique_sirene[1]} et votre effectif est supérieur à 5 000 salariés."
+        f"Vous êtes soumis à cette réglementation car {categorie_juridique_sirene[1]} et votre effectif est supérieur à 5 000 salariés."
     )
     assert reglementation.status_detail.endswith(
         "Vous devez établir un plan de vigilance si vous employez, à la clôture de deux exercices consécutifs, au moins 5 000 salariés, en votre sein ou dans vos filiales directes ou indirectes françaises, ou 10 000 salariés, en incluant vos filiales directes ou indirectes étrangères."
@@ -254,7 +260,7 @@ def test_calcule_statut_plus_de_5000_employes_dans_l_entreprise(
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert reglementation.status_detail.startswith(
-        "Vous êtes soumis à cette norme car votre entreprise est une Société Anonyme et votre effectif est supérieur à 5 000 salariés."
+        "Vous êtes soumis à cette réglementation car votre entreprise est une Société Anonyme et votre effectif est supérieur à 5 000 salariés."
     )
     assert reglementation.status_detail.endswith(
         "Vous devez établir un plan de vigilance si vous employez, à la clôture de deux exercices consécutifs, au moins 5 000 salariés, en votre sein ou dans vos filiales directes ou indirectes françaises, ou 10 000 salariés, en incluant vos filiales directes ou indirectes étrangères."
@@ -289,7 +295,7 @@ def test_calcule_statut_societe_mere_francaise_plus_de_5000_employes_dans_le_gro
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert reglementation.status_detail.startswith(
-        "Vous êtes soumis à cette norme car votre entreprise est une Société Anonyme et l'effectif du groupe France est supérieur à 5 000 salariés."
+        "Vous êtes soumis à cette réglementation car votre entreprise est une Société Anonyme et l'effectif du groupe France est supérieur à 5 000 salariés."
     )
     assert reglementation.status_detail.endswith(
         "Vous devez établir un plan de vigilance si vous employez, à la clôture de deux exercices consécutifs, au moins 5 000 salariés, en votre sein ou dans vos filiales directes ou indirectes françaises, ou 10 000 salariés, en incluant vos filiales directes ou indirectes étrangères."
@@ -330,7 +336,9 @@ def test_calcule_statut_societe_mere_etrangere_plus_de_5000_employes_dans_le_gro
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
-    assert reglementation.status_detail == "Vous n'êtes pas soumis à cette norme."
+    assert (
+        reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation."
+    )
     assert not reglementation.primary_action
 
 
@@ -354,7 +362,7 @@ def test_calcule_statut_societe_mere_francaise_moins_de_5000_employes_dans_le_gr
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
     assert reglementation.status_detail.startswith(
-        "Vous êtes soumis à cette norme car votre entreprise est une Société Anonyme et l'effectif du groupe international est supérieur à 10 000 salariés."
+        "Vous êtes soumis à cette réglementation car votre entreprise est une Société Anonyme et l'effectif du groupe international est supérieur à 10 000 salariés."
     )
     assert reglementation.status_detail.endswith(
         "Vous devez établir un plan de vigilance si vous employez, à la clôture de deux exercices consécutifs, au moins 5 000 salariés, en votre sein ou dans vos filiales directes ou indirectes françaises, ou 10 000 salariés, en incluant vos filiales directes ou indirectes étrangères."
@@ -381,7 +389,9 @@ def test_calcule_statut_societe_mere_francaise_moins_de_5000_employes_dans_le_gr
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
-    assert reglementation.status_detail == "Vous n'êtes pas soumis à cette norme."
+    assert (
+        reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation."
+    )
     assert not reglementation.primary_action
 
 
@@ -402,5 +412,7 @@ def test_calcule_statut_filiale_du_groupe(entreprise_factory, alice):
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
-    assert reglementation.status_detail == "Vous n'êtes pas soumis à cette norme."
+    assert (
+        reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation."
+    )
     assert not reglementation.primary_action

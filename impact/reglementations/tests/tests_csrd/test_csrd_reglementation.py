@@ -1236,7 +1236,9 @@ def test_calcule_etat_si_non_soumis(entreprise_factory, alice):
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
-    assert reglementation.status_detail == "Vous n'êtes pas soumis à cette norme."
+    assert (
+        reglementation.status_detail == "Vous n'êtes pas soumis à cette réglementation."
+    )
     assert reglementation.primary_action.title == "Tester un Rapport de Durabilité"
     assert reglementation.primary_action.url == reverse(
         "reglementations:gestion_csrd",
@@ -1271,7 +1273,7 @@ def test_calcule_etat_si_soumis_en_2025_et_delegable(entreprise_factory, alice):
     assert reglementation.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
         reglementation.status_detail
-        == "Vous êtes soumis à cette norme à partir de 2025 sur les données de l'exercice comptable 2024 car votre société est cotée sur un marché réglementé, l'effectif du groupe est supérieur à 500 salariés, le bilan du groupe est supérieur à 30M€ et le chiffre d'affaires du groupe est supérieur à 60M€. Vous pouvez déléguer cette obligation à votre société-mère. Vous devez publier le Rapport de Durabilité en même temps que le rapport de gestion."
+        == "Vous êtes soumis à cette réglementation à partir de 2025 sur les données de l'exercice comptable 2024 car votre société est cotée sur un marché réglementé, l'effectif du groupe est supérieur à 500 salariés, le bilan du groupe est supérieur à 30M€ et le chiffre d'affaires du groupe est supérieur à 60M€. Vous pouvez déléguer cette obligation à votre société-mère. Vous devez publier le Rapport de Durabilité en même temps que le rapport de gestion."
     )
     assert reglementation.prochaine_echeance == 2025
     assert reglementation.primary_action.title == "Actualiser mon Rapport de Durabilité"
@@ -1304,7 +1306,7 @@ def test_calcule_etat_si_soumis_en_2029_et_non_delegable(entreprise_factory, ali
 
     assert (
         reglementation.status_detail
-        == "Vous êtes soumis à cette norme à partir de 2029 sur les données de l'exercice comptable 2028 car votre société est cotée sur un marché réglementé, votre effectif est supérieur à 10 salariés et votre bilan est supérieur à 450k€. Vous devez publier le Rapport de Durabilité en même temps que le rapport de gestion."
+        == "Vous êtes soumis à cette réglementation à partir de 2029 sur les données de l'exercice comptable 2028 car votre société est cotée sur un marché réglementé, votre effectif est supérieur à 10 salariés et votre bilan est supérieur à 450k€. Vous devez publier le Rapport de Durabilité en même temps que le rapport de gestion."
     )
     assert reglementation.prochaine_echeance == 2029
     assert reglementation.primary_action.title == "Actualiser mon Rapport de Durabilité"
@@ -1338,7 +1340,7 @@ def test_calcule_etat_si_entreprise_hors_EEE_soumise_en_2029_sous_condition(
     assert reglementation.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert (
         reglementation.status_detail
-        == "Vous êtes soumis à cette norme à partir de 2029 sur les données de l'exercice comptable 2028 si votre société dont le siège social est hors EEE revêt une forme juridique comparable aux sociétés par actions ou aux sociétés à responsabilité limitée, comptabilise un chiffre d'affaires net dans l'Espace économique européen qui excède 150 millions d'euros à la date de clôture des deux derniers exercices consécutifs, ne contrôle ni n'est contrôlée par une autre société et dispose d'une succursale en France dont le chiffre d'affaires net excède 40 millions d'euros. Vous devez publier le Rapport de Durabilité en même temps que le rapport de gestion."
+        == "Vous êtes soumis à cette réglementation à partir de 2029 sur les données de l'exercice comptable 2028 si votre société dont le siège social est hors EEE revêt une forme juridique comparable aux sociétés par actions ou aux sociétés à responsabilité limitée, comptabilise un chiffre d'affaires net dans l'Espace économique européen qui excède 150 millions d'euros à la date de clôture des deux derniers exercices consécutifs, ne contrôle ni n'est contrôlée par une autre société et dispose d'une succursale en France dont le chiffre d'affaires net excède 40 millions d'euros. Vous devez publier le Rapport de Durabilité en même temps que le rapport de gestion."
     )
     assert reglementation.prochaine_echeance == 2029
 
@@ -2130,7 +2132,7 @@ def test_calcule_etat_si_soumis_en_2026_car_exercice_comptable_different_annee_c
 
     assert reglementation.status == ReglementationStatus.STATUS_A_ACTUALISER
     assert reglementation.status_detail.startswith(
-        "Vous êtes soumis à cette norme à partir de 2026 sur les données de l'exercice comptable 2024-2025 car"
+        "Vous êtes soumis à cette réglementation à partir de 2026 sur les données de l'exercice comptable 2024-2025 car"
     )
     assert reglementation.status_detail.endswith(
         "Vous devez publier le Rapport de Durabilité en même temps que le rapport de gestion."
