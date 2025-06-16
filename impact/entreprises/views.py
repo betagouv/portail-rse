@@ -17,6 +17,7 @@ from entreprises.forms import EntrepriseQualificationForm
 from entreprises.models import Entreprise
 from entreprises.models import SIREN_ENTREPRISE_TEST
 from habilitations.models import Habilitation
+from users.forms import message_erreur_proprietaires
 
 
 def get_current_entreprise(request):
@@ -92,6 +93,16 @@ def attach(request):
                 raise _InvalidRequest(
                     "Impossible d'ajouter cette entreprise. Vous y êtes déjà rattaché·e."
                 )
+            if habilitations := Habilitation.objects.filter(
+                entreprise=entreprise
+            ).all():
+                cause_erreur = message_erreur_proprietaires(
+                    [habilitation.user for habilitation in habilitations]
+                )
+                raise _InvalidRequest(
+                    f"Impossible d'ajouter cette entreprise. {cause_erreur}"
+                )
+
             else:
                 Habilitation.ajouter(
                     entreprise,

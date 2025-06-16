@@ -9,9 +9,31 @@
         <div class="fr-grid-row fr-grid-row--top">
             <div class="fr-col-lg-7 fr-col-12">
                 <h1>Création de compte sur Portail RSE</h1>
+                {% if creation_par_invitation %}
+                    <p>
+                        Vous avez été invité à créer un compte pour collaborer sur les obligations RSE d'une entreprise.
+                        Créez votre compte pour accéder aux informations communes.
+                    </p>
+                {% endif %}
                 <p>Sauf mention contraire “(optionnel)” dans le label, tous les champs sont obligatoires.</p>
-                <form action="{% url 'users:creation' %}" method="post">
+                <form action="{% if creation_par_invitation %}{% url 'users:invitation' form.id_invitation.value form.code.value %}{% else %}{% url 'users:creation' %}{% endif %}" method="post">
                     {% csrf_token %}
+
+                    {% if creation_par_invitation %}
+                        {{ form.id_invitation }}
+                        {{ form.code }}
+
+                        {% for erreur, messages in form.errors.items %}
+                            {% if erreur == "code" or erreur == "id_invitation"  %}
+                                <p class="fr-error-text">
+                                    {% for message in messages %}
+                                        {{message}}
+                                    {% endfor %}
+                                </p>
+                            {% endif %}
+                        {% endfor %}
+
+                    {% endif %}
                     {% include 'snippets/field.html' with field=form.email %}
                     <div id="svelte-password-validation" data-password1-field-name="password1" data-password2-field-name="password2">
                         {% include 'snippets/field.html' with field=form.password1 %}
@@ -42,7 +64,7 @@
                 </p>
                 <p>
                     <small>
-                        Portail RSE est une plateforme qui vise à aider les entreprises à identifier les obligations extra-financières issues du droit national et communautaire auxuelles elles sont soumises ;
+                        Portail RSE est une plateforme qui vise à aider les entreprises à identifier les obligations extra-financières issues du droit national et communautaire auxquelles elles sont soumises ;
                         et à leur permettre de disposer d’un outil unique de transmission, de déclaration et de publication, permettant de se conformer aux obligations extra-financières auxquelles elles sont assujetties.
                     </small>
                 </p>

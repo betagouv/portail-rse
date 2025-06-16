@@ -19,11 +19,11 @@ class Migration(migrations.Migration):
             name="role",
             field=models.CharField(
                 choices=[
-                    ("propriétaire", "Propriétaire"),
-                    ("éditeur", "Éditeur"),
+                    ("proprietaire", "Propriétaire"),
+                    ("editeur", "Éditeur"),
                     ("lecteur", "Lecteur"),
                 ],
-                default="propriétaire",
+                default="proprietaire",
                 max_length=20,
                 verbose_name="rôle",
             ),
