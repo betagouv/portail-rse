@@ -6,10 +6,7 @@ from django.urls import reverse
 from openpyxl import load_workbook
 
 from api.exceptions import APIError
-from habilitations.models import Habilitation
 from reglementations.models.csrd import DocumentAnalyseIA
-from reglementations.models.csrd import RapportCSRD
-from reglementations.views.csrd.analyse_ia import envoie_resultat_ia_email
 
 CONTENU_PDF = b"%PDF-1.4\n%\xd3\xeb\xe9\xe1\n1 0 obj\n<</Title (CharteEngagements"
 
@@ -214,7 +211,9 @@ def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_2(
     assert mail.template_id == settings.BREVO_RESULTAT_ANALYSE_IA_TEMPLATE
 
 
-def test_serveur_IA_envoie_le_resultat_de_l_analyse(client, document, mailoutbox, alice):
+def test_serveur_IA_envoie_le_resultat_de_l_analyse(
+    client, document, mailoutbox, alice
+):
     RESULTATS = """{
   "ESRS E1": [
     {
@@ -298,7 +297,9 @@ def test_envoie_resultat_ia_email_non_bloquant(client, document, mocker):
     assert isinstance(args[0], Exception)
 
 
-def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(client, csrd, alice):
+def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(
+    client, csrd, alice
+):
     document = DocumentAnalyseIA.objects.create(
         rapport_csrd=csrd,
         etat="success",
