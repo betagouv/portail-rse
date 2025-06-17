@@ -602,107 +602,28 @@ def test_save_bdese_configuration_for_a_new_year(
 
 
 @pytest.mark.parametrize("bdese_class", [BDESE_50_300, BDESE_300])
-def _test_initialize_personal_bdese_configuration_only_with_other_personal_bdeses(
-    bdese_class, bdese_factory, alice
-):
-    # note : suppression de ce test à confirmer, mais semble désormais obsolète
-    official_bdese = bdese_factory(bdese_class=bdese_class, annee=2021)
-    official_bdese.categories_professionnelles = ["A", "B", "C"]
-    if official_bdese.is_bdese_300:
-        official_bdese.categories_professionnelles_detaillees = [
+def test_initialize_bdese_configuration(bdese_class, bdese_factory, alice):
+    bdese_2021 = bdese_factory(bdese_class=bdese_class, annee=2021)
+    bdese_2021.categories_professionnelles = ["A", "B", "C"]
+    if bdese_class is BDESE_300:
+        bdese_2021.categories_professionnelles_detaillees = [
             "E",
             "F",
             "G",
             "H",
             "I",
         ]
-        official_bdese.niveaux_hierarchiques = ["Y", "Z"]
-    official_bdese.save()
+        bdese_2021.niveaux_hierarchiques = ["Y", "Z"]
+    bdese_2021.save()
 
-    new_bdese = bdese_factory(
-        bdese_class, entreprise=official_bdese.entreprise, annee=2022
+    bdese_2022 = bdese_factory(
+        bdese_class, entreprise=bdese_2021.entreprise, annee=2022
     )
-    initial = initialize_bdese_configuration(new_bdese)
 
-    assert not initial
-
-    personal_bdese = bdese_factory(
-        bdese_class=bdese_class,
-        entreprise=official_bdese.entreprise,
-        user=alice,
-        annee=2021,
-    )
-    personal_bdese.categories_professionnelles = ["A", "B", "C"]
-    if personal_bdese.is_bdese_300:
-        personal_bdese.categories_professionnelles_detaillees = [
-            "E",
-            "F",
-            "G",
-            "H",
-            "I",
-        ]
-        personal_bdese.niveaux_hierarchiques = ["Y", "Z"]
-    personal_bdese.save()
-
-    initial = initialize_bdese_configuration(new_bdese)
+    initial = initialize_bdese_configuration(bdese_2022)
 
     assert initial["categories_professionnelles"] == ["A", "B", "C"]
-    if personal_bdese.is_bdese_300:
-        assert initial["categories_professionnelles_detaillees"] == [
-            "E",
-            "F",
-            "G",
-            "H",
-            "I",
-        ]
-        assert initial["niveaux_hierarchiques"] == ["Y", "Z"]
-
-
-@pytest.mark.parametrize("bdese_class", [BDESE_50_300, BDESE_300])
-def _test_initialize_official_bdese_configuration_only_with_other_official_bdeses(
-    # note : suppression de ce test à confirmer, mais semble désormais obsolète
-    bdese_class,
-    bdese_factory,
-):
-    personal_bdese = bdese_factory(bdese_class=bdese_class, annee=2021)
-    personal_bdese.categories_professionnelles = ["A", "B", "C"]
-    if personal_bdese.is_bdese_300:
-        personal_bdese.categories_professionnelles_detaillees = [
-            "E",
-            "F",
-            "G",
-            "H",
-            "I",
-        ]
-        personal_bdese.niveaux_hierarchiques = ["Y", "Z"]
-    personal_bdese.save()
-
-    new_bdese = bdese_factory(
-        bdese_class, entreprise=personal_bdese.entreprise, annee=2022
-    )
-    initial = initialize_bdese_configuration(new_bdese)
-
-    assert not initial
-
-    official_bdese = bdese_factory(
-        bdese_class=bdese_class, entreprise=personal_bdese.entreprise, annee=2021
-    )
-    official_bdese.categories_professionnelles = ["A", "B", "C"]
-    if official_bdese.is_bdese_300:
-        official_bdese.categories_professionnelles_detaillees = [
-            "E",
-            "F",
-            "G",
-            "H",
-            "I",
-        ]
-        official_bdese.niveaux_hierarchiques = ["Y", "Z"]
-    official_bdese.save()
-
-    initial = initialize_bdese_configuration(new_bdese)
-
-    assert initial["categories_professionnelles"] == ["A", "B", "C"]
-    if personal_bdese.is_bdese_300:
+    if bdese_class is BDESE_300:
         assert initial["categories_professionnelles_detaillees"] == [
             "E",
             "F",
