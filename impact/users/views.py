@@ -13,7 +13,6 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .forms import InvitationForm
 from .forms import UserCreationForm
 from .forms import UserEditionForm
 from .forms import UserPasswordForm
@@ -23,6 +22,7 @@ from entreprises.models import Entreprise
 from entreprises.views import search_and_create_entreprise
 from habilitations.models import Habilitation
 from invitations.models import Invitation
+from users.forms import message_erreur_proprietaires
 from utils.tokens import check_token
 from utils.tokens import make_token
 from utils.tokens import uidb64
@@ -36,6 +36,18 @@ def creation(request):
                 siren = form.cleaned_data["siren"]
                 if entreprises := Entreprise.objects.filter(siren=siren):
                     entreprise = entreprises[0]
+                    if habilitations := Habilitation.objects.filter(
+                        entreprise=entreprise
+                    ):
+                        proprietaires_presents = [
+                            habilitation.user for habilitation in habilitations
+                        ]
+                        messages.error(
+                            request,
+                            message_erreur_proprietaires(proprietaires_presents),
+                        )
+                        return render(request, "users/creation.html", {"form": form})
+
                 else:
                     entreprise = search_and_create_entreprise(siren)
                 user = form.save()
@@ -53,15 +65,6 @@ def creation(request):
                 return redirect("reglementations:tableau_de_bord", siren)
             except APIError as exception:
                 messages.error(request, exception)
-        else:
-            if proprietaires_presents := form.proprietaires_presents:
-                proprio = proprietaires_presents[0]
-                messages.error(request, form.message_erreur_proprietaires())
-            else:
-                messages.error(
-                    request,
-                    "La création a échoué car le formulaire contient des erreurs.",
-                )
     else:
         siren = request.session.get("siren")
         form = UserCreationForm(initial={"siren": siren})
@@ -120,11 +123,19 @@ def invitation(request, id_invitation, code):
             "L'invitation est expirée. Vous devez demander une nouvelle invitation à un des propriétaires de l'entreprise sur Portail-RSE.",
         )
         return redirect("/")
+    if not check_token(invitation, "invitation", code):
+        messages.error(request, "Cette invitation est incorrecte.")
+        return redirect("/")
 
     if request.method == "POST":
-        form = InvitationForm(request.POST)
+        form = UserCreationForm(request.POST)
+        siren = form.data["siren"]
+        email = form.data.get("email")
+        if invitation.email != email:
+            form.add_error("email", "L'e-mail ne correspond pas à l'invitation.")
+        if invitation.entreprise.siren != siren:
+            form.add_error("siren", "L'entreprise ne correspond pas à l'invitation.")
         if form.is_valid():
-            siren = form.cleaned_data["siren"]
             entreprises = Entreprise.objects.filter(siren=siren)
             entreprise = entreprises[0]
             user = form.save()
@@ -135,6 +146,7 @@ def invitation(request, id_invitation, code):
                 user,
                 fonctions=form.cleaned_data["fonctions"],
             )
+            # message.success TODO XXX
             Invitation.objects.filter(entreprise=entreprise, email=user.email).delete()
             return redirect("reglementations:tableau_de_bord", siren)
         else:
@@ -145,12 +157,17 @@ def invitation(request, id_invitation, code):
         initial = {
             "email": invitation.email,
             "siren": invitation.entreprise.siren,
-            "id_invitation": invitation.id,
-            "code": make_token(invitation, "invitation"),
         }
-        form = InvitationForm(initial=initial)
+        form = UserCreationForm(initial=initial)
     return render(
-        request, "users/creation.html", {"form": form, "creation_par_invitation": True}
+        request,
+        "users/creation.html",
+        {
+            "form": form,
+            "creation_par_invitation": True,
+            "id_invitation": id_invitation,
+            "code": code,
+        },
     )
 
 
