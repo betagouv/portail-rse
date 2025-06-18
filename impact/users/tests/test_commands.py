@@ -1,7 +1,11 @@
+from datetime import date
+
 import pytest
+from dateutil.relativedelta import relativedelta
+from django.core.management import call_command
+from freezegun import freeze_time
 
 from habilitations.models import Habilitation
-from users.management.commands.import_utilisateurs_brevo import Command
 
 
 @pytest.mark.django_db(transaction=True)
@@ -23,7 +27,7 @@ def test_import_des_contacts(
         "sib_api_v3_sdk.ContactsApi.import_contacts",
     )
 
-    Command().handle(list_id=42)
+    call_command("import_utilisateurs_brevo", 42)
 
     assert mocked_import_contacts.called
     args, _ = mocked_import_contacts.call_args
@@ -42,3 +46,49 @@ def test_import_des_contacts(
     assert request_contact_import.list_ids == [42]
     assert request_contact_import.update_existing_contacts == True
     assert request_contact_import.empty_contacts_attributes == True
+
+
+@pytest.mark.django_db(transaction=True)
+def test_supprime_utilisateurs_non_confirmes(django_user_model):
+    il_y_a_deux_mois = date.today() + relativedelta(months=-2)
+    il_y_a_moins_de_deux_mois = il_y_a_deux_mois + relativedelta(days=1)
+    il_y_a_plus_de_deux_mois = il_y_a_deux_mois + relativedelta(days=-1)
+
+    with freeze_time(il_y_a_plus_de_deux_mois) as frozen_datetime:
+        alice = django_user_model.objects.create(
+            email="alice@portail-rse.test",
+            is_email_confirmed=False,
+        )
+        bob = django_user_model.objects.create(
+            email="bob@portail-rse.test",
+            is_email_confirmed=True,
+        )
+
+    with freeze_time(il_y_a_moins_de_deux_mois) as frozen_datetime:
+        charlie = django_user_model.objects.create(
+            email="charlie@portail-rse.test",
+            is_email_confirmed=False,
+        )
+
+    call_command("supprime_utilisateurs_non_confirmes")
+
+    with pytest.raises(django_user_model.DoesNotExist):
+        assert alice.refresh_from_db()
+    bob.refresh_from_db()
+    charlie.refresh_from_db()
+
+
+@pytest.mark.django_db(transaction=True)
+def test_check_supprime_utilisateurs_non_confirmes(django_user_model):
+    il_y_a_deux_mois = date.today() + relativedelta(months=-2)
+    il_y_a_plus_de_deux_mois = il_y_a_deux_mois + relativedelta(days=-1)
+
+    with freeze_time(il_y_a_plus_de_deux_mois) as frozen_datetime:
+        alice = django_user_model.objects.create(
+            email="alice@portail-rse.test",
+            is_email_confirmed=False,
+        )
+
+    call_command("supprime_utilisateurs_non_confirmes", check=True)
+
+    alice.refresh_from_db()
