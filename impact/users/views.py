@@ -146,7 +146,10 @@ def invitation(request, id_invitation, code):
                 user,
                 fonctions=form.cleaned_data["fonctions"],
             )
-            # message.success TODO XXX
+            messages.success(
+                request,
+                "Votre compte a bien été créé. Connectez-vous pour collaborer avec les autres membres de l'entreprise.",
+            )
             Invitation.objects.filter(entreprise=entreprise, email=user.email).delete()
             return redirect("reglementations:tableau_de_bord", siren)
         else:
