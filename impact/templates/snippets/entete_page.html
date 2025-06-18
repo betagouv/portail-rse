@@ -48,9 +48,9 @@
                                 </div>
                             </li>
                         {% else %}
-                            <li><a class="fr-btn fr-btn--secondary fr-icon-lock-fill" href="{% absolute_url 'users:login' %}?mtm_campaign=connexion-menu&mtm_kwd=menu">Se connecter</a></li>
+                            <li><a class="fr-btn fr-btn--secondary fr-icon-lock-fill" href="{% absolute_url 'users:login' %}">Se connecter</a></li>
                             {% if url_simulation not in request.path %}
-                                <li><a class="fr-btn fr-btn--primary fr-btn--tool-links" href="{% absolute_url 'simulation' %}?mtm_campaign=simulation-menu&mtm_kwd=menu">Vérifier mes obligations</a></li>
+                                <li><a class="fr-btn fr-btn--primary fr-btn--tool-links" href="{% absolute_url 'simulation' %}">Vérifier mes obligations</a></li>
                             {% endif %}
                         {% endif %}
                     </ul>
