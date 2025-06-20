@@ -80,7 +80,7 @@ def _envoie_email_d_ajout(request, entreprise, utilisateur):
         from_email=settings.DEFAULT_FROM_EMAIL,
     )
     email.template_id = settings.BREVO_AJOUT_MEMBRE_TEMPLATE
-    path = f"""{reverse("habilitations:membres_entreprise", args=[entreprise.siren])}"""
+    path = f"""{reverse("entreprises:entreprises")}"""
     url = f"{request.build_absolute_uri(path)}"
     inviteur = request.user
     email.merge_global_data = {
