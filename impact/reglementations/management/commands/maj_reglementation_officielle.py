@@ -29,7 +29,11 @@ class Command(BaseCommand):
         parser.add_argument(
             "--csrd", type=int, help="Identifiant du rapport CSRD à modifier"
         )
-
+        parser.add_argument(
+            "--liste",
+            type=str,
+            help="Liste les réglementations personnelles pour l'utilisateur (via son e-mail)",
+        )
         parser.add_argument(
             "--dry-run",
             action="store_true",
@@ -43,6 +47,20 @@ class Command(BaseCommand):
         bdese50300 = options["bdese50300"]
         csrd = options["csrd"]
         dry_run = options["dry_run"]
+        liste = options["liste"]
+
+        if liste:
+            self.stdout.write(
+                self.style.NOTICE(f"Liste des rapports personnels lié à '{liste}' :")
+            )
+            for clazz in [RapportCSRD, BDESEAvecAccord, BDESE_300, BDESE_50_300]:
+                f = "proprietaire__email" if clazz is RapportCSRD else "user__email"
+                rs = clazz.objects.filter(**{f: liste}).order_by("id")
+                if rs.exists():
+                    self.stdout.write(self.style.WARNING(f"> {clazz.__name__}:"))
+                    for r in rs:
+                        self.stdout.write(self.style.SUCCESS(f" - {r} (pk: {r.pk})"))
+            return
 
         clazz = None
         champ_utilisateur = "user"
