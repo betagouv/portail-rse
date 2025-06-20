@@ -155,6 +155,29 @@ def test_create_user_but_cant_send_confirm_email(
     )
 
 
+def test_échec_lors_de_la_création_car_un_propriétaire_de_l_entreprise_existe_déjà(
+    client, alice, entreprise_non_qualifiee
+):
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
+    data = {
+        "prenom": "Bob",
+        "nom": "User",
+        "email": "bob@domaine.test",
+        "password1": "Passw0rd!123",
+        "password2": "Passw0rd!123",
+        "siren": entreprise_non_qualifiee.siren,
+        "acceptation_cgu": "checked",
+        "fonctions": "Présidente",
+    }
+
+    response = client.post("/creation", data=data, follow=True)
+
+    assert response.status_code == 200
+    assert not User.objects.filter(email="bob@domaine.test")
+    content = html.unescape(response.content.decode("utf-8"))
+    assert "Il existe déjà un propriétaire sur cette entreprise." in content, content
+
+
 def test_confirm_email(client, alice):
     alice.is_email_confirmed = False
     alice.save()
@@ -509,16 +532,15 @@ def test_erreur_page_invitation_car_invitation_expirée(client, entreprise_facto
 
 
 def test_creation_d_un_utilisateur_après_une_invitation(
-    client, db, entreprise_factory, mailoutbox
+    client, db, entreprise_factory, mailoutbox, alice
 ):
-    entreprise = entreprise_factory(siren="130025265")  # Dinum
+    entreprise = entreprise_factory(siren="130025265")
+    Habilitation.ajouter(entreprise, alice)
     invitation = Invitation.objects.create(
         entreprise=entreprise, email="alice@portail.example"
     )
     CODE = make_token(invitation, "invitation")
     data = {
-        "id_invitation": invitation.id,
-        "code": CODE,
         "prenom": "Alice",
         "nom": "User",
         "email": "alice@portail.example",
@@ -563,3 +585,101 @@ def test_creation_d_un_utilisateur_après_une_invitation(
         ).count()
         == 0
     )
+
+
+def test_echec_d_invitation_car_le_code_ne_correspond_pas(
+    client, db, entreprise_factory, mailoutbox, alice
+):
+    entreprise = entreprise_factory(siren="130025265")
+    Habilitation.ajouter(entreprise, alice)
+    invitation = Invitation.objects.create(
+        entreprise=entreprise, email="alice@portail.example"
+    )
+    CODE = "INCORRECT"
+    data = {
+        "prenom": "Alice",
+        "nom": "User",
+        "email": "alice@portail.example",
+        "password1": "Passw0rd!123",
+        "password2": "Passw0rd!123",
+        "siren": entreprise.siren,
+        "acceptation_cgu": "checked",
+        "reception_actualites": "checked",
+        "fonctions": "Présidente",
+    }
+
+    response = client.post(
+        f"/invitation/{invitation.id}/{CODE}", data=data, follow=True
+    )
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [
+        ("/", 302),
+    ]
+    assert not User.objects.filter(email="alice@portail.example")
+    content = html.unescape(response.content.decode("utf-8"))
+    assert "Cette invitation est incorrecte." in content, content
+
+
+def test_echec_d_invitation_car_l_email_ne_correspond_pas(
+    client, db, entreprise_factory, mailoutbox, alice
+):
+    entreprise = entreprise_factory(siren="130025265")
+    Habilitation.ajouter(entreprise, alice)
+    invitation = Invitation.objects.create(
+        entreprise=entreprise, email="alice@portail.example"
+    )
+    CODE = make_token(invitation, "invitation")
+    data = {
+        "prenom": "Alice",
+        "nom": "User",
+        "email": "autre@email.test",
+        "password1": "Passw0rd!123",
+        "password2": "Passw0rd!123",
+        "siren": entreprise.siren,
+        "acceptation_cgu": "checked",
+        "reception_actualites": "checked",
+        "fonctions": "Présidente",
+    }
+
+    response = client.post(
+        f"/invitation/{invitation.id}/{CODE}", data=data, follow=True
+    )
+
+    assert response.status_code == 200
+    assert not User.objects.filter(email="alice@portail.example")
+    assert not User.objects.filter(email="autre@email.test")
+    content = html.unescape(response.content.decode("utf-8"))
+    assert "L'e-mail ne correspond pas à l'invitation." in content, content
+
+
+def test_echec_d_invitation_car_l_entreprise_ne_correspond_pas(
+    client, db, entreprise_factory, mailoutbox, alice
+):
+    entreprise = entreprise_factory(siren="130025265")
+    autre_entreprise = entreprise_factory(siren="000000001")
+    Habilitation.ajouter(entreprise, alice)
+    invitation = Invitation.objects.create(
+        entreprise=entreprise, email="alice@portail.example"
+    )
+    CODE = make_token(invitation, "invitation")
+    data = {
+        "prenom": "Alice",
+        "nom": "User",
+        "email": "autre@email.test",
+        "password1": "Passw0rd!123",
+        "password2": "Passw0rd!123",
+        "siren": autre_entreprise.siren,
+        "acceptation_cgu": "checked",
+        "reception_actualites": "checked",
+        "fonctions": "Présidente",
+    }
+
+    response = client.post(
+        f"/invitation/{invitation.id}/{CODE}", data=data, follow=True
+    )
+
+    assert response.status_code == 200
+    assert not User.objects.filter(email="alice@portail.example")
+    content = html.unescape(response.content.decode("utf-8"))
+    assert "L'entreprise ne correspond pas à l'invitation." in content, content

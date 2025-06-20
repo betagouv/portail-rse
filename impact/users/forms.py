@@ -7,14 +7,10 @@ from django.core.exceptions import ValidationError
 
 from .models import User
 from entreprises.forms import SirenField
-from entreprises.models import Entreprise
 from habilitations.models import FONCTIONS_MAX_LENGTH
 from habilitations.models import FONCTIONS_MIN_LENGTH
-from habilitations.models import Habilitation
-from invitations.models import Invitation
 from utils.emails import cache_partiellement_un_email
 from utils.forms import DsfrForm
-from utils.tokens import check_token
 
 
 class LoginForm(DsfrForm, AuthenticationForm):
@@ -98,22 +94,6 @@ class UserCreationForm(UserPasswordForm):
             "reception_actualites": "Je souhaite recevoir les actualités du Portail RSE (optionnel)",
         }
 
-    def clean_siren(self):
-        siren = self.cleaned_data.get("siren")
-        if entreprises := Entreprise.objects.filter(siren=siren):
-            entreprise = entreprises[0]
-            if habilitations := Habilitation.objects.filter(entreprise=entreprise):
-                self.proprietaires_presents = [
-                    habilitation.user for habilitation in habilitations
-                ]
-                raise forms.ValidationError(
-                    "Cette entreprise a déjà au moins un propriétaire."
-                )
-        return siren
-
-    def message_erreur_proprietaires(self):
-        return message_erreur_proprietaires(self.proprietaires_presents)
-
 
 def message_erreur_proprietaires(proprietaires_presents):
     if len(proprietaires_presents) == 1:
@@ -128,33 +108,6 @@ def message_erreur_proprietaires(proprietaires_presents):
         )
         message = f"Il existe déjà des propriétaires sur cette entreprise. Contactez une des personnes concernées ({emails_caches}) ou notre support (contact@portail-rse.beta.gouv.fr)."
     return message
-
-
-class InvitationForm(UserCreationForm):
-    code = forms.CharField(widget=forms.HiddenInput())
-    id_invitation = forms.IntegerField(widget=forms.HiddenInput())
-
-    def _post_clean(self):
-        super()._post_clean()
-        code = self.cleaned_data.get("code")
-        id_invitation = self.cleaned_data.get("id_invitation")
-        invitation = Invitation.objects.get(id=id_invitation)
-        if invitation.est_expiree:
-            self.add_error("id_invitation", "Cette invitation est expirée.")
-        if not check_token(invitation, "invitation", code):
-            self.add_error("code", "Cette invitation est incorrecte.")
-        email = self.cleaned_data.get("email")
-        if invitation.email != email:
-            self.add_error(
-                "email",
-                "L'e-mail ne correspond pas à l'invitation.",
-            )
-        siren = self.cleaned_data.get("siren")
-        if invitation.entreprise.siren != siren:
-            self.add_error(
-                "siren",
-                "L'entreprise ne correspond pas à l'invitation.",
-            )
 
 
 class UserEditionForm(DsfrForm, forms.ModelForm):

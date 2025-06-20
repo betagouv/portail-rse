@@ -89,9 +89,16 @@ def attach(request):
                 entreprise = entreprises[0]
             else:
                 entreprise = search_and_create_entreprise(siren)
-            if Habilitation.existe(entreprise, request.user):
-                raise _InvalidRequest(
-                    "Impossible d'ajouter cette entreprise. Vous y êtes déjà rattaché·e."
+            if habilitations := Habilitation.objects.filter(
+                entreprise=entreprise
+            ).all():
+                for habilitation in habilitations:
+                    if habilitation.user == request.user:
+                        raise _InvalidRequest(
+                            "Impossible d'ajouter cette entreprise. Vous y êtes déjà rattaché·e."
+                        )
+                cause_erreur = message_erreur_proprietaires(
+                    [habilitation.user for habilitation in habilitations]
                 )
             if habilitations := Habilitation.objects.filter(
                 entreprise=entreprise

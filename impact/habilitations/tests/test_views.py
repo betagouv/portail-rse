@@ -1,5 +1,6 @@
 import html
 
+import pytest
 from django.conf import settings
 from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed
@@ -134,3 +135,26 @@ def test_erreur_invitation_a_devenir_membre_car_email_incorrect(
     assert response.status_code == 200
     content = html.unescape(response.content.decode("utf-8"))
     assert "L'invitation a échoué car le formulaire contient des erreurs." in content
+
+
+@pytest.mark.django_db(transaction=True)
+def test_erreur_invitation_a_devenir_membre_car_deja_membre(
+    client, alice, bob, entreprise_factory, mailoutbox
+):
+    entreprise = entreprise_factory()
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
+    Habilitation.ajouter(entreprise, bob, fonctions="Présidente")
+    client.force_login(alice)
+    data = {
+        "email": bob.email,
+    }
+    url = f"/droits/{entreprise.siren}"
+
+    response = client.post(url, data=data, follow=True)
+
+    assert response.status_code == 200
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        "L'invitation a échoué car cette personne est déjà membre de l'entreprise."
+        in content
+    )

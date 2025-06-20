@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 from django.shortcuts import HttpResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -17,8 +18,8 @@ from entreprises.decorators import entreprise_qualifiee_required
 from entreprises.exceptions import EntrepriseNonQualifieeError
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
+from habilitations.enums import UserRole
 from habilitations.models import Habilitation
-from habilitations.models import is_user_habilited_on_entreprise
 from reglementations.forms import bdese_configuration_form_factory
 from reglementations.forms import bdese_form_factory
 from reglementations.forms import IntroductionDemoForm
@@ -96,11 +97,11 @@ class BDESEReglementation(Reglementation):
             cls._match_bdese_existante,
             cls._match_sans_bdese,
         ]:
-            if reglementation_status := match(caracteristiques, user):
+            if reglementation_status := match(caracteristiques):
                 return reglementation_status
 
     @classmethod
-    def _match_non_soumis(cls, caracteristiques, user):
+    def _match_non_soumis(cls, caracteristiques):
         if not cls.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_NON_SOUMIS
             status_detail = "Vous n'êtes pas soumis à cette réglementation."
@@ -118,12 +119,12 @@ class BDESEReglementation(Reglementation):
             )
 
     @classmethod
-    def _match_avec_accord(cls, caracteristiques, user):
+    def _match_avec_accord(cls, caracteristiques):
         if cls.bdese_type(caracteristiques) == cls.TYPE_AVEC_ACCORD:
             annee = derniere_annee_a_remplir_bdese()
             entreprise = caracteristiques.entreprise
-            bdese = cls._select_bdese(BDESEAvecAccord, annee, entreprise, user)
-            if bdese and bdese.is_complete:
+            bdese = BDESEAvecAccord.officials.filter(entreprise=entreprise, annee=annee)
+            if bdese and bdese[0].is_complete:
                 status = ReglementationStatus.STATUS_A_JOUR
                 primary_action_title = f"Marquer ma BDESE {annee} comme non actualisée"
             else:
@@ -145,7 +146,7 @@ class BDESEReglementation(Reglementation):
             )
 
     @classmethod
-    def _match_bdese_existante(cls, caracteristiques, user):
+    def _match_bdese_existante(cls, caracteristiques):
         if cls.bdese_type(caracteristiques) == cls.TYPE_INFERIEUR_300:
             bdese_class = BDESE_50_300
         else:
@@ -153,11 +154,11 @@ class BDESEReglementation(Reglementation):
 
         annee = derniere_annee_a_remplir_bdese()
         entreprise = caracteristiques.entreprise
-        bdese = cls._select_bdese(bdese_class, annee, entreprise, user)
+        bdese = bdese_class.officials.filter(entreprise=entreprise, annee=annee)
         if not bdese:
             return
 
-        if bdese.is_complete:
+        if bdese[0].is_complete:
             status = ReglementationStatus.STATUS_A_JOUR
             status_detail = f"Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez actualisé votre BDESE {annee} sur la plateforme."
             primary_action = ReglementationAction(
@@ -206,7 +207,7 @@ class BDESEReglementation(Reglementation):
         )
 
     @classmethod
-    def _match_sans_bdese(cls, caracteristiques, user):
+    def _match_sans_bdese(cls, caracteristiques):
         annee = derniere_annee_a_remplir_bdese()
         status = ReglementationStatus.STATUS_A_ACTUALISER
         status_detail = "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Nous allons vous aider à la remplir."
@@ -225,20 +226,26 @@ class BDESEReglementation(Reglementation):
             secondary_actions=secondary_actions,
         )
 
-    @staticmethod
-    def _select_bdese(bdese_class, annee, entreprise, user):
-        if (
-            user
-            and Habilitation.existe(entreprise, user)
-            and not is_user_habilited_on_entreprise(user, entreprise)
-        ):
-            bdese = bdese_class.personals.filter(
-                entreprise=entreprise, annee=annee, user=user
-            )
-        else:
-            bdese = bdese_class.officials.filter(entreprise=entreprise, annee=annee)
+    @classmethod
+    def classe_entreprise(cls, entreprise):
+        caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
 
-        return bdese[0] if bdese else None
+        if not caracteristiques:
+            raise EntrepriseNonQualifieeError(
+                "Veuillez renseigner les informations suivantes pour accéder à la BDESE",
+                entreprise,
+            )
+
+        match BDESEReglementation.bdese_type(caracteristiques):
+            case BDESEReglementation.TYPE_AVEC_ACCORD:
+                return BDESEAvecAccord
+            case (
+                BDESEReglementation.TYPE_INFERIEUR_500
+                | BDESEReglementation.TYPE_SUPERIEUR_500
+            ):
+                return BDESE_300
+            case _:
+                return BDESE_50_300
 
 
 @login_required
@@ -248,7 +255,13 @@ def bdese_pdf(request, siren, annee):
     if not Habilitation.existe(entreprise, request.user):
         raise PermissionDenied
 
-    bdese = get_or_create_bdese(entreprise, annee, request.user)
+    # à cette étape, on ne peut réutiliser qu'une BDESE principale
+    bdese = get_object_or_404(
+        BDESEReglementation.classe_entreprise(entreprise),
+        entreprise=entreprise,
+        annee=annee,
+        user=None,
+    )
 
     if bdese.is_bdese_avec_accord:
         raise Http404
@@ -297,7 +310,25 @@ def bdese_step(request, siren, annee, step):
     if not Habilitation.existe(entreprise, request.user):
         raise PermissionDenied
 
-    bdese = get_or_create_bdese(entreprise, annee, request.user)
+    role = Habilitation.role_pour(entreprise, request.user)
+    classe_bdese = BDESEReglementation.classe_entreprise(entreprise)
+
+    # les lecteurs et éditeurs ne sont pas habilités à créer une BDESE
+    if role == UserRole.PROPRIETAIRE:
+        bdese, _ = classe_bdese.objects.get_or_create(
+            entreprise=entreprise, annee=annee, user=None
+        )
+    else:
+        bdese = classe_bdese.objects.filter(
+            entreprise=entreprise, annee=annee, user=None
+        )
+        if not bdese.exists():
+            messages.warning(
+                request,
+                "Aucune BDESE existante pour l'instant (création possible par un utilisateur propriétaire)",
+            )
+            return redirect("reglementations:tableau_de_bord", siren=siren)
+        bdese = bdese.first()
 
     if bdese.is_bdese_avec_accord:
         raise Http404
@@ -357,15 +388,6 @@ def bdese_step(request, siren, annee, step):
                 step,
                 fetched_data=fetched_data,
             )
-
-    if (
-        not is_user_habilited_on_entreprise(request.user, entreprise)
-        and entreprise.users.count() >= 2
-    ):
-        messages.info(
-            request,
-            "Plusieurs utilisateurs sont liés à cette entreprise. Les informations que vous remplissez ne sont pas partagées avec les autres utilisateurs tant que vous n'êtes pas habilités.",
-        )
 
     return render(
         request,
@@ -430,7 +452,6 @@ def _bdese_step_context(form, entreprise, annee, bdese, step):
 def get_or_create_bdese(
     entreprise: Entreprise,
     annee: int,
-    user: settings.AUTH_USER_MODEL,
 ) -> BDESE_300 | BDESE_50_300 | BDESEAvecAccord:
     caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
     if not caracteristiques:
@@ -440,7 +461,8 @@ def get_or_create_bdese(
         )
 
     bdese_type = BDESEReglementation.bdese_type(caracteristiques)
-    habilitation = Habilitation.pour(entreprise, user)
+
+    # TODO: à remonter niveau métier ?
     if bdese_type == BDESEReglementation.TYPE_AVEC_ACCORD:
         bdese_class = BDESEAvecAccord
     elif bdese_type in (
@@ -451,14 +473,7 @@ def get_or_create_bdese(
     else:
         bdese_class = BDESE_50_300
 
-    if habilitation.is_confirmed:
-        bdese, _ = bdese_class.officials.get_or_create(
-            entreprise=entreprise, annee=annee
-        )
-    else:
-        bdese, _ = bdese_class.personals.get_or_create(
-            entreprise=entreprise, annee=annee, user=user
-        )
+    bdese, _ = bdese_class.officials.get_or_create(entreprise=entreprise, annee=annee)
 
     return bdese
 
@@ -487,7 +502,7 @@ def toggle_bdese_completion(request, siren, annee):
     if not Habilitation.existe(entreprise, request.user):
         raise PermissionDenied
 
-    bdese = get_or_create_bdese(entreprise, annee, request.user)
+    bdese = get_or_create_bdese(entreprise, annee)
 
     if bdese.is_bdese_avec_accord:
         bdese.toggle_completion()
