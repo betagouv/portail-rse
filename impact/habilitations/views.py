@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import EmailMessage
+from django.db.utils import IntegrityError
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -29,6 +30,11 @@ def index(request, siren):
             try:
                 utilisateur = User.objects.get(email=email)
                 _ajoute_membre(request, entreprise, utilisateur)
+            except IntegrityError:
+                messages.error(
+                    request,
+                    "L'invitation a échoué car cette personne est déjà membre de l'entreprise.",
+                )
             except ObjectDoesNotExist:
                 _cree_invitation(request, entreprise, email)
             return redirect(
