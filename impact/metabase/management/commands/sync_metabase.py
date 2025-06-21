@@ -171,21 +171,17 @@ class Command(BaseCommand):
         except InsuffisammentQualifieeError:
             return
         if est_soumise:
-            for utilisateur in entreprise.users.all():
-                portail_rse_status = BDESEReglementation.calculate_status(
-                    caracteristiques, utilisateur
-                ).status
-                statut = self._convertit_portail_rse_status_en_statut_metabase(
-                    portail_rse_status
-                )
-                MetabaseBDESE.objects.create(
-                    entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
-                    utilisateur=MetabaseUtilisateur.objects.get(
-                        impact_id=utilisateur.id
-                    ),
-                    est_soumise=est_soumise,
-                    statut=statut,
-                )
+            portail_rse_status = BDESEReglementation.calculate_status(
+                caracteristiques, entreprise.users.first()
+            ).status
+            statut = self._convertit_portail_rse_status_en_statut_metabase(
+                portail_rse_status
+            )
+            MetabaseBDESE.objects.create(
+                entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
+                est_soumise=est_soumise,
+                statut=statut,
+            )
         else:
             MetabaseBDESE.objects.create(
                 entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
