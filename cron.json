@@ -4,6 +4,9 @@
         "command": "0 0 * * * python3 impact/manage.py supprime_utilisateurs_sur_entreprise_test"
       },
       {
+        "command": "0 0 * * * python3 impact/manage.py supprime_utilisateurs_non_confirmes"
+      },
+      {
         "command": "5 0 * * * python3 impact/manage.py sync_metabase"
       },
       {
