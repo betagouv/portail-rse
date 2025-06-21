@@ -9,23 +9,21 @@ Fragments HTMX pour la gestion de l'espace CSRD
 """
 
 
-def _rapport_csrd_officiel(entreprise_non_qualifiee, alice, annee=now().year):
+def _rapport_csrd(entreprise_non_qualifiee, alice, annee=now().year):
     entreprise_non_qualifiee.users.add(alice)
-    rapport = RapportCSRD(
-        entreprise=entreprise_non_qualifiee, proprietaire=None, annee=annee
-    )
+    rapport = RapportCSRD(entreprise=entreprise_non_qualifiee, annee=annee)
     rapport.save()
     return rapport
 
 
 @pytest.fixture
 def rapport_csrd_courant(entreprise_non_qualifiee, alice):
-    return _rapport_csrd_officiel(entreprise_non_qualifiee, alice)
+    return _rapport_csrd(entreprise_non_qualifiee, alice)
 
 
 @pytest.fixture
 def rapport_csrd_precedent(entreprise_non_qualifiee, alice):
-    return _rapport_csrd_officiel(entreprise_non_qualifiee, alice, annee=now().year - 1)
+    return _rapport_csrd(entreprise_non_qualifiee, alice, annee=now().year - 1)
 
 
 def test_soumission_lien_rapport(client, rapport_csrd_courant, alice):
