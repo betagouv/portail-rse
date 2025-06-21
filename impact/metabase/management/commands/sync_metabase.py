@@ -70,7 +70,7 @@ class Command(BaseCommand):
                 societe_mere_en_france=entreprise.societe_mere_en_france,
                 comptes_consolides=entreprise.comptes_consolides,
                 effectif=caracteristiques.effectif if caracteristiques else None,
-                effectif_permanent=caracteristiques.effectif_permanent
+                effectif_securite_sociale=caracteristiques.effectif_securite_sociale
                 if caracteristiques
                 else None,
                 effectif_outre_mer=caracteristiques.effectif_outre_mer
@@ -80,9 +80,6 @@ class Command(BaseCommand):
                 if caracteristiques
                 else None,
                 effectif_groupe_france=caracteristiques.effectif_groupe_france
-                if caracteristiques
-                else None,
-                effectif_groupe_permanent=caracteristiques.effectif_groupe_permanent
                 if caracteristiques
                 else None,
                 tranche_chiffre_affaires=caracteristiques.tranche_chiffre_affaires

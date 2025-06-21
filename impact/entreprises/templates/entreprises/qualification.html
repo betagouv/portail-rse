@@ -29,8 +29,11 @@
                         <legend class="fr-fieldset__legend">
                             Effectifs
                         </legend>
+                        <div class="fr-ml-1w fr-mb-2w">
+                            (Pour plus de précisions, consulter <a href="https://travail-emploi.gouv.fr/les-regles-de-decompte-des-effectifs" target='_blank' rel='noopener'>les règles de décompte des effectifs</a>)
+                        </div>
+                        {% include 'snippets/fieldset_element.html' with field=form.effectif_securite_sociale %}
                         {% include 'snippets/fieldset_element.html' with field=form.effectif %}
-                        {% include 'snippets/fieldset_element.html' with field=form.effectif_permanent %}
                         {% include 'snippets/fieldset_element.html' with field=form.effectif_outre_mer %}
                     </fieldset>
                     <fieldset class="fr-fieldset">
@@ -57,7 +60,6 @@
                             {% include 'snippets/fieldset_element.html' with field=form.societe_mere_en_france %}
                             {% include 'snippets/fieldset_element.html' with field=form.effectif_groupe %}
                             {% include 'snippets/fieldset_element.html' with field=form.effectif_groupe_france %}
-                            {% include 'snippets/fieldset_element.html' with field=form.effectif_groupe_permanent %}
                             {% include 'snippets/fieldset_element.html' with field=form.comptes_consolides %}
                             <div id="svelte-comptes-consolides-fields">
                                 {% include 'snippets/fieldset_element.html' with field=form.tranche_chiffre_affaires_consolide %}

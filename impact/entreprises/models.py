@@ -31,11 +31,10 @@ SIREN_ENTREPRISE_TEST = "000000001"
 class ActualisationCaracteristiquesAnnuelles:
     date_cloture_exercice: date
     effectif: str
-    effectif_permanent: str
+    effectif_securite_sociale: str
     effectif_outre_mer: str
     effectif_groupe: str
     effectif_groupe_france: str
-    effectif_groupe_permanent: str
     tranche_chiffre_affaires: str
     tranche_bilan: str
     tranche_chiffre_affaires_consolide: str
@@ -290,13 +289,12 @@ class Entreprise(TimestampedModel):
         caracteristiques.entreprise = self
         caracteristiques.date_cloture_exercice = actualisation.date_cloture_exercice
         caracteristiques.effectif = actualisation.effectif
-        caracteristiques.effectif_permanent = actualisation.effectif_permanent
+        caracteristiques.effectif_securite_sociale = (
+            actualisation.effectif_securite_sociale
+        )
         caracteristiques.effectif_outre_mer = actualisation.effectif_outre_mer
         caracteristiques.effectif_groupe = actualisation.effectif_groupe
         caracteristiques.effectif_groupe_france = actualisation.effectif_groupe_france
-        caracteristiques.effectif_groupe_permanent = (
-            actualisation.effectif_groupe_permanent
-        )
         caracteristiques.tranche_chiffre_affaires = (
             actualisation.tranche_chiffre_affaires
         )
@@ -333,6 +331,19 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         (EFFECTIF_ENTRE_500_ET_4999, "entre 500 et 4 999 salariés"),
         (EFFECTIF_ENTRE_5000_ET_9999, "entre 5 000 et 9 999 salariés"),
         (EFFECTIF_10000_ET_PLUS, "10 000 salariés ou plus"),
+    ]
+
+    EFFECTIF_SECURITE_SOCIALE_MOINS_DE_10 = "0-9"
+    EFFECTIF_SECURITE_SOCIALE_ENTRE_10_ET_49 = "10-49"
+    EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249 = "50-249"
+    EFFECTIF_SECURITE_SOCIALE_ENTRE_250_ET_499 = "250-499"
+    EFFECTIF_SECURITE_SOCIALE_500_ET_PLUS = "500+"
+    EFFECTIF_SECURITE_SOCIALE_CHOICES = [
+        (EFFECTIF_SECURITE_SOCIALE_MOINS_DE_10, "entre 0 et 9 salariés"),
+        (EFFECTIF_SECURITE_SOCIALE_ENTRE_10_ET_49, "entre 10 et 49 salariés"),
+        (EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249, "entre 50 et 299 salariés"),
+        (EFFECTIF_SECURITE_SOCIALE_ENTRE_250_ET_499, "entre 250 et 499 salariés"),
+        (EFFECTIF_SECURITE_SOCIALE_500_ET_PLUS, "500 ou plus"),
     ]
 
     EFFECTIF_OUTRE_MER_MOINS_DE_250 = "0-249"
@@ -403,15 +414,15 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     effectif = models.CharField(
         max_length=9,
         choices=[BLANK_CHOICE] + EFFECTIF_CHOICES,
-        verbose_name="Effectif",
+        verbose_name="Effectif code du travail",
         help_text="Nombre de salariés (notamment CDI, CDD et salariés à temps partiel) de l'entreprise au prorata de leur temps de présence au cours des douze mois précédents (cf. <a href='https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000006072050/LEGISCTA000006177833/#LEGISCTA000006177833' target='_blank' rel='noopener'>articles L.1111-2 et L.1111-3 du Code du Travail</a>)",
         null=True,
     )
-    effectif_permanent = models.CharField(
+    effectif_securite_sociale = models.CharField(
         max_length=9,
-        choices=[BLANK_CHOICE] + EFFECTIF_CHOICES,
-        verbose_name="Effectif permanent",
-        help_text="Nombre moyen de salariés à temps plein, titulaires d'un contrat à durée indéterminée employés par l'entreprise au cours de l'exercice comptable",
+        choices=[BLANK_CHOICE] + EFFECTIF_SECURITE_SOCIALE_CHOICES,
+        verbose_name="Effectif sécurité sociale",
+        help_text="Nombre de salariés (notamment CDI, CDD et salariés à temps partiel) au prorata de leur temps de présence au cours des douze mois précédents (cf. articles <a href='https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000051287151' target='_blank' rel='noopener'>L130-1</a> et <a href='https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000041455619' target='_blank' rel='noopener'>R130-1</a> du code de la sécurité sociale",
         null=True,
     )
     effectif_outre_mer = models.CharField(
@@ -435,14 +446,6 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         choices=[BLANK_CHOICE] + EFFECTIF_GROUPE_CHOICES,
         verbose_name="Effectif du groupe France",
         help_text="Nombre de salariés (notamment CDI, CDD et salariés à temps partiel) employés par les entreprises françaises du groupe au prorata de leur temps de présence au cours des douze mois précédents (cf. <a href='https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000006072050/LEGISCTA000006177833/#LEGISCTA000006177833' target='_blank' rel='noopener'>articles L.1111-2 et L.1111-3 du Code du Travail</a>)",
-        null=True,
-        blank=True,
-    )
-    effectif_groupe_permanent = models.CharField(
-        max_length=9,
-        choices=[BLANK_CHOICE] + EFFECTIF_GROUPE_CHOICES,
-        verbose_name="Effectif permanent du groupe",
-        help_text="Nombre moyen de salariés à temps plein, titulaires d'un contrat à durée indéterminée employés par le groupe au cours de l'exercice comptable en incluant les filiales directes ou indirectes étrangères",
         null=True,
         blank=True,
     )
@@ -508,7 +511,6 @@ class CaracteristiquesAnnuelles(TimestampedModel):
             return bool(
                 self.effectif_groupe
                 and self.effectif_groupe_france
-                and self.effectif_groupe_permanent
                 and self.entreprise.est_societe_mere is not None
                 and self.entreprise.societe_mere_en_france is not None
                 and self.entreprise.comptes_consolides is not None
@@ -522,8 +524,8 @@ class CaracteristiquesAnnuelles(TimestampedModel):
             and self.entreprise.code_NAF
             and self.entreprise.updated_at > DATE_REQUALIFICATION
             and self.effectif
+            and self.effectif_securite_sociale
             and self.effectif_outre_mer
-            and self.effectif_permanent
             and self.tranche_chiffre_affaires
             and self.tranche_bilan
             and self.entreprise.est_cotee is not None
