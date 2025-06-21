@@ -6,7 +6,7 @@ from django.urls import reverse
 from api.exceptions import APIError
 from entreprises.exceptions import EntrepriseNonQualifieeError
 from entreprises.models import CaracteristiquesAnnuelles
-from habilitations.models import attach_user_to_entreprise
+from habilitations.models import Habilitation
 from reglementations.models import annees_a_remplir_bdese
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
@@ -166,7 +166,7 @@ def test_check_if_several_users_are_on_the_same_BDESE(
     configured_bdese, habilitated_user, client, bob
 ):
     bdese = configured_bdese
-    attach_user_to_entreprise(bob, bdese.entreprise, "Vice-président")
+    Habilitation.ajouter(bdese.entreprise, bob, fonctions="Vice-président")
     client.force_login(bob)
 
     url = bdese_step_url(bdese, 0)
@@ -774,7 +774,7 @@ def test_toggle_bdese_completion_redirige_vers_la_qualification_si_manquante(
 def test_get_or_create_bdese_avec_une_entreprise_non_qualifiee(
     entreprise_non_qualifiee, alice
 ):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
 
     with pytest.raises(EntrepriseNonQualifieeError):
         get_or_create_bdese(entreprise_non_qualifiee, 2023, alice)

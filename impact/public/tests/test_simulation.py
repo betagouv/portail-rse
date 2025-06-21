@@ -10,7 +10,7 @@ import api.exceptions
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from entreprises.models import SIREN_ENTREPRISE_TEST
-from habilitations.models import attach_user_to_entreprise
+from habilitations.models import Habilitation
 from public.views import should_commit
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
 from reglementations.views.bdese import BDESEReglementation
@@ -43,7 +43,7 @@ def entreprise(db, alice, entreprise_factory):
         denomination="Entreprise SAS",
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     return entreprise
 
 
@@ -408,7 +408,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_utilisateur_ne_
     """
 
     entreprise = entreprise_non_qualifiee
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     effectif = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     effectif_groupe = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
@@ -617,7 +617,7 @@ def test_should_not_commit_une_entreprise_avec_des_caracteristiques_actuelles_av
 ):
     date_cloture_dernier_exercice = date.today() - timedelta(days=1)
     entreprise = entreprise_factory(date_cloture_exercice=date_cloture_dernier_exercice)
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     assert entreprise.caracteristiques_actuelles()
 
@@ -639,7 +639,7 @@ def test_should_not_commit_une_entreprise_sans_caracteristiques_actuelles_avec_u
     client, entreprise_non_qualifiee, alice
 ):
     entreprise = entreprise_non_qualifiee
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     assert not should_commit(entreprise)
 

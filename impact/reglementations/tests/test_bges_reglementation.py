@@ -3,11 +3,10 @@ from freezegun import freeze_time
 
 from api.exceptions import APIError
 from entreprises.models import CaracteristiquesAnnuelles
-from habilitations.models import attach_user_to_entreprise
+from habilitations.models import Habilitation
 from reglementations.views.base import ReglementationAction
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.bges import BGESReglementation
-
 
 ACTION_PUBLIER = ReglementationAction(
     "https://bilans-ges.ademe.fr/bilans/comment-publier",
@@ -80,7 +79,7 @@ def test_calcule_le_statut_si_moins_de_500_employes(
     effectif, entreprise_factory, alice, mock_api_bges
 ):
     entreprise = entreprise_factory(effectif=effectif)
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = BGESReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
@@ -106,7 +105,7 @@ def test_calcule_le_statut_si_plus_de_500_employes_sans_bilan_publie(
     effectif, entreprise_factory, alice, mock_api_bges
 ):
     entreprise = entreprise_factory(effectif=effectif)
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     mock_api_bges.return_value = None
 
     with freeze_time("2023-12-15"):
@@ -129,7 +128,7 @@ def test_calcule_le_statut_si_soumis_et_erreur_API(
     entreprise = entreprise_factory(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     mock_api_bges.side_effect = APIError()
 
     with freeze_time("2023-12-15"):
@@ -158,7 +157,7 @@ def test_calcule_le_statut_si_plus_de_500_employes_bilan_publie_trop_vieux(
     effectif, entreprise_factory, alice, mock_api_bges
 ):
     entreprise = entreprise_factory(effectif=effectif)
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     mock_api_bges.return_value = 2015
 
     with freeze_time("2023-12-15"):
@@ -187,7 +186,7 @@ def test_calcule_le_statut_si_plus_de_500_employes_bilan_publie_recent(
     effectif, entreprise_factory, alice, mock_api_bges
 ):
     entreprise = entreprise_factory(effectif=effectif)
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     mock_api_bges.return_value = 2022
 
     with freeze_time("2023-12-15"):
@@ -211,7 +210,7 @@ def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer_sans_bilan_publie
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     mock_api_bges.return_value = None
 
     with freeze_time("2023-12-15"):
@@ -235,7 +234,7 @@ def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer_bilan_publie_trop
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     mock_api_bges.return_value = 2015
 
     with freeze_time("2023-12-15"):
@@ -259,7 +258,7 @@ def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer_bilan_publie_rece
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     mock_api_bges.return_value = 2022
 
     with freeze_time("2023-12-15"):

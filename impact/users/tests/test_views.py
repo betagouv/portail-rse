@@ -12,7 +12,7 @@ from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from habilitations.models import FONCTIONS_MAX_LENGTH
 from habilitations.models import FONCTIONS_MIN_LENGTH
-from habilitations.models import get_habilitation
+from habilitations.models import Habilitation
 from users.models import User
 from utils.tokens import make_token
 from utils.tokens import uidb64
@@ -74,7 +74,7 @@ def test_create_user_with_real_siren(client, db, mailoutbox):
     assert user.is_email_confirmed == False
     assert user in entreprise.users.all()
     assert user.uidb64
-    assert get_habilitation(user, entreprise).fonctions == "Présidente"
+    assert Habilitation.pour(entreprise, user).fonctions == "Présidente"
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
     assert mail.from_email == settings.DEFAULT_FROM_EMAIL

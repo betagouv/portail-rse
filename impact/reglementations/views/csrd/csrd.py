@@ -25,7 +25,7 @@ from openpyxl import Workbook
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
-from habilitations.models import is_user_attached_to_entreprise
+from habilitations.models import Habilitation
 from reglementations.enums import ESRS
 from reglementations.enums import EtapeCSRD
 from reglementations.enums import ETAPES_CSRD
@@ -538,7 +538,7 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
         )
 
     entreprise = get_object_or_404(Entreprise, siren=siren)
-    if not is_user_attached_to_entreprise(request.user, entreprise):
+    if not Habilitation.existe(entreprise, request.user):
         raise PermissionDenied
 
     template_name = f"reglementations/csrd/etape-{id_etape}.html"

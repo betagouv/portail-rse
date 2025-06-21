@@ -8,9 +8,9 @@ from django.urls import reverse
 from freezegun import freeze_time
 
 from entreprises.models import CaracteristiquesAnnuelles
-from habilitations.models import attach_user_to_entreprise
 from reglementations.utils import VSMEReglementation
 from reglementations.views import REGLEMENTATIONS
+from habilitations.models import Habilitation
 from reglementations.views.base import InsuffisammentQualifieeError
 from reglementations.views.base import ReglementationStatus
 
@@ -52,7 +52,7 @@ def entreprise(db, alice, entreprise_factory):
         denomination="Entreprise SAS",
         effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     return entreprise
 
 
@@ -89,7 +89,7 @@ def test_tableau_de_bord_avec_utilisateur_authentifié(client, entreprise):
 def test_tableau_de_bord_entreprise_non_qualifiee_redirige_vers_la_qualification(
     client, alice, entreprise_non_qualifiee, mock_api_infos_entreprise
 ):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
     client.force_login(alice)
 
     response = client.get(
