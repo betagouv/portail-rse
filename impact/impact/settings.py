@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+
 import os
 from pathlib import Path
 
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
     "vsme",
     "users",
     "utils",
+    "logs",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -410,3 +412,26 @@ SITES_FACILES_BASE_URL = os.getenv(
 CORS_ALLOWED_ORIGINS = [SITES_FACILES_BASE_URL]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = (*default_headers, "hx-current-url")
+
+# Logging :
+# permet un niveau de log 'INFO' pour le logger `logs.event`,
+# qui est également réglable via variable d'environnement, si besoin
+# (le reste de la configuration de logging par défaut n'est pas modifié).
+# Concernant Django, avoir des logs visibles à certains point critiques
+# de la configuration peut être une bonne idée.
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "event": {"class": "logs.event.EventLogHandler"},
+    },
+    "loggers": {
+        "django": {
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+        },
+        "logs.event": {
+            "level": os.getenv("EVENT_LOG_LEVEL", "INFO"),
+            "handlers": ["event"],
+        },
+    },
+}

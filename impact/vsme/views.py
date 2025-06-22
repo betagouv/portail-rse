@@ -7,6 +7,7 @@ from django.shortcuts import render
 from django.urls.base import reverse
 
 from entreprises.models import Entreprise
+from logs import event_logger
 
 
 ETAPES = {
@@ -67,5 +68,10 @@ def etape_vsme(request, siren, etape):
         "nom_entreprise": request._nom_entreprise,
         "siren": siren,
     }
+
+    # note : exemple de log en base
+    event_logger.info(
+        "view:vsme", {"etape": etape, "siren": siren, "idUtilisateur": request.user.pk}
+    )
 
     return render(request, template_name, context=context)
