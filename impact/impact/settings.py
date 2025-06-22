@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "vsme",
     "users",
     "utils",
+    "logs",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -423,20 +424,25 @@ CORS_ALLOWED_ORIGINS = [SITES_FACILES_BASE_URL]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = (*default_headers, "hx-current-url")
 
-# Django admin autorisé en local / dev
-if DEBUG:
-    MIDDLEWARE.remove("django_hosts.middleware.HostsRequestMiddleware")
-    MIDDLEWARE.remove("django_hosts.middleware.HostsResponseMiddleware")
-
-# Profiling Metabase :
-# temporaire le temps de voir comment améliorer globalement de temps de sync
-# ou de refondre l'architecture de transfert de données.
-
-# Permet l'affichage des temps d'éxecution de chaque partie de la synchro
-METABASE_DEBUG_SYNC = os.getenv("METABASE_DEBUG_SYNC") == "true"
-METABASE_DEBUG_SKIP_STEPS = os.getenv("METABASE_DEBUG_SKIP_STEPS", "").split(",")
-METABASE_DEBUG_BULK_SIZE = int(os.getenv("METABASE_DEBUG_BULK_SIZE", 1000))
-
-# Création des tables de travail metabase:
-# nombre maximum de requêtes asynchrones simultanées
-METABASE_NB_ASYNC_CALLS = int(os.getenv("METABASE_NB_ASYNC_CALLS", 100))
+# Logging :
+# permet un niveau de log 'INFO' pour le logger `logs.event`,
+# qui est également réglable via variable d'environnement, si besoin
+# (le reste de la configuration de logging par défaut n'est pas modifié).
+# Concernant Django, avoir des logs visibles à certains point critiques
+# de la configuration peut être une bonne idée.
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "event": {"class": "logs.event.EventLogHandler"},
+    },
+    "loggers": {
+        "django": {
+            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+        },
+        "logs.event": {
+            "level": os.getenv("EVENT_LOG_LEVEL", "INFO"),
+            "handlers": ["event"],
+        },
+    },
+}
