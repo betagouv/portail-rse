@@ -15,15 +15,7 @@ from django.urls.base import reverse
 import utils.htmx as htmx
 from entreprises.decorators import entreprise_qualifiee_requise
 from entreprises.models import Entreprise
-from entreprises.views import get_current_entreprise
-from habilitations.models import Habilitation
-from reglementations.views import tableau_de_bord_menu_context
-from vsme.forms import create_multiform_from_schema
-from vsme.models import Categorie
-from vsme.models import ExigenceDePublication
-from vsme.models import EXIGENCES_DE_PUBLICATION
-from vsme.models import Indicateur
-from vsme.models import RapportVSME
+from logs import event_logger
 
 
 ETAPES = {
@@ -94,6 +86,11 @@ def etape_vsme(request, siren, etape):
         "nom_entreprise": request._nom_entreprise,
         "siren": siren,
     }
+
+    # note : exemple de log en base
+    event_logger.info(
+        "view:vsme", {"etape": etape, "siren": siren, "idUtilisateur": request.user.pk}
+    )
 
     return render(request, template_name, context=context)
 
