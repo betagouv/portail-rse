@@ -6,10 +6,11 @@ from django.urls import reverse
 from api.exceptions import APIError
 from entreprises.exceptions import EntrepriseNonQualifieeError
 from entreprises.models import CaracteristiquesAnnuelles
-from habilitations.models import attach_user_to_entreprise
+from habilitations.models import Habilitation
 from reglementations.models import annees_a_remplir_bdese
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
+from reglementations.models import BDESEAvecAccord
 from reglementations.tests.tests_bdese.test_bdese_forms import configuration_form_data
 from reglementations.views.bdese import get_or_create_bdese
 from reglementations.views.bdese import initialize_bdese_configuration
@@ -38,7 +39,7 @@ def test_bdese_is_not_public(client, alice, grande_entreprise):
         (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499, BDESE_300),
     ],
 )
-def test_yearly_personal_bdese_is_created_at_first_authorized_request(
+def test_yearly_bdese_is_created_at_first_authorized_request(
     effectif, bdese_class, client, alice, entreprise_factory
 ):
     entreprise = entreprise_factory(effectif=effectif)
@@ -51,14 +52,14 @@ def test_yearly_personal_bdese_is_created_at_first_authorized_request(
     response = client.get(url)
 
     assert response.status_code == 302
-    bdese_2021 = bdese_class.personals.get(entreprise=entreprise, annee=2021)
-    assert bdese_2021.user == alice
+    bdese_2021 = bdese_class.officials.get(entreprise=entreprise, annee=2021)
+    assert bdese_2021.user is None
 
     url = f"/bdese/{entreprise.siren}/2022/1"
     response = client.get(url)
 
-    bdese_2022 = bdese_class.personals.get(entreprise=entreprise, annee=2022)
-    assert bdese_2022.user == alice
+    bdese_2022 = bdese_class.officials.get(entreprise=entreprise, annee=2022)
+    assert bdese_2022.user is None
     assert bdese_2021 != bdese_2022
 
 
@@ -160,35 +161,6 @@ def configured_bdese(bdese):
     bdese.mark_step_as_complete(0)
     bdese.save()
     return bdese
-
-
-def test_check_if_several_users_are_on_the_same_BDESE(
-    configured_bdese, habilitated_user, client, bob
-):
-    bdese = configured_bdese
-    attach_user_to_entreprise(bob, bdese.entreprise, "Vice-président")
-    client.force_login(bob)
-
-    url = bdese_step_url(bdese, 0)
-    response = client.get(url)
-
-    assert response.status_code == 200
-    content = html.unescape(response.content.decode("utf-8"))
-    assert (
-        "Plusieurs utilisateurs sont liés à cette entreprise. Les informations que vous remplissez ne sont pas partagées avec les autres utilisateurs tant que vous n'êtes pas habilités."
-        in content
-    )
-
-    client.force_login(habilitated_user)
-
-    response = client.get(url)
-
-    assert response.status_code == 200
-    content = html.unescape(response.content.decode("utf-8"))
-    assert (
-        "Plusieurs utilisateurs sont liés à cette entreprise. Les informations que vous remplissez ne sont pas partagées avec les autres utilisateurs tant que vous n'êtes pas habilités."
-        not in content
-    )
 
 
 def test_bdese_step_use_configured_categories_and_annees_a_remplir(
@@ -627,9 +599,10 @@ def test_save_bdese_configuration_for_a_new_year(
 
 
 @pytest.mark.parametrize("bdese_class", [BDESE_50_300, BDESE_300])
-def test_initialize_personal_bdese_configuration_only_with_other_personal_bdeses(
+def _test_initialize_personal_bdese_configuration_only_with_other_personal_bdeses(
     bdese_class, bdese_factory, alice
 ):
+    # note : suppression de ce test à confirmer, mais semble désormais obsolète
     official_bdese = bdese_factory(bdese_class=bdese_class, annee=2021)
     official_bdese.categories_professionnelles = ["A", "B", "C"]
     if official_bdese.is_bdese_300:
@@ -644,7 +617,7 @@ def test_initialize_personal_bdese_configuration_only_with_other_personal_bdeses
     official_bdese.save()
 
     new_bdese = bdese_factory(
-        bdese_class, entreprise=official_bdese.entreprise, user=alice, annee=2022
+        bdese_class, entreprise=official_bdese.entreprise, annee=2022
     )
     initial = initialize_bdese_configuration(new_bdese)
 
@@ -683,10 +656,12 @@ def test_initialize_personal_bdese_configuration_only_with_other_personal_bdeses
 
 
 @pytest.mark.parametrize("bdese_class", [BDESE_50_300, BDESE_300])
-def test_initialize_official_bdese_configuration_only_with_other_official_bdeses(
-    bdese_class, bdese_factory, alice
+def _test_initialize_official_bdese_configuration_only_with_other_official_bdeses(
+    # note : suppression de ce test à confirmer, mais semble désormais obsolète
+    bdese_class,
+    bdese_factory,
 ):
-    personal_bdese = bdese_factory(bdese_class=bdese_class, user=alice, annee=2021)
+    personal_bdese = bdese_factory(bdese_class=bdese_class, annee=2021)
     personal_bdese.categories_professionnelles = ["A", "B", "C"]
     if personal_bdese.is_bdese_300:
         personal_bdese.categories_professionnelles_detaillees = [
@@ -771,10 +746,26 @@ def test_toggle_bdese_completion_redirige_vers_la_qualification_si_manquante(
     assert response.url == reverse("entreprises:qualification", args=[entreprise.siren])
 
 
-def test_get_or_create_bdese_avec_une_entreprise_non_qualifiee(
-    entreprise_non_qualifiee, alice
+def test_toggle_bdese_completion_sans_bdese_existante(
+    client, entreprise_factory, alice
 ):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    client.force_login(alice)
+    entreprise = entreprise_factory(bdese_accord=True)
+    Habilitation.ajouter(entreprise=entreprise, utilisateur=alice)
+    url = f"/bdese/{entreprise.siren}/2025/actualiser-desactualiser"
 
+    response = client.get(url, follow=True)
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [
+        (reverse("reglementations:tableau_de_bord", args=[entreprise.siren]), 302)
+    ]
+    bdese_avec_accord = BDESEAvecAccord.objects.get(entreprise=entreprise)
+    assert bdese_avec_accord.is_complete
+
+
+def test_get_or_create_bdese_avec_une_entreprise_non_qualifiee(
+    entreprise_non_qualifiee,
+):
     with pytest.raises(EntrepriseNonQualifieeError):
-        get_or_create_bdese(entreprise_non_qualifiee, 2023, alice)
+        get_or_create_bdese(entreprise_non_qualifiee, 2023)

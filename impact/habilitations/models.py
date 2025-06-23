@@ -1,10 +1,15 @@
+import logging
+import warnings
 from datetime import datetime
 from datetime import timezone
 
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.validators import MaxLengthValidator
+from django.core.validators import MinLengthValidator
 from django.db import models
+from django.db.utils import IntegrityError
 
+from .enums import UserRole
 from entreprises.models import Entreprise
 from reglementations.models import get_all_personal_bdese
 from reglementations.models import has_official_bdese
@@ -12,68 +17,201 @@ from utils.models import TimestampedModel
 
 FONCTIONS_MIN_LENGTH = 3
 FONCTIONS_MAX_LENGTH = 250
+logger = logging.getLogger(__name__)
+
+
+class HabilitationQueryset(models.QuerySet):
+    def parEntreprise(self, entreprise):
+        return self.filter(entreprise=entreprise)
+
+    def parUtilisateur(self, utilisateur):
+        return self.filter(user=utilisateur)
+
+    def parRole(self, role):
+        return self.filter(role=role)
+
+    def pour(self, entreprise, utilisateur):
+        return self.get(user=utilisateur, entreprise=entreprise)
 
 
 class Habilitation(TimestampedModel):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
+    """
+    L'habilitation permet de rattacher l'utilisateur, l'entreprise, et son rôle.
+
+    Note : la plupart des fonctionnalité relatives à la confirmation seront dépréciées lors
+    du remaniement des parties CSRD et BDESE.
+    """
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name="utilisateur",
+    )
+    entreprise = models.ForeignKey(
+        Entreprise,
+        on_delete=models.CASCADE,
+    )
+    role = models.CharField(
+        max_length=20,
+        choices=UserRole.choices,
+        default=UserRole.PROPRIETAIRE,
+        verbose_name="rôle",
+    )
+
+    # TODO: isoler les utilisations
     fonctions = models.CharField(
-        verbose_name="Fonction(s) dans la société",
+        verbose_name="fonction(s) dans la société",
         max_length=FONCTIONS_MAX_LENGTH,
+        validators=[
+            MinLengthValidator(FONCTIONS_MIN_LENGTH),
+            MaxLengthValidator(FONCTIONS_MAX_LENGTH),
+        ],
         null=True,
         blank=True,
     )
+
+    # note: au 09.04.2025, seules 32 habilitations sont confirmées (0.35%)
+    # TODO : éventuellement à déprécier après modifications sur la CSRD et BDESE
     confirmed_at = models.DateTimeField(
-        verbose_name="Confirmée le",
+        verbose_name="confirmée le",
         null=True,
     )
 
+    invitation = models.ForeignKey(
+        "invitations.Invitation",
+        verbose_name="invitation",
+        null=True,
+        on_delete=models.SET_NULL,
+    )
+
+    objects = HabilitationQueryset.as_manager()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["entreprise", "user"],
+                name="unique_entreprise_user",
+            )
+        ]
+
     def __str__(self):
-        return f"Habilitation : {self.entreprise}, {self.user}"
+        return f"Habilitation : {self.entreprise}, {self.user}, {self.role}"
+
+    def __eq__(self, h):
+        # pour une utilisation avec `in`
+        return (
+            isinstance(h, Habilitation)
+            and self.entreprise_id == h.entreprise_id
+            and self.user_id == h.user_id
+            and self.role == h.role
+        )
+
+    def __hash__(self):
+        # pas de `__eq__` sans `__hash__`
+        # `self.pk` inutile à cause de la contrainte d'intégrité
+        return hash((self.user_id, self.entreprise_id, self.role))
+
+    # comparaisons des habilitations en fonction des rôles
+    # uniquement pour les habilitations d'un même tuple (entreprise,utilisateur)
+
+    def _same_origin(self, other):
+        return (
+            isinstance(other, Habilitation)
+            and self.entreprise == other.entreprise
+            and self.user == other.user
+        )
+
+    # Les méthodes de comparaison suivantes ne sont valides que pour
+    # des habilitations concernant le même utilisateur et la même entreprise.
+
+    def __lt__(self, other):
+        if not self._same_origin(other):
+            return NotImplemented
+        return self.role < other.role
+
+    def __le__(self, other):
+        if not self._same_origin(other):
+            return NotImplemented
+        return self.role <= other.role
+
+    def __gt__(self, other):
+        if not self._same_origin(other):
+            return NotImplemented
+        return self.role > other.role
+
+    def __ge__(self, other):
+        if not self._same_origin(other):
+            return NotImplemented
+        return self.role >= other.role
+
+    @classmethod
+    def ajouter(
+        cls, entreprise, utilisateur, role=UserRole.PROPRIETAIRE, fonctions=None
+    ):
+        h = cls(user=utilisateur, entreprise=entreprise, role=role)
+        if fonctions:
+            h.fonctions = fonctions
+        try:
+            h.save()
+            return h
+        except IntegrityError:
+            logger.warning(
+                "Une habilitation existe déjà: entreprise=%s, utilisateur=%s",
+                entreprise,
+                utilisateur,
+            )
+
+    @classmethod
+    def retirer(cls, entreprise, utilisateur):
+        try:
+            cls.objects.get(entreprise=entreprise, user=utilisateur).delete()
+        except Habilitation.DoesNotExist:
+            logger.warning(
+                "Il n'y a pas d'habilitation pour: entreprise=%s, utilisateur=%s",
+                entreprise,
+                utilisateur,
+            )
+
+    @classmethod
+    def existe(cls, entreprise, utilisateur) -> bool:
+        return cls.objects.filter(entreprise=entreprise, user=utilisateur).exists()
+
+    @classmethod
+    def pour(cls, entreprise, utilisateur):
+        return cls.objects.pour(entreprise, utilisateur)
+
+    @classmethod
+    def role_pour(cls, entreprise, utilisateur) -> UserRole:
+        return UserRole(cls.pour(entreprise, utilisateur).role)
+
+    # Méthodes dépréciées : confirmation de l'habilitation
 
     def confirm(self):
+        warnings.warn("fonctionnalité dépréciée : confirmation de l'habilitation")
         self.confirmed_at = datetime.now(timezone.utc)
         if not has_official_bdese(self.entreprise):
             for bdese in get_all_personal_bdese(self.entreprise, self.user):
                 bdese.officialize()
 
     def unconfirm(self):
+        warnings.warn(
+            "fonctionnalité dépréciée : annulation de la confirmation de l'habilitation"
+        )
         self.confirmed_at = None
 
     @property
     def is_confirmed(self):
+        warnings.warn(
+            "fonctionnalité dépréciée : vérification de la confirmation de l'habilitation"
+        )
         return bool(self.confirmed_at)
 
 
-def attach_user_to_entreprise(user, entreprise, fonctions):
-    return Habilitation.objects.create(
-        user=user,
-        entreprise=entreprise,
-        fonctions=fonctions,
-    )
-
-
-def detach_user_from_entreprise(user, entreprise):
-    get_habilitation(user, entreprise).delete()
-
-
-def get_habilitation(user, entreprise):
-    return Habilitation.objects.get(
-        user=user,
-        entreprise=entreprise,
-    )
-
-
-def is_user_attached_to_entreprise(user, entreprise):
-    try:
-        get_habilitation(user, entreprise)
-        return True
-    except (ObjectDoesNotExist, TypeError):
-        return False
-
-
 def is_user_habilited_on_entreprise(user, entreprise):
+    warnings.warn(
+        "fonctionnalité dépréciée : habilitation d'un utilisateur (utiliser `pour` ou `role_pour`)"
+    )
     return (
-        is_user_attached_to_entreprise(user, entreprise)
-        and get_habilitation(user, entreprise).is_confirmed
+        Habilitation.existe(entreprise, user)
+        and Habilitation.pour(entreprise, user).is_confirmed
     )

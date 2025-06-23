@@ -9,6 +9,7 @@ from .models import User
 from entreprises.forms import SirenField
 from habilitations.models import FONCTIONS_MAX_LENGTH
 from habilitations.models import FONCTIONS_MIN_LENGTH
+from utils.emails import cache_partiellement_un_email
 from utils.forms import DsfrForm
 
 
@@ -84,6 +85,7 @@ class UserCreationForm(UserPasswordForm):
         label="J’ai lu et j’accepte les CGU (Conditions Générales d'utilisation)",
         required=True,
     )
+    proprietaires_presents = []
 
     class Meta:
         model = User
@@ -91,6 +93,21 @@ class UserCreationForm(UserPasswordForm):
         labels = {
             "reception_actualites": "Je souhaite recevoir les actualités du Portail RSE (optionnel)",
         }
+
+
+def message_erreur_proprietaires(proprietaires_presents):
+    if len(proprietaires_presents) == 1:
+        email_cache = cache_partiellement_un_email(proprietaires_presents[0].email)
+        message = f"Il existe déjà un propriétaire sur cette entreprise. Contactez la personne concernée ({email_cache}) ou notre support (contact@portail-rse.beta.gouv.fr)."
+    else:
+        emails_caches = ", ".join(
+            [
+                cache_partiellement_un_email(proprietaire.email)
+                for proprietaire in proprietaires_presents
+            ]
+        )
+        message = f"Il existe déjà des propriétaires sur cette entreprise. Contactez une des personnes concernées ({emails_caches}) ou notre support (contact@portail-rse.beta.gouv.fr)."
+    return message
 
 
 class UserEditionForm(DsfrForm, forms.ModelForm):

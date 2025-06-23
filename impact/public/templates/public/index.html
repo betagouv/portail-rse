@@ -24,7 +24,7 @@
                     {% if user.is_authenticated and current_entreprise %}
                         <a href="{% url 'reglementations:tableau_de_bord' current_entreprise.siren %}" class="fr-btn fr-btn--lg">Accéder à mon tableau de bord</a>
                     {% else %}
-                        <a href="{% url 'simulation' %}?mtm_campaign=simulation-cta-principal&mtm_kwd=corps-page" class="fr-btn fr-btn--lg">Vérifier mes obligations en 30 sec</a>
+                        <a href="{% url 'simulation' %}" class="fr-btn fr-btn--lg">Vérifier mes obligations en 30 sec</a>
                     {% endif %}
                 </div>
             </div>
@@ -41,7 +41,7 @@
                             <div class="fr-card__footer">
                                 <ul class="fr-btns-group">
                                     <li>
-                                        <a href="{% url 'simulation' %}?mtm_campaign=simulation-carte&mtm_kwd=corps-page" class="fr-btn fr-btn--secondary">
+                                        <a href="{% url 'simulation' %}" class="fr-btn fr-btn--secondary">
                                             Vérifier mes obligations
                                         </a>
                                     </li>
@@ -100,7 +100,7 @@
                                                 Piloter mes obligations
                                             </a>
                                         {% else %}
-                                            <a href="{% url 'users:login' %}?next={{ request.path }}&mtm_campaign=obligations-carte&mtm_kwd=corps-page" class="fr-btn fr-btn--secondary">
+                                            <a href="{% url 'users:login' %}?next={{ request.path }}" class="fr-btn fr-btn--secondary">
                                                 Piloter mes obligations
                                             </a>
                                         {% endif %}
@@ -231,7 +231,7 @@
                 </div>
             </div>
             <div class="fr-grid-row fr-grid-row--center">
-                <a href="{% url 'simulation' %}?mtm_campaign=simulation-bloc-rse&mtm_kwd=corps-page" class="fr-btn fr-btn--primary">
+                <a href="{% url 'simulation' %}" class="fr-btn fr-btn--primary">
                     Vérifier mes obligations en 30 secondes
                 </a>
             </div>

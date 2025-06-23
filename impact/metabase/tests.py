@@ -11,7 +11,7 @@ from conftest import CODE_PAYS_PORTUGAL
 from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
-from habilitations.models import attach_user_to_entreprise
+from habilitations.models import Habilitation
 from metabase.management.commands.sync_metabase import Command
 from metabase.models import BDESE as MetabaseBDESE
 from metabase.models import BGES as MetabaseBGES
@@ -273,7 +273,7 @@ def test_synchronise_une_entreprise_avec_un_utilisateur(
         reception_actualites=False,
         is_email_confirmed=True,
     )
-    habilitation = attach_user_to_entreprise(utilisateur, entreprise, "Présidente")
+    habilitation = Habilitation.ajouter(entreprise, utilisateur, fonctions="Présidente")
 
     Command().handle()
 
@@ -316,7 +316,7 @@ def test_synchronise_une_entreprise_avec_un_utilisateur(
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_les_reglementations_BDESE(
-    alice, bob, entreprise_factory, bdese_factory, mock_api_egapro
+    alice, entreprise_factory, bdese_factory, mock_api_egapro
 ):
     entreprise_non_soumise = entreprise_factory(
         siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
@@ -327,39 +327,31 @@ def test_synchronise_les_reglementations_BDESE(
     entreprise_soumise_en_cours = entreprise_factory(
         siren="000000003", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     )
-    entreprise_soumise_2_utilisateurs = entreprise_factory(
+    entreprise_soumise_a_jour = entreprise_factory(
         siren="000000004", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     )
     for entreprise in (
         entreprise_non_soumise,
         entreprise_soumise_a_actualiser,
         entreprise_soumise_en_cours,
-        entreprise_soumise_2_utilisateurs,
+        entreprise_soumise_a_jour,
     ):
-        attach_user_to_entreprise(alice, entreprise, "Présidente")
+        Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     bdese_en_cours = bdese_factory(
         bdese_class=BDESE_50_300,
         entreprise=entreprise_soumise_en_cours,
-        user=alice,
         annee=derniere_annee_a_remplir_bdese(),
     )
-    bdese_a_jour_alice = bdese_factory(
+    bdese_a_jour = bdese_factory(
         bdese_class=BDESE_50_300,
-        entreprise=entreprise_soumise_2_utilisateurs,
-        user=alice,
+        entreprise=entreprise_soumise_a_jour,
         annee=derniere_annee_a_remplir_bdese(),
     )
-    bdese_en_cours_bob = bdese_factory(
-        bdese_class=BDESE_50_300,
-        entreprise=entreprise_soumise_2_utilisateurs,
-        user=bob,
-        annee=derniere_annee_a_remplir_bdese(),
-    )
-    mark_bdese_as_complete(bdese_a_jour_alice)
+    mark_bdese_as_complete(bdese_a_jour)
 
     Command().handle()
 
-    assert MetabaseBDESE.objects.count() == 5
+    assert MetabaseBDESE.objects.count() == 4
 
     metabase_bdese_entreprise_non_soumise = MetabaseBDESE.objects.get(
         entreprise__siren=entreprise_non_soumise.siren
@@ -385,25 +377,12 @@ def test_synchronise_les_reglementations_BDESE(
         == MetabaseBDESE.STATUT_EN_COURS
     )
 
-    metabase_bdese_entreprise_soumise_2_utilisateurs = MetabaseBDESE.objects.filter(
-        entreprise__siren=entreprise_soumise_2_utilisateurs.siren
+    metabase_bdese_entreprise_soumise_a_jour = MetabaseBDESE.objects.get(
+        entreprise__siren=entreprise_soumise_a_jour.siren
     )
-    assert metabase_bdese_entreprise_soumise_2_utilisateurs.count() == 2
-    assert metabase_bdese_entreprise_soumise_2_utilisateurs[
-        0
-    ].utilisateur == MetabaseUtilisateur.objects.get(pk=alice.pk)
-    assert metabase_bdese_entreprise_soumise_2_utilisateurs[0].est_soumise
+    assert metabase_bdese_entreprise_soumise_a_jour.est_soumise
     assert (
-        metabase_bdese_entreprise_soumise_2_utilisateurs[0].statut
-        == MetabaseBDESE.STATUT_A_JOUR
-    )
-    assert metabase_bdese_entreprise_soumise_2_utilisateurs[
-        1
-    ].utilisateur == MetabaseUtilisateur.objects.get(pk=bob.pk)
-    assert metabase_bdese_entreprise_soumise_2_utilisateurs[1].est_soumise
-    assert (
-        metabase_bdese_entreprise_soumise_2_utilisateurs[1].statut
-        == MetabaseBDESE.STATUT_EN_COURS
+        metabase_bdese_entreprise_soumise_a_jour.statut == MetabaseBDESE.STATUT_A_JOUR
     )
 
 
@@ -425,7 +404,7 @@ def test_synchronise_les_reglementations_IndexEgaPro(
         entreprise_soumise_a_actualiser,
         entreprise_soumise_a_jour,
     ):
-        attach_user_to_entreprise(alice, entreprise, "Présidente")
+        Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     mock_api_egapro.side_effect = [False, True]
 
     Command().handle()
@@ -478,7 +457,7 @@ def test_synchronise_les_reglementations_BGES(
         entreprise_soumise_a_actualiser,
         entreprise_soumise_a_jour,
     ):
-        attach_user_to_entreprise(alice, entreprise, "Présidente")
+        Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     mock_api_bges.side_effect = [2010, 2023]
 
     with freeze_time("2023-12-20"):
@@ -514,7 +493,7 @@ def test_synchronise_les_reglementations_plusieurs_fois(alice, entreprise_factor
     entreprise = entreprise_factory(
         siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     Command().handle()
     Command().handle()
@@ -528,7 +507,7 @@ def test_synchronise_les_reglementations_plusieurs_fois(alice, entreprise_factor
 def test_ignore_les_entreprises_inscrites_non_qualifiees_dans_la_synchro_des_reglementations(
     alice, entreprise_non_qualifiee
 ):
-    attach_user_to_entreprise(alice, entreprise_non_qualifiee, "Présidente")
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
 
     Command().handle()
 
@@ -546,7 +525,7 @@ def test_conserve_les_entreprises_inscrites_suffisamment_qualifiées_dans_la_syn
     # Les anciennes caracteristiques ne sont plus qualifiantes mais peuvent être encore suffisamment qualifiantes pour des réglementations
     # Dans ce cas on veut les garder dans Metabase
     entreprise = entreprise_factory()
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
     caracteristiques.tranche_chiffre_affaires = None  # CA non renseigné
     caracteristiques.save()
@@ -569,7 +548,7 @@ def test_ignore_les_entreprises_inscrites_qui_ne_sont_pas_suffisamment_qualifié
     # Si l'entreprise est insuffisamment qualifiée pour une réglementation
     # on ne met pas la réglementation de cette entreprise dans Metabase
     entreprise = entreprise_factory()
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
     caracteristiques.effectif = None  # effectif non renseigné
     caracteristiques.save()
@@ -597,21 +576,21 @@ def test_synchronise_l_indicateur_d_impact_nombre_de_reglementations_a_jour(
     entreprise_tout_a_jour = entreprise_factory(
         siren="000000003", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     )
-    entreprise_2_utilisateurs = entreprise_factory(
+    entreprise_bdese_a_jour = entreprise_factory(
         siren="000000004", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     )
     for entreprise in (
         entreprise_non_soumise,
         entreprise_tout_a_actualiser,
         entreprise_tout_a_jour,
+        entreprise_bdese_a_jour,
     ):
-        attach_user_to_entreprise(alice, entreprise, "Présidente")
+        Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     date_premiere_synchro = date(2020, 11, 28)
     with freeze_time(date_premiere_synchro):
         # une entreprise à jour pour Index Egapro sur 3 soumises
         mock_api_egapro.side_effect = [False, True, False]
         # deux entreprises à jour pour la BDESE sur 3 soumises
-        # dont une qui a deux utilisateurs qui ont terminé la mise à jour de leur BDESE personnelle
         bdese_a_actualiser = bdese_factory(
             bdese_class=BDESE_50_300,
             entreprise=entreprise_tout_a_actualiser,
@@ -620,24 +599,15 @@ def test_synchronise_l_indicateur_d_impact_nombre_de_reglementations_a_jour(
         bdese_a_jour = bdese_factory(
             bdese_class=BDESE_50_300,
             entreprise=entreprise_tout_a_jour,
-            user=alice,
             annee=derniere_annee_a_remplir_bdese(),
         )
-        bdese_a_jour_alice = bdese_factory(
+        bdese_a_jour_2 = bdese_factory(
             bdese_class=BDESE_50_300,
-            entreprise=entreprise_2_utilisateurs,
-            user=alice,
-            annee=derniere_annee_a_remplir_bdese(),
-        )
-        bdese_a_jour_bob = bdese_factory(
-            bdese_class=BDESE_50_300,
-            entreprise=entreprise_2_utilisateurs,
-            user=bob,
+            entreprise=entreprise_bdese_a_jour,
             annee=derniere_annee_a_remplir_bdese(),
         )
         mark_bdese_as_complete(bdese_a_jour)
-        mark_bdese_as_complete(bdese_a_jour_alice)
-        mark_bdese_as_complete(bdese_a_jour_bob)
+        mark_bdese_as_complete(bdese_a_jour_2)
         # aucune entreprise soumise au BGES
 
         Command().handle()
@@ -669,7 +639,7 @@ def test_synchronise_l_indicateur_d_impact_avec_des_entreprises_soumises_au_BGES
         entreprise_bges_a_actualiser,
         entreprise_bges_a_jour,
     ):
-        attach_user_to_entreprise(alice, entreprise, "Présidente")
+        Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     date_premiere_synchro = date(2020, 11, 28)
     with freeze_time(date_premiere_synchro):
         # aucune entreprise à jour pour Index Egapro sur 2 soumises

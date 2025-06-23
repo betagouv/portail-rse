@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "api",
     "entreprises",
     "habilitations",
+    "invitations",
     "metabase",
     "public",
     "reglementations",
@@ -90,6 +91,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "entreprises.context_processors.current_entreprise",
                 "utils.context_processors.custom_settings",
+                "habilitations.context_processors.habilitation",
             ],
         },
     },
@@ -222,14 +224,22 @@ EMAIL_BACKEND = (
 ANYMAIL = {"BREVO_API_KEY": BREVO_API_KEY}
 DEFAULT_FROM_EMAIL = "ne-pas-repondre@portail-rse.beta.gouv.fr"
 CONTACT_EMAIL = os.getenv("CONTACT_EMAIL")
+SUPPORT_EMAIL = "contact@portail-rse.beta.gouv.fr"
 BREVO_CONFIRMATION_EMAIL_TEMPLATE = 1
 BREVO_RESULTAT_ANALYSE_IA_TEMPLATE = 65
+BREVO_INVITATION_TEMPLATE = 82
+BREVO_AJOUT_MEMBRE_TEMPLATE = 84
 
 # Users
 AUTH_USER_MODEL = "users.User"
 LOGIN_URL = "/connexion"
 LOGIN_REDIRECT_URL = "/tableau-de-bord"
 LOGOUT_REDIRECT_URL = "/"
+
+# Invitations
+INVITATION_MAX_AGE = int(
+    os.getenv("INVITATION_MAX_AGE", 60 * 60 * 24 * 10)
+)  # en secondes, 10 jours par défaut
 
 # Sentry
 SENTRY_DSN = os.getenv("SENTRY_DSN")

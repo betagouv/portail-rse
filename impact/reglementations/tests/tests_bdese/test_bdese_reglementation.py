@@ -2,7 +2,7 @@ import pytest
 from django.urls import reverse
 
 from entreprises.models import CaracteristiquesAnnuelles
-from habilitations.models import attach_user_to_entreprise
+from habilitations.models import Habilitation
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
 from reglementations.models import BDESEAvecAccord
@@ -60,7 +60,7 @@ def test_calculate_status_less_than_50_employees(
         effectif=effectif,
         bdese_accord=bdese_accord,
     )
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     status = BDESEReglementation.calculate_status(
         entreprise.dernieres_caracteristiques_qualifiantes, alice
@@ -87,13 +87,11 @@ def test_calculate_status_less_than_50_employees(
         (CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS, BDESE_300),
     ],
 )
-def test_calculate_status_more_than_50_employees_with_habilited_user(
+def test_calculate_status_more_than_50_employees(
     effectif, bdese_class, entreprise_factory, alice, mocker
 ):
     entreprise = entreprise_factory(effectif=effectif, bdese_accord=False)
-    habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
-    habilitation.confirm()
-    habilitation.save()
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     annee = derniere_annee_a_remplir_bdese()
 
     status = BDESEReglementation.calculate_status(
@@ -151,46 +149,6 @@ def test_calculate_status_more_than_50_employees_with_habilited_user(
 
 
 @pytest.mark.parametrize(
-    "effectif, bdese_class",
-    [
-        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249, BDESE_50_300),
-        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299, BDESE_50_300),
-        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499, BDESE_300),
-        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999, BDESE_300),
-        (CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999, BDESE_300),
-        (CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS, BDESE_300),
-    ],
-)
-def test_calculate_status_more_than_50_employees_with_not_habilited_user(
-    effectif, bdese_class, entreprise_factory, alice, mocker
-):
-    entreprise = entreprise_factory(effectif=effectif, bdese_accord=False)
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
-    annee = derniere_annee_a_remplir_bdese()
-
-    status = BDESEReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
-    )
-
-    assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
-
-    bdese_class.officials.create(entreprise=entreprise, annee=annee)
-    status = BDESEReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
-    )
-
-    # L'utilisateur dont l'habilitation n'est pas confirmée voit le statut de sa BDESE personnelle, pas de celle officielle
-    assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
-
-    bdese_class.personals.create(entreprise=entreprise, annee=annee, user=alice)
-    status = BDESEReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
-    )
-
-    assert status.status == ReglementationStatus.STATUS_EN_COURS
-
-
-@pytest.mark.parametrize(
     "effectif",
     [
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
@@ -201,11 +159,11 @@ def test_calculate_status_more_than_50_employees_with_not_habilited_user(
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_calculate_status_with_bdese_accord_with_not_habilited_user(
+def test_calculate_status_with_bdese_accord(
     effectif, alice, entreprise_factory, mocker
 ):
     entreprise = entreprise_factory(effectif=effectif, bdese_accord=True)
-    attach_user_to_entreprise(alice, entreprise, "Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     annee = derniere_annee_a_remplir_bdese()
 
     status = BDESEReglementation.calculate_status(
@@ -223,68 +181,7 @@ def test_calculate_status_with_bdese_accord_with_not_habilited_user(
     )
     assert status.secondary_actions == []
 
-    bdese = BDESEAvecAccord.officials.create(entreprise=entreprise, annee=annee)
-    bdese.is_complete = True
-    bdese.save()
-    status = BDESEReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
-    )
-
-    # L'utilisateur dont l'habilitation n'est pas confirmée voit le statut de sa BDESE personnelle, pas de celle officielle
-    assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
-
-    bdese = BDESEAvecAccord.personals.create(
-        entreprise=entreprise, annee=annee, user=alice
-    )
-    bdese.is_complete = True
-    bdese.save()
-
-    status = BDESEReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
-    )
-
-    assert status.status == ReglementationStatus.STATUS_A_JOUR
-    assert (
-        status.primary_action.title == f"Marquer ma BDESE {annee} comme non actualisée"
-    )
-
-
-@pytest.mark.parametrize(
-    "effectif",
-    [
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
-        CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
-        CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
-    ],
-)
-def test_calculate_status_with_bdese_accord_with_habilited_user(
-    effectif, alice, entreprise_factory, mocker
-):
-    entreprise = entreprise_factory(effectif=effectif, bdese_accord=True)
-    habilitation = attach_user_to_entreprise(alice, entreprise, "Présidente")
-    habilitation.confirm()
-    habilitation.save()
-    annee = derniere_annee_a_remplir_bdese()
-
-    status = BDESEReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
-    )
-
-    assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
-    assert (
-        status.status_detail
-        == "Vous êtes soumis à cette réglementation car votre effectif est supérieur à 50 salariés. Vous avez un accord d'entreprise spécifique. Veuillez vous y référer."
-    )
-    assert status.primary_action.title == f"Marquer ma BDESE {annee} comme actualisée"
-    assert status.primary_action.url == reverse(
-        "reglementations:toggle_bdese_completion", args=[entreprise.siren, annee]
-    )
-    assert status.secondary_actions == []
-
-    bdese = BDESEAvecAccord.officials.create(entreprise=entreprise, annee=annee)
+    bdese = BDESEAvecAccord.objects.create(entreprise=entreprise, annee=annee)
     bdese.is_complete = True
     bdese.save()
     status = BDESEReglementation.calculate_status(

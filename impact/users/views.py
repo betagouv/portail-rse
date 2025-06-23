@@ -1,3 +1,6 @@
+from datetime import datetime
+from datetime import timezone
+
 import django.utils.http
 from django.conf import settings
 from django.contrib import messages
@@ -20,7 +23,9 @@ from .models import User
 from api.exceptions import APIError
 from entreprises.models import Entreprise
 from entreprises.views import search_and_create_entreprise
-from habilitations.models import attach_user_to_entreprise
+from habilitations.models import Habilitation
+from invitations.models import Invitation
+from users.forms import message_erreur_proprietaires
 from utils.tokens import check_token
 from utils.tokens import make_token
 from utils.tokens import uidb64
@@ -34,13 +39,25 @@ def creation(request):
                 siren = form.cleaned_data["siren"]
                 if entreprises := Entreprise.objects.filter(siren=siren):
                     entreprise = entreprises[0]
+                    if habilitations := Habilitation.objects.filter(
+                        entreprise=entreprise
+                    ):
+                        proprietaires_presents = [
+                            habilitation.user for habilitation in habilitations
+                        ]
+                        messages.error(
+                            request,
+                            message_erreur_proprietaires(proprietaires_presents),
+                        )
+                        return render(request, "users/creation.html", {"form": form})
+
                 else:
                     entreprise = search_and_create_entreprise(siren)
                 user = form.save()
-                attach_user_to_entreprise(
-                    user,
+                Habilitation.ajouter(
                     entreprise,
-                    form.cleaned_data["fonctions"],
+                    user,
+                    fonctions=form.cleaned_data["fonctions"],
                 )
                 if _send_confirm_email(request, user):
                     success_message = f"Votre compte a bien été créé. Un e-mail de confirmation a été envoyé à {user.email}. Confirmez votre adresse e-mail en cliquant sur le lien reçu avant de vous connecter."
@@ -51,10 +68,6 @@ def creation(request):
                 return redirect("reglementations:tableau_de_bord", siren)
             except APIError as exception:
                 messages.error(request, exception)
-        else:
-            messages.error(
-                request, "La création a échoué car le formulaire contient des erreurs."
-            )
     else:
         siren = request.session.get("siren")
         form = UserCreationForm(initial={"siren": siren})
@@ -99,6 +112,72 @@ def confirm_email(request, uidb64, token):
     fail_message = "Le lien de confirmation est invalide."
     messages.error(request, fail_message)
     return redirect("/")
+
+
+def invitation(request, id_invitation, code):
+    try:
+        invitation = Invitation.objects.get(id=id_invitation)
+    except Invitation.DoesNotExist:
+        messages.error(request, "Cette invitation n'existe pas.")
+        return redirect("/")
+    if invitation.est_expiree:
+        messages.error(
+            request,
+            "L'invitation est expirée. Vous devez demander une nouvelle invitation à un des propriétaires de l'entreprise sur Portail-RSE.",
+        )
+        return redirect("/")
+    if not check_token(invitation, "invitation", code):
+        messages.error(request, "Cette invitation est incorrecte.")
+        return redirect("/")
+
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        siren = form.data["siren"]
+        email = form.data.get("email")
+        if invitation.email != email:
+            form.add_error("email", "L'e-mail ne correspond pas à l'invitation.")
+        if invitation.entreprise.siren != siren:
+            form.add_error("siren", "L'entreprise ne correspond pas à l'invitation.")
+        if form.is_valid():
+            entreprises = Entreprise.objects.filter(siren=siren)
+            entreprise = entreprises[0]
+            user = form.save()
+            user.is_email_confirmed = True
+            user.save()
+            habilitation = Habilitation.ajouter(
+                entreprise,
+                user,
+                fonctions=form.cleaned_data["fonctions"],
+            )
+            habilitation.invitation = invitation
+            habilitation.save()
+            messages.success(
+                request,
+                "Votre compte a bien été créé. Connectez-vous pour collaborer avec les autres membres de l'entreprise.",
+            )
+            invitation.date_acceptation = datetime.now(timezone.utc)
+            invitation.save()
+            return redirect("reglementations:tableau_de_bord", siren)
+        else:
+            messages.error(
+                request, "La création a échoué car le formulaire contient des erreurs."
+            )
+    else:
+        initial = {
+            "email": invitation.email,
+            "siren": invitation.entreprise.siren,
+        }
+        form = UserCreationForm(initial=initial)
+    return render(
+        request,
+        "users/creation.html",
+        {
+            "form": form,
+            "creation_par_invitation": True,
+            "id_invitation": id_invitation,
+            "code": code,
+        },
+    )
 
 
 def deconnexion(request):
