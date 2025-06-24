@@ -77,6 +77,13 @@ class Habilitation(TimestampedModel):
         null=True,
     )
 
+    invitation = models.ForeignKey(
+        "invitations.Invitation",
+        verbose_name="invitation",
+        null=True,
+        on_delete=models.SET_NULL,
+    )
+
     objects = HabilitationQueryset.as_manager()
 
     class Meta:

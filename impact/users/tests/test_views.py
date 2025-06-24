@@ -552,9 +552,12 @@ def test_creation_d_un_utilisateur_après_une_invitation(
         "fonctions": "Présidente",
     }
 
-    response = client.post(
-        f"/invitation/{invitation.id}/{CODE}", data=data, follow=True
-    )
+    now = datetime.now(timezone.utc)
+
+    with freeze_time(now):
+        response = client.post(
+            f"/invitation/{invitation.id}/{CODE}", data=data, follow=True
+        )
 
     assert response.status_code == 200
     reglementation_url = reverse(
@@ -577,14 +580,12 @@ def test_creation_d_un_utilisateur_après_une_invitation(
     assert user.is_email_confirmed == True
     assert user in entreprise.users.all()
     assert user.uidb64
-    assert Habilitation.pour(entreprise, user).fonctions == "Présidente"
+    habilitation = Habilitation.pour(entreprise, user)
+    assert habilitation.fonctions == "Présidente"
+    assert habilitation.invitation == invitation
     assert len(mailoutbox) == 0
-    assert (
-        Invitation.objects.filter(
-            entreprise=entreprise, email="alice@portail.example"
-        ).count()
-        == 0
-    )
+    invitation.refresh_from_db()
+    assert invitation.date_acceptation == now
 
 
 def test_echec_d_invitation_car_le_code_ne_correspond_pas(

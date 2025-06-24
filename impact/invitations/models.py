@@ -28,6 +28,7 @@ class Invitation(TimestampedModel):
         on_delete=models.SET_NULL,
         null=True,
     )
+    date_acceptation = models.DateTimeField(null=True)
 
     @property
     def date_expiration(self):
