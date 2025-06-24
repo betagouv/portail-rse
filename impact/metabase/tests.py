@@ -12,12 +12,14 @@ from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from habilitations.models import Habilitation
+from invitations.models import Invitation
 from metabase.management.commands.sync_metabase import Command
 from metabase.models import BDESE as MetabaseBDESE
 from metabase.models import BGES as MetabaseBGES
 from metabase.models import Entreprise as MetabaseEntreprise
 from metabase.models import Habilitation as MetabaseHabilitation
 from metabase.models import IndexEgaPro as MetabaseIndexEgaPro
+from metabase.models import Invitation as MetabaseInvitation
 from metabase.models import Stats as MetabaseStats
 from metabase.models import Utilisateur as MetabaseUtilisateur
 from reglementations.models import BDESE_50_300
@@ -312,6 +314,48 @@ def test_synchronise_une_entreprise_avec_un_utilisateur(
     metabase_habilitation = MetabaseHabilitation.objects.first()
 
     assert metabase_habilitation.confirmee_le.date() == date_confirmation.date()
+
+
+@pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
+def test_synchronise_les_invitations(entreprise_factory, alice, django_user_model):
+    entreprise = entreprise_factory()
+    Habilitation.ajouter(entreprise, alice)
+    invitation = Invitation.objects.create(
+        entreprise=entreprise,
+        email="bob@portail-rse.test",
+        role="proprietaire",
+        inviteur=alice,
+    )
+
+    Command().handle()
+
+    assert MetabaseInvitation.objects.count() == 1
+
+    metabase_invitation = MetabaseInvitation.objects.first()
+    metabase_utilisateur = MetabaseUtilisateur.objects.first()
+    metabase_entreprise = MetabaseEntreprise.objects.first()
+
+    assert metabase_invitation.pk == metabase_invitation.impact_id == invitation.pk
+    assert metabase_invitation.ajoutee_le == invitation.created_at
+    assert metabase_invitation.modifiee_le == invitation.updated_at
+    assert metabase_invitation.inviteur == metabase_utilisateur
+    assert metabase_invitation.entreprise == metabase_entreprise
+    assert metabase_invitation.role == "proprietaire"
+    assert not metabase_invitation.date_acceptation
+
+    # L'invitation est acceptée par Bob
+    bob = django_user_model.objects.create(
+        prenom="Bob",
+        nom="Dylan",
+        email="bob@portail-rse.test",
+    )
+    invitation.accepter(bob)
+
+    Command().handle()
+
+    metabase_invitation.refresh_from_db()
+    assert metabase_invitation.date_acceptation
+    assert MetabaseHabilitation.objects.get(invitation=metabase_invitation)
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
