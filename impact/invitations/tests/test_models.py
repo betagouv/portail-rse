@@ -5,6 +5,8 @@ from datetime import timezone
 from django.conf import settings
 from freezegun import freeze_time
 
+from habilitations.models import Habilitation
+from habilitations.models import UserRole
 from invitations.models import Invitation
 
 
@@ -45,3 +47,30 @@ def test_inviteur_supprimé_après_la_creation_de_l_invitation(
 
     invitation.refresh_from_db()
     assert invitation.inviteur is None
+
+
+def test_accepter(alice, entreprise_factory, django_user_model):
+    entreprise = entreprise_factory()
+    invitation = Invitation.objects.create(
+        entreprise=entreprise,
+        email="bob@domaine.test",
+        inviteur=alice,
+        role=UserRole.EDITEUR,
+    )
+    date_acceptation = datetime(2025, 5, 9, 14, 30, tzinfo=timezone.utc)
+    bob = django_user_model.objects.create(
+        prenom="Bob",
+        nom="Dylan",
+        email="bob@domaine.test",
+    )
+
+    with freeze_time(date_acceptation):
+        invitation.accepter(bob, fonctions="Testeur")
+
+    invitation.refresh_from_db()
+    assert invitation.date_acceptation == date_acceptation
+
+    habilitation = Habilitation.pour(entreprise, bob)
+    assert habilitation.fonctions == "Testeur"
+    assert habilitation.invitation == invitation
+    assert habilitation.role == UserRole.EDITEUR

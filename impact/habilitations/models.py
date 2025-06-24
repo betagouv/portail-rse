@@ -146,11 +146,18 @@ class Habilitation(TimestampedModel):
 
     @classmethod
     def ajouter(
-        cls, entreprise, utilisateur, role=UserRole.PROPRIETAIRE, fonctions=None
+        cls,
+        entreprise,
+        utilisateur,
+        role=UserRole.PROPRIETAIRE,
+        fonctions=None,
+        invitation=None,
     ):
         h = cls(user=utilisateur, entreprise=entreprise, role=role)
         if fonctions:
             h.fonctions = fonctions
+        if invitation:
+            h.invitation = invitation
         try:
             h.save()
             return h

@@ -1,6 +1,3 @@
-from datetime import datetime
-from datetime import timezone
-
 import django.utils.http
 from django.conf import settings
 from django.contrib import messages
@@ -139,24 +136,14 @@ def invitation(request, id_invitation, code):
         if invitation.entreprise.siren != siren:
             form.add_error("siren", "L'entreprise ne correspond pas à l'invitation.")
         if form.is_valid():
-            entreprises = Entreprise.objects.filter(siren=siren)
-            entreprise = entreprises[0]
             user = form.save()
             user.is_email_confirmed = True
             user.save()
-            habilitation = Habilitation.ajouter(
-                entreprise,
-                user,
-                fonctions=form.cleaned_data["fonctions"],
-            )
-            habilitation.invitation = invitation
-            habilitation.save()
+            invitation.accepter(user, fonctions=form.cleaned_data["fonctions"])
             messages.success(
                 request,
                 "Votre compte a bien été créé. Connectez-vous pour collaborer avec les autres membres de l'entreprise.",
             )
-            invitation.date_acceptation = datetime.now(timezone.utc)
-            invitation.save()
             return redirect("reglementations:tableau_de_bord", siren)
         else:
             messages.error(

@@ -88,9 +88,7 @@ def test_une_invitation_a_devenir_membre_pour_un_compte_existant_est_activée_di
     redirect_url = (
         f"""{reverse("habilitations:membres_entreprise", args=[entreprise.siren])}"""
     )
-    invitation = Invitation.objects.filter(
-        entreprise=entreprise, email=bob.email
-    ).first()
+    invitation = Invitation.objects.get(entreprise=entreprise, email=bob.email)
     assert invitation.role == UserRole.PROPRIETAIRE.value
     assert invitation.inviteur == alice
     assert invitation.date_acceptation
