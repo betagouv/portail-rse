@@ -54,6 +54,16 @@ class Entreprise(models.Model):
         return f"{self.siren} {self.denomination}"
 
 
+class Invitation(models.Model):
+    impact_id = models.BigIntegerField(primary_key=True)
+    ajoutee_le = models.DateTimeField()
+    modifiee_le = models.DateTimeField()
+    inviteur = models.ForeignKey(Utilisateur, on_delete=models.SET_NULL, null=True)
+    entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
+    role = models.CharField(max_length=20)
+    date_acceptation = models.DateTimeField(null=True)
+
+
 class Habilitation(models.Model):
     impact_id = models.BigIntegerField(primary_key=True)
     ajoutee_le = models.DateTimeField()
@@ -62,6 +72,7 @@ class Habilitation(models.Model):
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
     fonctions = models.CharField(max_length=FONCTIONS_MAX_LENGTH, null=True)
     confirmee_le = models.DateTimeField(null=True)
+    invitation = models.ForeignKey(Invitation, on_delete=models.SET_NULL, null=True)
 
 
 class Reglementation(models.Model):

@@ -7,11 +7,13 @@ from django.db.models import Count
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise as PortailRSEEntreprise
 from habilitations.models import Habilitation as PortailRSEHabilitation
+from invitations.models import Invitation as PortailRSEInvitation
 from metabase.models import BDESE as MetabaseBDESE
 from metabase.models import BGES as MetabaseBGES
 from metabase.models import Entreprise as MetabaseEntreprise
 from metabase.models import Habilitation as MetabaseHabilitation
 from metabase.models import IndexEgaPro as MetabaseIndexEgaPro
+from metabase.models import Invitation as MetabaseInvitation
 from metabase.models import Stats as MetabaseStats
 from metabase.models import Utilisateur as MetabaseUtilisateur
 from reglementations.views.base import InsuffisammentQualifieeError
@@ -27,6 +29,7 @@ class Command(BaseCommand):
         self._drop_tables()
         self._insert_entreprises()
         self._insert_utilisateurs()
+        self._insert_invitations()
         self._insert_habilitations()
         self._insert_reglementations()
         self._insert_stats()
@@ -38,6 +41,8 @@ class Command(BaseCommand):
         self._success("Suppression des utilisateurs de Metabase: OK")
         MetabaseHabilitation.objects.all().delete()
         self._success("Suppression des habilitations de Metabase: OK")
+        MetabaseInvitation.objects.all().delete()
+        self._success("Suppression des invitations de Metabase: OK")
 
     def _insert_entreprises(self):
         self._success("Ajout des entreprises dans Metabase")
@@ -54,13 +59,15 @@ class Command(BaseCommand):
                 modifiee_le=_last_update(entreprise),
                 siren=entreprise.siren,
                 denomination=entreprise.denomination,
-                date_cloture_exercice=caracteristiques.date_cloture_exercice
-                if caracteristiques
-                else None,
+                date_cloture_exercice=(
+                    caracteristiques.date_cloture_exercice if caracteristiques else None
+                ),
                 date_derniere_qualification=entreprise.date_derniere_qualification,
-                categorie_juridique=entreprise.categorie_juridique.name
-                if entreprise.categorie_juridique
-                else None,
+                categorie_juridique=(
+                    entreprise.categorie_juridique.name
+                    if entreprise.categorie_juridique
+                    else None
+                ),
                 pays=entreprise.pays,
                 code_NAF=entreprise.code_NAF,
                 est_interet_public=entreprise.est_interet_public,
@@ -70,39 +77,51 @@ class Command(BaseCommand):
                 societe_mere_en_france=entreprise.societe_mere_en_france,
                 comptes_consolides=entreprise.comptes_consolides,
                 effectif=caracteristiques.effectif if caracteristiques else None,
-                effectif_permanent=caracteristiques.effectif_permanent
-                if caracteristiques
-                else None,
-                effectif_outre_mer=caracteristiques.effectif_outre_mer
-                if caracteristiques
-                else None,
-                effectif_groupe=caracteristiques.effectif_groupe
-                if caracteristiques
-                else None,
-                effectif_groupe_france=caracteristiques.effectif_groupe_france
-                if caracteristiques
-                else None,
-                effectif_groupe_permanent=caracteristiques.effectif_groupe_permanent
-                if caracteristiques
-                else None,
-                tranche_chiffre_affaires=caracteristiques.tranche_chiffre_affaires
-                if caracteristiques
-                else None,
-                tranche_bilan=caracteristiques.tranche_bilan
-                if caracteristiques
-                else None,
-                tranche_chiffre_affaires_consolide=caracteristiques.tranche_chiffre_affaires_consolide
-                if caracteristiques
-                else None,
-                tranche_bilan_consolide=caracteristiques.tranche_bilan_consolide
-                if caracteristiques
-                else None,
-                bdese_accord=caracteristiques.bdese_accord
-                if caracteristiques
-                else None,
-                systeme_management_energie=caracteristiques.systeme_management_energie
-                if caracteristiques
-                else None,
+                effectif_permanent=(
+                    caracteristiques.effectif_permanent if caracteristiques else None
+                ),
+                effectif_outre_mer=(
+                    caracteristiques.effectif_outre_mer if caracteristiques else None
+                ),
+                effectif_groupe=(
+                    caracteristiques.effectif_groupe if caracteristiques else None
+                ),
+                effectif_groupe_france=(
+                    caracteristiques.effectif_groupe_france
+                    if caracteristiques
+                    else None
+                ),
+                effectif_groupe_permanent=(
+                    caracteristiques.effectif_groupe_permanent
+                    if caracteristiques
+                    else None
+                ),
+                tranche_chiffre_affaires=(
+                    caracteristiques.tranche_chiffre_affaires
+                    if caracteristiques
+                    else None
+                ),
+                tranche_bilan=(
+                    caracteristiques.tranche_bilan if caracteristiques else None
+                ),
+                tranche_chiffre_affaires_consolide=(
+                    caracteristiques.tranche_chiffre_affaires_consolide
+                    if caracteristiques
+                    else None
+                ),
+                tranche_bilan_consolide=(
+                    caracteristiques.tranche_bilan_consolide
+                    if caracteristiques
+                    else None
+                ),
+                bdese_accord=(
+                    caracteristiques.bdese_accord if caracteristiques else None
+                ),
+                systeme_management_energie=(
+                    caracteristiques.systeme_management_energie
+                    if caracteristiques
+                    else None
+                ),
                 nombre_utilisateurs=entreprise.nombre_utilisateurs,
             )
             self._success(str(entreprise))
@@ -125,6 +144,25 @@ class Command(BaseCommand):
             self._success(str(utilisateur.pk))
         self._success("Ajout des utilisateurs dans Metabase: OK")
 
+    def _insert_invitations(self):
+        self._success("Ajout des invitations dans Metabase")
+        for invitation in PortailRSEInvitation.objects.all():
+            MetabaseInvitation.objects.create(
+                impact_id=invitation.pk,
+                ajoutee_le=invitation.created_at,
+                modifiee_le=invitation.updated_at,
+                entreprise=MetabaseEntreprise.objects.get(
+                    impact_id=invitation.entreprise_id
+                ),
+                inviteur=(
+                    MetabaseUtilisateur.objects.get(impact_id=invitation.inviteur_id)
+                    if invitation.inviteur
+                    else None
+                ),
+                role=invitation.role,
+                date_acceptation=invitation.date_acceptation,
+            )
+
     def _insert_habilitations(self):
         self._success("Ajout des habilitations dans Metabase")
         for habilitation in PortailRSEHabilitation.objects.all():
@@ -141,6 +179,11 @@ class Command(BaseCommand):
                 ),
                 fonctions=habilitation.fonctions,
                 confirmee_le=habilitation.confirmed_at,
+                invitation=(
+                    MetabaseInvitation.objects.get(impact_id=habilitation.invitation_id)
+                    if habilitation.invitation_id
+                    else None
+                ),
             )
             self._success(str(habilitation.pk))
         self._success("Ajout des habilitations dans Metabase: OK")
