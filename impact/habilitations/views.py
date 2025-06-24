@@ -1,4 +1,6 @@
 from collections import defaultdict
+from datetime import datetime
+from datetime import timezone
 
 from django.conf import settings
 from django.contrib import messages
@@ -74,7 +76,16 @@ def index(request, siren):
 
 
 def _ajoute_membre(request, entreprise, utilisateur):
-    Habilitation.objects.create(entreprise=entreprise, user=utilisateur)
+    invitation = Invitation.objects.create(
+        entreprise=entreprise,
+        email=utilisateur.email,
+        role=UserRole.PROPRIETAIRE.value,
+        inviteur=request.user,
+        date_acceptation=datetime.now(tz=timezone.utc),
+    )
+    Habilitation.objects.create(
+        entreprise=entreprise, user=utilisateur, invitation=invitation
+    )
     _envoie_email_d_ajout(request, entreprise, utilisateur)
     messages.success(
         request,
