@@ -57,7 +57,9 @@ def index(request, siren):
         {
             "entreprise": entreprise,
             "habilitation": Habilitation.pour(entreprise, request.user),
-            "invitations": Invitation.objects.filter(entreprise=entreprise),
+            "invitations": Invitation.objects.filter(
+                entreprise=entreprise, date_acceptation__isnull=True
+            ),
         }
     )
     # organisation des membres par habilitations

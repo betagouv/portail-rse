@@ -1,4 +1,5 @@
 import html
+from datetime import datetime
 
 import pytest
 from django.conf import settings
@@ -43,6 +44,23 @@ def test_page_membres_d_une_entreprise_n_affiche_pas_les_utilisateurs_non_confir
     bob.is_email_confirmed = False
     bob.save()
     Habilitation.ajouter(entreprise, bob, fonctions="Présidente")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
+    client.force_login(alice)
+
+    response = client.get(f"/droits/{entreprise.siren}")
+
+    assert response.status_code == 200
+    content = response.content.decode("utf-8")
+    assert bob.email not in content
+
+
+def test_page_membres_d_une_entreprise_n_affiche_pas_les_invitations_acceptées(
+    client, alice, bob, entreprise_factory
+):
+    entreprise = entreprise_factory()
+    Invitation.objects.create(
+        email=bob.email, entreprise=entreprise, date_acceptation=datetime.now()
+    )
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
 

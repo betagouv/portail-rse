@@ -1,3 +1,6 @@
+from datetime import datetime
+from datetime import timezone
+
 import django.utils.http
 from django.conf import settings
 from django.contrib import messages
@@ -141,16 +144,19 @@ def invitation(request, id_invitation, code):
             user = form.save()
             user.is_email_confirmed = True
             user.save()
-            Habilitation.ajouter(
+            habilitation = Habilitation.ajouter(
                 entreprise,
                 user,
                 fonctions=form.cleaned_data["fonctions"],
             )
+            habilitation.invitation = invitation
+            habilitation.save()
             messages.success(
                 request,
                 "Votre compte a bien été créé. Connectez-vous pour collaborer avec les autres membres de l'entreprise.",
             )
-            Invitation.objects.filter(entreprise=entreprise, email=user.email).delete()
+            invitation.date_acceptation = datetime.now(timezone.utc)
+            invitation.save()
             return redirect("reglementations:tableau_de_bord", siren)
         else:
             messages.error(
