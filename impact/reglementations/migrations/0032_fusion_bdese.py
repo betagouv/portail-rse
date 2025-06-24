@@ -76,9 +76,14 @@ class Migration(migrations.Migration):
                     bdese_personnelles = sorted(bdese_personnelles, key=_sort_fn)
 
                     if premiere_bdese := bdese_personnelles[0]:
-                        print(
-                            f" > PK entreprise {entreprise_id}, BDESE sélectionnée : {premiere_bdese.pk} (total: {len(bdese_personnelles)})"
-                        )
+                        try:
+                            print(
+                                f" > entreprise; {entreprise_id}, utilisateur: {premiere_bdese.user.email}, BDESE sélectionnée : {premiere_bdese.pk} (total: {len(bdese_personnelles)})"
+                            )
+                        except Exception:
+                            print(
+                                f"  > l'utilisateur {premiere_bdese.user_id} n'existe pas (intégrité)"
+                            )
                         premiere_bdese.user = None
                         premiere_bdese.save()
                         continue
