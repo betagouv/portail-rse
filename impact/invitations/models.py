@@ -6,6 +6,7 @@ from django.conf import settings
 from django.db import models
 
 from entreprises.models import Entreprise
+from habilitations.models import Habilitation
 from users.models import User
 from utils.models import TimestampedModel
 
@@ -37,3 +38,16 @@ class Invitation(TimestampedModel):
     @property
     def est_expiree(self):
         return self.date_expiration <= datetime.now(tz=timezone.utc)
+
+    def accepter(self, utilisateur, fonctions=None):
+        Habilitation.ajouter(
+            self.entreprise,
+            utilisateur,
+            role=self.role,
+            fonctions=fonctions,
+            invitation=self,
+        )
+
+        self.date_acceptation = datetime.now(timezone.utc)
+        self.save()
+        return self

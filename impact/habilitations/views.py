@@ -1,13 +1,10 @@
 from collections import defaultdict
-from datetime import datetime
-from datetime import timezone
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import EmailMessage
-from django.db.utils import IntegrityError
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -17,6 +14,7 @@ from .enums import UserRole
 from .forms import InvitationForm
 from .models import Habilitation
 from entreprises.models import Entreprise
+from habilitations.models import Habilitation
 from invitations.models import Invitation
 from users.models import User
 from utils.tokens import make_token
@@ -31,12 +29,13 @@ def index(request, siren):
             email = form.cleaned_data["email"]
             try:
                 utilisateur = User.objects.get(email=email)
-                _ajoute_membre(request, entreprise, utilisateur)
-            except IntegrityError:
-                messages.error(
-                    request,
-                    "L'invitation a échoué car cette personne est déjà membre de l'entreprise.",
-                )
+                if Habilitation.objects.filter(entreprise=entreprise, user=utilisateur):
+                    messages.error(
+                        request,
+                        "L'invitation a échoué car cette personne est déjà membre de l'entreprise.",
+                    )
+                else:
+                    _ajoute_membre(request, entreprise, utilisateur)
             except ObjectDoesNotExist:
                 _cree_invitation(request, entreprise, email)
             return redirect(
@@ -81,11 +80,8 @@ def _ajoute_membre(request, entreprise, utilisateur):
         email=utilisateur.email,
         role=UserRole.PROPRIETAIRE.value,
         inviteur=request.user,
-        date_acceptation=datetime.now(tz=timezone.utc),
     )
-    Habilitation.objects.create(
-        entreprise=entreprise, user=utilisateur, invitation=invitation
-    )
+    invitation.accepter(utilisateur)
     _envoie_email_d_ajout(request, entreprise, utilisateur)
     messages.success(
         request,

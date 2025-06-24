@@ -2,6 +2,7 @@ import pytest
 
 from habilitations.models import Habilitation
 from habilitations.models import UserRole
+from invitations.models import Invitation
 
 
 @pytest.mark.django_db
@@ -39,3 +40,13 @@ def test_ajouter_habilitation_avec_differents_roles(alice, entreprise_factory, r
     assert habilitation, "Il devrait exister une habilitation"
     assert habilitation.fonctions == "présidente", "La fonction est incorrecte"
     assert habilitation.role == role, "Le rôle est incorrect"
+
+
+def test_ajouter_habilitation_avec_invitation(alice, entreprise_factory):
+    entreprise = entreprise_factory()
+    invitation = Invitation.objects.create(entreprise=entreprise)
+
+    Habilitation.ajouter(entreprise, alice, invitation=invitation)
+
+    habilitation = Habilitation.objects.pour(entreprise, alice)
+    assert habilitation.invitation == invitation
