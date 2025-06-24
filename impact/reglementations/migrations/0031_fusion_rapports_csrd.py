@@ -57,10 +57,17 @@ class Migration(migrations.Migration):
                 # - et / ou nombre d'enjeux modifiés
                 # et il devient le rapport principal pour l'année donnée
                 if premier_rapport := rapports_personnels.first():
+                    try:
+                        print(
+                            f"  > changement en rapport officiel : entreprise: {id_entreprise}, rapport: {premier_rapport.pk}, utilisateur: {premier_rapport.proprietaire.email}"
+                        )
+                    except Exception:
+                        # FIXME: il manque apparement une contrainte d'intégrité dans le modèle...
+                        print(
+                            f"  > l'utilisateur {premier_rapport.proprietaire_id} n'existe pas (intégrité)"
+                        )
+
                     premier_rapport.proprietaire = None
-                    print(
-                        f"  > changement en rapport officiel : PK entreprise:{id_entreprise}, rapport: {premier_rapport.pk}"
-                    )
                     premier_rapport.save()
                     continue
 
