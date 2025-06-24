@@ -6,6 +6,7 @@ from django.conf import settings
 from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed
 
+from habilitations.enums import UserRole
 from habilitations.models import Habilitation
 from invitations.models import Invitation
 
@@ -87,10 +88,15 @@ def test_une_invitation_a_devenir_membre_pour_un_compte_existant_est_activée_di
     redirect_url = (
         f"""{reverse("habilitations:membres_entreprise", args=[entreprise.siren])}"""
     )
-    assert (
-        Invitation.objects.filter(entreprise=entreprise, email=bob.email).count() == 0
-    )
-    assert Habilitation.objects.filter(entreprise=entreprise, user=bob).first()
+    invitation = Invitation.objects.filter(
+        entreprise=entreprise, email=bob.email
+    ).first()
+    assert invitation.role == UserRole.PROPRIETAIRE.value
+    assert invitation.inviteur == alice
+    assert invitation.date_acceptation
+    assert Habilitation.objects.filter(
+        entreprise=entreprise, user=bob, invitation=invitation
+    ).first()
     assert response.redirect_chain == [(redirect_url, 302)]
     content = html.unescape(response.content.decode("utf-8"))
     assert "L'utilisateur a été ajouté." in content
