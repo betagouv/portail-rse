@@ -315,9 +315,7 @@ def bdese_step(request, siren, annee, step):
 
     # les lecteurs et éditeurs ne sont pas habilités à créer une BDESE
     if role == UserRole.PROPRIETAIRE:
-        bdese, _ = classe_bdese.objects.get_or_create(
-            entreprise=entreprise, annee=annee
-        )
+        bdese = get_or_create_bdese(entreprise, annee)
     else:
         bdese = classe_bdese.objects.filter(entreprise=entreprise, annee=annee)
         if not bdese.exists():
