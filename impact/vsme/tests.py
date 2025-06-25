@@ -27,7 +27,7 @@ def test_acces_vsme_refuse(client, entreprise_qualifiee, bob):
     assert response.status_code == 403, "Bob ne doit pas pouvoir accéder à cette page"
 
 
-@pytest.mark.parametrize("etape", ["introduction", "module_base", "module_complet"])
+@pytest.mark.parametrize("etape", ["introduction", "module_base", "module_narratif"])
 def test_chargement_templates(etape, client, entreprise_qualifiee, alice):
     # vérifie que tous les templates sont bien chargés dans la page résultante
     client.force_login(alice)
