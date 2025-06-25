@@ -29,5 +29,5 @@ class HabilitationInline(admin.TabularInline):
     model = Habilitation
     form = HabilitationAdminForm
     readonly_fields = ("confirmed_at",)
-    raw_id_fields = ("user", "invitation")
+    raw_id_fields = ("user", "entreprise", "invitation")
     extra = 0
