@@ -81,6 +81,7 @@ class Habilitation(TimestampedModel):
         "invitations.Invitation",
         verbose_name="invitation",
         null=True,
+        blank=True,
         on_delete=models.SET_NULL,
     )
 
