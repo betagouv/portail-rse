@@ -28,6 +28,7 @@ class Invitation(TimestampedModel):
         User,
         on_delete=models.SET_NULL,
         null=True,
+        blank=True,
     )
     date_acceptation = models.DateTimeField(null=True)
 
