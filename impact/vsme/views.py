@@ -12,7 +12,7 @@ from entreprises.models import Entreprise
 ETAPES = {
     "introduction": "Introduction",
     "module_base": "Module de base",
-    "module_complet": "Module complet",
+    "module_narratif": "Module narratif",
 }
 
 
@@ -57,8 +57,8 @@ def etape_vsme(request, siren, etape):
             template_name = "etapes/introduction.html"
         case "module_base":
             template_name = "etapes/module-base.html"
-        case "module_complet":
-            template_name = "etapes/module-complet.html"
+        case "module_narratif":
+            template_name = "etapes/module-narratif.html"
         case _:
             return Http404("Etape VSME inconnue")
 
