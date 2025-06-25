@@ -5,6 +5,7 @@ from invitations.models import Invitation
 
 class InvitationAdmin(admin.ModelAdmin):
     list_display = ["entreprise", "email"]
+    raw_id_fields = ("entreprise", "inviteur")
     model = Invitation
 
 
