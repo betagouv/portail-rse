@@ -3,6 +3,7 @@ import pprint
 import uuid
 
 import django.db.models as models
+from django.conf import settings
 from django.contrib.postgres.indexes import BrinIndex
 
 
@@ -42,14 +43,15 @@ class EventLog(models.Model):
     class Meta:
         verbose_name = "historique des évenements"
         verbose_name_plural = "historique des évenements"
-        indexes = (
-            BrinIndex(
-                fields=("created_at",),
-                name="idx_%(app_label)s_%(class)s_created_at",
-                autosummarize=True,
-            ),
-            models.Index(fields=("level",)),
-        )
+        if not settings.SQLITE_DB:
+            indexes = (
+                BrinIndex(
+                    fields=("created_at",),
+                    name="idx_%(app_label)s_%(class)s_created_at",
+                    autosummarize=True,
+                ),
+                models.Index(fields=("level",)),
+            )
 
     def __repr__(self):
         return pprint.pformat(
