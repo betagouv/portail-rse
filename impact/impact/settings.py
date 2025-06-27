@@ -446,3 +446,7 @@ LOGGING = {
         },
     },
 }
+
+# Permet d'avoir une base Sqlite qui ne contient pas d'indexes BRIN
+DATABASE_URL = os.getenv("DATABASE_URL")
+SQLITE_DB = "sqlite" in DATABASE_URL

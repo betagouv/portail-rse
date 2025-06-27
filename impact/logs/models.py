@@ -3,7 +3,9 @@ import pprint
 import uuid
 
 import django.db.models as models
-from django.contrib.postgres.indexes import BrinIndex
+
+# Pour les indexes BRIN
+# from django.contrib.postgres.indexes import BrinIndex
 
 
 class EventLog(models.Model):
@@ -42,13 +44,27 @@ class EventLog(models.Model):
     class Meta:
         verbose_name = "historique des évenements"
         verbose_name_plural = "historique des évenements"
+
+        # Quelque chose comme :
+        # indexes = (
+        #     BrinIndex(
+        #         fields=("created_at",),
+        #         name="idx_%(app_label)s_%(class)s_created_at",
+        #         autosummarize=True,
+        #     ),
+        #     models.Index(fields=("level",)),
+        # )
+        # serait plus optimisé pour effectuer des recherches par encadrement de dates
+        # mais les indexes BRIN ne sont disponibles que sur postgres (et la CI tourne sur Sqlite)
+        # En attendant, on utilisera des B-Tree
+
+        # FIXME : changer la CI qui tourne sur Sqlite et les environnements de dev
+
         indexes = (
-            BrinIndex(
-                fields=("created_at",),
-                name="idx_%(app_label)s_%(class)s_created_at",
-                autosummarize=True,
-            ),
             models.Index(fields=("level",)),
+            models.Index(
+                fields=("created_at",), name="idx_%(app_label)s_%(class)s_created_at"
+            ),
         )
 
     def __repr__(self):
