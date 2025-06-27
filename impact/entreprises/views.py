@@ -161,7 +161,7 @@ def qualification(request, siren):
                 "date_cloture_exercice": caracs.date_cloture_exercice
                 or date_cloture_exercice_par_defaut,
                 "effectif": caracs.effectif,
-                "effectif_permanent": caracs.effectif_permanent,
+                "effectif_securite_sociale": caracs.effectif_securite_sociale,
                 "effectif_outre_mer": caracs.effectif_outre_mer,
                 "tranche_chiffre_affaires": caracs.tranche_chiffre_affaires,
                 "tranche_bilan": caracs.tranche_bilan,
@@ -170,7 +170,6 @@ def qualification(request, siren):
                 "appartient_groupe": entreprise.appartient_groupe,
                 "effectif_groupe": caracs.effectif_groupe,
                 "effectif_groupe_france": caracs.effectif_groupe_france,
-                "effectif_groupe_permanent": caracs.effectif_groupe_permanent,
                 "est_societe_mere": entreprise.est_societe_mere,
                 "societe_mere_en_france": entreprise.societe_mere_en_france,
                 "comptes_consolides": entreprise.comptes_consolides,

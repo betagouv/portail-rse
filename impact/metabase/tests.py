@@ -72,7 +72,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
             code_pays_etranger_sirene=CODE_PAYS_PORTUGAL,
             code_NAF=CODE_NAF_CEREALES,
             effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
-            effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
+            effectif_securite_sociale=CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_MOINS_DE_10,
             effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
             est_cotee=False,
             est_interet_public=False,
@@ -87,11 +87,10 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
                 year=date_cloture_dernier_exercice.year + 1
             ),
             effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-            effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+            effectif_securite_sociale=CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249,
             effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
             effectif_groupe=None,
             effectif_groupe_france=None,
-            effectif_groupe_permanent=None,
             tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
             tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M,
             tranche_chiffre_affaires_consolide=None,
@@ -106,11 +105,10 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
                 year=date_cloture_dernier_exercice.year + 2
             ),
             effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
-            effectif_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
+            effectif_securite_sociale=CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249,
             effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
             effectif_groupe=None,
             effectif_groupe_france=None,
-            effectif_groupe_permanent=None,
             tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
             tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
             tranche_chiffre_affaires_consolide=None,
@@ -147,7 +145,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
     assert metabase_entreprise.societe_mere_en_france is False
     assert metabase_entreprise.comptes_consolides is False
     assert metabase_entreprise.effectif == "300-499"
-    assert metabase_entreprise.effectif_permanent == "250-299"
+    assert metabase_entreprise.effectif_securite_sociale == "50-249"
     assert metabase_entreprise.effectif_outre_mer == "0-249"
     assert metabase_entreprise.effectif_groupe is None
     assert metabase_entreprise.tranche_bilan == "43M-100M"
@@ -170,7 +168,6 @@ def test_synchronise_une_entreprise_qualifiee_appartenant_a_un_groupe(
         comptes_consolides=True,
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         effectif_groupe_france=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        effectif_groupe_permanent=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_MOINS_DE_60M,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_30M,
     )
@@ -189,10 +186,6 @@ def test_synchronise_une_entreprise_qualifiee_appartenant_a_un_groupe(
     )
     assert (
         metabase_entreprise.effectif_groupe_france
-        == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
-    )
-    assert (
-        metabase_entreprise.effectif_groupe_permanent
         == CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     )
     assert (
@@ -235,9 +228,8 @@ def test_synchronise_une_entreprise_sans_caracteristiques_annuelles():
     assert metabase_entreprise.siren == "000000001"
     assert metabase_entreprise.date_cloture_exercice is None
     assert metabase_entreprise.effectif is None
-    assert metabase_entreprise.effectif_permanent is None
+    assert metabase_entreprise.effectif_securite_sociale is None
     assert metabase_entreprise.effectif_groupe is None
-    assert metabase_entreprise.effectif_groupe_permanent is None
     assert metabase_entreprise.tranche_chiffre_affaires is None
     assert metabase_entreprise.tranche_bilan is None
     assert metabase_entreprise.bdese_accord is None

@@ -200,11 +200,10 @@ def calcule_simulation(simulation_form):
     actualisation = ActualisationCaracteristiquesAnnuelles(
         date_cloture_exercice=date_cloture_exercice,
         effectif=simulation_form.cleaned_data["effectif"],
-        effectif_permanent=None,
+        effectif_securite_sociale=None,
         effectif_outre_mer=None,
         effectif_groupe=simulation_form.cleaned_data["effectif_groupe"],
         effectif_groupe_france=None,
-        effectif_groupe_permanent=None,
         tranche_chiffre_affaires=simulation_form.cleaned_data[
             "tranche_chiffre_affaires"
         ],
@@ -231,13 +230,12 @@ def calcule_simulation(simulation_form):
 def enrichit_les_donnees_pour_la_simulation(caracteristiques):
     caracteristiques.entreprise.est_interet_public = False
     caracteristiques.entreprise.societe_mere_en_france = True
-    caracteristiques.effectif_permanent = caracteristiques.effectif
+    caracteristiques.effectif_securite_sociale = caracteristiques.effectif
     caracteristiques.effectif_outre_mer = (
         CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250
     )
     if caracteristiques.entreprise.appartient_groupe:
         caracteristiques.effectif_groupe_france = caracteristiques.effectif_groupe
-        caracteristiques.effectif_groupe_permanent = caracteristiques.effectif_groupe
     caracteristiques.bdese_accord = False
     caracteristiques.systeme_management_energie = False
     return caracteristiques
