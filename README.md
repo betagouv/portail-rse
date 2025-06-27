@@ -2,9 +2,18 @@
 
 # Portail RSE
 
+## Liens utiles
+
+Présentation du service :
 https://beta.gouv.fr/startups/portail-rse.html
+
+Site vitrine :
 https://portail-rse.beta.gouv.fr
 
+Service de gestion (correspond au code de ce dépôt) :
+https://portail-rse.beta.gouv.fr
+
+Il existe un service supplémentaire externe pour l'API d'analyse de documents.
 
 ## Développement local
 
