@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -14,7 +12,6 @@ from .enums import UserRole
 from .forms import InvitationForm
 from .models import Habilitation
 from entreprises.models import Entreprise
-from habilitations.models import Habilitation
 from invitations.models import Invitation
 from users.models import User
 from utils.tokens import make_token
@@ -23,6 +20,7 @@ from utils.tokens import make_token
 @login_required()
 def index(request, siren):
     entreprise = get_object_or_404(Entreprise, siren=siren)
+    request.session["entreprise"] = siren
     if request.POST:
         form = InvitationForm(request.POST)
         if form.is_valid():
@@ -64,10 +62,11 @@ def index(request, siren):
         }
     )
     # organisation des membres par habilitations
-    habilitations = defaultdict(list)
+    habilitations = []
     for h in entreprise.habilitation_set.all().order_by("user__nom"):
         if h.entreprise == entreprise and h.user.is_email_confirmed:
-            habilitations[h.role].append(h.user)
+            # habilitations[h.role].append(h.user)
+            habilitations.append(h)
 
     context |= {"habilitations": habilitations}
 

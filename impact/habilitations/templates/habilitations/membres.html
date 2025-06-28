@@ -7,7 +7,7 @@
     <div class="fr-container fr-my-4w">
 
         <h2>Membres de l'entreprise {% if entreprise.denomination %}{{ entreprise.denomination }}{% endif %}</h3>
-        {% if habilitations.proprietaire %}
+        {% if habilitations %}
             <div class="fr-table--sm fr-table fr-table" id="table-sm-component">
                 <div class="fr-table__wrapper">
                     <div class="fr-table__container">
@@ -18,14 +18,24 @@
                                         <th scope="col">Nom</th>
                                         <th scope="col">Prénom</th>
                                         <th scope="col">E-mail</th>
+                                        <th scope="col">Rôle</th>
+                                        <th scope="col">Action (propriétaire)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for user in habilitations.proprietaire %}
+                                    {% for habilitation in habilitations %}
                                         <tr>
-                                            <td>{{ user.nom }}</td>
-                                            <td>{{ user.prenom }}</td>
-                                            <td>{{ user.email }}</td>
+                                            {% with user=habilitation.user %}
+                                                <td>{{ user.nom }}</td>
+                                                <td>{{ user.prenom }}</td>
+                                                <td>{{ user.email }}</td>
+                                                {% if user == request.user %}
+                                                    <td>{{ habilitation.role }}</td>
+                                                {% else %}
+                                                    <td>ici rôle</td>
+                                                {% endif %}
+                                                <td>ici action (propriétaire)</td>
+                                            {% endwith %}
                                         </tr>
                                     {% endfor %}
                                 </tbody>
