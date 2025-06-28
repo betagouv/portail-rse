@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+
 import os
 from pathlib import Path
 
@@ -410,3 +411,8 @@ SITES_FACILES_BASE_URL = os.getenv(
 CORS_ALLOWED_ORIGINS = [SITES_FACILES_BASE_URL]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = (*default_headers, "hx-current-url")
+
+# Django admin autorisé en local / dev
+if DEBUG:
+    MIDDLEWARE.remove("django_hosts.middleware.HostsRequestMiddleware")
+    MIDDLEWARE.remove("django_hosts.middleware.HostsResponseMiddleware")
