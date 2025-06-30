@@ -1,4 +1,3 @@
 web: PYTHONUNBUFFERED=true python impact/manage.py runserver
-web-admin: ADMIN_CNAME=127.0.0.1 PYTHONUNBUFFERED=true python impact/manage.py runserver 127.0.0.1:8001
 front: npm run dev
 sass: npm run compile:css:watch
