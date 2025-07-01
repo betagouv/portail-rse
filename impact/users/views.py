@@ -15,6 +15,7 @@ from django.urls import reverse
 
 from .forms import UserCreationForm
 from .forms import UserEditionForm
+from .forms import UserInvitationForm
 from .forms import UserPasswordForm
 from .models import User
 from api.exceptions import APIError
@@ -128,13 +129,10 @@ def invitation(request, id_invitation, code):
         return redirect(reverse("erreur_terminale"))
 
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
-        siren = form.data["siren"]
+        form = UserInvitationForm(request.POST, invitation=invitation)
         email = form.data.get("email")
         if invitation.email != email:
             form.add_error("email", "L'e-mail ne correspond pas à l'invitation.")
-        if invitation.entreprise.siren != siren:
-            form.add_error("siren", "L'entreprise ne correspond pas à l'invitation.")
         if form.is_valid():
             user = form.save()
             user.is_email_confirmed = True
@@ -144,24 +142,22 @@ def invitation(request, id_invitation, code):
                 request,
                 "Votre compte a bien été créé. Connectez-vous pour collaborer avec les autres membres de l'entreprise.",
             )
-            return redirect("reglementations:tableau_de_bord", siren)
+            return redirect(
+                "reglementations:tableau_de_bord", invitation.entreprise.siren
+            )
         else:
             messages.error(
                 request, "La création a échoué car le formulaire contient des erreurs."
             )
     else:
-        initial = {
-            "email": invitation.email,
-            "siren": invitation.entreprise.siren,
-        }
-        form = UserCreationForm(initial=initial)
+        form = UserInvitationForm(invitation=invitation)
     return render(
         request,
         "users/creation.html",
         {
             "form": form,
             "creation_par_invitation": True,
-            "id_invitation": id_invitation,
+            "invitation": invitation,
             "code": code,
         },
     )
