@@ -19,22 +19,29 @@
                                         <th scope="col">Prénom</th>
                                         <th scope="col">E-mail</th>
                                         <th scope="col">Rôle</th>
-                                        <th scope="col">Action (propriétaire)</th>
+                                        <th scope="col">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for habilitation in habilitations %}
+                                    {% for h in habilitations %}
                                         <tr>
-                                            {% with user=habilitation.user %}
+                                            {% with user=h.user %}
                                                 <td>{{ user.nom }}</td>
                                                 <td>{{ user.prenom }}</td>
                                                 <td>{{ user.email }}</td>
-                                                {% if user == request.user %}
-                                                    <td>{{ habilitation.role }}</td>
-                                                {% else %}
-                                                    <td>ici rôle</td>
-                                                {% endif %}
-                                                <td>ici action (propriétaire)</td>
+                                                <td>{{ h.get_role_display }}</td>
+                                                <td>
+                                                    {% if user != habilitation.user %}
+                                                        {% if habilitation.role == "proprietaire" %}
+                                                            <button class="fr-btn fr-icon-delete-line fr-btn--icon-left fr-btn--primary">Retirer</button>
+                                                            <button class="fr-ml-1w fr-btn fr-icon-pencil-line fr-btn--icon-left fr-btn--secondary">Modifier</button>
+                                                        {% else %}
+                                                            <span class="fr-icon-lock-line"></span>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <span class="fr-icon-account-circle-line"></span> Votre compte
+                                                    {% endif %}
+                                                </td>
                                             {% endwith %}
                                         </tr>
                                     {% endfor %}
