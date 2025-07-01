@@ -85,7 +85,6 @@ class UserCreationForm(UserPasswordForm):
         label="J’ai lu et j’accepte les CGU (Conditions Générales d'utilisation)",
         required=True,
     )
-    proprietaires_presents = []
 
     class Meta:
         model = User
@@ -93,6 +92,19 @@ class UserCreationForm(UserPasswordForm):
         labels = {
             "reception_actualites": "Je souhaite recevoir les actualités du Portail RSE (optionnel)",
         }
+
+
+class UserInvitationForm(UserCreationForm):
+    siren = None
+
+    def __init__(self, *args, **kwargs):
+        invitation = kwargs.pop("invitation", None)
+        super().__init__(*args, **kwargs)
+        if invitation:
+            self.fields["fonctions"].label = (
+                f"Fonction(s) dans la société {invitation.entreprise.denomination}"
+            )
+            self.fields["email"].initial = invitation.email
 
 
 def message_erreur_proprietaires(proprietaires_presents):
