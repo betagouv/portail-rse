@@ -8,7 +8,7 @@
         <script src="https://stats.portail-rse.beta.gouv.fr/app/iframeResizer.js" nonce="{{ request.csp_nonce }}"></script>
         <iframe
             id="metabaseIframe"
-            src="https://stats.portail-rse.beta.gouv.fr/public/dashboard/f389618e-961a-4fdf-8311-418e6095e102#titled=false&bordered=false"
+            src="https://stats.portail-rse.beta.gouv.fr/public/dashboard/f6ef598f-5852-4bcb-9576-582d9fdc5eaa#titled=false&bordered=false"
             title="Dashboard Metabase"
             style="width: 1px; min-width: 100%"
             allowtransparency
@@ -16,7 +16,7 @@
     </div>
     <script nonce="{{ request.csp_nonce }}">
         <!-- No `unsafe-inline` CSP by getting the event handler out of the iframe element -->
-        document.getElementById('metabaseIframe').onload = iFrameResize({ minHeight: 1500, scrolling: true}, '#metabaseIframe');
+        document.getElementById('metabaseIframe').onload = iFrameResize({}, '#metabaseIframe');
     </script>
 <!-- page stats -->
 {% endblock %}
