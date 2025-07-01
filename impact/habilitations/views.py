@@ -65,7 +65,6 @@ def index(request, siren):
     habilitations = []
     for h in entreprise.habilitation_set.all().order_by("user__nom"):
         if h.entreprise == entreprise and h.user.is_email_confirmed:
-            # habilitations[h.role].append(h.user)
             habilitations.append(h)
 
     context |= {"habilitations": habilitations}
