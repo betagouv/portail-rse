@@ -1,0 +1,43 @@
+{% with pk=habilitation.pk role=habilitation.role %}
+    <dialog id="modaleModifier-{{ pk }}" class="fr-modal" aria-labelledby="modaleModifier-{{ pk }}-titre" data-fr-concealing-backdrop="true">
+        <div class="fr-container fr-container--fluid fr-container-md">
+            <div class="fr-grid-row fr-grid-row--center">
+                <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
+                    <div class="fr-modal__body">
+                        <form hx-post="{% url 'habilitations:gerer_habilitation' id=habilitation.pk %}" hx-target="body">
+                            <div class="fr-modal__header">
+                                <button aria-controls="modaleModifier-{{ pk }}" title="Fermer" type="button" class="fr-btn--close fr-btn">Fermer</button>
+                            </div>
+                            <div class="fr-modal__content">
+                                <h2 id="modaleModifier-{{ pk }}-titre" class="fr-modal__title">Modifier l'habilitation</h2>
+                                <fieldset class="fr-fieldset" id="storybook-form" aria-labelledby="storybook-form-legend storybook-form-messages">
+                                    <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="storybook-form-legend">
+                                        Choisissez le rôle à affecter à <strong>{{ habilitation.user.prenom }} {{ habilitation.user.nom }}</strong>
+                                    </legend>
+                                    <div class="fr-fieldset__element">
+                                        <div class="fr-radio-group">
+                                            <input type="radio" id="role-proprietaire" value="proprietaire" name="role" {% if role == "proprietaire" %}checked{% endif %}>
+                                            <label class="fr-label" for="role-proprietaire">Propriétaire</label>
+                                        </div>
+                                    </div>
+                                    <div class="fr-fieldset__element">
+                                        <div class="fr-radio-group">
+                                            <input type="radio" id="role-editeur" value="editeur" name="role" {% if role == "editeur" %}checked{% endif %}>
+                                            <label class="fr-label" for="role-editeur">Éditeur</label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div class="fr-modal__footer">
+                                <div class="fr-btns-group fr-btns-group--right fr-btns-group--inline-lg">
+                                    <button type="submit" class="fr-btn fr-btn--primary">Modifier</button>
+                                    <button type="button" class="fr-btn fr-btn--secondary" aria-controls="modaleModifier-{{ pk }}" >Annuler</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </dialog>
+{% endwith %}

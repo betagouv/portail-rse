@@ -33,8 +33,14 @@
                                                 <td>
                                                     {% if user != habilitation.user %}
                                                         {% if habilitation.role == "proprietaire" %}
-                                                            <button class="fr-btn fr-icon-delete-line fr-btn--icon-left fr-btn--primary">Retirer</button>
-                                                            <button class="fr-ml-1w fr-btn fr-icon-pencil-line fr-btn--icon-left fr-btn--secondary">Modifier</button>
+                                                            <button class="fr-btn fr-icon-delete-line fr-btn--icon-left fr-btn--primary" aria-controls="modaleRetirer-{{ h.pk }}" data-fr-opened="false">Retirer</button>
+                                                            <button class="fr-ml-1w fr-btn fr-icon-pencil-line fr-btn--icon-left fr-btn--secondary" aria-controls="modaleModifier-{{ h.pk }}" data-fr-opened="false">Modifier</button>
+
+                                                            {% with habilitation=h %}
+                                                                {% include "snippets/modale_retirer_habilitation.html" %}
+                                                                {% include "snippets/modale_modifier_habilitation.html" %}
+                                                            {% endwith %}
+
                                                         {% else %}
                                                             <span class="fr-icon-lock-line"></span>
                                                         {% endif %}
@@ -100,5 +106,7 @@
         {% endif %}
 
     </div>
+
+
 
 {% endblock %}
