@@ -3,17 +3,22 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import EmailMessage
+from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 
 from .enums import UserRole
 from .forms import InvitationForm
 from .models import Habilitation
 from entreprises.models import Entreprise
+from habilitations.decorators import role
 from invitations.models import Invitation
 from users.models import User
+from utils.htmx import HttpResponseRedirectSeeOther
 from utils.tokens import make_token
 
 
@@ -136,3 +141,40 @@ def _envoie_email_d_invitation(request, invitation):
         "inviteur": f"{invitation.inviteur.prenom} {invitation.inviteur.nom}",
     }
     email.send()
+
+
+# Gestion des droits par les propriétaires
+
+
+@login_required
+@require_http_methods(["DELETE", "POST"])
+@csrf_exempt
+@role(UserRole.PROPRIETAIRE)
+def gerer_habilitation(request, id: int):
+    habilitation = get_object_or_404(Habilitation, pk=id)
+    match request.method:
+        case "POST":
+            habilitation.role = request.POST.get("role")
+            habilitation.save()
+            messages.success(
+                request,
+                f"L'habilitation de {habilitation.user.prenom} {habilitation.user.nom} a été modifiée ({habilitation.get_role_display()})",
+            )
+        case "DELETE":
+            habilitation.delete()
+            messages.success(
+                request,
+                f"L'habilitation de {habilitation.user.prenom} {habilitation.user.nom} a été supprimée",
+            )
+        case _:
+            # normallement filtré en amont par le filtre de type de requêtes
+            # mais plus propre...
+            return HttpResponseBadRequest()
+
+    # 303 nécessaire (changement de méthode)
+    return HttpResponseRedirectSeeOther(
+        reverse(
+            "habilitations:membres_entreprise",
+            args=[request.session["entreprise"]],
+        )
+    )

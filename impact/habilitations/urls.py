@@ -9,4 +9,6 @@ urlpatterns = [
         views.index,
         name="membres_entreprise",
     ),
+    # fragments / snippets
+    path("habilitation/<int:id>", views.gerer_habilitation, name="gerer_habilitation"),
 ]
