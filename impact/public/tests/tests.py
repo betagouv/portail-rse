@@ -175,3 +175,10 @@ def test_fragments_entete_de_page_si_visiteur_non_connecté(client, alice):
     assertTemplateUsed(response, "snippets/entete_page.html")
     content = response.content.decode("utf-8")
     assert "Alice" in content
+
+
+def test_page_erreur_terminale(client):
+    response = client.get("/erreur")
+
+    assert response.status_code == 200
+    assertTemplateUsed(response, "public/erreur_terminale.html")

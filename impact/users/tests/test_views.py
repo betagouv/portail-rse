@@ -208,7 +208,7 @@ def test_fail_to_confirm_email_due_to_invalid_token(client, alice):
     response = client.get(url, follow=True)
 
     assert response.status_code == 200
-    assert response.redirect_chain == [("/", 302)]
+    assert response.redirect_chain == [(reverse("erreur_terminale"), 302)]
     content = html.unescape(response.content.decode("utf-8"))
     assert "Le lien de confirmation est invalide." in content
 
@@ -225,7 +225,7 @@ def test_fail_to_confirm_email_due_to_invalid_user(client, alice):
     response = client.get(url, follow=True)
 
     assert response.status_code == 200
-    assert response.redirect_chain == [("/", 302)]
+    assert response.redirect_chain == [(reverse("erreur_terminale"), 302)]
     content = html.unescape(response.content.decode("utf-8"))
     assert "Le lien de confirmation est invalide." in content
 
@@ -507,7 +507,7 @@ def test_erreur_page_invitation_car_invitation_n_existe_pas(client, entreprise_f
     response = client.get(f"/invitation/42/CODE", follow=True)
 
     assert response.status_code == 200
-    assert response.redirect_chain == [("/", 302)]
+    assert response.redirect_chain == [(reverse("erreur_terminale"), 302)]
     content = html.unescape(response.content.decode("utf-8"))
     assert "Cette invitation n'existe pas." in content, content
 
@@ -525,7 +525,7 @@ def test_erreur_page_invitation_car_invitation_expirée(client, entreprise_facto
         response = client.get(f"/invitation/{invitation.id}/{CODE}", follow=True)
 
     assert response.status_code == 200
-    assert response.redirect_chain == [("/", 302)]
+    assert response.redirect_chain == [(reverse("erreur_terminale"), 302)]
     content = html.unescape(response.content.decode("utf-8"))
     assert CODE not in content
     assert "L'invitation est expirée" in content, content
@@ -615,7 +615,7 @@ def test_echec_d_invitation_car_le_code_ne_correspond_pas(
 
     assert response.status_code == 200
     assert response.redirect_chain == [
-        ("/", 302),
+        (reverse("erreur_terminale"), 302),
     ]
     assert not User.objects.filter(email="alice@portail.example")
     content = html.unescape(response.content.decode("utf-8"))
