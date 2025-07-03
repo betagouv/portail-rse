@@ -1,6 +1,8 @@
 """
 Utilitaires divers pour HTMX
 """
+
+from django.http.response import HttpResponseRedirectBase
 from django.utils.http import urlencode
 
 
@@ -13,3 +15,14 @@ def retarget_params(request, new_target) -> str:
     # en passant la nouvelle cible en paramètre de requête
     if is_htmx(request) and new_target:
         return urlencode({"_hx_retarget": new_target})
+
+
+class HttpResponseRedirectSeeOther(HttpResponseRedirectBase):
+    # Assez surpris de voir tous les autres redirects implémentés en Django
+    # mais pas celui-ci.
+    # Pourtant pour faire l'équivalent d'un Post-Redirect-Get avec d'autres méthodes,
+    # ce type de redirection est obligatoire si la requête initiale et celle de redirection
+    # ont des méthodes HTTP différentes.
+    # Par exemple, DELETE puis redirect avec un GET est impossible avec une 302
+    # C'est par exemple très utile avec HTMX pour utiliser autre chose que des GET et des POST.
+    status_code = 303
