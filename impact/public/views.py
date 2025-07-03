@@ -28,7 +28,7 @@ def index(request):
                 )
             else:
                 return redirect("entreprises:entreprises")
-    return render(request, "public/index.html")
+    return redirect(settings.SITES_FACILES_BASE_URL)
 
 
 def fragment_liens_menu(request):

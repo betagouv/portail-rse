@@ -39,7 +39,7 @@ def test_get_current_entreprise_avec_une_entreprise_en_session_mais_inexistante_
     session["entreprise"] = "123456789"
     session.save()
 
-    request = client.get("/").wsgi_request
+    request = client.get(reverse("contact")).wsgi_request
 
     assert get_current_entreprise(request) is None
     session = client.session
