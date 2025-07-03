@@ -108,7 +108,7 @@ def confirm_email(request, uidb64, token):
         return redirect("users:login")
     fail_message = "Le lien de confirmation est invalide."
     messages.error(request, fail_message)
-    return redirect("/")
+    return redirect(reverse("erreur_terminale"))
 
 
 def invitation(request, id_invitation, code):
@@ -116,16 +116,16 @@ def invitation(request, id_invitation, code):
         invitation = Invitation.objects.get(id=id_invitation)
     except Invitation.DoesNotExist:
         messages.error(request, "Cette invitation n'existe pas.")
-        return redirect("/")
+        return redirect(reverse("erreur_terminale"))
     if invitation.est_expiree:
         messages.error(
             request,
             "L'invitation est expirée. Vous devez demander une nouvelle invitation à un des propriétaires de l'entreprise sur Portail-RSE.",
         )
-        return redirect("/")
+        return redirect(reverse("erreur_terminale"))
     if not check_token(invitation, "invitation", code):
         messages.error(request, "Cette invitation est incorrecte.")
-        return redirect("/")
+        return redirect(reverse("erreur_terminale"))
 
     if request.method == "POST":
         form = UserCreationForm(request.POST)

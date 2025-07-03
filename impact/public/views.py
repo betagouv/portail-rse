@@ -38,6 +38,10 @@ def fragment_liens_menu(request):
     )
 
 
+def erreur_terminale(request):
+    return render(request, "public/erreur_terminale.html")
+
+
 def stats(request):
     return render(request, "public/stats.html")
 

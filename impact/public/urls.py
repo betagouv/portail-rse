@@ -16,4 +16,5 @@ urlpatterns = [
     path("contact", views.contact, name="contact"),
     path("stats", views.stats, name="stats"),
     path("liens-menu", views.fragment_liens_menu, name="fragment_liens_menu"),
+    path("erreur", views.erreur_terminale, name="erreur_terminale"),
 ]
