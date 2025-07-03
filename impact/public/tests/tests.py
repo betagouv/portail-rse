@@ -1,18 +1,18 @@
 import html
 
 import pytest
+from django.conf import settings
 from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed
 
 from habilitations.models import Habilitation
 
 
-def test_page_index_pour_un_visiteur_anonyme(client):
+def test_index_pour_un_visiteur_anonyme_renvoie_vers_le_site_vitrine(client):
     response = client.get("/")
 
-    assert response.status_code == 200
-    content = response.content.decode("utf-8")
-    assert "<!-- page index -->" in content
+    assert response.status_code == 302
+    assert response.url == settings.SITES_FACILES_BASE_URL
 
 
 def test_redirection_de_la_page_index_vers_ses_reglementations_si_l_utilisateur_vient_de_se_connecter_depuis_la_page_d_accueil(
