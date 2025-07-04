@@ -790,7 +790,7 @@ def test_recherche_entreprise_avec_resultats(
     assert context["nombre_resultats"] == nombre_resultats
     assert context["entreprises"] == entreprises
     assert context["recherche"] == recherche
-    assert context["erreur_recherche_entreprise"] == None
+    assert context["erreur_recherche_entreprise"] is None
     assertTemplateUsed(response, "fragments/resultats_recherche_entreprise.html")
     content = response.content.decode("utf-8")
     assert reverse("entreprises:preremplissage_siren") in content
