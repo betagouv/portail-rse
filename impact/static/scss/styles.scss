@@ -77,44 +77,11 @@
     background-color: var(--background-alt-blue-france);
 }
 
-/* homepage */
+/* utilisé dans la création, simulation, etc. */
 
-.logo-rse {
-    max-width: 180px;
-}
-
-.rse-themes {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    p {
-        text-align: center;
-    }
-    .rse-theme {
-    max-width: 140px;
-        .fr-content-media {
-        margin: 1rem 0;
-        }
-    }
-}
-.fr-content-media [class^="fr-responsive-img"] {
-    aspect-ratio: auto;
-}
 .fr-responsive-img {
     height: 100%;
     object-fit: contain;
-}
-
-.portail-header {
-    background-image: url("../img/home.png");
-    background-size: cover;
-    background-position: top;
-    background-repeat: no-repeat;
-}
-
-.texte-important {
-    color: var(--text-default-info);
 }
 
 
@@ -692,12 +659,6 @@
         justify-content:flex-start;
         grid-row: 3/4;
     }
-    .rse-themes {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-        grid-gap: 1rem;
-    }
-    
     .dashboard {
         .reglementation-grid {
             display: flex;
@@ -720,14 +681,6 @@
 }
 
 @media screen and (max-width: 768px) {
-    .portail-header {
-        background-image: none;
-        background-color: var(--background-contrast-blue-ecume);
-        background-size: cover;
-        background-position: top;
-        background-repeat: no-repeat;
-    }
-
     .fr-card.fr-card--simulation .fr-card__content {
         padding:1rem;
         padding-left: 1rem;
@@ -750,21 +703,6 @@
     }
     .reglementation-title {
         grid-row: 2/3;
-    }
-    .rse-themes {
-        display: grid;
-        grid-template-columns: 1fr;
-        grid-gap: .5rem;
-        p {
-            text-align: left;
-            margin-bottom: .5rem;
-        }
-        .fr-content-media {
-            display: none;
-        }
-        .rse-theme {
-            max-width: none;
-        }
     }
 }
 
