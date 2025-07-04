@@ -6,6 +6,7 @@ from django.conf import settings
 from django.db import models
 
 from entreprises.models import Entreprise
+from habilitations.enums import UserRole
 from habilitations.models import Habilitation
 from users.models import User
 from utils.models import TimestampedModel
@@ -23,6 +24,7 @@ class Invitation(TimestampedModel):
     role = models.CharField(
         verbose_name="Role (droits)",
         max_length=20,
+        choices=UserRole.choices,
     )
     inviteur = models.ForeignKey(
         User,
