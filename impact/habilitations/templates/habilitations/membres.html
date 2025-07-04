@@ -29,18 +29,16 @@
                                                 <td>{{ user.nom }}</td>
                                                 <td>{{ user.prenom }}</td>
                                                 <td>{{ user.email }}</td>
-                                                <td>{{ h.get_role_display }}</td>
+                                                <td><span class="fr-badge fr-badge--info fr-badge--no-icon">{{ h.get_role_display }}</span></td>
                                                 <td>
                                                     {% if user != habilitation.user %}
                                                         {% if habilitation.role == "proprietaire" %}
                                                             <button class="fr-btn fr-icon-delete-line fr-btn--icon-left fr-btn--primary" aria-controls="modaleRetirer-{{ h.pk }}" data-fr-opened="false">Retirer</button>
                                                             <button class="fr-ml-1w fr-btn fr-icon-pencil-line fr-btn--icon-left fr-btn--secondary" aria-controls="modaleModifier-{{ h.pk }}" data-fr-opened="false">Modifier</button>
-
                                                             {% with habilitation=h %}
                                                                 {% include "snippets/modale_retirer_habilitation.html" %}
                                                                 {% include "snippets/modale_modifier_habilitation.html" %}
                                                             {% endwith %}
-
                                                         {% else %}
                                                             <span class="fr-icon-lock-line"></span>
                                                         {% endif %}
@@ -72,6 +70,7 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">E-mail</th>
+                                        <th scope="col">Rôle</th>
                                         <th scope="col">Expiration de l'invitation</th>
                                     </tr>
                                 </thead>
@@ -79,6 +78,7 @@
                                     {% for invitation in invitations %}
                                         <tr>
                                             <td>{{ invitation.email }}</td>
+                                            <td>{{ invitation.get_role_display }}</td>
                                             <td>{{ invitation.date_expiration|date:"d F Y" }}</td>
                                         </tr>
                                     {% endfor %}
@@ -92,21 +92,35 @@
 
         {% if habilitation.role == "proprietaire" %}
             <h3>Inviter un nouveau membre</h3>
-
             <p>
                 La personne recevra un e-mail d'invitation pour créer son compte et rejoindre l'entreprise {{ entreprise.denomination }}.
                 Si elle possède déjà un compte utilisateur sur le Portail RSE, elle sera directement ajoutée dans les membres de l'entreprise.
             </p>
-
+            <p>
+                Vous devez également sélectionner quel sera le rôle du nouveau membre de l'entreprise.
+            </p>
             <form method="post">
                 {% csrf_token %}
                 {% include 'snippets/field.html' with field=form.email %}
-                <button type="submit" class="fr-btn">Inviter</button>
+		{# utilisation stricte du DSFR #}
+                <div class="fr-select-group">
+                    <label class="fr-label" for="select-role">Rôle de l'utilisateur invité</label>
+                    {% if form.role.errors %}
+                        <div class="fr-messages-group" id="select-role-messages" aria-live="polite">
+                            <p class="fr-error-text">{{ form.role.errors.as_text }}</p>
+                        </div>
+                    {% endif %}
+                    <select class="fr-select" aria-describedby="select-role-messages" id="select-role" name="role">
+                        <option value="" selected disabled>Sélectionnez un rôle</option>
+                        <option value="proprietaire">Propriétaire</option>
+                        <option value="editeur">Éditeur</option>
+                    </select>
+                    <div class="fr-messages-group" id="select-1-messages" aria-live="polite">
+                    </div>
+                </div>
+                <button type="submit" class="fr-btn fr-btn--primary">Inviter</button>
             </form>
         {% endif %}
 
     </div>
-
-
-
 {% endblock %}

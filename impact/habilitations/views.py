@@ -30,6 +30,8 @@ def index(request, siren):
         form = InvitationForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data["email"]
+            role = form.cleaned_data["role"]
+            print("email,role", email, role)
             try:
                 utilisateur = User.objects.get(email=email)
                 if Habilitation.objects.filter(entreprise=entreprise, user=utilisateur):
@@ -38,9 +40,9 @@ def index(request, siren):
                         "L'invitation a échoué car cette personne est déjà membre de l'entreprise.",
                     )
                 else:
-                    _ajoute_membre(request, entreprise, utilisateur)
+                    _ajoute_membre(request, entreprise, utilisateur, role)
             except ObjectDoesNotExist:
-                _cree_invitation(request, entreprise, email)
+                _cree_invitation(request, entreprise, email, role)
             return redirect(
                 reverse("habilitations:membres_entreprise", args=[entreprise.siren])
             )
@@ -77,11 +79,11 @@ def index(request, siren):
     return render(request, "habilitations/membres.html", context)
 
 
-def _ajoute_membre(request, entreprise, utilisateur):
+def _ajoute_membre(request, entreprise, utilisateur, role):
     invitation = Invitation.objects.create(
         entreprise=entreprise,
         email=utilisateur.email,
-        role=UserRole.PROPRIETAIRE.value,
+        role=role,
         inviteur=request.user,
     )
     invitation.accepter(utilisateur)
@@ -109,11 +111,11 @@ def _envoie_email_d_ajout(request, entreprise, utilisateur):
     email.send()
 
 
-def _cree_invitation(request, entreprise, email):
+def _cree_invitation(request, entreprise, email, role):
     invitation = Invitation.objects.create(
         entreprise=entreprise,
         email=email,
-        role=UserRole.PROPRIETAIRE.value,
+        role=role,
         inviteur=request.user,
     )
     _envoie_email_d_invitation(request, invitation)
