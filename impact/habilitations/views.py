@@ -163,7 +163,21 @@ def gerer_habilitation(request, id: int):
                 f"L'habilitation de {habilitation.user.prenom} {habilitation.user.nom} a été modifiée ({habilitation.get_role_display()})",
             )
         case "DELETE":
+            if (
+                habilitation.role == UserRole.PROPRIETAIRE
+                and Habilitation.objects.parEntreprise(habilitation.entreprise)
+                .parRole(UserRole.PROPRIETAIRE)
+                .count()
+                == 1
+            ):
+                # il ne reste qu'un propriétaire : on ne peut pas le supprimer
+                messages.error(
+                    request, "Une entreprise doit avoir au moins un propriétaire"
+                )
+                return
+
             habilitation.delete()
+
             messages.success(
                 request,
                 f"L'habilitation de {habilitation.user.prenom} {habilitation.user.nom} a été supprimée",
