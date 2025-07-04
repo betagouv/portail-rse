@@ -17,13 +17,17 @@
                                     <div class="fr-fieldset__element">
                                         <div class="fr-radio-group">
                                             <input type="radio" id="role-proprietaire" value="proprietaire" name="role" {% if role == "proprietaire" %}checked{% endif %}>
-                                            <label class="fr-label" for="role-proprietaire">Propriétaire</label>
+                                            <label class="fr-label" for="role-proprietaire">Propriétaire
+                                                <span class="fr-hint-text">Un propriétaire dispose des droits d'un éditeur et peut gérér les habilitations des membres d'une entreprise.</span>
+                                            </label>
                                         </div>
                                     </div>
                                     <div class="fr-fieldset__element">
                                         <div class="fr-radio-group">
                                             <input type="radio" id="role-editeur" value="editeur" name="role" {% if role == "editeur" %}checked{% endif %}>
-                                            <label class="fr-label" for="role-editeur">Éditeur</label>
+                                            <label class="fr-label" for="role-editeur">Éditeur
+                                                <span class="fr-hint-text">Un éditeur peut créer et modifier de nouvelles réglementations pour l'entreprise.</span>
+                                            </label>
                                         </div>
                                     </div>
                                 </fieldset>
