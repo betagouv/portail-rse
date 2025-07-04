@@ -6,7 +6,7 @@ from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
 from django.core.exceptions import ValidationError
 
 from .models import User
-from entreprises.forms import SirenField
+from entreprises.forms import PreremplissageSirenForm
 from habilitations.models import FONCTIONS_MAX_LENGTH
 from habilitations.models import FONCTIONS_MIN_LENGTH
 from utils.emails import cache_partiellement_un_email
@@ -74,8 +74,7 @@ class UserPasswordForm(DsfrForm, forms.ModelForm):
         return user
 
 
-class UserCreationForm(UserPasswordForm):
-    siren = SirenField()
+class UserCreationForm(UserPasswordForm, PreremplissageSirenForm):
     fonctions = forms.CharField(
         label="Fonction(s) dans la société",
         min_length=FONCTIONS_MIN_LENGTH,
@@ -85,7 +84,6 @@ class UserCreationForm(UserPasswordForm):
         label="J’ai lu et j’accepte les CGU (Conditions Générales d'utilisation)",
         required=True,
     )
-    proprietaires_presents = []
 
     class Meta:
         model = User
@@ -93,6 +91,19 @@ class UserCreationForm(UserPasswordForm):
         labels = {
             "reception_actualites": "Je souhaite recevoir les actualités du Portail RSE (optionnel)",
         }
+
+
+class UserInvitationForm(UserCreationForm):
+    siren = None
+
+    def __init__(self, *args, **kwargs):
+        invitation = kwargs.pop("invitation", None)
+        super().__init__(*args, **kwargs)
+        if invitation:
+            self.fields["fonctions"].label = (
+                f"Fonction(s) dans la société {invitation.entreprise.denomination}"
+            )
+            self.fields["email"].initial = invitation.email
 
 
 def message_erreur_proprietaires(proprietaires_presents):

@@ -194,7 +194,7 @@ def test_formulaire_prerempli_avec_la_simulation_précédente(status_est_soumis,
     response = client.get("/simulation")
 
     # le formulaire est toujours sur la page, avec les bonnes données d'initialisation
-    simulation_form = response.context["simulation_form"]
+    simulation_form = response.context["form"]
     assert simulation_form["siren"].value() == siren
     assert simulation_form["denomination"].value() == denomination
     assert (
@@ -219,6 +219,7 @@ def test_formulaire_creation_compte_prerempli_avec_le_siren_de_la_simulation_pr�
     client,
 ):
     siren = "000000001"
+    denomination = "Entreprise SAS"
     data = {
         "siren": siren,
         "denomination": "Entreprise SAS",
@@ -237,6 +238,9 @@ def test_formulaire_creation_compte_prerempli_avec_le_siren_de_la_simulation_pr�
 
     creation_form = response.context["form"]
     assert creation_form["siren"].value() == siren
+    content = response.content.decode("utf-8")
+    assert siren in content
+    assert denomination in content
 
 
 @pytest.mark.parametrize("status_est_soumis", [True, False])
@@ -692,7 +696,7 @@ def test_simulation_en_session_incorrecte(client):
 
     # le formulaire n'est pas initialisé
     context = response.context
-    simulation_form = context["simulation_form"]
+    simulation_form = context["form"]
     assert not simulation_form["siren"].value()
 
 
@@ -714,16 +718,17 @@ def test_preremplissage_simulation(client, mock_api_infos_entreprise):
     infos_entreprise = mock_api_infos_entreprise.return_value
 
     response = client.get(
-        f"/simulation/fragments/preremplissage-formulaire-simulation/{siren}"
+        "/simulation/fragments/preremplissage-formulaire-simulation",
+        query_params={"siren": siren},
     )
 
     mock_api_infos_entreprise.assert_called_once_with(siren, donnees_financieres=True)
     assert response.status_code == 200
     assertTemplateUsed(response, "fragments/simulation_form.html")
     context = response.context
-    assert not context["erreur"]
+    assert not context["erreur_recherche_entreprise"]
     # le formulaire est prérempli les données d'API
-    simulation_form = response.context["simulation_form"]
+    simulation_form = response.context["form"]
     assert simulation_form["siren"].value() == infos_entreprise["siren"]
     assert simulation_form["denomination"].value() == infos_entreprise["denomination"]
     assert (
@@ -755,12 +760,13 @@ def test_preremplissage_simulation_erreur_API(client, mock_api_infos_entreprise)
     mock_api_infos_entreprise.side_effect = api.exceptions.APIError("Panne serveur")
 
     response = client.get(
-        f"/simulation/fragments/preremplissage-formulaire-simulation/{siren}"
+        "/simulation/fragments/preremplissage-formulaire-simulation",
+        query_params={"siren": siren},
     )
 
     assert response.status_code == 200
     context = response.context
-    assert context["erreur"] == "Panne serveur"
+    assert context["erreur_recherche_entreprise"] == "Panne serveur"
     content = response.content.decode("utf-8")
     assert "Panne serveur" in content
 
@@ -771,15 +777,16 @@ def test_preremplissage_simulation_avec_entreprise_test(
     siren = SIREN_ENTREPRISE_TEST
 
     response = client.get(
-        f"/simulation/fragments/preremplissage-formulaire-simulation/{siren}"
+        "/simulation/fragments/preremplissage-formulaire-simulation",
+        query_params={"siren": siren},
     )
 
     assert not mock_api_infos_entreprise.called
     assert response.status_code == 200
     context = response.context
-    assert not context["erreur"]
+    assert not context["erreur_recherche_entreprise"]
     # le formulaire est prérempli avec des données de test
-    simulation_form = response.context["simulation_form"]
+    simulation_form = response.context["form"]
     assert simulation_form["siren"].value() == SIREN_ENTREPRISE_TEST
     assert simulation_form["denomination"].value() == "ENTREPRISE TEST"
     assert simulation_form["categorie_juridique_sirene"].value() == 5505

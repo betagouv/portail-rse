@@ -2,6 +2,7 @@ from datetime import date
 
 from django.conf import settings
 from django.contrib import messages
+from django.core.exceptions import BadRequest
 from django.core.mail import EmailMessage
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -82,7 +83,6 @@ def simulation(request):
     if request.POST:
         if simulation_form.is_valid():
             request.session["simulation"] = simulation_form.cleaned_data
-            request.session["siren"] = simulation_form.cleaned_data["siren"]
             return redirect("resultats_simulation")
         else:
             messages.error(
@@ -97,13 +97,17 @@ def simulation(request):
         request,
         "public/simulation.html",
         {
-            "simulation_form": simulation_form,
+            "form": simulation_form,
         },
     )
 
 
-def preremplissage_formulaire_simulation(request, siren):
-    erreur = False
+def preremplissage_formulaire_simulation(request):
+    try:
+        siren = request.GET["siren"]
+    except KeyError:
+        raise BadRequest()
+    erreur_recherche_entreprise = False
     if siren == SIREN_ENTREPRISE_TEST:
         infos = {
             "siren": SIREN_ENTREPRISE_TEST,
@@ -130,13 +134,16 @@ def preremplissage_formulaire_simulation(request, siren):
             # cette donnée pourrait éventuellement être récupérée lors de l'appel API de recherche puis transmise à cette vue.
             # On pourrait alors simplifier cet appel API pour ne chercher que la donnée financière éventuelle
             # et le rendre non bloquant pour la simulation
-            erreur = str(e)
+            erreur_recherche_entreprise = str(e)
             infos = {}
     simulation_form = SimulationForm(initial=infos)
     return render(
         request,
         "fragments/simulation_form.html",
-        context={"simulation_form": simulation_form, "erreur": erreur},
+        context={
+            "form": simulation_form,
+            "erreur_recherche_entreprise": erreur_recherche_entreprise,
+        },
     )
 
 

@@ -2,6 +2,18 @@
     --ul-type: none;
 }
 
+/* htmx */
+/* https://htmx.org/docs/#indicators */
+.htmx-indicator{
+    display:none;
+}
+.htmx-request .htmx-indicator{
+    display:inline;
+}
+.htmx-request.htmx-indicator{
+    display:inline;
+}
+
 /* color themes */
 
 :root {
@@ -22,6 +34,12 @@
     --blue-france-sun-113-625-hover-inverted: #1212ff;
     --blue-france-sun-113-625-active-inverted: #2323ff;
     --btn-text-inverted: #fff;
+}
+
+
+/* imitation graphique de zone cliquable */
+.clickable {
+    cursor: pointer;
 }
 
 
@@ -119,10 +137,6 @@
 
 
 /* Dénomination de l'entreprise trouvée par une recherche SIREN */
-
-.denomination {
-    margin-bottom: 1rem;
-}
 
 .denomination .denomination-label{
     font-size: 1.25rem;
