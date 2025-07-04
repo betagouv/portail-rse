@@ -2,6 +2,7 @@ from datetime import date
 
 from django.conf import settings
 from django.contrib import messages
+from django.core.exceptions import BadRequest
 from django.core.mail import EmailMessage
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -78,7 +79,6 @@ def simulation(request):
     if request.POST:
         if simulation_form.is_valid():
             request.session["simulation"] = simulation_form.cleaned_data
-            request.session["siren"] = simulation_form.cleaned_data["siren"]
             return redirect("resultats_simulation")
         else:
             messages.error(
@@ -98,7 +98,11 @@ def simulation(request):
     )
 
 
-def preremplissage_formulaire_simulation(request, siren):
+def preremplissage_formulaire_simulation(request):
+    try:
+        siren = request.GET["siren"]
+    except KeyError:
+        raise BadRequest()
     erreur_recherche_entreprise = False
     if siren == SIREN_ENTREPRISE_TEST:
         infos = {

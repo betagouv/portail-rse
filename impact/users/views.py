@@ -67,8 +67,8 @@ def creation(request):
             except APIError as exception:
                 messages.error(request, exception)
     else:
-        siren = request.session.get("siren")
-        form = UserCreationForm(initial={"siren": siren})
+        simulation_data = request.session.get("simulation")
+        form = UserCreationForm(initial=simulation_data)
     return render(request, "users/creation.html", {"form": form})
 
 
