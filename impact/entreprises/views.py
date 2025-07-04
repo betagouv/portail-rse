@@ -14,7 +14,7 @@ from api.exceptions import APIError
 from entreprises.forms import EntrepriseAttachForm
 from entreprises.forms import EntrepriseDetachForm
 from entreprises.forms import EntrepriseQualificationForm
-from entreprises.forms import SirenForm
+from entreprises.forms import PreremplissageSirenForm
 from entreprises.models import Entreprise
 from entreprises.models import SIREN_ENTREPRISE_TEST
 from habilitations.models import Habilitation
@@ -190,9 +190,9 @@ def qualification(request, siren):
             except APIError:
                 infos_entreprise = {}
             if "date_cloture_exercice" not in infos_entreprise:
-                infos_entreprise[
-                    "date_cloture_exercice"
-                ] = date_cloture_exercice_par_defaut
+                infos_entreprise["date_cloture_exercice"] = (
+                    date_cloture_exercice_par_defaut
+                )
         form = EntrepriseQualificationForm(
             initial=infos_entreprise, entreprise=entreprise
         )
@@ -249,8 +249,8 @@ def recherche_entreprise(request):
     )
 
 
-def preremplissage_siren(request, siren):
-    form = SirenForm(data={"siren": siren})
+def preremplissage_siren(request):
+    form = PreremplissageSirenForm(request.GET)
     return render(
         request,
         "fragments/siren_field.html",

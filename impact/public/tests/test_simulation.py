@@ -219,6 +219,7 @@ def test_formulaire_creation_compte_prerempli_avec_le_siren_de_la_simulation_pr√
     client,
 ):
     siren = "000000001"
+    denomination = "Entreprise SAS"
     data = {
         "siren": siren,
         "denomination": "Entreprise SAS",
@@ -237,6 +238,9 @@ def test_formulaire_creation_compte_prerempli_avec_le_siren_de_la_simulation_pr√
 
     creation_form = response.context["form"]
     assert creation_form["siren"].value() == siren
+    content = response.content.decode("utf-8")
+    assert siren in content
+    assert denomination in content
 
 
 @pytest.mark.parametrize("status_est_soumis", [True, False])
@@ -714,7 +718,8 @@ def test_preremplissage_simulation(client, mock_api_infos_entreprise):
     infos_entreprise = mock_api_infos_entreprise.return_value
 
     response = client.get(
-        f"/simulation/fragments/preremplissage-formulaire-simulation/{siren}"
+        "/simulation/fragments/preremplissage-formulaire-simulation",
+        query_params={"siren": siren},
     )
 
     mock_api_infos_entreprise.assert_called_once_with(siren, donnees_financieres=True)
@@ -755,7 +760,8 @@ def test_preremplissage_simulation_erreur_API(client, mock_api_infos_entreprise)
     mock_api_infos_entreprise.side_effect = api.exceptions.APIError("Panne serveur")
 
     response = client.get(
-        f"/simulation/fragments/preremplissage-formulaire-simulation/{siren}"
+        "/simulation/fragments/preremplissage-formulaire-simulation",
+        query_params={"siren": siren},
     )
 
     assert response.status_code == 200
@@ -771,7 +777,8 @@ def test_preremplissage_simulation_avec_entreprise_test(
     siren = SIREN_ENTREPRISE_TEST
 
     response = client.get(
-        f"/simulation/fragments/preremplissage-formulaire-simulation/{siren}"
+        "/simulation/fragments/preremplissage-formulaire-simulation",
+        query_params={"siren": siren},
     )
 
     assert not mock_api_infos_entreprise.called
