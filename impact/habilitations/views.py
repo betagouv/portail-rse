@@ -141,6 +141,7 @@ def _envoie_email_d_invitation(request, invitation):
         "denomination_entreprise": invitation.entreprise.denomination,
         "invitation_url": url,
         "inviteur": f"{invitation.inviteur.prenom} {invitation.inviteur.nom}",
+        "role": invitation.get_role_display(),
     }
     email.send()
 
