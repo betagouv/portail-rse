@@ -14,10 +14,6 @@
 
             <h3>2. Renseignez les informations de votre entreprise</h3>
 
-            <p class="denomination">
-                <span class="denomination-label">{{ form.denomination.value|default:'' }}</span>
-            </p>
-
             <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--bottom fr-pb-4w">
                 <div class="fr-col-md-4 fr-col-12">
                     {% include 'snippets/field.html' with field=form.effectif %}

@@ -6,7 +6,7 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("simulation", views.simulation, name="simulation"),
     path(
-        "simulation/fragments/preremplissage-formulaire-simulation/<str:siren>",
+        "simulation/fragments/preremplissage-formulaire-simulation",
         views.preremplissage_formulaire_simulation,
         name="preremplissage_formulaire_simulation",
     ),

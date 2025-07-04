@@ -27,9 +27,9 @@ class SirenField(forms.CharField):
         if not kwargs.get("label"):
             kwargs["label"] = "Votre numéro SIREN"
         if not kwargs.get("help_text"):
-            kwargs[
-                "help_text"
-            ] = "Saisissez un numéro SIREN valide, disponible sur le Kbis de votre organisation ou sur l'Annuaire des Entreprises"
+            kwargs["help_text"] = (
+                "Saisissez un numéro SIREN valide, disponible sur le Kbis de votre organisation ou sur l'Annuaire des Entreprises"
+            )
         kwargs["min_length"] = 9
         kwargs["max_length"] = 9
         super().__init__(*args, **kwargs)
@@ -42,8 +42,9 @@ class SirenField(forms.CharField):
             raise ValidationError("Le siren est incorrect")
 
 
-class SirenForm(forms.Form):
+class PreremplissageSirenForm(forms.Form):
     siren = SirenField()
+    denomination = forms.CharField(required=False)
 
 
 class EntrepriseAttachForm(DsfrForm):

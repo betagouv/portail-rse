@@ -16,7 +16,8 @@
         {% for entreprise in entreprises %}
             {% firstof htmx_fragment_view_name "entreprises:preremplissage_siren" as view_name %}
             <div class="fr-tile fr-tile--sm fr-tile--no-icon fr-tile--horizontal fr-enlarge-link fr-mb-1w clickable"
-                 hx-get="{% url view_name entreprise.siren %}"
+                 hx-get="{% url view_name %}"
+                 hx-vals='{"siren": "{{ entreprise.siren }}", "denomination": "{{ entreprise.denomination }}"}'
                  hx-trigger="click"
                  hx-target="#htmx-preremplissage-target"
                  hx-swap="outerHTML"
@@ -43,5 +44,12 @@
     </p>
     {% if entreprises and entreprises|length > 2 %}
         <img src="{% static 'img/spinner.svg' %}" width="40" alt="Spinner d'attente" class="htmx-indicator">
+    {% endif %}
+{% elif form.siren.value %}
+    {{ form.siren.as_hidden }}
+    {% if form.denomination.value %}
+        <div class="denomination fr-mt-1w">
+            <span class="denomination-label">{{ form.denomination.value }}</span>
+        </div>
     {% endif %}
 {% endif %}

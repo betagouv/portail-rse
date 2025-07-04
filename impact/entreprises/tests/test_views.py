@@ -793,11 +793,7 @@ def test_recherche_entreprise_avec_resultats(
     assert context["erreur_recherche_entreprise"] == None
     assertTemplateUsed(response, "fragments/resultats_recherche_entreprise.html")
     content = response.content.decode("utf-8")
-    for entreprise in entreprises:
-        assert (
-            reverse("entreprises:preremplissage_siren", args=[entreprise["siren"]])
-            in content
-        )
+    assert reverse("entreprises:preremplissage_siren") in content
 
 
 def test_recherche_entreprise_moins_de_3_caractères(
@@ -887,16 +883,24 @@ def test_recherche_entreprise_avec_htmx_fragment_renseigné(
     context = response.context
     assert context["htmx_fragment_view_name"] == htmx_fragment_view_name
     content = response.content.decode("utf-8")
-    assert reverse(htmx_fragment_view_name, args=[siren]) in content
+    assert reverse(htmx_fragment_view_name) in content
 
 
 def test_preremplissage_siren(client):
     siren = "123456789"
+    denomination = "ENTREPRISE"
 
-    response = client.get(f"/entreprises/fragments/preremplissage-siren/{siren}")
+    response = client.get(
+        "/entreprises/fragments/preremplissage-siren",
+        query_params={
+            "siren": siren,
+            "denomination": denomination,
+        },
+    )
 
     assert response.status_code == 200
     assertTemplateUsed(response, "fragments/siren_field.html")
     context = response.context
-    siren_form = response.context["form"]
-    assert siren_form["siren"].value() == siren
+    preremplissage_form = response.context["form"]
+    assert preremplissage_form["siren"].value() == siren
+    assert preremplissage_form["denomination"].value() == denomination
