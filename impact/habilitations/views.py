@@ -1,32 +1,37 @@
-from collections import defaultdict
-
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import EmailMessage
+from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 
 from .enums import UserRole
 from .forms import InvitationForm
 from .models import Habilitation
 from entreprises.models import Entreprise
-from habilitations.models import Habilitation
+from habilitations.decorators import role
 from invitations.models import Invitation
 from users.models import User
+from utils.htmx import HttpResponseRedirectSeeOther
 from utils.tokens import make_token
 
 
 @login_required()
 def index(request, siren):
     entreprise = get_object_or_404(Entreprise, siren=siren)
+    request.session["entreprise"] = siren
     if request.POST:
         form = InvitationForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data["email"]
+            role = form.cleaned_data["role"]
+            print("email,role", email, role)
             try:
                 utilisateur = User.objects.get(email=email)
                 if Habilitation.objects.filter(entreprise=entreprise, user=utilisateur):
@@ -35,9 +40,9 @@ def index(request, siren):
                         "L'invitation a échoué car cette personne est déjà membre de l'entreprise.",
                     )
                 else:
-                    _ajoute_membre(request, entreprise, utilisateur)
+                    _ajoute_membre(request, entreprise, utilisateur, role)
             except ObjectDoesNotExist:
-                _cree_invitation(request, entreprise, email)
+                _cree_invitation(request, entreprise, email, role)
             return redirect(
                 reverse("habilitations:membres_entreprise", args=[entreprise.siren])
             )
@@ -64,21 +69,21 @@ def index(request, siren):
         }
     )
     # organisation des membres par habilitations
-    habilitations = defaultdict(list)
+    habilitations = []
     for h in entreprise.habilitation_set.all().order_by("user__nom"):
         if h.entreprise == entreprise and h.user.is_email_confirmed:
-            habilitations[h.role].append(h.user)
+            habilitations.append(h)
 
     context |= {"habilitations": habilitations}
 
     return render(request, "habilitations/membres.html", context)
 
 
-def _ajoute_membre(request, entreprise, utilisateur):
+def _ajoute_membre(request, entreprise, utilisateur, role):
     invitation = Invitation.objects.create(
         entreprise=entreprise,
         email=utilisateur.email,
-        role=UserRole.PROPRIETAIRE.value,
+        role=role,
         inviteur=request.user,
     )
     invitation.accepter(utilisateur)
@@ -106,11 +111,11 @@ def _envoie_email_d_ajout(request, entreprise, utilisateur):
     email.send()
 
 
-def _cree_invitation(request, entreprise, email):
+def _cree_invitation(request, entreprise, email, role):
     invitation = Invitation.objects.create(
         entreprise=entreprise,
         email=email,
-        role=UserRole.PROPRIETAIRE.value,
+        role=role,
         inviteur=request.user,
     )
     _envoie_email_d_invitation(request, invitation)
@@ -136,5 +141,57 @@ def _envoie_email_d_invitation(request, invitation):
         "denomination_entreprise": invitation.entreprise.denomination,
         "invitation_url": url,
         "inviteur": f"{invitation.inviteur.prenom} {invitation.inviteur.nom}",
+        "role": invitation.get_role_display(),
     }
     email.send()
+
+
+# Gestion des droits par les propriétaires
+
+
+@login_required
+@require_http_methods(["DELETE", "POST"])
+@csrf_exempt
+@role(UserRole.PROPRIETAIRE)
+def gerer_habilitation(request, id: int):
+    habilitation = get_object_or_404(Habilitation, pk=id)
+    match request.method:
+        case "POST":
+            habilitation.role = request.POST.get("role")
+            habilitation.save()
+            messages.success(
+                request,
+                f"L'habilitation de {habilitation.user.prenom} {habilitation.user.nom} a été modifiée ({habilitation.get_role_display()})",
+            )
+        case "DELETE":
+            if (
+                habilitation.role == UserRole.PROPRIETAIRE
+                and Habilitation.objects.parEntreprise(habilitation.entreprise)
+                .parRole(UserRole.PROPRIETAIRE)
+                .count()
+                == 1
+            ):
+                # il ne reste qu'un propriétaire : on ne peut pas le supprimer
+                messages.error(
+                    request, "Une entreprise doit avoir au moins un propriétaire"
+                )
+                return
+
+            habilitation.delete()
+
+            messages.success(
+                request,
+                f"L'habilitation de {habilitation.user.prenom} {habilitation.user.nom} a été supprimée",
+            )
+        case _:
+            # normallement filtré en amont par le filtre de type de requêtes
+            # mais plus propre...
+            return HttpResponseBadRequest()
+
+    # 303 nécessaire (changement de méthode)
+    return HttpResponseRedirectSeeOther(
+        reverse(
+            "habilitations:membres_entreprise",
+            args=[request.session["entreprise"]],
+        )
+    )

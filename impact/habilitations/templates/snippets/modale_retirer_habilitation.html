@@ -1,0 +1,25 @@
+{% with pk=habilitation.pk %}
+<dialog id="modaleRetirer-{{ pk }}" class="fr-modal" aria-labelledby="modaleRetirer-{{ pk }}-titre" data-fr-concealing-backdrop="true">
+        <div class="fr-container fr-container--fluid fr-container-md">
+            <div class="fr-grid-row fr-grid-row--center">
+                <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
+                    <div class="fr-modal__body">
+                        <div class="fr-modal__header">
+				<button aria-controls="modaleRetirer-{{ pk }}" title="Fermer" type="button" class="fr-btn--close fr-btn">Fermer</button>
+                        </div>
+                        <div class="fr-modal__content">
+				<h2 id="modaleRetirer-{{ pk }}-titre" class="fr-modal__title">Retirer l'habilitation</h2>
+			    <p>Voulez-vous retirer l'habilitation de <strong>{{ habilitation.user.prenom }} {{ habilitation.user.nom }}</strong> ({{ habilitation.get_role_display }}) ?</p>
+                        </div>
+                        <div class="fr-modal__footer">
+                            <div class="fr-btns-group fr-btns-group--right fr-btns-group--inline-lg">
+				    <button class="fr-btn fr-btn--primary" hx-target="body" hx-delete="{% url 'habilitations:gerer_habilitation' id=habilitation.pk %}">Retirer</button>
+                                <button class="fr-btn fr-btn--secondary" aria-controls="modaleRetirer-{{ pk }}" >Annuler</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </dialog>
+{% endwith %}
