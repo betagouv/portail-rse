@@ -78,9 +78,7 @@ def test_une_invitation_a_devenir_membre_pour_un_compte_existant_est_activée_di
     entreprise = entreprise_factory()
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
-    data = {
-        "email": bob.email,
-    }
+    data = {"email": bob.email, "role": UserRole.PROPRIETAIRE}
     url = f"/droits/{entreprise.siren}"
 
     response = client.post(url, data=data, follow=True)
@@ -112,9 +110,7 @@ def test_succès_invitation_a_devenir_membre(
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
     EMAIL_INVITE = "bob@bob.test"
-    data = {
-        "email": EMAIL_INVITE,
-    }
+    data = {"email": EMAIL_INVITE, "role": UserRole.EDITEUR}
     url = f"/droits/{entreprise.siren}"
 
     response = client.post(url, data=data, follow=True)
@@ -125,7 +121,7 @@ def test_succès_invitation_a_devenir_membre(
     invitations = Invitation.objects.filter(entreprise=entreprise, email=EMAIL_INVITE)
     assert len(invitations) == 1
     invitation = invitations[0]
-    assert invitation.role == "proprietaire"
+    assert invitation.role == "editeur"
     assert invitation.inviteur == alice
     assert response.redirect_chain == [(redirect_url, 302)]
     content = html.unescape(response.content.decode("utf-8"))
@@ -165,11 +161,9 @@ def test_erreur_invitation_a_devenir_membre_car_deja_membre(
 ):
     entreprise = entreprise_factory()
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
-    Habilitation.ajouter(entreprise, bob, fonctions="Présidente")
+    Habilitation.ajouter(entreprise, bob, fonctions="Vice-président")
     client.force_login(alice)
-    data = {
-        "email": bob.email,
-    }
+    data = {"email": bob.email, "role": UserRole.EDITEUR}
     url = f"/droits/{entreprise.siren}"
 
     response = client.post(url, data=data, follow=True)
