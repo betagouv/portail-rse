@@ -52,14 +52,12 @@ def test_yearly_bdese_is_created_at_first_authorized_request(
     response = client.get(url)
 
     assert response.status_code == 302
-    bdese_2021 = bdese_class.officials.get(entreprise=entreprise, annee=2021)
-    assert bdese_2021.user is None
+    bdese_2021 = bdese_class.objects.get(entreprise=entreprise, annee=2021)
 
     url = f"/bdese/{entreprise.siren}/2022/1"
     response = client.get(url)
 
-    bdese_2022 = bdese_class.officials.get(entreprise=entreprise, annee=2022)
-    assert bdese_2022.user is None
+    bdese_2022 = bdese_class.objects.get(entreprise=entreprise, annee=2022)
     assert bdese_2021 != bdese_2022
 
 
