@@ -1,7 +1,6 @@
 import pytest
 
 from entreprises.models import CaracteristiquesAnnuelles
-from habilitations.models import Habilitation
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.dispositif_anticorruption import DispositifAntiCorruption
 
@@ -156,15 +155,14 @@ def test_n_est_pas_suffisamment_qualifiee_car_comptes_consolides_mais_sans_CA_co
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
     ],
 )
-def test_calcule_etat_avec_effectif_insuffisant(effectif, entreprise_factory, alice):
+def test_calcule_etat_avec_effectif_insuffisant(effectif, entreprise_factory):
     entreprise = entreprise_factory(
         effectif=effectif,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = DispositifAntiCorruption.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -180,15 +178,14 @@ def test_calcule_etat_avec_effectif_insuffisant(effectif, entreprise_factory, al
         CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
     ],
 )
-def test_calcule_etat_avec_ca_insuffisant(ca, entreprise_factory, alice):
+def test_calcule_etat_avec_ca_insuffisant(ca, entreprise_factory):
     entreprise = entreprise_factory(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
         tranche_chiffre_affaires=ca,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = DispositifAntiCorruption.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -205,17 +202,14 @@ def test_calcule_etat_avec_ca_insuffisant(ca, entreprise_factory, alice):
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_calcule_etat_seuils_effectif_et_ca_suffisants(
-    effectif, entreprise_factory, alice
-):
+def test_calcule_etat_seuils_effectif_et_ca_suffisants(effectif, entreprise_factory):
     entreprise = entreprise_factory(
         effectif=effectif,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = DispositifAntiCorruption.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
@@ -234,7 +228,7 @@ def test_calcule_etat_seuils_effectif_et_ca_suffisants(
     ],
 )
 def test_calcule_etat_seuils_effectif_et_ca_consolide_suffisants(
-    effectif, entreprise_factory, alice
+    effectif, entreprise_factory
 ):
     entreprise = entreprise_factory(
         appartient_groupe=True,
@@ -242,10 +236,9 @@ def test_calcule_etat_seuils_effectif_et_ca_consolide_suffisants(
         effectif=effectif,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = DispositifAntiCorruption.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
@@ -255,9 +248,7 @@ def test_calcule_etat_seuils_effectif_et_ca_consolide_suffisants(
     )
 
 
-def test_calcule_etat_seuils_effectif_ca_et_ca_consolide_suffisants(
-    entreprise_factory, alice
-):
+def test_calcule_etat_seuils_effectif_ca_et_ca_consolide_suffisants(entreprise_factory):
     entreprise = entreprise_factory(
         appartient_groupe=True,
         comptes_consolides=True,
@@ -265,10 +256,9 @@ def test_calcule_etat_seuils_effectif_ca_et_ca_consolide_suffisants(
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = DispositifAntiCorruption.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
@@ -287,7 +277,7 @@ def test_calcule_etat_seuils_effectif_ca_et_ca_consolide_suffisants(
     ],
 )
 def test_calcule_etat_seuils_effectif_groupe_et_ca_suffisants(
-    effectif_groupe, entreprise_factory, alice
+    effectif_groupe, entreprise_factory
 ):
     entreprise = entreprise_factory(
         appartient_groupe=True,
@@ -295,10 +285,9 @@ def test_calcule_etat_seuils_effectif_groupe_et_ca_suffisants(
         effectif_groupe=effectif_groupe,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = DispositifAntiCorruption.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
@@ -317,7 +306,7 @@ def test_calcule_etat_seuils_effectif_groupe_et_ca_suffisants(
     ],
 )
 def test_calcule_etat_seuils_effectif_groupe_et_ca_suffisants_mais_siege_social_a_l_etranger(
-    effectif_groupe, entreprise_factory, alice
+    effectif_groupe, entreprise_factory
 ):
     entreprise = entreprise_factory(
         appartient_groupe=True,
@@ -325,10 +314,9 @@ def test_calcule_etat_seuils_effectif_groupe_et_ca_suffisants_mais_siege_social_
         effectif_groupe=effectif_groupe,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = DispositifAntiCorruption.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS

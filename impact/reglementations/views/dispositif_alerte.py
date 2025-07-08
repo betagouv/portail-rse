@@ -1,5 +1,3 @@
-from django.conf import settings
-
 from entreprises.models import CaracteristiquesAnnuelles
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationStatus
@@ -39,9 +37,8 @@ class DispositifAlerteReglementation(Reglementation):
     def calculate_status(
         cls,
         caracteristiques: CaracteristiquesAnnuelles,
-        user: settings.AUTH_USER_MODEL,
     ) -> ReglementationStatus:
-        if reglementation_status := super().calculate_status(caracteristiques, user):
+        if reglementation_status := super().calculate_status(caracteristiques):
             return reglementation_status
 
         if cls.est_soumis(caracteristiques):

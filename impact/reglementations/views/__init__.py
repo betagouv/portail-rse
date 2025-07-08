@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -10,8 +9,8 @@ from django.urls import reverse_lazy
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
-from reglementations.utils import VSMEReglementation
 from habilitations.models import Habilitation
+from reglementations.utils import VSMEReglementation
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.bdese import BDESEReglementation
@@ -59,7 +58,7 @@ def tableau_de_bord(request, siren=None):
                 request,
                 f"Les réglementations affichées sont basées sur des informations de l'exercice comptable {caracteristiques.annee}. <a href='{reverse_lazy('entreprises:qualification', args=[entreprise.siren])}'>Mettre à jour les informations de l'entreprise.</a>",
             )
-        reglementations = calcule_reglementations(caracteristiques, request.user)
+        reglementations = calcule_reglementations(caracteristiques)
         reglementations_a_actualiser = [
             r
             for r in reglementations
@@ -111,13 +110,11 @@ def tableau_de_bord(request, siren=None):
         return redirect("entreprises:qualification", siren=entreprise.siren)
 
 
-def calcule_reglementations(
-    caracteristiques: CaracteristiquesAnnuelles, user: settings.AUTH_USER_MODEL
-):
+def calcule_reglementations(caracteristiques: CaracteristiquesAnnuelles):
     reglementations = [
         {
             "reglementation": reglementation,
-            "status": reglementation.calculate_status(caracteristiques, user),
+            "status": reglementation.calculate_status(caracteristiques),
         }
         for reglementation in REGLEMENTATIONS
     ]

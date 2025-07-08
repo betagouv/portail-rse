@@ -11,7 +11,6 @@ from conftest import CODE_SAS
 from conftest import CODE_SCA
 from conftest import CODE_SE
 from entreprises.models import CaracteristiquesAnnuelles
-from habilitations.models import Habilitation
 from reglementations.enums import ThemeESRS
 from reglementations.enums import TitreESRS
 from reglementations.views.base import ReglementationStatus
@@ -1179,7 +1178,7 @@ def test_entreprise_cotee_effectif_et_bilan_superieurs_aux_seuils_petite_entrepr
     )
 
 
-def test_calcule_etat_si_non_soumis(entreprise_factory, alice):
+def test_calcule_etat_si_non_soumis(entreprise_factory):
     entreprise = entreprise_factory(
         categorie_juridique_sirene=CODE_SA,
         code_pays_etranger_sirene=None,
@@ -1189,10 +1188,9 @@ def test_calcule_etat_si_non_soumis(entreprise_factory, alice):
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = CSRDReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -1209,7 +1207,7 @@ def test_calcule_etat_si_non_soumis(entreprise_factory, alice):
     )
 
 
-def test_calcule_etat_si_soumis_en_2025_et_delegable(entreprise_factory, alice):
+def test_calcule_etat_si_soumis_en_2025_et_delegable(entreprise_factory):
     entreprise = entreprise_factory(
         categorie_juridique_sirene=CODE_SA,
         code_pays_etranger_sirene=None,
@@ -1224,10 +1222,9 @@ def test_calcule_etat_si_soumis_en_2025_et_delegable(entreprise_factory, alice):
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = CSRDReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_A_ACTUALISER
@@ -1246,7 +1243,7 @@ def test_calcule_etat_si_soumis_en_2025_et_delegable(entreprise_factory, alice):
     )
 
 
-def test_calcule_etat_si_soumis_en_2029_et_non_delegable(entreprise_factory, alice):
+def test_calcule_etat_si_soumis_en_2029_et_non_delegable(entreprise_factory):
     entreprise = entreprise_factory(
         categorie_juridique_sirene=CODE_SA,
         code_pays_etranger_sirene=None,
@@ -1256,10 +1253,9 @@ def test_calcule_etat_si_soumis_en_2029_et_non_delegable(entreprise_factory, ali
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = CSRDReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_A_ACTUALISER
@@ -1280,7 +1276,7 @@ def test_calcule_etat_si_soumis_en_2029_et_non_delegable(entreprise_factory, ali
 
 
 def test_calcule_etat_si_entreprise_hors_EEE_soumise_en_2029_sous_condition(
-    entreprise_factory, alice
+    entreprise_factory,
 ):
     entreprise = entreprise_factory(
         categorie_juridique_sirene=CODE_SA,
@@ -1291,10 +1287,9 @@ def test_calcule_etat_si_entreprise_hors_EEE_soumise_en_2029_sous_condition(
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = CSRDReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_A_ACTUALISER
@@ -2063,7 +2058,7 @@ def test_decale_annee_publication_selon_cloture_exercice_comptable_le_28_fevrier
 
 
 def test_calcule_etat_si_soumis_en_2026_car_exercice_comptable_different_annee_civile(
-    entreprise_factory, alice
+    entreprise_factory,
 ):
     entreprise = entreprise_factory(
         date_cloture_exercice=date(2023, 11, 30),
@@ -2075,10 +2070,9 @@ def test_calcule_etat_si_soumis_en_2026_car_exercice_comptable_different_annee_c
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = CSRDReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_A_ACTUALISER
@@ -2091,9 +2085,9 @@ def test_calcule_etat_si_soumis_en_2026_car_exercice_comptable_different_annee_c
     assert reglementation.prochaine_echeance == 2026
 
 
-def test_calcule_etat_avec_CSRD_initialisée(csrd, alice):
+def test_calcule_etat_avec_CSRD_initialisée(csrd):
     reglementation = CSRDReglementation.calculate_status(
-        csrd.entreprise.dernieres_caracteristiques_qualifiantes, alice
+        csrd.entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.primary_action.title == "Actualiser mon Rapport de Durabilité"
@@ -2106,13 +2100,13 @@ def test_calcule_etat_avec_CSRD_initialisée(csrd, alice):
     )
 
 
-def test_calcule_etat_avec_CSRD_et_étapes_validées(csrd, alice):
+def test_calcule_etat_avec_CSRD_et_étapes_validées(csrd):
     DEJA_VALIDEE = "selection-enjeux"
     csrd.etape_validee = DEJA_VALIDEE
     csrd.save()
 
     reglementation = CSRDReglementation.calculate_status(
-        csrd.entreprise.dernieres_caracteristiques_qualifiantes, alice
+        csrd.entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert (

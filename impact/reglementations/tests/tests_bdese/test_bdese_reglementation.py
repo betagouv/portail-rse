@@ -2,7 +2,6 @@ import pytest
 from django.urls import reverse
 
 from entreprises.models import CaracteristiquesAnnuelles
-from habilitations.models import Habilitation
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
 from reglementations.models import BDESEAvecAccord
@@ -54,16 +53,15 @@ def test_n_est_pas_suffisamment_qualifiee_car_sans_effectif(entreprise_non_quali
 )
 @pytest.mark.parametrize("bdese_accord", [True, False])
 def test_calculate_status_less_than_50_employees(
-    effectif, bdese_accord, entreprise_factory, alice
+    effectif, bdese_accord, entreprise_factory
 ):
     entreprise = entreprise_factory(
         effectif=effectif,
         bdese_accord=bdese_accord,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     status = BDESEReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert status.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -88,14 +86,13 @@ def test_calculate_status_less_than_50_employees(
     ],
 )
 def test_calculate_status_more_than_50_employees(
-    effectif, bdese_class, entreprise_factory, alice, mocker
+    effectif, bdese_class, entreprise_factory, mocker
 ):
     entreprise = entreprise_factory(effectif=effectif, bdese_accord=False)
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     annee = derniere_annee_a_remplir_bdese()
 
     status = BDESEReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
@@ -111,7 +108,7 @@ def test_calculate_status_more_than_50_employees(
 
     bdese_class.objects.create(entreprise=entreprise, annee=annee)
     status = BDESEReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert status.status == ReglementationStatus.STATUS_EN_COURS
@@ -129,7 +126,7 @@ def test_calculate_status_more_than_50_employees(
 
     mocker.patch("reglementations.models.AbstractBDESE.is_complete", return_value=True)
     status = BDESEReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert status.status == ReglementationStatus.STATUS_A_JOUR
@@ -159,15 +156,12 @@ def test_calculate_status_more_than_50_employees(
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_calculate_status_with_bdese_accord(
-    effectif, alice, entreprise_factory, mocker
-):
+def test_calculate_status_with_bdese_accord(effectif, entreprise_factory, mocker):
     entreprise = entreprise_factory(effectif=effectif, bdese_accord=True)
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     annee = derniere_annee_a_remplir_bdese()
 
     status = BDESEReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert status.status == ReglementationStatus.STATUS_A_ACTUALISER
@@ -185,7 +179,7 @@ def test_calculate_status_with_bdese_accord(
     bdese.is_complete = True
     bdese.save()
     status = BDESEReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert status.status == ReglementationStatus.STATUS_A_JOUR

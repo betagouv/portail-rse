@@ -1,7 +1,6 @@
 import pytest
 
 from entreprises.models import CaracteristiquesAnnuelles
-from habilitations.models import Habilitation
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.dispositif_alerte import DispositifAlerteReglementation
 
@@ -47,13 +46,12 @@ def test_n_est_pas_suffisamment_qualifiee_car_sans_effectif(entreprise_non_quali
     ],
 )
 def test_calculate_status_less_than_50_employees(
-    effectif_securite_sociale, entreprise_factory, alice
+    effectif_securite_sociale, entreprise_factory
 ):
     entreprise = entreprise_factory(effectif_securite_sociale=effectif_securite_sociale)
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = DispositifAlerteReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -71,13 +69,12 @@ def test_calculate_status_less_than_50_employees(
     ],
 )
 def test_calculate_status_more_than_50_employees(
-    effectif_securite_sociale, entreprise_factory, alice
+    effectif_securite_sociale, entreprise_factory
 ):
     entreprise = entreprise_factory(effectif_securite_sociale=effectif_securite_sociale)
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = DispositifAlerteReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
