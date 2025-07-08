@@ -12,7 +12,6 @@ from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from entreprises.models import SIREN_ENTREPRISE_TEST
-from entreprises.views import get_current_entreprise
 from public.forms import ContactForm
 from public.forms import SimulationForm
 from reglementations.views import REGLEMENTATIONS
@@ -20,15 +19,8 @@ from reglementations.views import REGLEMENTATIONS
 
 def index(request):
     if request.user.is_authenticated:
-        referer = request.META.get("HTTP_REFERER", "")
-        if referer.endswith("/connexion") or referer.endswith("/connexion?next=/"):
-            if entreprise := get_current_entreprise(request):
-                return redirect(
-                    "reglementations:tableau_de_bord", siren=entreprise.siren
-                )
-            else:
-                return redirect("entreprises:entreprises")
-    return redirect(settings.SITES_FACILES_BASE_URL)
+        return redirect("reglementations:tableau_de_bord")
+    return redirect("users:login")
 
 
 def fragment_liens_menu(request):

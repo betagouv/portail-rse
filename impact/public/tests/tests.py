@@ -1,59 +1,33 @@
 import html
 
 import pytest
-from django.conf import settings
 from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed
 
 from habilitations.models import Habilitation
 
 
-def test_index_pour_un_visiteur_anonyme_renvoie_vers_le_site_vitrine(client):
+def test_index_pour_un_visiteur_anonyme_renvoie_vers_la_page_de_connexion(client):
     response = client.get("/")
 
     assert response.status_code == 302
-    assert response.url == settings.SITES_FACILES_BASE_URL
+    assert response.url == reverse("users:login")
 
 
-def test_redirection_de_la_page_index_vers_ses_reglementations_si_l_utilisateur_vient_de_se_connecter_depuis_la_page_d_accueil(
+def test_redirection_de_la_page_index_vers_tableau_de_bord_si_l_utilisateur_est_connecté(
     client, alice, entreprise_factory
 ):
     entreprise = entreprise_factory()
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
 
-    response = client.get(
-        "/", follow=True, headers={"referer": "http://domain.test/connexion"}
-    )
+    response = client.get("/", follow=True)
 
     assert response.status_code == 200
-    assert response.redirect_chain == [
-        (reverse("reglementations:tableau_de_bord", args=[entreprise.siren]), 302),
-    ]
-
-    response = client.get(
-        "/", follow=True, headers={"referer": "http://domain.test/connexion?next=/"}
+    assert response.redirect_chain[0] == (
+        reverse("reglementations:tableau_de_bord"),
+        302,
     )
-
-    assert response.status_code == 200
-    assert response.redirect_chain == [
-        (reverse("reglementations:tableau_de_bord", args=[entreprise.siren]), 302),
-    ]
-
-
-def test_redirection_de_la_page_index_vers_l_ajout_d_entreprise_si_l_utilisateur_vient_de_se_connecter_depuis_la_page_d_accueil_et_sans_entreprise(
-    client, alice
-):
-    """cas où un utilisateur aurait quitté toutes ses entreprises"""
-    client.force_login(alice)
-    response = client.get(
-        "/", follow=True, headers={"referer": "http://domain.test/connexion?next=/"}
-    )
-
-    assert response.status_code == 200
-    assert response.redirect_chain == [
-        (reverse("entreprises:entreprises"), 302),
-    ]
 
 
 def test_page_simulation(client):
