@@ -1,5 +1,3 @@
-from django.conf import settings
-
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import CategorieJuridique
 from entreprises.models import convertit_categorie_juridique
@@ -89,9 +87,8 @@ class PlanVigilanceReglementation(Reglementation):
     def calculate_status(
         cls,
         caracteristiques: CaracteristiquesAnnuelles,
-        user: settings.AUTH_USER_MODEL,
     ) -> ReglementationStatus:
-        if reglementation_status := super().calculate_status(caracteristiques, user):
+        if reglementation_status := super().calculate_status(caracteristiques):
             return reglementation_status
 
         if cls.est_soumis(caracteristiques):

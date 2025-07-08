@@ -3,7 +3,6 @@ from freezegun import freeze_time
 
 from api.exceptions import APIError
 from entreprises.models import CaracteristiquesAnnuelles
-from habilitations.models import Habilitation
 from reglementations.models import derniere_annee_a_publier_index_egapro
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.index_egapro import IndexEgaproReglementation
@@ -48,13 +47,12 @@ def test_n_est_pas_suffisamment_qualifiee_car_sans_effectif(entreprise_non_quali
     ],
 )
 def test_calculate_status_less_than_50_employees(
-    effectif, entreprise_factory, alice, mock_api_egapro
+    effectif, entreprise_factory, mock_api_egapro
 ):
     entreprise = entreprise_factory(effectif=effectif)
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     index = IndexEgaproReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert index.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -82,16 +80,15 @@ def test_calculate_status_less_than_50_employees(
     ],
 )
 def test_calculate_status_more_than_50_employees(
-    effectif, entreprise_factory, alice, mock_api_egapro
+    effectif, entreprise_factory, mock_api_egapro
 ):
     entreprise = entreprise_factory(effectif=effectif)
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     mock_api_egapro.return_value = False
     with freeze_time("2023-02-28"):
         annee = derniere_annee_a_publier_index_egapro()
         index = IndexEgaproReglementation.calculate_status(
-            entreprise.dernieres_caracteristiques_qualifiantes, alice
+            entreprise.dernieres_caracteristiques_qualifiantes
         )
 
     assert index.status == ReglementationStatus.STATUS_A_ACTUALISER
@@ -110,7 +107,7 @@ def test_calculate_status_more_than_50_employees(
     with freeze_time("2023-02-28"):
         annee = derniere_annee_a_publier_index_egapro()
         index = IndexEgaproReglementation.calculate_status(
-            entreprise.dernieres_caracteristiques_qualifiantes, alice
+            entreprise.dernieres_caracteristiques_qualifiantes
         )
 
     assert index.status == ReglementationStatus.STATUS_A_JOUR
@@ -123,18 +120,17 @@ def test_calculate_status_more_than_50_employees(
 
 
 def test_calculate_status_more_than_50_employees_with_egapro_API_fails(
-    entreprise_factory, alice, mock_api_egapro
+    entreprise_factory, mock_api_egapro
 ):
     entreprise = entreprise_factory(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     mock_api_egapro.side_effect = APIError
     with freeze_time("2023-02-28"):
         annee = derniere_annee_a_publier_index_egapro()
         index = IndexEgaproReglementation.calculate_status(
-            entreprise.dernieres_caracteristiques_qualifiantes, alice
+            entreprise.dernieres_caracteristiques_qualifiantes
         )
 
     assert index.status == ReglementationStatus.STATUS_SOUMIS

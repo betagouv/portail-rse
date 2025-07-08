@@ -1,5 +1,3 @@
-from django.conf import settings
-
 from api import egapro
 from api.exceptions import APIError
 from entreprises.models import CaracteristiquesAnnuelles
@@ -45,9 +43,8 @@ class IndexEgaproReglementation(Reglementation):
     def calculate_status(
         cls,
         caracteristiques: CaracteristiquesAnnuelles,
-        user: settings.AUTH_USER_MODEL,
     ) -> ReglementationStatus:
-        if reglementation_status := super().calculate_status(caracteristiques, user):
+        if reglementation_status := super().calculate_status(caracteristiques):
             return reglementation_status
 
         if not cls.est_soumis(caracteristiques):

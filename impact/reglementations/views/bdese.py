@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -86,9 +85,8 @@ class BDESEReglementation(Reglementation):
     def calculate_status(
         cls,
         caracteristiques: CaracteristiquesAnnuelles,
-        user: settings.AUTH_USER_MODEL,
     ) -> ReglementationStatus:
-        if reglementation_status := super().calculate_status(caracteristiques, user):
+        if reglementation_status := super().calculate_status(caracteristiques):
             return reglementation_status
 
         for match in [

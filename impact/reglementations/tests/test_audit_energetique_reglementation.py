@@ -1,7 +1,6 @@
 import pytest
 
 from entreprises.models import CaracteristiquesAnnuelles
-from habilitations.models import Habilitation
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
 from reglementations.views.base import ReglementationStatus
 
@@ -194,15 +193,14 @@ def test_n_est_pas_suffisamment_qualifiee_car_groupe_mais_bilan_consolide_non_re
     ],
 )
 def test_calcule_statut_moins_de_249_employes_et_petit_bilan(
-    effectif, entreprise_factory, alice
+    effectif, entreprise_factory
 ):
     entreprise = entreprise_factory(
         effectif=effectif, tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = AuditEnergetiqueReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -222,12 +220,11 @@ def test_calcule_statut_moins_de_249_employes_et_petit_bilan(
         CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     ],
 )
-def test_calcule_statut_plus_de_250_employes(effectif, entreprise_factory, alice):
+def test_calcule_statut_plus_de_250_employes(effectif, entreprise_factory):
     entreprise = entreprise_factory(effectif=effectif)
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = AuditEnergetiqueReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
@@ -260,18 +257,15 @@ def test_calcule_statut_plus_de_250_employes(effectif, entreprise_factory, alice
         CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
     ],
 )
-def test_calcule_etat_avec_bilan_et_ca_trop_faible(
-    bilan, ca, entreprise_factory, alice
-):
+def test_calcule_etat_avec_bilan_et_ca_trop_faible(bilan, ca, entreprise_factory):
     entreprise = entreprise_factory(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         tranche_bilan=bilan,
         tranche_chiffre_affaires=ca,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = AuditEnergetiqueReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -292,16 +286,15 @@ def test_calcule_etat_avec_bilan_et_ca_trop_faible(
         CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     ],
 )
-def test_calcule_etat_avec_bilan_et_ca_suffisants(bilan, ca, entreprise_factory, alice):
+def test_calcule_etat_avec_bilan_et_ca_suffisants(bilan, ca, entreprise_factory):
     entreprise = entreprise_factory(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         tranche_bilan=bilan,
         tranche_chiffre_affaires=ca,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = AuditEnergetiqueReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
@@ -326,16 +319,15 @@ def test_calcule_etat_avec_bilan_et_ca_suffisants(bilan, ca, entreprise_factory,
         CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
     ],
 )
-def test_calcule_etat_avec_bilan_insuffisant(ca, entreprise_factory, alice):
+def test_calcule_etat_avec_bilan_insuffisant(ca, entreprise_factory):
     entreprise = entreprise_factory(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
         tranche_chiffre_affaires=ca,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = AuditEnergetiqueReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -349,16 +341,15 @@ def test_calcule_etat_avec_bilan_insuffisant(ca, entreprise_factory, alice):
         CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
     ],
 )
-def test_calcule_etat_avec_ca_insuffisant(bilan, entreprise_factory, alice):
+def test_calcule_etat_avec_ca_insuffisant(bilan, entreprise_factory):
     entreprise = entreprise_factory(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         tranche_bilan=bilan,
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = AuditEnergetiqueReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -390,17 +381,16 @@ def test_calcule_etat_avec_ca_insuffisant(bilan, entreprise_factory, alice):
     ],
 )
 def test_calcule_etat_avec_effectif_bilan_et_ca_suffisants(
-    effectif, bilan, ca, entreprise_factory, alice
+    effectif, bilan, ca, entreprise_factory
 ):
     entreprise = entreprise_factory(
         effectif=effectif,
         tranche_bilan=bilan,
         tranche_chiffre_affaires=ca,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = AuditEnergetiqueReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
@@ -419,7 +409,7 @@ def test_calcule_etat_avec_effectif_bilan_et_ca_suffisants(
 
 
 def test_calcule_etat_avec_bilan_et_ca_suffisants_mais_systeme_management_energie_en_place(
-    entreprise_factory, alice
+    entreprise_factory,
 ):
     entreprise = entreprise_factory(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
@@ -427,10 +417,9 @@ def test_calcule_etat_avec_bilan_et_ca_suffisants_mais_systeme_management_energi
         tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
         systeme_management_energie=True,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = AuditEnergetiqueReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -456,7 +445,7 @@ def test_calcule_etat_avec_bilan_et_ca_suffisants_mais_systeme_management_energi
     ],
 )
 def test_calcule_etat_avec_bilan_insuffisant_mais_bilan_consolide_et_ca_suffisants(
-    bilan_consolide, ca, entreprise_factory, alice
+    bilan_consolide, ca, entreprise_factory
 ):
     entreprise = entreprise_factory(
         appartient_groupe=True,
@@ -466,10 +455,9 @@ def test_calcule_etat_avec_bilan_insuffisant_mais_bilan_consolide_et_ca_suffisan
         tranche_chiffre_affaires=ca,
         tranche_bilan_consolide=bilan_consolide,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = AuditEnergetiqueReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS

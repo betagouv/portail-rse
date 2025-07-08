@@ -3,7 +3,6 @@ from freezegun import freeze_time
 
 from api.exceptions import APIError
 from entreprises.models import CaracteristiquesAnnuelles
-from habilitations.models import Habilitation
 from reglementations.views.base import ReglementationAction
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.bges import BGESReglementation
@@ -76,13 +75,12 @@ def test_n_est_pas_suffisamment_qualifiee_car_sans_effectif_outre_mer(
     ],
 )
 def test_calcule_le_statut_si_moins_de_500_employes(
-    effectif, entreprise_factory, alice, mock_api_bges
+    effectif, entreprise_factory, mock_api_bges
 ):
     entreprise = entreprise_factory(effectif=effectif)
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = BGESReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -102,15 +100,14 @@ def test_calcule_le_statut_si_moins_de_500_employes(
     ],
 )
 def test_calcule_le_statut_si_plus_de_500_employes_sans_bilan_publie(
-    effectif, entreprise_factory, alice, mock_api_bges
+    effectif, entreprise_factory, mock_api_bges
 ):
     entreprise = entreprise_factory(effectif=effectif)
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     mock_api_bges.return_value = None
 
     with freeze_time("2023-12-15"):
         reglementation = BGESReglementation.calculate_status(
-            entreprise.dernieres_caracteristiques_qualifiantes, alice
+            entreprise.dernieres_caracteristiques_qualifiantes
         )
 
     assert reglementation.status == ReglementationStatus.STATUS_A_ACTUALISER
@@ -123,17 +120,16 @@ def test_calcule_le_statut_si_plus_de_500_employes_sans_bilan_publie(
 
 
 def test_calcule_le_statut_si_soumis_et_erreur_API(
-    mocker, entreprise_factory, alice, mock_api_bges
+    mocker, entreprise_factory, mock_api_bges
 ):
     entreprise = entreprise_factory(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     mock_api_bges.side_effect = APIError()
 
     with freeze_time("2023-12-15"):
         reglementation = BGESReglementation.calculate_status(
-            entreprise.dernieres_caracteristiques_qualifiantes, alice
+            entreprise.dernieres_caracteristiques_qualifiantes
         )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
@@ -154,15 +150,14 @@ def test_calcule_le_statut_si_soumis_et_erreur_API(
     ],
 )
 def test_calcule_le_statut_si_plus_de_500_employes_bilan_publie_trop_vieux(
-    effectif, entreprise_factory, alice, mock_api_bges
+    effectif, entreprise_factory, mock_api_bges
 ):
     entreprise = entreprise_factory(effectif=effectif)
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     mock_api_bges.return_value = 2015
 
     with freeze_time("2023-12-15"):
         reglementation = BGESReglementation.calculate_status(
-            entreprise.dernieres_caracteristiques_qualifiantes, alice
+            entreprise.dernieres_caracteristiques_qualifiantes
         )
 
     assert reglementation.status == ReglementationStatus.STATUS_A_ACTUALISER
@@ -183,15 +178,14 @@ def test_calcule_le_statut_si_plus_de_500_employes_bilan_publie_trop_vieux(
     ],
 )
 def test_calcule_le_statut_si_plus_de_500_employes_bilan_publie_recent(
-    effectif, entreprise_factory, alice, mock_api_bges
+    effectif, entreprise_factory, mock_api_bges
 ):
     entreprise = entreprise_factory(effectif=effectif)
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     mock_api_bges.return_value = 2022
 
     with freeze_time("2023-12-15"):
         reglementation = BGESReglementation.calculate_status(
-            entreprise.dernieres_caracteristiques_qualifiantes, alice
+            entreprise.dernieres_caracteristiques_qualifiantes
         )
 
     assert reglementation.status == ReglementationStatus.STATUS_A_JOUR
@@ -204,18 +198,17 @@ def test_calcule_le_statut_si_plus_de_500_employes_bilan_publie_recent(
 
 
 def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer_sans_bilan_publie(
-    entreprise_factory, alice, mock_api_bges
+    entreprise_factory, mock_api_bges
 ):
     entreprise = entreprise_factory(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     mock_api_bges.return_value = None
 
     with freeze_time("2023-12-15"):
         reglementation = BGESReglementation.calculate_status(
-            entreprise.dernieres_caracteristiques_qualifiantes, alice
+            entreprise.dernieres_caracteristiques_qualifiantes
         )
 
     assert reglementation.status == ReglementationStatus.STATUS_A_ACTUALISER
@@ -228,18 +221,17 @@ def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer_sans_bilan_publie
 
 
 def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer_bilan_publie_trop_vieux(
-    entreprise_factory, alice, mock_api_bges
+    entreprise_factory, mock_api_bges
 ):
     entreprise = entreprise_factory(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     mock_api_bges.return_value = 2015
 
     with freeze_time("2023-12-15"):
         reglementation = BGESReglementation.calculate_status(
-            entreprise.dernieres_caracteristiques_qualifiantes, alice
+            entreprise.dernieres_caracteristiques_qualifiantes
         )
 
     assert reglementation.status == ReglementationStatus.STATUS_A_ACTUALISER
@@ -252,18 +244,17 @@ def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer_bilan_publie_trop
 
 
 def test_calcule_le_statut_avec_plus_de_250_employes_outre_mer_bilan_publie_recent(
-    entreprise_factory, alice, mock_api_bges
+    entreprise_factory, mock_api_bges
 ):
     entreprise = entreprise_factory(
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         effectif_outre_mer=CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     mock_api_bges.return_value = 2022
 
     with freeze_time("2023-12-15"):
         reglementation = BGESReglementation.calculate_status(
-            entreprise.dernieres_caracteristiques_qualifiantes, alice
+            entreprise.dernieres_caracteristiques_qualifiantes
         )
 
     assert reglementation.status == ReglementationStatus.STATUS_A_JOUR

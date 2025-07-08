@@ -7,7 +7,6 @@ from conftest import CODE_SAS
 from conftest import CODE_SCA
 from conftest import CODE_SE
 from entreprises.models import CaracteristiquesAnnuelles
-from habilitations.models import Habilitation
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.plan_vigilance import PlanVigilanceReglementation
 
@@ -133,16 +132,15 @@ def test_n_est_pas_suffisamment_qualifiee_car_groupe_mais_sans_effectif_groupe_f
         CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
     ],
 )
-def test_calcule_statut_moins_de_5000_employes(effectif, entreprise_factory, alice):
+def test_calcule_statut_moins_de_5000_employes(effectif, entreprise_factory):
     entreprise = entreprise_factory(
         categorie_juridique_sirene=CODE_SA,
         effectif=effectif,
         appartient_groupe=False,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = PlanVigilanceReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -162,7 +160,7 @@ def test_calcule_statut_moins_de_5000_employes(effectif, entreprise_factory, ali
     ],
 )
 def test_calcule_statut_societe_mere_francaise_moins_de_5000_employes_dans_le_groupe(
-    effectif_groupe, entreprise_factory, alice
+    effectif_groupe, entreprise_factory
 ):
     entreprise = entreprise_factory(
         categorie_juridique_sirene=CODE_SA,
@@ -173,10 +171,9 @@ def test_calcule_statut_societe_mere_francaise_moins_de_5000_employes_dans_le_gr
         effectif_groupe=effectif_groupe,
         effectif_groupe_france=effectif_groupe,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = PlanVigilanceReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -186,16 +183,15 @@ def test_calcule_statut_societe_mere_francaise_moins_de_5000_employes_dans_le_gr
     assert not reglementation.primary_action
 
 
-def test_calcule_statut_autre_statut_juridique(entreprise_factory, alice):
+def test_calcule_statut_autre_statut_juridique(entreprise_factory):
     entreprise = entreprise_factory(
         categorie_juridique_sirene=CODE_AUTRE,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         appartient_groupe=False,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = PlanVigilanceReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -216,16 +212,15 @@ def test_calcule_statut_autre_statut_juridique(entreprise_factory, alice):
     ],
 )
 def test_critere_categorie_juridique_si_categorie_juridique_SA_SCA_ou_SE(
-    categorie_juridique_sirene, entreprise_factory, alice
+    categorie_juridique_sirene, entreprise_factory
 ):
     entreprise = entreprise_factory(
         categorie_juridique_sirene=categorie_juridique_sirene[0],
         effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = PlanVigilanceReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
@@ -246,16 +241,15 @@ def test_critere_categorie_juridique_si_categorie_juridique_SA_SCA_ou_SE(
     ],
 )
 def test_calcule_statut_plus_de_5000_employes_dans_l_entreprise(
-    effectif, entreprise_factory, alice
+    effectif, entreprise_factory
 ):
     entreprise = entreprise_factory(
         effectif=effectif,
         categorie_juridique_sirene=CODE_SA,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = PlanVigilanceReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
@@ -276,7 +270,7 @@ def test_calcule_statut_plus_de_5000_employes_dans_l_entreprise(
     ],
 )
 def test_calcule_statut_societe_mere_francaise_plus_de_5000_employes_dans_le_groupe_france(
-    effectif_groupe_france, entreprise_factory, alice
+    effectif_groupe_france, entreprise_factory
 ):
     entreprise = entreprise_factory(
         categorie_juridique_sirene=CODE_SA,
@@ -287,10 +281,9 @@ def test_calcule_statut_societe_mere_francaise_plus_de_5000_employes_dans_le_gro
         effectif_groupe=effectif_groupe_france,
         effectif_groupe_france=effectif_groupe_france,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = PlanVigilanceReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
@@ -311,7 +304,7 @@ def test_calcule_statut_societe_mere_francaise_plus_de_5000_employes_dans_le_gro
     ],
 )
 def test_calcule_statut_societe_mere_etrangere_plus_de_5000_employes_dans_le_groupe_france(
-    effectif_groupe_france, entreprise_factory, alice
+    effectif_groupe_france, entreprise_factory
 ):
     """Cas limite
     Ce cas ne devrait pas exister car une société mère étrangère devrait avoir une catégorie juridique sirene
@@ -329,10 +322,9 @@ def test_calcule_statut_societe_mere_etrangere_plus_de_5000_employes_dans_le_gro
         effectif_groupe=effectif_groupe_france,
         effectif_groupe_france=effectif_groupe_france,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = PlanVigilanceReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -343,7 +335,7 @@ def test_calcule_statut_societe_mere_etrangere_plus_de_5000_employes_dans_le_gro
 
 
 def test_calcule_statut_societe_mere_francaise_moins_de_5000_employes_dans_le_groupe_france_plus_de_10000_employes_dans_le_groupe_international(
-    entreprise_factory, alice
+    entreprise_factory,
 ):
     entreprise = entreprise_factory(
         categorie_juridique_sirene=CODE_SA,
@@ -354,10 +346,9 @@ def test_calcule_statut_societe_mere_francaise_moins_de_5000_employes_dans_le_gr
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         effectif_groupe_france=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = PlanVigilanceReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_SOUMIS
@@ -371,7 +362,7 @@ def test_calcule_statut_societe_mere_francaise_moins_de_5000_employes_dans_le_gr
 
 
 def test_calcule_statut_societe_mere_francaise_moins_de_5000_employes_dans_le_groupe_france_moins_de_10000_employes_dans_le_groupe_international(
-    entreprise_factory, alice
+    entreprise_factory,
 ):
     entreprise = entreprise_factory(
         categorie_juridique_sirene=CODE_SA,
@@ -382,10 +373,9 @@ def test_calcule_statut_societe_mere_francaise_moins_de_5000_employes_dans_le_gr
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
         effectif_groupe_france=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = PlanVigilanceReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS
@@ -395,7 +385,7 @@ def test_calcule_statut_societe_mere_francaise_moins_de_5000_employes_dans_le_gr
     assert not reglementation.primary_action
 
 
-def test_calcule_statut_filiale_du_groupe(entreprise_factory, alice):
+def test_calcule_statut_filiale_du_groupe(entreprise_factory):
     entreprise = entreprise_factory(
         categorie_juridique_sirene=CODE_SA,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
@@ -405,10 +395,9 @@ def test_calcule_statut_filiale_du_groupe(entreprise_factory, alice):
         effectif_groupe=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         effectif_groupe_france=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
     reglementation = PlanVigilanceReglementation.calculate_status(
-        entreprise.dernieres_caracteristiques_qualifiantes, alice
+        entreprise.dernieres_caracteristiques_qualifiantes
     )
 
     assert reglementation.status == ReglementationStatus.STATUS_NON_SOUMIS

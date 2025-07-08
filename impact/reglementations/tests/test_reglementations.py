@@ -2,15 +2,14 @@ import html
 from datetime import timedelta
 
 import pytest
-from django.contrib.auth.models import AnonymousUser
 from django.contrib.messages import WARNING
 from django.urls import reverse
 from freezegun import freeze_time
 
 from entreprises.models import CaracteristiquesAnnuelles
+from habilitations.models import Habilitation
 from reglementations.utils import VSMEReglementation
 from reglementations.views import REGLEMENTATIONS
-from habilitations.models import Habilitation
 from reglementations.views.base import InsuffisammentQualifieeError
 from reglementations.views.base import ReglementationStatus
 
@@ -25,7 +24,7 @@ def test_les_reglementations_obligatoires_levent_une_exception_si_les_caracteris
         if reglementation not in REGLEMENTATIONS_RECOMMANDEES:
             with pytest.raises(InsuffisammentQualifieeError):
                 reglementation.est_soumis(caracteristiques)
-            status = reglementation.calculate_status(caracteristiques, AnonymousUser())
+            status = reglementation.calculate_status(caracteristiques)
             assert status.status == ReglementationStatus.STATUS_INCALCULABLE
 
 
@@ -80,7 +79,7 @@ def test_tableau_de_bord_avec_utilisateur_authentifié(client, entreprise):
             reglementation["reglementation"] for reglementation in reglementations
         ].index(REGLEMENTATION)
         assert reglementations[index]["status"] == REGLEMENTATION.calculate_status(
-            entreprise.dernieres_caracteristiques_qualifiantes, entreprise.users.first()
+            entreprise.dernieres_caracteristiques_qualifiantes
         )
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content

@@ -3,8 +3,6 @@ from abc import abstractmethod
 from dataclasses import dataclass
 from dataclasses import field
 
-from django.conf import settings
-
 from entreprises.models import CaracteristiquesAnnuelles
 
 
@@ -73,7 +71,6 @@ class Reglementation(ABC):
     def calculate_status(
         cls,
         caracteristiques: CaracteristiquesAnnuelles,
-        user: settings.AUTH_USER_MODEL,
     ) -> ReglementationStatus:
         if not cls.est_suffisamment_qualifiee(caracteristiques):
             primary_action = ReglementationAction(

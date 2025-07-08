@@ -305,9 +305,8 @@ class CSRDReglementation(Reglementation):
     def calculate_status(
         cls,
         caracteristiques: CaracteristiquesAnnuelles,
-        user: settings.AUTH_USER_MODEL,
     ) -> ReglementationStatus:
-        if reglementation_status := super().calculate_status(caracteristiques, user):
+        if reglementation_status := super().calculate_status(caracteristiques):
             return reglementation_status
 
         try:

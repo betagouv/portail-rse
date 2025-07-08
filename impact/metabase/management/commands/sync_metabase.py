@@ -212,7 +212,7 @@ class Command(BaseCommand):
             return
         if est_soumise:
             portail_rse_status = BDESEReglementation.calculate_status(
-                caracteristiques, entreprise.users.first()
+                caracteristiques
             ).status
             statut = self._convertit_portail_rse_status_en_statut_metabase(
                 portail_rse_status
@@ -236,7 +236,7 @@ class Command(BaseCommand):
             return
         if est_soumise:
             portail_rse_status = IndexEgaproReglementation.calculate_status(
-                caracteristiques, entreprise.users.first()
+                caracteristiques
             ).status
             statut = self._convertit_portail_rse_status_en_statut_metabase(
                 portail_rse_status
@@ -257,7 +257,7 @@ class Command(BaseCommand):
             return
         if est_soumise:
             portail_rse_status = BGESReglementation.calculate_status(
-                caracteristiques, entreprise.users.first()
+                caracteristiques
             ).status
             statut = self._convertit_portail_rse_status_en_statut_metabase(
                 portail_rse_status
