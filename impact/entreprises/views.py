@@ -2,6 +2,7 @@ from datetime import date
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import BadRequest
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
@@ -219,7 +220,10 @@ def recherche_entreprise(request):
     nombre_resultats = 0
     entreprises = []
     erreur_recherche_entreprise = None
-    recherche = request.GET.get("recherche")
+    try:
+        recherche = request.GET["recherche"]
+    except KeyError:
+        raise BadRequest()
     if recherche == SIREN_ENTREPRISE_TEST:
         nombre_resultats = 1
         entreprises = [
