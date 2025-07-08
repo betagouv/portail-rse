@@ -1,6 +1,5 @@
 import json
 import os
-import warnings
 from uuid import uuid4
 
 import django.db.models as models
@@ -23,9 +22,11 @@ class RapportCSRDQuerySet(models.QuerySet):
         return self.filter(annee=annee)
 
     def officiels(self):
+        # à supprimer une fois les documents personnels supprimés de la bdd
         return self.filter(proprietaire=None)
 
     def personnels(self):
+        # à supprimer une fois les documents personnels supprimés de la bdd
         return self.exclude(proprietaire=None)
 
     def publies(self):
@@ -43,7 +44,7 @@ class RapportCSRD(TimestampedModel):
         null=True,
         on_delete=models.SET_NULL,
         verbose_name="propriétaire rapport CSRD personnel",
-    )
+    )  # à supprimer une fois les documents personnels supprimés de la bdd
     annee = models.PositiveIntegerField(
         verbose_name="année du rapport CSRD", validators=[MinValueValidator(2024)]
     )
@@ -64,7 +65,9 @@ class RapportCSRD(TimestampedModel):
 
     class Meta:
         verbose_name = "rapport CSRD"
-        unique_together = [["annee", "entreprise", "proprietaire"]]
+        unique_together = [
+            ["annee", "entreprise", "proprietaire"]
+        ]  # à supprimer une fois les documents personnels supprimés de la bdd
         indexes = [models.Index(fields=["annee"])]
 
     def __str__(self):
@@ -102,6 +105,9 @@ class RapportCSRD(TimestampedModel):
         return tmp_enjeux
 
     def clean(self):
+        # à supprimer une fois les documents personnels supprimés de la bdd
+        # à remplacer par une contrainte d'unicité sur l'année et l'entreprise
+
         # La vérification du rapport officiel pourrait être faite par une contrainte (complexe)
         # en base de données, mais le fait d'utiliser une validation métier vérifiable
         # à tout moment est plus simple et plus lisible.
@@ -300,16 +306,6 @@ class Enjeu(TimestampedModel):
 
     def __str__(self):
         return self.nom
-
-
-def rapport_csrd_officiel(entreprise):  # ajouter l'année ?
-    return RapportCSRD.objects.filter(entreprise=entreprise).first()
-
-
-def rapport_csrd_personnel(entreprise, proprietaire):  # ajouter l'année ?
-    return RapportCSRD.objects.filter(
-        entreprise=entreprise, proprietaire=proprietaire
-    ).first()
 
 
 def select_storage():

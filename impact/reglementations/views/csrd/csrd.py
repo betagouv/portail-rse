@@ -507,7 +507,7 @@ def rapport_csrd(entreprise, annee):
     """
     return RapportCSRD.objects.get(
         entreprise=entreprise,
-        proprietaire=None,
+        proprietaire=None,  # à supprimer une fois les documents personnels supprimés de la bdd
         annee=annee,
     )
 
@@ -576,14 +576,16 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
                 "enjeux", "enjeux__parent"
             ).get_or_create(
                 entreprise=entreprise,
-                proprietaire=None,  # sera supprimé ultérieurement
+                proprietaire=None,  # à supprimer une fois les documents personnels supprimés de la bdd
                 annee=annee,
             )
         else:
             # si l'utilisateur n'est pas propriétaire, il ne peut que consulter
             # ou modifier un rapport existant
             csrd = RapportCSRD.objects.filter(
-                entreprise=entreprise, proprietaire=None, annee=annee
+                entreprise=entreprise,
+                proprietaire=None,  # à supprimer une fois les documents personnels supprimés de la bdd
+                annee=annee,
             )
             if not csrd.exists():
                 # pas de rapport existant créé par un propriétaire :
@@ -606,7 +608,7 @@ def contexte_d_etape(id_etape, csrd, form=None):
     # on récupère les rapports si plusieurs existants, pour permettre une sélection
     rapports_csrd = RapportCSRD.objects.filter(
         entreprise=csrd.entreprise,
-        proprietaire=csrd.proprietaire,
+        proprietaire=csrd.proprietaire,  # à supprimer une fois les documents personnels supprimés de la bdd
     ).order_by("annee")
 
     context = {

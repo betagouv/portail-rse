@@ -6,20 +6,18 @@ from reglementations.models import DocumentAnalyseIA
 from reglementations.models import RapportCSRD
 
 
-def test_impossible_de_creer_plusieurs_rapports_officiels_pour_les_mêmes_entreprise_et_annee(
+def test_impossible_de_creer_plusieurs_rapports_pour_les_mêmes_entreprise_et_annee(
     entreprise_factory, alice
 ):
     entreprise = entreprise_factory()
     RapportCSRD.objects.create(
         entreprise=entreprise,
-        proprietaire=None,  # rapport officiel 2024 sans propriétaire
         annee=2024,
     )
 
     with pytest.raises(ValidationError):
         RapportCSRD.objects.create(
             entreprise=entreprise,
-            proprietaire=None,
             annee=2024,
         )
 
@@ -30,12 +28,10 @@ def test_possible_de_creer_plusieurs_rapports_officiels_pour_des_annees_differen
     entreprise = entreprise_factory()
     RapportCSRD.objects.create(
         entreprise=entreprise,
-        proprietaire=None,  # rapport officiel 2024
         annee=2024,
     )
     RapportCSRD.objects.create(
         entreprise=entreprise,
-        proprietaire=None,  # rapport officiel 2025
         annee=2025,
     )
 
