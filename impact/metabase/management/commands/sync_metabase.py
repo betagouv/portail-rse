@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import BaseCommand
@@ -186,7 +186,7 @@ class Command(BaseCommand):
         self._success("Ajout des habilitations dans Metabase: OK")
 
     def _success(self, message):
-        self.stdout.write(self.style.SUCCESS(message))
+        self.stdout.write(f"{datetime.now()} {self.style.SUCCESS(message)}")
 
     def _insert_reglementations(self):
         self._success("Ajout des réglementations dans Metabase")
