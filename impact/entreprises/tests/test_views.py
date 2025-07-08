@@ -886,6 +886,15 @@ def test_recherche_entreprise_avec_htmx_fragment_renseigné(
     assert reverse(htmx_fragment_view_name) in content
 
 
+def test_recherche_entreprise_sans_parametre_recherche(
+    client, mock_api_recherche_par_nom_ou_siren
+):
+    response = client.get("/entreprises/fragments/recherche-entreprise")
+
+    assert not mock_api_recherche_par_nom_ou_siren.called
+    assert response.status_code == 400
+
+
 def test_preremplissage_siren(client):
     siren = "123456789"
     denomination = "ENTREPRISE"
