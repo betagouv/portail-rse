@@ -4,6 +4,7 @@ from datetime import datetime
 import pytest
 from django.conf import settings
 from django.urls import reverse
+from pytest_django.asserts import assertTemplateNotUsed
 from pytest_django.asserts import assertTemplateUsed
 
 from habilitations.enums import UserRole
@@ -174,3 +175,104 @@ def test_erreur_invitation_a_devenir_membre_car_deja_membre(
         "L'invitation a échoué car cette personne est déjà membre de l'entreprise."
         in content
     )
+
+
+@pytest.mark.parametrize(
+    "role,resultat", ((UserRole.PROPRIETAIRE, True), (UserRole.EDITEUR, False))
+)
+def test_visibilite_formulaire_invitation(
+    client, bob, entreprise_factory, role, resultat
+):
+    entreprise = entreprise_factory()
+    Habilitation.ajouter(entreprise, bob, role=role)
+    client.force_login(bob)
+
+    response = client.get(f"/droits/{entreprise.siren}")
+
+    assert response.status_code == 200
+    (
+        assertTemplateUsed(response, "snippets/formulaire_invitation.html")
+        if resultat
+        else assertTemplateNotUsed(response, "snippets/formulaire_invitation.html")
+    )
+
+
+@pytest.mark.parametrize(
+    "role,resultat", ((UserRole.PROPRIETAIRE, True), (UserRole.EDITEUR, False))
+)
+def test_visibilite_actions(client, bob, alice, entreprise_factory, role, resultat):
+    entreprise = entreprise_factory()
+    Habilitation.ajouter(entreprise, bob, role=role)
+    Habilitation.ajouter(entreprise, alice, role=UserRole.EDITEUR)
+    client.force_login(bob)
+
+    response = client.get(f"/droits/{entreprise.siren}")
+    assert response.status_code == 200
+
+    if resultat:
+        assertTemplateUsed(response, "snippets/modale_modifier_habilitation.html")
+        assertTemplateUsed(response, "snippets/modale_retirer_habilitation.html")
+    else:
+        assertTemplateNotUsed(response, "snippets/modale_modifier_habilitation.html")
+        assertTemplateNotUsed(response, "snippets/modale_retirer_habilitation.html")
+
+
+def test_acces_vues_actions(client, entreprise_factory, alice, bob):
+    # les vues traitant les actions d'habilitation doivent être accessibles aux propriétaires uniquement
+    entreprise = entreprise_factory()
+    h1 = Habilitation.ajouter(entreprise, bob, role=UserRole.PROPRIETAIRE)
+    h2 = Habilitation.ajouter(entreprise, alice, role=UserRole.EDITEUR)
+
+    # La session doit être affectée à une variable pour être utilisable
+    # https://docs.djangoproject.com/en/5.2/topics/testing/tools/#django.test.Client.session
+    session = client.session
+    session["entreprise"] = entreprise.siren
+    session.save()
+
+    # alice ne peut pas accéder aux fonctions de vue pour l'habilitation
+    client.force_login(alice)
+    response = client.post(
+        reverse("habilitations:gerer_habilitation", kwargs={"id": h1.pk}),
+        data={"role": UserRole.PROPRIETAIRE},
+    )
+    assert (
+        response.status_code == 403
+    ), "Cet accès (POST/modification) ne doit pas être autorisé pour Alice"
+
+    response = client.delete(
+        reverse("habilitations:gerer_habilitation", kwargs={"id": h1.pk})
+    )
+    assert (
+        response.status_code == 403
+    ), "Cet accès (DELETE/suppression) ne doit pas être autorisé pour Alice"
+
+    # bob est propriétaire : il doit pouvoir tout faire
+    client.force_login(bob)
+    session = client.session
+    session["entreprise"] = entreprise.siren
+    session.save()
+
+    response = client.get(
+        reverse("habilitations:gerer_habilitation", kwargs={"id": h1.pk})
+    )
+    assert (
+        response.status_code == 405
+    ), "Le type de méthode doit être filtré (POST et DELETE uniquement)"
+
+    response = client.post(
+        reverse("habilitations:gerer_habilitation", kwargs={"id": h2.pk}),
+        data={"role": UserRole.PROPRIETAIRE},
+    )
+    assert (
+        response.status_code == 303
+    ), "Le type de méthode doit être une redirection (303)"
+    assert UserRole.PROPRIETAIRE == Habilitation.role_pour(entreprise, alice)
+
+    response = client.delete(
+        reverse("habilitations:gerer_habilitation", kwargs={"id": h2.pk})
+    )
+    assert (
+        response.status_code == 303
+    ), "Le type de méthode doit être une redirection (303)"
+    with pytest.raises(Habilitation.DoesNotExist):
+        Habilitation.role_pour(entreprise, alice)
