@@ -155,6 +155,12 @@ def _envoie_email_d_invitation(request, invitation):
 @role(UserRole.PROPRIETAIRE)
 def gerer_habilitation(request, id: int):
     habilitation = get_object_or_404(Habilitation, pk=id)
+
+    if habilitation.user.pk == request.user.pk:
+        return HttpResponseBadRequest(
+            "Un utilisateur ne peut pas modifier une de ses habilitations"
+        )
+
     match request.method:
         case "POST":
             habilitation.role = request.POST.get("role")
