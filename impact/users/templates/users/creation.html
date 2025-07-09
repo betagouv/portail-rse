@@ -9,14 +9,14 @@
         <div class="fr-grid-row fr-grid-row--top">
             <div class="fr-col-lg-7 fr-col-12">
                 <h1>Création de compte sur Portail RSE</h1>
-                {% if creation_par_invitation %}
+                {% if invitation %}
                     <p>
                         Vous avez été invité à créer un compte pour collaborer sur les obligations RSE de l'entreprise {{ invitation.entreprise.denomination }}.<br>
                         Créez votre compte pour accéder aux informations communes.
                     </p>
                 {% endif %}
                 <p>Sauf mention contraire “(optionnel)” dans le label, tous les champs sont obligatoires.</p>
-                <form action="{% if creation_par_invitation %}{% url 'users:invitation' invitation.id code %}{% else %}{% url 'users:creation' %}{% endif %}" method="post">
+                <form action="{% if invitation %}{% url 'users:invitation' invitation.id code %}{% else %}{% url 'users:creation' %}{% endif %}" method="post">
                     {% csrf_token %}
 
                     {% include 'snippets/field.html' with field=form.email %}
@@ -26,7 +26,7 @@
                     </div>
                     {% include 'snippets/field.html' with field=form.prenom %}
                     {% include 'snippets/field.html' with field=form.nom %}
-                    {% if not creation_par_invitation %}
+                    {% if not invitation %}
                         {% include 'fragments/siren_field.html' %}
                     {% endif %}
                     {% include 'snippets/field.html' with field=form.fonctions %}

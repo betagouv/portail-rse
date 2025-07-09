@@ -156,7 +156,6 @@ def invitation(request, id_invitation, code):
         "users/creation.html",
         {
             "form": form,
-            "creation_par_invitation": True,
             "invitation": invitation,
             "code": code,
         },
