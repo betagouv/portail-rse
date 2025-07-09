@@ -276,3 +276,18 @@ def test_acces_vues_actions(client, entreprise_factory, alice, bob):
     ), "Le type de méthode doit être une redirection (303)"
     with pytest.raises(Habilitation.DoesNotExist):
         Habilitation.role_pour(entreprise, alice)
+
+
+def test_auto_modification(client, entreprise_factory, bob):
+    # un utilisateur ne peut pas modifier ses habilitations
+    entreprise = entreprise_factory()
+    habilitation = Habilitation.ajouter(entreprise, bob, role=UserRole.PROPRIETAIRE)
+    session = client.session
+    session["entreprise"] = entreprise.siren
+    session.save()
+
+    client.force_login(bob)
+    response = client.delete(
+        reverse("habilitations:gerer_habilitation", kwargs={"id": habilitation.pk})
+    )
+    assert response.status_code == 400, "Bob ne peut pas modifier ses habilitations"
