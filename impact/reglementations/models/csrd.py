@@ -25,6 +25,9 @@ class RapportCSRDQuerySet(models.QuerySet):
         return self.exclude(lien_rapport="")
 
 
+# Pour des raisons historiques (ADR 2023-03-01 Habilitation) il existe toujours en base des rapports personnels appartenant à des propriétaires
+# mais ceux-ci ne sont plus utilisées depuis la fusion des documents personnels et officiels (ADR 2025-06-24 Fusion documents personnels et officiels)
+# Ils pourront être supprimés de la bdd une fois le support éventuel terminé.
 class RapportCSRD(TimestampedModel):
     entreprise = models.ForeignKey(
         "entreprises.Entreprise",
