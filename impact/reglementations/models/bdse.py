@@ -69,9 +69,9 @@ class CategoryField(models.JSONField):
         return super().formfield(**defaults)
 
 
-# Pour des raisons historiques ([ADR 2023-03-01 Habilitation](https://github.com/betagouv/portail-rse/blob/main/doc/ADR/2023-03-01%20Habilitation.md))
-# il existe toujours en base des BDESE personnelles appartenant à des utilisateurs mais celles-ci ne sont plus utilisées depuis la fusion des documents personnels et officiels
-# Elles pourront être supprimées de la base une fois le support éventuel sur la fusion terminé et il n'y aura plus besoin de manager PersonalManager et OfficialManager
+# Pour des raisons historiques (ADR 2023-03-01 Habilitation) il existe toujours en base des BDESE personnelles appartenant à des utilisateurs
+# mais celles-ci ne sont plus utilisées depuis la fusion des documents personnels et officiels (ADR 2025-06-24 Fusion documents personnels et officiels)
+# Elles pourront être supprimées de la bdd une fois le support éventuel terminé et il n'y aura plus besoin de manager PersonalManager et OfficialManager
 class PersonalManager(models.Manager):
     # à supprimer une fois les documents personnels supprimés de la bdd
     def get_queryset(self):
