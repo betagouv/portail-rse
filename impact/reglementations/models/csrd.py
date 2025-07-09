@@ -21,14 +21,6 @@ class RapportCSRDQuerySet(models.QuerySet):
     def annee(self, annee: int):
         return self.filter(annee=annee)
 
-    def officiels(self):
-        # à supprimer une fois les documents personnels supprimés de la bdd
-        return self.filter(proprietaire=None)
-
-    def personnels(self):
-        # à supprimer une fois les documents personnels supprimés de la bdd
-        return self.exclude(proprietaire=None)
-
     def publies(self):
         return self.exclude(lien_rapport="")
 
@@ -161,11 +153,6 @@ class RapportCSRD(TimestampedModel):
             with transaction.atomic():
                 self.enjeux.add(*enjeux, bulk=False)
 
-    def est_officiel(self):
-        # le rapport CSRD n'a un propriétaire que si c'est un rapport personnel
-        # FIXME : à déprécier une fois les habilitations en place
-        return self.pk and not self.proprietaire
-
     def nombre_enjeux_selectionnes_par_esrs(self):
         # Retourne un dictionnaire de tuples contenant le nombre d'enjeux sélectionnés par ESRS pour ce rapport
         # par ex.: {"ESRS_E1": 2, "ESRS_E4": 5, ...}
@@ -193,23 +180,6 @@ class RapportCSRD(TimestampedModel):
 
     def nombre_enjeux_non_selectionnes(self):
         return self.enjeux.filter(selection=False).count()
-
-    def modifiable_par(self, utilisateur: "users.User") -> bool:
-        # Vérifie si le rapport CSRD courant est modifiable par un utilisateur donné.
-        # tip : un utilisateur anonyme n'a pas d'ID
-        # FIXME : à déprécier une fois les habilitations en place
-        return (
-            utilisateur
-            and utilisateur.id
-            and (
-                # l'utilisateur est le propriétaire du rapport (personnel)
-                self.proprietaire == utilisateur
-                # l'utilisateur à une habilitation confirmée pour cette entreprise
-                or utilisateur.habilitation_set.exclude(confirmed_at=None)
-                .filter(entreprise=self.entreprise)
-                .exists()
-            )
-        )
 
     def enjeux_par_esrs(self, esrs):
         qs = self.enjeux.prefetch_related("enfants")
