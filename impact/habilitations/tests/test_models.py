@@ -1,6 +1,7 @@
 import pytest
 
 from habilitations.models import Habilitation
+from habilitations.models import HabilitationError
 from habilitations.models import UserRole
 from invitations.models import Invitation
 
@@ -21,6 +22,13 @@ def test_ajouter_habilitation(alice, entreprise_factory):
 def test_retirer_habilitation(alice, entreprise_factory):
     entreprise = entreprise_factory()
     Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE, "présidente")
+    h = Habilitation.pour(entreprise, alice)
+
+    with pytest.raises(HabilitationError):
+        Habilitation.retirer(entreprise, alice)
+
+    h.role = UserRole.EDITEUR
+    h.save()
     Habilitation.retirer(entreprise, alice)
 
     with pytest.raises(Habilitation.DoesNotExist):

@@ -20,6 +20,10 @@ FONCTIONS_MAX_LENGTH = 250
 logger = logging.getLogger(__name__)
 
 
+class HabilitationError(Exception):
+    pass
+
+
 class HabilitationQueryset(models.QuerySet):
     def parEntreprise(self, entreprise):
         return self.filter(entreprise=entreprise)
@@ -171,6 +175,18 @@ class Habilitation(TimestampedModel):
 
     @classmethod
     def retirer(cls, entreprise, utilisateur):
+        # on vérifie que l'entreprise disposera d'un propriétaire
+        # après le retrait
+        habilitations = cls.objects.parEntreprise(entreprise).parRole(
+            UserRole.PROPRIETAIRE
+        )
+        if habilitations.count() == 1:
+            h = habilitations.first()
+            if h.user == utilisateur:
+                raise HabilitationError(
+                    "L'utilisateur est le dernier propriétaire de l'entreprise et ne peut être supprimé"
+                )
+
         try:
             cls.objects.get(entreprise=entreprise, user=utilisateur).delete()
         except Habilitation.DoesNotExist:
@@ -178,6 +194,9 @@ class Habilitation(TimestampedModel):
                 "Il n'y a pas d'habilitation pour: entreprise=%s, utilisateur=%s",
                 entreprise,
                 utilisateur,
+            )
+            raise HabilitationError(
+                "Aucune habilitation pour cet l'utilisateur dans cette entreprise"
             )
 
     @classmethod

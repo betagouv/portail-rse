@@ -19,6 +19,7 @@ from entreprises.forms import PreremplissageSirenForm
 from entreprises.models import Entreprise
 from entreprises.models import SIREN_ENTREPRISE_TEST
 from habilitations.models import Habilitation
+from habilitations.models import HabilitationError
 from users.forms import message_erreur_proprietaires
 
 
@@ -55,10 +56,13 @@ def index(request):
                         del request.session["entreprise"]
                     messages.success(
                         request,
-                        f"Votre compte n'êtes plus rattaché à l'entreprise {entreprise.denomination}",
+                        f"Votre compte n'est plus rattaché à l'entreprise {entreprise.denomination}",
                     )
                 except ObjectDoesNotExist:
                     messages.error(request, "Impossible de quitter cette entreprise")
+                except HabilitationError as h_err:
+                    messages.error(request, str(h_err))
+
             return redirect("entreprises:entreprises")
 
     return render(request, "entreprises/index.html", {"form": EntrepriseAttachForm()})

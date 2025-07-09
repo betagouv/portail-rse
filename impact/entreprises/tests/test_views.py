@@ -235,9 +235,11 @@ def test_échec_car_déjà_un_propriétaire_présent_sur_l_entreprise(
 
 @pytest.mark.parametrize("is_entreprise_in_session", [True, False])
 def test_detach_from_an_entreprise(
-    is_entreprise_in_session, client, alice, entreprise_factory
+    is_entreprise_in_session, client, alice, bob, entreprise_factory
 ):
     entreprise = entreprise_factory()
+    # Bob est ajouté car il faut toujours un propriétaire restant
+    Habilitation.ajouter(entreprise, bob, fonctions="Vice-président")
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
     session = client.session
@@ -257,7 +259,7 @@ def test_detach_from_an_entreprise(
     assert not Habilitation.objects.parEntreprise(entreprise).parUtilisateur(alice)
     content = html.unescape(response.content.decode("utf-8"))
     assert (
-        f"Votre compte n'êtes plus rattaché à l'entreprise {entreprise.denomination}"
+        f"Votre compte n'est plus rattaché à l'entreprise {entreprise.denomination}"
         in content
     )
 
@@ -909,7 +911,6 @@ def test_preremplissage_siren(client):
 
     assert response.status_code == 200
     assertTemplateUsed(response, "fragments/siren_field.html")
-    context = response.context
     preremplissage_form = response.context["form"]
     assert preremplissage_form["siren"].value() == siren
     assert preremplissage_form["denomination"].value() == denomination
