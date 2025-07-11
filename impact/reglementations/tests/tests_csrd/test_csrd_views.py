@@ -1,5 +1,3 @@
-from datetime import date
-from datetime import datetime
 from io import BytesIO
 
 import pytest
@@ -161,20 +159,14 @@ ETAPES_ENREGISTRABLES = EtapeCSRD.ETAPES_VALIDABLES[:-1]
 
 
 @pytest.mark.parametrize("etape", ETAPES_ENREGISTRABLES)
-def test_enregistrement_de_l_étape_de_la_csrd(etape, client, alice, entreprise_factory):
-    entreprise = entreprise_factory()
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
-    rapport_csrd = RapportCSRD.objects.create(
-        entreprise=entreprise,
-        annee=date.today().year,
-    )
+def test_enregistrement_de_l_étape_de_la_csrd(etape, client, csrd, alice):
     client.force_login(alice)
-    url = "/csrd/{siren}/etape-{etape}".format(siren=entreprise.siren, etape=etape)
+    url = "/csrd/{siren}/etape-{etape}".format(siren=csrd.entreprise.siren, etape=etape)
 
     client.post(url, follow=True)
 
-    rapport_csrd = RapportCSRD.objects.get(entreprise=entreprise)
-    assert rapport_csrd.etape_validee == etape
+    csrd.refresh_from_db()
+    assert csrd.etape_validee == etape
 
 
 @pytest.mark.parametrize("etape", ETAPES_ENREGISTRABLES)
@@ -189,19 +181,10 @@ def test_enregistrement_de_l_étape_de_la_csrd_retourne_une_404_si_aucune_CSRD(
     response = client.post(url, follow=True)
 
     assert response.status_code == 404
-    assert (
-        RapportCSRD.objects.filter(proprietaire=alice, entreprise=entreprise).count()
-        == 0
-    )
+    assert RapportCSRD.objects.filter(entreprise=entreprise).count() == 0
 
 
-def test_visualisation_des_enjeux(client, alice, entreprise_non_qualifiee):
-    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
-    csrd = RapportCSRD.objects.create(
-        proprietaire=alice,
-        entreprise=entreprise_non_qualifiee,
-        annee=f"{datetime.now():%Y}",
-    )
+def test_visualisation_des_enjeux(client, csrd, alice):
     client.force_login(alice)
 
     response = client.get(f"/csrd/fragments/selection_enjeux/{csrd.id}/ESRS_E1", {})
@@ -210,14 +193,8 @@ def test_visualisation_des_enjeux(client, alice, entreprise_non_qualifiee):
     assert "<!-- fragment enjeux -->" in response.content.decode("utf-8")
 
 
-def test_selection_et_deselection_d_enjeux(client, alice, entreprise_non_qualifiee):
+def test_selection_et_deselection_d_enjeux(client, csrd, alice):
     # update : les enjeux sont désormais sélectionnés par défaut
-    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
-    csrd = RapportCSRD.objects.create(
-        proprietaire=alice,
-        entreprise=entreprise_non_qualifiee,
-        annee=f"{datetime.now():%Y}",
-    )
     enjeux = csrd.enjeux.all()
     enjeu_adaptation = enjeux[0]
     enjeu_attenuation = enjeux[1]
@@ -242,13 +219,7 @@ def test_selection_et_deselection_d_enjeux(client, alice, entreprise_non_qualifi
     assert "<!-- fragment esrs -->" in response.content.decode("utf-8")
 
 
-def test_deselection_d_un_enjeu(client, alice, entreprise_non_qualifiee):
-    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
-    csrd = RapportCSRD.objects.create(
-        proprietaire=alice,
-        entreprise=entreprise_non_qualifiee,
-        annee=f"{datetime.now():%Y}",
-    )
+def test_deselection_d_un_enjeu(client, csrd, alice):
     enjeux = csrd.enjeux.all()
     enjeu = enjeux[0]
     enjeu.selection = True
@@ -264,13 +235,7 @@ def test_deselection_d_un_enjeu(client, alice, entreprise_non_qualifiee):
     assert response.status_code == 200
 
 
-def test_liste_des_enjeux_csrd_au_format_xlsx(client, alice, entreprise_non_qualifiee):
-    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
-    csrd = RapportCSRD.objects.create(
-        proprietaire=alice,
-        entreprise=entreprise_non_qualifiee,
-        annee=f"{datetime.now():%Y}",
-    )
+def test_liste_des_enjeux_csrd_au_format_xlsx(client, csrd, alice):
     enjeux = csrd.enjeux.all()
     enjeu_adaptation = enjeux[0]
     enjeu_attenuation = enjeux[1]
@@ -280,7 +245,7 @@ def test_liste_des_enjeux_csrd_au_format_xlsx(client, alice, entreprise_non_qual
     client.force_login(alice)
 
     response = client.get(
-        f"/csrd/{entreprise_non_qualifiee.siren}/enjeux.xlsx",
+        f"/csrd/{csrd.entreprise.siren}/enjeux.xlsx",
     )
 
     assert (
@@ -326,13 +291,7 @@ def test_liste_des_enjeux_csrd_au_format_xlsx_retourne_une_404_si_csrd_inexistan
     assert response.status_code == 404
 
 
-def test_liste_des_enjeux_csrd(client, alice, entreprise_non_qualifiee):
-    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
-    csrd = RapportCSRD.objects.create(
-        proprietaire=alice,
-        entreprise=entreprise_non_qualifiee,
-        annee=f"{datetime.now():%Y}",
-    )
+def test_liste_des_enjeux_csrd(client, csrd, alice):
     enjeux = csrd.enjeux.all()
 
     enjeu_attenuation = enjeux[1]
@@ -363,15 +322,7 @@ def test_liste_des_enjeux_csrd(client, alice, entreprise_non_qualifiee):
     )
 
 
-def test_datapoints_pour_enjeux_materiels_au_format_xlsx(
-    client, alice, entreprise_non_qualifiee
-):
-    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
-    csrd = RapportCSRD.objects.create(
-        proprietaire=alice,
-        entreprise=entreprise_non_qualifiee,
-        annee=f"{datetime.now():%Y}",
-    )
+def test_datapoints_pour_enjeux_materiels_au_format_xlsx(client, csrd, alice):
     enjeux = csrd.enjeux.all()
     enjeu_attenuation = enjeux[1]
     enjeu_attenuation.selection = True
@@ -381,7 +332,7 @@ def test_datapoints_pour_enjeux_materiels_au_format_xlsx(
     client.force_login(alice)
 
     response = client.get(
-        f"/csrd/{entreprise_non_qualifiee.siren}/datapoints.xlsx",
+        f"/csrd/{csrd.entreprise.siren}/datapoints.xlsx",
     )
 
     assert (
@@ -397,15 +348,7 @@ def test_datapoints_pour_enjeux_materiels_au_format_xlsx(
     assert "ESRS G1" not in noms_onglet
 
 
-def test_datapoints_pour_enjeux_non_materiels_au_format_xlsx(
-    client, alice, entreprise_non_qualifiee
-):
-    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
-    csrd = RapportCSRD.objects.create(
-        proprietaire=alice,
-        entreprise=entreprise_non_qualifiee,
-        annee=f"{datetime.now():%Y}",
-    )
+def test_datapoints_pour_enjeux_non_materiels_au_format_xlsx(client, csrd, alice):
     enjeux = csrd.enjeux.all()
 
     # enjeu de l'ESRS_E1:
@@ -414,7 +357,6 @@ def test_datapoints_pour_enjeux_non_materiels_au_format_xlsx(
     enjeu_attenuation.materiel = True
     enjeu_attenuation.save()
     esrs_materielle = enjeu_attenuation.esrs
-    client.force_login(alice)
 
     # note : les enjeux affichés dans le fichier "non-matériels"
     # doivent au préalable avoir été sélectionnés
@@ -431,8 +373,10 @@ def test_datapoints_pour_enjeux_non_materiels_au_format_xlsx(
         enjeu_esrs_e3.selection = False
         enjeu_esrs_e3.save()
 
+    client.force_login(alice)
+
     response = client.get(
-        f"/csrd/{entreprise_non_qualifiee.siren}/datapoints.xlsx?materiel=false",
+        f"/csrd/{csrd.entreprise.siren}/datapoints.xlsx?materiel=false",
     )
 
     assert (
@@ -496,11 +440,6 @@ def test_le_lien_analyse_d_écart_redirige_vers_l_étape_analyse_d_ecart_de_la_c
 ):
     entreprise = entreprise_factory()
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
-    RapportCSRD.objects.create(
-        entreprise=entreprise,
-        proprietaire=alice,
-        annee=date.today().year,
-    )
     client.force_login(alice)
     url = "/csrd/etape-analyse-ecart"
 

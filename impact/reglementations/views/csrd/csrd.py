@@ -697,7 +697,7 @@ def csrd_required_with_enjeux(function):
             habilitation = request.user.habilitation_set.get(entreprise=entreprise)
             csrd = RapportCSRD.objects.prefetch_related("enjeux", "enjeux__parent").get(
                 entreprise=entreprise,
-                proprietaire=None if habilitation.is_confirmed else request.user,
+                proprietaire=None,  # à supprimer une fois les documents personnels supprimés de la bdd
                 annee=datetime.now().year,
             )
             return function(request, siren, csrd=csrd)
