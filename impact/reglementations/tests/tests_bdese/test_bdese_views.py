@@ -600,7 +600,7 @@ def test_save_bdese_configuration_for_a_new_year(
 
 
 @pytest.mark.parametrize("bdese_class", [BDESE_50_300, BDESE_300])
-def test_initialize_bdese_configuration(bdese_class, bdese_factory, alice):
+def test_initialize_bdese_configuration(bdese_class, bdese_factory):
     bdese_2021 = bdese_factory(bdese_class=bdese_class, annee=2021)
     bdese_2021.categories_professionnelles = ["A", "B", "C"]
     if bdese_class is BDESE_300:
