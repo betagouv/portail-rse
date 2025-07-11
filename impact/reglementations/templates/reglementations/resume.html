@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Tableau de bord - Portail RSE{% endblock %}
+
+{% block content %}
+    <div class="fr-container fr-my-4w">
+        <div class="fr-grid-row">
+            {% include "snippets/tableau_de_bord_menu.html" %}
+
+            <div class="fr-col">
+                <h2>Bienvenue, {{ user.prenom|capfirst }} !</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}

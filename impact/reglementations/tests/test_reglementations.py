@@ -55,10 +55,10 @@ def entreprise(db, alice, entreprise_factory):
     return entreprise
 
 
-def test_tableau_de_bord_avec_utilisateur_authentifié(client, entreprise):
+def test_reglementations_avec_utilisateur_authentifié(client, entreprise):
     client.force_login(entreprise.users.first())
 
-    response = client.get(f"/tableau-de-bord/{entreprise.siren}")
+    response = client.get(f"/tableau-de-bord/{entreprise.siren}/reglementations")
 
     assert response.status_code == 200
 
@@ -85,6 +85,21 @@ def test_tableau_de_bord_avec_utilisateur_authentifié(client, entreprise):
         assert reglementation["status"].status_detail in content
 
 
+def test_reglementations_avec_entreprise_qualifiee_dans_le_passe(
+    client, date_cloture_dernier_exercice, entreprise
+):
+    with freeze_time(date_cloture_dernier_exercice + timedelta(days=367)):
+        client.force_login(entreprise.users.first())
+        response = client.get(f"/tableau-de-bord/{entreprise.siren}/reglementations")
+
+    assert response.status_code == 200
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        f"Les réglementations affichées sont basées sur des informations de l'exercice comptable {date_cloture_dernier_exercice.year}."
+        in content
+    ), content
+
+
 def test_tableau_de_bord_entreprise_non_qualifiee_redirige_vers_la_qualification(
     client, alice, entreprise_non_qualifiee, mock_api_infos_entreprise
 ):
@@ -98,21 +113,6 @@ def test_tableau_de_bord_entreprise_non_qualifiee_redirige_vers_la_qualification
     assert response.status_code == 200
     url = f"/entreprises/{entreprise_non_qualifiee.siren}"
     assert response.redirect_chain == [(url, 302)]
-
-
-def test_tableau_de_bord_entreprise_qualifiee_dans_le_passe(
-    client, date_cloture_dernier_exercice, entreprise
-):
-    with freeze_time(date_cloture_dernier_exercice + timedelta(days=367)):
-        client.force_login(entreprise.users.first())
-        response = client.get(f"/tableau-de-bord/{entreprise.siren}")
-
-    assert response.status_code == 200
-    content = html.unescape(response.content.decode("utf-8"))
-    assert (
-        f"Les réglementations affichées sont basées sur des informations de l'exercice comptable {date_cloture_dernier_exercice.year}."
-        in content
-    ), content
 
 
 def test_tableau_de_bord_sans_siren_redirige_vers_celui_de_l_entreprise_courante(
