@@ -37,11 +37,19 @@ class BDESE_Admin(admin.ModelAdmin):
     list_display = ["entreprise", "annee", "user"]
     list_filter = (("user", admin.EmptyFieldListFilter),)
     search_fields = ("user__email", "entreprise__denomination", "entreprise__siren")
+    raw_id_fields = ("user", "entreprise")
 
 
 @admin.register(RapportCSRD)
 class RapportCSRDAdmin(admin.ModelAdmin):
-    pass
+    list_display = ["entreprise", "annee", "proprietaire"]
+    list_filter = (("proprietaire", admin.EmptyFieldListFilter),)
+    search_fields = (
+        "proprietaire__email",
+        "entreprise__denomination",
+        "entreprise__siren",
+    )
+    raw_id_fields = ("proprietaire", "entreprise")
 
 
 @admin.register(DocumentAnalyseIA)

@@ -99,7 +99,12 @@ class AbstractBDESE(TimestampedModel):
     annee = models.IntegerField()
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name="propriétaire de la BDESE personnelle",
+        help_text="uniquement pour les documents personnels (déprécié)",
     )  # à supprimer une fois les documents personnels supprimés de la bdd
     categories_professionnelles = models.JSONField(
         verbose_name="Catégories professionnelles",
@@ -109,6 +114,7 @@ class AbstractBDESE(TimestampedModel):
     )
     external_fields = models.JSONField(
         default=list,
+        blank=True,
     )
 
     class Meta:
@@ -173,7 +179,10 @@ class BDESEAvecAccord(AbstractBDESE):
         verbose_name = "BDESE avec accord d'entreprise"
         verbose_name_plural = "BDESE avec accord d'entreprise"
 
-    is_complete = models.BooleanField(default=False)
+    is_complete = models.BooleanField(
+        default=False,
+        verbose_name="est marquée comme terminée",
+    )
 
     def toggle_completion(self):
         self.is_complete = not self.is_complete
