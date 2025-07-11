@@ -37,8 +37,10 @@ class RapportCSRD(TimestampedModel):
     proprietaire = models.ForeignKey(
         "users.User",
         null=True,
+        blank=True,
         on_delete=models.SET_NULL,
-        verbose_name="propriétaire rapport CSRD personnel",
+        verbose_name="propriétaire du rapport CSRD personnel",
+        help_text="uniquement pour les documents personnels (déprécié)",
     )  # à supprimer une fois les documents personnels supprimés de la bdd
     annee = models.PositiveIntegerField(
         verbose_name="année du rapport CSRD", validators=[MinValueValidator(2024)]
@@ -47,7 +49,7 @@ class RapportCSRD(TimestampedModel):
         verbose_name="description du rapport CSRD", blank=True
     )
     etape_validee = models.TextField(
-        verbose_name="étape validée du rapport CSRD", null=True
+        verbose_name="étape validée du rapport CSRD", null=True, blank=True
     )
     lien_rapport = models.URLField(
         verbose_name="lien du rapport CSRD publié", blank=True
@@ -298,16 +300,18 @@ class DocumentAnalyseIA(TimestampedModel):
     fichier = models.FileField(storage=select_storage, upload_to=upload_path)
     nom = models.CharField(max_length=255, verbose_name="nom d'origine")
     resultat_json = models.JSONField(
-        null=True, verbose_name="résultat de l'analyse IA au format JSON"
+        null=True, blank=True, verbose_name="résultat de l'analyse IA au format JSON"
     )
     etat = models.CharField(
         max_length=144,
         null=True,
+        blank=True,
         verbose_name="dernier état connu du traitement d'analyse IA envoyé par le serveur IA",
     )
     message = models.CharField(
         max_length=144,
         null=True,
+        blank=True,
         verbose_name="éventuel message précisant l'état envoyé par le serveur IA",
     )
 
