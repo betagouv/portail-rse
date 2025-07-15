@@ -5,6 +5,7 @@ import pytest
 from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
+from habilitations.models import Habilitation
 
 CODE_SA = 5505
 CODE_SA_COOPERATIVE = 5551
@@ -99,6 +100,7 @@ def entreprise_factory(db, date_cloture_dernier_exercice):
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_30M,
         bdese_accord=False,
         systeme_management_energie=False,
+        utilisateur=None,
     ):
         entreprise = Entreprise.objects.create(
             siren=siren,
@@ -131,6 +133,8 @@ def entreprise_factory(db, date_cloture_dernier_exercice):
         )
         caracteristiques = entreprise.actualise_caracteristiques(actualisation)
         caracteristiques.save()
+        if utilisateur:
+            Habilitation.ajouter(entreprise, utilisateur, fonctions="Président·e")
         return entreprise
 
     return create_entreprise
