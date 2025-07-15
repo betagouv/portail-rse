@@ -541,12 +541,12 @@
     border-radius: .5rem;
     padding:.5rem 1rem;
     padding-bottom: 1rem;
-    flex-direction: column;
-    h4 {
+    // flex-direction: column;
+    h2 {
         text-transform: uppercase;
-        font-size: .875rem;
-        font-weight: 700;
-        line-height: 1.5rem;
+        font-size: 1rem;
+        // font-weight: 700;
+        // line-height: 1.5rem;
         margin-bottom:  .5rem;
     }
     .reglementation_detail {
@@ -567,21 +567,21 @@
 
 .dashboard--a-actualiser {
     background-color: var(--background-contrast-error);
-    h4 {
+    h2 {
         color: var(--text-default-error);
     }
 }
 
 .dashboard--en-cours {
     background-color: var(--background-contrast-warning);
-    h4 {
+    h2 {
         color: var(--text-default-warning);
     }
 }
 
 .dashboard--a-jour {
     background-color: var(--background-contrast-green-emeraude);
-    h4 {
+    h2 {
         color: var(--text-label-green-emeraude);
     }
 }

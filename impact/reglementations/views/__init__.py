@@ -128,9 +128,9 @@ def reglementations(request, entreprise_qualifiee):
             "reglementations_a_actualiser": reglementations_a_actualiser,
             "reglementations_en_cours": reglementations_en_cours,
             "reglementations_a_jour": reglementations_a_jour,
-            "reglementations_soumises": reglementations_soumises,
-            "reglementations_non_soumises": reglementations_non_soumises,
-            "reglementations_recommandees": reglementations_recommandees,
+            "autres_reglementations": reglementations_soumises
+            + reglementations_recommandees
+            + reglementations_non_soumises,
         },
     )
 

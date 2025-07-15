@@ -1,0 +1,51 @@
+{% load static %}
+
+<div class="fr-col-12 fr-col-md-4">
+    <div class="fr-card fr-enlarge-link   ">
+        <div class="fr-card__body">
+            <div class="fr-card__content">
+                <h3 class="fr-card__title">
+                    {{ reglementation.title }}
+                    {% if reglementation.zone == "france" %}
+                        <span title="Réglementation Nationale" class="fr-pl-1w">🇫🇷</span>
+                    {% elif reglementation.zone == "europe" %}
+                        <span title="Réglementation Européenne" class="fr-pl-1w">🇪🇺</span>
+                    {% endif %}
+                    <a href="#"></a>
+                </h3>
+                <div class="fr-card__start">
+                    <ul class="fr-badge-group">
+                        {% if status.status == status.STATUS_NON_SOUMIS %}
+                            <li><p class="fr-badge">Non applicable</p></li>
+                        {% elif status.status == status.STATUS_RECOMMANDE %}
+                            <li><p class="fr-badge fr-badge--green-tilleul-verveine">Recommandé</p></li>
+                        {% else %}
+                            <li><p class="fr-badge fr-badge--pink-macaron">Obligatoire</p></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {% if status.prochaine_echeance %}
+                    <div class="fr-card__end">
+                        <p class="fr-text--sm">
+                            <span aria-hidden="true" class="fr-icon-time-fill"></span>
+                            {{ status.prochaine_echeance }}
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="fr-card__header">
+            <div class="fr-card__img">
+                {% if reglementation.tag  == "tag-social" %}
+                    <img class="fr-responsive-img" src="{% static 'img/Social.png' %}" alt="" />
+                {% elif reglementation.tag == "tag-environnement" %}
+                    <img class="fr-responsive-img" src="{% static 'img/Environnement.png' %}" alt="" />
+                {% elif reglementation.tag == "tag-gouvernance" %}
+                    <img class="fr-responsive-img" src="{% static 'img/Gouvernance.png' %}" alt="" />
+                {% elif reglementation.tag == "tag-durabilite" %}
+                    <img class="fr-responsive-img" src="{% static 'img/Durable.png' %}" alt="" />
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

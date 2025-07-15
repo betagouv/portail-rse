@@ -38,6 +38,7 @@ class Reglementation(ABC):
     title: str
     more_info_url: str
     summary: str
+    tag: str
     zone: str = "france"
 
     @classmethod
