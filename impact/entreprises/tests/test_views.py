@@ -13,6 +13,7 @@ from entreprises.models import Entreprise
 from entreprises.models import SIREN_ENTREPRISE_TEST
 from entreprises.views import get_current_entreprise
 from entreprises.views import search_and_create_entreprise
+from habilitations.enums import UserRole
 from habilitations.models import Habilitation
 
 
@@ -324,7 +325,7 @@ def test_page_de_qualification_d_une_entreprise_non_qualifiee_pre_remplit_les_ch
 
     response = client.get(f"/entreprises/{entreprise_non_qualifiee.siren}")
 
-    assert response.status_code == 200
+    assert response.status_code == 200, response.content.decode("utf-8")
     content = response.content.decode("utf-8")
     assert "<!-- page qualification entreprise -->" in content
     mock_api_infos_entreprise.assert_called_once_with(
@@ -720,6 +721,22 @@ def test_qualification_supprime_les_caracteristiques_annuelles_posterieures_a_la
 
     assert not entreprise.caracteristiques_annuelles(date_cloture_dernier_exercice.year)
     assert entreprise.caracteristiques_annuelles(date_cloture_dernier_exercice.year - 1)
+
+
+@pytest.mark.parametrize(
+    "role,statut_reponse", ((UserRole.EDITEUR, 403), (UserRole.PROPRIETAIRE, 200))
+)
+def test_access_qualification_entreprise_par_role(
+    client, alice, entreprise_factory, role, statut_reponse
+):
+    entreprise = entreprise_factory()
+    Habilitation.ajouter(entreprise, alice, role=role)
+    client.force_login(alice)
+
+    url = reverse("entreprises:qualification", kwargs={"siren": entreprise.siren})
+    response = client.get(url, follow=True)
+
+    assert response.status_code == statut_reponse
 
 
 def test_succes_api_search_entreprise(client, mock_api_infos_entreprise):

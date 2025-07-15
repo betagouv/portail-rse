@@ -10,6 +10,7 @@ def role(*required_roles):
     """
     Décorateur pour vérifier que l'utilisateur a une habilitation pour l'entreprise spécifiée
     et que son rôle satisfait au moins un des rôles requis, en tenant compte de la hiérarchie.
+    Note: l'utilisateur doit être rattaché à une entreprise
     """
 
     def decorateur(view_func):

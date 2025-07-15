@@ -18,6 +18,7 @@ from entreprises.forms import EntrepriseQualificationForm
 from entreprises.forms import PreremplissageSirenForm
 from entreprises.models import Entreprise
 from entreprises.models import SIREN_ENTREPRISE_TEST
+from habilitations.enums import UserRole
 from habilitations.models import Habilitation
 from habilitations.models import HabilitationError
 from users.forms import message_erreur_proprietaires
@@ -65,7 +66,9 @@ def index(request):
 
             return redirect("entreprises:entreprises")
 
-    return render(request, "entreprises/index.html", {"form": EntrepriseAttachForm()})
+    context = {"form": EntrepriseAttachForm()}
+
+    return render(request, "entreprises/index.html", context)
 
 
 class _InvalidRequest(Exception):
@@ -140,7 +143,10 @@ def attach(request):
 @login_required
 def qualification(request, siren):
     entreprise = get_object_or_404(Entreprise, siren=siren)
-    if not Habilitation.existe(entreprise, request.user):
+    try:
+        if Habilitation.role_pour(entreprise, request.user) != UserRole.PROPRIETAIRE:
+            raise PermissionDenied
+    except Habilitation.DoesNotExist:
         raise PermissionDenied
 
     if request.POST:
