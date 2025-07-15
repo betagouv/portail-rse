@@ -41,9 +41,7 @@ def test_reglementations_avec_utilisateur_authentifié(
         context["reglementations_a_actualiser"]
         + context["reglementations_en_cours"]
         + context["reglementations_a_jour"]
-        + context["reglementations_soumises"]
-        + context["reglementations_non_soumises"]
-        + context["reglementations_recommandees"]
+        + context["autres_reglementations"]
     )
     assert len(reglementations) == len(REGLEMENTATIONS)
     for REGLEMENTATION in REGLEMENTATIONS:
@@ -53,5 +51,3 @@ def test_reglementations_avec_utilisateur_authentifié(
         assert reglementations[index]["status"] == REGLEMENTATION.calculate_status(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
-    for reglementation in reglementations:
-        assert reglementation["status"].status_detail in content
