@@ -130,7 +130,7 @@ def reglementations(request, siren=None):
         ]
         return render(
             request,
-            "reglementations/tableau_de_bord.html",
+            "reglementations/reglementations.html",
             context={
                 "entreprise": entreprise,
                 "reglementations_a_actualiser": reglementations_a_actualiser,
