@@ -95,7 +95,7 @@ def test_reglementations_avec_entreprise_qualifiee_dans_le_passe(
     assert response.status_code == 200
     content = html.unescape(response.content.decode("utf-8"))
     assert (
-        f"Les réglementations affichées sont basées sur des informations de l'exercice comptable {date_cloture_dernier_exercice.year}."
+        f"Les informations affichées sont basées sur l'exercice comptable {date_cloture_dernier_exercice.year}."
         in content
     ), content
 
