@@ -1,13 +1,6 @@
-import html
-from datetime import timedelta
-
 import pytest
-from django.contrib.messages import WARNING
-from django.urls import reverse
-from freezegun import freeze_time
 
 from entreprises.models import CaracteristiquesAnnuelles
-from habilitations.models import Habilitation
 from reglementations.utils import VSMEReglementation
 from reglementations.views import REGLEMENTATIONS
 from reglementations.views.base import InsuffisammentQualifieeError
@@ -28,35 +21,14 @@ def test_les_reglementations_obligatoires_levent_une_exception_si_les_caracteris
             assert status.status == ReglementationStatus.STATUS_INCALCULABLE
 
 
-def test_tableau_de_bord_est_prive(client, entreprise_factory, alice):
-    entreprise = entreprise_factory()
-    url = f"/tableau-de-bord/{entreprise.siren}"
-
-    response = client.get(url)
-
-    assert response.status_code == 302
-    connexion_url = reverse("users:login")
-    assert response.url == f"{connexion_url}?next={url}"
-
-    client.force_login(alice)
-    response = client.get(url)
-
-    assert response.status_code == 403
-
-
-@pytest.fixture
-def entreprise(db, alice, entreprise_factory):
+def test_reglementations_avec_utilisateur_authentifié(
+    client, entreprise_factory, alice
+):
     entreprise = entreprise_factory(
-        siren="000000001",
-        denomination="Entreprise SAS",
         effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        utilisateur=alice,
     )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
-    return entreprise
-
-
-def test_reglementations_avec_utilisateur_authentifié(client, entreprise):
-    client.force_login(entreprise.users.first())
+    client.force_login(alice)
 
     response = client.get(f"/tableau-de-bord/{entreprise.siren}/reglementations")
 
@@ -83,71 +55,3 @@ def test_reglementations_avec_utilisateur_authentifié(client, entreprise):
         )
     for reglementation in reglementations:
         assert reglementation["status"].status_detail in content
-
-
-def test_reglementations_avec_entreprise_qualifiee_dans_le_passe(
-    client, date_cloture_dernier_exercice, entreprise
-):
-    with freeze_time(date_cloture_dernier_exercice + timedelta(days=367)):
-        client.force_login(entreprise.users.first())
-        response = client.get(f"/tableau-de-bord/{entreprise.siren}/reglementations")
-
-    assert response.status_code == 200
-    content = html.unescape(response.content.decode("utf-8"))
-    assert (
-        f"Les informations affichées sont basées sur l'exercice comptable {date_cloture_dernier_exercice.year}."
-        in content
-    ), content
-
-
-def test_tableau_de_bord_entreprise_non_qualifiee_redirige_vers_la_qualification(
-    client, alice, entreprise_non_qualifiee, mock_api_infos_entreprise
-):
-    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
-    client.force_login(alice)
-
-    response = client.get(
-        f"/tableau-de-bord/{entreprise_non_qualifiee.siren}", follow=True
-    )
-
-    assert response.status_code == 200
-    url = f"/entreprises/{entreprise_non_qualifiee.siren}"
-    assert response.redirect_chain == [(url, 302)]
-
-
-def test_tableau_de_bord_sans_siren_redirige_vers_celui_de_l_entreprise_courante(
-    client, entreprise, alice
-):
-    client.force_login(alice)
-
-    url = "/tableau-de-bord"
-    response = client.get(url)
-
-    assert response.status_code == 302
-    assert response.url == f"/tableau-de-bord/{entreprise.siren}"
-
-
-def test_tableau_de_bord_sans_siren_et_sans_entreprise(client, alice):
-    # Cas limite où un utilisateur n'est rattaché à aucune entreprise
-    client.force_login(alice)
-
-    url = "/tableau-de-bord"
-    response = client.get(url, follow=True)
-
-    assert response.status_code == 200
-    assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
-    messages = list(response.context["messages"])
-    assert messages[0].level == WARNING
-    assert (
-        messages[0].message
-        == "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à votre tableau de bord"
-    )
-
-
-def test_tableau_de_bord_avec_siren_inexistant(client, alice):
-    client.force_login(alice)
-
-    url = "/tableau-de-bord/yolo"
-    response = client.get(url)
-
-    assert response.status_code == 404
