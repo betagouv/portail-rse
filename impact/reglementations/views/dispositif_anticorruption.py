@@ -4,6 +4,7 @@ from reglementations.views.base import ReglementationStatus
 
 
 class DispositifAntiCorruption(Reglementation):
+    id = "dispositif-anti-corruption"
     title = "Dispositif anti-corruption"
     more_info_url = "https://portail-rse.beta.gouv.fr/fiches-reglementaires/dispositif-anti-corruption/"
     tag = "tag-gouvernance"

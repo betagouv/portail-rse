@@ -38,6 +38,7 @@ class BDESEReglementation(Reglementation):
     TYPE_INFERIEUR_500 = 3
     TYPE_SUPERIEUR_500 = 4
 
+    id = "bdese"
     title = "Base de données économiques, sociales et environnementales (BDESE)"
     more_info_url = "https://portail-rse.beta.gouv.fr/fiches-reglementaires/base-de-donnees-economiques-sociales-et-environnementales/"
     tag = "tag-social"

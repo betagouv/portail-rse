@@ -11,7 +11,7 @@
                     {% elif reglementation.zone == "europe" %}
                         <span title="Réglementation Européenne" class="fr-pl-1w">🇪🇺</span>
                     {% endif %}
-                    <a href="#"></a>
+                    <a href="{% url 'reglementations:reglementation' entreprise.siren reglementation.id %}"></a>
                 </h3>
                 <div class="fr-card__start">
                     <ul class="fr-badge-group">

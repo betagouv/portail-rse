@@ -9,6 +9,7 @@ from reglementations.views.base import ReglementationStatus
 
 
 class IndexEgaproReglementation(Reglementation):
+    id = "index-egalite-professionnelle"
     title = "Index de l’égalité professionnelle"
     more_info_url = "https://portail-rse.beta.gouv.fr/fiches-reglementaires/index-egalite-professionnelle/"
     tag = "tag-social"

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}{{ reglementation.title }} - Portail RSE{% endblock %}
+
+{% block content %}
+    <div class="fr-container fr-my-4w">
+        <div class="fr-grid-row">
+            {% include "snippets/tableau_de_bord_menu.html" %}
+
+            <div class="fr-col">
+                <h2>
+                    {{ reglementation.title }}
+                    {% if reglementation.zone == "france" %}
+                        <span title="Réglementation Nationale" class="fr-pl-1w">🇫🇷</span>
+                    {% elif reglementation.zone == "europe" %}
+                        <span title="Réglementation Européenne" class="fr-pl-1w">🇪🇺</span>
+                    {% endif %}
+                </h2>
+
+                <div role="alert" class="fr-alert fr-alert--info">
+                    <p>{{ status.status_detail }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

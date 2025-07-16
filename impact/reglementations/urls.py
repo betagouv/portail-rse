@@ -21,6 +21,11 @@ urlpatterns = [
         name="reglementations",
     ),
     path(
+        "tableau-de-bord/<str:siren>/reglementations/<str:id_reglementation>",
+        views.reglementation,
+        name="reglementation",
+    ),
+    path(
         "bdese/<str:siren>/<int:annee>/<int:step>",
         views.bdese.bdese_step,
         name="bdese_step",

@@ -9,6 +9,7 @@ from reglementations.views.base import ReglementationStatus
 
 
 class BGESReglementation(Reglementation):
+    id = "beges-et-plan-de-transition"
     title = "BEGES et Plan de Transition"
     more_info_url = "https://portail-rse.beta.gouv.fr/fiches-reglementaires/bilan-eges-et-plan-de-transition/"
     tag = "tag-environnement"
