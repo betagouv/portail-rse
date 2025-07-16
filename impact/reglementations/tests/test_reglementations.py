@@ -1,5 +1,6 @@
 import pytest
 
+import reglementations.views  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
 from reglementations.utils import VSMEReglementation
 from reglementations.views import REGLEMENTATIONS
