@@ -1,7 +1,9 @@
 from datetime import date
+from time import time
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import BaseCommand
+from django.db import transaction
 from django.db.models import Count
 
 from entreprises.models import CaracteristiquesAnnuelles
@@ -23,6 +25,14 @@ from reglementations.views.bges import BGESReglementation
 from reglementations.views.index_egapro import IndexEgaproReglementation
 from users.models import User as PortailRSEUtilisateur
 
+def mesure(fonction):
+    def wrapper(*args, **kwargs):
+        start_time = time()
+        resultat = fonction(*args, **kwargs)
+        end_time = time()
+        print(f"Temps d'exécution de {fonction.__name__} : {end_time - start_time} secondes")
+        return resultat
+    return wrapper
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
@@ -44,8 +54,14 @@ class Command(BaseCommand):
         MetabaseInvitation.objects.all().delete()
         self._success("Suppression des invitations de Metabase: OK")
 
+# entreprises :
+# transactions : 151 secs
+# tx + bulk : 61 secs  
+
+    @mesure
     def _insert_entreprises(self):
         self._success("Ajout des entreprises dans Metabase")
+        bulk = []
         for entreprise in PortailRSEEntreprise.objects.annotate(
             nombre_utilisateurs=Count("users")
         ):
@@ -53,7 +69,8 @@ class Command(BaseCommand):
                 entreprise.dernieres_caracteristiques_qualifiantes
                 or entreprise.dernieres_caracteristiques
             )
-            MetabaseEntreprise.objects.create(
+            me_entreprise = MetabaseEntreprise(
+            # MetabaseEntreprise.objects.create(
                 impact_id=entreprise.pk,
                 ajoutee_le=entreprise.created_at,
                 modifiee_le=_last_update(entreprise),
@@ -82,8 +99,8 @@ class Command(BaseCommand):
                     if caracteristiques
                     else None
                 ),
-                effectif_outre_mer=(
-                    caracteristiques.effectif_outre_mer if caracteristiques else None
+            effectif_outre_mer=(
+                caracteristiques.effectif_outre_mer if caracteristiques else None
                 ),
                 effectif_groupe=(
                     caracteristiques.effectif_groupe if caracteristiques else None
@@ -121,15 +138,25 @@ class Command(BaseCommand):
                 ),
                 nombre_utilisateurs=entreprise.nombre_utilisateurs,
             )
-            self._success(str(entreprise))
+            # self._success(str(entreprise))
+            bulk.append(me_entreprise)
+
+        with transaction.atomic():
+            MetabaseEntreprise.objects.bulk_create(bulk)        
+        
         self._success("Ajout des entreprises dans Metabase: OK")
 
+    # utilisateurs : 23 secs
+    # bulk + tx : 0.8 sec
+    @mesure
     def _insert_utilisateurs(self):
         self._success("Ajout des utilisateurs dans Metabase")
+        bulk=[]
         for utilisateur in PortailRSEUtilisateur.objects.annotate(
             nombre_entreprises=Count("entreprise")
         ):
-            MetabaseUtilisateur.objects.create(
+            mb_utilisateur = MetabaseUtilisateur(
+            # MetabaseUtilisateur.objects.create(
                 impact_id=utilisateur.pk,
                 ajoute_le=utilisateur.created_at,
                 modifie_le=utilisateur.updated_at,
@@ -138,13 +165,19 @@ class Command(BaseCommand):
                 email_confirme=utilisateur.is_email_confirmed,
                 nombre_entreprises=utilisateur.nombre_entreprises,
             )
-            self._success(str(utilisateur.pk))
+            # self._success(str(utilisateur.pk))
+            bulk.append(mb_utilisateur)
+        MetabaseUtilisateur.objects.bulk_create(bulk)    
         self._success("Ajout des utilisateurs dans Metabase: OK")
 
+    # invitations : 
+    # bulk + tx : 
+    @mesure
     def _insert_invitations(self):
         self._success("Ajout des invitations dans Metabase")
-        for invitation in PortailRSEInvitation.objects.all():
-            MetabaseInvitation.objects.create(
+        bulk=[]
+        for invitation in PortailRSEInvitation.objects.all().select_related("entreprise"):
+            mb_invitation = MetabaseInvitation(
                 impact_id=invitation.pk,
                 ajoutee_le=invitation.created_at,
                 modifiee_le=invitation.updated_at,
@@ -159,12 +192,21 @@ class Command(BaseCommand):
                 role=invitation.role,
                 date_acceptation=invitation.date_acceptation,
             )
+            bulk.append(mb_invitation)
 
+        with transaction.atomic():
+            MetabaseInvitation.objects.bulk_create(bulk)
+
+        self._success("Ajout des invitations dans Metabase: OK")
+
+    # habilitations : 
+    @mesure         
     def _insert_habilitations(self):
         self._success("Ajout des habilitations dans Metabase")
+        bulk=[]
         for habilitation in PortailRSEHabilitation.objects.all():
             # https://docs.djangoproject.com/fr/4.2/topics/db/optimization/#use-foreign-key-values-directly
-            meta_h = MetabaseHabilitation.objects.create(
+            meta_h = MetabaseHabilitation(
                 impact_id=habilitation.pk,
                 ajoutee_le=habilitation.created_at,
                 modifiee_le=habilitation.updated_at,
@@ -182,12 +224,18 @@ class Command(BaseCommand):
                     else None
                 ),
             )
-            self._success(str(habilitation.pk))
+            bulk.append(meta_h)
+            # self._success(str(habilitation.pk))
+
+        with transaction.atomic():
+            MetabaseHabilitation.objects.bulk_create(bulk)
+
         self._success("Ajout des habilitations dans Metabase: OK")
 
     def _success(self, message):
         self.stdout.write(self.style.SUCCESS(message))
 
+    @mesure
     def _insert_reglementations(self):
         self._success("Ajout des réglementations dans Metabase")
         for entreprise in PortailRSEEntreprise.objects.filter(
@@ -280,6 +328,7 @@ class Command(BaseCommand):
             statut = MetabaseBDESE.STATUT_A_JOUR
         return statut
 
+    @mesure
     def _insert_stats(self):
         self._success("Ajout des stats dans Metabase")
         bdese_statut_connu = (
