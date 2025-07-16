@@ -5,6 +5,7 @@ from reglementations.views.base import ReglementationStatus
 
 
 class AuditEnergetiqueReglementation(Reglementation):
+    id = "audit-energetique"
     title = "Audit énergétique"
     more_info_url = (
         "https://portail-rse.beta.gouv.fr/fiches-reglementaires/audit-energetique/"

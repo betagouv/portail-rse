@@ -22,11 +22,9 @@ def test_les_reglementations_obligatoires_levent_une_exception_si_les_caracteris
             assert status.status == ReglementationStatus.STATUS_INCALCULABLE
 
 
-def test_reglementations_avec_utilisateur_authentifié(
-    client, entreprise_factory, alice
-):
+def test_reglementations(client, entreprise_factory, alice):
     entreprise = entreprise_factory(
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,  # entreprise soumise à au moins une réglementation
         utilisateur=alice,
     )
     client.force_login(alice)
@@ -35,7 +33,6 @@ def test_reglementations_avec_utilisateur_authentifié(
 
     assert response.status_code == 200
 
-    content = response.content.decode("utf-8")
     context = response.context
     assert context["entreprise"] == entreprise
     reglementations = (
@@ -52,3 +49,34 @@ def test_reglementations_avec_utilisateur_authentifié(
         assert reglementations[index]["status"] == REGLEMENTATION.calculate_status(
             entreprise.dernieres_caracteristiques_qualifiantes
         )
+
+
+@pytest.mark.parametrize("reglementation", REGLEMENTATIONS)
+def test_reglementation(reglementation, client, entreprise_factory, alice):
+    entreprise = entreprise_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,  # entreprise soumise à au moins une réglementation
+        utilisateur=alice,
+    )
+    status = reglementation.calculate_status(
+        entreprise.dernieres_caracteristiques_qualifiantes
+    )
+    client.force_login(alice)
+
+    response = client.get(
+        f"/tableau-de-bord/{entreprise.siren}/reglementations/{reglementation.id}"
+    )
+
+    assert response.status_code == 200
+    context = response.context
+    assert context["entreprise"] == entreprise
+    assert context["reglementation"] == reglementation
+    assert context["status"] == status
+
+
+def test_reglementation_inexistante(client, entreprise_factory, alice):
+    entreprise = entreprise_factory(utilisateur=alice)
+    client.force_login(alice)
+
+    response = client.get(f"/tableau-de-bord/{entreprise.siren}/reglementations/yolo")
+
+    assert response.status_code == 404
