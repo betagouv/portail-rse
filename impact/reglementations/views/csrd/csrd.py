@@ -40,6 +40,7 @@ from reglementations.views.base import ReglementationStatus
 
 
 class CSRDReglementation(Reglementation):
+    id = "csrd"
     title = "Rapport de Durabilité - CSRD"
     more_info_url = "https://portail-rse.beta.gouv.fr/fiches-reglementaires/rapport-de-durabilite-csrd/"
     tag = "tag-durabilite"

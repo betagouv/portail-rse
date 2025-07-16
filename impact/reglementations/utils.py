@@ -22,6 +22,7 @@ utils:
 
 # TODO: à complèter et adapter après discussion
 class VSMEReglementation(Reglementation):
+    id = "vsme"
     title = "Standard volontaire européen - VSME"
     more_info_url = "https://portail-rse.beta.gouv.fr/csrd/vsme-pme/"
     tag = "tag-social"

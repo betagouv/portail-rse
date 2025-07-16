@@ -6,6 +6,7 @@ from reglementations.views.base import ReglementationStatus
 
 
 class PlanVigilanceReglementation(Reglementation):
+    id = "plan-de-vigilance"
     title = "Plan de vigilance"
     more_info_url = (
         "https://portail-rse.beta.gouv.fr/fiches-reglementaires/plan-de-vigilance/"

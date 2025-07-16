@@ -35,6 +35,7 @@ class ReglementationStatus:
 
 
 class Reglementation(ABC):
+    id: str
     title: str
     more_info_url: str
     summary: str

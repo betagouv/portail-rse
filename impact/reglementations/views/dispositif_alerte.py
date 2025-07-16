@@ -4,6 +4,7 @@ from reglementations.views.base import ReglementationStatus
 
 
 class DispositifAlerteReglementation(Reglementation):
+    id = "dispositif-dalerte"
     title = "Dispositif d’alerte"
     more_info_url = (
         "https://portail-rse.beta.gouv.fr/fiches-reglementaires/dispositif-dalerte/"
