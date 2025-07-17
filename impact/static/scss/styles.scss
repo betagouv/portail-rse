@@ -86,7 +86,7 @@
     width: fit-content;
 }
 
-/* colored bgs */
+/* background coloré */
 
 .background-light-grey {
     background-color: var(--grey-975-75);
@@ -96,6 +96,12 @@
 }
 .background-green {
     background-color:var(--background-alt-green-bourgeon);
+}
+
+/* texte coloré */
+
+.text-blue {
+    color: var(--text-title-blue-france)
 }
 
 /* utilisé dans la création, simulation, etc. */
