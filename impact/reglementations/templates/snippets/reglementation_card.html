@@ -24,14 +24,15 @@
                         {% endif %}
                     </ul>
                 </div>
-                {% if status.prochaine_echeance %}
-                    <div class="fr-card__end">
+                <div class="fr-card__end">
+                    {% if status.prochaine_echeance %}
                         <p class="fr-text--sm">
                             <span aria-hidden="true" class="fr-icon-time-fill"></span>
                             {{ status.prochaine_echeance }}
                         </p>
-                    </div>
-                {% endif %}
+                    {% endif %}
+                    <p class="fr-card__detail">Mettre à jour cette réglementation</p>
+                </div>
             </div>
         </div>
         <div class="fr-card__header">
