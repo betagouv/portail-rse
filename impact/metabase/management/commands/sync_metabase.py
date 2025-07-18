@@ -9,9 +9,12 @@ from django.db.models import Count
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise as PortailRSEEntreprise
 from habilitations.models import Habilitation as PortailRSEHabilitation
+from reglementations.models.csrd import DocumentAnalyseIA, RapportCSRD
+from reglementations.views.csrd.csrd import CSRDReglementation
 from invitations.models import Invitation as PortailRSEInvitation
 from metabase.models import BDESE as MetabaseBDESE
 from metabase.models import BGES as MetabaseBGES
+from metabase.models import CSRD as MetabaseCSRD
 from metabase.models import Entreprise as MetabaseEntreprise
 from metabase.models import Habilitation as MetabaseHabilitation
 from metabase.models import IndexEgaPro as MetabaseIndexEgaPro
@@ -246,11 +249,49 @@ class Command(BaseCommand):
                 or entreprise.dernieres_caracteristiques
             )
             if caracteristiques:
+                self._insert_csrd(caracteristiques)
                 self._insert_bdese(caracteristiques)
                 self._insert_index_egapro(caracteristiques)
                 self._insert_bges(caracteristiques)
                 self._success(str(entreprise))
         self._success("Ajout des réglementations dans Metabase: OK")
+
+    def _insert_csrd(self, caracteristiques):
+        entreprise = caracteristiques.entreprise
+        try:
+            est_soumise = CSRDReglementation.est_soumis(caracteristiques)
+        except InsuffisammentQualifieeError:
+            return
+        if est_soumise:
+            portail_rse_status = CSRDReglementation.calculate_status(
+                caracteristiques
+            ).status
+            statut = self._convertit_portail_rse_status_en_statut_metabase(
+                portail_rse_status
+            )
+            champs = {
+                    "entreprise": MetabaseEntreprise.objects.get(impact_id=entreprise.id),
+                    "est_soumise": est_soumise,
+                    "statut": statut,
+                      }
+            # spécificités rapport CSRD 
+            if dernier_rapport := RapportCSRD.objects.prefetch_related("enjeux").filter(entreprise_id=entreprise.id).order_by("-annee").first():
+                nb_documents_ia = DocumentAnalyseIA.objects.filter(rapport_csrd=dernier_rapport).count()
+                nb_iro_selectionnes = dernier_rapport.enjeux.exclude(materiel=None).count()
+
+                champs |= {"nb_documents_ia":nb_documents_ia, 
+                           "etape_validee": dernier_rapport.etape_validee, 
+                           "lien_rapport": dernier_rapport.lien_rapport != "", 
+                           "nb_iro_selectionnes": nb_iro_selectionnes,
+                           }
+
+            MetabaseCSRD.objects.create(**champs)
+        else:
+            MetabaseCSRD.objects.create(
+                entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
+                est_soumise=est_soumise,
+            )
+        
 
     def _insert_bdese(self, caracteristiques):
         entreprise = caracteristiques.entreprise
