@@ -2,7 +2,7 @@ from django.db import models
 
 from entreprises.models import DENOMINATION_MAX_LENGTH
 from habilitations.models import FONCTIONS_MAX_LENGTH
-
+from django.contrib.postgres.fields import ArrayField
 
 class Utilisateur(models.Model):
     impact_id = models.BigIntegerField(primary_key=True)
@@ -107,3 +107,10 @@ class Stats(models.Model):
     date = models.DateField(unique=True)
     reglementations_a_jour = models.IntegerField()
     reglementations_statut_connu = models.IntegerField()
+
+
+class CSRD(Reglementation):
+    etape_validee = models.TextField(null=True)
+    nb_documents_ia = models.IntegerField(default=0)
+    nb_iro_selectionnes = models.IntegerField(default=0)
+    lien_rapport = models.BooleanField(default=False)
