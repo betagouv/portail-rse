@@ -77,11 +77,19 @@ def entreprise_qualifiee_requise(function):
 @login_required
 @entreprise_qualifiee_requise
 def tableau_de_bord(request, entreprise_qualifiee):
+    caracteristiques = entreprise_qualifiee.dernieres_caracteristiques_qualifiantes
+    reglementations_applicables = [
+        reglementation
+        for reglementation in REGLEMENTATIONS
+        if reglementation.est_soumis(caracteristiques)
+    ]
+    nombre_reglementations_applicables = len(reglementations_applicables)
     return render(
         request,
         "reglementations/tableau_de_bord/resume.html",
         context={
             "entreprise": entreprise_qualifiee,
+            "nombre_reglementations_applicables": nombre_reglementations_applicables,
         },
     )
 

@@ -63,7 +63,7 @@ def index(request):
                 except HabilitationError as h_err:
                     messages.error(request, str(h_err))
 
-            return redirect("entreprises:entreprises")
+            return redirect("reglementations:tableau_de_bord")
 
     return render(request, "entreprises/index.html", {"form": EntrepriseAttachForm()})
 

@@ -254,7 +254,7 @@ def test_detach_from_an_entreprise(
     session = client.session
     assert "entreprise" not in session
     assert response.status_code == 200
-    assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
+    assert (reverse("reglementations:tableau_de_bord"), 302) in response.redirect_chain
     assert entreprise not in alice.entreprises
     assert not Habilitation.objects.parEntreprise(entreprise).parUtilisateur(alice)
     content = html.unescape(response.content.decode("utf-8"))
@@ -274,7 +274,7 @@ def test_fail_to_detach_without_relation_to_an_entreprise(
     response = client.post("/entreprises", data=data, follow=True)
 
     assert response.status_code == 200
-    assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
+    assert (reverse("reglementations:tableau_de_bord"), 302) in response.redirect_chain
 
 
 def test_fail_to_detach_to_an_entreprise_which_does_not_exist(client, alice):
@@ -284,7 +284,7 @@ def test_fail_to_detach_to_an_entreprise_which_does_not_exist(client, alice):
     response = client.post("/entreprises", data=data, follow=True)
 
     assert response.status_code == 200
-    assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
+    assert (reverse("reglementations:tableau_de_bord"), 302) in response.redirect_chain
 
 
 def test_qualification_page_is_not_public(client, alice, entreprise_non_qualifiee):
