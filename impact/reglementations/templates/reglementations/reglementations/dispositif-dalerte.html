@@ -1,1 +1,12 @@
 {% extends "reglementations/reglementations/base.html" %}
+
+{% block en_savoir_plus %}
+    <h3 class="fr-card__title">
+        <a href={{ reglementation.more_info_url }}>
+            En savoir plus sur le dispositif d'alerte
+        </a>
+    </h3>
+    <p class="fr-card__desc">
+        Le dispositif d'alerte consiste en une procédure interne de recueil et de traitement des signalements effectués par des lanceurs d'alerte.
+    </p>
+{% endblock %}
