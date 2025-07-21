@@ -79,7 +79,7 @@ def entreprise_qualifiee_requise(function):
 def tableau_de_bord(request, entreprise_qualifiee):
     return render(
         request,
-        "reglementations/resume.html",
+        "reglementations/tableau_de_bord/resume.html",
         context={
             "entreprise": entreprise_qualifiee,
         },
@@ -123,7 +123,7 @@ def reglementations(request, entreprise_qualifiee):
     ]
     return render(
         request,
-        "reglementations/reglementations.html",
+        "reglementations/tableau_de_bord/reglementations.html",
         context={
             "entreprise": entreprise_qualifiee,
             "reglementations_a_actualiser": reglementations_a_actualiser,
@@ -161,7 +161,7 @@ def reglementation(request, entreprise_qualifiee, id_reglementation):
     caracteristiques = entreprise_qualifiee.dernieres_caracteristiques_qualifiantes
     status = reglementation.calculate_status(caracteristiques)
 
-    template_name = f"reglementations/reglementations/{id_reglementation}.html"
+    template_name = f"reglementations/tableau_de_bord/{id_reglementation}.html"
     context = {
         "entreprise": entreprise_qualifiee,
         "reglementation": reglementation,
