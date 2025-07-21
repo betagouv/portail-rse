@@ -25,7 +25,7 @@ class VSMEReglementation(Reglementation):
     id = "vsme"
     title = "Standard volontaire européen - VSME"
     more_info_url = "https://portail-rse.beta.gouv.fr/csrd/vsme-pme/"
-    tag = "tag-social"
+    tag = "tag-durabilite"
     summary = ""
     zone = "europe"
 
