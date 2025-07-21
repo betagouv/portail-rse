@@ -1,1 +1,12 @@
 {% extends "reglementations/reglementations/base.html" %}
+
+{% block en_savoir_plus %}
+    <h3 class="fr-card__title">
+        <a href={{ reglementation.more_info_url }}>
+            En savoir plus sur les VSME
+        </a>
+    </h3>
+    <p class="fr-card__desc">
+        Les Voluntary Standard for non-listed micro-, small- and medium-sized undertakings (VSME) sont des normes européennes de reporting de durabilité établies pour aider les micro-entreprises et PME à mieux comprendre et communiquer leur impact environnemental, social et de gouvernance (ESG).
+    </p>
+{% endblock %}

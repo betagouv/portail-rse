@@ -1,1 +1,12 @@
 {% extends "reglementations/reglementations/base.html" %}
+
+{% block en_savoir_plus %}
+    <h3 class="fr-card__title">
+        <a href={{ reglementation.more_info_url }}>
+            En savoir plus sur la CSRD
+        </a>
+    </h3>
+    <p class="fr-card__desc">
+        La Corporate Sustainability Reporting Directive (CSRD) est une directive européenne qui renforce les obligations de publication d'informations en matière de durabilité à l'égard des entreprises.
+    </p>
+{% endblock %}

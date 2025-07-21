@@ -1,1 +1,12 @@
 {% extends "reglementations/reglementations/base.html" %}
+
+{% block en_savoir_plus %}
+    <h3 class="fr-card__title">
+        <a href={{ reglementation.more_info_url }}>
+            En savoir plus sur l'audit énergétique
+        </a>
+    </h3>
+    <p class="fr-card__desc">
+        L’audit énergétique vise à évaluer la performance énergétique de son entreprise.
+    </p>
+{% endblock %}

@@ -1,1 +1,12 @@
 {% extends "reglementations/reglementations/base.html" %}
+
+{% block en_savoir_plus %}
+    <h3 class="fr-card__title">
+        <a href={{ reglementation.more_info_url }}>
+            En savoir plus sur le BEGES
+        </a>
+    </h3>
+    <p class="fr-card__desc">
+        Le BEGES permet de mesurer les émissions de gaz à effet de serre et d'adopter un plan de transition en conséquence.
+    </p>
+{% endblock %}
