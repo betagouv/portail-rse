@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load static %}
+{% load filters %}
 
 {% block title %}Tableau de bord - Portail RSE{% endblock %}
 
@@ -9,6 +11,137 @@
 
             <div class="fr-col">
                 <h2>Bienvenue, {{ user.prenom|capfirst }} !</h2>
+                <p>Prêt à faire progresser votre démarche RSE ?</p>
+
+                <div class="fr-grid-row fr-grid-row--gutters">
+                    <div class="fr-col-12 fr-col-lg-4">
+                        <div class="fr-tile fr-enlarge-link">
+                            <div class="fr-tile__body">
+                                <div class="fr-tile__content">
+                                    <h3 class="fr-tile__title">
+                                        <a href="{% url 'reglementations:reglementations' entreprise.siren %}">
+                                            {{ nombre_reglementations_applicables }}
+                                        </a>
+                                    </h3>
+                                    <p class="fr-tile__desc">réglementation{{ nombre_reglementations_applicables|pluralize }} applicable{{ nombre_reglementations_applicables|pluralize }}</p>
+                                    <p class="fr-tile__detail">Voir mes réglementations</p>
+                                </div>
+                            </div>
+                            <div class="fr-tile__header">
+                                <div class="fr-tile__pictogram">
+                                    <svg aria-hidden="true" class="fr-artwork" viewBox="0 0 80 80" width="80px" height="80px">
+                                        <use class="fr-artwork-decorative" href="{% static 'dsfr' %}/artwork/pictograms/system/information.svg#artwork-decorative"></use>
+                                        <use class="fr-artwork-minor" href="{% static 'dsfr' %}/artwork/pictograms/system/information.svg#artwork-minor"></use>
+                                        <use class="fr-artwork-major" href="{% static 'dsfr' %}/artwork/pictograms/system/information.svg#artwork-major"></use>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fr-col-12 fr-col-lg-8">
+                        <div class="fr-card fr-card--md">
+                            <div class="fr-card__body">
+                                <div class="fr-card__content">
+                                    <h3 class="fr-card__title">
+                                        Profil entreprise
+                                    </h3>
+                                    <div class="fr-card__start">
+                                        <ul class="fr-tags-group">
+                                            <li><p class="fr-tag">{% if entreprise.code_pays_etranger_sirene and entreprise.est_hors_EEE %}Hors Espace Economique Européen{% else %}Espace Economique Européen{% endif %}</p></li>
+                                            {% if entreprise.categorie_juridique and entreprise.categorie_juridique.label %}
+                                                <li><p class="fr-tag">{{ entreprise.categorie_juridique.label }}</p></li>
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+                                    <p class="fr-card__desc">
+                                        {% with caracs=entreprise.dernieres_caracteristiques_qualifiantes|default:entreprise.dernieres_caracteristiques %}
+                                            Code NAF/APE : <b>{{ entreprise.code_NAF }}</b> ({{ entreprise.secteur_principal }})<br>
+                                            Date de clôture du dernier exercice : <b>{{ caracs.date_cloture_exercice | display_field }}</b><br>
+                                            Effectif (au sens du code du travail) : <b>{{ caracs.get_effectif_display | display_field }}</b><br>
+                                            Effectif (au sens du code de la Sécurité Sociale) : <b>{{ caracs.get_effectif_securite_sociale_display | display_field }}</b><br>
+                                            Chiffre d'affaires : <b>{{ caracs.get_tranche_chiffre_affaires_display | display_field }}</b><br>
+                                            Bilan : <b>{{ caracs.get_tranche_bilan_display | display_field }}</b><br>
+                                            {% if entreprise.appartient_groupe %}
+                                                {% if entreprise.est_societe_mere %}
+                                                    <b>Société mère d'un groupe d'entreprise</b><br>
+                                                {% elif entreprise.societe_mere_en_france %}
+                                                    <b>Filiale d'un groupe français</b> <em>dont la société mère est située en France</em><br>
+                                                {% else %}
+                                                    <b>Filiale d'un groupe étranger</b> <em>dont la société mère n'est pas située en France</em><br>
+                                                {% endif %}
+                                                Effectif du groupe international : <b>{{ caracs.get_effectif_groupe_display | display_field }}</b><br>
+                                                Effectif du groupe France : <b>{{ caracs.get_effectif_groupe_france_display | display_field }}</b><br>
+                                                {% if entreprise.comptes_consolides %}
+                                                    Chiffre d'affaires consolidé : <b>{{ caracs.get_tranche_chiffre_affaires_consolide_display | display_field }}</b><br>
+                                                    Bilan consolidé : <b>{{ caracs.get_tranche_bilan_consolide_display | display_field }}</b><br>
+                                                {% endif %}
+                                            {% else %}
+                                                <b>L'entreprise ne fait pas partie d'un groupe d'entreprises</b><br>
+                                            {% endif %}
+                                            {% if entreprise.est_interet_public %}
+                                                <b>L'entreprise est d'intérêt public</b><br>
+                                            {% endif %}
+                                            {% if entreprise.est_cotee %}
+                                                <b>L'entreprise est cotée sur un marché réglementé européen</b><br>
+                                            {% endif %}
+                                            Accord d'entreprise concernant la BDESE : <b>{{ caracs.bdese_accord | display_field }}</b><br>
+                                            Système de management de l'énergie : <b>{{ caracs.systeme_management_energie | display_field }}</b><br>
+                                        {% endwith %}
+                                    </p>
+                                </div>
+                                <div class="fr-card__footer">
+                                    <ul class="fr-btns-group--md fr-btns-group--inline-reverse fr-btns-group--inline-lg">
+                                        <li>
+                                            <a href="{% url 'entreprises:qualification' entreprise.siren %}" class="fr-btn fr-btn--icon-left fr-icon-edit-line">Modifier le profil</a>
+                                        </li>
+                                        <li>
+                                            <button class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-close-circle-line" data-fr-opened="false" aria-controls="modal-detach-{{ entreprise.siren }}">
+                                                Quitter cette entreprise
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <dialog aria-labelledby="modal-detach-{{ entreprise.siren }}-title" id="modal-detach-{{ entreprise.siren }}" class="fr-modal" role="dialog" >
+                            <div class="fr-container fr-container--fluid fr-container-md">
+                                <div class="fr-grid-row fr-grid-row--center">
+                                    <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
+                                        <div class="fr-modal__body">
+                                            <div class="fr-modal__header">
+                                                <button class="fr-link--close fr-link" aria-controls="modal-detach-{{ entreprise.siren }}">Fermer</button>
+                                            </div>
+                                            <div class="fr-modal__content">
+                                                <h1 id="modal-detach-{{ entreprise.siren }}-title" class="fr-modal__title">
+                                                    <span class="fr-fi-arrow-right-line fr-fi--lg"></span>
+                                                    Quitter cette entreprise
+                                                </h1>
+                                                <p>Êtes-vous sûr de vouloir retirer votre compte de l'entreprise {{ entreprise.denomination }} ?</p>
+                                                <p>L'entreprise et ses données éventuelles ne seront pas supprimées mais votre compte utilisateur n'y sera plus rattaché.</p>
+                                            </div>
+                                            <div class="fr-modal__footer">
+                                                <form action="{% url 'entreprises:entreprises' %}" method="post">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="siren" value="{{ entreprise.siren }}">
+                                                    <ul class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
+                                                        <li>
+                                                            <button type="submit" name="action" value="detach" class="fr-btn fr-btn--icon-left fr-icon-close-circle-line">Quitter cette entreprise</button>
+                                                        </li>
+                                                        <li>
+                                                            <button type="button" class="fr-btn fr-btn--secondary" aria-controls="modal-detach-{{ entreprise.siren }}">Annuler</button>
+                                                        </li>
+                                                    </ul>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </dialog>
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
