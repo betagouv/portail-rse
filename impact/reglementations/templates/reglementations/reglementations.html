@@ -16,7 +16,7 @@
                 </p>
 
                 {% if reglementations_a_actualiser %}
-                    <div class="fr-container fr-mb-2w dashboard-category dashboard--a-actualiser">
+                    <div class="fr-container fr-mb-2w dashboard dashboard-category dashboard--a-actualiser">
                         <h2>À mettre à jour</h2>
                         <div class="fr-grid-row fr-grid-row--gutters">
                             {% for reglementation in reglementations_a_actualiser %}
@@ -27,7 +27,7 @@
                 {% endif %}
 
                 {% if reglementations_en_cours %}
-                    <div class="fr-container fr-mb-2w dashboard-category dashboard--en-cours">
+                    <div class="fr-container fr-mb-2w dashboard dashboard-category dashboard--en-cours">
                         <h2>En cours</h2>
                         <div class="fr-grid-row fr-grid-row--gutters">
                             {% for reglementation in reglementations_en_cours %}
@@ -38,7 +38,7 @@
                 {% endif %}
 
                 {% if reglementations_a_jour %}
-                    <div class="fr-container fr-mb-2w dashboard-category dashboard--a-jour">
+                    <div class="fr-container fr-mb-2w dashboard dashboard-category dashboard--a-jour">
                         <h2>À jour</h2>
                         <div class="fr-grid-row fr-grid-row--gutters">
                             {% for reglementation in reglementations_a_jour %}
@@ -48,7 +48,7 @@
                     </div>
                 {% endif %}
 
-                <div class="fr-container fr-mb-2w">
+                <div class="fr-container fr-mb-2w dashboard">
                     <div class="fr-grid-row fr-grid-row--gutters">
                         {% for reglementation in autres_reglementations %}
                             {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}

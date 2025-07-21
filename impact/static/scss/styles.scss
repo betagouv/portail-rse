@@ -543,6 +543,12 @@
 
 /* dashboard */
 
+.dashboard {
+    .fr-card__img {
+        padding: .5rem;
+    }
+}
+
 .dashboard-category {
     border-radius: .5rem;
     padding:.5rem 1rem;
