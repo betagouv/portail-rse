@@ -64,11 +64,6 @@ class Command(BaseCommand):
         self._success("Suppression des habilitations de Metabase: OK")
         MetabaseInvitation.objects.all().delete()
         self._success("Suppression des invitations de Metabase: OK")
-        # reglementations en plusieurs étapes :
-
-    # entreprises :
-    # transactions : 151 secs
-    # tx + bulk : 61 secs
 
     @mesure
     def _insert_entreprises(self):
@@ -150,7 +145,6 @@ class Command(BaseCommand):
                 ),
                 nombre_utilisateurs=entreprise.nombre_utilisateurs,
             )
-            # self._success(str(entreprise))
             bulk.append(me_entreprise)
 
         with transaction.atomic():
@@ -158,8 +152,6 @@ class Command(BaseCommand):
 
         self._success("Ajout des entreprises dans Metabase: OK")
 
-    # utilisateurs : 23 secs
-    # bulk + tx : 0.8 sec
     @mesure
     def _insert_utilisateurs(self):
         self._success("Ajout des utilisateurs dans Metabase")
@@ -168,7 +160,6 @@ class Command(BaseCommand):
             nombre_entreprises=Count("entreprise")
         ):
             mb_utilisateur = MetabaseUtilisateur(
-                # MetabaseUtilisateur.objects.create(
                 impact_id=utilisateur.pk,
                 ajoute_le=utilisateur.created_at,
                 modifie_le=utilisateur.updated_at,
@@ -177,13 +168,13 @@ class Command(BaseCommand):
                 email_confirme=utilisateur.is_email_confirmed,
                 nombre_entreprises=utilisateur.nombre_entreprises,
             )
-            # self._success(str(utilisateur.pk))
             bulk.append(mb_utilisateur)
-        MetabaseUtilisateur.objects.bulk_create(bulk)
+
+        with transaction.atomic():
+            MetabaseUtilisateur.objects.bulk_create(bulk)
+
         self._success("Ajout des utilisateurs dans Metabase: OK")
 
-    # invitations :
-    # bulk + tx :
     @mesure
     def _insert_invitations(self):
         self._success("Ajout des invitations dans Metabase")
@@ -239,7 +230,6 @@ class Command(BaseCommand):
                 ),
             )
             bulk.append(meta_h)
-            # self._success(str(habilitation.pk))
 
         with transaction.atomic():
             MetabaseHabilitation.objects.bulk_create(bulk)
@@ -414,11 +404,7 @@ class Command(BaseCommand):
             )
         else:
             statut = None
-        # MetabaseBGES.objects.create(
-        #     entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
-        #     est_soumise=est_soumise,
-        #     statut=statut,
-        # )
+
         result = MetabaseBGES(
             entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
             est_soumise=est_soumise,
