@@ -416,3 +416,12 @@ CORS_ALLOW_HEADERS = (*default_headers, "hx-current-url")
 if DEBUG:
     MIDDLEWARE.remove("django_hosts.middleware.HostsRequestMiddleware")
     MIDDLEWARE.remove("django_hosts.middleware.HostsResponseMiddleware")
+
+# Profiling Metabase :
+# temporaire le temps de voir comment améliorer globalement de temps de sync
+# ou de refondre l'architecture de transfert de données.
+
+# Permet l'affichage des temps d'éxecution de chaque partie de la synchro
+METABASE_DEBUG_SYNC = os.getenv("METABASE_DEBUG_SYNC") == "true"
+METABASE_DEBUG_SKIP_STEPS = os.getenv("METABASE_DEBUG_SKIP_STEPS", "").split(",")
+METABASE_DEBUG_BULK_SIZE = int(os.getenv("METABASE_DEBUG_BULK_SIZE", "1000"))
