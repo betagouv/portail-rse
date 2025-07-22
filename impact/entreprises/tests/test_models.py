@@ -493,6 +493,13 @@ def test_caracteristiques_actuelles_selon_la_date_de_cloture(entreprise_non_qual
         assert entreprise_non_qualifiee.caracteristiques_actuelles() is None
 
 
+def test_caracteristiques_actuelles_annee_bissextile(entreprise_factory):
+    entreprise = entreprise_factory(date_cloture_exercice=date(2024, 2, 29))
+
+    with freeze_time(datetime(2025, 1, 27, 16, 1, tzinfo=timezone.utc)):
+        assert entreprise.caracteristiques_actuelles().annee == 2024
+
+
 def test_categorie_SA():
     PLAGES = [
         range(

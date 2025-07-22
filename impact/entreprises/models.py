@@ -4,6 +4,7 @@ from datetime import datetime
 from enum import Enum
 from enum import unique
 
+from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
@@ -275,7 +276,8 @@ class Entreprise(TimestampedModel):
             return self.caracteristiques_annuelles(cette_annee - 1)
         annee_dernier_exercice_clos = (
             cette_annee
-            if self.date_cloture_exercice.replace(year=cette_annee) < date.today()
+            if self.date_cloture_exercice + relativedelta(year=cette_annee)
+            < date.today()
             else cette_annee - 1
         )
         return self.caracteristiques_annuelles(annee_dernier_exercice_clos)
