@@ -241,21 +241,23 @@ class Command(BaseCommand):
     @mesure
     def _insert_reglementations(self):
         self._success("Ajout des réglementations dans Metabase")
-        for entreprise in PortailRSEEntreprise.objects.filter(
-            users__isnull=False
-        ).distinct():
-            caracteristiques = (
-                entreprise.dernieres_caracteristiques_qualifiantes
-                or entreprise.dernieres_caracteristiques
-            )
-            if caracteristiques:
-                self._insert_csrd(caracteristiques)
-                self._insert_bdese(caracteristiques)
-                self._insert_index_egapro(caracteristiques)
-                self._insert_bges(caracteristiques)
-                self._success(str(entreprise))
+        with transaction.atomic():
+            for entreprise in PortailRSEEntreprise.objects.filter(
+                users__isnull=False
+            ).distinct():
+                caracteristiques = (
+                    entreprise.dernieres_caracteristiques_qualifiantes
+                    or entreprise.dernieres_caracteristiques
+                )
+                if caracteristiques:
+                    self._insert_csrd(caracteristiques)
+                    self._insert_bdese(caracteristiques)
+                    self._insert_index_egapro(caracteristiques)
+                    self._insert_bges(caracteristiques)
+                    self._success(str(entreprise))
         self._success("Ajout des réglementations dans Metabase: OK")
 
+    @mesure
     def _insert_csrd(self, caracteristiques):
         entreprise = caracteristiques.entreprise
         try:
@@ -293,6 +295,7 @@ class Command(BaseCommand):
             )
         
 
+    @mesure
     def _insert_bdese(self, caracteristiques):
         entreprise = caracteristiques.entreprise
         try:
@@ -317,6 +320,7 @@ class Command(BaseCommand):
                 est_soumise=est_soumise,
             )
 
+    @mesure
     def _insert_index_egapro(self, caracteristiques):
         entreprise = caracteristiques.entreprise
         try:
@@ -338,6 +342,7 @@ class Command(BaseCommand):
             statut=statut,
         )
 
+    @mesure
     def _insert_bges(self, caracteristiques):
         entreprise = caracteristiques.entreprise
         try:
