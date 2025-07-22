@@ -1,6 +1,7 @@
 from datetime import date
 from time import time
 
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import BaseCommand
 from django.db import transaction
@@ -9,8 +10,6 @@ from django.db.models import Count
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise as PortailRSEEntreprise
 from habilitations.models import Habilitation as PortailRSEHabilitation
-from reglementations.models.csrd import DocumentAnalyseIA, RapportCSRD
-from reglementations.views.csrd.csrd import CSRDReglementation
 from invitations.models import Invitation as PortailRSEInvitation
 from metabase.models import BDESE as MetabaseBDESE
 from metabase.models import BGES as MetabaseBGES
@@ -21,21 +20,30 @@ from metabase.models import IndexEgaPro as MetabaseIndexEgaPro
 from metabase.models import Invitation as MetabaseInvitation
 from metabase.models import Stats as MetabaseStats
 from metabase.models import Utilisateur as MetabaseUtilisateur
+from reglementations.models.csrd import DocumentAnalyseIA
+from reglementations.models.csrd import RapportCSRD
 from reglementations.views.base import InsuffisammentQualifieeError
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.bdese import BDESEReglementation
 from reglementations.views.bges import BGESReglementation
+from reglementations.views.csrd.csrd import CSRDReglementation
 from reglementations.views.index_egapro import IndexEgaproReglementation
 from users.models import User as PortailRSEUtilisateur
+
 
 def mesure(fonction):
     def wrapper(*args, **kwargs):
         start_time = time()
         resultat = fonction(*args, **kwargs)
         end_time = time()
-        print(f"Temps d'exécution de {fonction.__name__} : {end_time - start_time} secondes")
+        if settings.METABASE_DEBUG_SYNC:
+            print(
+                f"Temps d'exécution de {fonction.__name__} : {end_time - start_time} secondes"
+            )
         return resultat
+
     return wrapper
+
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
@@ -56,10 +64,11 @@ class Command(BaseCommand):
         self._success("Suppression des habilitations de Metabase: OK")
         MetabaseInvitation.objects.all().delete()
         self._success("Suppression des invitations de Metabase: OK")
+        # reglementations en plusieurs étapes :
 
-# entreprises :
-# transactions : 151 secs
-# tx + bulk : 61 secs  
+    # entreprises :
+    # transactions : 151 secs
+    # tx + bulk : 61 secs
 
     @mesure
     def _insert_entreprises(self):
@@ -73,7 +82,7 @@ class Command(BaseCommand):
                 or entreprise.dernieres_caracteristiques
             )
             me_entreprise = MetabaseEntreprise(
-            # MetabaseEntreprise.objects.create(
+                # MetabaseEntreprise.objects.create(
                 impact_id=entreprise.pk,
                 ajoutee_le=entreprise.created_at,
                 modifiee_le=_last_update(entreprise),
@@ -102,8 +111,8 @@ class Command(BaseCommand):
                     if caracteristiques
                     else None
                 ),
-            effectif_outre_mer=(
-                caracteristiques.effectif_outre_mer if caracteristiques else None
+                effectif_outre_mer=(
+                    caracteristiques.effectif_outre_mer if caracteristiques else None
                 ),
                 effectif_groupe=(
                     caracteristiques.effectif_groupe if caracteristiques else None
@@ -145,8 +154,8 @@ class Command(BaseCommand):
             bulk.append(me_entreprise)
 
         with transaction.atomic():
-            MetabaseEntreprise.objects.bulk_create(bulk)        
-        
+            MetabaseEntreprise.objects.bulk_create(bulk)
+
         self._success("Ajout des entreprises dans Metabase: OK")
 
     # utilisateurs : 23 secs
@@ -154,12 +163,12 @@ class Command(BaseCommand):
     @mesure
     def _insert_utilisateurs(self):
         self._success("Ajout des utilisateurs dans Metabase")
-        bulk=[]
+        bulk = []
         for utilisateur in PortailRSEUtilisateur.objects.annotate(
             nombre_entreprises=Count("entreprise")
         ):
             mb_utilisateur = MetabaseUtilisateur(
-            # MetabaseUtilisateur.objects.create(
+                # MetabaseUtilisateur.objects.create(
                 impact_id=utilisateur.pk,
                 ajoute_le=utilisateur.created_at,
                 modifie_le=utilisateur.updated_at,
@@ -170,16 +179,18 @@ class Command(BaseCommand):
             )
             # self._success(str(utilisateur.pk))
             bulk.append(mb_utilisateur)
-        MetabaseUtilisateur.objects.bulk_create(bulk)    
+        MetabaseUtilisateur.objects.bulk_create(bulk)
         self._success("Ajout des utilisateurs dans Metabase: OK")
 
-    # invitations : 
-    # bulk + tx : 
+    # invitations :
+    # bulk + tx :
     @mesure
     def _insert_invitations(self):
         self._success("Ajout des invitations dans Metabase")
-        bulk=[]
-        for invitation in PortailRSEInvitation.objects.all().select_related("entreprise"):
+        bulk = []
+        for invitation in PortailRSEInvitation.objects.all().select_related(
+            "entreprise"
+        ):
             mb_invitation = MetabaseInvitation(
                 impact_id=invitation.pk,
                 ajoutee_le=invitation.created_at,
@@ -202,11 +213,11 @@ class Command(BaseCommand):
 
         self._success("Ajout des invitations dans Metabase: OK")
 
-    # habilitations : 
-    @mesure         
+    # habilitations :
+    @mesure
     def _insert_habilitations(self):
         self._success("Ajout des habilitations dans Metabase")
-        bulk=[]
+        bulk = []
         for habilitation in PortailRSEHabilitation.objects.all():
             # https://docs.djangoproject.com/fr/4.2/topics/db/optimization/#use-foreign-key-values-directly
             meta_h = MetabaseHabilitation(
@@ -241,25 +252,49 @@ class Command(BaseCommand):
     @mesure
     def _insert_reglementations(self):
         self._success("Ajout des réglementations dans Metabase")
+        csrd = []
+        bges = []
+        egapro = []
+        bdese = []
+        for entreprise in PortailRSEEntreprise.objects.filter(
+            users__isnull=False
+        ).distinct():
+            caracteristiques = (
+                entreprise.dernieres_caracteristiques_qualifiantes
+                or entreprise.dernieres_caracteristiques
+            )
+            if caracteristiques:
+                if r := self._insert_csrd(caracteristiques):
+                    csrd.append(r)
+
+                if r := self._insert_bges(caracteristiques):
+                    bges.append(r)
+
+                if r := self._insert_bdese(caracteristiques):
+                    bdese.append(r)
+
+                if r := self._insert_index_egapro(caracteristiques):
+                    egapro.append(r)
+
+                self._success(str(entreprise))
+
         with transaction.atomic():
-            for entreprise in PortailRSEEntreprise.objects.filter(
-                users__isnull=False
-            ).distinct():
-                caracteristiques = (
-                    entreprise.dernieres_caracteristiques_qualifiantes
-                    or entreprise.dernieres_caracteristiques
-                )
-                if caracteristiques:
-                    self._insert_csrd(caracteristiques)
-                    self._insert_bdese(caracteristiques)
-                    self._insert_index_egapro(caracteristiques)
-                    self._insert_bges(caracteristiques)
-                    self._success(str(entreprise))
+            if csrd:
+                MetabaseCSRD.objects.bulk_create(csrd)
+            if bges:
+                MetabaseBGES.objects.bulk_create(bges)
+            if bdese:
+                MetabaseBDESE.objects.bulk_create(bdese)
+            if egapro:
+                MetabaseIndexEgaPro.objects.bulk_create(egapro)
+
         self._success("Ajout des réglementations dans Metabase: OK")
 
-    @mesure
     def _insert_csrd(self, caracteristiques):
         entreprise = caracteristiques.entreprise
+        result = None
+        if "csrd" in settings.METABASE_DEBUG_SKIP_STEPS:
+            return
         try:
             est_soumise = CSRDReglementation.est_soumis(caracteristiques)
         except InsuffisammentQualifieeError:
@@ -272,32 +307,44 @@ class Command(BaseCommand):
                 portail_rse_status
             )
             champs = {
-                    "entreprise": MetabaseEntreprise.objects.get(impact_id=entreprise.id),
-                    "est_soumise": est_soumise,
-                    "statut": statut,
-                      }
-            # spécificités rapport CSRD 
-            if dernier_rapport := RapportCSRD.objects.prefetch_related("enjeux").filter(entreprise_id=entreprise.id).order_by("-annee").first():
-                nb_documents_ia = DocumentAnalyseIA.objects.filter(rapport_csrd=dernier_rapport).count()
-                nb_iro_selectionnes = dernier_rapport.enjeux.exclude(materiel=None).count()
+                "entreprise": MetabaseEntreprise.objects.get(impact_id=entreprise.id),
+                "est_soumise": est_soumise,
+                "statut": statut,
+            }
+            # spécificités rapport CSRD
+            if (
+                dernier_rapport := RapportCSRD.objects.prefetch_related("enjeux")
+                .filter(entreprise_id=entreprise.id)
+                .order_by("-annee")
+                .first()
+            ):
+                nb_documents_ia = DocumentAnalyseIA.objects.filter(
+                    rapport_csrd=dernier_rapport
+                ).count()
+                nb_iro_selectionnes = dernier_rapport.enjeux.exclude(
+                    materiel=None
+                ).count()
 
-                champs |= {"nb_documents_ia":nb_documents_ia, 
-                           "etape_validee": dernier_rapport.etape_validee, 
-                           "lien_rapport": dernier_rapport.lien_rapport != "", 
-                           "nb_iro_selectionnes": nb_iro_selectionnes,
-                           }
-
-            MetabaseCSRD.objects.create(**champs)
+                champs |= {
+                    "nb_documents_ia": nb_documents_ia,
+                    "etape_validee": dernier_rapport.etape_validee,
+                    "lien_rapport": dernier_rapport.lien_rapport != "",
+                    "nb_iro_selectionnes": nb_iro_selectionnes,
+                }
+            result = MetabaseCSRD(**champs)
         else:
-            MetabaseCSRD.objects.create(
+            result = MetabaseCSRD(
                 entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
                 est_soumise=est_soumise,
             )
-        
 
-    @mesure
+        return result
+
     def _insert_bdese(self, caracteristiques):
         entreprise = caracteristiques.entreprise
+        result = None
+        if "bdese" in settings.METABASE_DEBUG_SKIP_STEPS:
+            return
         try:
             est_soumise = BDESEReglementation.est_soumis(caracteristiques)
         except InsuffisammentQualifieeError:
@@ -309,20 +356,24 @@ class Command(BaseCommand):
             statut = self._convertit_portail_rse_status_en_statut_metabase(
                 portail_rse_status
             )
-            MetabaseBDESE.objects.create(
+            result = MetabaseBDESE(
                 entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
                 est_soumise=est_soumise,
                 statut=statut,
             )
         else:
-            MetabaseBDESE.objects.create(
+            result = MetabaseBDESE(
                 entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
                 est_soumise=est_soumise,
             )
 
-    @mesure
+        return result
+
     def _insert_index_egapro(self, caracteristiques):
         entreprise = caracteristiques.entreprise
+        result = None
+        if "egapro" in settings.METABASE_DEBUG_SKIP_STEPS:
+            return
         try:
             est_soumise = IndexEgaproReglementation.est_soumis(caracteristiques)
         except InsuffisammentQualifieeError:
@@ -336,15 +387,20 @@ class Command(BaseCommand):
             )
         else:
             statut = None
-        MetabaseIndexEgaPro.objects.create(
+
+        result = MetabaseIndexEgaPro(
             entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
             est_soumise=est_soumise,
             statut=statut,
         )
 
-    @mesure
+        return result
+
     def _insert_bges(self, caracteristiques):
         entreprise = caracteristiques.entreprise
+        result = None
+        if "bges" in settings.METABASE_DEBUG_SKIP_STEPS:
+            return
         try:
             est_soumise = BGESReglementation.est_soumis(caracteristiques)
         except InsuffisammentQualifieeError:
@@ -358,11 +414,18 @@ class Command(BaseCommand):
             )
         else:
             statut = None
-        MetabaseBGES.objects.create(
+        # MetabaseBGES.objects.create(
+        #     entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
+        #     est_soumise=est_soumise,
+        #     statut=statut,
+        # )
+        result = MetabaseBGES(
             entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
             est_soumise=est_soumise,
             statut=statut,
         )
+
+        return result
 
     def _convertit_portail_rse_status_en_statut_metabase(self, portail_rse_status):
         statut = None
