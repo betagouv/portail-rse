@@ -32,7 +32,6 @@ def index(request, siren):
         if form.is_valid():
             email = form.cleaned_data["email"]
             role = form.cleaned_data["role"]
-            print("email,role", email, role)
             try:
                 utilisateur = User.objects.get(email=email)
                 if Habilitation.objects.filter(entreprise=entreprise, user=utilisateur):
@@ -52,30 +51,20 @@ def index(request, siren):
                 request,
                 "L'invitation a échoué car le formulaire contient des erreurs.",
             )
-            context = {
-                "form": form,
-            }
     else:
-        context = {
-            "form": InvitationForm(),
-        }
+        form = InvitationForm()
 
-    context.update(
-        {
-            "entreprise": entreprise,
-            "habilitation": Habilitation.pour(entreprise, request.user),
-            "invitations": Invitation.objects.filter(
-                entreprise=entreprise, date_acceptation__isnull=True
-            ),
-        }
-    )
-    # organisation des membres par habilitations
-    habilitations = []
-    for h in entreprise.habilitation_set.all().order_by("user__nom"):
-        if h.entreprise == entreprise and h.user.is_email_confirmed:
-            habilitations.append(h)
-
-    context |= {"habilitations": habilitations}
+    context = {
+        "form": form,
+        "entreprise": entreprise,
+        "habilitation": Habilitation.pour(entreprise, request.user),
+        "invitations": Invitation.objects.filter(
+            entreprise=entreprise, date_acceptation__isnull=True
+        ),
+        "habilitations": Habilitation.objects.filter(
+            entreprise=entreprise, user__is_email_confirmed=True
+        ).order_by("user__nom"),
+    }
 
     return render(request, "habilitations/membres.html", context)
 
