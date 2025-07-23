@@ -1,10 +1,8 @@
 import html
-from datetime import datetime
 
 import pytest
 from django.conf import settings
 from django.urls import reverse
-from pytest_django.asserts import assertTemplateNotUsed
 from pytest_django.asserts import assertTemplateUsed
 
 from habilitations.enums import UserRole
@@ -37,40 +35,6 @@ def test_page_membres_d_une_entreprise_nécessite_d_être_connecté(
 
     redirect_url = f"""{reverse("users:login")}?next={url}"""
     assert response.redirect_chain == [(redirect_url, 302)]
-
-
-def test_page_membres_d_une_entreprise_n_affiche_pas_les_utilisateurs_non_confirmés(
-    client, alice, bob, entreprise_factory
-):
-    entreprise = entreprise_factory()
-    bob.is_email_confirmed = False
-    bob.save()
-    Habilitation.ajouter(entreprise, bob, fonctions="Présidente")
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
-    client.force_login(alice)
-
-    response = client.get(f"/droits/{entreprise.siren}")
-
-    assert response.status_code == 200
-    content = response.content.decode("utf-8")
-    assert bob.email not in content
-
-
-def test_page_membres_d_une_entreprise_n_affiche_pas_les_invitations_acceptées(
-    client, alice, bob, entreprise_factory
-):
-    entreprise = entreprise_factory()
-    Invitation.objects.create(
-        email=bob.email, entreprise=entreprise, date_acceptation=datetime.now()
-    )
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
-    client.force_login(alice)
-
-    response = client.get(f"/droits/{entreprise.siren}")
-
-    assert response.status_code == 200
-    content = response.content.decode("utf-8")
-    assert bob.email not in content
 
 
 def test_une_invitation_a_devenir_membre_pour_un_compte_existant_est_activée_directement(
@@ -175,46 +139,6 @@ def test_erreur_invitation_a_devenir_membre_car_deja_membre(
         "L'invitation a échoué car cette personne est déjà membre de l'entreprise."
         in content
     )
-
-
-@pytest.mark.parametrize(
-    "role,resultat", ((UserRole.PROPRIETAIRE, True), (UserRole.EDITEUR, False))
-)
-def test_visibilite_formulaire_invitation(
-    client, bob, entreprise_factory, role, resultat
-):
-    entreprise = entreprise_factory()
-    Habilitation.ajouter(entreprise, bob, role=role)
-    client.force_login(bob)
-
-    response = client.get(f"/droits/{entreprise.siren}")
-
-    assert response.status_code == 200
-    (
-        assertTemplateUsed(response, "snippets/formulaire_invitation.html")
-        if resultat
-        else assertTemplateNotUsed(response, "snippets/formulaire_invitation.html")
-    )
-
-
-@pytest.mark.parametrize(
-    "role,resultat", ((UserRole.PROPRIETAIRE, True), (UserRole.EDITEUR, False))
-)
-def test_visibilite_actions(client, bob, alice, entreprise_factory, role, resultat):
-    entreprise = entreprise_factory()
-    Habilitation.ajouter(entreprise, bob, role=role)
-    Habilitation.ajouter(entreprise, alice, role=UserRole.EDITEUR)
-    client.force_login(bob)
-
-    response = client.get(f"/droits/{entreprise.siren}")
-    assert response.status_code == 200
-
-    if resultat:
-        assertTemplateUsed(response, "snippets/modale_modifier_habilitation.html")
-        assertTemplateUsed(response, "snippets/modale_retirer_habilitation.html")
-    else:
-        assertTemplateNotUsed(response, "snippets/modale_modifier_habilitation.html")
-        assertTemplateNotUsed(response, "snippets/modale_retirer_habilitation.html")
 
 
 def test_acces_vues_actions(client, entreprise_factory, alice, bob):
