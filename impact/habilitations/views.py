@@ -44,18 +44,29 @@ def index(request, siren):
             except ObjectDoesNotExist:
                 _cree_invitation(request, entreprise, email, role)
             return redirect(
-                reverse("habilitations:membres_entreprise", args=[entreprise.siren])
+                reverse("reglementations:tableau_de_bord", args=[entreprise.siren])
             )
         else:
+            request.session["invitation_form"] = request.POST
             messages.error(
                 request,
                 "L'invitation a échoué car le formulaire contient des erreurs.",
             )
-    else:
-        form = InvitationForm()
+            return redirect(
+                reverse("reglementations:tableau_de_bord", args=[entreprise.siren])
+            )
 
+    context = contributeurs_context(request, entreprise)
+
+    return render(request, "habilitations/membres.html", context)
+
+
+def contributeurs_context(request, entreprise):
+    invitation_form = request.session.pop("invitation_form", None)
     context = {
-        "form": form,
+        "form": (
+            InvitationForm(invitation_form) if invitation_form else InvitationForm()
+        ),
         "entreprise": entreprise,
         "habilitation": Habilitation.pour(entreprise, request.user),
         "invitations": Invitation.objects.filter(
@@ -65,8 +76,7 @@ def index(request, siren):
             entreprise=entreprise, user__is_email_confirmed=True
         ).order_by("user__nom"),
     }
-
-    return render(request, "habilitations/membres.html", context)
+    return context
 
 
 def _ajoute_membre(request, entreprise, utilisateur, role):
@@ -178,7 +188,7 @@ def gerer_habilitation(request, id: int):
     # 303 nécessaire (changement de méthode)
     return HttpResponseRedirectSeeOther(
         reverse(
-            "habilitations:membres_entreprise",
+            "reglementations:tableau_de_bord",
             args=[request.session["entreprise"]],
         )
     )

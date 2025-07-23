@@ -1,0 +1,88 @@
+<h3>Gérer les contributeurs</h3>
+<p>Partagez l'accès aux informations clés de votre tableau de bord à des membres de votre entreprise, consultants ou accompagnants RSE</p>
+
+{% if habilitations %}
+    <div class="fr-table--sm fr-table fr-table" id="table-sm-component">
+        <div class="fr-table__wrapper">
+            <div class="fr-table__container">
+                <div class="fr-table__content">
+                    <table id="table-sm">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nom</th>
+                                <th scope="col">Prénom</th>
+                                <th scope="col">E-mail</th>
+                                <th scope="col">Rôle</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for h in habilitations %}
+                                <tr>
+                                    {% with user=h.user %}
+                                        <td>{{ user.nom }}</td>
+                                        <td>{{ user.prenom }}</td>
+                                        <td>{{ user.email }}</td>
+                                        <td><span class="fr-badge fr-badge--info fr-badge--no-icon">{{ h.get_role_display }}</span></td>
+                                        <td>
+                                            {% if user != habilitation.user %}
+                                                {% if habilitation.role == "proprietaire" %}
+                                                    <button class="fr-btn fr-icon-delete-line fr-btn--icon-left fr-btn--primary" aria-controls="modaleRetirer-{{ h.pk }}" data-fr-opened="false">Retirer</button>
+                                                    <button class="fr-ml-1w fr-btn fr-icon-pencil-line fr-btn--icon-left fr-btn--secondary" aria-controls="modaleModifier-{{ h.pk }}" data-fr-opened="false">Modifier</button>
+                                                    {% with habilitation=h %}
+                                                        {% include "snippets/modale_retirer_habilitation.html" %}
+                                                        {% include "snippets/modale_modifier_habilitation.html" %}
+                                                    {% endwith %}
+                                                {% else %}
+                                                    <span class="fr-icon-lock-line"></span>
+                                                {% endif %}
+                                            {% else %}
+                                                <span class="fr-icon-account-circle-line"></span> Votre compte
+                                            {% endif %}
+                                        </td>
+                                    {% endwith %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    Aucun propriétaire
+{% endif %}
+
+{% if invitations %}
+    <h3>Invités</h3>
+    <div class="fr-table--sm fr-table fr-table" id="table-sm-component">
+        <div class="fr-table__wrapper">
+            <div class="fr-table__container">
+                <div class="fr-table__content">
+                    <table id="table-sm">
+                        <thead>
+                            <tr>
+                                <th scope="col">E-mail</th>
+                                <th scope="col">Rôle</th>
+                                <th scope="col">Expiration de l'invitation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for invitation in invitations %}
+                                <tr>
+                                    <td>{{ invitation.email }}</td>
+                                    <td>{{ invitation.get_role_display }}</td>
+                                    <td>{{ invitation.date_expiration|date:"d F Y" }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+{% if habilitation.role == "proprietaire" %}
+    {% include "snippets/formulaire_invitation.html" %}
+{% endif %}

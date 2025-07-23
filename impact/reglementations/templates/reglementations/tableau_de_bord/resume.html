@@ -13,7 +13,7 @@
                 <h2>Bienvenue, {{ user.prenom|capfirst }} !</h2>
                 <p>Prêt à faire progresser votre démarche RSE ?</p>
 
-                <div class="fr-grid-row fr-grid-row--gutters">
+                <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
                     <div class="fr-col-12 fr-col-lg-4">
                         <div class="fr-tile fr-enlarge-link">
                             <div class="fr-tile__body">
@@ -142,6 +142,8 @@
 
                     </div>
                 </div>
+
+                {% include "snippets/contributeurs.html" %}
             </div>
         </div>
     </div>
