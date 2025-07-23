@@ -85,7 +85,7 @@ def test_une_invitation_a_devenir_membre_pour_un_compte_existant_est_activée_di
     response = client.post(url, data=data, follow=True)
 
     redirect_url = (
-        f"""{reverse("habilitations:membres_entreprise", args=[entreprise.siren])}"""
+        f"""{reverse("reglementations:tableau_de_bord", args=[entreprise.siren])}"""
     )
     invitation = Invitation.objects.get(entreprise=entreprise, email=bob.email)
     assert invitation.role == UserRole.PROPRIETAIRE.value
@@ -117,7 +117,7 @@ def test_succès_invitation_a_devenir_membre(
     response = client.post(url, data=data, follow=True)
 
     redirect_url = (
-        f"""{reverse("habilitations:membres_entreprise", args=[entreprise.siren])}"""
+        f"""{reverse("reglementations:tableau_de_bord", args=[entreprise.siren])}"""
     )
     invitations = Invitation.objects.filter(entreprise=entreprise, email=EMAIL_INVITE)
     assert len(invitations) == 1

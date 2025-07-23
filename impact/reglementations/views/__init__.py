@@ -13,6 +13,7 @@ from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
 from habilitations.models import Habilitation
+from habilitations.views import contributeurs_context
 from reglementations.utils import VSMEReglementation
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
 from reglementations.views.base import ReglementationStatus
@@ -84,13 +85,17 @@ def tableau_de_bord(request, entreprise_qualifiee):
         if reglementation.est_soumis(caracteristiques)
     ]
     nombre_reglementations_applicables = len(reglementations_applicables)
+
+    context = {
+        "entreprise": entreprise_qualifiee,
+        "nombre_reglementations_applicables": nombre_reglementations_applicables,
+    }
+    context |= contributeurs_context(request, entreprise_qualifiee)
+
     return render(
         request,
         "reglementations/tableau_de_bord/resume.html",
-        context={
-            "entreprise": entreprise_qualifiee,
-            "nombre_reglementations_applicables": nombre_reglementations_applicables,
-        },
+        context=context,
     )
 
 

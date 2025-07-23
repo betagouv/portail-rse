@@ -6,7 +6,7 @@
 <p>
     Vous devez également sélectionner quel sera le rôle du nouveau membre de l'entreprise.
 </p>
-<form method="post">
+<form action="{% url 'habilitations:membres_entreprise' entreprise.siren %}" method="post">
     {% csrf_token %}
     {% include 'snippets/field.html' with field=form.email %}
 		{# utilisation stricte du DSFR #}
