@@ -3,38 +3,10 @@ import html
 import pytest
 from django.conf import settings
 from django.urls import reverse
-from pytest_django.asserts import assertTemplateUsed
 
 from habilitations.enums import UserRole
 from habilitations.models import Habilitation
 from invitations.models import Invitation
-
-
-def test_page_membres_d_une_entreprise(client, alice, bob, entreprise_factory):
-    entreprise = entreprise_factory()
-    Habilitation.ajouter(entreprise, bob, fonctions="Présidente")
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
-    client.force_login(alice)
-
-    response = client.get(f"/droits/{entreprise.siren}")
-
-    assertTemplateUsed(response, "habilitations/membres.html")
-    assert response.status_code == 200
-    content = response.content.decode("utf-8")
-    assert alice.email in content
-
-
-def test_page_membres_d_une_entreprise_nécessite_d_être_connecté(
-    client, alice, entreprise_factory
-):
-    entreprise = entreprise_factory()
-    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
-    url = f"/droits/{entreprise.siren}"
-
-    response = client.get(url, follow=True)
-
-    redirect_url = f"""{reverse("users:login")}?next={url}"""
-    assert response.redirect_chain == [(redirect_url, 302)]
 
 
 def test_une_invitation_a_devenir_membre_pour_un_compte_existant_est_activée_directement(
@@ -44,7 +16,7 @@ def test_une_invitation_a_devenir_membre_pour_un_compte_existant_est_activée_di
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
     data = {"email": bob.email, "role": UserRole.PROPRIETAIRE}
-    url = f"/droits/{entreprise.siren}"
+    url = f"/invitation/{entreprise.siren}"
 
     response = client.post(url, data=data, follow=True)
 
@@ -76,7 +48,7 @@ def test_succès_invitation_a_devenir_membre(
     client.force_login(alice)
     EMAIL_INVITE = "bob@bob.test"
     data = {"email": EMAIL_INVITE, "role": UserRole.EDITEUR}
-    url = f"/droits/{entreprise.siren}"
+    url = f"/invitation/{entreprise.siren}"
 
     response = client.post(url, data=data, follow=True)
 
@@ -108,7 +80,7 @@ def test_erreur_invitation_a_devenir_membre_car_email_incorrect(
     data = {
         "email": EMAIL_INVITE,
     }
-    url = f"/droits/{entreprise.siren}"
+    url = f"/invitation/{entreprise.siren}"
 
     response = client.post(url, data=data, follow=True)
 
@@ -129,7 +101,7 @@ def test_erreur_invitation_a_devenir_membre_car_deja_membre(
     Habilitation.ajouter(entreprise, bob, fonctions="Vice-président")
     client.force_login(alice)
     data = {"email": bob.email, "role": UserRole.EDITEUR}
-    url = f"/droits/{entreprise.siren}"
+    url = f"/invitation/{entreprise.siren}"
 
     response = client.post(url, data=data, follow=True)
 
