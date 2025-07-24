@@ -182,7 +182,7 @@ class Habilitation(TimestampedModel):
             h = habilitations.first()
             if h.user == utilisateur:
                 raise HabilitationError(
-                    "L'utilisateur est le dernier propriétaire de l'entreprise et ne peut être supprimé"
+                    "Vous ne pouvez pas quitter cette entreprise car vous en êtes le seul propriétaire. Commencez par ajouter un nouveau propriétaire à l'entreprise avant de la quitter. En cas de problème n'hésitez pas à contacter le support."
                 )
 
         try:

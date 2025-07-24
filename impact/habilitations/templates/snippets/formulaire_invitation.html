@@ -1,4 +1,4 @@
-<h4 class="fr-h5">Inviter un nouveau contributeur</h4>
+<h3 class="fr-h5">Inviter un nouveau contributeur</h3>
 <form action="{% url 'habilitations:invitation' entreprise.siren %}" method="post">
     {% csrf_token %}
     {% include 'snippets/field.html' with field=form.email %}
