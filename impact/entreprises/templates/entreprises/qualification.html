@@ -3,19 +3,10 @@
 {% block title %}{{ entreprise.denomination }} - Portail RSE{% endblock %}
 
 {% block content %}
-
-    {% if entreprise.users.count >= 2 %}
-        <div class="fr-container fr-mt-4w">
-            <div class="fr-alert fr-alert--info">
-                <p>Plusieurs utilisateurs sont rattachés à cette entreprise. Les modifications seront visibles par tous les utilisateurs.</p>
-            </div>
-        </div>
-    {% endif %}
-
     <div class="fr-container fr-my-10w">
         <div class="fr-grid-row">
             <div class="fr-col">
-                <h2>{{ entreprise.denomination }}</h2>
+                <h2>Profil de l'entreprise {{ entreprise.denomination }}</h2>
                 <p>
                     <span class="fr-tag">SIREN : {{ entreprise.siren }}</span>
                     <span class="fr-tag">NAF/APE : {{ entreprise.secteur_principal }}</span>
@@ -75,7 +66,7 @@
                         {% include 'snippets/fieldset_element.html' with field=form.systeme_management_energie %}
                     </fieldset>
 
-                    <input type="submit" value="Enregistrer et accéder aux réglementations" class="fr-btn">
+                    <input type="submit" value="Enregistrer et accéder au tableau de bord" class="fr-btn">
                 </form>
             </div>
         </div>

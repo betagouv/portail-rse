@@ -80,10 +80,7 @@
                                                 <b>L'entreprise ne fait pas partie d'un groupe d'entreprises</b><br>
                                             {% endif %}
                                             {% if entreprise.est_interet_public %}
-                                                <b>L'entreprise est d'intérêt public</b><br>
-                                            {% endif %}
-                                            {% if entreprise.est_cotee %}
-                                                <b>L'entreprise est cotée sur un marché réglementé européen</b><br>
+                                                <b>L'entreprise est d'intérêt public</b>{% if entreprise.est_cotee %} <em>(l'entreprise est cotée sur un marché réglementé européen)</em>{% endif %}<br>
                                             {% endif %}
                                             Accord d'entreprise concernant la BDESE : <b>{{ caracs.bdese_accord | display_field }}</b><br>
                                             Système de management de l'énergie : <b>{{ caracs.systeme_management_energie | display_field }}</b><br>

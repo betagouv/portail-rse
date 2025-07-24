@@ -1,17 +1,17 @@
-<h3>Inviter un nouveau membre</h3>
-<p>
-    La personne recevra un e-mail d'invitation pour créer son compte et rejoindre l'entreprise {{ entreprise.denomination }}.
-    Si elle possède déjà un compte utilisateur sur le Portail RSE, elle sera directement ajoutée dans les membres de l'entreprise.
-</p>
-<p>
-    Vous devez également sélectionner quel sera le rôle du nouveau membre de l'entreprise.
-</p>
+<h4 class="fr-h5">Inviter un nouveau contributeur</h4>
 <form action="{% url 'habilitations:membres_entreprise' entreprise.siren %}" method="post">
     {% csrf_token %}
     {% include 'snippets/field.html' with field=form.email %}
 		{# utilisation stricte du DSFR #}
     <div class="fr-select-group">
-        <label class="fr-label" for="select-role">Rôle de l'utilisateur invité</label>
+        <label class="fr-label" for="select-role">
+            Rôle de l'utilisateur invité
+            <span class="fr-hint-text">
+                Sélectionnez le rôle du nouveau contributeur au sein de l'entreprise :
+                un éditeur peut créer et modifier de nouvelles réglementations pour l'entreprise.
+                un propriétaire dispose des droits d'un éditeur et peut gérér les habilitations des contributeurs d'une entreprise.
+            </span>
+        </label>
         {% if form.role.errors %}
             <div class="fr-messages-group" id="select-role-messages" aria-live="polite">
                 <p class="fr-error-text">{{ form.role.errors.as_text }}</p>
