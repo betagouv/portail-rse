@@ -68,7 +68,7 @@ def entreprise_qualifiee_requise(function):
         else:
             messages.warning(
                 request,
-                "Veuillez renseigner les informations suivantes pour accéder au tableau de bord de cette entreprise.",
+                "Veuillez renseigner le profil de l'entreprise pour accéder au tableau de bord.",
             )
             return redirect("entreprises:qualification", siren=entreprise.siren)
 
