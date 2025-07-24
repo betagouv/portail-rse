@@ -57,12 +57,19 @@ def index(request):
                         request,
                         f"Votre compte n'est plus rattaché à l'entreprise {entreprise.denomination}",
                     )
+                    return redirect("entreprises:entreprises")
                 except ObjectDoesNotExist:
                     messages.error(request, "Impossible de quitter cette entreprise")
                 except HabilitationError as h_err:
                     messages.error(request, str(h_err))
-
-            return redirect("reglementations:tableau_de_bord")
+            en_provenance_du_tableau_de_bord = request.META.get(
+                "HTTP_REFERER"
+            ) and "tableau-de-bord" in request.META.get("HTTP_REFERER")
+            return (
+                redirect("reglementations:tableau_de_bord")
+                if en_provenance_du_tableau_de_bord
+                else redirect("entreprises:entreprises")
+            )
 
     return render(request, "entreprises/index.html", {"form": EntrepriseAttachForm()})
 
