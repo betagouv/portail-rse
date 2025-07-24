@@ -6,7 +6,6 @@ from django.core.mail import EmailMessage
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
-from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -24,41 +23,37 @@ from utils.tokens import make_token
 
 
 @login_required()
-def index(request, siren):
+@require_http_methods(["POST"])
+def invitation(request, siren):
     entreprise = get_object_or_404(Entreprise, siren=siren)
     request.session["entreprise"] = siren
-    if request.POST:
-        form = InvitationForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data["email"]
-            role = form.cleaned_data["role"]
-            try:
-                utilisateur = User.objects.get(email=email)
-                if Habilitation.objects.filter(entreprise=entreprise, user=utilisateur):
-                    messages.error(
-                        request,
-                        "L'invitation a échoué car cette personne est déjà membre de l'entreprise.",
-                    )
-                else:
-                    _ajoute_membre(request, entreprise, utilisateur, role)
-            except ObjectDoesNotExist:
-                _cree_invitation(request, entreprise, email, role)
-            return redirect(
-                reverse("reglementations:tableau_de_bord", args=[entreprise.siren])
-            )
-        else:
-            request.session["invitation_form"] = request.POST
-            messages.error(
-                request,
-                "L'invitation a échoué car le formulaire contient des erreurs.",
-            )
-            return redirect(
-                reverse("reglementations:tableau_de_bord", args=[entreprise.siren])
-            )
-
-    context = contributeurs_context(request, entreprise)
-
-    return render(request, "habilitations/membres.html", context)
+    form = InvitationForm(request.POST)
+    if form.is_valid():
+        email = form.cleaned_data["email"]
+        role = form.cleaned_data["role"]
+        try:
+            utilisateur = User.objects.get(email=email)
+            if Habilitation.objects.filter(entreprise=entreprise, user=utilisateur):
+                messages.error(
+                    request,
+                    "L'invitation a échoué car cette personne est déjà membre de l'entreprise.",
+                )
+            else:
+                _ajoute_membre(request, entreprise, utilisateur, role)
+        except ObjectDoesNotExist:
+            _cree_invitation(request, entreprise, email, role)
+        return redirect(
+            reverse("reglementations:tableau_de_bord", args=[entreprise.siren])
+        )
+    else:
+        request.session["invitation_form"] = request.POST
+        messages.error(
+            request,
+            "L'invitation a échoué car le formulaire contient des erreurs.",
+        )
+        return redirect(
+            reverse("reglementations:tableau_de_bord", args=[entreprise.siren])
+        )
 
 
 def contributeurs_context(request, entreprise):
