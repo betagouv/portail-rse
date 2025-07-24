@@ -1,10 +1,13 @@
 <div class="fr-col-12 fr-col-md-3">
-    <nav class="fr-sidemenu fr-sidemenu--sticky" aria-label="Menu latéral">
+    <nav class="fr-sidemenu fr-sidemenu--sticky fr-mb-2w dashboard-sidemenu" role="navigation" aria-labelledby="sidemenu-title">
         <div class="fr-sidemenu__inner">
-            <button class="fr-sidemenu__btn" hidden aria-controls="fr-sidemenu-wrapper" aria-expanded="false">Dans cette rubrique</button>
+            <button type="button" class="fr-sidemenu__btn" hidden aria-controls="fr-sidemenu-wrapper" aria-expanded="false">Dans cette rubrique</button>
             <div class="fr-collapse" id="fr-sidemenu-wrapper">
-                <p>Mon tableau de bord</p>
-                <p>{{ entreprise.denomination }}</p>
+                <p class="fr-sidemenu__title" id="sidemenu-title">Mon tableau de bord</p>
+                <div class="denomination">
+                    <p class="fr-badge fr-icon-building-line fr-badge--icon-left"><span class="fr-ellipsis">{{ entreprise.denomination }}</span></p>
+                </div>
+                <a class="fr-btn fr-btn--secondary fr-my-2w" href="{% url 'entreprises:entreprises' %}">Ajouter une entreprise</a>
                 <ul class="fr-sidemenu__list">
                     <li class="fr-sidemenu__item {% if not 'reglementations' in request.path %}fr-sidemenu__item--active{% endif %}">
                         <a class="fr-sidemenu__link" href="{% url 'reglementations:tableau_de_bord' entreprise.siren %}" target="_self" {% if not 'reglementations' in request.path %}aria-current="page"{% endif %}>
@@ -16,6 +19,13 @@
                         <a class="fr-sidemenu__link" href="{% url 'reglementations:reglementations' entreprise.siren %}" target="_self" {% if 'reglementations' in request.path %}aria-current="page"{% endif %}>
                             <span class="fr-icon-feedback-line fr-mr-1w" aria-hidden="true"></span>
                             Mes réglementations
+                        </a>
+                    </li>
+                    <li class="fr-sidemenu__item {% if 'reglementations' in request.path %}fr-sidemenu__item--active{% endif %}">
+                        <a class="fr-sidemenu__link" target="_self">
+                            <span class="fr-icon-bar-chart-box-line fr-mr-1w" aria-hidden="true"></span>
+                            Mes indicateurs
+                            <span class="fr-text--xs fr-ml-1w">(à venir)</span>
                         </a>
                     </li>
                 </ul>

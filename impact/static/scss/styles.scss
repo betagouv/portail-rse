@@ -543,6 +543,21 @@
 
 /* dashboard */
 
+.dashboard-sidemenu {
+    .fr-badge {
+        padding: 0.5rem;
+        width: 100%;
+        justify-content: center;
+    }
+    .fr-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    a:not([href]) {
+        color: var(--text-disabled-grey)
+    }
+}
+
 .dashboard {
     .fr-card__img {
         padding: .5rem;
