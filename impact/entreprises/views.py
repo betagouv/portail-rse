@@ -5,7 +5,6 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import BadRequest
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import PermissionDenied
-from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -207,17 +206,6 @@ def qualification(request, siren):
         "entreprises/qualification.html",
         context={"entreprise": entreprise, "form": form},
     )
-
-
-def search_entreprise(request, siren):
-    try:
-        infos = api.infos_entreprise.infos_entreprise(siren, donnees_financieres=True)
-    except APIError as exception:
-        return JsonResponse(
-            {"error": str(exception)},
-            status=400,
-        )
-    return JsonResponse(infos)
 
 
 def recherche_entreprise(request):
