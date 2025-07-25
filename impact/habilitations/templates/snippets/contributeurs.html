@@ -80,7 +80,7 @@
                             {% for invitation in invitations %}
                                 <tr>
                                     <td>{{ invitation.email }}</td>
-                                    <td>{{ invitation.get_role_display }}</td>
+                                    <td><span class="fr-badge fr-badge--info fr-badge--no-icon">{{ invitation.get_role_display }}</span></td>
                                     <td>{{ invitation.date_expiration|date:"d F Y" }}</td>
                                 </tr>
                             {% endfor %}
