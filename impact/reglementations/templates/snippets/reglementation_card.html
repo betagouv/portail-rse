@@ -5,12 +5,7 @@
         <div class="fr-card__body">
             <div class="fr-card__content">
                 <h3 class="fr-card__title">
-                    {{ reglementation.title }}
-                    {% if reglementation.zone == "france" %}
-                        <span title="Réglementation Nationale" class="fr-pl-1w">🇫🇷</span>
-                    {% elif reglementation.zone == "europe" %}
-                        <span title="Réglementation Européenne" class="fr-pl-1w">🇪🇺</span>
-                    {% endif %}
+                    {{ reglementation.title }} {% if reglementation.zone == "france" %}<span title="Réglementation Nationale">🇫🇷</span>{% elif reglementation.zone == "europe" %}<span title="Réglementation Européenne">🇪🇺</span>{% endif %}
                     <a href="{% url 'reglementations:reglementation' entreprise.siren reglementation.id %}"></a>
                 </h3>
                 <div class="fr-card__start">
