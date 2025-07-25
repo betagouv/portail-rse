@@ -5,7 +5,7 @@
             <div class="fr-collapse" id="fr-sidemenu-wrapper">
                 <p class="fr-sidemenu__title" id="sidemenu-title">Mon tableau de bord</p>
                 <div class="denomination">
-                    <p class="fr-badge fr-icon-building-line fr-badge--icon-left"><span class="fr-ellipsis">{{ entreprise.denomination }}</span></p>
+                    <p class="fr-badge fr-icon-building-line fr-badge--icon-left"><span class="fr-ellipsis" title="{{ entreprise.denomination }}">{{ entreprise.denomination }}</span></p>
                 </div>
                 <a class="fr-btn fr-btn--secondary fr-my-2w" href="{% url 'entreprises:entreprises' %}">Ajouter une entreprise</a>
                 <ul class="fr-sidemenu__list">
