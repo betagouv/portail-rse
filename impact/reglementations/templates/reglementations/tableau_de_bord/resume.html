@@ -44,7 +44,7 @@
                                     </h3>
                                     <div class="fr-card__start">
                                         <ul class="fr-tags-group">
-                                            <li><p class="fr-tag">{% if entreprise.code_pays_etranger_sirene and entreprise.est_hors_EEE %}Hors Espace Economique Européen{% else %}Espace Economique Européen{% endif %}</p></li>
+                                            <li><p class="fr-tag">SIREN : {{ entreprise.siren }}</p></li>
                                             {% if entreprise.categorie_juridique and entreprise.categorie_juridique.label %}
                                                 <li><p class="fr-tag">{{ entreprise.categorie_juridique.label }}</p></li>
                                             {% endif %}
