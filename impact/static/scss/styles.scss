@@ -62,30 +62,6 @@
     }
 }
 
-/* Overriding header classes & css so we can display buttons in tool links */
-
-.fr-header__tools-links .fr-btn.fr-btn--tool-links, .fr-header__menu-links .fr-btn.fr-btn--tool-links {
-    --text-spacing: 0;
-    --title-spacing: 0;
-    --underline-img: none;
-    --hover-tint: var(--hover);
-    --idle: transparent;
-    --hover: var(--background-action-high-blue-france-hover);
-    --active: var(--background-action-high-blue-france-active);
-    align-items: center;
-    background-color: var(--background-action-high-blue-france);
-    color: var(--text-inverted-blue-france);
-    display: inline-flex;
-    flex-direction: row;
-    font-size: 1rem;
-    font-weight: 500;
-    line-height: 1.5rem;
-    min-height: 2.5rem;
-    padding: .5rem 1rem;
-    width: -moz-fit-content;
-    width: fit-content;
-}
-
 /* background coloré */
 
 .background-light-grey {
@@ -123,90 +99,6 @@
     border-radius: .25rem;
     color: var(--background-flat-info);
     background-color: var(--background-contrast-blue-ecume);
-}
-
-/* Réglementation Component Dashboard */
-
-.reglementation--full {
-    box-shadow: inset 0 -1px 0 0px var(--background-contrast-grey);
-}
-
-.reglementation-header {
-    width: 100%;
-    display: grid;
-    grid-template-columns: max-content 1fr;
-    grid-template-rows: auto;
-    grid-column: 1/3;
-    grid-gap:1rem;
-}
-
-.reglementation-title {
-    max-width: 960px;
-    margin-bottom: 0;
-    font-size: 1.175rem;
-}
-
-.reglementation_desc {
-    font-size: .875rem;
-    line-height: 1.5rem;
-    margin-bottom: 0;
-    order: 3;
-}
-
-.reglementation--content {
-    grid-column: 1/4;
-}
-
-.fr-badge {
-    &.europe {
-        background-color: var(--background-alt-blue-ecume);
-        color: var(--text-action-high-blue-cumulus);
-    }
-}
-
-.reglementation--full:last-child {
-    box-shadow: inset 0 0 0 0px var(--background-contrast-grey);
-}
-
-.reglementation_detail {
-    align-items: flex-start;
-    color: var(--text-default-info);
-    background-color: var(--background-contrast-info);
-    border-radius: .25rem;
-    display: flex;
-    flex-direction: row;
-    font-size: .75rem;
-    line-height: 1.25rem;
-    margin-bottom: 0;
-    grid-column: 1/3;
-    align-items: center;
-    width: fit-content;
-}
-
-.reglementation_detail[class*=" fr-fi-"]::before, .reglementation_detail[class*=" fr-icon-"]::before, .reglementation_detail[class^="fr-fi-"]::before, .reglementation_detail[class^="fr-icon-"]::before {
-    --icon-size: 1rem;
-    margin-right: .5rem;
-  }
-
-.reglementation-grid {
-    display: grid;
-    grid-template-columns: 135px auto;
-    grid-template-rows: auto;
-    grid-gap: 1rem;
-    width: 100%;
-    margin-top: 3rem;
-    padding-bottom: 1.5rem;
-    .fr-btns-group {
-        grid-column: 1/4;
-    }
-}
-
-.reglementation--grey {
-    color: var(--text-default-grey);
-    .reglementation_detail {
-        color: var(--text-default-grey);
-        background-color: var(--background-contrast-grey);
-    }
 }
 
 /* Sélection des enjeux */
@@ -568,17 +460,10 @@
     border-radius: .5rem;
     padding:.5rem 1rem;
     padding-bottom: 1rem;
-    // flex-direction: column;
     h2 {
         text-transform: uppercase;
         font-size: 1rem;
-        // font-weight: 700;
-        // line-height: 1.5rem;
         margin-bottom:  .5rem;
-    }
-    .reglementation_detail {
-        color: var(--text-default-grey);
-        background-color: var(--background-default-grey);
     }
 }
 
@@ -613,71 +498,6 @@
     }
 }
 
-.dashboard--soumis {
-    background-color: var(--background-contrast-info);
-    h4 {
-        color: var(--text-default-info);
-    }
-}
-
-.dashboard--non-soumis {
-    background-color: var(--background-alt-grey);
-    h4 {
-        color: var(--text-label-grey);
-    }
-}
-
-.dashboard--recommandees {
-    background-color: var(--background-alt-yellow-tournesol);
-    h4 {
-        color: var(--text-label-yellow-tournesol);
-    }
-}
-
-.dashboard {
-    .reglementation-grid {
-        display: grid;
-        grid-template-columns: auto 1fr;
-        grid-gap: 0rem;
-    }
-    .fr-btn {
-        margin-bottom: .5rem;
-    }
-    .fr-text--sm {
-        color: var(--text-mention-grey);
-    }
-    .reglementation-grid {
-        .fr-btns-group {
-            flex-flow: wrap;
-            align-items: flex-start;
-            grid-column: 2/3;
-            grid-row: 1/2;
-            text-align: right;
-            justify-content: end;
-            margin-left: 1rem;
-        }
-        .reglementation-header {
-            grid-column: 1/2;
-            grid-row:1/2;
-            display: flex;
-            flex-direction: column;
-            grid-gap:0px;
-        }
-    }
-}
-
-.dashboard-category-header {
-    display: flex;
-    flex-direction: column;
-    button {
-        color: var(--text-default-info);
-        &:hover {
-            color: var(--text-default-info-hover);
-            background-color: rgba(0,0,0,0);
-        }
-    }
-}
-
 
 /* fr-col aligné à droite */
 .col-right {
@@ -692,61 +512,10 @@
 }
 }
 
-@media screen and (max-width: 992px) {
-    .reglementation-grid {
-        grid-gap: 0rem;
-    }
-    .reglementation-header {
-        grid-column: 1/4;
-    }
-    .reglementation .fr-btns-group, .reglementation-grid .fr-btns-group {
-        justify-content:flex-start;
-        grid-row: 3/4;
-    }
-    .dashboard {
-        .reglementation-grid {
-            display: flex;
-            flex-direction: column;
-        }
-        .reglementation-header {
-            width: 100%;
-            display: grid;
-            grid-template-columns: 100%;
-            grid-template-rows: auto auto;
-        }
-        .reglementation-grid .fr-btns-group {
-            padding-top: 1em;
-            flex-flow: column;
-            align-items: start;
-            text-align: left;
-            justify-content: start;
-        }
-    }
-}
-
 @media screen and (max-width: 768px) {
     .fr-card.fr-card--simulation .fr-card__content {
         padding:1rem;
         padding-left: 1rem;
-    }
-}
-
-@media screen and (max-width: 576px) {
-    .reglementation-header {
-        width: 100%;
-        display: grid;
-        grid-template-columns: 100%;
-        grid-template-rows: auto auto auto auto;
-    }
-    .reglementation--content {
-        grid-column: auto;
-        grid-row: 4/5;
-    }
-    .reglementation_detail {
-        grid-row: 3/4;
-    }
-    .reglementation-title {
-        grid-row: 2/3;
     }
 }
 
