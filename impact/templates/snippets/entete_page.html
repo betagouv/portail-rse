@@ -31,7 +31,6 @@
                     <ul class="fr-btns-group">
                         <li><a class="fr-btn fr-tool-link fr-icon-mail-fill" href="{% absolute_url 'contact'%}">Contactez-nous</a></li>
                         {% if user.is_authenticated %}
-                            <li><a class="fr-btn fr-tool-link fr-icon-building-fill" href="{% absolute_url 'entreprises:entreprises' %}">{% if user.entreprise_set.count >= 2 %}Mes entreprises{% else %}Mon entreprise{% endif %}</a></li>
                             <li class="fr-nav__item header-collapse">
                                 <button class="fr-btn fr-tool-link fr-icon-account-circle-fill" aria-expanded="false" aria-controls="menu-header">{{ user.prenom|title }} {{ user.nom|title|first }}.</button>
                                 <div class="fr-collapse fr-menu" id="menu-header">
