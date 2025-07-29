@@ -1,12 +1,15 @@
 from functools import wraps
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http.response import Http404
 from django.http.response import HttpResponseForbidden
+from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls.base import reverse
 
 from entreprises.models import Entreprise
+from entreprises.views import get_current_entreprise
 
 
 ETAPES = {
@@ -29,7 +32,16 @@ def est_membre(func):
     # ne peut actuellement être utilisé que sur des fonctions avec
     # 2 params siren et etape
     @wraps(func)
-    def _inner(request, siren, etape):
+    def _inner(request, siren=None, etape="introduction"):
+        if not siren:
+            entreprise = get_current_entreprise(request)
+            if not entreprise:
+                messages.warning(
+                    request,
+                    "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à l'espace VSME",
+                )
+                return redirect("entreprises:entreprises")
+            return redirect("vsme:etape_vsme", siren=entreprise.siren, etape=etape)
         try:
             entreprise = Entreprise.objects.get(siren=siren)
             if request.user not in entreprise.users.all():
