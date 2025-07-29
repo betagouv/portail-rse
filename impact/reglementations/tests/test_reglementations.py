@@ -29,7 +29,7 @@ def test_reglementations(client, entreprise_factory, alice):
     )
     client.force_login(alice)
 
-    response = client.get(f"/tableau-de-bord/{entreprise.siren}/reglementations")
+    response = client.get(f"/tableau-de-bord/{entreprise.siren}/reglementations/")
 
     assert response.status_code == 200
 
@@ -63,7 +63,7 @@ def test_reglementation(reglementation, client, entreprise_factory, alice):
     client.force_login(alice)
 
     response = client.get(
-        f"/tableau-de-bord/{entreprise.siren}/reglementations/{reglementation.id}"
+        f"/tableau-de-bord/{entreprise.siren}/reglementations/{reglementation.id}/"
     )
 
     assert response.status_code == 200
@@ -77,6 +77,6 @@ def test_reglementation_inexistante(client, entreprise_factory, alice):
     entreprise = entreprise_factory(utilisateur=alice)
     client.force_login(alice)
 
-    response = client.get(f"/tableau-de-bord/{entreprise.siren}/reglementations/yolo")
+    response = client.get(f"/tableau-de-bord/{entreprise.siren}/reglementations/yolo/")
 
     assert response.status_code == 404
