@@ -15,8 +15,8 @@ from habilitations.models import Habilitation
 from invitations.models import Invitation
 from reglementations.views import REGLEMENTATIONS
 
-RESUME_URL = "/tableau-de-bord/{siren}"
-REGLEMENTATIONS_URL = "/tableau-de-bord/{siren}/reglementations"
+RESUME_URL = "/tableau-de-bord/{siren}/"
+REGLEMENTATIONS_URL = "/tableau-de-bord/{siren}/reglementations/"
 
 
 @pytest.mark.parametrize("url", [RESUME_URL, REGLEMENTATIONS_URL])
@@ -103,18 +103,29 @@ def test_tableau_de_bord_sans_siren_redirige_vers_celui_de_l_entreprise_courante
     entreprise = entreprise_factory(utilisateur=alice)
     client.force_login(alice)
 
-    url = "/tableau-de-bord"
+    url = "/tableau-de-bord/"
     response = client.get(url)
 
     assert response.status_code == 302
-    assert response.url == f"/tableau-de-bord/{entreprise.siren}"
+    assert response.url == f"/tableau-de-bord/{entreprise.siren}/"
+
+
+def test_tableau_de_bord_sans_slash_final(client, entreprise_factory, alice):
+    entreprise = entreprise_factory(utilisateur=alice)
+    client.force_login(alice)
+
+    url = "/tableau-de-bord"
+    response = client.get(url)
+
+    assert response.status_code == 301
+    assert response.url == f"/tableau-de-bord/"
 
 
 def test_tableau_de_bord_sans_siren_et_sans_entreprise(client, alice):
     # Cas limite où un utilisateur n'est rattaché à aucune entreprise
     client.force_login(alice)
 
-    url = "/tableau-de-bord"
+    url = "/tableau-de-bord/"
     response = client.get(url, follow=True)
 
     assert response.status_code == 200
