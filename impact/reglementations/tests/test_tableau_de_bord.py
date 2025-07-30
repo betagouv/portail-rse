@@ -17,6 +17,8 @@ from reglementations.views import REGLEMENTATIONS
 
 RESUME_URL = "/tableau-de-bord/{siren}/"
 REGLEMENTATIONS_URL = "/tableau-de-bord/{siren}/reglementations/"
+RESUME_URL_GENERIQUE = "/tableau-de-bord/"
+REGLEMENTATIONS_URL_GENERIQUE = "/tableau-de-bord/reglementations/"
 
 
 @pytest.mark.parametrize("url", [RESUME_URL, REGLEMENTATIONS_URL])
@@ -97,17 +99,17 @@ def test_tableau_de_bord_entreprise_inexistante(url, client, alice):
     assert response.status_code == 404
 
 
+@pytest.mark.parametrize("url", [RESUME_URL_GENERIQUE, REGLEMENTATIONS_URL_GENERIQUE])
 def test_tableau_de_bord_sans_siren_redirige_vers_celui_de_l_entreprise_courante(
-    client, entreprise_factory, alice
+    url, client, entreprise_factory, alice
 ):
     entreprise = entreprise_factory(utilisateur=alice)
     client.force_login(alice)
 
-    url = "/tableau-de-bord/"
     response = client.get(url)
 
     assert response.status_code == 302
-    assert response.url == f"/tableau-de-bord/{entreprise.siren}/"
+    assert entreprise.siren in response.url
 
 
 def test_tableau_de_bord_sans_slash_final(client, entreprise_factory, alice):
@@ -121,11 +123,11 @@ def test_tableau_de_bord_sans_slash_final(client, entreprise_factory, alice):
     assert response.url == f"/tableau-de-bord/"
 
 
-def test_tableau_de_bord_sans_siren_et_sans_entreprise(client, alice):
+@pytest.mark.parametrize("url", [RESUME_URL_GENERIQUE, REGLEMENTATIONS_URL_GENERIQUE])
+def test_tableau_de_bord_sans_siren_et_sans_entreprise(url, client, alice):
     # Cas limite où un utilisateur n'est rattaché à aucune entreprise
     client.force_login(alice)
 
-    url = "/tableau-de-bord/"
     response = client.get(url, follow=True)
 
     assert response.status_code == 200

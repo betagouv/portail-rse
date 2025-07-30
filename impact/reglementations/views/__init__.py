@@ -49,7 +49,11 @@ def entreprise_qualifiee_requise(function):
                     "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à votre tableau de bord",
                 )
                 return redirect("entreprises:entreprises")
-            return redirect("reglementations:tableau_de_bord", siren=entreprise.siren)
+            return redirect(
+                f"reglementations:{request.resolver_match.url_name}",
+                siren=entreprise.siren,
+                **kwargs,
+            )
 
         entreprise = get_object_or_404(Entreprise, siren=siren)
         if not Habilitation.existe(entreprise, request.user):
