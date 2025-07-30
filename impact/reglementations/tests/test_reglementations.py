@@ -80,3 +80,19 @@ def test_reglementation_inexistante(client, entreprise_factory, alice):
     response = client.get(f"/tableau-de-bord/{entreprise.siren}/reglementations/yolo/")
 
     assert response.status_code == 404
+
+
+@pytest.mark.parametrize("reglementation", REGLEMENTATIONS)
+def test_reglementation_sans_siren_redirige_vers_celle_de_l_entreprise_courante(
+    reglementation, client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    client.force_login(alice)
+
+    response = client.get(f"/tableau-de-bord/reglementations/{reglementation.id}/")
+
+    assert response.status_code == 302
+    assert (
+        response.url
+        == f"/tableau-de-bord/{entreprise.siren}/reglementations/{reglementation.id}/"
+    )

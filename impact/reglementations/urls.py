@@ -11,6 +11,16 @@ urlpatterns = [
         name="tableau_de_bord",
     ),
     path(
+        "tableau-de-bord/reglementations/",
+        views.reglementations,
+        name="reglementations",
+    ),
+    path(
+        "tableau-de-bord/reglementations/<str:id_reglementation>/",
+        views.reglementation,
+        name="reglementation",
+    ),
+    path(
         "tableau-de-bord/<str:siren>/",
         views.tableau_de_bord,
         name="tableau_de_bord",
