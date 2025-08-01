@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     "anymail",
     "corsheaders",
     "django_hosts",
+    "django_jsonform",
 ]
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",

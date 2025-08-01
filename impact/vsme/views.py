@@ -58,7 +58,7 @@ def est_membre(func):
 
     return _inner
 
-
+from .models import IndicateurTableau, IndicateurNombre
 @login_required
 @est_membre
 def etape_vsme(request, siren, etape):
@@ -78,6 +78,8 @@ def etape_vsme(request, siren, etape):
         "lien": reverse("vsme:etape_vsme", kwargs={"siren": siren, "etape": etape}),
         "nom_entreprise": request._nom_entreprise,
         "siren": siren,
+        "tableau_form": IndicateurTableau.objects.first(),
+        "nombre_form": IndicateurNombre.objects.first(),
     }
 
     return render(request, template_name, context=context)
