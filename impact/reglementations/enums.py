@@ -387,8 +387,10 @@ class EtapeCSRD:
     sous_etapes: dict = field(default_factory=dict)
     ETAPES_VALIDABLES = [
         "introduction",
+        # l'étape "analyse de la double matérialité" contient deux sous-étapes :
         "selection-enjeux",
         "analyse-materialite",
+        # l'étape "collecte des données" contient deux sous-étapes :
         "selection-informations",
         "analyse-ecart",
         "redaction-rapport-durabilite",
@@ -409,6 +411,22 @@ class EtapeCSRD:
                 if sous_etape.id == id_etape:
                     return sous_etape
         raise Exception(f"Étape CSRD inconnue : {id_etape}")
+
+    @classmethod
+    def id_etape_est_validee(cls, id_etape_reference, id_etape_a_tester):
+        return cls.ETAPES_VALIDABLES.index(
+            id_etape_reference
+        ) <= cls.ETAPES_VALIDABLES.index(id_etape_a_tester)
+
+    @classmethod
+    def progression_id_etape(cls, id_etape):
+        max = len(cls.ETAPES_VALIDABLES) - 1  # l'étape introduction est ignorée
+        if id_etape:
+            actuel = cls.ETAPES_VALIDABLES.index(id_etape)
+        else:
+            actuel = 0
+        pourcent = int(actuel / max * 100)
+        return {"max": max, "actuel": actuel, "pourcent": pourcent}
 
 
 phase2 = EtapeCSRD(

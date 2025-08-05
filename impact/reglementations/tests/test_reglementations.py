@@ -2,6 +2,7 @@ import pytest
 
 import reglementations.views  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
+from reglementations.models import RapportCSRD
 from reglementations.utils import VSMEReglementation
 from reglementations.views import REGLEMENTATIONS
 from reglementations.views.base import InsuffisammentQualifieeError
@@ -96,3 +97,30 @@ def test_reglementation_sans_siren_redirige_vers_celle_de_l_entreprise_courante(
         response.url
         == f"/tableau-de-bord/{entreprise.siren}/reglementations/{reglementation.id}/"
     )
+
+
+def test_reglementation_sur_la_csrd_fournit_la_csrd_en_cours_au_template_si_elle_existe(
+    client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,  # entreprise soumise à au moins une réglementation
+        utilisateur=alice,
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/tableau-de-bord/{entreprise.siren}/reglementations/csrd/")
+
+    assert response.status_code == 200
+    context = response.context
+    assert context["csrd"] is None
+
+    rapport = RapportCSRD.objects.create(
+        entreprise=entreprise,
+        annee=2025,
+    )
+
+    response = client.get(f"/tableau-de-bord/{entreprise.siren}/reglementations/csrd/")
+
+    assert response.status_code == 200
+    context = response.context
+    assert context["csrd"] == rapport
