@@ -1,7 +1,9 @@
+from datetime import datetime
 from functools import wraps
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -20,6 +22,7 @@ from reglementations.views.base import ReglementationStatus
 from reglementations.views.bdese import BDESEReglementation
 from reglementations.views.bges import BGESReglementation
 from reglementations.views.csrd import CSRDReglementation
+from reglementations.views.csrd.csrd import rapport_csrd
 from reglementations.views.dispositif_alerte import DispositifAlerteReglementation
 from reglementations.views.dispositif_anticorruption import DispositifAntiCorruption
 from reglementations.views.index_egapro import IndexEgaproReglementation
@@ -184,6 +187,15 @@ def reglementation(request, entreprise_qualifiee, id_reglementation):
         "reglementation": reglementation,
         "status": status,
     }
+    if id_reglementation == "csrd":
+        try:
+            rapport = rapport_csrd(
+                entreprise=entreprise_qualifiee,
+                annee=datetime.today().year,
+            )
+        except ObjectDoesNotExist:
+            rapport = None
+        context["csrd"] = rapport
 
     return render(
         request,

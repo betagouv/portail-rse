@@ -2,6 +2,44 @@
     --ul-type: none;
 }
 
+
+/* barre de progression pour l'étape de la csrd */
+// https://stackoverflow.com/questions/21476748/how-to-change-the-color-of-html5-progress-bar
+.progression-csrd {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+}
+
+/* IE10 */
+.progression-csrd {
+    color: var(--background-contrast-yellow-moutarde);
+}
+
+/* Firefox */
+.progression-csrd::-moz-progress-bar {
+    background: var(--background-contrast-yellow-moutarde);
+}
+.progression-csrd[value="5"]::-moz-progress-bar {
+    background-color : var(--background-contrast-green-emeraude);
+}
+
+/* Chrome */
+/* The filled part */
+.progression-csrd::-webkit-progress-value {
+    background: var(--background-contrast-yellow-moutarde);
+}
+.progression-csrd[value="5"]::-webkit-progress-value {
+    background-color : var(--background-contrast-green-emeraude);
+}
+/* The empty part */
+.progression-csrd::-webkit-progress-bar {
+    background: gray;
+}
+
+
+
 /* htmx */
 /* https://htmx.org/docs/#indicators */
 .htmx-indicator{

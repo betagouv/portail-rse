@@ -1,7 +1,10 @@
 import pytest
 from django.core.exceptions import ValidationError
+from django.urls import reverse_lazy
 
 from reglementations.enums import ENJEUX_NORMALISES
+from reglementations.enums import EtapeCSRD
+from reglementations.enums import ETAPES_CSRD
 from reglementations.models import DocumentAnalyseIA
 from reglementations.models import RapportCSRD
 
@@ -96,6 +99,139 @@ def test_rapport_csrd_bloque_non_modifiable(csrd):
     assert (
         csrd.lien_rapport == "https://example.com/nouveau"
     ), "Seul le lien_rapport devrait être modifiable"
+
+
+def test_debut_avancement_etapes_csrd(csrd):
+    assert not csrd.etape_validee
+    assert len(csrd.avancement_etapes()) == 3
+
+    id_sous_etape_selection_enjeux = EtapeCSRD.ETAPES_VALIDABLES[1]
+    id_sous_etape_analyse_materialite = EtapeCSRD.ETAPES_VALIDABLES[2]
+    id_sous_etape_selection_informations = EtapeCSRD.ETAPES_VALIDABLES[3]
+
+    # par défaut, rien n'est validé
+    for index, action in enumerate(csrd.avancement_etapes(), start=1):
+        assert action["etape"] == ETAPES_CSRD[index]
+        assert action["validee"] == False
+    assert csrd.avancement_etapes()[0]["lien"] == reverse_lazy(
+        "reglementations:gestion_csrd",
+        kwargs={
+            "siren": csrd.entreprise.siren,
+            "id_etape": id_sous_etape_selection_enjeux,
+        },
+    )
+
+    # rien n'est validé car seule la première sous-etape est validée
+    csrd.etape_validee = id_sous_etape_selection_enjeux
+    for action in csrd.avancement_etapes():
+        assert action["validee"] == False
+    assert csrd.avancement_etapes()[0]["lien"] == reverse_lazy(
+        "reglementations:gestion_csrd",
+        kwargs={
+            "siren": csrd.entreprise.siren,
+            "id_etape": id_sous_etape_selection_enjeux,
+        },
+    )
+
+    # la première étape est validée car la seconde sous-etape est validée
+    # on considère donc que la première sous-étape l'est aussi
+    csrd.etape_validee = id_sous_etape_analyse_materialite
+    assert csrd.avancement_etapes()[0] == {
+        "etape": ETAPES_CSRD[1],
+        "validee": True,
+        "lien": reverse_lazy(
+            "reglementations:gestion_csrd",
+            kwargs={
+                "siren": csrd.entreprise.siren,
+                "id_etape": id_sous_etape_analyse_materialite,
+            },
+        ),
+    }
+    # et pour la seconde étape, on ira sur la première sous-étape
+    assert csrd.avancement_etapes()[1] == {
+        "etape": ETAPES_CSRD[2],
+        "validee": False,
+        "lien": reverse_lazy(
+            "reglementations:gestion_csrd",
+            kwargs={
+                "siren": csrd.entreprise.siren,
+                "id_etape": id_sous_etape_selection_informations,
+            },
+        ),
+    }
+
+    # la première étape est validée car la première sous-etape
+    # de la seconde étape est validée
+    csrd.etape_validee = id_sous_etape_selection_informations
+    assert csrd.avancement_etapes()[0] == {
+        "etape": ETAPES_CSRD[1],
+        "validee": True,
+        "lien": reverse_lazy(
+            "reglementations:gestion_csrd",
+            kwargs={
+                "siren": csrd.entreprise.siren,
+                "id_etape": id_sous_etape_analyse_materialite,
+            },
+        ),
+    }
+    for action in csrd.avancement_etapes()[1:]:
+        assert action["validee"] == False
+
+    # la première étape est validée car la première sous-etape
+    # de la seconde étape est validée
+    csrd.etape_validee = id_sous_etape_selection_informations
+    assert csrd.avancement_etapes()[0] == {
+        "etape": ETAPES_CSRD[1],
+        "validee": True,
+        "lien": reverse_lazy(
+            "reglementations:gestion_csrd",
+            kwargs={
+                "siren": csrd.entreprise.siren,
+                "id_etape": id_sous_etape_analyse_materialite,
+            },
+        ),
+    }
+    for action in csrd.avancement_etapes()[1:]:
+        assert action["validee"] == False
+
+
+def test_fin_avancement_etapes_csrd(csrd):
+    id_etape_redaction = EtapeCSRD.ETAPES_VALIDABLES[-1]
+
+    # dernière étape validée
+    csrd.lien_rapport = "https://csrd.example"
+
+    # tout est validé
+    for index, action in enumerate(csrd.avancement_etapes(), start=1):
+        assert action["etape"] == ETAPES_CSRD[index]
+        assert action["validee"] == True
+    assert csrd.avancement_etapes()[-1]["lien"] == reverse_lazy(
+        "reglementations:gestion_csrd",
+        kwargs={
+            "siren": csrd.entreprise.siren,
+            "id_etape": id_etape_redaction,
+        },
+    )
+
+
+def test_progression_avancement_csrd(csrd):
+    id_sous_etape_selection_enjeux = EtapeCSRD.ETAPES_VALIDABLES[1]
+    id_sous_etape_analyse_materialite = EtapeCSRD.ETAPES_VALIDABLES[2]
+    id_sous_etape_selection_informations = EtapeCSRD.ETAPES_VALIDABLES[3]
+
+    assert csrd.progression() == {"max": 5, "actuel": 0, "pourcent": 0}
+
+    csrd.etape_validee = id_sous_etape_selection_enjeux
+    assert csrd.progression() == {"max": 5, "actuel": 1, "pourcent": 20}
+
+    csrd.etape_validee = id_sous_etape_analyse_materialite
+    assert csrd.progression() == {"max": 5, "actuel": 2, "pourcent": 40}
+
+    csrd.etape_validee = id_sous_etape_selection_informations
+    assert csrd.progression() == {"max": 5, "actuel": 3, "pourcent": 60}
+
+    csrd.lien_rapport = "https://csrd.example"
+    assert csrd.progression() == {"max": 5, "actuel": 5, "pourcent": 100}
 
 
 def test_rapport_csrd_avec_documents(csrd):

@@ -10,10 +10,13 @@ from django.db import transaction
 from django.db.models import F
 from django.db.models import IntegerField
 from django.db.models.query import Cast
+from django.urls import reverse_lazy
 
 from ..enums import EnjeuNormalise
 from ..enums import ENJEUX_NORMALISES
 from ..enums import ESRS
+from ..enums import EtapeCSRD
+from ..enums import ETAPES_CSRD
 from utils.models import TimestampedModel
 
 
@@ -157,6 +160,64 @@ class RapportCSRD(TimestampedModel):
             # C'est sans importance, juste un peu plus long à traiter au niveau DB.
             with transaction.atomic():
                 self.enjeux.add(*enjeux, bulk=False)
+
+    def avancement_etapes(self):
+        """Fournit la liste des étapes et leur avancement
+
+        Ne retourne que des infos liées aux étapes, mais l'avancement des sous-étapes est pris en compte le cas échéant.
+        """
+        avancement = []
+        for etape in ETAPES_CSRD[1:]:
+            action = {"etape": etape}
+            if self.lien_rapport:
+                action["validee"] = True
+                id_etape_a_faire = self._selection_id_etape_a_faire(
+                    etape, action["validee"]
+                )
+            elif self.etape_validee:
+                if etape.sous_etapes:
+                    id_etape_reference = etape.sous_etapes[1].id
+                else:
+                    id_etape_reference = etape.id
+
+                action["validee"] = EtapeCSRD.id_etape_est_validee(
+                    id_etape_reference, self.etape_validee
+                )
+
+                id_etape_a_faire = self._selection_id_etape_a_faire(
+                    etape, action["validee"]
+                )
+            else:
+                action["validee"] = False
+                id_etape_a_faire = self._selection_id_etape_a_faire(
+                    etape, action["validee"]
+                )
+            action["lien"] = reverse_lazy(
+                "reglementations:gestion_csrd",
+                kwargs={
+                    "siren": self.entreprise.siren,
+                    "id_etape": id_etape_a_faire,
+                },
+            )
+            avancement.append(action)
+        return avancement
+
+    def _selection_id_etape_a_faire(self, etape, etape_est_validee):
+        if etape.sous_etapes:
+            if etape_est_validee:
+                id_etape_a_faire = etape.sous_etapes[1].id
+            else:
+                id_etape_a_faire = etape.sous_etapes[0].id
+        else:
+            id_etape_a_faire = etape.id
+        return id_etape_a_faire
+
+    def progression(self):
+        if self.lien_rapport:
+            etape_validee = "redaction-rapport-durabilite"
+        else:
+            etape_validee = self.etape_validee
+        return EtapeCSRD.progression_id_etape(etape_validee)
 
     def nombre_enjeux_selectionnes_par_esrs(self):
         # Retourne un dictionnaire de tuples contenant le nombre d'enjeux sélectionnés par ESRS pour ce rapport
