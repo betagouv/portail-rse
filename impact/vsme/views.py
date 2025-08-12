@@ -105,12 +105,26 @@ def forms_par_exigence_de_publication(vsme):
             model = IndicateurTableau
             exclude = []
 
+        def __init__(self, indicateur, fetched_data=None, *args, **kwargs):
+            if fetched_data:
+                if "initial" not in kwargs:
+                    kwargs["initial"] = {"indicateur_id": 23}
+                kwargs["initial"].update(fetched_data)
+            super().__init__(*args, instance=indicateur, **kwargs)
+
     class FormNombre(forms.ModelForm):
         indicateur_id = forms.IntegerField()
 
         class Meta:
             model = IndicateurNombre
             exclude = []
+
+        def __init__(self, indicateur, fetched_data=None, *args, **kwargs):
+            if fetched_data:
+                if "initial" not in kwargs:
+                    kwargs["initial"] = {"indicateur_id": 23}
+                kwargs["initial"].update(fetched_data)
+            super().__init__(*args, instance=indicateur, **kwargs)
 
     for field_name in ["indicateur_tableau", "indicateur_nombre"]:
         fk_indicateur = vsme._meta.get_field(field_name)
