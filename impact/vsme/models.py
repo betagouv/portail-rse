@@ -1,4 +1,4 @@
-from django.db.models import BooleanField
+from django.db import models
 from django_jsonform.models.fields import JSONField
 
 from utils.models import TimestampedModel
@@ -52,39 +52,52 @@ from utils.models import TimestampedModel
 
 
 class IndicateurTableau(TimestampedModel):
+    type = "tableau"
     ITEMS_SCHEMA = {
-        'type': 'list',
-        'items': {
-            'type': 'dict',
-            'default': None,
-            'keys': {
-                'pertinent': {
-                    'type': 'boolean',
-                    'title': 'Pertinent selon votre situation',
+        "type": "list",
+        "items": {
+            "type": "dict",
+            "default": None,
+            "keys": {
+                "pertinent": {
+                    "type": "boolean",
+                    "title": "Pertinent selon votre situation",
                 },
-                'label': {
-                    'type': 'string'
+                "label": {"type": "string"},
+                "link": {
+                    "type": "string",
+                    "choices": ["Eggs", "Juice", "Milk"],
                 },
-                'link': {
-                    'type': 'string',
-                    'choices': ['Eggs', 'Juice', 'Milk'],
-                },
-                'new_tab': {
-                    'type': 'boolean',
-                    'title': 'Open in new tab'
-                }
-            }
-        }
+                "new_tab": {"type": "boolean", "title": "Open in new tab"},
+            },
+        },
     }
 
-    pertinent = BooleanField(default=True)
+    pertinent = models.BooleanField(default=True)
     items = JSONField(schema=ITEMS_SCHEMA)
 
+
 class IndicateurNombre(TimestampedModel):
+    type = "nombre"
     ITEMS_SCHEMA = {
-        'type': 'integer',
-        'default': None,
+        "type": "integer",
+        "default": None,
     }
 
-    pertinent = BooleanField(default=True)
+    pertinent = models.BooleanField(default=True)
     valeur = JSONField(schema=ITEMS_SCHEMA)
+
+
+class VSME(TimestampedModel):
+    indicateur_tableau = models.ForeignKey(
+        IndicateurTableau,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+    indicateur_nombre = models.ForeignKey(
+        IndicateurNombre,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )

@@ -1,5 +1,6 @@
 from functools import wraps
 
+from django import forms
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http.response import Http404
@@ -8,9 +9,11 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls.base import reverse
 
+from .models import IndicateurNombre
+from .models import IndicateurTableau
+from .models import VSME
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
-
 
 ETAPES = {
     "introduction": "Introduction",
@@ -58,7 +61,7 @@ def est_membre(func):
 
     return _inner
 
-from .models import IndicateurTableau, IndicateurNombre
+
 @login_required
 @est_membre
 def etape_vsme(request, siren, etape):
@@ -74,12 +77,54 @@ def etape_vsme(request, siren, etape):
         case _:
             return Http404("Etape VSME inconnue")
 
+    vsme = VSME.objects.first()
+    if not vsme:
+        vsme = VSME.objects.create()
+    forms = forms_par_exigence_de_publication(vsme)
+
     context |= {
         "lien": reverse("vsme:etape_vsme", kwargs={"siren": siren, "etape": etape}),
         "nom_entreprise": request._nom_entreprise,
         "siren": siren,
         "tableau_form": IndicateurTableau.objects.first(),
         "nombre_form": IndicateurNombre.objects.first(),
+        "vsme": vsme,
+        "forms": forms,
     }
 
     return render(request, template_name, context=context)
+
+
+def forms_par_exigence_de_publication(vsme):
+    _forms = []
+
+    class FormTableau(forms.ModelForm):
+        indicateur_id = forms.IntegerField()
+
+    class FormNombre(forms.ModelForm):
+        indicateur_id = forms.IntegerField()
+
+    for field_name in ["indicateur_tableau", "indicateur_nombre"]:
+        fk_indicateur = vsme._meta.get_field(field_name)
+        indicateur = fk_indicateur.related_model
+        type_indicateur = indicateur.type
+        if type_indicateur == "nombre":
+            form = forms.modelform_factory(
+                indicateur,
+                form=FormNombre,
+                exclude=[],
+            )
+            form.fields[field_name].value = vsme.id
+            form.indicateur_id.value = vsme.id
+            _forms.append(form)
+        elif type_indicateur == "tableau":
+            form = forms.modelform_factory(
+                indicateur,
+                form=FormTableau,
+                exclude=[],
+            )
+            form.indicateur_id = vsme.id
+            _forms.append(form)
+        else:
+            print("xxx", indicateur)
+    return _forms

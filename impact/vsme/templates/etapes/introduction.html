@@ -14,6 +14,14 @@
         {{ tableau_form.items }}
         <hr />
         {{ nombre_form.items }}
+
+        <hr />
+        {{ vsme }}
+        {% for form in forms %}
+          {{ form }}
+        {% endfor %}
+        <hr />
+
         <p>
           Bienvenue dans votre espace de pilotage pour vous aider à la rédaction de votre rapport volontaire de durabilité.
           Vous y trouverez toute la documentation utile pour vous familiariser avec les VSME (Voluntary reporting standard for SMEs).
