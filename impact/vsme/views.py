@@ -101,8 +101,16 @@ def forms_par_exigence_de_publication(vsme):
     class FormTableau(forms.ModelForm):
         indicateur_id = forms.IntegerField()
 
+        class Meta:
+            model = IndicateurTableau
+            exclude = []
+
     class FormNombre(forms.ModelForm):
         indicateur_id = forms.IntegerField()
+
+        class Meta:
+            model = IndicateurNombre
+            exclude = []
 
     for field_name in ["indicateur_tableau", "indicateur_nombre"]:
         fk_indicateur = vsme._meta.get_field(field_name)
@@ -114,17 +122,14 @@ def forms_par_exigence_de_publication(vsme):
                 form=FormNombre,
                 exclude=[],
             )
-            form.fields[field_name].value = vsme.id
-            form.indicateur_id.value = vsme.id
-            _forms.append(form)
         elif type_indicateur == "tableau":
             form = forms.modelform_factory(
                 indicateur,
                 form=FormTableau,
                 exclude=[],
             )
-            form.indicateur_id = vsme.id
-            _forms.append(form)
-        else:
-            print("xxx", indicateur)
+        # form.fields[field_name].value = indicateur.id
+        form.indicateur_id.value = indicateur.id
+        print(form)
+        _forms.append(form)
     return _forms
