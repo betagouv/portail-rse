@@ -2,7 +2,7 @@ from django.db import models
 
 from entreprises.models import DENOMINATION_MAX_LENGTH
 from habilitations.models import FONCTIONS_MAX_LENGTH
-from django.contrib.postgres.fields import ArrayField
+
 
 class Utilisateur(models.Model):
     impact_id = models.BigIntegerField(primary_key=True)
@@ -114,3 +114,41 @@ class CSRD(Reglementation):
     nb_documents_ia = models.IntegerField(default=0)
     nb_iro_selectionnes = models.IntegerField(default=0)
     lien_rapport = models.BooleanField(default=False)
+
+
+# Tables temporaires / de travail
+
+
+class TempTable(models.Model):
+    # utilisé pour les récupérations asynchrones des données d'API
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    siren = models.CharField(max_length=9, verbose_name="numéro SIREN")
+
+    class Meta:
+        abstract = True
+        indexes = [
+            models.Index(fields=["siren"], name="siren_idx"),
+        ]
+
+
+class TempEgaPro(TempTable):
+    annee = models.CharField(max_length=4, verbose_name="année de publication")
+    reponse_api = models.JSONField(null=True, verbose_name="réponse de l'API")
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["siren", "annee"], name="unique_siren_annee"
+            )
+        ]
+
+
+class TempBGES(TempTable):
+    dt_publication = models.DateField(verbose_name="date de publication")
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["dt_publication"], name="dt_publication_idx"),
+        ]
