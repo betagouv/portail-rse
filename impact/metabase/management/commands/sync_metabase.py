@@ -1,6 +1,7 @@
 from datetime import date
 from time import time
 
+import responses
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import BaseCommand
@@ -19,6 +20,7 @@ from metabase.models import Habilitation as MetabaseHabilitation
 from metabase.models import IndexEgaPro as MetabaseIndexEgaPro
 from metabase.models import Invitation as MetabaseInvitation
 from metabase.models import Stats as MetabaseStats
+from metabase.models import TempEgaPro
 from metabase.models import Utilisateur as MetabaseUtilisateur
 from reglementations.models.csrd import DocumentAnalyseIA
 from reglementations.models.csrd import RapportCSRD
@@ -47,6 +49,7 @@ def mesure(fonction):
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
+        self._register_responses()
         self._drop_tables()
         self._insert_entreprises()
         self._insert_utilisateurs()
@@ -77,7 +80,6 @@ class Command(BaseCommand):
                 or entreprise.dernieres_caracteristiques
             )
             me_entreprise = MetabaseEntreprise(
-                # MetabaseEntreprise.objects.create(
                 impact_id=entreprise.pk,
                 ajoutee_le=entreprise.created_at,
                 modifiee_le=_last_update(entreprise),
@@ -359,7 +361,9 @@ class Command(BaseCommand):
 
         return result
 
+    @responses.activate
     def _insert_index_egapro(self, caracteristiques):
+        # des appels API sont nécessaires pour calculate_status() : utilisation de tables de travail
         entreprise = caracteristiques.entreprise
         result = None
         if "egapro" in settings.METABASE_DEBUG_SKIP_STEPS:
@@ -387,6 +391,7 @@ class Command(BaseCommand):
         return result
 
     def _insert_bges(self, caracteristiques):
+        # des appels API sont nécessaires pour calculate_status() : utilisation de tables de travail
         entreprise = caracteristiques.entreprise
         result = None
         if "bges" in settings.METABASE_DEBUG_SKIP_STEPS:
@@ -478,6 +483,33 @@ class Command(BaseCommand):
                 reglementations_statut_connu=nombre_reglementations_statut_connu,
             )
         self._success("Ajout des stats dans Metabase: OK")
+
+    def _register_responses(self):
+        # permet de mocker efficacement les appels à requests
+        self.stdout.write(
+            self.style.WARNING(
+                " > utilisation des tables temporaires pour BGES et EgaPro"
+            )
+        )
+
+        # mocks pour EgaPro
+        responses.add_callback(
+            method="GET",
+            url=r"^https://egapro.travail.gouv.fr/api/public/declaration/",
+            callback=callback_egapro,
+        )
+
+
+def callback_egapro(request):
+    # mock de l'API EgaPro avec les valeurs pré-enregistrées de TempEgaPro
+    params = request.url.split("/")
+    siren = params[-2]
+    annee = params("/")[-1]
+    try:
+        temp_egapro = TempEgaPro.objects.get(siren=siren, annee=annee)
+        return temp_egapro.reponse_api
+    except TempEgaPro.DoesNotExist:
+        return None
 
 
 def _last_update(entreprise):
