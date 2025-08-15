@@ -7,7 +7,13 @@
         "command": "0 0 * * * python3 impact/manage.py supprime_utilisateurs_non_confirmes"
       },
       {
-        "command": "5 0 * * * python3 impact/manage.py sync_metabase"
+        "command": "5 0 * * * python3 impact/manage.py sync_bges"
+      },
+      {
+        "command": "10 0 * * * python3 impact/manage.py sync_egapro"
+      },
+      {
+        "command": "15 0 * * * python3 impact/manage.py sync_metabase"
       },
       {
         "command": "0 1 * * * python3 impact/manage.py import_utilisateurs_brevo $BREVO_CONTACTS_LIST_ID"
