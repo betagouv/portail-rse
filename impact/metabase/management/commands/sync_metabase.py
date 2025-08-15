@@ -19,7 +19,9 @@ from metabase.models import Entreprise as MetabaseEntreprise
 from metabase.models import Habilitation as MetabaseHabilitation
 from metabase.models import IndexEgaPro as MetabaseIndexEgaPro
 from metabase.models import Invitation as MetabaseInvitation
+from metabase.models import Reglementation
 from metabase.models import Stats as MetabaseStats
+from metabase.models import TempBGES
 from metabase.models import TempEgaPro
 from metabase.models import Utilisateur as MetabaseUtilisateur
 from reglementations.models.csrd import DocumentAnalyseIA
@@ -390,6 +392,7 @@ class Command(BaseCommand):
 
         return result
 
+    @responses.activate
     def _insert_bges(self, caracteristiques):
         # des appels API sont nécessaires pour calculate_status() : utilisation de tables de travail
         entreprise = caracteristiques.entreprise
@@ -419,14 +422,18 @@ class Command(BaseCommand):
         return result
 
     def _convertit_portail_rse_status_en_statut_metabase(self, portail_rse_status):
-        statut = None
-        if portail_rse_status == ReglementationStatus.STATUS_A_ACTUALISER:
-            statut = MetabaseBDESE.STATUT_A_ACTUALISER
-        elif portail_rse_status == ReglementationStatus.STATUS_EN_COURS:
-            statut = MetabaseBDESE.STATUT_EN_COURS
-        elif portail_rse_status == ReglementationStatus.STATUS_A_JOUR:
-            statut = MetabaseBDESE.STATUT_A_JOUR
-        return statut
+        match portail_rse_status:
+            case ReglementationStatus.STATUS_A_ACTUALISER:
+                return Reglementation.STATUT_A_ACTUALISER
+            case ReglementationStatus.STATUS_EN_COURS:
+                return Reglementation.STATUT_EN_COURS
+            # FIXME: ce point métier est à confirmer !
+            case (
+                ReglementationStatus.STATUS_A_JOUR | ReglementationStatus.STATUS_SOUMIS
+            ):
+                return Reglementation.STATUT_A_JOUR
+            case _:
+                return f"?{portail_rse_status}?"
 
     @mesure
     def _insert_stats(self):
@@ -485,31 +492,39 @@ class Command(BaseCommand):
         self._success("Ajout des stats dans Metabase: OK")
 
     def _register_responses(self):
-        # permet de mocker efficacement les appels à requests
+        # permet de mocker efficacement les appels à requests en utilisant les tables de travail
         self.stdout.write(
             self.style.WARNING(
                 " > utilisation des tables temporaires pour BGES et EgaPro"
             )
         )
 
-        # mocks pour EgaPro
+        # mocks responses pour EgaPro
         responses.add_callback(
             method="GET",
             url=r"^https://egapro.travail.gouv.fr/api/public/declaration/",
             callback=callback_egapro,
         )
 
+        # mocks responses pour BGES
+        responses.add_callback(
+            method="GET",
+            url="https://bilans-ges.ademe.fr/api/inventories",
+            callback=callback_bges,
+        )
 
-def callback_egapro(request):
-    # mock de l'API EgaPro avec les valeurs pré-enregistrées de TempEgaPro
-    params = request.url.split("/")
-    siren = params[-2]
-    annee = params("/")[-1]
-    try:
-        temp_egapro = TempEgaPro.objects.get(siren=siren, annee=annee)
-        return temp_egapro.reponse_api
-    except TempEgaPro.DoesNotExist:
-        return None
+        # mock de `extract_last_reporting_year()`
+        def _mock_extract_last_reporting_year(json_data):
+            return json_data["annee"]
+
+        # remplace via un mock les appels à extract_last_reporting_year() par un appel à _mock_extract_last_reporting_year
+        from unittest.mock import patch  # noqa
+
+        patcher = patch(
+            "api.bges.extract_last_reporting_year",
+            _mock_extract_last_reporting_year,
+        )
+        patcher.start()
 
 
 def _last_update(entreprise):
@@ -520,3 +535,31 @@ def _last_update(entreprise):
         if caracteristiques.updated_at > last_update:
             last_update = caracteristiques.updated_at
     return last_update
+
+
+# Callbacks pour `responses`
+
+
+def callback_egapro(request):
+    # mock de l'API EgaPro avec les valeurs pré-enregistrées de TempEgaPro
+    params = request.url.split("/")
+    siren = params[-2]
+    annee = params[-1]
+    try:
+        temp_egapro = TempEgaPro.objects.get(siren=siren, annee=annee)
+        return temp_egapro.reponse_api
+    except TempEgaPro.DoesNotExist:
+        return None
+
+
+def callback_bges(request):
+    # completement fake, mais permet de ne pas toucher le code existant.
+    # a utiliser conjointement avec un mock de `extract_last_reporting_year()`
+    siren = request.params.get("entity.siren")
+    if siren:
+        latest_publication = (
+            TempBGES.objects.filter(siren=siren).order_by("-dt_publication").first()
+        )
+        if latest_publication:
+            return (200, {}, {"annee": latest_publication.dt_publication.year})
+    return (404, {}, {})
