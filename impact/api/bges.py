@@ -26,14 +26,18 @@ def last_reporting_year(siren):
         raise APIError()
 
     try:
-        data = response.json()
-        if members := data["hydra:member"]:
-            first_member = members[0]
-            last_year = first_member["identitySheet"]["reportingYear"]
-            for member in members[1:]:
-                year = member["identitySheet"]["reportingYear"]
-                last_year = max(last_year, year)
-            return last_year
+        return extract_last_reporting_year(response.json())
     except Exception as e:
         sentry_sdk.capture_exception(e)
         raise APIError()
+
+
+def extract_last_reporting_year(json_data) -> int | None:
+    # pour réutilisation lors d'extraction des données des tables temporaires
+    if members := json_data["hydra:member"]:
+        first_member = members[0]
+        last_year = first_member["identitySheet"]["reportingYear"]
+        for member in members[1:]:
+            year = member["identitySheet"]["reportingYear"]
+            last_year = max(last_year, year)
+        return last_year
