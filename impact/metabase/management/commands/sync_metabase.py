@@ -1,5 +1,6 @@
 from datetime import date
 from time import time
+from unittest.mock import patch
 
 import responses
 from django.conf import settings
@@ -404,12 +405,16 @@ class Command(BaseCommand):
         except InsuffisammentQualifieeError:
             return
         if est_soumise:
-            portail_rse_status = BGESReglementation.calculate_status(
-                caracteristiques
-            ).status
-            statut = self._convertit_portail_rse_status_en_statut_metabase(
-                portail_rse_status
-            )
+            with patch(
+                "api.bges.extract_last_reporting_year",
+                _mock_extract_last_reporting_year,
+            ):
+                portail_rse_status = BGESReglementation.calculate_status(
+                    caracteristiques
+                ).status
+                statut = self._convertit_portail_rse_status_en_statut_metabase(
+                    portail_rse_status
+                )
         else:
             statut = None
 
@@ -513,19 +518,6 @@ class Command(BaseCommand):
             callback=callback_bges,
         )
 
-        # mock de `extract_last_reporting_year()`
-        def _mock_extract_last_reporting_year(json_data):
-            return json_data["annee"]
-
-        # remplace via un mock les appels à extract_last_reporting_year() par un appel à _mock_extract_last_reporting_year
-        from unittest.mock import patch  # noqa
-
-        patcher = patch(
-            "api.bges.extract_last_reporting_year",
-            _mock_extract_last_reporting_year,
-        )
-        patcher.start()
-
 
 def _last_update(entreprise):
     last_update = entreprise.updated_at
@@ -563,3 +555,10 @@ def callback_bges(request):
         if latest_publication:
             return (200, {}, {"annee": latest_publication.dt_publication.year})
     return (404, {}, {})
+
+
+# mock pour les appels BGES : uniquement actif dans cette management command
+
+
+def _mock_extract_last_reporting_year(json_data):
+    return json_data["annee"]

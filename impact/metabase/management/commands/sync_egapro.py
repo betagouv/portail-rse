@@ -3,13 +3,16 @@ import json
 from datetime import datetime
 
 import aiohttp
+from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from entreprises.models import Entreprise
 from metabase.models import TempEgaPro
 
 FETCH_URL = "https://egapro.travail.gouv.fr/api/public/declaration/%s/%s"
-NB_APPELS = 100
+
+# utilise un settings via variable d'evironnement nommé METABASE_NB_ASYNC_CALLS
+NB_APPELS = settings.METABASE_NB_ASYNC_CALLS
 
 
 class Command(BaseCommand):

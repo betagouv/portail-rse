@@ -424,4 +424,8 @@ if DEBUG:
 # Permet l'affichage des temps d'éxecution de chaque partie de la synchro
 METABASE_DEBUG_SYNC = os.getenv("METABASE_DEBUG_SYNC") == "true"
 METABASE_DEBUG_SKIP_STEPS = os.getenv("METABASE_DEBUG_SKIP_STEPS", "").split(",")
-METABASE_DEBUG_BULK_SIZE = int(os.getenv("METABASE_DEBUG_BULK_SIZE", "1000"))
+METABASE_DEBUG_BULK_SIZE = int(os.getenv("METABASE_DEBUG_BULK_SIZE", 1000))
+
+# Création des tables de travail metabase:
+# nombre maximum de requêtes asynchrones simultanées
+METABASE_NB_ASYNC_CALLS = int(os.getenv("METABASE_NB_ASYNC_CALLS", 100))
