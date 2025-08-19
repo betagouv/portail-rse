@@ -1,15 +1,22 @@
+from datetime import date
+from datetime import timedelta
+
 import pytest
 from django.conf import settings
+from freezegun import freeze_time
 
 from habilitations.management.commands.supprime_utilisateurs_sur_entreprise_test import (
     Command,
+)
+from habilitations.management.commands.supprime_utilisateurs_sur_entreprise_test import (
+    MAX_JOURS_HABILITATION,
 )
 from habilitations.models import Habilitation
 from users.models import User
 
 
 @pytest.mark.django_db(transaction=True)
-def test_nettoie_entreprise_test_supprime_ses_utilisateurs_et_ajoute_le_contact(
+def test_nettoie_entreprise_test_supprime_ses_utilisateurs_après_30_jours_et_ajoute_toujours_le_contact(
     db, mocker, entreprise_factory, alice, bob
 ):
     entreprise = entreprise_factory(siren="000000001")
@@ -20,7 +27,20 @@ def test_nettoie_entreprise_test_supprime_ses_utilisateurs_et_ajoute_le_contact(
     Habilitation.ajouter(autre_entreprise, bob)
     User.objects.create(email=settings.SUPPORT_EMAIL)
 
-    Command().handle()
+    jour_precedent_la_suppression = date.today() + timedelta(
+        days=MAX_JOURS_HABILITATION
+    )
+    with freeze_time(jour_precedent_la_suppression):
+        Command().handle()
+
+    entreprise.refresh_from_db()
+    assert entreprise.habilitation_set.count() == 3  # alice, bob et contact
+    autre_entreprise.refresh_from_db()
+    assert autre_entreprise.habilitation_set.count() == 2  # alice et bob
+
+    jour_suivant_la_suppression = jour_precedent_la_suppression + timedelta(days=1)
+    with freeze_time(jour_suivant_la_suppression):
+        Command().handle()
 
     entreprise.refresh_from_db()
     assert entreprise.habilitation_set.count() == 1  # uniquement contact
