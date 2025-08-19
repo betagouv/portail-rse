@@ -1,3 +1,5 @@
+{% load filters %}
+
 {% if habilitation.role == "proprietaire"%}
     <h2>Gérer les contributeurs</h2>
     <p>Partagez l'accès aux informations clés de votre tableau de bord à des membres de votre entreprise, consultants ou accompagnants RSE.</p>
@@ -29,7 +31,13 @@
                                     {% with user=h.user %}
                                         <td>{{ user.nom }}</td>
                                         <td>{{ user.prenom }}</td>
-                                        <td>{{ user.email }}</td>
+                                        <td>
+                                            {% if h.entreprise.siren == "000000001" %}
+                                                {{ user.email | cache_partiellement_un_email }}
+                                            {% else %}
+                                                {{ user.email }}
+                                            {% endif %}
+                                        </td>
                                         <td><span class="fr-badge fr-badge--info fr-badge--no-icon">{{ h.get_role_display }}</span></td>
                                         <td>
                                             {% if user != habilitation.user %}
@@ -79,7 +87,13 @@
                         <tbody>
                             {% for invitation in invitations %}
                                 <tr>
-                                    <td>{{ invitation.email }}</td>
+                                    <td>
+                                        {% if invitation.entreprise.siren == "000000001" %}
+                                            {{ invitation.email | cache_partiellement_un_email }}
+                                        {% else %}
+                                            {{ invitation.email }}
+                                        {% endif %}
+                                    </td>
                                     <td><span class="fr-badge fr-badge--info fr-badge--no-icon">{{ invitation.get_role_display }}</span></td>
                                     <td>{{ invitation.date_expiration|date:"d F Y" }}</td>
                                 </tr>
