@@ -9,17 +9,16 @@ from users.models import User
 
 
 @pytest.mark.django_db(transaction=True)
-def test_nettoie_entreprise_test_supprime_ses_utilisateurs_sauf_le_contact(
+def test_nettoie_entreprise_test_supprime_ses_utilisateurs_et_ajoute_le_contact(
     db, mocker, entreprise_factory, alice, bob
 ):
     entreprise = entreprise_factory(siren="000000001")
     Habilitation.ajouter(entreprise, alice)
     Habilitation.ajouter(entreprise, bob)
-    contact = User.objects.create(email=settings.SUPPORT_EMAIL)
-    Habilitation.ajouter(entreprise, contact)
     autre_entreprise = entreprise_factory(siren="123456789")
     Habilitation.ajouter(autre_entreprise, alice)
     Habilitation.ajouter(autre_entreprise, bob)
+    User.objects.create(email=settings.SUPPORT_EMAIL)
 
     Command().handle()
 
@@ -30,7 +29,7 @@ def test_nettoie_entreprise_test_supprime_ses_utilisateurs_sauf_le_contact(
 
 
 @pytest.mark.django_db(transaction=True)
-def test_nettoie_entreprise_test_ne_supprime_pas_adresse_de_contact(
+def test_nettoie_entreprise_test_garde_adresse_de_contact_si_elle_existe(
     db, mocker, entreprise_factory
 ):
     entreprise = entreprise_factory(siren="000000001")
