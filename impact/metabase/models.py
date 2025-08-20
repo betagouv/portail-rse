@@ -2,6 +2,7 @@ from django.db import models
 
 from entreprises.models import DENOMINATION_MAX_LENGTH
 from habilitations.models import FONCTIONS_MAX_LENGTH
+from utils.models import TimestampedModel
 
 
 class Utilisateur(models.Model):
@@ -119,11 +120,7 @@ class CSRD(Reglementation):
 # Tables temporaires / de travail
 
 
-class TempTable(models.Model):
-    # utilisé pour les récupérations asynchrones des données d'API
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
+class TempTable(TimestampedModel):
     siren = models.CharField(max_length=9, verbose_name="numéro SIREN")
 
     class Meta:
