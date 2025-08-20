@@ -1,6 +1,6 @@
 from django.conf import settings
 
-from utils.emails import cache_partiellement_un_email
+from utils.anonymisation import cache_partiellement_un_email
 
 
 def test():

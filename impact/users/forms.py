@@ -9,7 +9,7 @@ from .models import User
 from entreprises.forms import PreremplissageSirenForm
 from habilitations.models import FONCTIONS_MAX_LENGTH
 from habilitations.models import FONCTIONS_MIN_LENGTH
-from utils.emails import cache_partiellement_un_email
+from utils.anonymisation import cache_partiellement_un_email
 from utils.forms import DsfrForm
 
 
