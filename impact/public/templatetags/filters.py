@@ -94,3 +94,8 @@ def habilitation(user, entreprise):
 @register.filter
 def cache_partiellement_un_email(email):
     return utils.anonymisation.cache_partiellement_un_email(email)
+
+
+@register.filter
+def cache_partiellement_un_mot(mot):
+    return utils.anonymisation.cache_partiellement_un_mot(mot)

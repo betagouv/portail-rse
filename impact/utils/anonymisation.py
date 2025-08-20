@@ -6,4 +6,10 @@ def cache_partiellement_un_email(email):
         return email
     nom, domaine = email.split("@")
     etoiles = "*" * (len(nom) - 2)
-    return f"{nom[0]}{etoiles}{nom[-1]}@{domaine}"
+    nom_cache = cache_partiellement_un_mot(nom)
+    return f"{nom_cache}@{domaine}"
+
+
+def cache_partiellement_un_mot(mot):
+    etoiles = "*" * (len(mot) - 2)
+    return f"{mot[0]}{etoiles}{mot[-1]}"

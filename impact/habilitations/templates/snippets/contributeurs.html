@@ -29,15 +29,17 @@
                             {% for h in habilitations %}
                                 <tr>
                                     {% with user=h.user %}
-                                        <td>{{ user.nom }}</td>
-                                        <td>{{ user.prenom }}</td>
-                                        <td>
-                                            {% if h.entreprise.siren == "000000001" %}
+                                        {% if h.entreprise.siren == "000000001" %}
+                                            <td>{{ user.nom | cache_partiellement_un_mot }}</td>
+                                            <td>{{ user.prenom  | cache_partiellement_un_mot }}</td>
+                                            <td>
                                                 {{ user.email | cache_partiellement_un_email }}
-                                            {% else %}
-                                                {{ user.email }}
-                                            {% endif %}
-                                        </td>
+                                            </td>
+                                        {% else %}
+                                            <td>{{ user.nom }}</td>
+                                            <td>{{ user.prenom }}</td>
+                                            <td>{{ user.email }}</td>
+                                        {% endif %}
                                         <td><span class="fr-badge fr-badge--info fr-badge--no-icon">{{ h.get_role_display }}</span></td>
                                         <td>
                                             {% if user != habilitation.user %}
