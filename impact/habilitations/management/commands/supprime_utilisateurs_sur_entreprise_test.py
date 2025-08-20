@@ -12,14 +12,14 @@ from entreprises.models import Entreprise
 from habilitations.models import Habilitation
 from users.models import User
 
-MAX_JOURS_HABILITATION = 30
-
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        if entreprise := Entreprise.objects.filter(siren="000000001").first():
+        if entreprise := Entreprise.objects.filter(
+            siren=settings.SIREN_ENTREPRISE_TEST
+        ).first():
             date_min_habilitation = date.today() - timedelta(
-                days=MAX_JOURS_HABILITATION
+                days=settings.MAX_JOURS_HABILITATION
             )
             Habilitation.objects.filter(
                 entreprise=entreprise, created_at__lt=date_min_habilitation

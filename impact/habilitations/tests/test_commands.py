@@ -8,9 +8,6 @@ from freezegun import freeze_time
 from habilitations.management.commands.supprime_utilisateurs_sur_entreprise_test import (
     Command,
 )
-from habilitations.management.commands.supprime_utilisateurs_sur_entreprise_test import (
-    MAX_JOURS_HABILITATION,
-)
 from habilitations.models import Habilitation
 from users.models import User
 
@@ -19,7 +16,7 @@ from users.models import User
 def test_nettoie_entreprise_test_supprime_ses_utilisateurs_après_30_jours_et_ajoute_toujours_le_contact(
     db, mocker, entreprise_factory, alice, bob
 ):
-    entreprise = entreprise_factory(siren="000000001")
+    entreprise = entreprise_factory(siren=settings.SIREN_ENTREPRISE_TEST)
     Habilitation.ajouter(entreprise, alice)
     Habilitation.ajouter(entreprise, bob)
     autre_entreprise = entreprise_factory(siren="123456789")
@@ -28,7 +25,7 @@ def test_nettoie_entreprise_test_supprime_ses_utilisateurs_après_30_jours_et_aj
     User.objects.create(email=settings.SUPPORT_EMAIL)
 
     jour_precedent_la_suppression = date.today() + timedelta(
-        days=MAX_JOURS_HABILITATION
+        days=settings.MAX_JOURS_HABILITATION
     )
     with freeze_time(jour_precedent_la_suppression):
         Command().handle()
@@ -52,7 +49,7 @@ def test_nettoie_entreprise_test_supprime_ses_utilisateurs_après_30_jours_et_aj
 def test_nettoie_entreprise_test_garde_adresse_de_contact_si_elle_existe(
     db, mocker, entreprise_factory
 ):
-    entreprise = entreprise_factory(siren="000000001")
+    entreprise = entreprise_factory(siren=settings.SIREN_ENTREPRISE_TEST)
     contact = User.objects.create(email=settings.SUPPORT_EMAIL)
     Habilitation.ajouter(entreprise, contact)
 

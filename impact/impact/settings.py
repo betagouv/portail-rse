@@ -242,6 +242,12 @@ INVITATION_MAX_AGE = int(
     os.getenv("INVITATION_MAX_AGE", 60 * 60 * 24 * 30)
 )  # en secondes, 30 jours par défaut
 
+# Entreprise test
+SIREN_ENTREPRISE_TEST = "000000001"
+
+# Délai avant suppression de l'habilitation sur l'entreprise test
+MAX_JOURS_HABILITATION = 30
+
 # Sentry
 SENTRY_DSN = os.getenv("SENTRY_DSN")
 SENTRY_ENV = os.getenv("SENTRY_ENV", "production")
