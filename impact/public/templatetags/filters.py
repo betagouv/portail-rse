@@ -5,7 +5,7 @@ from django.forms import ChoiceField
 from django.forms import FileField
 
 import habilitations.models
-import utils.emails
+import utils.anonymisation
 
 register = template.Library()
 
@@ -93,4 +93,4 @@ def habilitation(user, entreprise):
 
 @register.filter
 def cache_partiellement_un_email(email):
-    return utils.emails.cache_partiellement_un_email(email)
+    return utils.anonymisation.cache_partiellement_un_email(email)
