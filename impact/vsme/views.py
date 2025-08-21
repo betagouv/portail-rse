@@ -8,9 +8,9 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls.base import reverse
 
+from .forms import forms_par_exigence_de_publication
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
-
 
 ETAPES = {
     "introduction": "Introduction",
@@ -74,10 +74,13 @@ def etape_vsme(request, siren, etape):
         case _:
             return Http404("Etape VSME inconnue")
 
+    forms = forms_par_exigence_de_publication(request.POST)
+
     context |= {
         "lien": reverse("vsme:etape_vsme", kwargs={"siren": siren, "etape": etape}),
         "nom_entreprise": request._nom_entreprise,
         "siren": siren,
+        "forms": forms,
     }
 
     return render(request, template_name, context=context)
