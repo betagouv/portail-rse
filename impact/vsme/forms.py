@@ -31,8 +31,6 @@ def forms_par_exigence_de_publication(posted_data):
     _forms = []
 
     for index, indicateur in enumerate(EXIGENCES_DE_PUBLICATION, start=1):
-        # fk_indicateur = vsme._meta.get_field(field_name)
-        # indicateur = fk_indicateur.related_model
         type_indicateur = indicateur["type"]
         if type_indicateur == "indicateur_nombre":
             form = cree_formulaire_nombre(indicateur, posted_data, index)
@@ -90,10 +88,12 @@ def cree_formulaire_liste(indicateur, posted_data, index):
                 ),
                 initial=initial_value,
             )
-        else:
+        elif contenu["type"] == "nombre":
             form.fields[clef] = forms.IntegerField(
                 label=label,
                 widget=forms.NumberInput(attrs={"class": "fr-input"}),
                 initial=initial_value,
             )
+        else:
+            raise Exception("Typo")
     return form
