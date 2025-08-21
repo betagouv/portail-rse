@@ -18,7 +18,7 @@ EXIGENCES_DE_PUBLICATION = [
                 "type": "texte",
             },
             {
-                "label": "Chiffre daffaire",
+                "label": "Chiffre d'affaire",
                 "clef": "CA",
                 "type": "nombre",
             },
