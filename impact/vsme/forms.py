@@ -23,22 +23,6 @@ EXIGENCES_DE_PUBLICATION = [
 ]
 
 
-class DsfrCharField(forms.CharField):
-    def __init__(self, *args, **kwargs):
-        if isinstance(self.widget, forms.widgets.Select):
-            fr_name = "fr-select"
-        else:
-            fr_name = "fr-input"
-        self.widget.attrs.update({"class": f"{fr_name}"})
-        if name in self.errors:
-            self.widget.attrs.update(
-                {
-                    "class": f"{fr_name} {fr_name}-error",
-                    "aria-describedby": f"{name}-error-desc-error",
-                }
-            )
-
-
 def forms_par_exigence_de_publication(posted_data):
     _forms = []
 
@@ -104,7 +88,5 @@ def forms_par_exigence_de_publication(posted_data):
             #    form=FormTableau,
             #    exclude=[],
             # )
-        # form.fields[field_name].value = indicateur.id
-        # form.indicateur_id.value = 666 #indicateur.id
         _forms.append(form)
     return _forms
