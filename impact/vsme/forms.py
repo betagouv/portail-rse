@@ -49,8 +49,6 @@ class IndicateurForm(DsfrForm):
 
 
 def cree_formulaire_nombre(indicateur, posted_data, index):
-    label = indicateur["label"]
-    clef = indicateur["clef"]
     if posted_data and int(posted_data["indicateur_id"][0]) == index:
         form = IndicateurForm(data=posted_data)
         initial_value = posted_data[clef][0]
@@ -58,6 +56,9 @@ def cree_formulaire_nombre(indicateur, posted_data, index):
         initial = {"indicateur_id": index}
         form = IndicateurForm(initial=initial)
         initial_value = None
+
+    label = indicateur["label"]
+    clef = indicateur["clef"]
     form.fields[clef] = forms.IntegerField(
         label=label,
         widget=forms.NumberInput(attrs={"class": "fr-input"}),
@@ -72,6 +73,7 @@ def cree_formulaire_liste(indicateur, posted_data, index):
     else:
         initial = {"indicateur_id": index}
         form = IndicateurForm(initial=initial)
+
     for contenu in indicateur["contient"]:
         label = contenu["label"]
         clef = contenu["clef"]
