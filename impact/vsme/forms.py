@@ -43,44 +43,20 @@ def forms_par_exigence_de_publication(posted_data):
     return _forms
 
 
-class FormListe(DsfrForm):
+class IndicateurForm(DsfrForm):
     pertinent = forms.BooleanField()
     indicateur_id = forms.IntegerField()
-
-
-#    class Meta:
-#        model = IndicateurTableau
-#        exclude = []
-#
-#    def __init__(self, indicateur, fetched_posted_data=None, *args, **kwargs):
-#        if fetched_posted_data:
-#            if "initial" not in kwargs:
-#                kwargs["initial"] = {"indicateur_id": 23}
-#            kwargs["initial"].update(fetched_posted_data)
-#        super().__init__(*args, instance=indicateur, **kwargs)
-
-
-class FormNombre(DsfrForm):
-    pertinent = forms.BooleanField()
-    indicateur_id = forms.IntegerField()
-
-    # def __init__(self, indicateur, fetched_posted_data=None, *args, **kwargs):
-    #    if fetched_posted_data:
-    #        if "initial" not in kwargs:
-    #            kwargs["initial"] = {"indicateur_id": 23}
-    #        kwargs["initial"].update(fetched_posted_data)
-    #    super().__init__(*args, instance=indicateur, **kwargs)
 
 
 def cree_formulaire_nombre(indicateur, posted_data, index):
     label = indicateur["label"]
     clef = indicateur["clef"]
     if posted_data and int(posted_data["indicateur_id"][0]) == index:
-        form = FormNombre(data=posted_data)
+        form = IndicateurForm(data=posted_data)
         initial_value = posted_data[clef][0]
     else:
         initial = {"indicateur_id": index}
-        form = FormNombre(initial=initial)
+        form = IndicateurForm(initial=initial)
         initial_value = None
     form.fields[clef] = forms.IntegerField(
         label=label,
@@ -88,19 +64,14 @@ def cree_formulaire_nombre(indicateur, posted_data, index):
         initial=initial_value,
     )
     return form
-    # forms.modelform_factory(
-    #    indicateur,
-    #    form=FormNombre,
-    #    exclude=[],
-    # )
 
 
 def cree_formulaire_liste(indicateur, posted_data, index):
     if posted_data and int(posted_data["indicateur_id"][0]) == index:
-        form = FormListe(data=posted_data)
+        form = IndicateurForm(data=posted_data)
     else:
         initial = {"indicateur_id": index}
-        form = FormListe(initial=initial)
+        form = IndicateurForm(initial=initial)
     for contenu in indicateur["contient"]:
         label = contenu["label"]
         clef = contenu["clef"]
@@ -124,9 +95,3 @@ def cree_formulaire_liste(indicateur, posted_data, index):
                 initial=initial_value,
             )
     return form
-
-    # forms.modelform_factory(
-    #    indicateur,
-    #    form=FormTableau,
-    #    exclude=[],
-    # )
