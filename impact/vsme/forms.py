@@ -96,18 +96,32 @@ def cree_formulaire_nombre(indicateur, posted_data, index):
 
 
 def cree_formulaire_liste(indicateur, posted_data, index):
-    form = FormListe(initial={"indicateur_id": index})
+    if posted_data and int(posted_data["indicateur_id"][0]) == index:
+        form = FormListe(data=posted_data)
+    else:
+        initial = {"indicateur_id": index}
+        form = FormListe(initial=initial)
     for contenu in indicateur["contient"]:
         label = contenu["label"]
         clef = contenu["clef"]
+        if posted_data and int(posted_data["indicateur_id"][0]) == index:
+            initial_value = posted_data[clef][0]
+        else:
+            initial_value = None
+
         if contenu["type"] == "texte":
             form.fields[clef] = forms.CharField(
-                label=label, widget=forms.TextInput(attrs={"class": "fr-input"})
+                label=label,
+                widget=forms.TextInput(
+                    attrs={"class": "fr-input"},
+                ),
+                initial=initial_value,
             )
         else:
             form.fields[clef] = forms.IntegerField(
                 label=label,
                 widget=forms.NumberInput(attrs={"class": "fr-input"}),
+                initial=initial_value,
             )
     return form
 
