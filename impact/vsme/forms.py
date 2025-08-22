@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import BaseFormSet
 from django.forms import formset_factory
 
 from utils.forms import DsfrForm
@@ -118,9 +119,8 @@ def cree_formulaire_liste(indicateur, posted_data, index):
     return form
 
 
-class ArticleForm(forms.Form):
-    title = forms.CharField()
-    pub_date = forms.DateField()
+class EmptyForm(forms.Form):
+    pass
 
 
 class MultiForm:
@@ -129,44 +129,45 @@ class MultiForm:
 
 
 def cree_formulaire_tableau(indicateur, posted_data, index):
-    ArticleFormSet = formset_factory(ArticleForm, extra=2)
-    formset = ArticleFormSet()
-    formset.type_indicateur = "indicateur_tableau"
-    form = IndicateurForm()
-    multiform = MultiForm()
-    multiform.forms = (form, formset)
-    return multiform
-
     if posted_data and int(posted_data["indicateur_id"][0]) == index:
         form = IndicateurForm(data=posted_data)
     else:
         initial = {"indicateur_id": index}
         form = IndicateurForm(initial=initial)
 
-    for contenu in indicateur["colonnes"]:
-        label = contenu["label"]
-        clef = contenu["clef"]
-        if posted_data and int(posted_data["indicateur_id"][0]) == index:
-            initial_value = posted_data[clef][0]
-        else:
-            initial_value = None
+    class TableauFormSet(BaseFormSet):
+        def add_fields(self, form, index):
+            super().add_fields(form, index)
+            for contenu in indicateur["colonnes"]:
+                label = contenu["label"]
+                clef = contenu["clef"]
+                if posted_data and int(posted_data["indicateur_id"][0]) == index:
+                    initial_value = posted_data[clef][0]
+                else:
+                    initial_value = None
+                if contenu["type"] == "texte":
+                    form.fields[clef] = forms.CharField(
+                        label=label,
+                        widget=forms.TextInput(
+                            attrs={"class": "fr-input"},
+                        ),
+                        required=False,
+                    )
+                elif contenu["type"] == "nombre":
+                    form.fields[clef] = forms.IntegerField(
+                        label=label,
+                        widget=forms.NumberInput(
+                            attrs={"class": "fr-input"},
+                        ),
+                        required=False,
+                    )
+                else:
+                    raise Exception("Typo")
 
-        if contenu["type"] == "texte":
-            form.fields[clef] = forms.CharField(
-                label=label,
-                widget=forms.TextInput(
-                    attrs={"class": "fr-input"},
-                ),
-                initial=initial_value,
-            )
-        elif contenu["type"] == "nombre":
-            form.fields[clef] = forms.IntegerField(
-                label=label,
-                widget=forms.NumberInput(attrs={"class": "fr-input"}),
-                initial=initial_value,
-            )
-        else:
-            raise Exception("Typo")
-        FormSet = formset_factory(form)
-
-    return FormSet()
+    FormSet = formset_factory(EmptyForm, formset=TableauFormSet, extra=2)
+    formset = FormSet()
+    # initialisation formset https://docs.djangoproject.com/en/5.2/topics/forms/formsets/#understanding-the-managementform
+    formset.type_indicateur = "indicateur_tableau"
+    multiform = MultiForm()
+    multiform.forms = (form, formset)
+    return multiform
