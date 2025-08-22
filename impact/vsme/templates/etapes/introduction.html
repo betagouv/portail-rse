@@ -18,7 +18,36 @@
           <form method="post">
             {% csrf_token %}
 
-            {{ form }}
+            {% if form.est_multiple %} {# tableau #}
+              {% for form_ in form.forms %}
+
+                {% if form_.type_indicateur != "indicateur_tableau" %}
+                  {{ form_ }}
+                {% else %}
+                  <table>
+                    <thead>
+                      {% for form in form_ %}
+                        {% if forloop.first %}
+                          {% for field in form %}
+                            <th>{{ field.label_tag }}</th>
+                          {% endfor %}
+                        {% endif %}
+                        </thead>
+                        <tbody>
+                          <tr>
+                            {% for field in form %}
+                              <td>{{ field }}</td>
+                            {% endfor %}
+                          </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              {{ form }}
+            {% endif %}
+
             <button type="submit" name="action" class="fr-btn">Envoyer</button>
           </form>
           <hr />
