@@ -36,6 +36,8 @@ urlpatterns = (
         path("", include("users.urls")),
         path("", include("vsme.urls")),
         path("trigger-error-for-sentry-debug/", trigger_error),
+        # admin : hijack
+        path("hijack/", include("hijack.urls")),
     ]
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

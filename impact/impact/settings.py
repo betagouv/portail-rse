@@ -59,6 +59,8 @@ INSTALLED_APPS = [
     "anymail",
     "corsheaders",
     "django_hosts",
+    "hijack",
+    "hijack.contrib.admin",
 ]
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -77,6 +79,8 @@ MIDDLEWARE = [
     # middlewares touchant à l'utilisation d'HTMX
     "utils.middlewares.HTMXRequestMiddleware",
     "utils.middlewares.HTMXRetargetMiddleware",
+    # admin : hijack
+    "hijack.middleware.HijackUserMiddleware",
 ]
 ROOT_URLCONF = "impact.urls"
 TEMPLATES = [

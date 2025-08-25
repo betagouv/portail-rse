@@ -88,3 +88,11 @@ class User(AbstractBaseUser, TimestampedModel):
     @property
     def uidb64(self):
         return uidb64(self)
+
+    @property
+    def is_superuser(self):
+        # FIXME:
+        # la gestion des super-utilisateurs et droits pour l'admin doit être revue :
+        # - pas d'alias pour ce champ
+        # - ajout de PermissionMixin pour le modèle
+        return self.is_staff
