@@ -36,8 +36,6 @@ urlpatterns = (
         path("", include("users.urls")),
         path("", include("vsme.urls")),
         path("trigger-error-for-sentry-debug/", trigger_error),
-        # admin : hijack
-        path("hijack/", include("hijack.urls")),
     ]
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
@@ -51,3 +49,4 @@ if settings.DEBUG:
     from django.contrib import admin
 
     urlpatterns.append(path("admin", admin.site.urls))
+    urlpatterns.append(path("hijack/", include("hijack.urls")))
