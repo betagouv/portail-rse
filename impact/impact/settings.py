@@ -38,6 +38,7 @@ ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "0.0.0.0,127.0.0.1,localhost").s
 
 # Application definition
 INSTALLED_APPS = [
+    # internal apps
     "api",
     "entreprises",
     "habilitations",
@@ -48,6 +49,8 @@ INSTALLED_APPS = [
     "vsme",
     "users",
     "utils",
+    "dynforms",
+    # apps from external libraires
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

@@ -1,0 +1,24 @@
+fields:
+  - name: nom
+    label: Nom complet
+    type: text
+    required: true
+    max_length: 100
+  - name: prenom
+    label: Prénom complet
+    type: text
+    required: true
+    max_length: 100
+  - name: email
+    label: Adresse email
+    type: email
+    required: true
+  - name: age
+    label: Âge
+    type: number
+    min: 18
+    max: 100
+  - name: un_booleen
+    label: Clique moi !
+    type: boolean
+    required: false
