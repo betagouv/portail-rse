@@ -2,16 +2,15 @@ from django.contrib import admin
 from django.http import HttpResponseForbidden
 from django.http import HttpResponseNotFound
 from django.http import HttpResponseServerError
-from django.urls import include
 from django.urls import path
 
 # URLs / chemins pour le site d'admin
 
 urlpatterns = [
     path("", admin.site.urls),
-    # admin : hijack
-    path("hijack/", include("hijack.urls")),
 ]
+
+print("patterns:", urlpatterns)
 
 # La gestion des pages d'erreurs doit être redéfinie pour le nouveau site,
 # sinon il tente d'utiliser les templates et vues par défaut (404.html ...)

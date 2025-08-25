@@ -59,12 +59,11 @@ INSTALLED_APPS = [
     "anymail",
     "corsheaders",
     "django_hosts",
-    "hijack",
-    "hijack.contrib.admin",
 ]
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
+    # django-hosts : doit être au début
     "django_hosts.middleware.HostsRequestMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -75,12 +74,11 @@ MIDDLEWARE = [
     "utils.middlewares.ExtendUserMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django_hosts.middleware.HostsResponseMiddleware",
     # middlewares touchant à l'utilisation d'HTMX
     "utils.middlewares.HTMXRequestMiddleware",
     "utils.middlewares.HTMXRetargetMiddleware",
-    # admin : hijack
-    "hijack.middleware.HijackUserMiddleware",
+    # django-hosts : doit être à la fin
+    "django_hosts.middleware.HostsResponseMiddleware",
 ]
 ROOT_URLCONF = "impact.urls"
 TEMPLATES = [
