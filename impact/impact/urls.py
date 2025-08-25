@@ -49,4 +49,3 @@ if settings.DEBUG:
     from django.contrib import admin
 
     urlpatterns.append(path("admin", admin.site.urls))
-    urlpatterns.append(path("hijack/", include("hijack.urls")))
