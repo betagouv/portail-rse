@@ -96,6 +96,7 @@ def tableau_de_bord(request, entreprise_qualifiee):
     context = {
         "entreprise": entreprise_qualifiee,
         "nombre_reglementations_applicables": nombre_reglementations_applicables,
+        "page_resume": True,
     }
     context |= contributeurs_context(request, entreprise_qualifiee)
 
