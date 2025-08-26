@@ -14,4 +14,9 @@ urlpatterns = [
         views.etape_vsme,
         name="etape_vsme",
     ),
+    path(
+        "indicateurs/<str:siren>",
+        views.indicateurs_vsme,
+        name="indicateurs_vsme",
+    ),
 ]

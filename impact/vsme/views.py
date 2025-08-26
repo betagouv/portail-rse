@@ -81,3 +81,9 @@ def etape_vsme(request, siren, etape):
     }
 
     return render(request, template_name, context=context)
+
+
+def indicateurs_vsme(request, siren):
+    entreprise = Entreprise.objects.get(siren=siren)
+    context = {"entreprise": entreprise}
+    return render(request, "vsme/indicateurs.html", context=context)
