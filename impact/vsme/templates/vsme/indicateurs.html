@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}{{ titre }}{% endblock %}
+
+{% block content %}
+    <div class="fr-container fr-my-4w">
+        <div class="fr-grid-row">
+            {% include "snippets/tableau_de_bord_menu.html" %}
+
+            <div class="fr-col">
+                Indicateurs VSME
+            </div>
+        </div>
+    </div>
+{% endblock %}
