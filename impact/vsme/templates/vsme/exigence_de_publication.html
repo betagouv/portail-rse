@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}{{ titre }}{% endblock %}
+
+{% block content %}
+    <div class="fr-container fr-my-4w">
+        <div class="fr-grid-row">
+            {% include "snippets/tableau_de_bord_menu.html" %}
+
+            <div class="fr-col">
+                <h3>Indicateurs VSME</h3>
+
+                <ul>
+                    {% for indicateur in indicateurs %}
+                        <li>
+                            <a href="{% url 'vsme:saisie_indicateurs_vsme' entreprise.siren indicateur.id %}">{{ indicateur.title }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -20,8 +20,18 @@ urlpatterns = [
         name="indicateurs_vsme",
     ),
     path(
+        "indicateurs/exigence-de-publication/<str:siren>",
+        views.exigence_de_publication,
+        name="exigence_de_publication",
+    ),
+    path(
         "indicateurs/<str:siren>/<str:categorie>",
         views.indicateurs_vsme_categorie,
         name="indicateurs_vsme_categorie",
+    ),
+    path(
+        "indicateurs/saisie/<str:siren>/<int:indicateur_id>",
+        views.saisie_indicateurs_vsme,
+        name="saisie_indicateurs_vsme",
     ),
 ]

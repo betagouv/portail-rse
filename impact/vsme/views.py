@@ -10,6 +10,8 @@ from django.urls.base import reverse
 
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
+from vsme.factory import create_form_from_schema
+from vsme.factory import load_json_schema
 
 
 ETAPES = {
@@ -103,3 +105,42 @@ def indicateurs_vsme_categorie(request, siren, categorie):
         raise Http404("Catégorie VSME inconnue")
     context = {"entreprise": entreprise}
     return render(request, template_name, context=context)
+
+def exigence_de_publication(request, siren):
+    entreprise = Entreprise.objects.get(siren=siren)
+    schema = load_json_schema("defs/b1.json")
+    context = {"entreprise": entreprise, "indicateurs": schema}
+    return render(request, "vsme/exigence_de_publication.html", context=context)
+
+
+def saisie_indicateurs_vsme(request, siren, indicateur_id):
+    entreprise = Entreprise.objects.get(siren=siren)
+    schema = load_json_schema("defs/b1.json")
+
+    if request.method == "POST":
+        form = create_form_from_schema(schema, indicateur_id)(
+            request.POST,
+            initial=request.session.get("indicateurs", {}).get(str(indicateur_id)),
+        )
+        if form.is_valid():
+            if request.session.get("indicateurs"):
+                request.session["indicateurs"][indicateur_id] = form.cleaned_data
+            else:
+                request.session["indicateurs"] = {indicateur_id: form.cleaned_data}
+            request.session.modified = True
+
+            return redirect(
+                "vsme:indicateurs_vsme",
+                siren=entreprise.siren,
+            )
+    else:  # GET
+        form = create_form_from_schema(schema, indicateur_id)(
+            initial=request.session.get("indicateurs", {}).get(str(indicateur_id))
+        )
+
+    context = {
+        "entreprise": entreprise,
+        "form": form,
+        "schema_indicateur": schema[indicateur_id],
+    }
+    return render(request, "vsme/saisie_indicateurs.html", context=context)

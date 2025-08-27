@@ -1,0 +1,209 @@
+[
+    {
+        "title": "Forme juridique de l’entreprise",
+        "id": 0,
+        "description": "Indiquer la structure légale de l’entité déclarante, telle que reconnue par la législation nationale.",
+        "fields": [
+            {
+                "name": "denomination",
+                "label": "Nom de l'entité déclarante",
+                "type": "text",
+                "required": true,
+                "max_length": 100
+            },
+            {
+                "name": "forme_juridique",
+                "label": "Forme juridique de l'entreprise",
+                "type": "choice",
+                "choices": [
+                    {
+                        "name": "SA",
+                        "label": "Société Anonyme"
+                    },
+                    {
+                        "name": "SAS",
+                        "label": "Société par Actions Simplifiées"
+                    },
+                    {
+                        "name": "SARL",
+                        "label": "Société A Responsabilité Limitée"
+                    },
+                    {
+                        "name": "autre",
+                        "label": "Autre"
+                    }
+                ],
+                "required": true
+            },
+            {
+                "name": "autre_forme_juridique",
+                "label": "Forme juridique de l'entreprise si non présent précédemment",
+                "type": "text",
+                "required": false
+            }
+        ]
+    },
+    {
+        "title": "Liste des filiales incluses dans le rapport",
+        "id": 1,
+        "description": "Champ permettant aux entreprises de rentrer en numérotant chaque filiale avec l’adresse correspondante.",
+        "fields": [
+            {
+                "name": "liste_filiales",
+                "label": "Filiales et leurs CA respectifs",
+                "type": "table",
+                "required": false,
+                "columns": [
+                    {
+                        "name": "denomination_filiale",
+                        "label": "Nom de la filiale",
+                        "type": "text",
+                        "required": true
+                    },
+                    {
+                        "name": "adresse",
+                        "label": "Adresse légale",
+                        "type": "text"
+                    },
+                    {
+                        "name": "pays",
+                        "label": "Pays",
+                        "type": "choice",
+                        "choices": [
+                            {
+                                "name": "estonie",
+                                "label": "Estonie"
+                            },
+                            {
+                                "name": "france",
+                                "label": "France"
+                            },
+                            {
+                                "name": "grece",
+                                "label": "Grèce"
+                            },
+                            {
+                                "name": "hongrie",
+                                "label": "Hongrie"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "code_postal",
+                        "label": "Code postal",
+                        "type": "text"
+                    },
+                    {
+                        "name": "commentaire",
+                        "label": "Commentaire (facultatif)",
+                        "type": "text"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title": "Effectif total de l’entreprise",
+        "id": 2,
+        "description": "Mesure la taille sociale de l’entreprise. Peut être exprimé en effectif total.",
+        "fields": [
+            {
+                "name": "nombre_salaries",
+                "label": "Nombre de salariés",
+                "type": "number",
+                "min": 1,
+                "max": 10000000
+            }
+        ]
+    },
+    {
+        "title": "Liste des sites",
+        "id": 3,
+        "description": "Champ permettant aux entreprises de rentrer en numérotant chaque géolocalisation de site avec l’adresse correspondante.",
+        "fields": [
+            {
+                "name": "liste_sites",
+                "label": "Sites",
+                "type": "table",
+                "required": false,
+                "columns": [
+                    {
+                        "name": "site",
+                        "label": "Site",
+                        "type": "text",
+                        "required": true
+                    },
+                    {
+                        "name": "adresse",
+                        "label": "Adresse",
+                        "type": "text"
+                    },
+                    {
+                        "name": "code_postal",
+                        "label": "Code postal",
+                        "type": "text"
+                    },
+                    {
+                        "name": "ville",
+                        "label": "Ville",
+                        "type": "text"
+                    },
+                    {
+                        "name": "pays",
+                        "label": "Pays",
+                        "type": "text"
+                    },
+                    {
+                        "name": "adresse",
+                        "label": "Adresse légale",
+                        "type": "choice",
+                        "choices": [
+                            {
+                                "name": "estonie",
+                                "label": "Estonie"
+                            },
+                            {
+                                "name": "france",
+                                "label": "France"
+                            },
+                            {
+                                "name": "grece",
+                                "label": "Grèce"
+                            },
+                            {
+                                "name": "hongrie",
+                                "label": "Hongrie"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "title": "Chiffre d’affaires (en euros)",
+        "id": 4,
+        "description": "Chiffre d'affaires net hors taxes (H.T.) réalisé sur le périmètre consolidé de l'organisation au cours du dernier exercice, selon le standard IFRS.",
+        "fields": [
+            {
+                "name": "CA",
+                "label": "Chiffre d’affaires",
+                "type": "number",
+                "required": true
+            }
+        ]
+    },
+    {
+        "title": "Taille du bilan (en euros)",
+        "id": 5,
+        "description": "Indicateur de la taille économique de l’entreprise.",
+        "fields": [
+            {
+                "name": "bilan",
+                "label": "Bilan",
+                "type": "number",
+                "required": true
+            }
+        ]
+    }
+]
