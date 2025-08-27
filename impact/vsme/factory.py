@@ -13,11 +13,12 @@ def load_yaml_schema(file_path):
         return yaml.safe_load(file)
 
 
-def create_form_from_yaml(yaml_data):
+def create_form_from_yaml(yaml_data, indicateur_id):
     class _DynamicForm(forms.Form):
         pass
 
-    for field in yaml_data["fields"]:
+    fields = yaml_data["indicators"][indicateur_id]["fields"]
+    for field in fields:
         field_type = field["type"]
         field_name = field["name"]
         field_kwargs = {

@@ -1,24 +1,23 @@
-fields:
-  - name: nom
-    label: Nom complet
-    type: text
-    required: true
-    max_length: 100
-  - name: prenom
-    label: Prénom complet
-    type: text
-    required: true
-    max_length: 100
-  - name: email
-    label: Adresse email
-    type: email
-    required: true
-  - name: bilan
-    label: Bilan net
-    type: number
-    min: 18
-    max: 100
-  - name: un_booleen
-    label: Clique moi !
-    type: boolean
-    required: false
+indicators:
+  - title: Premier indicateur
+    fields:
+    - name: denomination
+      label: Nom juridique
+      type: text
+      required: true
+      max_length: 100
+    - name: email
+      label: Adresse email
+      type: email
+      required: true
+  - title: Second indicateur
+    fields:
+    - name: bilan
+      label: Bilan net
+      type: number
+      min: 18
+      max: 100
+    - name: filiale
+      label: l'entreprise a plusieurs filiales
+      type: boolean
+      required: false
