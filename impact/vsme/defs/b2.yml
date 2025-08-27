@@ -10,14 +10,26 @@ indicators:
       label: Adresse email
       type: email
       required: true
-  - title: Second indicateur
-    fields:
     - name: bilan
       label: Bilan net
       type: number
-      min: 18
-      max: 100
+      min: 1
+      max: 10000000
     - name: filiale
       label: l'entreprise a plusieurs filiales
       type: boolean
       required: false
+  - title: Second indicateur
+    fields:
+    - name: liste_filiales
+      label: Filiales et leurs CA respectifs
+      type: table
+      required: false
+      columns:
+      - name: denomination_filiale
+        label: Nom juridique
+        type: text
+        required: true
+      - name: CA
+        label: Chiffre d'affaires
+        type: number

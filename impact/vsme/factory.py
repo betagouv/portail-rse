@@ -48,6 +48,41 @@ def create_form_from_yaml(yaml_data, indicateur_id):
             _DynamicForm.base_fields[field_name] = forms.IntegerField(**field_kwargs)
         elif field_type == "boolean":
             _DynamicForm.base_fields[field_name] = forms.BooleanField(**field_kwargs)
+        elif field_type == "table":
+
+            class TableauFormSet(forms.BaseFormSet):
+                def add_fields(self, form, index):
+                    super().add_fields(form, index)
+                    for column in field["columns"]:
+                        label = column["label"]
+                        name = column["name"]
+                        if column["type"] == "text":
+                            form.fields[name] = forms.CharField(
+                                label=label,
+                                widget=forms.TextInput(
+                                    attrs={"class": "fr-input"},
+                                ),
+                                required=False,
+                            )
+                        elif column["type"] == "number":
+                            form.fields[name] = forms.IntegerField(
+                                label=label,
+                                widget=forms.NumberInput(
+                                    attrs={"class": "fr-input"},
+                                ),
+                                required=False,
+                            )
+                        else:
+                            raise Exception("Typo")
+
+            FormSet = forms.formset_factory(
+                _DynamicForm, formset=TableauFormSet, extra=2
+            )
+            FormSet.indicator_type = "table"
+            return FormSet
+            formset = FormSet()
+            return formset
+            # initialisation formset https://docs.djangoproject.com/en/5.2/topics/forms/formsets/#understanding-the-managementform
         # et on continue ...
 
     return _DynamicForm

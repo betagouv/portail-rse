@@ -3,18 +3,41 @@
 {% block title %}{{ titre }}{% endblock %}
 
 {% block content %}
-    <div class="fr-container fr-my-4w">
-        <div class="fr-grid-row">
-            {% include "snippets/tableau_de_bord_menu.html" %}
+  <div class="fr-container fr-my-4w">
+    <div class="fr-grid-row">
+      {% include "snippets/tableau_de_bord_menu.html" %}
 
-            <div class="fr-col">
-                <h3>Remplir mes indicateurs VSME</h3>
-                <form method="post">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit">Envoyer</button>
-                </form>
-            </div>
-        </div>
+      <div class="fr-col">
+        <h3>Remplir mes indicateurs VSME</h3>
+        <form method="post">
+          {% csrf_token %}
+
+          {% if form.indicator_type != "table" %}
+            {{ form.as_p }}
+          {% else %}
+            <table>
+              <thead>
+                {% for form_table in form %}
+                  {% if forloop.first %}
+                    {% for field in form_table %}
+                      <th>{{ field.label_tag }}</th>
+                    {% endfor %}
+                  {% endif %}
+                  </thead>
+                  <tbody>
+                    <tr>
+                      {% for field in form_table %}
+                        <td>{{ field }}</td>
+                      {% endfor %}
+                    </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% endif %}
+
+          <button type="submit" class="fr-btn">Envoyer</button>
+        </form>
+      </div>
     </div>
+  </div>
 {% endblock %}

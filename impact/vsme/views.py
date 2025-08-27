@@ -94,7 +94,6 @@ def indicateurs_vsme(request, siren):
 def saisie_indicateurs_vsme(request, siren, indicateur_id):
     entreprise = Entreprise.objects.get(siren=siren)
     yaml_data = load_yaml_schema("defs/b2.yml")
-    print(indicateur_id, indicateur_id)
     form = create_form_from_yaml(yaml_data, indicateur_id)()
 
     if request.method == "POST":
