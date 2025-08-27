@@ -30,12 +30,21 @@ def create_form_from_yaml(yaml_data, indicateur_id):
         # Gestion des arguments spécifiques au type de champ
         if field_type == "text":
             field_kwargs["max_length"] = field.get("max_length", 255)
+            field_kwargs["widget"] = forms.TextInput(
+                attrs={"class": "fr-input"},
+            )
             _DynamicForm.base_fields[field_name] = forms.CharField(**field_kwargs)
         elif field_type == "email":
+            field_kwargs["widget"] = forms.TextInput(
+                attrs={"class": "fr-input"},
+            )
             _DynamicForm.base_fields[field_name] = forms.EmailField(**field_kwargs)
         elif field_type == "number":
             field_kwargs["min_value"] = field.get("min")
             field_kwargs["max_value"] = field.get("max")
+            field_kwargs["widget"] = forms.NumberInput(
+                attrs={"class": "fr-input"},
+            )
             _DynamicForm.base_fields[field_name] = forms.IntegerField(**field_kwargs)
         elif field_type == "boolean":
             _DynamicForm.base_fields[field_name] = forms.BooleanField(**field_kwargs)
