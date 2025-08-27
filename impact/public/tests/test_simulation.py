@@ -3,13 +3,13 @@ from datetime import date
 from datetime import timedelta
 
 import pytest
+from django.conf import settings
 from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed
 
 import api.exceptions
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
-from entreprises.models import SIREN_ENTREPRISE_TEST
 from habilitations.models import Habilitation
 from public.views import should_commit
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
@@ -774,7 +774,7 @@ def test_preremplissage_simulation_erreur_API(client, mock_api_infos_entreprise)
 def test_preremplissage_simulation_avec_entreprise_test(
     client, mock_api_infos_entreprise
 ):
-    siren = SIREN_ENTREPRISE_TEST
+    siren = settings.SIREN_ENTREPRISE_TEST
 
     response = client.get(
         "/simulation/fragments/preremplissage-formulaire-simulation",
@@ -787,7 +787,7 @@ def test_preremplissage_simulation_avec_entreprise_test(
     assert not context["erreur_recherche_entreprise"]
     # le formulaire est prérempli avec des données de test
     simulation_form = response.context["form"]
-    assert simulation_form["siren"].value() == SIREN_ENTREPRISE_TEST
+    assert simulation_form["siren"].value() == settings.SIREN_ENTREPRISE_TEST
     assert simulation_form["denomination"].value() == "ENTREPRISE TEST"
     assert simulation_form["categorie_juridique_sirene"].value() == 5505
     assert simulation_form["code_NAF"].value() == "01.11Z"

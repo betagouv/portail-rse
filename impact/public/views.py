@@ -12,7 +12,6 @@ from api.exceptions import APIError
 from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
-from entreprises.models import SIREN_ENTREPRISE_TEST
 from public.forms import ContactForm
 from public.forms import SimulationForm
 from reglementations.views import REGLEMENTATIONS
@@ -104,9 +103,9 @@ def preremplissage_formulaire_simulation(request):
     except KeyError:
         raise BadRequest()
     erreur_recherche_entreprise = False
-    if siren == SIREN_ENTREPRISE_TEST:
+    if siren == settings.SIREN_ENTREPRISE_TEST:
         infos = {
-            "siren": SIREN_ENTREPRISE_TEST,
+            "siren": settings.SIREN_ENTREPRISE_TEST,
             "denomination": "ENTREPRISE TEST",
             "effectif": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
             "categorie_juridique_sirene": 5505,
