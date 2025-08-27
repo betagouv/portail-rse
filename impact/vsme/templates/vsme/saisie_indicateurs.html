@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}{{ titre }}{% endblock %}
+
+
+{% block content %}
+  <div class="fr-container fr-my-4w">
+    <div class="fr-grid-row">
+      {% include "snippets/tableau_de_bord_menu.html" %}
+
+      <div class="fr-col">
+        <h3>Remplir mes indicateurs VSME</h3>
+
+        <p>{{ schema_indicateur.description }}</p>
+
+        <form method="post">
+          {% csrf_token %}
+
+          {% if form.indicator_type != "table" %}
+            {% for field in form %}
+              {% include 'snippets/field.html' %}
+            {% endfor %}
+
+          {% else %}
+            {{ form.management_form }}
+            <table>
+              <thead>
+                {% for field in form.0 %}
+                  <th>{{ field.label_tag }}</th>
+                {% endfor %}
+              </thead>
+              <tbody>
+                {% for form_table in form %}
+                  <tr>
+                    {% for field in form_table %}
+                      <td>{{ field }}</td>
+                    {% endfor %}
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          {% endif %}
+
+          <button type="submit" class="fr-btn">Enregistrer</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

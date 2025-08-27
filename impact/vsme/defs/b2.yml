@@ -1,0 +1,52 @@
+indicators:
+  - title: Présentation de l'entreprise
+    id: 0
+    description: Il s'agit d'un indicateur présentant l'entreprise
+    fields:
+    - name: denomination
+      label: Nom juridique
+      type: text
+      required: true
+      max_length: 100
+    - name: email
+      label: Adresse email
+      type: email
+      required: true
+    - name: forme_juridique
+      label: Forme Juridique
+      type: choice
+      choices:
+        - name: SA
+          label: Société Anonyme
+        - name: SAS
+          label: Société par Actions Simplifiées
+      required: false
+  - title: Finances
+    id: 1
+    description: Indicateur sur les finances
+    fields:
+    - name: bilan
+      label: Bilan net
+      type: number
+      min: 1
+      max: 10000000
+    - name: filiale
+      label: l'entreprise a plusieurs filiales
+      type: boolean
+      required: false
+  - title: Filiales
+    id: 2
+    description: Indicateur détaillant les filiales
+    fields:
+    - name: liste_filiales
+      label: Filiales et leurs CA respectifs
+      type: table
+      required: false
+      columns:
+      - name: denomination_filiale
+        label: Nom juridique
+        type: text
+        required: true
+      - name: CA
+        label: Chiffre d'affaires
+        type: number
