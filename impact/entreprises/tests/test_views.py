@@ -2,6 +2,7 @@ import html
 from datetime import date
 
 import pytest
+from django.conf import settings
 from django.urls import reverse
 from freezegun import freeze_time
 from pytest_django.asserts import assertTemplateUsed
@@ -10,7 +11,6 @@ import api.exceptions
 from conftest import CODE_PAYS_PORTUGAL
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
-from entreprises.models import SIREN_ENTREPRISE_TEST
 from entreprises.views import get_current_entreprise
 from entreprises.views import search_and_create_entreprise
 from habilitations.models import Habilitation
@@ -827,7 +827,7 @@ def test_recherche_entreprise_erreur_API(client, mock_api_recherche_par_nom_ou_s
 def test_recherche_entreprise_avec_siren_entreprise_test(
     client, mock_api_recherche_par_nom_ou_siren
 ):
-    recherche = SIREN_ENTREPRISE_TEST
+    recherche = settings.SIREN_ENTREPRISE_TEST
 
     response = client.get(
         "/entreprises/fragments/recherche-entreprise",
@@ -840,7 +840,7 @@ def test_recherche_entreprise_avec_siren_entreprise_test(
     assert context["nombre_resultats"] == 1
     assert context["entreprises"] == [
         {
-            "siren": SIREN_ENTREPRISE_TEST,
+            "siren": settings.SIREN_ENTREPRISE_TEST,
             "denomination": "ENTREPRISE TEST",
             "activite": "Cultures non permanentes",
         }

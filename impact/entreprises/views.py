@@ -1,5 +1,6 @@
 from datetime import date
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import BadRequest
@@ -16,7 +17,6 @@ from entreprises.forms import EntrepriseDetachForm
 from entreprises.forms import EntrepriseQualificationForm
 from entreprises.forms import PreremplissageSirenForm
 from entreprises.models import Entreprise
-from entreprises.models import SIREN_ENTREPRISE_TEST
 from habilitations.models import Habilitation
 from habilitations.models import HabilitationError
 from users.forms import message_erreur_proprietaires
@@ -223,11 +223,11 @@ def recherche_entreprise(request):
         recherche = request.GET["recherche"]
     except KeyError:
         raise BadRequest()
-    if recherche == SIREN_ENTREPRISE_TEST:
+    if recherche == settings.SIREN_ENTREPRISE_TEST:
         nombre_resultats = 1
         entreprises = [
             {
-                "siren": SIREN_ENTREPRISE_TEST,
+                "siren": settings.SIREN_ENTREPRISE_TEST,
                 "denomination": "ENTREPRISE TEST",
                 "activite": "Cultures non permanentes",
             }
