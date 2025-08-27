@@ -19,4 +19,9 @@ urlpatterns = [
         views.indicateurs_vsme,
         name="indicateurs_vsme",
     ),
+    path(
+        "indicateurs/saisie/<str:siren>/<str:indicateur_id>",
+        views.saisie_indicateurs_vsme,
+        name="saisie_indicateurs_vsme",
+    ),
 ]

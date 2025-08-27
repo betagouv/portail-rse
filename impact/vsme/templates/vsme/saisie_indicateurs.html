@@ -8,8 +8,12 @@
             {% include "snippets/tableau_de_bord_menu.html" %}
 
             <div class="fr-col">
-                <h3>Indicateurs VSME</h3>
-                <a href="{% url 'vsme:saisie_indicateurs_vsme' entreprise.siren 1 %}">Remplir mes indicateurs</a>
+                <h3>Remplir mes indicateurs VSME</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Envoyer</button>
+                </form>
             </div>
         </div>
     </div>

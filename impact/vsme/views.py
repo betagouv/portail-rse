@@ -10,6 +10,8 @@ from django.urls.base import reverse
 
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
+from vsme.factory import create_form_from_yaml
+from vsme.factory import load_yaml_schema
 
 
 ETAPES = {
@@ -87,3 +89,17 @@ def indicateurs_vsme(request, siren):
     entreprise = Entreprise.objects.get(siren=siren)
     context = {"entreprise": entreprise}
     return render(request, "vsme/indicateurs.html", context=context)
+
+
+def saisie_indicateurs_vsme(request, siren, indicateur_id):
+    entreprise = Entreprise.objects.get(siren=siren)
+    yaml_data = load_yaml_schema("defs/b2.yml")
+    form = create_form_from_yaml(yaml_data)()
+
+    if request.method == "POST":
+        form = create_form_from_yaml(yaml_data)(request.POST)
+        if form.is_valid():
+            print("cleaned_data:", form.cleaned_data)
+
+    context = {"entreprise": entreprise, "form": form}
+    return render(request, "vsme/saisie_indicateurs.html", context=context)
