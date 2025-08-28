@@ -76,11 +76,10 @@ def create_form_from_yaml(yaml_data, indicateur_id):
                             raise Exception("Typo")
 
             FormSet = forms.formset_factory(
-                _DynamicForm, formset=TableauFormSet, extra=2
+                _DynamicForm, formset=TableauFormSet, extra=1
             )
             FormSet.indicator_type = "table"
             return FormSet
-            # initialisation formset https://docs.djangoproject.com/en/5.2/topics/forms/formsets/#understanding-the-managementform
         # et on continue ...
 
     return _DynamicForm

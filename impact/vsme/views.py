@@ -116,7 +116,7 @@ def saisie_indicateurs_vsme(request, siren, indicateur_id):
                 siren=entreprise.siren,
             )
         else:
-            # print("cleaned_data:", form.cleaned_data)
+            print("cleaned_data:", form.cleaned_data)
             print("Invalide", form.errors)
     else:  # GET
         form = create_form_from_yaml(yaml_data, indicateur_id)(

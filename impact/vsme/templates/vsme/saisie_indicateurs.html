@@ -15,6 +15,7 @@
           {% if form.indicator_type != "table" %}
             {{ form.as_p }}
           {% else %}
+            {{ form.management_form }}
             <table>
               <thead>
                 {% for form_table in form %}
