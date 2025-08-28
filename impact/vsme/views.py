@@ -124,5 +124,9 @@ def saisie_indicateurs_vsme(request, siren, indicateur_id):
         )
     print("saisie_indicateurs_vsme HET", dict(request.session))
 
-    context = {"entreprise": entreprise, "form": form}
+    context = {
+        "entreprise": entreprise,
+        "form": form,
+        "schema_indicateur": yaml_data["indicators"][indicateur_id],
+    }
     return render(request, "vsme/saisie_indicateurs.html", context=context)

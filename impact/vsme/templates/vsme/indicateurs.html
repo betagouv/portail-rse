@@ -10,9 +10,13 @@
             <div class="fr-col">
                 <h3>Indicateurs VSME</h3>
 
-                {% for indicateur in indicateurs %}
-                    <a href="{% url 'vsme:saisie_indicateurs_vsme' entreprise.siren indicateur.id %}">{{ indicateur.title }}</a><br>
-                {% endfor %}
+                <ul>
+                    {% for indicateur in indicateurs %}
+                        <li>
+                            <a href="{% url 'vsme:saisie_indicateurs_vsme' entreprise.siren indicateur.id %}">{{ indicateur.title }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
 
             </div>
         </div>
