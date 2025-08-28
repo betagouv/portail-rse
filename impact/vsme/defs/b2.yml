@@ -1,5 +1,6 @@
 indicators:
   - title: Premier indicateur
+    id: 0
     fields:
     - name: denomination
       label: Nom juridique
@@ -10,6 +11,9 @@ indicators:
       label: Adresse email
       type: email
       required: true
+  - title: indicateur 2
+    id: 1
+    fields:
     - name: bilan
       label: Bilan net
       type: number
@@ -19,7 +23,8 @@ indicators:
       label: l'entreprise a plusieurs filiales
       type: boolean
       required: false
-  - title: Second indicateur
+  - title: indicateur 3
+    id: 2
     fields:
     - name: liste_filiales
       label: Filiales et leurs CA respectifs
