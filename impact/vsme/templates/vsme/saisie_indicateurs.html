@@ -2,6 +2,7 @@
 
 {% block title %}{{ titre }}{% endblock %}
 
+
 {% block content %}
   <div class="fr-container fr-my-4w">
     <div class="fr-grid-row">
@@ -13,7 +14,10 @@
           {% csrf_token %}
 
           {% if form.indicator_type != "table" %}
-            {{ form.as_p }}
+            {% for field in form %}
+              {% include 'snippets/field.html' %}
+            {% endfor %}
+
           {% else %}
             {{ form.management_form }}
             <table>

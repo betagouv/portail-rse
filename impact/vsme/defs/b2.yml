@@ -23,6 +23,10 @@ indicators:
       label: l'entreprise a plusieurs filiales
       type: boolean
       required: false
+    - name: forme_juridique
+      label: Forme Juridique
+      type: choice
+      required: false
   - title: indicateur 3
     id: 2
     fields:

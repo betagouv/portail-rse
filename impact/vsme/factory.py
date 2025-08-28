@@ -48,6 +48,15 @@ def create_form_from_yaml(yaml_data, indicateur_id):
             _DynamicForm.base_fields[field_name] = forms.IntegerField(**field_kwargs)
         elif field_type == "boolean":
             _DynamicForm.base_fields[field_name] = forms.BooleanField(**field_kwargs)
+        elif field_type == "choice":
+            field_kwargs["choices"] = (
+                ("SA", "Société Anonyme"),
+                ("SAS", "Société par Actions Simplifiées"),
+            )
+            field_kwargs["widget"] = forms.widgets.Select(
+                attrs={"class": "fr-select"},
+            )
+            _DynamicForm.base_fields[field_name] = forms.ChoiceField(**field_kwargs)
         elif field_type == "table":
 
             class TableauFormSet(forms.BaseFormSet):
