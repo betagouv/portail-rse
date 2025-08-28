@@ -80,8 +80,6 @@ def create_form_from_yaml(yaml_data, indicateur_id):
             )
             FormSet.indicator_type = "table"
             return FormSet
-            formset = FormSet()
-            return formset
             # initialisation formset https://docs.djangoproject.com/en/5.2/topics/forms/formsets/#understanding-the-managementform
         # et on continue ...
 

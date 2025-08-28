@@ -96,12 +96,12 @@ def indicateurs_vsme(request, siren):
 def saisie_indicateurs_vsme(request, siren, indicateur_id):
     entreprise = Entreprise.objects.get(siren=siren)
     yaml_data = load_yaml_schema("defs/b2.yml")
-    form = create_form_from_yaml(yaml_data, indicateur_id)(
-        initial=request.session.get("indicateurs", {}).get(str(indicateur_id))
-    )
 
     if request.method == "POST":
-        form = create_form_from_yaml(yaml_data, indicateur_id)(request.POST)
+        form = create_form_from_yaml(yaml_data, indicateur_id)(
+            request.POST,
+            initial=request.session.get("indicateurs", {}).get(str(indicateur_id)),
+        )
         if form.is_valid():
             print("cleaned_data:", form.cleaned_data)
             if request.session.get("indicateurs"):
@@ -115,6 +115,13 @@ def saisie_indicateurs_vsme(request, siren, indicateur_id):
                 "vsme:indicateurs_vsme",
                 siren=entreprise.siren,
             )
+        else:
+            # print("cleaned_data:", form.cleaned_data)
+            print("Invalide", form.errors)
+    else:  # GET
+        form = create_form_from_yaml(yaml_data, indicateur_id)(
+            initial=request.session.get("indicateurs", {}).get(str(indicateur_id))
+        )
     print("saisie_indicateurs_vsme HET", dict(request.session))
 
     context = {"entreprise": entreprise, "form": form}
