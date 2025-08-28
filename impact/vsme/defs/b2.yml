@@ -26,6 +26,11 @@ indicators:
     - name: forme_juridique
       label: Forme Juridique
       type: choice
+      choices:
+        - name: SA
+          label: Société Anonyme
+        - name: SAS
+          label: Société par Actions Simplifiées
       required: false
   - title: indicateur 3
     id: 2
