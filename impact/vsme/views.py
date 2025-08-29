@@ -117,6 +117,8 @@ def saisie_indicateurs_vsme(request, siren, indicateur_id):
             initial=request.session.get("indicateurs", {}).get(str(indicateur_id))
         )
 
+    form.reinitialise_widgets()
+
     context = {
         "entreprise": entreprise,
         "form": form,

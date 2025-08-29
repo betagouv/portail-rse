@@ -3,6 +3,9 @@ import os
 import yaml
 from django import forms
 
+from utils.forms import DsfrForm
+from utils.forms import DsfrFormSet
+
 
 def load_yaml_schema(file_path):
     # Get the directory of the current file
@@ -14,7 +17,7 @@ def load_yaml_schema(file_path):
 
 
 def create_form_from_yaml(yaml_data, indicateur_id):
-    class _DynamicForm(forms.Form):
+    class _DynamicForm(DsfrForm):
         pass
 
     fields = yaml_data["indicators"][indicateur_id]["fields"]
@@ -31,21 +34,12 @@ def create_form_from_yaml(yaml_data, indicateur_id):
         match field_type:
             case "text":
                 field_kwargs["max_length"] = field.get("max_length", 255)
-                field_kwargs["widget"] = forms.TextInput(
-                    attrs={"class": "fr-input"},
-                )
                 _DynamicForm.base_fields[field_name] = forms.CharField(**field_kwargs)
             case "email":
-                field_kwargs["widget"] = forms.TextInput(
-                    attrs={"class": "fr-input"},
-                )
                 _DynamicForm.base_fields[field_name] = forms.EmailField(**field_kwargs)
             case "number":
                 field_kwargs["min_value"] = field.get("min")
                 field_kwargs["max_value"] = field.get("max")
-                field_kwargs["widget"] = forms.NumberInput(
-                    attrs={"class": "fr-input"},
-                )
                 _DynamicForm.base_fields[field_name] = forms.IntegerField(
                     **field_kwargs
                 )
@@ -57,13 +51,10 @@ def create_form_from_yaml(yaml_data, indicateur_id):
                 field_kwargs["choices"] = (
                     (choice["name"], choice["label"]) for choice in field["choices"]
                 )
-                field_kwargs["widget"] = forms.widgets.Select(
-                    attrs={"class": "fr-select"},
-                )
                 _DynamicForm.base_fields[field_name] = forms.ChoiceField(**field_kwargs)
             case "table":
 
-                class TableauFormSet(forms.BaseFormSet):
+                class TableauFormSet(DsfrFormSet):
                     def add_fields(self, form, index):
                         super().add_fields(form, index)
                         for column in field["columns"]:
@@ -72,17 +63,11 @@ def create_form_from_yaml(yaml_data, indicateur_id):
                             if column["type"] == "text":
                                 form.fields[name] = forms.CharField(
                                     label=label,
-                                    widget=forms.TextInput(
-                                        attrs={"class": "fr-input"},
-                                    ),
                                     required=False,
                                 )
                             elif column["type"] == "number":
                                 form.fields[name] = forms.IntegerField(
                                     label=label,
-                                    widget=forms.NumberInput(
-                                        attrs={"class": "fr-input"},
-                                    ),
                                     required=False,
                                 )
                             else:
