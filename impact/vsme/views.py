@@ -88,7 +88,7 @@ def etape_vsme(request, siren, etape):
 def indicateurs_vsme(request, siren):
     entreprise = Entreprise.objects.get(siren=siren)
     schema = load_json_schema("defs/b1.json")
-    context = {"entreprise": entreprise, "indicateurs": schema["indicators"]}
+    context = {"entreprise": entreprise, "indicateurs": schema}
     return render(request, "vsme/indicateurs.html", context=context)
 
 
@@ -120,6 +120,6 @@ def saisie_indicateurs_vsme(request, siren, indicateur_id):
     context = {
         "entreprise": entreprise,
         "form": form,
-        "schema_indicateur": schema["indicators"][indicateur_id],
+        "schema_indicateur": schema[indicateur_id],
     }
     return render(request, "vsme/saisie_indicateurs.html", context=context)

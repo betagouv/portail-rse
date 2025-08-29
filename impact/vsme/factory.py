@@ -20,7 +20,7 @@ def create_form_from_schema(schema, indicateur_id):
     class _DynamicForm(DsfrForm):
         pass
 
-    fields = schema["indicators"][indicateur_id]["fields"]
+    fields = schema[indicateur_id]["fields"]
     for field in fields:
         field_type = field["type"]
         field_name = field["name"]
