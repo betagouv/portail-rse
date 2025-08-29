@@ -1,19 +1,19 @@
+import json
 import os
 
-import yaml
 from django import forms
 
 from utils.forms import DsfrForm
 from utils.forms import DsfrFormSet
 
 
-def load_yaml_schema(file_path):
+def load_json_schema(file_path):
     # Get the directory of the current file
     current_dir = os.path.dirname(os.path.abspath(__file__))
     # Join the current directory with the provided file path
     full_path = os.path.join(current_dir, file_path)
     with open(full_path, "r") as file:
-        return yaml.safe_load(file)
+        return json.load(file)
 
 
 def create_form_from_yaml(yaml_data, indicateur_id):
