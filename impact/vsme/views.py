@@ -10,7 +10,7 @@ from django.urls.base import reverse
 
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
-from vsme.factory import create_form_from_yaml
+from vsme.factory import create_form_from_schema
 from vsme.factory import load_json_schema
 
 
@@ -87,17 +87,17 @@ def etape_vsme(request, siren, etape):
 
 def indicateurs_vsme(request, siren):
     entreprise = Entreprise.objects.get(siren=siren)
-    yaml_data = load_json_schema("defs/b1.json")
-    context = {"entreprise": entreprise, "indicateurs": yaml_data["indicators"]}
+    schema = load_json_schema("defs/b1.json")
+    context = {"entreprise": entreprise, "indicateurs": schema["indicators"]}
     return render(request, "vsme/indicateurs.html", context=context)
 
 
 def saisie_indicateurs_vsme(request, siren, indicateur_id):
     entreprise = Entreprise.objects.get(siren=siren)
-    yaml_data = load_json_schema("defs/b1.json")
+    schema = load_json_schema("defs/b1.json")
 
     if request.method == "POST":
-        form = create_form_from_yaml(yaml_data, indicateur_id)(
+        form = create_form_from_schema(schema, indicateur_id)(
             request.POST,
             initial=request.session.get("indicateurs", {}).get(str(indicateur_id)),
         )
@@ -113,13 +113,13 @@ def saisie_indicateurs_vsme(request, siren, indicateur_id):
                 siren=entreprise.siren,
             )
     else:  # GET
-        form = create_form_from_yaml(yaml_data, indicateur_id)(
+        form = create_form_from_schema(schema, indicateur_id)(
             initial=request.session.get("indicateurs", {}).get(str(indicateur_id))
         )
 
     context = {
         "entreprise": entreprise,
         "form": form,
-        "schema_indicateur": yaml_data["indicators"][indicateur_id],
+        "schema_indicateur": schema["indicators"][indicateur_id],
     }
     return render(request, "vsme/saisie_indicateurs.html", context=context)
