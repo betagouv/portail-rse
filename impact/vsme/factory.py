@@ -60,27 +60,28 @@ def create_form_from_schema(schema, indicateur_id):
                         for column in field["columns"]:
                             label = column["label"]
                             name = column["name"]
-                            if column["type"] == "text":
-                                form.fields[name] = forms.CharField(
-                                    label=label,
-                                    required=False,
-                                )
-                            elif column["type"] == "number":
-                                form.fields[name] = forms.IntegerField(
-                                    label=label,
-                                    required=False,
-                                )
-                            elif column["type"] == "choice":
-                                form.fields[name] = forms.ChoiceField(
-                                    label=label,
-                                    required=False,
-                                    choices=[
-                                        (choice["name"], choice["label"])
-                                        for choice in column["choices"]
-                                    ],
-                                )
-                            else:
-                                raise Exception(f"Typo {column["type"]}")
+                            match column["type"]:
+                                case "text":
+                                    form.fields[name] = forms.CharField(
+                                        label=label,
+                                        required=False,
+                                    )
+                                case "number":
+                                    form.fields[name] = forms.IntegerField(
+                                        label=label,
+                                        required=False,
+                                    )
+                                case "choice":
+                                    form.fields[name] = forms.ChoiceField(
+                                        label=label,
+                                        required=False,
+                                        choices=[
+                                            (choice["name"], choice["label"])
+                                            for choice in column["choices"]
+                                        ],
+                                    )
+                                case _:
+                                    raise Exception(f"Typo {column["type"]}")
 
                 FormSet = forms.formset_factory(
                     _DynamicForm, formset=TableauFormSet, extra=1
