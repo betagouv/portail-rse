@@ -58,27 +58,27 @@ def create_form_from_schema(schema, indicateur_id):
                     def add_fields(self, form, index):
                         super().add_fields(form, index)
                         for column in field["columns"]:
-                            label = column["label"]
-                            name = column["name"]
+                            field_name = column["name"]
+                            field_kwargs = {
+                                "label": column.get("label", field_name),
+                                "required": column.get("required", True),
+                            }
                             match column["type"]:
                                 case "text":
-                                    form.fields[name] = forms.CharField(
-                                        label=label,
-                                        required=False,
+                                    form.fields[field_name] = forms.CharField(
+                                        **field_kwargs
                                     )
                                 case "number":
-                                    form.fields[name] = forms.IntegerField(
-                                        label=label,
-                                        required=False,
+                                    form.fields[field_name] = forms.IntegerField(
+                                        **field_kwargs
                                     )
                                 case "choice":
-                                    form.fields[name] = forms.ChoiceField(
-                                        label=label,
-                                        required=False,
-                                        choices=[
-                                            (choice["name"], choice["label"])
-                                            for choice in column["choices"]
-                                        ],
+                                    field_kwargs["choices"] = (
+                                        (choice["name"], choice["label"])
+                                        for choice in column["choices"]
+                                    )
+                                    form.fields[field_name] = forms.ChoiceField(
+                                        **field_kwargs
                                     )
                                 case _:
                                     raise Exception(f"Typo {column["type"]}")
