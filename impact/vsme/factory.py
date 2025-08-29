@@ -70,8 +70,17 @@ def create_form_from_yaml(yaml_data, indicateur_id):
                                     label=label,
                                     required=False,
                                 )
+                            elif column["type"] == "choice":
+                                form.fields[name] = forms.ChoiceField(
+                                    label=label,
+                                    required=False,
+                                    choices=[
+                                        (choice["name"], choice["label"])
+                                        for choice in column["choices"]
+                                    ],
+                                )
                             else:
-                                raise Exception("Typo")
+                                raise Exception(f"Typo {column["type"]}")
 
                 FormSet = forms.formset_factory(
                     _DynamicForm, formset=TableauFormSet, extra=1

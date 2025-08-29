@@ -87,14 +87,14 @@ def etape_vsme(request, siren, etape):
 
 def indicateurs_vsme(request, siren):
     entreprise = Entreprise.objects.get(siren=siren)
-    yaml_data = load_yaml_schema("defs/b2.yml")
+    yaml_data = load_yaml_schema("defs/b1.yml")
     context = {"entreprise": entreprise, "indicateurs": yaml_data["indicators"]}
     return render(request, "vsme/indicateurs.html", context=context)
 
 
 def saisie_indicateurs_vsme(request, siren, indicateur_id):
     entreprise = Entreprise.objects.get(siren=siren)
-    yaml_data = load_yaml_schema("defs/b2.yml")
+    yaml_data = load_yaml_schema("defs/b1.yml")
 
     if request.method == "POST":
         form = create_form_from_yaml(yaml_data, indicateur_id)(
