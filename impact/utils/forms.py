@@ -23,9 +23,9 @@ class DsfrForm(forms.Form):
 
 
 class DsfrFormSet(forms.BaseFormSet):
-
-    def reinitialise_widgets(self):
-        for form in self:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for form in self.forms:
             form.reinitialise_widgets()
 
 
