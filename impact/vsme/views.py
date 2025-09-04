@@ -87,3 +87,18 @@ def indicateurs_vsme(request, siren):
     entreprise = Entreprise.objects.get(siren=siren)
     context = {"entreprise": entreprise}
     return render(request, "vsme/indicateurs.html", context=context)
+
+
+def indicateurs_vsme_categorie(request, siren, categorie):
+    entreprise = Entreprise.objects.get(siren=siren)
+    if categorie in (
+        "informations-generales",
+        "environnement",
+        "social",
+        "gouvernance",
+    ):
+        template_name = f"categories/{categorie}.html"
+    else:
+        raise Http404("Catégorie VSME inconnue")
+    context = {"entreprise": entreprise}
+    return render(request, template_name, context=context)

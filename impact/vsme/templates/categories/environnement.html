@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}{{ titre }}{% endblock %}
+
+{% block content %}
+    <div class="fr-container fr-my-4w">
+        <div class="fr-grid-row">
+            {% include "snippets/tableau_de_bord_menu.html" %}
+
+            <div class="fr-col">
+                <h1>Environnement</h1>
+                B3 – Énergie et émissions de gaz à effet de serre<br>
+                B4 – Pollution de l’air, de l’eau et des sols<br>
+                B5 – Biodiversité<br>
+                B6 – Eau<br>
+                B7 – Utilisation des ressources, économie circulaire et gestion des déchets<br>
+            </div>
+        </div>
+    </div>
+{% endblock %}

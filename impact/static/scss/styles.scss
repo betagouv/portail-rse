@@ -536,6 +536,43 @@
     }
 }
 
+/* VSME */
+.progression-vsme {
+    text-align: center;
+    font-weight: bold;
+}
+
+.progression-vsme--avancement {
+    font-size: 1.5rem;
+}
+
+.progression-vsme--gov {
+    background-color: var(--background-contrast-info);
+    .progression-vsme--title {
+        color: var(--text-default-info);
+    }
+}
+
+.progression-vsme--env {
+    background-color: var(--background-contrast-green-emeraude);
+    .progression-vsme--title {
+        color: var(--text-label-green-emeraude);
+    }
+}
+
+.progression-vsme--social {
+    background-color: var(--background-contrast-purple-glycine);
+    .progression-vsme--title {
+        color: var(--text-label-purple-glycine);
+    }
+}
+
+.progression-vsme--title {
+    text-transform: uppercase;
+    color: var(--text-mention-grey);
+    text-align: center;
+}
+
 
 /* fr-col aligné à droite */
 .col-right {

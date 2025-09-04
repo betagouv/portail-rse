@@ -29,7 +29,9 @@ def test_acces_vsme_refuse(client, entreprise_qualifiee, bob):
 
 
 @pytest.mark.parametrize("etape", ["introduction", "module_base", "module_narratif"])
-def test_chargement_templates(etape, client, entreprise_qualifiee, alice):
+def test_chargement_templates_des_etapes_vsme(
+    etape, client, entreprise_qualifiee, alice
+):
     # vérifie que tous les templates sont bien chargés dans la page résultante
     client.force_login(alice)
 
@@ -74,3 +76,58 @@ def test_siren_absent_redirige_vers_l_ajout_d_entreprise_si_pas_d_entreprise(
         messages[0].message
         == "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à l'espace VSME"
     )
+
+
+def test_page_indicateurs_vsme(client, entreprise_qualifiee, alice):
+    client.force_login(alice)
+
+    response = client.get(f"/indicateurs/{entreprise_qualifiee.siren}")
+
+    assertTemplateUsed(response, "base.html")
+    assertTemplateUsed(response, "snippets/tableau_de_bord_menu.html")
+    assertTemplateUsed(response, "vsme/indicateurs.html")
+
+
+@pytest.mark.parametrize(
+    "categorie", ["informations-generales", "environnement", "social", "gouvernance"]
+)
+def test_chargement_templates_des_categories_de_vsme(
+    categorie, client, entreprise_qualifiee, alice
+):
+    # vérifie que tous les templates sont bien chargés dans la page résultante
+    client.force_login(alice)
+
+    response = client.get(
+        f"/indicateurs/{entreprise_qualifiee.siren}/{categorie}", follow=True
+    )
+
+    assertTemplateUsed(response, "base.html")
+    assertTemplateUsed(response, "snippets/tableau_de_bord_menu.html")
+    assertTemplateUsed(response, f"categories/{categorie}.html")
+
+
+@pytest.mark.parametrize(
+    "categorie", ["informations-generales", "environnement", "social", "gouvernance"]
+)
+def test_categorie_de_vsme(categorie, client, entreprise_qualifiee, alice):
+    # vérifie que tous les templates sont bien chargés dans la page résultante
+    client.force_login(alice)
+
+    response = client.get(f"/indicateurs/{entreprise_qualifiee.siren}/{categorie}")
+
+    assertTemplateUsed(response, "base.html")
+    assertTemplateUsed(response, "snippets/tableau_de_bord_menu.html")
+    assertTemplateUsed(response, f"categories/{categorie}.html")
+
+
+def test_categorie_de_vsme_inexistante_retourne_une_404(
+    client, entreprise_qualifiee, alice
+):
+    # vérifie que tous les templates sont bien chargés dans la page résultante
+    client.force_login(alice)
+
+    response = client.get(
+        f"/indicateurs/{entreprise_qualifiee.siren}/n-existe-pas", follow=True
+    )
+
+    assert response.status_code == 404
