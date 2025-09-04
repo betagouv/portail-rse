@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}{{ titre }}{% endblock %}
+
+{% block content %}
+    <div class="fr-container fr-my-4w">
+        <div class="fr-grid-row">
+            {% include "snippets/tableau_de_bord_menu.html" %}
+
+            <div class="fr-col">
+                <h1>Social</h1>
+                B8 – Effectifs : caractéristiques générales<br>
+                B9 – Effectifs : santé et sécurité<br>
+                B10 – Effectifs : rémunération, négociation collective et formation<br>
+            </div>
+        </div>
+    </div>
+{% endblock %}

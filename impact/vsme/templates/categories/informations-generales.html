@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}{{ titre }}{% endblock %}
+
+{% block content %}
+    <div class="fr-container fr-my-4w">
+        <div class="fr-grid-row">
+            {% include "snippets/tableau_de_bord_menu.html" %}
+
+            <div class="fr-col">
+                <h1>Informations générales</h1>
+                B1 – Base d’établissement<br>
+                B2 – Pratiques, politiques et initiatives futures pour une transition vers une économie plus durable
+            </div>
+        </div>
+    </div>
+{% endblock %}

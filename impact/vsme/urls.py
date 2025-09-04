@@ -19,4 +19,9 @@ urlpatterns = [
         views.indicateurs_vsme,
         name="indicateurs_vsme",
     ),
+    path(
+        "indicateurs/<str:siren>/<str:categorie>",
+        views.indicateurs_vsme_categorie,
+        name="indicateurs_vsme_categorie",
+    ),
 ]
