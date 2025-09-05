@@ -2,6 +2,7 @@ from functools import wraps
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import Http404
 from django.http.response import HttpResponseForbidden
 from django.shortcuts import redirect
@@ -12,6 +13,7 @@ from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
 from vsme.factory import create_form_from_schema
 from vsme.factory import load_json_schema
+from vsme.models import RapportVSME
 
 
 ETAPES = {
@@ -106,41 +108,56 @@ def indicateurs_vsme_categorie(request, siren, categorie):
     context = {"entreprise": entreprise}
     return render(request, template_name, context=context)
 
+
 def exigence_de_publication(request, siren):
     entreprise = Entreprise.objects.get(siren=siren)
-    schema = load_json_schema("defs/b1.json")
-    context = {"entreprise": entreprise, "indicateurs": schema}
+    rapport_vsme, created = RapportVSME.objects.get_or_create(
+        entreprise=entreprise, annee=2024
+    )
+    schema = load_json_schema("schemas/B1.json")
+    indicateurs = [dict(indicateur, id=id) for id, indicateur in schema.items()]
+    context = {
+        "entreprise": entreprise,
+        "rapport_vsme": rapport_vsme,
+        "indicateurs": indicateurs,
+    }
     return render(request, "vsme/exigence_de_publication.html", context=context)
 
 
-def saisie_indicateurs_vsme(request, siren, indicateur_id):
-    entreprise = Entreprise.objects.get(siren=siren)
-    schema = load_json_schema("defs/b1.json")
+def indicateur_vsme(request, vsme_id, indicateur_schema_id):
+    rapport_vsme = RapportVSME.objects.get(id=vsme_id)
+    try:
+        indicateur = rapport_vsme.indicateurs.get(schema_id=indicateur_schema_id)
+    except ObjectDoesNotExist:
+        indicateur = None
+    exigence_de_publication = indicateur_schema_id.split("-")[0]
+    schema = load_json_schema(f"schemas/{exigence_de_publication}.json")
 
     if request.method == "POST":
-        form = create_form_from_schema(schema, indicateur_id)(
+        form = create_form_from_schema(schema, indicateur_schema_id)(
             request.POST,
-            initial=request.session.get("indicateurs", {}).get(str(indicateur_id)),
+            initial=indicateur.data if indicateur else None,
         )
         if form.is_valid():
-            if request.session.get("indicateurs"):
-                request.session["indicateurs"][indicateur_id] = form.cleaned_data
+            if indicateur:
+                indicateur.data = form.cleaned_data
+                indicateur.save()
             else:
-                request.session["indicateurs"] = {indicateur_id: form.cleaned_data}
-            request.session.modified = True
-
+                rapport_vsme.indicateurs.create(
+                    schema_id=indicateur_schema_id, data=form.cleaned_data
+                )
             return redirect(
                 "vsme:indicateurs_vsme",
-                siren=entreprise.siren,
+                siren=rapport_vsme.entreprise.siren,
             )
     else:  # GET
-        form = create_form_from_schema(schema, indicateur_id)(
-            initial=request.session.get("indicateurs", {}).get(str(indicateur_id))
+        form = create_form_from_schema(schema, indicateur_schema_id)(
+            initial=indicateur.data if indicateur else None
         )
 
     context = {
-        "entreprise": entreprise,
+        "entreprise": rapport_vsme.entreprise,
         "form": form,
-        "schema_indicateur": schema[indicateur_id],
+        "schema_indicateur": schema[indicateur_schema_id],
     }
-    return render(request, "vsme/saisie_indicateurs.html", context=context)
+    return render(request, "vsme/saisie_indicateur.html", context=context)

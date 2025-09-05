@@ -13,7 +13,7 @@
                 <ul>
                     {% for indicateur in indicateurs %}
                         <li>
-                            <a href="{% url 'vsme:saisie_indicateurs_vsme' entreprise.siren indicateur.id %}">{{ indicateur.title }}</a>
+                            <a href="{% url 'vsme:indicateur_vsme' rapport_vsme.id indicateur.id %}">{{ indicateur.title }}</a>
                         </li>
                     {% endfor %}
                 </ul>

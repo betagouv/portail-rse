@@ -1,7 +1,6 @@
-[
-    {
+{
+    "B1-24-e-i": {
         "title": "Forme juridique de l’entreprise",
-        "id": 0,
         "description": "Indiquer la structure légale de l’entité déclarante, telle que reconnue par la législation nationale.",
         "fields": [
             {
@@ -43,9 +42,8 @@
             }
         ]
     },
-    {
+    "B1-24-d": {
         "title": "Liste des filiales incluses dans le rapport",
-        "id": 1,
         "description": "Champ permettant aux entreprises de rentrer en numérotant chaque filiale avec l’adresse correspondante.",
         "fields": [
             {
@@ -102,9 +100,8 @@
             }
         ]
     },
-    {
+    "B1-24-e-v": {
         "title": "Effectif total de l’entreprise",
-        "id": 2,
         "description": "Mesure la taille sociale de l’entreprise. Peut être exprimé en effectif total.",
         "fields": [
             {
@@ -116,9 +113,8 @@
             }
         ]
     },
-    {
+    "B1-24-e-vii": {
         "title": "Liste des sites",
-        "id": 3,
         "description": "Champ permettant aux entreprises de rentrer en numérotant chaque géolocalisation de site avec l’adresse correspondante.",
         "fields": [
             {
@@ -180,9 +176,8 @@
             }
         ]
     },
-    {
+    "B1-24-e-iv": {
         "title": "Chiffre d’affaires (en euros)",
-        "id": 4,
         "description": "Chiffre d'affaires net hors taxes (H.T.) réalisé sur le périmètre consolidé de l'organisation au cours du dernier exercice, selon le standard IFRS.",
         "fields": [
             {
@@ -193,9 +188,8 @@
             }
         ]
     },
-    {
+    "B1-24-e-iii": {
         "title": "Taille du bilan (en euros)",
-        "id": 5,
         "description": "Indicateur de la taille économique de l’entreprise.",
         "fields": [
             {
@@ -206,4 +200,4 @@
             }
         ]
     }
-]
+}
