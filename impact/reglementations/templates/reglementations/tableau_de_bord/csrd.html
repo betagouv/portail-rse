@@ -4,7 +4,7 @@
     {% if csrd %}
         <h4>Progression ({{ csrd.progression.pourcent }} %)</h4>
 
-        <progress max="{{ csrd.progression.max }}" value="{{ csrd.progression.actuel }}" class="progression-csrd">70%</progress>
+        <progress max="{{ csrd.progression.max }}" value="{{ csrd.progression.actuel }}" class="progression-csrd">{{ csrd.progression.pourcent }} %</progress>
 
         <h4 class="fr-mt-5w">Actions à mener ({{ csrd.avancement_etapes | length }})</h4>
         {% for action in csrd.avancement_etapes %}
