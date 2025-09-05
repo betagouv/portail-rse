@@ -22,7 +22,7 @@
     background: var(--background-contrast-yellow-moutarde);
 }
 .progression-csrd[value="5"]::-moz-progress-bar {
-    background-color : var(--background-contrast-green-emeraude);
+    background-color: var(--background-contrast-green-emeraude);
 }
 
 /* Chrome */
@@ -31,7 +31,7 @@
     background: var(--background-contrast-yellow-moutarde);
 }
 .progression-csrd[value="5"]::-webkit-progress-value {
-    background-color : var(--background-contrast-green-emeraude);
+    background-color: var(--background-contrast-green-emeraude);
 }
 /* The empty part */
 .progression-csrd::-webkit-progress-bar {
