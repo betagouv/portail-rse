@@ -130,11 +130,11 @@ def indicateur_vsme(request, vsme_id, indicateur_schema_id):
         indicateur = rapport_vsme.indicateurs.get(schema_id=indicateur_schema_id)
     except ObjectDoesNotExist:
         indicateur = None
-    exigence_de_publication = indicateur_schema_id.split("-")[0]
-    schema = load_json_schema(f"schemas/{exigence_de_publication}.json")
+
+    indicateur_schema = load_indicateur_schema(indicateur_schema_id)
 
     if request.method == "POST":
-        form = create_form_from_schema(schema, indicateur_schema_id)(
+        form = create_form_from_schema(indicateur_schema)(
             request.POST,
             initial=indicateur.data if indicateur else None,
         )
@@ -151,13 +151,21 @@ def indicateur_vsme(request, vsme_id, indicateur_schema_id):
                 siren=rapport_vsme.entreprise.siren,
             )
     else:  # GET
-        form = create_form_from_schema(schema, indicateur_schema_id)(
+        form = create_form_from_schema(indicateur_schema)(
             initial=indicateur.data if indicateur else None
         )
 
     context = {
         "entreprise": rapport_vsme.entreprise,
         "form": form,
-        "schema_indicateur": schema[indicateur_schema_id],
+        "indicateur_schema": indicateur_schema,
     }
     return render(request, "vsme/saisie_indicateur.html", context=context)
+
+
+def load_indicateur_schema(indicateur_schema_id):
+    exigence_de_publication = indicateur_schema_id.split("-")[0]
+    exigence_de_publication_schema = load_json_schema(
+        f"schemas/{exigence_de_publication}.json"
+    )
+    return exigence_de_publication_schema[indicateur_schema_id]
