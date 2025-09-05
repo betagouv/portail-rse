@@ -16,11 +16,11 @@ def load_json_schema(file_path):
         return json.load(file)
 
 
-def create_form_from_schema(schema, indicateur_id):
+def create_form_from_schema(schema):
     class _DynamicForm(DsfrForm):
         pass
 
-    fields = schema[indicateur_id]["fields"]
+    fields = schema["fields"]
     for field in fields:
         field_type = field["type"]
         field_name = field["name"]
