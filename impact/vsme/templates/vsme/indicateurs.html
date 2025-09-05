@@ -20,7 +20,7 @@
                             <div class="fr-tile__body progression-vsme">
                                 <div class="fr-tile__content">
                                     <h3 class="fr-tile__title progression-vsme--title">
-                                        <a href="/example/img/placeholder.3x4.pdf">Général</a>
+                                        <a href="{% url 'vsme:indicateurs_vsme_categorie' entreprise.siren 'informations-generales' %}">Général</a>
                                     </h3>
                                     <p class="fr-tile__desc">
                                         <span class="progression-vsme--avancement">0 %</span>
@@ -33,11 +33,11 @@
                         </div>
                     </div>
                     <div class="fr-col-12 fr-col-md-6 fr-col-lg-4">
-                        <div class="fr-tile fr-tile--sm fr-enlarge-link progression-vsme--env progression-vsme--disabled">
+                        <div class="fr-tile fr-tile--sm fr-enlarge-link progression-vsme--env">
                             <div class="fr-tile__body">
                                 <div class="fr-tile__content">
                                     <h3 class="fr-tile__title">
-                                        <span class="progression-vsme--title">Environnement</span>
+                                        <a href="{% url 'vsme:indicateurs_vsme_categorie' entreprise.siren 'environnement' %}" class="progression-vsme--title">Environnement</a>
                                     </h3>
                                     <p class="fr-tile__desc progression-vsme">
                                         <span class="progression-vsme--avancement">0 %</span>
@@ -57,7 +57,7 @@
                             <div class="fr-tile__body">
                                 <div class="fr-tile__content">
                                     <h3 class="fr-tile__title">
-                                        <span class="progression-vsme--title">Social</span>
+                                        <a href="{% url 'vsme:indicateurs_vsme_categorie' entreprise.siren 'social' %}" class="progression-vsme--title">Social</a>
                                     </h3>
                                     <p class="fr-tile__desc progression-vsme">
                                         <span class="progression-vsme--avancement">0 %</span>
@@ -74,15 +74,14 @@
                             <div class="fr-tile__body">
                                 <div class="fr-tile__content">
                                     <h3 class="fr-tile__title">
-                                        <span class="progression-vsme--title">Gouvernance
-                                        </h3>
-                                        <p class="fr-tile__desc progression-vsme">
-                                            <span class="progression-vsme--avancement">0 %</span>
-                                            <br>
-                                            de complétion
-                                            <progress max="100" value="0" class="progression-csrd">0 %</progress>
-                                        </p>
-                                    </div>
+                                        <a href="{% url 'vsme:indicateurs_vsme_categorie' entreprise.siren 'gouvernance' %}" class="progression-vsme--title">Gouvernance</a>
+                                    </h3>
+                                    <p class="fr-tile__desc progression-vsme">
+                                        <span class="progression-vsme--avancement">0 %</span>
+                                        <br>
+                                        de complétion
+                                        <progress max="100" value="0" class="progression-csrd">0 %</progress>
+                                    </p>
                                 </div>
                             </div>
                         </div>
