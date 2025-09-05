@@ -25,19 +25,17 @@
             {{ form.management_form }}
             <table>
               <thead>
+                {% for field in form.0 %}
+                  <th>{{ field.label_tag }}</th>
+                {% endfor %}
+              </thead>
+              <tbody>
                 {% for form_table in form %}
-                  {% if forloop.first %}
+                  <tr>
                     {% for field in form_table %}
-                      <th>{{ field.label_tag }}</th>
+                      <td>{{ field }}</td>
                     {% endfor %}
-                  {% endif %}
-                  </thead>
-                  <tbody>
-                    <tr>
-                      {% for field in form_table %}
-                        <td>{{ field }}</td>
-                      {% endfor %}
-                    </tr>
+                  </tr>
                 {% endfor %}
               </tbody>
             </table>
