@@ -30,8 +30,8 @@ urlpatterns = [
         name="indicateurs_vsme_categorie",
     ),
     path(
-        "indicateurs/saisie/<str:siren>/<int:indicateur_id>",
-        views.saisie_indicateurs_vsme,
-        name="saisie_indicateurs_vsme",
+        "indicateurs/vsme/<int:vsme_id>/<str:indicateur_schema_id>",
+        views.indicateur_vsme,
+        name="indicateur_vsme",
     ),
 ]
