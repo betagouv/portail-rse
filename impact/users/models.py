@@ -68,6 +68,11 @@ class User(AbstractBaseUser, TimestampedModel):
         default=False,
     )
 
+    sub = models.UUIDField(
+        verbose_name="identifiant interne ProConnect",
+        null=True,
+    )
+
     objects = UserManager()
 
     USERNAME_FIELD = "email"
