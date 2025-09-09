@@ -62,7 +62,10 @@ def est_membre(func):
 @login_required
 @est_membre
 def etape_vsme(request, siren, etape):
-    context = _base_context(etape)
+    try:
+        context = _base_context(etape)
+    except KeyError:  # l'étape n'existe pas
+        raise Http404("Etape VSME inconnue")
 
     match etape:
         case "introduction":
@@ -71,8 +74,6 @@ def etape_vsme(request, siren, etape):
             template_name = "etapes/module-base.html"
         case "module_narratif":
             template_name = "etapes/module-narratif.html"
-        case _:
-            return Http404("Etape VSME inconnue")
 
     context |= {
         "lien": reverse("vsme:etape_vsme", kwargs={"siren": siren, "etape": etape}),
