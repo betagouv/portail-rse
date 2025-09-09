@@ -9,6 +9,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls.base import reverse
 
+import utils.htmx as htmx
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
 from vsme.factory import create_form_from_schema
@@ -114,9 +115,15 @@ def exigence_de_publication(request, siren):
     rapport_vsme, created = RapportVSME.objects.get_or_create(
         entreprise=entreprise, annee=2024
     )
+    if created:
+        indicateurs_completes = ()
+    else:
+        indicateurs_completes = rapport_vsme.indicateurs.values_list(
+            "schema_id", flat=True
+        )
     exigence_de_publication_schema = load_json_schema("schemas/B1.json")
     indicateurs = [
-        dict(indicateur, id=id)
+        dict(indicateur, id=id, est_complete=id in indicateurs_completes)
         for id, indicateur in exigence_de_publication_schema.items()
     ]
     context = {
@@ -149,9 +156,9 @@ def indicateur_vsme(request, vsme_id, indicateur_schema_id):
                 indicateur = rapport_vsme.indicateurs.create(
                     schema_id=indicateur_schema_id, data=form.cleaned_data
                 )
-            form = create_form_from_schema(indicateur_schema)(
-                initial=indicateur.data
-            )  # reconstruire le formulaire permet de générer une nouvelle ligne vide dans les indicateurs de type table. Mais un bouton "Ajouter une ligne" dédié serait probablement plus pertinent.
+            redirect_to = reverse("vsme:exigence_de_publication", args=[rapport_vsme.entreprise.siren])
+            if htmx.is_htmx(request):
+                return htmx.HttpResponseHXRedirect(redirect_to)
     else:  # GET
         form = create_form_from_schema(indicateur_schema)(
             initial=indicateur.data if indicateur else None
