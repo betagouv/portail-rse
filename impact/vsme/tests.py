@@ -44,6 +44,16 @@ def test_chargement_templates_des_etapes_vsme(
     assertTemplateUsed(response, f"etapes/{etape.replace("_","-")}.html")
 
 
+def test_etape_vsme_inexistante_retourne_une_404(client, entreprise_qualifiee, alice):
+    client.force_login(alice)
+
+    response = client.get(
+        f"/vsme/{entreprise_qualifiee.siren}/n-existe-pas", follow=True
+    )
+
+    assert response.status_code == 404
+
+
 @pytest.mark.parametrize("etape", ["introduction", "module_base", "module_narratif"])
 def test_siren_absent_redirige_vers_celui_de_l_entreprise_courante(
     etape, client, entreprise_factory, alice
