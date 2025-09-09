@@ -92,8 +92,11 @@ def indicateurs_vsme(request, siren):
     rapport_vsme, created = RapportVSME.objects.get_or_create(
         entreprise=entreprise, annee=2024
     )
-    schema = load_json_schema("schemas/B1.json")
-    indicateurs = [dict(indicateur, id=id) for id, indicateur in schema.items()]
+    exigence_de_publication_schema = load_json_schema("schemas/B1.json")
+    indicateurs = [
+        dict(indicateur, id=id)
+        for id, indicateur in exigence_de_publication_schema.items()
+    ]
     context = {
         "entreprise": entreprise,
         "rapport_vsme": rapport_vsme,
