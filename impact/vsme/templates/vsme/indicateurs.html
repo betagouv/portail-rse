@@ -14,6 +14,11 @@
                     {% for indicateur in indicateurs %}
                         <li>
                             {{ indicateur.title }}
+                            {% if indicateur.est_complete %}
+                                <p class="fr-badge fr-badge--success fr-badge--no-icon">COMPLÉTÉ</p>
+                            {% else %}
+                                <p class="fr-badge">À COMPLÉTER</p>
+                            {% endif %}
                             <button aria-controls="htmx-modal-indicateur" data-fr-opened="false" type="button" class="fr-btn"
                                     hx-get="{% url 'vsme:indicateur_vsme' rapport_vsme.id indicateur.id %}"
                                     hx-target="#htmx-modal-indicateur">

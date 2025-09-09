@@ -2,6 +2,7 @@
 Utilitaires divers pour HTMX
 """
 
+from django.http import HttpResponse
 from django.http.response import HttpResponseRedirectBase
 from django.utils.http import urlencode
 
@@ -26,3 +27,11 @@ class HttpResponseRedirectSeeOther(HttpResponseRedirectBase):
     # Par exemple, DELETE puis redirect avec un GET est impossible avec une 302
     # C'est par exemple très utile avec HTMX pour utiliser autre chose que des GET et des POST.
     status_code = 303
+
+class HttpResponseHXRedirect(HttpResponse):
+    # Ajoute un entête `HX-Redirect` à la réponse permettant de déclencher une redirection.
+    # L'url cible est récupérée via l'argument redirect_to
+    # https://htmx.org/headers/hx-redirect/
+    def __init__(self, redirect_to, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self["HX-Redirect"] = redirect_to
