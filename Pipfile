@@ -28,7 +28,8 @@ aiohttp = "~=3.12.15"
 responses = "~=0.25.8"
 # admin : connexion en tant qu'utilisateur enregistré
 django-hijack = "~=3.7.4"
-
+# django-lasuite : wrapper de mozilla-django-oidc pour ProConnect
+django-lasuite = "~=0.0.14"
 [dev-packages]
 pytest-django = "*"
 pytest-mock = "*"
