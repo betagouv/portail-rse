@@ -22,36 +22,14 @@ def create_form_from_schema(schema):
 
     fields = schema["fields"]
     for field in fields:
-        field_type = field["type"]
         field_name = field["name"]
-        field_kwargs = {
-            "label": field.get("label", field_name),
-            "required": field.get("required", True),
-            # ...
-        }
+        field_type = field["type"]
 
-        # Gestion des arguments spécifiques au type de champ
         match field_type:
-            case "text":
-                field_kwargs["max_length"] = field.get("max_length", 255)
-                _DynamicForm.base_fields[field_name] = forms.CharField(**field_kwargs)
-            case "email":
-                _DynamicForm.base_fields[field_name] = forms.EmailField(**field_kwargs)
-            case "number":
-                field_kwargs["min_value"] = field.get("min")
-                field_kwargs["max_value"] = field.get("max")
-                _DynamicForm.base_fields[field_name] = forms.IntegerField(
-                    **field_kwargs
+            case "text" | "number" | "boolean" | "choice":
+                _DynamicForm.base_fields[field_name] = create_simple_field_from_schema(
+                    field
                 )
-            case "boolean":
-                _DynamicForm.base_fields[field_name] = forms.BooleanField(
-                    **field_kwargs
-                )
-            case "choice":
-                field_kwargs["choices"] = (
-                    (choice["name"], choice["label"]) for choice in field["choices"]
-                )
-                _DynamicForm.base_fields[field_name] = forms.ChoiceField(**field_kwargs)
             case "table":
 
                 class TableauFormSet(DsfrFormSet):
@@ -59,35 +37,40 @@ def create_form_from_schema(schema):
                         super().add_fields(form, index)
                         for column in field["columns"]:
                             field_name = column["name"]
-                            field_kwargs = {
-                                "label": column.get("label", field_name),
-                                "required": column.get("required", True),
-                            }
-                            match column["type"]:
-                                case "text":
-                                    form.fields[field_name] = forms.CharField(
-                                        **field_kwargs
-                                    )
-                                case "number":
-                                    form.fields[field_name] = forms.IntegerField(
-                                        **field_kwargs
-                                    )
-                                case "choice":
-                                    field_kwargs["choices"] = (
-                                        (choice["name"], choice["label"])
-                                        for choice in column["choices"]
-                                    )
-                                    form.fields[field_name] = forms.ChoiceField(
-                                        **field_kwargs
-                                    )
-                                case _:
-                                    raise Exception(f"Typo {column["type"]}")
+                            form.fields[field_name] = create_simple_field_from_schema(
+                                column
+                            )
 
                 FormSet = forms.formset_factory(
                     _DynamicForm, formset=TableauFormSet, extra=1
                 )
                 FormSet.indicator_type = "table"
                 return FormSet
-        # et on continue ...
 
     return _DynamicForm
+
+
+def create_simple_field_from_schema(field_schema):
+    field_name = field_schema["name"]
+    field_kwargs = {
+        "label": field_schema.get("label", field_name),
+        "required": field_schema.get("required", True),
+        # ...
+    }
+    match field_schema["type"]:
+        case "text":
+            field_kwargs["max_length"] = field_schema.get("max_length", 255)
+            return forms.CharField(**field_kwargs)
+        case "number":
+            field_kwargs["min_value"] = field_schema.get("min")
+            field_kwargs["max_value"] = field_schema.get("max")
+            return forms.IntegerField(**field_kwargs)
+        case "boolean":
+            return forms.BooleanField(**field_kwargs)
+        case "choice":
+            field_kwargs["choices"] = (
+                (choice["name"], choice["label"]) for choice in field_schema["choices"]
+            )
+            return forms.ChoiceField(**field_kwargs)
+        case _:
+            raise Exception(f"Type inconnu : {field_type}")
