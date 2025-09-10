@@ -146,13 +146,12 @@ def indicateur_vsme(request, vsme_id, indicateur_schema_id):
                 indicateur.data = form.cleaned_data
                 indicateur.save()
             else:
-                rapport_vsme.indicateurs.create(
+                indicateur = rapport_vsme.indicateurs.create(
                     schema_id=indicateur_schema_id, data=form.cleaned_data
                 )
-            return redirect(
-                "vsme:indicateurs_vsme",
-                siren=rapport_vsme.entreprise.siren,
-            )
+            form = create_form_from_schema(indicateur_schema)(
+                initial=indicateur.data
+            )  # reconstruire le formulaire permet de générer une nouvelle ligne vide dans les indicateurs de type table. Mais un bouton "Ajouter une ligne" dédié serait probablement plus pertinent.
     else:  # GET
         form = create_form_from_schema(indicateur_schema)(
             initial=indicateur.data if indicateur else None
@@ -162,8 +161,10 @@ def indicateur_vsme(request, vsme_id, indicateur_schema_id):
         "entreprise": rapport_vsme.entreprise,
         "form": form,
         "indicateur_schema": indicateur_schema,
+        "indicateur_schema_id": indicateur_schema_id,
+        "rapport_vsme_id": vsme_id,
     }
-    return render(request, "vsme/saisie_indicateur.html", context=context)
+    return render(request, "fragments/indicateur.html", context=context)
 
 
 def load_indicateur_schema(indicateur_schema_id):
