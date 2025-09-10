@@ -1,0 +1,49 @@
+<div class="fr-container fr-container--fluid fr-container-md">
+    <div class="fr-grid-row fr-grid-row--center">
+        <div class="fr-col-12 fr-col-md-10 fr-col-lg-8">
+            <div class="fr-modal__body">
+                <div class="fr-modal__header">
+                    <button aria-controls="htmx-modal-indicateur" title="Fermer" type="button" class="fr-btn--close fr-btn">Fermer</button>
+                </div>
+                <div class="fr-modal__content">
+                    <h2 id="htmx-modal-indicateur-title" class="fr-modal__title">{{ indicateur_schema.title }}</h2>
+
+                    <p>{{ indicateur_schema.description }}</p>
+
+                    <form method="post" action="{% url 'vsme:indicateur_vsme' rapport_vsme_id indicateur_schema_id %}"
+                          hx-post="{% url 'vsme:indicateur_vsme' rapport_vsme_id indicateur_schema_id %}"
+                          hx-target="#htmx-modal-indicateur">
+                        {% csrf_token %}
+
+                        {% if form.indicator_type != "table" %}
+                            {% for field in form %}
+                                {% include 'snippets/field.html' %}
+                            {% endfor %}
+
+                        {% else %}
+                            {{ form.management_form }}
+                            <table>
+                                <thead>
+                                    {% for field in form.0 %}
+                                        <th>{{ field.label_tag }}</th>
+                                    {% endfor %}
+                                </thead>
+                                <tbody>
+                                    {% for form_table in form %}
+                                        <tr>
+                                            {% for field in form_table %}
+                                                <td>{{ field }}</td>
+                                            {% endfor %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endif %}
+
+                        <button type="submit" class="fr-btn">Enregistrer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

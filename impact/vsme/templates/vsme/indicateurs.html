@@ -13,10 +13,17 @@
                 <ul>
                     {% for indicateur in indicateurs %}
                         <li>
-                            <a href="{% url 'vsme:indicateur_vsme' rapport_vsme.id indicateur.id %}">{{ indicateur.title }}</a>
+                            {{ indicateur.title }}
+                            <button aria-controls="htmx-modal-indicateur" data-fr-opened="false" type="button" class="fr-btn"
+                                    hx-get="{% url 'vsme:indicateur_vsme' rapport_vsme.id indicateur.id %}"
+                                    hx-target="#htmx-modal-indicateur">
+                                Modifier
+                            </button>
                         </li>
                     {% endfor %}
                 </ul>
+
+                <dialog id="htmx-modal-indicateur" class="fr-modal fr-modal--top" aria-labelledby="htmx-modal-indicateur-title" data-fr-concealing-backdrop="true"></dialog>
 
             </div>
         </div>
