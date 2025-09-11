@@ -459,3 +459,71 @@ METABASE_DEBUG_BULK_SIZE = int(os.getenv("METABASE_DEBUG_BULK_SIZE", 1000))
 # Création des tables de travail metabase:
 # nombre maximum de requêtes asynchrones simultanées
 METABASE_NB_ASYNC_CALLS = int(os.getenv("METABASE_NB_ASYNC_CALLS", 100))
+
+# ProConnect :
+# On garde l'identification classique par modèle quoi qu'il advienne
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+]
+# Configuration des endpoints ProConnect
+# Pointe par défaut sur la production, à modifier pour l'intégration (recette),
+OIDC_PC_DOMAIN = os.getenv("OIDC_PC_DOMAIN", "auth.agentconnect.gouv.fr")
+OIDC_PC_ISSUER = os.getenv("OIDC_PC_ISSUER", f"{OIDC_PC_DOMAIN}/api/v2")
+
+# l'activation de ProConnect est configurable par variable d'environnement
+OIDC_ENABLED = os.getenv("OIDC_ENABLED", "false") == "true"
+
+# mentionné dans la documentation
+OIDC_AUTH_REQUEST_EXTRA_PARAMS = {"acr_values": "eidas1"}
+
+if OIDC_ENABLED:
+    # ajoute OIDC comme mode possible d'identification
+    AUTHENTICATION_BACKENDS += [
+        "oidc.backends.CustomOIDCAuthenticationBackend",
+    ]
+
+# Authentication to support OIDC silent login flows via the 'silent' query parameter
+OIDC_AUTHENTICATE_CLASS = "lasuite.oidc_login.views.OIDCAuthenticationRequestView"
+OIDC_CALLBACK_CLASS = "lasuite.oidc_login.views.OIDCAuthenticationCallbackView"
+
+# Required OIDC settings
+OIDC_RP_CLIENT_ID = os.getenv("OIDC_RP_CLIENT_ID")
+OIDC_RP_CLIENT_SECRET = os.getenv("OIDC_RP_CLIENT_SECRET")
+OIDC_RP_SCOPES = "openid given_name usual_name email siret custom uid"
+OIDC_RP_SIGN_ALGO = "RS256"
+# permet de stocker le token du FI pour pouvoir effectuer une déconnexion globale
+OIDC_STORE_ID_TOKEN = True
+ALLOW_LOGOUT_GET_METHOD = True
+
+
+OIDC_OP_TOKEN_ENDPOINT = f"https://{OIDC_PC_ISSUER}/token"
+OIDC_OP_USER_ENDPOINT = f"https://{OIDC_PC_ISSUER}/userinfo"
+OIDC_OP_LOGOUT_ENDPOINT = f"https://{OIDC_PC_ISSUER}/session/end"
+OIDC_OP_AUTHORIZATION_ENDPOINT = f"https://{OIDC_PC_ISSUER}/authorize"
+OIDC_OP_JWKS_ENDPOINT = f"https://{OIDC_PC_ISSUER}/jwks"
+# OIDC_OP_USER_ENDPOINT_FORMAT = "AUTO"  # AUTO, JSON, or JWT, defaults to AUTO
+
+# Optional settings
+OIDC_USER_SUB_FIELD = (
+    "sub"  # Field to store the OIDC subject identifier, defaults to "sub"
+)
+
+# pour l'affichage complet du mom de l'utilisateur
+OIDC_USERINFO_FULLNAME_FIELDS = [
+    "given_name",
+    "usual_name",
+]
+# les éléments (claims) requis pour une identification de l'utilisateur sur le portail
+OIDC_USERINFO_ESSENTIAL_CLAIMS = [
+    "sub",
+    "given_name",
+    "usual_name",
+    "siret",
+    "email",
+]
+OIDC_FALLBACK_TO_EMAIL_FOR_IDENTIFICATION = (
+    True  # Allow fallback to email for user identification
+)
+OIDC_CREATE_USER = (
+    True  # Automatically create users if they don't exist, defaults to `True`
+)
