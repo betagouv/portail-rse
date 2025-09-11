@@ -537,9 +537,13 @@
 }
 
 /* VSME */
-.progression-vsme {
-    //  text-align: center;
-    //font-weight: bold;
+.desc-exigence-publication {
+  width: 100%;
+}
+
+.progression-exigence-publication {
+  width: 0;
+  min-width: 100%;
 }
 
 .progression-vsme--avancement {
