@@ -156,9 +156,16 @@ def indicateur_vsme(request, vsme_id, indicateur_schema_id):
                 indicateur = rapport_vsme.indicateurs.create(
                     schema_id=indicateur_schema_id, data=form.cleaned_data
                 )
-            redirect_to = reverse("vsme:exigence_de_publication", args=[rapport_vsme.entreprise.siren])
-            if htmx.is_htmx(request):
-                return htmx.HttpResponseHXRedirect(redirect_to)
+            if request.POST.get("action") == "ajouter-ligne":
+                form = create_form_from_schema(indicateur_schema)(
+                    initial=indicateur.data
+                )
+            else:
+                redirect_to = reverse(
+                    "vsme:exigence_de_publication", args=[rapport_vsme.entreprise.siren]
+                )
+                if htmx.is_htmx(request):
+                    return htmx.HttpResponseHXRedirect(redirect_to)
     else:  # GET
         form = create_form_from_schema(indicateur_schema)(
             initial=indicateur.data if indicateur else None
