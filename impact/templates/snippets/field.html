@@ -17,6 +17,30 @@
             </div>
         {% endblock %}
 
+    {% elif widget_type == 'CheckboxSelectMultiple' %}
+        <fieldset class="fr-fieldset {% if field.errors %} fr-fieldset--error {% endif %}" id="{{ field.name }}" role="group" aria-labelledby="{{ field.name }}-legend {{ field.name }}-messages">
+            <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="{{ field.name }}-legend">{{ field.label }}</legend>
+            {% for checkbox in field %}
+                <div class="fr-fieldset__element">
+                    <div class="fr-checkbox-group">
+                        {{ checkbox.tag }}
+                        <label class="fr-label" for="{{ checkbox.id_for_label }}">
+                            {{ checkbox.choice_label }}
+                        </label>
+                    </div>
+                </div>
+            {% endfor %}
+            {% if field.errors %}
+                <div class="fr-messages-group" id="{{ field.name }}-messages" aria-live="polite">
+                    <p class="fr-message fr-message--error">
+                        {% for error in field.errors %}
+                            {{ error|escape }}
+                        {% endfor %}
+                    </p>
+                </div>
+            {% endif %}
+        </fieldset>
+
     {% else %}
         <div class="{{ fr_group_class }}{% if field.errors %} {{ fr_group_class }}--error {% endif %} {{ additional_classes}}">
             {% block field %}

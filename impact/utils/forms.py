@@ -9,14 +9,17 @@ class DsfrForm(forms.Form):
     def reinitialise_widgets(self):
         for name, field in self.fields.items():
             if isinstance(field.widget, forms.widgets.Select):
-                fr_name = "fr-select"
+                dsfr_class_name = "fr-select"
+            elif isinstance(field.widget, forms.widgets.CheckboxSelectMultiple):
+                dsfr_class_name = None
             else:
-                fr_name = "fr-input"
-            field.widget.attrs.update({"class": f"{fr_name}"})
-            if name in self.errors:
+                dsfr_class_name = "fr-input"
+            if dsfr_class_name:
+                field.widget.attrs.update({"class": f"{dsfr_class_name}"})
+            if name in self.errors and dsfr_class_name:
                 field.widget.attrs.update(
                     {
-                        "class": f"{fr_name} {fr_name}-error",
+                        "class": f"{dsfr_class_name} {dsfr_class_name}-error",
                         "aria-describedby": f"{name}-error-desc-error",
                     }
                 )

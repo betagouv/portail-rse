@@ -1,4 +1,37 @@
 {
+    "B1-24-a": {
+        "title": "Base d’établissement",
+        "description": "Indiquer si vous utilisez le module de base ou le module complet pour votre déclaration de la norme VSME.",
+        "fields": [
+            {
+                "name": "base_etablissement",
+                "label": "Choix du module",
+                "type": "choice",
+                "choices": [
+                    {
+                        "name": "base",
+                        "label": "Module de base"
+                    },
+                    {
+                        "name": "complet",
+                        "label": "Module complet"
+                    }
+                ],
+                "required": true
+            }
+        ]
+    },
+    "B1-24-b": {
+        "title": "Omission d’information",
+        "description": "Indiquer si l’entreprise a omis une information jugée classifiée ou sensible, et préciser laquelle parmi les exigences de publication.",
+        "fields": [
+            {
+                "name": "omission_information",
+                "label": "Exigences de publication dans lesquelles des informations ont été omises",
+                "type": "exigences_de_publication"
+            }
+        ]
+    },
     "B1-24-e-i": {
         "title": "Forme juridique de l’entreprise",
         "description": "Indiquer la structure légale de l’entité déclarante, telle que reconnue par la législation nationale.",

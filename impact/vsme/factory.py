@@ -2,6 +2,7 @@ from django import forms
 
 from utils.forms import DsfrForm
 from utils.forms import DsfrFormSet
+from vsme.models import EXIGENCES_DE_PUBLICATION
 
 
 def create_form_from_schema(schema, **kwargs):
@@ -45,15 +46,24 @@ def create_form_from_schema(schema, **kwargs):
                 )  # TODO: ajouter les params django min_num et validate_min pour ne pas enregistrer de valeur nulle ?
                 FormSet.indicator_type = "table"
                 return FormSet
+            case "exigences_de_publication":
+                field["type"] = "multiple_choice"
+                choices = [
+                    (id, f"{id} - {nom}")
+                    for id, nom in EXIGENCES_DE_PUBLICATION.items()
+                ]
+                _DynamicForm.base_fields[field_name] = create_simple_field_from_schema(
+                    field, choices=choices
+                )
 
     return _DynamicForm
 
 
-def create_simple_field_from_schema(field_schema):
+def create_simple_field_from_schema(field_schema, **kwargs):
     field_name = field_schema["name"]
     field_kwargs = {
         "label": field_schema.get("label", field_name),
-        "required": field_schema.get("required", True),
+        "required": field_schema.get("required", False),
         # ...
     }
     match field_schema["type"]:
@@ -71,5 +81,14 @@ def create_simple_field_from_schema(field_schema):
                 (choice["name"], choice["label"]) for choice in field_schema["choices"]
             )
             return forms.ChoiceField(**field_kwargs)
+        case "multiple_choice":
+            choices = kwargs.get("choices") or (
+                (choice["name"], choice["label"]) for choice in field_schema["choices"]
+            )
+            return forms.MultipleChoiceField(
+                widget=forms.CheckboxSelectMultiple,
+                choices=choices,
+                **field_kwargs,
+            )
         case _:
             raise Exception(f"Type inconnu : {field_type}")
