@@ -15,6 +15,15 @@ EXIGENCES_DE_PUBLICATION = {
     "B9": "Effectifs : santé et sécurité",
     "B10": "Effectifs : rémunération, négociation collective et formation",
     "B11": "Condamnations et amendes en matière de lutte contre la corruption et les actes de corruption",
+    "C1": "Stratégie : modèle économique et initiatives liées à la durabilité",
+    "C2": "Description des pratiques, des politiques et des initiatives futures pour une transition vers une économie plus durable ",
+    "C3": "Cibles de réduction des émissions de GES et transition climatique",
+    "C4": "Risques climatiques",
+    "C5": "Caractéristiques supplémentaires (générales) des effectifs",
+    "C6": "Informations complémentaires sur les effectifs de l'entreprise – Politiques et procédures en matière de droits de l’homme ",
+    "C7": "Incidents graves en matière de droits de l’homme",
+    "C8": "Recettes de certains secteurs et exclusion des indices de référence de l'UE",
+    "C9": "Ratio femmes/hommes au sein de l'organe de gouvernance",
 }
 
 
