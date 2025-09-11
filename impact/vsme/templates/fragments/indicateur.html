@@ -32,12 +32,22 @@
                                     {% for form_table in form %}
                                         <tr>
                                             {% for field in form_table %}
-                                                <td>{{ field }}</td>
+                                                <td>
+                                                    {{ field }}
+                                                    {% if field.errors %}
+                                                        <p id="{{ field.name }}-error-desc-error" class="fr-error-text">
+                                                            {% for error in field.errors %}
+                                                                {{ error|escape }}
+                                                            {% endfor %}
+                                                        </p>
+                                                    {% endif %}
+                                                </td>
                                             {% endfor %}
                                         </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            <button type="submit" name="action" value="ajouter-ligne" class="fr-btn fr-btn--secondary">Ajouter une ligne</button>
                         {% endif %}
 
                         <button type="submit" class="fr-btn">Enregistrer</button>
