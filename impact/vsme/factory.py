@@ -16,7 +16,7 @@ def load_json_schema(file_path):
         return json.load(file)
 
 
-def create_form_from_schema(schema):
+def create_form_from_schema(schema, **kwargs):
     class _DynamicForm(DsfrForm):
         pass
 
@@ -41,9 +41,20 @@ def create_form_from_schema(schema):
                                 column
                             )
 
+                    @property
+                    def cleaned_data(self):
+                        super().cleaned_data
+                        # surcharge cleaned_data pour supprimer les valeurs des lignes supprimées
+                        return [
+                            form.cleaned_data
+                            for form in self.forms
+                            if form not in self.deleted_forms
+                        ]
+
+                extra = kwargs.get("extra", 0)
                 FormSet = forms.formset_factory(
-                    _DynamicForm, formset=TableauFormSet, extra=1
-                )
+                    _DynamicForm, formset=TableauFormSet, extra=extra, can_delete=True
+                )  # TODO: ajouter les params django min_num et validate_min pour ne pas enregistrer de valeur nulle ?
                 FormSet.indicator_type = "table"
                 return FormSet
 

@@ -144,8 +144,13 @@ def indicateur_vsme(request, vsme_id, indicateur_schema_id):
     indicateur_schema = load_indicateur_schema(indicateur_schema_id)
 
     if request.method == "POST":
+        if delete_field_name := request.POST.get("supprimer-ligne"):
+            data = request.POST.copy()
+            data[delete_field_name] = True
+        else:
+            data = request.POST
         form = create_form_from_schema(indicateur_schema)(
-            request.POST,
+            data,
             initial=indicateur.data if indicateur else None,
         )
         if form.is_valid():
@@ -156,8 +161,9 @@ def indicateur_vsme(request, vsme_id, indicateur_schema_id):
                 indicateur = rapport_vsme.indicateurs.create(
                     schema_id=indicateur_schema_id, data=form.cleaned_data
                 )
-            if request.POST.get("action") == "ajouter-ligne":
-                form = create_form_from_schema(indicateur_schema)(
+            if request.POST.get("ajouter-ligne") or request.POST.get("supprimer-ligne"):
+                extra = 1 if request.POST.get("ajouter-ligne") else 0
+                form = create_form_from_schema(indicateur_schema, extra=extra)(
                     initial=indicateur.data
                 )
             else:
