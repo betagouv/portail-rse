@@ -41,6 +41,11 @@ urlpatterns = (
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 )
 
+if settings.OIDC_ENABLED:
+    urlpatterns += [
+        path("oidc/", include("lasuite.oidc_login.urls")),
+    ]
+
 if settings.DEBUG_TOOLBAR:
     urlpatterns.extend(debug_toolbar_urls())
 
