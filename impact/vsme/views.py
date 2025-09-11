@@ -1,3 +1,5 @@
+import json
+import os
 from functools import wraps
 
 from django.contrib import messages
@@ -13,7 +15,6 @@ import utils.htmx as htmx
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
 from vsme.factory import create_form_from_schema
-from vsme.factory import load_json_schema
 from vsme.models import RapportVSME
 
 
@@ -132,6 +133,15 @@ def exigence_de_publication(request, siren):
         "indicateurs": indicateurs,
     }
     return render(request, "vsme/exigence_de_publication.html", context=context)
+
+
+def load_json_schema(file_path):
+    # Get the directory of the current file
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    # Join the current directory with the provided file path
+    full_path = os.path.join(current_dir, file_path)
+    with open(full_path, "r") as file:
+        return json.load(file)
 
 
 def indicateur_vsme(request, vsme_id, indicateur_schema_id):
