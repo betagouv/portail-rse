@@ -10,6 +10,8 @@ class DsfrForm(forms.Form):
         for name, field in self.fields.items():
             if isinstance(field.widget, forms.widgets.Select):
                 fr_name = "fr-select"
+            elif isinstance(field.widget, forms.widgets.CheckboxSelectMultiple):
+                fr_name = None  # TODO: fixme
             else:
                 fr_name = "fr-input"
             field.widget.attrs.update({"class": f"{fr_name}"})

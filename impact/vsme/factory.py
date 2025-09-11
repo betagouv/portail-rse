@@ -2,6 +2,7 @@ from django import forms
 
 from utils.forms import DsfrForm
 from utils.forms import DsfrFormSet
+from vsme.models import EXIGENCES_DE_PUBLICATION
 
 
 def create_form_from_schema(schema, **kwargs):
@@ -45,6 +46,11 @@ def create_form_from_schema(schema, **kwargs):
                 )  # TODO: ajouter les params django min_num et validate_min pour ne pas enregistrer de valeur nulle ?
                 FormSet.indicator_type = "table"
                 return FormSet
+            case "exigences_de_publication":
+                _DynamicForm.base_fields[field_name] = forms.MultipleChoiceField(
+                    widget=forms.CheckboxSelectMultiple,
+                    choices=EXIGENCES_DE_PUBLICATION,
+                )
 
     return _DynamicForm
 

@@ -3,6 +3,21 @@ from django.db import models
 from utils.models import TimestampedModel
 
 
+EXIGENCES_DE_PUBLICATION = {
+    "B1": "Base d’établissement",
+    "B2": "Pratiques, politiques et initiatives futures pour une transition vers une économie plus durable",
+    "B3": "Énergie et émissions de gaz à effet de serre",
+    "B4": "Pollution de l’air, de l’eau et des sols",
+    "B5": "Biodiversité",
+    "B6": "Eau",
+    "B7": "Utilisation des ressources, économie circulaire et gestion des déchets",
+    "B8": "Effectifs : caractéristiques générales",
+    "B9": "Effectifs : santé et sécurité",
+    "B10": "Effectifs : rémunération, négociation collective et formation",
+    "B11": "Condamnations et amendes en matière de lutte contre la corruption et les actes de corruption",
+}
+
+
 class RapportVSME(TimestampedModel):
     entreprise = models.ForeignKey(
         "entreprises.Entreprise",
@@ -43,6 +58,7 @@ class Indicateur(TimestampedModel):
     data = models.JSONField(
         null=True, blank=True, verbose_name="donnée brute saisie par l'utilisateur"
     )
+    # est_complete ?
 
     class Meta:
         constraints = [
