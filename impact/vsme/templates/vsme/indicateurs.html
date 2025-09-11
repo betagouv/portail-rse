@@ -15,24 +15,28 @@
                 </p>
 
                 <div class="fr-grid-row fr-grid-row--gutters">
-                    <div class="fr-col-12 fr-col-md-6 fr-col-lg-4">
+                    <div class="fr-col-12 fr-col-md-6">
                         <div class="fr-tile fr-tile--sm fr-enlarge-link">
                             <div class="fr-tile__body progression-vsme">
                                 <div class="fr-tile__content">
                                     <h3 class="fr-tile__title progression-vsme--title">
                                         <a href="{% url 'vsme:indicateurs_vsme_categorie' entreprise.siren 'informations-generales' %}">Général</a>
                                     </h3>
-                                    <p class="fr-tile__desc">
-                                        <span class="progression-vsme--avancement">0 %</span>
-                                        <br>
-                                        de complétion
-                                        <progress max="100" value="0" class="progression-csrd">0 %</progress>
+                                    <p class="fr-tile__desc progression-vsme">
+                                        <div class="progress-circle-wrapper">
+                                            <div class="progress-circle" data-value="0">
+                                                <div class="progress-masque">
+                                                    <div class="progress-barre"></div>
+                                                    <div class="progress-sup50"></div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="fr-col-12 fr-col-md-6 fr-col-lg-4">
+                    <div class="fr-col-12 fr-col-md-6">
                         <div class="fr-tile fr-tile--sm fr-enlarge-link progression-vsme--env">
                             <div class="fr-tile__body">
                                 <div class="fr-tile__content">
@@ -40,10 +44,14 @@
                                         <a href="{% url 'vsme:indicateurs_vsme_categorie' entreprise.siren 'environnement' %}" class="progression-vsme--title">Environnement</a>
                                     </h3>
                                     <p class="fr-tile__desc progression-vsme">
-                                        <span class="progression-vsme--avancement">0 %</span>
-                                        <br>
-                                        de complétion
-                                        <progress max="100" value="0" class="progression-csrd">0 %</progress>
+                                        <div class="progress-circle-wrapper">
+                                            <div class="progress-circle" data-value="0">
+                                                <div class="progress-masque">
+                                                    <div class="progress-barre"></div>
+                                                    <div class="progress-sup50"></div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </p>
                                 </div>
                             </div>
@@ -60,10 +68,14 @@
                                         <a href="{% url 'vsme:indicateurs_vsme_categorie' entreprise.siren 'social' %}" class="progression-vsme--title">Social</a>
                                     </h3>
                                     <p class="fr-tile__desc progression-vsme">
-                                        <span class="progression-vsme--avancement">0 %</span>
-                                        <br>
-                                        de complétion
-                                        <progress max="100" value="0" class="progression-csrd">0 %</progress>
+                                        <div class="progress-circle-wrapper">
+                                            <div class="progress-circle" data-value="0">
+                                                <div class="progress-masque">
+                                                    <div class="progress-barre"></div>
+                                                    <div class="progress-sup50"></div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </p>
                                 </div>
                             </div>
@@ -77,10 +89,14 @@
                                         <a href="{% url 'vsme:indicateurs_vsme_categorie' entreprise.siren 'gouvernance' %}" class="progression-vsme--title">Gouvernance</a>
                                     </h3>
                                     <p class="fr-tile__desc progression-vsme">
-                                        <span class="progression-vsme--avancement">0 %</span>
-                                        <br>
-                                        de complétion
-                                        <progress max="100" value="0" class="progression-csrd">0 %</progress>
+                                        <div class="progress-circle-wrapper">
+                                            <div class="progress-circle" data-value="0">
+                                                <div class="progress-masque">
+                                                    <div class="progress-barre"></div>
+                                                    <div class="progress-sup50"></div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </p>
                                 </div>
                             </div>
