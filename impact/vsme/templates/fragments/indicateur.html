@@ -10,7 +10,7 @@
 
                     <p>{{ indicateur_schema.description }}</p>
 
-                    <form method="post" action="{% url 'vsme:indicateur_vsme' rapport_vsme_id indicateur_schema_id %}"
+                    <form id="form-indicateur" method="post" action="{% url 'vsme:indicateur_vsme' rapport_vsme_id indicateur_schema_id %}"
                           hx-post="{% url 'vsme:indicateur_vsme' rapport_vsme_id indicateur_schema_id %}"
                           hx-target="#htmx-modal-indicateur">
                         {% csrf_token %}
@@ -60,9 +60,13 @@
                             </table>
                             <button type="submit" name="ajouter-ligne" value="on" class="fr-btn fr-btn--secondary">Ajouter une ligne</button>
                         {% endif %}
-
-                        <button type="submit" class="fr-btn">Enregistrer</button>
                     </form>
+                </div>
+                <div class="fr-modal__footer">
+                    <div class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
+                        <button type="submit" form="form-indicateur" class="fr-btn fr-icon-checkbox-circle-line fr-btn--icon-left">Enregistrer</button>
+                        <button aria-controls="htmx-modal-indicateur" class="fr-btn fr-btn--secondary">Annuler</button>
+                    </div>
                 </div>
             </div>
         </div>
