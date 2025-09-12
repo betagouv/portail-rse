@@ -16,11 +16,11 @@
 
                 <div class="fr-grid-row fr-grid-row--gutters">
                     <div class="fr-col-12 fr-col-md-6">
-                        <div class="fr-tile fr-tile--sm fr-enlarge-link">
-                            <div class="fr-tile__body progression-vsme">
+                        <div class="fr-tile fr-tile--sm fr-enlarge-link progression-vsme--general">
+                            <div class="fr-tile__body">
                                 <div class="fr-tile__content">
-                                    <h3 class="fr-tile__title progression-vsme--title">
-                                        <a href="{% url 'vsme:indicateurs_vsme_categorie' entreprise.siren 'informations-generales' %}">Général</a>
+                                    <h3 class="fr-tile__title">
+                                        <a href="{% url 'vsme:indicateurs_vsme_categorie' entreprise.siren 'informations-generales' %}" class="progression-vsme--title">Général</a>
                                     </h3>
                                     {% comment %}
                                     <p class="fr-tile__desc progression-vsme">

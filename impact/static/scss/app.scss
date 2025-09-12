@@ -550,6 +550,13 @@
     font-size: 1.5rem;
 }
 
+.progression-vsme--general {
+    background-color: var(--background-contrast-yellow-moutarde);
+    .progression-vsme--title {
+        color: var(--text-label-yellow-moutarde);
+    }
+}
+
 .progression-vsme--gov {
     background-color: var(--background-contrast-info);
     .progression-vsme--title {
