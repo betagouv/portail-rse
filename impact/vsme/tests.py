@@ -28,7 +28,7 @@ def test_acces_vsme_refuse(client, entreprise_qualifiee, bob):
     assert response.status_code == 403, "Bob ne doit pas pouvoir accéder à cette page"
 
 
-@pytest.mark.parametrize("etape", ["introduction", "module_base", "module_narratif"])
+@pytest.mark.parametrize("etape", ["introduction", "module_base", "module_complet"])
 def test_chargement_templates_des_etapes_vsme(
     etape, client, entreprise_qualifiee, alice
 ):
@@ -54,7 +54,7 @@ def test_etape_vsme_inexistante_retourne_une_404(client, entreprise_qualifiee, a
     assert response.status_code == 404
 
 
-@pytest.mark.parametrize("etape", ["introduction", "module_base", "module_narratif"])
+@pytest.mark.parametrize("etape", ["introduction", "module_base", "module_complet"])
 def test_siren_absent_redirige_vers_celui_de_l_entreprise_courante(
     etape, client, entreprise_factory, alice
 ):
@@ -69,7 +69,7 @@ def test_siren_absent_redirige_vers_celui_de_l_entreprise_courante(
     assert response.redirect_chain == [(redirect_url, 302)]
 
 
-@pytest.mark.parametrize("etape", ["introduction", "module_base", "module_narratif"])
+@pytest.mark.parametrize("etape", ["introduction", "module_base", "module_complet"])
 def test_siren_absent_redirige_vers_l_ajout_d_entreprise_si_pas_d_entreprise(
     etape, client, alice
 ):
