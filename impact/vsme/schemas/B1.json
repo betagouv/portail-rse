@@ -30,7 +30,8 @@
                 "label": "Exigences de publication dans lesquelles des informations ont été omises",
                 "type": "exigences_de_publication"
             }
-        ]
+        ],
+        "si_pertinent": true
     },
     "B1-24-e-i": {
         "title": "Forme juridique de l’entreprise",
@@ -144,7 +145,8 @@
                 "min": 1,
                 "max": 10000000
             }
-        ]
+        ],
+        "si_pertinent": true
     },
     "B1-24-e-vii": {
         "title": "Liste des sites",

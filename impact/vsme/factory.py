@@ -4,10 +4,34 @@ from utils.forms import DsfrForm
 from utils.forms import DsfrFormSet
 from vsme.models import EXIGENCES_DE_PUBLICATION
 
+NON_PERTINENT_FIELD_NAME = "non_pertinent"
+
 
 def create_form_from_schema(schema, **kwargs):
     class _DynamicForm(DsfrForm):
-        pass
+        def clean(self):
+            super().clean()
+
+            if NON_PERTINENT_FIELD_NAME in self.fields:
+                non_pertinent = self.cleaned_data.get(NON_PERTINENT_FIELD_NAME)
+                if not non_pertinent:
+                    for field in self.fields:
+                        if (
+                            field != NON_PERTINENT_FIELD_NAME
+                            and not self.cleaned_data.get(field)
+                        ):
+                            self.add_error(
+                                field,
+                                "Ce champ est requis lorsque l'indicateur est déclaré comme pertinent",
+                            )
+
+    if schema.get("si_pertinent", False):
+        _DynamicForm.base_fields[NON_PERTINENT_FIELD_NAME] = forms.BooleanField(
+            required=False,
+            widget=forms.BooleanField.widget(
+                attrs={"hx-post": kwargs["toggle_pertinent_url"]}
+            ),
+        )
 
     fields = schema["fields"]
     for field in fields:
