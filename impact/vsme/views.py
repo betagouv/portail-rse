@@ -15,7 +15,7 @@ from entreprises.views import get_current_entreprise
 ETAPES = {
     "introduction": "Introduction",
     "module_base": "Module de base",
-    "module_narratif": "Module narratif",
+    "module_complet": "Module complet",
 }
 
 
@@ -72,8 +72,8 @@ def etape_vsme(request, siren, etape):
             template_name = "etapes/introduction.html"
         case "module_base":
             template_name = "etapes/module-base.html"
-        case "module_narratif":
-            template_name = "etapes/module-narratif.html"
+        case "module_complet":
+            template_name = "etapes/module-complet.html"
 
     context |= {
         "lien": reverse("vsme:etape_vsme", kwargs={"siren": siren, "etape": etape}),
