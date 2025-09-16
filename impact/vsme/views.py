@@ -15,6 +15,7 @@ import utils.htmx as htmx
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
 from vsme.factory import create_form_from_schema
+from vsme.factory import NON_PERTINENT_FIELD_NAME
 from vsme.models import RapportVSME
 
 
@@ -152,6 +153,9 @@ def indicateur_vsme(request, vsme_id, indicateur_schema_id):
         indicateur = None
 
     indicateur_schema = load_indicateur_schema(indicateur_schema_id)
+    toggle_pertinent_url = reverse(
+        "vsme:toggle_pertinent", args=[vsme_id, indicateur_schema_id]
+    )
 
     if request.method == "POST":
         if delete_field_name := request.POST.get("supprimer-ligne"):
@@ -159,7 +163,9 @@ def indicateur_vsme(request, vsme_id, indicateur_schema_id):
             data[delete_field_name] = True
         else:
             data = request.POST
-        form = create_form_from_schema(indicateur_schema)(
+        form = create_form_from_schema(
+            indicateur_schema, toggle_pertinent_url=toggle_pertinent_url
+        )(
             data,
             initial=indicateur.data if indicateur else None,
         )
@@ -173,9 +179,11 @@ def indicateur_vsme(request, vsme_id, indicateur_schema_id):
                 )
             if request.POST.get("ajouter-ligne") or request.POST.get("supprimer-ligne"):
                 extra = 1 if request.POST.get("ajouter-ligne") else 0
-                form = create_form_from_schema(indicateur_schema, extra=extra)(
-                    initial=indicateur.data
-                )
+                form = create_form_from_schema(
+                    indicateur_schema,
+                    toggle_pertinent_url=toggle_pertinent_url,
+                    extra=extra,
+                )(initial=indicateur.data)
             else:
                 redirect_to = reverse(
                     "vsme:exigence_de_publication", args=[rapport_vsme.entreprise.siren]
@@ -183,9 +191,9 @@ def indicateur_vsme(request, vsme_id, indicateur_schema_id):
                 if htmx.is_htmx(request):
                     return htmx.HttpResponseHXRedirect(redirect_to)
     else:  # GET
-        form = create_form_from_schema(indicateur_schema)(
-            initial=indicateur.data if indicateur else None
-        )
+        form = create_form_from_schema(
+            indicateur_schema, toggle_pertinent_url=toggle_pertinent_url
+        )(initial=indicateur.data if indicateur else None)
 
     context = {
         "entreprise": rapport_vsme.entreprise,
@@ -203,3 +211,30 @@ def load_indicateur_schema(indicateur_schema_id):
         f"schemas/{exigence_de_publication}.json"
     )
     return exigence_de_publication_schema[indicateur_schema_id]
+
+
+def toggle_pertinent(request, vsme_id, indicateur_schema_id):
+    rapport_vsme = RapportVSME.objects.get(id=vsme_id)
+    indicateur_schema = load_indicateur_schema(indicateur_schema_id)
+    toggle_pertinent_url = reverse(
+        "vsme:toggle_pertinent", args=[vsme_id, indicateur_schema_id]
+    )
+
+    form = create_form_from_schema(
+        indicateur_schema, toggle_pertinent_url=toggle_pertinent_url
+    )(
+        initial=request.POST,
+    )
+    if request.POST.get(NON_PERTINENT_FIELD_NAME):
+        for field in form.fields:
+            if field != NON_PERTINENT_FIELD_NAME:
+                form.fields[field].disabled = True
+
+    context = {
+        "entreprise": rapport_vsme.entreprise,
+        "form": form,
+        "indicateur_schema": indicateur_schema,
+        "indicateur_schema_id": indicateur_schema_id,
+        "rapport_vsme_id": vsme_id,
+    }
+    return render(request, "fragments/indicateur.html", context=context)
