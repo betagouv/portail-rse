@@ -132,7 +132,8 @@
                     }
                 ]
             }
-        ]
+        ],
+        "si_pertinent": true
     },
     "B1-24-e-v": {
         "title": "Effectif total de l’entreprise",

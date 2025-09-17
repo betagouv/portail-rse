@@ -29,6 +29,9 @@
                                     {% endfor %}
                                 </p>
                             {% endif %}
+                            {% if indicateur_schema.si_pertinent %}
+                                <input type="checkbox" name="non_pertinent" {% if form.non_pertinent %}checked{% endif %}>
+                            {% endif%}
                             <table>
                                 <thead>
                                     {% for field in form.0 %}

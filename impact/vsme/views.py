@@ -2,6 +2,7 @@ import json
 import os
 from functools import wraps
 
+from django import forms
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -191,9 +192,13 @@ def indicateur_vsme(request, vsme_id, indicateur_schema_id):
                 if htmx.is_htmx(request):
                     return htmx.HttpResponseHXRedirect(redirect_to)
     else:  # GET
-        form = create_form_from_schema(
-            indicateur_schema, toggle_pertinent_url=toggle_pertinent_url
-        )(initial=indicateur.data if indicateur else None)
+        # form = create_form_from_schema(
+        #     indicateur_schema, toggle_pertinent_url=toggle_pertinent_url
+        # )(initial=indicateur.data if indicateur else None)
+
+        # gère l'initialisation du non_pertinent
+        data = indicateur.data if indicateur else None
+        form = calcule_indicateur(indicateur_schema, toggle_pertinent_url, data)
 
     context = {
         "entreprise": rapport_vsme.entreprise,
@@ -220,15 +225,17 @@ def toggle_pertinent(request, vsme_id, indicateur_schema_id):
         "vsme:toggle_pertinent", args=[vsme_id, indicateur_schema_id]
     )
 
-    form = create_form_from_schema(
-        indicateur_schema, toggle_pertinent_url=toggle_pertinent_url
-    )(
-        initial=request.POST,
-    )
-    if request.POST.get(NON_PERTINENT_FIELD_NAME):
-        for field in form.fields:
-            if field != NON_PERTINENT_FIELD_NAME:
-                form.fields[field].disabled = True
+    # form = create_form_from_schema(
+    #     indicateur_schema, toggle_pertinent_url=toggle_pertinent_url
+    # )(
+    #     initial=request.POST,
+    # )
+    # if request.POST.get(NON_PERTINENT_FIELD_NAME):
+    #     for field in form.fields:
+    #         if field != NON_PERTINENT_FIELD_NAME:
+    #             form.fields[field].disabled = True
+
+    form = calcule_indicateur(indicateur_schema, toggle_pertinent_url, request.POST)
 
     context = {
         "entreprise": rapport_vsme.entreprise,
@@ -238,3 +245,24 @@ def toggle_pertinent(request, vsme_id, indicateur_schema_id):
         "rapport_vsme_id": vsme_id,
     }
     return render(request, "fragments/indicateur.html", context=context)
+
+
+def calcule_indicateur(indicateur_schema, toggle_pertinent_url, data):
+    form = create_form_from_schema(
+        indicateur_schema, toggle_pertinent_url=toggle_pertinent_url
+    )(
+        initial=data,
+    )
+    if isinstance(form, forms.Form) and data and data.get(NON_PERTINENT_FIELD_NAME):
+        for field in form.fields:
+            if field != NON_PERTINENT_FIELD_NAME:
+                form.fields[field].disabled = True
+    # gérer plutôt la désactivation des champs dans l'init du formulaire ?
+    # permettrait de ne pas vérifier la classe par exemple
+    # et de ne pas avoir besoin de cette fonction calcule_indicateur
+    # un début d'implem est commenté dans la factory
+    # mais il faudrait améliorer pour gérer correctement le cas de l'enregistrement (initialisation du form avec des data et pas juste initial)
+    # vérifier par ex le comportement lorsque en base on a stocké que c'était non pertinent mais l'utilisateur modifie ensuite pour enregistrer une valeur
+    # à discuter si on veut aller dans cette direction
+
+    return form

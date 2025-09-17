@@ -9,6 +9,13 @@ NON_PERTINENT_FIELD_NAME = "non_pertinent"
 
 def create_form_from_schema(schema, **kwargs):
     class _DynamicForm(DsfrForm):
+        # def __init__(self, *args, **kwargs):
+        #     super().__init__(*args, **kwargs)
+        #     if NON_PERTINENT_FIELD_NAME in self.fields and self.initial and self.initial.get(NON_PERTINENT_FIELD_NAME):
+        #         for field in self.fields:
+        #             if field != NON_PERTINENT_FIELD_NAME:
+        #                 self.fields[field].disabled = True
+
         def clean(self):
             super().clean()
 
@@ -46,6 +53,29 @@ def create_form_from_schema(schema, **kwargs):
             case "table":
 
                 class TableauFormSet(DsfrFormSet):
+                    def __init__(self, *args, **kwargs):
+                        self.non_pertinent = None
+                        # nécessaire si on a un indicateur de type tableau non obligatoire (qui peut être non pertinent)
+                        # mais fonctionne seulement si on n'a pas plusieurs champs dont 1 de type tableau dans un indicateur
+                        # si c'est possible il faudrait plutôt gérer proprement le cas d'avoir plusieurs formsets/forms...
+                        # et le non_pertinent serait géré plus proprement dans un form à part, sans toucher au formset ?
+                        # ce cas de plusieurs champs dont 1 de type tableau n'est pas géré aujourd'hui (même sans l'histoire de pertinence)
+                        self.name = field["name"]
+                        if kwargs and kwargs.get("initial"):
+                            self.non_pertinent = kwargs["initial"].get(
+                                NON_PERTINENT_FIELD_NAME
+                            )
+                            formset_initial = kwargs["initial"].get(self.name)
+                            kwargs["initial"] = formset_initial
+                        if args:
+                            data = args[0]
+                            self.non_pertinent = data.get(NON_PERTINENT_FIELD_NAME)
+                        super().__init__(*args, **kwargs)
+                        # if self.non_pertinent:
+                        #     for form in self.forms:
+                        #         for field in form.fields:
+                        #             form.fields[field].disabled
+
                     def add_fields(self, form, index):
                         super().add_fields(form, index)
                         for column in field["columns"]:
@@ -58,16 +88,26 @@ def create_form_from_schema(schema, **kwargs):
                     def cleaned_data(self):
                         super().cleaned_data
                         # surcharge cleaned_data pour supprimer les valeurs des lignes supprimées
-                        return [
+                        # et ajouter le champ non pertinent éventuel
+                        cleaned_data = {}
+                        if self.non_pertinent:
+                            cleaned_data[NON_PERTINENT_FIELD_NAME] = bool(
+                                self.non_pertinent
+                            )
+                        cleaned_data[self.name] = [
                             form.cleaned_data
                             for form in self.forms
                             if form not in self.deleted_forms
                         ]
+                        return cleaned_data
 
                 extra = kwargs.get("extra", 0)
                 FormSet = forms.formset_factory(
-                    _DynamicForm, formset=TableauFormSet, extra=extra, can_delete=True
+                    DsfrForm, formset=TableauFormSet, extra=extra, can_delete=True
                 )  # TODO: ajouter les params django min_num et validate_min pour ne pas enregistrer de valeur nulle ?
+                # Le fait de ne pas utiliser DynamicForm permet de ne pas trimballer des champs non_pertinents à chaque ligne du formset
+                # mais il serait peut être plus malin de ne pas ajouter de champ non_pertinent dans le DynamicForm comme on le fait actuellement
+                # traiter à part ce champ non_pertinent ?
                 FormSet.indicator_type = "table"
                 return FormSet
             case "exigences_de_publication":
