@@ -2,7 +2,7 @@
 {% with fr_group_class=field|fr_group_class field_type=field|field_type widget_type=field|widget_type %}
     {% if widget_type == 'CheckboxInput' %}
         {% block boolean_field %}
-            <div class="{{ fr_group_class }}{% if field.errors %} {{ fr_group_class }}--error {% endif %}">
+            <div class="{{ fr_group_class }} {% if field.errors %}{{ fr_group_class }}--error{% endif %}">
                 {{ field }}
                 <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label|safe }}
                     <span class="fr-hint-text">{{ field.help_text|safe }}</span>
@@ -18,7 +18,7 @@
         {% endblock %}
 
     {% elif widget_type == 'CheckboxSelectMultiple' %}
-        <fieldset class="fr-fieldset {% if field.errors %} fr-fieldset--error {% endif %}" id="{{ field.name }}" role="group" aria-labelledby="{{ field.name }}-legend {{ field.name }}-messages">
+        <fieldset class="fr-fieldset {% if field.errors %}fr-fieldset--error{% endif %}" id="{{ field.name }}" role="group" {% if field.field.disabled %}disabled{% endif %} aria-labelledby="{{ field.name }}-legend {{ field.name }}-messages">
             <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="{{ field.name }}-legend">{{ field.label }}</legend>
             {% for checkbox in field %}
                 <div class="fr-fieldset__element">
@@ -42,7 +42,7 @@
         </fieldset>
 
     {% else %}
-        <div class="{{ fr_group_class }}{% if field.errors %} {{ fr_group_class }}--error {% endif %} {{ additional_classes}}">
+        <div class="{{ fr_group_class }} {% if field.errors %}{{ fr_group_class }}--error{% endif %} {% if field.field.disabled %}{{ fr_group_class }}--disabled{% endif %} {{ additional_classes}}">
             {% block field %}
                 <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label }}
                     <span class="fr-hint-text">{{ field.help_text|safe }}</span>
