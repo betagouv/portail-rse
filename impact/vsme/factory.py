@@ -7,7 +7,29 @@ from vsme.models import EXIGENCES_DE_PUBLICATION
 NON_PERTINENT_FIELD_NAME = "non_pertinent"
 
 
-def create_form_from_schema(schema, **kwargs):
+def create_multiform_from_schema(schema, **kwargs):
+    class _MultiForm:
+        Forms = []
+
+        def __init__(self, *args, **kwargs):
+            self.forms = []
+            for Form in self.Forms:
+                self.forms.append(Form(*args, **kwargs))
+
+        @classmethod
+        def add_Form(cls, Form):
+            cls.Forms.append(Form)
+
+        def is_valid(self):
+            return all([form.is_valid() for form in self.forms])
+
+        @property
+        def cleaned_data(self):
+            cleaned_data = {}
+            for form in self.forms:
+                cleaned_data.update(form.cleaned_data)
+            return cleaned_data
+
     class _DynamicForm(DsfrForm):
         def clean(self):
             super().clean()
@@ -46,9 +68,18 @@ def create_form_from_schema(schema, **kwargs):
             case "table":
 
                 class TableauFormSet(DsfrFormSet):
+                    name = field["name"]
+                    columns = field["columns"]
+
+                    def __init__(self, *args, **kwargs):
+                        if kwargs.get("initial"):
+                            formset_initial = kwargs["initial"].get(self.name)
+                            kwargs["initial"] = formset_initial
+                        super().__init__(*args, **kwargs)
+
                     def add_fields(self, form, index):
                         super().add_fields(form, index)
-                        for column in field["columns"]:
+                        for column in self.columns:
                             field_name = column["name"]
                             form.fields[field_name] = create_simple_field_from_schema(
                                 column
@@ -58,18 +89,21 @@ def create_form_from_schema(schema, **kwargs):
                     def cleaned_data(self):
                         super().cleaned_data
                         # surcharge cleaned_data pour supprimer les valeurs des lignes supprimées
-                        return [
-                            form.cleaned_data
-                            for form in self.forms
-                            if form not in self.deleted_forms
-                        ]
+                        # et retourner un dictionnaire comme un formulaire standard
+                        return {
+                            self.name: [
+                                form.cleaned_data
+                                for form in self.forms
+                                if form not in self.deleted_forms
+                            ]
+                        }
 
                 extra = kwargs.get("extra", 0)
                 FormSet = forms.formset_factory(
-                    _DynamicForm, formset=TableauFormSet, extra=extra, can_delete=True
+                    DsfrForm, formset=TableauFormSet, extra=extra, can_delete=True
                 )  # TODO: ajouter les params django min_num et validate_min pour ne pas enregistrer de valeur nulle ?
                 FormSet.indicator_type = "table"
-                return FormSet
+                _MultiForm.add_Form(FormSet)
             case "exigences_de_publication":
                 field["type"] = "multiple_choice"
                 choices = [
@@ -80,7 +114,10 @@ def create_form_from_schema(schema, **kwargs):
                     field, choices=choices
                 )
 
-    return _DynamicForm
+    if _DynamicForm.base_fields:
+        _MultiForm.add_Form(_DynamicForm)
+
+    return _MultiForm
 
 
 def create_simple_field_from_schema(field_schema, **kwargs):

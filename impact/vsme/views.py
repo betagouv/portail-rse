@@ -14,7 +14,7 @@ from django.urls.base import reverse
 import utils.htmx as htmx
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
-from vsme.factory import create_form_from_schema
+from vsme.factory import create_multiform_from_schema
 from vsme.factory import NON_PERTINENT_FIELD_NAME
 from vsme.models import RapportVSME
 
@@ -163,23 +163,23 @@ def indicateur_vsme(request, vsme_id, indicateur_schema_id):
             data[delete_field_name] = True
         else:
             data = request.POST
-        form = create_form_from_schema(
+        multiform = create_multiform_from_schema(
             indicateur_schema, toggle_pertinent_url=toggle_pertinent_url
         )(
             data,
             initial=indicateur.data if indicateur else None,
         )
-        if form.is_valid():
+        if multiform.is_valid():
             if indicateur:
-                indicateur.data = form.cleaned_data
+                indicateur.data = multiform.cleaned_data
                 indicateur.save()
             else:
                 indicateur = rapport_vsme.indicateurs.create(
-                    schema_id=indicateur_schema_id, data=form.cleaned_data
+                    schema_id=indicateur_schema_id, data=multiform.cleaned_data
                 )
             if request.POST.get("ajouter-ligne") or request.POST.get("supprimer-ligne"):
                 extra = 1 if request.POST.get("ajouter-ligne") else 0
-                form = create_form_from_schema(
+                multiform = create_multiform_from_schema(
                     indicateur_schema,
                     toggle_pertinent_url=toggle_pertinent_url,
                     extra=extra,
@@ -191,13 +191,13 @@ def indicateur_vsme(request, vsme_id, indicateur_schema_id):
                 if htmx.is_htmx(request):
                     return htmx.HttpResponseHXRedirect(redirect_to)
     else:  # GET
-        form = create_form_from_schema(
+        multiform = create_multiform_from_schema(
             indicateur_schema, toggle_pertinent_url=toggle_pertinent_url
         )(initial=indicateur.data if indicateur else None)
 
     context = {
         "entreprise": rapport_vsme.entreprise,
-        "form": form,
+        "multiform": multiform,
         "indicateur_schema": indicateur_schema,
         "indicateur_schema_id": indicateur_schema_id,
         "rapport_vsme_id": vsme_id,
@@ -220,19 +220,19 @@ def toggle_pertinent(request, vsme_id, indicateur_schema_id):
         "vsme:toggle_pertinent", args=[vsme_id, indicateur_schema_id]
     )
 
-    form = create_form_from_schema(
+    multiform = create_multiform_from_schema(
         indicateur_schema, toggle_pertinent_url=toggle_pertinent_url
     )(
         initial=request.POST,
     )
     if request.POST.get(NON_PERTINENT_FIELD_NAME):
-        for field in form.fields:
+        for field in multiform.fields:
             if field != NON_PERTINENT_FIELD_NAME:
-                form.fields[field].disabled = True
+                multiform.fields[field].disabled = True
 
     context = {
         "entreprise": rapport_vsme.entreprise,
-        "form": form,
+        "multiform": multiform,
         "indicateur_schema": indicateur_schema,
         "indicateur_schema_id": indicateur_schema_id,
         "rapport_vsme_id": vsme_id,
