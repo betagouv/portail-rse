@@ -139,7 +139,8 @@
                 "min": 1,
                 "max": 10000000
             }
-        ]
+        ],
+        "si_pertinent": true
     },
     "B1-24-e-v": {
         "title": "Effectif total de l’entreprise",

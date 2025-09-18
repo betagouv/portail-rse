@@ -10,18 +10,50 @@ NON_PERTINENT_FIELD_NAME = "non_pertinent"
 def create_multiform_from_schema(schema, **kwargs):
     class _MultiForm:
         Forms = []
+        si_pertinent = schema.get("si_pertinent", False)
 
         def __init__(self, *args, **kwargs):
             self.forms = []
             for Form in self.Forms:
                 self.forms.append(Form(*args, **kwargs))
+            if self.si_pertinent:
+                # désactive tous les champs du multiform (sauf le champ non pertinent)
+                # lorsque le multiform est initialisé avec une valeur positive du champ non pertinent.
+                # Si le multiform est initialisé à la fois avec les données d'un dictionnaire initial
+                # et celles d'un dictionnaire data (postées par l'utilisateur)
+                # c'est les données postées qui prévalent
+                non_pertinent = None
+                if kwargs and kwargs.get("initial"):
+                    non_pertinent = kwargs["initial"].get(NON_PERTINENT_FIELD_NAME)
+                if args:
+                    data = args[0]
+                    non_pertinent = data.get(NON_PERTINENT_FIELD_NAME)
+                if non_pertinent:
+                    self.disable_fields()
 
         @classmethod
         def add_Form(cls, Form):
             cls.Forms.append(Form)
 
         def is_valid(self):
+            self.clean()
             return all([form.is_valid() for form in self.forms])
+
+        def clean(self):
+            if self.si_pertinent:
+                non_pertinent = self.forms[0].cleaned_data.get(NON_PERTINENT_FIELD_NAME)
+                if not non_pertinent:
+                    for form in self.forms:
+                        if isinstance(form, forms.Form):
+                            for field in form.fields:
+                                if (
+                                    field != NON_PERTINENT_FIELD_NAME
+                                    and not form.cleaned_data.get(field)
+                                ):
+                                    form.add_error(
+                                        field,
+                                        "Ce champ est requis lorsque l'indicateur est déclaré comme pertinent",
+                                    )
 
         @property
         def cleaned_data(self):
@@ -30,22 +62,26 @@ def create_multiform_from_schema(schema, **kwargs):
                 cleaned_data.update(form.cleaned_data)
             return cleaned_data
 
-    class _DynamicForm(DsfrForm):
-        def clean(self):
-            super().clean()
+        def disable_fields(self):
+            for form in self.forms:
+                if isinstance(form, forms.Form):
+                    for field in form.fields:
+                        if field != NON_PERTINENT_FIELD_NAME:
+                            form.fields[field].disabled = True
+                else:  # FormSet
+                    form.min_num = 0
+                    form.validate_min = False
+                    for form_table in form.forms:
+                        for field in form_table.fields:
+                            form_table.fields[field].disabled = True
 
-            if NON_PERTINENT_FIELD_NAME in self.fields:
-                non_pertinent = self.cleaned_data.get(NON_PERTINENT_FIELD_NAME)
-                if not non_pertinent:
-                    for field in self.fields:
-                        if (
-                            field != NON_PERTINENT_FIELD_NAME
-                            and not self.cleaned_data.get(field)
-                        ):
-                            self.add_error(
-                                field,
-                                "Ce champ est requis lorsque l'indicateur est déclaré comme pertinent",
-                            )
+    def _dynamicform_factory():
+        class _DynamicForm(DsfrForm):
+            pass
+
+        return _DynamicForm
+
+    _DynamicForm = _dynamicform_factory()
 
     if schema.get("si_pertinent", False):
         _DynamicForm.base_fields[NON_PERTINENT_FIELD_NAME] = forms.BooleanField(
@@ -66,6 +102,9 @@ def create_multiform_from_schema(schema, **kwargs):
                     field
                 )
             case "table":
+                if _DynamicForm.base_fields:
+                    _MultiForm.add_Form(_DynamicForm)
+                    _DynamicForm = _dynamicform_factory()
 
                 class TableauFormSet(DsfrFormSet):
                     name = field["name"]
@@ -99,9 +138,15 @@ def create_multiform_from_schema(schema, **kwargs):
                         }
 
                 extra = kwargs.get("extra", 0)
+                min_num = 1 if _MultiForm.si_pertinent else None
                 FormSet = forms.formset_factory(
-                    DsfrForm, formset=TableauFormSet, extra=extra, can_delete=True
-                )  # TODO: ajouter les params django min_num et validate_min pour ne pas enregistrer de valeur nulle ?
+                    DsfrForm,
+                    formset=TableauFormSet,
+                    extra=extra,
+                    can_delete=True,
+                    min_num=min_num,
+                    validate_min=bool(min_num),
+                )
                 FormSet.indicator_type = "table"
                 _MultiForm.add_Form(FormSet)
             case "exigences_de_publication":
