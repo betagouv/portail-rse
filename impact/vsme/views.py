@@ -15,7 +15,6 @@ import utils.htmx as htmx
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
 from vsme.factory import create_multiform_from_schema
-from vsme.factory import NON_PERTINENT_FIELD_NAME
 from vsme.models import RapportVSME
 
 
@@ -225,10 +224,6 @@ def toggle_pertinent(request, vsme_id, indicateur_schema_id):
     )(
         initial=request.POST,
     )
-    if request.POST.get(NON_PERTINENT_FIELD_NAME):
-        for field in multiform.fields:
-            if field != NON_PERTINENT_FIELD_NAME:
-                multiform.fields[field].disabled = True
 
     context = {
         "entreprise": rapport_vsme.entreprise,
