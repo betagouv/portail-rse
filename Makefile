@@ -4,6 +4,10 @@ export
 run:
 	honcho --procfile Procfile.dev start
 
+web:
+# utile pour débugger en ajoutant des breakpoint() dans le code et permettre leur exécution dans le terminal sans interception des commandes par honcho
+	PYTHONUNBUFFERED=true python impact/manage.py runserver
+
 install:
 	pipenv install -d
 	npm install
