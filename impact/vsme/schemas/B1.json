@@ -131,6 +131,13 @@
                         "type": "text"
                     }
                 ]
+            },
+            {
+                "name": "nombre_salaries",
+                "label": "Nombre de salariés",
+                "type": "number",
+                "min": 1,
+                "max": 10000000
             }
         ]
     },

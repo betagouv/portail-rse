@@ -15,51 +15,53 @@
                           hx-target="#htmx-modal-indicateur">
                         {% csrf_token %}
 
-                        {% if form.indicator_type != "table" %}
-                            {% for field in form %}
-                                {% include 'snippets/field.html' %}
-                            {% endfor %}
+                        {% for form in multiform.forms %}
+                            {% if form.indicator_type != "table" %}
+                                {% for field in form %}
+                                    {% include 'snippets/field.html' %}
+                                {% endfor %}
 
-                        {% else %}
-                            {{ form.management_form }}
-                            {% if form.non_form_errors %}
-                                <p class="fr-error-text">
-                                    {% for error in form.non_form_errors %}
-                                        {{ error|escape }}
-                                    {% endfor %}
-                                </p>
-                            {% endif %}
-                            <table>
-                                <thead>
-                                    {% for field in form.0 %}
-                                        <th>{{ field.label_tag }}</th>
-                                    {% endfor %}
-                                </thead>
-                                <tbody>
-                                    {% for form_table in form %}
-                                        <tr>
-                                            {% for field in form_table %}
-                                                <td>
-                                                    {% if field.name == "DELETE" %}
-                                                        <button type="submit" name="supprimer-ligne" value="{{ field.html_name }}" class="fr-btn fr-btn--secondary">Supprimer</button>
-                                                    {% else %}
-                                                        {{ field }}
-                                                        {% if field.errors %}
-                                                            <p id="{{ field.name }}-error-desc-error" class="fr-error-text">
-                                                                {% for error in field.errors %}
-                                                                    {{ error|escape }}
-                                                                {% endfor %}
-                                                            </p>
+                            {% else %}
+                                {{ form.management_form }}
+                                {% if form.non_form_errors %}
+                                    <p class="fr-error-text">
+                                        {% for error in form.non_form_errors %}
+                                            {{ error|escape }}
+                                        {% endfor %}
+                                    </p>
+                                {% endif %}
+                                <table>
+                                    <thead>
+                                        {% for field in form.0 %}
+                                            <th>{{ field.label_tag }}</th>
+                                        {% endfor %}
+                                    </thead>
+                                    <tbody>
+                                        {% for form_table in form %}
+                                            <tr>
+                                                {% for field in form_table %}
+                                                    <td>
+                                                        {% if field.name == "DELETE" %}
+                                                            <button type="submit" name="supprimer-ligne" value="{{ field.html_name }}" class="fr-btn fr-btn--secondary">Supprimer</button>
+                                                        {% else %}
+                                                            {{ field }}
+                                                            {% if field.errors %}
+                                                                <p id="{{ field.name }}-error-desc-error" class="fr-error-text">
+                                                                    {% for error in field.errors %}
+                                                                        {{ error|escape }}
+                                                                    {% endfor %}
+                                                                </p>
+                                                            {% endif %}
                                                         {% endif %}
-                                                    {% endif %}
-                                                </td>
-                                            {% endfor %}
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                            <button type="submit" name="ajouter-ligne" value="on" class="fr-btn fr-btn--secondary">Ajouter une ligne</button>
-                        {% endif %}
+                                                    </td>
+                                                {% endfor %}
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                <button type="submit" name="ajouter-ligne" value="on" class="fr-btn fr-btn--secondary">Ajouter une ligne</button>
+                            {% endif %}
+                        {% endfor %}
                     </form>
                 </div>
                 <div class="fr-modal__footer">
