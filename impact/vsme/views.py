@@ -184,16 +184,16 @@ def indicateur_vsme(request, vsme_id, indicateur_schema_id):
                     return htmx.HttpResponseHXRedirect(redirect_to)
             else:
                 extra = 1 if request.POST.get("ajouter-ligne") else 0
-                multiform = create_multiform_from_schema(
+                multiform = calcule_indicateur(
                     indicateur_schema,
-                    toggle_pertinent_url=toggle_pertinent_url,
+                    toggle_pertinent_url,
+                    indicateur.data,
                     extra=extra,
-                )(initial=indicateur.data)
+                )
 
     else:  # GET
-        multiform = create_multiform_from_schema(
-            indicateur_schema, toggle_pertinent_url=toggle_pertinent_url
-        )(initial=indicateur.data if indicateur else None)
+        data = indicateur.data if indicateur else None
+        multiform = calcule_indicateur(indicateur_schema, toggle_pertinent_url, data)
 
     context = {
         "entreprise": rapport_vsme.entreprise,
@@ -219,11 +219,8 @@ def toggle_pertinent(request, vsme_id, indicateur_schema_id):
     toggle_pertinent_url = reverse(
         "vsme:toggle_pertinent", args=[vsme_id, indicateur_schema_id]
     )
-
-    multiform = create_multiform_from_schema(
-        indicateur_schema, toggle_pertinent_url=toggle_pertinent_url
-    )(
-        initial=request.POST,
+    multiform = calcule_indicateur(
+        indicateur_schema, toggle_pertinent_url, request.POST
     )
 
     context = {
@@ -234,3 +231,12 @@ def toggle_pertinent(request, vsme_id, indicateur_schema_id):
         "rapport_vsme_id": vsme_id,
     }
     return render(request, "fragments/indicateur.html", context=context)
+
+
+def calcule_indicateur(indicateur_schema, toggle_pertinent_url, data, extra=0):
+    multiform = create_multiform_from_schema(
+        indicateur_schema, toggle_pertinent_url=toggle_pertinent_url, extra=extra
+    )(
+        initial=data,
+    )
+    return multiform
