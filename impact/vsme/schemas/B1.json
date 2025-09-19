@@ -21,58 +21,44 @@
             }
         ]
     },
-    "B1-24-b": {
-        "title": "Omission d’information",
-        "description": "Indiquer si l’entreprise a omis une information jugée classifiée ou sensible, et préciser laquelle parmi les exigences de publication.",
-        "fields": [
-            {
-                "name": "omission_information",
-                "label": "Exigences de publication dans lesquelles des informations ont été omises",
-                "type": "exigences_de_publication"
-            }
-        ],
-        "si_pertinent": true
-    },
     "B1-24-e-i": {
         "title": "Forme juridique de l’entreprise",
         "description": "Indiquer la structure légale de l’entité déclarante, telle que reconnue par la législation nationale.",
         "fields": [
             {
-                "name": "denomination",
-                "label": "Nom de l'entité déclarante",
-                "type": "text",
-                "required": true,
-                "max_length": 100
-            },
-            {
                 "name": "forme_juridique",
                 "label": "Forme juridique de l'entreprise",
                 "type": "choice",
-                "choices": [
-                    {
-                        "name": "SA",
-                        "label": "Société Anonyme"
-                    },
-                    {
-                        "name": "SAS",
-                        "label": "Société par Actions Simplifiées"
-                    },
-                    {
-                        "name": "SARL",
-                        "label": "Société A Responsabilité Limitée"
-                    },
-                    {
-                        "name": "autre",
-                        "label": "Autre"
-                    }
-                ],
+                "choices": "CHOIX_FORME_JURIDIQUE",
                 "required": true
             },
             {
-                "name": "autre_forme_juridique",
-                "label": "Forme juridique de l'entreprise si non présent précédemment",
-                "type": "text",
+                "name": "Coopérative",
+                "label": "L’entité déclarante est une coopérative.",
+                "type": "boolean",
                 "required": false
+            }
+        ]
+    },
+    "B1-24-c": {
+        "title": "Type de périmètre",
+        "description": "Indiquer si le rapport de durabilité est établi sur une base individuelle (seules informations de l’entreprise) ou sur une base consolidée (incluant filiales).",
+        "fields": [
+            {
+                "name": "type_perimetre",
+                "label": "Choix du périmètre",
+                "type": "choice",
+                "choices": [
+                    {
+                        "name": "individuelle",
+                        "label": "Base individuelle"
+                    },
+                    {
+                        "name": "consolidee",
+                        "label": "Base consolidée"
+                    }
+                ],
+                "required": true
             }
         ]
     },
@@ -101,24 +87,7 @@
                         "name": "pays",
                         "label": "Pays",
                         "type": "choice",
-                        "choices": [
-                            {
-                                "name": "estonie",
-                                "label": "Estonie"
-                            },
-                            {
-                                "name": "france",
-                                "label": "France"
-                            },
-                            {
-                                "name": "grece",
-                                "label": "Grèce"
-                            },
-                            {
-                                "name": "hongrie",
-                                "label": "Hongrie"
-                            }
-                        ]
+                        "choices": "CHOIX_PAYS"
                     },
                     {
                         "name": "code_postal",
@@ -131,40 +100,30 @@
                         "type": "text"
                     }
                 ]
-            },
-            {
-                "name": "nombre_salaries",
-                "label": "Nombre de salariés",
-                "type": "number",
-                "min": 1,
-                "max": 10000000
             }
         ],
         "si_pertinent": true
     },
-    "B1-24-e-v": {
-        "title": "Effectif total de l’entreprise",
-        "description": "Mesure la taille sociale de l’entreprise. Peut être exprimé en effectif total.",
+    "B1-24-e-ii": {
+        "title": "Code(s) NACE de l’activité principale",
+        "description": "Publier le ou les codes NACE de l’entreprise (Nomenclature statistique des activités économiques dans la Communauté européenne).",
         "fields": [
             {
-                "name": "nombre_salaries",
-                "label": "Nombre de salariés",
-                "type": "number",
-                "min": 1,
-                "max": 10000000
+                "name": "nace",
+                "label": "Codes NACE",
+                "type": "text"
             }
-        ],
-        "si_pertinent": true
+        ]
     },
     "B1-24-e-vii": {
         "title": "Liste des sites",
-        "description": "Champ permettant aux entreprises de rentrer en numérotant chaque géolocalisation de site avec l’adresse correspondante.",
+        "description": "Indiquer la géolocalisation des sites détenus, loués ou gérés.",
         "fields": [
             {
                 "name": "liste_sites",
                 "label": "Sites",
                 "type": "table",
-                "required": false,
+                "required": true,
                 "columns": [
                     {
                         "name": "site",
@@ -190,38 +149,21 @@
                     {
                         "name": "pays",
                         "label": "Pays",
-                        "type": "text"
+                        "type": "choice",
+                        "choices": "CHOIX_PAYS"
                     },
                     {
-                        "name": "adresse",
-                        "label": "Adresse légale",
-                        "type": "choice",
-                        "choices": [
-                            {
-                                "name": "estonie",
-                                "label": "Estonie"
-                            },
-                            {
-                                "name": "france",
-                                "label": "France"
-                            },
-                            {
-                                "name": "grece",
-                                "label": "Grèce"
-                            },
-                            {
-                                "name": "hongrie",
-                                "label": "Hongrie"
-                            }
-                        ]
+                        "name": "geolocalisation",
+                        "label": "Géolocalisation",
+                        "type": "text"
                     }
                 ]
             }
         ]
     },
     "B1-24-e-iv": {
-        "title": "Chiffre d’affaires (en euros)",
-        "description": "Chiffre d'affaires net hors taxes (H.T.) réalisé sur le périmètre consolidé de l'organisation au cours du dernier exercice, selon le standard IFRS.",
+        "title": "Chiffre d’affaires en euros",
+        "description": "Indiquer le montant net du chiffre d’affaires réalisé sur le périmètre consolidé de l’organisation au cours de l’année de référence. Unité : euros",
         "fields": [
             {
                 "name": "CA",
@@ -232,14 +174,93 @@
         ]
     },
     "B1-24-e-iii": {
-        "title": "Taille du bilan (en euros)",
-        "description": "Indicateur de la taille économique de l’entreprise.",
+        "title": "Total du bilan en euros",
+        "description": "Indiquer le total du bilan (total des actifs en unités monétaires). Unité : euros",
         "fields": [
             {
                 "name": "bilan",
                 "label": "Bilan",
                 "type": "number",
                 "required": true
+            }
+        ]
+    },
+   "B1-25": {
+        "title": "Certifications ou labels en matière de durabilité",
+        "description": "Indiquer si l’entreprise a obtenu une certification ou un label de durabilité et fournir une brève description.",
+        "fields": [
+            {
+                "name": "certifications",
+                "label": "Certifications ou labels",
+                "type": "table",
+                "required": false,
+                "columns": [
+                    {
+                        "name": "nom_certification",
+                        "label": "Nom du label ou certification",
+                        "type": "text",
+                        "required": true
+                    },
+                    {
+                        "name": "emetteur",
+                        "label": "Émetteur",
+                        "type": "text"
+                    },
+                    {
+                        "name": "date_obtention",
+                        "label": "Date d’obtention",
+                        "type": "text"
+                    },
+                    {
+                        "name": "score",
+                        "label": "Score ou niveau atteint (facultatif)",
+                        "type": "text"
+                    },
+                    {
+                        "name": "commentaire",
+                        "label": "Commentaire (facultatif)",
+                        "type": "text"
+                    }
+                ]
+            }
+        ],
+        "si_pertinent": true
+    },
+    "B1-24-e-vi": {
+        "title": "Pays d’exercice",
+        "description": "Indiquer les pays où sont exercées les activités principales et la localisation d’actifs présentant un intérêt significatif.",
+        "fields": [
+            {
+                "name": "pays",
+                "label": "Pays",
+                "type": "choice",
+                "choices": "CHOIX_PAYS",
+                "required": true
+            }
+        ]
+    },
+    "B1-24-b": {
+        "title": "Omission d’information",
+        "description": "Indiquer si l’entreprise a omis une information jugée classifiée ou sensible, et préciser laquelle parmi les exigences de publication.",
+        "fields": [
+            {
+                "name": "omission_information",
+                "label": "Exigences de publication dans lesquelles des informations ont été omises",
+                "type": "exigences_de_publication"
+            }
+        ],
+        "si_pertinent": true
+    },
+    "B1-24-e-v": {
+        "title": "Effectif total de l’entreprise",
+        "description": "Mesure la taille sociale de l’entreprise. Peut être exprimé en effectif total.",
+        "fields": [
+            {
+                "name": "nombre_salaries",
+                "label": "Nombre de salariés",
+                "type": "number",
+                "min": 1,
+                "max": 10000000
             }
         ]
     }
