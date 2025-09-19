@@ -15,6 +15,7 @@ import utils.htmx as htmx
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
 from vsme.factory import create_multiform_from_schema
+from vsme.models import Indicateur
 from vsme.models import RapportVSME
 
 
@@ -171,12 +172,14 @@ def indicateur_vsme(request, vsme_id, indicateur_schema_id):
         if multiform.is_valid():
             if indicateur:
                 indicateur.data = multiform.cleaned_data
-                indicateur.save()
             else:
-                indicateur = rapport_vsme.indicateurs.create(
-                    schema_id=indicateur_schema_id, data=multiform.cleaned_data
+                indicateur = Indicateur(
+                    rapport_vsme=rapport_vsme,
+                    schema_id=indicateur_schema_id,
+                    data=multiform.cleaned_data,
                 )
             if "enregistrer" in request.POST:
+                indicateur.save()
                 redirect_to = reverse(
                     "vsme:exigence_de_publication", args=[rapport_vsme.entreprise.siren]
                 )
