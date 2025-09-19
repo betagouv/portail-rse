@@ -22,13 +22,13 @@ def create_multiform_from_schema(schema, **kwargs):
                 # Si le multiform est initialisé à la fois avec les données d'un dictionnaire initial
                 # et celles d'un dictionnaire data (postées par l'utilisateur)
                 # c'est les données postées qui prévalent
-                non_pertinent = None
+                self.non_pertinent = None
                 if kwargs and kwargs.get("initial"):
-                    non_pertinent = kwargs["initial"].get(NON_PERTINENT_FIELD_NAME)
+                    self.non_pertinent = kwargs["initial"].get(NON_PERTINENT_FIELD_NAME)
                 if args:
                     data = args[0]
-                    non_pertinent = data.get(NON_PERTINENT_FIELD_NAME)
-                if non_pertinent:
+                    self.non_pertinent = data.get(NON_PERTINENT_FIELD_NAME)
+                if self.non_pertinent:
                     self.disable_fields()
 
         @classmethod
@@ -40,20 +40,18 @@ def create_multiform_from_schema(schema, **kwargs):
             return all([form.is_valid() for form in self.forms])
 
         def clean(self):
-            if self.si_pertinent:
-                non_pertinent = self.forms[0].cleaned_data.get(NON_PERTINENT_FIELD_NAME)
-                if not non_pertinent:
-                    for form in self.forms:
-                        if isinstance(form, forms.Form):
-                            for field in form.fields:
-                                if (
-                                    field != NON_PERTINENT_FIELD_NAME
-                                    and not form.cleaned_data.get(field)
-                                ):
-                                    form.add_error(
-                                        field,
-                                        "Ce champ est requis lorsque l'indicateur est déclaré comme pertinent",
-                                    )
+            if self.si_pertinent and not self.non_pertinent:
+                for form in self.forms:
+                    if isinstance(form, forms.Form):
+                        for field in form.fields:
+                            if (
+                                field != NON_PERTINENT_FIELD_NAME
+                                and not form.cleaned_data.get(field)
+                            ):
+                                form.add_error(
+                                    field,
+                                    "Ce champ est requis lorsque l'indicateur est déclaré comme pertinent",
+                                )
 
         @property
         def cleaned_data(self):
@@ -90,7 +88,6 @@ def create_multiform_from_schema(schema, **kwargs):
                 attrs={"hx-post": kwargs["toggle_pertinent_url"]}
             ),
         )
-
     fields = schema["fields"]
     for field in fields:
         field_name = field["name"]
