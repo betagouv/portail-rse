@@ -97,7 +97,7 @@ def create_multiform_from_schema(schema, **kwargs):
         field_type = field["type"]
 
         match field_type:
-            case "text" | "number" | "boolean" | "choice":
+            case "text" | "number" | "boolean" | "choice" | "multiple_choice":
                 _DynamicForm.base_fields[field_name] = create_simple_field_from_schema(
                     field
                 )
@@ -150,13 +150,13 @@ def create_multiform_from_schema(schema, **kwargs):
                 FormSet.indicator_type = "table"
                 _MultiForm.add_Form(FormSet)
             case "exigences_de_publication":
-                field["type"] = "multiple_choice"
+                new_field = dict(field, type="multiple_choice")
                 choices = [
                     (id, f"{id} - {nom}")
                     for id, nom in EXIGENCES_DE_PUBLICATION.items()
                 ]
                 _DynamicForm.base_fields[field_name] = create_simple_field_from_schema(
-                    field, choices=choices
+                    new_field, choices=choices
                 )
 
     if _DynamicForm.base_fields:
