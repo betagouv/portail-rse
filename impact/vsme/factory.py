@@ -2,6 +2,7 @@ from django import forms
 
 from utils.forms import DsfrForm
 from utils.forms import DsfrFormSet
+from utils.pays import CODES_PAYS_ISO_3166_1
 from vsme.models import EXIGENCES_DE_PUBLICATION
 
 NON_PERTINENT_FIELD_NAME = "non_pertinent"
@@ -162,6 +163,29 @@ def create_multiform_from_schema(schema, **kwargs):
     return _MultiForm
 
 
+CHOIX_FORME_JURIDIQUE = (
+    (
+        "OPCVM",
+        "Organisme de placement collectif en valeurs mobilières sans personnalité morale (OPCVM)",
+    ),
+    ("EI", "Entrepreneur individuel"),
+    ("indivision", "Indivision"),
+    ("de fait", "Société créée de fait"),
+    ("en participation", "Société en participation"),
+    ("fiducie", "Fiducie"),
+    ("paroisse", "Paroisse hors zone concordataire"),
+    ("assujetti unique", "Assujetti unique à la TVA"),
+    (
+        "autre groupement de droit prive",
+        "Autre groupement de droit privé non doté de la personnalité morale",
+    ),
+    (
+        "personne morale de droit etranger",
+        "Personne morale de droit étranger, immatriculée au RCS",
+    ),
+)
+
+
 def create_simple_field_from_schema(field_schema, **kwargs):
     field_name = field_schema["name"]
     field_kwargs = {
@@ -180,9 +204,15 @@ def create_simple_field_from_schema(field_schema, **kwargs):
         case "boolean":
             return forms.BooleanField(**field_kwargs)
         case "choice":
-            field_kwargs["choices"] = (
-                (choice["name"], choice["label"]) for choice in field_schema["choices"]
-            )
+            if field_schema["choices"] == "CHOIX_PAYS":
+                field_kwargs["choices"] = CODES_PAYS_ISO_3166_1
+            if field_schema["choices"] == "CHOIX_FORME_JURIDIQUE":
+                field_kwargs["choices"] = CHOIX_FORME_JURIDIQUE
+            else:
+                field_kwargs["choices"] = (
+                    (choice["name"], choice["label"])
+                    for choice in field_schema["choices"]
+                )
             return forms.ChoiceField(**field_kwargs)
         case "multiple_choice":
             choices = kwargs.get("choices") or (
