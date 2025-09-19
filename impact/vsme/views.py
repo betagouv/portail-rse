@@ -176,19 +176,20 @@ def indicateur_vsme(request, vsme_id, indicateur_schema_id):
                 indicateur = rapport_vsme.indicateurs.create(
                     schema_id=indicateur_schema_id, data=multiform.cleaned_data
                 )
-            if request.POST.get("ajouter-ligne") or request.POST.get("supprimer-ligne"):
+            if "enregistrer" in request.POST:
+                redirect_to = reverse(
+                    "vsme:exigence_de_publication", args=[rapport_vsme.entreprise.siren]
+                )
+                if htmx.is_htmx(request):
+                    return htmx.HttpResponseHXRedirect(redirect_to)
+            else:
                 extra = 1 if request.POST.get("ajouter-ligne") else 0
                 multiform = create_multiform_from_schema(
                     indicateur_schema,
                     toggle_pertinent_url=toggle_pertinent_url,
                     extra=extra,
                 )(initial=indicateur.data)
-            else:
-                redirect_to = reverse(
-                    "vsme:exigence_de_publication", args=[rapport_vsme.entreprise.siren]
-                )
-                if htmx.is_htmx(request):
-                    return htmx.HttpResponseHXRedirect(redirect_to)
+
     else:  # GET
         multiform = create_multiform_from_schema(
             indicateur_schema, toggle_pertinent_url=toggle_pertinent_url
