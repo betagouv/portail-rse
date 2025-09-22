@@ -184,7 +184,7 @@ def create_simple_field_from_schema(field_schema, **kwargs):
         case "choice":
             if field_schema["choices"] == "CHOIX_PAYS":
                 field_kwargs["choices"] = CODES_PAYS_ISO_3166_1
-            if field_schema["choices"] == "CHOIX_FORME_JURIDIQUE":
+            elif field_schema["choices"] == "CHOIX_FORME_JURIDIQUE":
                 field_kwargs["choices"] = CATEGORIES_JURIDIQUES_NIVEAU_II
             else:
                 field_kwargs["choices"] = (
