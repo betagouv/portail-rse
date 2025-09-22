@@ -93,12 +93,18 @@ def etape_vsme(request, siren, etape):
 
 def indicateurs_vsme(request, siren):
     entreprise = Entreprise.objects.get(siren=siren)
-    context = {"entreprise": entreprise}
+    rapport_vsme, created = RapportVSME.objects.get_or_create(
+        entreprise=entreprise, annee=2024
+    )
+    context = {
+        "entreprise": entreprise,
+        "rapport_vsme_id": rapport_vsme.id,
+    }
     return render(request, "vsme/indicateurs.html", context=context)
 
 
-def indicateurs_vsme_categorie(request, siren, categorie):
-    entreprise = Entreprise.objects.get(siren=siren)
+def categorie_vsme(request, vsme_id, categorie):
+    rapport_vsme = RapportVSME.objects.get(id=vsme_id)
     if categorie in (
         "informations-generales",
         "environnement",
@@ -108,28 +114,23 @@ def indicateurs_vsme_categorie(request, siren, categorie):
         template_name = f"categories/{categorie}.html"
     else:
         raise Http404("Catégorie VSME inconnue")
-    context = {"entreprise": entreprise}
+    context = {
+        "entreprise": rapport_vsme.entreprise,
+        "rapport_vsme_id": rapport_vsme.id,
+    }
     return render(request, template_name, context=context)
 
 
-def exigence_de_publication(request, siren):
-    entreprise = Entreprise.objects.get(siren=siren)
-    rapport_vsme, created = RapportVSME.objects.get_or_create(
-        entreprise=entreprise, annee=2024
-    )
-    if created:
-        indicateurs_completes = ()
-    else:
-        indicateurs_completes = rapport_vsme.indicateurs.values_list(
-            "schema_id", flat=True
-        )
+def exigence_de_publication_vsme(request, vsme_id, exigence_de_publication_code):
+    rapport_vsme = RapportVSME.objects.get(id=vsme_id)
+    indicateurs_completes = rapport_vsme.indicateurs.values_list("schema_id", flat=True)
     exigence_de_publication_schema = load_json_schema("schemas/B1.json")
     indicateurs = [
         dict(indicateur, id=id, est_complete=id in indicateurs_completes)
         for id, indicateur in exigence_de_publication_schema.items()
     ]
     context = {
-        "entreprise": entreprise,
+        "entreprise": rapport_vsme.entreprise,
         "rapport_vsme": rapport_vsme,
         "indicateurs": indicateurs,
     }
@@ -180,8 +181,10 @@ def indicateur_vsme(request, vsme_id, indicateur_schema_id):
                 )
             if "enregistrer" in request.POST:
                 indicateur.save()
+                exigence_de_publication = indicateur_schema_id.split("-")[0]
                 redirect_to = reverse(
-                    "vsme:exigence_de_publication", args=[rapport_vsme.entreprise.siren]
+                    "vsme:exigence_de_publication_vsme",
+                    args=[rapport_vsme.id, exigence_de_publication],
                 )
                 if htmx.is_htmx(request):
                     return htmx.HttpResponseHXRedirect(redirect_to)
