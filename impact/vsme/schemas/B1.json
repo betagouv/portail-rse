@@ -28,7 +28,8 @@
             {
                 "name": "omission_information",
                 "label": "Exigences de publication dans lesquelles des informations ont été omises",
-                "type": "exigences_de_publication"
+                "type": "multiple_choice",
+                "choices": "CHOIX_EXIGENCE_DE_PUBLICATION"
             }
         ],
         "si_pertinent": true
