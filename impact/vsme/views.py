@@ -91,14 +91,14 @@ def etape_vsme(request, siren, etape):
     return render(request, template_name, context=context)
 
 
-def indicateurs_vsme(request, siren):
+def indicateurs_vsme(request, siren, annee):
     entreprise = Entreprise.objects.get(siren=siren)
     rapport_vsme, created = RapportVSME.objects.get_or_create(
-        entreprise=entreprise, annee=2024
+        entreprise=entreprise, annee=annee
     )
     context = {
         "entreprise": entreprise,
-        "rapport_vsme_id": rapport_vsme.id,
+        "rapport_vsme": rapport_vsme,
     }
     return render(request, "vsme/indicateurs.html", context=context)
 
@@ -116,7 +116,7 @@ def categorie_vsme(request, vsme_id, categorie):
         raise Http404("Catégorie VSME inconnue")
     context = {
         "entreprise": rapport_vsme.entreprise,
-        "rapport_vsme_id": rapport_vsme.id,
+        "rapport_vsme": rapport_vsme,
     }
     return render(request, template_name, context=context)
 
@@ -206,7 +206,7 @@ def indicateur_vsme(request, vsme_id, indicateur_schema_id):
         "multiform": multiform,
         "indicateur_schema": indicateur_schema,
         "indicateur_schema_id": indicateur_schema_id,
-        "rapport_vsme_id": vsme_id,
+        "rapport_vsme": rapport_vsme,
     }
     return render(request, "fragments/indicateur.html", context=context)
 
@@ -234,7 +234,7 @@ def toggle_pertinent(request, vsme_id, indicateur_schema_id):
         "multiform": multiform,
         "indicateur_schema": indicateur_schema,
         "indicateur_schema_id": indicateur_schema_id,
-        "rapport_vsme_id": vsme_id,
+        "rapport_vsme": rapport_vsme,
     }
     return render(request, "fragments/indicateur.html", context=context)
 

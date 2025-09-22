@@ -15,7 +15,7 @@
                     <div class="fr-collapse" id="breadcrumb-1">
                         <ol class="fr-breadcrumb__list">
                             <li>
-                                <a class="fr-breadcrumb__link" href="{% url 'vsme:indicateurs_vsme' entreprise.siren %}">Mes indicateurs</a>
+                                <a class="fr-breadcrumb__link" href="{% url 'vsme:indicateurs_vsme' entreprise.siren rapport_vsme.annee %}">Mes indicateurs</a>
                             </li>
                             <li>
                                 <a class="fr-breadcrumb__link" aria-current="page">Informations générales</a>
@@ -27,7 +27,7 @@
                 <h1>Informations générales</h1>
 
 
-                {% url 'vsme:exigence_de_publication_vsme' rapport_vsme_id 'B1' as url_page %}
+                {% url 'vsme:exigence_de_publication_vsme' rapport_vsme.id 'B1' as url_page %}
                 {% include "snippets/tuile_exigence_publication.html" with titre="B1 – Base d’établissement" categorie="general" url=url_page %}
                 {% include "snippets/tuile_exigence_publication.html" with titre="B2 – Pratiques, politiques et initiatives futures pour une transition vers une économie plus durable" categorie="general" url="https://portail-rse.beta.gouv.fr/vsme/b2-pratiques-politiques-et-initiatives-futures-en-vue-de-la-transition-vers-une-economie-plus-durable/" %}
 
