@@ -14,7 +14,7 @@ from django.urls.base import reverse
 import utils.htmx as htmx
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
-from vsme.factory import create_multiform_from_schema
+from vsme.forms import create_multiform_from_schema
 from vsme.models import Indicateur
 from vsme.models import RapportVSME
 
