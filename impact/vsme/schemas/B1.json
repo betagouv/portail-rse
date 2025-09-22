@@ -21,24 +21,17 @@
             }
         ]
     },
-    "B1-24-e-i": {
-        "title": "Forme juridique de l’entreprise",
-        "description": "Indiquer la structure légale de l’entité déclarante, telle que reconnue par la législation nationale.",
+    "B1-24-b": {
+        "title": "Omission d’information",
+        "description": "Indiquer si l’entreprise a omis une information jugée classifiée ou sensible, et préciser laquelle parmi les exigences de publication.",
         "fields": [
             {
-                "name": "forme_juridique",
-                "label": "Forme juridique de l'entreprise",
-                "type": "choice",
-                "choices": "CHOIX_FORME_JURIDIQUE",
-                "required": true
-            },
-            {
-                "name": "Coopérative",
-                "label": "L’entité déclarante est une coopérative.",
-                "type": "boolean",
-                "required": false
+                "name": "omission_information",
+                "label": "Exigences de publication dans lesquelles des informations ont été omises",
+                "type": "exigences_de_publication"
             }
-        ]
+        ],
+        "si_pertinent": true
     },
     "B1-24-c": {
         "title": "Type de périmètre",
@@ -64,13 +57,13 @@
     },
     "B1-24-d": {
         "title": "Liste des filiales incluses dans le rapport",
-        "description": "Champ permettant aux entreprises de rentrer en numérotant chaque filiale avec l’adresse correspondante.",
+        "description": "Indiquer la liste des filiales, y compris leur siège social.",
         "fields": [
             {
-                "name": "liste_filiales",
-                "label": "Filiales et leurs CA respectifs",
+                "name": "filiales",
+                "label": "Filiales",
                 "type": "table",
-                "required": false,
+                "required": true,
                 "columns": [
                     {
                         "name": "denomination_filiale",
@@ -81,18 +74,21 @@
                     {
                         "name": "adresse",
                         "label": "Adresse légale",
-                        "type": "text"
+                        "type": "text",
+                        "required": true
                     },
                     {
                         "name": "pays",
                         "label": "Pays",
                         "type": "choice",
-                        "choices": "CHOIX_PAYS"
+                        "choices": "CHOIX_PAYS",
+                        "required": true
                     },
                     {
                         "name": "code_postal",
                         "label": "Code postal",
-                        "type": "text"
+                        "type": "text",
+                        "required": true
                     },
                     {
                         "name": "commentaire",
@@ -101,8 +97,25 @@
                     }
                 ]
             }
-        ],
-        "si_pertinent": true
+        ]
+    },
+    "B1-24-e-i": {
+        "title": "Forme juridique de l’entreprise",
+        "description": "Indiquer la structure légale de l’entité déclarante, telle que reconnue par la législation nationale.",
+        "fields": [
+            {
+                "name": "forme_juridique",
+                "label": "Forme juridique de l'entreprise",
+                "type": "choice",
+                "choices": "CHOIX_FORME_JURIDIQUE",
+                "required": true
+            },
+            {
+                "name": "coopérative",
+                "label": "L’entité déclarante est une coopérative.",
+                "type": "boolean"
+            }
+        ]
     },
     "B1-24-e-ii": {
         "title": "Code(s) NACE de l’activité principale",
@@ -111,7 +124,57 @@
             {
                 "name": "nace",
                 "label": "Codes NACE",
-                "type": "text"
+                "type": "text",
+                "required": true
+            }
+        ]
+    },
+    "B1-24-e-iii": {
+        "title": "Total du bilan en euros",
+        "description": "Indiquer le total du bilan (total des actifs en unités monétaires). Unité : euros",
+        "fields": [
+            {
+                "name": "bilan",
+                "label": "Bilan",
+                "type": "number",
+                "required": true
+            }
+        ]
+    },
+    "B1-24-e-iv": {
+        "title": "Chiffre d’affaires en euros",
+        "description": "Indiquer le montant net du chiffre d’affaires réalisé sur le périmètre consolidé de l’organisation au cours de l’année de référence. Unité : euros",
+        "fields": [
+            {
+                "name": "CA",
+                "label": "Chiffre d’affaires",
+                "type": "number",
+                "required": true
+            }
+        ]
+    },
+    "B1-24-e-v": {
+        "title": "Effectif total de l’entreprise",
+        "description": "Indiquer le nombre de salariés (CDI, CDD, temps partiel) au prorata de leur temps de présence au cours de l’année de référence.",
+        "fields": [
+            {
+                "name": "nombre_salaries",
+                "label": "Nombre de salariés",
+                "type": "number",
+                "required": true
+            }
+        ]
+    },
+    "B1-24-e-vi": {
+        "title": "Pays d’exercice",
+        "description": "Indiquer les pays où sont exercées les activités principales et la localisation d’actifs présentant un intérêt significatif.",
+        "fields": [
+            {
+                "name": "pays",
+                "label": "Pays",
+                "type": "choice",
+                "choices": "CHOIX_PAYS",
+                "required": true
             }
         ]
     },
@@ -120,14 +183,14 @@
         "description": "Indiquer la géolocalisation des sites détenus, loués ou gérés.",
         "fields": [
             {
-                "name": "liste_sites",
+                "name": "sites",
                 "label": "Sites",
                 "type": "table",
                 "required": true,
                 "columns": [
                     {
-                        "name": "site",
-                        "label": "Site",
+                        "name": "nom_site",
+                        "label": "Nom du site",
                         "type": "text",
                         "required": true
                     },
@@ -161,30 +224,6 @@
             }
         ]
     },
-    "B1-24-e-iv": {
-        "title": "Chiffre d’affaires en euros",
-        "description": "Indiquer le montant net du chiffre d’affaires réalisé sur le périmètre consolidé de l’organisation au cours de l’année de référence. Unité : euros",
-        "fields": [
-            {
-                "name": "CA",
-                "label": "Chiffre d’affaires",
-                "type": "number",
-                "required": true
-            }
-        ]
-    },
-    "B1-24-e-iii": {
-        "title": "Total du bilan en euros",
-        "description": "Indiquer le total du bilan (total des actifs en unités monétaires). Unité : euros",
-        "fields": [
-            {
-                "name": "bilan",
-                "label": "Bilan",
-                "type": "number",
-                "required": true
-            }
-        ]
-    },
    "B1-25": {
         "title": "Certifications ou labels en matière de durabilité",
         "description": "Indiquer si l’entreprise a obtenu une certification ou un label de durabilité et fournir une brève description.",
@@ -193,7 +232,6 @@
                 "name": "certifications",
                 "label": "Certifications ou labels",
                 "type": "table",
-                "required": false,
                 "columns": [
                     {
                         "name": "nom_certification",
@@ -204,16 +242,18 @@
                     {
                         "name": "emetteur",
                         "label": "Émetteur",
-                        "type": "text"
+                        "type": "text",
+                        "required": true
                     },
                     {
                         "name": "date_obtention",
                         "label": "Date d’obtention",
-                        "type": "text"
+                        "type": "text",
+                        "required": true
                     },
                     {
                         "name": "score",
-                        "label": "Score ou niveau atteint (facultatif)",
+                        "label": "Score ou niveau atteint (si applicable)",
                         "type": "text"
                     },
                     {
@@ -225,43 +265,5 @@
             }
         ],
         "si_pertinent": true
-    },
-    "B1-24-e-vi": {
-        "title": "Pays d’exercice",
-        "description": "Indiquer les pays où sont exercées les activités principales et la localisation d’actifs présentant un intérêt significatif.",
-        "fields": [
-            {
-                "name": "pays",
-                "label": "Pays",
-                "type": "choice",
-                "choices": "CHOIX_PAYS",
-                "required": true
-            }
-        ]
-    },
-    "B1-24-b": {
-        "title": "Omission d’information",
-        "description": "Indiquer si l’entreprise a omis une information jugée classifiée ou sensible, et préciser laquelle parmi les exigences de publication.",
-        "fields": [
-            {
-                "name": "omission_information",
-                "label": "Exigences de publication dans lesquelles des informations ont été omises",
-                "type": "exigences_de_publication"
-            }
-        ],
-        "si_pertinent": true
-    },
-    "B1-24-e-v": {
-        "title": "Effectif total de l’entreprise",
-        "description": "Mesure la taille sociale de l’entreprise. Peut être exprimé en effectif total.",
-        "fields": [
-            {
-                "name": "nombre_salaries",
-                "label": "Nombre de salariés",
-                "type": "number",
-                "min": 1,
-                "max": 10000000
-            }
-        ]
     }
 }
