@@ -20,7 +20,7 @@
                             <div class="fr-tile__body">
                                 <div class="fr-tile__content">
                                     <h3 class="fr-tile__title">
-                                        <a href="{% url 'vsme:categorie_vsme' rapport_vsme_id 'informations-generales' %}" class="progression-vsme--title">Général</a>
+                                        <a href="{% url 'vsme:categorie_vsme' rapport_vsme.id 'informations-generales' %}" class="progression-vsme--title">Général</a>
                                     </h3>
                                     {% comment %}
                                     <p class="fr-tile__desc progression-vsme">
@@ -43,7 +43,7 @@
                             <div class="fr-tile__body">
                                 <div class="fr-tile__content">
                                     <h3 class="fr-tile__title">
-                                        <a href="{% url 'vsme:categorie_vsme' rapport_vsme_id 'environnement' %}" class="progression-vsme--title">Environnement</a>
+                                        <a href="{% url 'vsme:categorie_vsme' rapport_vsme.id 'environnement' %}" class="progression-vsme--title">Environnement</a>
                                     </h3>
                                     {% comment %}
                                     <p class="fr-tile__desc progression-vsme">
@@ -67,7 +67,7 @@
                             <div class="fr-tile__body">
                                 <div class="fr-tile__content">
                                     <h3 class="fr-tile__title">
-                                        <a href="{% url 'vsme:categorie_vsme' rapport_vsme_id 'social' %}" class="progression-vsme--title">Social</a>
+                                        <a href="{% url 'vsme:categorie_vsme' rapport_vsme.id 'social' %}" class="progression-vsme--title">Social</a>
                                     </h3>
                                     {% comment %}
                                     <p class="fr-tile__desc progression-vsme">
@@ -90,7 +90,7 @@
                             <div class="fr-tile__body">
                                 <div class="fr-tile__content">
                                     <h3 class="fr-tile__title">
-                                        <a href="{% url 'vsme:categorie_vsme' rapport_vsme_id 'gouvernance' %}" class="progression-vsme--title">Gouvernance</a>
+                                        <a href="{% url 'vsme:categorie_vsme' rapport_vsme.id 'gouvernance' %}" class="progression-vsme--title">Gouvernance</a>
                                     </h3>
                                     {% comment %}
                                     <p class="fr-tile__desc progression-vsme">

@@ -15,7 +15,7 @@ urlpatterns = [
         name="etape_vsme",
     ),
     path(
-        "indicateurs/vsme/<str:siren>",
+        "indicateurs/vsme/<str:siren>/<int:annee>",
         views.indicateurs_vsme,
         name="indicateurs_vsme",
     ),
