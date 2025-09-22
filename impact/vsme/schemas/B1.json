@@ -125,7 +125,8 @@
             {
                 "name": "nace",
                 "label": "Codes NACE",
-                "type": "text",
+                "type": "multiple_choice",
+                "choices": "CHOIX_NACE",
                 "required": true
             }
         ]
@@ -173,9 +174,9 @@
             {
                 "name": "pays",
                 "label": "Pays",
-                "type": "choice",
-                "choices": "CHOIX_PAYS",
-                "required": true
+                "type": "multiple_choice",
+                "choices": "CHOIX_PAYS"
+
             }
         ]
     },

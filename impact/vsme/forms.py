@@ -1,6 +1,7 @@
 from django import forms
 
 from utils.categories_juridiques import CATEGORIES_JURIDIQUES_NIVEAU_II
+from utils.codes_nace import CODES_NACE
 from utils.forms import DsfrForm
 from utils.forms import DsfrFormSet
 from utils.pays import CODES_PAYS_ISO_3166_1
@@ -178,6 +179,10 @@ def create_simple_field_from_schema(field_schema, **kwargs):
                     choices = CODES_PAYS_ISO_3166_1
                 case "CHOIX_FORME_JURIDIQUE":
                     choices = CATEGORIES_JURIDIQUES_NIVEAU_II
+                case "CHOIX_NACE":
+                    choices = [
+                        (code, f"{code} - {nom}") for code, nom in CODES_NACE.items()
+                    ]
                 case "CHOIX_EXIGENCE_DE_PUBLICATION":
                     choices = [
                         (id, f"{id} - {nom}")
