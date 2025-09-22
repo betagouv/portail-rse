@@ -148,15 +148,6 @@ def create_multiform_from_schema(schema, **kwargs):
                 )
                 FormSet.indicator_type = "table"
                 _MultiForm.add_Form(FormSet)
-            case "exigences_de_publication":
-                new_field = dict(field, type="multiple_choice")
-                choices = [
-                    (id, f"{id} - {nom}")
-                    for id, nom in EXIGENCES_DE_PUBLICATION.items()
-                ]
-                _DynamicForm.base_fields[field_name] = create_simple_field_from_schema(
-                    new_field, choices=choices
-                )
 
     if _DynamicForm.base_fields:
         _MultiForm.add_Form(_DynamicForm)
@@ -181,25 +172,29 @@ def create_simple_field_from_schema(field_schema, **kwargs):
             return forms.IntegerField(**field_kwargs)
         case "boolean":
             return forms.BooleanField(**field_kwargs)
-        case "choice":
-            if field_schema["choices"] == "CHOIX_PAYS":
-                field_kwargs["choices"] = CODES_PAYS_ISO_3166_1
-            elif field_schema["choices"] == "CHOIX_FORME_JURIDIQUE":
-                field_kwargs["choices"] = CATEGORIES_JURIDIQUES_NIVEAU_II
+        case "choice" | "multiple_choice" as field_type:
+            match field_schema["choices"]:
+                case "CHOIX_PAYS":
+                    choices = CODES_PAYS_ISO_3166_1
+                case "CHOIX_FORME_JURIDIQUE":
+                    choices = CATEGORIES_JURIDIQUES_NIVEAU_II
+                case "CHOIX_EXIGENCE_DE_PUBLICATION":
+                    choices = [
+                        (id, f"{id} - {nom}")
+                        for id, nom in EXIGENCES_DE_PUBLICATION.items()
+                    ]
+                case _:
+                    choices = (
+                        (choice["name"], choice["label"])
+                        for choice in field_schema["choices"]
+                    )
+            if field_type == "choice":
+                return forms.ChoiceField(choices=choices, **field_kwargs)
             else:
-                field_kwargs["choices"] = (
-                    (choice["name"], choice["label"])
-                    for choice in field_schema["choices"]
+                return forms.MultipleChoiceField(
+                    widget=forms.CheckboxSelectMultiple,
+                    choices=choices,
+                    **field_kwargs,
                 )
-            return forms.ChoiceField(**field_kwargs)
-        case "multiple_choice":
-            choices = kwargs.get("choices") or (
-                (choice["name"], choice["label"]) for choice in field_schema["choices"]
-            )
-            return forms.MultipleChoiceField(
-                widget=forms.CheckboxSelectMultiple,
-                choices=choices,
-                **field_kwargs,
-            )
         case _:
             raise Exception(f"Type inconnu : {field_type}")
