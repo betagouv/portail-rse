@@ -10,8 +10,8 @@
 
                     <p>{{ indicateur_schema.description }}</p>
 
-                    <form id="form-indicateur" method="post" action="{% url 'vsme:indicateur_vsme' rapport_vsme_id indicateur_schema_id %}"
-                          hx-post="{% url 'vsme:indicateur_vsme' rapport_vsme_id indicateur_schema_id %}"
+                    <form id="form-indicateur" method="post" action="{% url 'vsme:indicateur_vsme' rapport_vsme.id indicateur_schema_id %}"
+                          hx-post="{% url 'vsme:indicateur_vsme' rapport_vsme.id indicateur_schema_id %}"
                           hx-target="#htmx-modal-indicateur">
                         {% csrf_token %}
 
