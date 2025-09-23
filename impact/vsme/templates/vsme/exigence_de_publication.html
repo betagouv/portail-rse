@@ -8,6 +8,25 @@
             {% include "snippets/tableau_de_bord_menu.html" %}
 
             <div class="fr-col">
+                <nav role="navigation" class="fr-breadcrumb" aria-label="vous êtes ici :">
+                    <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">
+                        Voir le fil d’Ariane
+                    </button>
+                    <div class="fr-collapse" id="breadcrumb-1">
+                        <ol class="fr-breadcrumb__list">
+                            <li>
+                                <a class="fr-breadcrumb__link" href="{% url 'vsme:indicateurs_vsme' entreprise.siren rapport_vsme.annee %}">Mes indicateurs</a>
+                            </li>
+                            <li>
+                                <a class="fr-breadcrumb__link" href="{% url 'vsme:categorie_vsme' rapport_vsme.id 'informations-generales' %}">Informations générales</a>
+                            </li>
+                            <li>
+                                <a class="fr-breadcrumb__link" aria-current="page">B1 - Base d'établissement</a>
+                            </li>
+                        </ol>
+                    </div>
+                </nav>
+
                 <h3>B1 - Base d'établissement</h3>
 
                 <p>Exercice {{ rapport_vsme.annee }}</p>
