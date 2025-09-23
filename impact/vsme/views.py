@@ -15,6 +15,7 @@ import utils.htmx as htmx
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
 from vsme.forms import create_multiform_from_schema
+from vsme.models import EXIGENCES_DE_PUBLICATION
 from vsme.models import Indicateur
 from vsme.models import RapportVSME
 
@@ -123,8 +124,11 @@ def categorie_vsme(request, vsme_id, categorie):
 
 def exigence_de_publication_vsme(request, vsme_id, exigence_de_publication_code):
     rapport_vsme = RapportVSME.objects.get(id=vsme_id)
+    exigence_de_publication = EXIGENCES_DE_PUBLICATION[exigence_de_publication_code]
     indicateurs_completes = rapport_vsme.indicateurs.values_list("schema_id", flat=True)
-    exigence_de_publication_schema = load_json_schema("schemas/B1.json")
+    exigence_de_publication_schema = load_json_schema(
+        f"schemas/{exigence_de_publication_code}.json"
+    )
     indicateurs = [
         dict(indicateur, id=id, est_complete=id in indicateurs_completes)
         for id, indicateur in exigence_de_publication_schema.items()
@@ -132,6 +136,7 @@ def exigence_de_publication_vsme(request, vsme_id, exigence_de_publication_code)
     context = {
         "entreprise": rapport_vsme.entreprise,
         "rapport_vsme": rapport_vsme,
+        "exigence_de_publication": exigence_de_publication,
         "indicateurs": indicateurs,
     }
     return render(request, "vsme/exigence_de_publication.html", context=context)

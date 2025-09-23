@@ -185,8 +185,11 @@ def create_simple_field_from_schema(field_schema, **kwargs):
                     ]
                 case "CHOIX_EXIGENCE_DE_PUBLICATION":
                     choices = [
-                        (id, f"{id} - {nom}")
-                        for id, nom in EXIGENCES_DE_PUBLICATION.items()
+                        (
+                            exigence_de_publication.code,
+                            f"{exigence_de_publication.code} - {exigence_de_publication.nom}",
+                        )
+                        for exigence_de_publication in EXIGENCES_DE_PUBLICATION.values()
                     ]
                 case _:
                     choices = (
