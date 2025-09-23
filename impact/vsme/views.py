@@ -10,6 +10,7 @@ from django.shortcuts import render
 from django.urls.base import reverse
 
 import utils.htmx as htmx
+from entreprises.decorators import entreprise_qualifiee_requise
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
 from vsme.forms import create_multiform_from_schema
@@ -90,13 +91,15 @@ def etape_vsme(request, siren, etape):
     return render(request, template_name, context=context)
 
 
-def indicateurs_vsme(request, siren, annee):
-    entreprise = Entreprise.objects.get(siren=siren)
+@login_required
+@entreprise_qualifiee_requise
+def indicateurs_vsme(request, entreprise_qualifiee, annee=None):
+    annee = annee or 2024
     rapport_vsme, created = RapportVSME.objects.get_or_create(
-        entreprise=entreprise, annee=annee
+        entreprise=entreprise_qualifiee, annee=annee
     )
     context = {
-        "entreprise": entreprise,
+        "entreprise": entreprise_qualifiee,
         "rapport_vsme": rapport_vsme,
     }
     return render(request, "vsme/indicateurs.html", context=context)
