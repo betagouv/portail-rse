@@ -91,24 +91,30 @@ def create_multiform_from_schema(schema, **kwargs):
                 attrs={"hx-post": kwargs["toggle_pertinent_url"]}
             ),
         )
-    fields = schema["fields"]
+    fields = schema["champs"]
     for field in fields:
-        field_name = field["name"]
+        field_name = field["id"]
         field_type = field["type"]
 
         match field_type:
-            case "text" | "number" | "boolean" | "choice" | "multiple_choice":
+            case (
+                "texte"
+                | "nombre_entier"
+                | "choix_binaire"
+                | "choix_unique"
+                | "choix_multiple"
+            ):
                 _DynamicForm.base_fields[field_name] = create_simple_field_from_schema(
                     field
                 )
-            case "table":
+            case "tableau":
                 if _DynamicForm.base_fields:
                     _MultiForm.add_Form(_DynamicForm)
                     _DynamicForm = _dynamicform_factory()
 
                 class TableauFormSet(DsfrFormSet):
-                    name = field["name"]
-                    columns = field["columns"]
+                    name = field["id"]
+                    columns = field["colonnes"]
 
                     def __init__(self, *args, **kwargs):
                         if kwargs.get("initial"):
@@ -119,7 +125,7 @@ def create_multiform_from_schema(schema, **kwargs):
                     def add_fields(self, form, index):
                         super().add_fields(form, index)
                         for column in self.columns:
-                            field_name = column["name"]
+                            field_name = column["id"]
                             form.fields[field_name] = create_simple_field_from_schema(
                                 column
                             )
@@ -157,24 +163,25 @@ def create_multiform_from_schema(schema, **kwargs):
 
 
 def create_simple_field_from_schema(field_schema, **kwargs):
-    field_name = field_schema["name"]
+    field_name = field_schema["id"]
+    field_type = field_schema["type"]
     field_kwargs = {
         "label": field_schema.get("label", field_name),
-        "required": field_schema.get("required", False),
+        "required": field_schema.get("obligatoire", False),
         # ...
     }
-    match field_schema["type"]:
-        case "text":
+    match field_type:
+        case "texte":
             field_kwargs["max_length"] = field_schema.get("max_length", 255)
             return forms.CharField(**field_kwargs)
-        case "number":
+        case "nombre_entier":
             field_kwargs["min_value"] = field_schema.get("min")
             field_kwargs["max_value"] = field_schema.get("max")
             return forms.IntegerField(**field_kwargs)
-        case "boolean":
+        case "choix_binaire":
             return forms.BooleanField(**field_kwargs)
-        case "choice" | "multiple_choice" as field_type:
-            match field_schema["choices"]:
+        case "choix_unique" | "choix_multiple":
+            match field_schema["choix"]:
                 case "CHOIX_PAYS":
                     choices = CODES_PAYS_ISO_3166_1
                 case "CHOIX_FORME_JURIDIQUE":
@@ -193,12 +200,12 @@ def create_simple_field_from_schema(field_schema, **kwargs):
                     ]
                 case _:
                     choices = (
-                        (choice["name"], choice["label"])
-                        for choice in field_schema["choices"]
+                        (choice["id"], choice["label"])
+                        for choice in field_schema["choix"]
                     )
-            if field_type == "choice":
+            if field_type == "choix_unique":
                 return forms.ChoiceField(choices=choices, **field_kwargs)
-            else:
+            else:  # choix_multiple
                 return forms.MultipleChoiceField(
                     widget=forms.CheckboxSelectMultiple,
                     choices=choices,
