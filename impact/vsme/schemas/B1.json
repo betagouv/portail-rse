@@ -1,267 +1,267 @@
 {
     "B1-24-a": {
-        "title": "Base d’établissement",
+        "titre": "Base d’établissement",
         "description": "Indiquer si vous utilisez le module de base ou le module complet pour votre déclaration de la norme VSME.",
-        "fields": [
+        "champs": [
             {
-                "name": "base_etablissement",
+                "id": "base_etablissement",
                 "label": "Choix du module",
-                "type": "choice",
-                "choices": [
+                "type": "choix_unique",
+                "choix": [
                     {
-                        "name": "base",
+                        "id": "base",
                         "label": "Module de base"
                     },
                     {
-                        "name": "complet",
+                        "id": "complet",
                         "label": "Module complet"
                     }
                 ],
-                "required": true
+                "obligatoire": true
             }
         ]
     },
     "B1-24-b": {
-        "title": "Omission d’information",
+        "titre": "Omission d’information",
         "description": "Indiquer si l’entreprise a omis une information jugée classifiée ou sensible, et préciser laquelle parmi les exigences de publication.",
-        "fields": [
+        "champs": [
             {
-                "name": "omission_information",
+                "id": "omission_information",
                 "label": "Exigences de publication dans lesquelles des informations ont été omises",
-                "type": "multiple_choice",
-                "choices": "CHOIX_EXIGENCE_DE_PUBLICATION"
+                "type": "choix_multiple",
+                "choix": "CHOIX_EXIGENCE_DE_PUBLICATION"
             }
         ],
         "si_pertinent": true
     },
     "B1-24-c": {
-        "title": "Type de périmètre",
+        "titre": "Type de périmètre",
         "description": "Indiquer si le rapport de durabilité est établi sur une base individuelle (seules informations de l’entreprise) ou sur une base consolidée (incluant filiales).",
-        "fields": [
+        "champs": [
             {
-                "name": "type_perimetre",
+                "id": "type_perimetre",
                 "label": "Choix du périmètre",
-                "type": "choice",
-                "choices": [
+                "type": "choix_unique",
+                "choix": [
                     {
-                        "name": "individuelle",
+                        "id": "individuelle",
                         "label": "Base individuelle"
                     },
                     {
-                        "name": "consolidee",
+                        "id": "consolidee",
                         "label": "Base consolidée"
                     }
                 ],
-                "required": true
+                "obligatoire": true
             }
         ]
     },
     "B1-24-d": {
-        "title": "Liste des filiales incluses dans le rapport",
+        "titre": "Liste des filiales incluses dans le rapport",
         "description": "Indiquer la liste des filiales, y compris leur siège social.",
-        "fields": [
+        "champs": [
             {
-                "name": "filiales",
+                "id": "filiales",
                 "label": "Filiales",
-                "type": "table",
-                "required": true,
-                "columns": [
+                "type": "tableau",
+                "obligatoire": true,
+                "colonnes": [
                     {
-                        "name": "denomination_filiale",
+                        "id": "denomination_filiale",
                         "label": "Nom de la filiale",
-                        "type": "text",
-                        "required": true
+                        "type": "texte",
+                        "obligatoire": true
                     },
                     {
-                        "name": "adresse",
+                        "id": "adresse",
                         "label": "Adresse légale",
-                        "type": "text",
-                        "required": true
+                        "type": "texte",
+                        "obligatoire": true
                     },
                     {
-                        "name": "pays",
+                        "id": "pays",
                         "label": "Pays",
-                        "type": "choice",
-                        "choices": "CHOIX_PAYS",
-                        "required": true
+                        "type": "choix_unique",
+                        "choix": "CHOIX_PAYS",
+                        "obligatoire": true
                     },
                     {
-                        "name": "code_postal",
+                        "id": "code_postal",
                         "label": "Code postal",
-                        "type": "text",
-                        "required": true
+                        "type": "texte",
+                        "obligatoire": true
                     },
                     {
-                        "name": "commentaire",
+                        "id": "commentaire",
                         "label": "Commentaire (facultatif)",
-                        "type": "text"
+                        "type": "texte"
                     }
                 ]
             }
         ]
     },
     "B1-24-e-i": {
-        "title": "Forme juridique de l’entreprise",
+        "titre": "Forme juridique de l’entreprise",
         "description": "Indiquer la structure légale de l’entité déclarante, telle que reconnue par la législation nationale.",
-        "fields": [
+        "champs": [
             {
-                "name": "forme_juridique",
+                "id": "forme_juridique",
                 "label": "Forme juridique de l'entreprise",
-                "type": "choice",
-                "choices": "CHOIX_FORME_JURIDIQUE",
-                "required": true
+                "type": "choix_unique",
+                "choix": "CHOIX_FORME_JURIDIQUE",
+                "obligatoire": true
             },
             {
-                "name": "coopérative",
+                "id": "coopérative",
                 "label": "L’entité déclarante est une coopérative.",
-                "type": "boolean"
+                "type": "choix_binaire"
             }
         ]
     },
     "B1-24-e-ii": {
-        "title": "Code(s) NACE de l’activité principale",
+        "titre": "Code(s) NACE de l’activité principale",
         "description": "Publier le ou les codes NACE de l’entreprise (Nomenclature statistique des activités économiques dans la Communauté européenne).",
-        "fields": [
+        "champs": [
             {
-                "name": "nace",
+                "id": "nace",
                 "label": "Codes NACE",
-                "type": "multiple_choice",
-                "choices": "CHOIX_NACE",
-                "required": true
+                "type": "choix_multiple",
+                "choix": "CHOIX_NACE",
+                "obligatoire": true
             }
         ]
     },
     "B1-24-e-iii": {
-        "title": "Total du bilan en euros",
+        "titre": "Total du bilan en euros",
         "description": "Indiquer le total du bilan (total des actifs en unités monétaires). Unité : euros",
-        "fields": [
+        "champs": [
             {
-                "name": "bilan",
+                "id": "bilan",
                 "label": "Bilan",
-                "type": "number",
-                "required": true
+                "type": "nombre_entier",
+                "obligatoire": true
             }
         ]
     },
     "B1-24-e-iv": {
-        "title": "Chiffre d’affaires en euros",
+        "titre": "Chiffre d’affaires en euros",
         "description": "Indiquer le montant net du chiffre d’affaires réalisé sur le périmètre consolidé de l’organisation au cours de l’année de référence. Unité : euros",
-        "fields": [
+        "champs": [
             {
-                "name": "CA",
+                "id": "chiffre_affaire",
                 "label": "Chiffre d’affaires",
-                "type": "number",
-                "required": true
+                "type": "nombre_entier",
+                "obligatoire": true
             }
         ]
     },
     "B1-24-e-v": {
-        "title": "Effectif total de l’entreprise",
+        "titre": "Effectif total de l’entreprise",
         "description": "Indiquer le nombre de salariés (CDI, CDD, temps partiel) au prorata de leur temps de présence au cours de l’année de référence.",
-        "fields": [
+        "champs": [
             {
-                "name": "nombre_salaries",
+                "id": "nombre_salaries",
                 "label": "Nombre de salariés",
-                "type": "number",
-                "required": true
+                "type": "nombre_entier",
+                "obligatoire": true
             }
         ]
     },
     "B1-24-e-vi": {
-        "title": "Pays d’exercice",
+        "titre": "Pays d’exercice",
         "description": "Indiquer les pays où sont exercées les activités principales et la localisation d’actifs présentant un intérêt significatif.",
-        "fields": [
+        "champs": [
             {
-                "name": "pays",
+                "id": "pays",
                 "label": "Pays",
-                "type": "multiple_choice",
-                "choices": "CHOIX_PAYS"
+                "type": "choix_multiple",
+                "choix": "CHOIX_PAYS"
 
             }
         ]
     },
     "B1-24-e-vii": {
-        "title": "Liste des sites",
+        "titre": "Liste des sites",
         "description": "Indiquer la géolocalisation des sites détenus, loués ou gérés.",
-        "fields": [
+        "champs": [
             {
-                "name": "sites",
+                "id": "sites",
                 "label": "Sites",
-                "type": "table",
-                "required": true,
-                "columns": [
+                "type": "tableau",
+                "obligatoire": true,
+                "colonnes": [
                     {
-                        "name": "nom_site",
+                        "id": "nom_site",
                         "label": "Nom du site",
-                        "type": "text",
-                        "required": true
+                        "type": "texte",
+                        "obligatoire": true
                     },
                     {
-                        "name": "adresse",
+                        "id": "adresse",
                         "label": "Adresse",
-                        "type": "text"
+                        "type": "texte"
                     },
                     {
-                        "name": "code_postal",
+                        "id": "code_postal",
                         "label": "Code postal",
-                        "type": "text"
+                        "type": "texte"
                     },
                     {
-                        "name": "ville",
+                        "id": "ville",
                         "label": "Ville",
-                        "type": "text"
+                        "type": "texte"
                     },
                     {
-                        "name": "pays",
+                        "id": "pays",
                         "label": "Pays",
-                        "type": "choice",
-                        "choices": "CHOIX_PAYS"
+                        "type": "choix_unique",
+                        "choix": "CHOIX_PAYS"
                     },
                     {
-                        "name": "geolocalisation",
+                        "id": "geolocalisation",
                         "label": "Géolocalisation",
-                        "type": "text"
+                        "type": "texte"
                     }
                 ]
             }
         ]
     },
    "B1-25": {
-        "title": "Certifications ou labels en matière de durabilité",
+        "titre": "Certifications ou labels en matière de durabilité",
         "description": "Indiquer si l’entreprise a obtenu une certification ou un label de durabilité et fournir une brève description.",
-        "fields": [
+        "champs": [
             {
-                "name": "certifications",
+                "id": "certifications",
                 "label": "Certifications ou labels",
-                "type": "table",
-                "columns": [
+                "type": "tableau",
+                "colonnes": [
                     {
-                        "name": "nom_certification",
+                        "id": "nom_certification",
                         "label": "Nom du label ou certification",
-                        "type": "text",
-                        "required": true
+                        "type": "texte",
+                        "obligatoire": true
                     },
                     {
-                        "name": "emetteur",
+                        "id": "emetteur",
                         "label": "Émetteur",
-                        "type": "text",
-                        "required": true
+                        "type": "texte",
+                        "obligatoire": true
                     },
                     {
-                        "name": "date_obtention",
+                        "id": "date_obtention",
                         "label": "Date d’obtention",
-                        "type": "text",
-                        "required": true
+                        "type": "texte",
+                        "obligatoire": true
                     },
                     {
-                        "name": "score",
+                        "id": "score",
                         "label": "Score ou niveau atteint (si applicable)",
-                        "type": "text"
+                        "type": "texte"
                     },
                     {
-                        "name": "commentaire",
+                        "id": "commentaire",
                         "label": "Commentaire (facultatif)",
-                        "type": "text"
+                        "type": "texte"
                     }
                 ]
             }
