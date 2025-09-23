@@ -14,6 +14,7 @@ from entreprises.decorators import entreprise_qualifiee_requise
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
 from vsme.forms import create_multiform_from_schema
+from vsme.models import Categorie
 from vsme.models import EXIGENCES_DE_PUBLICATION
 from vsme.models import Indicateur
 from vsme.models import RapportVSME
@@ -105,22 +106,17 @@ def indicateurs_vsme(request, entreprise_qualifiee, annee=None):
     return render(request, "vsme/indicateurs.html", context=context)
 
 
-def categorie_vsme(request, vsme_id, categorie):
+def categorie_vsme(request, vsme_id, categorie_id):
     rapport_vsme = RapportVSME.objects.get(id=vsme_id)
-    if categorie in (
-        "informations-generales",
-        "environnement",
-        "social",
-        "gouvernance",
-    ):
-        template_name = f"categories/{categorie}.html"
-    else:
+    categorie = Categorie.par_id(categorie_id)
+    if not categorie:
         raise Http404("Catégorie VSME inconnue")
     context = {
         "entreprise": rapport_vsme.entreprise,
         "rapport_vsme": rapport_vsme,
+        "categorie": categorie,
     }
-    return render(request, template_name, context=context)
+    return render(request, "vsme/categorie.html", context=context)
 
 
 def exigence_de_publication_vsme(request, vsme_id, exigence_de_publication_code):

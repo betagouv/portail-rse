@@ -15,12 +15,27 @@ class Categorie(Enum):
     SOCIAL = {"id": "social", "label": "Social"}
     GOUVERNANCE = {"id": "gouvernance", "label": "Gouvernance"}
 
+    @classmethod
+    def par_id(cls, categorie_id):
+        for c in cls:
+            if c.value["id"] == categorie_id:
+                return c
+
+    def exigences_de_publication(self):
+        return (
+            exigence
+            for code, exigence in EXIGENCES_DE_PUBLICATION.items()
+            if exigence.categorie == self
+        )
+
 
 @dataclass
 class ExigenceDePublication:
     code: str
     nom: str
     categorie: "Categorie"
+    url_infos: str = ""
+    remplissable: bool = False
 
     def load_json_schema(self):
         # Get the directory of the current file
@@ -32,40 +47,72 @@ class ExigenceDePublication:
 
 
 EXIGENCES_DE_PUBLICATION = {
-    "B1": ExigenceDePublication("B1", "Base d’établissement", Categorie.GENERAL),
+    "B1": ExigenceDePublication(
+        "B1",
+        "Base d’établissement",
+        Categorie.GENERAL,
+        "https://portail-rse.beta.gouv.fr/vsme/b1-base-de-preparation/",
+        remplissable=True,
+    ),
     "B2": ExigenceDePublication(
         "B2",
         "Pratiques, politiques et initiatives futures pour une transition vers une économie plus durable",
         Categorie.GENERAL,
+        "https://portail-rse.beta.gouv.fr/vsme/b2-pratiques-politiques-et-initiatives-futures-en-vue-de-la-transition-vers-une-economie-plus-durable/",
     ),
     "B3": ExigenceDePublication(
-        "B3", "Énergie et émissions de gaz à effet de serre", Categorie.ENVIRONNEMENT
+        "B3",
+        "Énergie et émissions de gaz à effet de serre",
+        Categorie.ENVIRONNEMENT,
+        "https://portail-rse.beta.gouv.fr/vsme/b3-energie-et-emissions-de-gaz-a-effet-de-serre/",
     ),
     "B4": ExigenceDePublication(
-        "B4", "Pollution de l’air, de l’eau et des sols", Categorie.ENVIRONNEMENT
+        "B4",
+        "Pollution de l’air, de l’eau et des sols",
+        Categorie.ENVIRONNEMENT,
+        "https://portail-rse.beta.gouv.fr/vsme/b4-pollution-de-l-air-de-l-eau-et-des-sols/",
     ),
-    "B5": ExigenceDePublication("B5", "Biodiversité", Categorie.ENVIRONNEMENT),
-    "B6": ExigenceDePublication("B6", "Eau", Categorie.ENVIRONNEMENT),
+    "B5": ExigenceDePublication(
+        "B5",
+        "Biodiversité",
+        Categorie.ENVIRONNEMENT,
+        "https://portail-rse.beta.gouv.fr/vsme/b5-biodiversite/",
+    ),
+    "B6": ExigenceDePublication(
+        "B6",
+        "Eau",
+        Categorie.ENVIRONNEMENT,
+        "https://portail-rse.beta.gouv.fr/vsme/b6-eau/",
+    ),
     "B7": ExigenceDePublication(
         "B7",
         "Utilisation des ressources, économie circulaire et gestion des déchets",
         Categorie.ENVIRONNEMENT,
+        "https://portail-rse.beta.gouv.fr/vsme/b7-utilisation-des-ressources-economie-circulaire-et-gestion-des-dechets/",
     ),
     "B8": ExigenceDePublication(
-        "B8", "Effectifs : caractéristiques générales", Categorie.SOCIAL
+        "B8",
+        "Effectifs : caractéristiques générales",
+        Categorie.SOCIAL,
+        "https://portail-rse.beta.gouv.fr/vsme/b8-effectifs-caracteristiques-generales/",
     ),
     "B9": ExigenceDePublication(
-        "B9", "Effectifs : santé et sécurité", Categorie.SOCIAL
+        "B9",
+        "Effectifs : santé et sécurité",
+        Categorie.SOCIAL,
+        "https://portail-rse.beta.gouv.fr/vsme/b9-effectifs-sante-et-securite/",
     ),
     "B10": ExigenceDePublication(
         "B10",
         "Effectifs : rémunération, négociation collective et formation",
         Categorie.SOCIAL,
+        "https://portail-rse.beta.gouv.fr/vsme/b10-personnel-remuneration-negociation-collective-et-formation/",
     ),
     "B11": ExigenceDePublication(
         "B11",
         "Condamnations et amendes en matière de lutte contre la corruption et les actes de corruption",
         Categorie.GOUVERNANCE,
+        "https://portail-rse.beta.gouv.fr/vsme/b11-condamnations-et-amendes-pour-corruption-et-versement-de-pots-de-vin/",
     ),
     "C1": ExigenceDePublication(
         "C1",
@@ -82,7 +129,11 @@ EXIGENCES_DE_PUBLICATION = {
         "Cibles de réduction des émissions de GES et transition climatique",
         Categorie.ENVIRONNEMENT,
     ),
-    "C4": ExigenceDePublication("C4", "Risques climatiques", Categorie.ENVIRONNEMENT),
+    "C4": ExigenceDePublication(
+        "C4",
+        "Risques climatiques",
+        Categorie.ENVIRONNEMENT,
+    ),
     "C5": ExigenceDePublication(
         "C5",
         "Caractéristiques supplémentaires (générales) des effectifs",
