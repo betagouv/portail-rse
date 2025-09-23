@@ -41,19 +41,23 @@
                         <tr>
                             <td>{{ indicateur.title }}</td>
                             <td>
-                                {% if indicateur.est_complete %}
+                                {% if not indicateur.est_actif %}
+                                    <p class="fr-badge">NON APPLICABLE</p>
+                                {% elif indicateur.est_complete %}
                                     <p class="fr-badge fr-badge--success fr-badge--no-icon">COMPLÉTÉ</p>
                                 {% else %}
                                     <p class="fr-badge">À COMPLÉTER</p>
                                 {% endif %}
                             </td>
                             <td>
-                                <button aria-controls="htmx-modal-indicateur" data-fr-opened="false" type="button" class="fr-btn fr-icon-edit-line fr-btn--secondary"
-                                        title="Modifier"
-                                        hx-get="{% url 'vsme:indicateur_vsme' rapport_vsme.id indicateur.id %}"
-                                        hx-target="#htmx-modal-indicateur">
-                                    Modifier
-                                </button>
+                                {% if indicateur.est_actif %}
+                                    <button aria-controls="htmx-modal-indicateur" data-fr-opened="false" type="button" class="fr-btn fr-icon-edit-line fr-btn--secondary"
+                                            title="Modifier"
+                                            hx-get="{% url 'vsme:indicateur_vsme' rapport_vsme.id indicateur.id %}"
+                                            hx-target="#htmx-modal-indicateur">
+                                        Modifier
+                                    </button>
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}

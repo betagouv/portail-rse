@@ -1,5 +1,3 @@
-import json
-import os
 from functools import wraps
 
 from django.contrib import messages
@@ -125,14 +123,19 @@ def categorie_vsme(request, vsme_id, categorie):
 def exigence_de_publication_vsme(request, vsme_id, exigence_de_publication_code):
     rapport_vsme = RapportVSME.objects.get(id=vsme_id)
     exigence_de_publication = EXIGENCES_DE_PUBLICATION[exigence_de_publication_code]
-    indicateurs_completes = rapport_vsme.indicateurs.values_list("schema_id", flat=True)
-    exigence_de_publication_schema = load_json_schema(
-        f"schemas/{exigence_de_publication_code}.json"
-    )
+    indicateurs_completes = rapport_vsme.indicateurs_completes(exigence_de_publication)
+    indicateurs_actifs = rapport_vsme.indicateurs_actifs(exigence_de_publication)
+    exigence_de_publication_schema = exigence_de_publication.load_json_schema()
     indicateurs = [
-        dict(indicateur, id=id, est_complete=id in indicateurs_completes)
+        dict(
+            indicateur,
+            id=id,
+            est_complete=id in indicateurs_completes,
+            est_actif=id in indicateurs_actifs,
+        )
         for id, indicateur in exigence_de_publication_schema.items()
     ]
+
     context = {
         "entreprise": rapport_vsme.entreprise,
         "rapport_vsme": rapport_vsme,
@@ -140,15 +143,6 @@ def exigence_de_publication_vsme(request, vsme_id, exigence_de_publication_code)
         "indicateurs": indicateurs,
     }
     return render(request, "vsme/exigence_de_publication.html", context=context)
-
-
-def load_json_schema(file_path):
-    # Get the directory of the current file
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    # Join the current directory with the provided file path
-    full_path = os.path.join(current_dir, file_path)
-    with open(full_path, "r") as file:
-        return json.load(file)
 
 
 def indicateur_vsme(request, vsme_id, indicateur_schema_id):
@@ -217,10 +211,10 @@ def indicateur_vsme(request, vsme_id, indicateur_schema_id):
 
 
 def load_indicateur_schema(indicateur_schema_id):
-    exigence_de_publication = indicateur_schema_id.split("-")[0]
-    exigence_de_publication_schema = load_json_schema(
-        f"schemas/{exigence_de_publication}.json"
-    )
+    exigence_de_publication_code = indicateur_schema_id.split("-")[0]
+    exigence_de_publication_schema = EXIGENCES_DE_PUBLICATION[
+        exigence_de_publication_code
+    ].load_json_schema()
     return exigence_de_publication_schema[indicateur_schema_id]
 
 
