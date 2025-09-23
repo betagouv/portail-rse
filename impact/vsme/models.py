@@ -1,6 +1,9 @@
+import json
+import os
 from dataclasses import dataclass
 from enum import Enum
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
 from utils.models import TimestampedModel
@@ -18,6 +21,14 @@ class ExigenceDePublication:
     code: str
     nom: str
     categorie: "Categorie"
+
+    def load_json_schema(self):
+        # Get the directory of the current file
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        file_path = f"schemas/{self.code}.json"
+        full_path = os.path.join(current_dir, file_path)
+        with open(full_path, "r") as file:
+            return json.load(file)
 
 
 EXIGENCES_DE_PUBLICATION = {
@@ -118,6 +129,36 @@ class RapportVSME(TimestampedModel):
             ),
         ]
         indexes = [models.Index(fields=["annee"])]
+
+    def indicateurs_actifs(self, exigence_de_publication):
+        exigence_de_publication_schema = exigence_de_publication.load_json_schema()
+        indicateurs_actifs = [
+            ind
+            for ind in exigence_de_publication_schema
+            if self.indicateur_est_actif(ind)
+        ]
+        return indicateurs_actifs
+
+    def indicateur_est_actif(self, indicateur_schema_id):
+        if indicateur_schema_id == "B1-24-d":  # indicateur liste filiales
+            indicateur_type_de_perimetre = "B1-24-c"
+            try:
+                base_consolidee = (
+                    self.indicateurs.get(schema_id=indicateur_type_de_perimetre).data[
+                        "type_perimetre"
+                    ]
+                    == "consolidee"
+                )
+            except ObjectDoesNotExist:
+                base_consolidee = False
+            return base_consolidee
+        else:
+            return True
+
+    def indicateurs_completes(self, exigence_de_publication):
+        return self.indicateurs.filter(
+            schema_id__startswith=exigence_de_publication.code
+        ).values_list("schema_id", flat=True)
 
 
 class Indicateur(TimestampedModel):
