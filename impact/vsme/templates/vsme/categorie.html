@@ -6,7 +6,6 @@
     <div class="fr-container fr-my-4w">
         <div class="fr-grid-row">
             {% include "snippets/tableau_de_bord_menu.html" %}
-
             <div class="fr-col">
 
                 <nav role="navigation" class="fr-breadcrumb" aria-label="vous êtes ici :">
@@ -19,15 +18,17 @@
                                 <a class="fr-breadcrumb__link" href="{% url 'vsme:indicateurs_vsme' entreprise.siren rapport_vsme.annee %}">Mes indicateurs</a>
                             </li>
                             <li>
-                                <a class="fr-breadcrumb__link" aria-current="page">Gouvernance</a>
+                                <a class="fr-breadcrumb__link" aria-current="page">{{ categorie.value.label }}</a>
                             </li>
                         </ol>
                     </div>
                 </nav>
 
-                <h1>Gouvernance</h1>
+                <h1>{{ categorie.value.label }}</h1>
 
-                {% include "snippets/tuile_exigence_publication.html" with titre="B11 – Condamnations et amendes en matière de lutte contre la corruption et les actes de corruption" categorie="gov" url="https://portail-rse.beta.gouv.fr/vsme/b11-condamnations-et-amendes-pour-corruption-et-versement-de-pots-de-vin/" %}
+                {% for exigence in categorie.exigences_de_publication %}
+                    {% include "snippets/tuile_exigence_publication.html" with exigence=exigence categorie=categorie  url="https://portail-rse.beta.gouv.fr/vsme/b2-pratiques-politiques-et-initiatives-futures-en-vue-de-la-transition-vers-une-economie-plus-durable/" %}
+                {% endfor %}
 
             </div>
         </div>

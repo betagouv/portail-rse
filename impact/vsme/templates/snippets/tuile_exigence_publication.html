@@ -1,19 +1,27 @@
-<div class="fr-grid-row fr-mb-1w">
-    <div class="fr-col">
-        <div class="fr-tile fr-enlarge-link fr-tile--horizontal progression-vsme--{{ categorie }}">
-            <div class="fr-tile__body">
-                <div class="fr-tile__content">
-                    <h3 class="fr-tile__title">
-                        <a href="{{ url }}" class="progression-vsme--title">{{ titre}}</a>
-                    </h3>
+{% if exigence.url_infos %}
+    <div class="fr-grid-row fr-mb-1w">
+        <div class="fr-col">
+            <div class="fr-tile fr-enlarge-link fr-tile--horizontal progression-vsme--{% if categorie.value.id == 'informations-generales' %}general{% elif categorie.value.id == 'environnement' %}env{% elif categorie.value.id == 'social' %}social{% else %}gov{% endif %}">
+                <div class="fr-tile__body">
+                    <div class="fr-tile__content">
+                        <h3 class="fr-tile__title">
+                            {% if exigence.remplissable %}
+                                {% url 'vsme:exigence_de_publication_vsme' rapport_vsme.id exigence.code as url_page %}
+                                <a href="{{ url_page }}" class="progression-vsme--title">{{ exigence.code }} – {{ exigence.nom }}</a>
+                            {% else %}
+                                <a href="{{ exigence.url_infos }}" class="progression-vsme--title">{{ exigence.code }} – {{ exigence.nom }}</a>
+                            {% endif %}
+                        </h3>
+
                     {% comment %}
                     <p class="fr-tile__desc desc-exigence-publication">
                         Complétion : 0 %
                         <progress max="100" value="0" class="progression-exigence-publication">0 %</progress>
                     </p>
                     {% endcomment %}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+{% endif %}
