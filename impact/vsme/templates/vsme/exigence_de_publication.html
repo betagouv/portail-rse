@@ -29,39 +29,52 @@
 
                 <h3>{{ exigence_de_publication.code }} - {{ exigence_de_publication.nom }}</h3>
 
+                <p><a href="{{ exigence_de_publication.url_infos }}" class="fr-link">En savoir plus sur les indicateurs demandés</a></p>
                 <p>Exercice {{ rapport_vsme.annee }}</p>
-                <table>
-                    <tr>
-                        <th>Indicateur</th>
-                        <th>Statut</th>
-                        <th></th>
-                    </tr>
+                <div class="fr-table fr-table--sm">
+                    <div class="fr-table__wrapper">
+                        <div class="fr-table__container">
+                            <div class="fr-table__content">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Indicateur</th>
+                                            <th>Statut</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
 
-                    {% for indicateur in indicateurs %}
-                        <tr>
-                            <td>{{ indicateur.titre }}</td>
-                            <td>
-                                {% if not indicateur.est_actif %}
-                                    <p class="fr-badge">NON APPLICABLE</p>
-                                {% elif indicateur.est_complete %}
-                                    <p class="fr-badge fr-badge--success fr-badge--no-icon">COMPLÉTÉ</p>
-                                {% else %}
-                                    <p class="fr-badge">À COMPLÉTER</p>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if indicateur.est_actif %}
-                                    <button aria-controls="htmx-modal-indicateur" data-fr-opened="false" type="button" class="fr-btn fr-icon-edit-line fr-btn--secondary"
-                                            title="Modifier"
-                                            hx-get="{% url 'vsme:indicateur_vsme' rapport_vsme.id indicateur.id %}"
-                                            hx-target="#htmx-modal-indicateur">
-                                        Modifier
-                                    </button>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </table>
+                                    <tbody>
+                                        {% for indicateur in indicateurs %}
+                                            <tr>
+                                                <td>{{ indicateur.titre }}</td>
+                                                <td>
+                                                    {% if not indicateur.est_actif %}
+                                                        <p class="fr-badge fr-badge--brown-cafe-creme">NON APPLICABLE</p>
+                                                    {% elif indicateur.est_complete %}
+                                                        <p class="fr-badge fr-badge--success fr-badge--no-icon">COMPLÉTÉ</p>
+                                                    {% else %}
+                                                        <p class="fr-badge">À COMPLÉTER</p>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if indicateur.est_actif %}
+                                                        <button aria-controls="htmx-modal-indicateur" data-fr-opened="false" type="button" class="fr-btn fr-icon-edit-line fr-btn--secondary"
+                                                                title="Modifier"
+                                                                hx-get="{% url 'vsme:indicateur_vsme' rapport_vsme.id indicateur.id %}"
+                                                                hx-target="#htmx-modal-indicateur">
+                                                            Modifier
+                                                        </button>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <dialog id="htmx-modal-indicateur" class="fr-modal fr-modal--top" aria-labelledby="htmx-modal-indicateur-title" data-fr-concealing-backdrop="true"></dialog>
 
