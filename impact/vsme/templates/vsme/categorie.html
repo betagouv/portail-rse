@@ -27,7 +27,7 @@
                 <h1>{{ categorie.value.label }}</h1>
 
                 {% for exigence in categorie.exigences_de_publication %}
-                    {% include "snippets/tuile_exigence_publication.html" with exigence=exigence categorie=categorie  url="https://portail-rse.beta.gouv.fr/vsme/b2-pratiques-politiques-et-initiatives-futures-en-vue-de-la-transition-vers-une-economie-plus-durable/" %}
+                    {% include "snippets/tuile_exigence_publication.html" with exigence=exigence categorie=categorie %}
                 {% endfor %}
 
             </div>
