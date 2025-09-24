@@ -214,6 +214,12 @@ class RapportVSME(TimestampedModel):
             schema_id__startswith=exigence_de_publication.code
         ).values_list("schema_id", flat=True)
 
+    def progression_par(self, exigence_de_publication):
+        complet = self.indicateurs_completes(exigence_de_publication).count()
+        total = len(self.indicateurs_actifs(exigence_de_publication))
+        pourcentage = (complet / total) * 100
+        return int(pourcentage)
+
 
 class Indicateur(TimestampedModel):
     rapport_vsme = models.ForeignKey(
