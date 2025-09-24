@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 
 from utils.models import TimestampedModel
@@ -230,7 +231,10 @@ class Indicateur(TimestampedModel):
         verbose_name="numéro de version du schéma descriptif de l'indicateur", default=1
     )
     data = models.JSONField(
-        null=True, blank=True, verbose_name="donnée brute saisie par l'utilisateur"
+        encoder=DjangoJSONEncoder,
+        null=True,
+        blank=True,
+        verbose_name="donnée brute saisie par l'utilisateur",
     )
     # est_complete ?
 
