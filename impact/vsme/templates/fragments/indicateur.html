@@ -8,6 +8,8 @@
                 <div class="fr-modal__content">
                     <h2 id="htmx-modal-indicateur-title" class="fr-modal__title">{{ indicateur_schema.titre }}</h2>
 
+                    <p><a href="{{ exigence_de_publication.url_info }}" class="fr-link">En savoir plus sur les indicateurs demandés</a></p>
+
                     <p>{{ indicateur_schema.description }}</p>
 
                     <form id="form-indicateur" method="post" action="{% url 'vsme:indicateur_vsme' rapport_vsme.id indicateur_schema_id %}"
