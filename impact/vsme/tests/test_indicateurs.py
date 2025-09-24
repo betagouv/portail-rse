@@ -1,14 +1,14 @@
 import pytest
 from pytest_django.asserts import assertTemplateUsed
 
-INDICATEURS_VSME_URL = "/indicateurs/vsme/{siren}"
+INDICATEURS_VSME_URL = "/indicateurs/vsme/{siren}/{annee}"
 CATEGORIE_VSME_URL = "/indicateurs/vsme/{vsme_id}/categorie/{categorie_id}"
 
 
 def test_page_indicateurs_vsme(client, entreprise_qualifiee, alice):
     client.force_login(alice)
 
-    url = INDICATEURS_VSME_URL.format(siren=entreprise_qualifiee.siren)
+    url = INDICATEURS_VSME_URL.format(siren=entreprise_qualifiee.siren, annee=2024)
     response = client.get(url)
 
     assert response.status_code == 200
