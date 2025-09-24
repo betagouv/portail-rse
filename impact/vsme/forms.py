@@ -2,6 +2,7 @@ from django import forms
 
 from utils.categories_juridiques import CATEGORIES_JURIDIQUES_NIVEAU_II
 from utils.codes_nace import CODES_NACE
+from utils.forms import DateInput
 from utils.forms import DsfrForm
 from utils.forms import DsfrFormSet
 from utils.pays import CODES_PAYS_ISO_3166_1
@@ -101,6 +102,7 @@ def create_multiform_from_schema(schema, **kwargs):
                 "texte"
                 | "nombre_entier"
                 | "nombre_decimal"
+                | "date"
                 | "choix_binaire"
                 | "choix_unique"
                 | "choix_multiple"
@@ -181,6 +183,8 @@ def create_simple_field_from_schema(field_schema, **kwargs):
             return forms.IntegerField(**field_kwargs)
         case "nombre_decimal":
             return forms.FloatField(**field_kwargs)
+        case "date":
+            return forms.DateField(widget=DateInput, **field_kwargs)
         case "choix_binaire":
             return forms.BooleanField(**field_kwargs)
         case "choix_unique" | "choix_multiple":
