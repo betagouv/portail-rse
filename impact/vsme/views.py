@@ -108,19 +108,13 @@ def indicateurs_vsme(request, entreprise_qualifiee, annee=None):
 
 def categorie_vsme(request, vsme_id, categorie_id):
     rapport_vsme = RapportVSME.objects.get(id=vsme_id)
-    # if categorie in (
-    #    "informations-generales",
-    #    "environnement",
-    #    "social",
-    #    "gouvernance",
-    # ):
-    #    template_name = f"categories/{categorie}.html"
-    # else:
-    #    raise Http404("Catégorie VSME inconnue")
+    categorie = Categorie.par_id(categorie_id)
+    if not categorie:
+        raise Http404("Catégorie VSME inconnue")
     context = {
         "entreprise": rapport_vsme.entreprise,
         "rapport_vsme": rapport_vsme,
-        "categorie": Categorie.par_id(categorie_id),
+        "categorie": categorie,
     }
     return render(request, "vsme/categorie.html", context=context)
 
