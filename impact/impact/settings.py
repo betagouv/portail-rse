@@ -487,7 +487,9 @@ if OIDC_ENABLED:
 
 # Authentication to support OIDC silent login flows via the 'silent' query parameter
 OIDC_AUTHENTICATE_CLASS = "lasuite.oidc_login.views.OIDCAuthenticationRequestView"
-OIDC_CALLBACK_CLASS = "lasuite.oidc_login.views.OIDCAuthenticationCallbackView"
+# OIDC_CALLBACK_CLASS = "lasuite.oidc_login.views.OIDCAuthenticationCallbackView"
+# callback modifié pour traitement et routage spécifique à ProConnect
+OIDC_CALLBACK_CLASS = "oidc.views.OIDCAuthenticationCallbackView"
 
 # Required OIDC settings
 OIDC_RP_CLIENT_ID = os.getenv("OIDC_RP_CLIENT_ID")
