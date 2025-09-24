@@ -139,6 +139,7 @@
                 "id": "bilan",
                 "label": "Bilan",
                 "type": "nombre_entier",
+                "unité": "euros",
                 "obligatoire": true
             }
         ]
@@ -151,6 +152,7 @@
                 "id": "chiffre_affaire",
                 "label": "Chiffre d’affaires",
                 "type": "nombre_entier",
+                "unité": "euros",
                 "obligatoire": true
             }
         ]
@@ -163,6 +165,7 @@
                 "id": "nombre_salaries",
                 "label": "Nombre de salariés",
                 "type": "nombre_decimal",
+                "unité": "salariés",
                 "obligatoire": true
             }
         ]
