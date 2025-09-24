@@ -11,7 +11,7 @@
     "build": "vite build front && npm run compile:css && npm run dsfr"
   },
   "devDependencies": {
-    "@gouvfr/dsfr": "^1.11.0",
+    "@gouvfr/dsfr": "^1.12.0",
     "@sveltejs/vite-plugin-svelte": "^2.0.0",
     "sass": "^1.70.0",
     "svelte": "^4.2.19",
