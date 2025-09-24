@@ -35,7 +35,9 @@ class ExigenceDePublication:
     nom: str
     categorie: "Categorie"
     url_infos: str = ""
-    remplissable: bool = False
+    remplissable: bool = (
+        False  # nous intégrons les exigences de publication une par une, toutes ne le sont pas encore
+    )
 
     def load_json_schema(self):
         # Get the directory of the current file
