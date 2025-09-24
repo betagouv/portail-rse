@@ -216,11 +216,26 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
                 if htmx.is_htmx(request):
                     return htmx.HttpResponseHXRedirect(redirect_to)
             else:
-                extra = 1 if request.POST.get("ajouter-ligne") else 0
+                extra = 0
+                data = indicateur.data.copy()
+                if request.POST.get("ajouter-ligne"):
+                    if indicateur_a_champ_auto_id(indicateur_schema):
+                        tableau, champ_auto_id = indicateur_a_champ_auto_id(
+                            indicateur_schema
+                        )
+                        prochain_id = (
+                            1
+                            if not indicateur.data.get(tableau)
+                            else indicateur.data[tableau][-1][champ_auto_id] + 1
+                        )
+                        nouvelle_ligne = [{champ_auto_id: prochain_id}]
+                        data[tableau] = data[tableau] + nouvelle_ligne
+                    else:
+                        extra = 1
                 multiform = calcule_indicateur(
                     indicateur_schema,
                     toggle_pertinent_url,
-                    indicateur.data,
+                    data,
                     extra=extra,
                 )
 
@@ -247,6 +262,22 @@ def load_indicateur_schema(indicateur_schema_id):
         return exigence_de_publication_schema[indicateur_schema_id]
     except KeyError:
         raise IndicateurInconnu()
+
+
+def indicateur_a_champ_auto_id(indicateur_schema):
+    tableaux = [
+        champ for champ in indicateur_schema["champs"] if champ["type"] == "tableau"
+    ]
+    if not tableaux:
+        return False
+    for tableau in tableaux:
+        tableau_id = tableau["id"]
+        colonnes = tableau["colonnes"]
+        champ_auto_id = [
+            champ["id"] for champ in colonnes if champ["type"] == "auto_id"
+        ]
+        if champ_auto_id:
+            return tableau_id, champ_auto_id[0]
 
 
 @login_required
