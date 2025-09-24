@@ -1,3 +1,5 @@
+{% load progression_vsme %}
+
 {% if exigence.url_infos %}
     <div class="fr-grid-row fr-mb-1w">
         <div class="fr-col">
@@ -13,12 +15,12 @@
                             {% endif %}
                         </h3>
 
-                    {% comment %}
-                    <p class="fr-tile__desc desc-exigence-publication">
-                        Complétion : 0 %
-                        <progress max="100" value="0" class="progression-exigence-publication">0 %</progress>
-                    </p>
-                    {% endcomment %}
+                        {% if exigence.remplissable %}
+                            <p class="fr-tile__desc desc-exigence-publication">
+                                Complétion : {% progression_exigence rapport_vsme exigence %} %
+                                <progress max="100" value="{% progression_exigence rapport_vsme exigence %}" class="progression-exigence-publication">{% progression_exigence rapport_vsme exigence %} %</progress>
+                            </p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
