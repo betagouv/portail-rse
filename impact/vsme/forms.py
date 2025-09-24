@@ -101,6 +101,7 @@ def create_multiform_from_schema(schema, **kwargs):
                 "texte"
                 | "nombre_entier"
                 | "nombre_decimal"
+                | "date"
                 | "choix_binaire"
                 | "choix_unique"
                 | "choix_multiple"
@@ -181,6 +182,11 @@ def create_simple_field_from_schema(field_schema, **kwargs):
             return forms.IntegerField(**field_kwargs)
         case "nombre_decimal":
             return forms.FloatField(**field_kwargs)
+        case "date":
+            return forms.DateField(
+                widget=forms.DateInput(format="%Y-%m-%d", attrs={"type": "date"}),
+                **field_kwargs,
+            )
         case "choix_binaire":
             return forms.BooleanField(**field_kwargs)
         case "choix_unique" | "choix_multiple":

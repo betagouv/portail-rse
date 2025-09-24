@@ -250,7 +250,7 @@
                     {
                         "id": "date_obtention",
                         "label": "Date d’obtention",
-                        "type": "texte",
+                        "type": "date",
                         "obligatoire": true
                     },
                     {
