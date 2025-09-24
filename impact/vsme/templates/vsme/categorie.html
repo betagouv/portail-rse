@@ -27,7 +27,7 @@
                 <h1>{{ categorie.value.label }}</h1>
 
                 {% for exigence in categorie.exigences_de_publication %}
-                    {% include "snippets/tuile_exigence_publication.html" with exigence=exigence categorie=categorie %}
+                    {% include "snippets/tuile_exigence_publication.html" with exigence=exigence categorie=categorie rapport_vsme=rapport_vsme %}
                 {% endfor %}
 
             </div>
