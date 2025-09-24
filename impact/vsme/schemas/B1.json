@@ -162,7 +162,7 @@
             {
                 "id": "nombre_salaries",
                 "label": "Nombre de salariés",
-                "type": "nombre_entier",
+                "type": "nombre_decimal",
                 "obligatoire": true
             }
         ]

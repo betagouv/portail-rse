@@ -100,6 +100,7 @@ def create_multiform_from_schema(schema, **kwargs):
             case (
                 "texte"
                 | "nombre_entier"
+                | "nombre_decimal"
                 | "choix_binaire"
                 | "choix_unique"
                 | "choix_multiple"
@@ -178,6 +179,8 @@ def create_simple_field_from_schema(field_schema, **kwargs):
             field_kwargs["min_value"] = field_schema.get("min")
             field_kwargs["max_value"] = field_schema.get("max")
             return forms.IntegerField(**field_kwargs)
+        case "nombre_decimal":
+            return forms.FloatField(**field_kwargs)
         case "choix_binaire":
             return forms.BooleanField(**field_kwargs)
         case "choix_unique" | "choix_multiple":
