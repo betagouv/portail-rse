@@ -43,7 +43,7 @@ urlpatterns = (
 
 if settings.OIDC_ENABLED:
     urlpatterns += [
-        path("oidc/", include("lasuite.oidc_login.urls")),
+        path("oidc/", include("oidc.urls")),
     ]
 
 if settings.DEBUG_TOOLBAR:
