@@ -1,11 +1,33 @@
 import pytest
+from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed
 
-INDICATEURS_VSME_URL = "/indicateurs/vsme/{siren}/{annee}/"
-CATEGORIE_VSME_URL = "/indicateurs/vsme/{vsme_id}/categorie/{categorie_id}/"
+from habilitations.models import Habilitation
+
+INDICATEURS_VSME_BASE_URL = "/indicateurs/vsme/"
+INDICATEURS_VSME_URL = INDICATEURS_VSME_BASE_URL + "{siren}/{annee}/"
+CATEGORIE_VSME_URL = INDICATEURS_VSME_BASE_URL + "{vsme_id}/categorie/{categorie_id}/"
 
 
-def test_page_indicateurs_vsme(client, entreprise_qualifiee, alice):
+def test_indicateurs_vsme_est_prive(client, entreprise_factory, alice):
+    entreprise = entreprise_factory()
+
+    url = INDICATEURS_VSME_URL.format(siren=entreprise.siren, annee=2024)
+    response = client.get(url)
+
+    assert response.status_code == 302
+    connexion_url = reverse("users:login")
+    assert response.url == f"{connexion_url}?next={url}"
+
+    client.force_login(alice)
+    response = client.get(url)
+
+    assert response.status_code == 403
+
+
+def test_indicateurs_vsme_avec_utilisateur_authentifie(
+    client, entreprise_qualifiee, alice
+):
     client.force_login(alice)
 
     url = INDICATEURS_VSME_URL.format(siren=entreprise_qualifiee.siren, annee=2024)
@@ -15,6 +37,32 @@ def test_page_indicateurs_vsme(client, entreprise_qualifiee, alice):
     assertTemplateUsed(response, "base.html")
     assertTemplateUsed(response, "snippets/tableau_de_bord_menu.html")
     assertTemplateUsed(response, "vsme/indicateurs.html")
+
+
+def test_indicateurs_vsme_entreprise_non_qualifiee_redirige_vers_la_qualification(
+    client, entreprise_non_qualifiee, alice
+):
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
+    client.force_login(alice)
+
+    url = INDICATEURS_VSME_URL.format(siren=entreprise_non_qualifiee.siren, annee=2024)
+    response = client.get(url, follow=True)
+
+    assert response.status_code == 200
+    url = f"/entreprises/{entreprise_non_qualifiee.siren}"
+    assert response.redirect_chain == [(url, 302)]
+
+
+def test_indicateurs_vsme_sans_siren_et_sans_annee(client, entreprise_qualifiee, alice):
+    client.force_login(alice)
+
+    url = INDICATEURS_VSME_BASE_URL
+    response = client.get(url, follow=True)
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [
+        (f"/indicateurs/vsme/{entreprise_qualifiee.siren}/", 302)
+    ]
 
 
 @pytest.mark.parametrize(
