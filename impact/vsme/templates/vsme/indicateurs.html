@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load progression_vsme %}
+
 {% block title %}{{ titre }}{% endblock %}
 
 {% block content %}
@@ -22,10 +24,10 @@
                                     <h3 class="fr-tile__title">
                                         <a href="{% url 'vsme:categorie_vsme' rapport_vsme.id 'informations-generales' %}" class="progression-vsme--title">Général</a>
                                     </h3>
-                                    {% comment %}
                                     <p class="fr-tile__desc progression-vsme">
                                         <div class="progress-circle-wrapper">
-                                            <div class="progress-circle" data-value="0">
+                                            {% progression_categorie rapport_vsme 'informations-generales' as progression %}
+                                            <div class="progress-circle" data-value="{{ progression.pourcent }}">
                                                 <div class="progress-masque">
                                                     <div class="progress-barre"></div>
                                                     <div class="progress-sup50"></div>
@@ -33,7 +35,6 @@
                                             </div>
                                         </div>
                                     </p>
-                                    {% endcomment %}
                                 </div>
                             </div>
                         </div>

@@ -214,11 +214,23 @@ class RapportVSME(TimestampedModel):
             schema_id__startswith=exigence_de_publication.code
         ).values_list("schema_id", flat=True)
 
-    def progression_par(self, exigence_de_publication):
+    def progression_par_exigence(self, exigence_de_publication):
         complet = self.indicateurs_completes(exigence_de_publication).count()
         total = len(self.indicateurs_actifs(exigence_de_publication))
-        pourcentage = (complet / total) * 100
-        return int(pourcentage)
+        pourcent = (complet / total) * 100
+        return {"total": total, "complet": complet, "pourcent": int(pourcent)}
+
+    def progression_par_categorie(self, categorie):
+        complet, total = 0, 0
+        for exigence_de_publication in categorie.exigences_de_publication():
+            if exigence_de_publication.remplissable:
+                progression_exigence = self.progression_par_exigence(
+                    exigence_de_publication
+                )
+                complet += progression_exigence["complet"]
+                total += progression_exigence["total"]
+        pourcent = (complet / total) * 100
+        return {"total": total, "complet": complet, "pourcent": int(pourcent)}
 
 
 class Indicateur(TimestampedModel):
