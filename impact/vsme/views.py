@@ -3,8 +3,10 @@ from functools import wraps
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import PermissionDenied
 from django.http.response import Http404
 from django.http.response import HttpResponseForbidden
+from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls.base import reverse
@@ -13,6 +15,7 @@ import utils.htmx as htmx
 from entreprises.decorators import entreprise_qualifiee_requise
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
+from habilitations.models import Habilitation
 from vsme.forms import create_multiform_from_schema
 from vsme.models import Categorie
 from vsme.models import EXIGENCES_DE_PUBLICATION
@@ -106,8 +109,22 @@ def indicateurs_vsme(request, entreprise_qualifiee, annee=None):
     return render(request, "vsme/indicateurs.html", context=context)
 
 
-def categorie_vsme(request, vsme_id, categorie_id):
-    rapport_vsme = RapportVSME.objects.get(id=vsme_id)
+def rapport_vsme_requis(function):
+    @wraps(function)
+    def wrap(request, vsme_id, *args, **kwargs):
+        rapport_vsme = get_object_or_404(RapportVSME, id=vsme_id)
+
+        if not Habilitation.existe(rapport_vsme.entreprise, request.user):
+            raise PermissionDenied()
+
+        return function(request, rapport_vsme, *args, **kwargs)
+
+    return wrap
+
+
+@login_required
+@rapport_vsme_requis
+def categorie_vsme(request, rapport_vsme, categorie_id):
     categorie = Categorie.par_id(categorie_id)
     if not categorie:
         raise Http404("Catégorie VSME inconnue")
@@ -119,9 +136,12 @@ def categorie_vsme(request, vsme_id, categorie_id):
     return render(request, "vsme/categorie.html", context=context)
 
 
-def exigence_de_publication_vsme(request, vsme_id, exigence_de_publication_code):
-    rapport_vsme = RapportVSME.objects.get(id=vsme_id)
-    exigence_de_publication = EXIGENCES_DE_PUBLICATION[exigence_de_publication_code]
+@login_required
+@rapport_vsme_requis
+def exigence_de_publication_vsme(request, rapport_vsme, exigence_de_publication_code):
+    exigence_de_publication = EXIGENCES_DE_PUBLICATION.get(exigence_de_publication_code)
+    if not exigence_de_publication or not exigence_de_publication.remplissable:
+        raise Http404("Exigence de publication VSME inconnue")
     indicateurs_completes = rapport_vsme.indicateurs_completes(exigence_de_publication)
     indicateurs_actifs = rapport_vsme.indicateurs_actifs(exigence_de_publication)
     exigence_de_publication_schema = exigence_de_publication.load_json_schema()
@@ -144,16 +164,25 @@ def exigence_de_publication_vsme(request, vsme_id, exigence_de_publication_code)
     return render(request, "vsme/exigence_de_publication.html", context=context)
 
 
-def indicateur_vsme(request, vsme_id, indicateur_schema_id):
-    rapport_vsme = RapportVSME.objects.get(id=vsme_id)
+class IndicateurInconnu(Exception):
+    pass
+
+
+@login_required
+@rapport_vsme_requis
+def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
+    try:
+        indicateur_schema = load_indicateur_schema(indicateur_schema_id)
+    except IndicateurInconnu:
+        raise Http404("Indicateur VSME inconnu")
+
     try:
         indicateur = rapport_vsme.indicateurs.get(schema_id=indicateur_schema_id)
     except ObjectDoesNotExist:
         indicateur = None
 
-    indicateur_schema = load_indicateur_schema(indicateur_schema_id)
     toggle_pertinent_url = reverse(
-        "vsme:toggle_pertinent", args=[vsme_id, indicateur_schema_id]
+        "vsme:toggle_pertinent", args=[rapport_vsme.id, indicateur_schema_id]
     )
 
     if request.method == "POST":
@@ -211,17 +240,21 @@ def indicateur_vsme(request, vsme_id, indicateur_schema_id):
 
 def load_indicateur_schema(indicateur_schema_id):
     exigence_de_publication_code = indicateur_schema_id.split("-")[0]
-    exigence_de_publication_schema = EXIGENCES_DE_PUBLICATION[
-        exigence_de_publication_code
-    ].load_json_schema()
-    return exigence_de_publication_schema[indicateur_schema_id]
+    try:
+        exigence_de_publication_schema = EXIGENCES_DE_PUBLICATION[
+            exigence_de_publication_code
+        ].load_json_schema()
+        return exigence_de_publication_schema[indicateur_schema_id]
+    except KeyError:
+        raise IndicateurInconnu()
 
 
-def toggle_pertinent(request, vsme_id, indicateur_schema_id):
-    rapport_vsme = RapportVSME.objects.get(id=vsme_id)
+@login_required
+@rapport_vsme_requis
+def toggle_pertinent(request, rapport_vsme, indicateur_schema_id):
     indicateur_schema = load_indicateur_schema(indicateur_schema_id)
     toggle_pertinent_url = reverse(
-        "vsme:toggle_pertinent", args=[vsme_id, indicateur_schema_id]
+        "vsme:toggle_pertinent", args=[rapport_vsme.id, indicateur_schema_id]
     )
     multiform = calcule_indicateur(
         indicateur_schema, toggle_pertinent_url, request.POST
