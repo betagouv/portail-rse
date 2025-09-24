@@ -17,8 +17,8 @@
 
                         {% if exigence.remplissable %}
                             <p class="fr-tile__desc desc-exigence-publication">
-                                Complétion : {% progression_vsme rapport_vsme exigence %} %
-                                <progress max="100" value="{% progression_vsme rapport_vsme exigence %}" class="progression-exigence-publication">{% progression_vsme rapport_vsme exigence %} %</progress>
+                                Complétion : {% progression_exigence rapport_vsme exigence %} %
+                                <progress max="100" value="{% progression_exigence rapport_vsme exigence %}" class="progression-exigence-publication">{% progression_exigence rapport_vsme exigence %} %</progress>
                             </p>
                         {% endif %}
                     </div>
