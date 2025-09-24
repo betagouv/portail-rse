@@ -45,6 +45,9 @@
                                                     <td>
                                                         {% if field.name == "DELETE" %}
                                                             <button type="submit" name="supprimer-ligne" value="{{ field.html_name }}" class="fr-btn fr-btn--secondary">Supprimer</button>
+                                                        {% elif field.field.auto_id %}
+                                                            {{ field.value }}
+                                                            {{ field.as_hidden }}
                                                         {% else %}
                                                             {{ field }}
                                                             {% if field.errors %}

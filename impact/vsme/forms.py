@@ -105,6 +105,7 @@ def create_multiform_from_schema(schema, **kwargs):
                 | "choix_binaire"
                 | "choix_unique"
                 | "choix_multiple"
+                | "auto_id"
             ):
                 _DynamicForm.base_fields[field_name] = create_simple_field_from_schema(
                     field
@@ -173,10 +174,14 @@ def create_simple_field_from_schema(field_schema, **kwargs):
         # ...
     }
     match field_type:
+        case "auto_id":
+            field = forms.IntegerField(min_value=1, required=True)
+            field.auto_id = True
+            return field
         case "texte":
             field_kwargs["max_length"] = field_schema.get("max_length", 255)
             return forms.CharField(**field_kwargs)
-        case "nombre_entier":
+        case "nombre_entier" | "auto_id":
             field_kwargs["min_value"] = field_schema.get("min")
             field_kwargs["max_value"] = field_schema.get("max")
             return forms.IntegerField(**field_kwargs)

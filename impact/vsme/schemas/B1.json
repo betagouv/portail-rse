@@ -194,6 +194,11 @@
                 "obligatoire": true,
                 "colonnes": [
                     {
+                        "id": "id_site",
+                        "label": "Numéro ID",
+                        "type": "auto_id"
+                    },
+                    {
                         "id": "nom_site",
                         "label": "Nom du site",
                         "type": "texte",
@@ -223,7 +228,8 @@
                     {
                         "id": "geolocalisation",
                         "label": "Géolocalisation",
-                        "type": "texte"
+                        "type": "texte",
+                        "obligatoire": true
                     }
                 ]
             }
