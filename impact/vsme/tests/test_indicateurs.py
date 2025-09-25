@@ -14,7 +14,7 @@ EXIGENCE_DE_PUBLICATION_URL = (
 )
 
 
-def test_indicateurs_vsme_est_prive(client, entreprise_factory, alice):
+def test_categories_vsme_est_prive(client, entreprise_factory, alice):
     entreprise = entreprise_factory()
 
     url = INDICATEURS_VSME_URL.format(siren=entreprise.siren, annee=2024)
@@ -30,7 +30,7 @@ def test_indicateurs_vsme_est_prive(client, entreprise_factory, alice):
     assert response.status_code == 403
 
 
-def test_indicateurs_vsme_avec_utilisateur_authentifie(
+def test_categories_vsme_avec_utilisateur_authentifie(
     client, entreprise_qualifiee, alice
 ):
     client.force_login(alice)
@@ -41,10 +41,10 @@ def test_indicateurs_vsme_avec_utilisateur_authentifie(
     assert response.status_code == 200
     assertTemplateUsed(response, "base.html")
     assertTemplateUsed(response, "snippets/tableau_de_bord_menu.html")
-    assertTemplateUsed(response, "vsme/indicateurs.html")
+    assertTemplateUsed(response, "vsme/categories.html")
 
 
-def test_indicateurs_vsme_entreprise_non_qualifiee_redirige_vers_la_qualification(
+def test_categories_vsme_entreprise_non_qualifiee_redirige_vers_la_qualification(
     client, entreprise_non_qualifiee, alice
 ):
     Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
@@ -58,7 +58,7 @@ def test_indicateurs_vsme_entreprise_non_qualifiee_redirige_vers_la_qualificatio
     assert response.redirect_chain == [(url, 302)]
 
 
-def test_indicateurs_vsme_sans_siren_et_sans_annee(client, entreprise_qualifiee, alice):
+def test_categories_vsme_sans_siren_et_sans_annee(client, entreprise_qualifiee, alice):
     client.force_login(alice)
 
     url = INDICATEURS_VSME_BASE_URL
