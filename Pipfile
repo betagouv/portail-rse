@@ -28,6 +28,7 @@ aiohttp = "~=3.12.15"
 responses = "~=0.25.8"
 # admin : connexion en tant qu'utilisateur enregistré
 django-hijack = "~=3.7.4"
+geojson = "~=3.2.0"
 
 [dev-packages]
 pytest-django = "*"

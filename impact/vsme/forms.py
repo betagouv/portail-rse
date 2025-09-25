@@ -1,4 +1,9 @@
+import re
+from json.decoder import JSONDecodeError
+
+import geojson
 from django import forms
+from django.core.exceptions import ValidationError
 
 from utils.categories_juridiques import CATEGORIES_JURIDIQUES_NIVEAU_II
 from utils.codes_nace import CODES_NACE
@@ -225,5 +230,24 @@ def create_simple_field_from_schema(field_schema, **kwargs):
                     choices=choices,
                     **field_kwargs,
                 )
+        case "geolocalisation":
+            return GeoField(**field_kwargs)
         case _:
             raise Exception(f"Type inconnu : {field_type}")
+
+
+class GeoField(forms.CharField):
+    def clean(self, value):
+        cleaned_value = super().clean(value)
+        minimized_cleaned_value = re.sub(
+            r"\s+", "", cleaned_value
+        )  # supprime tous les caractères d'espacement
+        try:
+            coordonnees = geojson.loads(minimized_cleaned_value)
+        except JSONDecodeError:
+            raise ValidationError("Les coordonnées sont incorrectes")
+        point = geojson.Point(coordonnees)
+        polygon = geojson.Polygon(coordonnees)
+        if not point.is_valid and not polygon.is_valid:
+            raise ValidationError("Les coordonnées sont incorrectes")
+        return minimized_cleaned_value
