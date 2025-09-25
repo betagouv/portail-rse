@@ -228,7 +228,7 @@
                     {
                         "id": "geolocalisation",
                         "label": "Géolocalisation",
-                        "type": "texte",
+                        "type": "geolocalisation",
                         "obligatoire": true
                     }
                 ]
