@@ -237,6 +237,8 @@ def create_simple_field_from_schema(field_schema, **kwargs):
 
 
 class GeoField(forms.CharField):
+    geolocalisation = True
+
     def clean(self, value):
         cleaned_value = super().clean(value)
         minimized_cleaned_value = re.sub(
