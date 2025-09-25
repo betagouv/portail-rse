@@ -158,9 +158,26 @@
         ]
     },
     "B1-24-e-v": {
-        "titre": "Effectif total de l’entreprise",
-        "description": "Indiquer le nombre de salariés (CDI, CDD, temps partiel) au prorata de leur temps de présence au cours de l’année de référence.",
+        "titre": "Nombre de salariés",
+        "description": "Indiquer le nombre de salariés de l'entreprise.",
         "champs": [
+            {
+                "id": "methode_comptabilisation",
+                "label": "Méthode de comptabilisation des salariés (effectifs ou équivalents temps plein)",
+                "description": "L’équivalent temps plein (ETP) est le nombre de postes à temps plein dans une entreprise. Il peut être calculé en divisant le nombre d’heures planifié d’un salarié (nombre total des heures effectivement travaillées par semaine) par le nombre d’heures de travail arrêté par l’employeur pour une semaine de travail à temps plein (nombre total des heures à effectuer par des salariés à temps plein). L’effectif correspond au nombre total de personnes employées par l’entreprise constaté soit à la fin de la période de référence, soit en moyenne sur l’ensemble de la période de référence.",
+                "type": "choix_unique",
+                "choix": [
+                    {
+                        "id": "ETP",
+                        "label": "Équivalents temps plein (ETP)"
+                    },
+                    {
+                        "id": "effectifs",
+                        "label": "Effectifs"
+                    }
+                ],
+                "obligatoire": true
+            },
             {
                 "id": "nombre_salaries",
                 "label": "Nombre de salariés",
