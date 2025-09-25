@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 
 from utils.categories_juridiques import CATEGORIES_JURIDIQUES_NIVEAU_II
 from utils.codes_nace import CODES_NACE
@@ -147,6 +148,32 @@ def create_multiform_from_schema(schema, **kwargs):
                             ]
                         }
 
+                    def clean(self):
+                        if any(self.errors):
+                            return  # Valide d'abord chaque formulaire individuellement
+
+                        if self.auto_id_field:
+                            auto_ids = set()
+                            for form in self.forms:
+                                if self.can_delete and self._should_delete_form(form):
+                                    continue  # Ignore les lignes supprimées
+                                auto_id = form.cleaned_data[self.auto_id_field]
+                                if auto_id in auto_ids:
+                                    form.add_error(
+                                        self.auto_id_field, "ID déjà utilisé"
+                                    )
+                                    raise ValidationError(
+                                        "Chaque ligne du tableau doit avoir un identifiant unique"
+                                    )
+                                auto_ids.add(auto_id)
+
+                    @property
+                    def auto_id_field(self):
+                        for column in self.columns:
+                            if column["type"] == "auto_id":
+                                return column["id"]
+                        return None
+
                 extra = kwargs.get("extra", 0)
                 min_num = 1 if _MultiForm.si_pertinent else None
                 FormSet = forms.formset_factory(
@@ -182,7 +209,7 @@ def create_simple_field_from_schema(field_schema, **kwargs):
         case "texte":
             field_kwargs["max_length"] = field_schema.get("max_length", 255)
             return forms.CharField(**field_kwargs)
-        case "nombre_entier" | "auto_id":
+        case "nombre_entier":
             field_kwargs["min_value"] = field_schema.get("min")
             field_kwargs["max_value"] = field_schema.get("max")
             return forms.IntegerField(**field_kwargs)

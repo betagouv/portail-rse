@@ -219,10 +219,8 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
                 extra = 0
                 data = indicateur.data.copy()
                 if request.POST.get("ajouter-ligne"):
-                    if indicateur_a_champ_auto_id(indicateur_schema):
-                        tableau, champ_auto_id = indicateur_a_champ_auto_id(
-                            indicateur_schema
-                        )
+                    if position := indicateur_a_champ_auto_id(indicateur_schema):
+                        tableau, champ_auto_id = position
                         prochain_id = (
                             1
                             if not indicateur.data.get(tableau)
