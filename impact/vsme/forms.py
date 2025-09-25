@@ -205,6 +205,7 @@ def create_simple_field_from_schema(field_schema, **kwargs):
             match field_schema["choix"]:
                 case "CHOIX_PAYS":
                     choices = CODES_PAYS_ISO_3166_1
+                    field_kwargs["initial"] = ("FRA", "FRANCE")
                 case "CHOIX_FORME_JURIDIQUE":
                     choices = CATEGORIES_JURIDIQUES_NIVEAU_II
                 case "CHOIX_NACE":
