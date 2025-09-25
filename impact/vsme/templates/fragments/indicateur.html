@@ -1,3 +1,5 @@
+{% load geolocalisation %}
+
 <div class="fr-container fr-container--fluid fr-container-md">
     <div class="fr-grid-row fr-grid-row--center">
         <div class="fr-col-12 fr-col-md-10 fr-col-lg-8">
@@ -42,7 +44,7 @@
                                         {% for form_table in form %}
                                             <tr>
                                                 {% for field in form_table %}
-                                                    <td>
+                                                    <td {%if field.field.geolocalisation %}class="indicateur-geolocalisation"{% endif %}>
                                                         {% if field.name == "DELETE" %}
                                                             <button type="submit" name="supprimer-ligne" value="{{ field.html_name }}" class="fr-btn fr-btn--secondary">Supprimer</button>
                                                         {% elif field.field.auto_id %}
@@ -50,6 +52,11 @@
                                                             {{ field.as_hidden }}
                                                         {% else %}
                                                             {{ field }}
+                                                            {% if field.field.geolocalisation and field.value %}
+                                                                <span>
+                                                                    <a title="Voir le site - nouvel onglet" href="{% url_geolocalisation field.value %}" target="_blank" rel="noopener external" class="fr-link">Voir</a>
+                                                                </span>
+                                                            {% endif %}
                                                             {% if field.errors %}
                                                                 <p id="{{ field.name }}-error-desc-error" class="fr-error-text">
                                                                     {% for error in field.errors %}
