@@ -97,7 +97,7 @@ def etape_vsme(request, siren, etape):
 
 @login_required
 @entreprise_qualifiee_requise
-def indicateurs_vsme(request, entreprise_qualifiee, annee=None):
+def categories_vsme(request, entreprise_qualifiee, annee=None):
     annee = annee or 2024
     rapport_vsme, created = RapportVSME.objects.get_or_create(
         entreprise=entreprise_qualifiee, annee=annee
@@ -106,7 +106,7 @@ def indicateurs_vsme(request, entreprise_qualifiee, annee=None):
         "entreprise": entreprise_qualifiee,
         "rapport_vsme": rapport_vsme,
     }
-    return render(request, "vsme/indicateurs.html", context=context)
+    return render(request, "vsme/categories.html", context=context)
 
 
 def rapport_vsme_requis(function):

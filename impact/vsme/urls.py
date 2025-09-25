@@ -16,18 +16,18 @@ urlpatterns = [
     ),
     path(
         "indicateurs/vsme/",
-        views.indicateurs_vsme,
-        name="indicateurs_vsme",
+        views.categories_vsme,
+        name="categories_vsme",
     ),
     path(
         "indicateurs/vsme/<str:siren>/",
-        views.indicateurs_vsme,
-        name="indicateurs_vsme",
+        views.categories_vsme,
+        name="categories_vsme",
     ),
     path(
         "indicateurs/vsme/<str:siren>/<int:annee>/",
-        views.indicateurs_vsme,
-        name="indicateurs_vsme",
+        views.categories_vsme,
+        name="categories_vsme",
     ),
     path(
         "indicateurs/vsme/<int:vsme_id>/categorie/<str:categorie_id>/",
