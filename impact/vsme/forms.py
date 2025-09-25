@@ -178,6 +178,8 @@ def create_simple_field_from_schema(field_schema, **kwargs):
         "required": field_schema.get("obligatoire", False),
         # ...
     }
+    if description := field_schema.get("description"):
+        field_kwargs["help_text"] = description
     match field_type:
         case "auto_id":
             field = forms.IntegerField(min_value=1, required=True)
