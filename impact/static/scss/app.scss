@@ -1,3 +1,12 @@
+$background-general: var(--background-contrast-yellow-moutarde);
+$text-general: var(--text-label-yellow-moutarde);
+$background-environnement: var(--background-contrast-green-emeraude);
+$text-environnement: var(--text-label-green-emeraude);
+$background-social: var(--background-contrast-purple-glycine);
+$text-social: var(--text-label-purple-glycine);
+$background-gouvernance: var(--background-contrast-info);
+$text-gouvernance: var(--text-default-info);
+
 .fr-btns-group--md {
     --ul-type: none;
 }
@@ -284,9 +293,9 @@
 }
 
 .esrs-organizer--gov {
-    background-color: var(--background-contrast-info);
+    background-color: $background-gouvernance;
     .esrs-organizer--title {
-        color: var(--text-default-info);
+        color: $text-gouvernance;
     }
     .esrs-organizer--title::before {
         background: center no-repeat url("../img/espace_csrd/picto-gov.png");
@@ -294,9 +303,9 @@
 }
 
 .esrs-organizer--env {
-    background-color: var(--background-contrast-green-emeraude);
+    background-color: $background-environnement;
     .esrs-organizer--title {
-        color: var(--text-label-green-emeraude);
+        color: $text-environnement;
     }
     .esrs-organizer--title::before {
         background: center no-repeat url("../img/espace_csrd/picto-env.png");
@@ -304,9 +313,9 @@
 }
 
 .esrs-organizer--social {
-    background-color: var(--background-contrast-purple-glycine);
+    background-color: $background-social;
     .esrs-organizer--title {
-        color: var(--text-label-purple-glycine);
+        color: $text-social;
     }
     .esrs-organizer--title::before {
         background: center no-repeat url("../img/espace_csrd/picto-social.png");
@@ -464,7 +473,6 @@
             flex-grow: 1;
         }
     }
-    
 }
 
 .fr-icon--blue {
@@ -546,42 +554,36 @@
   min-width: 100%;
 }
 
-.progression-vsme--avancement {
-    font-size: 1.5rem;
-}
-
 .progression-vsme--general {
-    background-color: var(--background-contrast-yellow-moutarde);
+    background-color: $background-general;
     .progression-vsme--title {
-        color: var(--text-label-yellow-moutarde);
+        color: $text-general;
     }
 }
 
 .progression-vsme--gov {
-    background-color: var(--background-contrast-info);
+    background-color: $background-gouvernance;
     .progression-vsme--title {
-        color: var(--text-default-info);
+        color: $text-gouvernance;
     }
 }
 
 .progression-vsme--env {
-    background-color: var(--background-contrast-green-emeraude);
+    background-color: $background-environnement;
     .progression-vsme--title {
-        color: var(--text-label-green-emeraude);
+        color: $text-environnement;
     }
 }
 
 .progression-vsme--social {
-    background-color: var(--background-contrast-purple-glycine);
+    background-color: $background-social;
     .progression-vsme--title {
-        color: var(--text-label-purple-glycine);
+        color: $text-social;
     }
 }
 
 .progression-vsme--title {
     text-transform: uppercase;
-    color: var(--text-mention-grey);
-    text-align: center;
 }
 
 /* Indicateurs */
@@ -609,7 +611,7 @@
 
 /* media queries */
 @media screen and (min-width: 992px) {
-#account-mobile { 
+#account-mobile {
     display: none;
 }
 }
