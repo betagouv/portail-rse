@@ -48,6 +48,15 @@ class ExigenceDePublication:
         with open(full_path, "r") as file:
             return json.load(file)
 
+    @classmethod
+    def par_code(cls, exigence_de_publication_code):
+        return EXIGENCES_DE_PUBLICATION[exigence_de_publication_code]
+
+    @classmethod
+    def par_indicateur_schema_id(cls, indicateur_schema_id):
+        code = indicateur_schema_id.split("-")[0]
+        return cls.par_code(code)
+
 
 EXIGENCES_DE_PUBLICATION = {
     "B1": ExigenceDePublication(

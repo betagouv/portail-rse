@@ -2,9 +2,10 @@
     "B1-24-a": {
         "titre": "Base d’établissement",
         "description": "Indiquer si vous utilisez le module de base ou le module complet pour votre déclaration de la norme VSME.",
+        "ancre": "choix_module",
         "champs": [
             {
-                "id": "base_etablissement",
+                "id": "choix_module",
                 "label": "Choix du module",
                 "type": "choix_unique",
                 "choix": [
@@ -22,11 +23,12 @@
         ]
     },
     "B1-24-b": {
-        "titre": "Omission d’information",
+        "titre": "Omission d’informations",
         "description": "Indiquer si l’entreprise a omis une information jugée classifiée ou sensible, et préciser laquelle parmi les exigences de publication.",
+        "ancre": "omission_informations",
         "champs": [
             {
-                "id": "omission_information",
+                "id": "omission_informations",
                 "label": "Exigences de publication dans lesquelles des informations ont été omises",
                 "type": "choix_multiple",
                 "choix": "CHOIX_EXIGENCE_DE_PUBLICATION"
@@ -37,6 +39,7 @@
     "B1-24-c": {
         "titre": "Type de périmètre",
         "description": "Indiquer si le rapport de durabilité est établi sur une base individuelle (seules informations de l’entreprise) ou sur une base consolidée (incluant filiales).",
+        "ancre": "type_perimetre",
         "champs": [
             {
                 "id": "type_perimetre",
@@ -59,6 +62,7 @@
     "B1-24-d": {
         "titre": "Liste des filiales incluses dans le rapport",
         "description": "Indiquer la liste des filiales, y compris leur siège social.",
+        "ancre": "filiales",
         "champs": [
             {
                 "id": "filiales",
@@ -103,6 +107,7 @@
     "B1-24-e-i": {
         "titre": "Forme juridique de l’entreprise",
         "description": "Indiquer la structure légale de l’entité déclarante, telle que reconnue par la législation nationale.",
+        "ancre": "forme_juridique",
         "champs": [
             {
                 "id": "forme_juridique",
@@ -121,6 +126,7 @@
     "B1-24-e-ii": {
         "titre": "Code(s) NACE de l’activité principale",
         "description": "Publier le ou les codes NACE de l’entreprise (Nomenclature statistique des activités économiques dans la Communauté européenne).",
+        "ancre": "nace",
         "champs": [
             {
                 "id": "nace",
@@ -134,6 +140,7 @@
     "B1-24-e-iii": {
         "titre": "Total du bilan en euros",
         "description": "Indiquer le total du bilan (total des actifs en unités monétaires). Unité : euros",
+        "ancre": "bilan",
         "champs": [
             {
                 "id": "bilan",
@@ -147,9 +154,10 @@
     "B1-24-e-iv": {
         "titre": "Chiffre d’affaires en euros",
         "description": "Indiquer le montant net du chiffre d’affaires réalisé sur le périmètre consolidé de l’organisation au cours de l’année de référence. Unité : euros",
+        "ancre": "chiffre_affaires",
         "champs": [
             {
-                "id": "chiffre_affaire",
+                "id": "chiffre_affaires",
                 "label": "Chiffre d’affaires",
                 "type": "nombre_entier",
                 "unité": "euros",
@@ -160,6 +168,7 @@
     "B1-24-e-v": {
         "titre": "Nombre de salariés",
         "description": "Indiquer le nombre de salariés de l'entreprise.",
+        "ancre": "nombre_salaries",
         "champs": [
             {
                 "id": "methode_comptabilisation",
@@ -190,6 +199,7 @@
     "B1-24-e-vi": {
         "titre": "Pays d’exercice",
         "description": "Indiquer les pays où sont exercées les activités principales et la localisation d’actifs présentant un intérêt significatif.",
+        "ancre": "pays",
         "champs": [
             {
                 "id": "pays",
@@ -203,6 +213,7 @@
     "B1-24-e-vii": {
         "titre": "Liste des sites",
         "description": "Indiquer la géolocalisation des sites détenus, loués ou gérés.",
+        "ancre": "sites",
         "champs": [
             {
                 "id": "sites",
@@ -255,6 +266,7 @@
    "B1-25": {
         "titre": "Certifications ou labels en matière de durabilité",
         "description": "Indiquer si l’entreprise a obtenu une certification ou un label de durabilité et fournir une brève description.",
+        "ancre": "certifications",
         "champs": [
             {
                 "id": "certifications",
