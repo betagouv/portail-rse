@@ -149,13 +149,18 @@ def create_multiform_from_schema(schema, **kwargs):
                         super().cleaned_data
                         # surcharge cleaned_data pour supprimer les valeurs des lignes supprimées
                         # et retourner un dictionnaire comme un formulaire standard
-                        return {
-                            self.id: [
-                                form.cleaned_data
-                                for form in self.forms
-                                if form not in self.deleted_forms
-                            ]
-                        }
+                        cleaned_data = {self.id: []}
+                        for form in self.forms:
+                            if form not in self.deleted_forms:
+                                row = [
+                                    {
+                                        field_name: field_value
+                                        for field_name, field_value in form.cleaned_data.items()
+                                        if field_name != "DELETE"
+                                    }
+                                ]
+                                cleaned_data[self.id] = cleaned_data[self.id] + row
+                        return cleaned_data
 
                 extra = kwargs.get("extra", 0)
                 FormSet = forms.formset_factory(
