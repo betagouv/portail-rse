@@ -128,6 +128,9 @@ def create_multiform_from_schema(schema, **kwargs):
                         if kwargs.get("initial"):
                             formset_initial = kwargs["initial"].get(self.name)
                             kwargs["initial"] = formset_initial
+                        self.default_error_messages["too_few_forms"] = (
+                            "Le tableau doit contenir au moins une ligne."
+                        )
                         super().__init__(*args, **kwargs)
 
                     def add_fields(self, form, index):
@@ -152,14 +155,13 @@ def create_multiform_from_schema(schema, **kwargs):
                         }
 
                 extra = kwargs.get("extra", 0)
-                min_num = 1 if _MultiForm.si_pertinent else None
                 FormSet = forms.formset_factory(
                     DsfrForm,
                     formset=TableauFormSet,
                     extra=extra,
                     can_delete=True,
-                    min_num=min_num,
-                    validate_min=bool(min_num),
+                    min_num=1,
+                    validate_min=True,
                 )
                 FormSet.indicator_type = "table"
                 _MultiForm.add_Form(FormSet)
