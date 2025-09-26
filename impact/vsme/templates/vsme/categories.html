@@ -27,10 +27,10 @@
                                     <p class="fr-tile__desc progression-vsme">
                                         <div class="progress-circle-wrapper">
                                             {% progression_categorie rapport_vsme 'informations-generales' as progression %}
-                                            <div class="progress-circle" data-value="{{ progression.pourcent }}">
+                                            <div class="progress-circle progress-circle--general" data-value="{{ progression.pourcent }}">
                                                 <div class="progress-masque">
-                                                    <div class="progress-barre"></div>
-                                                    <div class="progress-sup50"></div>
+                                                    <div class="progress-barre progress-barre--general"></div>
+                                                    <div class="progress-sup50 progress-sup50--general"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -49,10 +49,10 @@
                                     {% comment %}
                                     <p class="fr-tile__desc progression-vsme">
                                         <div class="progress-circle-wrapper">
-                                            <div class="progress-circle" data-value="0">
+                                            <div class="progress-circle progress-circle--environnement" data-value="60">
                                                 <div class="progress-masque">
-                                                    <div class="progress-barre"></div>
-                                                    <div class="progress-sup50"></div>
+                                                    <div class="progress-barre progress-barre--environnement"></div>
+                                                    <div class="progress-sup50 progress-sup50--environnement"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -73,10 +73,10 @@
                                     {% comment %}
                                     <p class="fr-tile__desc progression-vsme">
                                         <div class="progress-circle-wrapper">
-                                            <div class="progress-circle" data-value="0">
+                                            <div class="progress-circle progress-circle--social" data-value="70">
                                                 <div class="progress-masque">
-                                                    <div class="progress-barre"></div>
-                                                    <div class="progress-sup50"></div>
+                                                    <div class="progress-barre progress-barre--social"></div>
+                                                    <div class="progress-sup50 progress-sup50--social"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -96,10 +96,10 @@
                                     {% comment %}
                                     <p class="fr-tile__desc progression-vsme">
                                         <div class="progress-circle-wrapper">
-                                            <div class="progress-circle" data-value="0">
+                                            <div class="progress-circle  progress-circle--gouvernance" data-value="70">
                                                 <div class="progress-masque">
-                                                    <div class="progress-barre"></div>
-                                                    <div class="progress-sup50"></div>
+                                                    <div class="progress-barre progress-barre--gouvernance"></div>
+                                                    <div class="progress-sup50 progress-sup50--gouvernance"></div>
                                                 </div>
                                             </div>
                                         </div>
