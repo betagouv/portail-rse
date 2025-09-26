@@ -1,7 +1,12 @@
 /* progression en forme de cercle */
 /* basé sur https://nosmoking.developpez.com/demos/css/gauge_circulaire.html
-simplifié car inutile de gérer les décimales
+  - simplifié car inutile de gérer les décimales
+  - modifié pour s'adapter aux couleurs du portail
 */
+
+@use "constantes";
+
+
 .progress-circle-wrapper {
     order: 3;
 }
@@ -41,12 +46,32 @@ simplifié car inutile de gérer les décimales
     box-sizing: border-box;         /* prise en compte bordure dans la dimension */
     border-width: .15em;            /* largeur bordure de la gauge */
     border-style: solid;
-    border-color: black;
     border-radius: 50%;             /* rendu aspect circulaire */
     width: 1em;                     /* largeur à 100% */
     height: 1em;                    /* hauteur à 100% */
     clip: rect(0, .5em, 1em, 0);    /* on ne garde que la partie gauche */
 }
+
+.progress-barre--general,
+.progress-sup50--general {
+        border-color: constantes.$TEXT_GENERAL;
+}
+
+.progress-barre--environnement,
+.progress-sup50--environnement {
+        border-color: constantes.$TEXT_ENVIRONNEMENT;
+}
+
+.progress-barre--social,
+.progress-sup50--social {
+        border-color: constantes.$TEXT_SOCIAL;
+}
+
+.progress-barre--gouvernance,
+.progress-sup50--gouvernance {
+        border-color: constantes.$TEXT_GOUVERNANCE;
+}
+
 
 .progress-circle[data-value="0"]   .progress-barre {transform: rotate(0.00deg)}
 .progress-circle[data-value="1"]   .progress-barre {transform: rotate(3.60deg)}
@@ -173,8 +198,29 @@ simplifié car inutile de gérer les décimales
     align-items: center;
     justify-content: center;
     font-weight: 600;
+   /* &--general {
+        @extend .progress-circle;
+        color: var(--text-label-yellow-moutarde);
+    }*/
 
     /*-- pour effet shadow intérieur --*/
     border-radius: 50%;
     box-shadow: 0 0 .5em rgba(0, 0, 0, .5) inset;
+}
+
+
+.progress-circle--general:after {
+        color: constantes.$TEXT_GENERAL;
+}
+
+.progress-circle--environnement:after {
+        color: constantes.$TEXT_ENVIRONNEMENT;
+}
+
+.progress-circle--social:after {
+        color: constantes.$TEXT_SOCIAL;
+}
+
+.progress-circle--gouvernance:after {
+        color: constantes.$TEXT_GOUVERNANCE;
 }
