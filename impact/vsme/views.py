@@ -217,20 +217,10 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
                     return htmx.HttpResponseHXRedirect(redirect_to)
             else:
                 extra = 0
-                data = indicateur.data.copy()
+                data = indicateur.data
                 if request.POST.get("ajouter-ligne"):
-                    if indicateur_a_champ_auto_id(indicateur_schema):
-                        tableau, champ_auto_id = indicateur_a_champ_auto_id(
-                            indicateur_schema
-                        )
-                        prochain_id = (
-                            1
-                            if not indicateur.data.get(tableau)
-                            else indicateur.data[tableau][-1][champ_auto_id] + 1
-                        )
-                        nouvelle_ligne = [{champ_auto_id: prochain_id}]
-                        data[tableau] = data[tableau] + nouvelle_ligne
-                    else:
+                    data, ajouté = ajoute_auto_id_eventuel(indicateur_schema, data)
+                    if not ajouté:
                         extra = 1
                 multiform = calcule_indicateur(
                     indicateur_schema,
@@ -240,7 +230,9 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
                 )
 
     else:  # GET
-        data = indicateur.data if indicateur else None
+        data = indicateur.data if indicateur else {}
+        if not data:
+            data, _ = ajoute_auto_id_eventuel(indicateur_schema, data)
         multiform = calcule_indicateur(indicateur_schema, toggle_pertinent_url, data)
 
     context = {
@@ -264,12 +256,13 @@ def load_indicateur_schema(indicateur_schema_id):
         raise IndicateurInconnu()
 
 
-def indicateur_a_champ_auto_id(indicateur_schema):
+def ajoute_auto_id_eventuel(indicateur_schema, data):
+    data = data.copy()
     tableaux = [
         champ for champ in indicateur_schema["champs"] if champ["type"] == "tableau"
     ]
     if not tableaux:
-        return False
+        return data, False
     for tableau in tableaux:
         tableau_id = tableau["id"]
         colonnes = tableau["colonnes"]
@@ -277,7 +270,17 @@ def indicateur_a_champ_auto_id(indicateur_schema):
             champ["id"] for champ in colonnes if champ["type"] == "auto_id"
         ]
         if champ_auto_id:
-            return tableau_id, champ_auto_id[0]
+            champ_auto_id = champ_auto_id[0]
+            prochain_id = (
+                1
+                if not data.get(tableau_id)
+                else data[tableau_id][-1][champ_auto_id] + 1
+            )
+            nouvelle_ligne = [{champ_auto_id: prochain_id}]
+            data[tableau_id] = data.get(tableau_id, []) + nouvelle_ligne
+            return data, True
+        else:
+            return data, False
 
 
 @login_required
