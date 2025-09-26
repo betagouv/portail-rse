@@ -1,11 +1,4 @@
-$background-general: var(--background-contrast-yellow-moutarde);
-$text-general: var(--text-label-yellow-moutarde);
-$background-environnement: var(--background-contrast-green-emeraude);
-$text-environnement: var(--text-label-green-emeraude);
-$background-social: var(--background-contrast-purple-glycine);
-$text-social: var(--text-label-purple-glycine);
-$background-gouvernance: var(--background-contrast-info);
-$text-gouvernance: var(--text-default-info);
+@use "constantes";
 
 .fr-btns-group--md {
     --ul-type: none;
@@ -293,9 +286,9 @@ $text-gouvernance: var(--text-default-info);
 }
 
 .esrs-organizer--gov {
-    background-color: $background-gouvernance;
+    background-color: constantes.$BACKGROUND_GOUVERNANCE;
     .esrs-organizer--title {
-        color: $text-gouvernance;
+        color: constantes.$TEXT_GOUVERNANCE;
     }
     .esrs-organizer--title::before {
         background: center no-repeat url("../img/espace_csrd/picto-gov.png");
@@ -303,9 +296,9 @@ $text-gouvernance: var(--text-default-info);
 }
 
 .esrs-organizer--env {
-    background-color: $background-environnement;
+    background-color: constantes.$BACKGROUND_ENVIRONNEMENT;
     .esrs-organizer--title {
-        color: $text-environnement;
+        color: constantes.$TEXT_ENVIRONNEMENT;
     }
     .esrs-organizer--title::before {
         background: center no-repeat url("../img/espace_csrd/picto-env.png");
@@ -313,9 +306,9 @@ $text-gouvernance: var(--text-default-info);
 }
 
 .esrs-organizer--social {
-    background-color: $background-social;
+    background-color: constantes.$BACKGROUND_SOCIAL;
     .esrs-organizer--title {
-        color: $text-social;
+        color: constantes.$TEXT_SOCIAL;
     }
     .esrs-organizer--title::before {
         background: center no-repeat url("../img/espace_csrd/picto-social.png");
@@ -555,30 +548,30 @@ $text-gouvernance: var(--text-default-info);
 }
 
 .progression-vsme--general {
-    background-color: $background-general;
+    background-color: constantes.$BACKGROUND_GENERAL;
     .progression-vsme--title {
-        color: $text-general;
+        color: constantes.$TEXT_GENERAL;
     }
 }
 
 .progression-vsme--gov {
-    background-color: $background-gouvernance;
+    background-color: constantes.$BACKGROUND_GOUVERNANCE;
     .progression-vsme--title {
-        color: $text-gouvernance;
+        color: constantes.$TEXT_GOUVERNANCE;
     }
 }
 
 .progression-vsme--env {
-    background-color: $background-environnement;
+    background-color: constantes.$BACKGROUND_ENVIRONNEMENT;
     .progression-vsme--title {
-        color: $text-environnement;
+        color: constantes.$TEXT_ENVIRONNEMENT;
     }
 }
 
 .progression-vsme--social {
-    background-color: $background-social;
+    background-color: constantes.$BACKGROUND_SOCIAL;
     .progression-vsme--title {
-        color: $text-social;
+        color: constantes.$TEXT_SOCIAL;
     }
 }
 
