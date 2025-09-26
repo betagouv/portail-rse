@@ -18,6 +18,7 @@ from entreprises.views import get_current_entreprise
 from habilitations.models import Habilitation
 from vsme.forms import create_multiform_from_schema
 from vsme.models import Categorie
+from vsme.models import ExigenceDePublication
 from vsme.models import EXIGENCES_DE_PUBLICATION
 from vsme.models import Indicateur
 from vsme.models import RapportVSME
@@ -235,12 +236,17 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
             data, _ = ajoute_auto_id_eventuel(indicateur_schema, data)
         multiform = calcule_indicateur(indicateur_schema, toggle_pertinent_url, data)
 
+    exigence_de_publication = ExigenceDePublication.par_indicateur_schema_id(
+        indicateur_schema_id
+    )
+
     context = {
         "entreprise": rapport_vsme.entreprise,
         "multiform": multiform,
         "indicateur_schema": indicateur_schema,
         "indicateur_schema_id": indicateur_schema_id,
         "rapport_vsme": rapport_vsme,
+        "exigence_de_publication": exigence_de_publication,
     }
     return render(request, "fragments/indicateur.html", context=context)
 
@@ -293,6 +299,9 @@ def toggle_pertinent(request, rapport_vsme, indicateur_schema_id):
     multiform = calcule_indicateur(
         indicateur_schema, toggle_pertinent_url, request.POST
     )
+    exigence_de_publication = ExigenceDePublication.par_indicateur_schema_id(
+        indicateur_schema_id
+    )
 
     context = {
         "entreprise": rapport_vsme.entreprise,
@@ -300,6 +309,7 @@ def toggle_pertinent(request, rapport_vsme, indicateur_schema_id):
         "indicateur_schema": indicateur_schema,
         "indicateur_schema_id": indicateur_schema_id,
         "rapport_vsme": rapport_vsme,
+        "exigence_de_publication": exigence_de_publication,
     }
     return render(request, "fragments/indicateur.html", context=context)
 
