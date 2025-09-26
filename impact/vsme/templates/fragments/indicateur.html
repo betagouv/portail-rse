@@ -21,6 +21,9 @@
                             {% if form.indicator_type != "table" %}
                                 {% for field in form %}
                                     {% include 'snippets/field.html' %}
+                                    {% if field.name == "non_pertinent" %}
+                                        <div class="fr-my-2w"></div>
+                                    {% endif %}
                                 {% endfor %}
 
                             {% else %}
