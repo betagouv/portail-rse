@@ -9,10 +9,8 @@
                 </div>
                 <div class="fr-modal__content">
                     <h2 id="htmx-modal-indicateur-title" class="fr-modal__title">{{ indicateur_schema.titre }}</h2>
-
-                    <p><a href="{{ exigence_de_publication.url_infos }}#{{ indicateur_schema.ancre }}" class="fr-link">En savoir plus sur les indicateurs demandés</a></p>
-
                     <p>{{ indicateur_schema.description }}</p>
+                    <p><a href="{{ exigence_de_publication.url_infos }}#{{ indicateur_schema.ancre }}" class="fr-link fr-icon-information-line fr-link--icon-left">En savoir plus sur cet indicateur</a></p>
 
                     <form id="form-indicateur" method="post" action="{% url 'vsme:indicateur_vsme' rapport_vsme.id indicateur_schema_id %}"
                           hx-post="{% url 'vsme:indicateur_vsme' rapport_vsme.id indicateur_schema_id %}"
