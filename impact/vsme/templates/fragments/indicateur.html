@@ -2,7 +2,7 @@
 
 <div class="fr-container fr-container--fluid fr-container-md">
     <div class="fr-grid-row fr-grid-row--center">
-        <div class="fr-col-12 fr-col-md-10 fr-col-lg-8">
+        <div class="fr-col-12 fr-col-md-10">
             <div class="fr-modal__body">
                 <div class="fr-modal__header">
                     <button aria-controls="htmx-modal-indicateur" title="Fermer" type="button" class="fr-btn--close fr-btn">Fermer</button>
@@ -28,18 +28,18 @@
 
                             {% else %}
                                 {{ form.management_form }}
-                                {% if form.non_form_errors %}
-                                    <p class="fr-error-text">
-                                        {% for error in form.non_form_errors %}
-                                            {{ error|escape }}
-                                        {% endfor %}
-                                    </p>
-                                {% endif %}
                                 <table class="indicateur-tableau">
                                     <caption>
                                         {{ form.label }}
                                         {% if form.description %}
-                                            <div class="fr-text--xs">{{ form.description }}</div>
+                                            <p class="fr-text--xs">{{ form.description }}</p>
+                                        {% endif %}
+                                        {% if form.non_form_errors %}
+                                            <p class="fr-error-text">
+                                                {% for error in form.non_form_errors %}
+                                                    {{ error|escape }}
+                                                {% endfor %}
+                                            </p>
                                         {% endif %}
                                     </caption>
                                     <thead>
@@ -86,11 +86,7 @@
                                         {% endfor %}
                                     </tbody>
                                 </table>
-            <!-- </div>
-        </div>
-    </div>
-</div> -->
-                                <button type="submit" name="ajouter-ligne" value="on" class="fr-btn fr-btn--secondary">Ajouter une ligne</button>
+                                <button type="submit" name="ajouter-ligne" value="on" class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-circle-line fr-mt-1w">Ajouter une ligne</button>
                             {% endif %}
                         {% endfor %}
                     </form>
