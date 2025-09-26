@@ -44,7 +44,7 @@
                                         {% for form_table in form %}
                                             <tr>
                                                 {% for field in form_table %}
-                                                    <td {%if field.field.geolocalisation %}class="indicateur-geolocalisation"{% endif %}>
+                                                    <td {%if field.field.geolocalisation and not field.errors %}class="indicateur-geolocalisation"{% endif %}>
                                                         {% if field.name == "DELETE" %}
                                                             <button type="submit" name="supprimer-ligne" value="{{ field.html_name }}" class="fr-btn fr-btn--secondary">Supprimer</button>
                                                         {% elif field.field.auto_id %}
@@ -52,7 +52,7 @@
                                                             {{ field.as_hidden }}
                                                         {% else %}
                                                             {{ field }}
-                                                            {% if field.field.geolocalisation and field.value %}
+                                                            {% if field.field.geolocalisation and field.value and not field.errors %}
                                                                 <span>
                                                                     <a title="Voir le site - nouvel onglet" href="{% url_geolocalisation field.value %}" target="_blank" rel="noopener external" class="fr-link">Voir</a>
                                                                 </span>

@@ -1,3 +1,4 @@
+from json.decoder import JSONDecodeError
 from urllib.parse import quote
 
 import geojson
@@ -9,7 +10,10 @@ register = template.Library()
 
 @register.simple_tag
 def url_geolocalisation(coordonnees_str):
-    coordonnees = geojson.loads(coordonnees_str)
+    try:
+        coordonnees = geojson.loads(coordonnees_str)
+    except JSONDecodeError:
+        return None
     point = geojson.Point(coordonnees)
     polygon = geojson.Polygon(coordonnees)
     if point.is_valid:
