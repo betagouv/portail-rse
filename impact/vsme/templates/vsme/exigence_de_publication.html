@@ -58,14 +58,13 @@
                                                     {% endif %}
                                                 </td>
                                                 <td>
-                                                    {% if indicateur.est_actif %}
-                                                        <button aria-controls="htmx-modal-indicateur" data-fr-opened="false" type="button" class="fr-btn fr-icon-edit-line fr-btn--secondary"
-                                                                title="Modifier"
-                                                                hx-get="{% url 'vsme:indicateur_vsme' rapport_vsme.id indicateur.id %}"
-                                                                hx-target="#htmx-modal-indicateur">
-                                                            Modifier
-                                                        </button>
-                                                    {% endif %}
+                                                    <button aria-controls="htmx-modal-indicateur" data-fr-opened="false" type="button" class="fr-btn fr-icon-edit-line fr-btn--tertiary"
+                                                            title="Modifier"
+                                                            hx-get="{% url 'vsme:indicateur_vsme' rapport_vsme.id indicateur.id %}"
+                                                            hx-target="#htmx-modal-indicateur"
+                                                            {% if not indicateur.est_actif %}disabled{% endif %}>
+                                                        Modifier
+                                                    </button>
                                                 </td>
                                             </tr>
                                         {% endfor %}
