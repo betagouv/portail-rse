@@ -45,7 +45,9 @@
                                     <thead>
                                         {% for field in form.0 %}
                                             {% if field.name != "DELETE" %}
-                                                <th scope="col">{{ field.label_tag }}</th>
+                                                <th scope="col">
+                                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                                </th>
                                             {% endif %}
                                         {% endfor %}
                                         <th>Supprimer</th>
