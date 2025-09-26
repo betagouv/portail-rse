@@ -473,6 +473,9 @@ OIDC_PC_ISSUER = os.getenv("OIDC_PC_ISSUER", f"{OIDC_PC_DOMAIN}/api/v2")
 # l'activation de ProConnect est configurable par variable d'environnement
 OIDC_ENABLED = os.getenv("OIDC_ENABLED", "false") == "true"
 
+if OIDC_ENABLED:
+    MIDDLEWARE.append("oidc.middlewares.OIDCMiddleware")
+
 # mentionné dans la documentation
 OIDC_AUTH_REQUEST_EXTRA_PARAMS = {"acr_values": "eidas1"}
 
@@ -493,15 +496,15 @@ OIDC_RP_SCOPES = "openid given_name usual_name email siret custom uid"
 OIDC_RP_SIGN_ALGO = "RS256"
 # permet de stocker le token du FI pour pouvoir effectuer une déconnexion globale
 OIDC_STORE_ID_TOKEN = True
+# le token d'accès est stocké en session pour pouvoir accéder aux claims OIDC a posteriori
+OIDC_STORE_ACCESS_TOKEN = True
 ALLOW_LOGOUT_GET_METHOD = True
-
 
 OIDC_OP_TOKEN_ENDPOINT = f"https://{OIDC_PC_ISSUER}/token"
 OIDC_OP_USER_ENDPOINT = f"https://{OIDC_PC_ISSUER}/userinfo"
 OIDC_OP_LOGOUT_ENDPOINT = f"https://{OIDC_PC_ISSUER}/session/end"
 OIDC_OP_AUTHORIZATION_ENDPOINT = f"https://{OIDC_PC_ISSUER}/authorize"
 OIDC_OP_JWKS_ENDPOINT = f"https://{OIDC_PC_ISSUER}/jwks"
-# OIDC_OP_USER_ENDPOINT_FORMAT = "AUTO"  # AUTO, JSON, or JWT, defaults to AUTO
 
 # Optional settings
 OIDC_USER_SUB_FIELD = (
@@ -513,7 +516,7 @@ OIDC_USERINFO_FULLNAME_FIELDS = [
     "given_name",
     "usual_name",
 ]
-# les éléments (claims) requis pour une identification de l'utilisateur sur le portail
+# les éléments (claims) requis pour une identification/création de l'utilisateur sur le portail
 OIDC_USERINFO_ESSENTIAL_CLAIMS = [
     "sub",
     "given_name",
