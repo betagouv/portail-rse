@@ -586,7 +586,18 @@
 
 /* Indicateurs */
 
-.indicateur-geolocalisation {
+.indicateur-tableau {
+    caption {
+        text-align: left;
+    }
+}
+
+.indicateur-cellule {
+    vertical-align: top;
+    text-align: center;
+}
+
+.indicateur-cellule--geolocalisation {
     display: flex;
 }
 

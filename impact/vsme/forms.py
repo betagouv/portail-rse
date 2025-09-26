@@ -121,12 +121,15 @@ def create_multiform_from_schema(schema, **kwargs):
                     _DynamicForm = _dynamicform_factory()
 
                 class TableauFormSet(DsfrFormSet):
-                    name = field["id"]
+                    indicator_type = "table"
+                    id = field["id"]
+                    label = field["label"]
+                    description = field.get("description")
                     columns = field["colonnes"]
 
                     def __init__(self, *args, **kwargs):
                         if kwargs.get("initial"):
-                            formset_initial = kwargs["initial"].get(self.name)
+                            formset_initial = kwargs["initial"].get(self.id)
                             kwargs["initial"] = formset_initial
                         self.default_error_messages["too_few_forms"] = (
                             "Le tableau doit contenir au moins une ligne."
@@ -147,7 +150,7 @@ def create_multiform_from_schema(schema, **kwargs):
                         # surcharge cleaned_data pour supprimer les valeurs des lignes supprimées
                         # et retourner un dictionnaire comme un formulaire standard
                         return {
-                            self.name: [
+                            self.id: [
                                 form.cleaned_data
                                 for form in self.forms
                                 if form not in self.deleted_forms
@@ -163,7 +166,6 @@ def create_multiform_from_schema(schema, **kwargs):
                     min_num=1,
                     validate_min=True,
                 )
-                FormSet.indicator_type = "table"
                 _MultiForm.add_Form(FormSet)
 
     if _DynamicForm.base_fields:

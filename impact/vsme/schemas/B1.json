@@ -218,6 +218,7 @@
             {
                 "id": "sites",
                 "label": "Sites",
+                "description": "La géolocalisation est attendue au format de coordonnées GeoJSON d'un point (par ex: [30, 10]) ou d'un polygone (par ex: [[[30, 10], [40, 40], [20, 40], [10, 20], [30, 10]]])",
                 "type": "tableau",
                 "obligatoire": true,
                 "colonnes": [

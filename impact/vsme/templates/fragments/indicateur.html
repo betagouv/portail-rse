@@ -34,43 +34,59 @@
                                         {% endfor %}
                                     </p>
                                 {% endif %}
-                                <table>
+                                <table class="indicateur-tableau">
+                                    <caption>
+                                        {{ form.label }}
+                                        {% if form.description %}
+                                            <div class="fr-text--xs">{{ form.description }}</div>
+                                        {% endif %}
+                                    </caption>
                                     <thead>
                                         {% for field in form.0 %}
-                                            <th>{{ field.label_tag }}</th>
+                                            {% if field.name != "DELETE" %}
+                                                <th scope="col">{{ field.label_tag }}</th>
+                                            {% endif %}
                                         {% endfor %}
+                                        <th>Supprimer</th>
                                     </thead>
                                     <tbody>
                                         {% for form_table in form %}
                                             <tr>
                                                 {% for field in form_table %}
-                                                    <td {%if field.field.geolocalisation and not field.errors %}class="indicateur-geolocalisation"{% endif %}>
-                                                        {% if field.name == "DELETE" %}
-                                                            <button type="submit" name="supprimer-ligne" value="{{ field.html_name }}" class="fr-btn fr-btn--secondary">Supprimer</button>
-                                                        {% elif field.field.auto_id %}
-                                                            {{ field.value }}
-                                                            {{ field.as_hidden }}
-                                                        {% else %}
-                                                            {{ field }}
-                                                            {% if field.field.geolocalisation and field.value and not field.errors %}
-                                                                <span>
-                                                                    <a title="Voir le site - nouvel onglet" href="{% url_geolocalisation field.value %}" target="_blank" rel="noopener external" class="fr-link">Voir</a>
-                                                                </span>
+                                                    {% if field.name != "DELETE" %}
+                                                        <td class="indicateur-cellule {%if field.field.geolocalisation and not field.errors %}indicateur-cellule--geolocalisation{% endif %}">
+                                                            {% if field.field.auto_id %}
+                                                                {{ field.value }}
+                                                                {{ field.as_hidden }}
+                                                            {% else %}
+                                                                {{ field }}
+                                                                {% if field.field.geolocalisation and field.value and not field.errors %}
+                                                                    <span>
+                                                                        <a class="fr-btn fr-icon-map-pin-2-line fr-btn--tertiary-no-outline" title="Voir le site - nouvel onglet" href="{% url_geolocalisation field.value %}" target="_blank" rel="noopener external" class="fr-link">Voir</a>
+                                                                    </span>
+                                                                {% endif %}
+                                                                {% if field.errors %}
+                                                                    <p id="{{ field.name }}-error-desc-error" class="fr-error-text">
+                                                                        {% for error in field.errors %}
+                                                                            {{ error|escape }}
+                                                                        {% endfor %}
+                                                                    </p>
+                                                                {% endif %}
                                                             {% endif %}
-                                                            {% if field.errors %}
-                                                                <p id="{{ field.name }}-error-desc-error" class="fr-error-text">
-                                                                    {% for error in field.errors %}
-                                                                        {{ error|escape }}
-                                                                    {% endfor %}
-                                                                </p>
-                                                            {% endif %}
-                                                        {% endif %}
-                                                    </td>
+                                                        </td>
+                                                    {% endif %}
                                                 {% endfor %}
+                                                <td class="indicateur-cellule">
+                                                    <button type="submit" name="supprimer-ligne" value="{{ form_table.DELETE.html_name }}" class="fr-btn fr-icon-delete-line fr-btn--tertiary-no-outline" title="Supprimer">Supprimer</button>
+                                                </td>
                                             </tr>
                                         {% endfor %}
                                     </tbody>
                                 </table>
+            <!-- </div>
+        </div>
+    </div>
+</div> -->
                                 <button type="submit" name="ajouter-ligne" value="on" class="fr-btn fr-btn--secondary">Ajouter une ligne</button>
                             {% endif %}
                         {% endfor %}
