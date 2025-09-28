@@ -1,3 +1,5 @@
+import logging
+
 from django.conf import settings
 from django.contrib import messages
 from django.core.exceptions import SuspiciousOperation
@@ -12,6 +14,8 @@ from api.exceptions import APIError
 from entreprises.models import Entreprise
 from habilitations.models import Habilitation
 from utils.anonymisation import cache_partiellement_un_email
+
+logger = logging.getLogger(__name__)
 
 
 class OIDCAuthenticationCallbackView(CallbackView):
@@ -37,8 +41,6 @@ def dispatch_view(request):
     En cas de succès d'une connexion ProConnect, cette vue 'récupère' le routage
     pour pouvoir aiguiller ou traiter les cas spécifiques.
     """
-    print("OIDC: dispatching")
-
     if not request.session.get("oidc_user_claims"):
         raise SuspiciousOperation(
             "Impossible de trouver les `claims` utilisateur, dont le SIREN de connexion"
@@ -48,27 +50,29 @@ def dispatch_view(request):
     entreprise = None
     url_destination = resolve_url(settings.LOGIN_REDIRECT_URL)
 
-    print("SIREN:", oidc_siren)
+    logger.info(f"Dispatching for SIREN: {oidc_siren}")
 
     # Vérification de l'existence de l'entreprise choisie via ProConnect
     try:
         entreprise = Entreprise.objects.get(siren=oidc_siren)
     except Entreprise.DoesNotExist:
-        print(
+        logger.warning(
             f"L'entreprise sélectionnée sur ProConnect ({oidc_siren}) n'existe pas encore sur le portail"
         )
-
-    print("entreprise:", entreprise)
 
     # l'entreprise n'existe pas encore en base
     if not entreprise:
         try:
             entreprise = _creation_entreprise(oidc_siren, request.user)
         except APIError as ex:
+            logger.error(f"Impossible de contacter l'API entreprise : {ex}")
             return HttpResponseBadRequest(
                 f"Impossible de contacter l'API entreprise : {ex}"
             )
         except Exception as ex:
+            logger.error(
+                f"Erreur lors de la creation de l'entreprise SIREN:{oidc_siren} : {ex}"
+            )
             return HttpResponseServerError(
                 f"Erreur lors de la creation de l'entreprise SIREN:{oidc_siren} : {ex}"
             )
@@ -94,7 +98,15 @@ def dispatch_view(request):
         )
         return redirect(url_destination)
 
-    # l'entreprise existe mais l'utilisateur n'en est pas membre
+    # cas limite :
+    # une entreprise est existante, mais sans utilisateur rattaché
+    # par ex. suite à une suppression de l'utilisateur via l'admin
+    # => l'utilisateur devient propriétaire
+    if Habilitation.objects.filter(entreprise=entreprise).count() == 0:
+        Habilitation.ajouter(entreprise, request.user)
+        return redirect(url_destination)
+
+    # l'entreprise et l'utilisateur existent mais l'utilisateur n'en est pas membre
     messages.warning(request, _message_erreur_proprietaire(entreprise))
     return redirect("entreprises:entreprises")
 
