@@ -22,12 +22,21 @@ class OIDCAuthenticationCallbackView(CallbackView):
     """
     En cas de connexion via ProConnect, le routage "normal" est détourné
     et traité par des vues spécifiques pour certains cas d'utilisation :
-        - nouvel utilisateur pour entreprise existante
-        - nouvel utilisateur pour nouvelle entreprise
-        - utilisateur existant pour entreprise inconnue
+        - nouvel utilisateur pour entreprise existante,
+        - nouvel utilisateur pour nouvelle entreprise,
+        - utilisateur existant pour entreprise inconnue,
         - utilisateur existant pour entreprise existante
     => plutôt que de rediriger vers `LOGIN_REDIRECT_URL` ou `next_url`,
-       on redirige vers `oidc.views.dispatch_view()`
+       on redirige vers `oidc.views.dispatch_view()` pour traitement.
+    Note :
+        Certaines portions de la vue de "dispatch" sont dupliquées ou remaniées.
+        AMA il est préférable d'avoir les 2 types de connexion compartimentés.
+        Une première tentative d'intégration dans le code existant a échouée :
+            - code et flow illisible pour les 2 types d'identification,
+            - on fini par ne plus discerner clairement les responsabilités de chaque flow.
+        Il est à mon avis plus clair d'avoir tout en seul point pour chaque flow (PC ou e-mail/mdp),
+        même avec un peu de code dupliqué.
+        Libre à tout un chacun d'ameliorer ou simplifier au besoin...
     """
 
     @property
@@ -52,7 +61,7 @@ def dispatch_view(request):
 
     logger.info(f"Dispatching for SIREN: {oidc_siren}")
 
-    # Vérification de l'existence de l'entreprise choisie via ProConnect
+    # vérification de l'existence de l'entreprise choisie via ProConnect
     try:
         entreprise = Entreprise.objects.get(siren=oidc_siren)
     except Entreprise.DoesNotExist:
@@ -67,15 +76,14 @@ def dispatch_view(request):
         except APIError as ex:
             logger.error(f"Impossible de contacter l'API entreprise : {ex}")
             return HttpResponseBadRequest(
-                f"Impossible de contacter l'API entreprise : {ex}"
+                f"Impossible de contacter l'API entreprise, veuillez-vous déconnecter et rééssayer ultérieurement ({ex})"
             )
         except Exception as ex:
-            logger.error(
-                f"Erreur lors de la creation de l'entreprise SIREN:{oidc_siren} : {ex}"
+            msg = (
+                f"Erreur lors de la creation de l'entreprise SIREN: {oidc_siren} : {ex}"
             )
-            return HttpResponseServerError(
-                f"Erreur lors de la creation de l'entreprise SIREN:{oidc_siren} : {ex}"
-            )
+            logger.error(msg)
+            return HttpResponseServerError(msg)
         else:
             # on sélectione l'entreprise nouvellement créée pour le tableau de bord
             request.session["entreprise"] = oidc_siren
@@ -87,7 +95,7 @@ def dispatch_view(request):
             return redirect(url_destination)
 
     # l'entreprise existe déjà en base :
-    # l'utilisateur connecté en fait-il partie ?
+    # l'utilisateur connecté en est-il membre ?
     if Habilitation.existe(entreprise, request.user):
         # on peut directement rediriger vers le tableau de bord
         request.session["entreprise"] = oidc_siren
