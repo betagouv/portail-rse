@@ -18,9 +18,15 @@ class CustomOIDCAuthenticationBackend(OIDCAuthenticationBackend):
             raise SuspiciousOperation(
                 "Claims contained no recognizable user identification"
             )
+
+        # le SIRET des claims n'est pas directement mappé sur le modèle user
+        del claims["siret"]
+
         user = self.UserModel(**claims)
         user.set_unusable_password()
         user.save()
+
+        return user
 
     def update_user_if_needed(self, user, claims):
         updated_claims = {}
