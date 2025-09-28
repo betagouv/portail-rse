@@ -22,30 +22,39 @@
                         <div class="fr-fieldset__element">
                             {% include 'snippets/field.html' with field=account_form.nom %}
                         </div>
-                        <div class="fr-fieldset__element">
-                            {% include 'snippets/field.html' with field=account_form.email %}
-                        </div>
+                        {% if not proconnect %}
+                            <div class="fr-fieldset__element">
+                                {% include 'snippets/field.html' with field=account_form.email %}
+                            </div>
+                        {% endif %}
                         <div class="fr-fieldset__element">
                             {% include 'snippets/field.html' with field=account_form.reception_actualites %}
                         </div>
                     </fieldset>
                     <button type="submit" class="fr-btn" name="action" value="update-account">Modifier mon compte</button>
                 </form>
-                <form action="{% url 'users:account' %}" method="post" class="fr-mt-4w">
-                    {% csrf_token %}
-                    <h2 class="fr-h6">Mot de passe</h2>
-                    <div id="svelte-password-validation" data-password1-field-name="password1" data-password2-field-name="password2">
-                        <fieldset class="fr-fieldset fr-mt-3w" aria-label="Modification du mot de passe">
-                            <div class="fr-fieldset__element">
-                                {% include 'snippets/field.html' with field=password_form.password1 %}
-                            </div>
-                            <div class="fr-fieldset__element">
-                                {% include 'snippets/field.html' with field=password_form.password2 %}
-                            </div>
-                        </fieldset>
-                    </div>
-                    <button type="submit" class="fr-btn" name="action" value="update-password">Modifier mon mot de passe</button>
-                </form>
+                {% if not proconnect %}
+                    <form action="{% url 'users:account' %}" method="post" class="fr-mt-4w">
+                        {% csrf_token %}
+                        <h2 class="fr-h6">Mot de passe</h2>
+                        <div id="svelte-password-validation" data-password1-field-name="password1" data-password2-field-name="password2">
+                            <fieldset class="fr-fieldset fr-mt-3w" aria-label="Modification du mot de passe">
+                                <div class="fr-fieldset__element">
+                                    {% include 'snippets/field.html' with field=password_form.password1 %}
+                                </div>
+                                <div class="fr-fieldset__element">
+                                    {% include 'snippets/field.html' with field=password_form.password2 %}
+                                </div>
+                            </fieldset>
+                        </div>
+                        <button type="submit" class="fr-btn" name="action" value="update-password">Modifier mon mot de passe</button>
+                    </form>
+                {% else %}
+                    <h2 class="fr-h6 fr-mt-4w">Mot de passe</h2>
+                    <p>Vous vous êtes connecté via <strong>Proconnect</strong>.</p>
+                    <p>Pour effectuer un changement de mot de passe, ou modifier votre adresse e-mail (<strong>{{ user.email }}</strong>), vous devez vous connecter sur l'espace de gestion ProConnect.</p>
+                    </p>
+                {% endif %}
             </div>
         </div>
 <!-- page mon compte -->
