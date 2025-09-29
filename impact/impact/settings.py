@@ -96,6 +96,7 @@ TEMPLATES = [
                 "entreprises.context_processors.current_entreprise",
                 "utils.context_processors.custom_settings",
                 "habilitations.context_processors.habilitation",
+                "oidc.context_processors.proconnect",
             ],
         },
     },
