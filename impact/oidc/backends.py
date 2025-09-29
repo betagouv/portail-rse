@@ -22,7 +22,8 @@ class CustomOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         # le SIRET des claims n'est pas directement mappé sur le modèle user
         del claims["siret"]
 
-        user = self.UserModel(**claims)
+        # on considère qu'un utilisateur identifié par ProConnect a un e-mail valide
+        user = self.UserModel(is_email_confirmed=True, **claims)
         user.set_unusable_password()
         user.save()
 
