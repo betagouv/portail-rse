@@ -218,7 +218,7 @@
             {
                 "id": "sites",
                 "label": "Sites",
-                "description": "La géolocalisation est attendue au format de coordonnées GeoJSON d'un point (par ex: [30, 10]) ou d'un polygone (par ex: [[[30, 10], [40, 40], [20, 40], [10, 20], [30, 10]]])",
+                "description": "La géolocalisation doit être indiquée sous la forme de points spatiaux. Les points spatiaux sont fournis sous la forme de coordonnées en degrés décimaux exprimant la longitude et la latitude du point. Par exemple : [2.294381, 48.858099] pour la Tour Eiffel située à la longitude 2.294381 et latitude 48.858099. Consultez le lien « En savoir plus sur cet indicateur » pour plus de détails.",
                 "type": "tableau",
                 "obligatoire": true,
                 "colonnes": [

@@ -256,6 +256,8 @@ class GeoField(forms.CharField):
         minimized_cleaned_value = re.sub(
             r"\s+", "", cleaned_value
         )  # supprime tous les caractères d'espacement
+        if not minimized_cleaned_value.startswith("["):
+            minimized_cleaned_value = f"[{minimized_cleaned_value}]"
         try:
             coordonnees = geojson.loads(minimized_cleaned_value)
         except JSONDecodeError:
