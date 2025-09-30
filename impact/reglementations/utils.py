@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.urls.base import reverse_lazy
 
 from entreprises.models import CaracteristiquesAnnuelles
@@ -51,17 +53,31 @@ class VSMEReglementation(Reglementation):
 
         primary_action = ReglementationAction(
             reverse_lazy(
-                "vsme:etape_vsme",
+                "vsme:categories_vsme",
                 kwargs={
                     "siren": caracteristiques.entreprise.siren,
-                    "etape": "introduction",
+                    "annee": date.today().year - 1,
                 },
             ),
-            "Découvrir la démarche VSME",
+            "Remplir mes indicateurs VSME",
         )
+
+        secondary_actions = [
+            ReglementationAction(
+                reverse_lazy(
+                    "vsme:etape_vsme",
+                    kwargs={
+                        "siren": caracteristiques.entreprise.siren,
+                        "etape": "introduction",
+                    },
+                ),
+                "Découvrir la démarche VSME",
+            )
+        ]
 
         return ReglementationStatus(
             status=ReglementationStatus.STATUS_RECOMMANDE,
             status_detail="Cette norme est volontaire et recommandée pour les entreprises qui souhaitent mieux structurer leurs informations de durabilité.",
             primary_action=primary_action,
+            secondary_actions=secondary_actions,
         )
