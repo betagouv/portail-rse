@@ -32,6 +32,8 @@
         {% endblock %}
 
         <main>
+            {% block bandeau %}{% endblock %}
+
             {% if messages %}
                 <div class="fr-container fr-mt-4w">
                     {% for message in messages %}
@@ -41,6 +43,7 @@
                     {% endfor %}
                 </div>
             {% endif %}
+
             {% block content %}{% endblock %}
         </main>
 
