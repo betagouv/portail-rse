@@ -1,3 +1,4 @@
+from datetime import date
 from functools import wraps
 
 from django.contrib import messages
@@ -16,6 +17,7 @@ from entreprises.decorators import entreprise_qualifiee_requise
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
 from habilitations.models import Habilitation
+from reglementations.views import tableau_de_bord_menu_context
 from vsme.forms import create_multiform_from_schema
 from vsme.models import Categorie
 from vsme.models import ExigenceDePublication
@@ -99,12 +101,13 @@ def etape_vsme(request, siren, etape):
 @login_required
 @entreprise_qualifiee_requise
 def categories_vsme(request, entreprise_qualifiee, annee=None):
-    annee = annee or 2024
+    annee = annee or (date.today().year - 1)
     rapport_vsme, created = RapportVSME.objects.get_or_create(
         entreprise=entreprise_qualifiee, annee=annee
     )
-    context = {
-        "entreprise": entreprise_qualifiee,
+
+    context = tableau_de_bord_menu_context(entreprise_qualifiee)
+    context |= {
         "rapport_vsme": rapport_vsme,
     }
     return render(request, "vsme/categories.html", context=context)
@@ -129,8 +132,8 @@ def categorie_vsme(request, rapport_vsme, categorie_id):
     categorie = Categorie.par_id(categorie_id)
     if not categorie:
         raise Http404("Catégorie VSME inconnue")
-    context = {
-        "entreprise": rapport_vsme.entreprise,
+    context = tableau_de_bord_menu_context(rapport_vsme.entreprise)
+    context |= {
         "rapport_vsme": rapport_vsme,
         "categorie": categorie,
     }
@@ -156,8 +159,8 @@ def exigence_de_publication_vsme(request, rapport_vsme, exigence_de_publication_
         for id, indicateur in exigence_de_publication_schema.items()
     ]
 
-    context = {
-        "entreprise": rapport_vsme.entreprise,
+    context = tableau_de_bord_menu_context(rapport_vsme.entreprise)
+    context |= {
         "rapport_vsme": rapport_vsme,
         "exigence_de_publication": exigence_de_publication,
         "indicateurs": indicateurs,
