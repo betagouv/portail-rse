@@ -1,3 +1,4 @@
+from datetime import date
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
@@ -33,6 +34,14 @@ REGLEMENTATIONS = [
 ]
 
 
+def tableau_de_bord_menu_context(entreprise, page_resume=False):
+    return {
+        "entreprise": entreprise,
+        "page_resume": page_resume,
+        "annee_precedente": date.today().year - 1,
+    }
+
+
 @login_required
 @entreprise_qualifiee_requise
 def tableau_de_bord(request, entreprise_qualifiee):
@@ -44,12 +53,11 @@ def tableau_de_bord(request, entreprise_qualifiee):
     ]
     nombre_reglementations_applicables = len(reglementations_applicables)
 
-    context = {
-        "entreprise": entreprise_qualifiee,
-        "nombre_reglementations_applicables": nombre_reglementations_applicables,
-        "page_resume": True,
-    }
+    context = tableau_de_bord_menu_context(entreprise_qualifiee, page_resume=True)
     context |= contributeurs_context(request, entreprise_qualifiee)
+    context |= {
+        "nombre_reglementations_applicables": nombre_reglementations_applicables
+    }
 
     return render(
         request,
@@ -93,18 +101,20 @@ def reglementations(request, entreprise_qualifiee):
         for r in reglementations
         if r["status"].status == ReglementationStatus.STATUS_RECOMMANDE
     ]
+
+    context = tableau_de_bord_menu_context(entreprise_qualifiee)
+    context |= {
+        "reglementations_a_actualiser": reglementations_a_actualiser,
+        "reglementations_en_cours": reglementations_en_cours,
+        "reglementations_a_jour": reglementations_a_jour,
+        "autres_reglementations": reglementations_soumises
+        + reglementations_recommandees
+        + reglementations_non_soumises,
+    }
     return render(
         request,
         "reglementations/tableau_de_bord/reglementations.html",
-        context={
-            "entreprise": entreprise_qualifiee,
-            "reglementations_a_actualiser": reglementations_a_actualiser,
-            "reglementations_en_cours": reglementations_en_cours,
-            "reglementations_a_jour": reglementations_a_jour,
-            "autres_reglementations": reglementations_soumises
-            + reglementations_recommandees
-            + reglementations_non_soumises,
-        },
+        context=context,
     )
 
 
@@ -134,8 +144,9 @@ def reglementation(request, entreprise_qualifiee, id_reglementation):
     status = reglementation.calculate_status(caracteristiques)
 
     template_name = f"reglementations/tableau_de_bord/{id_reglementation}.html"
-    context = {
-        "entreprise": entreprise_qualifiee,
+
+    context = tableau_de_bord_menu_context(entreprise_qualifiee)
+    context |= {
         "reglementation": reglementation,
         "status": status,
     }
