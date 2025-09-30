@@ -4,6 +4,10 @@
 
 {% block title %}{{ titre }}{% endblock %}
 
+{% block bandeau %}
+    {% include "snippets/bandeau.html" %}
+{% endblock %}
+
 {% block content %}
     <div class="fr-container fr-my-4w">
         <div class="fr-grid-row">
