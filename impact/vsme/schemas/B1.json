@@ -62,7 +62,7 @@
     "B1-24-d": {
         "titre": "Liste des filiales incluses dans le rapport",
         "description": "Indiquer la liste des filiales, y compris leur siège social.",
-        "ancre": "filiales",
+        "ancre": "type_perimetre",
         "champs": [
             {
                 "id": "filiales",
