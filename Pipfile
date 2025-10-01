@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "~=5.1.12"
+django = "~=5.1.13"
 gunicorn = "~=23.0.0"
 requests = "~=2.32.4"
 django-weasyprint = "~=2.4.0"
