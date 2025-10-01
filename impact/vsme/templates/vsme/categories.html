@@ -53,7 +53,8 @@
                                     {% comment %}
                                     <p class="fr-tile__desc progression-vsme">
                                         <div class="progress-circle-wrapper">
-                                            <div class="progress-circle progress-circle--environnement" data-value="60">
+                                            {% progression_categorie rapport_vsme 'environnement' as progression %}
+                                            <div class="progress-circle progress-circle--environnement" data-value="{{ progression.pourcent }}">
                                                 <div class="progress-masque">
                                                     <div class="progress-barre progress-barre--environnement"></div>
                                                     <div class="progress-sup50 progress-sup50--environnement"></div>
@@ -77,7 +78,8 @@
                                     {% comment %}
                                     <p class="fr-tile__desc progression-vsme">
                                         <div class="progress-circle-wrapper">
-                                            <div class="progress-circle progress-circle--social" data-value="70">
+                                            {% progression_categorie rapport_vsme 'social' as progression %}
+                                            <div class="progress-circle progress-circle--social" data-value="{{ progression.pourcent }}">
                                                 <div class="progress-masque">
                                                     <div class="progress-barre progress-barre--social"></div>
                                                     <div class="progress-sup50 progress-sup50--social"></div>
@@ -97,10 +99,10 @@
                                     <h3 class="fr-tile__title">
                                         <a href="{% url 'vsme:categorie_vsme' rapport_vsme.id 'gouvernance' %}" class="progression-vsme--title">Gouvernance</a>
                                     </h3>
-                                    {% comment %}
                                     <p class="fr-tile__desc progression-vsme">
                                         <div class="progress-circle-wrapper">
-                                            <div class="progress-circle  progress-circle--gouvernance" data-value="70">
+                                            {% progression_categorie rapport_vsme 'gouvernance' as progression %}
+                                            <div class="progress-circle  progress-circle--gouvernance" data-value="{{ progression.pourcent }}">
                                                 <div class="progress-masque">
                                                     <div class="progress-barre progress-barre--gouvernance"></div>
                                                     <div class="progress-sup50 progress-sup50--gouvernance"></div>
@@ -108,7 +110,6 @@
                                             </div>
                                         </div>
                                     </p>
-                                    {% endcomment %}
                                 </div>
                             </div>
                         </div>

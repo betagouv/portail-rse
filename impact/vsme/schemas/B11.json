@@ -1,0 +1,30 @@
+{
+    "B11-43-p1": {
+        "titre": "Nombre de condamnations pour violations des lois anti-corruption",
+        "description": "Indiquer le nombre de condamnations pénales définitives prononcées à l'encontre de l'entreprise ou de ses représentants.",
+        "ancre": "nombre_condamnations",
+        "champs": [
+            {
+                "id": "nombre_condamnations",
+                "label": "Nombre de condamnations",
+                "type": "nombre_entier",
+                "unité": "condamnations"
+            }
+        ],
+        "si_pertinent": true
+    },
+    "B11-43-p2": {
+        "titre": "Montant total des amendes infligées pour corruption",
+        "description": "Indiquez le montant total des amendes financières imposées à l'entreprise pour des infractions aux lois anticorruption ou antifraude. Unité : euros",
+        "ancre": "montant_amendes",
+        "champs": [
+            {
+                "id": "montant_amendes",
+                "label": "Montant total des amendes",
+                "type": "nombre_decimal",
+                "unité": "euros"
+            }
+        ],
+        "si_pertinent": true
+    }
+}

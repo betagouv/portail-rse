@@ -125,6 +125,7 @@ EXIGENCES_DE_PUBLICATION = {
         "Condamnations et amendes en matière de lutte contre la corruption et les actes de corruption",
         Categorie.GOUVERNANCE,
         "https://portail-rse.beta.gouv.fr/vsme/b11-condamnations-et-amendes-pour-corruption-et-versement-de-pots-de-vin/",
+        remplissable=True,
     ),
     "C1": ExigenceDePublication(
         "C1",
