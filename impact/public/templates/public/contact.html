@@ -9,6 +9,8 @@
             Une remarque, un avis à partager, ou une demande d’informations supplémentaires ?
             Nous vous invitons à compléter le formulaire ci-dessous.
         </p>
+
+
         <form class="fr-mt-6w" action="{% url 'contact' %}" method="post">
             {% csrf_token %}
             {% include 'snippets/field.html' with field=form.email %}

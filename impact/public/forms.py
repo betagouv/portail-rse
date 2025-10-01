@@ -23,10 +23,14 @@ class NaiveCaptchaField(forms.CharField):
 class ContactForm(DsfrForm):
     email = forms.EmailField(label="Votre adresse e-mail")
     subject = forms.CharField(
-        label="Sujet",
+        label="Objet",
         max_length=255,
     )
-    message = forms.CharField(widget=forms.Textarea())
+    message = forms.CharField(
+        label="Comment peut-on vous aider ?",
+        widget=forms.Textarea(),
+        help_text="Pour nous permettre de vous aider au mieux et de traiter votre demande plus rapidement, merci de bien détailler votre situation : contexte, étapes déjà effectuées, messages d'erreur éventuels, etc. Si votre entreprise est déjà inscrite sur le Portail RSE, merci d'indiquer votre numéro SIREN dans votre message.",
+    )
     sum = NaiveCaptchaField(
         label="Pour vérifier que vous n'êtes pas un robot, merci de répondre en toutes lettres à la question 1 + 2 = ?",
         max_length=10,
