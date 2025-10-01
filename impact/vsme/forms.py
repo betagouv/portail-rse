@@ -197,7 +197,7 @@ def create_simple_field_from_schema(field_schema, **kwargs):
         case "texte":
             field_kwargs["max_length"] = field_schema.get("max_length", 255)
             return forms.CharField(**field_kwargs)
-        case "nombre_entier" | "auto_id":
+        case "nombre_entier":
             field_kwargs["min_value"] = field_schema.get("min")
             field_kwargs["max_value"] = field_schema.get("max")
             return forms.IntegerField(**field_kwargs)
