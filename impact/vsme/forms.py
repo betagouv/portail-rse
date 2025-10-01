@@ -172,6 +172,63 @@ def create_multiform_from_schema(schema, **kwargs):
                     validate_min=True,
                 )
                 _MultiForm.add_Form(FormSet)
+            case "tableau_lignes_fixes":
+                if _DynamicForm.base_fields:
+                    _MultiForm.add_Form(_DynamicForm)
+                    _DynamicForm = _dynamicform_factory()
+
+                class TableauFormSet(DsfrFormSet):
+                    indicator_type = "table_lignes_fixes"
+                    id = field["id"]
+                    label = field["label"]
+                    description = field.get("description")
+                    columns = field["colonnes"]
+
+                    def __init__(self, *args, **kwargs):
+                        if kwargs.get("initial"):
+                            formset_initial = kwargs["initial"].get(self.id)
+                            kwargs["initial"] = formset_initial
+                        self.default_error_messages["too_few_forms"] = (
+                            "Le tableau doit contenir au moins une ligne."
+                        )
+                        super().__init__(*args, **kwargs)
+
+                    def add_fields(self, form, index):
+                        super().add_fields(form, index)
+                        for column in self.columns:
+                            field_name = column["id"]
+                            form.fields[field_name] = create_simple_field_from_schema(
+                                column
+                            )
+
+                    @property
+                    def cleaned_data(self):
+                        super().cleaned_data
+                        # surcharge cleaned_data pour supprimer les valeurs des lignes supprimées
+                        # et retourner un dictionnaire comme un formulaire standard
+                        cleaned_data = {self.id: []}
+                        for form in self.forms:
+                            if form not in self.deleted_forms:
+                                row = [
+                                    {
+                                        field_name: field_value
+                                        for field_name, field_value in form.cleaned_data.items()
+                                        if field_name != "DELETE"
+                                    }
+                                ]
+                                cleaned_data[self.id] = cleaned_data[self.id] + row
+                        return cleaned_data
+
+                extra = 0
+                FormSet = forms.formset_factory(
+                    DsfrForm,
+                    formset=TableauFormSet,
+                    extra=extra,
+                    can_delete=False,
+                    min_num=1,
+                    validate_min=True,
+                )
+                _MultiForm.add_Form(FormSet)
 
     if _DynamicForm.base_fields:
         _MultiForm.add_Form(_DynamicForm)
