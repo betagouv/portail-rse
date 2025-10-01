@@ -172,6 +172,61 @@ def create_multiform_from_schema(schema, **kwargs):
                     validate_min=True,
                 )
                 _MultiForm.add_Form(FormSet)
+            case "tableau_lignes_fixes":
+                if _DynamicForm.base_fields:
+                    _MultiForm.add_Form(_DynamicForm)
+                    _DynamicForm = _dynamicform_factory()
+
+                class TableauFormSet(DsfrFormSet):
+                    indicator_type = "table_lignes_fixes"
+                    id = field["id"]
+                    label = field["label"]
+                    description = field.get("description")
+                    columns = field["colonnes"]
+                    rows = field["lignes"]
+
+                    def __init__(self, *args, **kwargs):
+                        if kwargs.get("initial"):
+                            formset_initial = kwargs["initial"].get(self.id)
+                            if formset_initial:
+                                kwargs["initial"] = list(formset_initial.values())
+                            else:
+                                kwargs["initial"] = [{} for row in rows]
+                        super().__init__(*args, **kwargs)
+
+                    def add_fields(self, form, index):
+                        super().add_fields(form, index)
+                        for column in self.columns:
+                            field_name = column["id"]
+                            form.fields[field_name] = create_simple_field_from_schema(
+                                column
+                            )
+
+                    @property
+                    def cleaned_data(self):
+                        super().cleaned_data
+                        # surcharge cleaned_data pour retourner un dictionnaire de dictionnaires
+                        # chaque ligne est représentée par un dictionnaire
+                        # par exemple :
+                        # {
+                        #   declaration_durabilite: {
+                        #       changement_climatique: {pratiques: True, accessibles: True},
+                        #       pollution: {pratiques: True, accessibles: True, cibles: True},
+                        #       ...
+                        # }
+                        cleaned_data = {self.id: {row["id"]: {} for row in self.rows}}
+                        for index, form in enumerate(self.forms):
+                            cleaned_data[self.id][
+                                self.rows[index]["id"]
+                            ] = form.cleaned_data
+                        return cleaned_data
+
+                FormSet = forms.formset_factory(
+                    DsfrForm,
+                    formset=TableauFormSet,
+                    extra=0,
+                )
+                _MultiForm.add_Form(FormSet)
 
     if _DynamicForm.base_fields:
         _MultiForm.add_Form(_DynamicForm)

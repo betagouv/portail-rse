@@ -71,6 +71,7 @@ EXIGENCES_DE_PUBLICATION = {
         "Pratiques, politiques et initiatives futures pour une transition vers une économie plus durable",
         Categorie.GENERAL,
         "https://portail-rse.beta.gouv.fr/vsme/b2-pratiques-politiques-et-initiatives-futures-en-vue-de-la-transition-vers-une-economie-plus-durable/",
+        remplissable=True,
     ),
     "B3": ExigenceDePublication(
         "B3",
