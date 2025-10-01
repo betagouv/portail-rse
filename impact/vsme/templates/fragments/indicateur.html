@@ -1,4 +1,5 @@
 {% load geolocalisation %}
+{% load filters %}
 
 <div class="fr-container fr-container--fluid fr-container-md">
     <div class="fr-grid-row fr-grid-row--center">
@@ -18,15 +19,8 @@
                         {% csrf_token %}
 
                         {% for form in multiform.forms %}
-                            {% if form.indicator_type != "table" %}
-                                {% for field in form %}
-                                    {% include 'snippets/field.html' %}
-                                    {% if field.name == "non_pertinent" %}
-                                        <div class="fr-my-2w"></div>
-                                    {% endif %}
-                                {% endfor %}
+                            {% if form.indicator_type == "table" %}
 
-                            {% else %}
                                 {{ form.management_form }}
                                 <table class="indicateur-tableau">
                                     <caption>
@@ -87,6 +81,71 @@
                                     </tbody>
                                 </table>
                                 <button type="submit" name="ajouter-ligne" value="on" class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-circle-line fr-mt-1w">Ajouter une ligne</button>
+                            {% elif form.indicator_type == "table_lignes_fixes" %}
+                                {{ form.management_form }}
+                                <table class="indicateur-tableau">
+                                    <caption>
+                                        {{ form.label }}
+                                        {% if form.description %}
+                                            <p class="fr-text--xs">{{ form.description }}</p>
+                                        {% endif %}
+                                        {% if form.non_form_errors %}
+                                            <p class="fr-error-text">
+                                                {% for error in form.non_form_errors %}
+                                                    {{ error|escape }}
+                                                {% endfor %}
+                                            </p>
+                                        {% endif %}
+                                    </caption>
+                                    <thead>
+                                        <th scope="col"></th>
+                                        {% for field in form.0 %}
+                                            {% if field.name != "DELETE" %}
+                                                <th scope="col">
+                                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                                </th>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </thead>
+                                    <tbody>
+                                        {% for form_table in form %}
+                                            <tr>
+                                                <td>{% with row=form.rows|index:forloop.counter0 %}{{ row.label }}{% endwith %}</td>
+                                                {% for field in form_table %}
+                                                    {% if field.name != "DELETE" %}
+                                                        <td class="indicateur-cellule {%if field.field.geolocalisation and not field.errors %}indicateur-cellule--geolocalisation{% endif %}">
+                                                            {% if field.field.auto_id %}
+                                                                {{ field.value }}
+                                                                {{ field.as_hidden }}
+                                                            {% else %}
+                                                                {{ field }}
+                                                                {% if field.field.geolocalisation and field.value and not field.errors %}
+                                                                    <span>
+                                                                        <a class="fr-btn fr-icon-map-pin-2-line fr-btn--tertiary-no-outline" title="Voir le site - nouvel onglet" href="{% url_geolocalisation field.value %}" target="_blank" rel="noopener external" class="fr-link">Voir</a>
+                                                                    </span>
+                                                                {% endif %}
+                                                                {% if field.errors %}
+                                                                    <p id="{{ field.name }}-error-desc-error" class="fr-error-text">
+                                                                        {% for error in field.errors %}
+                                                                            {{ error|escape }}
+                                                                        {% endfor %}
+                                                                    </p>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        </td>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                {% for field in form %}
+                                    {% include 'snippets/field.html' %}
+                                    {% if field.name == "non_pertinent" %}
+                                        <div class="fr-my-2w"></div>
+                                    {% endif %}
+                                {% endfor %}
                             {% endif %}
                         {% endfor %}
                     </form>

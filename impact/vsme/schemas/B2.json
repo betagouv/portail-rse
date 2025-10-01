@@ -1,0 +1,74 @@
+{
+    "B2-26": {
+        "titre": "Déclaration des pratiques et politiques de durabilité",
+        "ancre": "declaration-durabilite",
+        "champs": [
+            {
+                "id": "declaration_durabilite",
+                "label": "Déclaration des pratiques et politiques de durabilité",
+                "description": "Indiquez les pratiques, politiques et initiatives futures mises en place pour réduire les impacts négatifs et renforcer les impacts positifs de l’entreprise sur la société et l’environnement, afin de contribuer à une économie plus durable.",
+                "type": "tableau_lignes_fixes",
+                "obligatoire": true,
+                "colonnes": [
+                    {
+                        "id": "pratiques",
+                        "label": "Mettez-vous en œuvre des pratiques/politiques – ou envisagez-vous de mettre en œuvre des initiatives – en matière de durabilité touchant aux questions suivantes? ",
+                        "type": "choix_binaire"
+                    },
+                    {
+                        "id": "accessibles",
+                        "label": "Sont-elles accessibles au public?",
+                        "type": "choix_binaire"
+                    },
+                    {
+                        "id": "cibles",
+                        "label": "Des cibles ont-elles été fixées pour ces politiques?",
+                        "type": "choix_binaire"
+                    }
+                ],
+                "lignes": [
+                    {
+                        "id": "changement_climatique",
+                        "label": "Changement climatique"
+                    },
+                    {
+                        "id": "pollution",
+                        "label": "Pollution"
+                    },
+                    {
+                        "id": "eau",
+                        "label": "Eau et ressources aquatiques et marines"
+                    },
+                    {
+                        "id": "biodiversite",
+                        "label": "Biodiversité et écosystèmes"
+                    },
+                    {
+                        "id": "economie_circulaire",
+                        "label": "Économie circulaire"
+                    },
+                    {
+                        "id": "personnel",
+                        "label": "Personnel propre à l'entreprise"
+                    },
+                    {
+                        "id": "travailleurs",
+                        "label": "Travailleurs dans la chaîne de valeur"
+                    },
+                    {
+                        "id": "communautes",
+                        "label": "Communautés affectées"
+                    },
+                    {
+                        "id": "consommateurs",
+                        "label": "Consommateurs et utilisateurs finaux"
+                    },
+                    {
+                        "id": "conduite_affaires",
+                        "label": "Conduite des affaires et lutte contre la corruption"
+                    }
+                ]
+            }
+        ]
+    }
+}
