@@ -27,6 +27,8 @@ class CustomOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         user.set_unusable_password()
         user.save()
 
+        # TODO: log me
+
         return user
 
     def update_user_if_needed(self, user, claims):
