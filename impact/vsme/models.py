@@ -208,9 +208,9 @@ class RapportVSME(TimestampedModel):
             indicateur_type_de_perimetre = "B1-24-c"
             try:
                 base_consolidee = (
-                    self.indicateurs.get(schema_id=indicateur_type_de_perimetre).data[
-                        "type_perimetre"
-                    ]
+                    self.indicateurs.get(
+                        schema_id=indicateur_type_de_perimetre
+                    ).data.get("type_perimetre")
                     == "consolidee"
                 )
             except ObjectDoesNotExist:
@@ -225,8 +225,13 @@ class RapportVSME(TimestampedModel):
         ).values_list("schema_id", flat=True)
 
     def progression_par_exigence(self, exigence_de_publication):
-        complet = self.indicateurs_completes(exigence_de_publication).count()
-        total = len(self.indicateurs_actifs(exigence_de_publication))
+        indicateurs_actifs = set(self.indicateurs_actifs(exigence_de_publication))
+        indicateurs_completes = set(self.indicateurs_completes(exigence_de_publication))
+        indicateurs_completes_et_actifs = indicateurs_actifs.intersection(
+            indicateurs_completes
+        )
+        complet = len(indicateurs_completes_et_actifs)
+        total = len(indicateurs_actifs)
         pourcent = (complet / total) * 100
         return {"total": total, "complet": complet, "pourcent": int(pourcent)}
 
@@ -240,6 +245,19 @@ class RapportVSME(TimestampedModel):
                 complet += progression_exigence["complet"]
                 total += progression_exigence["total"]
         pourcent = (complet / total) * 100
+        return {"total": total, "complet": complet, "pourcent": int(pourcent)}
+
+    def progression(self):
+        complet, total, pourcent = 0, 0, 0
+        for exigence_de_publication in EXIGENCES_DE_PUBLICATION.values():
+            if exigence_de_publication.remplissable:
+                progression_exigence = self.progression_par_exigence(
+                    exigence_de_publication
+                )
+                complet += progression_exigence["complet"]
+                total += progression_exigence["total"]
+        if total:
+            pourcent = (complet / total) * 100
         return {"total": total, "complet": complet, "pourcent": int(pourcent)}
 
 
