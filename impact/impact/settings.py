@@ -447,6 +447,15 @@ LOGGING = {
     },
 }
 
-# Permet d'avoir une base Sqlite qui ne contient pas d'indexes BRIN
-DATABASE_URL = os.getenv("DATABASE_URL")
-SQLITE_DB = "sqlite" in DATABASE_URL
+# Profiling Metabase :
+# temporaire le temps de voir comment améliorer globalement de temps de sync
+# ou de refondre l'architecture de transfert de données.
+
+# Permet l'affichage des temps d'éxecution de chaque partie de la synchro
+METABASE_DEBUG_SYNC = os.getenv("METABASE_DEBUG_SYNC") == "true"
+METABASE_DEBUG_SKIP_STEPS = os.getenv("METABASE_DEBUG_SKIP_STEPS", "").split(",")
+METABASE_DEBUG_BULK_SIZE = int(os.getenv("METABASE_DEBUG_BULK_SIZE", 1000))
+
+# Création des tables de travail metabase:
+# nombre maximum de requêtes asynchrones simultanées
+METABASE_NB_ASYNC_CALLS = int(os.getenv("METABASE_NB_ASYNC_CALLS", 100))
