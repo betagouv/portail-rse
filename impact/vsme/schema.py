@@ -255,6 +255,10 @@ class IndicateurSchemaInvalide(Exception):
     pass
 
 
+class IndicateurInconnu(Exception):
+    pass
+
+
 class IndicateurSchema(BaseModel):
     schema_id: str = Field(frozen=True)
     titre: str
@@ -265,9 +269,12 @@ class IndicateurSchema(BaseModel):
 
     @classmethod
     def par_schema_id(cls, schema_id):
-        schema = ExigenceDePublication.par_indicateur_schema_id(
-            schema_id
-        ).load_json_schema()[schema_id]
+        try:
+            schema = ExigenceDePublication.par_indicateur_schema_id(
+                schema_id
+            ).load_json_schema()[schema_id]
+        except KeyError:
+            raise IndicateurInconnu()
         try:
             return cls.model_validate(dict(schema, schema_id=schema_id))
         except ValidationError as e:

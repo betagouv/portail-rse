@@ -25,6 +25,7 @@ from vsme.schema import AutoID
 from vsme.schema import Categorie
 from vsme.schema import ExigenceDePublication
 from vsme.schema import EXIGENCES_DE_PUBLICATION
+from vsme.schema import IndicateurInconnu
 from vsme.schema import IndicateurSchema
 from vsme.schema import IndicateurSchemaInvalide
 from vsme.schema import Tableau
@@ -172,16 +173,12 @@ def exigence_de_publication_vsme(request, rapport_vsme, exigence_de_publication_
     return render(request, "vsme/exigence_de_publication.html", context=context)
 
 
-class IndicateurInconnu(Exception):
-    pass
-
-
 @login_required
 @rapport_vsme_requis
 def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
     try:
-        indicateur_schema = load_indicateur_schema(indicateur_schema_id)
-    except IndicateurInconnu:
+        indicateur_schema = IndicateurSchema.par_schema_id(indicateur_schema_id)
+    except (IndicateurInconnu, IndicateurSchemaInvalide):
         raise Http404("Indicateur VSME inconnu")
 
     try:
@@ -258,13 +255,6 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
     return render(request, "fragments/indicateur.html", context=context)
 
 
-def load_indicateur_schema(indicateur_schema_id):
-    try:
-        return IndicateurSchema.par_schema_id(indicateur_schema_id)
-    except (KeyError, IndicateurSchemaInvalide):
-        raise IndicateurInconnu()
-
-
 def ajoute_auto_id_eventuel(indicateur_schema, data):
     data = data.copy()
     tableaux = [
@@ -295,7 +285,11 @@ def ajoute_auto_id_eventuel(indicateur_schema, data):
 @login_required
 @rapport_vsme_requis
 def toggle_pertinent(request, rapport_vsme, indicateur_schema_id):
-    indicateur_schema = load_indicateur_schema(indicateur_schema_id)
+    try:
+        indicateur_schema = IndicateurSchema.par_schema_id(indicateur_schema_id)
+    except (IndicateurInconnu, IndicateurSchemaInvalide):
+        raise Http404("Indicateur VSME inconnu")
+
     toggle_pertinent_url = reverse(
         "vsme:toggle_pertinent", args=[rapport_vsme.id, indicateur_schema_id]
     )
