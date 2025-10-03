@@ -28,8 +28,9 @@ class UserAdmin(BaseUserAdmin):
     add_form = UserAdminCreationForm
 
     readonly_fields = ("last_login",)
-    list_display = ("email", "is_staff", "uidb64")
+    list_display = ("id", "email", "is_staff", "uidb64")
     list_filter = ("is_staff",)
+    search_fields = ["id"]
     fieldsets = (
         (
             None,
@@ -61,6 +62,18 @@ class UserAdmin(BaseUserAdmin):
     ordering = ("email",)
     filter_horizontal = ()
     inlines = (HabilitationInline,)
+
+    def get_search_results(self, request, queryset, search_term):
+        queryset, use_distinct = super().get_search_results(
+            request, queryset, search_term
+        )
+        PREFIXE_IDS = "ids:"
+        if search_term.startswith(PREFIXE_IDS):
+            longueur_prefixe = len(PREFIXE_IDS)
+            ids_term = search_term[longueur_prefixe:]
+            ids = [int(id) for id in ids_term.split(" ") if id]
+            queryset |= self.model.objects.filter(id__in=ids)
+        return queryset.distinct(), use_distinct
 
 
 admin.site.register(User, UserAdmin)
