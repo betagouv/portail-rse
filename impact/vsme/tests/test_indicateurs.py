@@ -3,7 +3,7 @@ from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed
 
 from habilitations.models import Habilitation
-from vsme.models import EXIGENCES_DE_PUBLICATION
+from vsme.schema import EXIGENCES_DE_PUBLICATION
 
 INDICATEURS_VSME_BASE_URL = "/indicateurs/vsme/"
 INDICATEURS_VSME_URL = INDICATEURS_VSME_BASE_URL + "{siren}/{annee}/"

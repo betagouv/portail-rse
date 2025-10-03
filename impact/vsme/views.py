@@ -19,11 +19,11 @@ from entreprises.views import get_current_entreprise
 from habilitations.models import Habilitation
 from reglementations.views import tableau_de_bord_menu_context
 from vsme.forms import create_multiform_from_schema
-from vsme.models import Categorie
-from vsme.models import ExigenceDePublication
-from vsme.models import EXIGENCES_DE_PUBLICATION
 from vsme.models import Indicateur
 from vsme.models import RapportVSME
+from vsme.schema import Categorie
+from vsme.schema import ExigenceDePublication
+from vsme.schema import EXIGENCES_DE_PUBLICATION
 
 
 ETAPES = {

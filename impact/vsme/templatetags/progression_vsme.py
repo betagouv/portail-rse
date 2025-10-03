@@ -1,6 +1,6 @@
 from django import template
 
-from vsme.models import Categorie
+from vsme.schema import Categorie
 
 register = template.Library()
 

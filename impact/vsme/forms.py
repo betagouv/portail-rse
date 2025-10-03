@@ -10,7 +10,7 @@ from utils.codes_nace import CODES_NACE
 from utils.forms import DsfrForm
 from utils.forms import DsfrFormSet
 from utils.pays import CODES_PAYS_ISO_3166_1
-from vsme.models import EXIGENCES_DE_PUBLICATION
+from vsme.schema import EXIGENCES_DE_PUBLICATION
 
 NON_PERTINENT_FIELD_NAME = "non_pertinent"
 
