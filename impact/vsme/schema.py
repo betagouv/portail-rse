@@ -166,6 +166,16 @@ class ExigenceDePublication:
         code = indicateur_schema_id.split("-")[0]
         return cls.par_code(code)
 
+    def indicateurs_schemas(self):
+        json_schema = self.load_json_schema()
+        try:
+            return [
+                IndicateurSchema.model_validate(dict(schema, schema_id=schema_id))
+                for schema_id, schema in json_schema.items()
+            ]
+        except ValidationError as e:
+            raise IndicateurSchemaInvalide(e)
+
 
 EXIGENCES_DE_PUBLICATION = {
     "B1": ExigenceDePublication(
