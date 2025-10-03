@@ -22,6 +22,7 @@ from metabase.models import IndexEgaPro as MetabaseIndexEgaPro
 from metabase.models import Invitation as MetabaseInvitation
 from metabase.models import Stats as MetabaseStats
 from metabase.models import Utilisateur as MetabaseUtilisateur
+from metabase.models import VSME as MetabaseVSME
 from reglementations.models import BDESE_50_300
 from reglementations.models import derniere_annee_a_remplir_bdese
 from reglementations.tests.conftest import bdese_factory  # noqa
@@ -522,6 +523,79 @@ def test_synchronise_les_reglementations_BGES(
     )
     assert metabase_bges_entreprise_soumise_a_jour.est_soumise
     assert metabase_bges_entreprise_soumise_a_jour.statut == MetabaseBGES.STATUT_A_JOUR
+
+
+@pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
+def test_synchronise_les_reglementations_VSME(
+    alice, entreprise_factory, bdese_factory, mock_api_egapro
+):
+    MetabaseVSME()
+    entreprise_non_soumise = entreprise_factory(
+        siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
+    )
+    entreprise_soumise_a_actualiser = entreprise_factory(
+        siren="000000002", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+    )
+    entreprise_soumise_en_cours = entreprise_factory(
+        siren="000000003", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+    )
+    entreprise_soumise_a_jour = entreprise_factory(
+        siren="000000004", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+    )
+    for entreprise in (
+        entreprise_non_soumise,
+        entreprise_soumise_a_actualiser,
+        entreprise_soumise_en_cours,
+        entreprise_soumise_a_jour,
+    ):
+        Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
+    bdese_en_cours = bdese_factory(
+        bdese_class=BDESE_50_300,
+        entreprise=entreprise_soumise_en_cours,
+        annee=derniere_annee_a_remplir_bdese(),
+    )
+    bdese_a_jour = bdese_factory(
+        bdese_class=BDESE_50_300,
+        entreprise=entreprise_soumise_a_jour,
+        annee=derniere_annee_a_remplir_bdese(),
+    )
+    mark_bdese_as_complete(bdese_a_jour)
+
+    Command().handle()
+
+    assert MetabaseBDESE.objects.count() == 4
+
+    metabase_bdese_entreprise_non_soumise = MetabaseBDESE.objects.get(
+        entreprise__siren=entreprise_non_soumise.siren
+    )
+    assert not metabase_bdese_entreprise_non_soumise.est_soumise
+    assert metabase_bdese_entreprise_non_soumise.statut is None
+
+    metabase_bdese_entreprise_soumise_a_actualiser = MetabaseBDESE.objects.get(
+        entreprise__siren=entreprise_soumise_a_actualiser.siren
+    )
+    assert metabase_bdese_entreprise_soumise_a_actualiser.est_soumise
+    assert (
+        metabase_bdese_entreprise_soumise_a_actualiser.statut
+        == MetabaseBDESE.STATUT_A_ACTUALISER
+    )
+
+    metabase_bdese_entreprise_soumise_en_cours = MetabaseBDESE.objects.get(
+        entreprise__siren=entreprise_soumise_en_cours.siren
+    )
+    assert metabase_bdese_entreprise_soumise_en_cours.est_soumise
+    assert (
+        metabase_bdese_entreprise_soumise_en_cours.statut
+        == MetabaseBDESE.STATUT_EN_COURS
+    )
+
+    metabase_bdese_entreprise_soumise_a_jour = MetabaseBDESE.objects.get(
+        entreprise__siren=entreprise_soumise_a_jour.siren
+    )
+    assert metabase_bdese_entreprise_soumise_a_jour.est_soumise
+    assert (
+        metabase_bdese_entreprise_soumise_a_jour.statut == MetabaseBDESE.STATUT_A_JOUR
+    )
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
