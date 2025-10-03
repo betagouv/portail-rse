@@ -1,15 +1,24 @@
 import json
 import os
+import re
 from dataclasses import dataclass
 from enum import Enum
+from json.decoder import JSONDecodeError
 from typing import Annotated
 from typing import Literal
 from typing import TypedDict
 from typing import Union
 
+import geojson
+from django import forms
+from django.core.exceptions import ValidationError as DjangoValidationError
 from pydantic import BaseModel
 from pydantic import Field
 from pydantic import ValidationError
+
+from utils.categories_juridiques import CATEGORIES_JURIDIQUES_NIVEAU_II
+from utils.codes_nace import CODES_NACE
+from utils.pays import CODES_PAYS_ISO_3166_1
 
 
 class BaseChamp(BaseModel):
@@ -18,36 +27,92 @@ class BaseChamp(BaseModel):
     description: str | None = None
     obligatoire: bool = False
 
+    def _base_field_kwargs(self):
+        """Retourne les kwargs de base pour tous les champs Django"""
+        kwargs = {
+            "label": self.label,
+            "required": self.obligatoire,
+        }
+        if self.description:
+            kwargs["help_text"] = self.description
+        return kwargs
+
 
 class AutoID(BaseChamp):
     type_champ: Literal["auto_id"] = Field(alias="type")
+
+    def to_django_field(self):
+        field = forms.IntegerField(min_value=1, required=True)
+        field.auto_id = True
+        return field
 
 
 class NombreEntier(BaseChamp):
     type_champ: Literal["nombre_entier"] = Field(alias="type")
     unité: str
 
+    def to_django_field(self):
+        return forms.IntegerField(**self._base_field_kwargs())
+
 
 class NombreDecimal(BaseChamp):
     type_champ: Literal["nombre_decimal"] = Field(alias="type")
     unité: str
+
+    def to_django_field(self):
+        return forms.FloatField(**self._base_field_kwargs())
 
 
 class Texte(BaseChamp):
     type_champ: Literal["texte"] = Field(alias="type")
     max_length: int = 255
 
+    def to_django_field(self):
+        kwargs = self._base_field_kwargs()
+        kwargs["max_length"] = self.max_length
+        return forms.CharField(**kwargs)
+
 
 class Date(BaseChamp):
     type_champ: Literal["date"] = Field(alias="type")
+
+    def to_django_field(self):
+        kwargs = self._base_field_kwargs()
+        kwargs["widget"] = forms.DateInput(format="%Y-%m-%d", attrs={"type": "date"})
+        return forms.DateField(**kwargs)
+
+
+class GeolocalisationField(forms.CharField):
+    geolocalisation = True
+
+    def clean(self, value):
+        cleaned_value = super().clean(value)
+        minimized_cleaned_value = re.sub(r"\s+", "", cleaned_value)
+        if not minimized_cleaned_value.startswith("["):
+            minimized_cleaned_value = f"[{minimized_cleaned_value}]"
+        try:
+            coordonnees = geojson.loads(minimized_cleaned_value)
+        except JSONDecodeError:
+            raise DjangoValidationError("Les coordonnées sont incorrectes")
+        point = geojson.Point(coordonnees)
+        polygon = geojson.Polygon(coordonnees)
+        if not point.is_valid and not polygon.is_valid:
+            raise DjangoValidationError("Les coordonnées sont incorrectes")
+        return minimized_cleaned_value
 
 
 class Geolocalisation(BaseChamp):
     type_champ: Literal["geolocalisation"] = Field(alias="type")
 
+    def to_django_field(self):
+        return GeolocalisationField(**self._base_field_kwargs())
+
 
 class ChoixBinaire(BaseChamp):
     type_champ: Literal["choix_binaire"] = Field(alias="type")
+
+    def to_django_field(self):
+        return forms.BooleanField(**self._base_field_kwargs())
 
 
 class Choix(TypedDict):
@@ -66,13 +131,48 @@ ChoixPredefinis = Union[
 class BaseChoix(BaseChamp):
     choix: list[Choix] | ChoixPredefinis
 
+    def _get_choices(self):
+        """Retourne les choix Django selon le type de choix"""
+        if isinstance(self.choix, str):
+            # Choix prédéfinis
+            match self.choix:
+                case "CHOIX_PAYS":
+                    return CODES_PAYS_ISO_3166_1
+                case "CHOIX_FORME_JURIDIQUE":
+                    return CATEGORIES_JURIDIQUES_NIVEAU_II
+                case "CHOIX_NACE":
+                    return [
+                        (code, f"{code} - {nom}") for code, nom in CODES_NACE.items()
+                    ]
+                case "CHOIX_EXIGENCE_DE_PUBLICATION":
+                    return [
+                        (exigence.code, f"{exigence.code} - {exigence.nom}")
+                        for exigence in EXIGENCES_DE_PUBLICATION.values()
+                    ]
+        else:
+            # Choix personnalisés
+            return [(choice["id"], choice["label"]) for choice in self.choix]
+
 
 class ChoixUnique(BaseChoix):
     type_champ: Literal["choix_unique"] = Field(alias="type")
 
+    def to_django_field(self):
+        kwargs = self._base_field_kwargs()
+        kwargs["choices"] = self._get_choices()
+        if isinstance(self.choix, str) and self.choix == "CHOIX_PAYS":
+            kwargs["initial"] = ("FRA", "FRANCE")
+        return forms.ChoiceField(**kwargs)
+
 
 class ChoixMultiple(BaseChoix):
     type_champ: Literal["choix_multiple"] = Field(alias="type")
+
+    def to_django_field(self):
+        kwargs = self._base_field_kwargs()
+        kwargs["choices"] = self._get_choices()
+        kwargs["widget"] = forms.CheckboxSelectMultiple
+        return forms.MultipleChoiceField(**kwargs)
 
 
 ChampBasique = Annotated[
@@ -94,6 +194,58 @@ ChampBasique = Annotated[
 class Tableau(BaseChamp):
     type_champ: Literal["tableau"] = Field(alias="type")
     colonnes: list[ChampBasique]
+
+    def to_django_formset(self, extra=0):
+        from utils.forms import DsfrForm
+        from utils.forms import DsfrFormSet
+
+        tableau_self = self
+
+        class TableauFormSet(DsfrFormSet):
+            indicator_type = "table"
+            id = tableau_self.id
+            label = tableau_self.label
+            description = tableau_self.description
+            colonnes = tableau_self.colonnes
+
+            def __init__(self, *args, **formset_kwargs):
+                if formset_kwargs.get("initial"):
+                    formset_initial = formset_kwargs["initial"].get(self.id)
+                    formset_kwargs["initial"] = formset_initial
+                self.default_error_messages["too_few_forms"] = (
+                    "Le tableau doit contenir au moins une ligne."
+                )
+                super().__init__(*args, **formset_kwargs)
+
+            def add_fields(self, form, index):
+                super().add_fields(form, index)
+                for colonne in self.colonnes:
+                    form.fields[colonne.id] = colonne.to_django_field()
+
+            @property
+            def cleaned_data(self):
+                super().cleaned_data
+                cleaned_data = {self.id: []}
+                for form in self.forms:
+                    if form not in self.deleted_forms:
+                        row = [
+                            {
+                                field_name: field_value
+                                for field_name, field_value in form.cleaned_data.items()
+                                if field_name != "DELETE"
+                            }
+                        ]
+                        cleaned_data[self.id] = cleaned_data[self.id] + row
+                return cleaned_data
+
+        return forms.formset_factory(
+            DsfrForm,
+            formset=TableauFormSet,
+            extra=extra,
+            can_delete=True,
+            min_num=1,
+            validate_min=True,
+        )
 
 
 Champ = Annotated[Union[ChampBasique, Tableau], Field(discriminator="type_champ")]

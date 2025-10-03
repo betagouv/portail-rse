@@ -21,9 +21,13 @@ from reglementations.views import tableau_de_bord_menu_context
 from vsme.forms import create_multiform_from_schema
 from vsme.models import Indicateur
 from vsme.models import RapportVSME
+from vsme.schema import AutoID
 from vsme.schema import Categorie
 from vsme.schema import ExigenceDePublication
 from vsme.schema import EXIGENCES_DE_PUBLICATION
+from vsme.schema import IndicateurSchema
+from vsme.schema import IndicateurSchemaInvalide
+from vsme.schema import Tableau
 
 
 ETAPES = {
@@ -255,31 +259,27 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
 
 
 def load_indicateur_schema(indicateur_schema_id):
-    exigence_de_publication_code = indicateur_schema_id.split("-")[0]
     try:
-        exigence_de_publication_schema = EXIGENCES_DE_PUBLICATION[
-            exigence_de_publication_code
-        ].load_json_schema()
-        return exigence_de_publication_schema[indicateur_schema_id]
-    except KeyError:
+        return IndicateurSchema.par_schema_id(indicateur_schema_id)
+    except (KeyError, IndicateurSchemaInvalide):
         raise IndicateurInconnu()
 
 
 def ajoute_auto_id_eventuel(indicateur_schema, data):
     data = data.copy()
     tableaux = [
-        champ for champ in indicateur_schema["champs"] if champ["type"] == "tableau"
+        champ for champ in indicateur_schema.champs if isinstance(champ, Tableau)
     ]
     if not tableaux:
         return data, False
     for tableau in tableaux:
-        tableau_id = tableau["id"]
-        colonnes = tableau["colonnes"]
-        champ_auto_id = [
-            champ["id"] for champ in colonnes if champ["type"] == "auto_id"
+        tableau_id = tableau.id
+        colonnes = tableau.colonnes
+        champs_auto_id = [
+            colonne.id for colonne in colonnes if isinstance(colonne, AutoID)
         ]
-        if champ_auto_id:
-            champ_auto_id = champ_auto_id[0]
+        if champs_auto_id:
+            champ_auto_id = champs_auto_id[0]
             prochain_id = (
                 1
                 if not data.get(tableau_id)

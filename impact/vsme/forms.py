@@ -1,24 +1,15 @@
-import re
-from json.decoder import JSONDecodeError
-
-import geojson
 from django import forms
-from django.core.exceptions import ValidationError
 
-from utils.categories_juridiques import CATEGORIES_JURIDIQUES_NIVEAU_II
-from utils.codes_nace import CODES_NACE
 from utils.forms import DsfrForm
-from utils.forms import DsfrFormSet
-from utils.pays import CODES_PAYS_ISO_3166_1
-from vsme.schema import EXIGENCES_DE_PUBLICATION
+from vsme.schema import Tableau
 
 NON_PERTINENT_FIELD_NAME = "non_pertinent"
 
 
-def create_multiform_from_schema(schema, **kwargs):
+def create_multiform_from_schema(indicateur_schema, **kwargs):
     class _MultiForm:
         Forms = []
-        si_pertinent = schema.get("si_pertinent", False)
+        si_pertinent = indicateur_schema.si_pertinent
 
         def __init__(self, *args, **kwargs):
             self.forms = []
@@ -89,181 +80,27 @@ def create_multiform_from_schema(schema, **kwargs):
 
     _DynamicForm = _dynamicform_factory()
 
-    if schema.get("si_pertinent", False):
+    if indicateur_schema.si_pertinent:
         _DynamicForm.base_fields[NON_PERTINENT_FIELD_NAME] = forms.BooleanField(
             required=False,
             widget=forms.BooleanField.widget(
                 attrs={"hx-post": kwargs["toggle_pertinent_url"]}
             ),
         )
-    fields = schema["champs"]
-    for field in fields:
-        field_name = field["id"]
-        field_type = field["type"]
 
-        match field_type:
-            case (
-                "texte"
-                | "nombre_entier"
-                | "nombre_decimal"
-                | "date"
-                | "choix_binaire"
-                | "choix_unique"
-                | "choix_multiple"
-                | "auto_id"
-            ):
-                _DynamicForm.base_fields[field_name] = create_simple_field_from_schema(
-                    field
-                )
-            case "tableau":
-                if _DynamicForm.base_fields:
-                    _MultiForm.add_Form(_DynamicForm)
-                    _DynamicForm = _dynamicform_factory()
+    for champ in indicateur_schema.champs:
+        if isinstance(champ, Tableau):
+            if _DynamicForm.base_fields:
+                _MultiForm.add_Form(_DynamicForm)
+                _DynamicForm = _dynamicform_factory()
 
-                class TableauFormSet(DsfrFormSet):
-                    indicator_type = "table"
-                    id = field["id"]
-                    label = field["label"]
-                    description = field.get("description")
-                    columns = field["colonnes"]
-
-                    def __init__(self, *args, **kwargs):
-                        if kwargs.get("initial"):
-                            formset_initial = kwargs["initial"].get(self.id)
-                            kwargs["initial"] = formset_initial
-                        self.default_error_messages["too_few_forms"] = (
-                            "Le tableau doit contenir au moins une ligne."
-                        )
-                        super().__init__(*args, **kwargs)
-
-                    def add_fields(self, form, index):
-                        super().add_fields(form, index)
-                        for column in self.columns:
-                            field_name = column["id"]
-                            form.fields[field_name] = create_simple_field_from_schema(
-                                column
-                            )
-
-                    @property
-                    def cleaned_data(self):
-                        super().cleaned_data
-                        # surcharge cleaned_data pour supprimer les valeurs des lignes supprimées
-                        # et retourner un dictionnaire comme un formulaire standard
-                        cleaned_data = {self.id: []}
-                        for form in self.forms:
-                            if form not in self.deleted_forms:
-                                row = [
-                                    {
-                                        field_name: field_value
-                                        for field_name, field_value in form.cleaned_data.items()
-                                        if field_name != "DELETE"
-                                    }
-                                ]
-                                cleaned_data[self.id] = cleaned_data[self.id] + row
-                        return cleaned_data
-
-                extra = kwargs.get("extra", 0)
-                FormSet = forms.formset_factory(
-                    DsfrForm,
-                    formset=TableauFormSet,
-                    extra=extra,
-                    can_delete=True,
-                    min_num=1,
-                    validate_min=True,
-                )
-                _MultiForm.add_Form(FormSet)
+            FormSet = champ.to_django_formset(extra=kwargs.get("extra", 0))
+            _MultiForm.add_Form(FormSet)
+        else:
+            # Champ basique
+            _DynamicForm.base_fields[champ.id] = champ.to_django_field()
 
     if _DynamicForm.base_fields:
         _MultiForm.add_Form(_DynamicForm)
 
     return _MultiForm
-
-
-def create_simple_field_from_schema(field_schema, **kwargs):
-    field_name = field_schema["id"]
-    field_type = field_schema["type"]
-    field_kwargs = {
-        "label": field_schema.get("label", field_name),
-        "required": field_schema.get("obligatoire", False),
-        # ...
-    }
-    if description := field_schema.get("description"):
-        field_kwargs["help_text"] = description
-    match field_type:
-        case "auto_id":
-            field = forms.IntegerField(min_value=1, required=True)
-            field.auto_id = True
-            return field
-        case "texte":
-            field_kwargs["max_length"] = field_schema.get("max_length", 255)
-            return forms.CharField(**field_kwargs)
-        case "nombre_entier":
-            field_kwargs["min_value"] = field_schema.get("min")
-            field_kwargs["max_value"] = field_schema.get("max")
-            return forms.IntegerField(**field_kwargs)
-        case "nombre_decimal":
-            return forms.FloatField(**field_kwargs)
-        case "date":
-            return forms.DateField(
-                widget=forms.DateInput(format="%Y-%m-%d", attrs={"type": "date"}),
-                **field_kwargs,
-            )
-        case "choix_binaire":
-            return forms.BooleanField(**field_kwargs)
-        case "choix_unique" | "choix_multiple":
-            match field_schema["choix"]:
-                case "CHOIX_PAYS":
-                    choices = CODES_PAYS_ISO_3166_1
-                    field_kwargs["initial"] = ("FRA", "FRANCE")
-                case "CHOIX_FORME_JURIDIQUE":
-                    choices = CATEGORIES_JURIDIQUES_NIVEAU_II
-                case "CHOIX_NACE":
-                    choices = [
-                        (code, f"{code} - {nom}") for code, nom in CODES_NACE.items()
-                    ]
-                case "CHOIX_EXIGENCE_DE_PUBLICATION":
-                    choices = [
-                        (
-                            exigence_de_publication.code,
-                            f"{exigence_de_publication.code} - {exigence_de_publication.nom}",
-                        )
-                        for exigence_de_publication in EXIGENCES_DE_PUBLICATION.values()
-                    ]
-                case _:
-                    choices = (
-                        (choice["id"], choice["label"])
-                        for choice in field_schema["choix"]
-                    )
-            if field_type == "choix_unique":
-                return forms.ChoiceField(choices=choices, **field_kwargs)
-            else:  # choix_multiple
-                return forms.MultipleChoiceField(
-                    widget=forms.CheckboxSelectMultiple,
-                    choices=choices,
-                    **field_kwargs,
-                )
-        case "geolocalisation":
-            return GeoField(**field_kwargs)
-        case _:
-            raise Exception(f"Type inconnu : {field_type}")
-
-
-class GeoField(forms.CharField):
-    geolocalisation = True
-
-    def clean(self, value):
-        cleaned_value = super().clean(value)
-        minimized_cleaned_value = re.sub(
-            r"\s+", "", cleaned_value
-        )  # supprime tous les caractères d'espacement
-        if not minimized_cleaned_value.startswith("["):
-            minimized_cleaned_value = f"[{minimized_cleaned_value}]"
-        try:
-            coordonnees = geojson.loads(minimized_cleaned_value)
-        except JSONDecodeError:
-            raise ValidationError("Les coordonnées sont incorrectes")
-        point = geojson.Point(coordonnees)
-        polygon = geojson.Polygon(coordonnees)
-        if not point.is_valid and not polygon.is_valid:
-            raise ValidationError("Les coordonnées sont incorrectes")
-        return minimized_cleaned_value
