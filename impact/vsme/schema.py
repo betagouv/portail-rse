@@ -104,7 +104,7 @@ class IndicateurSchemaInvalide(Exception):
 
 
 class IndicateurSchema(BaseModel):
-    schema_id: str = Field(frozen=True, init=False)
+    schema_id: str = Field(frozen=True)
     titre: str
     description: str
     ancre: str
