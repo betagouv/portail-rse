@@ -15,8 +15,16 @@ from django.urls.base import reverse
 import utils.htmx as htmx
 from entreprises.decorators import entreprise_qualifiee_requise
 from entreprises.models import Entreprise
+from entreprises.views import get_current_entreprise
+from habilitations.models import Habilitation
 from logs import event_logger
-
+from reglementations.views import tableau_de_bord_menu_context
+from vsme.forms import create_multiform_from_schema
+from vsme.models import Categorie
+from vsme.models import ExigenceDePublication
+from vsme.models import EXIGENCES_DE_PUBLICATION
+from vsme.models import Indicateur
+from vsme.models import RapportVSME
 
 ETAPES = {
     "introduction": "Introduction",
