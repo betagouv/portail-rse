@@ -25,6 +25,7 @@ from metabase.models import Stats as MetabaseStats
 from metabase.models import TempBGES
 from metabase.models import TempEgaPro
 from metabase.models import Utilisateur as MetabaseUtilisateur
+from metabase.models import VSME as MetabaseVSME
 from reglementations.models.csrd import DocumentAnalyseIA
 from reglementations.models.csrd import RapportCSRD
 from reglementations.views.base import InsuffisammentQualifieeError
@@ -34,6 +35,7 @@ from reglementations.views.bges import BGESReglementation
 from reglementations.views.csrd.csrd import CSRDReglementation
 from reglementations.views.index_egapro import IndexEgaproReglementation
 from users.models import User as PortailRSEUtilisateur
+from vsme.models import RapportVSME
 
 
 def mesure(fonction):
@@ -247,6 +249,7 @@ class Command(BaseCommand):
     @mesure
     def _insert_reglementations(self):
         self._success("Ajout des réglementations dans Metabase")
+        vsme = []
         csrd = []
         bges = []
         egapro = []
@@ -259,6 +262,9 @@ class Command(BaseCommand):
                 or entreprise.dernieres_caracteristiques
             )
             if caracteristiques:
+                if r := self._insert_vsme(caracteristiques):
+                    vsme.append(r)
+
                 if r := self._insert_csrd(caracteristiques):
                     csrd.append(r)
 
@@ -274,6 +280,8 @@ class Command(BaseCommand):
                 self._success(str(entreprise))
 
         with transaction.atomic():
+            if vsme:
+                MetabaseVSME.objects.bulk_create(vsme)
             if csrd:
                 MetabaseCSRD.objects.bulk_create(csrd)
             if bges:
@@ -284,6 +292,33 @@ class Command(BaseCommand):
                 MetabaseIndexEgaPro.objects.bulk_create(egapro)
 
         self._success("Ajout des réglementations dans Metabase: OK")
+
+    def _insert_vsme(self, caracteristiques):
+        entreprise = caracteristiques.entreprise
+
+        if (
+            dernier_rapport := RapportVSME.objects.prefetch_related("indicateurs")
+            .filter(entreprise_id=entreprise.id)
+            .order_by("-annee")
+            .first()
+        ):
+            # On ne synchronise que le dernier rapport actuellement, comme pour la CSRD
+            # mais on pourrait vouloir tous les rapports quand il y en a plusieurs
+            nb_indicateurs_completes = dernier_rapport.indicateurs.count()
+            progression = dernier_rapport.progression()["pourcent"]
+            return MetabaseVSME(
+                entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
+                est_soumise=True,
+                statut=(
+                    Reglementation.STATUT_EN_COURS
+                    if progression < 100
+                    else Reglementation.STATUT_A_JOUR
+                ),
+                nb_indicateurs_completes=nb_indicateurs_completes,
+                progression=progression,
+            )
+        else:
+            return
 
     def _insert_csrd(self, caracteristiques):
         entreprise = caracteristiques.entreprise

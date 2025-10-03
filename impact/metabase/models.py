@@ -104,6 +104,11 @@ class BGES(Reglementation):
     pass
 
 
+class VSME(Reglementation):
+    nb_indicateurs_completes = models.IntegerField(default=0)
+    progression = models.IntegerField(default=0)
+
+
 class Stats(models.Model):
     date = models.DateField(unique=True)
     reglementations_a_jour = models.IntegerField()

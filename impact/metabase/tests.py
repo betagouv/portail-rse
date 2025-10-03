@@ -22,9 +22,12 @@ from metabase.models import IndexEgaPro as MetabaseIndexEgaPro
 from metabase.models import Invitation as MetabaseInvitation
 from metabase.models import Stats as MetabaseStats
 from metabase.models import Utilisateur as MetabaseUtilisateur
+from metabase.models import VSME as MetabaseVSME
 from reglementations.models import BDESE_50_300
 from reglementations.models import derniere_annee_a_remplir_bdese
 from reglementations.tests.conftest import bdese_factory  # noqa
+from vsme.models import EXIGENCES_DE_PUBLICATION
+from vsme.models import RapportVSME
 
 METABASE_DATABASE_NAME = settings.METABASE_DATABASE_NAME
 
@@ -522,6 +525,65 @@ def test_synchronise_les_reglementations_BGES(
     )
     assert metabase_bges_entreprise_soumise_a_jour.est_soumise
     assert metabase_bges_entreprise_soumise_a_jour.statut == MetabaseBGES.STATUT_A_JOUR
+
+
+@pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
+def test_synchronise_les_rapports_VSME(alice, entreprise_factory, mock_api_egapro):
+    entreprise_sans_vsme = entreprise_factory(siren="000000001", utilisateur=alice)
+    entreprise_avec_vsme_vide = entreprise_factory(siren="000000002", utilisateur=alice)
+    entreprise_avec_vsme_commencee = entreprise_factory(
+        siren="000000003", utilisateur=alice
+    )
+    entreprise_avec_vsme_terminee = entreprise_factory(
+        siren="000000004", utilisateur=alice
+    )
+
+    vsme_vide = RapportVSME.objects.create(
+        entreprise=entreprise_avec_vsme_vide, annee=2024
+    )
+    vsme_commencee = RapportVSME.objects.create(
+        entreprise=entreprise_avec_vsme_commencee, annee=2024
+    )
+    vsme_terminee = RapportVSME.objects.create(
+        entreprise=entreprise_avec_vsme_terminee, annee=2024
+    )
+
+    vsme_commencee.indicateurs.create(
+        schema_id="B1-24-a", data={"yolo": "yolo"}  # indicateur réel de B1
+    )
+
+    EXIGENCES_REMPLISSABLES = [
+        exigence
+        for exigence in EXIGENCES_DE_PUBLICATION.values()
+        if exigence.remplissable
+    ]
+    for exigence in EXIGENCES_REMPLISSABLES:
+        for indicateur in exigence.load_json_schema():
+            vsme_terminee.indicateurs.create(
+                schema_id=indicateur, data={"yolo": "yolo"}
+            )
+
+    Command().handle()
+
+    assert MetabaseVSME.objects.count() == 3
+
+    metabase_vsme_vide = MetabaseVSME.objects.get(
+        entreprise__siren=entreprise_avec_vsme_vide.siren
+    )
+    assert metabase_vsme_vide.nb_indicateurs_completes == 0
+    assert metabase_vsme_vide.progression == 0
+
+    metabase_vsme_commencee = MetabaseVSME.objects.get(
+        entreprise__siren=entreprise_avec_vsme_commencee.siren
+    )
+    assert metabase_vsme_commencee.nb_indicateurs_completes == 1
+    assert 0 < metabase_vsme_commencee.progression < 100
+
+    metabase_vsme_terminee = MetabaseVSME.objects.get(
+        entreprise__siren=entreprise_avec_vsme_terminee.siren
+    )
+    assert metabase_vsme_terminee.nb_indicateurs_completes > 1
+    assert metabase_vsme_terminee.progression == 100
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
