@@ -170,8 +170,9 @@ def deconnexion(request):
     (CORS et CSRF).
     https://docs.djangoproject.com/en/5.1/topics/auth/default/#django.contrib.auth.logout
     """
-    logout(request)
-    return redirect(settings.SITES_FACILES_BASE_URL)
+    # return redirect(settings.SITES_FACILES_BASE_URL)
+    return redirect("oidc_logout_custom")
+
 
 
 @login_required()

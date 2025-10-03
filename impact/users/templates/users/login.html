@@ -37,10 +37,28 @@
                         Pas encore de compte ? <a href="{% url 'users:creation'%}" class="fr-link">Créez votre compte</a><br>
                     </div>
                 </form>
+
+<div class="fr-connect-group">
+	<a href="/oidc/authenticate/">
+	{% csrf_token %}
+    <button class="fr-connect" type="button">
+        <span class="fr-connect__login">S’identifier avec</span>
+        <span class="fr-connect__brand">ProConnect</span>
+    </button>
+	</a>
+    <p>
+        <a href="https://www.proconnect.gouv.fr/" target="_blank" rel="noopener" title="Qu’est-ce que ProConnect ? - nouvelle fenêtre">Qu’est-ce ProConnect ?</a>
+    </p>
+</div>
+
+
+
             </div>
             <div class="fr-col-lg-6 fr-col-12">
                 <img class="fr-responsive-img" src="{% static 'img/dashboard.png' %}" alt="" />
             </div>
         </div>
     </div>
+
+
 {% endblock %}
