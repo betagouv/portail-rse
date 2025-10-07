@@ -1,4 +1,5 @@
 {% load geolocalisation %}
+{% load filters %}
 
 <div class="fr-container fr-container--fluid fr-container-md">
     <div class="fr-grid-row fr-grid-row--center">
@@ -81,6 +82,7 @@
                                 </table>
                                 <button type="submit" name="ajouter-ligne" value="on" class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-circle-line fr-mt-1w">Ajouter une ligne</button>
                             {% elif form.indicator_type == "table_lignes_fixes" %}
+                                {{ form.management_form }}
                                 <table class="indicateur-tableau">
                                     <caption>
                                         {{ form.label }}
@@ -96,6 +98,7 @@
                                         {% endif %}
                                     </caption>
                                     <thead>
+                                        <th scope="col"></th>
                                         {% for field in form.0 %}
                                             {% if field.name != "DELETE" %}
                                                 <th scope="col">
@@ -107,6 +110,7 @@
                                     <tbody>
                                         {% for form_table in form %}
                                             <tr>
+                                                <td>{% with row=form.rows|index:forloop.counter0 %}{{ row.label }}{% endwith %}</td>
                                                 {% for field in form_table %}
                                                     {% if field.name != "DELETE" %}
                                                         <td class="indicateur-cellule {%if field.field.geolocalisation and not field.errors %}indicateur-cellule--geolocalisation{% endif %}">

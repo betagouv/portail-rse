@@ -183,14 +183,15 @@ def create_multiform_from_schema(schema, **kwargs):
                     label = field["label"]
                     description = field.get("description")
                     columns = field["colonnes"]
+                    rows = field["lignes"]
 
                     def __init__(self, *args, **kwargs):
                         if kwargs.get("initial"):
                             formset_initial = kwargs["initial"].get(self.id)
-                            kwargs["initial"] = formset_initial
-                        self.default_error_messages["too_few_forms"] = (
-                            "Le tableau doit contenir au moins une ligne."
-                        )
+                            if formset_initial:
+                                kwargs["initial"] = list(formset_initial.values())
+                            else:
+                                kwargs["initial"] = [{} for row in rows]
                         super().__init__(*args, **kwargs)
 
                     def add_fields(self, form, index):
@@ -204,29 +205,26 @@ def create_multiform_from_schema(schema, **kwargs):
                     @property
                     def cleaned_data(self):
                         super().cleaned_data
-                        # surcharge cleaned_data pour supprimer les valeurs des lignes supprimées
-                        # et retourner un dictionnaire comme un formulaire standard
-                        cleaned_data = {self.id: []}
-                        for form in self.forms:
-                            if form not in self.deleted_forms:
-                                row = [
-                                    {
-                                        field_name: field_value
-                                        for field_name, field_value in form.cleaned_data.items()
-                                        if field_name != "DELETE"
-                                    }
-                                ]
-                                cleaned_data[self.id] = cleaned_data[self.id] + row
+                        # surcharge cleaned_data pour retourner un dictionnaire de dictionnaires
+                        # chaque ligne est représentée par un dictionnaire
+                        # par exemple :
+                        # {
+                        #   declaration_durabilite: {
+                        #       changement_climatique: {pratiques: True, accessibles: True},
+                        #       pollution: {pratiques: True, accessibles: True, cibles: True},
+                        #       ...
+                        # }
+                        cleaned_data = {self.id: {row["id"]: {} for row in self.rows}}
+                        for index, form in enumerate(self.forms):
+                            cleaned_data[self.id][
+                                self.rows[index]["id"]
+                            ] = form.cleaned_data
                         return cleaned_data
 
-                extra = 0
                 FormSet = forms.formset_factory(
                     DsfrForm,
                     formset=TableauFormSet,
-                    extra=extra,
-                    can_delete=False,
-                    min_num=1,
-                    validate_min=True,
+                    extra=0,
                 )
                 _MultiForm.add_Form(FormSet)
 
