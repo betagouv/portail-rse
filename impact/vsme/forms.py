@@ -120,108 +120,8 @@ def create_multiform_from_schema(schema, **kwargs):
                     _MultiForm.add_Form(_DynamicForm)
                     _DynamicForm = _dynamicform_factory()
 
-                class TableauFormSet(DsfrFormSet):
-                    id = field["id"]
-                    label = field["label"]
-                    description = field.get("description")
-                    columns = field["colonnes"]
+                FormSet = create_formset_from_schema(field)
 
-                class TableauLignesLibresFormSet(TableauFormSet):
-                    indicator_type = "table"
-
-                    def __init__(self, *args, **kwargs):
-                        if kwargs.get("initial"):
-                            formset_initial = kwargs["initial"].get(self.id)
-                            kwargs["initial"] = formset_initial
-                        self.default_error_messages["too_few_forms"] = (
-                            "Le tableau doit contenir au moins une ligne."
-                        )
-                        super().__init__(*args, **kwargs)
-
-                    def add_fields(self, form, index):
-                        super().add_fields(form, index)
-                        for column in self.columns:
-                            field_name = column["id"]
-                            form.fields[field_name] = create_simple_field_from_schema(
-                                column
-                            )
-
-                    @property
-                    def cleaned_data(self):
-                        super().cleaned_data
-                        # surcharge cleaned_data pour supprimer les valeurs des lignes supprimées
-                        # et retourner un dictionnaire comme un formulaire standard
-                        cleaned_data = {self.id: []}
-                        for form in self.forms:
-                            if form not in self.deleted_forms:
-                                row = [
-                                    {
-                                        field_name: field_value
-                                        for field_name, field_value in form.cleaned_data.items()
-                                        if field_name != "DELETE"
-                                    }
-                                ]
-                                cleaned_data[self.id] = cleaned_data[self.id] + row
-                        return cleaned_data
-
-                class TableauLignesFixesFormSet(TableauFormSet):
-                    indicator_type = "table_lignes_fixes"
-                    rows = field.get("lignes")
-
-                    def __init__(self, *args, **kwargs):
-                        if kwargs.get("initial"):
-                            formset_initial = kwargs["initial"].get(self.id)
-                            if formset_initial:
-                                kwargs["initial"] = list(formset_initial.values())
-                            else:
-                                kwargs["initial"] = [{} for row in rows]
-                        else:
-                            kwargs["initial"] = [{} for row in self.rows]
-                        super().__init__(*args, **kwargs)
-
-                    def add_fields(self, form, index):
-                        super().add_fields(form, index)
-                        for column in self.columns:
-                            field_name = column["id"]
-                            form.fields[field_name] = create_simple_field_from_schema(
-                                column
-                            )
-
-                    @property
-                    def cleaned_data(self):
-                        super().cleaned_data
-                        # surcharge cleaned_data pour retourner un dictionnaire de dictionnaires
-                        # chaque ligne est représentée par un dictionnaire
-                        # par exemple :
-                        # {
-                        #   declaration_durabilite: {
-                        #       changement_climatique: {pratiques: True, accessibles: True},
-                        #       pollution: {pratiques: True, accessibles: True, cibles: True},
-                        #       ...
-                        # }
-                        cleaned_data = {self.id: {row["id"]: {} for row in self.rows}}
-                        for index, form in enumerate(self.forms):
-                            cleaned_data[self.id][
-                                self.rows[index]["id"]
-                            ] = form.cleaned_data
-                        return cleaned_data
-
-                if field_type == "tableau":
-                    extra = kwargs.get("extra", 0)
-                    FormSet = forms.formset_factory(
-                        DsfrForm,
-                        formset=TableauLignesLibresFormSet,
-                        extra=extra,
-                        can_delete=True,
-                        min_num=1,
-                        validate_min=True,
-                    )
-                else:  # "tableau_lignes_fixes"
-                    FormSet = forms.formset_factory(
-                        DsfrForm,
-                        formset=TableauLignesFixesFormSet,
-                        extra=0,
-                    )
                 _MultiForm.add_Form(FormSet)
 
     if _DynamicForm.base_fields:
@@ -318,3 +218,106 @@ class GeoField(forms.CharField):
         if not point.is_valid and not polygon.is_valid:
             raise ValidationError("Les coordonnées sont incorrectes")
         return minimized_cleaned_value
+
+
+def create_formset_from_schema(field, **kwargs):
+    field_type = field["type"]
+
+    class TableauFormSet(DsfrFormSet):
+        id = field["id"]
+        label = field["label"]
+        description = field.get("description")
+        columns = field["colonnes"]
+
+    class TableauLignesLibresFormSet(TableauFormSet):
+        indicator_type = "table"
+
+        def __init__(self, *args, **kwargs):
+            if kwargs.get("initial"):
+                formset_initial = kwargs["initial"].get(self.id)
+                kwargs["initial"] = formset_initial
+            self.default_error_messages["too_few_forms"] = (
+                "Le tableau doit contenir au moins une ligne."
+            )
+            super().__init__(*args, **kwargs)
+
+        def add_fields(self, form, index):
+            super().add_fields(form, index)
+            for column in self.columns:
+                field_name = column["id"]
+                form.fields[field_name] = create_simple_field_from_schema(column)
+
+        @property
+        def cleaned_data(self):
+            super().cleaned_data
+            # surcharge cleaned_data pour supprimer les valeurs des lignes supprimées
+            # et retourner un dictionnaire comme un formulaire standard
+            cleaned_data = {self.id: []}
+            for form in self.forms:
+                if form not in self.deleted_forms:
+                    row = [
+                        {
+                            field_name: field_value
+                            for field_name, field_value in form.cleaned_data.items()
+                            if field_name != "DELETE"
+                        }
+                    ]
+                    cleaned_data[self.id] = cleaned_data[self.id] + row
+            return cleaned_data
+
+    class TableauLignesFixesFormSet(TableauFormSet):
+        indicator_type = "table_lignes_fixes"
+        rows = field.get("lignes")
+
+        def __init__(self, *args, **kwargs):
+            if kwargs.get("initial"):
+                formset_initial = kwargs["initial"].get(self.id)
+                if formset_initial:
+                    kwargs["initial"] = list(formset_initial.values())
+                else:
+                    kwargs["initial"] = [{} for row in rows]
+            else:
+                kwargs["initial"] = [{} for row in self.rows]
+            super().__init__(*args, **kwargs)
+
+        def add_fields(self, form, index):
+            super().add_fields(form, index)
+            for column in self.columns:
+                field_name = column["id"]
+                form.fields[field_name] = create_simple_field_from_schema(column)
+
+        @property
+        def cleaned_data(self):
+            super().cleaned_data
+            # surcharge cleaned_data pour retourner un dictionnaire de dictionnaires
+            # chaque ligne est représentée par un dictionnaire
+            # par exemple :
+            # {
+            #   declaration_durabilite: {
+            #       changement_climatique: {pratiques: True, accessibles: True},
+            #       pollution: {pratiques: True, accessibles: True, cibles: True},
+            #       ...
+            # }
+            cleaned_data = {self.id: {row["id"]: {} for row in self.rows}}
+            for index, form in enumerate(self.forms):
+                cleaned_data[self.id][self.rows[index]["id"]] = form.cleaned_data
+            return cleaned_data
+
+    if field_type == "tableau":
+        extra = kwargs.get("extra", 0)
+        FormSet = forms.formset_factory(
+            DsfrForm,
+            formset=TableauLignesLibresFormSet,
+            extra=extra,
+            can_delete=True,
+            min_num=1,
+            validate_min=True,
+        )
+    else:  # "tableau_lignes_fixes"
+        FormSet = forms.formset_factory(
+            DsfrForm,
+            formset=TableauLignesFixesFormSet,
+            extra=0,
+        )
+
+    return FormSet
