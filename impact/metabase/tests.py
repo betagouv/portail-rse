@@ -570,20 +570,36 @@ def test_synchronise_les_rapports_VSME(alice, entreprise_factory, mock_api_egapr
     metabase_vsme_vide = MetabaseVSME.objects.get(
         entreprise__siren=entreprise_avec_vsme_vide.siren
     )
+    assert metabase_vsme_vide.cree_le
+    assert metabase_vsme_vide.modifie_le
+    assert metabase_vsme_vide.statut == MetabaseVSME.STATUT_EN_COURS
     assert metabase_vsme_vide.nb_indicateurs_completes == 0
     assert metabase_vsme_vide.progression == 0
+    for code in EXIGENCES_DE_PUBLICATION:
+        assert getattr(metabase_vsme_vide, f"progression_{code}") == 0
 
     metabase_vsme_commencee = MetabaseVSME.objects.get(
         entreprise__siren=entreprise_avec_vsme_commencee.siren
     )
+    assert metabase_vsme_commencee.statut == MetabaseVSME.STATUT_EN_COURS
     assert metabase_vsme_commencee.nb_indicateurs_completes == 1
     assert 0 < metabase_vsme_commencee.progression < 100
+    assert 0 < metabase_vsme_commencee.progression_B1 < 100
+    for code in EXIGENCES_DE_PUBLICATION:
+        if code != "B1":
+            assert getattr(metabase_vsme_commencee, f"progression_{code}") == 0
 
     metabase_vsme_terminee = MetabaseVSME.objects.get(
         entreprise__siren=entreprise_avec_vsme_terminee.siren
     )
+    assert metabase_vsme_terminee.statut == MetabaseVSME.STATUT_A_JOUR
     assert metabase_vsme_terminee.nb_indicateurs_completes > 1
     assert metabase_vsme_terminee.progression == 100
+    for code, exigence in EXIGENCES_DE_PUBLICATION.items():
+        if exigence.remplissable:
+            assert getattr(metabase_vsme_terminee, f"progression_{code}") == 100
+        else:
+            assert getattr(metabase_vsme_terminee, f"progression_{code}") == 0
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
