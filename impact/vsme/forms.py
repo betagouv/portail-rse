@@ -115,17 +115,19 @@ def create_multiform_from_schema(schema, **kwargs):
                 _DynamicForm.base_fields[field_name] = create_simple_field_from_schema(
                     field
                 )
-            case "tableau":
+            case "tableau" | "tableau_lignes_fixes":
                 if _DynamicForm.base_fields:
                     _MultiForm.add_Form(_DynamicForm)
                     _DynamicForm = _dynamicform_factory()
 
                 class TableauFormSet(DsfrFormSet):
-                    indicator_type = "table"
                     id = field["id"]
                     label = field["label"]
                     description = field.get("description")
                     columns = field["colonnes"]
+
+                class TableauLignesLibresFormSet(TableauFormSet):
+                    indicator_type = "table"
 
                     def __init__(self, *args, **kwargs):
                         if kwargs.get("initial"):
@@ -162,28 +164,9 @@ def create_multiform_from_schema(schema, **kwargs):
                                 cleaned_data[self.id] = cleaned_data[self.id] + row
                         return cleaned_data
 
-                extra = kwargs.get("extra", 0)
-                FormSet = forms.formset_factory(
-                    DsfrForm,
-                    formset=TableauFormSet,
-                    extra=extra,
-                    can_delete=True,
-                    min_num=1,
-                    validate_min=True,
-                )
-                _MultiForm.add_Form(FormSet)
-            case "tableau_lignes_fixes":
-                if _DynamicForm.base_fields:
-                    _MultiForm.add_Form(_DynamicForm)
-                    _DynamicForm = _dynamicform_factory()
-
-                class TableauFormSet(DsfrFormSet):
+                class TableauLignesFixesFormSet(TableauFormSet):
                     indicator_type = "table_lignes_fixes"
-                    id = field["id"]
-                    label = field["label"]
-                    description = field.get("description")
-                    columns = field["colonnes"]
-                    rows = field["lignes"]
+                    rows = field.get("lignes")
 
                     def __init__(self, *args, **kwargs):
                         if kwargs.get("initial"):
@@ -223,11 +206,22 @@ def create_multiform_from_schema(schema, **kwargs):
                             ] = form.cleaned_data
                         return cleaned_data
 
-                FormSet = forms.formset_factory(
-                    DsfrForm,
-                    formset=TableauFormSet,
-                    extra=0,
-                )
+                if field_type == "tableau":
+                    extra = kwargs.get("extra", 0)
+                    FormSet = forms.formset_factory(
+                        DsfrForm,
+                        formset=TableauLignesLibresFormSet,
+                        extra=extra,
+                        can_delete=True,
+                        min_num=1,
+                        validate_min=True,
+                    )
+                else:  # "tableau_lignes_fixes"
+                    FormSet = forms.formset_factory(
+                        DsfrForm,
+                        formset=TableauLignesFixesFormSet,
+                        extra=0,
+                    )
                 _MultiForm.add_Form(FormSet)
 
     if _DynamicForm.base_fields:
