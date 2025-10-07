@@ -105,8 +105,30 @@ class BGES(Reglementation):
 
 
 class VSME(Reglementation):
+    cree_le = models.DateTimeField()
+    modifie_le = models.DateTimeField()
     nb_indicateurs_completes = models.IntegerField(default=0)
     progression = models.IntegerField(default=0)
+    progression_B1 = models.IntegerField(default=0)
+    progression_B2 = models.IntegerField(default=0)
+    progression_B3 = models.IntegerField(default=0)
+    progression_B4 = models.IntegerField(default=0)
+    progression_B5 = models.IntegerField(default=0)
+    progression_B6 = models.IntegerField(default=0)
+    progression_B7 = models.IntegerField(default=0)
+    progression_B8 = models.IntegerField(default=0)
+    progression_B9 = models.IntegerField(default=0)
+    progression_B10 = models.IntegerField(default=0)
+    progression_B11 = models.IntegerField(default=0)
+    progression_C1 = models.IntegerField(default=0)
+    progression_C2 = models.IntegerField(default=0)
+    progression_C3 = models.IntegerField(default=0)
+    progression_C4 = models.IntegerField(default=0)
+    progression_C5 = models.IntegerField(default=0)
+    progression_C6 = models.IntegerField(default=0)
+    progression_C7 = models.IntegerField(default=0)
+    progression_C8 = models.IntegerField(default=0)
+    progression_C9 = models.IntegerField(default=0)
 
 
 class Stats(models.Model):

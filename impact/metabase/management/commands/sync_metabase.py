@@ -35,6 +35,7 @@ from reglementations.views.bges import BGESReglementation
 from reglementations.views.csrd.csrd import CSRDReglementation
 from reglementations.views.index_egapro import IndexEgaproReglementation
 from users.models import User as PortailRSEUtilisateur
+from vsme.models import EXIGENCES_DE_PUBLICATION
 from vsme.models import RapportVSME
 
 
@@ -304,8 +305,24 @@ class Command(BaseCommand):
         ):
             # On ne synchronise que le dernier rapport actuellement, comme pour la CSRD
             # mais on pourrait vouloir tous les rapports quand il y en a plusieurs
-            nb_indicateurs_completes = dernier_rapport.indicateurs.count()
-            progression = dernier_rapport.progression()["pourcent"]
+            cree_le = dernier_rapport.created_at
+            indicateurs = dernier_rapport.indicateurs.order_by("-updated_at")
+            nb_indicateurs_completes = indicateurs.count()
+            if indicateurs:
+                modifie_le = indicateurs.first().updated_at
+                progression = dernier_rapport.progression()["pourcent"]
+                progression_par_exigence = {}
+                for code, exigence in EXIGENCES_DE_PUBLICATION.items():
+                    progression_par_exigence[f"progression_{code}"] = (
+                        dernier_rapport.progression_par_exigence(exigence)["pourcent"]
+                    )
+            else:
+                modifie_le = dernier_rapport.updated_at
+                progression = 0
+                progression_par_exigence = {
+                    f"progression_{code}": 0 for code in EXIGENCES_DE_PUBLICATION
+                }
+
             return MetabaseVSME(
                 entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
                 est_soumise=True,
@@ -314,8 +331,11 @@ class Command(BaseCommand):
                     if progression < 100
                     else Reglementation.STATUT_A_JOUR
                 ),
+                cree_le=cree_le,
+                modifie_le=modifie_le,
                 nb_indicateurs_completes=nb_indicateurs_completes,
                 progression=progression,
+                **progression_par_exigence,
             )
         else:
             return
