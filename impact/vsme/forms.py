@@ -192,6 +192,8 @@ def create_multiform_from_schema(schema, **kwargs):
                                 kwargs["initial"] = list(formset_initial.values())
                             else:
                                 kwargs["initial"] = [{} for row in rows]
+                        else:
+                            kwargs["initial"] = [{} for row in self.rows]
                         super().__init__(*args, **kwargs)
 
                     def add_fields(self, form, index):
