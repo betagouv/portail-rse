@@ -121,7 +121,7 @@ def create_multiform_from_schema(schema, **kwargs):
                     _MultiForm.add_Form(_DynamicForm)
                     _DynamicForm = _dynamicform_factory()
 
-                FormSet = create_formset_from_schema(field)
+                FormSet = create_formset_from_schema(field, **kwargs)
 
                 _MultiForm.add_Form(FormSet)
 
