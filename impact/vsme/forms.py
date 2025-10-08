@@ -167,6 +167,11 @@ def create_simple_field_from_schema(field_schema, **kwargs):
             )
         case "choix_binaire":
             return forms.BooleanField(**field_kwargs)
+        case "choix_binaire_radio":
+            return forms.BooleanField(
+                widget=forms.RadioSelect(choices=[(True, "Oui"), (False, "Non")]),
+                **field_kwargs,
+            )
         case "choix_unique" | "choix_multiple":
             match field_schema["choix"]:
                 case "CHOIX_PAYS":
