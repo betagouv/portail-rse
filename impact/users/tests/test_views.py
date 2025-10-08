@@ -278,6 +278,7 @@ def test_la_déconnexion_renvoie_vers_le_site_vitrine(client, alice):
 
     response = client.get("/deconnexion")
 
+    # en cas de login via e-mail/mdp uniquement (différent avec ProConnect)
     assert response.status_code == 302
     assert response.url == settings.SITES_FACILES_BASE_URL
 
@@ -285,6 +286,7 @@ def test_la_déconnexion_renvoie_vers_le_site_vitrine(client, alice):
 def test_la_déconnexion_renvoie_vers_le_site_vitrine_même_si_non_connecté(client):
     response = client.get("/deconnexion")
 
+    # en cas de login via e-mail/mdp uniquement (différent avec ProConnect)
     assert response.status_code == 302
     assert response.url == settings.SITES_FACILES_BASE_URL
 
