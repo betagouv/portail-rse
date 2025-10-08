@@ -33,12 +33,12 @@ class CustomOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         # le SIRET des claims n'est pas directement mappé sur le modèle user
         del claims["siret"]
 
-        # on considère qu'un utilisateur identifié par ProConnect a un e-mail valide
+        # on considère qu'un utilisateur identifié par ProConnect :
+        # - a un e-mail valide
+        # - n'a pas de mot de passe valide sur le portail
         user = self.UserModel(is_email_confirmed=True, **claims)
         user.set_unusable_password()
         user.save()
-
-        # TODO: log me
 
         return user
 
@@ -57,5 +57,5 @@ class CustomOIDCAuthenticationBackend(OIDCAuthenticationBackend):
             # il y a un problème dans la version initiale :
             # si on part d'un pool d'utilisateurs qui n'a jamais été connecté à ProConnect
             # toute la base est mise à jour avec le `sub` actuel (c'est mal)
-            # TODO: investiguer plus avant, voir si à remonter à la suite
+            # TODO: investiguer plus avant, voir si à remonter à La Suite
             self.UserModel.objects.filter(pk=user.pk).update(**updated_claims)

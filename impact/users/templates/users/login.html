@@ -11,6 +11,29 @@
                 <div class="fr-mb-3w">
                     Connectez-vous pour piloter et suivre vos réglementations.
                 </div>
+
+                <div class="background-light-grey fr-p-4w fr-my-4w" >
+			<p >Pour créér un nouveau compte sur le Portail RSE ou vous connecter, vous devez maintenant utiliser <strong>ProConnect</strong></p>
+		<div class="fr-connect-group" style="text-align: center;">
+			<a href="/oidc/authenticate/">
+			    <button class="fr-connect" type="button">
+				<span class="fr-connect__login">S’identifier avec</span>
+				<span class="fr-connect__brand">ProConnect</span>
+			    </button>
+			</a>
+			<p>
+				<a href="https://www.proconnect.gouv.fr/" target="_blank" rel="noopener" title="Qu’est-ce que ProConnect ? - nouvelle fenêtre">Qu’est-ce ProConnect ?</a>
+			</p>
+		</div>
+		</div>
+
+		<hr>
+
+                <div class="fr-mb-3w">
+			Si vous n'avez pas utilisé ProConnect pour créer votre compte, 
+			vous pouvez toujours vous connecter avec vos anciens identifiants :
+                </div>
+
                 {% if form.non_field_errors %}
                     <div class="fr-alert fr-alert--error fr-mb-5w">
                         <h3 class="fr-alert__title">Erreur</h3>
@@ -33,23 +56,7 @@
                         <button type="submit" class="fr-btn">Se connecter</button>
                     </div>
 
-                    <div class="background-light-grey fr-py-4w fr-my-4w" style="text-align: center;">
-                        Pas encore de compte ? <a href="{% url 'users:creation'%}" class="fr-link">Créez votre compte</a><br>
-                    </div>
                 </form>
-
-<div class="fr-connect-group">
-	<a href="/oidc/authenticate/">
-	{% csrf_token %}
-    <button class="fr-connect" type="button">
-        <span class="fr-connect__login">S’identifier avec</span>
-        <span class="fr-connect__brand">ProConnect</span>
-    </button>
-	</a>
-    <p>
-        <a href="https://www.proconnect.gouv.fr/" target="_blank" rel="noopener" title="Qu’est-ce que ProConnect ? - nouvelle fenêtre">Qu’est-ce ProConnect ?</a>
-    </p>
-</div>
 
 
 

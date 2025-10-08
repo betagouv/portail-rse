@@ -101,3 +101,8 @@ class User(AbstractBaseUser, TimestampedModel):
         # - pas d'alias pour ce champ
         # - ajout de PermissionMixin pour le modèle
         return self.is_staff
+
+    @property
+    def created_with_oidc(self):
+        # l'utilisateur a été créé via OIDC
+        return not self.has_usable_password() and bool(self.oidc_sub_id)
