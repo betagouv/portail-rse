@@ -235,6 +235,12 @@ def create_formset_from_schema(field, **kwargs):
         description = field.get("description")
         columns = field["colonnes"]
 
+        def add_fields(self, form, index):
+            super().add_fields(form, index)
+            for column in self.columns:
+                field_name = column["id"]
+                form.fields[field_name] = create_simple_field_from_schema(column)
+
     class TableauLignesLibresFormSet(TableauFormSet):
         indicator_type = "table"
 
@@ -246,12 +252,6 @@ def create_formset_from_schema(field, **kwargs):
                 "Le tableau doit contenir au moins une ligne."
             )
             super().__init__(*args, **kwargs)
-
-        def add_fields(self, form, index):
-            super().add_fields(form, index)
-            for column in self.columns:
-                field_name = column["id"]
-                form.fields[field_name] = create_simple_field_from_schema(column)
 
         @property
         def cleaned_data(self):
@@ -285,12 +285,6 @@ def create_formset_from_schema(field, **kwargs):
             else:
                 kwargs["initial"] = [{} for row in self.rows]
             super().__init__(*args, **kwargs)
-
-        def add_fields(self, form, index):
-            super().add_fields(form, index)
-            for column in self.columns:
-                field_name = column["id"]
-                form.fields[field_name] = create_simple_field_from_schema(column)
 
         @property
         def cleaned_data(self):
