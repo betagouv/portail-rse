@@ -8,12 +8,13 @@ class DsfrForm(forms.Form):
 
     def reinitialise_widgets(self):
         for name, field in self.fields.items():
-            if isinstance(field.widget, forms.widgets.Select):
-                dsfr_class_name = "fr-select"
-            elif isinstance(field.widget, forms.widgets.CheckboxSelectMultiple):
-                dsfr_class_name = None
-            else:
-                dsfr_class_name = "fr-input"
+            match field.widget:
+                case forms.widgets.Select():
+                    dsfr_class_name = "fr-select"
+                case forms.widgets.CheckboxSelectMultiple() | forms.RadioSelect():
+                    dsfr_class_name = None
+                case _:
+                    dsfr_class_name = "fr-input"
             if dsfr_class_name:
                 field.widget.attrs.update({"class": f"{dsfr_class_name}"})
             if name in self.errors and dsfr_class_name:

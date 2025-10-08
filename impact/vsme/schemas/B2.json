@@ -53,7 +53,7 @@
                     {
                         "id": "pratiques",
                         "label": "Des pratiques/politiques sont mises en œuvre ou envisagées",
-                        "type": "choix_binaire"
+                        "type": "choix_binaire_radio"
                     },
                     {
                         "id": "accessibles",
