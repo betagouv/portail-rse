@@ -205,20 +205,30 @@ class RapportVSME(TimestampedModel):
         return indicateurs_actifs
 
     def indicateur_est_actif(self, indicateur_schema_id):
-        if indicateur_schema_id == "B1-24-d":  # indicateur liste filiales
-            indicateur_type_de_perimetre = "B1-24-c"
-            try:
-                base_consolidee = (
-                    self.indicateurs.get(
-                        schema_id=indicateur_type_de_perimetre
-                    ).data.get("type_perimetre")
-                    == "consolidee"
-                )
-            except ObjectDoesNotExist:
-                base_consolidee = False
-            return base_consolidee
-        else:
-            return True
+        match indicateur_schema_id.split("-"):
+            case ["B1", "24", "d"]:  # indicateur liste filiales
+                indicateur_type_de_perimetre = "B1-24-c"
+                try:
+                    base_consolidee = (
+                        self.indicateurs.get(
+                            schema_id=indicateur_type_de_perimetre
+                        ).data.get("type_perimetre")
+                        == "consolidee"
+                    )
+                except ObjectDoesNotExist:
+                    base_consolidee = False
+                return base_consolidee
+            case ["B2", "26", p]:  # indicateurs spécifiques aux coopératives
+                indicateur_forme_juridique = "B1-24-e-i"
+                try:
+                    est_cooperative = self.indicateurs.get(
+                        schema_id=indicateur_forme_juridique
+                    ).data.get("coopérative")
+                except ObjectDoesNotExist:
+                    est_cooperative = False
+                return est_cooperative
+            case _:
+                return True
 
     def indicateurs_completes(self, exigence_de_publication):
         return self.indicateurs.filter(
