@@ -113,14 +113,14 @@ def test_tableau_de_bord_sans_siren_redirige_vers_celui_de_l_entreprise_courante
 
 
 def test_tableau_de_bord_sans_slash_final(client, entreprise_factory, alice):
-    entreprise = entreprise_factory(utilisateur=alice)
+    entreprise_factory(utilisateur=alice)
     client.force_login(alice)
 
     url = "/tableau-de-bord"
     response = client.get(url)
 
     assert response.status_code == 301
-    assert response.url == f"/tableau-de-bord/"
+    assert response.url == "/tableau-de-bord/"
 
 
 @pytest.mark.parametrize("url", [RESUME_URL_GENERIQUE, REGLEMENTATIONS_URL_GENERIQUE])
@@ -136,7 +136,7 @@ def test_tableau_de_bord_sans_siren_et_sans_entreprise(url, client, alice):
     assert messages[0].level == WARNING
     assert (
         messages[0].message
-        == "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à votre tableau de bord"
+        == "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à votre tableau de bord."
     )
 
 
