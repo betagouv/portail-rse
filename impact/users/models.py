@@ -68,7 +68,7 @@ class User(AbstractBaseUser, TimestampedModel):
         default=False,
     )
 
-    sub = models.UUIDField(
+    oidc_sub_id = models.UUIDField(
         verbose_name="identifiant interne ProConnect",
         null=True,
     )
