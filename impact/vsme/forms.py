@@ -104,6 +104,7 @@ def create_multiform_from_schema(schema, **kwargs):
         match field_type:
             case (
                 "texte"
+                | "texte_long"
                 | "nombre_entier"
                 | "nombre_decimal"
                 | "date"
@@ -148,6 +149,11 @@ def create_simple_field_from_schema(field_schema, **kwargs):
         case "texte":
             field_kwargs["max_length"] = field_schema.get("max_length", 255)
             return forms.CharField(**field_kwargs)
+        case "texte_long":
+            return forms.CharField(
+                widget=forms.Textarea(),
+                **field_kwargs,
+            )
         case "nombre_entier" | "auto_id":
             field_kwargs["min_value"] = field_schema.get("min")
             field_kwargs["max_value"] = field_schema.get("max")
