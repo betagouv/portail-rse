@@ -41,28 +41,28 @@
     },
     "B2-26": {
         "titre": "Déclaration des pratiques et politiques de durabilité",
+        "description": "Indiquez les pratiques, politiques et initiatives futures mises en place pour réduire les impacts négatifs et renforcer les impacts positifs de l’entreprise sur la société et l’environnement, afin de contribuer à une économie plus durable.",
         "ancre": "declaration-durabilite",
         "champs": [
             {
                 "id": "declaration_durabilite",
                 "label": "Déclaration des pratiques et politiques de durabilité",
-                "description": "Indiquez les pratiques, politiques et initiatives futures mises en place pour réduire les impacts négatifs et renforcer les impacts positifs de l’entreprise sur la société et l’environnement, afin de contribuer à une économie plus durable.",
+                "description": "Mettez-vous en œuvre des pratiques/politiques – ou envisagez-vous de mettre en œuvre des initiatives – en matière de durabilité touchant aux questions suivantes ? Sont-elles accessibles au public ? Des cibles ont-elles été fixées pour ces politiques ?",
                 "type": "tableau_lignes_fixes",
-                "obligatoire": true,
                 "colonnes": [
                     {
                         "id": "pratiques",
-                        "label": "Mettez-vous en œuvre des pratiques/politiques – ou envisagez-vous de mettre en œuvre des initiatives – en matière de durabilité touchant aux questions suivantes? ",
+                        "label": "Des pratiques/politiques sont mises en œuvre ou envisagées",
                         "type": "choix_binaire"
                     },
                     {
                         "id": "accessibles",
-                        "label": "Sont-elles accessibles au public?",
+                        "label": "Elles sont accessibles au public",
                         "type": "choix_binaire"
                     },
                     {
                         "id": "cibles",
-                        "label": "Des cibles ont-elles été fixées pour ces politiques?",
+                        "label": "Des cibles ont été fixées",
                         "type": "choix_binaire"
                     }
                 ],
@@ -109,6 +109,7 @@
                     }
                 ]
             }
-        ]
+        ],
+        "si_pertinent": true
     }
 }

@@ -281,7 +281,7 @@ def create_formset_from_schema(field, **kwargs):
                 if formset_initial:
                     kwargs["initial"] = list(formset_initial.values())
                 else:
-                    kwargs["initial"] = [{} for row in rows]
+                    kwargs["initial"] = [{} for row in self.rows]
             else:
                 kwargs["initial"] = [{} for row in self.rows]
             super().__init__(*args, **kwargs)
