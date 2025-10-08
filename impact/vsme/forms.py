@@ -121,7 +121,7 @@ def create_multiform_from_schema(schema, **kwargs):
                     _MultiForm.add_Form(_DynamicForm)
                     _DynamicForm = _dynamicform_factory()
 
-                FormSet = create_formset_from_schema(field, **kwargs)
+                FormSet = create_Formset_from_schema(field, **kwargs)
 
                 _MultiForm.add_Form(FormSet)
 
@@ -231,14 +231,14 @@ class GeoField(forms.CharField):
         return minimized_cleaned_value
 
 
-def create_formset_from_schema(field, **kwargs):
-    field_type = field["type"]
+def create_Formset_from_schema(field_schema, **kwargs):
+    field_type = field_schema["type"]
 
     class TableauFormSet(DsfrFormSet):
-        id = field["id"]
-        label = field["label"]
-        description = field.get("description")
-        columns = field["colonnes"]
+        id = field_schema["id"]
+        label = field_schema["label"]
+        description = field_schema.get("description")
+        columns = field_schema["colonnes"]
 
         def add_fields(self, form, index):
             super().add_fields(form, index)
@@ -278,7 +278,7 @@ def create_formset_from_schema(field, **kwargs):
 
     class TableauLignesFixesFormSet(TableauFormSet):
         indicator_type = "table_lignes_fixes"
-        rows = field.get("lignes")
+        rows = field_schema.get("lignes")
 
         def __init__(self, *args, **kwargs):
             if kwargs.get("initial"):
