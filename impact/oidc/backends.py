@@ -10,6 +10,8 @@ class CustomOIDCAuthenticationBackend(OIDCAuthenticationBackend):
             "prenom": user_info["given_name"],
             "nom": user_info["usual_name"],
             "siret": user_info["siret"],
+            # le claim `sub` est nommé `oidc_sub_id` dans le modèle pour être plus explicite
+            "oidc_sub_id": user_info["sub"],
         }
 
     def create_user(self, claims):
@@ -26,6 +28,8 @@ class CustomOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         user = self.UserModel(is_email_confirmed=True, **claims)
         user.set_unusable_password()
         user.save()
+
+        # TODO: log me
 
         return user
 

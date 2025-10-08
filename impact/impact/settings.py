@@ -511,7 +511,7 @@ OIDC_OP_JWKS_ENDPOINT = f"https://{OIDC_PC_ISSUER}/jwks"
 
 # Optional settings
 OIDC_USER_SUB_FIELD = (
-    "sub"  # Field to store the OIDC subject identifier, defaults to "sub"
+    "oidc_sub_id"  # Field to store the OIDC subject identifier, defaults to "sub"
 )
 
 # pour l'affichage complet du mom de l'utilisateur
