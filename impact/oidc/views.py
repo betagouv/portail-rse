@@ -1,5 +1,3 @@
-import logging
-
 from django.conf import settings
 from django.contrib import messages
 from django.core.exceptions import SuspiciousOperation
@@ -13,9 +11,8 @@ import api.infos_entreprise as api_entreprise
 from api.exceptions import APIError
 from entreprises.models import Entreprise
 from habilitations.models import Habilitation
+from logs import event_logger as logger
 from utils.anonymisation import cache_partiellement_un_email
-
-logger = logging.getLogger(__name__)
 
 
 class OIDCAuthenticationCallbackView(CallbackView):
@@ -59,7 +56,14 @@ def dispatch_view(request):
     entreprise = None
     url_destination = resolve_url(settings.LOGIN_REDIRECT_URL)
 
-    logger.info(f"Dispatching for SIREN: {oidc_siren}")
+    logger.info(
+        "oidc:login",
+        {
+            "sub": str(request.user.oidc_sub_id),
+            "siren": oidc_siren,
+            "session": request.session.session_key,
+        },
+    )
 
     # vérification de l'existence de l'entreprise choisie via ProConnect
     try:
