@@ -19,8 +19,7 @@
                         {% csrf_token %}
 
                         {% for form in multiform.forms %}
-                            {% if form.indicator_type == "table" %}
-
+                            {% if form.indicator_type == "table" or form.indicator_type == "table_lignes_fixes" %}
                                 {{ form.management_form }}
                                 <table class="indicateur-tableau">
                                     <caption>
@@ -37,6 +36,10 @@
                                         {% endif %}
                                     </caption>
                                     <thead>
+                                        {% if form.indicator_type == "table_lignes_fixes" %}
+                                            <!-- Colonne des en-têtes de ligne -->
+                                            <th scope="col"></th>
+                                        {% endif %}
                                         {% for field in form.0 %}
                                             {% if field.name != "DELETE" %}
                                                 <th scope="col">
@@ -44,11 +47,18 @@
                                                 </th>
                                             {% endif %}
                                         {% endfor %}
-                                        <th>Supprimer</th>
+                                        {% if form.indicator_type == "table" %}
+                                            <!-- Colonne des boutons de suppression de ligne -->
+                                            <th>Supprimer</th>
+                                        {% endif %}
                                     </thead>
                                     <tbody>
                                         {% for form_table in form %}
                                             <tr>
+                                                {% if form.indicator_type == "table_lignes_fixes" %}
+                                                    <!-- En-tête de ligne -->
+                                                    <td>{% with row=form.rows|index:forloop.counter0 %}{{ row.label }}{% endwith %}</td>
+                                                {% endif %}
                                                 {% for field in form_table %}
                                                     {% if field.name != "DELETE" %}
                                                         <td class="indicateur-cellule {%if field.field.geolocalisation and not field.errors %}indicateur-cellule--geolocalisation{% endif %}">
@@ -73,72 +83,20 @@
                                                         </td>
                                                     {% endif %}
                                                 {% endfor %}
-                                                <td class="indicateur-cellule">
-                                                    <button type="submit" name="supprimer-ligne" value="{{ form_table.DELETE.html_name }}" class="fr-btn fr-icon-delete-line fr-btn--tertiary-no-outline" title="Supprimer">Supprimer</button>
-                                                </td>
+                                                {% if form.indicator_type == "table" %}
+                                                    <!-- Bouton de suppression de ligne -->
+                                                    <td class="indicateur-cellule">
+                                                        <button type="submit" name="supprimer-ligne" value="{{ form_table.DELETE.html_name }}" class="fr-btn fr-icon-delete-line fr-btn--tertiary-no-outline" title="Supprimer">Supprimer</button>
+                                                    </td>
+                                                {% endif %}
                                             </tr>
                                         {% endfor %}
                                     </tbody>
                                 </table>
-                                <button type="submit" name="ajouter-ligne" value="on" class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-circle-line fr-mt-1w">Ajouter une ligne</button>
-                            {% elif form.indicator_type == "table_lignes_fixes" %}
-                                {{ form.management_form }}
-                                <table class="indicateur-tableau">
-                                    <caption>
-                                        {{ form.label }}
-                                        {% if form.description %}
-                                            <p class="fr-text--xs">{{ form.description }}</p>
-                                        {% endif %}
-                                        {% if form.non_form_errors %}
-                                            <p class="fr-error-text">
-                                                {% for error in form.non_form_errors %}
-                                                    {{ error|escape }}
-                                                {% endfor %}
-                                            </p>
-                                        {% endif %}
-                                    </caption>
-                                    <thead>
-                                        <th scope="col"></th>
-                                        {% for field in form.0 %}
-                                            {% if field.name != "DELETE" %}
-                                                <th scope="col">
-                                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                                                </th>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </thead>
-                                    <tbody>
-                                        {% for form_table in form %}
-                                            <tr>
-                                                <td>{% with row=form.rows|index:forloop.counter0 %}{{ row.label }}{% endwith %}</td>
-                                                {% for field in form_table %}
-                                                    {% if field.name != "DELETE" %}
-                                                        <td class="indicateur-cellule {%if field.field.geolocalisation and not field.errors %}indicateur-cellule--geolocalisation{% endif %}">
-                                                            {% if field.field.auto_id %}
-                                                                {{ field.value }}
-                                                                {{ field.as_hidden }}
-                                                            {% else %}
-                                                                {{ field }}
-                                                                {% if field.field.geolocalisation and field.value and not field.errors %}
-                                                                    <span>
-                                                                        <a class="fr-btn fr-icon-map-pin-2-line fr-btn--tertiary-no-outline" title="Voir le site - nouvel onglet" href="{% url_geolocalisation field.value %}" target="_blank" rel="noopener external" class="fr-link">Voir</a>
-                                                                    </span>
-                                                                {% endif %}
-                                                                {% if field.errors %}
-                                                                    <p id="{{ field.name }}-error-desc-error" class="fr-error-text">
-                                                                        {% for error in field.errors %}
-                                                                            {{ error|escape }}
-                                                                        {% endfor %}
-                                                                    </p>
-                                                                {% endif %}
-                                                            {% endif %}
-                                                        </td>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
+                                {% if form.indicator_type == "table" %}
+                                    <!-- Bouton d'ajout de ligne -->
+                                    <button type="submit" name="ajouter-ligne" value="on" class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-circle-line fr-mt-1w">Ajouter une ligne</button>
+                                {% endif %}
                             {% else %}
                                 {% for field in form %}
                                     {% include 'snippets/field.html' %}
