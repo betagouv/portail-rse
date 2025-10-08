@@ -1,6 +1,8 @@
 from django.core.exceptions import SuspiciousOperation
 from lasuite.oidc_login.backends import OIDCAuthenticationBackend
 
+from logs import event_logger as logger
+
 
 class CustomOIDCAuthenticationBackend(OIDCAuthenticationBackend):
     # Pour optimiser la connexion ProConnect dans le contexte du Portail RSE
@@ -20,6 +22,8 @@ class CustomOIDCAuthenticationBackend(OIDCAuthenticationBackend):
             raise SuspiciousOperation(
                 "Claims contained no recognizable user identification"
             )
+
+        logger.info("oidc:create_user", {"sub": sub, "siret": claims["siret"]})
 
         # le SIRET des claims n'est pas directement mappé sur le modèle user
         del claims["siret"]
