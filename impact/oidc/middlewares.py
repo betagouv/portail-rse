@@ -29,6 +29,4 @@ class OIDCMiddleware:
 
         response = self.get_response(request)
 
-        # rien après
-
         return response
