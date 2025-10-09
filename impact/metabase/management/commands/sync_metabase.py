@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.db.models import Count
+from django.db.models import Max
 
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise as PortailRSEEntreprise
@@ -298,7 +299,10 @@ class Command(BaseCommand):
         entreprise = caracteristiques.entreprise
 
         if (
-            dernier_rapport := RapportVSME.objects.prefetch_related("indicateurs")
+            dernier_rapport := RapportVSME.objects.annotate(
+                nb_indicateurs=Count("indicateurs"),
+                derniere_modif_indicateur=Max("indicateurs__updated_at"),
+            )
             .filter(entreprise_id=entreprise.id)
             .order_by("-annee")
             .first()
@@ -306,10 +310,8 @@ class Command(BaseCommand):
             # On ne synchronise que le dernier rapport actuellement, comme pour la CSRD
             # mais on pourrait vouloir tous les rapports quand il y en a plusieurs
             cree_le = dernier_rapport.created_at
-            indicateurs = dernier_rapport.indicateurs.order_by("-updated_at")
-            nb_indicateurs_completes = indicateurs.count()
-            if indicateurs:
-                modifie_le = indicateurs.first().updated_at
+            if dernier_rapport.nb_indicateurs > 0:
+                modifie_le = dernier_rapport.derniere_modif_indicateur
                 progression = dernier_rapport.progression()["pourcent"]
                 progression_par_exigence = {}
                 for code, exigence in EXIGENCES_DE_PUBLICATION.items():
@@ -333,7 +335,7 @@ class Command(BaseCommand):
                 ),
                 cree_le=cree_le,
                 modifie_le=modifie_le,
-                nb_indicateurs_completes=nb_indicateurs_completes,
+                nb_indicateurs_completes=dernier_rapport.nb_indicateurs,
                 progression=progression,
                 **progression_par_exigence,
             )
