@@ -360,7 +360,7 @@ class Command(BaseCommand):
                 }
 
             return MetabaseVSME(
-                entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
+                entreprise_id=entreprise.id,  # optimisation possible car la clé primaire de l'objet Metabase est identique à la clé primaire dans PortailRSE
                 est_soumise=True,
                 statut=(
                     Reglementation.STATUT_EN_COURS
@@ -393,7 +393,7 @@ class Command(BaseCommand):
                 portail_rse_status
             )
             champs = {
-                "entreprise": MetabaseEntreprise.objects.get(impact_id=entreprise.id),
+                "entreprise_id": entreprise.id,  # optimisation possible car la clé primaire de l'objet Metabase est identique à la clé primaire dans PortailRSE
                 "est_soumise": est_soumise,
                 "statut": statut,
             }
@@ -443,13 +443,13 @@ class Command(BaseCommand):
                 portail_rse_status
             )
             result = MetabaseBDESE(
-                entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
+                entreprise_id=entreprise.id,  # optimisation possible car la clé primaire de l'objet Metabase est identique à la clé primaire dans PortailRSE
                 est_soumise=est_soumise,
                 statut=statut,
             )
         else:
             result = MetabaseBDESE(
-                entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
+                entreprise_id=entreprise.id,  # optimisation possible car la clé primaire de l'objet Metabase est identique à la clé primaire dans PortailRSE
                 est_soumise=est_soumise,
             )
 
@@ -477,7 +477,7 @@ class Command(BaseCommand):
             statut = None
 
         result = MetabaseIndexEgaPro(
-            entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
+            entreprise_id=entreprise.id,  # optimisation possible car la clé primaire de l'objet Metabase est identique à la clé primaire dans PortailRSE
             est_soumise=est_soumise,
             statut=statut,
         )
@@ -510,6 +510,7 @@ class Command(BaseCommand):
             statut = None
 
         result = MetabaseBGES(
+            entreprise_id=entreprise.id,  # optimisation possible car la clé primaire de l'objet Metabase est identique à la clé primaire dans PortailRSE
             entreprise=MetabaseEntreprise.objects.get(impact_id=entreprise.id),
             est_soumise=est_soumise,
             statut=statut,
