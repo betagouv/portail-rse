@@ -240,14 +240,10 @@ class Command(BaseCommand):
                 impact_id=invitation.pk,
                 ajoutee_le=invitation.created_at,
                 modifiee_le=invitation.updated_at,
-                entreprise=MetabaseEntreprise.objects.get(
-                    impact_id=invitation.entreprise_id
-                ),
-                inviteur=(
-                    MetabaseUtilisateur.objects.get(impact_id=invitation.inviteur_id)
-                    if invitation.inviteur
-                    else None
-                ),
+                entreprise_id=invitation.entreprise_id,  # optimisation possible car la clé primaire de l'objet Metabase est identique à la clé primaire dans PortailRSE
+                inviteur_id=(
+                    invitation.inviteur_id if invitation.inviteur else None
+                ),  # optimisation possible car la clé primaire de l'objet Metabase est identique à la clé primaire dans PortailRSE
                 role=invitation.role,
                 date_acceptation=invitation.date_acceptation,
             )
@@ -258,7 +254,6 @@ class Command(BaseCommand):
 
         self._success("Ajout des invitations dans Metabase: OK")
 
-    # habilitations :
     @mesure
     def _sync_habilitations(self):
         MetabaseHabilitation.objects.all().delete()
@@ -271,19 +266,13 @@ class Command(BaseCommand):
                 impact_id=habilitation.pk,
                 ajoutee_le=habilitation.created_at,
                 modifiee_le=habilitation.updated_at,
-                utilisateur=MetabaseUtilisateur.objects.get(
-                    impact_id=habilitation.user_id
-                ),
-                entreprise=MetabaseEntreprise.objects.get(
-                    impact_id=habilitation.entreprise_id
-                ),
+                utilisateur_id=habilitation.user_id,  # optimisation possible car la clé primaire de l'objet Metabase est identique à la clé primaire dans PortailRSE
+                entreprise_id=habilitation.entreprise_id,  # optimisation possible car la clé primaire de l'objet Metabase est identique à la clé primaire dans PortailRSE
                 fonctions=habilitation.fonctions,
                 confirmee_le=habilitation.confirmed_at,
-                invitation=(
-                    MetabaseInvitation.objects.get(impact_id=habilitation.invitation_id)
-                    if habilitation.invitation_id
-                    else None
-                ),
+                invitation_id=(
+                    habilitation.invitation_id if habilitation.invitation_id else None
+                ),  # optimisation possible car la clé primaire de l'objet Metabase est identique à la clé primaire dans PortailRSE
             )
             bulk.append(meta_h)
 
