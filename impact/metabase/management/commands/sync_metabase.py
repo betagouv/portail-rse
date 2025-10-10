@@ -286,6 +286,13 @@ class Command(BaseCommand):
 
     @mesure
     def _sync_reglementations(self):
+        MetabaseVSME.objects.all().delete()
+        MetabaseCSRD.objects.all().delete()
+        MetabaseBGES.objects.all().delete()
+        MetabaseBDESE.objects.all().delete()
+        MetabaseIndexEgaPro.objects.all().delete()
+        self._success("Suppression des réglementations de Metabase: OK")
+
         self._success("Ajout des réglementations dans Metabase")
         vsme = []
         csrd = []
