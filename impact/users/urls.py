@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import views as auth_views
 from django.urls import path
 from django.urls import reverse_lazy
@@ -23,7 +24,6 @@ urlpatterns = [
         name="login",
     ),
     path("deconnexion", deconnexion, name="logout"),
-    path("creation", creation, name="creation"),
     path("invitation/<int:id_invitation>/<str:code>", invitation, name="invitation"),
     path(
         "mot-de-passe-oublie",
@@ -52,3 +52,7 @@ urlpatterns = [
         name="confirm_email",
     ),
 ]
+
+if not settings.OIDC_ENABLED:
+    # certaines options de gestion du compte et des identifiants sont absentes avec ProConnect
+    urlpatterns.append(path("creation", creation, name="creation"))

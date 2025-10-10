@@ -16,7 +16,6 @@ django-vite = "~=3.1.0"
 django-anymail = "~=13.0"
 python-dateutil = "~=2.9.0"
 django-hosts = "~=6.0"
-# note on django-csp: using v4, v3 conf will soon be incompatible
 django-csp= "~=4.0"
 sib-api-v3-sdk = "~=7.6.0"
 openpyxl = "~=3.1.5"
@@ -26,9 +25,9 @@ filetype = "~=1.2"
 # tables de travail analytics / Metabase
 aiohttp = "~=3.12.15"
 responses = "~=0.25.8"
-# admin : connexion en tant qu'utilisateur enregistré
-django-hijack = "~=3.7.4"
 geojson = "~=3.2.0"
+# gestion OIDC / ProConnect
+django-lasuite = "~=0.0.14"
 
 [dev-packages]
 pytest-django = "*"

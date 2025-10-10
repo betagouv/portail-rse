@@ -78,20 +78,6 @@ class _InvalidRequest(Exception):
     pass
 
 
-def search_and_create_entreprise(siren):
-    try:
-        infos_entreprise = api.infos_entreprise.infos_entreprise(siren)
-    except APIError as exception:
-        raise exception
-    return Entreprise.objects.create(
-        siren=infos_entreprise["siren"],
-        denomination=infos_entreprise["denomination"],
-        categorie_juridique_sirene=infos_entreprise["categorie_juridique_sirene"],
-        code_pays_etranger_sirene=infos_entreprise["code_pays_etranger_sirene"],
-        code_NAF=infos_entreprise["code_NAF"],
-    )
-
-
 def attach(request):
     form = EntrepriseAttachForm(request.POST)
     try:
@@ -100,7 +86,7 @@ def attach(request):
             if entreprises := Entreprise.objects.filter(siren=siren):
                 entreprise = entreprises[0]
             else:
-                entreprise = search_and_create_entreprise(siren)
+                entreprise = Entreprise.search_and_create_entreprise(siren)
             if habilitations := Habilitation.objects.filter(
                 entreprise=entreprise
             ).all():

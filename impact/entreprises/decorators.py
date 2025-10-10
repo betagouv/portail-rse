@@ -33,10 +33,10 @@ def entreprise_qualifiee_requise(function):
         if not siren:
             entreprise = get_current_entreprise(request)
             if not entreprise:
-                messages.warning(
-                    request,
-                    "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à votre tableau de bord",
-                )
+                msg = "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à votre tableau de bord."
+                if request.session.get("oidc_id_token"):
+                    msg += "<br>Dans le cadre d'une connexion via ProConnect, vous pouvez vous déconnecter et vous reconnecter en précisant une autre entreprise de rattachement."
+                messages.warning(request, msg)
                 return redirect("entreprises:entreprises")
             return redirect(
                 f"{request.resolver_match.app_name}:{request.resolver_match.url_name}",

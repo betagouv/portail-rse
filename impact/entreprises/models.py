@@ -10,6 +10,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils import timezone
 
+import api
+from api.exceptions import APIError
 from utils.codes_naf import CODES_NAF
 from utils.models import TimestampedModel
 from utils.pays import CODES_PAYS_ETRANGER_SIRENE
@@ -304,6 +306,20 @@ class Entreprise(TimestampedModel):
             actualisation.systeme_management_energie
         )
         return caracteristiques
+
+    @classmethod
+    def search_and_create_entreprise(cls, siren):
+        try:
+            infos_entreprise = api.infos_entreprise.infos_entreprise(siren)
+        except APIError as exception:
+            raise exception
+        return Entreprise.objects.create(
+            siren=infos_entreprise["siren"],
+            denomination=infos_entreprise["denomination"],
+            categorie_juridique_sirene=infos_entreprise["categorie_juridique_sirene"],
+            code_pays_etranger_sirene=infos_entreprise["code_pays_etranger_sirene"],
+            code_NAF=infos_entreprise["code_NAF"],
+        )
 
 
 BLANK_CHOICE = ("", "Sélectionnez une réponse")

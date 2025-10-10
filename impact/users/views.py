@@ -20,9 +20,9 @@ from .forms import UserPasswordForm
 from .models import User
 from api.exceptions import APIError
 from entreprises.models import Entreprise
-from entreprises.views import search_and_create_entreprise
 from habilitations.models import Habilitation
 from invitations.models import Invitation
+from logs import event_logger as logger
 from users.forms import message_erreur_proprietaires
 from utils.tokens import check_token
 from utils.tokens import make_token
@@ -50,7 +50,7 @@ def creation(request):
                         return render(request, "users/creation.html", {"form": form})
 
                 else:
-                    entreprise = search_and_create_entreprise(siren)
+                    entreprise = Entreprise.search_and_create_entreprise(siren)
                 user = form.save()
                 Habilitation.ajouter(
                     entreprise,
@@ -170,6 +170,18 @@ def deconnexion(request):
     (CORS et CSRF).
     https://docs.djangoproject.com/en/5.1/topics/auth/default/#django.contrib.auth.logout
     """
+    if request.session.get("oidc_id_token"):
+        # connecté via ProConnect, utilise le flow OIDC
+        logger.info(
+            "oidc:logout",
+            {
+                "session": request.session.session_key,
+                "sub": str(request.user.oidc_sub_id),
+            },
+        )
+        return redirect("oidc_logout_custom")
+
+    # Sinon, déconnexion classique
     logout(request)
     return redirect(settings.SITES_FACILES_BASE_URL)
 

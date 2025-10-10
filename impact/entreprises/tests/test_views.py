@@ -12,7 +12,6 @@ from conftest import CODE_PAYS_PORTUGAL
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
-from entreprises.views import search_and_create_entreprise
 from habilitations.models import Habilitation
 
 
@@ -97,7 +96,7 @@ def test_search_and_create_entreprise(db, mock_api_infos_entreprise):
         "code_NAF": "01.11Z",
     }
 
-    search_and_create_entreprise("123456789")
+    Entreprise.search_and_create_entreprise("123456789")
 
     entreprise = Entreprise.objects.get(siren="123456789")
     assert entreprise.denomination == "Entreprise SAS"
