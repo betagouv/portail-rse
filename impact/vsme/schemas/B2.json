@@ -58,12 +58,12 @@
                     {
                         "id": "accessibles",
                         "label": "Elles sont accessibles au public",
-                        "type": "choix_binaire"
+                        "type": "choix_binaire_radio"
                     },
                     {
                         "id": "cibles",
                         "label": "Des cibles ont été fixées",
-                        "type": "choix_binaire"
+                        "type": "choix_binaire_radio"
                     }
                 ],
                 "lignes": [
