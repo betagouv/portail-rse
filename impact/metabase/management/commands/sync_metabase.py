@@ -315,8 +315,6 @@ class Command(BaseCommand):
                 if r := self._insert_index_egapro(caracteristiques):
                     egapro.append(r)
 
-                self._success(str(entreprise))
-
         with transaction.atomic():
             if vsme:
                 MetabaseVSME.objects.bulk_create(vsme)
