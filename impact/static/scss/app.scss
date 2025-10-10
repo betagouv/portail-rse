@@ -596,6 +596,12 @@
     display: flex;
 }
 
+.indicateur-cellule--flex-container > div {
+    display: flex;
+    justify-content: center;
+    gap: 0.5em;
+}
+
 /* fr-col aligné à droite */
 .col-right {
     text-align: right;
