@@ -292,12 +292,19 @@ class Command(BaseCommand):
         bges = []
         egapro = []
         bdese = []
-        for entreprise in PortailRSEEntreprise.objects.filter(
-            users__isnull=False
-        ).distinct():
+        for entreprise in (
+            PortailRSEEntreprise.objects.filter(users__isnull=False)
+            .prefetch_related(
+                Prefetch(
+                    "caracteristiquesannuelles_set",
+                    queryset=CaracteristiquesAnnuelles.objects.order_by("-annee"),
+                    to_attr="caracteristiques",
+                )
+            )
+            .distinct()
+        ):
             caracteristiques = (
-                entreprise.dernieres_caracteristiques_qualifiantes
-                or entreprise.dernieres_caracteristiques
+                entreprise.caracteristiques[0] if entreprise.caracteristiques else None
             )
             if caracteristiques:
                 if r := self._insert_vsme(caracteristiques):
