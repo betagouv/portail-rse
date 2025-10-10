@@ -4,6 +4,7 @@ from datetime import timezone
 
 import pytest
 from django.conf import settings
+from django.core.management import call_command
 from freezegun import freeze_time
 
 from conftest import CODE_NAF_CEREALES
@@ -13,7 +14,6 @@ from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from habilitations.models import Habilitation
 from invitations.models import Invitation
-from metabase.management.commands.sync_metabase import Command
 from metabase.models import BDESE as MetabaseBDESE
 from metabase.models import BGES as MetabaseBGES
 from metabase.models import Entreprise as MetabaseEntreprise
@@ -121,7 +121,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
         )
         entreprise.actualise_caracteristiques(actualisation).save()
 
-    Command().handle()
+    call_command("sync_metabase")
 
     assert MetabaseEntreprise.objects.count() == 1
     metabase_entreprise = MetabaseEntreprise.objects.first()
@@ -175,7 +175,7 @@ def test_synchronise_une_entreprise_qualifiee_appartenant_a_un_groupe(
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_30M,
     )
 
-    Command().handle()
+    call_command("sync_metabase")
 
     assert MetabaseEntreprise.objects.count() == 1
     metabase_entreprise = MetabaseEntreprise.objects.first()
@@ -208,8 +208,8 @@ def test_synchronise_une_entreprise_plusieurs_fois(entreprise_factory):
         denomination="Entreprise A",
     )
 
-    Command().handle()
-    Command().handle()
+    call_command("sync_metabase")
+    call_command("sync_metabase")
 
     assert MetabaseEntreprise.objects.count() == 1
     metabase_entreprise = MetabaseEntreprise.objects.first()
@@ -224,7 +224,7 @@ def test_synchronise_une_entreprise_sans_caracteristiques_annuelles():
         siren="000000001", denomination="Entreprise SAS"
     )
 
-    Command().handle()
+    call_command("sync_metabase")
 
     metabase_entreprise = MetabaseEntreprise.objects.first()
     assert metabase_entreprise.denomination == "Entreprise SAS"
@@ -251,7 +251,7 @@ def test_synchronise_une_entreprise_sans_caracteristiques_qualifiantes(
     caracteristiques.tranche_chiffre_affaires = None
     caracteristiques.save()
 
-    Command().handle()
+    call_command("sync_metabase")
 
     metabase_entreprise = MetabaseEntreprise.objects.first()
     assert metabase_entreprise.tranche_bilan == tranche_bilan
@@ -272,7 +272,7 @@ def test_synchronise_une_entreprise_avec_un_utilisateur(
     )
     habilitation = Habilitation.ajouter(entreprise, utilisateur, fonctions="Présidente")
 
-    Command().handle()
+    call_command("sync_metabase")
 
     metabase_entreprise = MetabaseEntreprise.objects.first()
     assert metabase_entreprise.nombre_utilisateurs == 1
@@ -303,7 +303,7 @@ def test_synchronise_une_entreprise_avec_un_utilisateur(
     habilitation.confirmed_at = date_confirmation
     habilitation.save()
 
-    Command().handle()
+    call_command("sync_metabase")
 
     assert MetabaseHabilitation.objects.count() == 1
     metabase_habilitation = MetabaseHabilitation.objects.first()
@@ -322,7 +322,7 @@ def test_synchronise_les_invitations(entreprise_factory, alice, django_user_mode
         inviteur=alice,
     )
 
-    Command().handle()
+    call_command("sync_metabase")
 
     assert MetabaseInvitation.objects.count() == 1
 
@@ -346,7 +346,7 @@ def test_synchronise_les_invitations(entreprise_factory, alice, django_user_mode
     )
     invitation.accepter(bob)
 
-    Command().handle()
+    call_command("sync_metabase")
 
     metabase_invitation.refresh_from_db()
     assert metabase_invitation.date_acceptation
@@ -388,7 +388,7 @@ def test_synchronise_les_reglementations_BDESE(
     )
     mark_bdese_as_complete(bdese_a_jour)
 
-    Command().handle()
+    call_command("sync_metabase")
 
     assert MetabaseBDESE.objects.count() == 4
 
@@ -446,7 +446,7 @@ def test_synchronise_les_reglementations_IndexEgaPro(
         Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     mock_api_egapro.side_effect = [False, True]
 
-    Command().handle()
+    call_command("sync_metabase")
 
     assert mock_api_egapro.call_count == 2
     assert MetabaseIndexEgaPro.objects.count() == 3
@@ -500,7 +500,7 @@ def test_synchronise_les_reglementations_BGES(
     mock_api_bges.side_effect = [2010, 2023]
 
     with freeze_time("2023-12-20"):
-        Command().handle()
+        call_command("sync_metabase")
 
     assert mock_api_bges.call_count == 2
     assert MetabaseBGES.objects.count() == 3
@@ -563,7 +563,7 @@ def test_synchronise_les_rapports_VSME(alice, entreprise_factory, mock_api_egapr
                 schema_id=indicateur, data={"yolo": "yolo"}
             )
 
-    Command().handle()
+    call_command("sync_metabase")
 
     assert MetabaseVSME.objects.count() == 3
 
@@ -609,8 +609,8 @@ def test_synchronise_les_reglementations_plusieurs_fois(alice, entreprise_factor
     )
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
-    Command().handle()
-    Command().handle()
+    call_command("sync_metabase")
+    call_command("sync_metabase")
 
     assert MetabaseBDESE.objects.count() == 1
     assert MetabaseIndexEgaPro.objects.count() == 1
@@ -623,7 +623,7 @@ def test_ignore_les_entreprises_inscrites_non_qualifiees_dans_la_synchro_des_reg
 ):
     Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
 
-    Command().handle()
+    call_command("sync_metabase")
 
     assert MetabaseBDESE.objects.count() == 0
     assert MetabaseIndexEgaPro.objects.count() == 0
@@ -644,7 +644,7 @@ def test_conserve_les_entreprises_inscrites_suffisamment_qualifiées_dans_la_syn
     caracteristiques.tranche_chiffre_affaires = None  # CA non renseigné
     caracteristiques.save()
 
-    Command().handle()
+    call_command("sync_metabase")
 
     # CA non nécessaire pour qualifier la BDESE
     assert MetabaseBDESE.objects.count() == 1
@@ -667,7 +667,7 @@ def test_ignore_les_entreprises_inscrites_qui_ne_sont_pas_suffisamment_qualifié
     caracteristiques.effectif = None  # effectif non renseigné
     caracteristiques.save()
 
-    Command().handle()
+    call_command("sync_metabase")
 
     # effectif nécessaire pour qualifier la BDESE
     assert MetabaseBDESE.objects.count() == 0
@@ -724,7 +724,7 @@ def test_synchronise_l_indicateur_d_impact_nombre_de_reglementations_a_jour(
         mark_bdese_as_complete(bdese_a_jour_2)
         # aucune entreprise soumise au BGES
 
-        Command().handle()
+        call_command("sync_metabase")
 
     assert MetabaseStats.objects.count() == 1
     stat = MetabaseStats.objects.first()
@@ -763,7 +763,7 @@ def test_synchronise_l_indicateur_d_impact_avec_des_entreprises_soumises_au_BGES
         # la première a un dépôt trop ancien, la deuxième suffisamment récent
         mock_api_bges.side_effect = [2010, 2023]
 
-        Command().handle()
+        call_command("sync_metabase")
 
     assert MetabaseStats.objects.count() == 1
     stat = MetabaseStats.objects.first()
@@ -780,15 +780,15 @@ def test_synchronise_les_stats_plusieurs_fois():
     date_troisieme_synchro = date(2020, 11, 29)
 
     with freeze_time(date_premiere_synchro):
-        Command().handle()
-        Command().handle()
+        call_command("sync_metabase")
+        call_command("sync_metabase")
 
     assert MetabaseStats.objects.count() == 1
     stat = MetabaseStats.objects.first()
     assert stat.date == date_premiere_synchro
 
     with freeze_time(date_troisieme_synchro):
-        Command().handle()
+        call_command("sync_metabase")
 
     assert MetabaseStats.objects.count() == 2
     assert MetabaseStats.objects.get(date=date_premiere_synchro)
