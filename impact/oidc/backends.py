@@ -7,7 +7,12 @@ from logs import event_logger as logger
 class CustomOIDCAuthenticationBackend(OIDCAuthenticationBackend):
     # Pour optimiser la connexion ProConnect dans le contexte du Portail RSE
 
+    # les champs qu el'on veut pouvoir mettre à jour dans le modèle,
+    # si ils ont été modifiés sur l'espace ProConnect
+    _updatable_claims = ["nom", "prenom"]
+
     def get_extra_claims(self, user_info):
+        # tous ces claims *doivent* correspondre à des champs du modèle
         return {
             "prenom": user_info["given_name"],
             "nom": user_info["usual_name"],
@@ -23,7 +28,7 @@ class CustomOIDCAuthenticationBackend(OIDCAuthenticationBackend):
                 "Claims contained no recognizable user identification"
             )
 
-        logger.info("oidc:create_user", {"sub": sub, "siret": claims["siret"]})
+        logger.info("oidc:create_user", {"oidc_sub_id": sub, "siret": claims["siret"]})
 
         # le SIRET des claims n'est pas directement mappé sur le modèle user
         del claims["siret"]
@@ -39,7 +44,8 @@ class CustomOIDCAuthenticationBackend(OIDCAuthenticationBackend):
 
     def update_user_if_needed(self, user, claims):
         updated_claims = {}
-        for key in claims:
+        for key in self._updatable_claims:
+            # défensif...
             if not hasattr(user, key):
                 continue
 
