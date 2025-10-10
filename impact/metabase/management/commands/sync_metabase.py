@@ -9,6 +9,7 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.db.models import Count
 from django.db.models import Max
+from django.db.models import Prefetch
 
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise as PortailRSEEntreprise
@@ -111,17 +112,25 @@ class Command(BaseCommand):
         self._success("Suppression des entreprises de Metabase: OK")
         self._success("Ajout des entreprises dans Metabase")
         bulk = []
-        for entreprise in PortailRSEEntreprise.objects.annotate(
-            nombre_utilisateurs=Count("users")
-        ):
+
+        for entreprise in PortailRSEEntreprise.objects.prefetch_related(
+            Prefetch(
+                "caracteristiquesannuelles_set",
+                queryset=CaracteristiquesAnnuelles.objects.order_by("-annee"),
+                to_attr="caracteristiques",
+            )
+        ).annotate(nombre_utilisateurs=Count("users")):
             caracteristiques = (
-                entreprise.dernieres_caracteristiques_qualifiantes
-                or entreprise.dernieres_caracteristiques
+                entreprise.caracteristiques[0] if entreprise.caracteristiques else None
             )
             me_entreprise = MetabaseEntreprise(
                 impact_id=entreprise.pk,
                 ajoutee_le=entreprise.created_at,
-                modifiee_le=_last_update(entreprise),
+                modifiee_le=(
+                    max(entreprise.updated_at, caracteristiques.updated_at)
+                    if caracteristiques
+                    else entreprise.updated_at
+                ),
                 siren=entreprise.siren,
                 denomination=entreprise.denomination,
                 date_cloture_exercice=(
@@ -612,16 +621,6 @@ class Command(BaseCommand):
             url="https://bilans-ges.ademe.fr/api/inventories",
             callback=callback_bges,
         )
-
-
-def _last_update(entreprise):
-    last_update = entreprise.updated_at
-    for caracteristiques in CaracteristiquesAnnuelles.objects.filter(
-        entreprise=entreprise
-    ):
-        if caracteristiques.updated_at > last_update:
-            last_update = caracteristiques.updated_at
-    return last_update
 
 
 # Callbacks pour `responses`
