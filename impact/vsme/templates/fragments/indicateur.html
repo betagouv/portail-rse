@@ -61,7 +61,9 @@
                                                 {% endif %}
                                                 {% for field in form_table %}
                                                     {% if field.name != "DELETE" %}
-                                                        <td class="indicateur-cellule {%if field.field.geolocalisation and not field.errors %}indicateur-cellule--geolocalisation{% endif %}">
+                                                        <td class="indicateur-cellule
+                                                                   {% if field|widget_type == 'RadioSelect' %}indicateur-cellule--flex-container{% endif %}
+                                                                   {% if field.field.geolocalisation and not field.errors %}indicateur-cellule--geolocalisation{% endif %}">
                                                             {% if field.field.auto_id %}
                                                                 {{ field.value }}
                                                                 {{ field.as_hidden }}
