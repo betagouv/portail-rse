@@ -55,28 +55,60 @@ def mesure(fonction):
 
 
 class Command(BaseCommand):
-    def handle(self, *args, **options):
-        self._register_responses()
-        self._drop_tables()
-        self._insert_entreprises()
-        self._insert_utilisateurs()
-        self._insert_invitations()
-        self._insert_habilitations()
-        self._insert_reglementations()
-        self._insert_stats()
+    help = "Synchronise les données de la base de donnée de prod vers la base de données de Metabase"
 
-    def _drop_tables(self):
-        MetabaseEntreprise.objects.all().delete()
-        self._success("Suppression des entreprises de Metabase: OK")
-        MetabaseUtilisateur.objects.all().delete()
-        self._success("Suppression des utilisateurs de Metabase: OK")
-        MetabaseHabilitation.objects.all().delete()
-        self._success("Suppression des habilitations de Metabase: OK")
-        MetabaseInvitation.objects.all().delete()
-        self._success("Suppression des invitations de Metabase: OK")
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "-e",
+            "--entreprises",
+            action="store_true",
+            help="synchronise les entreprises",
+        )
+        parser.add_argument(
+            "-u",
+            "--utilisateurs",
+            action="store_true",
+            help="synchronise les utilisateurs, les invitations et les habilitations",
+        )
+        parser.add_argument(
+            "-r",
+            "--reglementations",
+            action="store_true",
+            help="synchronise les réglementations",
+        )
+        parser.add_argument(
+            "-s", "--stats", action="store_true", help="synchronise les stats"
+        )
+
+    def handle(self, *args, **options):
+        if not (
+            options["entreprises"]
+            or options["utilisateurs"]
+            or options["reglementations"]
+            or options["stats"]
+        ):
+            # Quand aucun argument n'est passé, on effectue la synchro entièrement
+            options["entreprises"] = True
+            options["utilisateurs"] = True
+            options["reglementations"] = True
+            options["stats"] = True
+
+        if options["entreprises"]:
+            self._sync_entreprises()
+        if options["utilisateurs"]:
+            self._sync_utilisateurs()
+            self._sync_invitations()
+            self._sync_habilitations()
+        if options["reglementations"]:
+            self._register_responses()
+            self._sync_reglementations()
+        if options["stats"]:
+            self._insert_stats()
 
     @mesure
-    def _insert_entreprises(self):
+    def _sync_entreprises(self):
+        MetabaseEntreprise.objects.all().delete()
+        self._success("Suppression des entreprises de Metabase: OK")
         self._success("Ajout des entreprises dans Metabase")
         bulk = []
         for entreprise in PortailRSEEntreprise.objects.annotate(
@@ -162,7 +194,9 @@ class Command(BaseCommand):
         self._success("Ajout des entreprises dans Metabase: OK")
 
     @mesure
-    def _insert_utilisateurs(self):
+    def _sync_utilisateurs(self):
+        MetabaseUtilisateur.objects.all().delete()
+        self._success("Suppression des utilisateurs de Metabase: OK")
         self._success("Ajout des utilisateurs dans Metabase")
         bulk = []
         for utilisateur in PortailRSEUtilisateur.objects.annotate(
@@ -185,7 +219,9 @@ class Command(BaseCommand):
         self._success("Ajout des utilisateurs dans Metabase: OK")
 
     @mesure
-    def _insert_invitations(self):
+    def _sync_invitations(self):
+        MetabaseInvitation.objects.all().delete()
+        self._success("Suppression des invitations de Metabase: OK")
         self._success("Ajout des invitations dans Metabase")
         bulk = []
         for invitation in PortailRSEInvitation.objects.all().select_related(
@@ -215,7 +251,9 @@ class Command(BaseCommand):
 
     # habilitations :
     @mesure
-    def _insert_habilitations(self):
+    def _sync_habilitations(self):
+        MetabaseHabilitation.objects.all().delete()
+        self._success("Suppression des habilitations de Metabase: OK")
         self._success("Ajout des habilitations dans Metabase")
         bulk = []
         for habilitation in PortailRSEHabilitation.objects.all():
@@ -249,7 +287,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(message))
 
     @mesure
-    def _insert_reglementations(self):
+    def _sync_reglementations(self):
         self._success("Ajout des réglementations dans Metabase")
         vsme = []
         csrd = []
