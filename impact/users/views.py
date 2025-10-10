@@ -20,7 +20,6 @@ from .forms import UserPasswordForm
 from .models import User
 from api.exceptions import APIError
 from entreprises.models import Entreprise
-from entreprises.views import search_and_create_entreprise
 from habilitations.models import Habilitation
 from invitations.models import Invitation
 from logs import event_logger as logger
@@ -51,7 +50,7 @@ def creation(request):
                         return render(request, "users/creation.html", {"form": form})
 
                 else:
-                    entreprise = search_and_create_entreprise(siren)
+                    entreprise = Entreprise.search_and_create_entreprise(siren)
                 user = form.save()
                 Habilitation.ajouter(
                     entreprise,
