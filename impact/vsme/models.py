@@ -221,9 +221,12 @@ class RapportVSME(TimestampedModel):
             case ["B2", "26", p]:  # indicateurs spécifiques aux coopératives
                 indicateur_forme_juridique = "B1-24-e-i"
                 try:
-                    est_cooperative = self.indicateurs.get(
+                    forme_juridique = self.indicateurs.get(
                         schema_id=indicateur_forme_juridique
-                    ).data.get("coopérative")
+                    ).data
+                    est_cooperative = forme_juridique.get(
+                        "coopérative"
+                    ) or forme_juridique.get("forme_juridique") in ("51", "63")
                 except ObjectDoesNotExist:
                     est_cooperative = False
                 return est_cooperative
