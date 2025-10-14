@@ -17,6 +17,7 @@ from ..enums import ENJEUX_NORMALISES
 from ..enums import ESRS
 from ..enums import EtapeCSRD
 from ..enums import ETAPES_CSRD
+from analyseia.models import AnalyseIA
 from utils.models import TimestampedModel
 
 
@@ -60,6 +61,7 @@ class RapportCSRD(TimestampedModel):
     bloque = models.BooleanField(
         verbose_name="rapport bloqué après publication", default=False
     )
+    analyses_ia = models.ManyToManyField(AnalyseIA, related_name="rapports_csrd")
 
     objects = RapportCSRDQuerySet.as_manager()
 

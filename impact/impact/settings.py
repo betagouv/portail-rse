@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "users",
     "utils",
     "logs",
+    "analyseia",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
