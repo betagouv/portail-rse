@@ -319,10 +319,15 @@ def create_Formset_from_schema(field_schema, **kwargs):
             validate_min=True,
         )
     else:  # "tableau_lignes_fixes"
+        nb_lignes = len(field_schema["lignes"])
         FormSet = forms.formset_factory(
             DsfrForm,
             formset=TableauLignesFixesFormSet,
             extra=0,
+            min_num=nb_lignes,
+            max_num=nb_lignes,
+            validate_min=True,
+            validate_max=True,
         )
 
     return FormSet

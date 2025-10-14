@@ -362,3 +362,18 @@ def test_multiform_tableau_lignes_fixes_suppression_ligne_impossible(
         "nombre_heures_travaillees": 2,
         "representation_conseil_administration": False,
     }
+
+
+def test_multiform_tableau_lignes_fixes_vide_invalide(
+    indicateur_avec_tableau_lignes_fixes,
+):
+    multiform_class = create_multiform_from_schema(
+        indicateur_avec_tableau_lignes_fixes, toggle_pertinent_url="/test"
+    )
+    data = {
+        "form-TOTAL_FORMS": "3",
+        "form-INITIAL_FORMS": "0",
+    }
+    multiform = multiform_class(data)
+
+    assert not multiform.is_valid()
