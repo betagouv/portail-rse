@@ -36,6 +36,30 @@ TABLEAU_EMPLOYES = {
 }
 
 
+TABLEAU_REPARTITION_HOMME_FEMME = {
+    "id": "repartition",
+    "label": "Répartition par genre",
+    "type": "tableau_lignes_fixes",
+    "colonnes": [
+        {
+            "id": "nombre_heures_travaillees",
+            "label": "Nombre d'heures travaillées",
+            "type": "nombre_decimal",
+        },
+        {
+            "id": "representation_conseil_administration",
+            "label": "Est représenté au conseil d'administration",
+            "type": "choix_binaire_radio",
+        },
+    ],
+    "lignes": [
+        {"id": "homme", "label": "Homme"},
+        {"id": "femme", "label": "Femme"},
+        {"id": "autre", "label": "Autre"},
+    ],
+}
+
+
 @pytest.fixture
 def indicateur_avec_champs_simples():
     return {
@@ -86,6 +110,17 @@ def indicateur_champs_et_tableau():
                 "type": "texte",
             },
         ],
+    }
+
+
+@pytest.fixture
+def indicateur_avec_tableau_lignes_fixes():
+    return {
+        "schema_id": "TEST-5",
+        "titre": "Test tableau lignes fixes",
+        "description": "Description test",
+        "ancre": "test",
+        "champs": [TABLEAU_REPARTITION_HOMME_FEMME],
     }
 
 
@@ -266,3 +301,64 @@ def test_multiform_si_pertinent_validation_avec_non_pertinent(indicateur_si_pert
     assert multiform.is_valid()
     assert multiform.cleaned_data["non_pertinent"] is True
     assert multiform.cleaned_data["age"] is None
+
+
+def test_multiform_tableau_lignes_fixes_validation(
+    indicateur_avec_tableau_lignes_fixes,
+):
+    multiform_class = create_multiform_from_schema(
+        indicateur_avec_tableau_lignes_fixes, toggle_pertinent_url="/test"
+    )
+    data = {
+        "form-TOTAL_FORMS": "3",
+        "form-INITIAL_FORMS": "0",
+        "form-0-nombre_heures_travaillees": "10",
+        "form-0-representation_conseil_administration": True,
+        "form-1-nombre_heures_travaillees": "5",
+        "form-1-representation_conseil_administration": True,
+        "form-2-nombre_heures_travaillees": "2",
+        "form-2-representation_conseil_administration": False,
+    }
+    multiform = multiform_class(data)
+
+    assert multiform.is_valid()
+    assert multiform.cleaned_data["repartition"] == {
+        "homme": {
+            "nombre_heures_travaillees": 10,
+            "representation_conseil_administration": True,
+        },
+        "femme": {
+            "nombre_heures_travaillees": 5,
+            "representation_conseil_administration": True,
+        },
+        "autre": {
+            "nombre_heures_travaillees": 2,
+            "representation_conseil_administration": False,
+        },
+    }
+
+
+def test_multiform_tableau_lignes_fixes_suppression_ligne_impossible(
+    indicateur_avec_tableau_lignes_fixes,
+):
+    multiform_class = create_multiform_from_schema(
+        indicateur_avec_tableau_lignes_fixes, toggle_pertinent_url="/test"
+    )
+    data = {
+        "form-TOTAL_FORMS": "3",
+        "form-INITIAL_FORMS": "0",
+        "form-0-nombre_heures_travaillees": "10",
+        "form-0-representation_conseil_administration": True,
+        "form-1-nombre_heures_travaillees": "5",
+        "form-1-representation_conseil_administration": True,
+        "form-2-nombre_heures_travaillees": "2",
+        "form-2-representation_conseil_administration": False,
+        "form-2-DELETE": "on",
+    }
+    multiform = multiform_class(data)
+
+    assert multiform.is_valid()
+    assert multiform.cleaned_data["repartition"]["autre"] == {
+        "nombre_heures_travaillees": 2,
+        "representation_conseil_administration": False,
+    }
