@@ -114,6 +114,7 @@ EXIGENCES_DE_PUBLICATION = {
         "Effectifs : santé et sécurité",
         Categorie.SOCIAL,
         "https://portail-rse.beta.gouv.fr/vsme/b9-effectifs-sante-et-securite/",
+        remplissable=True,
     ),
     "B10": ExigenceDePublication(
         "B10",

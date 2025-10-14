@@ -1,0 +1,34 @@
+{
+    "B9-41a": {
+        "titre": "Accidents du travail",
+        "description": "Publier le nombre d’accidents du travail comptabilisables ainsi que le taux correspondant.",
+        "ancre": "accidents_travail",
+        "champs": [
+            {
+                "id": "nombre_accidents",
+                "label": "Nombre d'accidents du travail",
+                "type": "nombre_entier",
+                "obligatoire": true
+            },
+            {
+                "id": "taux_accidents",
+                "label": "Taux d’accidents du travail comptabilisables",
+                "type": "nombre_decimal",
+                "obligatoire": true
+            }
+        ]
+    },
+    "B9-41b": {
+        "titre": "Décès dus à des accidents du travail",
+        "description": "Indiquer le nombre de décès de salariés résultant d’accidents du travail et/ou de problèmes de santé liés au travail.",
+        "ancre": "deces_accidents_travail",
+        "champs": [
+            {
+                "id": "deces_accidents_travail",
+                "label": "Nombre de décès  dus à des accidents du travail",
+                "type": "nombre_entier",
+                "obligatoire": true
+            }
+        ]
+    }
+}
