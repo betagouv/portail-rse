@@ -1,0 +1,48 @@
+<div class="background-light-grey fr-p-4w fr-my-4w">
+    <p>Pour créér un nouveau compte sur le Portail RSE ou vous connecter, vous devez maintenant utiliser
+        <strong>ProConnect</strong>
+    </p>
+    <div class="fr-connect-group" style="text-align: center;">
+        <a href="/oidc/authenticate/">
+            <button class="fr-connect" type="button">
+                <span class="fr-connect__login">S’identifier avec</span>
+                <span class="fr-connect__brand">ProConnect</span>
+            </button>
+        </a>
+        <p>
+            <a href="https://www.proconnect.gouv.fr/" target="_blank" rel="noopener"
+               title="Qu’est-ce que ProConnect ? - nouvelle fenêtre">Qu’est-ce ProConnect ?</a>
+        </p>
+    </div>
+</div>
+
+<hr>
+
+<div class="fr-mb-3w">
+    Si vous n'avez pas utilisé ProConnect pour créer votre compte,
+    vous pouvez toujours vous connecter avec vos anciens identifiants :
+</div>
+
+{% if form.non_field_errors %}
+    <div class="fr-alert fr-alert--error fr-mb-5w">
+        <h3 class="fr-alert__title">Erreur</h3>
+        {% for error in form.non_field_errors %}
+            <p>{{ error }}</p>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<form action="{% url 'users:login' %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}">
+    {% include 'snippets/field.html' with field=form.username %}
+    {% include 'snippets/field.html' with field=form.password additional_classes="fr-mb-1w" %}
+    <div>
+        Mot de passe oublié ? <a href="{% url 'users:password_reset'%}" class="fr-link">Réinitialisez votre mot
+            de passe</a>
+    </div>
+
+    <div class="fr-mt-4w">
+        <button type="submit" class="fr-btn">Se connecter</button>
+    </div>
+</form>
