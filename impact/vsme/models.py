@@ -84,6 +84,7 @@ EXIGENCES_DE_PUBLICATION = {
         "Pollution de l’air, de l’eau et des sols",
         Categorie.ENVIRONNEMENT,
         "https://portail-rse.beta.gouv.fr/vsme/b4-pollution-de-l-air-de-l-eau-et-des-sols/",
+        remplissable=True,
     ),
     "B5": ExigenceDePublication(
         "B5",

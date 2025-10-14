@@ -1,0 +1,20 @@
+{
+    "B4-1": {
+        "titre": "Texte avec suggestion",
+        "description": "Indiquer une des suggestions ou un champ libre",
+        "ancre": "",
+        "champs": [
+            {
+                "id": "test",
+                "label": "Suggestions",
+                "description": "Commencez à taper pour voir les suggestions",
+                "type": "texte",
+                "suggestions": [
+                    "Premier",
+                    "Deuxième",
+                    "Troisième"
+                ]
+            }
+        ]
+    }
+}
