@@ -291,6 +291,20 @@ def test_multiform_si_pertinent_validation_sans_non_pertinent(indicateur_si_pert
     )
 
 
+def test_multiform_si_pertinent_validation_valeur_0(indicateur_si_pertinent):
+    multiform_class = create_multiform_from_schema(
+        indicateur_si_pertinent, toggle_pertinent_url="/test/"
+    )
+    data = {
+        "non_pertinent": False,
+        "age": 0,
+    }
+    multiform = multiform_class(data)
+
+    assert multiform.is_valid()
+    assert multiform.cleaned_data["age"] == 0
+
+
 def test_multiform_si_pertinent_validation_avec_non_pertinent(indicateur_si_pertinent):
     multiform_class = create_multiform_from_schema(
         indicateur_si_pertinent, toggle_pertinent_url="/test/"

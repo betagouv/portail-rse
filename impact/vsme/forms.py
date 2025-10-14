@@ -55,6 +55,7 @@ def create_multiform_from_schema(schema, **kwargs):
                             if (
                                 field != NON_PERTINENT_FIELD_NAME
                                 and not form.cleaned_data.get(field)
+                                and not form.cleaned_data.get(field) == 0
                             ):
                                 form.add_error(
                                     field,
