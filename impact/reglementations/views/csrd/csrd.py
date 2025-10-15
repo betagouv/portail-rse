@@ -632,7 +632,7 @@ def contexte_d_etape(id_etape, csrd, form=None):
         case "analyse-ecart":
             context |= {
                 "form": form or DocumentAnalyseIAForm(),
-                "documents": csrd.documents,
+                "documents": csrd.analyses_ia,
                 "stats_synthese": resume_resultats_analyse_ia(csrd),
                 "onglet_resultats_actif": csrd.documents_analyses.exists()
                 and not csrd.documents_non_analyses.exists(),

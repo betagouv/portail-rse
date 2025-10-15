@@ -16,10 +16,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from openpyxl import load_workbook
 
+from analyseia.models import AnalyseIA
 from api import analyse_ia
 from api.exceptions import APIError
 from reglementations.forms.csrd import DocumentAnalyseIAForm
-from reglementations.models import DocumentAnalyseIA
 from reglementations.models import RapportCSRD
 from reglementations.views.csrd.csrd import contexte_d_etape
 from reglementations.views.csrd.csrd import normalise_titre_esrs
@@ -35,10 +35,13 @@ def ajout_document(request, csrd_id):
     id_etape = "analyse-ecart"
     csrd = RapportCSRD.objects.get(id=csrd_id)
     data = {**request.POST}
-    data["rapport_csrd"] = csrd_id
+    # data["rapport_csrd"] = csrd_id
     form = DocumentAnalyseIAForm(data=data, files=request.FILES)
     if form.is_valid():
+        # les analyses IA étant désormais génériques,
+        # on effectue le rattachement au rapport CSRD
         form.save()
+        form.instance.rapports_csrd.add(csrd)
         messages.success(request, "Document ajouté")
         return redirect(
             "reglementations:gestion_csrd",
@@ -55,14 +58,15 @@ def ajout_document(request, csrd_id):
 @document_required
 @require_http_methods(["POST"])
 def suppression_document(request, id_document):
-    document = DocumentAnalyseIA.objects.get(id=id_document)
+    document = AnalyseIA.objects.get(id=id_document)
+    rapport_csrd = document.rapports_csrd.first()
     document.delete()
     document.fichier.delete(save=False)
     messages.success(request, "Document supprimé")
     id_etape = "analyse-ecart"
     return redirect(
         "reglementations:gestion_csrd",
-        siren=document.rapport_csrd.entreprise.siren,
+        siren=rapport_csrd.entreprise.siren,
         id_etape=id_etape,
     )
 
@@ -71,7 +75,7 @@ def suppression_document(request, id_document):
 @document_required
 @require_http_methods(["POST"])
 def lancement_analyse_IA(request, id_document):
-    document = DocumentAnalyseIA.objects.get(id=id_document)
+    document = AnalyseIA.objects.get(id=id_document)
 
     if document.etat != "success":
         try:
@@ -106,7 +110,7 @@ def lancement_analyse_IA(request, id_document):
 @csrf_exempt
 def etat_analyse_IA(request, id_document):
     try:
-        document = DocumentAnalyseIA.objects.get(id=id_document)
+        document = AnalyseIA.objects.get(id=id_document)
     except ObjectDoesNotExist:
         raise Http404("Ce document n'existe pas")
 
@@ -158,7 +162,7 @@ def envoie_resultat_ia_email(document, resultat_ia_url):
 @login_required
 @document_required
 def resultat_IA_xlsx(request, id_document):
-    document = DocumentAnalyseIA.objects.get(id=id_document)
+    document = AnalyseIA.objects.get(id=id_document)
 
     chemin_xlsx = Path(
         settings.BASE_DIR, "reglementations/views/csrd/xlsx/template_synthese_ESG.xlsx"

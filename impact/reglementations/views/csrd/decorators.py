@@ -2,9 +2,10 @@ from functools import wraps
 
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
+from django.shortcuts import Http404
 
+from analyseia.models import AnalyseIA
 from habilitations.models import Habilitation
-from reglementations.models.csrd import DocumentAnalyseIA
 from reglementations.models.csrd import Enjeu
 from reglementations.models.csrd import RapportCSRD
 
@@ -41,9 +42,13 @@ def enjeu_required(function):
 def document_required(function):
     @wraps(function)
     def wrap(request, id_document, *args, **kwargs):
-        document = get_object_or_404(DocumentAnalyseIA, id=id_document)
+        document = get_object_or_404(AnalyseIA, id=id_document)
+        rapport_csrd = document.rapports_csrd.first()
 
-        if not Habilitation.existe(document.rapport_csrd.entreprise, request.user):
+        if not rapport_csrd:
+            raise Http404("Cette analyse IA n'a pas de rapport CSRD associé")
+
+        if not Habilitation.existe(rapport_csrd.entreprise, request.user):
             raise PermissionDenied(
                 "L'utilisateur n'a pas les permissions nécessaires pour accéder à ce fichier"
             )
