@@ -260,11 +260,11 @@ class RapportCSRD(TimestampedModel):
 
     @property
     def documents_analyses(self):
-        return self.documents.filter(etat__exact="success")
+        return self.analyses_ia.filter(etat__exact="success")
 
     @property
     def documents_non_analyses(self):
-        return self.documents.filter(etat__isnull=True)
+        return self.analyses_ia.filter(etat__isnull=True)
 
     @property
     def est_termine(self):

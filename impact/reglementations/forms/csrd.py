@@ -5,7 +5,7 @@ from django.core.validators import FileExtensionValidator
 from django.forms import FileField
 from django.forms.widgets import RadioSelect
 
-from reglementations.models.csrd import DocumentAnalyseIA
+from analyseia.models import AnalyseIA
 from reglementations.models.csrd import Enjeu
 from reglementations.models.csrd import RapportCSRD
 
@@ -182,6 +182,6 @@ class DocumentAnalyseIAForm(forms.ModelForm):
     )
 
     class Meta:
-        model = DocumentAnalyseIA
-        fields = ["rapport_csrd", "fichier"]
+        model = AnalyseIA
+        fields = ["fichier"]
         labels = {"fichier": "Ajouter un fichier"}

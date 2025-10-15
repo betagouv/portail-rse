@@ -10,17 +10,17 @@ def copier_documents_analyseia(apps, _):
     for analyse_ia in DocumentAnalyseIA.objects.select_related("rapport_csrd").all():
         rapport_csrd = analyse_ia.rapport_csrd
         doc_fields = model_to_dict(analyse_ia)
+
         doc_fields.pop("rapport_csrd")
+        doc_fields.pop("id")
+
         analyse_ia = AnalyseIA.objects.create(**doc_fields)
         analyse_ia.rapports_csrd.add(rapport_csrd)
 
 
 class Migration(migrations.Migration):
     dependencies = [
-        (
-            "reglementations",
-            "0034_alter_bdese_300_external_fields_alter_bdese_300_user_and_more",
-        ),
+        ("reglementations", "0035_rapportcsrd_analyses_ia"),
         ("analyseia", "0001_initial"),
     ]
 
