@@ -15,11 +15,11 @@ from vsme.models import EXIGENCES_DE_PUBLICATION
 NON_PERTINENT_FIELD_NAME = "non_pertinent"
 
 
-def create_multiform_from_schema(schema, **kwargs):
+def create_multiform_from_schema(schema, infos_preremplissage=None, **kwargs):
     class _MultiForm:
         Forms = []
         si_pertinent = schema.get("si_pertinent", False)
-        preremplissage = kwargs.get("preremplissage")
+        preremplissage = infos_preremplissage
 
         def __init__(self, *args, **kwargs):
             if self.preremplissage:
