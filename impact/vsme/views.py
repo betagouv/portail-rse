@@ -242,7 +242,10 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
         data = indicateur.data if indicateur else {}
         if not data:
             data, _ = ajoute_auto_id_eventuel(indicateur_schema, data)
-        multiform = calcule_indicateur(indicateur_schema, toggle_pertinent_url, data)
+            preremplissage = preremplit_indicateur(indicateur_schema_id, rapport_vsme)
+        multiform = calcule_indicateur(
+            indicateur_schema, toggle_pertinent_url, data, preremplissage=preremplissage
+        )
 
     exigence_de_publication = ExigenceDePublication.par_indicateur_schema_id(
         indicateur_schema_id
@@ -297,6 +300,23 @@ def ajoute_auto_id_eventuel(indicateur_schema, data):
             return data, False
 
 
+def preremplit_indicateur(indicateur_schema_id, rapport_vsme):
+    preremplissage = {}
+    match indicateur_schema_id:
+        case "B1-24-e-i":  # indicateur forme juridique
+            entreprise = rapport_vsme.entreprise
+            forme_juridique = str(entreprise.categorie_juridique_sirene)[:2]
+            preremplissage["initial"] = {
+                "forme_juridique": forme_juridique,
+                "coopérative": forme_juridique in ("51", "63"),
+            }
+            preremplissage["source"] = {
+                "nom": "l'Annuaire des Entreprise",
+                "url": "https://annuaire-entreprises.data.gouv.fr/",
+            }
+    return preremplissage
+
+
 @login_required
 @rapport_vsme_requis
 def toggle_pertinent(request, rapport_vsme, indicateur_schema_id):
@@ -322,9 +342,14 @@ def toggle_pertinent(request, rapport_vsme, indicateur_schema_id):
     return render(request, "fragments/indicateur.html", context=context)
 
 
-def calcule_indicateur(indicateur_schema, toggle_pertinent_url, data, extra=0):
+def calcule_indicateur(
+    indicateur_schema, toggle_pertinent_url, data, extra=0, preremplissage=None
+):
     multiform = create_multiform_from_schema(
-        indicateur_schema, toggle_pertinent_url=toggle_pertinent_url, extra=extra
+        indicateur_schema,
+        toggle_pertinent_url=toggle_pertinent_url,
+        extra=extra,
+        preremplissage=preremplissage,
     )(
         initial=data,
     )

@@ -19,8 +19,11 @@ def create_multiform_from_schema(schema, **kwargs):
     class _MultiForm:
         Forms = []
         si_pertinent = schema.get("si_pertinent", False)
+        preremplissage = kwargs.get("preremplissage")
 
         def __init__(self, *args, **kwargs):
+            if self.preremplissage:
+                kwargs["initial"] = self.preremplissage["initial"]
             self.forms = []
             for Form in self.Forms:
                 self.forms.append(Form(*args, **kwargs))

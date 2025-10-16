@@ -18,6 +18,15 @@
                           hx-target="#htmx-modal-indicateur">
                         {% csrf_token %}
 
+                        {% if multiform.preremplissage %}
+                            <div class="fr-callout fr-callout--green-menthe">
+                                <p class="fr-callout__text">
+                                    Cet indicateur a été prérempli avec les données issues de <a href="{{ multiform.preremplissage.source.url }}" target="_blank" rel="noopener external" class="fr-link">{{ multiform.preremplissage.source.nom }}</a>.
+                                    Vérifiez et complétez éventuellement les informations ci-dessous.
+                                </p>
+                            </div>
+                        {% endif %}
+
                         {% for form in multiform.forms %}
                             {% if form.indicator_type == "table" or form.indicator_type == "table_lignes_fixes" %}
                                 {{ form.management_form }}
