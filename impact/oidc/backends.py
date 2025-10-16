@@ -9,7 +9,7 @@ class CustomOIDCAuthenticationBackend(OIDCAuthenticationBackend):
 
     # les champs qu el'on veut pouvoir mettre à jour dans le modèle,
     # si ils ont été modifiés sur l'espace ProConnect
-    _updatable_claims = ["nom", "prenom"]
+    _updatable_claims = ["nom", "prenom", "oidc_sub_id"]
 
     def get_extra_claims(self, user_info):
         # tous ces claims *doivent* correspondre à des champs du modèle
@@ -50,10 +50,16 @@ class CustomOIDCAuthenticationBackend(OIDCAuthenticationBackend):
                 continue
 
             claim_value = claims.get(key)
-            if claim_value and claim_value != getattr(user, key):
+            # conversion en str pour la comparaison des UUIDs (oidc_sub_id)
+            if claim_value and str(claim_value) != str(getattr(user, key)):
                 updated_claims[key] = claim_value
 
         if updated_claims:
+            logger.info(
+                "oidc:update_user",
+                {"oidc_sub_id": claims["oidc_sub_id"], "claims": updated_claims},
+            )
+
             # il y a un problème dans la version initiale :
             # si on part d'un pool d'utilisateurs qui n'a jamais été connecté à ProConnect
             # toute la base est mise à jour avec le `sub` actuel (c'est mal)
