@@ -311,15 +311,16 @@ def preremplit_indicateur(indicateur_schema_id, rapport_vsme):
     match indicateur_schema_id:
         case "B1-24-e-i":  # indicateur forme juridique
             entreprise = rapport_vsme.entreprise
-            forme_juridique = str(entreprise.categorie_juridique_sirene)[:2]
-            infos_preremplissage["initial"] = {
-                "forme_juridique": forme_juridique,
-                "coopérative": forme_juridique in ("51", "63"),
-            }
-            infos_preremplissage["source"] = {
-                "nom": "l'Annuaire des Entreprise",
-                "url": "https://annuaire-entreprises.data.gouv.fr/",
-            }
+            if entreprise.categorie_juridique_sirene:
+                forme_juridique = str(entreprise.categorie_juridique_sirene)[:2]
+                infos_preremplissage["initial"] = {
+                    "forme_juridique": forme_juridique,
+                    "coopérative": forme_juridique in ("51", "63"),
+                }
+                infos_preremplissage["source"] = {
+                    "nom": "l'Annuaire des Entreprise",
+                    "url": "https://annuaire-entreprises.data.gouv.fr/",
+                }
     return infos_preremplissage
 
 

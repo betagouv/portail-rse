@@ -29,6 +29,19 @@ def test_preremplit_indicateur_forme_juridique(rapport_vsme):
     }
 
 
+def test_preremplit_indicateur_forme_juridique_entreprise_sans_categorie_juridique_sirene(
+    rapport_vsme,
+):
+    # Cas marginal mais il pourrait y avoir des entreprises sans catégorie juridique sirene en base
+    # si celle-ci n'a pas (ou mal) été récupérée par API à la création de l'entreprise
+    rapport_vsme.entreprise.categorie_juridique_sirene = None
+    indicateur_schema_id = "B1-24-e-i"
+
+    preremplissage = preremplit_indicateur(indicateur_schema_id, rapport_vsme)
+
+    assert preremplissage == {}
+
+
 def test_indicateur_prerempli_affiche_le_preremplissage(client, alice, rapport_vsme):
     rapport_vsme.entreprise.categorie_juridique_sirene = CODE_SA
     client.force_login(alice)
