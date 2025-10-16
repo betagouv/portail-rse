@@ -15,7 +15,9 @@ from vsme.models import EXIGENCES_DE_PUBLICATION
 NON_PERTINENT_FIELD_NAME = "non_pertinent"
 
 
-def create_multiform_from_schema(schema, infos_preremplissage=None, **kwargs):
+def create_multiform_from_schema(
+    schema, toggle_pertinent_url, infos_preremplissage=None, **kwargs
+):
     class _MultiForm:
         Forms = []
         si_pertinent = schema.get("si_pertinent", False)
@@ -96,9 +98,7 @@ def create_multiform_from_schema(schema, infos_preremplissage=None, **kwargs):
     if schema.get("si_pertinent", False):
         _DynamicForm.base_fields[NON_PERTINENT_FIELD_NAME] = forms.BooleanField(
             required=False,
-            widget=forms.BooleanField.widget(
-                attrs={"hx-post": kwargs["toggle_pertinent_url"]}
-            ),
+            widget=forms.BooleanField.widget(attrs={"hx-post": toggle_pertinent_url}),
         )
     fields = schema["champs"]
     for field in fields:

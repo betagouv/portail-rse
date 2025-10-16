@@ -201,7 +201,7 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
         else:
             data = request.POST
         multiform = create_multiform_from_schema(
-            indicateur_schema, toggle_pertinent_url=toggle_pertinent_url
+            indicateur_schema, toggle_pertinent_url
         )(
             data,
             initial=indicateur.data if indicateur else None,
@@ -352,7 +352,7 @@ def calcule_indicateur(
 ):
     multiform = create_multiform_from_schema(
         indicateur_schema,
-        toggle_pertinent_url=toggle_pertinent_url,
+        toggle_pertinent_url,
         extra=extra,
         infos_preremplissage=infos_preremplissage,
     )(
