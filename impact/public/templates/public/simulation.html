@@ -14,7 +14,7 @@
                             <p>
                                 Effectuez une simulation simplifiée pour connaître les réglementations applicables à votre entreprise.<br>
                                 {% if not user.is_authenticated %}
-                                    <a href="{% url 'users:creation' %}" target="_self" class="fr-link">Inscrivez-vous</a> ou <a href="{% url 'users:login' %}" target="_self" class="fr-link">connectez-vous</a> pour saisir vos critères complets.
+                                    <a href="{% url 'users:login' %}" target="_self" class="fr-link">Inscrivez-vous ou connectez-vous</a> pour saisir vos critères complets.
                                 {% endif %}
                             </p>
 
