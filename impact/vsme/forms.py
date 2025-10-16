@@ -125,7 +125,7 @@ def create_multiform_from_schema(schema, **kwargs):
                     _MultiForm.add_Form(_DynamicForm)
                     _DynamicForm = _dynamicform_factory()
 
-                FormSet = create_Formset_from_schema(field, **kwargs)
+                FormSet = create_Formset_from_schema(field, kwargs.get("extra", 0))
 
                 _MultiForm.add_Form(FormSet)
 
@@ -135,7 +135,7 @@ def create_multiform_from_schema(schema, **kwargs):
     return _MultiForm
 
 
-def create_simple_field_from_schema(field_schema, **kwargs):
+def create_simple_field_from_schema(field_schema):
     field_name = field_schema["id"]
     field_type = field_schema["type"]
     field_kwargs = {
@@ -235,7 +235,7 @@ class GeoField(forms.CharField):
         return minimized_cleaned_value
 
 
-def create_Formset_from_schema(field_schema, **kwargs):
+def create_Formset_from_schema(field_schema, extra=0):
     field_type = field_schema["type"]
 
     class TableauFormSet(DsfrFormSet):
@@ -313,7 +313,7 @@ def create_Formset_from_schema(field_schema, **kwargs):
             return cleaned_data
 
     if field_type == "tableau":
-        extra = kwargs.get("extra", 0)
+        extra = extra
         FormSet = forms.formset_factory(
             DsfrForm,
             formset=TableauLignesLibresFormSet,
