@@ -16,7 +16,7 @@ NON_PERTINENT_FIELD_NAME = "non_pertinent"
 
 
 def create_multiform_from_schema(
-    schema, toggle_pertinent_url, infos_preremplissage=None, **kwargs
+    schema, toggle_pertinent_url, extra=0, infos_preremplissage=None
 ):
     class _MultiForm:
         Forms = []
@@ -125,7 +125,7 @@ def create_multiform_from_schema(
                     _MultiForm.add_Form(_DynamicForm)
                     _DynamicForm = _dynamicform_factory()
 
-                FormSet = create_Formset_from_schema(field, kwargs.get("extra", 0))
+                FormSet = create_Formset_from_schema(field, extra)
 
                 _MultiForm.add_Form(FormSet)
 
@@ -313,7 +313,6 @@ def create_Formset_from_schema(field_schema, extra=0):
             return cleaned_data
 
     if field_type == "tableau":
-        extra = extra
         FormSet = forms.formset_factory(
             DsfrForm,
             formset=TableauLignesLibresFormSet,
