@@ -41,3 +41,24 @@ def test_indicateur_prerempli_affiche_le_preremplissage(client, alice, rapport_v
     content = response.content.decode("utf-8")
     assert "Annuaire des Entreprise" in content, content
     assert context["multiform"].forms[0]["forme_juridique"].value() == "55"
+
+
+def test_indicateur_deja_complete_n_affiche_pas_le_preremplissage(
+    client, alice, rapport_vsme
+):
+    indicateur_forme_juridique = "B1-24-e-i"
+    rapport_vsme.entreprise.categorie_juridique_sirene = CODE_SA
+    rapport_vsme.indicateurs.create(
+        schema_id=indicateur_forme_juridique,
+        data={"forme_juridique": "11"},
+    )
+    client.force_login(alice)
+
+    url = INDICATEURS_VSME_BASE_URL + f"{rapport_vsme.id}/indicateur/B1-24-e-i/"
+    response = client.get(url)
+
+    assert response.status_code == 200
+    context = response.context
+    content = response.content.decode("utf-8")
+    assert "Annuaire des Entreprise" not in content
+    assert context["multiform"].forms[0]["forme_juridique"].value() == "11"

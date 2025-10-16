@@ -239,6 +239,7 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
                 )
 
     else:  # GET
+        infos_preremplissage = None
         data = indicateur.data if indicateur else {}
         if not data:
             data, _ = ajoute_auto_id_eventuel(indicateur_schema, data)
