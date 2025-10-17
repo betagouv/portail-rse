@@ -5,13 +5,13 @@
         "ancre": "accidents_travail",
         "champs": [
             {
-                "id": "nombre_accidents",
+                "id": "nombre_accidents_travail",
                 "label": "Nombre d'accidents du travail",
                 "type": "nombre_entier",
                 "obligatoire": true
             },
             {
-                "id": "taux_accidents",
+                "id": "taux_accidents_travail",
                 "label": "Taux d’accidents du travail comptabilisables",
                 "type": "nombre_decimal",
                 "obligatoire": true
@@ -25,7 +25,7 @@
         "champs": [
             {
                 "id": "deces_accidents_travail",
-                "label": "Nombre de décès  dus à des accidents du travail",
+                "label": "Nombre de décès dus à des accidents du travail",
                 "type": "nombre_entier",
                 "obligatoire": true
             }
