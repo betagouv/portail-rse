@@ -333,6 +333,30 @@ def test_multiform_si_pertinent_validation_avec_non_pertinent(indicateur_si_pert
     assert multiform.cleaned_data["age"] is None
 
 
+def test_multiform_si_pertinent_label_personnalisé(indicateur_si_pertinent):
+    multiform_class = create_multiform_from_schema(
+        indicateur_si_pertinent, toggle_pertinent_url="/test/"
+    )
+
+    assert (
+        multiform_class.Forms[0].base_fields["non_pertinent"].label == "Non pertinent"
+    )
+
+    indicateur_si_pertinent_personnalise = indicateur_si_pertinent.copy()
+    indicateur_si_pertinent_personnalise["si_pertinent"] = (
+        "Cochez cette case si vous en avez envie"
+    )
+
+    multiform_class = create_multiform_from_schema(
+        indicateur_si_pertinent_personnalise, toggle_pertinent_url="/test/"
+    )
+
+    assert (
+        multiform_class.Forms[0].base_fields["non_pertinent"].label
+        == "Cochez cette case si vous en avez envie"
+    )
+
+
 def test_multiform_tableau_lignes_fixes_validation(
     indicateur_avec_tableau_lignes_fixes,
 ):

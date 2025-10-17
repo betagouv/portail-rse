@@ -98,8 +98,9 @@ def create_multiform_from_schema(
 
     _DynamicForm = _dynamicform_factory()
 
-    if schema.get("si_pertinent", False):
+    if si_pertinent := schema.get("si_pertinent", False):
         _DynamicForm.base_fields[NON_PERTINENT_FIELD_NAME] = forms.BooleanField(
+            label=si_pertinent if type(si_pertinent) == str else "Non pertinent",
             required=False,
             widget=forms.BooleanField.widget(attrs={"hx-post": toggle_pertinent_url}),
         )
