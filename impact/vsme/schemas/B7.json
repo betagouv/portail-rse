@@ -1,0 +1,187 @@
+{
+    "B7-37": {
+        "titre": "Description des principes de l'économie circulaire",
+        "description": "Indiquer de quelle manière l'entreprise applique les principes de l'économie circulaire",
+        "ancre": "economie_circulaire",
+        "champs": [
+            {
+                "id": "economie_circulaire",
+                "label": "Principes de l'économie circulaire",
+                "type": "texte_long"
+            }
+        ],
+        "si_pertinent": "L'entreprise n'applique pas de principe de l'économie circulaire"
+    },
+    "B7-38ab": {
+        "titre": "Gestion des déchets",
+        "description": "Si l’entreprise ne produit pas exclusivement des déchets ménagers, elle publie le type (dangereux et non dangereux), ainsi que la part des déchets destinés au recyclage ou à la réutilisation. (Unité : tonnes)",
+        "ancre": "gestion_dechets",
+        "champs": [
+            {
+                "id": "gestion_dechets",
+                "label": "Déchets non ménagers",
+                "type": "tableau",
+                "colonnes": [
+                    {
+                        "id": "dechet",
+                        "label": "Type de déchets",
+                        "type": "choix_unique",
+                        "choix": [
+                            {
+                                "id": "01",
+                                "label": "01. Déchets provenant de l'exploration et de l'exploitation des mines et des carrières ainsi que du traitement physique et chimique des minéraux"
+                            },
+                            {
+                                "id": "02",
+                                "label": "02. Déchets provenant de l'agriculture, de l'horticulture, de l'aquaculture, de la sylviculture, de la chasse et de la pêche ainsi que de la préparation et de la transformation des aliments"
+                            },
+                            {
+                                "id": "03",
+                                "label": "03. Déchets provenant de la transformation du bois et de la production de panneaux et de meubles, de pâte à papier, de papier et de carton"
+                            },
+                            {
+                                "id": "04",
+                                "label": "04. Déchets provenant des industries du cuir, de la fourrure et du textile"
+                            },
+                            {
+                                "id": "05",
+                                "label": "05. Déchets provenant du raffinage du pétrole, de la purification du gaz naturel et du traitement pyrolytique du charbon"
+                            },
+                            {
+                                "id": "06",
+                                "label": "06. Déchets des procédés de la chimie minérale"
+                            },
+                            {
+                                "id": "07",
+                                "label": "07. Déchets des procédés de la chimie organique"
+                            },
+                            {
+                                "id": "08",
+                                "label": "08. Déchets provenant de la fabrication, de la formulation, de la distribution et de l'utilisation (FFDU) de produits de revêtement (peintures, vernis et émaux vitrifiés), mastics et encres d'impression"
+                            },
+                            {
+                                "id": "09",
+                                "label": "09. Déchets provenant de l'industrie photographique"
+                            },
+                            {
+                                "id": "10",
+                                "label": "10. Déchets provenant de procédés thermiques"
+                            },
+                            {
+                                "id": "11",
+                                "label": "11. Déchets provenant du traitement chimique de surface et du revêtement des métaux et autres matériaux, et de l'hydrométallurgie des métaux non ferreux"
+                            },
+                            {
+                                "id": "12",
+                                "label": "12. Déchets provenant de la mise en forme et du traitement physique et mécanique de surface des métaux et matières plastiques"
+                            },
+                            {
+                                "id": "13",
+                                "label": "13. Huiles et combustibles liquides usagés (sauf huiles alimentaires et huiles figurant aux chapitres 05 et 12)"
+                            },
+                            {
+                                "id": "14",
+                                "label": "14. Déchets de solvants organiques, d'agents réfrigérants et propulseurs (sauf chapitres 07 et 08)"
+                            },
+                            {
+                                "id": "15",
+                                "label": "15. Emballages et déchets d'emballages; absorbants, chiffons d'essuyage, matériaux filtrants et vêtements de protection non spécifiés ailleurs"
+                            },
+                            {
+                                "id": "17",
+                                "label": "17. Déchets de construction et de démolition (y compris déblais provenant de sites contaminés)"
+                            },
+                            {
+                                "id": "18",
+                                "label": "18. Déchets provenant des soins médicaux ou vétérinaires et/ou de la recherche associée (sauf déchets de cuisine et de restauration ne provenant pas directement des soins médicaux)"
+                            },
+                            {
+                                "id": "19",
+                                "label": "19. Déchets provenant des installations de gestion des déchets, des stations d'épuration des eaux usées hors site et de la préparation d'eau destinée à la consommation humaine et d'eau à usage industriel"
+                            },
+                            {
+                                "id": "20",
+                                "label": "20. Déchets municipaux (déchets ménagers et déchets assimilés provenant des commerces, des industries et des administrations), y compris les fractions collectées séparément"
+                            },
+                            {
+                                "id": "16",
+                                "label": "16. Déchets non décrits ailleurs sur la liste"
+                            }
+                        ],
+                        "obligatoire": true
+                    },
+                    {
+                        "id": "nom_autre_dechet",
+                        "label": "Nom (facultatif)",
+                        "type": "texte"
+                    },
+                    {
+                        "id": "dangereux",
+                        "label": "Dangereux",
+                        "type": "choix_binaire_radio"
+                    },
+                    {
+                        "id": "recyclage_ou_reutilisation",
+                        "label": "Dont déchets orientés vers le recyclage ou la réutilisation",
+                        "type": "nombre_decimal",
+                        "obligatoire": true
+                    },
+                    {
+                        "id": "elimines",
+                        "label": "Dont déchets éliminés",
+                        "type": "nombre_decimal",
+                        "obligatoire": true
+                    }
+                ]
+            }
+        ],
+        "si_pertinent": true
+    },
+    "B7-38c": {
+        "titre": "Flux massique annuel des matières pertinentes utilisées",
+        "description": "Publier le flux massique annuel des matières pertinentes utilisées par l'entreprise.",
+        "ancre": "flux_massique",
+        "champs": [
+            {
+                "id": "flux_massique",
+                "label": "Flux massique",
+                "type": "tableau",
+                "colonnes": [
+                    {
+                        "id": "nom",
+                        "label": "Nom de la matière essentielle",
+                        "type": "texte",
+                        "obligatoire": true
+                    },
+                    {
+                        "id": "masse_ou_volume",
+                        "label": "Masse/Volume",
+                        "type": "nombre_decimal",
+                        "obligatoire": true
+                    },
+                    {
+                        "id": "dechet",
+                        "label": "Type de déchets",
+                        "type": "choix_unique",
+                        "choix": [
+                            {
+                                "id": "t",
+                                "label": "tonnes"
+                            },
+                            {
+                                "id": "kg",
+                                "label": "kilogrammes"
+                            },
+                            {
+                                "id": "m3",
+                                "label": "mètres cubes"
+                            }
+                        ],
+                        "obligatoire": true
+                    }
+                ]
+            }
+        ],
+        "si_pertinent": "L’entreprise n'exerce pas d'activité dans un secteur utilisant des flux de matières importants (fabrication, construction, emballage ou autres)"
+    }
+}

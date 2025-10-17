@@ -104,6 +104,7 @@ EXIGENCES_DE_PUBLICATION = {
         "Utilisation des ressources, économie circulaire et gestion des déchets",
         Categorie.ENVIRONNEMENT,
         "https://portail-rse.beta.gouv.fr/vsme/b7-utilisation-des-ressources-economie-circulaire-et-gestion-des-dechets/",
+        remplissable=True,
     ),
     "B8": ExigenceDePublication(
         "B8",
