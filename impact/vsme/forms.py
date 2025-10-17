@@ -15,7 +15,7 @@ from vsme.models import EXIGENCES_DE_PUBLICATION
 NON_PERTINENT_FIELD_NAME = "non_pertinent"
 
 
-def create_multiform_from_schema(schema, **kwargs):
+def create_multiform_from_schema(schema, rapport_vsme, **kwargs):
     class _MultiForm:
         Forms = []
         si_pertinent = schema.get("si_pertinent", False)
@@ -123,7 +123,10 @@ def create_multiform_from_schema(schema, **kwargs):
                     _MultiForm.add_Form(_DynamicForm)
                     _DynamicForm = _dynamicform_factory()
 
-                FormSet = create_Formset_from_schema(field, **kwargs)
+                rows = calcule_lignes(field.get("lignes"), rapport_vsme)
+                FormSet = create_Formset_from_schema(
+                    field, calculated_rows=rows, **kwargs
+                )
 
                 _MultiForm.add_Form(FormSet)
 
@@ -233,7 +236,7 @@ class GeoField(forms.CharField):
         return minimized_cleaned_value
 
 
-def create_Formset_from_schema(field_schema, **kwargs):
+def create_Formset_from_schema(field_schema, calculated_rows=None, **kwargs):
     field_type = field_schema["type"]
 
     class TableauFormSet(DsfrFormSet):
@@ -280,7 +283,7 @@ def create_Formset_from_schema(field_schema, **kwargs):
 
     class TableauLignesFixesFormSet(TableauFormSet):
         indicator_type = "table_lignes_fixes"
-        rows = field_schema.get("lignes")
+        rows = calculated_rows
 
         def __init__(self, *args, **kwargs):
             if kwargs.get("initial"):
@@ -333,3 +336,16 @@ def create_Formset_from_schema(field_schema, **kwargs):
         )
 
     return FormSet
+
+
+def calcule_lignes(lignes, rapport_vsme):
+    match lignes:
+        case "PAYS":
+            codes_pays = rapport_vsme.pays()
+            pays = [
+                {"id": code_pays, "label": CODES_PAYS_ISO_3166_1[code_pays]}
+                for code_pays in codes_pays
+            ]
+            return pays
+        case list():
+            return lignes

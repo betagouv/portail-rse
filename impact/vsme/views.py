@@ -201,7 +201,7 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
         else:
             data = request.POST
         multiform = create_multiform_from_schema(
-            indicateur_schema, toggle_pertinent_url=toggle_pertinent_url
+            indicateur_schema, rapport_vsme, toggle_pertinent_url=toggle_pertinent_url
         )(
             data,
             initial=indicateur.data if indicateur else None,
@@ -233,6 +233,7 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
                         extra = 1
                 multiform = calcule_indicateur(
                     indicateur_schema,
+                    rapport_vsme,
                     toggle_pertinent_url,
                     data,
                     extra=extra,
@@ -242,7 +243,9 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
         data = indicateur.data if indicateur else {}
         if not data:
             data, _ = ajoute_auto_id_eventuel(indicateur_schema, data)
-        multiform = calcule_indicateur(indicateur_schema, toggle_pertinent_url, data)
+        multiform = calcule_indicateur(
+            indicateur_schema, rapport_vsme, toggle_pertinent_url, data
+        )
 
     exigence_de_publication = ExigenceDePublication.par_indicateur_schema_id(
         indicateur_schema_id
@@ -305,7 +308,7 @@ def toggle_pertinent(request, rapport_vsme, indicateur_schema_id):
         "vsme:toggle_pertinent", args=[rapport_vsme.id, indicateur_schema_id]
     )
     multiform = calcule_indicateur(
-        indicateur_schema, toggle_pertinent_url, request.POST
+        indicateur_schema, rapport_vsme, toggle_pertinent_url, request.POST
     )
     exigence_de_publication = ExigenceDePublication.par_indicateur_schema_id(
         indicateur_schema_id
@@ -322,9 +325,14 @@ def toggle_pertinent(request, rapport_vsme, indicateur_schema_id):
     return render(request, "fragments/indicateur.html", context=context)
 
 
-def calcule_indicateur(indicateur_schema, toggle_pertinent_url, data, extra=0):
+def calcule_indicateur(
+    indicateur_schema, rapport_vsme, toggle_pertinent_url, data, extra=0
+):
     multiform = create_multiform_from_schema(
-        indicateur_schema, toggle_pertinent_url=toggle_pertinent_url, extra=extra
+        indicateur_schema,
+        rapport_vsme,
+        toggle_pertinent_url=toggle_pertinent_url,
+        extra=extra,
     )(
         initial=data,
     )
