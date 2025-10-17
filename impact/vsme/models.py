@@ -111,6 +111,7 @@ EXIGENCES_DE_PUBLICATION = {
         "Effectifs : caractéristiques générales",
         Categorie.SOCIAL,
         "https://portail-rse.beta.gouv.fr/vsme/b8-effectifs-caracteristiques-generales/",
+        remplissable=True,
     ),
     "B9": ExigenceDePublication(
         "B9",
@@ -278,6 +279,16 @@ class RapportVSME(TimestampedModel):
         if total:
             pourcent = (complet / total) * 100
         return {"total": total, "complet": complet, "pourcent": int(pourcent)}
+
+    def pays(self):
+        indicateur_pays = "B1-24-e-vi"
+        try:
+            codes_pays = self.indicateurs.get(schema_id=indicateur_pays).data.get(
+                "pays"
+            )
+        except ObjectDoesNotExist:
+            codes_pays = []
+        return codes_pays
 
 
 class Indicateur(TimestampedModel):

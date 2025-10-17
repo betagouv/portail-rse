@@ -1,0 +1,23 @@
+{
+    "B8-39-c": {
+        "titre": "Effectifs par pays",
+        "description": "Si l’entreprise exerce ses activités dans plusieurs pays, publier le nombre de salariés (effectifs ou ETP) par pays de contrat de travail.",
+        "ancre": "effectifs_pays",
+        "champs": [
+            {
+                "id": "effectifs_pays",
+                "label": "Effectifs par pays",
+                "type": "tableau_lignes_fixes",
+                "colonnes": [
+                    {
+                        "id": "nombre_salaries",
+                        "label": "Nombre de salariés",
+                        "type": "nombre_decimal",
+                        "obligatoire": true
+                    }
+                ],
+                "lignes": "PAYS"
+            }
+        ]
+    }
+}
