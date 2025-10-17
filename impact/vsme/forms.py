@@ -19,7 +19,7 @@ NON_PERTINENT_FIELD_NAME = "non_pertinent"
 
 
 def create_multiform_from_schema(
-    schema, toggle_pertinent_url, extra=0, infos_preremplissage=None
+    schema, toggle_pertinent_url, rapport_vsme, extra=0, infos_preremplissage=None
 ):
     class _MultiForm:
         Forms = []
@@ -129,7 +129,12 @@ def create_multiform_from_schema(
                     _MultiForm.add_Form(_DynamicForm)
                     _DynamicForm = _dynamicform_factory()
 
-                FormSet = create_Formset_from_schema(field, extra)
+                rows = calculate_rows(field.get("lignes"), rapport_vsme)
+                FormSet = create_Formset_from_schema(
+                    field,
+                    extra=extra,
+                    calculated_rows=rows,
+                )
 
                 _MultiForm.add_Form(FormSet)
 
@@ -282,7 +287,7 @@ class DatalistTextInput(forms.TextInput):
         )
 
 
-def create_Formset_from_schema(field_schema, extra=0):
+def create_Formset_from_schema(field_schema, extra=0, calculated_rows=None):
     field_type = field_schema["type"]
 
     class TableauFormSet(DsfrFormSet):
@@ -329,7 +334,7 @@ def create_Formset_from_schema(field_schema, extra=0):
 
     class TableauLignesFixesFormSet(TableauFormSet):
         indicator_type = "table_lignes_fixes"
-        rows = field_schema.get("lignes")
+        rows = calculated_rows
 
         def __init__(self, *args, **kwargs):
             if kwargs.get("initial"):
@@ -369,7 +374,7 @@ def create_Formset_from_schema(field_schema, extra=0):
             validate_min=True,
         )
     else:  # "tableau_lignes_fixes"
-        nb_lignes = len(field_schema["lignes"])
+        nb_lignes = len(calculated_rows)
         FormSet = forms.formset_factory(
             DsfrForm,
             formset=TableauLignesFixesFormSet,
@@ -381,3 +386,16 @@ def create_Formset_from_schema(field_schema, extra=0):
         )
 
     return FormSet
+
+
+def calculate_rows(lignes, rapport_vsme):
+    match lignes:
+        case "PAYS":
+            codes_pays = rapport_vsme.pays()
+            pays = [
+                {"id": code_pays, "label": CODES_PAYS_ISO_3166_1[code_pays]}
+                for code_pays in codes_pays
+            ]
+            return pays
+        case list():
+            return lignes

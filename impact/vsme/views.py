@@ -201,7 +201,7 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
         else:
             data = request.POST
         multiform = create_multiform_from_schema(
-            indicateur_schema, toggle_pertinent_url
+            indicateur_schema, toggle_pertinent_url, rapport_vsme
         )(
             data,
             initial=indicateur.data if indicateur else None,
@@ -234,6 +234,7 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
                 multiform = calcule_indicateur(
                     indicateur_schema,
                     toggle_pertinent_url,
+                    rapport_vsme,
                     data,
                     extra=extra,
                 )
@@ -249,6 +250,7 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
         multiform = calcule_indicateur(
             indicateur_schema,
             toggle_pertinent_url,
+            rapport_vsme,
             data,
             infos_preremplissage=infos_preremplissage,
         )
@@ -332,7 +334,7 @@ def toggle_pertinent(request, rapport_vsme, indicateur_schema_id):
         "vsme:toggle_pertinent", args=[rapport_vsme.id, indicateur_schema_id]
     )
     multiform = calcule_indicateur(
-        indicateur_schema, toggle_pertinent_url, request.POST
+        indicateur_schema, toggle_pertinent_url, rapport_vsme, request.POST
     )
     exigence_de_publication = ExigenceDePublication.par_indicateur_schema_id(
         indicateur_schema_id
@@ -350,11 +352,12 @@ def toggle_pertinent(request, rapport_vsme, indicateur_schema_id):
 
 
 def calcule_indicateur(
-    indicateur_schema, toggle_pertinent_url, data, extra=0, infos_preremplissage=None
+    indicateur_schema, toggle_pertinent_url, rapport_vsme, data, extra=0, infos_preremplissage=None
 ):
     multiform = create_multiform_from_schema(
         indicateur_schema,
         toggle_pertinent_url,
+        rapport_vsme,
         extra=extra,
         infos_preremplissage=infos_preremplissage,
     )(
