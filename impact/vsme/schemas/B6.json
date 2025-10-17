@@ -1,7 +1,7 @@
 {
     "B6-35": {
         "titre": "Prélèvement d'eau",
-        "description": "Publier le total des prélèvements d'eau, c’est-à-dire la quantité d’eau prélevée dans les limites de l’organisation (ou de l’installation) ; en outre, présenter séparément la quantité d’eau prélevée sur les sites qui se situent dans des zones exposées à un stress hydrique élevé. Unité : m³",
+        "description": "Publier le total des prélèvements d'eau, c’est-à-dire la quantité d’eau prélevée dans les limites de l’organisation (ou de l’installation) ; en outre, présenter séparément la quantité d’eau prélevée sur les sites qui se situent dans des zones exposées à un stress hydrique élevé. Unité : m³",
         "ancre": "prelevement_eau",
         "champs": [
             {
@@ -22,7 +22,7 @@
     },
     "B6-36": {
         "titre": "Consommation d'eau",
-        "description": "Si l'entreprise est concernée, indiquer la consommation d’eau, calculée comme étant la différence entre les prélèvements d’eau et les rejets d’eau provenant des processus de production. Unité : m³",
+        "description": "Si l'entreprise est concernée, indiquer la consommation d’eau, calculée comme étant la différence entre les prélèvements d’eau et les rejets d’eau provenant des processus de production. Unité : m³",
         "ancre": "consommation_eau",
         "champs": [
             {
