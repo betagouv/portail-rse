@@ -2,10 +2,10 @@ import pytest
 from django.core.exceptions import ValidationError
 from django.urls import reverse_lazy
 
+from analyseia.models import AnalyseIA
 from reglementations.enums import ENJEUX_NORMALISES
 from reglementations.enums import EtapeCSRD
 from reglementations.enums import ETAPES_CSRD
-from reglementations.models import DocumentAnalyseIA
 from reglementations.models import RapportCSRD
 
 
@@ -235,8 +235,10 @@ def test_progression_avancement_csrd(csrd):
 
 
 def test_rapport_csrd_avec_documents(csrd):
-    document_1 = DocumentAnalyseIA.objects.create(rapport_csrd=csrd)
-    document_2 = DocumentAnalyseIA.objects.create(rapport_csrd=csrd, etat="pending")
+    document_1 = AnalyseIA.objects.create()
+    document_1.rapports_csrd.add(csrd)
+    document_2 = AnalyseIA.objects.create(etat="pending")
+    document_2.rapports_csrd.add(csrd)
 
     assert list(csrd.documents_analyses) == []
     assert list(csrd.documents_non_analyses) == [document_1]

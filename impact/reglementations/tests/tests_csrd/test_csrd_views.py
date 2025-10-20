@@ -6,9 +6,9 @@ from django.urls import reverse
 from openpyxl import load_workbook
 from pytest_django.asserts import assertTemplateUsed
 
+from analyseia.models import AnalyseIA
 from habilitations.models import Habilitation
 from reglementations.enums import EtapeCSRD
-from reglementations.models.csrd import DocumentAnalyseIA
 from reglementations.models.csrd import Enjeu
 from reglementations.models.csrd import RapportCSRD
 from reglementations.views.csrd.csrd import resume_resultats_analyse_ia
@@ -65,8 +65,7 @@ def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
 
 
 def test_resume_resultats_analyse_ia(csrd):
-    DocumentAnalyseIA.objects.create(
-        rapport_csrd=csrd,
+    document = AnalyseIA.objects.create(
         etat="success",
         resultat_json="""{
   "ESRS E1": [
@@ -87,8 +86,8 @@ def test_resume_resultats_analyse_ia(csrd):
   ]
   }""",
     )
-    DocumentAnalyseIA.objects.create(
-        rapport_csrd=csrd,
+    document.rapports_csrd.add(csrd)
+    document = AnalyseIA.objects.create(
         etat="success",
         resultat_json="""{
   "ESRS E2 - Pollution": [
@@ -111,9 +110,9 @@ def test_resume_resultats_analyse_ia(csrd):
   ]
   }""",
     )
-    DocumentAnalyseIA.objects.create(
-        rapport_csrd=csrd, etat="error", resultat_json=None
-    )
+    document.rapports_csrd.add(csrd)
+    AnalyseIA.objects.create(etat="error", resultat_json=None)
+    document.rapports_csrd.add(csrd)
 
     stats = resume_resultats_analyse_ia(csrd)
 
