@@ -9,6 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import EmailMessage
 from django.http import Http404
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -74,8 +75,9 @@ def suppression_document(request, id_document):
 @login_required
 @document_required
 @require_http_methods(["POST"])
-def lancement_analyse_IA(request, id_document):
+def lancement_analyse_IA(request, id_document, csrd_id):
     document = AnalyseIA.objects.get(id=id_document)
+    rapport_csrd = get_object_or_404(RapportCSRD, pk=csrd_id)
 
     if document.etat != "success":
         try:
@@ -84,6 +86,7 @@ def lancement_analyse_IA(request, id_document):
                     "reglementations:etat_analyse_IA",
                     kwargs={
                         "id_document": document.id,
+                        "csrd_id": rapport_csrd.id,
                     },
                 )
             )
@@ -102,17 +105,19 @@ def lancement_analyse_IA(request, id_document):
     id_etape = "analyse-ecart"
     return redirect(
         "reglementations:gestion_csrd",
-        siren=document.rapport_csrd.entreprise.siren,
+        siren=rapport_csrd.entreprise.siren,
         id_etape=id_etape,
     )
 
 
 @csrf_exempt
-def etat_analyse_IA(request, id_document):
+def etat_analyse_IA(request, id_document, csrd_id):
     try:
         document = AnalyseIA.objects.get(id=id_document)
     except ObjectDoesNotExist:
         raise Http404("Ce document n'existe pas")
+
+    rapport_csrd = get_object_or_404(RapportCSRD, pk=csrd_id)
 
     status = request.POST.get("status")
     document.etat = status
@@ -125,7 +130,7 @@ def etat_analyse_IA(request, id_document):
         path = reverse(
             "reglementations:gestion_csrd",
             kwargs={
-                "siren": document.rapport_csrd.entreprise.siren,
+                "siren": rapport_csrd.entreprise.siren,
                 "id_etape": "analyse-ecart",
             },
         )
@@ -141,6 +146,7 @@ def etat_analyse_IA(request, id_document):
     return HttpResponse("OK")
 
 
+# FIXME : rapport CSRD
 def envoie_resultat_ia_email(document, resultat_ia_url):
     destinataires = [
         utilisateur.email

@@ -73,7 +73,7 @@ urlpatterns = [
         name="soumettre_lien_rapport",
     ),
     path(
-        "csrd/fragments/document_ia/<int:id_document>",
+        "csrd/fragments/document_ia/<int:id_document>/<int:csrd_id>",
         statut_analyse_ia,
         name="statut_analyse_ia",
     ),

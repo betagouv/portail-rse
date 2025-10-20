@@ -46,12 +46,12 @@ urlpatterns = [
         name="suppression_document",
     ),
     path(
-        "ESRS-predict/<int:id_document>",
+        "ESRS-predict/<int:id_document>/<int:csrd_id>",
         etat_analyse_IA,
         name="etat_analyse_IA",
     ),
     path(
-        "ESRS-predict/<int:id_document>/start",
+        "ESRS-predict/<int:id_document>/<int:csrd_id>/start",
         lancement_analyse_IA,
         name="lancement_analyse_IA",
     ),
