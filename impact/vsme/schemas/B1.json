@@ -205,8 +205,8 @@
                 "id": "pays",
                 "label": "Pays",
                 "type": "choix_multiple",
-                "choix": "CHOIX_PAYS"
-
+                "choix": "CHOIX_PAYS",
+                "obligatoire": true
             }
         ]
     },
