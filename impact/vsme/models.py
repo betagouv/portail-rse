@@ -233,6 +233,8 @@ class RapportVSME(TimestampedModel):
                 except ObjectDoesNotExist:
                     est_cooperative = False
                 return est_cooperative
+            case ["B8", "39", "c"]:  # indicateur effectifs par pays
+                return len(self.pays()) > 1
             case _:
                 return True
 
@@ -251,7 +253,10 @@ class RapportVSME(TimestampedModel):
         )
         complet = len(indicateurs_completes_et_actifs)
         total = len(indicateurs_actifs)
-        pourcent = (complet / total) * 100
+        if total:
+            pourcent = (complet / total) * 100
+        else:
+            pourcent = 100
         return {"total": total, "complet": complet, "pourcent": int(pourcent)}
 
     def progression_par_categorie(self, categorie):
@@ -282,7 +287,7 @@ class RapportVSME(TimestampedModel):
         indicateur_pays = "B1-24-e-vi"
         try:
             codes_pays = self.indicateurs.get(schema_id=indicateur_pays).data.get(
-                "pays"
+                "pays", []
             )
         except ObjectDoesNotExist:
             codes_pays = []
