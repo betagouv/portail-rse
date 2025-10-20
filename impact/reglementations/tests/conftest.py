@@ -3,13 +3,13 @@ from datetime import date
 import pytest
 from django.core.files.base import ContentFile
 
+from analyseia.models import AnalyseIA
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import Habilitation
 from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
 from reglementations.models import BDESEAvecAccord
 from reglementations.models import RapportCSRD
-from reglementations.models.csrd import DocumentAnalyseIA
 
 
 # Empêche tous les tests de faire des appels api
@@ -67,9 +67,11 @@ def csrd(entreprise_factory, alice):
 
 @pytest.fixture
 def document(csrd):
-    document = DocumentAnalyseIA.objects.create(
-        rapport_csrd=csrd, fichier=ContentFile("pdf file data", name="fichier.pdf")
+    document = AnalyseIA.objects.create(
+        fichier=ContentFile("pdf file data", name="fichier.pdf")
     )
+
+    document.rapports_csrd.add(csrd)
     return document
 
 

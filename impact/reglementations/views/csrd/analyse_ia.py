@@ -136,7 +136,7 @@ def etat_analyse_IA(request, id_document, csrd_id):
         )
         try:
             envoie_resultat_ia_email(
-                document, f"{request.build_absolute_uri(path)}#onglets"
+                document, rapport_csrd, f"{request.build_absolute_uri(path)}#onglets"
             )
         except Exception as e:
             with sentry_sdk.new_scope() as scope:
@@ -147,10 +147,9 @@ def etat_analyse_IA(request, id_document, csrd_id):
 
 
 # FIXME : rapport CSRD
-def envoie_resultat_ia_email(document, resultat_ia_url):
+def envoie_resultat_ia_email(document, rapport_csrd, resultat_ia_url):
     destinataires = [
-        utilisateur.email
-        for utilisateur in document.rapport_csrd.entreprise.users.all()
+        utilisateur.email for utilisateur in rapport_csrd.entreprise.users.all()
     ]
 
     email = EmailMessage(
