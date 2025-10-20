@@ -340,7 +340,9 @@ def create_Formset_from_schema(field_schema, extra=0, calculated_rows=None):
             if kwargs.get("initial"):
                 formset_initial = kwargs["initial"].get(self.id)
                 if formset_initial:
-                    kwargs["initial"] = list(formset_initial.values())
+                    kwargs["initial"] = [
+                        formset_initial.get(row["id"]) for row in self.rows
+                    ]
                 else:
                     kwargs["initial"] = [{} for row in self.rows]
             else:
