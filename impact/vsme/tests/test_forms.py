@@ -2,7 +2,6 @@ import pytest
 
 from vsme.forms import create_multiform_from_schema
 
-TOGGLE_PERTINENT_URL = "/test/"
 
 CHAMP_NOM = {
     "id": "nom",
@@ -130,7 +129,7 @@ def test_create_multiform_from_schema_avec_champs_simples(
     indicateur_avec_champs_simples, rapport_vsme
 ):
     multiform_class = create_multiform_from_schema(
-        indicateur_avec_champs_simples, TOGGLE_PERTINENT_URL, rapport_vsme
+        indicateur_avec_champs_simples, rapport_vsme
     )
 
     assert multiform_class.Forms
@@ -144,7 +143,7 @@ def test_create_multiform_from_schema_avec_tableau(
     indicateur_avec_tableau, rapport_vsme
 ):
     multiform_class = create_multiform_from_schema(
-        indicateur_avec_tableau, TOGGLE_PERTINENT_URL, rapport_vsme
+        indicateur_avec_tableau, rapport_vsme
     )
 
     assert multiform_class.Forms
@@ -157,7 +156,7 @@ def test_create_multiform_from_schema_si_pertinent(
     indicateur_si_pertinent, rapport_vsme
 ):
     multiform_class = create_multiform_from_schema(
-        indicateur_si_pertinent, TOGGLE_PERTINENT_URL, rapport_vsme
+        indicateur_si_pertinent, rapport_vsme
     )
 
     assert multiform_class.si_pertinent is True
@@ -171,7 +170,7 @@ def test_multiform_validation_champs_simples(
     indicateur_avec_champs_simples, rapport_vsme
 ):
     multiform_class = create_multiform_from_schema(
-        indicateur_avec_champs_simples, TOGGLE_PERTINENT_URL, rapport_vsme
+        indicateur_avec_champs_simples, rapport_vsme
     )
     multiform = multiform_class({"nom": "Alice", "age": 30})
 
@@ -184,7 +183,7 @@ def test_multiform_validation_champ_obligatoire_manquant(
     indicateur_avec_champs_simples, rapport_vsme
 ):
     multiform_class = create_multiform_from_schema(
-        indicateur_avec_champs_simples, TOGGLE_PERTINENT_URL, rapport_vsme
+        indicateur_avec_champs_simples, rapport_vsme
     )
     multiform = multiform_class({"age": 30})
 
@@ -194,7 +193,7 @@ def test_multiform_validation_champ_obligatoire_manquant(
 
 def test_multiform_validation_tableau(indicateur_avec_tableau, rapport_vsme):
     multiform_class = create_multiform_from_schema(
-        indicateur_avec_tableau, TOGGLE_PERTINENT_URL, rapport_vsme, extra=1
+        indicateur_avec_tableau, rapport_vsme, extra=1
     )
     data = {
         "form-TOTAL_FORMS": "1",
@@ -214,7 +213,7 @@ def test_multiform_validation_tableau(indicateur_avec_tableau, rapport_vsme):
 
 def test_multiform_tableau_suppression_ligne(indicateur_avec_tableau, rapport_vsme):
     multiform_class = create_multiform_from_schema(
-        indicateur_avec_tableau, TOGGLE_PERTINENT_URL, rapport_vsme, extra=0
+        indicateur_avec_tableau, rapport_vsme, extra=0
     )
     data = {
         "form-TOTAL_FORMS": "3",
@@ -240,7 +239,7 @@ def test_multiform_tableau_minimum_une_ligne_requise(
     indicateur_avec_tableau, rapport_vsme
 ):
     multiform_class = create_multiform_from_schema(
-        indicateur_avec_tableau, TOGGLE_PERTINENT_URL, rapport_vsme, extra=0
+        indicateur_avec_tableau, rapport_vsme, extra=0
     )
     data = {
         "form-TOTAL_FORMS": "0",
@@ -259,7 +258,7 @@ def test_multiform_champs_avant_et_apres_tableau(
     indicateur_champs_et_tableau, rapport_vsme
 ):
     multiform_class = create_multiform_from_schema(
-        indicateur_champs_et_tableau, TOGGLE_PERTINENT_URL, rapport_vsme, extra=1
+        indicateur_champs_et_tableau, rapport_vsme, extra=1
     )
 
     assert len(multiform_class.Forms) == 3
@@ -276,7 +275,7 @@ def test_multiform_champs_et_tableau_validation(
     indicateur_champs_et_tableau, rapport_vsme
 ):
     multiform_class = create_multiform_from_schema(
-        indicateur_champs_et_tableau, TOGGLE_PERTINENT_URL, rapport_vsme, extra=1
+        indicateur_champs_et_tableau, rapport_vsme, extra=1
     )
     data = {
         "nom": "Alice",
@@ -298,7 +297,7 @@ def test_multiform_si_pertinent_non_pertinent_desactive_champs(
     indicateur_si_pertinent, rapport_vsme
 ):
     multiform_class = create_multiform_from_schema(
-        indicateur_si_pertinent, TOGGLE_PERTINENT_URL, rapport_vsme
+        indicateur_si_pertinent, rapport_vsme
     )
     data = {"non_pertinent": True}
     multiform = multiform_class(data)
@@ -311,7 +310,7 @@ def test_multiform_si_pertinent_validation_sans_non_pertinent(
     indicateur_si_pertinent, rapport_vsme
 ):
     multiform_class = create_multiform_from_schema(
-        indicateur_si_pertinent, TOGGLE_PERTINENT_URL, rapport_vsme
+        indicateur_si_pertinent, rapport_vsme
     )
     data = {"non_pertinent": False}
     multiform = multiform_class(data)
@@ -327,7 +326,7 @@ def test_multiform_si_pertinent_validation_valeur_0(
     indicateur_si_pertinent, rapport_vsme
 ):
     multiform_class = create_multiform_from_schema(
-        indicateur_si_pertinent, TOGGLE_PERTINENT_URL, rapport_vsme
+        indicateur_si_pertinent, rapport_vsme
     )
     data = {
         "non_pertinent": False,
@@ -343,7 +342,7 @@ def test_multiform_si_pertinent_validation_avec_non_pertinent(
     indicateur_si_pertinent, rapport_vsme
 ):
     multiform_class = create_multiform_from_schema(
-        indicateur_si_pertinent, TOGGLE_PERTINENT_URL, rapport_vsme
+        indicateur_si_pertinent, rapport_vsme
     )
     data = {"non_pertinent": True}
     multiform = multiform_class(data)
@@ -357,7 +356,7 @@ def test_multiform_si_pertinent_label_personnalisé(
     indicateur_si_pertinent, rapport_vsme
 ):
     multiform_class = create_multiform_from_schema(
-        indicateur_si_pertinent, TOGGLE_PERTINENT_URL, rapport_vsme
+        indicateur_si_pertinent, rapport_vsme
     )
 
     assert (
@@ -370,7 +369,7 @@ def test_multiform_si_pertinent_label_personnalisé(
     )
 
     multiform_class = create_multiform_from_schema(
-        indicateur_si_pertinent_personnalise, TOGGLE_PERTINENT_URL, rapport_vsme
+        indicateur_si_pertinent_personnalise, rapport_vsme
     )
 
     assert (
@@ -384,7 +383,7 @@ def test_multiform_tableau_lignes_fixes_validation(
     rapport_vsme,
 ):
     multiform_class = create_multiform_from_schema(
-        indicateur_avec_tableau_lignes_fixes, TOGGLE_PERTINENT_URL, rapport_vsme
+        indicateur_avec_tableau_lignes_fixes, rapport_vsme
     )
     data = {
         "form-TOTAL_FORMS": "3",
@@ -420,7 +419,7 @@ def test_multiform_tableau_lignes_fixes_suppression_ligne_impossible(
     rapport_vsme,
 ):
     multiform_class = create_multiform_from_schema(
-        indicateur_avec_tableau_lignes_fixes, TOGGLE_PERTINENT_URL, rapport_vsme
+        indicateur_avec_tableau_lignes_fixes, rapport_vsme
     )
     data = {
         "form-TOTAL_FORMS": "3",
@@ -447,7 +446,7 @@ def test_multiform_tableau_lignes_fixes_vide_invalide(
     rapport_vsme,
 ):
     multiform_class = create_multiform_from_schema(
-        indicateur_avec_tableau_lignes_fixes, TOGGLE_PERTINENT_URL, rapport_vsme
+        indicateur_avec_tableau_lignes_fixes, rapport_vsme
     )
     data = {
         "form-TOTAL_FORMS": "3",
