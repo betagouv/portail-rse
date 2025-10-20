@@ -8,7 +8,7 @@
     <td>
         <div
             {% if document.etat in "pending,processing,text_processed,analysis_complete" %}
-                hx-get="{% url 'reglementations:statut_analyse_ia' document.id %}" {# URL de la vue qui renvoie ce fragment #}
+                hx-get="{% url 'reglementations:statut_analyse_ia' document.id csrd.id %}" {# URL de la vue qui renvoie ce fragment #}
                 hx-trigger="every 5s" {# Déclencheur toutes les 5 secondes #}
             {% endif %}>
             {% if document.etat in "pending,processing,text_processed,analysis_complete" %}
@@ -32,7 +32,7 @@
     </td>
     <td>
         {% if not document.etat %}
-            <form action="{% url 'reglementations:lancement_analyse_IA' document.id %}" method="post">
+            <form action="{% url 'reglementations:lancement_analyse_IA' document.id csrd.id %}" method="post">
                 {% csrf_token %}
                 <button type="submit"
                         class="fr-btn fr-btn--sm fr-btn--icon-left fr-icon-play-circle-line">Lancer une
