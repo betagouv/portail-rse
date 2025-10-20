@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.utils.html import format_html
 from django.utils.html import format_html_join
 from django.utils.safestring import mark_safe
+from django.urls.base import reverse
 
 from utils.categories_juridiques import CATEGORIES_JURIDIQUES_NIVEAU_II
 from utils.codes_nace import CODES_NACE
@@ -19,7 +20,7 @@ NON_PERTINENT_FIELD_NAME = "non_pertinent"
 
 
 def create_multiform_from_schema(
-    schema, toggle_pertinent_url, rapport_vsme, extra=0, infos_preremplissage=None
+    schema, rapport_vsme, extra=0, infos_preremplissage=None
 ):
     class _MultiForm:
         Forms = []
@@ -99,6 +100,9 @@ def create_multiform_from_schema(
     _DynamicForm = _dynamicform_factory()
 
     if si_pertinent := schema.get("si_pertinent", False):
+        toggle_pertinent_url = reverse(
+            "vsme:toggle_pertinent", args=[rapport_vsme.id, schema["schema_id"]]
+        )
         _DynamicForm.base_fields[NON_PERTINENT_FIELD_NAME] = forms.BooleanField(
             label=si_pertinent if type(si_pertinent) == str else "Non pertinent",
             required=False,
