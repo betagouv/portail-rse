@@ -3,6 +3,7 @@ from json.decoder import JSONDecodeError
 
 import geojson
 from django import forms
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
 from django.utils.html import format_html
 from django.utils.html import format_html_join
@@ -134,10 +135,14 @@ def create_multiform_from_schema(
                     _DynamicForm = _dynamicform_factory()
 
                 rows = calculate_rows(field.get("lignes"), rapport_vsme)
+                validators = calculate_extra_formset_validators(
+                    schema["schema_id"], rapport_vsme
+                )
                 FormSet = create_Formset_from_schema(
                     field,
                     extra=extra,
                     calculated_rows=rows,
+                    extra_formset_validators=validators,
                 )
 
                 _MultiForm.add_Form(FormSet)
@@ -291,7 +296,9 @@ class DatalistTextInput(forms.TextInput):
         )
 
 
-def create_Formset_from_schema(field_schema, extra=0, calculated_rows=None):
+def create_Formset_from_schema(
+    field_schema, extra=0, calculated_rows=None, extra_formset_validators=None
+):
     field_type = field_schema["type"]
 
     class TableauFormSet(DsfrFormSet):
@@ -339,6 +346,7 @@ def create_Formset_from_schema(field_schema, extra=0, calculated_rows=None):
     class TableauLignesFixesFormSet(TableauFormSet):
         indicator_type = "table_lignes_fixes"
         rows = calculated_rows
+        extra_validators = extra_formset_validators
 
         def __init__(self, *args, **kwargs):
             if kwargs.get("initial"):
@@ -369,6 +377,13 @@ def create_Formset_from_schema(field_schema, extra=0, calculated_rows=None):
             for index, form in enumerate(self.forms):
                 cleaned_data[self.id][self.rows[index]["id"]] = form.cleaned_data
             return cleaned_data
+
+        def clean(self):
+            if any(self.errors):
+                return  # Valide d'abord chaque formulaire individuellement
+
+            for validator in self.extra_validators:
+                validator(self.forms)
 
     if field_type == "tableau":
         FormSet = forms.formset_factory(
@@ -405,3 +420,32 @@ def calculate_rows(lignes, rapport_vsme):
             return pays
         case list():
             return lignes
+
+
+def calculate_extra_formset_validators(indicateur_schema_id, rapport_vsme):
+    match indicateur_schema_id:
+        case "B8-39-c":
+            indicateur_nombre_salaries = "B1-24-e-v"
+            try:
+                nombre_salaries = rapport_vsme.indicateurs.get(
+                    schema_id=indicateur_nombre_salaries
+                ).data.get("nombre_salaries")
+            except ObjectDoesNotExist:
+                nombre_salaries = 0
+            return [effectif_total_validator(nombre_salaries)]
+    return []
+
+
+def effectif_total_validator(nombre_salaries_B1):
+    def validator(forms):
+        nombre_salaries_par_categorie = []
+        for form in forms:
+            nombre_salaries_par_categorie.append(form.cleaned_data["nombre_salaries"])
+        nombre_salaries_total = sum(nombre_salaries_par_categorie)
+
+        if nombre_salaries_total != nombre_salaries_B1:
+            raise ValidationError(
+                f"Le total du nombre de salariés doit être égal à celui indiqué dans l'indicateur de B1 : {nombre_salaries_B1}"
+            )
+
+    return validator
