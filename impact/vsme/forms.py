@@ -423,8 +423,8 @@ def calculate_rows(lignes, rapport_vsme):
 
 
 def calculate_extra_formset_validators(indicateur_schema_id, rapport_vsme):
-    match indicateur_schema_id:
-        case "B8-39-c":
+    match indicateur_schema_id.split("-"):
+        case ["B8", "39", _]:
             indicateur_nombre_salaries = "B1-24-e-v"
             try:
                 nombre_salaries = rapport_vsme.indicateurs.get(
