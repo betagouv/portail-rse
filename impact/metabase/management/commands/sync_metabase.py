@@ -110,6 +110,7 @@ class Command(BaseCommand):
     def _sync_entreprises(self):
         MetabaseEntreprise.objects.all().delete()
         self._success("Suppression des entreprises de Metabase: OK")
+
         self._success("Ajout des entreprises dans Metabase")
         bulk = []
 
@@ -123,7 +124,7 @@ class Command(BaseCommand):
             caracteristiques = (
                 entreprise.caracteristiques[0] if entreprise.caracteristiques else None
             )
-            me_entreprise = MetabaseEntreprise(
+            mb_entreprise = MetabaseEntreprise(
                 impact_id=entreprise.pk,
                 ajoutee_le=entreprise.created_at,
                 modifiee_le=(
@@ -195,7 +196,7 @@ class Command(BaseCommand):
                 ),
                 nombre_utilisateurs=entreprise.nombre_utilisateurs,
             )
-            bulk.append(me_entreprise)
+            bulk.append(mb_entreprise)
 
         with transaction.atomic():
             MetabaseEntreprise.objects.bulk_create(bulk)
@@ -206,6 +207,7 @@ class Command(BaseCommand):
     def _sync_utilisateurs(self):
         MetabaseUtilisateur.objects.all().delete()
         self._success("Suppression des utilisateurs de Metabase: OK")
+
         self._success("Ajout des utilisateurs dans Metabase")
         bulk = []
         for utilisateur in PortailRSEUtilisateur.objects.annotate(
@@ -231,10 +233,15 @@ class Command(BaseCommand):
     def _sync_invitations(self):
         MetabaseInvitation.objects.all().delete()
         self._success("Suppression des invitations de Metabase: OK")
+
         self._success("Ajout des invitations dans Metabase")
+        # on ne synchronise que les invitations des entreprises déjà synchronisées dans Metabase pour éviter des problèmes d'intégrité
         bulk = []
-        for invitation in PortailRSEInvitation.objects.all().select_related(
-            "entreprise"
+        mb_entreprises = list(
+            MetabaseEntreprise.objects.values_list("impact_id", flat=True)
+        )
+        for invitation in PortailRSEInvitation.objects.filter(
+            entreprise_id__in=mb_entreprises
         ):
             mb_invitation = MetabaseInvitation(
                 impact_id=invitation.pk,
@@ -258,11 +265,21 @@ class Command(BaseCommand):
     def _sync_habilitations(self):
         MetabaseHabilitation.objects.all().delete()
         self._success("Suppression des habilitations de Metabase: OK")
+
         self._success("Ajout des habilitations dans Metabase")
+        # on ne synchronise que les habilitations des entreprises et utilisateurs déjà synchronisés dans Metabase pour éviter des problèmes d'intégrité
+        mb_entreprises = list(
+            MetabaseEntreprise.objects.values_list("impact_id", flat=True)
+        )
+        mb_utilisateurs = list(
+            MetabaseUtilisateur.objects.values_list("impact_id", flat=True)
+        )
         bulk = []
-        for habilitation in PortailRSEHabilitation.objects.all():
+        for habilitation in PortailRSEHabilitation.objects.filter(
+            entreprise_id__in=mb_entreprises, user_id__in=mb_utilisateurs
+        ):
             # https://docs.djangoproject.com/fr/4.2/topics/db/optimization/#use-foreign-key-values-directly
-            meta_h = MetabaseHabilitation(
+            mb_habilitation = MetabaseHabilitation(
                 impact_id=habilitation.pk,
                 ajoutee_le=habilitation.created_at,
                 modifiee_le=habilitation.updated_at,
@@ -274,7 +291,7 @@ class Command(BaseCommand):
                     habilitation.invitation_id if habilitation.invitation_id else None
                 ),  # optimisation possible car la clé primaire de l'objet Metabase est identique à la clé primaire dans PortailRSE
             )
-            bulk.append(meta_h)
+            bulk.append(mb_habilitation)
 
         with transaction.atomic():
             MetabaseHabilitation.objects.bulk_create(bulk)
@@ -294,6 +311,10 @@ class Command(BaseCommand):
         self._success("Suppression des réglementations de Metabase: OK")
 
         self._success("Ajout des réglementations dans Metabase")
+        # on ne synchronise que les réglementations des entreprises déjà synchronisées dans Metabase pour éviter des problèmes d'intégrité
+        mb_entreprises = list(
+            MetabaseEntreprise.objects.values_list("impact_id", flat=True)
+        )
         vsme = []
         csrd = []
         bges = []
@@ -301,6 +322,7 @@ class Command(BaseCommand):
         bdese = []
         for entreprise in (
             PortailRSEEntreprise.objects.filter(users__isnull=False)
+            .filter(id__in=mb_entreprises)
             .prefetch_related(
                 Prefetch(
                     "caracteristiquesannuelles_set",

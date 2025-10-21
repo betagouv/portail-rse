@@ -312,6 +312,27 @@ def test_synchronise_une_entreprise_avec_un_utilisateur(
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
+def test_nouvelle_entreprise_creee_entre_la_synchronisation_des_entreprises_et_des_utilisateurs(
+    entreprise_factory, alice
+):
+    entreprise = entreprise_factory()
+    Habilitation.ajouter(entreprise, alice)
+
+    call_command("sync_metabase", entreprises=True)
+
+    assert MetabaseEntreprise.objects.count() == 1
+
+    nouvelle_entreprise = entreprise_factory(siren="000000002")
+    Habilitation.ajouter(nouvelle_entreprise, alice)
+
+    call_command("sync_metabase", entreprises=False, utilisateurs=True)
+
+    # La nouvelle entreprise et la nouvelle habilitation ont été ignorées pour ne pas provoquer d'erreurs d'intégrité
+    assert MetabaseEntreprise.objects.count() == 1
+    assert MetabaseHabilitation.objects.count() == 1
+
+
+@pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_les_invitations(entreprise_factory, alice, django_user_model):
     entreprise = entreprise_factory()
     Habilitation.ajouter(entreprise, alice)
