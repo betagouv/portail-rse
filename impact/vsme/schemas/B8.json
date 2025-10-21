@@ -1,4 +1,68 @@
 {
+    "B8-39-a": {
+        "titre": "Effectifs par type de contrat",
+        "description": "Publier le nombre de salariés (effectifs ou ETP) selon leur type de contrat de travail (temporaire ou permanent).",
+        "ancre": "effectifs_type_de_contrat",
+        "champs": [
+            {
+                "id": "effectifs_type_de_contrat",
+                "label": "Effectifs par type de contrat",
+                "type": "tableau_lignes_fixes",
+                "colonnes": [
+                    {
+                        "id": "nombre_salaries",
+                        "label": "Nombre de salariés",
+                        "type": "nombre_decimal",
+                        "obligatoire": true
+                    }
+                ],
+                "lignes": [
+                    {
+                        "id": "contrat_permanent",
+                        "label": "Contrat permanent"
+                    },
+                    {
+                        "id": "contrat_temporaire",
+                        "label": "Contrat temporaire"
+                    }
+                ]
+            }
+        ]
+    },
+    "B8-39-b": {
+        "titre": "Effectifs par genre",
+        "description": "Publier le nombre de salariés (effectifs ou ETP) ventilés par genre.",
+        "ancre": "effectifs_genre",
+        "champs": [
+            {
+                "id": "effectifs_genre",
+                "label": "Effectifs par genre",
+                "type": "tableau_lignes_fixes",
+                "colonnes": [
+                    {
+                        "id": "nombre_salaries",
+                        "label": "Nombre de salariés",
+                        "type": "nombre_decimal",
+                        "obligatoire": true
+                    }
+                ],
+                "lignes": [
+                    {
+                        "id": "homme",
+                        "label": "Hommes"
+                    },
+                    {
+                        "id": "femme",
+                        "label": "Femmes"
+                    },
+                    {
+                        "id": "autre",
+                        "label": "Autres"
+                    }
+                ]
+            }
+        ]
+    },
     "B8-39-c": {
         "titre": "Effectifs par pays",
         "description": "Si l’entreprise exerce ses activités dans plusieurs pays, publier le nombre de salariés (effectifs ou ETP) par pays de contrat de travail.",
@@ -19,5 +83,19 @@
                 "lignes": "PAYS"
             }
         ]
+    },
+    "B8-40": {
+        "titre": "Taux de rotation du personnel",
+        "description": "Si l’entreprise emploie 50 salariés ou plus, indiquer le taux de rotation du personnel pour la période de référence.",
+        "ancre": "taux_rotation_personnel",
+        "champs": [
+            {
+                "id": "taux_rotation_personnel",
+                "label": "Taux de rotation du personnel (en %)",
+                "type": "nombre_decimal",
+                "unité": "%"
+            }
+        ],
+        "si_pertinent": "L’entreprise emploie moins de 50 salariés"
     }
 }
