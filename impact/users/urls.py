@@ -15,12 +15,18 @@ from .views import PasswordResetView
 from users.views import confirm_email
 
 app_name = "users"
+
+_connexion_view = auth_views.LoginView.as_view(
+    template_name="users/login.html", authentication_form=LoginForm
+)
+
+# certaines options de gestion du compte et des identifiants sont absentes avec ProConnect
+_creation_view = _connexion_view if settings.OIDC_ENABLED else creation
+
 urlpatterns = [
     path(
         "connexion",
-        auth_views.LoginView.as_view(
-            template_name="users/login.html", authentication_form=LoginForm
-        ),
+        _connexion_view,
         name="login",
     ),
     path("deconnexion", deconnexion, name="logout"),
@@ -51,8 +57,5 @@ urlpatterns = [
         confirm_email,
         name="confirm_email",
     ),
+    path("creation", _creation_view, name="creation"),
 ]
-
-if not settings.OIDC_ENABLED:
-    # certaines options de gestion du compte et des identifiants sont absentes avec ProConnect
-    urlpatterns.append(path("creation", creation, name="creation"))
