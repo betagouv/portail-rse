@@ -135,14 +135,14 @@ def create_multiform_from_schema(
                     _DynamicForm = _dynamicform_factory()
 
                 rows = calculate_rows(field.get("lignes"), rapport_vsme)
-                validators = calculate_extra_formset_validators(
+                extra_validators = calculate_extra_validators(
                     schema["schema_id"], rapport_vsme
                 )
                 FormSet = create_Formset_from_schema(
                     field,
                     extra=extra,
                     calculated_rows=rows,
-                    extra_formset_validators=validators,
+                    extra_validators=extra_validators,
                 )
 
                 _MultiForm.add_Form(FormSet)
@@ -297,7 +297,7 @@ class DatalistTextInput(forms.TextInput):
 
 
 def create_Formset_from_schema(
-    field_schema, extra=0, calculated_rows=None, extra_formset_validators=None
+    field_schema, extra=0, calculated_rows=None, extra_validators=None
 ):
     field_type = field_schema["type"]
 
@@ -346,7 +346,6 @@ def create_Formset_from_schema(
     class TableauLignesFixesFormSet(TableauFormSet):
         indicator_type = "table_lignes_fixes"
         rows = calculated_rows
-        extra_validators = extra_formset_validators
 
         def __init__(self, *args, **kwargs):
             if kwargs.get("initial"):
@@ -382,7 +381,7 @@ def create_Formset_from_schema(
             if any(self.errors):
                 return  # Valide d'abord chaque formulaire individuellement
 
-            for validator in self.extra_validators:
+            for validator in extra_validators:
                 validator(self.forms)
 
     if field_type == "tableau":
@@ -422,7 +421,7 @@ def calculate_rows(lignes, rapport_vsme):
             return lignes
 
 
-def calculate_extra_formset_validators(indicateur_schema_id, rapport_vsme):
+def calculate_extra_validators(indicateur_schema_id, rapport_vsme):
     match indicateur_schema_id.split("-"):
         case ["B8", "39", _]:
             indicateur_nombre_salaries = "B1-24-e-v"
