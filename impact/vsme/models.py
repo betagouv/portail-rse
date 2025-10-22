@@ -96,6 +96,7 @@ EXIGENCES_DE_PUBLICATION = {
         "Eau",
         Categorie.ENVIRONNEMENT,
         "https://portail-rse.beta.gouv.fr/vsme/b6-eau/",
+        remplissable=True,
     ),
     "B7": ExigenceDePublication(
         "B7",
@@ -108,6 +109,7 @@ EXIGENCES_DE_PUBLICATION = {
         "Effectifs : caractéristiques générales",
         Categorie.SOCIAL,
         "https://portail-rse.beta.gouv.fr/vsme/b8-effectifs-caracteristiques-generales/",
+        remplissable=True,
     ),
     "B9": ExigenceDePublication(
         "B9",
@@ -231,6 +233,8 @@ class RapportVSME(TimestampedModel):
                 except ObjectDoesNotExist:
                     est_cooperative = False
                 return est_cooperative
+            case ["B8", "39", "c"]:  # indicateur effectifs par pays
+                return len(self.pays()) > 1
             case _:
                 return True
 
@@ -249,7 +253,10 @@ class RapportVSME(TimestampedModel):
         )
         complet = len(indicateurs_completes_et_actifs)
         total = len(indicateurs_actifs)
-        pourcent = (complet / total) * 100
+        if total:
+            pourcent = (complet / total) * 100
+        else:
+            pourcent = 100
         return {"total": total, "complet": complet, "pourcent": int(pourcent)}
 
     def progression_par_categorie(self, categorie):
@@ -275,6 +282,16 @@ class RapportVSME(TimestampedModel):
         if total:
             pourcent = (complet / total) * 100
         return {"total": total, "complet": complet, "pourcent": int(pourcent)}
+
+    def pays(self):
+        indicateur_pays = "B1-24-e-vi"
+        try:
+            codes_pays = self.indicateurs.get(schema_id=indicateur_pays).data.get(
+                "pays", []
+            )
+        except ObjectDoesNotExist:
+            codes_pays = []
+        return codes_pays
 
 
 class Indicateur(TimestampedModel):

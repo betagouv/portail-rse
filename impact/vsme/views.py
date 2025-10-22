@@ -190,19 +190,13 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
     except ObjectDoesNotExist:
         indicateur = None
 
-    toggle_pertinent_url = reverse(
-        "vsme:toggle_pertinent", args=[rapport_vsme.id, indicateur_schema_id]
-    )
-
     if request.method == "POST":
         if delete_field_name := request.POST.get("supprimer-ligne"):
             data = request.POST.copy()
             data[delete_field_name] = True
         else:
             data = request.POST
-        multiform = create_multiform_from_schema(
-            indicateur_schema, toggle_pertinent_url
-        )(
+        multiform = create_multiform_from_schema(indicateur_schema, rapport_vsme)(
             data,
             initial=indicateur.data if indicateur else None,
         )
@@ -233,7 +227,7 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
                         extra = 1
                 multiform = calcule_indicateur(
                     indicateur_schema,
-                    toggle_pertinent_url,
+                    rapport_vsme,
                     data,
                     extra=extra,
                 )
@@ -248,7 +242,7 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
             )
         multiform = calcule_indicateur(
             indicateur_schema,
-            toggle_pertinent_url,
+            rapport_vsme,
             data,
             infos_preremplissage=infos_preremplissage,
         )
@@ -274,7 +268,10 @@ def load_indicateur_schema(indicateur_schema_id):
         exigence_de_publication_schema = EXIGENCES_DE_PUBLICATION[
             exigence_de_publication_code
         ].load_json_schema()
-        return exigence_de_publication_schema[indicateur_schema_id]
+        return dict(
+            exigence_de_publication_schema[indicateur_schema_id],
+            schema_id=indicateur_schema_id,
+        )
     except KeyError:
         raise IndicateurInconnu()
 
@@ -331,9 +328,7 @@ def toggle_pertinent(request, rapport_vsme, indicateur_schema_id):
     toggle_pertinent_url = reverse(
         "vsme:toggle_pertinent", args=[rapport_vsme.id, indicateur_schema_id]
     )
-    multiform = calcule_indicateur(
-        indicateur_schema, toggle_pertinent_url, request.POST
-    )
+    multiform = calcule_indicateur(indicateur_schema, rapport_vsme, request.POST)
     exigence_de_publication = ExigenceDePublication.par_indicateur_schema_id(
         indicateur_schema_id
     )
@@ -350,11 +345,11 @@ def toggle_pertinent(request, rapport_vsme, indicateur_schema_id):
 
 
 def calcule_indicateur(
-    indicateur_schema, toggle_pertinent_url, data, extra=0, infos_preremplissage=None
+    indicateur_schema, rapport_vsme, data, extra=0, infos_preremplissage=None
 ):
     multiform = create_multiform_from_schema(
         indicateur_schema,
-        toggle_pertinent_url,
+        rapport_vsme,
         extra=extra,
         infos_preremplissage=infos_preremplissage,
     )(
