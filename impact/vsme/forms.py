@@ -4,6 +4,9 @@ from json.decoder import JSONDecodeError
 import geojson
 from django import forms
 from django.core.exceptions import ValidationError
+from django.utils.html import format_html
+from django.utils.html import format_html_join
+from django.utils.safestring import mark_safe
 
 from utils.categories_juridiques import CATEGORIES_JURIDIQUES_NIVEAU_II
 from utils.codes_nace import CODES_NACE
@@ -152,7 +155,14 @@ def create_simple_field_from_schema(field_schema):
             return field
         case "texte":
             field_kwargs["max_length"] = field_schema.get("max_length", 255)
-            return forms.CharField(**field_kwargs)
+            if suggestions := field_schema.get("suggestions"):
+                widget = DatalistTextInput(options=suggestions)
+            else:
+                widget = None
+            return forms.CharField(
+                widget=widget,
+                **field_kwargs,
+            )
         case "texte_long":
             return forms.CharField(
                 widget=forms.Textarea(),
@@ -233,6 +243,42 @@ class GeoField(forms.CharField):
         if not point.is_valid and not polygon.is_valid:
             raise ValidationError("Les coordonnées sont incorrectes")
         return minimized_cleaned_value
+
+
+class DatalistTextInput(forms.TextInput):
+    def __init__(self, options, attrs=None):
+        super().__init__(attrs)
+        self.options = options
+
+    def render(self, name, value, attrs=None, renderer=None):
+        self.datalist_id = f"datalist_{name}"
+
+        # Ajoute l'attribut 'list' à l'input pour le lier à la datalist
+        if attrs is None:
+            attrs = {}
+        attrs["list"] = self.datalist_id
+
+        # Génère l'input standard
+        input_html = super().render(name, value, attrs, renderer)
+
+        # Génère la datalist avec les options
+        datalist_html = self._render_datalist()
+
+        # Combine l'input et la datalist
+        return mark_safe(f"{input_html}{datalist_html}")
+
+    def _render_datalist(self):
+        options_html = format_html_join(
+            "\n",
+            "<option value='{}'></option>",
+            ((option,) for option in self.options),
+        )
+
+        return format_html(
+            "<datalist id='{}'>{}</datalist>",
+            self.datalist_id,
+            options_html,
+        )
 
 
 def create_Formset_from_schema(field_schema, extra=0):
