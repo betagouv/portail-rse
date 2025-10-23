@@ -1,6 +1,5 @@
 import json
 import logging
-from datetime import date
 from email.message import EmailMessage
 from pathlib import Path
 from tempfile import NamedTemporaryFile
@@ -22,42 +21,49 @@ from .helpers import synthese_analyse
 from .models import AnalyseIA
 from api import analyse_ia
 from api.exceptions import APIError
+from entreprises.decorators import entreprise_qualifiee_requise
+from reglementations.views import tableau_de_bord_menu_context
+
 
 logger = logging.getLogger(__name__)
 
 
-def _contexte_analyses(request):
-    return {
-        "entreprise": request.entreprise,
-        "annee_precedente": date.today().year - 1,
+def _contexte_analyses(entreprise):
+    context = tableau_de_bord_menu_context(entreprise)
+    context |= {
         "form": AnalyseIAForm(),
-        "analyses_ia": request.entreprise.analyses_ia.all(),
-        "synthese": synthese_analyse(request.entreprise),
+        "analyses_ia": entreprise.analyses_ia.all(),
+        "synthese": synthese_analyse(entreprise),
     }
+    return context
 
 
 @login_required
-def analyses(request):
-    # entreprise = get_object_or_404(Entreprise, siren=request.session.get("entreprise"))
-    return render(request, "accueil.html", _contexte_analyses(request))
+@entreprise_qualifiee_requise
+def analyses(request, entreprise_qualifiee):
+    return render(request, "accueil.html", _contexte_analyses(entreprise_qualifiee))
 
 
 @login_required
+@entreprise_qualifiee_requise
 @require_http_methods(["POST"])
-def ajout_document(request):
+def ajout_document(request, entreprise_qualifiee):
     data = {**request.POST}
     form = AnalyseIAForm(data=data, files=request.FILES)
     if form.is_valid():
         # les analyses IA étant désormais génériques,
         # on effectue le rattachement à l'entreprise
         form.save()
-        request.entreprise.analyses_ia.add(form.instance)
+        entreprise_qualifiee.analyses_ia.add(form.instance)
         messages.success(request, "Document ajouté")
-        return redirect(
-            "analyseia:analyses",
-        )
+        return redirect("analyseia:analyses", siren=entreprise_qualifiee.siren)
     else:
-        return render(request, "accueil.html", _contexte_analyses(request), status=400)
+        return render(
+            request,
+            "accueil.html",
+            _contexte_analyses(entreprise_qualifiee),
+            status=400,
+        )
 
 
 @login_required

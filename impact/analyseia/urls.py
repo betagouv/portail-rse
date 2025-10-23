@@ -12,7 +12,8 @@ app_name = "analyseia"
 
 urlpatterns = [
     path("analyses/", analyses, name="analyses"),
-    path("ajout_document/", ajout_document, name="ajout_document"),
+    path("analyses/<str:siren>/", analyses, name="analyses"),
+    path("analyses/<str:siren>/ajout_document/", ajout_document, name="ajout_document"),
     path(
         "suppression/<int:id_analyse>/",
         suppression,
