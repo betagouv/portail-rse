@@ -123,6 +123,7 @@ EXIGENCES_DE_PUBLICATION = {
         "Effectifs : rémunération, négociation collective et formation",
         Categorie.SOCIAL,
         "https://portail-rse.beta.gouv.fr/vsme/b10-personnel-remuneration-negociation-collective-et-formation/",
+        remplissable=True,
     ),
     "B11": ExigenceDePublication(
         "B11",
