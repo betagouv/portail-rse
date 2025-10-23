@@ -8,7 +8,7 @@
     <td>
         <div
             {% if analyse.etat in "pending,processing,text_processed,analysis_complete" %}
-                hx-get="{% url 'analyseia:statut' analyse.id %}" {# URL de la vue qui renvoie ce fragment #}
+                hx-get="{% url 'analyseia:etat' analyse.id %}" {# URL de la vue qui renvoie ce fragment #}
                 hx-trigger="every 5s" {# Déclencheur toutes les 5 secondes #}
             {% endif %}>
             {% if analyse.etat in "pending,processing,text_processed,analysis_complete" %}
