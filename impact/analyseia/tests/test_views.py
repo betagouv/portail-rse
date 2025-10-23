@@ -134,3 +134,40 @@ def test_ajout_document_dont_le_contenu_n_est_pas_du_pdf(
 
     assert response.status_code == 400
     assert entreprise.analyses_ia.count() == 0
+
+
+def test_suppression_analyse_par_utilisateur_autorise(client, analyse, alice):
+    entreprise = analyse.entreprise
+    client.force_login(alice)
+
+    url = SUPPRESSION_DOCUMENT_URL.format(analyse_id=analyse.id)
+    response = client.post(url)
+
+    assert response.status_code == 302
+    assert response.url == reverse(
+        "analyseia:analyses",
+        kwargs={
+            "siren": entreprise.siren,
+        },
+    )
+    assert AnalyseIA.objects.count() == 0
+
+
+def test_suppression_analyse_par_utilisateur_non_autorise(client, analyse, bob):
+    client.force_login(bob)
+
+    url = SUPPRESSION_DOCUMENT_URL.format(analyse_id=analyse.id)
+    response = client.post(url)
+
+    assert response.status_code == 403
+    assert AnalyseIA.objects.count() == 1
+
+
+def test_suppression_analyse_inexistante(client, analyse, alice):
+    client.force_login(alice)
+
+    url = SUPPRESSION_DOCUMENT_URL.format(analyse_id=42)
+    response = client.post(url)
+
+    assert response.status_code == 404
+    assert AnalyseIA.objects.count() == 1

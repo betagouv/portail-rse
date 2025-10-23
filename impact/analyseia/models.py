@@ -64,3 +64,10 @@ class AnalyseIA(TimestampedModel):
             if "Non ESRS" not in esrs:
                 quantite += len(phrases)
         return quantite
+
+    @property
+    def entreprise(self):
+        if self.entreprises.count():
+            return self.entreprises.first()
+        else:
+            return self.rapports_csrd.first().entreprise
