@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed
@@ -8,7 +9,8 @@ CONTENU_PDF = b"%PDF-1.4\n%\xd3\xeb\xe9\xe1\n1 0 obj\n<</Title (CharteEngagement
 ANALYSES_URL = "/analyses/{siren}/"
 AJOUT_DOCUMENT_URL = ANALYSES_URL + "ajout_document/"
 ANALYSE_BASE_URL = "/analyses/{analyse_id}/"
-SUPPRESSION_DOCUMENT_URL = ANALYSE_BASE_URL + "suppression/"
+SUPPRESSION_ANALYSE_URL = ANALYSE_BASE_URL + "suppression/"
+ETAT_URL = ANALYSE_BASE_URL + "etat/"
 
 
 def test_analyses_est_prive(client, entreprise_factory, alice):
@@ -140,7 +142,7 @@ def test_suppression_analyse_par_utilisateur_autorise(client, analyse, alice):
     entreprise = analyse.entreprise
     client.force_login(alice)
 
-    url = SUPPRESSION_DOCUMENT_URL.format(analyse_id=analyse.id)
+    url = SUPPRESSION_ANALYSE_URL.format(analyse_id=analyse.id)
     response = client.post(url)
 
     assert response.status_code == 302
@@ -156,7 +158,7 @@ def test_suppression_analyse_par_utilisateur_autorise(client, analyse, alice):
 def test_suppression_analyse_par_utilisateur_non_autorise(client, analyse, bob):
     client.force_login(bob)
 
-    url = SUPPRESSION_DOCUMENT_URL.format(analyse_id=analyse.id)
+    url = SUPPRESSION_ANALYSE_URL.format(analyse_id=analyse.id)
     response = client.post(url)
 
     assert response.status_code == 403
@@ -166,8 +168,134 @@ def test_suppression_analyse_par_utilisateur_non_autorise(client, analyse, bob):
 def test_suppression_analyse_inexistante(client, analyse, alice):
     client.force_login(alice)
 
-    url = SUPPRESSION_DOCUMENT_URL.format(analyse_id=42)
+    url = SUPPRESSION_ANALYSE_URL.format(analyse_id=42)
     response = client.post(url)
 
     assert response.status_code == 404
     assert AnalyseIA.objects.count() == 1
+
+
+# TODO: ajouter les tests sur le lancement de l'IA
+
+
+def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_1(
+    client, analyse, mailoutbox
+):
+    url = ETAT_URL.format(analyse_id=analyse.id)
+    client.post(
+        url,
+        {
+            "status": "processing",
+        },
+    )
+
+    analyse.refresh_from_db()
+    assert analyse.etat == "processing"
+    assert len(mailoutbox) == 0
+
+
+def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_2(
+    client, analyse, mailoutbox, alice
+):
+    url = ETAT_URL.format(analyse_id=analyse.id)
+    client.post(
+        url,
+        {
+            "status": "error",
+            "msg": "MESSAGE",
+        },
+    )
+
+    analyse.refresh_from_db()
+    assert analyse.etat == "error"
+    assert analyse.message == "MESSAGE"
+    assert len(mailoutbox) == 1
+    mail = mailoutbox[0]
+    assert mail.from_email == settings.DEFAULT_FROM_EMAIL
+    assert list(mail.to) == [alice.email]
+    assert mail.template_id == settings.BREVO_RESULTAT_ANALYSE_IA_TEMPLATE
+
+
+def test_serveur_IA_envoie_le_resultat_de_l_analyse(client, analyse, mailoutbox, alice):
+    RESULTATS = """{
+  "ESRS E1": [
+    {
+      "PAGES": 1,
+      "TEXTS": "A"
+    }
+  ],
+  "ESRS E2": [
+    {
+      "PAGES": 6,
+      "TEXTS": "B"
+    },
+    {
+      "PAGES": 7,
+      "TEXTS": "C"
+    }
+  ]
+  }"""
+
+    url = ETAT_URL.format(analyse_id=analyse.id)
+    response = client.post(
+        url,
+        {
+            "status": "success",
+            "resultat_json": RESULTATS,
+        },
+    )
+
+    analyse.refresh_from_db()
+    assert analyse.etat == "success"
+    assert analyse.resultat_json == RESULTATS
+
+    assert len(mailoutbox) == 1
+    mail = mailoutbox[0]
+    assert mail.from_email == settings.DEFAULT_FROM_EMAIL
+    assert list(mail.to) == [alice.email]
+    assert mail.template_id == settings.BREVO_RESULTAT_ANALYSE_IA_TEMPLATE
+    assert mail.merge_global_data == {
+        "resultat_ia_url": response.wsgi_request.build_absolute_uri(
+            reverse(
+                "analyseia:analyses",
+                kwargs={
+                    "siren": analyse.entreprise.siren,
+                },
+            )
+        )
+        + "#onglets"
+    }
+
+
+def test_envoie_resultat_ia_email_non_bloquant(client, analyse, mocker):
+    mocker.patch(
+        "analyseia.views._envoie_resultat_ia_email",
+        side_effect=Exception,
+    )
+    capture_exception_mock = mocker.patch("sentry_sdk.capture_exception")
+
+    RESULTATS = """{
+  "ESRS E1": [
+    {
+      "PAGES": 1,
+      "TEXTS": "A"
+    }
+  ]
+  }"""
+
+    url = ETAT_URL.format(analyse_id=analyse.id)
+    response = client.post(
+        url,
+        {
+            "status": "success",
+            "resultat_json": RESULTATS,
+        },
+    )
+
+    analyse.refresh_from_db()
+    assert analyse.etat == "success"
+    assert analyse.resultat_json == RESULTATS
+
+    capture_exception_mock.assert_called_once()
+    args, _ = capture_exception_mock.call_args
+    assert isinstance(args[0], Exception)

@@ -20,7 +20,7 @@ urlpatterns = [
         name="suppression",
     ),
     path(
-        "etat/<int:id_analyse>/",
+        "analyses/<int:id_analyse>/etat/",
         etat,
         name="etat",
     ),
