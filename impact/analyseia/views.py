@@ -19,6 +19,7 @@ from django.views.decorators.http import require_http_methods
 from openpyxl import load_workbook
 
 from .forms import AnalyseIAForm
+from .helpers import normalise_titre_esrs
 from .helpers import synthese_analyse
 from .models import AnalyseIA
 from api import analyse_ia
@@ -122,7 +123,8 @@ def lancement_analyse(request, id_analyse):
 
 
 @login_required
-def resultat(request, id_analyse):
+@entreprise_qualifiee_requise
+def resultat(request, entreprise_qualifiee, id_analyse):
     analyse = get_object_or_404(AnalyseIA, pk=id_analyse)
     chemin_xlsx = Path(settings.BASE_DIR, "analyseia/xlsx/template_synthese_ESG.xlsx")
     workbook = load_workbook(chemin_xlsx)
@@ -145,14 +147,14 @@ def _ajoute_ligne_resultat_ia(worksheet, document, avec_nom_fichier, contrainte_
             ):
                 if avec_nom_fichier:
                     ligne = [
-                        "TODO TITRE lIGNE",
+                        normalise_titre_esrs(esrs, prefixe_ESRS=False),
                         document.nom,
                         contenu["PAGES"],
                         contenu["TEXTS"],
                     ]
                 else:
                     ligne = [
-                        "TODO TITRE LIGNE",
+                        normalise_titre_esrs(esrs, prefixe_ESRS=True),
                         contenu["PAGES"],
                         contenu["TEXTS"],
                     ]
@@ -187,6 +189,33 @@ def _envoie_resultat_ia_email(entreprise, resultat_ia_url):
         "resultat_ia_url": resultat_ia_url,
     }
     email.send()
+
+
+@login_required
+@entreprise_qualifiee_requise
+def synthese_resultat(request, entreprise_qualifiee):
+    chemin_xlsx = Path(settings.BASE_DIR, "analyseia/xlsx/template_synthese_ESG.xlsx")
+    workbook = load_workbook(chemin_xlsx)
+    worksheet = workbook["Phrases relatives aux ESG"]
+    for document in entreprise_qualifiee.analyses_ia.all():
+        _ajoute_ligne_resultat_ia(worksheet, document, True, None)
+    return xlsx_response(workbook, "synthese_resultats.xlsx")
+
+
+@login_required
+@entreprise_qualifiee_requise
+def synthese_resultat_par_ESRS(request, entreprise_qualifiee, code_esrs):
+    chemin_xlsx = Path(
+        settings.BASE_DIR,
+        f"analyseia/xlsx/template_synthese_{code_esrs[0]}.xlsx",
+    )
+    workbook = load_workbook(chemin_xlsx)
+    worksheet = workbook[">>>"]
+    worksheet["C14"] = normalise_titre_esrs(f"ESRS {code_esrs}", prefixe_ESRS=False)
+    worksheet = workbook["Phrases relatives aux ESG"]
+    for document in entreprise_qualifiee.analyses_ia.all():
+        _ajoute_ligne_resultat_ia(worksheet, document, True, code_esrs)
+    return xlsx_response(workbook, f"resultats_ESRS_{code_esrs}.xlsx")
 
 
 # Fragments / HTMX

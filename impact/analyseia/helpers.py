@@ -8,6 +8,13 @@ def _normalise_titre_esrs(titre_esrs):
     return TitreESRS[underscored_esrs].value
 
 
+def normalise_titre_esrs(titre_esrs, prefixe_ESRS=True):
+    titre = _normalise_titre_esrs(titre_esrs)
+    if not prefixe_ESRS:
+        titre = titre.split("-")[1].strip()
+    return titre
+
+
 def synthese_analyse(entreprise):
     resultat = {
         "phrases_environnement": {},
