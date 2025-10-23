@@ -15,7 +15,7 @@ urlpatterns = [
     path("analyses/<str:siren>/", analyses, name="analyses"),
     path("analyses/<str:siren>/ajout_document/", ajout_document, name="ajout_document"),
     path(
-        "suppression/<int:id_analyse>/",
+        "analyses/<int:id_analyse>/suppression/",
         suppression,
         name="suppression",
     ),

@@ -1,12 +1,14 @@
 import json
 import logging
 from email.message import EmailMessage
+from functools import wraps
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
@@ -22,6 +24,7 @@ from .models import AnalyseIA
 from api import analyse_ia
 from api.exceptions import APIError
 from entreprises.decorators import entreprise_qualifiee_requise
+from habilitations.models import Habilitation
 from reglementations.views import tableau_de_bord_menu_context
 
 
@@ -68,14 +71,27 @@ def ajout_document(request, entreprise_qualifiee):
         )
 
 
+def analyse_requise(function):
+    @wraps(function)
+    def wrap(request, id_analyse, *args, **kwargs):
+        analyse = get_object_or_404(AnalyseIA, id=id_analyse)
+
+        if not Habilitation.existe(analyse.entreprise, request.user):
+            raise PermissionDenied()
+        return function(request, analyse, *args, **kwargs)
+
+    return wrap
+
+
 @login_required
+@analyse_requise
 @require_http_methods(["POST"])
-def suppression(request, id_analyse):
-    analyse = get_object_or_404(AnalyseIA, pk=id_analyse)
+def suppression(request, analyse):
+    entreprise = analyse.entreprise
     analyse.delete()
     analyse.fichier.delete(save=False)
     messages.success(request, "Document supprimé")
-    return redirect("analyseia:analyses")
+    return redirect("analyseia:analyses", siren=entreprise.siren)
 
 
 @login_required
