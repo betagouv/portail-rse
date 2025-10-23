@@ -41,7 +41,9 @@ def _contexte_analyses(entreprise):
 @login_required
 @entreprise_qualifiee_requise
 def analyses(request, entreprise_qualifiee):
-    return render(request, "accueil.html", _contexte_analyses(entreprise_qualifiee))
+    return render(
+        request, "analyseia/accueil.html", _contexte_analyses(entreprise_qualifiee)
+    )
 
 
 @login_required
@@ -60,7 +62,7 @@ def ajout_document(request, entreprise_qualifiee):
     else:
         return render(
             request,
-            "accueil.html",
+            "analyseia/accueil.html",
             _contexte_analyses(entreprise_qualifiee),
             status=400,
         )
