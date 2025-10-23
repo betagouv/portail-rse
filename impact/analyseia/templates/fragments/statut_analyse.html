@@ -40,7 +40,7 @@
             </form>
         {% elif analyse.etat == "success" %}
             <a class="fr-btn fr-btn--sm fr-btn--icon-left fr-icon-download-line"
-               href="{% url 'analyseia:resultat' analyse.id %}"
+               href="{% url 'analyseia:resultat' entreprise.siren analyse.id %}"
                title="Télécharger le résultat">Télécharger le résultat</a>
         {% endif %}
     </td>

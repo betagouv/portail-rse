@@ -7,6 +7,8 @@ from .views import lancement_analyse
 from .views import resultat
 from .views import statut_analyse_ia
 from .views import suppression
+from .views import synthese_resultat
+from .views import synthese_resultat_par_ESRS
 
 app_name = "analyseia"
 
@@ -25,14 +27,24 @@ urlpatterns = [
         name="etat",
     ),
     path(
-        "lancement_analyse/<int:id_analyse>/",
+        "analyses/lancement_analyse/<int:id_analyse>/",
         lancement_analyse,
         name="lancement_analyse",
     ),
     path(
-        "resultat/<int:id_analyse>/",
+        "analyses/<str:siren>/resultat/<int:id_analyse>/",
         resultat,
         name="resultat",
+    ),
+    path(
+        "analyses/<str:siren>/synthese/",
+        synthese_resultat,
+        name="synthese_resultat",
+    ),
+    path(
+        "analyses/<str:siren>/<str:code_esrs>",
+        synthese_resultat_par_ESRS,
+        name="synthese_resultat_par_ESRS",
     ),
     path(
         "fragments/statut/<int:id_analyse>/",
