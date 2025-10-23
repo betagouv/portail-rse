@@ -4,6 +4,7 @@ from .views import ajout_document
 from .views import analyses
 from .views import etat
 from .views import lancement_analyse
+from .views import resultat
 from .views import statut_analyse_ia
 from .views import suppression
 
@@ -26,6 +27,11 @@ urlpatterns = [
         "lancement_analyse/<int:id_analyse>/",
         lancement_analyse,
         name="lancement_analyse",
+    ),
+    path(
+        "resultat/<int:id_analyse>/",
+        resultat,
+        name="resultat",
     ),
     path(
         "fragments/statut/<int:id_analyse>/",

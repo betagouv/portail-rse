@@ -81,22 +81,25 @@
             <b>Aucun document ajouté.</b>
         {% endif %}
     </div>
+
+    {# à remanier #}
+
     <div id="onglet-resultats-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="onglet-resultats"
          tabindex="0">
         <div class="fr-container">
-            {% if csrd.analyses_ia_analyses %}
+            {% if analyses_ia %}
                 <div class="fr-grid-row fr-grid-row--gutters fr-pb-4w">
                     <div class="fr-col">
                         <div class="fr-tile">
                             <div class="fr-tile__body">
                                 <div class="fr-tile__content">
                                     <h3 class="fr-tile__title">
-                                        {{ stats_synthese.nb_analyses_ia_analyses }}
+                                        {{ synthese.nb_analyses_ia_analyses }}
                                     </h3>
                                     <p class="fr-tile__desc">document{{
-                                        stats_synthese.nb_analyses_ia_analyses|pluralize
+                                        synthese.nb_analyses_ia_analyses|pluralize
                                         }} analysé{{
-                                        stats_synthese.nb_analyses_ia_analyses|pluralize
+                                        synthese.nb_analyses_ia_analyses|pluralize
                                         }}</p>
                                 </div>
                             </div>
@@ -124,15 +127,15 @@
                                 <div class="fr-tile__content">
                                     <h3 class="fr-tile__title">
                                         {{
-                                        stats_synthese.nb_phrases_pertinentes_detectees
+                                        synthese.nb_phrases_pertinentes_detectees
                                         }}
                                     </h3>
                                     <p class="fr-tile__desc">phrase{{
-                                        stats_synthese.nb_phrases_pertinentes_detectees|pluralize
+                                        synthese.nb_phrases_pertinentes_detectees|pluralize
                                         }} pertinente{{
-                                        stats_synthese.nb_phrases_pertinentes_detectees|pluralize
+                                        synthese.nb_phrases_pertinentes_detectees|pluralize
                                         }} détectée{{
-                                        stats_synthese.nb_phrases_pertinentes_detectees|pluralize
+                                        synthese.nb_phrases_pertinentes_detectees|pluralize
                                         }}</p>
                                 </div>
                             </div>
@@ -159,13 +162,13 @@
                             <div class="fr-tile__body">
                                 <div class="fr-tile__content">
                                     <h3 class="fr-tile__title">
-                                        {{ stats_synthese.nb_esrs_thematiques_detectees
+                                        {{ synthese.nb_esrs_thematiques_detectees
                                         }}
                                     </h3>
                                     <p class="fr-tile__desc">ESRS thématique{{
-                                        stats_synthese.nb_esrs_thematiques_detectees|pluralize
+                                        synthese.nb_esrs_thematiques_detectees|pluralize
                                         }} détecté{{
-                                        stats_synthese.nb_esrs_thematiques_detectees|pluralize
+                                        synthese.nb_esrs_thematiques_detectees|pluralize
                                         }}</p>
                                 </div>
                             </div>
@@ -190,13 +193,14 @@
                 </div>
                 <div class="fr-grid-row fr-grid-row--center fr-pb-4w">
 
+		    {# TODO: ajouter url document de synthese (en plusieurs endroits dans ce template) #}
                     <a class="fr-btn fr-btn--icon-left fr-icon-download-line"
-                       href="{% url 'reglementations:synthese_resultats_IA' csrd.id %}">Télécharger la
+                       href="#">Télécharger la
                         synthèse de tous les résultats (xlsx)</a>
 
                 </div>
                 <div class="fr-grid-row">
-                    <h4>Résultats par ESRS</h4>
+                    <h4>Résultats par catégorie</h4>
                     <div class="fr-container fr-pb-6w">
 
                         <div class="fr-grid-row fr-grid-row--gutters esrs-organizer">
@@ -208,8 +212,8 @@
                                     </div>
 
                                     <div class="esrs-organizer--content">
-                                        {% if stats_synthese.phrases_environnement %}
-                                            {% for phrases_par_esrs in stats_synthese.phrases_environnement %}
+                                        {% if synthese.phrases_environnement %}
+                                            {% for phrases_par_esrs in synthese.phrases_environnement %}
                                                 <div class="esrs-organizer--esrs">
                                                     <div class="esrs-organizer--card">
                                                         <div
@@ -227,7 +231,7 @@
                                                                 }}</b>
                                                             <a class="fr-btn fr-btn--sm fr-btn--secondary fr-icon-download-line"
                                                                title="Télécharger le tableur contenant les phrases correspondant à cet ESRS"
-                                                               href="{% url 'reglementations:synthese_resultats_IA_par_ESRS' csrd.id phrases_par_esrs.code_esrs %}"
+                                                               href="#"
                                                                target="_blank">Télécharger
                                                                 le tableur
                                                                 contenant les
@@ -258,8 +262,8 @@
                                         <h4 class="esrs-organizer--title">Social</h4>
                                     </div>
                                     <div class="esrs-organizer--content">
-                                        {% if stats_synthese.phrases_social %}
-                                            {% for phrases_par_esrs in stats_synthese.phrases_social %}
+                                        {% if synthese.phrases_social %}
+                                            {% for phrases_par_esrs in synthese.phrases_social %}
                                                 <div class="esrs-organizer--esrs">
                                                     <div class="esrs-organizer--card">
                                                         <div
@@ -277,7 +281,7 @@
                                                                 }}</b>
                                                             <a class="fr-btn fr-btn--sm fr-btn--secondary fr-icon-download-line"
                                                                title="Télécharger le tableur contenant les phrases correspondant à cet ESRS"
-                                                               href="{% url 'reglementations:synthese_resultats_IA_par_ESRS' csrd.id phrases_par_esrs.code_esrs %}"
+                                                               href="#"
                                                                target="_blank">Télécharger
                                                                 le tableur
                                                                 contenant les
@@ -309,8 +313,8 @@
                                         </h4>
                                     </div>
                                     <div class="esrs-organizer--content">
-                                        {% if stats_synthese.phrases_gouvernance %}
-                                            {% for phrases_par_esrs in stats_synthese.phrases_gouvernance %}
+                                        {% if synthese.phrases_gouvernance %}
+                                            {% for phrases_par_esrs in synthese.phrases_gouvernance %}
                                                 <div class="esrs-organizer--esrs">
                                                     <div class="esrs-organizer--card">
                                                         <div
@@ -328,7 +332,7 @@
                                                                 }}</b>
                                                             <a class="fr-btn fr-btn--sm fr-btn--secondary fr-icon-download-line"
                                                                title="Télécharger le tableur contenant les phrases correspondant à cet ESRS"
-                                                               href="{% url 'reglementations:synthese_resultats_IA_par_ESRS' csrd.id phrases_par_esrs.code_esrs %}"
+                                                               href="#"
                                                                target="_blank">Télécharger
                                                                 le tableur
                                                                 contenant les
