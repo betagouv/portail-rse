@@ -18,7 +18,7 @@
     <div id="onglet-fichiers-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel"
          aria-labelledby="onglet-fichiers" tabindex="0">
         <div>
-            <form enctype="multipart/form-data" action="{% url 'analyseia:ajout_document' %}"
+            <form enctype="multipart/form-data" action="{% url 'analyseia:ajout_document' entreprise.siren %}"
                   method="post">
                 {% csrf_token %}
                 {% include 'snippets/field.html' with field=form.fichier %}
