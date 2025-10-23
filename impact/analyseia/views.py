@@ -1,6 +1,9 @@
+import json
 import logging
 from datetime import date
 from email.message import EmailMessage
+from pathlib import Path
+from tempfile import NamedTemporaryFile
 
 from django.conf import settings
 from django.contrib import messages
@@ -12,8 +15,10 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
+from openpyxl import load_workbook
 
 from .forms import AnalyseIAForm
+from .helpers import synthese_analyse
 from .models import AnalyseIA
 from api import analyse_ia
 from api.exceptions import APIError
@@ -27,6 +32,7 @@ def _contexte_analyses(request):
         "annee_precedente": date.today().year - 1,
         "form": AnalyseIAForm(),
         "analyses_ia": request.entreprise.analyses_ia.all(),
+        "synthese": synthese_analyse(request.entreprise),
     }
 
 
@@ -46,8 +52,6 @@ def ajout_document(request):
         # on effectue le rattachement à l'entreprise
         form.save()
         request.entreprise.analyses_ia.add(form.instance)
-        print("entreprise:", request.entreprise)
-        print("instance:", form.instance)
         messages.success(request, "Document ajouté")
         return redirect(
             "analyseia:analyses",
@@ -94,6 +98,59 @@ def lancement_analyse(request, id_analyse):
             messages.error(request, exception)
 
     return redirect("analyseia:analyses")
+
+
+@login_required
+def resultat(request, id_analyse):
+    analyse = get_object_or_404(AnalyseIA, pk=id_analyse)
+    chemin_xlsx = Path(settings.BASE_DIR, "analyseia/xlsx/template_synthese_ESG.xlsx")
+    workbook = load_workbook(chemin_xlsx)
+    worksheet = workbook[">>>"]
+    worksheet["C14"] = ""
+    worksheet = workbook["Phrases relatives aux ESG"]
+    _ajoute_ligne_resultat_ia(worksheet, analyse, True, None)
+    return xlsx_response(workbook, "resultats.xlsx")
+
+
+# TODO: externaliser ?
+
+
+def _ajoute_ligne_resultat_ia(worksheet, document, avec_nom_fichier, contrainte_esrs):
+    data = json.loads(document.resultat_json)
+    for esrs, contenus in data.items():
+        for contenu in contenus:
+            if esrs != "Non ESRS" and (
+                (not contrainte_esrs) or contrainte_esrs in esrs
+            ):
+                if avec_nom_fichier:
+                    ligne = [
+                        "TODO TITRE lIGNE",
+                        document.nom,
+                        contenu["PAGES"],
+                        contenu["TEXTS"],
+                    ]
+                else:
+                    ligne = [
+                        "TODO TITRE LIGNE",
+                        contenu["PAGES"],
+                        contenu["TEXTS"],
+                    ]
+                worksheet.append(ligne)
+
+
+def xlsx_response(workbook, filename):
+    with NamedTemporaryFile() as tmp:
+        workbook.save(tmp.name)
+        tmp.seek(0)
+        xlsx_stream = tmp.read()
+
+    response = HttpResponse(
+        xlsx_stream,
+        content_type="application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet",
+    )
+    response["Content-Disposition"] = f"filename={filename}"
+
+    return response
 
 
 def _envoie_resultat_ia_email(entreprise, resultat_ia_url):
