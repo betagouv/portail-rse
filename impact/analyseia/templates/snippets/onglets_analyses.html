@@ -94,13 +94,12 @@
                             <div class="fr-tile__body">
                                 <div class="fr-tile__content">
                                     <h3 class="fr-tile__title">
-                                        {{ synthese.nb_analyses_ia_analyses }}
+                                        {{ synthese.nb_documents_analyses }}
                                     </h3>
-                                    <p class="fr-tile__desc">document{{
-                                        synthese.nb_analyses_ia_analyses|pluralize
-                                        }} analysé{{
-                                        synthese.nb_analyses_ia_analyses|pluralize
-                                        }}</p>
+                                    <p class="fr-tile__desc">
+                                        document{{ synthese.nb_documents_analyses|pluralize }}
+                                        analysé{{ synthese.nb_documents_analyses|pluralize }}
+                                    </p>
                                 </div>
                             </div>
                             <div class="fr-tile__header">
@@ -126,17 +125,13 @@
                             <div class="fr-tile__body">
                                 <div class="fr-tile__content">
                                     <h3 class="fr-tile__title">
-                                        {{
-                                        synthese.nb_phrases_pertinentes_detectees
-                                        }}
+                                        {{synthese.nb_phrases_pertinentes_detectees }}
                                     </h3>
-                                    <p class="fr-tile__desc">phrase{{
-                                        synthese.nb_phrases_pertinentes_detectees|pluralize
-                                        }} pertinente{{
-                                        synthese.nb_phrases_pertinentes_detectees|pluralize
-                                        }} détectée{{
-                                        synthese.nb_phrases_pertinentes_detectees|pluralize
-                                        }}</p>
+                                    <p class="fr-tile__desc">
+                                        phrase{{ synthese.nb_phrases_pertinentes_detectees|pluralize }}
+                                        pertinente{{ synthese.nb_phrases_pertinentes_detectees|pluralize }}
+                                        détectée{{ synthese.nb_phrases_pertinentes_detectees|pluralize }}
+                                    </p>
                                 </div>
                             </div>
                             <div class="fr-tile__header">
@@ -162,14 +157,12 @@
                             <div class="fr-tile__body">
                                 <div class="fr-tile__content">
                                     <h3 class="fr-tile__title">
-                                        {{ synthese.nb_esrs_thematiques_detectees
-                                        }}
+                                        {{ synthese.nb_esrs_thematiques_detectees }}
                                     </h3>
-                                    <p class="fr-tile__desc">ESRS thématique{{
-                                        synthese.nb_esrs_thematiques_detectees|pluralize
-                                        }} détecté{{
-                                        synthese.nb_esrs_thematiques_detectees|pluralize
-                                        }}</p>
+                                    <p class="fr-tile__desc">
+                                        Thème{{ synthese.nb_esrs_thematiques_detectees|pluralize }}
+                                        détecté{{ synthese.nb_esrs_thematiques_detectees|pluralize }}
+                                    </p>
                                 </div>
                             </div>
                             <div class="fr-tile__header">
@@ -193,9 +186,8 @@
                 </div>
                 <div class="fr-grid-row fr-grid-row--center fr-pb-4w">
 
-		    {# TODO: ajouter url document de synthese (en plusieurs endroits dans ce template) #}
                     <a class="fr-btn fr-btn--icon-left fr-icon-download-line"
-                       href="#">Télécharger la
+                       href="{% url 'analyseia:synthese_resultat' entreprise.siren %}">Télécharger la
                         synthèse de tous les résultats (xlsx)</a>
 
                 </div>
@@ -220,24 +212,20 @@
                                                             class="esrs-organizer--card-title">
                                                             <p
                                                                 class="fr-badge fr-badge--sm">
-                                                                {{
-                                                                phrases_par_esrs.nombre_phrases
-                                                                }} phrase{{
-                                                                phrases_par_esrs.nombre_phrases|pluralize
-                                                                }} pertinente{{
-                                                                phrases_par_esrs.nombre_phrases|pluralize
-                                                                }}</p>
-                                                            <b>{{ phrases_par_esrs.titre
-                                                                }}</b>
+                                                                {{ phrases_par_esrs.nombre_phrases }}
+                                                                phrase{{ phrases_par_esrs.nombre_phrases|pluralize }}
+                                                                pertinente{{ phrases_par_esrs.nombre_phrases|pluralize }}
+                                                            </p>
+                                                            <b>{{ phrases_par_esrs.titre }}</b>
                                                             <a class="fr-btn fr-btn--sm fr-btn--secondary fr-icon-download-line"
                                                                title="Télécharger le tableur contenant les phrases correspondant à cet ESRS"
-                                                               href="#"
+                                                               href="{% url 'analyseia:synthese_resultat_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs %}"
                                                                target="_blank">Télécharger
                                                                 le tableur
                                                                 contenant les
                                                                 phrases
                                                                 correspondant à
-                                                                cet ESRS</a>
+                                                                ce thème</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -270,24 +258,20 @@
                                                             class="esrs-organizer--card-title">
                                                             <p
                                                                 class="fr-badge fr-badge--sm">
-                                                                {{
-                                                                phrases_par_esrs.nombre_phrases
-                                                                }} phrase{{
-                                                                phrases_par_esrs.nombre_phrases|pluralize
-                                                                }} pertinente{{
-                                                                phrases_par_esrs.nombre_phrases|pluralize
-                                                                }}</p>
-                                                            <b>{{ phrases_par_esrs.titre
-                                                                }}</b>
+                                                                {{ phrases_par_esrs.nombre_phrases }}
+                                                                phrase{{ phrases_par_esrs.nombre_phrases|pluralize }}
+                                                                pertinente{{ phrases_par_esrs.nombre_phrases|pluralize }}
+                                                            </p>
+                                                            <b>{{ phrases_par_esrs.titre }}</b>
                                                             <a class="fr-btn fr-btn--sm fr-btn--secondary fr-icon-download-line"
                                                                title="Télécharger le tableur contenant les phrases correspondant à cet ESRS"
-                                                               href="#"
+                                                               href="{% url 'analyseia:synthese_resultat_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs %}"
                                                                target="_blank">Télécharger
                                                                 le tableur
                                                                 contenant les
                                                                 phrases
                                                                 correspondant à
-                                                                cet ESRS</a>
+                                                                ce thème</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -321,24 +305,20 @@
                                                             class="esrs-organizer--card-title">
                                                             <p
                                                                 class="fr-badge fr-badge--sm">
-                                                                {{
-                                                                phrases_par_esrs.nombre_phrases
-                                                                }} phrase{{
-                                                                phrases_par_esrs.nombre_phrases|pluralize
-                                                                }} pertinente{{
-                                                                phrases_par_esrs.nombre_phrases|pluralize
-                                                                }}</p>
-                                                            <b>{{ phrases_par_esrs.titre
-                                                                }}</b>
+                                                                {{ phrases_par_esrs.nombre_phrases }}
+                                                                phrase{{ phrases_par_esrs.nombre_phrases|pluralize }}
+                                                                pertinente{{ phrases_par_esrs.nombre_phrases|pluralize }}
+                                                            </p>
+                                                            <b>{{ phrases_par_esrs.titre }}</b>
                                                             <a class="fr-btn fr-btn--sm fr-btn--secondary fr-icon-download-line"
                                                                title="Télécharger le tableur contenant les phrases correspondant à cet ESRS"
-                                                               href="#"
+                                                               href="{% url 'analyseia:synthese_resultat_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs %}"
                                                                target="_blank">Télécharger
                                                                 le tableur
                                                                 contenant les
                                                                 phrases
                                                                 correspondant à
-                                                                cet ESRS</a>
+                                                                ce thème</a>
                                                         </div>
                                                     </div>
                                                 </div>

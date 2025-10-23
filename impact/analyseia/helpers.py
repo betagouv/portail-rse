@@ -36,7 +36,7 @@ def synthese_analyse(entreprise):
                 type_esg = "phrases_social"
             elif esrs.startswith("ESRS G"):
                 type_esg = "phrases_gouvernance"
-            titre_esrs = _normalise_titre_esrs(esrs)
+            titre_esrs = normalise_titre_esrs(esrs, prefixe_ESRS=False)
 
             if titre_esrs in resultat[type_esg]:
                 resultat[type_esg][titre_esrs]["nombre_phrases"] += len(phrases)
