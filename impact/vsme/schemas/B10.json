@@ -1,0 +1,125 @@
+{
+    "B10-42-a": {
+        "titre": "Respect du salaire minimum applicable",
+        "ancre": "respect_salaire_minimum",
+        "champs": [
+            {
+                "id": "respect_salaire_minimum",
+                "label": "Tous les employés perçoivent une rémunération au moins équivalente au salaire minimum",
+                "type": "choix_binaire"
+            }
+        ]
+    },
+    "B10-42-b": {
+        "titre": "Écart de rémunération hommes/femmes",
+        "description": "Déclarer l’écart de rémunération en pourcentage entre les salariés féminins et masculins. L’entreprise peut omettre cette information lorsque le nombre de ses salariés est inférieur à 150, en notant que ce seuil sera ramené à 100 salariés à partir du 7 juin 2031.",
+        "ancre": "ecart_remuneration_hommes_femmes",
+        "champs": [
+            {
+                "id": "remuneration_horaire_hommes",
+                "label": "Rémunération horaire brute moyenne des salariés hommes en euros",
+                "description": "Correspond à la rémunération brute hebdomadaire (ou annuelle) divisée par le nombre moyen d’heures travaillées par semaine (ou par an)",
+                "type": "nombre_decimal",
+                "unité": "euros"
+            },
+            {
+                "id": "remuneration_horaire_femmes",
+                "label": "Rémunération horaire brute moyenne des salariés femmes en euros",
+                "description": "Correspond à la rémunération brute hebdomadaire (ou annuelle) divisée par le nombre moyen d’heures travaillées par semaine (ou par an)",
+                "type": "nombre_decimal",
+                "unité": "euros"
+            },
+            {
+                "id": "ecart_remuneration_hommes_femmes",
+                "label": "Écart en pourcentage entre la rémunération des salariés hommes et des salariés femmes",
+                "type": "nombre_decimal",
+                "unité": "%",
+                "calculé": true
+            }
+        ],
+        "si_pertinent": true
+    },
+    "B10-42-c": {
+        "titre": "Part de salariés couverts par des conventions collectives",
+        "description": "Déclarer le pourcentage des salariés couverts par des conventions collectives.",
+        "ancre": "taux_couverture_conventions_collectives",
+        "champs": [
+            {
+                "id": "nombre_salaries_conventions_collectives",
+                "label": "Nombre de salariés couvert par des conventions collectives.",
+                "type": "nombre_decimal",
+                "unité": "salariés"
+            },
+            {
+                "id": "taux_couverture_conventions_collectives",
+                "label": "Part de salariés couverts par des conventions collectives",
+                "description": "Le taux de couverture des conventions collectives est publié par tranche : entre 0 et 19 %, entre 20 et 39 %, entre 40 et 59 %, entre 60 et 79 % ou entre 80 et 100 %.",
+                "type": "choix_unique",
+                "choix": [
+                    {
+                        "id": "0-20",
+                        "label": "Inférieur à 20%"
+                    },
+                    {
+                        "id": "20-40",
+                        "label": "Entre 20 et 40%"
+                    },
+                    {
+                        "id": "40-60",
+                        "label": "Entre 40 et 60%"
+                    },
+                    {
+                        "id": "60-80",
+                        "label": "Entre 60 et 80%"
+                    },
+                    {
+                        "id": "80-100",
+                        "label": "Entre 80 et 100%"
+                    }
+                ],
+                "calculé": true
+            }
+        ]
+    },
+    "B10-42-d": {
+        "titre": "Nombre moyen d'heures de formation par genre",
+        "description": "Indiquer le nombre moyen d’heures de formation par an et par salarié, ventilé par genre.",
+        "ancre": "nombre_heures_formation_par_genre",
+        "champs": [
+            {
+                "id": "nombre_heures_formation_par_genre",
+                "label": "Nombre moyen d'heures de formation par genre",
+                "type": "tableau_lignes_fixes",
+                "colonnes": [
+                    {
+                        "id": "total_heures_formation",
+                        "label": "Total des heures de formation suivies par les salariés de ce genre",
+                        "type": "nombre_decimal",
+                        "unité": "heures"
+                    },
+                    {
+                        "id": "nombre_moyen_heures_formation",
+                        "label": "Nombre moyen d'heures de formation",
+                        "type": "nombre_decimal",
+                        "unité": "heures/salarié",
+                        "calculé": true
+                    }
+                ],
+                "lignes": [
+                    {
+                        "id": "homme",
+                        "label": "Hommes"
+                    },
+                    {
+                        "id": "femme",
+                        "label": "Femmes"
+                    },
+                    {
+                        "id": "autre",
+                        "label": "Autres"
+                    }
+                ]
+            }
+        ]
+    }
+}
