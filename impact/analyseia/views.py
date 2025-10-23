@@ -1,14 +1,14 @@
 import json
-import logging
-from email.message import EmailMessage
 from functools import wraps
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
+import sentry_sdk
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.core.mail import EmailMessage
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
@@ -26,9 +26,6 @@ from api.exceptions import APIError
 from entreprises.decorators import entreprise_qualifiee_requise
 from habilitations.models import Habilitation
 from reglementations.views import tableau_de_bord_menu_context
-
-
-logger = logging.getLogger(__name__)
 
 
 def _contexte_analyses(entreprise):
@@ -178,7 +175,6 @@ def xlsx_response(workbook, filename):
 
 
 def _envoie_resultat_ia_email(entreprise, resultat_ia_url):
-    # FIXME: pull-up / utils
     destinataires = [utilisateur.email for utilisateur in entreprise.users.all()]
 
     email = EmailMessage(
@@ -207,14 +203,16 @@ def etat(request, id_analyse):
         analyse.resultat_json = request.POST["resultat_json"]
     analyse.save()
     if status in ("success", "error"):
-        path = reverse("analyseia:analyses")
+        path = reverse("analyseia:analyses", kwargs={"siren": analyse.entreprise.siren})
         try:
             _envoie_resultat_ia_email(
-                request.entreprise,
+                analyse.entreprise,
                 f"{request.build_absolute_uri(path)}#onglets",
             )
         except Exception as e:
-            logger.exception(e)
+            with sentry_sdk.new_scope() as scope:
+                scope.set_level("info")
+                sentry_sdk.capture_exception(e)
 
     return HttpResponse("OK")
 
