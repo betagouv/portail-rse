@@ -35,6 +35,7 @@ urlpatterns = (
         path("", include("reglementations.urls")),
         path("", include("users.urls")),
         path("", include("vsme.urls")),
+        path("", include("analyseia.urls")),
         path("trigger-error-for-sentry-debug/", trigger_error),
     ]
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
