@@ -64,6 +64,7 @@ def create_multiform_from_schema(
                         for field in form.fields:
                             if (
                                 field != NON_PERTINENT_FIELD_NAME
+                                and not hasattr(form.fields[field], "est_calcule")
                                 and not form.cleaned_data.get(field)
                                 and not form.cleaned_data.get(field) == 0
                             ):
@@ -188,7 +189,10 @@ def create_simple_field_from_schema(field_schema):
             field_kwargs["max_value"] = field_schema.get("max")
             return forms.IntegerField(**field_kwargs)
         case "nombre_decimal":
-            return forms.FloatField(**field_kwargs)
+            field = forms.FloatField(**field_kwargs)
+            if field_schema.get("calculé", False):
+                field.est_calcule = True
+            return field
         case "date":
             return forms.DateField(
                 widget=forms.DateInput(format="%Y-%m-%d", attrs={"type": "date"}),
@@ -226,7 +230,10 @@ def create_simple_field_from_schema(field_schema):
                         for choice in field_schema["choix"]
                     )
             if field_type == "choix_unique":
-                return forms.ChoiceField(choices=choices, **field_kwargs)
+                field = forms.ChoiceField(choices=choices, **field_kwargs)
+                if field_schema.get("calculé", False):
+                    field.est_calcule = True
+                return field
             else:  # choix_multiple
                 return forms.MultipleChoiceField(
                     widget=forms.CheckboxSelectMultiple,
