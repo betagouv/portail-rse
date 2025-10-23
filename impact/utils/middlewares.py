@@ -25,6 +25,9 @@ class ExtendUserMiddleware:
             request.habilitations = request.user.habilitation_set.all()
             request.entreprises = request.user.entreprise_set.all()
 
+            if entreprise := request.session.get("entreprise"):
+                request.entreprise = request.entreprises.get(siren=entreprise)
+
         response = self.get_response(request)
 
         # rien après
