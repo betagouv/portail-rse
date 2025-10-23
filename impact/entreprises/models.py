@@ -11,6 +11,7 @@ from django.db import models
 from django.utils import timezone
 
 import api
+from analyseia.models import AnalyseIA
 from api.exceptions import APIError
 from utils.codes_naf import CODES_NAF
 from utils.models import TimestampedModel
@@ -216,6 +217,7 @@ class Entreprise(TimestampedModel):
     users = models.ManyToManyField(
         settings.AUTH_USER_MODEL, through="habilitations.Habilitation"
     )
+    analyses_ia = models.ManyToManyField(AnalyseIA, related_name="entreprises")
 
     def __str__(self):
         return f"{self.siren} {self.denomination}"
