@@ -126,15 +126,9 @@ def lancement_analyse(request, id_analyse):
 @entreprise_qualifiee_requise
 def resultat(request, entreprise_qualifiee, id_analyse, rendu):
     analyse = get_object_or_404(AnalyseIA, pk=id_analyse)
-    if rendu == "theme":
-        chemin_xlsx = Path(
-            settings.BASE_DIR, "analyseia/xlsx/template_synthese_ESG.xlsx"
-        )
-    else:
-        chemin_xlsx = Path(
-            settings.BASE_DIR,
-            "reglementations/views/csrd/xlsx/template_synthese_ESG.xlsx",
-        )
+    chemin_xlsx = Path(
+        settings.BASE_DIR, f"analyseia/xlsx/{rendu}/template_synthese_ESG.xlsx"
+    )
     workbook = load_workbook(chemin_xlsx)
     worksheet = workbook[">>>"]
     worksheet["C14"] = ""
@@ -195,15 +189,9 @@ def _envoie_resultat_ia_email(entreprise, resultat_ia_url):
 @entreprise_qualifiee_requise
 def synthese_resultat(request, entreprise_qualifiee, csrd_id=None):
     rendu = "esrs" if csrd_id else "theme"
-    if rendu == "theme":
-        chemin_xlsx = Path(
-            settings.BASE_DIR, "analyseia/xlsx/template_synthese_ESG.xlsx"
-        )
-    else:
-        chemin_xlsx = Path(
-            settings.BASE_DIR,
-            "reglementations/views/csrd/xlsx/template_synthese_ESG.xlsx",
-        )
+    chemin_xlsx = Path(
+        settings.BASE_DIR, f"analyseia/xlsx/{rendu}/template_synthese_ESG.xlsx"
+    )
     workbook = load_workbook(chemin_xlsx)
     if rendu == "theme":
         worksheet = workbook["Phrases relatives aux ESG"]
@@ -226,16 +214,10 @@ def synthese_resultat(request, entreprise_qualifiee, csrd_id=None):
 def synthese_resultat_par_ESRS(request, entreprise_qualifiee, code_esrs, csrd_id=None):
     rendu = "esrs" if csrd_id else "theme"
     prefixe_ESRS = rendu == "esrs"
-    if rendu == "theme":
-        chemin_xlsx = Path(
-            settings.BASE_DIR,
-            f"analyseia/xlsx/template_synthese_{code_esrs[0]}.xlsx",
-        )
-    else:
-        chemin_xlsx = Path(
-            settings.BASE_DIR,
-            f"reglementations/views/csrd/xlsx/template_synthese_{code_esrs[0]}.xlsx",
-        )
+    chemin_xlsx = Path(
+        settings.BASE_DIR,
+        f"analyseia/xlsx/{rendu}/template_synthese_{code_esrs[0]}.xlsx",
+    )
     workbook = load_workbook(chemin_xlsx)
     worksheet = workbook[">>>"]
     titre = normalise_titre_esrs(f"ESRS {code_esrs}", prefixe_ESRS=prefixe_ESRS)
