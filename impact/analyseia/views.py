@@ -211,11 +211,21 @@ def synthese_resultat_par_ESRS(request, entreprise_qualifiee, code_esrs):
     )
     workbook = load_workbook(chemin_xlsx)
     worksheet = workbook[">>>"]
-    worksheet["C14"] = normalise_titre_esrs(f"ESRS {code_esrs}", prefixe_ESRS=False)
+    titre = normalise_titre_esrs(f"ESRS {code_esrs}", prefixe_ESRS=False)
+    worksheet["C14"] = titre
     worksheet = workbook["Phrases relatives aux ESG"]
     for document in entreprise_qualifiee.analyses_ia.all():
         _ajoute_ligne_resultat_ia(worksheet, document, True, code_esrs)
-    return xlsx_response(workbook, f"resultats_ESRS_{code_esrs}.xlsx")
+    titre_pour_nom_de_fichier = normalise_titre_pour_nom_de_fichier(titre)
+    return xlsx_response(workbook, f"resultats_{titre_pour_nom_de_fichier}.xlsx")
+
+
+def normalise_titre_pour_nom_de_fichier(titre):
+    """transforme une chaine pour en faire un nom adapté à un nom de fichier
+
+    unidecode n'est pas dans les dépendances et il y a que deux cas de lettres accentuées
+    """
+    return titre.lower().replace(" ", "_").replace("é", "e").replace("î", "i")
 
 
 # Fragments / HTMX
