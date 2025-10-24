@@ -3,13 +3,9 @@ import json
 from reglementations.enums import TitreESRS
 
 
-def _normalise_titre_esrs(titre_esrs):
-    underscored_esrs = titre_esrs[:7].replace(" ", "_")
-    return TitreESRS[underscored_esrs].value
-
-
 def normalise_titre_esrs(titre_esrs, prefixe_ESRS=True):
-    titre = _normalise_titre_esrs(titre_esrs)
+    underscored_esrs = titre_esrs[:7].replace(" ", "_")
+    titre = TitreESRS[underscored_esrs].value
     if not prefixe_ESRS:
         titre = titre.split("-")[1].strip()
     return titre
