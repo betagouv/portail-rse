@@ -1,7 +1,6 @@
 import json
 from functools import wraps
 from pathlib import Path
-from tempfile import NamedTemporaryFile
 
 import sentry_sdk
 from django.conf import settings
@@ -27,6 +26,7 @@ from api.exceptions import APIError
 from entreprises.decorators import entreprise_qualifiee_requise
 from habilitations.models import Habilitation
 from reglementations.views import tableau_de_bord_menu_context
+from utils.xlsx import xlsx_response
 
 
 def _contexte_analyses(entreprise):
@@ -174,21 +174,6 @@ def _ajoute_ligne_resultat_ia(
                         contenu["TEXTS"],
                     ]
                 worksheet.append(ligne)
-
-
-def xlsx_response(workbook, filename):
-    with NamedTemporaryFile() as tmp:
-        workbook.save(tmp.name)
-        tmp.seek(0)
-        xlsx_stream = tmp.read()
-
-    response = HttpResponse(
-        xlsx_stream,
-        content_type="application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet",
-    )
-    response["Content-Disposition"] = f"filename={filename}"
-
-    return response
 
 
 def _envoie_resultat_ia_email(entreprise, resultat_ia_url):

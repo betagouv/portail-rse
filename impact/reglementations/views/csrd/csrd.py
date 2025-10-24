@@ -3,7 +3,6 @@ from datetime import datetime
 from datetime import timedelta
 from functools import wraps
 from pathlib import Path
-from tempfile import NamedTemporaryFile
 
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
@@ -37,6 +36,7 @@ from reglementations.models import RapportCSRD
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
 from reglementations.views.base import ReglementationStatus
+from utils.xlsx import xlsx_response
 
 
 class CSRDReglementation(Reglementation):
@@ -760,21 +760,6 @@ def _build_xlsx(enjeux, csrd=None, materiels=False):
 
     filename = "enjeux_csrd.xlsx" if not materiels else "enjeux_csrd_materiels.xlsx"
     return xlsx_response(workbook, filename)
-
-
-def xlsx_response(workbook, filename):
-    with NamedTemporaryFile() as tmp:
-        workbook.save(tmp.name)
-        tmp.seek(0)
-        xlsx_stream = tmp.read()
-
-    response = HttpResponse(
-        xlsx_stream,
-        content_type="application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet",
-    )
-    response["Content-Disposition"] = f"filename={filename}"
-
-    return response
 
 
 @login_required
