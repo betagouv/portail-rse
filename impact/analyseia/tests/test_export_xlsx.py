@@ -120,7 +120,6 @@ def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_x
   ]
   }""",
     )
-
     client.force_login(alice)
 
     response = client.get(
@@ -173,7 +172,7 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx(
       "TEXTS": "A"
     }
   ],
-  "ESRS E2": [
+  "ESRS E5": [
     {
       "PAGES": 4,
       "TEXTS": "B"
@@ -190,7 +189,7 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx(
     document = entreprise.analyses_ia.create(
         etat="success",
         resultat_json="""{
-  "ESRS E2": [
+  "ESRS E5": [
     {
       "PAGES": 6,
       "TEXTS": "C"
@@ -198,30 +197,33 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx(
   ]
   }""",
     )
-
     client.force_login(alice)
 
     response = client.get(
-        reverse("analyseia:synthese_resultat_par_ESRS", args=[entreprise.siren, "E2"]),
+        reverse("analyseia:synthese_resultat_par_ESRS", args=[entreprise.siren, "E5"]),
     )
 
-    assert response["Content-Disposition"] == "filename=resultats_ESRS_E2.xlsx"
+    assert (
+        response["Content-Disposition"]
+        == "filename=resultats_utilisation_des_ressources_et_economie_circulaire.xlsx"
+    )
     assert (
         response["content-type"]
         == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook[">>>"]
-    assert onglet["C14"].value == "Pollution"
+    TITRE_ESRS_E5 = "Utilisation des ressources et économie circulaire"
+    assert onglet["C14"].value == TITRE_ESRS_E5
     onglet = workbook["Phrases relatives aux ESG"]
     assert onglet["A1"].value == "Thèmes"
     assert onglet["B1"].value == "Fichier"
     assert onglet["C1"].value == "Page"
     assert onglet["D1"].value == "Phrase"
-    assert onglet["A2"].value == "Pollution"
+    assert onglet["A2"].value == TITRE_ESRS_E5
     assert onglet["C2"].value == 4
     assert onglet["D2"].value == "B"
-    assert onglet["A3"].value == "Pollution"
+    assert onglet["A3"].value == TITRE_ESRS_E5
     assert onglet["C3"].value == 6
     assert onglet["D3"].value == "C"
 
