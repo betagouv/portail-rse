@@ -32,7 +32,7 @@ urlpatterns = [
         name="lancement_analyse",
     ),
     path(
-        "analyses/<str:siren>/resultat/<int:id_analyse>/",
+        "analyses/<str:siren>/resultat/<int:id_analyse>/<str:rendu>",
         resultat,
         name="resultat",
     ),
@@ -40,6 +40,16 @@ urlpatterns = [
         "analyses/<str:siren>/synthese/",
         synthese_resultat,
         name="synthese_resultat",
+    ),
+    path(
+        "analyses/<str:siren>/synthese/<int:csrd_id>",
+        synthese_resultat,
+        name="synthese_resultat",
+    ),
+    path(
+        "analyses/<str:siren>/<str:code_esrs>/<int:csrd_id>",
+        synthese_resultat_par_ESRS,
+        name="synthese_resultat_par_ESRS",
     ),
     path(
         "analyses/<str:siren>/<str:code_esrs>",

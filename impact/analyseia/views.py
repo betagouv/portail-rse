@@ -124,21 +124,36 @@ def lancement_analyse(request, id_analyse):
 
 @login_required
 @entreprise_qualifiee_requise
-def resultat(request, entreprise_qualifiee, id_analyse):
+def resultat(request, entreprise_qualifiee, id_analyse, rendu):
     analyse = get_object_or_404(AnalyseIA, pk=id_analyse)
-    chemin_xlsx = Path(settings.BASE_DIR, "analyseia/xlsx/template_synthese_ESG.xlsx")
+    if rendu == "theme":
+        chemin_xlsx = Path(
+            settings.BASE_DIR, "analyseia/xlsx/template_synthese_ESG.xlsx"
+        )
+    else:
+        chemin_xlsx = Path(
+            settings.BASE_DIR,
+            "reglementations/views/csrd/xlsx/template_synthese_ESG.xlsx",
+        )
     workbook = load_workbook(chemin_xlsx)
     worksheet = workbook[">>>"]
     worksheet["C14"] = ""
-    worksheet = workbook["Phrases relatives aux ESG"]
-    _ajoute_ligne_resultat_ia(worksheet, analyse, True, None)
+    if rendu == "theme":
+        worksheet = workbook["Phrases relatives aux ESG"]
+    else:
+        worksheet = workbook["Phrases relatives aux ESRS"]
+
+    prefixe_ESRS = rendu == "esrs"
+    _ajoute_ligne_resultat_ia(worksheet, analyse, True, None, prefixe_ESRS)
     return xlsx_response(workbook, "resultats.xlsx")
 
 
 # TODO: externaliser ?
 
 
-def _ajoute_ligne_resultat_ia(worksheet, document, avec_nom_fichier, contrainte_esrs):
+def _ajoute_ligne_resultat_ia(
+    worksheet, document, avec_nom_fichier, contrainte_esrs, prefixe_ESRS=False
+):
     data = json.loads(document.resultat_json)
     for esrs, contenus in data.items():
         for contenu in contenus:
@@ -147,14 +162,14 @@ def _ajoute_ligne_resultat_ia(worksheet, document, avec_nom_fichier, contrainte_
             ):
                 if avec_nom_fichier:
                     ligne = [
-                        normalise_titre_esrs(esrs, prefixe_ESRS=False),
+                        normalise_titre_esrs(esrs, prefixe_ESRS=prefixe_ESRS),
                         document.nom,
                         contenu["PAGES"],
                         contenu["TEXTS"],
                     ]
                 else:
                     ligne = [
-                        normalise_titre_esrs(esrs, prefixe_ESRS=True),
+                        normalise_titre_esrs(esrs, prefixe_ESRS=prefixe_ESRS),
                         contenu["PAGES"],
                         contenu["TEXTS"],
                     ]
@@ -193,31 +208,71 @@ def _envoie_resultat_ia_email(entreprise, resultat_ia_url):
 
 @login_required
 @entreprise_qualifiee_requise
-def synthese_resultat(request, entreprise_qualifiee):
-    chemin_xlsx = Path(settings.BASE_DIR, "analyseia/xlsx/template_synthese_ESG.xlsx")
+def synthese_resultat(request, entreprise_qualifiee, csrd_id=None):
+    rendu = "esrs" if csrd_id else "theme"
+    if rendu == "theme":
+        chemin_xlsx = Path(
+            settings.BASE_DIR, "analyseia/xlsx/template_synthese_ESG.xlsx"
+        )
+    else:
+        chemin_xlsx = Path(
+            settings.BASE_DIR,
+            "reglementations/views/csrd/xlsx/template_synthese_ESG.xlsx",
+        )
     workbook = load_workbook(chemin_xlsx)
-    worksheet = workbook["Phrases relatives aux ESG"]
-    for document in entreprise_qualifiee.analyses_ia.all():
-        _ajoute_ligne_resultat_ia(worksheet, document, True, None)
+    if rendu == "theme":
+        worksheet = workbook["Phrases relatives aux ESG"]
+        documents = entreprise_qualifiee.analyses_ia.all()
+    else:
+        worksheet = workbook["Phrases relatives aux ESRS"]
+        from reglementations.models import RapportCSRD
+
+        csrd = get_object_or_404(RapportCSRD, id=csrd_id)
+        documents = csrd.documents_analyses
+
+    prefixe_ESRS = rendu == "esrs"
+    for document in documents:
+        _ajoute_ligne_resultat_ia(worksheet, document, True, None, prefixe_ESRS)
     return xlsx_response(workbook, "synthese_resultats.xlsx")
 
 
 @login_required
 @entreprise_qualifiee_requise
-def synthese_resultat_par_ESRS(request, entreprise_qualifiee, code_esrs):
-    chemin_xlsx = Path(
-        settings.BASE_DIR,
-        f"analyseia/xlsx/template_synthese_{code_esrs[0]}.xlsx",
-    )
+def synthese_resultat_par_ESRS(request, entreprise_qualifiee, code_esrs, csrd_id=None):
+    rendu = "esrs" if csrd_id else "theme"
+    prefixe_ESRS = rendu == "esrs"
+    if rendu == "theme":
+        chemin_xlsx = Path(
+            settings.BASE_DIR,
+            f"analyseia/xlsx/template_synthese_{code_esrs[0]}.xlsx",
+        )
+    else:
+        chemin_xlsx = Path(
+            settings.BASE_DIR,
+            f"reglementations/views/csrd/xlsx/template_synthese_{code_esrs[0]}.xlsx",
+        )
     workbook = load_workbook(chemin_xlsx)
     worksheet = workbook[">>>"]
-    titre = normalise_titre_esrs(f"ESRS {code_esrs}", prefixe_ESRS=False)
+    titre = normalise_titre_esrs(f"ESRS {code_esrs}", prefixe_ESRS=prefixe_ESRS)
     worksheet["C14"] = titre
-    worksheet = workbook["Phrases relatives aux ESG"]
-    for document in entreprise_qualifiee.analyses_ia.all():
-        _ajoute_ligne_resultat_ia(worksheet, document, True, code_esrs)
-    titre_pour_nom_de_fichier = normalise_titre_pour_nom_de_fichier(titre)
-    return xlsx_response(workbook, f"resultats_{titre_pour_nom_de_fichier}.xlsx")
+    if rendu == "theme":
+        worksheet = workbook["Phrases relatives aux ESG"]
+        documents = entreprise_qualifiee.analyses_ia.all()
+    else:
+        worksheet = workbook["Phrases relatives aux ESRS"]
+        from reglementations.models import RapportCSRD
+
+        csrd = get_object_or_404(RapportCSRD, id=csrd_id)
+        documents = csrd.documents_analyses
+
+    for document in documents:
+        _ajoute_ligne_resultat_ia(worksheet, document, True, code_esrs, prefixe_ESRS)
+    if rendu == "theme":
+        titre_pour_nom_de_fichier = normalise_titre_pour_nom_de_fichier(titre)
+        nom_de_fichier = f"resultats_{titre_pour_nom_de_fichier}.xlsx"
+    else:
+        nom_de_fichier = f"resultats_ESRS_{code_esrs}.xlsx"
+    return xlsx_response(workbook, nom_de_fichier)
 
 
 def normalise_titre_pour_nom_de_fichier(titre):

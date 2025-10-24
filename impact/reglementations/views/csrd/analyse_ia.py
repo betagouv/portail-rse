@@ -1,6 +1,3 @@
-import json
-from pathlib import Path
-
 import sentry_sdk
 from django.conf import settings
 from django.contrib import messages
@@ -15,7 +12,6 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-from openpyxl import load_workbook
 
 from analyseia.models import AnalyseIA
 from api import analyse_ia
@@ -23,8 +19,6 @@ from api.exceptions import APIError
 from reglementations.forms.csrd import DocumentAnalyseIAForm
 from reglementations.models import RapportCSRD
 from reglementations.views.csrd.csrd import contexte_d_etape
-from reglementations.views.csrd.csrd import normalise_titre_esrs
-from reglementations.views.csrd.csrd import xlsx_response
 from reglementations.views.csrd.decorators import csrd_required
 from reglementations.views.csrd.decorators import document_required
 
@@ -162,73 +156,3 @@ def envoie_resultat_ia_email(document, rapport_csrd, resultat_ia_url):
         "resultat_ia_url": resultat_ia_url,
     }
     email.send()
-
-
-@login_required
-@document_required
-def resultat_IA_xlsx(request, id_document):
-    document = AnalyseIA.objects.get(id=id_document)
-
-    chemin_xlsx = Path(
-        settings.BASE_DIR, "reglementations/views/csrd/xlsx/template_synthese_ESG.xlsx"
-    )
-    workbook = load_workbook(chemin_xlsx)
-    worksheet = workbook[">>>"]
-    worksheet["C14"] = ""
-    worksheet = workbook["Phrases relatives aux ESRS"]
-    _ajoute_ligne_resultat_ia(worksheet, document, True, None)
-    return xlsx_response(workbook, "resultats.xlsx")
-
-
-def _ajoute_ligne_resultat_ia(worksheet, document, avec_nom_fichier, contrainte_esrs):
-    data = json.loads(document.resultat_json)
-    for esrs, contenus in data.items():
-        for contenu in contenus:
-            if esrs != "Non ESRS" and (
-                (not contrainte_esrs) or contrainte_esrs in esrs
-            ):
-                if avec_nom_fichier:
-                    ligne = [
-                        normalise_titre_esrs(esrs),
-                        document.nom,
-                        contenu["PAGES"],
-                        contenu["TEXTS"],
-                    ]
-                else:
-                    ligne = [
-                        normalise_titre_esrs(esrs),
-                        contenu["PAGES"],
-                        contenu["TEXTS"],
-                    ]
-                worksheet.append(ligne)
-
-
-@login_required
-@csrd_required
-def synthese_resultat_IA_xlsx(request, csrd_id):
-    csrd = RapportCSRD.objects.get(id=csrd_id)
-    chemin_xlsx = Path(
-        settings.BASE_DIR, "reglementations/views/csrd/xlsx/template_synthese_ESG.xlsx"
-    )
-    workbook = load_workbook(chemin_xlsx)
-    worksheet = workbook["Phrases relatives aux ESRS"]
-    for document in csrd.documents_analyses:
-        _ajoute_ligne_resultat_ia(worksheet, document, True, None)
-    return xlsx_response(workbook, "synthese_resultats.xlsx")
-
-
-@login_required
-@csrd_required
-def synthese_resultat_IA_par_ESRS_xlsx(request, csrd_id, code_esrs):
-    csrd = RapportCSRD.objects.get(id=csrd_id)
-    chemin_xlsx = Path(
-        settings.BASE_DIR,
-        f"reglementations/views/csrd/xlsx/template_synthese_{code_esrs[0]}.xlsx",
-    )
-    workbook = load_workbook(chemin_xlsx)
-    worksheet = workbook[">>>"]
-    worksheet["C14"] = normalise_titre_esrs(f"ESRS {code_esrs}")
-    worksheet = workbook["Phrases relatives aux ESRS"]
-    for document in csrd.documents_analyses:
-        _ajoute_ligne_resultat_ia(worksheet, document, True, code_esrs)
-    return xlsx_response(workbook, f"resultats_ESRS_{code_esrs}.xlsx")

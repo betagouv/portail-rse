@@ -40,7 +40,7 @@
             </form>
         {% elif document.etat == "success" %}
             <a class="fr-btn fr-btn--sm fr-btn--icon-left fr-icon-download-line"
-               href="{% url 'reglementations:resultat_IA_xlsx' document.id %}"
+               href="{% url 'analyseia:resultat' csrd.entreprise.siren document.id 'esrs' %}"
                title="Télécharger le résultat">Télécharger le résultat</a>
         {% endif %}
     </td>
