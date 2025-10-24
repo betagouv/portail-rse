@@ -144,14 +144,14 @@ def resultat(request, entreprise_qualifiee, id_analyse, rendu):
         worksheet = workbook["Phrases relatives aux ESRS"]
 
     prefixe_ESRS = rendu == "esrs"
-    _ajoute_ligne_resultat_ia(worksheet, analyse, True, None, prefixe_ESRS)
+    _ajoute_lignes_resultat_ia(worksheet, analyse, True, None, prefixe_ESRS)
     return xlsx_response(workbook, "resultats.xlsx")
 
 
 # TODO: externaliser ?
 
 
-def _ajoute_ligne_resultat_ia(
+def _ajoute_lignes_resultat_ia(
     worksheet, document, avec_nom_fichier, contrainte_esrs, prefixe_ESRS=False
 ):
     data = json.loads(document.resultat_json)
@@ -217,7 +217,7 @@ def synthese_resultat(request, entreprise_qualifiee, csrd_id=None):
 
     prefixe_ESRS = rendu == "esrs"
     for document in documents:
-        _ajoute_ligne_resultat_ia(worksheet, document, True, None, prefixe_ESRS)
+        _ajoute_lignes_resultat_ia(worksheet, document, True, None, prefixe_ESRS)
     return xlsx_response(workbook, "synthese_resultats.xlsx")
 
 
@@ -251,7 +251,7 @@ def synthese_resultat_par_ESRS(request, entreprise_qualifiee, code_esrs, csrd_id
         documents = csrd.documents_analyses
 
     for document in documents:
-        _ajoute_ligne_resultat_ia(worksheet, document, True, code_esrs, prefixe_ESRS)
+        _ajoute_lignes_resultat_ia(worksheet, document, True, code_esrs, prefixe_ESRS)
     if rendu == "theme":
         titre_pour_nom_de_fichier = normalise_titre_pour_nom_de_fichier(titre)
         nom_de_fichier = f"resultats_{titre_pour_nom_de_fichier}.xlsx"
