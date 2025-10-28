@@ -32,7 +32,7 @@ urlpatterns = [
         name="lancement_analyse",
     ),
     path(
-        "analyses/<str:siren>/resultat/<int:id_analyse>/<str:rendu>",
+        "analyses/<int:id_analyse>/resultat/<str:rendu>",
         resultat,
         name="resultat",
     ),

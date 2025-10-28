@@ -123,9 +123,8 @@ def lancement_analyse(request, id_analyse):
 
 
 @login_required
-@entreprise_qualifiee_requise
-def resultat(request, entreprise_qualifiee, id_analyse, rendu):
-    analyse = get_object_or_404(AnalyseIA, pk=id_analyse)
+@analyse_requise
+def resultat(request, analyse, rendu):
     chemin_xlsx = Path(
         settings.BASE_DIR, f"analyseia/xlsx/{rendu}/template_synthese_ESG.xlsx"
     )
@@ -254,6 +253,7 @@ def normalise_titre_pour_nom_de_fichier(titre):
 
 
 @csrf_exempt
+@require_http_methods(["POST"])
 def etat(request, id_analyse):
     analyse = get_object_or_404(AnalyseIA, pk=id_analyse)
     status = request.POST.get("status")
