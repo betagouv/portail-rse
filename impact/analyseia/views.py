@@ -22,6 +22,7 @@ from openpyxl.utils.exceptions import IllegalCharacterError
 
 from .forms import AnalyseIAForm
 from .helpers import normalise_titre_esrs
+from .helpers import normalise_titre_pour_nom_de_fichier
 from .helpers import synthese_analyse
 from .models import AnalyseIA
 from api import analyse_ia
@@ -278,14 +279,6 @@ def synthese_resultat_par_ESRS(request, entreprise_qualifiee, code_esrs, csrd_id
     else:
         nom_de_fichier = f"resultats_ESRS_{code_esrs}.xlsx"
     return xlsx_response(workbook, nom_de_fichier)
-
-
-def normalise_titre_pour_nom_de_fichier(titre):
-    """transforme une chaine pour en faire un nom adapté à un nom de fichier
-
-    unidecode n'est pas dans les dépendances et il y a que deux cas de lettres accentuées
-    """
-    return titre.lower().replace(" ", "_").replace("é", "e").replace("î", "i")
 
 
 # Fragments / HTMX

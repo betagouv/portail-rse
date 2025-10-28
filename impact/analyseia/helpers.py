@@ -3,6 +3,15 @@ import json
 from reglementations.enums import TitreESRS
 
 
+def normalise_titre_pour_nom_de_fichier(titre):
+    """transforme une chaine pour en faire un nom adapté à un nom de fichier
+
+    unidecode n'est pas dans les dépendances et il y a que deux cas de lettres accentuées
+    dans les titres des ESRS
+    """
+    return titre.lower().replace(" ", "_").replace("é", "e").replace("î", "i")
+
+
 def normalise_titre_esrs(titre_esrs, prefixe_ESRS=True):
     underscored_esrs = titre_esrs[:7].replace(" ", "_")
     titre = TitreESRS[underscored_esrs].value
