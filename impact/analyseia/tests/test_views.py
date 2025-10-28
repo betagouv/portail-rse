@@ -9,6 +9,7 @@ from api.exceptions import APIError
 CONTENU_PDF = b"%PDF-1.4\n%\xd3\xeb\xe9\xe1\n1 0 obj\n<</Title (CharteEngagements"
 ANALYSES_URL = "/analyses/{siren}/"
 AJOUT_DOCUMENT_URL = ANALYSES_URL + "ajout_document/"
+AJOUT_DOCUMENT_LIE_CSRD_URL = ANALYSES_URL + "ajout_document/{csrd_id}"
 ANALYSE_BASE_URL = "/analyses/{analyse_id}/"
 SUPPRESSION_ANALYSE_URL = ANALYSE_BASE_URL + "suppression/"
 LANCEMENT_ANALYSE_URL = ANALYSE_BASE_URL + "lancement_analyse/"
@@ -57,7 +58,9 @@ def test_analyses_sans_siren(client, entreprise_factory, alice):
     ]
 
 
-def test_ajout_document_par_utilisateur_autorise(client, entreprise_factory, alice):
+def test_ajout_document_liée_à_une_entreprise_par_utilisateur_autorise(
+    client, entreprise_factory, alice
+):
     entreprise = entreprise_factory(utilisateur=alice)
     client.force_login(alice)
     fichier = SimpleUploadedFile("test.pdf", CONTENU_PDF)
@@ -79,7 +82,34 @@ def test_ajout_document_par_utilisateur_autorise(client, entreprise_factory, ali
     assert entreprise.analyses_ia.first().nom == "test.pdf"
 
 
-def test_ajout_document_par_utilisateur_non_autorise(client, entreprise_factory, bob):
+def test_ajout_document_liée_à_un_rapport_csrd_par_utilisateur_autorise(
+    client, csrd, alice
+):
+    entreprise = csrd.entreprise
+    client.force_login(alice)
+    fichier = SimpleUploadedFile("test.pdf", CONTENU_PDF)
+
+    url = AJOUT_DOCUMENT_LIE_CSRD_URL.format(siren=entreprise.siren, csrd_id=csrd.id)
+    response = client.post(
+        url,
+        {"fichier": fichier},
+    )
+
+    assert response.status_code == 302
+    assert response.url == reverse(
+        "reglementations:gestion_csrd",
+        kwargs={
+            "siren": csrd.entreprise.siren,
+            "id_etape": "analyse-ecart",
+        },
+    )
+    assert csrd.analyses_ia.count() == 1
+    assert csrd.analyses_ia.first().nom == "test.pdf"
+
+
+def test_ajout_document_liée_à_une_entreprise_par_utilisateur_non_autorise(
+    client, entreprise_factory, bob
+):
     entreprise = entreprise_factory()
     client.force_login(bob)
     fichier = SimpleUploadedFile("test.pdf", CONTENU_PDF)
@@ -94,7 +124,24 @@ def test_ajout_document_par_utilisateur_non_autorise(client, entreprise_factory,
     assert entreprise.analyses_ia.count() == 0
 
 
-def test_ajout_document_sur_entreprise_inexistante(client, alice):
+def test_ajout_document_liée_à_un_rapport_csrd_par_utilisateur_non_autorise(
+    client, csrd, bob
+):
+    entreprise = csrd.entreprise
+    client.force_login(bob)
+    fichier = SimpleUploadedFile("test.pdf", CONTENU_PDF)
+
+    url = AJOUT_DOCUMENT_LIE_CSRD_URL.format(siren=entreprise.siren, csrd_id=csrd.id)
+    response = client.post(
+        url,
+        {"fichier": fichier},
+    )
+
+    assert response.status_code == 403
+    assert csrd.analyses_ia.count() == 0
+
+
+def test_ajout_document_liée_à_une_entreprise_inexistante(client, alice):
     client.force_login(alice)
     fichier = SimpleUploadedFile("test.pdf", CONTENU_PDF)
 
@@ -108,7 +155,26 @@ def test_ajout_document_sur_entreprise_inexistante(client, alice):
     assert AnalyseIA.objects.count() == 0
 
 
-def test_ajout_document_sans_extension_pdf(client, entreprise_factory, alice):
+def test_ajout_document_liée_à_un_rapport_csrd_inexistant(
+    client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    client.force_login(alice)
+    fichier = SimpleUploadedFile("test.pdf", CONTENU_PDF)
+
+    url = AJOUT_DOCUMENT_LIE_CSRD_URL.format(siren=entreprise.siren, csrd_id=42)
+    response = client.post(
+        url,
+        {"fichier": fichier},
+    )
+
+    assert response.status_code == 404
+    assert AnalyseIA.objects.count() == 0
+
+
+def test_ajout_document_liée_à_une_entreprise_sans_extension_pdf(
+    client, entreprise_factory, alice
+):
     entreprise = entreprise_factory(utilisateur=alice)
     client.force_login(alice)
     fichier = SimpleUploadedFile("test.odt", b"libre office writer data")
@@ -123,7 +189,22 @@ def test_ajout_document_sans_extension_pdf(client, entreprise_factory, alice):
     assert entreprise.analyses_ia.count() == 0
 
 
-def test_ajout_document_dont_le_contenu_n_est_pas_du_pdf(
+def test_ajout_document_liée_à_un_rapport_csrd_sans_extension_pdf(client, csrd, alice):
+    entreprise = csrd.entreprise
+    client.force_login(alice)
+    fichier = SimpleUploadedFile("test.odt", b"libre office writer data")
+
+    url = AJOUT_DOCUMENT_LIE_CSRD_URL.format(siren=entreprise.siren, csrd_id=csrd.id)
+    response = client.post(
+        url,
+        {"fichier": fichier},
+    )
+
+    assert response.status_code == 400
+    assert csrd.analyses_ia.count() == 0
+
+
+def test_ajout_document_liée_à_une_entreprise__dont_le_contenu_n_est_pas_du_pdf(
     client, entreprise_factory, alice
 ):
     entreprise = entreprise_factory(utilisateur=alice)
@@ -138,6 +219,23 @@ def test_ajout_document_dont_le_contenu_n_est_pas_du_pdf(
 
     assert response.status_code == 400
     assert entreprise.analyses_ia.count() == 0
+
+
+def test_ajout_document_liée_à_un_rapport_csrd_dont_le_contenu_n_est_pas_du_pdf(
+    client, csrd, alice
+):
+    entreprise = csrd.entreprise
+    client.force_login(alice)
+    fichier = SimpleUploadedFile("test.pdf", b"pas un pdf")
+
+    url = AJOUT_DOCUMENT_LIE_CSRD_URL.format(siren=entreprise.siren, csrd_id=csrd.id)
+    response = client.post(
+        url,
+        {"fichier": fichier},
+    )
+
+    assert response.status_code == 400
+    assert csrd.analyses_ia.count() == 0
 
 
 def test_suppression_analyse_liée_à_une_entreprise_par_utilisateur_autorise(

@@ -8,7 +8,6 @@ from django.http import Http404
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
-from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -16,37 +15,8 @@ from django.views.decorators.http import require_http_methods
 from analyseia.models import AnalyseIA
 from api import analyse_ia
 from api.exceptions import APIError
-from reglementations.forms.csrd import DocumentAnalyseIAForm
 from reglementations.models import RapportCSRD
-from reglementations.views.csrd.csrd import contexte_d_etape
-from reglementations.views.csrd.decorators import csrd_required
 from reglementations.views.csrd.decorators import document_required
-
-
-@login_required
-@csrd_required
-@require_http_methods(["POST"])
-def ajout_document(request, csrd_id):
-    id_etape = "analyse-ecart"
-    csrd = RapportCSRD.objects.get(id=csrd_id)
-    data = {**request.POST}
-    # data["rapport_csrd"] = csrd_id
-    form = DocumentAnalyseIAForm(data=data, files=request.FILES)
-    if form.is_valid():
-        # les analyses IA étant désormais génériques,
-        # on effectue le rattachement au rapport CSRD
-        form.save()
-        form.instance.rapports_csrd.add(csrd)
-        messages.success(request, "Document ajouté")
-        return redirect(
-            "reglementations:gestion_csrd",
-            siren=csrd.entreprise.siren,
-            id_etape=id_etape,
-        )
-    else:
-        context = contexte_d_etape(id_etape, csrd, form)
-        template_name = f"reglementations/csrd/etape-{id_etape}.html"
-        return render(request, template_name, context, status=400)
 
 
 @login_required

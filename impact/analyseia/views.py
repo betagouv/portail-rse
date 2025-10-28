@@ -31,6 +31,7 @@ from entreprises.decorators import entreprise_qualifiee_requise
 from habilitations.models import Habilitation
 from reglementations.enums import ESRS
 from reglementations.views import tableau_de_bord_menu_context
+from reglementations.views.csrd.csrd import contexte_d_etape
 from utils.xlsx import xlsx_response
 
 
@@ -54,24 +55,46 @@ def analyses(request, entreprise_qualifiee):
 
 @login_required
 @entreprise_qualifiee_requise
+@csrd_valide_si_presente
 @require_http_methods(["POST"])
-def ajout_document(request, entreprise_qualifiee):
+def ajout_document(request, entreprise_qualifiee, csrd=None):
+    relation = "csrd" if csrd else "entreprises"
     data = {**request.POST}
     form = AnalyseIAForm(data=data, files=request.FILES)
     if form.is_valid():
-        # les analyses IA étant désormais génériques,
-        # on effectue le rattachement à l'entreprise
         form.save()
-        entreprise_qualifiee.analyses_ia.add(form.instance)
+        # les analyses IA étant désormais génériques,
+        # on effectue le rattachement soit à l'entreprise
+        # soit au rapport CSRD
+        if csrd:
+            form.instance.rapports_csrd.add(csrd)
+        else:
+            entreprise_qualifiee.analyses_ia.add(form.instance)
         messages.success(request, "Document ajouté")
-        return redirect("analyseia:analyses", siren=entreprise_qualifiee.siren)
+        if relation == "entreprises":
+            redirection = redirect(
+                "analyseia:analyses", siren=entreprise_qualifiee.siren
+            )
+        else:
+            redirection = redirect(
+                "reglementations:gestion_csrd",
+                siren=entreprise_qualifiee.siren,
+                id_etape="analyse-ecart",
+            )
+        return redirection
     else:
-        return render(
-            request,
-            "analyseia/accueil.html",
-            _contexte_analyses(entreprise_qualifiee),
-            status=400,
-        )
+        if relation == "entreprises":
+            return render(
+                request,
+                "analyseia/accueil.html",
+                _contexte_analyses(entreprise_qualifiee),
+                status=400,
+            )
+        else:
+            id_etape = "analyse-ecart"
+            context = contexte_d_etape(id_etape, csrd, form)
+            template_name = f"reglementations/csrd/etape-{id_etape}.html"
+            return render(request, template_name, context, status=400)
 
 
 @login_required
