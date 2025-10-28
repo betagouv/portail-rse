@@ -1,8 +1,6 @@
 from django.conf import settings
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 
-from analyseia.models import AnalyseIA
 from api.exceptions import APIError
 
 CONTENU_PDF = b"%PDF-1.4\n%\xd3\xeb\xe9\xe1\n1 0 obj\n<</Title (CharteEngagements"
@@ -10,79 +8,6 @@ CONTENU_PDF = b"%PDF-1.4\n%\xd3\xeb\xe9\xe1\n1 0 obj\n<</Title (CharteEngagement
 
 # note : les rapports CSRD sont uniquement officiels désormais
 # Alice est l'utilisateur propriétaire rattaché aux entreprises de test
-
-
-def test_ajout_document_par_utilisateur_autorise(client, csrd, alice):
-    client.force_login(alice)
-    fichier = SimpleUploadedFile("test.pdf", CONTENU_PDF)
-
-    response = client.post(
-        f"/csrd/{csrd.id}/ajout_document",
-        {"fichier": fichier},
-    )
-
-    assert response.status_code == 302
-    assert response.url == reverse(
-        "reglementations:gestion_csrd",
-        kwargs={
-            "siren": csrd.entreprise.siren,
-            "id_etape": "analyse-ecart",
-        },
-    )
-    assert csrd.analyses_ia.count() == 1
-    assert csrd.analyses_ia.first().nom == "test.pdf"
-
-
-def test_ajout_document_par_utilisateur_non_autorise(client, csrd, bob):
-    client.force_login(bob)
-    fichier = SimpleUploadedFile("test.pdf", CONTENU_PDF)
-
-    response = client.post(
-        f"/csrd/{csrd.id}/ajout_document",
-        {"fichier": fichier},
-    )
-
-    assert response.status_code == 403
-    assert csrd.analyses_ia.count() == 0
-
-
-def test_ajout_document_sur_csrd_inexistante(client, alice):
-    client.force_login(alice)
-    fichier = SimpleUploadedFile("test.pdf", CONTENU_PDF)
-
-    response = client.post(
-        "/csrd/42/ajout_document",
-        {"fichier": fichier},
-    )
-
-    assert response.status_code == 404
-    assert AnalyseIA.objects.count() == 0
-
-
-def test_ajout_document_sans_extension_pdf(client, csrd, alice):
-    client.force_login(alice)
-    fichier = SimpleUploadedFile("test.odt", b"libre office writer data")
-
-    response = client.post(
-        f"/csrd/{csrd.id}/ajout_document",
-        {"fichier": fichier},
-    )
-
-    assert response.status_code == 400
-    assert csrd.analyses_ia.count() == 0
-
-
-def test_ajout_document_dont_le_contenu_n_est_pas_du_pdf(client, csrd, alice):
-    client.force_login(alice)
-    fichier = SimpleUploadedFile("test.pdf", b"pas un pdf")
-
-    response = client.post(
-        f"/csrd/{csrd.id}/ajout_document",
-        {"fichier": fichier},
-    )
-
-    assert response.status_code == 400
-    assert csrd.analyses_ia.count() == 0
 
 
 def test_lancement_d_analyse_IA(client, mock_api_analyse_ia, document, alice):

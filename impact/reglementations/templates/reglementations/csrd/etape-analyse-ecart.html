@@ -43,7 +43,7 @@
             </ul>
             <div id="onglet-fichiers-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel" aria-labelledby="onglet-fichiers" tabindex="0">
                 <div>
-                    <form enctype="multipart/form-data" action="{% url 'reglementations:ajout_document' csrd.id %}" method="post">
+                    <form enctype="multipart/form-data" action="{% url 'analyseia:ajout_document' csrd.entreprise.siren csrd.id %}" method="post">
                         {% csrf_token %}
                         {% include 'snippets/field.html' with field=form.fichier %}
                         <button type="submit" class="fr-btn fr-btn--icon-left fr-icon-upload-2-line fr-mt-1w">Envoyer</button>

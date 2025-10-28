@@ -1,7 +1,6 @@
 from django.urls import path
 from django.urls.conf import include
 
-from reglementations.views.csrd.analyse_ia import ajout_document
 from reglementations.views.csrd.analyse_ia import etat_analyse_IA
 from reglementations.views.csrd.analyse_ia import lancement_analyse_IA
 from reglementations.views.csrd.csrd import datapoints_xlsx
@@ -30,11 +29,6 @@ urlpatterns = [
         "csrd/<str:siren>/datapoints.xlsx",
         datapoints_xlsx,
         name="datapoints_xlsx",
-    ),
-    path(
-        "csrd/<int:csrd_id>/ajout_document",
-        ajout_document,
-        name="ajout_document",
     ),
     path(
         "ESRS-predict/<int:id_document>/<int:csrd_id>",
