@@ -3,8 +3,21 @@ from functools import wraps
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 
+from .models import AnalyseIA
 from habilitations.models import Habilitation
 from reglementations.models.csrd import RapportCSRD
+
+
+def analyse_requise(function):
+    @wraps(function)
+    def wrap(request, id_analyse, *args, **kwargs):
+        analyse = get_object_or_404(AnalyseIA, id=id_analyse)
+
+        if not Habilitation.existe(analyse.entreprise, request.user):
+            raise PermissionDenied()
+        return function(request, analyse, *args, **kwargs)
+
+    return wrap
 
 
 def csrd_valide_si_presente(function):
