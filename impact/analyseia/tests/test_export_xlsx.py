@@ -12,7 +12,7 @@ def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(
     rendu, client, entreprise_factory, alice
 ):
     entreprise = entreprise_factory(utilisateur=alice)
-    document = AnalyseIA.objects.create(
+    document = entreprise.analyses_ia.create(
         etat="success",
         resultat_json="""{
   "ESRS E1": [
@@ -37,7 +37,7 @@ def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(
     client.force_login(alice)
 
     response = client.get(
-        reverse("analyseia:resultat", args=[entreprise.siren, document.id, rendu]),
+        reverse("analyseia:resultat", args=[document.id, rendu]),
     )
 
     assert response["Content-Disposition"] == "filename=resultats.xlsx"
@@ -85,7 +85,7 @@ def test_telechargement_des_resultats_IA_d_un_document_inexistant(
     client.force_login(alice)
 
     response = client.get(
-        reverse("analyseia:resultat", args=[entreprise.siren, 42, rendu]),
+        reverse("analyseia:resultat", args=[42, rendu]),
     )
 
     assert response.status_code == 404
@@ -98,7 +98,7 @@ def test_telechargement_des_resultats_IA_d_un_document_redirige_vers_la_connexio
     entreprise = entreprise_factory(siren="000000089", utilisateur=alice)
 
     response = client.get(
-        reverse("analyseia:resultat", args=[entreprise.siren, analyse.id, rendu]),
+        reverse("analyseia:resultat", args=[analyse.id, rendu]),
     )
 
     assert response.status_code == 302
