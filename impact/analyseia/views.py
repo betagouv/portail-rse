@@ -101,7 +101,7 @@ def lancement_analyse(request, id_analyse):
         try:
             callback_url = request.build_absolute_uri(
                 reverse(
-                    "analyseia:etat",
+                    "analyseia:actualisation_etat",
                     kwargs={
                         "id_analyse": analyse.id,
                     },
@@ -120,6 +120,33 @@ def lancement_analyse(request, id_analyse):
             messages.error(request, exception)
 
     return redirect("analyseia:analyses")
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def actualisation_etat(request, id_analyse):
+    # callback pour l'API IA qui renvoie le statut de l'analyse IA à la fin de chaque étape de l'analyse
+    analyse = get_object_or_404(AnalyseIA, pk=id_analyse)
+    status = request.POST.get("status")
+    analyse.etat = status
+    if message := request.POST.get("msg"):
+        analyse.message = message
+    if status == "success":
+        analyse.resultat_json = request.POST["resultat_json"]
+    analyse.save()
+    if status in ("success", "error"):
+        path = reverse("analyseia:analyses", kwargs={"siren": analyse.entreprise.siren})
+        try:
+            _envoie_resultat_ia_email(
+                analyse.entreprise,
+                f"{request.build_absolute_uri(path)}#onglets",
+            )
+        except Exception as e:
+            with sentry_sdk.new_scope() as scope:
+                scope.set_level("info")
+                sentry_sdk.capture_exception(e)
+
+    return HttpResponse("OK")
 
 
 @login_required
@@ -250,32 +277,6 @@ def normalise_titre_pour_nom_de_fichier(titre):
 
 
 # Fragments / HTMX
-
-
-@csrf_exempt
-@require_http_methods(["POST"])
-def etat(request, id_analyse):
-    analyse = get_object_or_404(AnalyseIA, pk=id_analyse)
-    status = request.POST.get("status")
-    analyse.etat = status
-    if message := request.POST.get("msg"):
-        analyse.message = message
-    if status == "success":
-        analyse.resultat_json = request.POST["resultat_json"]
-    analyse.save()
-    if status in ("success", "error"):
-        path = reverse("analyseia:analyses", kwargs={"siren": analyse.entreprise.siren})
-        try:
-            _envoie_resultat_ia_email(
-                analyse.entreprise,
-                f"{request.build_absolute_uri(path)}#onglets",
-            )
-        except Exception as e:
-            with sentry_sdk.new_scope() as scope:
-                scope.set_level("info")
-                sentry_sdk.capture_exception(e)
-
-    return HttpResponse("OK")
 
 
 @login_required

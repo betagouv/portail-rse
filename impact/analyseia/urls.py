@@ -1,8 +1,8 @@
 from django.urls import path
 
+from .views import actualisation_etat
 from .views import ajout_document
 from .views import analyses
-from .views import etat
 from .views import lancement_analyse
 from .views import resultat
 from .views import statut_analyse_ia
@@ -22,15 +22,15 @@ urlpatterns = [
         name="suppression",
     ),
     path(
-        "analyses/<int:id_analyse>/etat/",
-        etat,
-        name="etat",
-    ),
-    path(
         "analyses/lancement_analyse/<int:id_analyse>/",
         lancement_analyse,
         name="lancement_analyse",
     ),
+    path(
+        "analyses/<int:id_analyse>/etat/",
+        actualisation_etat,
+        name="actualisation_etat",
+    ),  # callback API IA
     path(
         "analyses/<int:id_analyse>/resultat/<str:rendu>",
         resultat,
