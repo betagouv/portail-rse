@@ -11,6 +11,14 @@ from utils.models import TimestampedModel
 # TODO : refactor ?
 
 
+class AnalyseIAQuerySet(models.QuerySet):
+    def reussies(self):
+        return self.filter(etat__exact="success")
+
+    def non_lancees(self):
+        return self.filter(etat__isnull=True)
+
+
 def select_storage():
     # Utiliser un autre storage que celui par défaut ne permet pas de le modifier dans les tests
     # https://code.djangoproject.com/ticket/36269
@@ -43,6 +51,8 @@ class AnalyseIA(TimestampedModel):
     class Meta:
         verbose_name = "document analyse IA"
         verbose_name_plural = "documents analyse IA"
+
+    objects = AnalyseIAQuerySet.as_manager()
 
     def __str__(self):
         return f"AnalyseIA {self.id} - {self.nom}"

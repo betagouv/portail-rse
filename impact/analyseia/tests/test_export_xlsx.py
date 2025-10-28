@@ -437,3 +437,6 @@ def test_telechargement_des_resultats_IA_par_ESRS_redirige_vers_la_connexion_si_
     )
 
     assert response.status_code == 302
+
+
+# TODO: ajoute un test sur le téléchargement de la synthèse dans le cas où un document n'a pas été analysé/est toujours en cours d'analyse
