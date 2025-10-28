@@ -490,3 +490,18 @@ def test_telechargement_des_resultats_IA_par_ESRS_redirige_vers_la_connexion_si_
     )
 
     assert response.status_code == 302
+
+
+def test_telechargement_des_resultats_IA_par_ESRS_d_un_rapport_csrd_inexistant(
+    client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    client.force_login(alice)
+
+    response = client.get(
+        reverse(
+            "analyseia:synthese_resultat_par_ESRS", args=[entreprise.siren, "E2", 42]
+        ),
+    )
+
+    assert response.status_code == 404
