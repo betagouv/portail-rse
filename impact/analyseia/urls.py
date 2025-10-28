@@ -22,7 +22,7 @@ urlpatterns = [
         name="suppression",
     ),
     path(
-        "analyses/lancement_analyse/<int:id_analyse>/",
+        "analyses/<int:id_analyse>/lancement_analyse/",
         lancement_analyse,
         name="lancement_analyse",
     ),
