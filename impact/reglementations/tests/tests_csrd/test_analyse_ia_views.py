@@ -85,48 +85,6 @@ def test_ajout_document_dont_le_contenu_n_est_pas_du_pdf(client, csrd, alice):
     assert csrd.analyses_ia.count() == 0
 
 
-def test_suppression_document_par_utilisateur_autorise(client, document, alice):
-    client.force_login(alice)
-    rapport_csrd = document.rapports_csrd.select_related("entreprise").first()
-
-    url = reverse(
-        "reglementations:suppression_document", kwargs={"id_document": document.id}
-    )
-    response = client.post(url)
-
-    assert response.status_code == 302
-    assert response.url == reverse(
-        "reglementations:gestion_csrd",
-        kwargs={
-            "siren": rapport_csrd.entreprise.siren,
-            "id_etape": "analyse-ecart",
-        },
-    )
-    assert AnalyseIA.objects.count() == 0
-
-
-def test_suppression_document_par_utilisateur_non_autorise(client, document, bob):
-    client.force_login(bob)
-
-    url = reverse(
-        "reglementations:suppression_document", kwargs={"id_document": document.id}
-    )
-    response = client.post(url)
-
-    assert response.status_code == 403
-    assert AnalyseIA.objects.count() == 1
-
-
-def test_suppression_document_inexistant(client, document, alice):
-    client.force_login(alice)
-
-    url = reverse("reglementations:suppression_document", kwargs={"id_document": 42})
-    response = client.post(url)
-
-    assert response.status_code == 404
-    assert AnalyseIA.objects.count() == 1
-
-
 def test_lancement_d_analyse_IA(client, mock_api_analyse_ia, document, alice):
     client.force_login(alice)
     rapport_csrd = document.rapports_csrd.select_related("entreprise").first()

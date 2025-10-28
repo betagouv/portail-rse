@@ -4,7 +4,6 @@ from django.urls.conf import include
 from reglementations.views.csrd.analyse_ia import ajout_document
 from reglementations.views.csrd.analyse_ia import etat_analyse_IA
 from reglementations.views.csrd.analyse_ia import lancement_analyse_IA
-from reglementations.views.csrd.analyse_ia import suppression_document
 from reglementations.views.csrd.csrd import datapoints_xlsx
 from reglementations.views.csrd.csrd import enjeux_materiels_xlsx
 from reglementations.views.csrd.csrd import enjeux_xlsx
@@ -36,11 +35,6 @@ urlpatterns = [
         "csrd/<int:csrd_id>/ajout_document",
         ajout_document,
         name="ajout_document",
-    ),
-    path(
-        "csrd/<int:id_document>/suppression",
-        suppression_document,
-        name="suppression_document",
     ),
     path(
         "ESRS-predict/<int:id_document>/<int:csrd_id>",

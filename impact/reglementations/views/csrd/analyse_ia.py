@@ -52,23 +52,6 @@ def ajout_document(request, csrd_id):
 @login_required
 @document_required
 @require_http_methods(["POST"])
-def suppression_document(request, id_document):
-    document = AnalyseIA.objects.get(id=id_document)
-    rapport_csrd = document.rapports_csrd.first()
-    document.delete()
-    document.fichier.delete(save=False)
-    messages.success(request, "Document supprimé")
-    id_etape = "analyse-ecart"
-    return redirect(
-        "reglementations:gestion_csrd",
-        siren=rapport_csrd.entreprise.siren,
-        id_etape=id_etape,
-    )
-
-
-@login_required
-@document_required
-@require_http_methods(["POST"])
 def lancement_analyse_IA(request, id_document, csrd_id):
     document = AnalyseIA.objects.get(id=id_document)
     rapport_csrd = get_object_or_404(RapportCSRD, pk=csrd_id)

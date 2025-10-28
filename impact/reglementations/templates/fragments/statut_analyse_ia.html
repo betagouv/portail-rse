@@ -54,7 +54,7 @@
                    target="_blank">Voir le document dans un nouvel onglet</a>
             </li>
             <li>
-                <form action="{% url 'reglementations:suppression_document' document.id %}"
+                <form action="{% url 'analyseia:suppression' document.id %}"
                       method="post">
                     {% csrf_token %}
                     <button type="submit" class="fr-btn fr-btn--secondary fr-icon-delete-line"

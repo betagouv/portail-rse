@@ -140,7 +140,9 @@ def test_ajout_document_dont_le_contenu_n_est_pas_du_pdf(
     assert entreprise.analyses_ia.count() == 0
 
 
-def test_suppression_analyse_par_utilisateur_autorise(client, analyse, alice):
+def test_suppression_analyse_liée_à_une_entreprise_par_utilisateur_autorise(
+    client, analyse, alice
+):
     entreprise = analyse.entreprise
     client.force_login(alice)
 
@@ -152,6 +154,27 @@ def test_suppression_analyse_par_utilisateur_autorise(client, analyse, alice):
         "analyseia:analyses",
         kwargs={
             "siren": entreprise.siren,
+        },
+    )
+    assert AnalyseIA.objects.count() == 0
+
+
+def test_suppression_analyse_liée_à_un_rapport_csrd_par_utilisateur_autorise(
+    client, analyse_avec_csrd, alice
+):
+    client.force_login(alice)
+    csrd = analyse_avec_csrd.rapports_csrd.first()
+    entreprise = csrd.entreprise
+
+    url = SUPPRESSION_ANALYSE_URL.format(analyse_id=analyse_avec_csrd.id)
+    response = client.post(url)
+
+    assert response.status_code == 302
+    assert response.url == reverse(
+        "reglementations:gestion_csrd",
+        kwargs={
+            "siren": entreprise.siren,
+            "id_etape": "analyse-ecart",
         },
     )
     assert AnalyseIA.objects.count() == 0
