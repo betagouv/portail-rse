@@ -220,7 +220,7 @@ def synthese_resultat(request, entreprise_qualifiee, csrd_id=None):
     workbook = load_workbook(chemin_xlsx)
     if rendu == "theme":
         worksheet = workbook["Phrases relatives aux ESG"]
-        documents = entreprise_qualifiee.analyses_ia.all()
+        documents = entreprise_qualifiee.analyses_ia.reussies()
     else:
         worksheet = workbook["Phrases relatives aux ESRS"]
         from reglementations.models import RapportCSRD
@@ -249,7 +249,7 @@ def synthese_resultat_par_ESRS(request, entreprise_qualifiee, code_esrs, csrd_id
     worksheet["C14"] = titre
     if rendu == "theme":
         worksheet = workbook["Phrases relatives aux ESG"]
-        documents = entreprise_qualifiee.analyses_ia.all()
+        documents = entreprise_qualifiee.analyses_ia.reussies()
     else:
         worksheet = workbook["Phrases relatives aux ESRS"]
         from reglementations.models import RapportCSRD
