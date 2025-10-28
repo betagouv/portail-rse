@@ -1,12 +1,10 @@
 import json
-from functools import wraps
 from pathlib import Path
 
 import sentry_sdk
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMessage
 from django.http import Http404
 from django.http import HttpResponse
@@ -20,6 +18,7 @@ from openpyxl import load_workbook
 from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
 from openpyxl.utils.exceptions import IllegalCharacterError
 
+from .decorators import analyse_requise
 from .decorators import csrd_valide_si_presente
 from .forms import AnalyseIAForm
 from .helpers import normalise_titre_esrs
@@ -73,18 +72,6 @@ def ajout_document(request, entreprise_qualifiee):
             _contexte_analyses(entreprise_qualifiee),
             status=400,
         )
-
-
-def analyse_requise(function):
-    @wraps(function)
-    def wrap(request, id_analyse, *args, **kwargs):
-        analyse = get_object_or_404(AnalyseIA, id=id_analyse)
-
-        if not Habilitation.existe(analyse.entreprise, request.user):
-            raise PermissionDenied()
-        return function(request, analyse, *args, **kwargs)
-
-    return wrap
 
 
 @login_required
