@@ -20,6 +20,7 @@ from openpyxl import load_workbook
 from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
 from openpyxl.utils.exceptions import IllegalCharacterError
 
+from .decorators import csrd_valide_si_presente
 from .forms import AnalyseIAForm
 from .helpers import normalise_titre_esrs
 from .helpers import normalise_titre_pour_nom_de_fichier
@@ -223,8 +224,9 @@ def _envoie_resultat_ia_email(entreprise, resultat_ia_url):
 
 @login_required
 @entreprise_qualifiee_requise
-def synthese_resultat(request, entreprise_qualifiee, csrd_id=None):
-    rendu = "esrs" if csrd_id else "theme"
+@csrd_valide_si_presente
+def synthese_resultat(request, entreprise_qualifiee, csrd=None):
+    rendu = "esrs" if csrd else "theme"
     chemin_xlsx = Path(
         settings.BASE_DIR, f"analyseia/xlsx/{rendu}/template_synthese_ESG.xlsx"
     )
@@ -234,9 +236,6 @@ def synthese_resultat(request, entreprise_qualifiee, csrd_id=None):
         documents = entreprise_qualifiee.analyses_ia.reussies()
     else:
         worksheet = workbook["Phrases relatives aux ESRS"]
-        from reglementations.models import RapportCSRD
-
-        csrd = get_object_or_404(RapportCSRD, id=csrd_id)
         documents = csrd.documents_analyses
 
     prefixe_ESRS = rendu == "esrs"
@@ -247,11 +246,12 @@ def synthese_resultat(request, entreprise_qualifiee, csrd_id=None):
 
 @login_required
 @entreprise_qualifiee_requise
-def synthese_resultat_par_ESRS(request, entreprise_qualifiee, code_esrs, csrd_id=None):
+@csrd_valide_si_presente
+def synthese_resultat_par_ESRS(request, entreprise_qualifiee, code_esrs, csrd=None):
     if code_esrs not in ESRS.codes():
         raise Http404
 
-    rendu = "esrs" if csrd_id else "theme"
+    rendu = "esrs" if csrd else "theme"
     prefixe_ESRS = rendu == "esrs"
     chemin_xlsx = Path(
         settings.BASE_DIR,
@@ -266,9 +266,6 @@ def synthese_resultat_par_ESRS(request, entreprise_qualifiee, code_esrs, csrd_id
         documents = entreprise_qualifiee.analyses_ia.reussies()
     else:
         worksheet = workbook["Phrases relatives aux ESRS"]
-        from reglementations.models import RapportCSRD
-
-        csrd = get_object_or_404(RapportCSRD, id=csrd_id)
         documents = csrd.documents_analyses
 
     for document in documents:
