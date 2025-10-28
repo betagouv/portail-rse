@@ -93,10 +93,9 @@ def suppression(request, analyse):
 
 
 @login_required
+@analyse_requise
 @require_http_methods(["POST"])
-def lancement_analyse(request, id_analyse):
-    analyse = get_object_or_404(AnalyseIA, pk=id_analyse)
-
+def lancement_analyse(request, analyse):
     if analyse.etat != "success":
         try:
             callback_url = request.build_absolute_uri(
