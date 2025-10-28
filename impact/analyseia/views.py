@@ -78,11 +78,20 @@ def ajout_document(request, entreprise_qualifiee):
 @analyse_requise
 @require_http_methods(["POST"])
 def suppression(request, analyse):
+    relation = "entreprises" if analyse.entreprises.count() else "csrd"
     entreprise = analyse.entreprise
     analyse.delete()
     analyse.fichier.delete(save=False)
     messages.success(request, "Document supprimé")
-    return redirect("analyseia:analyses", siren=entreprise.siren)
+    if relation == "entreprises":
+        redirection = redirect("analyseia:analyses", siren=entreprise.siren)
+    else:
+        redirection = redirect(
+            "reglementations:gestion_csrd",
+            siren=entreprise.siren,
+            id_etape="analyse-ecart",
+        )
+    return redirection
 
 
 @login_required
