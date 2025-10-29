@@ -11,7 +11,7 @@ def normalise_titre_esrs(titre_esrs, prefixe_ESRS=True):
     return titre
 
 
-def synthese_analyse(entreprise):
+def synthese_analyse(analyses):
     resultat = {
         "phrases_environnement": {},
         "phrases_social": {},
@@ -19,7 +19,7 @@ def synthese_analyse(entreprise):
     }
     nb_phrases_pertinentes_detectees = 0
     esrs_thematiques_detectees = set()
-    for analyse in entreprise.analyses_ia.reussies():
+    for analyse in analyses:
         if not analyse.resultat_json:
             break
         for esrs, phrases in json.loads(analyse.resultat_json).items():
@@ -51,6 +51,6 @@ def synthese_analyse(entreprise):
             resultat[nom_phase].values(), key=lambda d: d["titre"]
         )
     resultat["nb_phrases_pertinentes_detectees"] = nb_phrases_pertinentes_detectees
-    resultat["nb_documents_analyses"] = entreprise.analyses_ia.reussies().count()
+    resultat["nb_documents_analyses"] = len(analyses)
     resultat["nb_esrs_thematiques_detectees"] = len(esrs_thematiques_detectees)
     return resultat

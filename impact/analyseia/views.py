@@ -34,7 +34,7 @@ def _contexte_analyses(entreprise):
     context |= {
         "form": AnalyseIAForm(),
         "analyses_ia": entreprise.analyses_ia.all(),
-        "synthese": synthese_analyse(entreprise),
+        "synthese": synthese_analyse(entreprise.analyses_ia.reussies()),
     }
     return context
 
