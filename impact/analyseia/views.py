@@ -173,6 +173,8 @@ def resultat(request, analyse, rendu):
 def _ajoute_lignes_resultat_ia(
     worksheet, document, avec_nom_fichier, contrainte_esrs, prefixe_ESRS=False
 ):
+    if not document.resultat_json:
+        return
     data = json.loads(document.resultat_json)
     for esrs, contenus in data.items():
         for contenu in contenus:
