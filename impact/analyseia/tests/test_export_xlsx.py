@@ -4,8 +4,6 @@ import pytest
 from django.urls import reverse
 from openpyxl import load_workbook
 
-from analyseia.models import AnalyseIA
-
 
 @pytest.mark.parametrize("rendu", ["theme", "esrs"])
 def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(
@@ -78,6 +76,34 @@ def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(
 
 
 @pytest.mark.parametrize("rendu", ["theme", "esrs"])
+def test_telechargement_des_resultats_IA_d_une_analyse_non_terminee(
+    rendu, client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    analyse = entreprise.analyses_ia.create(
+        etat="processing",
+    )
+
+    client.force_login(alice)
+
+    response = client.get(
+        reverse("analyseia:resultat", args=[analyse.id, rendu]),
+    )
+
+    assert response["Content-Disposition"] == "filename=resultats.xlsx"
+    assert (
+        response["content-type"]
+        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+    )
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook[">>>"]
+    assert not onglet["A2"].value
+    assert not onglet["B2"].value
+    assert not onglet["C2"].value
+    assert not onglet["D2"].value
+
+
+@pytest.mark.parametrize("rendu", ["theme", "esrs"])
 def test_telechargement_des_resultats_IA_d_un_document_inexistant(
     rendu, client, entreprise_factory, alice
 ):
@@ -105,10 +131,10 @@ def test_telechargement_des_resultats_IA_d_un_document_redirige_vers_la_connexio
 
 
 def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_xlsx_lié_à_une_entreprise(
-    client, entreprise_factory, csrd, alice
+    client, entreprise_factory, alice
 ):
     entreprise = entreprise_factory(utilisateur=alice, siren="123456789")
-    document = entreprise.analyses_ia.create(
+    entreprise.analyses_ia.create(
         etat="success",
         resultat_json="""{
   "ESRS E1": [
@@ -125,8 +151,7 @@ def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_x
   ]
   }""",
     )
-
-    document = entreprise.analyses_ia.create(
+    entreprise.analyses_ia.create(
         etat="success",
         resultat_json="""{
   "ESRS E2": [
@@ -136,6 +161,9 @@ def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_x
     }
   ]
   }""",
+    )
+    entreprise.analyses_ia.create(
+        etat="processing",
     )
     client.force_login(alice)
 
@@ -165,10 +193,9 @@ def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_x
 
 
 def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_xlsx_lié_à_une_CSRD(
-    client, entreprise_factory, csrd, alice
+    client, csrd, alice
 ):
-    entreprise = entreprise_factory(utilisateur=alice, siren="123456789")
-    document = AnalyseIA.objects.create(
+    csrd.analyses_ia.create(
         etat="success",
         resultat_json="""{
   "ESRS E1": [
@@ -185,9 +212,7 @@ def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_x
   ]
   }""",
     )
-    document.rapports_csrd.add(csrd)
-
-    document = AnalyseIA.objects.create(
+    csrd.analyses_ia.create(
         etat="success",
         resultat_json="""{
   "ESRS E2": [
@@ -198,11 +223,13 @@ def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_x
   ]
   }""",
     )
-    document.rapports_csrd.add(csrd)
+    csrd.analyses_ia.create(
+        etat="processing",
+    )
     client.force_login(alice)
 
     response = client.get(
-        reverse("analyseia:synthese_resultat", args=[entreprise.siren, csrd.id]),
+        reverse("analyseia:synthese_resultat", args=[csrd.entreprise.siren, csrd.id]),
     )
 
     assert response["Content-Disposition"] == "filename=synthese_resultats.xlsx"
@@ -261,7 +288,7 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx_lié_à_une_entrep
     client, entreprise_factory, alice
 ):
     entreprise = entreprise_factory(utilisateur=alice)
-    document = entreprise.analyses_ia.create(
+    entreprise.analyses_ia.create(
         etat="success",
         resultat_json="""{
   "ESRS E1": [
@@ -284,7 +311,7 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx_lié_à_une_entrep
   ]
   }""",
     )
-    document = entreprise.analyses_ia.create(
+    entreprise.analyses_ia.create(
         etat="success",
         resultat_json="""{
   "ESRS E5": [
@@ -294,6 +321,9 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx_lié_à_une_entrep
     }
   ]
   }""",
+    )
+    entreprise.analyses_ia.create(
+        etat="processing",
     )
     client.force_login(alice)
 
@@ -327,10 +357,9 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx_lié_à_une_entrep
 
 
 def test_telechargement_des_resultats_par_ESRS_au_format_xlsx_lié_à_une_CSRD(
-    client, entreprise_factory, csrd, alice
+    client, csrd, alice
 ):
-    entreprise = entreprise_factory(utilisateur=alice, siren="123456789")
-    document = AnalyseIA.objects.create(
+    csrd.analyses_ia.create(
         etat="success",
         resultat_json="""{
   "ESRS E1": [
@@ -353,9 +382,7 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx_lié_à_une_CSRD(
   ]
   }""",
     )
-    document.rapports_csrd.add(csrd)
-
-    document = AnalyseIA.objects.create(
+    csrd.analyses_ia.create(
         etat="success",
         resultat_json="""{
   "ESRS E2": [
@@ -366,13 +393,15 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx_lié_à_une_CSRD(
   ]
   }""",
     )
-    document.rapports_csrd.add(csrd)
+    csrd.analyses_ia.create(
+        etat="processing",
+    )
     client.force_login(alice)
 
     response = client.get(
         reverse(
             "analyseia:synthese_resultat_par_ESRS",
-            args=[entreprise.siren, "E2", csrd.id],
+            args=[csrd.entreprise.siren, "E2", csrd.id],
         ),
     )
 
@@ -437,6 +466,3 @@ def test_telechargement_des_resultats_IA_par_ESRS_redirige_vers_la_connexion_si_
     )
 
     assert response.status_code == 302
-
-
-# TODO: ajoute un test sur le téléchargement de la synthèse dans le cas où un document n'a pas été analysé/est toujours en cours d'analyse
