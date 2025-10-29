@@ -16,6 +16,8 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from openpyxl import load_workbook
+from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
+from openpyxl.utils.exceptions import IllegalCharacterError
 
 from .forms import AnalyseIAForm
 from .helpers import normalise_titre_esrs
@@ -194,7 +196,11 @@ def _ajoute_lignes_resultat_ia(
                         contenu["PAGES"],
                         contenu["TEXTS"],
                     ]
-                worksheet.append(ligne)
+                try:
+                    worksheet.append(ligne)
+                except IllegalCharacterError:
+                    ligne[-1] = ILLEGAL_CHARACTERS_RE.sub("", contenu["TEXTS"])
+                    worksheet.append(ligne)
 
 
 def _envoie_resultat_ia_email(entreprise, resultat_ia_url):
