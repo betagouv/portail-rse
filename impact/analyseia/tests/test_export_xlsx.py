@@ -133,7 +133,7 @@ def test_telechargement_des_resultats_IA_d_un_document_redirige_vers_la_connexio
 def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_xlsx_lié_à_une_entreprise(
     client, entreprise_factory, alice
 ):
-    entreprise = entreprise_factory(utilisateur=alice, siren="123456789")
+    entreprise = entreprise_factory(utilisateur=alice)
     entreprise.analyses_ia.create(
         etat="success",
         resultat_json="""{
@@ -446,22 +446,22 @@ def test_telechargement_des_resultats_IA_par_ESRS_d_une_entreprise_inexistante(
 
 def test_telechargement_des_resultats_IA_par_ESRS_d_un_ESRS_inexistant(
     client,
-    entreprise_factory,
     alice,
     csrd,
 ):
-    entreprise = entreprise_factory(utilisateur=alice, siren="123456789")
+    entreprise = csrd.entreprise
     client.force_login(alice)
 
     response = client.get(
-        reverse("analyseia:synthese_resultat_par_ESRS", args=["123456789", "H8"]),
+        reverse("analyseia:synthese_resultat_par_ESRS", args=[entreprise.siren, "H8"]),
     )
 
     assert response.status_code == 404
 
     response = client.get(
         reverse(
-            "analyseia:synthese_resultat_par_ESRS", args=["123456789", "H8", csrd.id]
+            "analyseia:synthese_resultat_par_ESRS",
+            args=[entreprise.siren, "H8", csrd.id],
         ),
     )
 
@@ -474,7 +474,7 @@ def test_telechargement_des_resultats_IA_par_ESRS_redirige_vers_la_connexion_si_
     alice,
     csrd,
 ):
-    entreprise = entreprise_factory(utilisateur=alice, siren="123456789")
+    entreprise = csrd.entreprise
 
     response = client.get(
         reverse("analyseia:synthese_resultat_par_ESRS", args=[entreprise.siren, "E2"]),
