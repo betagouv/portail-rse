@@ -2,7 +2,6 @@ from django.urls import path
 from django.urls.conf import include
 
 from reglementations.views.csrd.analyse_ia import etat_analyse_IA
-from reglementations.views.csrd.analyse_ia import lancement_analyse_IA
 from reglementations.views.csrd.csrd import datapoints_xlsx
 from reglementations.views.csrd.csrd import enjeux_materiels_xlsx
 from reglementations.views.csrd.csrd import enjeux_xlsx
@@ -34,11 +33,6 @@ urlpatterns = [
         "ESRS-predict/<int:id_document>/<int:csrd_id>",
         etat_analyse_IA,
         name="etat_analyse_IA",
-    ),
-    path(
-        "ESRS-predict/<int:id_document>/<int:csrd_id>/start",
-        lancement_analyse_IA,
-        name="lancement_analyse_IA",
     ),
 ]
 

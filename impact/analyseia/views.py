@@ -142,7 +142,16 @@ def lancement_analyse(request, analyse):
         except APIError as exception:
             messages.error(request, exception)
 
-    return redirect("analyseia:analyses")
+    relation = "entreprises" if analyse.entreprises.count() else "csrd"
+    if relation == "entreprises":
+        redirection = redirect("analyseia:analyses", siren=analyse.entreprise.siren)
+    else:
+        redirection = redirect(
+            "reglementations:gestion_csrd",
+            siren=analyse.entreprise.siren,
+            id_etape="analyse-ecart",
+        )
+    return redirection
 
 
 @csrf_exempt
