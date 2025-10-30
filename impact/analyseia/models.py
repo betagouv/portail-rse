@@ -76,8 +76,16 @@ class AnalyseIA(TimestampedModel):
         return quantite
 
     @property
+    def nombre_de_phrases(self):
+        try:
+            data = json.loads(self.resultat_json)
+        except TypeError:  # cas d'un fichier non traité
+            return 0
+        quantite = 0
+        for esrs, phrases in data.items():
+            quantite += len(phrases)
+        return quantite
+
+    @property
     def entreprise(self):
-        if self.entreprises.count():
-            return self.entreprises.first()
-        else:
-            return self.rapports_csrd.first().entreprise
+        return self.entreprises.first() or self.rapports_csrd.first().entreprise
