@@ -32,7 +32,7 @@
     </td>
     <td>
         {% if not document.etat %}
-            <form action="{% url 'reglementations:lancement_analyse_IA' document.id csrd.id %}" method="post">
+            <form action="{% url 'analyseia:lancement_analyse' document.id %}" method="post">
                 {% csrf_token %}
                 <button type="submit"
                         class="fr-btn fr-btn--sm fr-btn--icon-left fr-icon-play-circle-line">Lancer une

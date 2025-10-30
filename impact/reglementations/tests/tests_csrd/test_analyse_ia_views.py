@@ -1,75 +1,12 @@
 from django.conf import settings
 from django.urls import reverse
 
-from api.exceptions import APIError
 
 CONTENU_PDF = b"%PDF-1.4\n%\xd3\xeb\xe9\xe1\n1 0 obj\n<</Title (CharteEngagements"
 
 
 # note : les rapports CSRD sont uniquement officiels désormais
 # Alice est l'utilisateur propriétaire rattaché aux entreprises de test
-
-
-def test_lancement_d_analyse_IA(client, mock_api_analyse_ia, document, alice):
-    client.force_login(alice)
-    rapport_csrd = document.rapports_csrd.select_related("entreprise").first()
-
-    response = client.post(
-        f"/ESRS-predict/{document.id}/{rapport_csrd.id}/start",
-        follow=True,
-    )
-
-    callback_url = response.wsgi_request.build_absolute_uri(
-        reverse(
-            "reglementations:etat_analyse_IA",
-            kwargs={
-                "id_document": document.id,
-                "csrd_id": rapport_csrd.id,
-            },
-        )
-    )
-
-    mock_api_analyse_ia.assert_called_once_with(
-        document.id, document.fichier.url, callback_url
-    )
-    document.refresh_from_db()
-    assert document.etat == "pending"
-    assert response.status_code == 200
-    assert "L'analyse a bien été lancée." in response.content.decode("utf-8")
-
-
-def test_lancement_d_anlyse_IA_redirige_vers_la_connexion_si_non_connecté(
-    client, mock_api_analyse_ia, document
-):
-    rapport_csrd = document.rapports_csrd.select_related("entreprise").first()
-
-    response = client.post(
-        f"/ESRS-predict/{document.id}/{rapport_csrd.id}/start",
-    )
-
-    assert response.status_code == 302
-    assert not document.etat
-    assert not mock_api_analyse_ia.called
-
-
-def test_lancement_d_analyse_IA_erreur_API(
-    client, mock_api_analyse_ia, document, alice
-):
-    rapport_csrd = document.rapports_csrd.select_related("entreprise").first()
-    message_erreur = (
-        "Le service est actuellement indisponible. Merci de réessayer plus tard."
-    )
-    mock_api_analyse_ia.side_effect = APIError(message_erreur)
-    client.force_login(alice)
-
-    response = client.post(
-        f"/ESRS-predict/{document.id}/{rapport_csrd.id}/start", follow=True
-    )
-
-    document.refresh_from_db()
-    assert not document.etat
-    content = response.content.decode("utf-8")
-    assert message_erreur in content
 
 
 def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_1(

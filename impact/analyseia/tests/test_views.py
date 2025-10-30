@@ -13,7 +13,9 @@ AJOUT_DOCUMENT_LIE_CSRD_URL = ANALYSES_URL + "ajout_document/{csrd_id}"
 ANALYSE_BASE_URL = "/analyses/{analyse_id}/"
 SUPPRESSION_ANALYSE_URL = ANALYSE_BASE_URL + "suppression/"
 LANCEMENT_ANALYSE_URL = ANALYSE_BASE_URL + "lancement_analyse/"
+LANCEMENT_ANALYSE_LIE_CSRD_URL = ANALYSE_BASE_URL + "lancement_analyse/{csrd_id}"
 ACTUALISATION_ETAT_URL = ANALYSE_BASE_URL + "etat/"
+CSRD_ANALYSE_ECART_URL = "/csrd/{siren}/etape-analyse-ecart"
 
 
 def test_analyses_est_prive(client, entreprise_factory, alice):
@@ -298,7 +300,7 @@ def test_suppression_analyse_inexistante(client, analyse, alice):
     assert AnalyseIA.objects.count() == 1
 
 
-def test_lancement_d_analyse_IA_par_utilisateur_autorise(
+def test_lancement_d_analyse_IA_liée_à_une_entreprise_par_utilisateur_autorise(
     client, mock_api_analyse_ia, analyse, alice
 ):
     client.force_login(alice)
@@ -322,6 +324,40 @@ def test_lancement_d_analyse_IA_par_utilisateur_autorise(
     assert analyse.etat == "pending"
     assert response.status_code == 200
     assert "L'analyse a bien été lancée." in response.content.decode("utf-8")
+    assert response.redirect_chain == [
+        (ANALYSES_URL.format(siren=analyse.entreprise.siren), 302)
+    ]
+
+
+def test_lancement_d_analyse_IA_liée_à_un_rapport_csrd_par_utilisateur_autorise(
+    client, mock_api_analyse_ia, analyse_avec_csrd, alice
+):
+    analyse = analyse_avec_csrd
+    csrd = analyse.rapports_csrd.first()
+    client.force_login(alice)
+
+    url = LANCEMENT_ANALYSE_URL.format(analyse_id=analyse.id)
+    response = client.post(url, follow=True)
+
+    callback_url = response.wsgi_request.build_absolute_uri(
+        reverse(
+            "analyseia:actualisation_etat",
+            kwargs={
+                "id_analyse": analyse.id,
+            },
+        )
+    )
+
+    mock_api_analyse_ia.assert_called_once_with(
+        analyse.id, analyse.fichier.url, callback_url
+    )
+    analyse.refresh_from_db()
+    assert analyse.etat == "pending"
+    assert response.status_code == 200
+    assert "L'analyse a bien été lancée." in response.content.decode("utf-8")
+    assert response.redirect_chain == [
+        (CSRD_ANALYSE_ECART_URL.format(siren=csrd.entreprise.siren), 302)
+    ]
 
 
 def test_lancement_d_analyse_IA_par_utilisateur_non_autorise(

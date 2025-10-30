@@ -1,8 +1,8 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 
-from ..analyse_ia import document_required
-from ..analyse_ia import login_required
+from ..decorators import document_required
 from analyseia.models import AnalyseIA
 from reglementations.models.csrd import RapportCSRD
 
