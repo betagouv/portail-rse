@@ -144,6 +144,18 @@ class CSRD(Reglementation):
     lien_rapport = models.BooleanField(default=False)
 
 
+class AnalyseIA(models.Model):
+    impact_id = models.BigIntegerField(primary_key=True)
+    ajoutee_le = models.DateTimeField()
+    modifiee_le = models.DateTimeField()
+    entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
+    csrd = models.BooleanField(default=False)
+    etat = models.CharField(max_length=144, null=True)
+    message = models.CharField(max_length=144, null=True)
+    nb_phrases = models.IntegerField(null=True)
+    nb_phrases_pertinentes = models.IntegerField(null=True)
+
+
 # Tables temporaires / de travail
 
 

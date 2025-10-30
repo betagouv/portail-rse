@@ -11,10 +11,12 @@ from django.db.models import Count
 from django.db.models import Max
 from django.db.models import Prefetch
 
+from analyseia.models import AnalyseIA
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise as PortailRSEEntreprise
 from habilitations.models import Habilitation as PortailRSEHabilitation
 from invitations.models import Invitation as PortailRSEInvitation
+from metabase.models import AnalyseIA as MetabaseAnalyseIA
 from metabase.models import BDESE as MetabaseBDESE
 from metabase.models import BGES as MetabaseBGES
 from metabase.models import CSRD as MetabaseCSRD
@@ -80,6 +82,9 @@ class Command(BaseCommand):
         parser.add_argument(
             "-s", "--stats", action="store_true", help="synchronise les stats"
         )
+        parser.add_argument(
+            "-a", "--analyses", action="store_true", help="synchronise les analyses IA"
+        )
 
     def handle(self, *args, **options):
         if not (
@@ -87,12 +92,14 @@ class Command(BaseCommand):
             or options["utilisateurs"]
             or options["reglementations"]
             or options["stats"]
+            or options["analyses"]
         ):
             # Quand aucun argument n'est passé, on effectue la synchro entièrement
             options["entreprises"] = True
             options["utilisateurs"] = True
             options["reglementations"] = True
             options["stats"] = True
+            options["analyses"] = True
 
         if options["entreprises"]:
             self._sync_entreprises()
@@ -105,6 +112,8 @@ class Command(BaseCommand):
             self._sync_reglementations()
         if options["stats"]:
             self._insert_stats()
+        if options["analyses"]:
+            self._sync_analyses_IA()
 
     @mesure
     def _sync_entreprises(self):
@@ -623,6 +632,54 @@ class Command(BaseCommand):
                 reglementations_statut_connu=nombre_reglementations_statut_connu,
             )
         self._success("Ajout des stats dans Metabase: OK")
+
+    def _sync_analyses_IA(self):
+        MetabaseAnalyseIA.objects.all().delete()
+        self._success("Suppression des analyses IA de Metabase: OK")
+
+        self._success("Ajout des analyses IA dans Metabase")
+        # on ne synchronise que les analyses des entreprises déjà synchronisées dans Metabase pour éviter des problèmes d'intégrité
+        mb_entreprises = list(
+            MetabaseEntreprise.objects.values_list("impact_id", flat=True)
+        )
+        bulk = []
+        analyses_avec_entreprise_id = AnalyseIA.objects.values(
+            "id", "entreprises", "rapports_csrd__entreprise"
+        ).distinct()  # [{'id': 1, 'entreprises': None, 'rapports_csrd__entreprise': 14}, {'id': 2, 'entreprises': 37, 'rapports_csrd__entreprise': None}]
+        entreprise_id_par_analyse = {
+            a["id"]: a["entreprises"] or a["rapports_csrd__entreprise"]
+            for a in analyses_avec_entreprise_id
+        }  # {1: 14, 2: 37}
+        analyses_de_rapports_csrd = set(
+            a["id"]
+            for a in analyses_avec_entreprise_id
+            if a["rapports_csrd__entreprise"]
+        )
+        for analyse in AnalyseIA.objects.all():
+            entreprise_id = entreprise_id_par_analyse[analyse.id]
+            if entreprise_id not in mb_entreprises:
+                break
+            mb_analyse = MetabaseAnalyseIA(
+                impact_id=analyse.pk,
+                ajoutee_le=analyse.created_at,
+                modifiee_le=analyse.updated_at,
+                entreprise_id=entreprise_id,  # optimisation possible car la clé primaire de l'objet Metabase est identique à la clé primaire dans PortailRSE
+                csrd=analyse.id in analyses_de_rapports_csrd,
+                etat=analyse.etat,
+                message=analyse.message,
+                nb_phrases=analyse.nombre_de_phrases if analyse.resultat_json else None,
+                nb_phrases_pertinentes=(
+                    analyse.nombre_de_phrases_pertinentes
+                    if analyse.resultat_json
+                    else None
+                ),
+            )
+            bulk.append(mb_analyse)
+
+        with transaction.atomic():
+            MetabaseAnalyseIA.objects.bulk_create(bulk)
+
+        self._success("Ajout des analyses dans Metabase: OK")
 
     def _register_responses(self):
         # permet de mocker efficacement les appels à requests en utilisant les tables de travail

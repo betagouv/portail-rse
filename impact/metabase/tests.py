@@ -4,6 +4,7 @@ from datetime import timezone
 
 import pytest
 from django.conf import settings
+from django.core.files.base import ContentFile
 from django.core.management import call_command
 from freezegun import freeze_time
 
@@ -14,6 +15,7 @@ from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from habilitations.models import Habilitation
 from invitations.models import Invitation
+from metabase.models import AnalyseIA as MetabaseAnalyseIA
 from metabase.models import BDESE as MetabaseBDESE
 from metabase.models import BGES as MetabaseBGES
 from metabase.models import Entreprise as MetabaseEntreprise
@@ -25,6 +27,7 @@ from metabase.models import Utilisateur as MetabaseUtilisateur
 from metabase.models import VSME as MetabaseVSME
 from reglementations.models import BDESE_50_300
 from reglementations.models import derniere_annee_a_remplir_bdese
+from reglementations.models.csrd import RapportCSRD
 from reglementations.tests.conftest import bdese_factory  # noqa
 from vsme.models import EXIGENCES_DE_PUBLICATION
 from vsme.models import RapportVSME
@@ -814,3 +817,77 @@ def test_synchronise_les_stats_plusieurs_fois():
     assert MetabaseStats.objects.count() == 2
     assert MetabaseStats.objects.get(date=date_premiere_synchro)
     assert MetabaseStats.objects.get(date=date_troisieme_synchro)
+
+
+@pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
+def test_synchronise_les_analyses_ia(entreprise_factory, alice):
+    entreprise = entreprise_factory(utilisateur=alice)
+    csrd = RapportCSRD.objects.create(entreprise=entreprise, annee=2024)
+    analyse = entreprise.analyses_ia.create(
+        fichier=ContentFile("pdf file data", name="fichier.pdf")
+    )
+    analyse_avec_csrd = csrd.analyses_ia.create(
+        fichier=ContentFile("pdf file data", name="fichier.pdf")
+    )
+    analyse_reussie = entreprise.analyses_ia.create(
+        fichier=ContentFile("pdf file data", name="fichier_correct.pdf"),
+        etat="success",
+        resultat_json="""{
+  "ESRS E1": [
+    {
+      "PAGES": 1,
+      "TEXTS": "A"
+    }
+  ],
+  "ESRS E2": [
+    {
+      "PAGES": 4,
+      "TEXTS": "B"
+    }
+  ],
+  "Non ESRS": [
+    {
+      "PAGES": 22,
+      "TEXTS": "X"
+    }
+  ]
+  }""",
+    )
+    analyse_erronee = entreprise.analyses_ia.create(
+        fichier=ContentFile("pdf file data", name="fichier_corrompu.pdf"),
+        etat="error",
+        message="Une erreur est survenue",
+    )
+
+    call_command("sync_metabase", entreprises=True, analyses=True)
+
+    assert MetabaseAnalyseIA.objects.count() == 4
+
+    metabase_analyse = MetabaseAnalyseIA.objects.get(impact_id=analyse.id)
+    assert metabase_analyse.ajoutee_le
+    assert metabase_analyse.modifiee_le
+    assert metabase_analyse.entreprise.siren == analyse.entreprise.siren
+    assert not metabase_analyse.csrd
+    assert not metabase_analyse.etat
+    assert not metabase_analyse.message
+    assert not metabase_analyse.nb_phrases
+    assert not metabase_analyse.nb_phrases_pertinentes
+
+    metabase_analyse_csrd = MetabaseAnalyseIA.objects.get(
+        impact_id=analyse_avec_csrd.id
+    )
+    assert metabase_analyse_csrd.entreprise.siren == analyse_avec_csrd.entreprise.siren
+    assert metabase_analyse_csrd.csrd
+
+    metabase_analyse_reussie = MetabaseAnalyseIA.objects.get(
+        impact_id=analyse_reussie.id
+    )
+    assert metabase_analyse_reussie.etat == "success"
+    assert metabase_analyse_reussie.nb_phrases == 3
+    assert metabase_analyse_reussie.nb_phrases_pertinentes == 2
+
+    metabase_analyse_erronee = MetabaseAnalyseIA.objects.get(
+        impact_id=analyse_erronee.id
+    )
+    assert metabase_analyse_erronee.etat == "error"
+    assert metabase_analyse_erronee.message == "Une erreur est survenue"
