@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMessage
+from django.http import Http404
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
@@ -27,6 +28,7 @@ from api import analyse_ia
 from api.exceptions import APIError
 from entreprises.decorators import entreprise_qualifiee_requise
 from habilitations.models import Habilitation
+from reglementations.enums import ESRS
 from reglementations.views import tableau_de_bord_menu_context
 from utils.xlsx import xlsx_response
 
@@ -245,6 +247,9 @@ def synthese_resultat(request, entreprise_qualifiee, csrd_id=None):
 @login_required
 @entreprise_qualifiee_requise
 def synthese_resultat_par_ESRS(request, entreprise_qualifiee, code_esrs, csrd_id=None):
+    if code_esrs not in ESRS.codes():
+        raise Http404
+
     rendu = "esrs" if csrd_id else "theme"
     prefixe_ESRS = rendu == "esrs"
     chemin_xlsx = Path(

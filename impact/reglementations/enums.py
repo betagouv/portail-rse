@@ -22,6 +22,21 @@ class ESRS(models.TextChoices):
 
     ESRS_G1 = "ESRS_G1"
 
+    @classmethod
+    def codes(cls):
+        return (
+            "E1",
+            "E2",
+            "E3",
+            "E4",
+            "E5",
+            "S1",
+            "S2",
+            "S3",
+            "S4",
+            "G1",
+        )
+
 
 class ThemeESRS(Enum):
     ESRS_E1 = "environnement"

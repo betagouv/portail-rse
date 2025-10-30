@@ -444,6 +444,30 @@ def test_telechargement_des_resultats_IA_par_ESRS_d_une_entreprise_inexistante(
     assert response.status_code == 404
 
 
+def test_telechargement_des_resultats_IA_par_ESRS_d_un_ESRS_inexistant(
+    client,
+    entreprise_factory,
+    alice,
+    csrd,
+):
+    entreprise = entreprise_factory(utilisateur=alice, siren="123456789")
+    client.force_login(alice)
+
+    response = client.get(
+        reverse("analyseia:synthese_resultat_par_ESRS", args=["123456789", "H8"]),
+    )
+
+    assert response.status_code == 404
+
+    response = client.get(
+        reverse(
+            "analyseia:synthese_resultat_par_ESRS", args=["123456789", "H8", csrd.id]
+        ),
+    )
+
+    assert response.status_code == 404
+
+
 def test_telechargement_des_resultats_IA_par_ESRS_redirige_vers_la_connexion_si_non_connecté(
     client,
     entreprise_factory,
