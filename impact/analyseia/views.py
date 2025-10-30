@@ -28,17 +28,16 @@ from .models import AnalyseIA
 from api import analyse_ia
 from api.exceptions import APIError
 from entreprises.decorators import entreprise_qualifiee_requise
-from habilitations.models import Habilitation
 from reglementations.enums import ESRS
 from reglementations.views import tableau_de_bord_menu_context
 from reglementations.views.csrd.csrd import contexte_d_etape
 from utils.xlsx import xlsx_response
 
 
-def _contexte_analyses(entreprise):
+def _contexte_analyses(entreprise, form=None):
     context = tableau_de_bord_menu_context(entreprise)
     context |= {
-        "form": AnalyseIAForm(),
+        "form": form or AnalyseIAForm(),
         "analyses_ia": entreprise.analyses_ia.all(),
         "synthese": synthese_analyse(entreprise.analyses_ia.reussies()),
     }
@@ -87,7 +86,7 @@ def ajout_document(request, entreprise_qualifiee, csrd=None):
             return render(
                 request,
                 "analyseia/accueil.html",
-                _contexte_analyses(entreprise_qualifiee),
+                _contexte_analyses(entreprise_qualifiee, form),
                 status=400,
             )
         else:
