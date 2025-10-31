@@ -1,12 +1,10 @@
 import json
-from functools import wraps
 from pathlib import Path
 
 import sentry_sdk
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMessage
 from django.http import Http404
 from django.http import HttpResponse
@@ -20,23 +18,26 @@ from openpyxl import load_workbook
 from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
 from openpyxl.utils.exceptions import IllegalCharacterError
 
+from .decorators import analyse_requise
+from .decorators import csrd_valide_si_presente
 from .forms import AnalyseIAForm
 from .helpers import normalise_titre_esrs
+from .helpers import normalise_titre_pour_nom_de_fichier
 from .helpers import synthese_analyse
 from .models import AnalyseIA
 from api import analyse_ia
 from api.exceptions import APIError
 from entreprises.decorators import entreprise_qualifiee_requise
-from habilitations.models import Habilitation
 from reglementations.enums import ESRS
 from reglementations.views import tableau_de_bord_menu_context
+from reglementations.views.csrd.csrd import contexte_d_etape
 from utils.xlsx import xlsx_response
 
 
-def _contexte_analyses(entreprise):
+def _contexte_analyses(entreprise, form=None):
     context = tableau_de_bord_menu_context(entreprise)
     context |= {
-        "form": AnalyseIAForm(),
+        "form": form or AnalyseIAForm(),
         "analyses_ia": entreprise.analyses_ia.all(),
         "synthese": synthese_analyse(entreprise.analyses_ia.reussies()),
     }
@@ -53,47 +54,66 @@ def analyses(request, entreprise_qualifiee):
 
 @login_required
 @entreprise_qualifiee_requise
+@csrd_valide_si_presente
 @require_http_methods(["POST"])
-def ajout_document(request, entreprise_qualifiee):
+def ajout_document(request, entreprise_qualifiee, csrd=None):
+    relation = "csrd" if csrd else "entreprises"
     data = {**request.POST}
     form = AnalyseIAForm(data=data, files=request.FILES)
     if form.is_valid():
-        # les analyses IA étant désormais génériques,
-        # on effectue le rattachement à l'entreprise
         form.save()
-        entreprise_qualifiee.analyses_ia.add(form.instance)
+        # les analyses IA étant désormais génériques,
+        # on effectue le rattachement soit à l'entreprise
+        # soit au rapport CSRD
+        if csrd:
+            form.instance.rapports_csrd.add(csrd)
+        else:
+            entreprise_qualifiee.analyses_ia.add(form.instance)
         messages.success(request, "Document ajouté")
-        return redirect("analyseia:analyses", siren=entreprise_qualifiee.siren)
+        if relation == "entreprises":
+            redirection = redirect(
+                "analyseia:analyses", siren=entreprise_qualifiee.siren
+            )
+        else:
+            redirection = redirect(
+                "reglementations:gestion_csrd",
+                siren=entreprise_qualifiee.siren,
+                id_etape="analyse-ecart",
+            )
+        return redirection
     else:
-        return render(
-            request,
-            "analyseia/accueil.html",
-            _contexte_analyses(entreprise_qualifiee),
-            status=400,
-        )
-
-
-def analyse_requise(function):
-    @wraps(function)
-    def wrap(request, id_analyse, *args, **kwargs):
-        analyse = get_object_or_404(AnalyseIA, id=id_analyse)
-
-        if not Habilitation.existe(analyse.entreprise, request.user):
-            raise PermissionDenied()
-        return function(request, analyse, *args, **kwargs)
-
-    return wrap
+        if relation == "entreprises":
+            return render(
+                request,
+                "analyseia/accueil.html",
+                _contexte_analyses(entreprise_qualifiee, form),
+                status=400,
+            )
+        else:
+            id_etape = "analyse-ecart"
+            context = contexte_d_etape(id_etape, csrd, form)
+            template_name = f"reglementations/csrd/etape-{id_etape}.html"
+            return render(request, template_name, context, status=400)
 
 
 @login_required
 @analyse_requise
 @require_http_methods(["POST"])
 def suppression(request, analyse):
+    relation = "entreprises" if analyse.entreprises.count() else "csrd"
     entreprise = analyse.entreprise
     analyse.delete()
     analyse.fichier.delete(save=False)
     messages.success(request, "Document supprimé")
-    return redirect("analyseia:analyses", siren=entreprise.siren)
+    if relation == "entreprises":
+        redirection = redirect("analyseia:analyses", siren=entreprise.siren)
+    else:
+        redirection = redirect(
+            "reglementations:gestion_csrd",
+            siren=entreprise.siren,
+            id_etape="analyse-ecart",
+        )
+    return redirection
 
 
 @login_required
@@ -122,7 +142,16 @@ def lancement_analyse(request, analyse):
         except APIError as exception:
             messages.error(request, exception)
 
-    return redirect("analyseia:analyses")
+    relation = "entreprises" if analyse.entreprises.count() else "csrd"
+    if relation == "entreprises":
+        redirection = redirect("analyseia:analyses", siren=analyse.entreprise.siren)
+    else:
+        redirection = redirect(
+            "reglementations:gestion_csrd",
+            siren=analyse.entreprise.siren,
+            id_etape="analyse-ecart",
+        )
+    return redirection
 
 
 @csrf_exempt
@@ -138,7 +167,19 @@ def actualisation_etat(request, id_analyse):
         analyse.resultat_json = request.POST["resultat_json"]
     analyse.save()
     if status in ("success", "error"):
-        path = reverse("analyseia:analyses", kwargs={"siren": analyse.entreprise.siren})
+        relation = "entreprises" if analyse.entreprises.count() else "csrd"
+        if relation == "entreprises":
+            path = reverse(
+                "analyseia:analyses", kwargs={"siren": analyse.entreprise.siren}
+            )
+        else:
+            path = reverse(
+                "reglementations:gestion_csrd",
+                kwargs={
+                    "siren": analyse.entreprise.siren,
+                    "id_etape": "analyse-ecart",
+                },
+            )
         try:
             _envoie_resultat_ia_email(
                 analyse.entreprise,
@@ -222,8 +263,9 @@ def _envoie_resultat_ia_email(entreprise, resultat_ia_url):
 
 @login_required
 @entreprise_qualifiee_requise
-def synthese_resultat(request, entreprise_qualifiee, csrd_id=None):
-    rendu = "esrs" if csrd_id else "theme"
+@csrd_valide_si_presente
+def synthese_resultat(request, entreprise_qualifiee, csrd=None):
+    rendu = "esrs" if csrd else "theme"
     chemin_xlsx = Path(
         settings.BASE_DIR, f"analyseia/xlsx/{rendu}/template_synthese_ESG.xlsx"
     )
@@ -233,9 +275,6 @@ def synthese_resultat(request, entreprise_qualifiee, csrd_id=None):
         documents = entreprise_qualifiee.analyses_ia.reussies()
     else:
         worksheet = workbook["Phrases relatives aux ESRS"]
-        from reglementations.models import RapportCSRD
-
-        csrd = get_object_or_404(RapportCSRD, id=csrd_id)
         documents = csrd.documents_analyses
 
     prefixe_ESRS = rendu == "esrs"
@@ -246,11 +285,12 @@ def synthese_resultat(request, entreprise_qualifiee, csrd_id=None):
 
 @login_required
 @entreprise_qualifiee_requise
-def synthese_resultat_par_ESRS(request, entreprise_qualifiee, code_esrs, csrd_id=None):
+@csrd_valide_si_presente
+def synthese_resultat_par_ESRS(request, entreprise_qualifiee, code_esrs, csrd=None):
     if code_esrs not in ESRS.codes():
         raise Http404
 
-    rendu = "esrs" if csrd_id else "theme"
+    rendu = "esrs" if csrd else "theme"
     prefixe_ESRS = rendu == "esrs"
     chemin_xlsx = Path(
         settings.BASE_DIR,
@@ -265,9 +305,6 @@ def synthese_resultat_par_ESRS(request, entreprise_qualifiee, code_esrs, csrd_id
         documents = entreprise_qualifiee.analyses_ia.reussies()
     else:
         worksheet = workbook["Phrases relatives aux ESRS"]
-        from reglementations.models import RapportCSRD
-
-        csrd = get_object_or_404(RapportCSRD, id=csrd_id)
         documents = csrd.documents_analyses
 
     for document in documents:
@@ -278,14 +315,6 @@ def synthese_resultat_par_ESRS(request, entreprise_qualifiee, code_esrs, csrd_id
     else:
         nom_de_fichier = f"resultats_ESRS_{code_esrs}.xlsx"
     return xlsx_response(workbook, nom_de_fichier)
-
-
-def normalise_titre_pour_nom_de_fichier(titre):
-    """transforme une chaine pour en faire un nom adapté à un nom de fichier
-
-    unidecode n'est pas dans les dépendances et il y a que deux cas de lettres accentuées
-    """
-    return titre.lower().replace(" ", "_").replace("é", "e").replace("î", "i")
 
 
 # Fragments / HTMX

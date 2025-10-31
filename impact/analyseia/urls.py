@@ -17,6 +17,11 @@ urlpatterns = [
     path("analyses/<str:siren>/", analyses, name="analyses"),
     path("analyses/<str:siren>/ajout_document/", ajout_document, name="ajout_document"),
     path(
+        "analyses/<str:siren>/ajout_document/<int:csrd_id>",
+        ajout_document,
+        name="ajout_document",
+    ),
+    path(
         "analyses/<int:id_analyse>/suppression/",
         suppression,
         name="suppression",
