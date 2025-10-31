@@ -580,3 +580,18 @@ def test_envoie_resultat_ia_email_non_bloquant(client, analyse, mocker):
     capture_exception_mock.assert_called_once()
     args, _ = capture_exception_mock.call_args
     assert isinstance(args[0], Exception)
+
+
+def test_serveur_IA_envoie_une_requête_invalide(client, analyse, mailoutbox):
+    url = ACTUALISATION_ETAT_URL.format(analyse_id=analyse.id)
+    response = client.post(
+        url,
+        {
+            "yolo": "yolo",
+        },
+    )
+
+    assert response.status_code == 400
+    analyse.refresh_from_db()
+    assert not analyse.etat
+    assert len(mailoutbox) == 0
