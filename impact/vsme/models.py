@@ -97,6 +97,7 @@ EXIGENCES_DE_PUBLICATION = {
         "Eau",
         Categorie.ENVIRONNEMENT,
         "https://portail-rse.beta.gouv.fr/vsme/b6-eau/",
+        remplissable=True,
     ),
     "B7": ExigenceDePublication(
         "B7",
