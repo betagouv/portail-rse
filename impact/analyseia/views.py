@@ -10,6 +10,7 @@ from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMessage
 from django.http import Http404
 from django.http import HttpResponse
+from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -130,12 +131,15 @@ def lancement_analyse(request, analyse):
 def actualisation_etat(request, id_analyse):
     # callback pour l'API IA qui renvoie le statut de l'analyse IA à la fin de chaque étape de l'analyse
     analyse = get_object_or_404(AnalyseIA, pk=id_analyse)
-    status = request.POST.get("status")
-    analyse.etat = status
-    if message := request.POST.get("msg"):
-        analyse.message = message
-    if status == "success":
-        analyse.resultat_json = request.POST["resultat_json"]
+    try:
+        status = request.POST["status"]
+        analyse.etat = status
+        if message := request.POST.get("msg"):
+            analyse.message = message
+        if status == "success":
+            analyse.resultat_json = request.POST["resultat_json"]
+    except KeyError:
+        return HttpResponseBadRequest()
     analyse.save()
     if status in ("success", "error"):
         path = reverse("analyseia:analyses", kwargs={"siren": analyse.entreprise.siren})
