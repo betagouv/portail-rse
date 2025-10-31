@@ -440,7 +440,9 @@ def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_2(
     assert mail.template_id == settings.BREVO_RESULTAT_ANALYSE_IA_TEMPLATE
 
 
-def test_serveur_IA_envoie_le_resultat_de_l_analyse(client, analyse, mailoutbox, alice):
+def test_serveur_IA_envoie_le_resultat_de_l_analyse_liée_à_une_entreprise(
+    client, analyse, mailoutbox, alice
+):
     RESULTATS = """{
   "ESRS E1": [
     {
@@ -484,6 +486,62 @@ def test_serveur_IA_envoie_le_resultat_de_l_analyse(client, analyse, mailoutbox,
                 "analyseia:analyses",
                 kwargs={
                     "siren": analyse.entreprise.siren,
+                },
+            )
+        )
+        + "#onglets"
+    }
+
+
+def test_serveur_IA_envoie_le_resultat_de_l_analyse_liée_à_un_rapport_csrd(
+    client, analyse_avec_csrd, mailoutbox, alice
+):
+    analyse = analyse_avec_csrd
+    rapport_csrd = analyse.rapports_csrd.first()
+    RESULTATS = """{
+  "ESRS E1": [
+    {
+      "PAGES": 1,
+      "TEXTS": "A"
+    }
+  ],
+  "ESRS E2": [
+    {
+      "PAGES": 6,
+      "TEXTS": "B"
+    },
+    {
+      "PAGES": 7,
+      "TEXTS": "C"
+    }
+  ]
+  }"""
+
+    url = ACTUALISATION_ETAT_URL.format(analyse_id=analyse.id)
+    response = client.post(
+        url,
+        {
+            "status": "success",
+            "resultat_json": RESULTATS,
+        },
+    )
+
+    analyse.refresh_from_db()
+    assert analyse.etat == "success"
+    assert analyse.resultat_json == RESULTATS
+
+    assert len(mailoutbox) == 1
+    mail = mailoutbox[0]
+    assert mail.from_email == settings.DEFAULT_FROM_EMAIL
+    assert list(mail.to) == [alice.email]
+    assert mail.template_id == settings.BREVO_RESULTAT_ANALYSE_IA_TEMPLATE
+    assert mail.merge_global_data == {
+        "resultat_ia_url": response.wsgi_request.build_absolute_uri(
+            reverse(
+                "reglementations:gestion_csrd",
+                kwargs={
+                    "siren": rapport_csrd.entreprise.siren,
+                    "id_etape": "analyse-ecart",
                 },
             )
         )
