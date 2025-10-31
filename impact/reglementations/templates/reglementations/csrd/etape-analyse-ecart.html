@@ -86,8 +86,8 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {% for document in documents.all %}
-                                                {% include "fragments/statut_analyse_ia.html" %}
+                                            {% for analyse in documents.all %}
+                                                {% include "fragments/statut_analyse.html" %}
                                                 <div>
                                             {% endfor %}
                                         </tbody>

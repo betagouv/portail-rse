@@ -1,6 +1,5 @@
 from django.urls import path
 
-from .document_ia import statut_analyse_ia
 from .enjeux import creation_enjeu
 from .enjeux import deselection_enjeu
 from .enjeux import liste_enjeux_selectionnes
@@ -71,10 +70,5 @@ urlpatterns = [
         "csrd/fragments/rapport/soumettre_lien_rapport/<int:csrd_id>",
         soumettre_lien_rapport,
         name="soumettre_lien_rapport",
-    ),
-    path(
-        "csrd/fragments/document_ia/<int:id_document>/<int:csrd_id>",
-        statut_analyse_ia,
-        name="statut_analyse_ia",
     ),
 ]
