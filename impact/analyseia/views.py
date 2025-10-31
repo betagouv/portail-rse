@@ -167,7 +167,19 @@ def actualisation_etat(request, id_analyse):
         analyse.resultat_json = request.POST["resultat_json"]
     analyse.save()
     if status in ("success", "error"):
-        path = reverse("analyseia:analyses", kwargs={"siren": analyse.entreprise.siren})
+        relation = "entreprises" if analyse.entreprises.count() else "csrd"
+        if relation == "entreprises":
+            path = reverse(
+                "analyseia:analyses", kwargs={"siren": analyse.entreprise.siren}
+            )
+        else:
+            path = reverse(
+                "reglementations:gestion_csrd",
+                kwargs={
+                    "siren": analyse.entreprise.siren,
+                    "id_etape": "analyse-ecart",
+                },
+            )
         try:
             _envoie_resultat_ia_email(
                 analyse.entreprise,
