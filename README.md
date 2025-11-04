@@ -51,7 +51,7 @@ make run
 
 - Le service est disponible sur http://127.0.0.1:8000
 
-- Pour lancer une commande du projet django en local :
+- Pour lancer une commande du projet django en local :
 
 ```
 pipenv run python3 impact/manage.py my_command
