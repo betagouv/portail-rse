@@ -5,7 +5,6 @@ from reglementations.models import BDESE_300
 from reglementations.models import BDESE_50_300
 from reglementations.models import BDESEAvecAccord
 from reglementations.models import CategoryType
-from reglementations.models.csrd import DocumentAnalyseIA
 from reglementations.models.csrd import RapportCSRD
 
 
@@ -50,14 +49,3 @@ class RapportCSRDAdmin(admin.ModelAdmin):
         "entreprise__siren",
     )
     raw_id_fields = ("proprietaire", "entreprise")
-
-
-@admin.register(DocumentAnalyseIA)
-class DocumentAnalyseIA_Admin(admin.ModelAdmin):
-    list_display = ["nom", "rapport_csrd"]
-    search_fields = (
-        "nom",
-        "rapport_csrd__entreprise__denomination",
-        "rapport_csrd__entreprise__siren",
-    )
-    readonly_fields = ("nombre_de_phrases_pertinentes",)
