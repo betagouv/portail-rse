@@ -13,7 +13,6 @@ AJOUT_DOCUMENT_LIE_CSRD_URL = ANALYSES_URL + "ajout_document/{csrd_id}"
 ANALYSE_BASE_URL = "/analyses/{analyse_id}/"
 SUPPRESSION_ANALYSE_URL = ANALYSE_BASE_URL + "suppression/"
 LANCEMENT_ANALYSE_URL = ANALYSE_BASE_URL + "lancement_analyse/"
-LANCEMENT_ANALYSE_LIE_CSRD_URL = ANALYSE_BASE_URL + "lancement_analyse/{csrd_id}"
 ACTUALISATION_ETAT_URL = ANALYSE_BASE_URL + "etat/"
 CSRD_ANALYSE_ECART_URL = "/csrd/{siren}/etape-analyse-ecart"
 
