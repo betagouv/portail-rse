@@ -1,8 +1,5 @@
-from uuid import uuid4
-
 import django.db.models as models
 from django.core.exceptions import ValidationError
-from django.core.files.storage import default_storage
 from django.core.validators import MinValueValidator
 from django.db import transaction
 from django.db.models import F
@@ -334,13 +331,3 @@ class Enjeu(TimestampedModel):
 
     def __str__(self):
         return self.nom
-
-
-def select_storage():
-    # Utiliser un autre storage que celui par défaut ne permet pas de le modifier dans les tests
-    # https://code.djangoproject.com/ticket/36269
-    return default_storage
-
-
-def upload_path(instance, filename):
-    return f"analyse_ia/{str(uuid4())}.pdf"
