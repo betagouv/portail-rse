@@ -30,7 +30,6 @@ from metabase.models import TempBGES
 from metabase.models import TempEgaPro
 from metabase.models import Utilisateur as MetabaseUtilisateur
 from metabase.models import VSME as MetabaseVSME
-from reglementations.models.csrd import DocumentAnalyseIA
 from reglementations.models.csrd import RapportCSRD
 from reglementations.views.base import InsuffisammentQualifieeError
 from reglementations.views.base import ReglementationStatus
@@ -449,9 +448,7 @@ class Command(BaseCommand):
                 .order_by("-annee")
                 .first()
             ):
-                nb_documents_ia = DocumentAnalyseIA.objects.filter(
-                    rapport_csrd=dernier_rapport
-                ).count()
+                nb_documents_ia = dernier_rapport.analyses_ia.count()
                 nb_iro_selectionnes = dernier_rapport.enjeux.exclude(
                     materiel=None
                 ).count()
