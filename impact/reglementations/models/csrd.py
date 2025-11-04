@@ -257,14 +257,6 @@ class RapportCSRD(TimestampedModel):
         return qs
 
     @property
-    def documents_analyses(self):
-        return self.analyses_ia.filter(etat__exact="success")
-
-    @property
-    def documents_non_analyses(self):
-        return self.analyses_ia.filter(etat__isnull=True)
-
-    @property
     def est_termine(self):
         # on peut considérer un rapport CSRD comme terminé une fois son rapport publié
         return bool(self.lien_rapport) and self.bloque
