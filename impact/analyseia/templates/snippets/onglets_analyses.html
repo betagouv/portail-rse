@@ -1,4 +1,13 @@
 {% load static %}
+
+{% if csrd %}
+    {% url 'analyseia:ajout_document' csrd.entreprise.siren csrd.id as ajout_document_url %}
+    {% url 'analyseia:synthese_resultat' entreprise.siren csrd.id as synthese_resultat_url %}
+{% else %}
+    {% url 'analyseia:ajout_document' entreprise.siren as ajout_document_url %}
+    {% url 'analyseia:synthese_resultat' entreprise.siren as synthese_resultat_url %}
+{% endif %}
+
 <div class="fr-tabs" id="onglets">
     <ul class="fr-tabs__list" role="tablist" aria-label="onglets-analyse-ecart">
         <li role="presentation">
@@ -18,7 +27,7 @@
     <div id="onglet-fichiers-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel"
          aria-labelledby="onglet-fichiers" tabindex="0">
         <div>
-            <form enctype="multipart/form-data" action="{% url 'analyseia:ajout_document' entreprise.siren %}"
+            <form enctype="multipart/form-data" action="{{ ajout_document_url }}"
                   method="post">
                 {% csrf_token %}
                 {% include 'snippets/field.html' with field=form.fichier %}
@@ -158,7 +167,7 @@
                                         {{ synthese.nb_esrs_thematiques_detectees }}
                                     </h3>
                                     <p class="fr-tile__desc">
-                                        Thème{{ synthese.nb_esrs_thematiques_detectees|pluralize }}
+                                        {% if csrd %}ESRS thématique{% else %}Thème{% endif %}{{ synthese.nb_esrs_thematiques_detectees|pluralize }}
                                         détecté{{ synthese.nb_esrs_thematiques_detectees|pluralize }}
                                     </p>
                                 </div>
@@ -185,12 +194,12 @@
                 <div class="fr-grid-row fr-grid-row--center fr-pb-4w">
 
                     <a class="fr-btn fr-btn--icon-left fr-icon-download-line"
-                       href="{% url 'analyseia:synthese_resultat' entreprise.siren %}">Télécharger la
+                       href="{{ synthese_resultat_url }}">Télécharger la
                         synthèse de tous les résultats (xlsx)</a>
 
                 </div>
                 <div class="fr-grid-row">
-                    <h4>Résultats par catégorie</h4>
+                    <h4>Résultats par {% if csrd %}ESRS{% else %}catégorie{% endif %}</h4>
                     <div class="fr-container fr-pb-6w">
 
                         <div class="fr-grid-row fr-grid-row--gutters esrs-organizer">
@@ -204,6 +213,11 @@
                                     <div class="esrs-organizer--content">
                                         {% if synthese.phrases_environnement %}
                                             {% for phrases_par_esrs in synthese.phrases_environnement %}
+                                                {% if csrd %}
+                                                    {% url 'analyseia:synthese_resultat_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs csrd.id as synthese_resultat_par_ESRS_url %}
+                                                {% else %}
+                                                    {% url 'analyseia:synthese_resultat_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs as synthese_resultat_par_ESRS_url %}
+                                                {% endif %}
                                                 <div class="esrs-organizer--esrs">
                                                     <div class="esrs-organizer--card">
                                                         <div
@@ -216,14 +230,9 @@
                                                             </p>
                                                             <b>{{ phrases_par_esrs.titre }}</b>
                                                             <a class="fr-btn fr-btn--sm fr-btn--secondary fr-icon-download-line"
-                                                               title="Télécharger le tableur contenant les phrases correspondant à cet ESRS"
-                                                               href="{% url 'analyseia:synthese_resultat_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs %}"
-                                                               target="_blank">Télécharger
-                                                                le tableur
-                                                                contenant les
-                                                                phrases
-                                                                correspondant à
-                                                                ce thème</a>
+                                                               title="Télécharger le tableur contenant les phrases correspondant à {% if csrd %}cet ESRS{% else %}ce thème{% endif %}"
+                                                               href="{{ synthese_resultat_par_ESRS_url }}"
+                                                               target="_blank">Télécharger le tableur contenant les phrases correspondant à {% if csrd %}cet ESRS{% else %}ce thème{% endif %}</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -250,6 +259,11 @@
                                     <div class="esrs-organizer--content">
                                         {% if synthese.phrases_social %}
                                             {% for phrases_par_esrs in synthese.phrases_social %}
+                                                {% if csrd %}
+                                                    {% url 'analyseia:synthese_resultat_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs csrd.id as synthese_resultat_par_ESRS_url %}
+                                                {% else %}
+                                                    {% url 'analyseia:synthese_resultat_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs as synthese_resultat_par_ESRS_url %}
+                                                {% endif %}
                                                 <div class="esrs-organizer--esrs">
                                                     <div class="esrs-organizer--card">
                                                         <div
@@ -262,14 +276,9 @@
                                                             </p>
                                                             <b>{{ phrases_par_esrs.titre }}</b>
                                                             <a class="fr-btn fr-btn--sm fr-btn--secondary fr-icon-download-line"
-                                                               title="Télécharger le tableur contenant les phrases correspondant à cet ESRS"
-                                                               href="{% url 'analyseia:synthese_resultat_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs %}"
-                                                               target="_blank">Télécharger
-                                                                le tableur
-                                                                contenant les
-                                                                phrases
-                                                                correspondant à
-                                                                ce thème</a>
+                                                               title="Télécharger le tableur contenant les phrases correspondant à {% if csrd %}cet ESRS{% else %}ce thème{% endif %}"
+                                                               href="{{ synthese_resultat_par_ESRS_url }}"
+                                                               target="_blank">Télécharger le tableur contenant les phrases correspondant à {% if csrd %}cet ESRS{% else %}ce thème{% endif %}</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -297,6 +306,11 @@
                                     <div class="esrs-organizer--content">
                                         {% if synthese.phrases_gouvernance %}
                                             {% for phrases_par_esrs in synthese.phrases_gouvernance %}
+                                                {% if csrd %}
+                                                    {% url 'analyseia:synthese_resultat_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs csrd.id as synthese_resultat_par_ESRS_url %}
+                                                {% else %}
+                                                    {% url 'analyseia:synthese_resultat_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs as synthese_resultat_par_ESRS_url %}
+                                                {% endif %}
                                                 <div class="esrs-organizer--esrs">
                                                     <div class="esrs-organizer--card">
                                                         <div
@@ -309,14 +323,9 @@
                                                             </p>
                                                             <b>{{ phrases_par_esrs.titre }}</b>
                                                             <a class="fr-btn fr-btn--sm fr-btn--secondary fr-icon-download-line"
-                                                               title="Télécharger le tableur contenant les phrases correspondant à cet ESRS"
-                                                               href="{% url 'analyseia:synthese_resultat_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs %}"
-                                                               target="_blank">Télécharger
-                                                                le tableur
-                                                                contenant les
-                                                                phrases
-                                                                correspondant à
-                                                                ce thème</a>
+                                                               title="Télécharger le tableur contenant les phrases correspondant à {% if csrd %}cet ESRS{% else %}ce thème{% endif %}"
+                                                               href="{{ synthese_resultat_par_ESRS_url }}"
+                                                               target="_blank">Télécharger le tableur contenant les phrases correspondant à {% if csrd %}cet ESRS{% else %}ce thème{% endif %}</a>
                                                         </div>
                                                     </div>
                                                 </div>

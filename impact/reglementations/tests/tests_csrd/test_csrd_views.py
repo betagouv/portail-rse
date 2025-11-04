@@ -6,12 +6,10 @@ from django.urls import reverse
 from openpyxl import load_workbook
 from pytest_django.asserts import assertTemplateUsed
 
-from analyseia.models import AnalyseIA
 from habilitations.models import Habilitation
 from reglementations.enums import EtapeCSRD
 from reglementations.models.csrd import Enjeu
 from reglementations.models.csrd import RapportCSRD
-from reglementations.views.csrd.csrd import resume_resultats_analyse_ia
 
 
 @pytest.mark.parametrize("etape", EtapeCSRD.ETAPES_VALIDABLES)
@@ -46,7 +44,7 @@ def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
         )
     elif etape.endswith("analyse-ecart"):
         assertTemplateUsed(response, "reglementations/csrd/etape-analyse-ecart.html")
-        assert context["stats_synthese"] == {
+        assert context["synthese"] == {
             "phrases_environnement": [],
             "phrases_social": [],
             "phrases_gouvernance": [],
@@ -62,85 +60,6 @@ def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
     rapport_csrd = RapportCSRD.objects.get(entreprise=entreprise)
     NOMBRE_ENJEUX = 103
     assert len(rapport_csrd.enjeux.all()) == NOMBRE_ENJEUX
-
-
-def test_resume_resultats_analyse_ia(csrd):
-    document = AnalyseIA.objects.create(
-        etat="success",
-        resultat_json="""{
-  "ESRS E1": [
-    {
-      "PAGES": 1,
-      "TEXTS": "A"
-    },
-    {
-      "PAGES": 1,
-      "TEXTS": "B"
-    }
-  ],
-  "Non ESRS": [
-    {
-      "PAGES": 4,
-      "TEXTS": "C"
-    }
-  ]
-  }""",
-    )
-    document.rapports_csrd.add(csrd)
-    document = AnalyseIA.objects.create(
-        etat="success",
-        resultat_json="""{
-  "ESRS E2 - Pollution": [
-    {
-      "PAGES": 6,
-      "TEXTS": "D"
-    }
-  ],
-  "ESRS S3 : Communautés affectées": [
-    {
-      "PAGES": 7,
-      "TEXTS": "E"
-    }
-  ],
-  "Non ESRS": [
-    {
-      "PAGES": 8,
-      "TEXTS": "F"
-    }
-  ]
-  }""",
-    )
-    document.rapports_csrd.add(csrd)
-    AnalyseIA.objects.create(etat="error", resultat_json=None)
-    document.rapports_csrd.add(csrd)
-
-    stats = resume_resultats_analyse_ia(csrd)
-
-    assert stats == {
-        "phrases_environnement": [
-            {
-                "nombre_phrases": 2,
-                "titre": "ESRS E1 - Changement climatique",
-                "code_esrs": "E1",
-            },
-            {
-                "nombre_phrases": 1,
-                "titre": "ESRS E2 - Pollution",
-                "code_esrs": "E2",
-            },
-        ],
-        "phrases_social": [
-            {
-                "nombre_phrases": 1,
-                "titre": "ESRS S3 - Communautés affectées",
-                "code_esrs": "S3",
-            },
-        ],
-        "phrases_gouvernance": [],
-        "nb_phrases_pertinentes_detectees": 4,
-        "nb_documents_analyses": 2,
-        "nb_esrs_thematiques_detectees": 3,
-    }
 
 
 def test_étape_inexistante_de_la_csrd(client, alice, entreprise_factory):

@@ -1,4 +1,3 @@
-import json
 from datetime import datetime
 from datetime import timedelta
 from functools import wraps
@@ -21,6 +20,8 @@ from django.urls import reverse_lazy
 from openpyxl import load_workbook
 from openpyxl import Workbook
 
+from analyseia.forms import AnalyseIAForm
+from analyseia.helpers import synthese_analyse
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
@@ -29,8 +30,6 @@ from habilitations.models import Habilitation
 from reglementations.enums import ESRS
 from reglementations.enums import EtapeCSRD
 from reglementations.enums import ETAPES_CSRD
-from reglementations.enums import TitreESRS
-from reglementations.forms.csrd import DocumentAnalyseIAForm
 from reglementations.forms.csrd import LienRapportCSRDForm
 from reglementations.models import RapportCSRD
 from reglementations.views.base import Reglementation
@@ -631,9 +630,11 @@ def contexte_d_etape(id_etape, csrd, form=None):
             }
         case "analyse-ecart":
             context |= {
-                "form": form or DocumentAnalyseIAForm(),
-                "documents": csrd.analyses_ia,
-                "stats_synthese": resume_resultats_analyse_ia(csrd),
+                "form": form or AnalyseIAForm(),
+                "analyses_ia": csrd.analyses_ia.all(),
+                "synthese": synthese_analyse(
+                    csrd.documents_analyses, prefixe_ESRS=True
+                ),
                 "onglet_resultats_actif": csrd.documents_analyses.exists()
                 and not csrd.documents_non_analyses.exists(),
             }
@@ -641,54 +642,6 @@ def contexte_d_etape(id_etape, csrd, form=None):
             context |= {"form": LienRapportCSRDForm(instance=csrd)}
 
     return context
-
-
-def resume_resultats_analyse_ia(csrd):
-    resultat = {
-        "phrases_environnement": {},
-        "phrases_social": {},
-        "phrases_gouvernance": {},
-    }
-    nb_phrases_pertinentes_detectees = 0
-    esrs_thematiques_detectees = set()
-    for document in csrd.documents_analyses:
-        for esrs, phrases in json.loads(document.resultat_json).items():
-            if esrs == "Non ESRS":
-                break
-
-            if esrs.startswith("ESRS E"):
-                type_esg = "phrases_environnement"
-            elif esrs.startswith("ESRS S"):
-                type_esg = "phrases_social"
-            elif esrs.startswith("ESRS G"):
-                type_esg = "phrases_gouvernance"
-            titre_esrs = normalise_titre_esrs(esrs)
-
-            if titre_esrs in resultat[type_esg]:
-                resultat[type_esg][titre_esrs]["nombre_phrases"] += len(phrases)
-            else:
-                resultat[type_esg][titre_esrs] = {
-                    "titre": titre_esrs,
-                    "nombre_phrases": len(phrases),
-                    "code_esrs": esrs[5:7],
-                }
-
-            esrs_thematiques_detectees.add(titre_esrs)
-            nb_phrases_pertinentes_detectees += len(phrases)
-
-    for nom_phase in ("phrases_environnement", "phrases_social", "phrases_gouvernance"):
-        resultat[nom_phase] = sorted(
-            resultat[nom_phase].values(), key=lambda d: d["titre"]
-        )
-    resultat["nb_phrases_pertinentes_detectees"] = nb_phrases_pertinentes_detectees
-    resultat["nb_documents_analyses"] = csrd.documents_analyses.count()
-    resultat["nb_esrs_thematiques_detectees"] = len(esrs_thematiques_detectees)
-    return resultat
-
-
-def normalise_titre_esrs(titre_esrs):
-    underscored_esrs = titre_esrs[:7].replace(" ", "_")
-    return TitreESRS[underscored_esrs].value
 
 
 def csrd_required_with_enjeux(function):
