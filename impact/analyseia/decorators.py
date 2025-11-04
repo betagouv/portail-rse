@@ -1,6 +1,7 @@
 from functools import wraps
 
 from django.core.exceptions import PermissionDenied
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 
 from .models import AnalyseIA
@@ -28,10 +29,8 @@ def csrd_valide_si_presente(function):
 
         csrd = get_object_or_404(RapportCSRD, id=csrd_id)
 
-        if not Habilitation.existe(csrd.entreprise, request.user):
-            raise PermissionDenied(
-                "L'utilisateur n'a pas les permissions nécessaires pour accéder à ce rapport CSRD"
-            )
+        if not csrd.entreprise == entreprise:
+            raise Http404
 
         return function(request, entreprise, *args, csrd=csrd, **kwargs)
 
