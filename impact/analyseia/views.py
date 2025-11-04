@@ -275,7 +275,7 @@ def synthese_resultat(request, entreprise_qualifiee, csrd=None):
         documents = entreprise_qualifiee.analyses_ia.reussies()
     else:
         worksheet = workbook["Phrases relatives aux ESRS"]
-        documents = csrd.documents_analyses
+        documents = csrd.analyses_ia.reussies()
 
     prefixe_ESRS = rendu == "esrs"
     for document in documents:
@@ -305,7 +305,7 @@ def synthese_resultat_par_ESRS(request, entreprise_qualifiee, code_esrs, csrd=No
         documents = entreprise_qualifiee.analyses_ia.reussies()
     else:
         worksheet = workbook["Phrases relatives aux ESRS"]
-        documents = csrd.documents_analyses
+        documents = csrd.analyses_ia.reussies()
 
     for document in documents:
         _ajoute_lignes_resultat_ia(worksheet, document, True, code_esrs, prefixe_ESRS)
