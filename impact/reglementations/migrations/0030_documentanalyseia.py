@@ -3,8 +3,6 @@ import django.db.models.deletion
 from django.db import migrations
 from django.db import models
 
-import reglementations.models.csrd
-
 
 class Migration(migrations.Migration):
 
@@ -30,8 +28,8 @@ class Migration(migrations.Migration):
                 (
                     "fichier",
                     models.FileField(
-                        storage=reglementations.models.csrd.select_storage,
-                        upload_to=reglementations.models.csrd.upload_path,
+                        storage=None,  # les fonctions ont été déplacées dans analyseia.models et DocumentAnalyseIA est supprimé dans la migration 0036
+                        upload_to=None,  # les fonctions ont été déplacées dans analyseia.models et DocumentAnalyseIA est supprimé dans la migration 0036
                     ),
                 ),
                 ("nom", models.CharField(max_length=255, verbose_name="nom d'origine")),
