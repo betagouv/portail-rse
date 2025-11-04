@@ -1,11 +1,8 @@
 import filetype
 from django import forms
 from django.core.exceptions import ValidationError
-from django.core.validators import FileExtensionValidator
-from django.forms import FileField
 from django.forms.widgets import RadioSelect
 
-from analyseia.models import AnalyseIA
 from reglementations.models.csrd import Enjeu
 from reglementations.models.csrd import RapportCSRD
 
@@ -169,19 +166,3 @@ def validate_file_size(value):
         raise ValidationError(
             "La taille du fichier dépasse la taille maximale autorisée"
         )
-
-
-class DocumentAnalyseIAForm(forms.ModelForm):
-    fichier = FileField(
-        validators=[
-            FileExtensionValidator(["pdf"]),
-            validate_pdf_content,
-            validate_file_size,
-        ],
-        help_text="Sélectionnez des documents contenant des <b>données publiques</b> susceptibles de répondre à vos exigences ESRS.<br>Taille maximale : <b>50 Mo</b>. Format supporté : <b>PDF</b>. Langue du document : <b>Français</b>.",
-    )
-
-    class Meta:
-        model = AnalyseIA
-        fields = ["fichier"]
-        labels = {"fichier": "Ajouter un fichier"}

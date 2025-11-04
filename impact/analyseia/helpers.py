@@ -20,7 +20,7 @@ def normalise_titre_esrs(titre_esrs, prefixe_ESRS=True):
     return titre
 
 
-def synthese_analyse(analyses):
+def synthese_analyse(analyses, prefixe_ESRS=False):
     resultat = {
         "phrases_environnement": {},
         "phrases_social": {},
@@ -41,7 +41,7 @@ def synthese_analyse(analyses):
                 type_esg = "phrases_social"
             elif esrs.startswith("ESRS G"):
                 type_esg = "phrases_gouvernance"
-            titre_esrs = normalise_titre_esrs(esrs, prefixe_ESRS=False)
+            titre_esrs = normalise_titre_esrs(esrs, prefixe_ESRS=prefixe_ESRS)
 
             if titre_esrs in resultat[type_esg]:
                 resultat[type_esg][titre_esrs]["nombre_phrases"] += len(phrases)
