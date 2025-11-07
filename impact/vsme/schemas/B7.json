@@ -121,6 +121,12 @@
                         "type": "choix_binaire_radio"
                     },
                     {
+                        "id": "total_dechets",
+                        "label": "Total des déchets produits (en tonnes)",
+                        "type": "nombre_decimal",
+                        "obligatoire": true
+                    },
+                    {
                         "id": "recyclage_ou_reutilisation",
                         "label": "Dont déchets orientés vers le recyclage ou la réutilisation",
                         "type": "nombre_decimal",
@@ -135,7 +141,7 @@
                 ]
             }
         ],
-        "si_pertinent": true
+        "si_pertinent": "L'entreprise ne produit que des déchets ménagers"
     },
     "B7-38c": {
         "titre": "Flux massique annuel des matières pertinentes utilisées",
