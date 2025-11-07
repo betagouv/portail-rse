@@ -827,7 +827,7 @@ def test_synchronise_les_analyses_ia(entreprise_factory, alice):
         fichier=ContentFile("pdf file data", name="fichier.pdf")
     )
     analyse_avec_csrd = csrd.analyses_ia.create(
-        fichier=ContentFile("pdf file data", name="fichier.pdf")
+        fichier=ContentFile("pdf file data", name="fichier_avec_csrd.pdf")
     )
     analyse_reussie = entreprise.analyses_ia.create(
         fichier=ContentFile("pdf file data", name="fichier_correct.pdf"),
@@ -867,6 +867,7 @@ def test_synchronise_les_analyses_ia(entreprise_factory, alice):
     assert metabase_analyse.ajoutee_le
     assert metabase_analyse.modifiee_le
     assert metabase_analyse.entreprise.siren == analyse.entreprise.siren
+    assert metabase_analyse.nom_fichier == "fichier.pdf"
     assert not metabase_analyse.csrd
     assert not metabase_analyse.etat
     assert not metabase_analyse.message
