@@ -1,6 +1,8 @@
 from datetime import date
 from functools import wraps
+from pathlib import Path
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -11,6 +13,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls.base import reverse
+from openpyxl import load_workbook
 
 import utils.htmx as htmx
 from entreprises.decorators import entreprise_qualifiee_requise
@@ -19,6 +22,7 @@ from entreprises.views import get_current_entreprise
 from habilitations.models import Habilitation
 from logs import event_logger
 from reglementations.views import tableau_de_bord_menu_context
+from utils.xlsx import xlsx_response
 from vsme.forms import create_multiform_from_schema
 from vsme.forms import NON_PERTINENT_FIELD_NAME
 from vsme.models import Categorie
@@ -26,6 +30,7 @@ from vsme.models import ExigenceDePublication
 from vsme.models import EXIGENCES_DE_PUBLICATION
 from vsme.models import Indicateur
 from vsme.models import RapportVSME
+
 
 ETAPES = {
     "introduction": "Introduction",
@@ -378,3 +383,35 @@ def calcule_indicateur(
         initial=data,
     )
     return multiform
+
+
+@login_required
+@rapport_vsme_requis
+def export_vsme(request, rapport_vsme):
+    chemin_xlsx = Path(settings.BASE_DIR, f"vsme/xlsx/VSME.xlsx")
+    workbook = load_workbook(chemin_xlsx)
+    _export_b2(workbook, rapport_vsme)
+    return xlsx_response(workbook, "vsme.xlsx")
+
+
+def _export_b2(workbook, rapport_vsme):
+    worksheet = workbook["B2"]
+    exigence_de_publication = EXIGENCES_DE_PUBLICATION["B2"]
+    for indicateur_schema_id in rapport_vsme.indicateurs_applicables(
+        exigence_de_publication
+    ):
+        if indicateur_schema_id == "B2-26":
+            indicateur = rapport_vsme.indicateurs.get(schema_id=indicateur_schema_id)
+            declaration_durabilite = indicateur.data["declaration_durabilite"]
+            for num_ligne, (k, v) in enumerate(declaration_durabilite.items(), start=3):
+                worksheet[f"C{num_ligne}"] = convertit_indicateur_booleen(
+                    v["pratiques"]
+                )
+                worksheet[f"D{num_ligne}"] = convertit_indicateur_booleen(
+                    v["accessibles"]
+                )
+                worksheet[f"E{num_ligne}"] = convertit_indicateur_booleen(v["cibles"])
+
+
+def convertit_indicateur_booleen(valeur):
+    return "OUI" if valeur else "NON"
