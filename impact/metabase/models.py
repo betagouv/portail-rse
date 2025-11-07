@@ -150,6 +150,7 @@ class AnalyseIA(models.Model):
     modifiee_le = models.DateTimeField()
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
     csrd = models.BooleanField(default=False)
+    nom_fichier = models.CharField(max_length=255)
     etat = models.CharField(max_length=144, null=True)
     message = models.CharField(max_length=144, null=True)
     nb_phrases = models.IntegerField(null=True)

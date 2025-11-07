@@ -662,6 +662,7 @@ class Command(BaseCommand):
                 modifiee_le=analyse.updated_at,
                 entreprise_id=entreprise_id,  # optimisation possible car la clé primaire de l'objet Metabase est identique à la clé primaire dans PortailRSE
                 csrd=analyse.id in analyses_de_rapports_csrd,
+                nom_fichier=analyse.nom,
                 etat=analyse.etat,
                 message=analyse.message,
                 nb_phrases=analyse.nombre_de_phrases if analyse.resultat_json else None,
