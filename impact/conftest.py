@@ -140,6 +140,19 @@ def entreprise_factory(db, date_cloture_dernier_exercice):
     return create_entreprise
 
 
+@pytest.fixture
+def entreprise_unique_factory(entreprise_factory):
+    counter = {"value": 2}
+
+    def create_entreprise_with_unique_siren(**kwargs):
+        if "siren" not in kwargs:
+            kwargs["siren"] = f"{counter['value']:09d}"
+            counter["value"] += 1
+        return entreprise_factory(**kwargs)
+
+    return create_entreprise_with_unique_siren
+
+
 # the following fixtures were defined in `api.test.fixtures`,
 # but they are used by several high-level packages
 # (entreprise, reglementations, users ...), hence pulled-up.

@@ -24,6 +24,7 @@ from utils.tokens import make_token
 
 @login_required()
 @require_http_methods(["POST"])
+@role(UserRole.PROPRIETAIRE)
 def invitation(request, siren):
     entreprise = get_object_or_404(Entreprise, siren=siren)
     request.session["entreprise"] = siren
