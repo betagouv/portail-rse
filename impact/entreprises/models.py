@@ -217,7 +217,9 @@ class Entreprise(TimestampedModel):
     users = models.ManyToManyField(
         settings.AUTH_USER_MODEL, through="habilitations.Habilitation"
     )
-    analyses_ia = models.ManyToManyField(AnalyseIA, related_name="entreprises")
+    analyses_ia = models.ManyToManyField(
+        AnalyseIA, related_name="entreprises", blank=True
+    )
 
     def __str__(self):
         return f"{self.siren} {self.denomination}"
