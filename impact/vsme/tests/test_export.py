@@ -7,7 +7,213 @@ from vsme.models import Indicateur
 from vsme.models import RapportVSME
 
 
-def test_telechargement_d_un_rapport_vsme_au_format_xlsx(
+def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B1_intégralement_rempli(
+    client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2025)
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-a",
+        data={"choix_module": "complet"},
+    )
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-b",
+        data={"non_pertinent": False, "omission_informations": ["B7", "B8"]},
+    )
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-c",
+        data={"type_perimetre": "consolidee"},
+    )
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-d",
+        data={
+            "filiales": [
+                {
+                    "denomination_filiale": "filiale 1",
+                    "adresse": "adresse 1",
+                    "pays": "FRA",
+                    "code_postal": "33000",
+                    "commentaire": "commentaire F1",
+                },
+                {
+                    "denomination_filiale": "filiale 2",
+                    "adresse": "adresse 2",
+                    "pays": "DEU",
+                    "code_postal": "42000",
+                    "commentaire": "commentaire F2",
+                },
+            ]
+        },
+    )
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-e-i",
+        data={"forme_juridique": "54", "coopérative": True},
+    )
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-e-ii",
+        data={"nace": ["01.13", "01.16"]},
+    )
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-e-iii",
+        data={"bilan": 54321},
+    )
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-e-v",
+        data={"methode_comptabilisation": "ETP", "nombre_salaries": 42.0},
+    )
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-e-vi",
+        data={"pays": ["DEU", "FRA"]},
+    )
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-e-vii",
+        data={
+            "sites": [
+                {
+                    "id_site": 1,
+                    "nom_site": "site 1",
+                    "adresse": "adresse site 1",
+                    "code_postal": "75000",
+                    "ville": "Paris",
+                    "pays": "FRA",
+                    "geolocalisation": "[2.294381,48.858099]",
+                },
+                {
+                    "id_site": 2,
+                    "nom_site": "site 2",
+                    "adresse": "adresse site 2",
+                    "code_postal": "12345",
+                    "ville": "Berlin",
+                    "pays": "DEU",
+                    "geolocalisation": "[3,3]",
+                },
+            ]
+        },
+    )
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-25",
+        data={
+            "non_pertinent": False,
+            "certifications": [
+                {
+                    "nom_certification": "label",
+                    "emetteur": "émetteur 1",
+                    "date_obtention": "2000-12-12",
+                    "score": "10/20",
+                    "commentaire": "un commentaire",
+                },
+                {
+                    "nom_certification": "certif",
+                    "emetteur": "émetteur 2",
+                    "date_obtention": "2020-04-05",
+                    "score": "bon",
+                    "commentaire": "",
+                },
+            ],
+        },
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
+
+    assert response["Content-Disposition"] == "filename=vsme.xlsx"
+    assert (
+        response["content-type"]
+        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+    )
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook["B1"]
+    assert onglet["A4"].value == "complet"
+    assert onglet["B4"].value == "B7"
+    assert onglet["B5"].value == "B8"
+    assert onglet["C4"].value == "consolidee"
+    assert onglet["D4"].value == "filiale 1"
+    assert onglet["E4"].value == "adresse 1"
+    assert onglet["F4"].value == "FRA"
+    assert onglet["G4"].value == "33000"
+    assert onglet["H4"].value == "commentaire F1"
+    assert onglet["D5"].value == "filiale 2"
+    assert onglet["E5"].value == "adresse 2"
+    assert onglet["F5"].value == "DEU"
+    assert onglet["G5"].value == "42000"
+    assert onglet["H5"].value == "commentaire F2"
+    assert onglet["I4"].value == "54"
+    assert onglet["J4"].value == "01.13"
+    assert onglet["J5"].value == "01.16"
+    assert onglet["K4"].value == 54321
+    assert onglet["L4"].value == 42.0
+    assert onglet["M4"].value == "DEU"
+    assert onglet["M5"].value == "FRA"
+    assert onglet["N4"].value == "site 1"
+    assert onglet["O4"].value == "adresse site 1"
+    assert onglet["P4"].value == "75000"
+    assert onglet["Q4"].value == "Paris"
+    assert onglet["R4"].value == "FRA"
+    assert onglet["S4"].value == "[2.294381,48.858099]"
+    assert onglet["N5"].value == "site 2"
+    assert onglet["O5"].value == "adresse site 2"
+    assert onglet["P5"].value == "12345"
+    assert onglet["Q5"].value == "Berlin"
+    assert onglet["R5"].value == "DEU"
+    assert onglet["S5"].value == "[3,3]"
+    assert onglet["T4"].value == "label"
+    assert onglet["U4"].value == "émetteur 1"
+    assert onglet["V4"].value == "2000-12-12"
+    assert onglet["W4"].value == "10/20"
+    assert onglet["X4"].value == "un commentaire"
+    assert onglet["T5"].value == "certif"
+    assert onglet["U5"].value == "émetteur 2"
+    assert onglet["V5"].value == "2020-04-05"
+    assert onglet["W5"].value == "bon"
+    assert not onglet["X5"].value
+
+
+def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B1_avec_indicateurs_non_pertinents(
+    client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2025)
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-b",
+        data={"non_pertinent": True, "omission_informations": []},
+    )
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-25",
+        data={"non_pertinent": True, "certifications": []},
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
+
+    assert response["Content-Disposition"] == "filename=vsme.xlsx"
+    assert (
+        response["content-type"]
+        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+    )
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook["B1"]
+    assert not onglet["B4"].value
+    assert not onglet["T4"].value
+    assert not onglet["U4"].value
+    assert not onglet["V4"].value
+    assert not onglet["W4"].value
+    assert not onglet["X4"].value
+
+
+def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B2(
     client, entreprise_factory, alice
 ):
     entreprise = entreprise_factory(utilisateur=alice)
