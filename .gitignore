@@ -166,3 +166,5 @@ impact/static/dsfr
 impact/static/svelte
 impact/media
 doc/dat/
+**/tmp/
+**/wip/
