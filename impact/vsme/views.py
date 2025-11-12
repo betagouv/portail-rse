@@ -390,8 +390,129 @@ def calcule_indicateur(
 def export_vsme(request, rapport_vsme):
     chemin_xlsx = Path(settings.BASE_DIR, f"vsme/xlsx/VSME.xlsx")
     workbook = load_workbook(chemin_xlsx)
+    _export_b1(workbook, rapport_vsme)
     _export_b2(workbook, rapport_vsme)
     return xlsx_response(workbook, "vsme.xlsx")
+
+
+def _export_b1(workbook, rapport_vsme):
+    worksheet = workbook["B1"]
+    exigence_de_publication = EXIGENCES_DE_PUBLICATION["B1"]
+    for indicateur_schema_id in rapport_vsme.indicateurs_applicables(
+        exigence_de_publication
+    ):
+        if indicateur_schema_id == "B1-24-a":
+            try:
+                indicateur = rapport_vsme.indicateurs.get(
+                    schema_id=indicateur_schema_id
+                )
+            except ObjectDoesNotExist:
+                break
+            worksheet["A4"] = indicateur.data["choix_module"]
+        elif indicateur_schema_id == "B1-24-b":
+            try:
+                indicateur = rapport_vsme.indicateurs.get(
+                    schema_id=indicateur_schema_id
+                )
+            except ObjectDoesNotExist:
+                break
+            for num_ligne, omission in enumerate(
+                indicateur.data["omission_informations"], start=4
+            ):
+                worksheet[f"B{num_ligne}"] = omission
+        elif indicateur_schema_id == "B1-24-c":
+            try:
+                indicateur = rapport_vsme.indicateurs.get(
+                    schema_id=indicateur_schema_id
+                )
+            except ObjectDoesNotExist:
+                break
+            worksheet["C4"] = indicateur.data["type_perimetre"]
+        elif indicateur_schema_id == "B1-24-d":
+            try:
+                indicateur = rapport_vsme.indicateurs.get(
+                    schema_id=indicateur_schema_id
+                )
+            except ObjectDoesNotExist:
+                break
+            data = indicateur.data["filiales"]
+            for num_ligne, element in enumerate(data, start=4):
+                worksheet[f"D{num_ligne}"] = element["denomination_filiale"]
+                worksheet[f"E{num_ligne}"] = element["adresse"]
+                worksheet[f"F{num_ligne}"] = element["pays"]
+                worksheet[f"G{num_ligne}"] = element["code_postal"]
+                worksheet[f"H{num_ligne}"] = element["commentaire"]
+        elif indicateur_schema_id == "B1-24-e-i":
+            try:
+                indicateur = rapport_vsme.indicateurs.get(
+                    schema_id=indicateur_schema_id
+                )
+            except ObjectDoesNotExist:
+                break
+            worksheet["I4"] = indicateur.data["forme_juridique"]
+        elif indicateur_schema_id == "B1-24-e-ii":
+            try:
+                indicateur = rapport_vsme.indicateurs.get(
+                    schema_id=indicateur_schema_id
+                )
+            except ObjectDoesNotExist:
+                break
+            for num_ligne, data in enumerate(indicateur.data["nace"], start=4):
+                worksheet[f"J{num_ligne}"] = data
+        elif indicateur_schema_id == "B1-24-e-iii":
+            try:
+                indicateur = rapport_vsme.indicateurs.get(
+                    schema_id=indicateur_schema_id
+                )
+            except ObjectDoesNotExist:
+                break
+            worksheet["K4"] = indicateur.data["bilan"]
+        elif indicateur_schema_id == "B1-24-e-v":
+            try:
+                indicateur = rapport_vsme.indicateurs.get(
+                    schema_id=indicateur_schema_id
+                )
+            except ObjectDoesNotExist:
+                break
+            worksheet["L4"] = indicateur.data["nombre_salaries"]
+        elif indicateur_schema_id == "B1-24-e-vi":
+            try:
+                indicateur = rapport_vsme.indicateurs.get(
+                    schema_id=indicateur_schema_id
+                )
+            except ObjectDoesNotExist:
+                break
+            for num_ligne, data in enumerate(indicateur.data["pays"], start=4):
+                worksheet[f"M{num_ligne}"] = data
+        elif indicateur_schema_id == "B1-24-e-vii":
+            try:
+                indicateur = rapport_vsme.indicateurs.get(
+                    schema_id=indicateur_schema_id
+                )
+            except ObjectDoesNotExist:
+                break
+            data = indicateur.data["sites"]
+            for num_ligne, element in enumerate(data, start=4):
+                worksheet[f"N{num_ligne}"] = element["nom_site"]
+                worksheet[f"O{num_ligne}"] = element["adresse"]
+                worksheet[f"P{num_ligne}"] = element["code_postal"]
+                worksheet[f"Q{num_ligne}"] = element["ville"]
+                worksheet[f"R{num_ligne}"] = element["pays"]
+                worksheet[f"S{num_ligne}"] = element["geolocalisation"]
+        elif indicateur_schema_id == "B1-25":
+            try:
+                indicateur = rapport_vsme.indicateurs.get(
+                    schema_id=indicateur_schema_id
+                )
+            except ObjectDoesNotExist:
+                break
+            data = indicateur.data["certifications"]
+            for num_ligne, element in enumerate(data, start=4):
+                worksheet[f"T{num_ligne}"] = element["nom_certification"]
+                worksheet[f"U{num_ligne}"] = element["emetteur"]
+                worksheet[f"V{num_ligne}"] = element["date_obtention"]
+                worksheet[f"W{num_ligne}"] = element["score"]
+                worksheet[f"X{num_ligne}"] = element["commentaire"]
 
 
 def _export_b2(workbook, rapport_vsme):
@@ -401,7 +522,12 @@ def _export_b2(workbook, rapport_vsme):
         exigence_de_publication
     ):
         if indicateur_schema_id == "B2-26":
-            indicateur = rapport_vsme.indicateurs.get(schema_id=indicateur_schema_id)
+            try:
+                indicateur = rapport_vsme.indicateurs.get(
+                    schema_id=indicateur_schema_id
+                )
+            except ObjectDoesNotExist:
+                return
             declaration_durabilite = indicateur.data["declaration_durabilite"]
             for num_ligne, (k, v) in enumerate(declaration_durabilite.items(), start=3):
                 worksheet[f"C{num_ligne}"] = convertit_indicateur_booleen(
