@@ -17,12 +17,13 @@ def test_une_invitation_a_devenir_membre_pour_un_compte_existant_est_activée_di
     client.force_login(alice)
     data = {"email": bob.email, "role": UserRole.PROPRIETAIRE}
     url = f"/invitation/{entreprise.siren}"
+    redirect_url = reverse("reglementations:tableau_de_bord", args=[entreprise.siren])
+
+    # un simple login ne met pas l'entreprise courante en session
+    client.get(redirect_url)
 
     response = client.post(url, data=data, follow=True)
 
-    redirect_url = (
-        f"""{reverse("reglementations:tableau_de_bord", args=[entreprise.siren])}"""
-    )
     invitation = Invitation.objects.get(entreprise=entreprise, email=bob.email)
     assert invitation.role == UserRole.PROPRIETAIRE.value
     assert invitation.inviteur == alice
@@ -49,12 +50,13 @@ def test_succès_invitation_a_devenir_membre(
     EMAIL_INVITE = "bob@bob.test"
     data = {"email": EMAIL_INVITE, "role": UserRole.EDITEUR}
     url = f"/invitation/{entreprise.siren}"
+    redirect_url = reverse("reglementations:tableau_de_bord", args=[entreprise.siren])
+
+    # un simple login ne met pas l'entreprise courante en session
+    client.get(redirect_url)
 
     response = client.post(url, data=data, follow=True)
 
-    redirect_url = (
-        f"""{reverse("reglementations:tableau_de_bord", args=[entreprise.siren])}"""
-    )
     invitations = Invitation.objects.filter(entreprise=entreprise, email=EMAIL_INVITE)
     assert len(invitations) == 1
     invitation = invitations[0]
@@ -75,7 +77,10 @@ def test_erreur_invitation_a_devenir_membre_car_email_incorrect(
 ):
     entreprise = entreprise_factory()
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
+
     client.force_login(alice)
+    client.get(reverse("reglementations:tableau_de_bord", args=[entreprise.siren]))
+
     EMAIL_INVITE = "bob"
     data = {
         "email": EMAIL_INVITE,
@@ -99,7 +104,10 @@ def test_erreur_invitation_a_devenir_membre_car_deja_membre(
     entreprise = entreprise_factory()
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     Habilitation.ajouter(entreprise, bob, fonctions="Vice-président")
+
     client.force_login(alice)
+    client.get(reverse("reglementations:tableau_de_bord", args=[entreprise.siren]))
+
     data = {"email": bob.email, "role": UserRole.EDITEUR}
     url = f"/invitation/{entreprise.siren}"
 
