@@ -5,10 +5,10 @@ import geojson
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
+from django.urls.base import reverse
 from django.utils.html import format_html
 from django.utils.html import format_html_join
 from django.utils.safestring import mark_safe
-from django.urls.base import reverse
 
 from utils.categories_juridiques import CATEGORIES_JURIDIQUES_NIVEAU_II
 from utils.codes_nace import CODES_NACE
@@ -313,6 +313,19 @@ def create_Formset_from_schema(
                 field_name = column["id"]
                 form.fields[field_name] = create_simple_field_from_schema(column)
 
+        def clean(self):
+            if any(self.errors):
+                return  # Valide d'abord chaque formulaire individuellement
+
+            for validator in extra_validators:
+                validator(
+                    [
+                        form
+                        for form in self.forms
+                        if not (self.can_delete and self._should_delete_form(form))
+                    ]
+                )
+
     class TableauLignesLibresFormSet(TableauFormSet):
         indicator_type = "table"
 
@@ -377,13 +390,6 @@ def create_Formset_from_schema(
                 cleaned_data[self.id][self.rows[index]["id"]] = form.cleaned_data
             return cleaned_data
 
-        def clean(self):
-            if any(self.errors):
-                return  # Valide d'abord chaque formulaire individuellement
-
-            for validator in extra_validators:
-                validator(self.forms)
-
     if field_type == "tableau":
         FormSet = forms.formset_factory(
             DsfrForm,
@@ -423,6 +429,9 @@ def calculate_rows(lignes, rapport_vsme):
 
 def calculate_extra_validators(indicateur_schema_id, rapport_vsme):
     match indicateur_schema_id.split("-"):
+        case ["B7", "38", "ab"]:
+            return [dechets_total_validator]
+
         case ["B8", "39", _]:
             indicateur_nombre_salaries = "B1-24-e-v"
             try:
@@ -433,6 +442,19 @@ def calculate_extra_validators(indicateur_schema_id, rapport_vsme):
                 nombre_salaries = 0
             return [effectif_total_validator(nombre_salaries)]
     return []
+
+
+def dechets_total_validator(forms):
+    for form in forms:
+        if (
+            form.cleaned_data["total_dechets"]
+            != form.cleaned_data["recyclage_ou_reutilisation"]
+            + form.cleaned_data["elimines"]
+        ):
+            form.add_error("total_dechets", "Total invalide")
+            raise ValidationError(
+                f"Le total des déchets produits doit être égal à la somme des déchets recyclés et éliminés"
+            )
 
 
 def effectif_total_validator(nombre_salaries_B1):
