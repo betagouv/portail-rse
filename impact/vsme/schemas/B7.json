@@ -12,7 +12,7 @@
         ],
         "si_pertinent": "L'entreprise n'applique pas de principe de l'économie circulaire"
     },
-    "B7-38ab": {
+    "B7-38-ab": {
         "titre": "Gestion des déchets",
         "description": "Si l’entreprise ne produit pas exclusivement des déchets ménagers, elle publie le type (dangereux et non dangereux), ainsi que la part des déchets destinés au recyclage ou à la réutilisation.",
         "ancre": "gestion_dechets",
@@ -146,7 +146,7 @@
         ],
         "si_pertinent": "L'entreprise ne produit que des déchets ménagers"
     },
-    "B7-38c": {
+    "B7-38-c": {
         "titre": "Flux massique annuel des matières pertinentes utilisées",
         "description": "Publier le flux massique annuel des matières pertinentes utilisées par l'entreprise.",
         "ancre": "flux_massique",
