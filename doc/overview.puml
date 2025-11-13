@@ -1,0 +1,53 @@
+@startuml Portail_RSE
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Portail RSE - Infrastructure technique
+
+Container_Boundary(mb, "analytics") {
+    Container(mbapp, "stats.portail-rse.beta.gouv.fr", "metabase", "Tableaux de bord et reporting")
+    ContainerDb(db2, "DB", "Postgresql", "Base de données analytics")
+    Rel_R(mbapp,db2, "lit / écrit")
+}
+
+Container_Boundary(app, "app principale") {
+        Container(django, "app.portail-rse.beta.gouv.fr", "app Django", "Permet aux entreprises de saisir et valider leurs obligations RSE")
+        ContainerDb(db1, "DB", "Postgresql", "Base de données applicative")
+        Rel_R(django,db1, "lit / écrit")
+}
+
+Rel_L(django ,mb, "envoie des données")
+
+Container_Boundary(ia, "annalyse IA") {
+    Container(ia_app, "ia.portail-rse.beta.gouv.fr", "flask", "Analyse des documents des entreprises via IA")
+}
+
+Rel(django, ia_app, "commande")
+Lay_L(django, ia)
+
+Container_Boundary(sf, "sites-faciles") {
+    Container(sfapp, "portail-rse.beta.gouv.fr", "sites-faciles wagtail", "Gestion de la documentation et des fiches techniques")
+}
+
+System_Ext(api1, "API INSEE", "Recherche des entreprises")
+Rel(django, api1, "utilise")
+
+System_Ext(api2, "API Index EGAPRO", "Données de l'index de l’égalité professionnelle")
+Rel(django, api2, "utilise")
+
+System_Ext(api3, "Sentry", "Monitoring et suivi des erreurs")
+Rel(django, api3, "utilise")
+
+System_Ext(pc, "ProConnect", "Connexion sécuriséedes utilisateurs")
+Rel(django, pc, "identifie via")
+
+System_Ext(sw, "Scaleway S3", "Stockage des documents utilisateurs ou analyse IA")
+Rel(django, sw, "stocke via")
+Rel(ia_app, sw, "utilise")
+
+System_Ext(brevo, "Brevo", "Permet l'envoi d'e-mails aux entreprises et utilisateurs")
+Rel(django, brevo, "envoie e-mails via")
+
+System_Ext(hf, "HuggingFace", "Stocke les modèles IA pour le Portail RSE")
+Rel(ia_app, hf, "utilise")
+
+@enduml
