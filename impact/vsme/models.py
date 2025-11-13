@@ -329,3 +329,10 @@ class Indicateur(TimestampedModel):
             ),
         ]
         indexes = [models.Index(fields=["schema_id"])]
+
+    @property
+    def schema(self):
+        schema_exigence = ExigenceDePublication.par_indicateur_schema_id(
+            self.schema_id
+        ).load_json_schema()
+        return schema_exigence[self.schema_id]

@@ -1,3 +1,4 @@
+import string
 from datetime import date
 from functools import wraps
 from pathlib import Path
@@ -408,7 +409,7 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            worksheet["A4"] = indicateur.data["choix_module"]
+            _export_choix_unique(indicateur, worksheet, "A4")
         elif indicateur_schema_id == "B1-24-b":
             try:
                 indicateur = rapport_vsme.indicateurs.get(
@@ -416,10 +417,7 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            for num_ligne, omission in enumerate(
-                indicateur.data["omission_informations"], start=4
-            ):
-                worksheet[f"B{num_ligne}"] = omission
+            _export_choix_multiple(indicateur, worksheet, "B4")
         elif indicateur_schema_id == "B1-24-c":
             try:
                 indicateur = rapport_vsme.indicateurs.get(
@@ -427,7 +425,7 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            worksheet["C4"] = indicateur.data["type_perimetre"]
+            _export_choix_unique(indicateur, worksheet, "C4")
         elif indicateur_schema_id == "B1-24-d":
             try:
                 indicateur = rapport_vsme.indicateurs.get(
@@ -435,13 +433,7 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            data = indicateur.data["filiales"]
-            for num_ligne, element in enumerate(data, start=4):
-                worksheet[f"D{num_ligne}"] = element["denomination_filiale"]
-                worksheet[f"E{num_ligne}"] = element["adresse"]
-                worksheet[f"F{num_ligne}"] = element["pays"]
-                worksheet[f"G{num_ligne}"] = element["code_postal"]
-                worksheet[f"H{num_ligne}"] = element["commentaire"]
+            _export_tableau(indicateur, worksheet, "D4")
         elif indicateur_schema_id == "B1-24-e-i":
             try:
                 indicateur = rapport_vsme.indicateurs.get(
@@ -457,8 +449,7 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            for num_ligne, data in enumerate(indicateur.data["nace"], start=4):
-                worksheet[f"J{num_ligne}"] = data
+            _export_choix_multiple(indicateur, worksheet, "J4")
         elif indicateur_schema_id == "B1-24-e-iii":
             try:
                 indicateur = rapport_vsme.indicateurs.get(
@@ -466,7 +457,7 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            worksheet["K4"] = indicateur.data["bilan"]
+            _export_choix_unique(indicateur, worksheet, "K4")
         elif indicateur_schema_id == "B1-24-e-v":
             try:
                 indicateur = rapport_vsme.indicateurs.get(
@@ -482,8 +473,7 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            for num_ligne, data in enumerate(indicateur.data["pays"], start=4):
-                worksheet[f"M{num_ligne}"] = data
+            _export_choix_multiple(indicateur, worksheet, "M4")
         elif indicateur_schema_id == "B1-24-e-vii":
             try:
                 indicateur = rapport_vsme.indicateurs.get(
@@ -491,14 +481,7 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            data = indicateur.data["sites"]
-            for num_ligne, element in enumerate(data, start=4):
-                worksheet[f"N{num_ligne}"] = element["nom_site"]
-                worksheet[f"O{num_ligne}"] = element["adresse"]
-                worksheet[f"P{num_ligne}"] = element["code_postal"]
-                worksheet[f"Q{num_ligne}"] = element["ville"]
-                worksheet[f"R{num_ligne}"] = element["pays"]
-                worksheet[f"S{num_ligne}"] = element["geolocalisation"]
+            _export_tableau(indicateur, worksheet, "N4")
         elif indicateur_schema_id == "B1-25":
             try:
                 indicateur = rapport_vsme.indicateurs.get(
@@ -506,13 +489,37 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            data = indicateur.data["certifications"]
-            for num_ligne, element in enumerate(data, start=4):
-                worksheet[f"T{num_ligne}"] = element["nom_certification"]
-                worksheet[f"U{num_ligne}"] = element["emetteur"]
-                worksheet[f"V{num_ligne}"] = element["date_obtention"]
-                worksheet[f"W{num_ligne}"] = element["score"]
-                worksheet[f"X{num_ligne}"] = element["commentaire"]
+            _export_tableau(indicateur, worksheet, "T4")
+
+
+def _export_choix_unique(indicateur, worksheet, cellule):
+    clef_data = indicateur.schema["champs"][0]["id"]
+    worksheet[cellule] = indicateur.data[clef_data]
+
+
+def _export_choix_multiple(indicateur, worksheet, cellule_depart):
+    clef_data = indicateur.schema["champs"][0]["id"]
+    ligne_depart = int(cellule_depart[1:])
+    colonne = cellule_depart[0]
+    for num_ligne, data in enumerate(indicateur.data[clef_data], start=ligne_depart):
+        worksheet[f"{colonne}{num_ligne}"] = data
+
+
+def _export_tableau(indicateur, worksheet, cellule_depart):
+    clef_data = indicateur.schema["champs"][0]["id"]
+    ligne_depart = int(cellule_depart[1:])
+    colonne_depart = cellule_depart[0]
+    index_colonne = string.ascii_uppercase.index(colonne_depart)
+    data = indicateur.data[clef_data]
+    for offset_ligne, enregistrement in enumerate(data):
+        enregistrement2 = {k: v for k, v in enregistrement.items() if k != "id_site"}
+        for offset_colonne, (k, v) in enumerate(enregistrement2.items()):
+            type_data = indicateur.schema["champs"][0]["colonnes"][offset_colonne][
+                "type"
+            ]
+            colonne = string.ascii_uppercase[index_colonne + offset_colonne]
+            num_ligne = ligne_depart + offset_ligne
+            worksheet[f"{colonne}{num_ligne}"] = v
 
 
 def _export_b2(workbook, rapport_vsme):
