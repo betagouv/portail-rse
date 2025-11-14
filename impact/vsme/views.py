@@ -15,6 +15,8 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls.base import reverse
 from openpyxl import load_workbook
+from openpyxl.utils.cell import column_index_from_string
+from openpyxl.utils.cell import coordinate_from_string
 from openpyxl.utils.cell import get_column_letter
 
 import utils.htmx as htmx
@@ -442,8 +444,7 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            worksheet["I4"] = indicateur.data["forme_juridique"]
-            # J4 est coop
+            _export_indicateur(indicateur, worksheet, "I4")
         elif indicateur_schema_id == "B1-24-e-ii":
             try:
                 indicateur = rapport_vsme.indicateurs.get(
@@ -467,8 +468,7 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            # M4 methode comptage salariés
-            worksheet["N4"] = indicateur.data["nombre_salaries"]
+            _export_indicateur(indicateur, worksheet, "M4")
         elif indicateur_schema_id == "B1-24-e-vi":
             try:
                 indicateur = rapport_vsme.indicateurs.get(
@@ -496,33 +496,55 @@ def _export_b1(workbook, rapport_vsme):
 
 
 def _export_indicateur(indicateur, worksheet, cellule_depart):
-    type_indicateur = indicateur.schema["champs"][0]["type"]
-    match type_indicateur:
-        case "choix_unique" | "nombre_entier":
-            _export_choix_unique(indicateur, worksheet, cellule_depart)
-        case "choix_multiple":
-            _export_choix_multiple(indicateur, worksheet, cellule_depart)
-        case "tableau":
-            _export_tableau(indicateur, worksheet, cellule_depart)
-        case "tableau_lignes_fixes":
-            _export_tableau_lignes_fixes(indicateur, worksheet, cellule_depart)
+    for index_champ, champ in enumerate(indicateur.schema["champs"]):
+        type_indicateur = champ["type"]
+        colonne_depart, ligne_depart = coordinate_from_string(cellule_depart)
+        index_colonne = column_index_from_string(colonne_depart)
+        colonne = get_column_letter(index_colonne + index_champ)
+        cellule_destination = f"{colonne}{ligne_depart}"
+
+        match type_indicateur:
+            case "choix_unique" | "nombre_entier" | "nombre_decimal":
+                _export_choix_unique(
+                    indicateur, index_champ, worksheet, cellule_destination
+                )
+            case "choix_binaire":
+                _export_choix_unique_binaire(
+                    indicateur, index_champ, worksheet, cellule_destination
+                )
+            case "choix_multiple":
+                _export_choix_multiple(
+                    indicateur, index_champ, worksheet, cellule_destination
+                )
+            case "tableau":
+                _export_tableau(indicateur, index_champ, worksheet, cellule_destination)
+            case "tableau_lignes_fixes":
+                _export_tableau_lignes_fixes(
+                    indicateur, index_champ, worksheet, cellule_destination
+                )
 
 
-def _export_choix_unique(indicateur, worksheet, cellule):
-    clef_data = indicateur.schema["champs"][0]["id"]
-    worksheet[cellule] = indicateur.data[clef_data]
+def _export_choix_unique(indicateur, index_champ, worksheet, cellule_depart):
+    clef_data = indicateur.schema["champs"][index_champ]["id"]
+    worksheet[cellule_depart] = indicateur.data[clef_data]
 
 
-def _export_choix_multiple(indicateur, worksheet, cellule_depart):
-    clef_data = indicateur.schema["champs"][0]["id"]
+def _export_choix_unique_binaire(indicateur, index_champ, worksheet, cellule):
+    clef_data = indicateur.schema["champs"][index_champ]["id"]
+    valeur = indicateur.data[clef_data]
+    worksheet[cellule] = "OUI" if valeur else "NON"
+
+
+def _export_choix_multiple(indicateur, index_champ, worksheet, cellule_depart):
+    clef_data = indicateur.schema["champs"][index_champ]["id"]
     ligne_depart = int(cellule_depart[1:])
     colonne = cellule_depart[0]
     for num_ligne, data in enumerate(indicateur.data[clef_data], start=ligne_depart):
         worksheet[f"{colonne}{num_ligne}"] = data
 
 
-def _export_tableau(indicateur, worksheet, cellule_depart):
-    clef_data = indicateur.schema["champs"][0]["id"]
+def _export_tableau(indicateur, index_champ, worksheet, cellule_depart):
+    clef_data = indicateur.schema["champs"][index_champ]["id"]
     ligne_depart = int(cellule_depart[1:])
     colonne_depart = cellule_depart[0]
     index_colonne = string.ascii_uppercase.index(colonne_depart)
@@ -537,8 +559,8 @@ def _export_tableau(indicateur, worksheet, cellule_depart):
             worksheet[f"{colonne}{num_ligne}"] = v
 
 
-def _export_tableau_lignes_fixes(indicateur, worksheet, cellule_depart):
-    clef_data = indicateur.schema["champs"][0]["id"]
+def _export_tableau_lignes_fixes(indicateur, index_champ, worksheet, cellule_depart):
+    clef_data = indicateur.schema["champs"][index_champ]["id"]
     ligne_depart = int(cellule_depart[1:])
     colonne_depart = cellule_depart[0]
     index_colonne = string.ascii_uppercase.index(colonne_depart)

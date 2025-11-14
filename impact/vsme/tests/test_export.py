@@ -149,19 +149,23 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B1_intégralement_rempl
     assert onglet["G5"].value == "42000"
     assert onglet["H5"].value == "commentaire F2"
     assert onglet["I4"].value == "54"
+    assert onglet["J4"].value == "OUI"
     assert onglet["K4"].value == "01.13"
     assert onglet["K5"].value == "01.16"
     assert onglet["L4"].value == 54321
+    assert onglet["M4"].value == "ETP"
     assert onglet["N4"].value == 42.0
     assert onglet["O4"].value == "DEU"
     assert onglet["O5"].value == "FRA"
     assert onglet["Q4"].value == "site 1"
+    assert onglet["P4"].value == 1
     assert onglet["R4"].value == "adresse site 1"
     assert onglet["S4"].value == "75000"
     assert onglet["T4"].value == "Paris"
     assert onglet["U4"].value == "FRA"
     assert onglet["V4"].value == "[2.294381,48.858099]"
     assert onglet["Q5"].value == "site 2"
+    assert onglet["P5"].value == 2
     assert onglet["R5"].value == "adresse site 2"
     assert onglet["S5"].value == "12345"
     assert onglet["T5"].value == "Berlin"
