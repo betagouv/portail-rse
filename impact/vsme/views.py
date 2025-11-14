@@ -15,6 +15,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls.base import reverse
 from openpyxl import load_workbook
+from openpyxl.utils.cell import get_column_letter
 
 import utils.htmx as htmx
 from entreprises.decorators import entreprise_qualifiee_requise
@@ -442,6 +443,7 @@ def _export_b1(workbook, rapport_vsme):
             except ObjectDoesNotExist:
                 break
             worksheet["I4"] = indicateur.data["forme_juridique"]
+            # J4 est coop
         elif indicateur_schema_id == "B1-24-e-ii":
             try:
                 indicateur = rapport_vsme.indicateurs.get(
@@ -449,7 +451,7 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            _export_indicateur(indicateur, worksheet, "J4")
+            _export_indicateur(indicateur, worksheet, "K4")
         elif indicateur_schema_id == "B1-24-e-iii":
             try:
                 indicateur = rapport_vsme.indicateurs.get(
@@ -457,7 +459,7 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            _export_indicateur(indicateur, worksheet, "K4")
+            _export_indicateur(indicateur, worksheet, "L4")
         elif indicateur_schema_id == "B1-24-e-v":
             try:
                 indicateur = rapport_vsme.indicateurs.get(
@@ -465,7 +467,8 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            worksheet["L4"] = indicateur.data["nombre_salaries"]
+            # M4 methode comptage salariés
+            worksheet["N4"] = indicateur.data["nombre_salaries"]
         elif indicateur_schema_id == "B1-24-e-vi":
             try:
                 indicateur = rapport_vsme.indicateurs.get(
@@ -473,7 +476,7 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            _export_indicateur(indicateur, worksheet, "M4")
+            _export_indicateur(indicateur, worksheet, "O4")
         elif indicateur_schema_id == "B1-24-e-vii":
             try:
                 indicateur = rapport_vsme.indicateurs.get(
@@ -481,7 +484,7 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            _export_indicateur(indicateur, worksheet, "N4")
+            _export_indicateur(indicateur, worksheet, "P4")
         elif indicateur_schema_id == "B1-25":
             try:
                 indicateur = rapport_vsme.indicateurs.get(
@@ -489,7 +492,7 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            _export_indicateur(indicateur, worksheet, "T4")
+            _export_indicateur(indicateur, worksheet, "W4")
 
 
 def _export_indicateur(indicateur, worksheet, cellule_depart):
@@ -525,12 +528,11 @@ def _export_tableau(indicateur, worksheet, cellule_depart):
     index_colonne = string.ascii_uppercase.index(colonne_depart)
     data = indicateur.data[clef_data]
     for offset_ligne, enregistrement in enumerate(data):
-        enregistrement2 = {k: v for k, v in enregistrement.items() if k != "id_site"}
-        for offset_colonne, (k, v) in enumerate(enregistrement2.items()):
+        for offset_colonne, (k, v) in enumerate(enregistrement.items()):
             type_data = indicateur.schema["champs"][0]["colonnes"][offset_colonne][
                 "type"
             ]
-            colonne = string.ascii_uppercase[index_colonne + offset_colonne]
+            colonne = get_column_letter(index_colonne + offset_colonne + 1)
             num_ligne = ligne_depart + offset_ligne
             worksheet[f"{colonne}{num_ligne}"] = v
 
@@ -547,7 +549,7 @@ def _export_tableau_lignes_fixes(indicateur, worksheet, cellule_depart):
             type_data = indicateur.schema["champs"][0]["colonnes"][offset_colonne][
                 "type"
             ]
-            colonne = string.ascii_uppercase[index_colonne + offset_colonne]
+            colonne = get_column_letter(index_colonne + offset_colonne + 1)
             num_ligne = ligne_depart + offset_ligne
             worksheet[f"{colonne}{num_ligne}"] = convertit_indicateur_booleen(v)
 
