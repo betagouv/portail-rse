@@ -7,6 +7,7 @@ from django.http import Http404
 from django.shortcuts import render
 
 from entreprises.decorators import entreprise_qualifiee_requise
+from entreprises.decorators import entreprise_requise
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.views import contributeurs_context
 from reglementations.utils import VSMEReglementation
@@ -62,6 +63,17 @@ def tableau_de_bord(request, entreprise_qualifiee):
     return render(
         request,
         "reglementations/tableau_de_bord/resume.html",
+        context=context,
+    )
+
+
+@login_required
+@entreprise_requise
+def index(request, entreprise):
+    context = tableau_de_bord_menu_context(entreprise)
+    return render(
+        request,
+        "reglementations/tableau_de_bord/index.html",
         context=context,
     )
 
