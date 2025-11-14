@@ -27,7 +27,7 @@ def entreprise_qualifiee_required(function):
     return wrap
 
 
-def entreprise_qualifiee_requise(function):
+def entreprise_requise(function):
     @wraps(function)
     def wrap(request, siren=None, **kwargs):
         if not siren:
@@ -50,6 +50,15 @@ def entreprise_qualifiee_requise(function):
 
         request.session["entreprise"] = entreprise.siren
 
+        return function(request, entreprise, **kwargs)
+
+    return wrap
+
+
+def entreprise_qualifiee_requise(function):
+    @entreprise_requise
+    @wraps(function)
+    def wrap(request, entreprise, **kwargs):
         if caracteristiques := entreprise.dernieres_caracteristiques_qualifiantes:
             if caracteristiques != entreprise.caracteristiques_actuelles():
                 messages.warning(

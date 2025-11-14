@@ -16,7 +16,7 @@
                         </a>
                     </li>
                     <li class="fr-sidemenu__item {% if 'reglementations' in request.path %}fr-sidemenu__item--active{% endif %}">
-                        <a class="fr-sidemenu__link" href="{% url 'reglementations:reglementations' entreprise.siren %}" target="_self" {% if 'reglementations' in request.path %}aria-current="page"{% endif %}>
+                        <a class="fr-sidemenu__link" href="{% url 'reglementations:index' entreprise.siren %}" target="_self" {% if 'reglementations' in request.path %}aria-current="page"{% endif %}>
                             <span class="fr-icon-article-line fr-mr-1w" aria-hidden="true"></span>
                             Mes réglementations
                         </a>
