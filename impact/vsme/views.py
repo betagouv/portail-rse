@@ -409,7 +409,7 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            _export_choix_unique(indicateur, worksheet, "A4")
+            _export_indicateur(indicateur, worksheet, "A4")
         elif indicateur_schema_id == "B1-24-b":
             try:
                 indicateur = rapport_vsme.indicateurs.get(
@@ -417,7 +417,7 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            _export_choix_multiple(indicateur, worksheet, "B4")
+            _export_indicateur(indicateur, worksheet, "B4")
         elif indicateur_schema_id == "B1-24-c":
             try:
                 indicateur = rapport_vsme.indicateurs.get(
@@ -425,7 +425,7 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            _export_choix_unique(indicateur, worksheet, "C4")
+            _export_indicateur(indicateur, worksheet, "C4")
         elif indicateur_schema_id == "B1-24-d":
             try:
                 indicateur = rapport_vsme.indicateurs.get(
@@ -433,7 +433,7 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            _export_tableau(indicateur, worksheet, "D4")
+            _export_indicateur(indicateur, worksheet, "D4")
         elif indicateur_schema_id == "B1-24-e-i":
             try:
                 indicateur = rapport_vsme.indicateurs.get(
@@ -449,7 +449,7 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            _export_choix_multiple(indicateur, worksheet, "J4")
+            _export_indicateur(indicateur, worksheet, "J4")
         elif indicateur_schema_id == "B1-24-e-iii":
             try:
                 indicateur = rapport_vsme.indicateurs.get(
@@ -457,7 +457,7 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            _export_choix_unique(indicateur, worksheet, "K4")
+            _export_indicateur(indicateur, worksheet, "K4")
         elif indicateur_schema_id == "B1-24-e-v":
             try:
                 indicateur = rapport_vsme.indicateurs.get(
@@ -473,7 +473,7 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            _export_choix_multiple(indicateur, worksheet, "M4")
+            _export_indicateur(indicateur, worksheet, "M4")
         elif indicateur_schema_id == "B1-24-e-vii":
             try:
                 indicateur = rapport_vsme.indicateurs.get(
@@ -481,7 +481,7 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            _export_tableau(indicateur, worksheet, "N4")
+            _export_indicateur(indicateur, worksheet, "N4")
         elif indicateur_schema_id == "B1-25":
             try:
                 indicateur = rapport_vsme.indicateurs.get(
@@ -489,7 +489,20 @@ def _export_b1(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 break
-            _export_tableau(indicateur, worksheet, "T4")
+            _export_indicateur(indicateur, worksheet, "T4")
+
+
+def _export_indicateur(indicateur, worksheet, cellule_depart):
+    type_indicateur = indicateur.schema["champs"][0]["type"]
+    match type_indicateur:
+        case "choix_unique" | "nombre_entier":
+            _export_choix_unique(indicateur, worksheet, cellule_depart)
+        case "choix_multiple":
+            _export_choix_multiple(indicateur, worksheet, cellule_depart)
+        case "tableau":
+            _export_tableau(indicateur, worksheet, cellule_depart)
+        case "tableau_lignes_fixes":
+            _export_tableau_lignes_fixes(indicateur, worksheet, cellule_depart)
 
 
 def _export_choix_unique(indicateur, worksheet, cellule):
@@ -522,6 +535,23 @@ def _export_tableau(indicateur, worksheet, cellule_depart):
             worksheet[f"{colonne}{num_ligne}"] = v
 
 
+def _export_tableau_lignes_fixes(indicateur, worksheet, cellule_depart):
+    clef_data = indicateur.schema["champs"][0]["id"]
+    ligne_depart = int(cellule_depart[1:])
+    colonne_depart = cellule_depart[0]
+    index_colonne = string.ascii_uppercase.index(colonne_depart)
+    data = indicateur.data[clef_data]
+    for offset_ligne, clef_enregistrement in enumerate(data):
+        enregistrement = data[clef_enregistrement]
+        for offset_colonne, (k, v) in enumerate(enregistrement.items()):
+            type_data = indicateur.schema["champs"][0]["colonnes"][offset_colonne][
+                "type"
+            ]
+            colonne = string.ascii_uppercase[index_colonne + offset_colonne]
+            num_ligne = ligne_depart + offset_ligne
+            worksheet[f"{colonne}{num_ligne}"] = convertit_indicateur_booleen(v)
+
+
 def _export_b2(workbook, rapport_vsme):
     worksheet = workbook["B2"]
     exigence_de_publication = EXIGENCES_DE_PUBLICATION["B2"]
@@ -535,15 +565,7 @@ def _export_b2(workbook, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 return
-            declaration_durabilite = indicateur.data["declaration_durabilite"]
-            for num_ligne, (k, v) in enumerate(declaration_durabilite.items(), start=3):
-                worksheet[f"C{num_ligne}"] = convertit_indicateur_booleen(
-                    v["pratiques"]
-                )
-                worksheet[f"D{num_ligne}"] = convertit_indicateur_booleen(
-                    v["accessibles"]
-                )
-                worksheet[f"E{num_ligne}"] = convertit_indicateur_booleen(v["cibles"])
+            _export_indicateur(indicateur, worksheet, "C3")
 
 
 def convertit_indicateur_booleen(valeur):
