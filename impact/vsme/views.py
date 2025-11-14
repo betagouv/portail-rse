@@ -20,6 +20,7 @@ from habilitations.models import Habilitation
 from logs import event_logger
 from reglementations.views import tableau_de_bord_menu_context
 from vsme.forms import create_multiform_from_schema
+from vsme.forms import NON_PERTINENT_FIELD_NAME
 from vsme.models import Categorie
 from vsme.models import ExigenceDePublication
 from vsme.models import EXIGENCES_DE_PUBLICATION
@@ -320,6 +321,25 @@ def preremplit_indicateur(indicateur_schema_id, rapport_vsme):
                     "nom": "l'Annuaire des Entreprise",
                     "url": "https://annuaire-entreprises.data.gouv.fr/",
                 }
+        case "B8-40":  # indicateur taux de rotation du personnel
+            try:
+                indicateur_nombre_salaries = "B1-24-e-v"
+                nombre_salaries = rapport_vsme.indicateurs.get(
+                    schema_id=indicateur_nombre_salaries
+                ).data.get("nombre_salaries")
+                if nombre_salaries < 50:
+                    infos_preremplissage["initial"] = {
+                        NON_PERTINENT_FIELD_NAME: True,
+                    }
+                    infos_preremplissage["source"] = {
+                        "nom": "l'indicateur Nombre de salariés dans B1",
+                        "url": reverse(
+                            "vsme:exigence_de_publication_vsme",
+                            args=[rapport_vsme.id, "B1"],
+                        ),
+                    }
+            except ObjectDoesNotExist:
+                pass
     return infos_preremplissage
 
 
