@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import EmailMessage
 from django.http.response import HttpResponseBadRequest
+from django.http.response import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -26,6 +27,13 @@ from utils.tokens import make_token
 @require_http_methods(["POST"])
 @role(UserRole.PROPRIETAIRE)
 def invitation(request, siren):
+    # le SIREN dans l'URL doit correspondre au SIREN de l'entreprise courante en session
+    siren_session = request.session.get("entreprise")
+    if siren != siren_session:
+        return HttpResponseForbidden(
+            "Le SIREN demandé ne correspond pas à l'entreprise courante."
+        )
+
     entreprise = get_object_or_404(Entreprise, siren=siren)
     request.session["entreprise"] = siren
     form = InvitationForm(request.POST)
@@ -151,6 +159,14 @@ def _envoie_email_d_invitation(request, invitation):
 @role(UserRole.PROPRIETAIRE)
 def gerer_habilitation(request, id: int):
     habilitation = get_object_or_404(Habilitation, pk=id)
+
+    # Vérification critique de sécurité : l'habilitation doit appartenir
+    # à l'entreprise courante en session
+    siren_session = request.session.get("entreprise")
+    if habilitation.entreprise.siren != siren_session:
+        return HttpResponseForbidden(
+            "Cette habilitation n'appartient pas à l'entreprise courante."
+        )
 
     if habilitation.user.pk == request.user.pk:
         return HttpResponseBadRequest(

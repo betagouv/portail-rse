@@ -3,6 +3,7 @@ from django.shortcuts import reverse
 from habilitations.enums import UserRole
 from habilitations.models import Habilitation
 from invitations.models import Invitation
+from users.models import User
 
 
 def test_utilisateur_non_authentifie_ne_peut_pas_inviter(client, entreprise_factory):
@@ -161,3 +162,90 @@ def test_invitation_depuis_autre_entreprise(
     assert not Invitation.objects.filter(entreprise=entreprise_bob).exists()
     assert Habilitation.objects.filter(entreprise=entreprise_bob).count() == 1
     assert Habilitation.objects.filter(entreprise=entreprise_bob).first().user == bob
+
+
+def test_attaque_reelle_avec_session_etablie(
+    client, alice, bob, entreprise_unique_factory
+):
+    entreprise_alice = entreprise_unique_factory(siren="111111111")
+    Habilitation.ajouter(entreprise_alice, alice, role=UserRole.PROPRIETAIRE)
+    entreprise_bob = entreprise_unique_factory(siren="222222222")
+    Habilitation.ajouter(entreprise_bob, bob, role=UserRole.PROPRIETAIRE)
+
+    client.force_login(alice)
+    response = client.get(
+        reverse(
+            "reglementations:tableau_de_bord", kwargs={"siren": entreprise_alice.siren}
+        )
+    )
+
+    assert response.status_code == 200
+    assert client.session.get("entreprise") == entreprise_alice.siren
+
+    data = {"email": alice.email, "role": UserRole.PROPRIETAIRE}
+    url = f"/invitation/{entreprise_bob.siren}"
+
+    response = client.post(url, data=data)
+
+    assert (
+        response.status_code == 403
+    ), "Alice ne doit pas pouvoir inviter vers l'entreprise de Bob"
+    assert not Habilitation.objects.filter(
+        entreprise=entreprise_bob, user=alice
+    ).exists(), "Alice ne doit pas avoir d'habilitation sur l'entreprise de Bob"
+    assert (
+        Invitation.objects.filter(entreprise=entreprise_bob).count() == 0
+    ), "Il ne doit pas y avoir d'invitation sur l'entreprise de Bob"
+
+
+def test_attaque_gerer_habilitation_autre_entreprise(
+    client, alice, bob, entreprise_unique_factory
+):
+    entreprise_alice = entreprise_unique_factory(siren="333333333")
+    Habilitation.ajouter(entreprise_alice, alice, role=UserRole.PROPRIETAIRE)
+
+    entreprise_bob = entreprise_unique_factory(siren="444444444")
+    Habilitation.ajouter(entreprise_bob, bob, role=UserRole.PROPRIETAIRE)
+
+    jane = User.objects.create(
+        email="jane@portail-rse.test",
+        prenom="Jane",
+        nom="DeLaJungle",
+        is_email_confirmed=True,
+    )
+    habilitation_jane = Habilitation.ajouter(
+        entreprise_bob, jane, role=UserRole.EDITEUR
+    )
+
+    client.force_login(alice)
+    response = client.get(
+        reverse(
+            "reglementations:tableau_de_bord", kwargs={"siren": entreprise_alice.siren}
+        )
+    )
+    assert response.status_code == 200
+    assert client.session.get("entreprise") == entreprise_alice.siren
+
+    response = client.post(
+        f"/habilitation/{habilitation_jane.id}",
+        data={"role": UserRole.PROPRIETAIRE},
+        content_type="application/x-www-form-urlencoded",
+    )
+
+    habilitation_jane.refresh_from_db()
+    assert (
+        response.status_code == 403
+    ), "Alice ne doit pas pouvoir modifier l'habilitation de Jane"
+    assert (
+        habilitation_jane.role == UserRole.EDITEUR.value
+    ), "Le rôle de Jane ne doit pas changer"
+
+    response = client.delete(f"/habilitation/{habilitation_jane.id}")
+
+    # Vérifier que l'attaque a été bloquée
+    assert (
+        response.status_code == 403
+    ), "Alice ne doit pas pouvoir supprimer l'habilitation de Jane"
+    assert Habilitation.objects.filter(
+        pk=habilitation_jane.id
+    ).exists(), "L'habilitation de Jane ne doit pas être supprimée"
