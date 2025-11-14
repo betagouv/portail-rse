@@ -152,14 +152,16 @@ def exigence_de_publication_vsme(request, rapport_vsme, exigence_de_publication_
     if not exigence_de_publication or not exigence_de_publication.remplissable:
         raise Http404("Exigence de publication VSME inconnue")
     indicateurs_completes = rapport_vsme.indicateurs_completes(exigence_de_publication)
-    indicateurs_actifs = rapport_vsme.indicateurs_actifs(exigence_de_publication)
+    indicateurs_applicables = rapport_vsme.indicateurs_applicables(
+        exigence_de_publication
+    )
     exigence_de_publication_schema = exigence_de_publication.load_json_schema()
     indicateurs = [
         dict(
             indicateur,
             id=id,
             est_complete=id in indicateurs_completes,
-            est_actif=id in indicateurs_actifs,
+            est_applicable=id in indicateurs_applicables,
         )
         for id, indicateur in exigence_de_publication_schema.items()
     ]
