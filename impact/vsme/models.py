@@ -111,6 +111,7 @@ EXIGENCES_DE_PUBLICATION = {
         "Effectifs : caractéristiques générales",
         Categorie.SOCIAL,
         "https://portail-rse.beta.gouv.fr/vsme/b8-effectifs-caracteristiques-generales/",
+        remplissable=True,
     ),
     "B9": ExigenceDePublication(
         "B9",
@@ -199,16 +200,16 @@ class RapportVSME(TimestampedModel):
         ]
         indexes = [models.Index(fields=["annee"])]
 
-    def indicateurs_actifs(self, exigence_de_publication):
+    def indicateurs_applicables(self, exigence_de_publication):
         exigence_de_publication_schema = exigence_de_publication.load_json_schema()
-        indicateurs_actifs = [
+        indicateurs_applicables = [
             ind
             for ind in exigence_de_publication_schema
-            if self.indicateur_est_actif(ind)
+            if self.indicateur_est_applicable(ind)
         ]
-        return indicateurs_actifs
+        return indicateurs_applicables
 
-    def indicateur_est_actif(self, indicateur_schema_id):
+    def indicateur_est_applicable(self, indicateur_schema_id):
         match indicateur_schema_id.split("-"):
             case ["B1", "24", "d"]:  # indicateur liste filiales
                 indicateur_type_de_perimetre = "B1-24-c"
@@ -234,6 +235,8 @@ class RapportVSME(TimestampedModel):
                 except ObjectDoesNotExist:
                     est_cooperative = False
                 return est_cooperative
+            case ["B8", "39", "c"]:  # indicateur effectifs par pays
+                return len(self.pays()) > 1
             case _:
                 return True
 
@@ -245,14 +248,19 @@ class RapportVSME(TimestampedModel):
     def progression_par_exigence(self, exigence_de_publication):
         if not exigence_de_publication.remplissable:
             return {"total": 0, "complet": 0, "pourcent": 0}
-        indicateurs_actifs = set(self.indicateurs_actifs(exigence_de_publication))
+        indicateurs_applicables = set(
+            self.indicateurs_applicables(exigence_de_publication)
+        )
         indicateurs_completes = set(self.indicateurs_completes(exigence_de_publication))
-        indicateurs_completes_et_actifs = indicateurs_actifs.intersection(
+        indicateurs_completes_et_applicables = indicateurs_applicables.intersection(
             indicateurs_completes
         )
-        complet = len(indicateurs_completes_et_actifs)
-        total = len(indicateurs_actifs)
-        pourcent = (complet / total) * 100
+        complet = len(indicateurs_completes_et_applicables)
+        total = len(indicateurs_applicables)
+        if total:
+            pourcent = (complet / total) * 100
+        else:
+            pourcent = 100
         return {"total": total, "complet": complet, "pourcent": int(pourcent)}
 
     def progression_par_categorie(self, categorie):
@@ -278,6 +286,16 @@ class RapportVSME(TimestampedModel):
         if total:
             pourcent = (complet / total) * 100
         return {"total": total, "complet": complet, "pourcent": int(pourcent)}
+
+    def pays(self):
+        indicateur_pays = "B1-24-e-vi"
+        try:
+            codes_pays = self.indicateurs.get(schema_id=indicateur_pays).data.get(
+                "pays", []
+            )
+        except ObjectDoesNotExist:
+            codes_pays = []
+        return codes_pays
 
 
 class Indicateur(TimestampedModel):

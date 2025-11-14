@@ -20,6 +20,7 @@ from habilitations.models import Habilitation
 from logs import event_logger
 from reglementations.views import tableau_de_bord_menu_context
 from vsme.forms import create_multiform_from_schema
+from vsme.forms import NON_PERTINENT_FIELD_NAME
 from vsme.models import Categorie
 from vsme.models import ExigenceDePublication
 from vsme.models import EXIGENCES_DE_PUBLICATION
@@ -152,14 +153,16 @@ def exigence_de_publication_vsme(request, rapport_vsme, exigence_de_publication_
     if not exigence_de_publication or not exigence_de_publication.remplissable:
         raise Http404("Exigence de publication VSME inconnue")
     indicateurs_completes = rapport_vsme.indicateurs_completes(exigence_de_publication)
-    indicateurs_actifs = rapport_vsme.indicateurs_actifs(exigence_de_publication)
+    indicateurs_applicables = rapport_vsme.indicateurs_applicables(
+        exigence_de_publication
+    )
     exigence_de_publication_schema = exigence_de_publication.load_json_schema()
     indicateurs = [
         dict(
             indicateur,
             id=id,
             est_complete=id in indicateurs_completes,
-            est_actif=id in indicateurs_actifs,
+            est_applicable=id in indicateurs_applicables,
         )
         for id, indicateur in exigence_de_publication_schema.items()
     ]
@@ -190,19 +193,13 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
     except ObjectDoesNotExist:
         indicateur = None
 
-    toggle_pertinent_url = reverse(
-        "vsme:toggle_pertinent", args=[rapport_vsme.id, indicateur_schema_id]
-    )
-
     if request.method == "POST":
         if delete_field_name := request.POST.get("supprimer-ligne"):
             data = request.POST.copy()
             data[delete_field_name] = True
         else:
             data = request.POST
-        multiform = create_multiform_from_schema(
-            indicateur_schema, toggle_pertinent_url
-        )(
+        multiform = create_multiform_from_schema(indicateur_schema, rapport_vsme)(
             data,
             initial=indicateur.data if indicateur else None,
         )
@@ -233,7 +230,7 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
                         extra = 1
                 multiform = calcule_indicateur(
                     indicateur_schema,
-                    toggle_pertinent_url,
+                    rapport_vsme,
                     data,
                     extra=extra,
                 )
@@ -248,7 +245,7 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
             )
         multiform = calcule_indicateur(
             indicateur_schema,
-            toggle_pertinent_url,
+            rapport_vsme,
             data,
             infos_preremplissage=infos_preremplissage,
         )
@@ -274,7 +271,10 @@ def load_indicateur_schema(indicateur_schema_id):
         exigence_de_publication_schema = EXIGENCES_DE_PUBLICATION[
             exigence_de_publication_code
         ].load_json_schema()
-        return exigence_de_publication_schema[indicateur_schema_id]
+        return dict(
+            exigence_de_publication_schema[indicateur_schema_id],
+            schema_id=indicateur_schema_id,
+        )
     except KeyError:
         raise IndicateurInconnu()
 
@@ -321,6 +321,25 @@ def preremplit_indicateur(indicateur_schema_id, rapport_vsme):
                     "nom": "l'Annuaire des Entreprise",
                     "url": "https://annuaire-entreprises.data.gouv.fr/",
                 }
+        case "B8-40":  # indicateur taux de rotation du personnel
+            try:
+                indicateur_nombre_salaries = "B1-24-e-v"
+                nombre_salaries = rapport_vsme.indicateurs.get(
+                    schema_id=indicateur_nombre_salaries
+                ).data.get("nombre_salaries")
+                if nombre_salaries < 50:
+                    infos_preremplissage["initial"] = {
+                        NON_PERTINENT_FIELD_NAME: True,
+                    }
+                    infos_preremplissage["source"] = {
+                        "nom": "l'indicateur Nombre de salariés dans B1",
+                        "url": reverse(
+                            "vsme:exigence_de_publication_vsme",
+                            args=[rapport_vsme.id, "B1"],
+                        ),
+                    }
+            except ObjectDoesNotExist:
+                pass
     return infos_preremplissage
 
 
@@ -331,9 +350,7 @@ def toggle_pertinent(request, rapport_vsme, indicateur_schema_id):
     toggle_pertinent_url = reverse(
         "vsme:toggle_pertinent", args=[rapport_vsme.id, indicateur_schema_id]
     )
-    multiform = calcule_indicateur(
-        indicateur_schema, toggle_pertinent_url, request.POST
-    )
+    multiform = calcule_indicateur(indicateur_schema, rapport_vsme, request.POST)
     exigence_de_publication = ExigenceDePublication.par_indicateur_schema_id(
         indicateur_schema_id
     )
@@ -350,11 +367,11 @@ def toggle_pertinent(request, rapport_vsme, indicateur_schema_id):
 
 
 def calcule_indicateur(
-    indicateur_schema, toggle_pertinent_url, data, extra=0, infos_preremplissage=None
+    indicateur_schema, rapport_vsme, data, extra=0, infos_preremplissage=None
 ):
     multiform = create_multiform_from_schema(
         indicateur_schema,
-        toggle_pertinent_url,
+        rapport_vsme,
         extra=extra,
         infos_preremplissage=infos_preremplissage,
     )(
