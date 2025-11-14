@@ -200,16 +200,16 @@ class RapportVSME(TimestampedModel):
         ]
         indexes = [models.Index(fields=["annee"])]
 
-    def indicateurs_actifs(self, exigence_de_publication):
+    def indicateurs_applicables(self, exigence_de_publication):
         exigence_de_publication_schema = exigence_de_publication.load_json_schema()
-        indicateurs_actifs = [
+        indicateurs_applicables = [
             ind
             for ind in exigence_de_publication_schema
-            if self.indicateur_est_actif(ind)
+            if self.indicateur_est_applicable(ind)
         ]
-        return indicateurs_actifs
+        return indicateurs_applicables
 
-    def indicateur_est_actif(self, indicateur_schema_id):
+    def indicateur_est_applicable(self, indicateur_schema_id):
         match indicateur_schema_id.split("-"):
             case ["B1", "24", "d"]:  # indicateur liste filiales
                 indicateur_type_de_perimetre = "B1-24-c"
@@ -248,13 +248,15 @@ class RapportVSME(TimestampedModel):
     def progression_par_exigence(self, exigence_de_publication):
         if not exigence_de_publication.remplissable:
             return {"total": 0, "complet": 0, "pourcent": 0}
-        indicateurs_actifs = set(self.indicateurs_actifs(exigence_de_publication))
+        indicateurs_applicables = set(
+            self.indicateurs_applicables(exigence_de_publication)
+        )
         indicateurs_completes = set(self.indicateurs_completes(exigence_de_publication))
-        indicateurs_completes_et_actifs = indicateurs_actifs.intersection(
+        indicateurs_completes_et_applicables = indicateurs_applicables.intersection(
             indicateurs_completes
         )
-        complet = len(indicateurs_completes_et_actifs)
-        total = len(indicateurs_actifs)
+        complet = len(indicateurs_completes_et_applicables)
+        total = len(indicateurs_applicables)
         if total:
             pourcent = (complet / total) * 100
         else:

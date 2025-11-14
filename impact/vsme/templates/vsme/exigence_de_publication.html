@@ -57,7 +57,7 @@
                                             <tr>
                                                 <td>{{ indicateur.titre }}</td>
                                                 <td>
-                                                    {% if not indicateur.est_actif %}
+                                                    {% if not indicateur.est_applicable %}
                                                         <p class="fr-badge fr-badge--brown-cafe-creme">NON APPLICABLE</p>
                                                     {% elif indicateur.est_complete %}
                                                         <p class="fr-badge fr-badge--success fr-badge--no-icon">COMPLÉTÉ</p>
@@ -70,7 +70,7 @@
                                                             title="Modifier"
                                                             hx-get="{% url 'vsme:indicateur_vsme' rapport_vsme.id indicateur.id %}"
                                                             hx-target="#htmx-modal-indicateur"
-                                                            {% if not indicateur.est_actif %}disabled{% endif %}>
+                                                            {% if not indicateur.est_applicable %}disabled{% endif %}>
                                                         Modifier
                                                     </button>
                                                 </td>
