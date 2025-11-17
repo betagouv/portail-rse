@@ -411,13 +411,41 @@ def _export_onglets(workbook, rapport_vsme):
         "B1-24-e-vi": "O4",
         "B1-24-e-vii": "P4",
         "B1-25": "W4",
-        "B2-26": "C3",
+        "B2-26-p1": "A4",
+        "B2-26-p2": "B4",
+        "B2-26-p3": "C4",
+        "B2-26": "E5",
+        "B4-32-p1": "A4",
+        "B4-32-p2": "D4",
+        "B4-32-p3": "G4",
+        "B6-35": "A4",
+        "B6-36": "C4",
+        "B7-37": "A4",
+        "B7-38-ab": "B4",
+        "B7-38-c": "H4",
+        "B8-39-a": "A4",
+        "B8-39-b": "C4",
+        "B8-39-c": "F4",
+        "B8-40": "H4",
+        "B9-41a": "A4",
+        "B9-41b": "C4",
+        "B11-43-p1": "A4",
+        "B11-43-p2": "B4",
     }
     for (
         code_exigence_de_publication,
         exigence_de_publication,
     ) in EXIGENCES_DE_PUBLICATION.items():
-        if code_exigence_de_publication in ("B1", "B2"):
+        if code_exigence_de_publication in (
+            "B1",
+            "B2",
+            "B4",
+            "B6",
+            "B7",
+            "B8",
+            "B9",
+            "B11",
+        ):
             for indicateur_schema_id in rapport_vsme.indicateurs_applicables(
                 exigence_de_publication
             ):
@@ -443,7 +471,7 @@ def _export_indicateur(indicateur, worksheet, cellule_depart):
         cellule_destination = f"{colonne}{ligne_depart}"
 
         match type_indicateur:
-            case "choix_unique" | "nombre_entier" | "nombre_decimal":
+            case "choix_unique" | "nombre_entier" | "nombre_decimal" | "texte_long":
                 _export_choix_unique(
                     indicateur, index_champ, worksheet, cellule_destination
                 )
@@ -512,7 +540,11 @@ def _export_tableau_lignes_fixes(indicateur, index_champ, worksheet, cellule_dep
             ]
             colonne = get_column_letter(index_colonne + offset_colonne + 1)
             num_ligne = ligne_depart + offset_ligne
-            worksheet[f"{colonne}{num_ligne}"] = convertit_indicateur_booleen(v)
+            worksheet[f"{colonne}{num_ligne}"] = (
+                convertit_indicateur_booleen(v)
+                if type_data == "choix_binaire_radio"
+                else v
+            )
 
 
 def convertit_indicateur_booleen(valeur):
