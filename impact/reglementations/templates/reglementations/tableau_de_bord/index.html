@@ -10,6 +10,46 @@
             {% include "snippets/tableau_de_bord_menu.html" %}
 
             <div class="fr-col-12 fr-col-md-9">
+                <div class="fr-grid-row fr-grid-row--gutters fr-my-4w">
+                    <div class="fr-col">
+                        <div class="fr-tile fr-enlarge-link">
+                            <div class="fr-tile__body">
+                                <div class="fr-tile__content">
+                                    <h2 class="fr-tile__title">
+                                        <a href="{% url 'simulation' %}">
+                                            Simulation simplifiée
+                                        </a>
+                                    </h2>
+                                    <p class="fr-tile__desc">En moins d'1 minute simulez différents scénarios à partir de critères simplifiés et anticipez vos prochaines réglementations applicables</p>
+                                </div>
+                            </div>
+                            <div class="fr-tile__header">
+                                <div class="fr-card__img">
+                                    <img class="fr-responsive-img fr-ratio-3x2" src="{% static 'img/simulation.png' %}" alt="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fr-col">
+                        <div class="fr-tile fr-enlarge-link">
+                            <div class="fr-tile__body">
+                                <div class="fr-tile__content">
+                                    <h2 class="fr-tile__title">
+                                        <a href="{% url 'reglementations:reglementations' entreprise.siren %}">
+                                            Mes réglementations
+                                        </a>
+                                    </h2>
+                                    <p class="fr-tile__desc">Pilotez les réglementations applicables à votre profil entreprise et accélerez votre mise en conformité RSE</p>
+                                </div>
+                            </div>
+                            <div class="fr-tile__header">
+                                <div class="fr-card__img">
+                                    <img class="fr-responsive-img fr-ratio-3x2" src="{% static 'img/piloter.png' %}" alt="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

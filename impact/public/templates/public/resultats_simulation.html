@@ -51,7 +51,7 @@
                         <div class="fr-container">
                             <div class="fr-grid-row fr-grid-row--center">
                                 <img class="fr-responsive-img" src="{% static 'img/piloter.png' %}" alt="" />
-                                <a class="fr-link" href="{{ sites_faciles_base_url }}/fiches-reglementaires">Découvrir les réglementations</a>
+                                <a class="fr-link" href="{{ sites_faciles_base_url }}/fiches-reglementaires">Découvrir les fiches réglementaires</a>
                             </div>
                         </div>
                     {% endif %}
@@ -63,8 +63,8 @@
                             <h3>En route vers le pilotage de vos réglementations</h3>
                             {% if not user.is_authenticated %}
                                 <p>
-                                    Nous avons besoin d'informations complémentataires pour vérifier vos réglementations applicables.<br>
-                                    Connectez-vous pour compléter les caractéristiques de votre entreprise et piloter vos réglementations.
+                                    Nous avons besoin d'informations complémentaires pour vérifier vos réglementations applicables.<br>
+                                    Connectez-vous pour compléter votre profil entreprise et piloter vos réglementations.
                                 </p>
                             {% else %}
                                 <p>Accédez à votre tableau de bord pour piloter vos réglementations.</p>
@@ -73,13 +73,14 @@
                             <h3>Anticipez le pilotage de vos réglementations</h3>
                             {% if not user.is_authenticated %}
                                 <p>
-                                    Connectez-vous pour compléter les caractéristiques de votre entreprise et piloter vos potentielles futures réglementations.
+                                    Nous avons besoin d'informations complémentaires pour vérifier vos réglementations applicables.<br>
+                                    Connectez-vous pour compléter votre profil entreprise et piloter vos potentielles futures réglementations.
                                 </p>
                             {% else %}
                                 <p>Accédez à votre tableau de bord pour piloter vos potentielles futures réglementations.</p>
                             {% endif %}
                         {% endif %}
-                        <a class="fr-btn" href="{% url 'reglementations:tableau_de_bord' siren %}">C'est parti !</a>
+                        <a class="fr-btn" href="{% url 'reglementations:reglementations' siren %}">Piloter mes réglementations</a>
                     </div>
                 </div>
             </div>
