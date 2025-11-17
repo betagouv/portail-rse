@@ -1,4 +1,3 @@
-import string
 from datetime import date
 from functools import wraps
 from pathlib import Path
@@ -510,25 +509,23 @@ def _export_choix_multiple(indicateur, index_champ, worksheet, cellule_depart):
 
 def _export_tableau(indicateur, index_champ, worksheet, cellule_depart):
     clef_data = indicateur.schema["champs"][index_champ]["id"]
-    ligne_depart = int(cellule_depart[1:])
-    colonne_depart = cellule_depart[0]
-    index_colonne = string.ascii_uppercase.index(colonne_depart)
+    colonne_depart, ligne_depart = coordinate_from_string(cellule_depart)
+    index_colonne = column_index_from_string(colonne_depart)
     data = indicateur.data[clef_data]
     for offset_ligne, enregistrement in enumerate(data):
         for offset_colonne, (k, v) in enumerate(enregistrement.items()):
             type_data = indicateur.schema["champs"][0]["colonnes"][offset_colonne][
                 "type"
             ]
-            colonne = get_column_letter(index_colonne + offset_colonne + 1)
+            colonne = get_column_letter(index_colonne + offset_colonne)
             num_ligne = ligne_depart + offset_ligne
             worksheet[f"{colonne}{num_ligne}"] = v
 
 
 def _export_tableau_lignes_fixes(indicateur, index_champ, worksheet, cellule_depart):
     clef_data = indicateur.schema["champs"][index_champ]["id"]
-    ligne_depart = int(cellule_depart[1:])
-    colonne_depart = cellule_depart[0]
-    index_colonne = string.ascii_uppercase.index(colonne_depart)
+    colonne_depart, ligne_depart = coordinate_from_string(cellule_depart)
+    index_colonne = column_index_from_string(colonne_depart)
     data = indicateur.data[clef_data]
     for offset_ligne, clef_enregistrement in enumerate(data):
         enregistrement = data[clef_enregistrement]
@@ -536,7 +533,7 @@ def _export_tableau_lignes_fixes(indicateur, index_champ, worksheet, cellule_dep
             type_data = indicateur.schema["champs"][0]["colonnes"][offset_colonne][
                 "type"
             ]
-            colonne = get_column_letter(index_colonne + offset_colonne + 1)
+            colonne = get_column_letter(index_colonne + offset_colonne)
             num_ligne = ligne_depart + offset_ligne
             worksheet[f"{colonne}{num_ligne}"] = (
                 convertit_indicateur_booleen(v)
