@@ -472,11 +472,9 @@ def _export_indicateur(indicateur, worksheet, cellule_depart):
 
         match type_indicateur:
             case "choix_unique" | "nombre_entier" | "nombre_decimal" | "texte_long":
-                _export_choix_unique(
-                    indicateur, index_champ, worksheet, cellule_destination
-                )
+                _export_simple(indicateur, index_champ, worksheet, cellule_destination)
             case "choix_binaire":
-                _export_choix_unique_binaire(
+                _export_choix_binaire(
                     indicateur, index_champ, worksheet, cellule_destination
                 )
             case "choix_multiple":
@@ -491,12 +489,12 @@ def _export_indicateur(indicateur, worksheet, cellule_depart):
                 )
 
 
-def _export_choix_unique(indicateur, index_champ, worksheet, cellule_depart):
+def _export_simple(indicateur, index_champ, worksheet, cellule_depart):
     clef_data = indicateur.schema["champs"][index_champ]["id"]
     worksheet[cellule_depart] = indicateur.data[clef_data]
 
 
-def _export_choix_unique_binaire(indicateur, index_champ, worksheet, cellule):
+def _export_choix_binaire(indicateur, index_champ, worksheet, cellule):
     clef_data = indicateur.schema["champs"][index_champ]["id"]
     valeur = indicateur.data[clef_data]
     worksheet[cellule] = "OUI" if valeur else "NON"
