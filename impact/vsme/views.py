@@ -394,105 +394,44 @@ def calcule_indicateur(
 def export_vsme(request, rapport_vsme):
     chemin_xlsx = Path(settings.BASE_DIR, f"vsme/xlsx/VSME.xlsx")
     workbook = load_workbook(chemin_xlsx)
-    _export_b1(workbook, rapport_vsme)
-    _export_b2(workbook, rapport_vsme)
+    _export_onglets(workbook, rapport_vsme)
     return xlsx_response(workbook, "vsme.xlsx")
 
 
-def _export_b1(workbook, rapport_vsme):
-    worksheet = workbook["B1"]
-    exigence_de_publication = EXIGENCES_DE_PUBLICATION["B1"]
-    for indicateur_schema_id in rapport_vsme.indicateurs_applicables(
-        exigence_de_publication
-    ):
-        if indicateur_schema_id == "B1-24-a":
-            try:
-                indicateur = rapport_vsme.indicateurs.get(
-                    schema_id=indicateur_schema_id
-                )
-            except ObjectDoesNotExist:
-                break
-            _export_indicateur(indicateur, worksheet, "A4")
-        elif indicateur_schema_id == "B1-24-b":
-            try:
-                indicateur = rapport_vsme.indicateurs.get(
-                    schema_id=indicateur_schema_id
-                )
-            except ObjectDoesNotExist:
-                break
-            _export_indicateur(indicateur, worksheet, "B4")
-        elif indicateur_schema_id == "B1-24-c":
-            try:
-                indicateur = rapport_vsme.indicateurs.get(
-                    schema_id=indicateur_schema_id
-                )
-            except ObjectDoesNotExist:
-                break
-            _export_indicateur(indicateur, worksheet, "C4")
-        elif indicateur_schema_id == "B1-24-d":
-            try:
-                indicateur = rapport_vsme.indicateurs.get(
-                    schema_id=indicateur_schema_id
-                )
-            except ObjectDoesNotExist:
-                break
-            _export_indicateur(indicateur, worksheet, "D4")
-        elif indicateur_schema_id == "B1-24-e-i":
-            try:
-                indicateur = rapport_vsme.indicateurs.get(
-                    schema_id=indicateur_schema_id
-                )
-            except ObjectDoesNotExist:
-                break
-            _export_indicateur(indicateur, worksheet, "I4")
-        elif indicateur_schema_id == "B1-24-e-ii":
-            try:
-                indicateur = rapport_vsme.indicateurs.get(
-                    schema_id=indicateur_schema_id
-                )
-            except ObjectDoesNotExist:
-                break
-            _export_indicateur(indicateur, worksheet, "K4")
-        elif indicateur_schema_id == "B1-24-e-iii":
-            try:
-                indicateur = rapport_vsme.indicateurs.get(
-                    schema_id=indicateur_schema_id
-                )
-            except ObjectDoesNotExist:
-                break
-            _export_indicateur(indicateur, worksheet, "L4")
-        elif indicateur_schema_id == "B1-24-e-v":
-            try:
-                indicateur = rapport_vsme.indicateurs.get(
-                    schema_id=indicateur_schema_id
-                )
-            except ObjectDoesNotExist:
-                break
-            _export_indicateur(indicateur, worksheet, "M4")
-        elif indicateur_schema_id == "B1-24-e-vi":
-            try:
-                indicateur = rapport_vsme.indicateurs.get(
-                    schema_id=indicateur_schema_id
-                )
-            except ObjectDoesNotExist:
-                break
-            _export_indicateur(indicateur, worksheet, "O4")
-        elif indicateur_schema_id == "B1-24-e-vii":
-            try:
-                indicateur = rapport_vsme.indicateurs.get(
-                    schema_id=indicateur_schema_id
-                )
-            except ObjectDoesNotExist:
-                break
-            _export_indicateur(indicateur, worksheet, "P4")
-        elif indicateur_schema_id == "B1-25":
-            try:
-                indicateur = rapport_vsme.indicateurs.get(
-                    schema_id=indicateur_schema_id
-                )
-            except ObjectDoesNotExist:
-                break
-            _export_indicateur(indicateur, worksheet, "W4")
+def _export_onglets(workbook, rapport_vsme):
+    SCHEMA_ID_VERS_CELLULE = {
+        "B1-24-a": "A4",
+        "B1-24-b": "B4",
+        "B1-24-c": "C4",
+        "B1-24-d": "D4",
+        "B1-24-e-i": "I4",
+        "B1-24-e-ii": "K4",
+        "B1-24-e-iii": "L4",
+        "B1-24-e-v": "M4",
+        "B1-24-e-vi": "O4",
+        "B1-24-e-vii": "P4",
+        "B1-25": "W4",
+        "B2-26": "C3",
+    }
+    for (
+        code_exigence_de_publication,
+        exigence_de_publication,
+    ) in EXIGENCES_DE_PUBLICATION.items():
+        if code_exigence_de_publication in ("B1", "B2"):
+            for indicateur_schema_id in rapport_vsme.indicateurs_applicables(
+                exigence_de_publication
+            ):
+
+                for schema_id, cellule in SCHEMA_ID_VERS_CELLULE.items():
+                    if schema_id.startswith(code_exigence_de_publication):
+                        try:
+                            indicateur = rapport_vsme.indicateurs.get(
+                                schema_id=schema_id
+                            )
+                        except ObjectDoesNotExist:
+                            continue
+                        worksheet = workbook[code_exigence_de_publication]
+                        _export_indicateur(indicateur, worksheet, cellule)
 
 
 def _export_indicateur(indicateur, worksheet, cellule_depart):
@@ -574,22 +513,6 @@ def _export_tableau_lignes_fixes(indicateur, index_champ, worksheet, cellule_dep
             colonne = get_column_letter(index_colonne + offset_colonne + 1)
             num_ligne = ligne_depart + offset_ligne
             worksheet[f"{colonne}{num_ligne}"] = convertit_indicateur_booleen(v)
-
-
-def _export_b2(workbook, rapport_vsme):
-    worksheet = workbook["B2"]
-    exigence_de_publication = EXIGENCES_DE_PUBLICATION["B2"]
-    for indicateur_schema_id in rapport_vsme.indicateurs_applicables(
-        exigence_de_publication
-    ):
-        if indicateur_schema_id == "B2-26":
-            try:
-                indicateur = rapport_vsme.indicateurs.get(
-                    schema_id=indicateur_schema_id
-                )
-            except ObjectDoesNotExist:
-                return
-            _export_indicateur(indicateur, worksheet, "C3")
 
 
 def convertit_indicateur_booleen(valeur):
