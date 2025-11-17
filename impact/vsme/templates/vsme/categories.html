@@ -16,6 +16,10 @@
             <div class="fr-col">
                 <h1>Mes indicateurs</h1>
 
+                <div class="fr-grid-row fr-grid-row--right fr-pb-1w">
+                    <a class="fr-btn fr-btn--icon-left fr-icon-download-line" href="{% url 'vsme:export_vsme' rapport_vsme.id %}">Télécharger les données (xlsx)</a>
+                </div>
+
                 <p>
                     Renseignez et suivez vos indicateurs environnementaux, sociaux et de gouvernance
                 </p>
@@ -111,10 +115,6 @@
                         </div>
                     </div>
 
-                </div>
-
-                <div class="fr-grid-row fr-grid-row--center fr-pt-4w">
-                    <a class="fr-btn fr-btn--icon-left fr-icon-download-line" href="{% url 'vsme:export_vsme' rapport_vsme.id %}">Télécharger les données (xlsx)</a>
                 </div>
 
             </div>
