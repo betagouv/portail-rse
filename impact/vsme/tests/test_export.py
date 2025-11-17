@@ -224,6 +224,22 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B2(
     rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2025)
     Indicateur.objects.create(
         rapport_vsme=rapport_vsme,
+        schema_id="B2-26-p1",
+        data={"non_pertinent": False, "participation_gouvernance": "PARTICIPATION"},
+    )
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B2-26-p2",
+        data={"non_pertinent": False, "investissement_economie_sociale": 222},
+    )
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B2-26-p3",
+        data={"non_pertinent": False, "limites_distribution_profits": "LIMITES"},
+    )
+
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
         schema_id="B2-26",
         data={
             "declaration_durabilite": {
@@ -287,12 +303,215 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B2(
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet_b2 = workbook["B2"]
-    assert onglet_b2["C3"].value == "OUI"
-    assert onglet_b2["D3"].value == "OUI"
-    assert onglet_b2["E3"].value == "NON"
-    assert onglet_b2["C12"].value == "NON"
-    assert onglet_b2["D12"].value == "OUI"
-    assert onglet_b2["E12"].value == "OUI"
+    assert onglet_b2["A4"].value == "PARTICIPATION"
+    assert onglet_b2["B4"].value == 222
+    assert onglet_b2["C4"].value == "LIMITES"
+    assert onglet_b2["E5"].value == "OUI"
+    assert onglet_b2["F5"].value == "OUI"
+    assert onglet_b2["G5"].value == "NON"
+    assert onglet_b2["E14"].value == "NON"
+    assert onglet_b2["F14"].value == "OUI"
+    assert onglet_b2["G14"].value == "OUI"
+
+
+def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B4(
+    client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2025)
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B4-32-p1",
+        data={
+            "non_pertinent": False,
+            "pollution_air": [
+                {"polluant": "Anthracène", "unite": "kilos", "valeur": 11.0},
+                {"polluant": "Autre", "unite": "tonnes", "valeur": 22.0},
+            ],
+        },
+    )
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B4-32-p2",
+        data={
+            "non_pertinent": False,
+            "pollution_eau": [
+                {"polluant": "Chlorfenvinphos", "unite": "tonnes", "valeur": 33.0},
+                {"polluant": "Chlorure de vinyle", "unite": "kilos", "valeur": 44.0},
+            ],
+        },
+    )
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B4-32-p3",
+        data={
+            "non_pertinent": False,
+            "pollution_sols": [
+                {"polluant": "Alachlore", "unite": "kilos", "valeur": 55.0},
+                {"polluant": "divers", "unite": "tonnes", "valeur": 66.0},
+            ],
+        },
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
+
+    assert response["Content-Disposition"] == "filename=vsme.xlsx"
+    assert (
+        response["content-type"]
+        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+    )
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook["B4"]
+    assert onglet["A4"].value == "Anthracène"
+    assert onglet["B4"].value == "kilos"
+    assert onglet["C4"].value == 11
+    assert onglet["A5"].value == "Autre"
+    assert onglet["B5"].value == "tonnes"
+    assert onglet["C5"].value == 22
+    assert onglet["D4"].value == "Chlorfenvinphos"
+    assert onglet["E4"].value == "tonnes"
+    assert onglet["F4"].value == 33
+    assert onglet["D5"].value == "Chlorure de vinyle"
+    assert onglet["E5"].value == "kilos"
+    assert onglet["F5"].value == 44
+    assert onglet["G4"].value == "Alachlore"
+    assert onglet["H4"].value == "kilos"
+    assert onglet["I4"].value == 55
+    assert onglet["G5"].value == "divers"
+    assert onglet["H5"].value == "tonnes"
+    assert onglet["I5"].value == 66
+
+
+def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B6(
+    client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2025)
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B6-35",
+        data={
+            "total_prelevements_eau": 2222,
+            "total_prelevements_eau_sites_sensibles": 1111,
+        },
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
+
+    assert response["Content-Disposition"] == "filename=vsme.xlsx"
+    assert (
+        response["content-type"]
+        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+    )
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook["B6"]
+    assert onglet["A4"].value == 2222
+    assert onglet["B4"].value == 1111
+
+
+def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B7(
+    client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2025)
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B7-37",
+        data={"non_pertinent": False, "economie_circulaire": "PRINCIPES"},
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
+
+    assert response["Content-Disposition"] == "filename=vsme.xlsx"
+    assert (
+        response["content-type"]
+        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+    )
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook["B7"]
+    assert onglet["A4"].value == "PRINCIPES"
+
+
+def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B8(
+    client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2025)
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B8-39-a",
+        data={
+            "effectifs_type_de_contrat": {
+                "contrat_permanent": {"nombre_salaries": 40.5},
+                "contrat_temporaire": {"nombre_salaries": 1.5},
+            }
+        },
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
+
+    assert response["Content-Disposition"] == "filename=vsme.xlsx"
+    assert (
+        response["content-type"]
+        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+    )
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook["B8"]
+    assert onglet["A4"].value == 40.5
+    assert onglet["A5"].value == 1.5
+
+
+def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B9(
+    client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2025)
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B9-41a",
+        data={"nombre_accidents_travail": 55, "taux_accidents_travail": 12.3},
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
+
+    assert response["Content-Disposition"] == "filename=vsme.xlsx"
+    assert (
+        response["content-type"]
+        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+    )
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook["B9"]
+    assert onglet["A4"].value == 55
+    assert onglet["B4"].value == 12.3
+
+
+def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B11(
+    client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2025)
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B11-43-p1",
+        data={"non_pertinent": False, "nombre_condamnations": 0},
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
+
+    assert response["Content-Disposition"] == "filename=vsme.xlsx"
+    assert (
+        response["content-type"]
+        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+    )
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook["B11"]
+    assert onglet["A4"].value == 0
 
 
 def test_telechargement_d_un_rapport_vsme_inexistant(client, entreprise_factory, alice):
