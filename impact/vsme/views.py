@@ -463,84 +463,71 @@ def _export_onglets(workbook, rapport_vsme):
 
 def _export_indicateur(indicateur, worksheet, cellule_depart):
     for index_champ, champ in enumerate(indicateur.schema["champs"]):
-        type_indicateur = champ["type"]
         colonne_depart, ligne_depart = coordinate_from_string(cellule_depart)
         index_colonne = column_index_from_string(colonne_depart)
         colonne = get_column_letter(index_colonne + index_champ)
         cellule_destination = f"{colonne}{ligne_depart}"
-
-        match type_indicateur:
-            case "choix_unique" | "nombre_entier" | "nombre_decimal" | "texte_long":
-                _export_simple(indicateur, index_champ, worksheet, cellule_destination)
-            case "choix_binaire":
-                _export_choix_binaire(
-                    indicateur, index_champ, worksheet, cellule_destination
-                )
-            case "choix_multiple":
-                _export_choix_multiple(
-                    indicateur, index_champ, worksheet, cellule_destination
-                )
-            case "tableau":
-                _export_tableau(indicateur, index_champ, worksheet, cellule_destination)
-            case "tableau_lignes_fixes":
-                _export_tableau_lignes_fixes(
-                    indicateur, index_champ, worksheet, cellule_destination
-                )
+        _export_champ(
+            indicateur.data[champ["id"]], champ, worksheet, cellule_destination
+        )
 
 
-def _export_simple(indicateur, index_champ, worksheet, cellule_depart):
-    clef_data = indicateur.schema["champs"][index_champ]["id"]
-    worksheet[cellule_depart] = indicateur.data[clef_data]
+def _export_champ(data, champ, worksheet, cellule_depart):
+    type_indicateur = champ["type"]
+    cellule_destination = cellule_depart
+    match type_indicateur:
+        case "choix_binaire" | "choix_binaire_radio":
+            _export_choix_binaire(data, champ, worksheet, cellule_destination)
+        case "choix_multiple":
+            _export_choix_multiple(data, champ, worksheet, cellule_destination)
+        case "tableau":
+            _export_tableau(data, champ, worksheet, cellule_destination)
+        case "tableau_lignes_fixes":
+            _export_tableau_lignes_fixes(data, champ, worksheet, cellule_destination)
+        case _:
+            _export_simple(data, champ, worksheet, cellule_destination)
 
 
-def _export_choix_binaire(indicateur, index_champ, worksheet, cellule):
-    clef_data = indicateur.schema["champs"][index_champ]["id"]
-    valeur = indicateur.data[clef_data]
-    worksheet[cellule] = "OUI" if valeur else "NON"
+def _export_simple(data, champ, worksheet, cellule_depart):
+    worksheet[cellule_depart] = data
 
 
-def _export_choix_multiple(indicateur, index_champ, worksheet, cellule_depart):
-    clef_data = indicateur.schema["champs"][index_champ]["id"]
-    ligne_depart = int(cellule_depart[1:])
-    colonne = cellule_depart[0]
-    for num_ligne, data in enumerate(indicateur.data[clef_data], start=ligne_depart):
-        worksheet[f"{colonne}{num_ligne}"] = data
+def _export_choix_binaire(data, champ, worksheet, cellule):
+    worksheet[cellule] = "OUI" if data else "NON"
 
 
-def _export_tableau(indicateur, index_champ, worksheet, cellule_depart):
-    clef_data = indicateur.schema["champs"][index_champ]["id"]
+def _export_choix_multiple(data, champ, worksheet, cellule_depart):
+    colonne, ligne_depart = coordinate_from_string(cellule_depart)
+    for num_ligne, data_simple in enumerate(data, start=ligne_depart):
+        worksheet[f"{colonne}{num_ligne}"] = data_simple
+
+
+def _export_tableau(data, champ, worksheet, cellule_depart):
     colonne_depart, ligne_depart = coordinate_from_string(cellule_depart)
     index_colonne = column_index_from_string(colonne_depart)
-    data = indicateur.data[clef_data]
     for offset_ligne, enregistrement in enumerate(data):
         for offset_colonne, (k, v) in enumerate(enregistrement.items()):
-            type_data = indicateur.schema["champs"][0]["colonnes"][offset_colonne][
-                "type"
-            ]
             colonne = get_column_letter(index_colonne + offset_colonne)
             num_ligne = ligne_depart + offset_ligne
-            worksheet[f"{colonne}{num_ligne}"] = v
-
-
-def _export_tableau_lignes_fixes(indicateur, index_champ, worksheet, cellule_depart):
-    clef_data = indicateur.schema["champs"][index_champ]["id"]
-    colonne_depart, ligne_depart = coordinate_from_string(cellule_depart)
-    index_colonne = column_index_from_string(colonne_depart)
-    data = indicateur.data[clef_data]
-    for offset_ligne, clef_enregistrement in enumerate(data):
-        enregistrement = data[clef_enregistrement]
-        for offset_colonne, (k, v) in enumerate(enregistrement.items()):
-            type_data = indicateur.schema["champs"][0]["colonnes"][offset_colonne][
-                "type"
-            ]
-            colonne = get_column_letter(index_colonne + offset_colonne)
-            num_ligne = ligne_depart + offset_ligne
-            worksheet[f"{colonne}{num_ligne}"] = (
-                convertit_indicateur_booleen(v)
-                if type_data == "choix_binaire_radio"
-                else v
+            _export_champ(
+                enregistrement[k],
+                champ["colonnes"][offset_colonne],
+                worksheet,
+                f"{colonne}{num_ligne}",
             )
 
 
-def convertit_indicateur_booleen(valeur):
-    return "OUI" if valeur else "NON"
+def _export_tableau_lignes_fixes(data, champ, worksheet, cellule_depart):
+    colonne_depart, ligne_depart = coordinate_from_string(cellule_depart)
+    index_colonne = column_index_from_string(colonne_depart)
+    for offset_ligne, clef_enregistrement in enumerate(data):
+        enregistrement = data[clef_enregistrement]
+        for offset_colonne, (k, v) in enumerate(enregistrement.items()):
+            colonne = get_column_letter(index_colonne + offset_colonne)
+            num_ligne = ligne_depart + offset_ligne
+            _export_champ(
+                enregistrement[k],
+                champ["colonnes"][offset_colonne],
+                worksheet,
+                f"{colonne}{num_ligne}",
+            )
