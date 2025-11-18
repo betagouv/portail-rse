@@ -113,6 +113,17 @@ def tableau_de_bord(request, entreprise):
 
 @login_required
 @entreprise_requise
+def index(request, entreprise):
+    context = tableau_de_bord_menu_context(entreprise)
+    return render(
+        request,
+        "reglementations/tableau_de_bord/index.html",
+        context=context,
+    )
+
+
+@login_required
+@entreprise_requise
 def reglementations(request, entreprise):
     caracteristiques = (
         entreprise.dernieres_caracteristiques_qualifiantes
