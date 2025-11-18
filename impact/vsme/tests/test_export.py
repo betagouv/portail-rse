@@ -440,6 +440,24 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B8(
 ):
     entreprise = entreprise_factory(utilisateur=alice)
     rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2025)
+    # Indicateur pays
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-e-vi",
+        data={"pays": ["FIN", "FRA"]},
+    )
+    # Indicateur effectifs par pays
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B8-39-c",
+        data={
+            "effectifs_pays": {
+                "FIN": {"nombre_salaries": 30},
+                "FRA": {"nombre_salaries": 12},
+            }
+        },
+    )
+    # Indicateur effectifs par type de contrat
     Indicateur.objects.create(
         rapport_vsme=rapport_vsme,
         schema_id="B8-39-a",
@@ -462,7 +480,11 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B8(
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook["B8"]
     assert onglet["A4"].value == 40.5
-    assert onglet["A5"].value == 1.5
+    assert onglet["B4"].value == 1.5
+    assert onglet["F4"].value == "FIN"
+    assert onglet["G4"].value == 30
+    assert onglet["F5"].value == "FRA"
+    assert onglet["G5"].value == 12
 
 
 def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B9(
