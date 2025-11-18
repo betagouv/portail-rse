@@ -10,7 +10,23 @@
             {% include "snippets/tableau_de_bord_menu.html" %}
 
             <div class="fr-col">
-                <h1>Mes réglementations</h1>
+                <nav role="navigation" class="fr-breadcrumb" aria-label="vous êtes ici :">
+                    <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">
+                        Voir le fil d’Ariane
+                    </button>
+                    <div class="fr-collapse" id="breadcrumb-1">
+                        <ol class="fr-breadcrumb__list">
+                            <li>
+                                <a class="fr-breadcrumb__link" href="{% url 'reglementations:index' entreprise.siren %}">Mes réglementations</a>
+                            </li>
+                            <li>
+                                <a class="fr-breadcrumb__link" aria-current="page">Gérer mes réglementations</a>
+                            </li>
+                        </ol>
+                    </div>
+                </nav>
+
+                <h1>Gérer mes réglementations</h1>
                 <p>
                     Découvrez les réglementations auxquelles votre entreprise est soumise
                 </p>
