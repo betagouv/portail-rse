@@ -13,7 +13,9 @@
                 <h1>Bienvenue, {{ user.prenom|capfirst }} !</h1>
                 <p>Prêt à faire progresser votre démarche RSE ?</p>
 
+                <!-- Ligne 1 : 3 tuiles -->
                 <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
+                    <!-- Tuile 1 : Réglementations applicables -->
                     <div class="fr-col-12 fr-col-lg-4">
                         <div class="fr-tile fr-enlarge-link">
                             <div class="fr-tile__body">
@@ -35,73 +37,120 @@
                         </div>
                     </div>
 
-                    <div class="fr-col-12 fr-col-lg-8">
-                        <div class="fr-card fr-card--md">
-                            <div class="fr-card__body">
-                                <div class="fr-card__content">
-                                    <h3 class="fr-card__title">
-                                        {{ entreprise.denomination }}
-                                    </h3>
-                                    <div class="fr-card__start">
-                                        <ul class="fr-tags-group">
-                                            <li><p class="fr-tag">SIREN : {{ entreprise.siren }}</p></li>
-                                            {% if entreprise.categorie_juridique and entreprise.categorie_juridique.label %}
-                                                <li><p class="fr-tag">{{ entreprise.categorie_juridique.label }}</p></li>
-                                            {% endif %}
-                                        </ul>
-                                    </div>
-                                    <p class="fr-card__desc">
-                                        {% with caracs=entreprise.dernieres_caracteristiques_qualifiantes|default:entreprise.dernieres_caracteristiques %}
-                                            Code NAF/APE : <b>{{ entreprise.code_NAF }}</b> ({{ entreprise.secteur_principal }})<br>
-                                            Date de clôture du dernier exercice : <b>{{ caracs.date_cloture_exercice | display_field }}</b><br>
-                                            Effectif (au sens du code du travail) : <b>{{ caracs.get_effectif_display | display_field }}</b><br>
-                                            Effectif (au sens du code de la Sécurité Sociale) : <b>{{ caracs.get_effectif_securite_sociale_display | display_field }}</b><br>
-                                            Chiffre d'affaires : <b>{{ caracs.get_tranche_chiffre_affaires_display | display_field }}</b><br>
-                                            Bilan : <b>{{ caracs.get_tranche_bilan_display | display_field }}</b><br>
-                                            {% if entreprise.appartient_groupe %}
-                                                {% if entreprise.est_societe_mere %}
-                                                    <b>Société mère d'un groupe d'entreprise</b><br>
-                                                {% elif entreprise.societe_mere_en_france %}
-                                                    <b>Filiale d'un groupe français</b> <em>dont la société mère est située en France</em><br>
-                                                {% else %}
-                                                    <b>Filiale d'un groupe étranger</b> <em>dont la société mère n'est pas située en France</em><br>
-                                                {% endif %}
-                                                Effectif du groupe international : <b>{{ caracs.get_effectif_groupe_display | display_field }}</b><br>
-                                                Effectif du groupe France : <b>{{ caracs.get_effectif_groupe_france_display | display_field }}</b><br>
-                                                {% if entreprise.comptes_consolides %}
-                                                    Chiffre d'affaires consolidé : <b>{{ caracs.get_tranche_chiffre_affaires_consolide_display | display_field }}</b><br>
-                                                    Bilan consolidé : <b>{{ caracs.get_tranche_bilan_consolide_display | display_field }}</b><br>
-                                                {% endif %}
-                                            {% else %}
-                                                <b>L'entreprise ne fait pas partie d'un groupe d'entreprises</b><br>
-                                            {% endif %}
-                                            {% if entreprise.est_interet_public %}
-                                                <b>L'entreprise est d'intérêt public</b>{% if entreprise.est_cotee %} <em>(l'entreprise est cotée sur un marché réglementé européen)</em>{% endif %}<br>
-                                            {% endif %}
-                                            Accord d'entreprise concernant la BDESE : <b>{{ caracs.bdese_accord | display_field }}</b><br>
-                                            Système de management de l'énergie : <b>{{ caracs.systeme_management_energie | display_field }}</b><br>
-                                        {% endwith %}
-                                    </p>
+                    <!-- Tuile 2 : Indicateurs -->
+                    <div class="fr-col-12 fr-col-lg-4">
+                        <div class="fr-tile fr-enlarge-link">
+                            <div class="fr-tile__body">
+                                <div class="fr-tile__content">
+                                    <h2 class="fr-tile__title">
+                                        <a href="{% url 'vsme:categories_vsme' entreprise.siren annee_precedente %}">
+                                            0
+                                        </a>
+                                    </h2>
+                                    <p class="fr-tile__desc">indicateur{{ 0|pluralize }} VSME rempli{{ 0|pluralize }}</p>
+                                    <p class="fr-tile__detail">Voir mes indicateurs</p>
                                 </div>
-                                <div class="fr-card__footer">
-                                    <ul class="fr-btns-group--md fr-btns-group--inline-reverse fr-btns-group--inline-lg">
-                                        <li>
-                                            <a href="{% url 'entreprises:qualification' entreprise.siren %}" class="fr-btn fr-btn--icon-left fr-icon-edit-line">Modifier le profil</a>
-                                        </li>
-                                        <li>
-                                            <button class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-close-circle-line" data-fr-opened="false" aria-controls="modal-detach-{{ entreprise.siren }}">
-                                                Quitter cette entreprise
-                                            </button>
-                                        </li>
-                                    </ul>
+                            </div>
+                            <div class="fr-tile__header">
+                                <div class="fr-card__img">
+                                    <img class="fr-responsive-img fr-ratio-3x2" src="{% static 'img/dashboard.png' %}" alt="" />
                                 </div>
                             </div>
                         </div>
-                        {% include 'snippets/modale_quitter_entreprise.html' %}
+                    </div>
+
+                    <!-- Tuile 3 : Analyses IA -->
+                    <div class="fr-col-12 fr-col-lg-4">
+                        <div class="fr-tile fr-enlarge-link">
+                            <div class="fr-tile__body">
+                                <div class="fr-tile__content">
+                                    <h2 class="fr-tile__title">
+                                        <a href="{% url 'analyseia:analyses' %}">
+                                            {{ nombre_analyses_ia }}
+                                        </a>
+                                    </h2>
+                                    <p class="fr-tile__desc">analyse{{ nombre_analyses_ia|pluralize }} IA effectuée{{ nombre_analyses_ia|pluralize }}</p>
+                                    <p class="fr-tile__detail">Voir mes analyses</p>
+                                </div>
+                            </div>
+                            <div class="fr-tile__header">
+                                <div class="fr-card__img">
+                                    <img class="fr-responsive-img fr-ratio-3x2" src="{% static 'img/connaitre.png' %}" alt="" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
+                <!-- Ligne 2 : Gestion des contributeurs -->
                 {% include "snippets/contributeurs.html" %}
+
+                <!-- Ligne 3 : À propos de l'entreprise -->
+                <div class="fr-mt-4w fr-mb-6w">
+                    <h2>À propos de l'entreprise</h2>
+                    <div class="fr-card fr-card--md">
+                        <div class="fr-card__body">
+                            <div class="fr-card__content">
+                                <h3 class="fr-card__title">
+                                    {{ entreprise.denomination }}
+                                </h3>
+                                <div class="fr-card__start">
+                                    <ul class="fr-tags-group">
+                                        <li><p class="fr-tag">SIREN : {{ entreprise.siren }}</p></li>
+                                        {% if entreprise.categorie_juridique and entreprise.categorie_juridique.label %}
+                                            <li><p class="fr-tag">{{ entreprise.categorie_juridique.label }}</p></li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                                <p class="fr-card__desc">
+                                    {% with caracs=entreprise.dernieres_caracteristiques_qualifiantes|default:entreprise.dernieres_caracteristiques %}
+                                        Code NAF/APE : <b>{{ entreprise.code_NAF }}</b> ({{ entreprise.secteur_principal }})<br>
+                                        Date de clôture du dernier exercice : <b>{{ caracs.date_cloture_exercice | display_field }}</b><br>
+                                        Effectif (au sens du code du travail) : <b>{{ caracs.get_effectif_display | display_field }}</b><br>
+                                        Effectif (au sens du code de la Sécurité Sociale) : <b>{{ caracs.get_effectif_securite_sociale_display | display_field }}</b><br>
+                                        Chiffre d'affaires : <b>{{ caracs.get_tranche_chiffre_affaires_display | display_field }}</b><br>
+                                        Bilan : <b>{{ caracs.get_tranche_bilan_display | display_field }}</b><br>
+                                        {% if entreprise.appartient_groupe %}
+                                            {% if entreprise.est_societe_mere %}
+                                                <b>Société mère d'un groupe d'entreprise</b><br>
+                                            {% elif entreprise.societe_mere_en_france %}
+                                                <b>Filiale d'un groupe français</b> <em>dont la société mère est située en France</em><br>
+                                            {% else %}
+                                                <b>Filiale d'un groupe étranger</b> <em>dont la société mère n'est pas située en France</em><br>
+                                            {% endif %}
+                                            Effectif du groupe international : <b>{{ caracs.get_effectif_groupe_display | display_field }}</b><br>
+                                            Effectif du groupe France : <b>{{ caracs.get_effectif_groupe_france_display | display_field }}</b><br>
+                                            {% if entreprise.comptes_consolides %}
+                                                Chiffre d'affaires consolidé : <b>{{ caracs.get_tranche_chiffre_affaires_consolide_display | display_field }}</b><br>
+                                                Bilan consolidé : <b>{{ caracs.get_tranche_bilan_consolide_display | display_field }}</b><br>
+                                            {% endif %}
+                                        {% else %}
+                                            <b>L'entreprise ne fait pas partie d'un groupe d'entreprises</b><br>
+                                        {% endif %}
+                                        {% if entreprise.est_interet_public %}
+                                            <b>L'entreprise est d'intérêt public</b>{% if entreprise.est_cotee %} <em>(l'entreprise est cotée sur un marché réglementé européen)</em>{% endif %}<br>
+                                        {% endif %}
+                                        Accord d'entreprise concernant la BDESE : <b>{{ caracs.bdese_accord | display_field }}</b><br>
+                                        Système de management de l'énergie : <b>{{ caracs.systeme_management_energie | display_field }}</b><br>
+                                    {% endwith %}
+                                </p>
+                            </div>
+                            <div class="fr-card__footer">
+                                <ul class="fr-btns-group--md fr-btns-group--inline-reverse fr-btns-group--inline-lg">
+                                    <li>
+                                        <a href="{% url 'entreprises:qualification' entreprise.siren %}" class="fr-btn fr-btn--icon-left fr-icon-edit-line">Modifier le profil</a>
+                                    </li>
+                                    <li>
+                                        <button class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-close-circle-line" data-fr-opened="false" aria-controls="modal-detach-{{ entreprise.siren }}">
+                                            Quitter cette entreprise
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% include 'snippets/modale_quitter_entreprise.html' %}
             </div>
         </div>
     </div>
