@@ -25,6 +25,7 @@ from entreprises.views import get_current_entreprise
 from habilitations.models import Habilitation
 from logs import event_logger
 from reglementations.views import tableau_de_bord_menu_context
+from utils.pays import CODES_PAYS_ISO_3166_1
 from utils.xlsx import xlsx_response
 from vsme.forms import create_multiform_from_schema
 from vsme.forms import NON_PERTINENT_FIELD_NAME
@@ -480,6 +481,8 @@ def _export_champ(champ, data, cellule_destination: Cell) -> Cell:
     match type_indicateur:
         case "choix_binaire" | "choix_binaire_radio":
             return _export_choix_binaire(champ, data, cellule_destination)
+        case "choix_unique":
+            return _export_choix_unique(champ, data, cellule_destination)
         case "choix_multiple":
             return _export_choix_multiple(champ, data, cellule_destination)
         case "tableau":
@@ -502,9 +505,23 @@ def _export_choix_binaire(champ, data, cellule_destination):
     return prochaine_cellule_destination
 
 
+def _export_choix_unique(champ, data, cellule_destination):
+    if champ["choix"] == "CHOIX_PAYS":
+        cellule_destination.value = CODES_PAYS_ISO_3166_1[data]
+    else:
+        cellule_destination.value = data
+    prochaine_cellule_destination = cellule_destination.offset(column=1)
+    return prochaine_cellule_destination
+
+
 def _export_choix_multiple(champ, data, cellule_depart):
     for offset_ligne, data_simple in enumerate(data):
-        cellule_depart.offset(row=offset_ligne).value = data_simple
+        if champ["choix"] == "CHOIX_PAYS":
+            cellule_depart.offset(row=offset_ligne).value = CODES_PAYS_ISO_3166_1[
+                data_simple
+            ]
+        else:
+            cellule_depart.offset(row=offset_ligne).value = data_simple
     prochaine_cellule_destination = cellule_depart.offset(column=1)
     return prochaine_cellule_destination
 
