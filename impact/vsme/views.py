@@ -510,30 +510,61 @@ def _export_choix_multiple(champ, data, cellule_depart):
 
 
 def _export_tableau(champ, data, cellule_depart):
+    colonnes = champ["colonnes"]
     for offset_ligne, data_ligne in enumerate(data):
         for id_colonne, data_simple in data_ligne.items():
-            colonnes_ids = [colonne["id"] for colonne in champ["colonnes"]]
+            colonnes_ids = [colonne["id"] for colonne in colonnes]
             offset_colonne = colonnes_ids.index(id_colonne)
             _export_champ(
-                champ["colonnes"][offset_colonne],
+                colonnes[offset_colonne],
                 data_simple,
                 cellule_depart.offset(row=offset_ligne, column=offset_colonne),
             )
-    prochaine_cellule_destination = cellule_depart.offset(column=len(champ["colonnes"]))
+    prochaine_cellule_destination = cellule_depart.offset(column=len(colonnes))
     return prochaine_cellule_destination
 
 
 def _export_tableau_lignes_fixes(champ, data, cellule_depart):
-    for id_ligne, data_ligne in data.items():
-        lignes_ids = [ligne["id"] for ligne in champ["lignes"]]
-        offset_ligne = lignes_ids.index(id_ligne)
-        for id_colonne, data_simple in data_ligne.items():
-            colonnes_ids = [colonne["id"] for colonne in champ["colonnes"]]
-            offset_colonne = colonnes_ids.index(id_colonne)
-            _export_champ(
-                champ["colonnes"][offset_colonne],
-                data_simple,
-                cellule_depart.offset(row=offset_ligne, column=offset_colonne),
-            )
-    prochaine_cellule_destination = cellule_depart.offset(column=len(champ["colonnes"]))
+    lignes = champ["lignes"]
+    colonnes = champ["colonnes"]
+    match lignes:
+        case "PAYS":
+            for index, (pays, data_dict) in enumerate(data.items()):
+                cellule_depart.offset(row=index).value = pays
+                cellule_depart.offset(row=index, column=1).value = data_dict[
+                    "nombre_salaries"
+                ]
+            prochaine_cellule_destination = cellule_depart.offset(column=2)
+        case list():
+            colonnes_ids = [colonne["id"] for colonne in colonnes]
+            if len(colonnes_ids) == 1:
+                # L'export des lignes se fait en colonnes plutôt qu'en lignes
+                for id_ligne, data_ligne in data.items():
+                    lignes_ids = [ligne["id"] for ligne in champ["lignes"]]
+                    offset_colonne = lignes_ids.index(id_ligne)
+                    _export_champ(
+                        colonnes[0],
+                        data_ligne[colonnes_ids[0]],
+                        cellule_depart.offset(column=offset_colonne),
+                    )
+                prochaine_cellule_destination = cellule_depart.offset(
+                    column=len(lignes)
+                )
+
+            else:
+                for id_ligne, data_ligne in data.items():
+                    lignes_ids = [ligne["id"] for ligne in champ["lignes"]]
+                    offset_ligne = lignes_ids.index(id_ligne)
+                    for id_colonne, data_simple in data_ligne.items():
+                        offset_colonne = colonnes_ids.index(id_colonne)
+                        _export_champ(
+                            colonnes[offset_colonne],
+                            data_simple,
+                            cellule_depart.offset(
+                                row=offset_ligne, column=offset_colonne
+                            ),
+                        )
+                prochaine_cellule_destination = cellule_depart.offset(
+                    column=len(colonnes)
+                )
     return prochaine_cellule_destination
