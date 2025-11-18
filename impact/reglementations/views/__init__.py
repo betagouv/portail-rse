@@ -12,6 +12,7 @@ from django.urls import reverse_lazy
 from entreprises.decorators import entreprise_requise
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.views import contributeurs_context
+from logs import event_logger as logger
 from reglementations.utils import VSMEReglementation
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
 from reglementations.views.base import ReglementationStatus
@@ -23,6 +24,7 @@ from reglementations.views.dispositif_alerte import DispositifAlerteReglementati
 from reglementations.views.dispositif_anticorruption import DispositifAntiCorruption
 from reglementations.views.index_egapro import IndexEgaproReglementation
 from reglementations.views.plan_vigilance import PlanVigilanceReglementation
+
 
 REGLEMENTATIONS = [
     VSMEReglementation,
@@ -92,6 +94,15 @@ def tableau_de_bord(request, entreprise):
     context |= {
         "nombre_reglementations_applicables": nombre_reglementations_applicables
     }
+
+    logger.info(
+        "app:tableauDeBord",
+        {
+            "idUtilisateur": request.user.pk,
+            "siren": entreprise.siren,
+            "session": request.session.session_key,
+        },
+    )
 
     return render(
         request,
