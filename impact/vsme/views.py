@@ -506,7 +506,9 @@ def _export_tableau(data, champ, worksheet, cellule_depart):
     colonne_depart, ligne_depart = coordinate_from_string(cellule_depart)
     index_colonne = column_index_from_string(colonne_depart)
     for offset_ligne, enregistrement in enumerate(data):
-        for offset_colonne, (k, v) in enumerate(enregistrement.items()):
+        for k, v in enregistrement.items():
+            colonnes_ids = [colonne["id"] for colonne in champ["colonnes"]]
+            offset_colonne = colonnes_ids.index(k)
             colonne = get_column_letter(index_colonne + offset_colonne)
             num_ligne = ligne_depart + offset_ligne
             _export_champ(
@@ -520,9 +522,13 @@ def _export_tableau(data, champ, worksheet, cellule_depart):
 def _export_tableau_lignes_fixes(data, champ, worksheet, cellule_depart):
     colonne_depart, ligne_depart = coordinate_from_string(cellule_depart)
     index_colonne = column_index_from_string(colonne_depart)
-    for offset_ligne, clef_enregistrement in enumerate(data):
-        enregistrement = data[clef_enregistrement]
-        for offset_colonne, (k, v) in enumerate(enregistrement.items()):
+    for k, v in data.items():
+        lignes_ids = [ligne["id"] for ligne in champ["lignes"]]
+        offset_ligne = lignes_ids.index(k)
+        enregistrement = v
+        for k, v in enregistrement.items():
+            colonnes_ids = [colonne["id"] for colonne in champ["colonnes"]]
+            offset_colonne = colonnes_ids.index(k)
             colonne = get_column_letter(index_colonne + offset_colonne)
             num_ligne = ligne_depart + offset_ligne
             _export_champ(
