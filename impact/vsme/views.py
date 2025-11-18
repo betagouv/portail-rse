@@ -14,9 +14,9 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls.base import reverse
 from openpyxl import load_workbook
+from openpyxl.cell import Cell
 from openpyxl.utils.cell import column_index_from_string
 from openpyxl.utils.cell import coordinate_from_string
-from openpyxl.utils.cell import get_column_letter
 
 import utils.htmx as htmx
 from entreprises.decorators import entreprise_qualifiee_requise
@@ -449,7 +449,7 @@ def _export_onglets(workbook, rapport_vsme):
                 exigence_de_publication
             ):
 
-                for schema_id, cellule in SCHEMA_ID_VERS_CELLULE.items():
+                for schema_id, adresse_cellule_depart in SCHEMA_ID_VERS_CELLULE.items():
                     if schema_id.startswith(code_exigence_de_publication):
                         try:
                             indicateur = rapport_vsme.indicateurs.get(
@@ -458,81 +458,82 @@ def _export_onglets(workbook, rapport_vsme):
                         except ObjectDoesNotExist:
                             continue
                         worksheet = workbook[code_exigence_de_publication]
-                        _export_indicateur(indicateur, worksheet, cellule)
+                        _export_indicateur(
+                            indicateur, worksheet, adresse_cellule_depart
+                        )
 
 
-def _export_indicateur(indicateur, worksheet, cellule_depart):
-    for index_champ, champ in enumerate(indicateur.schema["champs"]):
-        colonne_depart, ligne_depart = coordinate_from_string(cellule_depart)
-        index_colonne = column_index_from_string(colonne_depart)
-        lettre_colonne = get_column_letter(index_colonne + index_champ)
-        cellule_destination = f"{lettre_colonne}{ligne_depart}"
-        _export_champ(
-            champ, indicateur.data[champ["id"]], worksheet, cellule_destination
+def _export_indicateur(indicateur, worksheet, adresse_cellule_depart: str):
+    colonne_depart, ligne_depart = coordinate_from_string(adresse_cellule_depart)
+    index_colonne_depart = column_index_from_string(colonne_depart)
+    prochaine_cellule_destination = worksheet.cell(
+        row=ligne_depart, column=index_colonne_depart
+    )
+    for champ in indicateur.schema["champs"]:
+        prochaine_cellule_destination = _export_champ(
+            champ, indicateur.data[champ["id"]], prochaine_cellule_destination
         )
 
 
-def _export_champ(champ, data, worksheet, cellule_destination):
+def _export_champ(champ, data, cellule_destination: Cell) -> Cell:
     type_indicateur = champ["type"]
     match type_indicateur:
         case "choix_binaire" | "choix_binaire_radio":
-            _export_choix_binaire(champ, data, worksheet, cellule_destination)
+            return _export_choix_binaire(champ, data, cellule_destination)
         case "choix_multiple":
-            _export_choix_multiple(champ, data, worksheet, cellule_destination)
+            return _export_choix_multiple(champ, data, cellule_destination)
         case "tableau":
-            _export_tableau(champ, data, worksheet, cellule_destination)
+            return _export_tableau(champ, data, cellule_destination)
         case "tableau_lignes_fixes":
-            _export_tableau_lignes_fixes(champ, data, worksheet, cellule_destination)
+            return _export_tableau_lignes_fixes(champ, data, cellule_destination)
         case _:
-            _export_simple(champ, data, worksheet, cellule_destination)
+            return _export_simple(champ, data, cellule_destination)
 
 
-def _export_simple(champ, data, worksheet, cellule_destination):
-    worksheet[cellule_destination] = data
+def _export_simple(champ, data, cellule_destination):
+    cellule_destination.value = data
+    prochaine_cellule_destination = cellule_destination.offset(column=1)
+    return prochaine_cellule_destination
 
 
-def _export_choix_binaire(champ, data, worksheet, cellule_destination):
-    worksheet[cellule_destination] = "OUI" if data else "NON"
+def _export_choix_binaire(champ, data, cellule_destination):
+    cellule_destination.value = "OUI" if data else "NON"
+    prochaine_cellule_destination = cellule_destination.offset(column=1)
+    return prochaine_cellule_destination
 
 
-def _export_choix_multiple(champ, data, worksheet, cellule_depart):
-    lettre_colonne, ligne_depart = coordinate_from_string(cellule_depart)
+def _export_choix_multiple(champ, data, cellule_depart):
     for offset_ligne, data_simple in enumerate(data):
-        num_ligne = ligne_depart + offset_ligne
-        worksheet[f"{lettre_colonne}{num_ligne}"] = data_simple
+        cellule_depart.offset(row=offset_ligne).value = data_simple
+    prochaine_cellule_destination = cellule_depart.offset(column=1)
+    return prochaine_cellule_destination
 
 
-def _export_tableau(champ, data, worksheet, cellule_depart):
-    colonne_depart, ligne_depart = coordinate_from_string(cellule_depart)
-    index_colonne = column_index_from_string(colonne_depart)
+def _export_tableau(champ, data, cellule_depart):
     for offset_ligne, data_ligne in enumerate(data):
         for id_colonne, data_simple in data_ligne.items():
             colonnes_ids = [colonne["id"] for colonne in champ["colonnes"]]
             offset_colonne = colonnes_ids.index(id_colonne)
-            lettre_colonne = get_column_letter(index_colonne + offset_colonne)
-            num_ligne = ligne_depart + offset_ligne
             _export_champ(
                 champ["colonnes"][offset_colonne],
                 data_simple,
-                worksheet,
-                f"{lettre_colonne}{num_ligne}",
+                cellule_depart.offset(row=offset_ligne, column=offset_colonne),
             )
+    prochaine_cellule_destination = cellule_depart.offset(column=len(champ["colonnes"]))
+    return prochaine_cellule_destination
 
 
-def _export_tableau_lignes_fixes(champ, data, worksheet, cellule_depart):
-    colonne_depart, ligne_depart = coordinate_from_string(cellule_depart)
-    index_colonne = column_index_from_string(colonne_depart)
+def _export_tableau_lignes_fixes(champ, data, cellule_depart):
     for id_ligne, data_ligne in data.items():
         lignes_ids = [ligne["id"] for ligne in champ["lignes"]]
         offset_ligne = lignes_ids.index(id_ligne)
         for id_colonne, data_simple in data_ligne.items():
             colonnes_ids = [colonne["id"] for colonne in champ["colonnes"]]
             offset_colonne = colonnes_ids.index(id_colonne)
-            lettre_colonne = get_column_letter(index_colonne + offset_colonne)
-            num_ligne = ligne_depart + offset_ligne
             _export_champ(
                 champ["colonnes"][offset_colonne],
                 data_simple,
-                worksheet,
-                f"{lettre_colonne}{num_ligne}",
+                cellule_depart.offset(row=offset_ligne, column=offset_colonne),
             )
+    prochaine_cellule_destination = cellule_depart.offset(column=len(champ["colonnes"]))
+    return prochaine_cellule_destination
