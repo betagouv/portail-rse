@@ -13,7 +13,7 @@
                 <h2>Transferts commerciaux et financiers entre les entités du groupe</h2>
                 <p>À remplir par les entreprises appartenant à un groupe.</p>
 
-                <form action="{% url 'reglementations:bdese_step' siren annee 10 %}" method="post">
+                <form action="{% url 'reglementations:bdese_step' entreprise.siren annee 10 %}" method="post">
                     {% csrf_token %}
                     {{ form.external_fields_in_step.as_hidden }}
 

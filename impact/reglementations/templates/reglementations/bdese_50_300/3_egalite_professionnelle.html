@@ -12,7 +12,7 @@
             <div class="fr-col">
                 <h2>Egalité professionnelle entre les femmes et les hommes au sein de l'entreprise</h2>
 
-                <form action="{% url 'reglementations:bdese_step' siren annee 3 %}" method="post">
+                <form action="{% url 'reglementations:bdese_step' entreprise.siren annee 3 %}" method="post">
                     {% csrf_token %}
                     {{ form.external_fields_in_step.as_hidden }}
 
