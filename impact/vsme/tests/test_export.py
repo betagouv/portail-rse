@@ -481,9 +481,9 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B8(
     onglet = workbook["B8"]
     assert onglet["A4"].value == 40.5
     assert onglet["B4"].value == 1.5
-    assert onglet["F4"].value == "FIN"
+    assert onglet["F4"].value == "FINLANDE"
     assert onglet["G4"].value == 30
-    assert onglet["F5"].value == "FRA"
+    assert onglet["F5"].value == "FRANCE"
     assert onglet["G5"].value == 12
 
 
