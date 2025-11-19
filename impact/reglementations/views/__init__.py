@@ -13,6 +13,7 @@ from entreprises.decorators import entreprise_requise
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.views import contributeurs_context
 from logs import event_logger as logger
+from logs import log_path
 from reglementations.utils import VSMEReglementation
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
 from reglementations.views.base import ReglementationStatus
@@ -49,6 +50,7 @@ def tableau_de_bord_menu_context(entreprise, page_resume=False):
 
 @login_required
 @entreprise_requise
+@log_path("app:tableauDeBord")
 def tableau_de_bord(request, entreprise):
     caracteristiques = (
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -99,15 +101,6 @@ def tableau_de_bord(request, entreprise):
         "nombre_analyses_ia": nombre_analyses_ia,
     }
 
-    logger.info(
-        "app:tableauDeBord",
-        {
-            "idUtilisateur": request.user.pk,
-            "siren": entreprise.siren,
-            "session": request.session.session_key,
-        },
-    )
-
     return render(
         request,
         "reglementations/tableau_de_bord/resume.html",
@@ -117,6 +110,7 @@ def tableau_de_bord(request, entreprise):
 
 @login_required
 @entreprise_requise
+@log_path("app:tableauDeBord:index")
 def index(request, entreprise):
     context = tableau_de_bord_menu_context(entreprise)
     return render(
@@ -128,6 +122,7 @@ def index(request, entreprise):
 
 @login_required
 @entreprise_requise
+@log_path("app:reglementations")
 def reglementations(request, entreprise):
     caracteristiques = (
         entreprise.dernieres_caracteristiques_qualifiantes
@@ -263,6 +258,15 @@ def reglementation(request, entreprise, id_reglementation):
         except ObjectDoesNotExist:
             rapport = None
         context["csrd"] = rapport
+
+    logger.info(
+        f"app:reglementation:{id_reglementation}",
+        {
+            "idUtilisateur": request.user.pk,
+            "siren": request.session["entreprise"],
+            "session": request.session.session_key,
+        },
+    )
 
     return render(
         request,
