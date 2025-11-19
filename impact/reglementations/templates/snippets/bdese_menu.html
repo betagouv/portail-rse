@@ -6,7 +6,7 @@
                 <ul class="fr-sidemenu__list">
                     {% for step_number, step in steps.items %}
                         <li class="fr-sidemenu__item {% if active_item == step_number %}fr-sidemenu__item--active{% endif %}">
-                            <a class="fr-sidemenu__link" href="{% url 'reglementations:bdese_step' siren annee step_number %}" target="_self" {% if active_item == step_number %}aria-current="page"{% endif %}>
+                            <a class="fr-sidemenu__link" href="{% url 'reglementations:bdese_step' entreprise.siren annee step_number %}" target="_self" {% if active_item == step_number %}aria-current="page"{% endif %}>
                                 {% if step.is_complete %}
                                     <span class="fr-icon-success-line fr-mr-1w" aria-hidden="true"></span>
                                 {% endif %}

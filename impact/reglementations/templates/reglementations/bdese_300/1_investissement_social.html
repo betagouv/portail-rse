@@ -12,7 +12,7 @@
             <div class="fr-col">
                 <h2>Investissement social</h2>
 
-                <form action="{% url 'reglementations:bdese_step' siren annee 1 %}" method="post">
+                <form action="{% url 'reglementations:bdese_step' entreprise.siren annee 1 %}" method="post">
                     {% csrf_token %}
                     {{ form.external_fields_in_step.as_hidden }}
 

@@ -1,4 +1,25 @@
-<div class="fr-container fr-mt-8w">
+<div class="fr-container fr-mt-4w">
+    <nav role="navigation" class="fr-breadcrumb" aria-label="vous êtes ici :">
+        <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">
+            Voir le fil d’Ariane
+        </button>
+        <div class="fr-collapse" id="breadcrumb-1">
+            <ol class="fr-breadcrumb__list">
+                <li>
+                    <a class="fr-breadcrumb__link" href="{% url 'reglementations:index' entreprise.siren %}">Mes réglementations</a>
+                </li>
+                <li>
+                    <a class="fr-breadcrumb__link" href="{% url 'reglementations:reglementations' entreprise.siren %}">Gérer mes réglementations</a>
+                </li>
+                <li>
+                    <a class="fr-breadcrumb__link" href="{% url 'reglementations:reglementation' entreprise.siren reglementation.id %}">{{ reglementation.title }}</a>
+                </li>
+                <li>
+                    <a class="fr-breadcrumb__link" aria-current="page">Rapport {{ annee }}</a>
+                </li>
+            </ol>
+        </div>
+    </nav>
     <div class="fr-grid-row">
         <div class="fr-col-12 fr-col-md-6">
             <h1>BDESE {{ annee }}</h1>

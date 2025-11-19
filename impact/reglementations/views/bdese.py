@@ -428,6 +428,8 @@ def _bdese_step_context(form, entreprise, annee, bdese, step):
     step_is_complete = steps[step]["is_complete"]
     bdese_is_complete = bdese.is_complete
     context = {
+        "entreprise": entreprise,
+        "reglementation": BDESEReglementation,
         "form": form,
         "siren": entreprise.siren,
         "annee": annee,

@@ -612,6 +612,7 @@ def contexte_d_etape(id_etape, csrd, form=None):
 
     context = {
         "entreprise": csrd.entreprise,
+        "reglementation": CSRDReglementation,
         "etape": EtapeCSRD.get(id_etape),
         "csrd": csrd,
         "annee": datetime.now().year,

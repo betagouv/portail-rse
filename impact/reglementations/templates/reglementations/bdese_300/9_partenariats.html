@@ -12,7 +12,7 @@
             <div class="fr-col">
                 <h2>Partenariats</h2>
 
-                <form action="{% url 'reglementations:bdese_step' siren annee 9 %}" method="post">
+                <form action="{% url 'reglementations:bdese_step' entreprise.siren annee 9 %}" method="post">
                     {% csrf_token %}
                     {{ form.external_fields_in_step.as_hidden }}
 
