@@ -434,11 +434,8 @@ def _export_onglets(workbook, rapport_vsme):
         "B11-43-p1": "A4",
         "B11-43-p2": "B4",
     }
-    for (
-        code_exigence_de_publication,
-        exigence_de_publication,
-    ) in EXIGENCES_DE_PUBLICATION.items():
-        if code_exigence_de_publication in (
+    for exigence_de_publication in EXIGENCES_DE_PUBLICATION.values():
+        if exigence_de_publication.code in (
             "B1",
             "B2",
             "B4",
@@ -451,16 +448,15 @@ def _export_onglets(workbook, rapport_vsme):
             for indicateur_schema_id in rapport_vsme.indicateurs_applicables(
                 exigence_de_publication
             ):
-
                 for schema_id, adresse_cellule_depart in SCHEMA_ID_VERS_CELLULE.items():
-                    if schema_id.startswith(code_exigence_de_publication):
+                    if schema_id.split("-")[0] == exigence_de_publication.code:
                         try:
                             indicateur = rapport_vsme.indicateurs.get(
                                 schema_id=schema_id
                             )
                         except ObjectDoesNotExist:
                             continue
-                        worksheet = workbook[code_exigence_de_publication]
+                        worksheet = workbook[exigence_de_publication.code]
                         _export_indicateur(
                             indicateur, worksheet, adresse_cellule_depart
                         )
