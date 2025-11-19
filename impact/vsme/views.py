@@ -479,10 +479,6 @@ def _export_indicateur(indicateur, worksheet, adresse_cellule_depart: str):
 def _export_champ(champ, data, cellule_destination: Cell) -> Cell:
     type_indicateur = champ["type"]
     match type_indicateur:
-        case "choix_binaire" | "choix_binaire_radio":
-            return _export_choix_binaire(champ, data, cellule_destination)
-        case "choix_unique":
-            return _export_choix_unique(champ, data, cellule_destination)
         case "choix_multiple":
             return _export_choix_multiple(champ, data, cellule_destination)
         case "tableau":
@@ -494,36 +490,27 @@ def _export_champ(champ, data, cellule_destination: Cell) -> Cell:
 
 
 def _export_simple(champ, data, cellule_destination):
-    cellule_destination.value = data
-    prochaine_cellule_destination = cellule_destination.offset(column=1)
-    return prochaine_cellule_destination
-
-
-def _export_choix_binaire(champ, data, cellule_destination):
-    cellule_destination.value = "OUI" if data else "NON"
-    prochaine_cellule_destination = cellule_destination.offset(column=1)
-    return prochaine_cellule_destination
-
-
-def _export_choix_unique(champ, data, cellule_destination):
-    if champ["choix"] == "CHOIX_PAYS":
-        cellule_destination.value = CODES_PAYS_ISO_3166_1[data]
-    else:
-        cellule_destination.value = data
+    cellule_destination.value = formate_valeur(data, champ)
     prochaine_cellule_destination = cellule_destination.offset(column=1)
     return prochaine_cellule_destination
 
 
 def _export_choix_multiple(champ, data, cellule_depart):
-    for offset_ligne, data_simple in enumerate(data):
-        if champ["choix"] == "CHOIX_PAYS":
-            cellule_depart.offset(row=offset_ligne).value = CODES_PAYS_ISO_3166_1[
-                data_simple
-            ]
-        else:
-            cellule_depart.offset(row=offset_ligne).value = data_simple
+    for offset_ligne, valeur in enumerate(data):
+        cellule_depart.offset(row=offset_ligne).value = formate_valeur(valeur, champ)
     prochaine_cellule_destination = cellule_depart.offset(column=1)
     return prochaine_cellule_destination
+
+
+def formate_valeur(valeur, champ):
+    match champ["type"]:
+        case "choix_binaire" | "choix_binaire_radio":
+            return "OUI" if valeur else "NON"
+        case "choix_unique" | "choix_multiple":
+            match champ["choix"]:
+                case "CHOIX_PAYS":
+                    return CODES_PAYS_ISO_3166_1[valeur]
+    return valeur
 
 
 def _export_tableau(champ, data, cellule_depart):
