@@ -20,7 +20,7 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B1_intégralement_rempl
     Indicateur.objects.create(
         rapport_vsme=rapport_vsme,
         schema_id="B1-24-b",
-        data={"non_pertinent": False, "omission_informations": ["B7", "B8"]},
+        data={"non_pertinent": False, "omission_informations": ["B6", "B8"]},
     )
     Indicateur.objects.create(
         rapport_vsme=rapport_vsme,
@@ -57,7 +57,7 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B1_intégralement_rempl
     Indicateur.objects.create(
         rapport_vsme=rapport_vsme,
         schema_id="B1-24-e-ii",
-        data={"nace": ["01.13", "01.16"]},
+        data={"nace": ["01.12", "01.16"]},
     )
     Indicateur.objects.create(
         rapport_vsme=rapport_vsme,
@@ -135,8 +135,8 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B1_intégralement_rempl
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook["B1"]
     assert onglet["A4"].value == "complet"
-    assert onglet["B4"].value == "B7"
-    assert onglet["B5"].value == "B8"
+    assert onglet["B4"].value == "B6 - Eau"
+    assert onglet["B5"].value == "B8 - Effectifs : caractéristiques générales"
     assert onglet["C4"].value == "consolidee"
     assert onglet["D4"].value == "filiale 1"
     assert onglet["E4"].value == "adresse 1"
@@ -148,10 +148,10 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B1_intégralement_rempl
     assert onglet["F5"].value == "ALLEMAGNE"
     assert onglet["G5"].value == "42000"
     assert onglet["H5"].value == "commentaire F2"
-    assert onglet["I4"].value == "54"
+    assert onglet["I4"].value == "Société à responsabilité limitée (SARL)"
     assert onglet["J4"].value == "OUI"
-    assert onglet["K4"].value == "01.13"
-    assert onglet["K5"].value == "01.16"
+    assert onglet["K4"].value == "Culture du riz"
+    assert onglet["K5"].value == "Culture de plantes à fibres"
     assert onglet["L4"].value == 54321
     assert onglet["M4"].value == "ETP"
     assert onglet["N4"].value == 42.0
