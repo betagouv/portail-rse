@@ -25,6 +25,8 @@ from entreprises.views import get_current_entreprise
 from habilitations.models import Habilitation
 from logs import event_logger
 from reglementations.views import tableau_de_bord_menu_context
+from utils.categories_juridiques import CATEGORIES_JURIDIQUES_NIVEAU_II
+from utils.codes_nace import CODES_NACE
 from utils.pays import CODES_PAYS_ISO_3166_1
 from utils.xlsx import xlsx_response
 from vsme.forms import create_multiform_from_schema
@@ -508,6 +510,13 @@ def formate_valeur(valeur, champ):
             return "OUI" if valeur else "NON"
         case "choix_unique" | "choix_multiple":
             match champ["choix"]:
+                case "CHOIX_FORME_JURIDIQUE":
+                    return CATEGORIES_JURIDIQUES_NIVEAU_II[valeur]
+                case "CHOIX_EXIGENCE_DE_PUBLICATION":
+                    nom = EXIGENCES_DE_PUBLICATION[valeur].nom
+                    return f"{valeur} - {nom}"
+                case "CHOIX_NACE":
+                    return CODES_NACE[valeur]
                 case "CHOIX_PAYS":
                     return CODES_PAYS_ISO_3166_1[valeur]
     return valeur
