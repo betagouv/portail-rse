@@ -68,7 +68,7 @@
                     <p>Si vous modifiez ces catégories après avoir renseigné des indicateurs, les données concernant les catégories modifiées seront perdues.</p>
                 </div>
 
-                <form action="{% url 'reglementations:bdese_step' siren annee 0 %}" method="post">
+                <form action="{% url 'reglementations:bdese_step' entreprise.siren annee 0 %}" method="post">
                     {% csrf_token %}
                     {% include 'snippets/field.html' with field=form.categories_professionnelles %}
                     {% if form.categories_professionnelles_detaillees %}

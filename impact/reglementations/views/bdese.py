@@ -431,7 +431,6 @@ def _bdese_step_context(form, entreprise, annee, bdese, step):
         "entreprise": entreprise,
         "reglementation": BDESEReglementation,
         "form": form,
-        "siren": entreprise.siren,
         "annee": annee,
         "step_is_complete": step_is_complete,
         "steps": steps,

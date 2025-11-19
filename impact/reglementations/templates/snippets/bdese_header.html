@@ -26,7 +26,7 @@
         </div>
         <div class="fr-col" style="text-align: right;">
             <p>
-                <a class="fr-btn" href="{% url 'reglementations:bdese_pdf' siren annee %}" target="_blank" rel="noopener">
+                <a class="fr-btn" href="{% url 'reglementations:bdese_pdf' entreprise.siren annee %}" target="_blank" rel="noopener">
                     {% if est_soumis_actuellement %}
                         Télécharger ma BDESE {{ annee }}{% if not bdese_is_complete %} (brouillon){% endif %}
                     {% else %}
@@ -43,7 +43,7 @@
                 <p>
                     Années à remplir :
                     {% for annee in annees %}
-                        <a href="{% url 'reglementations:bdese_step' siren annee 0 %}" title="Remplissez la BDESE et télécharger le rapport pour {{ annee }}">{{ annee }}</a>
+                        <a href="{% url 'reglementations:bdese_step' entreprise.siren annee 0 %}" title="Remplissez la BDESE et télécharger le rapport pour {{ annee }}">{{ annee }}</a>
                     {% endfor %}
                 </p>
             {% else %}
