@@ -533,8 +533,10 @@ def _export_tableau_lignes_fixes(champ, data, cellule_depart):
     colonnes = champ["colonnes"]
     match lignes:
         case "PAYS":
-            for index, (pays, data_dict) in enumerate(data.items()):
-                cellule_depart.offset(row=index).value = pays
+            for index, (code_pays, data_dict) in enumerate(data.items()):
+                cellule_depart.offset(row=index).value = CODES_PAYS_ISO_3166_1[
+                    code_pays
+                ]
                 cellule_depart.offset(row=index, column=1).value = data_dict[
                     "nombre_salaries"
                 ]
