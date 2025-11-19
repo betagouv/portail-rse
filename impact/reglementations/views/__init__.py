@@ -25,6 +25,7 @@ from reglementations.views.dispositif_alerte import DispositifAlerteReglementati
 from reglementations.views.dispositif_anticorruption import DispositifAntiCorruption
 from reglementations.views.index_egapro import IndexEgaproReglementation
 from reglementations.views.plan_vigilance import PlanVigilanceReglementation
+from vsme.models import RapportVSME
 
 
 REGLEMENTATIONS = [
@@ -94,11 +95,22 @@ def tableau_de_bord(request, entreprise):
     # Calculer le nombre d'analyses IA réussies
     nombre_analyses_ia = entreprise.analyses_ia.reussies().count()
 
+    # Calculer le pourcentage de progression VSME
+    annee_precedente = date.today().year - 1
+    try:
+        rapport_vsme = RapportVSME.objects.get(
+            entreprise=entreprise, annee=annee_precedente
+        )
+        pourcentage_vsme = rapport_vsme.progression()["pourcent"]
+    except RapportVSME.DoesNotExist:
+        pourcentage_vsme = 0
+
     context = tableau_de_bord_menu_context(entreprise, page_resume=True)
     context |= contributeurs_context(request, entreprise)
     context |= {
         "nombre_reglementations_applicables": nombre_reglementations_applicables,
         "nombre_analyses_ia": nombre_analyses_ia,
+        "pourcentage_vsme": pourcentage_vsme,
     }
 
     return render(

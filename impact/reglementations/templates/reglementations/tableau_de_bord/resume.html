@@ -44,10 +44,10 @@
                                 <div class="fr-tile__content">
                                     <h2 class="fr-tile__title">
                                         <a href="{% url 'vsme:categories_vsme' entreprise.siren annee_precedente %}">
-                                            0
+                                            {{ pourcentage_vsme }}%
                                         </a>
                                     </h2>
-                                    <p class="fr-tile__desc">indicateur{{ 0|pluralize }} VSME rempli{{ 0|pluralize }}</p>
+                                    <p class="fr-tile__desc">de progression VSME</p>
                                     <p class="fr-tile__detail">Voir mes indicateurs</p>
                                 </div>
                             </div>
