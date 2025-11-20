@@ -448,18 +448,19 @@ def _export_onglets(workbook, rapport_vsme):
             for indicateur_schema_id in rapport_vsme.indicateurs_applicables(
                 exigence_de_publication
             ):
-                for schema_id, adresse_cellule_depart in SCHEMA_ID_VERS_CELLULE.items():
-                    if schema_id.split("-")[0] == exigence_de_publication.code:
-                        try:
-                            indicateur = rapport_vsme.indicateurs.get(
-                                schema_id=schema_id
-                            )
-                        except ObjectDoesNotExist:
-                            continue
-                        worksheet = workbook[exigence_de_publication.code]
-                        _export_indicateur(
-                            indicateur, worksheet, adresse_cellule_depart
+                if indicateur_schema_id in SCHEMA_ID_VERS_CELLULE:
+                    try:
+                        indicateur = rapport_vsme.indicateurs.get(
+                            schema_id=indicateur_schema_id
                         )
+                    except ObjectDoesNotExist:
+                        continue
+                    worksheet = workbook[exigence_de_publication.code]
+                    _export_indicateur(
+                        indicateur,
+                        worksheet,
+                        SCHEMA_ID_VERS_CELLULE[indicateur_schema_id],
+                    )
 
 
 def _export_indicateur(indicateur, worksheet, adresse_cellule_depart: str):
