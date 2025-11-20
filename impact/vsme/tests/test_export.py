@@ -218,27 +218,31 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B1_avec_indicateurs_non
 
 
 def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B2(
-    client, entreprise_factory, alice
+    client, rapport_vsme, alice
 ):
-    entreprise = entreprise_factory(utilisateur=alice)
-    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2025)
-    Indicateur.objects.create(
+    rapport_vsme.indicateurs.create(
         rapport_vsme=rapport_vsme,
         schema_id="B2-26-p1",
         data={"non_pertinent": False, "participation_gouvernance": "PARTICIPATION"},
     )
-    Indicateur.objects.create(
+    rapport_vsme.indicateurs.create(
         rapport_vsme=rapport_vsme,
         schema_id="B2-26-p2",
         data={"non_pertinent": False, "investissement_economie_sociale": 222},
     )
-    Indicateur.objects.create(
+    rapport_vsme.indicateurs.create(
         rapport_vsme=rapport_vsme,
         schema_id="B2-26-p3",
         data={"non_pertinent": False, "limites_distribution_profits": "LIMITES"},
     )
+    # Active les indicateurs spécifiques aux coopératives B2-26-p1 B2-26-p2 et B2-26-p3
+    rapport_vsme.indicateurs.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-e-i",
+        data={"forme_juridique": "54", "coopérative": True},
+    )
 
-    Indicateur.objects.create(
+    rapport_vsme.indicateurs.create(
         rapport_vsme=rapport_vsme,
         schema_id="B2-26",
         data={
@@ -306,6 +310,101 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B2(
     assert onglet_b2["A4"].value == "PARTICIPATION"
     assert onglet_b2["B4"].value == 222
     assert onglet_b2["C4"].value == "LIMITES"
+    assert onglet_b2["E5"].value == "OUI"
+    assert onglet_b2["F5"].value == "OUI"
+    assert onglet_b2["G5"].value == "NON"
+    assert onglet_b2["E14"].value == "NON"
+    assert onglet_b2["F14"].value == "OUI"
+    assert onglet_b2["G14"].value == "OUI"
+
+
+def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B2_avec_indicateurs_non_applicables(
+    client, rapport_vsme, alice
+):
+    rapport_vsme.indicateurs.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B2-26-p1",
+        data={"non_pertinent": False, "participation_gouvernance": "PARTICIPATION"},
+    )
+    rapport_vsme.indicateurs.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B2-26-p2",
+        data={"non_pertinent": False, "investissement_economie_sociale": 222},
+    )
+    rapport_vsme.indicateurs.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B2-26-p3",
+        data={"non_pertinent": False, "limites_distribution_profits": "LIMITES"},
+    )
+    # Désactive les indicateurs spécifiques aux coopératives B2-26-p1 B2-26-p2 et B2-26-p3
+    rapport_vsme.indicateurs.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-e-i",
+        data={"forme_juridique": "54", "coopérative": False},
+    )
+
+    rapport_vsme.indicateurs.create(
+        schema_id="B2-26",
+        data={
+            "declaration_durabilite": {
+                "changement_climatique": {
+                    "pratiques": True,
+                    "accessibles": True,
+                    "cibles": False,
+                },
+                "pollution": {
+                    "pratiques": False,
+                    "accessibles": False,
+                    "cibles": False,
+                },
+                "eau": {"pratiques": False, "accessibles": False, "cibles": True},
+                "biodiversite": {
+                    "pratiques": False,
+                    "accessibles": False,
+                    "cibles": False,
+                },
+                "economie_circulaire": {
+                    "pratiques": False,
+                    "accessibles": False,
+                    "cibles": False,
+                },
+                "personnel": {
+                    "pratiques": False,
+                    "accessibles": False,
+                    "cibles": False,
+                },
+                "travailleurs": {
+                    "pratiques": False,
+                    "accessibles": False,
+                    "cibles": False,
+                },
+                "communautes": {
+                    "pratiques": False,
+                    "accessibles": False,
+                    "cibles": False,
+                },
+                "consommateurs": {
+                    "pratiques": False,
+                    "accessibles": False,
+                    "cibles": False,
+                },
+                "conduite_affaires": {
+                    "pratiques": False,
+                    "accessibles": True,
+                    "cibles": True,
+                },
+            }
+        },
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
+
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet_b2 = workbook["B2"]
+    assert not onglet_b2["A4"].value
+    assert not onglet_b2["B4"].value
+    assert not onglet_b2["C4"].value
     assert onglet_b2["E5"].value == "OUI"
     assert onglet_b2["F5"].value == "OUI"
     assert onglet_b2["G5"].value == "NON"
