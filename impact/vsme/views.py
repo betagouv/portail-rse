@@ -396,11 +396,25 @@ def calcule_indicateur(
 def export_vsme(request, rapport_vsme):
     chemin_xlsx = Path(settings.BASE_DIR, f"vsme/xlsx/VSME.xlsx")
     workbook = load_workbook(chemin_xlsx)
-    _export_onglets(workbook, rapport_vsme)
+    for exigence_de_publication in EXIGENCES_DE_PUBLICATION.values():
+        # Les exigences de publications sont ajoutées au fur et à mesure de leur intégration sur le portail au template d'export_vsme
+        if exigence_de_publication.code in (
+            "B1",
+            "B2",
+            "B4",
+            "B6",
+            "B7",
+            "B8",
+            "B9",
+            "B11",
+        ):
+            _export_exigence_de_publication(
+                exigence_de_publication, workbook, rapport_vsme
+            )
     return xlsx_response(workbook, "vsme.xlsx")
 
 
-def _export_onglets(workbook, rapport_vsme):
+def _export_exigence_de_publication(exigence_de_publication, workbook, rapport_vsme):
     SCHEMA_ID_VERS_CELLULE = {
         "B1-24-a": "A4",
         "B1-24-b": "B4",
@@ -434,33 +448,23 @@ def _export_onglets(workbook, rapport_vsme):
         "B11-43-p1": "A4",
         "B11-43-p2": "B4",
     }
-    for exigence_de_publication in EXIGENCES_DE_PUBLICATION.values():
-        if exigence_de_publication.code in (
-            "B1",
-            "B2",
-            "B4",
-            "B6",
-            "B7",
-            "B8",
-            "B9",
-            "B11",
-        ):
-            for indicateur_schema_id in rapport_vsme.indicateurs_applicables(
-                exigence_de_publication
-            ):
-                if indicateur_schema_id in SCHEMA_ID_VERS_CELLULE:
-                    try:
-                        indicateur = rapport_vsme.indicateurs.get(
-                            schema_id=indicateur_schema_id
-                        )
-                    except ObjectDoesNotExist:
-                        continue
-                    worksheet = workbook[exigence_de_publication.code]
-                    _export_indicateur(
-                        indicateur,
-                        worksheet,
-                        SCHEMA_ID_VERS_CELLULE[indicateur_schema_id],
-                    )
+
+    for indicateur_schema_id in rapport_vsme.indicateurs_applicables(
+        exigence_de_publication
+    ):
+        if indicateur_schema_id in SCHEMA_ID_VERS_CELLULE:
+            try:
+                indicateur = rapport_vsme.indicateurs.get(
+                    schema_id=indicateur_schema_id
+                )
+            except ObjectDoesNotExist:
+                continue
+            worksheet = workbook[exigence_de_publication.code]
+            _export_indicateur(
+                indicateur,
+                worksheet,
+                SCHEMA_ID_VERS_CELLULE[indicateur_schema_id],
+            )
 
 
 def _export_indicateur(indicateur, worksheet, adresse_cellule_depart: str):
