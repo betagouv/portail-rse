@@ -353,9 +353,6 @@ def preremplit_indicateur(indicateur_schema_id, rapport_vsme):
 @rapport_vsme_requis
 def toggle_pertinent(request, rapport_vsme, indicateur_schema_id):
     indicateur_schema = load_indicateur_schema(indicateur_schema_id)
-    toggle_pertinent_url = reverse(
-        "vsme:toggle_pertinent", args=[rapport_vsme.id, indicateur_schema_id]
-    )
     multiform = calcule_indicateur(indicateur_schema, rapport_vsme, request.POST)
     exigence_de_publication = ExigenceDePublication.par_indicateur_schema_id(
         indicateur_schema_id
