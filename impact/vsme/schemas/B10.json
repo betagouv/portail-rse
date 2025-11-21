@@ -117,6 +117,10 @@
                     {
                         "id": "autre",
                         "label": "Autres"
+                    },
+                    {
+                        "id": "non_communique",
+                        "label": "Non communiqué"
                     }
                 ]
             }
