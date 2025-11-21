@@ -31,6 +31,10 @@ def create_multiform_from_schema(
         def __init__(self, *args, **kwargs):
             if self.preremplissage:
                 kwargs["initial"] = self.preremplissage["initial"]
+            if kwargs and kwargs.get("initial"):
+                kwargs["initial"] = add_computed_fields(
+                    schema["schema_id"], rapport_vsme, kwargs["initial"]
+                )
             self.forms = []
             for Form in self.Forms:
                 self.forms.append(Form(*args, **kwargs))
@@ -477,3 +481,63 @@ def effectif_total_validator(nombre_salaries_B1):
             )
 
     return validator
+
+
+def add_computed_fields(indicateur_schema_id, rapport_vsme, data):
+    match indicateur_schema_id:
+        case "B10-42-b":
+            remuneration_hommes = data["remuneration_horaire_hommes"]
+            remuneration_femmes = data["remuneration_horaire_femmes"]
+            ecart_remuneration_hommes_femmes = round(
+                100 * (remuneration_hommes - remuneration_femmes) / remuneration_hommes,
+                2,
+            )
+            data["ecart_remuneration_hommes_femmes"] = ecart_remuneration_hommes_femmes
+        case "B10-42-c":
+            nombre_salaries_conventions_collectives = data[
+                "nombre_salaries_conventions_collectives"
+            ]
+            indicateur_nombre_salaries = "B1-24-e-v"
+            try:
+                nombre_salaries = rapport_vsme.indicateurs.get(
+                    schema_id=indicateur_nombre_salaries
+                ).data.get("nombre_salaries")
+                taux = 100 * nombre_salaries_conventions_collectives / nombre_salaries
+                if taux < 20:
+                    tranche_taux = "0-20"
+                elif taux < 40:
+                    tranche_taux = "20-40"
+                elif taux < 60:
+                    tranche_taux = "40-60"
+                elif taux < 80:
+                    tranche_taux = "60-80"
+                else:
+                    tranche_taux = "80-100"
+                data["taux_couverture_conventions_collectives"] = tranche_taux
+            except ObjectDoesNotExist:
+                pass
+        case "B10-42-d":
+            try:
+                indicateur_nombre_salaries_par_genre = "B8-39-b"
+                nombre_salaries_par_genre = rapport_vsme.indicateurs.get(
+                    schema_id=indicateur_nombre_salaries_par_genre
+                ).data.get("effectifs_genre")
+                for genre in nombre_salaries_par_genre:
+                    total_heure_formation = data["nombre_heures_formation_par_genre"][
+                        genre
+                    ]["total_heures_formation"]
+                    nombre_salaries = nombre_salaries_par_genre[genre][
+                        "nombre_salaries"
+                    ]
+                    if nombre_salaries:
+                        nombre_moyen_heures_formation = round(
+                            total_heure_formation / nombre_salaries, 2
+                        )
+                    else:
+                        nombre_moyen_heures_formation = 0
+                    data["nombre_heures_formation_par_genre"][genre][
+                        "nombre_moyen_heures_formation"
+                    ] = nombre_moyen_heures_formation
+            except ObjectDoesNotExist:
+                pass
+    return data

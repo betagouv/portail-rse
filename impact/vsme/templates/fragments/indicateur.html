@@ -79,7 +79,7 @@
                                                                 {{ field.value }}
                                                                 {{ field.as_hidden }}
                                                             {% elif field.field.est_calcule %}
-                                                                {{ field.value|default:"..." }}
+                                                                {{ field.value|default_if_none:"..." }}
                                                             {% else %}
                                                                 {{ field }}
                                                                 {% if field.field.geolocalisation and field.value and not field.errors %}
@@ -120,7 +120,7 @@
                                                 <span class="fr-hint-text">{{ field.help_text|safe }}</span>
                                             </label>
                                             <div class="fr-col-12 {% if widget_type == 'NumberInput' %}fr-col-sm-2{% endif %}">
-                                                <output id="{{ field.id_for_label }}">{{ field.value|default:"..." }}</output>
+                                                <output id="{{ field.id_for_label }}">{{ field.value|default_if_none:"..." }}</output>
                                             </div>
                                     {% else %}
                                         {% include 'snippets/field.html' %}
