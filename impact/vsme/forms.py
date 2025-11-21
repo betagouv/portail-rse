@@ -23,6 +23,10 @@ NON_PERTINENT_FIELD_NAME = "non_pertinent"
 def create_multiform_from_schema(
     schema, rapport_vsme, extra=0, infos_preremplissage=None
 ):
+    toggle_pertinent_url = reverse(
+        "vsme:toggle_pertinent", args=[rapport_vsme.id, schema["schema_id"]]
+    )
+
     class _MultiForm:
         Forms = []
         si_pertinent = schema.get("si_pertinent", False)
@@ -38,6 +42,13 @@ def create_multiform_from_schema(
             self.forms = []
             for Form in self.Forms:
                 self.forms.append(Form(*args, **kwargs))
+            for form in self.forms:
+                if isinstance(form, forms.Form):
+                    for field in form.fields:
+                        if hasattr(form.fields[field], "provoque_calcul"):
+                            form.fields[field].widget.attrs.update(
+                                {"hx-post": toggle_pertinent_url}
+                            )
             if self.si_pertinent:
                 # désactive tous les champs du multiform (sauf le champ non pertinent)
                 # lorsque le multiform est initialisé avec une valeur positive du champ non pertinent.
@@ -106,9 +117,6 @@ def create_multiform_from_schema(
     _DynamicForm = _dynamicform_factory()
 
     if si_pertinent := schema.get("si_pertinent", False):
-        toggle_pertinent_url = reverse(
-            "vsme:toggle_pertinent", args=[rapport_vsme.id, schema["schema_id"]]
-        )
         _DynamicForm.base_fields[NON_PERTINENT_FIELD_NAME] = forms.BooleanField(
             label=si_pertinent if type(si_pertinent) == str else "Non pertinent",
             required=False,
@@ -196,6 +204,8 @@ def create_simple_field_from_schema(field_schema):
             field = forms.FloatField(**field_kwargs)
             if field_schema.get("calculé", False):
                 field.est_calcule = True
+            if field_schema.get("provoque_calcul", False):
+                field.provoque_calcul = True
             return field
         case "date":
             return forms.DateField(
@@ -484,24 +494,27 @@ def effectif_total_validator(nombre_salaries_B1):
 
 
 def add_computed_fields(indicateur_schema_id, rapport_vsme, data):
+    new_data = data.copy()
     match indicateur_schema_id:
         case "B10-42-b":
-            remuneration_hommes = data["remuneration_horaire_hommes"]
-            remuneration_femmes = data["remuneration_horaire_femmes"]
+            remuneration_hommes = float(new_data["remuneration_horaire_hommes"])
+            remuneration_femmes = float(new_data["remuneration_horaire_femmes"])
             ecart_remuneration_hommes_femmes = round(
                 100 * (remuneration_hommes - remuneration_femmes) / remuneration_hommes,
                 2,
             )
-            data["ecart_remuneration_hommes_femmes"] = ecart_remuneration_hommes_femmes
+            new_data["ecart_remuneration_hommes_femmes"] = (
+                ecart_remuneration_hommes_femmes
+            )
         case "B10-42-c":
-            nombre_salaries_conventions_collectives = data[
+            nombre_salaries_conventions_collectives = new_data[
                 "nombre_salaries_conventions_collectives"
             ]
             indicateur_nombre_salaries = "B1-24-e-v"
             try:
                 nombre_salaries = rapport_vsme.indicateurs.get(
                     schema_id=indicateur_nombre_salaries
-                ).data.get("nombre_salaries")
+                ).new_data.get("nombre_salaries")
                 taux = 100 * nombre_salaries_conventions_collectives / nombre_salaries
                 if taux < 20:
                     tranche_taux = "0-20"
@@ -513,7 +526,7 @@ def add_computed_fields(indicateur_schema_id, rapport_vsme, data):
                     tranche_taux = "60-80"
                 else:
                     tranche_taux = "80-100"
-                data["taux_couverture_conventions_collectives"] = tranche_taux
+                new_data["taux_couverture_conventions_collectives"] = tranche_taux
             except ObjectDoesNotExist:
                 pass
         case "B10-42-d":
@@ -521,11 +534,11 @@ def add_computed_fields(indicateur_schema_id, rapport_vsme, data):
                 indicateur_nombre_salaries_par_genre = "B8-39-b"
                 nombre_salaries_par_genre = rapport_vsme.indicateurs.get(
                     schema_id=indicateur_nombre_salaries_par_genre
-                ).data.get("effectifs_genre")
+                ).new_data.get("effectifs_genre")
                 for genre in nombre_salaries_par_genre:
-                    total_heure_formation = data["nombre_heures_formation_par_genre"][
-                        genre
-                    ]["total_heures_formation"]
+                    total_heure_formation = new_data[
+                        "nombre_heures_formation_par_genre"
+                    ][genre]["total_heures_formation"]
                     nombre_salaries = nombre_salaries_par_genre[genre][
                         "nombre_salaries"
                     ]
@@ -535,9 +548,9 @@ def add_computed_fields(indicateur_schema_id, rapport_vsme, data):
                         )
                     else:
                         nombre_moyen_heures_formation = 0
-                    data["nombre_heures_formation_par_genre"][genre][
+                    new_data["nombre_heures_formation_par_genre"][genre][
                         "nombre_moyen_heures_formation"
                     ] = nombre_moyen_heures_formation
             except ObjectDoesNotExist:
                 pass
-    return data
+    return new_data
