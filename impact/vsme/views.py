@@ -483,22 +483,31 @@ def _export_champ(champ, data, cellule_destination: Cell) -> Cell:
     type_indicateur = champ["type"]
     match type_indicateur:
         case "choix_multiple":
-            return _export_choix_multiple(champ, data, cellule_destination)
+            prochaine_cellule_destination = _export_choix_multiple(
+                champ, data, cellule_destination
+            )
         case "tableau":
-            return _export_tableau(champ, data, cellule_destination)
+            prochaine_cellule_destination = _export_tableau(
+                champ, data, cellule_destination
+            )
         case "tableau_lignes_fixes":
-            return _export_tableau_lignes_fixes(champ, data, cellule_destination)
+            prochaine_cellule_destination = _export_tableau_lignes_fixes(
+                champ, data, cellule_destination
+            )
         case _:
-            return _export_simple(champ, data, cellule_destination)
+            prochaine_cellule_destination = _export_simple(
+                champ, data, cellule_destination
+            )
+    return prochaine_cellule_destination
 
 
-def _export_simple(champ, data, cellule_destination):
+def _export_simple(champ, data, cellule_destination: Cell) -> Cell:
     cellule_destination.value = formate_valeur(data, champ)
     prochaine_cellule_destination = cellule_destination.offset(column=1)
     return prochaine_cellule_destination
 
 
-def _export_choix_multiple(champ, data, cellule_depart):
+def _export_choix_multiple(champ, data, cellule_depart: Cell) -> Cell:
     for offset_ligne, valeur in enumerate(data):
         cellule_depart.offset(row=offset_ligne).value = formate_valeur(valeur, champ)
     prochaine_cellule_destination = cellule_depart.offset(column=1)
@@ -523,31 +532,32 @@ def formate_valeur(valeur, champ):
     return valeur
 
 
-def _export_tableau(champ, data, cellule_depart):
+def _export_tableau(champ, data, cellule_depart: Cell) -> Cell:
     colonnes = champ["colonnes"]
+    colonnes_ids = [colonne["id"] for colonne in colonnes]
     for offset_ligne, data_ligne in enumerate(data):
-        for id_colonne, data_simple in data_ligne.items():
-            colonnes_ids = [colonne["id"] for colonne in colonnes]
+        for id_colonne, data_cellule in data_ligne.items():
             offset_colonne = colonnes_ids.index(id_colonne)
             _export_champ(
                 colonnes[offset_colonne],
-                data_simple,
+                data_cellule,
                 cellule_depart.offset(row=offset_ligne, column=offset_colonne),
             )
     prochaine_cellule_destination = cellule_depart.offset(column=len(colonnes))
     return prochaine_cellule_destination
 
 
-def _export_tableau_lignes_fixes(champ, data, cellule_depart):
+def _export_tableau_lignes_fixes(champ, data, cellule_depart: Cell) -> Cell:
     lignes = champ["lignes"]
     colonnes = champ["colonnes"]
     match lignes:
         case "PAYS":
-            for index, (code_pays, data_dict) in enumerate(data.items()):
-                cellule_depart.offset(row=index).value = CODES_PAYS_ISO_3166_1[
+            # une colonne pays, une colonne nombre salariés
+            for offset_ligne, (code_pays, data_pays) in enumerate(data.items()):
+                cellule_depart.offset(row=offset_ligne).value = CODES_PAYS_ISO_3166_1[
                     code_pays
                 ]
-                cellule_depart.offset(row=index, column=1).value = data_dict[
+                cellule_depart.offset(row=offset_ligne, column=1).value = data_pays[
                     "nombre_salaries"
                 ]
             prochaine_cellule_destination = cellule_depart.offset(column=2)
@@ -566,16 +576,15 @@ def _export_tableau_lignes_fixes(champ, data, cellule_depart):
                 prochaine_cellule_destination = cellule_depart.offset(
                     column=len(lignes)
                 )
-
             else:
                 for id_ligne, data_ligne in data.items():
                     lignes_ids = [ligne["id"] for ligne in champ["lignes"]]
                     offset_ligne = lignes_ids.index(id_ligne)
-                    for id_colonne, data_simple in data_ligne.items():
+                    for id_colonne, data_cellule in data_ligne.items():
                         offset_colonne = colonnes_ids.index(id_colonne)
                         _export_champ(
                             colonnes[offset_colonne],
-                            data_simple,
+                            data_cellule,
                             cellule_depart.offset(
                                 row=offset_ligne, column=offset_colonne
                             ),
