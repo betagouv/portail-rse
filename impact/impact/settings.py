@@ -439,9 +439,6 @@ LOGGING = {
         "event": {"class": "logs.event.EventLogHandler"},
     },
     "loggers": {
-        "django": {
-            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
-        },
         "logs.event": {
             "level": os.getenv("EVENT_LOG_LEVEL", "INFO"),
             "handlers": ["event"],
