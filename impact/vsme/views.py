@@ -23,6 +23,7 @@ from logs import event_logger
 from reglementations.views import tableau_de_bord_menu_context
 from utils.xlsx import xlsx_response
 from vsme.export import export_exigence_de_publication
+from vsme.forms import add_computed_fields
 from vsme.forms import create_multiform_from_schema
 from vsme.forms import NON_PERTINENT_FIELD_NAME
 from vsme.models import ajoute_donnes_calculees
