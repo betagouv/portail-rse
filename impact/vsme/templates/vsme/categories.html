@@ -16,8 +16,24 @@
             <div class="fr-col">
                 <h1>Mes indicateurs</h1>
 
-                <div class="fr-grid-row fr-grid-row--right fr-pb-1w">
-                    <a class="fr-btn fr-btn--icon-left fr-icon-download-line" href="{% url 'vsme:export_vsme' rapport_vsme.id %}">Télécharger les données (xlsx)</a>
+                <div class="fr-grid-row fr-grid-row--gutters fr-pb-1w fr-mb-1w">
+                    <div class="fr-col-12 fr-col-md-6">
+                        <div class="fr-select-group">
+                            <label class="fr-label" for="select-annee">
+                                Année du rapport VSME
+                            </label>
+                            <select class="fr-select" id="select-annee" name="annee" onchange="window.location.href='{% url 'vsme:categories_vsme' entreprise.siren %}' + this.value + '/'">
+                                {% for annee in annees_disponibles reversed %}
+                                    <option value="{{ annee }}" {% if annee == rapport_vsme.annee %}selected{% endif %}>
+                                        {{ annee }}{% if annee == annee_par_defaut %} (par défaut){% endif %}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="fr-col-12 fr-col-md-6" style="display: flex; align-items: flex-end; justify-content: flex-end;">
+                        <a class="fr-btn fr-btn--icon-left fr-icon-download-line" href="{% url 'vsme:export_vsme' rapport_vsme.id %}">Télécharger les données (xlsx)</a>
+                    </div>
                 </div>
 
                 <p>
