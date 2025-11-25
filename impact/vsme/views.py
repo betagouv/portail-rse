@@ -427,7 +427,7 @@ def preremplit_indicateur(indicateur_schema_id, rapport_vsme):
 
 @login_required
 @rapport_vsme_requis
-def toggle_pertinent(request, rapport_vsme, indicateur_schema_id):
+def rafraichit_formulaire_indicateur(request, rapport_vsme, indicateur_schema_id):
     indicateur_schema = load_indicateur_schema(indicateur_schema_id)
 
     multiform = create_multiform_from_schema(
