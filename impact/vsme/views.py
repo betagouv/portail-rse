@@ -1,4 +1,3 @@
-from datetime import date
 from functools import wraps
 from pathlib import Path
 
@@ -27,9 +26,12 @@ from vsme.export import export_exigence_de_publication
 from vsme.forms import create_multiform_from_schema
 from vsme.forms import NON_PERTINENT_FIELD_NAME
 from vsme.models import ajoute_donnes_calculees
+from vsme.models import annee_est_valide
 from vsme.models import Categorie
 from vsme.models import ExigenceDePublication
 from vsme.models import EXIGENCES_DE_PUBLICATION
+from vsme.models import get_annee_rapport_par_defaut
+from vsme.models import get_annees_valides
 from vsme.models import Indicateur
 from vsme.models import RapportVSME
 
@@ -114,14 +116,42 @@ def etape_vsme(request, siren, etape):
 @login_required
 @entreprise_qualifiee_requise
 def categories_vsme(request, entreprise_qualifiee, annee=None):
-    annee = annee or (date.today().year - 1)
+    annee = annee or get_annee_rapport_par_defaut()
+
+    # Vérifier que l'année est valide
+    if not annee_est_valide(annee):
+        messages.error(
+            request,
+            f"L'année {annee} n'est pas valide pour un rapport VSME. "
+            f"Les rapports doivent être créés pour une année entre 2020 et {get_annee_rapport_par_defaut()}.",
+        )
+        return redirect("vsme:categories_vsme", siren=entreprise_qualifiee.siren)
+
     rapport_vsme, created = RapportVSME.objects.get_or_create(
         entreprise=entreprise_qualifiee, annee=annee
     )
 
+    # Message informatif lors du changement d'année
+    # On affiche le message si l'année n'est pas l'année par défaut
+    # ou si l'utilisateur vient de créer un nouveau rapport
+    annee_par_defaut = get_annee_rapport_par_defaut()
+    if annee != annee_par_defaut or created:
+        if annee == annee_par_defaut:
+            messages.info(
+                request,
+                f"Vous travaillez sur le rapport VSME de l'année {annee} (année par défaut).",
+            )
+        else:
+            messages.info(
+                request, f"Vous travaillez sur le rapport VSME de l'année {annee}."
+            )
+
     context = tableau_de_bord_menu_context(entreprise_qualifiee)
     context |= {
         "rapport_vsme": rapport_vsme,
+        "annee_courante": annee,
+        "annees_disponibles": get_annees_valides(),
+        "annee_par_defaut": annee_par_defaut,
     }
     return render(request, "vsme/categories.html", context=context)
 
