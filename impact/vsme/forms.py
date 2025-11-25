@@ -23,8 +23,9 @@ NON_PERTINENT_FIELD_NAME = "non_pertinent"
 def create_multiform_from_schema(
     schema, rapport_vsme, extra=0, infos_preremplissage=None
 ):
-    toggle_pertinent_url = reverse(
-        "vsme:toggle_pertinent", args=[rapport_vsme.id, schema["schema_id"]]
+    rafraichit_formulaire_indicateur_url = reverse(
+        "vsme:rafraichit_formulaire_indicateur",
+        args=[rapport_vsme.id, schema["schema_id"]],
     )
 
     class _MultiForm:
@@ -43,14 +44,14 @@ def create_multiform_from_schema(
                     for field in form.fields:
                         if hasattr(form.fields[field], "provoque_calcul"):
                             form.fields[field].widget.attrs.update(
-                                {"hx-post": toggle_pertinent_url}
+                                {"hx-post": rafraichit_formulaire_indicateur_url}
                             )
                 else:  # FormSet
                     for form_table in form.forms:
                         for field in form_table.fields:
                             if hasattr(form_table.fields[field], "provoque_calcul"):
                                 form_table.fields[field].widget.attrs.update(
-                                    {"hx-post": toggle_pertinent_url}
+                                    {"hx-post": rafraichit_formulaire_indicateur_url}
                                 )
             if self.si_pertinent:
                 # désactive tous les champs du multiform (sauf le champ non pertinent)
@@ -123,7 +124,9 @@ def create_multiform_from_schema(
         _DynamicForm.base_fields[NON_PERTINENT_FIELD_NAME] = forms.BooleanField(
             label=si_pertinent if type(si_pertinent) == str else "Non pertinent",
             required=False,
-            widget=forms.BooleanField.widget(attrs={"hx-post": toggle_pertinent_url}),
+            widget=forms.BooleanField.widget(
+                attrs={"hx-post": rafraichit_formulaire_indicateur_url}
+            ),
         )
     fields = schema["champs"]
     for field in fields:
