@@ -1,13 +1,40 @@
 import json
 import os
 from dataclasses import dataclass
+from datetime import date
 from enum import Enum
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 
 from utils.models import TimestampedModel
+
+
+ANNEE_DEBUT_VSME = 2020  # Première année où les rapports VSME peuvent être créés
+
+
+def get_annee_rapport_par_defaut():
+    """Retourne l'année par défaut pour un rapport VSME (N-1)"""
+    return date.today().year - 1
+
+
+def get_annees_valides():
+    annee_max = get_annee_rapport_par_defaut()
+    return list(range(ANNEE_DEBUT_VSME, annee_max + 1))
+
+
+def annee_est_valide(annee):
+    return ANNEE_DEBUT_VSME <= annee <= get_annee_rapport_par_defaut()
+
+
+def validate_annee_rapport(value):
+    if not annee_est_valide(value):
+        annee_max = get_annee_rapport_par_defaut()
+        raise ValidationError(
+            f"L'année du rapport doit être entre {ANNEE_DEBUT_VSME} et {annee_max}"
+        )
 
 
 class Categorie(Enum):
@@ -189,6 +216,7 @@ class RapportVSME(TimestampedModel):
     )
     annee = models.PositiveIntegerField(
         verbose_name="année du rapport VSME",
+        validators=[validate_annee_rapport],
     )
 
     class Meta:
