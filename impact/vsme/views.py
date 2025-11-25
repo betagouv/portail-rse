@@ -24,6 +24,7 @@ from logs import event_logger
 from reglementations.views import tableau_de_bord_menu_context
 from utils.xlsx import xlsx_response
 from vsme.export import export_exigence_de_publication
+from vsme.forms import add_computed_fields
 from vsme.forms import create_multiform_from_schema
 from vsme.forms import NON_PERTINENT_FIELD_NAME
 from vsme.models import Categorie
@@ -250,6 +251,7 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
             infos_preremplissage = preremplit_indicateur(
                 indicateur_schema_id, rapport_vsme
             )
+        data = add_computed_fields(indicateur_schema_id, rapport_vsme, data)
         multiform = create_multiform_from_schema(
             indicateur_schema,
             rapport_vsme,
@@ -360,8 +362,20 @@ def toggle_pertinent(request, rapport_vsme, indicateur_schema_id):
         indicateur_schema,
         rapport_vsme,
     )(
-        initial=request.POST,
+        request.POST,
     )
+    if multiform.is_valid():
+        data = add_computed_fields(
+            indicateur_schema_id, rapport_vsme, multiform.cleaned_data
+        )
+    else:
+        data = request.POST
+
+    # Réinstancie le formulaire avec un initial mais sans data liée pour éviter de la validation et affichage d'erreurs
+    multiform = create_multiform_from_schema(
+        indicateur_schema,
+        rapport_vsme,
+    )(initial=data)
 
     exigence_de_publication = ExigenceDePublication.par_indicateur_schema_id(
         indicateur_schema_id
