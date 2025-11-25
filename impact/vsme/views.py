@@ -234,11 +234,12 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
                     data, ajouté = ajoute_auto_id_eventuel(indicateur_schema, data)
                     if not ajouté:
                         extra = 1
-                multiform = calcule_indicateur(
+                multiform = create_multiform_from_schema(
                     indicateur_schema,
                     rapport_vsme,
-                    data,
                     extra=extra,
+                )(
+                    initial=data,
                 )
 
     else:  # GET
@@ -249,11 +250,12 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
             infos_preremplissage = preremplit_indicateur(
                 indicateur_schema_id, rapport_vsme
             )
-        multiform = calcule_indicateur(
+        multiform = create_multiform_from_schema(
             indicateur_schema,
             rapport_vsme,
-            data,
             infos_preremplissage=infos_preremplissage,
+        )(
+            initial=data,
         )
 
     exigence_de_publication = ExigenceDePublication.par_indicateur_schema_id(
@@ -353,7 +355,14 @@ def preremplit_indicateur(indicateur_schema_id, rapport_vsme):
 @rapport_vsme_requis
 def toggle_pertinent(request, rapport_vsme, indicateur_schema_id):
     indicateur_schema = load_indicateur_schema(indicateur_schema_id)
-    multiform = calcule_indicateur(indicateur_schema, rapport_vsme, request.POST)
+
+    multiform = create_multiform_from_schema(
+        indicateur_schema,
+        rapport_vsme,
+    )(
+        initial=request.POST,
+    )
+
     exigence_de_publication = ExigenceDePublication.par_indicateur_schema_id(
         indicateur_schema_id
     )
@@ -367,20 +376,6 @@ def toggle_pertinent(request, rapport_vsme, indicateur_schema_id):
         "exigence_de_publication": exigence_de_publication,
     }
     return render(request, "fragments/indicateur.html", context=context)
-
-
-def calcule_indicateur(
-    indicateur_schema, rapport_vsme, data, extra=0, infos_preremplissage=None
-):
-    multiform = create_multiform_from_schema(
-        indicateur_schema,
-        rapport_vsme,
-        extra=extra,
-        infos_preremplissage=infos_preremplissage,
-    )(
-        initial=data,
-    )
-    return multiform
 
 
 @login_required
