@@ -50,7 +50,8 @@
                 "id": "nombre_salaries_conventions_collectives",
                 "label": "Nombre de salariés couvert par des conventions collectives.",
                 "type": "nombre_decimal",
-                "unité": "salariés"
+                "unité": "salariés",
+                "provoque_calcul": true
             },
             {
                 "id": "taux_couverture_conventions_collectives",
@@ -97,7 +98,8 @@
                         "id": "total_heures_formation",
                         "label": "Total des heures de formation suivies par les salariés de ce genre",
                         "type": "nombre_decimal",
-                        "unité": "heures"
+                        "unité": "heures",
+                        "provoque_calcul": true
                     },
                     {
                         "id": "nombre_moyen_heures_formation",
