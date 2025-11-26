@@ -10,7 +10,7 @@ web:
 
 install:
 	pipenv install -d
-	npm install
+	npm ci
 	pipenv run pre-commit install
 
 shell:
