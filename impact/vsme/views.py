@@ -194,6 +194,10 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
     except IndicateurInconnu:
         raise Http404("Indicateur VSME inconnu")
 
+    exigence_de_publication = ExigenceDePublication.par_indicateur_schema_id(
+        indicateur_schema_id
+    )
+
     try:
         indicateur = rapport_vsme.indicateurs.get(schema_id=indicateur_schema_id)
     except ObjectDoesNotExist:
@@ -205,42 +209,57 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
             data[delete_field_name] = True
         else:
             data = request.POST
+
         multiform = create_multiform_from_schema(indicateur_schema, rapport_vsme)(
             data,
             initial=indicateur.data if indicateur else None,
         )
-        if multiform.is_valid():
-            if indicateur:
-                indicateur.data = multiform.cleaned_data
-            else:
-                indicateur = Indicateur(
-                    rapport_vsme=rapport_vsme,
-                    schema_id=indicateur_schema_id,
-                    data=multiform.cleaned_data,
-                )
-            if "enregistrer" in request.POST:
+
+        if "enregistrer" in request.POST:
+            if multiform.is_valid():
+                if indicateur:
+                    indicateur.data = multiform.cleaned_data
+                else:
+                    indicateur = Indicateur(
+                        rapport_vsme=rapport_vsme,
+                        schema_id=indicateur_schema_id,
+                        data=multiform.cleaned_data,
+                    )
                 indicateur.save()
-                exigence_de_publication = indicateur_schema_id.split("-")[0]
                 redirect_to = reverse(
                     "vsme:exigence_de_publication_vsme",
-                    args=[rapport_vsme.id, exigence_de_publication],
+                    args=[rapport_vsme.id, exigence_de_publication.code],
                 )
                 if htmx.is_htmx(request):
                     return htmx.HttpResponseHXRedirect(redirect_to)
-            else:
-                extra = 0
-                data = indicateur.data
-                if request.POST.get("ajouter-ligne"):
-                    data, ajouté = ajoute_auto_id_eventuel(indicateur_schema, data)
-                    if not ajouté:
-                        extra = 1
+        elif "ajouter-ligne" in request.POST:
+            if multiform.is_valid():
+                data, ajouté = ajoute_auto_id_eventuel(
+                    indicateur_schema, multiform.cleaned_data
+                )
                 multiform = create_multiform_from_schema(
                     indicateur_schema,
                     rapport_vsme,
-                    extra=extra,
-                )(
-                    initial=data,
+                    extra=0 if ajouté else 1,
+                )(initial=data)
+        elif "supprimer-ligne" in request.POST:
+            if multiform.is_valid():
+                multiform = create_multiform_from_schema(
+                    indicateur_schema,
+                    rapport_vsme,
+                )(initial=multiform.cleaned_data)
+        else:
+            # un champ a déclenché un raffraichissement dynamique du formulaire (non pertinent, calcul...)
+            if multiform.is_valid():
+                data = add_computed_fields(
+                    indicateur_schema_id, rapport_vsme, multiform.cleaned_data
                 )
+
+            # Réinstancie le formulaire avec un initial mais sans data liée pour éviter de la validation et affichage d'erreurs
+            multiform = create_multiform_from_schema(
+                indicateur_schema,
+                rapport_vsme,
+            )(initial=data)
 
     else:  # GET
         infos_preremplissage = None
@@ -258,10 +277,6 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
         )(
             initial=data,
         )
-
-    exigence_de_publication = ExigenceDePublication.par_indicateur_schema_id(
-        indicateur_schema_id
-    )
 
     context = {
         "entreprise": rapport_vsme.entreprise,
@@ -423,45 +438,6 @@ def preremplit_indicateur(indicateur_schema_id, rapport_vsme):
             except ObjectDoesNotExist:
                 pass
     return infos_preremplissage
-
-
-@login_required
-@rapport_vsme_requis
-def rafraichit_formulaire_indicateur(request, rapport_vsme, indicateur_schema_id):
-    indicateur_schema = load_indicateur_schema(indicateur_schema_id)
-
-    multiform = create_multiform_from_schema(
-        indicateur_schema,
-        rapport_vsme,
-    )(
-        request.POST,
-    )
-    if multiform.is_valid():
-        data = add_computed_fields(
-            indicateur_schema_id, rapport_vsme, multiform.cleaned_data
-        )
-    else:
-        data = request.POST
-
-    # Réinstancie le formulaire avec un initial mais sans data liée pour éviter de la validation et affichage d'erreurs
-    multiform = create_multiform_from_schema(
-        indicateur_schema,
-        rapport_vsme,
-    )(initial=data)
-
-    exigence_de_publication = ExigenceDePublication.par_indicateur_schema_id(
-        indicateur_schema_id
-    )
-
-    context = {
-        "entreprise": rapport_vsme.entreprise,
-        "multiform": multiform,
-        "indicateur_schema": indicateur_schema,
-        "indicateur_schema_id": indicateur_schema_id,
-        "rapport_vsme": rapport_vsme,
-        "exigence_de_publication": exigence_de_publication,
-    }
-    return render(request, "fragments/indicateur.html", context=context)
 
 
 @login_required
