@@ -39,20 +39,8 @@ def create_multiform_from_schema(
             self.forms = []
             for Form in self.Forms:
                 self.forms.append(Form(*args, **kwargs))
-            for form in self.forms:
-                if isinstance(form, forms.Form):
-                    for field in form.fields:
-                        if hasattr(form.fields[field], "provoque_calcul"):
-                            form.fields[field].widget.attrs.update(
-                                {"hx-post": rafraichit_formulaire_indicateur_url}
-                            )
-                else:  # FormSet
-                    for form_table in form.forms:
-                        for field in form_table.fields:
-                            if hasattr(form_table.fields[field], "provoque_calcul"):
-                                form_table.fields[field].widget.attrs.update(
-                                    {"hx-post": rafraichit_formulaire_indicateur_url}
-                                )
+            self.customize_fields()
+
             if self.si_pertinent:
                 # désactive tous les champs du multiform (sauf le champ non pertinent)
                 # lorsque le multiform est initialisé avec une valeur positive du champ non pertinent.
@@ -98,6 +86,22 @@ def create_multiform_from_schema(
             for form in self.forms:
                 cleaned_data.update(form.cleaned_data)
             return cleaned_data
+
+        def customize_fields(self):
+            for form in self.forms:
+                if isinstance(form, forms.Form):
+                    for field in form.fields:
+                        self.customize_field(form, field)
+                else:  # FormSet
+                    for form_table in form.forms:
+                        for field in form_table.fields:
+                            self.customize_field(form_table, field)
+
+        def customize_field(self, form, field):
+            if hasattr(form.fields[field], "provoque_calcul"):
+                form.fields[field].widget.attrs.update(
+                    {"hx-post": rafraichit_formulaire_indicateur_url}
+                )
 
         def disable_fields(self):
             for form in self.forms:
