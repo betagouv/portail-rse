@@ -23,8 +23,8 @@ NON_PERTINENT_FIELD_NAME = "non_pertinent"
 def create_multiform_from_schema(
     schema, rapport_vsme, extra=0, infos_preremplissage=None
 ):
-    rafraichit_formulaire_indicateur_url = reverse(
-        "vsme:rafraichit_formulaire_indicateur",
+    indicateur_url = reverse(
+        "vsme:indicateur_vsme",
         args=[rapport_vsme.id, schema["schema_id"]],
     )
 
@@ -99,9 +99,7 @@ def create_multiform_from_schema(
 
         def customize_field(self, form, field):
             if hasattr(form.fields[field], "provoque_calcul"):
-                form.fields[field].widget.attrs.update(
-                    {"hx-post": rafraichit_formulaire_indicateur_url}
-                )
+                form.fields[field].widget.attrs.update({"hx-post": indicateur_url})
 
         def disable_fields(self):
             for form in self.forms:
@@ -128,9 +126,7 @@ def create_multiform_from_schema(
         _DynamicForm.base_fields[NON_PERTINENT_FIELD_NAME] = forms.BooleanField(
             label=si_pertinent if type(si_pertinent) == str else "Non pertinent",
             required=False,
-            widget=forms.BooleanField.widget(
-                attrs={"hx-post": rafraichit_formulaire_indicateur_url}
-            ),
+            widget=forms.BooleanField.widget(attrs={"hx-post": indicateur_url}),
         )
     fields = schema["champs"]
     for field in fields:

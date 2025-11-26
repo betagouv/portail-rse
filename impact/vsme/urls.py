@@ -49,9 +49,4 @@ urlpatterns = [
         views.indicateur_vsme,
         name="indicateur_vsme",
     ),
-    path(
-        "indicateurs/vsme/<int:vsme_id>/indicateur/<str:indicateur_schema_id>/rafraichissement/",
-        views.rafraichit_formulaire_indicateur,
-        name="rafraichit_formulaire_indicateur",
-    ),
 ]
