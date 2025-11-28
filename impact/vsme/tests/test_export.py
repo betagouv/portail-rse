@@ -66,6 +66,11 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B1_intégralement_rempl
     )
     Indicateur.objects.create(
         rapport_vsme=rapport_vsme,
+        schema_id="B1-24-e-iv",
+        data={"chiffre_affaires": 98765},
+    )
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
         schema_id="B1-24-e-v",
         data={"methode_comptabilisation": "ETP", "nombre_salaries": 42.0},
     )
@@ -153,34 +158,35 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B1_intégralement_rempl
     assert onglet["K4"].value == "Culture du riz"
     assert onglet["K5"].value == "Culture de plantes à fibres"
     assert onglet["L4"].value == 54321
-    assert onglet["M4"].value == "ETP"
-    assert onglet["N4"].value == 42.0
-    assert onglet["O4"].value == "ALLEMAGNE"
-    assert onglet["O5"].value == "FRANCE"
-    assert onglet["Q4"].value == "site 1"
-    assert onglet["P4"].value == 1
-    assert onglet["R4"].value == "adresse site 1"
-    assert onglet["S4"].value == "75000"
-    assert onglet["T4"].value == "Paris"
-    assert onglet["U4"].value == "FRANCE"
-    assert onglet["V4"].value == "[2.294381,48.858099]"
-    assert onglet["Q5"].value == "site 2"
-    assert onglet["P5"].value == 2
-    assert onglet["R5"].value == "adresse site 2"
-    assert onglet["S5"].value == "12345"
-    assert onglet["T5"].value == "Berlin"
-    assert onglet["U5"].value == "ALLEMAGNE"
-    assert onglet["V5"].value == "[3,3]"
-    assert onglet["W4"].value == "label"
-    assert onglet["X4"].value == "émetteur 1"
-    assert onglet["Y4"].value == "2000-12-12"
-    assert onglet["Z4"].value == "10/20"
-    assert onglet["AA4"].value == "un commentaire"
-    assert onglet["W5"].value == "certif"
-    assert onglet["X5"].value == "émetteur 2"
-    assert onglet["Y5"].value == "2020-04-05"
-    assert onglet["Z5"].value == "bon"
-    assert not onglet["AA5"].value
+    assert onglet["M4"].value == 98765
+    assert onglet["N4"].value == "ETP"
+    assert onglet["O4"].value == 42.0
+    assert onglet["P4"].value == "ALLEMAGNE"
+    assert onglet["P5"].value == "FRANCE"
+    assert onglet["Q4"].value == 1
+    assert onglet["R4"].value == "site 1"
+    assert onglet["S4"].value == "adresse site 1"
+    assert onglet["T4"].value == "75000"
+    assert onglet["U4"].value == "Paris"
+    assert onglet["V4"].value == "FRANCE"
+    assert onglet["W4"].value == "[2.294381,48.858099]"
+    assert onglet["Q5"].value == 2
+    assert onglet["R5"].value == "site 2"
+    assert onglet["S5"].value == "adresse site 2"
+    assert onglet["T5"].value == "12345"
+    assert onglet["U5"].value == "Berlin"
+    assert onglet["V5"].value == "ALLEMAGNE"
+    assert onglet["W5"].value == "[3,3]"
+    assert onglet["X4"].value == "label"
+    assert onglet["Y4"].value == "émetteur 1"
+    assert onglet["Z4"].value == "2000-12-12"
+    assert onglet["AA4"].value == "10/20"
+    assert onglet["AB4"].value == "un commentaire"
+    assert onglet["X5"].value == "certif"
+    assert onglet["Y5"].value == "émetteur 2"
+    assert onglet["Z5"].value == "2020-04-05"
+    assert onglet["AA5"].value == "bon"
+    assert not onglet["AB5"].value
 
 
 def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B1_avec_indicateurs_non_pertinents(
@@ -580,10 +586,10 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B8(
     onglet = workbook["B8"]
     assert onglet["A4"].value == 40.5
     assert onglet["B4"].value == 1.5
-    assert onglet["F4"].value == "FINLANDE"
-    assert onglet["G4"].value == 30
-    assert onglet["F5"].value == "FRANCE"
-    assert onglet["G5"].value == 12
+    assert onglet["G4"].value == "FINLANDE"
+    assert onglet["H4"].value == 30
+    assert onglet["G5"].value == "FRANCE"
+    assert onglet["H5"].value == 12
 
 
 def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B9(
@@ -609,6 +615,59 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B9(
     onglet = workbook["B9"]
     assert onglet["A4"].value == 55
     assert onglet["B4"].value == 12.3
+
+
+def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B10(
+    client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2025)
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B10-42-a",
+        data={
+            "respect_salaire_minimum": True,
+        },
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
+
+    assert response["Content-Disposition"] == "filename=vsme.xlsx"
+    assert (
+        response["content-type"]
+        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+    )
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook["B10"]
+    assert onglet["A4"].value == "OUI"
+
+
+def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B10_avec_champ_calculé(
+    client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2025)
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B10-42-b",
+        data={
+            "remuneration_horaire_hommes": 2,
+            "remuneration_horaire_femmes": 1,
+        },
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
+
+    assert response["Content-Disposition"] == "filename=vsme.xlsx"
+    assert (
+        response["content-type"]
+        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+    )
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook["B10"]
+    assert onglet["D4"].value == 50  # résultat de ecart_remuneration_hommes_femmes
 
 
 def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B11(

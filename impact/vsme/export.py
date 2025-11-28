@@ -18,10 +18,11 @@ def export_exigence_de_publication(exigence_de_publication, workbook, rapport_vs
         "B1-24-e-i": "I4",
         "B1-24-e-ii": "K4",
         "B1-24-e-iii": "L4",
-        "B1-24-e-v": "M4",
-        "B1-24-e-vi": "O4",
-        "B1-24-e-vii": "P4",
-        "B1-25": "W4",
+        "B1-24-e-iv": "M4",
+        "B1-24-e-v": "N4",
+        "B1-24-e-vi": "P4",
+        "B1-24-e-vii": "Q4",
+        "B1-25": "X4",
         "B2-26-p1": "A4",
         "B2-26-p2": "B4",
         "B2-26-p3": "C4",
@@ -36,10 +37,14 @@ def export_exigence_de_publication(exigence_de_publication, workbook, rapport_vs
         "B7-38-c": "H4",
         "B8-39-a": "A4",
         "B8-39-b": "C4",
-        "B8-39-c": "F4",
-        "B8-40": "H4",
+        "B8-39-c": "G4",
+        "B8-40": "I4",
         "B9-41a": "A4",
         "B9-41b": "C4",
+        "B10-42-a": "A4",
+        "B10-42-b": "B4",
+        "B10-42-c": "E4",
+        "B10-42-d": "H4",
         "B11-43-p1": "A4",
         "B11-43-p2": "B4",
     }
@@ -57,20 +62,27 @@ def export_exigence_de_publication(exigence_de_publication, workbook, rapport_vs
             worksheet = workbook[exigence_de_publication.code]
             _export_indicateur(
                 indicateur,
+                rapport_vsme,
                 worksheet,
                 SCHEMA_ID_VERS_CELLULE[indicateur_schema_id],
             )
 
 
-def _export_indicateur(indicateur, worksheet, adresse_cellule_depart: str):
+def _export_indicateur(
+    indicateur, rapport_vsme, worksheet, adresse_cellule_depart: str
+):
+    from vsme.views import add_computed_fields
+
     colonne_depart, ligne_depart = coordinate_from_string(adresse_cellule_depart)
     index_colonne_depart = column_index_from_string(colonne_depart)
     prochaine_cellule_destination = worksheet.cell(
         row=ligne_depart, column=index_colonne_depart
     )
+    add_computed_fields(indicateur.schema_id, rapport_vsme, indicateur.data)
     for champ in indicateur.schema["champs"]:
+        data = indicateur.data.get(champ.get("id"))
         prochaine_cellule_destination = _export_champ(
-            champ, indicateur.data[champ["id"]], prochaine_cellule_destination
+            champ, data, prochaine_cellule_destination
         )
 
 
