@@ -455,6 +455,7 @@ def export_vsme(request, rapport_vsme):
             "B7",
             "B8",
             "B9",
+            "B10",
             "B11",
         ):
             export_exigence_de_publication(
