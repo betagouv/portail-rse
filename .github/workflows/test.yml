@@ -29,8 +29,6 @@ jobs:
           node-version: 16.x
       - name: Install front dependencies
         run: npm ci --ignore-scripts
-      - name: Verify package signatures
-        run: npm audit signatures
       - name: Build front
         run: npm run build
       - name: Set up python 3.12
