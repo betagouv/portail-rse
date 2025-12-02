@@ -81,7 +81,7 @@
                                                                 {{ field.value }}
                                                                 {{ field.as_hidden }}
                                                             {% elif field.field.is_computed %}
-                                                                {{ field.value|default_if_none:"..." }}
+                                                                {{ field.value|default_if_none:"<span class='fr-badge fr-badge--sm'>auto</span>" }}
                                                                 <img id="htmx-indicator-{{ field.name }}-{{ forloop.parentloop.counter0 }}" src="{% static 'img/spinner.svg' %}" alt="Spinner d'attente" height="30em" class="htmx-indicator">
                                                             {% else %}
                                                                 {{ field }}
@@ -123,7 +123,7 @@
                                                 <span class="fr-hint-text">{{ field.help_text|safe }}</span>
                                             </label>
                                             <div class="fr-col-12 {% if widget_type == 'NumberInput' %}fr-col-sm-2{% endif %}">
-                                                <output id="{{ field.id_for_label }}">{{ field.value|default_if_none:"..." }}</output>
+                                                <output id="{{ field.id_for_label }}">{{ field.value|default_if_none:"<p class='fr-badge fr-badge--sm'>auto</p>" }}</output>
                                             </div>
                                             <img id="htmx-indicator-{{ field.name }}" src="{% static 'img/spinner.svg' %}" alt="Spinner d'attente" height="30em" class="htmx-indicator">
                                     {% else %}
