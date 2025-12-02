@@ -22,23 +22,25 @@ jobs:
       API_SIRENE_KEY: ${{ secrets.API_SIRENE_KEY }}
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: 16.x
-    - name: Install front dependencies
-      run: npm ci --ignore-scripts
-    - name: Build front
-      run: npm run build
-    - name: Set up python 3.12
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.12'
-        cache: 'pipenv'
-    - name: Install pipenv
-      run: curl https://raw.githubusercontent.com/pypa/pipenv/master/get-pipenv.py | python
-    - name: Install dependencies
-      run: pipenv install -d
-    - name: Run tests
-      run: pipenv run pytest -m "not network"
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+      - name: Verify package signatures
+        run: npm audit signatures
+      - name: Install front dependencies
+        run: npm ci --ignore-scripts
+      - name: Build front
+        run: npm run build
+      - name: Set up python 3.12
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+          cache: "pipenv"
+      - name: Install pipenv
+        run: curl https://raw.githubusercontent.com/pypa/pipenv/master/get-pipenv.py | python
+      - name: Install dependencies
+        run: pipenv install -d
+      - name: Run tests
+        run: pipenv run pytest -m "not network"
