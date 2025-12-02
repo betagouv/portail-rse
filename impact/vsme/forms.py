@@ -189,7 +189,6 @@ def create_simple_field_from_schema(field_schema):
     field_kwargs = {
         "label": field_schema.get("label", field_name),
         "required": field_schema.get("obligatoire", False),
-        # ...
     }
     if description := field_schema.get("description"):
         field_kwargs["help_text"] = description
