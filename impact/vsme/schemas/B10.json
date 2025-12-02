@@ -51,6 +51,7 @@
                 "label": "Nombre de salariés couvert par des conventions collectives.",
                 "type": "nombre_decimal",
                 "unité": "salariés",
+                "obligatoire": true,
                 "provoque_calcul": "taux_couverture_conventions_collectives"
             },
             {
