@@ -139,10 +139,10 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B1_intégralement_rempl
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook["B1"]
-    assert onglet["A4"].value == "complet"
+    assert onglet["A4"].value == "Module complet"
     assert onglet["B4"].value == "B6 - Eau"
     assert onglet["B5"].value == "B8 - Effectifs : caractéristiques générales"
-    assert onglet["C4"].value == "consolidee"
+    assert onglet["C4"].value == "Base consolidée"
     assert onglet["D4"].value == "filiale 1"
     assert onglet["E4"].value == "adresse 1"
     assert onglet["F4"].value == "FRANCE"
@@ -159,7 +159,7 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B1_intégralement_rempl
     assert onglet["K5"].value == "Culture de plantes à fibres"
     assert onglet["L4"].value == 54321
     assert onglet["M4"].value == 98765
-    assert onglet["N4"].value == "ETP"
+    assert onglet["N4"].value == "Équivalents temps plein (ETP)"
     assert onglet["O4"].value == 42.0
     assert onglet["P4"].value == "ALLEMAGNE"
     assert onglet["P5"].value == "FRANCE"
@@ -469,7 +469,7 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B4(
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook["B4"]
     assert onglet["A4"].value == "Anthracène"
-    assert onglet["B4"].value == "kilos"
+    assert onglet["B4"].value == "kg"
     assert onglet["C4"].value == 11
     assert onglet["A5"].value == "Autre"
     assert onglet["B5"].value == "tonnes"
@@ -478,10 +478,10 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B4(
     assert onglet["E4"].value == "tonnes"
     assert onglet["F4"].value == 33
     assert onglet["D5"].value == "Chlorure de vinyle"
-    assert onglet["E5"].value == "kilos"
+    assert onglet["E5"].value == "kg"
     assert onglet["F5"].value == 44
     assert onglet["G4"].value == "Alachlore"
-    assert onglet["H4"].value == "kilos"
+    assert onglet["H4"].value == "kg"
     assert onglet["I4"].value == 55
     assert onglet["G5"].value == "divers"
     assert onglet["H5"].value == "tonnes"
