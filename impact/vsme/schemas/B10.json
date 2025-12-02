@@ -12,7 +12,7 @@
     },
     "B10-42-b": {
         "titre": "Écart de rémunération hommes/femmes",
-        "description": "Déclarer l’écart de rémunération en pourcentage entre les salariés féminins et masculins. L’entreprise peut omettre cette information lorsque le nombre de ses salariés est inférieur à 150, en notant que ce seuil sera ramené à 100 salariés à partir du 7 juin 2031.",
+        "description": "Déclarer l’écart de rémunération en pourcentage entre les salariés féminins et masculins.",
         "ancre": "ecart_remuneration_hommes_femmes",
         "champs": [
             {
@@ -39,7 +39,7 @@
                 "calculé": true
             }
         ],
-        "si_pertinent": true
+        "si_pertinent": "Non applicable si l’entreprise emploie moins de 150 salariés, en notant que ce seuil sera ramené à 100 salariés à partir du 7 juin 2031."
     },
     "B10-42-c": {
         "titre": "Part de salariés couverts par des conventions collectives",
