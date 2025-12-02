@@ -135,6 +135,10 @@ def formate_valeur(valeur, champ):
                     return CODES_NACE[valeur]
                 case "CHOIX_PAYS":
                     return CODES_PAYS_ISO_3166_1[valeur]
+                case _:  # récupération du label correspondant au choix enregistré
+                    for choix in champ["choix"]:
+                        if choix["id"] == valeur:
+                            return choix["label"]
     return valeur
 
 
