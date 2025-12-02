@@ -6,6 +6,7 @@ from openpyxl.utils.cell import coordinate_from_string
 from utils.categories_juridiques import CATEGORIES_JURIDIQUES_NIVEAU_II
 from utils.codes_nace import CODES_NACE
 from utils.pays import CODES_PAYS_ISO_3166_1
+from vsme.models import ajoute_donnes_calculees
 from vsme.models import EXIGENCES_DE_PUBLICATION
 
 
@@ -71,14 +72,12 @@ def export_exigence_de_publication(exigence_de_publication, workbook, rapport_vs
 def _export_indicateur(
     indicateur, rapport_vsme, worksheet, adresse_cellule_depart: str
 ):
-    from vsme.views import add_computed_fields
-
     colonne_depart, ligne_depart = coordinate_from_string(adresse_cellule_depart)
     index_colonne_depart = column_index_from_string(colonne_depart)
     prochaine_cellule_destination = worksheet.cell(
         row=ligne_depart, column=index_colonne_depart
     )
-    add_computed_fields(indicateur.schema_id, rapport_vsme, indicateur.data)
+    ajoute_donnes_calculees(indicateur.schema_id, rapport_vsme, indicateur.data)
     for champ in indicateur.schema["champs"]:
         data = indicateur.data.get(champ.get("id"))
         prochaine_cellule_destination = _export_champ(
