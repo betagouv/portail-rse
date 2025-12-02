@@ -1,5 +1,6 @@
 {% load geolocalisation %}
 {% load filters %}
+{% load static %}
 
 <div class="fr-container fr-container--fluid fr-container-md">
     <div class="fr-grid-row fr-grid-row--center">
@@ -15,7 +16,8 @@
 
                     <form id="form-indicateur" method="post" action="{% url 'vsme:indicateur_vsme' rapport_vsme.id indicateur_schema_id %}"
                           hx-post="{% url 'vsme:indicateur_vsme' rapport_vsme.id indicateur_schema_id %}"
-                          hx-target="#htmx-modal-indicateur">
+                          hx-target="#htmx-modal-indicateur"
+                          hx-swap="morph:innerHTML">
                         {% csrf_token %}
 
                         {% if multiform.preremplissage %}
@@ -78,8 +80,9 @@
                                                             {% if field.field.auto_id %}
                                                                 {{ field.value }}
                                                                 {{ field.as_hidden }}
-                                                            {% elif field.field.est_calcule %}
+                                                            {% elif field.field.is_computed %}
                                                                 {{ field.value|default_if_none:"..." }}
+                                                                <img id="htmx-indicator-{{ field.name }}-{{ forloop.parentloop.counter0 }}" src="{% static 'img/spinner.svg' %}" alt="Spinner d'attente" height="30em" class="htmx-indicator">
                                                             {% else %}
                                                                 {{ field }}
                                                                 {% if field.field.geolocalisation and field.value and not field.errors %}
@@ -114,7 +117,7 @@
                                 {% endif %}
                             {% else %}
                                 {% for field in form %}
-                                    {% if field.field.est_calcule %}
+                                    {% if field.field.is_computed %}
                                         <div class="fr-input-group">
                                             <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label }}
                                                 <span class="fr-hint-text">{{ field.help_text|safe }}</span>
@@ -122,6 +125,7 @@
                                             <div class="fr-col-12 {% if widget_type == 'NumberInput' %}fr-col-sm-2{% endif %}">
                                                 <output id="{{ field.id_for_label }}">{{ field.value|default_if_none:"..." }}</output>
                                             </div>
+                                            <img id="htmx-indicator-{{ field.name }}" src="{% static 'img/spinner.svg' %}" alt="Spinner d'attente" height="30em" class="htmx-indicator">
                                     {% else %}
                                         {% include 'snippets/field.html' %}
                                     {% endif %}

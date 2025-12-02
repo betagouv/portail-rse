@@ -71,7 +71,7 @@ def create_multiform_from_schema(
                         for field in form.fields:
                             if (
                                 field != NON_PERTINENT_FIELD_NAME
-                                and not hasattr(form.fields[field], "est_calcule")
+                                and not hasattr(form.fields[field], "is_computed")
                                 and not form.cleaned_data.get(field)
                                 and not form.cleaned_data.get(field) == 0
                             ):
@@ -93,13 +93,24 @@ def create_multiform_from_schema(
                     for field in form.fields:
                         self.customize_field(form, field)
                 else:  # FormSet
-                    for form_table in form.forms:
+                    for index, form_table in enumerate(form.forms):
                         for field in form_table.fields:
-                            self.customize_field(form_table, field)
+                            self.customize_field(form_table, field, index)
 
-        def customize_field(self, form, field):
-            if hasattr(form.fields[field], "provoque_calcul"):
-                form.fields[field].widget.attrs.update({"hx-post": indicateur_url})
+        def customize_field(self, form, field_name, index=None):
+            if hasattr(form.fields[field_name], "trigger_computed_field"):
+                hx_indicator = (
+                    f"#htmx-indicator-{form.fields[field_name].trigger_computed_field}"
+                )
+                if index is not None:
+                    hx_indicator += f"-{index}"
+                form.fields[field_name].widget.attrs.update(
+                    {
+                        "hx-post": indicateur_url,
+                        "hx-trigger": "input changed delay:500ms",
+                        "hx-indicator": hx_indicator,
+                    }
+                )
 
         def disable_fields(self):
             for form in self.forms:
@@ -209,9 +220,9 @@ def create_simple_field_from_schema(field_schema):
         case "nombre_decimal":
             field = forms.FloatField(**field_kwargs)
             if field_schema.get("calculé", False):
-                field.est_calcule = True
-            if field_schema.get("provoque_calcul", False):
-                field.provoque_calcul = True
+                field.is_computed = True
+            if computed_field := field_schema.get("provoque_calcul", False):
+                field.trigger_computed_field = computed_field
             return field
         case "date":
             return forms.DateField(
@@ -252,7 +263,7 @@ def create_simple_field_from_schema(field_schema):
             if field_type == "choix_unique":
                 field = forms.ChoiceField(choices=choices, **field_kwargs)
                 if field_schema.get("calculé", False):
-                    field.est_calcule = True
+                    field.is_computed = True
                 return field
             else:  # choix_multiple
                 return forms.MultipleChoiceField(
