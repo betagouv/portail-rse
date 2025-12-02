@@ -28,7 +28,7 @@ jobs:
       with:
         node-version: 16.x
     - name: Install front dependencies
-      run: npm ci
+      run: npm ci --ignore-scripts
     - name: Build front
       run: npm run build
     - name: Set up python 3.12
