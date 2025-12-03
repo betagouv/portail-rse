@@ -22,9 +22,10 @@
                             <label class="fr-label" for="select-annee">
                                 Année du rapport VSME
                             </label>
-                            <select class="fr-select" id="select-annee" name="annee" data-url-base="{% url 'vsme:categories_vsme' entreprise.siren %}">
+                            <select class="fr-select" id="select-annee" name="annee">
                                 {% for annee in annees_disponibles reversed %}
-                                    <option value="{{ annee }}" {% if annee == rapport_vsme.annee %}selected{% endif %}>
+                                    <option value="{{ annee }}" {% if annee == rapport_vsme.annee %}selected{% endif %}
+                                            hx-get="{% url 'vsme:categories_vsme' entreprise.siren annee %}">
                                         {{ annee }}{% if annee == annee_par_defaut %} (par défaut){% endif %}
                                     </option>
                                 {% endfor %}
@@ -136,19 +137,4 @@
             </div>
         </div>
     </div>
-{% endblock %}
-
-{% block extra_js %}
-    <script nonce="{{ request.csp_nonce }}">
-        document.addEventListener('DOMContentLoaded', function() {
-            const selectAnnee = document.getElementById('select-annee');
-            if (selectAnnee) {
-                selectAnnee.addEventListener('change', function() {
-                    const urlBase = this.getAttribute('data-url-base');
-                    const annee = this.value;
-                    window.location.href = urlBase + annee + '/';
-                });
-            }
-        });
-    </script>
 {% endblock %}
