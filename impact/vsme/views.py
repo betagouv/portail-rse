@@ -116,6 +116,13 @@ def etape_vsme(request, siren, etape):
 @login_required
 @entreprise_qualifiee_requise
 def categories_vsme(request, entreprise_qualifiee, annee=None):
+    if htmx.is_htmx(request):
+        redirect_to = reverse(
+            "vsme:categories_vsme",
+            args=[entreprise_qualifiee.siren, annee],
+        )
+        return htmx.HttpResponseHXRedirect(redirect_to)
+
     annee = annee or get_annee_rapport_par_defaut()
 
     # Vérifier que l'année est valide
