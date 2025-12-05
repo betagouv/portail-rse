@@ -3,7 +3,6 @@ from json.decoder import JSONDecodeError
 
 import geojson
 from django import forms
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
 from django.urls.base import reverse
 from django.utils.html import format_html
@@ -470,13 +469,7 @@ def calculate_extra_validators(indicateur_schema_id, rapport_vsme):
             return [dechets_total_validator]
 
         case ["B8", "39", _]:
-            indicateur_nombre_salaries = "B1-24-e-v"
-            try:
-                nombre_salaries = rapport_vsme.indicateurs.get(
-                    schema_id=indicateur_nombre_salaries
-                ).data.get("nombre_salaries")
-            except ObjectDoesNotExist:
-                nombre_salaries = 0
+            nombre_salaries = rapport_vsme.nombre_salaries() or 0
             return [effectif_total_validator(nombre_salaries)]
     return []
 
