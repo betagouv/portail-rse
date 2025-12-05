@@ -120,6 +120,17 @@ def test_preremplit_indicateur_taux_rotation_personnel_nb_salaries_superieur_a_5
     assert preremplissage == {}
 
 
+def test_preremplit_indicateur_taux_rotation_personnel_nb_salaries_non_renseigne(
+    rapport_vsme,
+):
+    indicateur_taux_rotation_personnel = "B8-40"
+    preremplissage = preremplit_indicateur(
+        indicateur_taux_rotation_personnel, rapport_vsme
+    )
+
+    assert preremplissage == {}
+
+
 def test_preremplit_indicateur_ecart_remuneration_hommes_femmes_nb_salaries_inferieur_a_150(
     rapport_vsme,
 ):
@@ -153,6 +164,17 @@ def test_preremplit_indicateur_ecart_remuneration_hommes_femmes_nb_salaries_supe
         schema_id=indicateur_nombre_salaries, data={"nombre_salaries": 150}
     )
 
+    indicateur_ecart_remuneration_hommes_femmes = "B10-42-b"
+    preremplissage = preremplit_indicateur(
+        indicateur_ecart_remuneration_hommes_femmes, rapport_vsme
+    )
+
+    assert preremplissage == {}
+
+
+def test_preremplit_indicateur_ecart_remuneration_hommes_femmes_nb_salaries_non_renseigne(
+    rapport_vsme,
+):
     indicateur_ecart_remuneration_hommes_femmes = "B10-42-b"
     preremplissage = preremplit_indicateur(
         indicateur_ecart_remuneration_hommes_femmes, rapport_vsme

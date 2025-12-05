@@ -348,26 +348,22 @@ def preremplit_indicateur(indicateur_schema_id, rapport_vsme):
                 }
         case "B8-40" | "B10-42-b":
             # indicateur taux de rotation du personnel | écart rémunération hommes/femmes
-            try:
-                indicateur_nombre_salaries = "B1-24-e-v"
-                nombre_salaries = rapport_vsme.indicateurs.get(
-                    schema_id=indicateur_nombre_salaries
-                ).data.get("nombre_salaries")
-                if nombre_salaries < 50 or (
-                    nombre_salaries < 150 and indicateur_schema_id == "B10-42-b"
-                ):
-                    infos_preremplissage["initial"] = {
-                        NON_PERTINENT_FIELD_NAME: True,
-                    }
-                    infos_preremplissage["source"] = {
-                        "nom": "l'indicateur Nombre de salariés dans B1",
-                        "url": reverse(
-                            "vsme:exigence_de_publication_vsme",
-                            args=[rapport_vsme.id, "B1"],
-                        ),
-                    }
-            except ObjectDoesNotExist:
+            nombre_salaries = rapport_vsme.nombre_salaries()
+            if nombre_salaries is None:
                 pass
+            elif nombre_salaries < 50 or (
+                nombre_salaries < 150 and indicateur_schema_id == "B10-42-b"
+            ):
+                infos_preremplissage["initial"] = {
+                    NON_PERTINENT_FIELD_NAME: True,
+                }
+                infos_preremplissage["source"] = {
+                    "nom": "l'indicateur Nombre de salariés dans B1",
+                    "url": reverse(
+                        "vsme:exigence_de_publication_vsme",
+                        args=[rapport_vsme.id, "B1"],
+                    ),
+                }
     return infos_preremplissage
 
 

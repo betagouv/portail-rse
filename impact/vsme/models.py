@@ -298,6 +298,16 @@ class RapportVSME(TimestampedModel):
             codes_pays = []
         return codes_pays
 
+    def nombre_salaries(self):
+        indicateur_nombre_salaries = "B1-24-e-v"
+        try:
+            nombre_salaries = self.indicateurs.get(
+                schema_id=indicateur_nombre_salaries
+            ).data.get("nombre_salaries")
+        except ObjectDoesNotExist:
+            nombre_salaries = None
+        return nombre_salaries
+
 
 class Indicateur(TimestampedModel):
     rapport_vsme = models.ForeignKey(
@@ -358,30 +368,22 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
             if nombre_salaries_conventions_collectives := data.get(
                 "nombre_salaries_conventions_collectives"
             ):
-                indicateur_nombre_salaries = "B1-24-e-v"
-                try:
-                    nombre_salaries = rapport_vsme.indicateurs.get(
-                        schema_id=indicateur_nombre_salaries
-                    ).data.get("nombre_salaries")
-                    if nombre_salaries:
-                        taux = (
-                            100
-                            * nombre_salaries_conventions_collectives
-                            / nombre_salaries
-                        )
-                        if taux < 20:
-                            tranche_taux = "0-20"
-                        elif taux < 40:
-                            tranche_taux = "20-40"
-                        elif taux < 60:
-                            tranche_taux = "40-60"
-                        elif taux < 80:
-                            tranche_taux = "60-80"
-                        else:
-                            tranche_taux = "80-100"
-                        data["taux_couverture_conventions_collectives"] = tranche_taux
-                except ObjectDoesNotExist:
-                    pass
+                nombre_salaries = rapport_vsme.nombre_salaries()
+                if nombre_salaries:
+                    taux = (
+                        100 * nombre_salaries_conventions_collectives / nombre_salaries
+                    )
+                    if taux < 20:
+                        tranche_taux = "0-20"
+                    elif taux < 40:
+                        tranche_taux = "20-40"
+                    elif taux < 60:
+                        tranche_taux = "40-60"
+                    elif taux < 80:
+                        tranche_taux = "60-80"
+                    else:
+                        tranche_taux = "80-100"
+                    data["taux_couverture_conventions_collectives"] = tranche_taux
         case "B10-42-d":
             if total_heure_formation_par_genre := data.get(
                 "nombre_heures_formation_par_genre"
