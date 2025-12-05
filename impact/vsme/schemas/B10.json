@@ -34,6 +34,7 @@
             {
                 "id": "ecart_remuneration_hommes_femmes",
                 "label": "Écart en pourcentage entre la rémunération des salariés hommes et des salariés femmes",
+                "description": "Calculé automatiquement et exprimé en pourcentage du niveau moyen de rémunération des hommes",
                 "type": "nombre_decimal",
                 "unité": "%",
                 "calculé": true
@@ -57,7 +58,7 @@
             {
                 "id": "taux_couverture_conventions_collectives",
                 "label": "Part de salariés couverts par des conventions collectives",
-                "description": "Le taux de couverture des conventions collectives est publié par tranche : inférieur à 20%, entre 20 et 40%, entre 40 et 60%, entre 60 et 80% ou entre 80 et 100%. Il est calculé automatiquement en fonction du nombre de salariés renseigné dans B1.",
+                "description": "Le taux de couverture des conventions collectives est publié par tranche : inférieur à 20%, entre 20 et 40%, entre 40 et 60%, entre 60 et 80% ou entre 80 et 100%. Calculé automatiquement en fonction du nombre de salariés renseigné dans B1.",
                 "type": "choix_unique",
                 "choix": [
                     {
@@ -105,6 +106,7 @@
                     {
                         "id": "nombre_moyen_heures_formation",
                         "label": "Nombre moyen d'heures de formation",
+                        "description": "Calculé automatiquement en fonction des nombres de salariés par genre renseignés dans B8.",
                         "type": "nombre_decimal",
                         "unité": "heures/salarié",
                         "calculé": true
