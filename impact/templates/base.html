@@ -23,8 +23,9 @@
         {% vite_asset 'src/main.js' %}
 
         <script type="text/javascript" src="{% static 'js/htmx.min.js' %}" nonce="{{ request.csp_nonce }}" defer></script>
+        <script type="text/javascript" src="{% static 'js/idiomorph-ext.min.js' %}" nonce="{{ request.csp_nonce }}" defer></script>
     </head>
-    <body>
+    <body hx-ext="morph">
         {% block header %}
             <header role="banner" class="fr-header">
                 {% include "snippets/entete_page.html" %}

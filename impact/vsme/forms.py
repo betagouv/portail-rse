@@ -3,7 +3,6 @@ from json.decoder import JSONDecodeError
 
 import geojson
 from django import forms
-from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
 from django.urls.base import reverse
 from django.utils.html import format_html
@@ -23,6 +22,11 @@ NON_PERTINENT_FIELD_NAME = "non_pertinent"
 def create_multiform_from_schema(
     schema, rapport_vsme, extra=0, infos_preremplissage=None
 ):
+    indicateur_url = reverse(
+        "vsme:indicateur_vsme",
+        args=[rapport_vsme.id, schema["schema_id"]],
+    )
+
     class _MultiForm:
         Forms = []
         si_pertinent = schema.get("si_pertinent", False)
@@ -34,6 +38,8 @@ def create_multiform_from_schema(
             self.forms = []
             for Form in self.Forms:
                 self.forms.append(Form(*args, **kwargs))
+            self.customize_fields()
+
             if self.si_pertinent:
                 # désactive tous les champs du multiform (sauf le champ non pertinent)
                 # lorsque le multiform est initialisé avec une valeur positive du champ non pertinent.
@@ -64,6 +70,7 @@ def create_multiform_from_schema(
                         for field in form.fields:
                             if (
                                 field != NON_PERTINENT_FIELD_NAME
+                                and not hasattr(form.fields[field], "is_computed")
                                 and not form.cleaned_data.get(field)
                                 and not form.cleaned_data.get(field) == 0
                             ):
@@ -78,6 +85,31 @@ def create_multiform_from_schema(
             for form in self.forms:
                 cleaned_data.update(form.cleaned_data)
             return cleaned_data
+
+        def customize_fields(self):
+            for form in self.forms:
+                if isinstance(form, forms.Form):
+                    for field in form.fields:
+                        self.customize_field(form, field)
+                else:  # FormSet
+                    for index, form_table in enumerate(form.forms):
+                        for field in form_table.fields:
+                            self.customize_field(form_table, field, index)
+
+        def customize_field(self, form, field_name, index=None):
+            if hasattr(form.fields[field_name], "trigger_computed_field"):
+                hx_indicator = (
+                    f"#htmx-indicator-{form.fields[field_name].trigger_computed_field}"
+                )
+                if index is not None:
+                    hx_indicator += f"-{index}"
+                form.fields[field_name].widget.attrs.update(
+                    {
+                        "hx-post": indicateur_url,
+                        "hx-trigger": "input changed delay:500ms",
+                        "hx-indicator": hx_indicator,
+                    }
+                )
 
         def disable_fields(self):
             for form in self.forms:
@@ -101,13 +133,10 @@ def create_multiform_from_schema(
     _DynamicForm = _dynamicform_factory()
 
     if si_pertinent := schema.get("si_pertinent", False):
-        toggle_pertinent_url = reverse(
-            "vsme:toggle_pertinent", args=[rapport_vsme.id, schema["schema_id"]]
-        )
         _DynamicForm.base_fields[NON_PERTINENT_FIELD_NAME] = forms.BooleanField(
             label=si_pertinent if type(si_pertinent) == str else "Non pertinent",
             required=False,
-            widget=forms.BooleanField.widget(attrs={"hx-post": toggle_pertinent_url}),
+            widget=forms.BooleanField.widget(attrs={"hx-post": indicateur_url}),
         )
     fields = schema["champs"]
     for field in fields:
@@ -159,7 +188,6 @@ def create_simple_field_from_schema(field_schema):
     field_kwargs = {
         "label": field_schema.get("label", field_name),
         "required": field_schema.get("obligatoire", False),
-        # ...
     }
     if description := field_schema.get("description"):
         field_kwargs["help_text"] = description
@@ -188,7 +216,12 @@ def create_simple_field_from_schema(field_schema):
             field_kwargs["max_value"] = field_schema.get("max")
             return forms.IntegerField(**field_kwargs)
         case "nombre_decimal":
-            return forms.FloatField(**field_kwargs)
+            field = forms.FloatField(**field_kwargs)
+            if field_schema.get("calculé", False):
+                field.is_computed = True
+            if computed_field := field_schema.get("provoque_calcul", False):
+                field.trigger_computed_field = computed_field
+            return field
         case "date":
             return forms.DateField(
                 widget=forms.DateInput(format="%Y-%m-%d", attrs={"type": "date"}),
@@ -226,7 +259,10 @@ def create_simple_field_from_schema(field_schema):
                         for choice in field_schema["choix"]
                     )
             if field_type == "choix_unique":
-                return forms.ChoiceField(choices=choices, **field_kwargs)
+                field = forms.ChoiceField(choices=choices, **field_kwargs)
+                if field_schema.get("calculé", False):
+                    field.is_computed = True
+                return field
             else:  # choix_multiple
                 return forms.MultipleChoiceField(
                     widget=forms.CheckboxSelectMultiple,
@@ -433,13 +469,7 @@ def calculate_extra_validators(indicateur_schema_id, rapport_vsme):
             return [dechets_total_validator]
 
         case ["B8", "39", _]:
-            indicateur_nombre_salaries = "B1-24-e-v"
-            try:
-                nombre_salaries = rapport_vsme.indicateurs.get(
-                    schema_id=indicateur_nombre_salaries
-                ).data.get("nombre_salaries")
-            except ObjectDoesNotExist:
-                nombre_salaries = 0
+            nombre_salaries = rapport_vsme.nombre_salaries() or 0
             return [effectif_total_validator(nombre_salaries)]
     return []
 

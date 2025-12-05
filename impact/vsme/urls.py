@@ -49,9 +49,4 @@ urlpatterns = [
         views.indicateur_vsme,
         name="indicateur_vsme",
     ),
-    path(
-        "indicateurs/vsme/<int:vsme_id>/indicateur/<str:indicateur_schema_id>/pertinent/",
-        views.toggle_pertinent,
-        name="toggle_pertinent",
-    ),
 ]
