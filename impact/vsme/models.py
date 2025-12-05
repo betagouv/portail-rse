@@ -354,7 +354,7 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
         case "B10-42-b":
             remuneration_hommes = data.get("remuneration_horaire_hommes")
             remuneration_femmes = data.get("remuneration_horaire_femmes")
-            if remuneration_hommes and remuneration_femmes:
+            if remuneration_hommes and remuneration_femmes is not None:
                 ecart_remuneration_hommes_femmes = round(
                     100
                     * (remuneration_hommes - remuneration_femmes)
@@ -365,9 +365,10 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                     ecart_remuneration_hommes_femmes
                 )
         case "B10-42-c":
-            if nombre_salaries_conventions_collectives := data.get(
+            nombre_salaries_conventions_collectives = data.get(
                 "nombre_salaries_conventions_collectives"
-            ):
+            )
+            if nombre_salaries_conventions_collectives is not None:
                 nombre_salaries = rapport_vsme.nombre_salaries()
                 if nombre_salaries:
                     taux = (
@@ -384,6 +385,8 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                     else:
                         tranche_taux = "80-100"
                     data["taux_couverture_conventions_collectives"] = tranche_taux
+                else:
+                    data["taux_couverture_conventions_collectives"] = "n/a"
         case "B10-42-d":
             if total_heure_formation_par_genre := data.get(
                 "nombre_heures_formation_par_genre"
@@ -406,7 +409,7 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                                     total_heure_formation / nombre_salaries, 2
                                 )
                             else:
-                                nombre_moyen_heures_formation = 0
+                                nombre_moyen_heures_formation = "n/a"
                             data["nombre_heures_formation_par_genre"][genre][
                                 "nombre_moyen_heures_formation"
                             ] = nombre_moyen_heures_formation
