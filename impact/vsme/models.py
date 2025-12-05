@@ -394,9 +394,10 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                         schema_id=indicateur_nombre_salaries_par_genre
                     ).data.get("effectifs_genre")
                     for genre in nombre_salaries_par_genre:
-                        if total_heure_formation := data[
+                        total_heure_formation = data[
                             "nombre_heures_formation_par_genre"
-                        ][genre]["total_heures_formation"]:
+                        ][genre]["total_heures_formation"]
+                        if total_heure_formation is not None:
                             nombre_salaries = nombre_salaries_par_genre[genre][
                                 "nombre_salaries"
                             ]
