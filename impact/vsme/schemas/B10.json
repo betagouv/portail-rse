@@ -57,7 +57,7 @@
             {
                 "id": "taux_couverture_conventions_collectives",
                 "label": "Part de salariés couverts par des conventions collectives",
-                "description": "Le taux de couverture des conventions collectives est publié par tranche : entre 0 et 19 %, entre 20 et 39 %, entre 40 et 59 %, entre 60 et 79 % ou entre 80 et 100 %.",
+                "description": "Le taux de couverture des conventions collectives est publié par tranche : inférieur à 20%, entre 20 et 40%, entre 40 et 60%, entre 60 et 80% ou entre 80 et 100%. Il est calculé automatiquement en fonction du nombre de salariés renseigné dans B1.",
                 "type": "choix_unique",
                 "choix": [
                     {
