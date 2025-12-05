@@ -1,8 +1,6 @@
+from django import forms
 from django import template
 from django.conf import settings
-from django.forms import BooleanField
-from django.forms import ChoiceField
-from django.forms import FileField
 
 import habilitations.models
 import utils.anonymisation
@@ -53,14 +51,27 @@ def svelte_container_id(field):
 
 @register.filter
 def fr_group_class(field):
-    if isinstance(field.field, BooleanField):
-        return "fr-checkbox-group"
-    elif isinstance(field.field, ChoiceField):
-        return "fr-select-group"
-    elif isinstance(field.field, FileField):
-        return "fr-upload-group"
+    match field.field:
+        case forms.BooleanField():
+            return "fr-checkbox-group"
+        case forms.ChoiceField():
+            return "fr-select-group"
+        case forms.FileField():
+            return "fr-upload-group"
+        case _:
+            return "fr-input-group"
+
+
+@register.filter
+def get_field_display(field):
+    if field.value() is None:
+        return
     else:
-        return "fr-input-group"
+        match field.field:
+            case forms.ChoiceField():
+                return dict(field.field.choices)[field.value()]
+            case _:
+                return field.value()
 
 
 @register.filter

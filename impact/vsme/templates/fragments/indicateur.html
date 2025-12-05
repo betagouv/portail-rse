@@ -122,9 +122,7 @@
                                             <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label }}
                                                 <span class="fr-hint-text">{{ field.help_text|safe }}</span>
                                             </label>
-                                            <div class="fr-col-12 {% if widget_type == 'NumberInput' %}fr-col-sm-2{% endif %}">
-                                                <output id="{{ field.id_for_label }}">{{ field.value|default_if_none:"<p class='fr-badge fr-badge--sm'>auto</p>" }}</output>
-                                            </div>
+                                            <output id="{{ field.id_for_label }}">{{ field|get_field_display|default_if_none:"<p class='fr-badge fr-badge--sm'>auto</p>" }}</output>
                                             <img id="htmx-indicator-{{ field.name }}" src="{% static 'img/spinner.svg' %}" alt="Spinner d'attente" height="30em" class="htmx-indicator">
                                     {% else %}
                                         {% include 'snippets/field.html' %}
