@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "utils",
     "logs",
     "analyseia",
+    "security",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -65,6 +66,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     # django-hosts : doit être au début
     "django_hosts.middleware.HostsRequestMiddleware",
+    # Filtrage IP pour bloquer les requêtes malveillantes (haut de liste)
+    "security.middlewares.IPBlocklistMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
