@@ -534,3 +534,10 @@ OIDC_FALLBACK_TO_EMAIL_FOR_IDENTIFICATION = (
 OIDC_CREATE_USER = (
     True  # Automatically create users if they don't exist, defaults to `True`
 )
+
+# Security:
+
+# Filtered IP addresses or subnets
+BLOCKED_IP_SUBNETS = os.getenv("BLOCKED_IP_SUBNETS", "")
+# Do we log filtered requests ?
+BLOCKED_IP_SUBNETS_LOG = os.getenv("BLOCKED_IP_SUBNETS_LOG", "false") == "true"
