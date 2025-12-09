@@ -164,17 +164,7 @@ def create_multiform_from_schema(
                     _MultiForm.add_Form(_DynamicForm)
                     _DynamicForm = _dynamicform_factory()
 
-                rows = calculate_rows(field.get("lignes"), rapport_vsme)
-                extra_validators = calculate_extra_validators(
-                    schema["schema_id"], rapport_vsme
-                )
-                FormSet = create_Formset_from_schema(
-                    field,
-                    rapport_vsme,
-                    extra=extra,
-                    calculated_rows=rows,
-                    extra_validators=extra_validators,
-                )
+                FormSet = create_Formset_from_schema(field, rapport_vsme, extra=extra)
 
                 _MultiForm.add_Form(FormSet)
 
@@ -314,10 +304,10 @@ class DatalistTextInput(forms.TextInput):
         )
 
 
-def create_Formset_from_schema(
-    field_schema, rapport_vsme, extra=0, calculated_rows=None, extra_validators=None
-):
+def create_Formset_from_schema(field_schema, rapport_vsme, extra=0):
     field_type = field_schema["type"]
+    calculated_rows = calculate_rows(field_schema.get("lignes"), rapport_vsme)
+    extra_validators = calculate_extra_validators(field_schema["id"], rapport_vsme)
 
     class TableauFormSet(DsfrFormSet):
         id = field_schema["id"]
@@ -480,12 +470,11 @@ def calculate_choices(choix, rapport_vsme):
     return choices
 
 
-def calculate_extra_validators(indicateur_schema_id, rapport_vsme):
-    match indicateur_schema_id.split("-"):
-        case ["B7", "38", "ab"]:
+def calculate_extra_validators(field_id, rapport_vsme):
+    match field_id:
+        case "gestion_dechets":
             return [dechets_total_validator]
-
-        case ["B8", "39", _]:
+        case "effectifs_type_de_contrat" | "effectifs_genre" | "effectifs_pays":
             nombre_salaries = rapport_vsme.nombre_salaries() or 0
             return [effectif_total_validator(nombre_salaries)]
     return []
