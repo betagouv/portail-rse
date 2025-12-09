@@ -91,7 +91,7 @@ def indicateur_si_pertinent():
         "description": "Description test",
         "ancre": "test",
         "si_pertinent": True,
-        "champs": [CHAMP_AGE],
+        "champs": [CHAMP_NOM, CHAMP_AGE],
     }
 
 
@@ -163,6 +163,7 @@ def test_create_multiform_from_schema_si_pertinent(
     assert len(multiform_class.Forms) == 1
     form = multiform_class.Forms[0]
     assert "non_pertinent" in form.base_fields
+    assert "nom" in form.base_fields
     assert "age" in form.base_fields
 
 
@@ -302,8 +303,12 @@ def test_multiform_si_pertinent_non_pertinent_desactive_champs(
     data = {"non_pertinent": True}
     multiform = multiform_class(data)
 
-    assert multiform.forms[0].fields["age"].disabled is True
+    assert multiform.forms[0].fields["nom"].disabled
+    assert not multiform.forms[0].fields["nom"].required
+    assert multiform.forms[0].fields["age"].disabled
+    assert not multiform.forms[0].fields["age"].required
     assert multiform.forms[0].fields["non_pertinent"].disabled is False
+    assert not multiform.forms[0].fields["non_pertinent"].required
 
 
 def test_multiform_si_pertinent_validation_sans_non_pertinent(
@@ -316,10 +321,8 @@ def test_multiform_si_pertinent_validation_sans_non_pertinent(
     multiform = multiform_class(data)
 
     assert not multiform.is_valid()
-    assert (
-        "Ce champ est requis lorsque l'indicateur est déclaré comme pertinent"
-        in multiform.forms[0].errors["age"]
-    )
+    assert "Ce champ est obligatoire." in multiform.forms[0].errors["nom"]
+    assert "age" not in multiform.forms[0].errors
 
 
 def test_multiform_si_pertinent_validation_valeur_0(
@@ -330,6 +333,7 @@ def test_multiform_si_pertinent_validation_valeur_0(
     )
     data = {
         "non_pertinent": False,
+        "nom": "Alice",
         "age": 0,
     }
     multiform = multiform_class(data)
@@ -349,7 +353,8 @@ def test_multiform_si_pertinent_validation_avec_non_pertinent(
 
     assert multiform.is_valid()
     assert multiform.cleaned_data["non_pertinent"] is True
-    assert multiform.cleaned_data["age"] is None
+    assert not multiform.cleaned_data["nom"]
+    assert not multiform.cleaned_data["age"]
 
 
 def test_multiform_si_pertinent_label_personnalisé(

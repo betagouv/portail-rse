@@ -54,5 +54,62 @@
             }
         ],
         "si_pertinent": "L'entreprise ne dispose pas de sites situés dans ou à proximité de zones sensibles sur le plan de la biodiversité"
+    },
+    "B5-34": {
+        "titre": "Affectation des terres",
+        "description": "Publier des indicateurs relatifs à l’utilisation des terres (en hectares ou mètres carrés).",
+        "ancre": "affectation_terres",
+        "champs": [
+            {
+                "id": "unite_superficie",
+                "label": "Unité",
+                "description": "Unité utilisée pour le calcul de superficie des sites (ha ou m²)",
+                "type": "choix_unique",
+                "choix": [
+                    {
+                        "id": "ha",
+                        "label": "hectares (ha)"
+                    },
+                    {
+                        "id": "m2",
+                        "label": "mètres carrés (m²)"
+                    }
+                ],
+                "obligatoire": true
+            },
+            {
+                "id": "affectation_terres",
+                "label": "Affectation des terres",
+                "type": "tableau_lignes_fixes",
+                "colonnes": [
+                    {
+                        "id": "superficie",
+                        "label": "Superficie",
+                        "description": "Surface de la zone (unité sélectionnée précédemment)",
+                        "type": "nombre_decimal",
+                        "obligatoire": true
+                    }
+                ],
+                "lignes": [
+                    {
+                        "id": "surface_impermeabilisee",
+                        "label": "Surface totale imperméabilisée"
+                    },
+                    {
+                        "id": "surface_respectueuse_sur_site",
+                        "label": "Surface respecteuse de la nature sur le site"
+                    },
+                    {
+                        "id": "surface_respectueuse_hors_site",
+                        "label": "Surface respecteuse de la nature hors site"
+                    },
+                    {
+                        "id": "surface_totale",
+                        "label": "Utilisation totale des terres"
+                    }
+                ]
+            }
+        ],
+        "si_pertinent": true
     }
 }

@@ -6,7 +6,7 @@ class DsfrForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.reinitialise_widgets()
 
-    def reinitialise_widgets(self):
+    def reinitialise_widgets(self, avec_erreur=False):
         for name, field in self.fields.items():
             match field.widget:
                 case forms.widgets.Select():
@@ -17,13 +17,17 @@ class DsfrForm(forms.Form):
                     dsfr_class_name = "fr-input"
             if dsfr_class_name:
                 field.widget.attrs.update({"class": f"{dsfr_class_name}"})
-            if name in self.errors and dsfr_class_name:
+            if avec_erreur and name in self.errors and dsfr_class_name:
                 field.widget.attrs.update(
                     {
                         "class": f"{dsfr_class_name} {dsfr_class_name}-error",
                         "aria-describedby": f"{name}-error-desc-error",
                     }
                 )
+
+    def full_clean(self):
+        super().full_clean()
+        self.reinitialise_widgets(avec_erreur=True)
 
 
 class DsfrFormSet(forms.BaseFormSet):
