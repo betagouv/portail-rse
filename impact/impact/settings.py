@@ -538,6 +538,10 @@ OIDC_CREATE_USER = (
 
 # Security:
 
+# Configuration pour reverse proxy (nginx)
+# Django doit faire confiance au header X-Forwarded-Proto pour détecter HTTPS
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 # Filtered IP addresses or subnets
 BLOCKED_IP_SUBNETS = os.getenv("BLOCKED_IP_SUBNETS", "")
 # Do we log filtered requests ?
