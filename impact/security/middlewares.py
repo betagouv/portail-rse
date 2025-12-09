@@ -84,4 +84,4 @@ class IPBlocklistMiddleware:
                         },
                     )
 
-            return self.get_response(request)
+        return self.get_response(request)
