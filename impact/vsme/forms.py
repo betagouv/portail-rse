@@ -3,6 +3,7 @@ from json.decoder import JSONDecodeError
 
 import geojson
 from django import forms
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
 from django.urls.base import reverse
 from django.utils.html import format_html
@@ -156,7 +157,7 @@ def create_multiform_from_schema(
                 | "auto_id"
             ):
                 _DynamicForm.base_fields[field_name] = create_simple_field_from_schema(
-                    field
+                    field, rapport_vsme
                 )
             case "tableau" | "tableau_lignes_fixes":
                 if _DynamicForm.base_fields:
@@ -169,6 +170,7 @@ def create_multiform_from_schema(
                 )
                 FormSet = create_Formset_from_schema(
                     field,
+                    rapport_vsme,
                     extra=extra,
                     calculated_rows=rows,
                     extra_validators=extra_validators,
@@ -182,7 +184,7 @@ def create_multiform_from_schema(
     return _MultiForm
 
 
-def create_simple_field_from_schema(field_schema):
+def create_simple_field_from_schema(field_schema, rapport_vsme):
     field_name = field_schema["id"]
     field_type = field_schema["type"]
     field_kwargs = {
@@ -253,6 +255,8 @@ def create_simple_field_from_schema(field_schema):
                         )
                         for exigence_de_publication in EXIGENCES_DE_PUBLICATION.values()
                     ]
+                case "CHOIX_SITES":
+                    choices = calculate_choices(field_schema["choix"], rapport_vsme)
                 case _:
                     choices = (
                         (choice["id"], choice["label"])
@@ -333,7 +337,7 @@ class DatalistTextInput(forms.TextInput):
 
 
 def create_Formset_from_schema(
-    field_schema, extra=0, calculated_rows=None, extra_validators=None
+    field_schema, rapport_vsme, extra=0, calculated_rows=None, extra_validators=None
 ):
     field_type = field_schema["type"]
 
@@ -347,7 +351,9 @@ def create_Formset_from_schema(
             super().add_fields(form, index)
             for column in self.columns:
                 field_name = column["id"]
-                form.fields[field_name] = create_simple_field_from_schema(column)
+                form.fields[field_name] = create_simple_field_from_schema(
+                    column, rapport_vsme
+                )
 
         def clean(self):
             if any(self.errors):
@@ -461,6 +467,23 @@ def calculate_rows(lignes, rapport_vsme):
             return pays
         case list():
             return lignes
+
+
+def calculate_choices(choix, rapport_vsme):
+    match choix:
+        case "CHOIX_SITES":
+            indicateur_sites = "B1-24-e-vii"
+            try:
+                sites = rapport_vsme.indicateurs.get(
+                    schema_id=indicateur_sites
+                ).data.get("sites", [])
+                choices = (
+                    (site["id_site"], f"{site["id_site"]} - {site["nom_site"]}")
+                    for site in sites
+                )
+            except ObjectDoesNotExist:
+                choices = ()
+            return choices
 
 
 def calculate_extra_validators(indicateur_schema_id, rapport_vsme):
