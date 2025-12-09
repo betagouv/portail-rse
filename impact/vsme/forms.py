@@ -237,31 +237,9 @@ def create_simple_field_from_schema(field_schema, rapport_vsme):
                 **field_kwargs,
             )
         case "choix_unique" | "choix_multiple":
-            match field_schema["choix"]:
-                case "CHOIX_PAYS":
-                    choices = CODES_PAYS_ISO_3166_1
-                    field_kwargs["initial"] = ("FRA", "FRANCE")
-                case "CHOIX_FORME_JURIDIQUE":
-                    choices = CATEGORIES_JURIDIQUES_NIVEAU_II
-                case "CHOIX_NACE":
-                    choices = [
-                        (code, f"{code} - {nom}") for code, nom in CODES_NACE.items()
-                    ]
-                case "CHOIX_EXIGENCE_DE_PUBLICATION":
-                    choices = [
-                        (
-                            exigence_de_publication.code,
-                            f"{exigence_de_publication.code} - {exigence_de_publication.nom}",
-                        )
-                        for exigence_de_publication in EXIGENCES_DE_PUBLICATION.values()
-                    ]
-                case "CHOIX_SITES":
-                    choices = calculate_choices(field_schema["choix"], rapport_vsme)
-                case _:
-                    choices = (
-                        (choice["id"], choice["label"])
-                        for choice in field_schema["choix"]
-                    )
+            choices = calculate_choices(field_schema["choix"], rapport_vsme)
+            if field_schema["choix"] == "CHOIX_PAYS":
+                field_kwargs["initial"] = ("FRA", "FRANCE")
             if field_type == "choix_unique":
                 field = forms.ChoiceField(choices=choices, **field_kwargs)
                 if field_schema.get("calculé", False):
@@ -471,6 +449,20 @@ def calculate_rows(lignes, rapport_vsme):
 
 def calculate_choices(choix, rapport_vsme):
     match choix:
+        case "CHOIX_PAYS":
+            choices = CODES_PAYS_ISO_3166_1
+        case "CHOIX_FORME_JURIDIQUE":
+            choices = CATEGORIES_JURIDIQUES_NIVEAU_II
+        case "CHOIX_NACE":
+            choices = [(code, f"{code} - {nom}") for code, nom in CODES_NACE.items()]
+        case "CHOIX_EXIGENCE_DE_PUBLICATION":
+            choices = [
+                (
+                    exigence_de_publication.code,
+                    f"{exigence_de_publication.code} - {exigence_de_publication.nom}",
+                )
+                for exigence_de_publication in EXIGENCES_DE_PUBLICATION.values()
+            ]
         case "CHOIX_SITES":
             indicateur_sites = "B1-24-e-vii"
             try:
@@ -483,7 +475,9 @@ def calculate_choices(choix, rapport_vsme):
                 )
             except ObjectDoesNotExist:
                 choices = ()
-            return choices
+        case _:
+            choices = ((choice["id"], choice["label"]) for choice in choix)
+    return choices
 
 
 def calculate_extra_validators(indicateur_schema_id, rapport_vsme):
