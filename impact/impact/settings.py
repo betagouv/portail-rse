@@ -66,8 +66,9 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     # django-hosts : doit être au début
     "django_hosts.middleware.HostsRequestMiddleware",
-    # Filtrage IP pour bloquer les requêtes malveillantes (haut de liste)
-    "security.middlewares.IPBlocklistMiddleware",
+    # Filtrage IP pour bloquer les requêtes malveillantes (haut de liste) :
+    # devrait désormais être géré par Nginx
+    # "security.middlewares.IPBlocklistMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
