@@ -602,6 +602,12 @@
     gap: 0.5em;
 }
 
+// pas de gras si dans une en-tête de tableau
+th .fr-hint-text {
+    font-weight: normal;
+}
+
+
 /* fr-col aligné à droite */
 .col-right {
     text-align: right;
