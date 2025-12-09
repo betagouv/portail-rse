@@ -91,6 +91,7 @@ EXIGENCES_DE_PUBLICATION = {
         "Biodiversité",
         Categorie.ENVIRONNEMENT,
         "https://portail-rse.beta.gouv.fr/vsme/b5-biodiversite/",
+        remplissable=True,
     ),
     "B6": ExigenceDePublication(
         "B6",

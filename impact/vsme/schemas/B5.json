@@ -1,0 +1,58 @@
+{
+    "B5-33": {
+        "titre": "Sites situés dans les zones sensibles",
+        "description": "Publier le nombre et la superficie (en hectares ou mètres carrés) des sites que l'entreprise possède, qu’elle a loués ou qu’elle gère, qui se trouvent dans ou à proximité d’une zone sensible sur le plan de la biodiversité.",
+        "ancre": "sites_zones_sensibles",
+        "champs": [
+            {
+                "id": "unite_superficie",
+                "label": "Unité",
+                "description": "Unité utilisée pour le calcul de superficie des sites (ha ou m²)",
+                "type": "choix_unique",
+                "choix": [
+                    {
+                        "id": "ha",
+                        "label": "hectares (ha)"
+                    },
+                    {
+                        "id": "m2",
+                        "label": "mètres carrés (m²)"
+                    }
+                ]
+            },
+            {
+                "id": "sites_zones_sensibles",
+                "label": "Sites situés dans les zones sensibles",
+                "type": "tableau",
+                "colonnes": [
+                    {
+                        "id": "id_site",
+                        "label": "Site",
+                        "description": "Identifiant du site renseigné dans B1",
+                        "type": "choix_unique",
+                        "choix": "CHOIX_SITES",
+                        "obligatoire": true
+                    },
+                    {
+                        "id": "superficie",
+                        "label": "Superficie",
+                        "description": "Surface totale du site (unité sélectionnée précédemment)",
+                        "type": "nombre_decimal",
+                        "obligatoire": true
+                    },
+                    {
+                        "id": "dans_zone_sensible",
+                        "label": "Situé dans une zone sensible",
+                        "type": "choix_binaire_radio"
+                    },
+                    {
+                        "id": "proximite_zone_sensible",
+                        "label": "Situé à proximité d’une zone sensible",
+                        "type": "choix_binaire_radio"
+                    }
+                ]
+            }
+        ],
+        "si_pertinent": "L'entreprise ne dispose pas de sites situés dans ou à proximité de zones sensibles sur le plan de la biodiversité"
+    }
+}
