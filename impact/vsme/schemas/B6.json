@@ -32,7 +32,8 @@
                 "label": "Consommation d’eau",
                 "description": "Unité : m³",
                 "type": "nombre_decimal",
-                "unité": "m3"
+                "unité": "m3",
+                "obligatoire": true
             }
         ],
         "si_pertinent": "Les processus de production de l'entreprise n'entraînent pas une consommation d'eau importante"

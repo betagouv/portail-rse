@@ -31,10 +31,11 @@
                 "id": "omission_informations",
                 "label": "Exigences de publication dans lesquelles des informations ont été omises",
                 "type": "choix_multiple",
-                "choix": "CHOIX_EXIGENCE_DE_PUBLICATION"
+                "choix": "CHOIX_EXIGENCE_DE_PUBLICATION",
+                "obligatoire": true
             }
         ],
-        "si_pertinent": true
+        "si_pertinent": "Aucune information n'a été omise"
     },
     "B1-24-c": {
         "titre": "Type de périmètre",

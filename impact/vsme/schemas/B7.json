@@ -7,7 +7,8 @@
             {
                 "id": "economie_circulaire",
                 "label": "Principes de l'économie circulaire",
-                "type": "texte_long"
+                "type": "texte_long",
+                "obligatoire": true
             }
         ],
         "si_pertinent": "L'entreprise n'applique pas de principe de l'économie circulaire"

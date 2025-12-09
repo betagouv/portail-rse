@@ -7,7 +7,8 @@
             {
                 "id": "participation_gouvernance",
                 "label": "Participation à la gouvernance des travailleurs, utilisateurs, ou autres parties ou communautés intéressées",
-                "type": "texte_long"
+                "type": "texte_long",
+                "obligatoire": true
             }
         ],
         "si_pertinent": true
@@ -21,7 +22,8 @@
                 "id": "investissement_economie_sociale",
                 "label": "Investissement dans l'économie sociale",
                 "type": "nombre_entier",
-                "unité": "euros"
+                "unité": "euros",
+                "obligatoire": true
             }
         ],
         "si_pertinent": true
@@ -34,7 +36,8 @@
             {
                 "id": "limites_distribution_profits",
                 "label": "Limites à la distribution des profits",
-                "type": "texte_long"
+                "type": "texte_long",
+                "obligatoire": true
             }
         ],
         "si_pertinent": true

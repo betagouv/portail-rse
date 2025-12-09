@@ -21,7 +21,8 @@
                 "description": "Correspond à la rémunération brute hebdomadaire (ou annuelle) divisée par le nombre moyen d’heures travaillées par semaine (ou par an)",
                 "type": "nombre_decimal",
                 "unité": "euros",
-                "provoque_calcul": "ecart_remuneration_hommes_femmes"
+                "provoque_calcul": "ecart_remuneration_hommes_femmes",
+                "obligatoire": true
             },
             {
                 "id": "remuneration_horaire_femmes",
@@ -29,7 +30,8 @@
                 "description": "Correspond à la rémunération brute hebdomadaire (ou annuelle) divisée par le nombre moyen d’heures travaillées par semaine (ou par an)",
                 "type": "nombre_decimal",
                 "unité": "euros",
-                "provoque_calcul": "ecart_remuneration_hommes_femmes"
+                "provoque_calcul": "ecart_remuneration_hommes_femmes",
+                "obligatoire": true
             },
             {
                 "id": "ecart_remuneration_hommes_femmes",

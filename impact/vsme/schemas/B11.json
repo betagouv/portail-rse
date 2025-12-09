@@ -8,7 +8,8 @@
                 "id": "nombre_condamnations",
                 "label": "Nombre de condamnations",
                 "type": "nombre_entier",
-                "unité": "condamnations"
+                "unité": "condamnations",
+                "obligatoire": true
             }
         ],
         "si_pertinent": true
@@ -22,7 +23,8 @@
                 "id": "montant_amendes",
                 "label": "Montant total des amendes",
                 "type": "nombre_decimal",
-                "unité": "euros"
+                "unité": "euros",
+                "obligatoire": true
             }
         ],
         "si_pertinent": true

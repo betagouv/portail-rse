@@ -97,7 +97,8 @@
                 "id": "taux_rotation_personnel",
                 "label": "Taux de rotation du personnel (en %)",
                 "type": "nombre_decimal",
-                "unité": "%"
+                "unité": "%",
+                "obligatoire": true
             }
         ],
         "si_pertinent": "Non applicable si l’entreprise emploie moins de 50 salariés"

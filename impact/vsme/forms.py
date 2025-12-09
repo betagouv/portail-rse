@@ -61,24 +61,7 @@ def create_multiform_from_schema(
             cls.Forms.append(Form)
 
         def is_valid(self):
-            self.clean()
             return all([form.is_valid() for form in self.forms])
-
-        def clean(self):
-            if self.si_pertinent and not self.non_pertinent:
-                for form in self.forms:
-                    if isinstance(form, forms.Form):
-                        for field in form.fields:
-                            if (
-                                field != NON_PERTINENT_FIELD_NAME
-                                and not hasattr(form.fields[field], "is_computed")
-                                and not form.cleaned_data.get(field)
-                                and not form.cleaned_data.get(field) == 0
-                            ):
-                                form.add_error(
-                                    field,
-                                    "Ce champ est requis lorsque l'indicateur est déclaré comme pertinent",
-                                )
 
         @property
         def cleaned_data(self):
@@ -118,12 +101,14 @@ def create_multiform_from_schema(
                     for field in form.fields:
                         if field != NON_PERTINENT_FIELD_NAME:
                             form.fields[field].disabled = True
+                            form.fields[field].required = False
                 else:  # FormSet
                     form.min_num = 0
                     form.validate_min = False
                     for form_table in form.forms:
                         for field in form_table.fields:
                             form_table.fields[field].disabled = True
+                            form_table.fields[field].required = False
 
     def _dynamicform_factory():
         class _DynamicForm(DsfrForm):
