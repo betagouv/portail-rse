@@ -378,6 +378,7 @@ def export_vsme(request, rapport_vsme):
             "B1",
             "B2",
             "B4",
+            "B5",
             "B6",
             "B7",
             "B8",

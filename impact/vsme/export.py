@@ -31,6 +31,8 @@ def export_exigence_de_publication(exigence_de_publication, workbook, rapport_vs
         "B4-32-p1": "A4",
         "B4-32-p2": "D4",
         "B4-32-p3": "G4",
+        "B5-33": "A4",
+        "B5-34": "F4",
         "B6-35": "A4",
         "B6-36": "C4",
         "B7-37": "A4",
@@ -135,6 +137,8 @@ def formate_valeur(valeur, champ):
                     return CODES_NACE[valeur]
                 case "CHOIX_PAYS":
                     return CODES_PAYS_ISO_3166_1[valeur]
+                case "CHOIX_SITES":
+                    return valeur  # id du site
                 case _:  # récupération du label correspondant au choix enregistré
                     for choix in champ["choix"]:
                         if choix["id"] == valeur:

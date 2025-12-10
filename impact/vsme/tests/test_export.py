@@ -488,6 +488,62 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B4(
     assert onglet["I5"].value == 66
 
 
+def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B5(
+    client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2025)
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-e-vii",
+        data={
+            "sites": [
+                {
+                    "id_site": 1,
+                    "nom_site": "Usine",
+                    "adresse": "adresse",
+                    "code_postal": "33000",
+                    "ville": "Bordeaux",
+                    "pays": "FRA",
+                    "geolocalisation": "[2.294381,48.858099]",
+                }
+            ]
+        },
+    )
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B5-33",
+        data={
+            "non_pertinent": False,
+            "unite_superficie": "m2",
+            "sites_zones_sensibles": [
+                {
+                    "id_site": "1",
+                    "superficie": 999.0,
+                    "dans_zone_sensible": True,
+                    "proximite_zone_sensible": True,
+                }
+            ],
+        },
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
+
+    assert response["Content-Disposition"] == "filename=vsme.xlsx"
+    assert (
+        response["content-type"]
+        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+    )
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook["B5"]
+    assert onglet["A4"].value == "mètres carrés (m²)"
+    assert onglet["B4"].value == "1"
+    assert onglet["C4"].value == 999.0
+    assert onglet["D4"].value == "OUI"
+    assert onglet["E4"].value == "OUI"
+
+
 def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B6(
     client, entreprise_factory, alice
 ):
