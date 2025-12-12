@@ -388,6 +388,34 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                     data["consommation_energie_par_combustible"][index].update(
                         infos_combustible
                     )
+                    etat_renouvelabilite = data["consommation_energie_par_combustible"][
+                        index
+                    ]["etat_renouvelabilite"]
+                    etat_chimique = data["consommation_energie_par_combustible"][index][
+                        "etat_chimique"
+                    ]
+                    ETATS_CHIMIQUE = {
+                        "liquide": "Liquide",
+                        "gaz": "Gaz",
+                        "solide": "Solide",
+                    }
+                    ETATS_RENOUVELABILITE = {
+                        "renouvelable": "Renouvelable",
+                        "non_renouvelable": "Non renouvelable",
+                    }
+                    data["consommation_energie_par_combustible"][index][
+                        "etat_chimique"
+                    ] = ETATS_CHIMIQUE.get(etat_chimique, "?")
+                    data["consommation_energie_par_combustible"][index][
+                        "etat_renouvelabilite"
+                    ] = ETATS_RENOUVELABILITE.get(etat_renouvelabilite, "??")
+                    quantite = data["consommation_energie_par_combustible"][index][
+                        "quantite"
+                    ]
+                    data["consommation_energie_par_combustible"][index]["energie"] = (
+                        quantite * 2
+                    )
+
         case "B10-42-b":
             remuneration_hommes = data.get("remuneration_horaire_hommes")
             remuneration_femmes = data.get("remuneration_horaire_femmes")
