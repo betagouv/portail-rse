@@ -441,6 +441,20 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                     data["consommation_energie_par_combustible"][index].update(
                         infos_combustible
                     )
+                    quantite = data["consommation_energie_par_combustible"][index].get(
+                        "quantite"
+                    )
+                    if quantite:
+                        match infos_combustible["unite"]:
+                            case "t":
+                                masse = quantite
+                            case "L" | "m3":
+                                masse = quantite * infos_combustible["densite"]
+                        energie = masse * infos_combustible["NCV"]
+                        data["consommation_energie_par_combustible"][index][
+                            "energie"
+                        ] = energie
+
         case "B10-42-b":
             remuneration_hommes = data.get("remuneration_horaire_hommes")
             remuneration_femmes = data.get("remuneration_horaire_femmes")
