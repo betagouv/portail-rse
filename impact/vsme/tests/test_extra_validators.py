@@ -71,13 +71,13 @@ def test_succes_vérification_total_dechets_produit(client, rapport_vsme):
         "form-TOTAL_FORMS": "1",
         "form-INITIAL_FORMS": "0",
         "form-0-dechet": "01",
+        "form-0-dangereux": True,
         "form-0-total_dechets": "3",
         "form-0-recyclage_ou_reutilisation": "1",
         "form-0-elimines": "2",
         # somme recyclage et elimines égale à total_dechets
     }
     multiform = multiform_class(data)
-
     assert multiform.is_valid()
 
 
@@ -91,6 +91,7 @@ def test_échec_vérification_total_dechets_produit(client, rapport_vsme):
         "form-TOTAL_FORMS": "1",
         "form-INITIAL_FORMS": "0",
         "form-0-dechet": "01",
+        "form-0-dangereux": True,
         "form-0-total_dechets": "3",
         "form-0-recyclage_ou_reutilisation": "1",
         "form-0-elimines": "4",

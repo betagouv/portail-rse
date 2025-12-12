@@ -207,8 +207,11 @@ def create_simple_field_from_schema(field_schema, rapport_vsme):
         case "choix_binaire":
             return forms.BooleanField(**field_kwargs)
         case "choix_binaire_radio":
-            return forms.BooleanField(
-                widget=forms.RadioSelect(choices=[(True, "Oui"), (False, "Non")]),
+            field_kwargs["required"] = True
+            return forms.TypedChoiceField(
+                coerce=lambda x: x == "True",
+                choices=[(True, "Oui"), (False, "Non")],
+                widget=forms.RadioSelect(),
                 **field_kwargs,
             )
         case "choix_unique" | "choix_multiple":
