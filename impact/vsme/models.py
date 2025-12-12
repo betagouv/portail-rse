@@ -1,13 +1,65 @@
 import json
 import os
 from dataclasses import dataclass
+from datetime import date
 from enum import Enum
 
+from dateutil.relativedelta import relativedelta
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 
 from utils.models import TimestampedModel
+
+
+ANNEE_DEBUT_VSME = 2020  # Première année où les rapports VSME peuvent être créés
+
+
+def get_annee_dernier_exercice_clos(entreprise):
+    """
+    Retourne l'année du dernier exercice clos pour une entreprise.
+    Si l'entreprise n'a pas de date de clôture définie, retourne N-1.
+    """
+    annee_en_cours = date.today().year
+    if not entreprise or not entreprise.date_cloture_exercice:
+        return annee_en_cours - 1
+    # Si la date de clôture de cette année est déjà passée, l'exercice de cette année est clos
+    date_cloture = entreprise.date_cloture_exercice + relativedelta(year=annee_en_cours)
+    if date_cloture < date.today():
+        return annee_en_cours
+    return annee_en_cours - 1
+
+
+def get_annee_rapport_par_defaut(entreprise=None):
+    return get_annee_dernier_exercice_clos(entreprise)
+
+
+def get_annee_max_valide(entreprise=None):
+    return get_annee_dernier_exercice_clos(entreprise) + 1
+
+
+def get_annees_valides(entreprise=None):
+    annee_max = get_annee_max_valide(entreprise)
+    return list(range(ANNEE_DEBUT_VSME, annee_max + 1))
+
+
+def annee_est_valide(annee, entreprise=None):
+    return ANNEE_DEBUT_VSME <= annee <= get_annee_max_valide(entreprise)
+
+
+def validate_annee_rapport(value):
+    """
+    Validateur pour le champ annee du modèle RapportVSME.
+    Valide sans contexte d'entreprise (utilise l'année calendaire).
+    La validation complète avec l'entreprise est faite dans les vues.
+    """
+    # Validation de base : entre 2020 et N+1 calendaire
+    annee_max = date.today().year + 1
+    if not (ANNEE_DEBUT_VSME <= value <= annee_max):
+        raise ValidationError(
+            f"L'année du rapport doit être entre {ANNEE_DEBUT_VSME} et {annee_max}"
+        )
 
 
 class Categorie(Enum):
@@ -189,6 +241,7 @@ class RapportVSME(TimestampedModel):
     )
     annee = models.PositiveIntegerField(
         verbose_name="année du rapport VSME",
+        validators=[validate_annee_rapport],
     )
 
     class Meta:
