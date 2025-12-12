@@ -215,13 +215,18 @@ def create_simple_field_from_schema(field_schema, rapport_vsme):
             choices = calculate_choices(field_schema["choix"], rapport_vsme)
             if field_schema["choix"] == "CHOIX_PAYS":
                 field_kwargs["initial"] = ("FRA", "FRANCE")
+            if type_choix := field_schema.get("type_choix"):
+                match type_choix:
+                    case "nombre_entier":
+                        field_kwargs["coerce"] = int
+                        field_kwargs["empty_value"] = None
             if field_type == "choix_unique":
-                field = forms.ChoiceField(choices=choices, **field_kwargs)
+                field = forms.TypedChoiceField(choices=choices, **field_kwargs)
                 if field_schema.get("calculé", False):
                     field.is_computed = True
                 return field
             else:  # choix_multiple
-                return forms.MultipleChoiceField(
+                return forms.TypedMultipleChoiceField(
                     widget=forms.CheckboxSelectMultiple,
                     choices=choices,
                     **field_kwargs,
