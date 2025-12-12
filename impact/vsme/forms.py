@@ -179,10 +179,13 @@ def create_simple_field_from_schema(field_schema, rapport_vsme):
                 widget = DatalistTextInput(options=suggestions)
             else:
                 widget = None
-            return forms.CharField(
+            field = forms.CharField(
                 widget=widget,
                 **field_kwargs,
             )
+            if computed_field := field_schema.get("provoque_calcul", False):
+                field.trigger_computed_field = computed_field
+            return field
         case "texte_long":
             return forms.CharField(
                 widget=forms.Textarea(),
