@@ -69,7 +69,7 @@ def get_field_display(field):
     else:
         match field.field:
             case forms.ChoiceField():
-                return dict(field.field.choices)[field.value()]
+                return dict(field.field.choices).get(field.value(), field.value())
             case _:
                 return field.value()
 
