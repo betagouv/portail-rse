@@ -1,0 +1,43 @@
+{
+    "B3-29-p1": {
+        "titre": "Consommation d’électricité",
+        "description": "Publier la consommation totale d’électricité, ventilée en énergie renouvelable et non renouvelable.",
+        "ancre": "consommation_electricite",
+        "champs": [
+            {
+                "id": "consommation_electricite_par_type",
+                "label": "Consommation d’électricité",
+                "type": "tableau_lignes_fixes",
+                "colonnes": [
+                    {
+                        "id": "electricite_renouvelable",
+                        "label": "Renouvelable",
+                        "description": "Unité : MWh",
+                        "type": "nombre_decimal",
+                        "provoque_calcul": "total"
+                    },
+                    {
+                        "id": "electricite_non_renouvelable",
+                        "label": "Non renouvelable",
+                        "description": "Unité : MWh",
+                        "type": "nombre_decimal",
+                        "provoque_calcul": "total"
+                    },
+                    {
+                        "id": "total",
+                        "label": "Total",
+                        "description": "Unité : MWh",
+                        "type": "nombre_decimal",
+                        "calculé": true
+                    }
+                ],
+                "lignes": [
+                    {
+                        "id": "consommation_electricite",
+                        "label": "Consommation d’électricité"
+                    }
+                ]
+            }
+        ]
+    }
+}
