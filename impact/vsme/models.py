@@ -130,6 +130,7 @@ EXIGENCES_DE_PUBLICATION = {
         "Énergie et émissions de gaz à effet de serre",
         Categorie.ENVIRONNEMENT,
         "https://portail-rse.beta.gouv.fr/vsme/b3-energie-et-emissions-de-gaz-a-effet-de-serre/",
+        remplissable=True,
     ),
     "B4": ExigenceDePublication(
         "B4",
@@ -405,6 +406,31 @@ class Indicateur(TimestampedModel):
 
 def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
     match indicateur_schema_id:
+        case "B3-29-p1":
+            consommation_electricite = data.get("consommation_electricite_par_type")
+            if consommation_electricite:
+                electricite_renouvelable = (
+                    consommation_electricite.get("consommation_electricite")[
+                        "electricite_renouvelable"
+                    ]
+                    or 0
+                )
+                electricite_non_renouvelable = (
+                    consommation_electricite.get("consommation_electricite")[
+                        "electricite_non_renouvelable"
+                    ]
+                    or 0
+                )
+                total = electricite_renouvelable + electricite_non_renouvelable
+                data["consommation_electricite_par_type"]["consommation_electricite"][
+                    "electricite_renouvelable"
+                ] = electricite_renouvelable
+                data["consommation_electricite_par_type"]["consommation_electricite"][
+                    "electricite_non_renouvelable"
+                ] = electricite_non_renouvelable
+                data["consommation_electricite_par_type"]["consommation_electricite"][
+                    "total"
+                ] = total
         case "B10-42-b":
             remuneration_hommes = data.get("remuneration_horaire_hommes")
             remuneration_femmes = data.get("remuneration_horaire_femmes")
