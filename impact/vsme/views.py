@@ -30,6 +30,7 @@ from vsme.models import annee_est_valide
 from vsme.models import Categorie
 from vsme.models import ExigenceDePublication
 from vsme.models import EXIGENCES_DE_PUBLICATION
+from vsme.models import get_annee_max_valide
 from vsme.models import get_annee_rapport_par_defaut
 from vsme.models import get_annees_valides
 from vsme.models import Indicateur
@@ -123,14 +124,15 @@ def categories_vsme(request, entreprise_qualifiee, annee=None):
         )
         return htmx.HttpResponseHXRedirect(redirect_to)
 
-    annee = annee or get_annee_rapport_par_defaut()
+    annee_par_defaut = get_annee_rapport_par_defaut(entreprise_qualifiee)
+    annee = annee or annee_par_defaut
 
-    # Vérifier que l'année est valide
-    if not annee_est_valide(annee):
+    # Vérifier que l'année est valide pour cette entreprise
+    if not annee_est_valide(annee, entreprise_qualifiee):
         messages.error(
             request,
             f"L'année {annee} n'est pas valide pour un rapport VSME. "
-            f"Les rapports doivent être créés pour une année entre 2020 et {get_annee_rapport_par_defaut()}.",
+            f"Les rapports doivent être créés pour une année entre 2020 et {get_annee_max_valide(entreprise_qualifiee)}.",
         )
         return redirect("vsme:categories_vsme", siren=entreprise_qualifiee.siren)
 
@@ -141,7 +143,6 @@ def categories_vsme(request, entreprise_qualifiee, annee=None):
     # Message informatif lors du changement d'année
     # On affiche le message si l'année n'est pas l'année par défaut
     # ou si l'utilisateur vient de créer un nouveau rapport
-    annee_par_defaut = get_annee_rapport_par_defaut()
     if annee != annee_par_defaut or created:
         if annee == annee_par_defaut:
             messages.info(
@@ -157,7 +158,7 @@ def categories_vsme(request, entreprise_qualifiee, annee=None):
     context |= {
         "rapport_vsme": rapport_vsme,
         "annee_courante": annee,
-        "annees_disponibles": get_annees_valides(),
+        "annees_disponibles": get_annees_valides(entreprise_qualifiee),
         "annee_par_defaut": annee_par_defaut,
     }
     return render(request, "vsme/categories.html", context=context)
