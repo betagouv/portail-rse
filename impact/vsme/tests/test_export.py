@@ -197,7 +197,7 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B1_avec_indicateurs_non
     Indicateur.objects.create(
         rapport_vsme=rapport_vsme,
         schema_id="B1-24-b",
-        data={"non_pertinent": True, "omission_informations": []},
+        data={"non_pertinent": True, "omission_informations": ["B6", "B8"]},
     )
     Indicateur.objects.create(
         rapport_vsme=rapport_vsme,
