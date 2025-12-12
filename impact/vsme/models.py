@@ -7,6 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 
+from utils.combustibles import COMBUSTIBLES
 from utils.models import TimestampedModel
 
 
@@ -378,6 +379,15 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                 data["consommation_electricite_par_type"]["consommation_electricite"][
                     "total"
                 ] = total
+        case "B3-29-p2":
+            combustibles = data.get("consommation_energie_par_combustible")
+            if combustibles:
+                for index, combustible in enumerate(combustibles):
+                    type_combustible = combustible.get("type_combustible")
+                    infos_combustible = COMBUSTIBLES.get(type_combustible, {})
+                    data["consommation_energie_par_combustible"][index].update(
+                        infos_combustible
+                    )
         case "B10-42-b":
             remuneration_hommes = data.get("remuneration_horaire_hommes")
             remuneration_femmes = data.get("remuneration_horaire_femmes")
