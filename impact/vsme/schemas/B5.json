@@ -30,6 +30,7 @@
                         "label": "Site",
                         "description": "Identifiant du site renseigné dans B1",
                         "type": "choix_unique",
+                        "type_choix": "nombre_entier",
                         "choix": "CHOIX_SITES",
                         "obligatoire": true
                     },
