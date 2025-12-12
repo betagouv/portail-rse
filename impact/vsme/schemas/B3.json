@@ -148,9 +148,28 @@
                     {
                         "id": "quantite",
                         "label": "Quantité",
-                        "description": "Unité : t (si solide) ou m3 (si gazeux) ou L (si liquide)",
                         "type": "nombre_decimal",
                         "provoque_calcul": "total"
+                    },
+                    {
+                        "id": "unite",
+                        "label": "Unité",
+                        "type": "choix_unique",
+                        "choix": [
+                            {
+                                "id": "t",
+                                "label": "Tonnes (t)"
+                            },
+                            {
+                                "id": "m3",
+                                "label": "Mètre cubes (m³)"
+                            },
+                            {
+                                "id": "L",
+                                "label": "Litres (L)"
+                            }
+                        ],
+                        "calculé": true
                     },
                     {
                         "id": "energie",
