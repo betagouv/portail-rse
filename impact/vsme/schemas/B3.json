@@ -209,8 +209,8 @@
                 ],
                 "lignes": [
                     {
-                        "id": "consommation_electricite",
-                        "label": "Consommation d’électricité"
+                        "id": "consommation_energie",
+                        "label": "Consommation d’énergie"
                     }
                 ]
             }

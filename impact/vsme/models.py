@@ -435,6 +435,8 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
         case "B3-29-p2":
             combustibles = data.get("consommation_energie_par_combustible")
             if combustibles:
+                consommation_renouvelable = 0
+                consommation_non_renouvelable = 0
                 for index, combustible in enumerate(combustibles):
                     type_combustible = combustible.get("type_combustible")
                     infos_combustible = COMBUSTIBLES.get(type_combustible, {})
@@ -454,6 +456,20 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                         data["consommation_energie_par_combustible"][index][
                             "energie"
                         ] = energie
+                        match infos_combustible["etat_renouvelabilite"]:
+                            case "renouvelable":
+                                consommation_renouvelable += energie
+                            case "non_renouvelable":
+                                consommation_non_renouvelable += energie
+                data["consommation_combustible_par_type"]["consommation_energie"][
+                    "energie_renouvelable"
+                ] = consommation_renouvelable
+                data["consommation_combustible_par_type"]["consommation_energie"][
+                    "energie_non_renouvelable"
+                ] = consommation_non_renouvelable
+                data["consommation_combustible_par_type"]["consommation_energie"][
+                    "total"
+                ] = (consommation_renouvelable + consommation_non_renouvelable)
 
         case "B10-42-b":
             remuneration_hommes = data.get("remuneration_horaire_hommes")
