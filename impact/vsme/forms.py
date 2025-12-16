@@ -12,6 +12,7 @@ from django.utils.safestring import mark_safe
 
 from utils.categories_juridiques import CATEGORIES_JURIDIQUES_NIVEAU_II
 from utils.codes_nace import CODES_NACE
+from utils.combustibles import COMBUSTIBLES
 from utils.forms import DsfrForm
 from utils.forms import DsfrFormSet
 from utils.pays import CODES_PAYS_ISO_3166_1
@@ -444,6 +445,10 @@ def calculate_rows(lignes, rapport_vsme):
 
 def calculate_choices(choix, rapport_vsme):
     match choix:
+        case "CHOIX_COMBUSTIBLE":
+            choices = [
+                (combustible, combustible) for combustible in COMBUSTIBLES.keys()
+            ]
         case "CHOIX_PAYS":
             choices = CODES_PAYS_ISO_3166_1
         case "CHOIX_FORME_JURIDIQUE":
