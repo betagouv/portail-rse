@@ -51,7 +51,8 @@
                         "label": "Situé à proximité d’une zone sensible",
                         "type": "choix_binaire_radio"
                     }
-                ]
+                ],
+                "obligatoire": true
             }
         ],
         "si_pertinent": "L'entreprise ne dispose pas de sites situés dans ou à proximité de zones sensibles sur le plan de la biodiversité"

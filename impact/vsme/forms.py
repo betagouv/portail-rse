@@ -21,7 +21,11 @@ NON_PERTINENT_FIELD_NAME = "non_pertinent"
 
 
 def create_multiform_from_schema(
-    schema, rapport_vsme, extra=0, infos_preremplissage=None
+    schema,
+    rapport_vsme,
+    id_tableau_ligne_ajoutee=None,
+    ajoute_ligne_vide=False,
+    infos_preremplissage=None,
 ):
     indicateur_url = reverse(
         "vsme:indicateur_vsme",
@@ -148,7 +152,10 @@ def create_multiform_from_schema(
                 if _DynamicForm.base_fields:
                     _MultiForm.add_Form(_DynamicForm)
                     _DynamicForm = _dynamicform_factory()
-
+                if id_tableau_ligne_ajoutee == field_name:
+                    extra = 1 if ajoute_ligne_vide else 0
+                else:
+                    extra = 0
                 FormSet = create_Formset_from_schema(field, rapport_vsme, extra=extra)
 
                 _MultiForm.add_Form(FormSet)
@@ -404,7 +411,7 @@ def create_Formset_from_schema(field_schema, rapport_vsme, extra=0):
             formset=TableauLignesLibresFormSet,
             extra=extra,
             can_delete=True,
-            min_num=1,
+            min_num=1 if field_schema.get("obligatoire", False) else 0,
             validate_min=True,
         )
     else:  # "tableau_lignes_fixes"

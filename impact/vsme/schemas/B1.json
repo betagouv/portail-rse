@@ -303,7 +303,8 @@
                         "label": "Commentaire (facultatif)",
                         "type": "texte"
                     }
-                ]
+                ],
+                "obligatoire": true
             }
         ],
         "si_pertinent": true

@@ -276,11 +276,12 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
                 data = ajoute_donnes_calculees(
                     indicateur_schema_id, rapport_vsme, multiform.cleaned_data
                 )
-                data, ajouté = ajoute_auto_id_eventuel(indicateur_schema, data)
+                data, ligne_ajoutee = ajoute_auto_id_eventuel(indicateur_schema, data)
                 multiform = create_multiform_from_schema(
                     indicateur_schema,
                     rapport_vsme,
-                    extra=0 if ajouté else 1,
+                    id_tableau_ligne_ajoutee=request.POST["ajouter-ligne"],
+                    ajoute_ligne_vide=not ligne_ajoutee,
                 )(initial=data)
         elif "supprimer-ligne" in request.POST:
             if multiform.is_valid():

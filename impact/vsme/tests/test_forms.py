@@ -34,6 +34,7 @@ TABLEAU_EMPLOYES = {
             "type": "texte",
         },
     ],
+    "obligatoire": True,
 }
 
 
@@ -194,7 +195,7 @@ def test_multiform_validation_champ_obligatoire_manquant(
 
 def test_multiform_validation_tableau(indicateur_avec_tableau, rapport_vsme):
     multiform_class = create_multiform_from_schema(
-        indicateur_avec_tableau, rapport_vsme, extra=1
+        indicateur_avec_tableau, rapport_vsme
     )
     data = {
         "employes-TOTAL_FORMS": "1",
@@ -214,7 +215,7 @@ def test_multiform_validation_tableau(indicateur_avec_tableau, rapport_vsme):
 
 def test_multiform_tableau_suppression_ligne(indicateur_avec_tableau, rapport_vsme):
     multiform_class = create_multiform_from_schema(
-        indicateur_avec_tableau, rapport_vsme, extra=0
+        indicateur_avec_tableau, rapport_vsme
     )
     data = {
         "employes-TOTAL_FORMS": "3",
@@ -240,7 +241,7 @@ def test_multiform_tableau_minimum_une_ligne_requise(
     indicateur_avec_tableau, rapport_vsme
 ):
     multiform_class = create_multiform_from_schema(
-        indicateur_avec_tableau, rapport_vsme, extra=0
+        indicateur_avec_tableau, rapport_vsme
     )
     data = {
         "form-TOTAL_FORMS": "0",
@@ -259,7 +260,7 @@ def test_multiform_champs_avant_et_apres_tableau(
     indicateur_champs_et_tableau, rapport_vsme
 ):
     multiform_class = create_multiform_from_schema(
-        indicateur_champs_et_tableau, rapport_vsme, extra=1
+        indicateur_champs_et_tableau, rapport_vsme
     )
 
     assert len(multiform_class.Forms) == 3
@@ -276,7 +277,7 @@ def test_multiform_champs_et_tableau_validation(
     indicateur_champs_et_tableau, rapport_vsme
 ):
     multiform_class = create_multiform_from_schema(
-        indicateur_champs_et_tableau, rapport_vsme, extra=1
+        indicateur_champs_et_tableau, rapport_vsme
     )
     data = {
         "nom": "Alice",
