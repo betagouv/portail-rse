@@ -399,7 +399,7 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                                 masse = quantite
                             case "L" | "m3":
                                 masse = quantite * infos_combustible["densite"]
-                        energie = masse * infos_combustible["NCV"]
+                        energie = round(masse * infos_combustible["NCV"], 2)
                         data["consommation_energie_par_combustible"][index][
                             "energie"
                         ] = energie
@@ -419,12 +419,13 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                                 consommation_non_renouvelable += combustible["energie"]
             data["consommation_combustible_par_type"] = {
                 "consommation_energie": {
-                    "energie_renouvelable": consommation_renouvelable,
-                    "energie_non_renouvelable": consommation_non_renouvelable,
-                    "total": consommation_renouvelable + consommation_non_renouvelable,
+                    "energie_renouvelable": round(consommation_renouvelable, 2),
+                    "energie_non_renouvelable": round(consommation_non_renouvelable, 2),
+                    "total": round(
+                        consommation_renouvelable + consommation_non_renouvelable, 2
+                    ),
                 }
             }
-
         case "B10-42-b":
             remuneration_hommes = data.get("remuneration_horaire_hommes")
             remuneration_femmes = data.get("remuneration_horaire_femmes")
