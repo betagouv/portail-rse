@@ -142,7 +142,8 @@
                         "type": "nombre_decimal",
                         "obligatoire": true
                     }
-                ]
+                ],
+                "obligatoire": true
             }
         ],
         "si_pertinent": "L'entreprise ne produit que des déchets ménagers"
@@ -189,7 +190,8 @@
                         ],
                         "obligatoire": true
                     }
-                ]
+                ],
+                "obligatoire": true
             }
         ],
         "si_pertinent": "L’entreprise n'exerce pas d'activité dans un secteur utilisant des flux de matières importants (fabrication, construction, emballage ou autres)"

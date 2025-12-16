@@ -134,7 +134,8 @@
                         "type": "nombre_decimal",
                         "obligatoire": true
                     }
-                ]
+                ],
+                "obligatoire": true
             }
         ],
         "si_pertinent": true
@@ -274,7 +275,8 @@
                         "type": "nombre_decimal",
                         "obligatoire": true
                     }
-                ]
+                ],
+                "obligatoire": true
             }
         ],
         "si_pertinent": true
@@ -414,7 +416,8 @@
                         "type": "nombre_decimal",
                         "obligatoire": true
                     }
-                ]
+                ],
+                "obligatoire": true
             }
         ],
         "si_pertinent": true

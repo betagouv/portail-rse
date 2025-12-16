@@ -181,6 +181,42 @@
                 ]
             },
             {
+                "id": "consommation_energie_autres_combustibles",
+                "label": "Consommation d'énergie par combustible spécifique",
+                "type": "tableau",
+                "colonnes": [
+                    {
+                        "id": "type_combustible",
+                        "label": "Type de combustible",
+                        "type": "texte",
+                        "obligatoire": true
+                    },
+                    {
+                        "id": "etat_renouvelabilite",
+                        "label": "Renouvelable/Non renouvelable",
+                        "type": "choix_unique",
+                        "choix": [
+                            {
+                                "id": "renouvelable",
+                                "label": "Renouvelable"
+                            },
+                            {
+                                "id": "non_renouvelable",
+                                "label": "Non renouvelable"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "energie",
+                        "label": "Énergie consommée",
+                        "description": "Unité : MWh",
+                        "type": "nombre_decimal",
+                        "provoque_calcul": "consommation_combustible_par_type",
+                        "obligatoire": true
+                    }
+                ]
+            },
+            {
                 "id": "consommation_combustible_par_type",
                 "label": "Consommation de combustible",
                 "type": "tableau_lignes_fixes",
