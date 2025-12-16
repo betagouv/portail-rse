@@ -342,6 +342,7 @@ def create_Formset_from_schema(field_schema, rapport_vsme, extra=0):
             self.default_error_messages["too_few_forms"] = (
                 "Le tableau doit contenir au moins une ligne."
             )
+            kwargs["prefix"] = self.id
             super().__init__(*args, **kwargs)
 
         @property
@@ -377,6 +378,7 @@ def create_Formset_from_schema(field_schema, rapport_vsme, extra=0):
                     kwargs["initial"] = [{} for row in self.rows]
             else:
                 kwargs["initial"] = [{} for row in self.rows]
+            kwargs["prefix"] = self.id
             super().__init__(*args, **kwargs)
 
         @property

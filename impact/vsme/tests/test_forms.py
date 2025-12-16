@@ -197,10 +197,10 @@ def test_multiform_validation_tableau(indicateur_avec_tableau, rapport_vsme):
         indicateur_avec_tableau, rapport_vsme, extra=1
     )
     data = {
-        "form-TOTAL_FORMS": "1",
-        "form-INITIAL_FORMS": "0",
-        "form-0-nom_employe": "Alice",
-        "form-0-fonction": "Présidente",
+        "employes-TOTAL_FORMS": "1",
+        "employes-INITIAL_FORMS": "0",
+        "employes-0-nom_employe": "Alice",
+        "employes-0-fonction": "Présidente",
     }
     multiform = multiform_class(data)
 
@@ -217,15 +217,15 @@ def test_multiform_tableau_suppression_ligne(indicateur_avec_tableau, rapport_vs
         indicateur_avec_tableau, rapport_vsme, extra=0
     )
     data = {
-        "form-TOTAL_FORMS": "3",
-        "form-INITIAL_FORMS": "2",
-        "form-0-nom_employe": "Alice",
-        "form-0-fonction": "Présidente",
-        "form-1-nom_employe": "Bob",
-        "form-1-fonction": "Associé",
-        "form-1-DELETE": "on",
-        "form-2-nom_employe": "Charlie",
-        "form-2-fonction": "Responsable RSE",
+        "employes-TOTAL_FORMS": "3",
+        "employes-INITIAL_FORMS": "2",
+        "employes-0-nom_employe": "Alice",
+        "employes-0-fonction": "Présidente",
+        "employes-1-nom_employe": "Bob",
+        "employes-1-fonction": "Associé",
+        "employes-1-DELETE": "on",
+        "employes-2-nom_employe": "Charlie",
+        "employes-2-fonction": "Responsable RSE",
     }
     multiform = multiform_class(data)
 
@@ -280,10 +280,10 @@ def test_multiform_champs_et_tableau_validation(
     )
     data = {
         "nom": "Alice",
-        "form-TOTAL_FORMS": "1",
-        "form-INITIAL_FORMS": "0",
-        "form-0-nom_employe": "Charlie",
-        "form-0-fonction": "Responsable RSE",
+        "employes-TOTAL_FORMS": "1",
+        "employes-INITIAL_FORMS": "0",
+        "employes-0-nom_employe": "Charlie",
+        "employes-0-fonction": "Responsable RSE",
         "commentaire": "Test",
     }
     multiform = multiform_class(data)
@@ -391,14 +391,14 @@ def test_multiform_tableau_lignes_fixes_validation(
         indicateur_avec_tableau_lignes_fixes, rapport_vsme
     )
     data = {
-        "form-TOTAL_FORMS": "3",
-        "form-INITIAL_FORMS": "0",
-        "form-0-nombre_heures_travaillees": "10",
-        "form-0-representation_conseil_administration": True,
-        "form-1-nombre_heures_travaillees": "5",
-        "form-1-representation_conseil_administration": True,
-        "form-2-nombre_heures_travaillees": "2",
-        "form-2-representation_conseil_administration": False,
+        "repartition-TOTAL_FORMS": "3",
+        "repartition-INITIAL_FORMS": "0",
+        "repartition-0-nombre_heures_travaillees": "10",
+        "repartition-0-representation_conseil_administration": True,
+        "repartition-1-nombre_heures_travaillees": "5",
+        "repartition-1-representation_conseil_administration": True,
+        "repartition-2-nombre_heures_travaillees": "2",
+        "repartition-2-representation_conseil_administration": False,
     }
     multiform = multiform_class(data)
 
@@ -427,15 +427,15 @@ def test_multiform_tableau_lignes_fixes_suppression_ligne_impossible(
         indicateur_avec_tableau_lignes_fixes, rapport_vsme
     )
     data = {
-        "form-TOTAL_FORMS": "3",
-        "form-INITIAL_FORMS": "0",
-        "form-0-nombre_heures_travaillees": "10",
-        "form-0-representation_conseil_administration": True,
-        "form-1-nombre_heures_travaillees": "5",
-        "form-1-representation_conseil_administration": True,
-        "form-2-nombre_heures_travaillees": "2",
-        "form-2-representation_conseil_administration": False,
-        "form-2-DELETE": "on",
+        "repartition-TOTAL_FORMS": "3",
+        "repartition-INITIAL_FORMS": "0",
+        "repartition-0-nombre_heures_travaillees": "10",
+        "repartition-0-representation_conseil_administration": True,
+        "repartition-1-nombre_heures_travaillees": "5",
+        "repartition-1-representation_conseil_administration": True,
+        "repartition-2-nombre_heures_travaillees": "2",
+        "repartition-2-representation_conseil_administration": False,
+        "repartition-2-DELETE": "on",
     }
     multiform = multiform_class(data)
 

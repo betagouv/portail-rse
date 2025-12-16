@@ -29,10 +29,10 @@ def test_succès_vérification_total_des_salariés(client, rapport_vsme_42_salar
     )
 
     data = {
-        "form-TOTAL_FORMS": "2",
-        "form-INITIAL_FORMS": "2",
-        "form-0-nombre_salaries": "20",
-        "form-1-nombre_salaries": "22",
+        "effectifs_pays-TOTAL_FORMS": "2",
+        "effectifs_pays-INITIAL_FORMS": "2",
+        "effectifs_pays-0-nombre_salaries": "20",
+        "effectifs_pays-1-nombre_salaries": "22",
         # total nombre salariés égal à 42
     }
     multiform = multiform_class(data)
@@ -47,10 +47,10 @@ def test_échec_vérification_total_des_salariés(client, rapport_vsme_42_salari
     )
 
     data = {
-        "form-TOTAL_FORMS": "2",
-        "form-INITIAL_FORMS": "2",
-        "form-0-nombre_salaries": "1",
-        "form-1-nombre_salaries": "3",
+        "effectifs_pays-TOTAL_FORMS": "2",
+        "effectifs_pays-INITIAL_FORMS": "2",
+        "effectifs_pays-0-nombre_salaries": "1",
+        "effectifs_pays-1-nombre_salaries": "3",
         # total nombre salariés différent de 42
     }
     multiform = multiform_class(data)
@@ -68,13 +68,13 @@ def test_succes_vérification_total_dechets_produit(client, rapport_vsme):
     )
 
     data = {
-        "form-TOTAL_FORMS": "1",
-        "form-INITIAL_FORMS": "0",
-        "form-0-dechet": "01",
-        "form-0-dangereux": True,
-        "form-0-total_dechets": "3",
-        "form-0-recyclage_ou_reutilisation": "1",
-        "form-0-elimines": "2",
+        "gestion_dechets-TOTAL_FORMS": "1",
+        "gestion_dechets-INITIAL_FORMS": "0",
+        "gestion_dechets-0-dechet": "01",
+        "gestion_dechets-0-dangereux": True,
+        "gestion_dechets-0-total_dechets": "3",
+        "gestion_dechets-0-recyclage_ou_reutilisation": "1",
+        "gestion_dechets-0-elimines": "2",
         # somme recyclage et elimines égale à total_dechets
     }
     multiform = multiform_class(data)
@@ -88,13 +88,13 @@ def test_échec_vérification_total_dechets_produit(client, rapport_vsme):
     )
 
     data = {
-        "form-TOTAL_FORMS": "1",
-        "form-INITIAL_FORMS": "0",
-        "form-0-dechet": "01",
-        "form-0-dangereux": True,
-        "form-0-total_dechets": "3",
-        "form-0-recyclage_ou_reutilisation": "1",
-        "form-0-elimines": "4",
+        "gestion_dechets-TOTAL_FORMS": "1",
+        "gestion_dechets-INITIAL_FORMS": "0",
+        "gestion_dechets-0-dechet": "01",
+        "gestion_dechets-0-dangereux": True,
+        "gestion_dechets-0-total_dechets": "3",
+        "gestion_dechets-0-recyclage_ou_reutilisation": "1",
+        "gestion_dechets-0-elimines": "4",
         # somme recyclage et elimines différente de total_dechets
     }
     multiform = multiform_class(data)
