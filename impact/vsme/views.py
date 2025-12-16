@@ -235,9 +235,10 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
                     return htmx.HttpResponseHXRedirect(redirect_to)
         elif "ajouter-ligne" in request.POST:
             if multiform.is_valid():
-                data, ajouté = ajoute_auto_id_eventuel(
-                    indicateur_schema, multiform.cleaned_data
+                data = ajoute_donnes_calculees(
+                    indicateur_schema_id, rapport_vsme, multiform.cleaned_data
                 )
+                data, ajouté = ajoute_auto_id_eventuel(indicateur_schema, data)
                 multiform = create_multiform_from_schema(
                     indicateur_schema,
                     rapport_vsme,
@@ -245,10 +246,13 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
                 )(initial=data)
         elif "supprimer-ligne" in request.POST:
             if multiform.is_valid():
+                data = ajoute_donnes_calculees(
+                    indicateur_schema_id, rapport_vsme, multiform.cleaned_data
+                )
                 multiform = create_multiform_from_schema(
                     indicateur_schema,
                     rapport_vsme,
-                )(initial=multiform.cleaned_data)
+                )(initial=data)
         else:
             # un champ a déclenché un raffraichissement dynamique du formulaire (non pertinent, calcul...)
             if multiform.is_valid():
