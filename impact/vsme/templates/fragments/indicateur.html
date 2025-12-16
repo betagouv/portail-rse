@@ -81,7 +81,7 @@
                                                                 {{ field.value }}
                                                                 {{ field.as_hidden }}
                                                             {% elif field.field.is_computed %}
-                                                                {{ field.value|default_if_none:"<span class='fr-badge fr-badge--sm'>auto</span>" }}
+                                                                {{ field|get_field_display|default_if_none:"<span class='fr-badge fr-badge--sm'>auto</span>" }}
                                                                 <img id="htmx-indicator-{{ field.name }}-{{ forloop.parentloop.counter0 }}" src="{% static 'img/spinner.svg' %}" alt="Spinner d'attente" height="30em" class="htmx-indicator">
                                                             {% else %}
                                                                 {{ field }}
