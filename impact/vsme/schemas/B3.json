@@ -48,6 +48,7 @@
             {
                 "id": "consommation_energie_par_combustible",
                 "label": "Consommation d'énergie par combustible",
+                "description": "Conversion automatique de la quantité consommée en énergie pour les types de combustible connus",
                 "type": "tableau",
                 "colonnes": [
                     {
@@ -131,7 +132,8 @@
             },
             {
                 "id": "consommation_energie_autres_combustibles",
-                "label": "Consommation d'énergie par combustible spécifique",
+                "label": "Autres combustibles",
+                "description": "Si l'entreprise consomme d'autres types de combustible plus spécifiques, calculer et saisir directement l'énergie consommée",
                 "type": "tableau",
                 "colonnes": [
                     {
@@ -167,7 +169,8 @@
             },
             {
                 "id": "consommation_combustible_par_type",
-                "label": "Consommation de combustible",
+                "label": "Consommation d'énergie totale",
+                "description": "Consommation d'énergie totale calculée à partir des données saisies par combustible",
                 "type": "tableau_lignes_fixes",
                 "colonnes": [
                     {

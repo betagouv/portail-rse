@@ -115,10 +115,13 @@
                                     </table>
                                 {% else %}
                                     <!-- tableau sans ligne -->
-                                    <p class="fr-label">
+                                    <span class="fr-label">
                                         {{ form.label }}
-                                    </p>
+                                    </span>
                                     <p class="fr-text--xs">
+                                        {{ form.description }}
+                                    </p>
+                                    <p class="fr-text--xs fr-mb-1v">
                                         Aucune ligne dans ce tableau
                                     </p>
                                 {% endif %}
