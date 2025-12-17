@@ -410,26 +410,24 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
         case "B3-29-p1":
             consommation_electricite = data.get("consommation_electricite_par_type")
             if consommation_electricite:
-                electricite_renouvelable = (
-                    consommation_electricite.get("consommation_electricite")[
-                        "electricite_renouvelable"
+                consommation_renouvelable = (
+                    consommation_electricite.get("consommation_energie")["renouvelable"]
+                    or 0
+                )
+                consommation_non_renouvelable = (
+                    consommation_electricite.get("consommation_energie")[
+                        "non_renouvelable"
                     ]
                     or 0
                 )
-                electricite_non_renouvelable = (
-                    consommation_electricite.get("consommation_electricite")[
-                        "electricite_non_renouvelable"
-                    ]
-                    or 0
-                )
-                total = electricite_renouvelable + electricite_non_renouvelable
-                data["consommation_electricite_par_type"]["consommation_electricite"][
-                    "electricite_renouvelable"
-                ] = electricite_renouvelable
-                data["consommation_electricite_par_type"]["consommation_electricite"][
-                    "electricite_non_renouvelable"
-                ] = electricite_non_renouvelable
-                data["consommation_electricite_par_type"]["consommation_electricite"][
+                total = consommation_renouvelable + consommation_non_renouvelable
+                data["consommation_electricite_par_type"]["consommation_energie"][
+                    "renouvelable"
+                ] = consommation_renouvelable
+                data["consommation_electricite_par_type"]["consommation_energie"][
+                    "non_renouvelable"
+                ] = consommation_non_renouvelable
+                data["consommation_electricite_par_type"]["consommation_energie"][
                     "total"
                 ] = total
         case "B3-29-p2":
@@ -472,8 +470,8 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                                 consommation_non_renouvelable += combustible["energie"]
             data["consommation_combustible_par_type"] = {
                 "consommation_energie": {
-                    "energie_renouvelable": round(consommation_renouvelable, 2),
-                    "energie_non_renouvelable": round(consommation_non_renouvelable, 2),
+                    "renouvelable": round(consommation_renouvelable, 2),
+                    "non_renouvelable": round(consommation_non_renouvelable, 2),
                     "total": round(
                         consommation_renouvelable + consommation_non_renouvelable, 2
                     ),
