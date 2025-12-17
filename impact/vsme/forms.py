@@ -95,7 +95,7 @@ def create_multiform_from_schema(
                 form.fields[field_name].widget.attrs.update(
                     {
                         "hx-post": indicateur_url,
-                        "hx-trigger": "input changed delay:500ms",
+                        "hx-trigger": "load, input changed delay:500ms",
                         "hx-indicator": hx_indicator,
                     }
                 )
@@ -180,7 +180,6 @@ def create_simple_field_from_schema(field_schema, rapport_vsme):
         case "auto_id":
             field = forms.IntegerField(min_value=1, required=True)
             field.auto_id = True
-            return field
         case "texte":
             field_kwargs["max_length"] = field_schema.get("max_length", 255)
             if suggestions := field_schema.get("suggestions"):
@@ -191,35 +190,27 @@ def create_simple_field_from_schema(field_schema, rapport_vsme):
                 widget=widget,
                 **field_kwargs,
             )
-            if computed_field := field_schema.get("provoque_calcul", False):
-                field.trigger_computed_field = computed_field
-            return field
         case "texte_long":
-            return forms.CharField(
+            field = forms.CharField(
                 widget=forms.Textarea(),
                 **field_kwargs,
             )
         case "nombre_entier" | "auto_id":
             field_kwargs["min_value"] = field_schema.get("min")
             field_kwargs["max_value"] = field_schema.get("max")
-            return forms.IntegerField(**field_kwargs)
+            field = forms.IntegerField(**field_kwargs)
         case "nombre_decimal":
             field = forms.FloatField(**field_kwargs)
-            if field_schema.get("calculé", False):
-                field.is_computed = True
-            if computed_field := field_schema.get("provoque_calcul", False):
-                field.trigger_computed_field = computed_field
-            return field
         case "date":
-            return forms.DateField(
+            field = forms.DateField(
                 widget=forms.DateInput(format="%Y-%m-%d", attrs={"type": "date"}),
                 **field_kwargs,
             )
         case "choix_binaire":
-            return forms.BooleanField(**field_kwargs)
+            field = forms.BooleanField(**field_kwargs)
         case "choix_binaire_radio":
             field_kwargs["required"] = True
-            return forms.TypedChoiceField(
+            field = forms.TypedChoiceField(
                 coerce=lambda x: x == "True",
                 choices=[(True, "Oui"), (False, "Non")],
                 widget=forms.RadioSelect(),
@@ -236,19 +227,23 @@ def create_simple_field_from_schema(field_schema, rapport_vsme):
                         field_kwargs["empty_value"] = None
             if field_type == "choix_unique":
                 field = forms.TypedChoiceField(choices=choices, **field_kwargs)
-                if field_schema.get("calculé", False):
-                    field.is_computed = True
-                return field
             else:  # choix_multiple
-                return forms.TypedMultipleChoiceField(
+                field = forms.TypedMultipleChoiceField(
                     widget=forms.CheckboxSelectMultiple,
                     choices=choices,
                     **field_kwargs,
                 )
         case "geolocalisation":
-            return GeoField(**field_kwargs)
+            field = GeoField(**field_kwargs)
         case _:
             raise Exception(f"Type inconnu : {field_type}")
+
+    if computed_field := field_schema.get("provoque_calcul", False):
+        field.trigger_computed_field = computed_field
+    if field_schema.get("calculé", False):
+        field.is_computed = True
+
+    return field
 
 
 class GeoField(forms.CharField):
