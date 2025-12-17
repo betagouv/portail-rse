@@ -203,5 +203,52 @@
                 ]
             }
         ]
+    },
+    "B3-30": {
+        "titre": "Estimation des émissions brutes de gaz à effet de serre",
+        "description": "L’entreprise publie ses émissions brutes de GES en tonnes équivalent CO₂ (teqCO₂), ventilées entre le scope 1 (émissions directes) et le scope 2 basé sur la localisation (émissions indirectes liées à l’énergie achetée).",
+        "ancre": "estimation_emissions_GES",
+        "champs": [
+            {
+                "id": "estimation_emissions_GES",
+                "label": "Estimation des émissions brutes de gaz à effet de serre",
+                "type": "tableau_lignes_fixes",
+                "colonnes": [
+                    {
+                        "id": "emission_scope_1",
+                        "label": "émissions du scope 1",
+                        "description": "Unité : teqCO2",
+                        "type": "nombre_decimal",
+                        "provoque_calcul_des_champs": ["total_emission_GES", "intensite_GES"]
+                    },
+                    {
+                        "id": "emission_scope_2",
+                        "label": "émissions du scope 2 basées sur la localisation",
+                        "description": "Unité : teqCO2",
+                        "type": "nombre_decimal",
+                        "provoque_calcul_des_champs": ["total_emission_GES", "intensite_GES"]
+                    },
+                    {
+                        "id": "total_emission_GES",
+                        "label": "Total",
+                        "type": "nombre_decimal",
+                        "calculé": true
+                    }
+                ],
+                "lignes": [
+                    {
+                        "id": "GES",
+                        "label": "Gaz à Effet de Serre"
+                    }
+                ]
+            },
+            {
+                "id": "intensite_GES",
+                "label": "Intensité GES",
+                "description": "Calculée automatiquement en divisant le total des émissions brutes de gaz à effet de serre par le chiffre d'affaires renseigné dans B1.",
+                "type": "nombre_decimal",
+                "calculé": true
+            }
+        ]
     }
 }
