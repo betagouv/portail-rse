@@ -14,14 +14,14 @@
                         "label": "Renouvelable",
                         "description": "Unité : MWh",
                         "type": "nombre_decimal",
-                        "provoque_calcul": "total"
+                        "provoque_calcul_des_champs": ["total"]
                     },
                     {
                         "id": "electricite_non_renouvelable",
                         "label": "Non renouvelable",
                         "description": "Unité : MWh",
                         "type": "nombre_decimal",
-                        "provoque_calcul": "total"
+                        "provoque_calcul_des_champs": ["total"]
                     },
                     {
                         "id": "total",
@@ -55,7 +55,7 @@
                         "label": "Type de combustible",
                         "type": "choix_unique",
                         "choix": "CHOIX_COMBUSTIBLE",
-                        "provoque_calcul": "etat_chimique",
+                        "provoque_calcul_des_champs": ["etat_chimique", "etat_renouvelabilite", "unite"],
                         "obligatoire": true
                     },
                     {
@@ -98,7 +98,7 @@
                         "id": "quantite",
                         "label": "Quantité",
                         "type": "nombre_decimal",
-                        "provoque_calcul": "total"
+                        "provoque_calcul_des_champs": ["energie"]
                     },
                     {
                         "id": "unite",
@@ -160,7 +160,7 @@
                         "label": "Énergie consommée",
                         "description": "Unité : MWh",
                         "type": "nombre_decimal",
-                        "provoque_calcul": "consommation_combustible_par_type",
+                        "provoque_calcul_des_champs": ["consommation_combustible_par_type"],
                         "obligatoire": true
                     }
                 ]

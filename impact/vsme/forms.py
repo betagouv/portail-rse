@@ -86,12 +86,16 @@ def create_multiform_from_schema(
                             self.customize_field(form_table, field, index)
 
         def customize_field(self, form, field_name, index=None):
-            if hasattr(form.fields[field_name], "trigger_computed_field"):
-                hx_indicator = (
-                    f"#htmx-indicator-{form.fields[field_name].trigger_computed_field}"
-                )
+            if hasattr(form.fields[field_name], "trigger_computed_fields"):
+                triggered_fields = form.fields[field_name].trigger_computed_fields
+                hx_indicators = [
+                    f"#htmx-indicator-{field}" for field in triggered_fields
+                ]
                 if index is not None:
-                    hx_indicator += f"-{index}"
+                    hx_indicators = [
+                        hx_indicator + f"-{index}" for hx_indicator in hx_indicators
+                    ]
+                hx_indicator = ", ".join(hx_indicators)
                 form.fields[field_name].widget.attrs.update(
                     {
                         "hx-post": indicateur_url,
@@ -238,8 +242,8 @@ def create_simple_field_from_schema(field_schema, rapport_vsme):
         case _:
             raise Exception(f"Type inconnu : {field_type}")
 
-    if computed_field := field_schema.get("provoque_calcul", False):
-        field.trigger_computed_field = computed_field
+    if computed_fields := field_schema.get("provoque_calcul_des_champs", False):
+        field.trigger_computed_fields = computed_fields
     if field_schema.get("calculé", False):
         field.is_computed = True
 
