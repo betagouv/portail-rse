@@ -21,7 +21,7 @@
                 "description": "Correspond à la rémunération brute hebdomadaire (ou annuelle) divisée par le nombre moyen d’heures travaillées par semaine (ou par an)",
                 "type": "nombre_decimal",
                 "unité": "euros",
-                "provoque_calcul": "ecart_remuneration_hommes_femmes",
+                "provoque_calcul_des_champs": ["ecart_remuneration_hommes_femmes"],
                 "obligatoire": true
             },
             {
@@ -30,7 +30,7 @@
                 "description": "Correspond à la rémunération brute hebdomadaire (ou annuelle) divisée par le nombre moyen d’heures travaillées par semaine (ou par an)",
                 "type": "nombre_decimal",
                 "unité": "euros",
-                "provoque_calcul": "ecart_remuneration_hommes_femmes",
+                "provoque_calcul_des_champs": ["ecart_remuneration_hommes_femmes"],
                 "obligatoire": true
             },
             {
@@ -55,7 +55,7 @@
                 "type": "nombre_decimal",
                 "unité": "salariés",
                 "obligatoire": true,
-                "provoque_calcul": "taux_couverture_conventions_collectives"
+                "provoque_calcul_des_champs": ["taux_couverture_conventions_collectives"]
             },
             {
                 "id": "taux_couverture_conventions_collectives",
@@ -103,7 +103,7 @@
                         "label": "Total des heures de formation suivies par les salariés de ce genre",
                         "type": "nombre_decimal",
                         "unité": "heures",
-                        "provoque_calcul": "nombre_moyen_heures_formation"
+                        "provoque_calcul_des_champs": ["nombre_moyen_heures_formation"]
                     },
                     {
                         "id": "nombre_moyen_heures_formation",
