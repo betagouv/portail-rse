@@ -16,7 +16,6 @@ from utils.combustibles import COMBUSTIBLES
 from utils.forms import DsfrForm
 from utils.forms import DsfrFormSet
 from utils.pays import CODES_PAYS_ISO_3166_1
-from vsme.models import EXIGENCES_DE_PUBLICATION
 
 NON_PERTINENT_FIELD_NAME = "non_pertinent"
 
@@ -460,7 +459,7 @@ def calculate_choices(choix, rapport_vsme):
                     exigence_de_publication.code,
                     f"{exigence_de_publication.code} - {exigence_de_publication.nom}",
                 )
-                for exigence_de_publication in EXIGENCES_DE_PUBLICATION.values()
+                for exigence_de_publication in rapport_vsme.exigences_de_publication_applicables()
             ]
         case "CHOIX_SITES":
             indicateur_sites = "B1-24-e-vii"
