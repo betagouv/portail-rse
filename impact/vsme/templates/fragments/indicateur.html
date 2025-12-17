@@ -34,11 +34,11 @@
                                 {{ form.management_form }}
                                 {% if form.forms %}
                                     <!-- Lignes présentes dans le tableau-->
-                                    <table class="indicateur-tableau">
+                                    <table class="indicateur-tableau fr-mb-1w">
                                         <caption>
                                             <span class="fr-label">{{ form.label }}</span>
                                             {% if form.description %}
-                                                <p class="fr-text--xs">{{ form.description }}</p>
+                                                <p class="fr-text--xs fr-mb-1w">{{ form.description }}</p>
                                             {% endif %}
                                             {% if form.non_form_errors %}
                                                 <p class="fr-error-text">
@@ -118,16 +118,16 @@
                                     <span class="fr-label">
                                         {{ form.label }}
                                     </span>
-                                    <p class="fr-text--xs">
+                                    <p class="fr-text--xs fr-mb-1w">
                                         {{ form.description }}
                                     </p>
-                                    <p class="fr-text--xs fr-mb-1v">
+                                    <p class="fr-text--xs fr-mb-1w">
                                         Aucune ligne dans ce tableau
                                     </p>
                                 {% endif %}
                                 {% if form.indicator_type == "table" %}
                                     <!-- Bouton d'ajout de ligne -->
-                                    <button type="submit" name="ajouter-ligne" value="{{ form.id }}" class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-circle-line fr-mt-1w fr-mb-2w">Ajouter une ligne</button>
+                                    <button type="submit" name="ajouter-ligne" value="{{ form.id }}" class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-circle-line fr-mb-2w">Ajouter une ligne</button>
                                 {% endif %}
                                 <div class="fr-mb-2w"></div>
                             {% else %}
