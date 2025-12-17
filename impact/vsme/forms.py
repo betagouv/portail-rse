@@ -95,7 +95,7 @@ def create_multiform_from_schema(
                 form.fields[field_name].widget.attrs.update(
                     {
                         "hx-post": indicateur_url,
-                        "hx-trigger": "load, input changed delay:500ms",
+                        "hx-trigger": "input changed delay:500ms",
                         "hx-indicator": hx_indicator,
                     }
                 )
