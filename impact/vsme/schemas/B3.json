@@ -205,7 +205,7 @@
         ]
     },
     "B3-30": {
-        "titre": "Estimation des émissions brutes de gaz à effet de serre",
+        "titre": "Estimation des émissions brutes de gaz à effet de serre (GES)",
         "description": "L’entreprise publie ses émissions brutes de GES en tonnes équivalent CO₂ (teqCO₂), ventilées entre le scope 1 (émissions directes) et le scope 2 basé sur la localisation (émissions indirectes liées à l’énergie achetée).",
         "ancre": "estimation_emissions_GES",
         "champs": [
@@ -215,30 +215,31 @@
                 "type": "tableau_lignes_fixes",
                 "colonnes": [
                     {
-                        "id": "emission_scope_1",
-                        "label": "émissions du scope 1",
-                        "description": "Unité : teqCO2",
+                        "id": "scope_1",
+                        "label": "Scope 1",
+                        "description": "Unité : teqCO₂",
                         "type": "nombre_decimal",
-                        "provoque_calcul_des_champs": ["total_emission_GES", "intensite_GES"]
+                        "provoque_calcul_des_champs": ["total", "intensite_GES"]
                     },
                     {
-                        "id": "emission_scope_2",
-                        "label": "émissions du scope 2 basées sur la localisation",
-                        "description": "Unité : teqCO2",
+                        "id": "scope_2_localisation",
+                        "label": "Scope 2 basé sur la localisation",
+                        "description": "Unité : teqCO₂",
                         "type": "nombre_decimal",
-                        "provoque_calcul_des_champs": ["total_emission_GES", "intensite_GES"]
+                        "provoque_calcul_des_champs": ["total", "intensite_GES"]
                     },
                     {
-                        "id": "total_emission_GES",
+                        "id": "total",
                         "label": "Total",
+                        "description": "Unité : teqCO₂",
                         "type": "nombre_decimal",
                         "calculé": true
                     }
                 ],
                 "lignes": [
                     {
-                        "id": "GES",
-                        "label": "Gaz à Effet de Serre"
+                        "id": "emissions_brutes_GES",
+                        "label": "Emissions brutes de GES"
                     }
                 ]
             },
