@@ -426,6 +426,31 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                     ),
                 }
             }
+        case "B3-30":
+            emissions = data.get("estimation_emissions_GES", {}).get(
+                "emissions_brutes_GES"
+            )
+            if emissions:
+                emissions_scope_1 = emissions.get("scope_1") or 0
+                emissions_scope_2 = emissions.get("scope_2_localisation") or 0
+                total = emissions_scope_1 + emissions_scope_2
+                data["estimation_emissions_GES"]["emissions_brutes_GES"][
+                    "total"
+                ] = total
+
+                indicateur_chiffre_affaires = "B1-24-e-iv"
+                try:
+                    chiffre_affaires = rapport_vsme.indicateurs.get(
+                        schema_id=indicateur_chiffre_affaires
+                    ).data.get("chiffre_affaires")
+                    if chiffre_affaires:
+                        intensite_GES = round(total / chiffre_affaires, 2)
+                    else:
+                        intensite_GES = "n/a"
+                except ObjectDoesNotExist:
+                    intensite_GES = "n/a"
+                data["intensite_GES"] = intensite_GES
+
         case "B10-42-b":
             remuneration_hommes = data.get("remuneration_horaire_hommes")
             remuneration_femmes = data.get("remuneration_horaire_femmes")
