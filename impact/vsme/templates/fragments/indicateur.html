@@ -126,6 +126,7 @@
                                     <!-- Bouton d'ajout de ligne -->
                                     <button type="submit" name="ajouter-ligne" value="{{ form.id }}" class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-circle-line fr-mt-1w fr-mb-2w">Ajouter une ligne</button>
                                 {% endif %}
+                                <div class="fr-mb-2w"></div>
                             {% else %}
                                 {% for field in form %}
                                     {% if field.field.is_computed %}
