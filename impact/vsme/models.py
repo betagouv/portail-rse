@@ -289,6 +289,26 @@ class RapportVSME(TimestampedModel):
             pourcent = (complet / total) * 100
         return {"total": total, "complet": complet, "pourcent": int(pourcent)}
 
+    def exigences_de_publication_applicables(self):
+        indicateur_choix_module = "B1-24-a"
+        try:
+            choix_module = self.indicateurs.get(
+                schema_id=indicateur_choix_module
+            ).data.get("choix_module")
+        except ObjectDoesNotExist:
+            choix_module = "base"
+        exigences_de_publication = EXIGENCES_DE_PUBLICATION.values()
+        exigences_de_publication_module_base = [
+            exigence
+            for exigence in exigences_de_publication
+            if exigence.code.startswith("B")
+        ]
+        match choix_module:
+            case "base":
+                return exigences_de_publication_module_base
+            case "complet":
+                return exigences_de_publication
+
     def pays(self):
         indicateur_pays = "B1-24-e-vi"
         try:
