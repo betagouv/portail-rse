@@ -10,14 +10,14 @@
                 "type": "tableau_lignes_fixes",
                 "colonnes": [
                     {
-                        "id": "electricite_renouvelable",
+                        "id": "renouvelable",
                         "label": "Renouvelable",
                         "description": "Unité : MWh",
                         "type": "nombre_decimal",
                         "provoque_calcul_des_champs": ["total"]
                     },
                     {
-                        "id": "electricite_non_renouvelable",
+                        "id": "non_renouvelable",
                         "label": "Non renouvelable",
                         "description": "Unité : MWh",
                         "type": "nombre_decimal",
@@ -33,8 +33,8 @@
                 ],
                 "lignes": [
                     {
-                        "id": "consommation_electricite",
-                        "label": "Consommation d’électricité"
+                        "id": "consommation_energie",
+                        "label": "Consommation d’énergie"
                     }
                 ]
             }
@@ -174,14 +174,14 @@
                 "type": "tableau_lignes_fixes",
                 "colonnes": [
                     {
-                        "id": "energie_renouvelable",
+                        "id": "renouvelable",
                         "label": "Renouvelable",
                         "description": "Unité : MWh",
                         "type": "nombre_decimal",
                         "calculé": true
                     },
                     {
-                        "id": "energie_non_renouvelable",
+                        "id": "non_renouvelable",
                         "label": "Non renouvelable",
                         "description": "Unité : MWh",
                         "type": "nombre_decimal",
