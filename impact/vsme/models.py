@@ -450,7 +450,9 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                                 masse = quantite
                             case "L" | "m3":
                                 masse = quantite * infos_combustible["densite"]
-                        energie = round(masse * infos_combustible["NCV"], 2)
+                        energie = arrondit_2_decimales_si_superieur_a_1(
+                            masse * infos_combustible["NCV"]
+                        )
                         data["consommation_energie_par_combustible"][index][
                             "energie"
                         ] = energie
@@ -470,10 +472,14 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                                 consommation_non_renouvelable += combustible["energie"]
             data["consommation_combustible_par_type"] = {
                 "consommation_energie": {
-                    "renouvelable": round(consommation_renouvelable, 2),
-                    "non_renouvelable": round(consommation_non_renouvelable, 2),
-                    "total": round(
-                        consommation_renouvelable + consommation_non_renouvelable, 2
+                    "renouvelable": arrondit_2_decimales_si_superieur_a_1(
+                        consommation_renouvelable
+                    ),
+                    "non_renouvelable": arrondit_2_decimales_si_superieur_a_1(
+                        consommation_non_renouvelable
+                    ),
+                    "total": arrondit_2_decimales_si_superieur_a_1(
+                        consommation_renouvelable + consommation_non_renouvelable
                     ),
                 }
             }
@@ -495,7 +501,9 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                         schema_id=indicateur_chiffre_affaires
                     ).data.get("chiffre_affaires")
                     if chiffre_affaires:
-                        intensite_GES = round(total / chiffre_affaires, 2)
+                        intensite_GES = arrondit_2_decimales_si_superieur_a_1(
+                            total / chiffre_affaires
+                        )
                     else:
                         intensite_GES = "n/a"
                 except ObjectDoesNotExist:
@@ -567,3 +575,7 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                 except ObjectDoesNotExist:
                     pass
     return data
+
+
+def arrondit_2_decimales_si_superieur_a_1(valeur):
+    return round(valeur, 2) if valeur > 1 else valeur
