@@ -491,15 +491,19 @@ def calculate_extra_validators(field_id, rapport_vsme):
 
 def dechets_total_validator(forms):
     for form in forms:
+        total_dechets = form.cleaned_data.get("total_dechets")
+        recyclage_ou_reutilisation = form.cleaned_data.get("recyclage_ou_reutilisation")
+        elimines = form.cleaned_data.get("elimines")
         if (
-            form.cleaned_data["total_dechets"]
-            != form.cleaned_data["recyclage_ou_reutilisation"]
-            + form.cleaned_data["elimines"]
+            total_dechets is not None
+            and recyclage_ou_reutilisation is not None
+            and elimines is not None
         ):
-            form.add_error("total_dechets", "Total invalide")
-            raise ValidationError(
-                f"Le total des déchets produits doit être égal à la somme des déchets recyclés et éliminés"
-            )
+            if total_dechets != recyclage_ou_reutilisation + elimines:
+                form.add_error("total_dechets", "Total invalide")
+                raise ValidationError(
+                    f"Le total des déchets produits doit être égal à la somme des déchets recyclés et éliminés"
+                )
 
 
 def effectif_total_validator(nombre_salaries_B1):

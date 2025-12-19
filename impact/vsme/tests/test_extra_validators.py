@@ -103,3 +103,27 @@ def test_échec_vérification_total_dechets_produit(client, rapport_vsme):
     assert multiform.forms[1].non_form_errors() == [
         "Le total des déchets produits doit être égal à la somme des déchets recyclés et éliminés"
     ]
+
+
+def test_vérification_total_dechets_produit_non_bloquant_quand_non_pertinent(
+    client, rapport_vsme
+):
+    indicateur_gestion_dechets = load_indicateur_schema("B7-38-ab")
+    multiform_class = create_multiform_from_schema(
+        indicateur_gestion_dechets, rapport_vsme
+    )
+
+    data = {
+        "non_pertinent": True,
+        "gestion_dechets-TOTAL_FORMS": "1",
+        "gestion_dechets-INITIAL_FORMS": "0",
+        "gestion_dechets-0-dechet": "01",
+        "gestion_dechets-0-dangereux": True,
+        "gestion_dechets-0-total_dechets": "3",
+        "gestion_dechets-0-recyclage_ou_reutilisation": "1",
+        "gestion_dechets-0-elimines": "4",
+        # somme recyclage et elimines différente de total_dechets
+    }
+    multiform = multiform_class(data)
+
+    assert multiform.is_valid()
