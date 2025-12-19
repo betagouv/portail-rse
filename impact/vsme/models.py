@@ -411,25 +411,25 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
             consommation_electricite = data.get("consommation_electricite_par_type")
             if consommation_electricite:
                 consommation_renouvelable = (
-                    consommation_electricite.get("consommation_energie")["renouvelable"]
+                    consommation_electricite.get("consommation_energie", {}).get(
+                        "renouvelable"
+                    )
                     or 0
                 )
                 consommation_non_renouvelable = (
-                    consommation_electricite.get("consommation_energie")[
+                    consommation_electricite.get("consommation_energie", {}).get(
                         "non_renouvelable"
-                    ]
+                    )
                     or 0
                 )
                 total = consommation_renouvelable + consommation_non_renouvelable
-                data["consommation_electricite_par_type"]["consommation_energie"][
-                    "renouvelable"
-                ] = consommation_renouvelable
-                data["consommation_electricite_par_type"]["consommation_energie"][
-                    "non_renouvelable"
-                ] = consommation_non_renouvelable
-                data["consommation_electricite_par_type"]["consommation_energie"][
-                    "total"
-                ] = total
+                data["consommation_electricite_par_type"] = {
+                    "consommation_energie": {
+                        "renouvelable": consommation_renouvelable,
+                        "non_renouvelable": consommation_non_renouvelable,
+                        "total": total,
+                    }
+                }
         case "B3-29-p2":
             consommation_renouvelable = 0
             consommation_non_renouvelable = 0
@@ -468,8 +468,8 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
             autres_combustibles = data.get("consommation_energie_autres_combustibles")
             if autres_combustibles:
                 for combustible in autres_combustibles:
-                    if combustible["energie"]:
-                        match combustible["etat_renouvelabilite"]:
+                    if combustible.get("energie"):
+                        match combustible.get("etat_renouvelabilite"):
                             case "renouvelable":
                                 consommation_renouvelable += combustible["energie"]
                             case "non_renouvelable":
@@ -513,7 +513,6 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                 except ObjectDoesNotExist:
                     intensite_GES = "n/a"
                 data["intensite_GES"] = intensite_GES
-
         case "B10-42-b":
             remuneration_hommes = data.get("remuneration_horaire_hommes")
             remuneration_femmes = data.get("remuneration_horaire_femmes")
@@ -559,23 +558,26 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                     nombre_salaries_par_genre = rapport_vsme.indicateurs.get(
                         schema_id=indicateur_nombre_salaries_par_genre
                     ).data.get("effectifs_genre")
-                    for genre in nombre_salaries_par_genre:
-                        total_heure_formation = data[
-                            "nombre_heures_formation_par_genre"
-                        ][genre]["total_heures_formation"]
-                        if total_heure_formation is not None:
-                            nombre_salaries = nombre_salaries_par_genre[genre][
-                                "nombre_salaries"
-                            ]
-                            if nombre_salaries:
-                                nombre_moyen_heures_formation = round(
-                                    total_heure_formation / nombre_salaries, 2
+                    if nombre_salaries_par_genre:
+                        for genre in nombre_salaries_par_genre:
+                            total_heure_formation = (
+                                data["nombre_heures_formation_par_genre"]
+                                .get(genre, {})
+                                .get("total_heures_formation")
+                            )
+                            if total_heure_formation is not None:
+                                nombre_salaries = nombre_salaries_par_genre[genre].get(
+                                    "nombre_salaries"
                                 )
-                            else:
-                                nombre_moyen_heures_formation = "n/a"
-                            data["nombre_heures_formation_par_genre"][genre][
-                                "nombre_moyen_heures_formation"
-                            ] = nombre_moyen_heures_formation
+                                if nombre_salaries:
+                                    nombre_moyen_heures_formation = round(
+                                        total_heure_formation / nombre_salaries, 2
+                                    )
+                                else:
+                                    nombre_moyen_heures_formation = "n/a"
+                                data["nombre_heures_formation_par_genre"][genre][
+                                    "nombre_moyen_heures_formation"
+                                ] = nombre_moyen_heures_formation
                 except ObjectDoesNotExist:
                     pass
     return data
