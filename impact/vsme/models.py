@@ -386,7 +386,11 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                     type_combustible = combustible.get("type_combustible")
                     infos_combustible = COMBUSTIBLES.get(type_combustible, {})
                     data["consommation_energie_par_combustible"][index].update(
-                        infos_combustible
+                        {
+                            k: v
+                            for k, v in infos_combustible.items()
+                            if k not in ("NCV", "densite")
+                        }
                     )
                     quantite = data["consommation_energie_par_combustible"][index].get(
                         "quantite"
