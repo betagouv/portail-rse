@@ -384,34 +384,35 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
             if combustibles:
                 for index, combustible in enumerate(combustibles):
                     type_combustible = combustible.get("type_combustible")
-                    infos_combustible = COMBUSTIBLES.get(type_combustible, {})
-                    data["consommation_energie_par_combustible"][index].update(
-                        {
-                            k: v
-                            for k, v in infos_combustible.items()
-                            if k not in ("NCV", "densite")
-                        }
-                    )
-                    quantite = data["consommation_energie_par_combustible"][index].get(
-                        "quantite"
-                    )
-                    if quantite:
-                        match infos_combustible["unite"]:
-                            case "t":
-                                masse = quantite
-                            case "L" | "m3":
-                                masse = quantite * infos_combustible["densite"]
-                        energie = arrondit_2_decimales_si_superieur_a_1(
-                            masse * infos_combustible["NCV"]
+                    infos_combustible = COMBUSTIBLES.get(type_combustible)
+                    if infos_combustible:
+                        data["consommation_energie_par_combustible"][index].update(
+                            {
+                                k: v
+                                for k, v in infos_combustible.items()
+                                if k not in ("NCV", "densite")
+                            }
                         )
-                        data["consommation_energie_par_combustible"][index][
-                            "energie"
-                        ] = energie
-                        match infos_combustible["etat_renouvelabilite"]:
-                            case "renouvelable":
-                                consommation_renouvelable += energie
-                            case "non_renouvelable":
-                                consommation_non_renouvelable += energie
+                        quantite = data["consommation_energie_par_combustible"][
+                            index
+                        ].get("quantite")
+                        if quantite:
+                            match infos_combustible["unite"]:
+                                case "t":
+                                    masse = quantite
+                                case "L" | "m3":
+                                    masse = quantite * infos_combustible["densite"]
+                            energie = arrondit_2_decimales_si_superieur_a_1(
+                                masse * infos_combustible["NCV"]
+                            )
+                            data["consommation_energie_par_combustible"][index][
+                                "energie"
+                            ] = energie
+                            match infos_combustible["etat_renouvelabilite"]:
+                                case "renouvelable":
+                                    consommation_renouvelable += energie
+                                case "non_renouvelable":
+                                    consommation_non_renouvelable += energie
             autres_combustibles = data.get("consommation_energie_autres_combustibles")
             if autres_combustibles:
                 for combustible in autres_combustibles:

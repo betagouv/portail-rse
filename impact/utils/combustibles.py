@@ -53,12 +53,6 @@ COMBUSTIBLES = {
         "etat_renouvelabilite": "non_renouvelable",
         "densite": 2.50,
     },
-    "Coke oven coke & lignite coke": {
-        "etat_chimique": "gaz",
-        "unite": "m3",
-        "NCV": 28.20,
-        "etat_renouvelabilite": "non_renouvelable",
-    },
     "Coke oven gas": {
         "etat_chimique": "gaz",
         "unite": "m3",
