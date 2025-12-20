@@ -38,7 +38,7 @@
                                         <caption>
                                             <span class="fr-label">{{ form.label }}</span>
                                             {% if form.description %}
-                                                <p class="fr-text--xs fr-mb-1w">{{ form.description }}</p>
+                                                <p class="fr-text--xs fr-mb-1w">{{ form.description | safe }}</p>
                                             {% endif %}
                                             {% if form.non_form_errors %}
                                                 <p class="fr-error-text">
