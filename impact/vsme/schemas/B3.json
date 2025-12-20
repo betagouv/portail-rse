@@ -48,7 +48,7 @@
             {
                 "id": "consommation_energie_par_combustible",
                 "label": "Consommation d'énergie par combustible",
-                "description": "Conversion automatique de la quantité consommée en énergie pour les types de combustible connus",
+                "description": "Conversion automatique de la quantité consommée en énergie pour les types de combustible connus générée conformément au convertisseur proposé par l’Efrag (voir <a href='https://www.efrag.org/en/vsme-digital-template-and-xbrl-taxonomy'>VSME Digital template</a>)",
                 "type": "tableau",
                 "colonnes": [
                     {
