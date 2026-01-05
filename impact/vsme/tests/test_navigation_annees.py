@@ -2,6 +2,7 @@ from datetime import date
 
 import pytest
 from django.urls import reverse
+from freezegun import freeze_time
 
 from vsme.models import get_annee_max_valide
 from vsme.models import get_annee_rapport_par_defaut
@@ -41,13 +42,14 @@ def test_acces_avec_annee_valide(client, entreprise_factory, alice, annee):
         assert RapportVSME.objects.filter(entreprise=entreprise, annee=annee).exists()
 
 
+@freeze_time("2025-12-12")
 def test_acces_annee_n_plus_1_avec_cloture_30_juin(client, entreprise_factory, alice):
     entreprise = entreprise_factory(utilisateur=alice)
     entreprise.date_cloture_exercice = date(2023, 6, 30)
     entreprise.save()
     client.force_login(alice)
 
-    annee_n_plus_1 = date.today().year + 1
+    annee_n_plus_1 = 2026  # N+1 pour 2025
     url = reverse("vsme:categories_vsme", args=[entreprise.siren, annee_n_plus_1])
     response = client.get(url)
 
@@ -114,6 +116,7 @@ def test_contexte_contient_annees_disponibles_cloture_31_decembre(
     assert date.today().year + 1 not in annees  # N+1 n'est pas disponible
 
 
+@freeze_time("2025-12-12")
 def test_contexte_contient_annees_disponibles_cloture_30_juin(
     client, entreprise_factory, alice
 ):
@@ -127,8 +130,8 @@ def test_contexte_contient_annees_disponibles_cloture_30_juin(
 
     annees = response.context["annees_disponibles"]
     assert 2020 in annees
-    assert date.today().year in annees
-    assert date.today().year + 1 in annees  # N+1 est disponible
+    assert 2025 in annees  # N est disponible
+    assert 2026 in annees  # N+1 est disponible
 
 
 def test_message_info_annee_non_defaut(client, entreprise_factory, alice):

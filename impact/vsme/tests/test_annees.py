@@ -2,6 +2,7 @@ from datetime import date
 
 import pytest
 from django.core.exceptions import ValidationError
+from freezegun import freeze_time
 
 from vsme.models import ANNEE_DEBUT_VSME
 from vsme.models import annee_est_valide
@@ -66,6 +67,7 @@ def test_get_annee_dernier_exercice_clos_cloture_31_decembre(entreprise_factory,
     assert get_annee_dernier_exercice_clos(entreprise) == date.today().year - 1
 
 
+@freeze_time("2025-12-12")
 def test_get_annee_dernier_exercice_clos_cloture_30_juin(entreprise_factory, alice):
     """
     Entreprise avec clôture au 30/06 :
@@ -78,7 +80,7 @@ def test_get_annee_dernier_exercice_clos_cloture_30_juin(entreprise_factory, ali
 
     # Aujourd'hui on est le 12 décembre 2025, donc après la clôture du 30/06/2025
     # Le dernier exercice clos est donc 2025
-    assert get_annee_dernier_exercice_clos(entreprise) == date.today().year
+    assert get_annee_dernier_exercice_clos(entreprise) == 2025
 
 
 def test_get_annee_rapport_par_defaut_avec_entreprise_cloture_31_decembre(
@@ -93,6 +95,7 @@ def test_get_annee_rapport_par_defaut_avec_entreprise_cloture_31_decembre(
     assert get_annee_rapport_par_defaut(entreprise) == date.today().year - 1
 
 
+@freeze_time("2025-12-12")
 def test_get_annee_rapport_par_defaut_avec_entreprise_cloture_30_juin(
     entreprise_factory, alice
 ):
@@ -102,7 +105,7 @@ def test_get_annee_rapport_par_defaut_avec_entreprise_cloture_30_juin(
     entreprise.save()
 
     # Le dernier exercice clos est N (clôture 30/06 déjà passée)
-    assert get_annee_rapport_par_defaut(entreprise) == date.today().year
+    assert get_annee_rapport_par_defaut(entreprise) == 2025
 
 
 def test_get_annee_max_valide_avec_entreprise_cloture_31_decembre(
@@ -117,6 +120,7 @@ def test_get_annee_max_valide_avec_entreprise_cloture_31_decembre(
     assert get_annee_max_valide(entreprise) == date.today().year
 
 
+@freeze_time("2025-12-12")
 def test_get_annee_max_valide_avec_entreprise_cloture_30_juin(
     entreprise_factory, alice
 ):
@@ -125,10 +129,11 @@ def test_get_annee_max_valide_avec_entreprise_cloture_30_juin(
     entreprise.date_cloture_exercice = date(2023, 6, 30)
     entreprise.save()
 
-    # Dernier exercice clos = N, donc max = N+1
-    assert get_annee_max_valide(entreprise) == date.today().year + 1
+    # Dernier exercice clos = 2025, donc max = 2026
+    assert get_annee_max_valide(entreprise) == 2026
 
 
+@freeze_time("2025-12-12")
 def test_get_annees_valides_avec_entreprise(entreprise_factory, alice):
     entreprise = entreprise_factory(utilisateur=alice)
     entreprise.date_cloture_exercice = date(2023, 6, 30)
@@ -139,7 +144,7 @@ def test_get_annees_valides_avec_entreprise(entreprise_factory, alice):
 
     assert annees[0] == ANNEE_DEBUT_VSME
     assert annees[-1] == annee_max
-    assert date.today().year + 1 in annees  # N+1 est disponible pour clôture 30/06
+    assert 2026 in annees  # 2026 (N+1) est disponible pour clôture 30/06
 
 
 def test_annee_est_valide_avec_entreprise_cloture_31_decembre(
@@ -157,6 +162,7 @@ def test_annee_est_valide_avec_entreprise_cloture_31_decembre(
     assert not annee_est_valide(2019, entreprise)
 
 
+@freeze_time("2025-12-12")
 def test_annee_est_valide_avec_entreprise_cloture_30_juin(entreprise_factory, alice):
     """Avec clôture 30/06, les années valides vont de 2020 à N+1"""
     entreprise = entreprise_factory(utilisateur=alice)
@@ -164,9 +170,9 @@ def test_annee_est_valide_avec_entreprise_cloture_30_juin(entreprise_factory, al
     entreprise.save()
 
     assert annee_est_valide(2020, entreprise)
-    assert annee_est_valide(date.today().year, entreprise)
-    assert annee_est_valide(date.today().year + 1, entreprise)  # N+1 est valide
-    assert not annee_est_valide(date.today().year + 2, entreprise)  # N+2 invalide
+    assert annee_est_valide(2025, entreprise)  # N=2025 est valide
+    assert annee_est_valide(2026, entreprise)  # N+1=2026 est valide
+    assert not annee_est_valide(2027, entreprise)  # N+2=2027 invalide
     assert not annee_est_valide(2019, entreprise)
 
 
