@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import pytest
 
 import reglementations.views  # noqa
@@ -116,7 +118,7 @@ def test_reglementation_sur_la_csrd_fournit_la_csrd_en_cours_au_template_si_elle
 
     rapport = RapportCSRD.objects.create(
         entreprise=entreprise,
-        annee=2025,
+        annee=datetime.now().year,
     )
 
     response = client.get(f"/tableau-de-bord/{entreprise.siren}/reglementations/csrd/")
