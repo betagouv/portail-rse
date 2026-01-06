@@ -48,7 +48,7 @@
             {
                 "id": "consommation_energie_par_combustible",
                 "label": "Consommation d'énergie par combustible",
-                "description": "Conversion automatique de la quantité consommée en énergie pour les types de combustible connus générée conformément au convertisseur proposé par l’Efrag (voir <a href='https://www.efrag.org/en/vsme-digital-template-and-xbrl-taxonomy'>VSME Digital template</a>)",
+                "description": "Conversion automatique de la quantité consommée en énergie pour les types de combustible connus générée conformément au convertisseur proposé par l’Efrag (voir <a href='https://www.efrag.org/en/vsme-digital-template-and-xbrl-taxonomy'>VSME Digital template</a>).<br>La méthode de calcul est précisée dans le lien « En savoir plus ».",
                 "type": "tableau",
                 "colonnes": [
                     {
@@ -56,7 +56,7 @@
                         "label": "Type de combustible",
                         "type": "choix_unique",
                         "choix": "CHOIX_COMBUSTIBLE",
-                        "provoque_calcul_des_champs": ["etat_chimique", "etat_renouvelabilite", "unite"],
+                        "provoque_calcul_des_champs": ["etat_chimique", "etat_renouvelabilite", "densite", "NCV", "unite"],
                         "obligatoire": true
                     },
                     {
@@ -93,6 +93,18 @@
                                 "label": "Non renouvelable"
                             }
                         ],
+                        "calculé": true
+                    },
+                    {
+                        "id": "densite",
+                        "label": "Densité",
+                        "type": "texte",
+                        "calculé": true
+                    },
+                    {
+                        "id": "NCV",
+                        "label": "NCV",
+                        "type": "texte",
                         "calculé": true
                     },
                     {
@@ -133,7 +145,7 @@
             {
                 "id": "consommation_energie_autres_combustibles",
                 "label": "Autres combustibles",
-                "description": "Si l'entreprise consomme d'autres types de combustible plus spécifiques, calculer et saisir directement l'énergie consommée",
+                "description": "Si l'entreprise consomme d'autres types de combustible plus spécifiques (ou des densités ou NCV différentes du tableau précédent), calculer et saisir directement l'énergie consommée",
                 "type": "tableau",
                 "colonnes": [
                     {
