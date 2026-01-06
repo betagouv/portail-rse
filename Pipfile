@@ -23,7 +23,7 @@ django-cors-headers = "~=4.7.0"
 django-storages = {extras = ["s3"], version = "~=1.14.5"}
 filetype = "~=1.2"
 # tables de travail analytics / Metabase
-aiohttp = "~=3.12.15"
+aiohttp = "~=3.13.3"
 responses = "~=0.25.8"
 geojson = "~=3.2.0"
 # gestion OIDC / ProConnect
