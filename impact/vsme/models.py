@@ -2,6 +2,7 @@ import json
 import os
 from dataclasses import dataclass
 from datetime import date
+from decimal import Decimal
 from enum import Enum
 
 from dateutil.relativedelta import relativedelta
@@ -406,6 +407,32 @@ class Indicateur(TimestampedModel):
 
 
 def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
+    schema_exigence = ExigenceDePublication.par_indicateur_schema_id(
+        indicateur_schema_id
+    ).load_json_schema()
+    schema_indicateur = schema_exigence[indicateur_schema_id]
+
+    for champ in schema_indicateur["champs"]:
+        match champ["type"]:
+            case "nombre_decimal":
+                string_data = data.get(champ["id"])
+                data[champ["id"]] = Decimal(string_data) if string_data else None
+            case "tableau":
+                for colonne in champ["colonnes"]:
+                    if colonne["type"] == "nombre_decimal":
+                        for ligne in data.get(champ["id"], []):
+                            string_data = ligne[colonne["id"]]
+                            ligne[colonne["id"]] = (
+                                Decimal(string_data) if string_data else None
+                            )
+            case "tableau_lignes_fixes":
+                for colonne in champ["colonnes"]:
+                    if colonne["type"] == "nombre_decimal":
+                        for ligne in data.get(champ["id"], {}):
+                            string_data = data[champ["id"]][ligne][colonne["id"]]
+                            data[champ["id"]][ligne][colonne["id"]] = (
+                                Decimal(string_data) if string_data else None
+                            )
     match indicateur_schema_id:
         case "B3-29-p1":
             consommation_electricite = data.get("consommation_electricite_par_type")
