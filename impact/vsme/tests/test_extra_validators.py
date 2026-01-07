@@ -127,3 +127,25 @@ def test_vérification_total_dechets_produit_non_bloquant_quand_non_pertinent(
     multiform = multiform_class(data)
 
     assert multiform.is_valid()
+
+
+def test_succes_vérification_total_dechets_produit_nombres_decimaux(
+    client, rapport_vsme
+):
+    indicateur_gestion_dechets = load_indicateur_schema("B7-38-ab")
+    multiform_class = create_multiform_from_schema(
+        indicateur_gestion_dechets, rapport_vsme
+    )
+
+    data = {
+        "gestion_dechets-TOTAL_FORMS": "1",
+        "gestion_dechets-INITIAL_FORMS": "0",
+        "gestion_dechets-0-dechet": "01",
+        "gestion_dechets-0-dangereux": True,
+        "gestion_dechets-0-total_dechets": "92.13",
+        "gestion_dechets-0-recyclage_ou_reutilisation": "0.84",
+        "gestion_dechets-0-elimines": "91.29",
+        # somme recyclage et elimines égale à total_dechets sauf si les nombres sont de type float
+    }
+    multiform = multiform_class(data)
+    assert multiform.is_valid()
