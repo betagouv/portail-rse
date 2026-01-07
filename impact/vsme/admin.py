@@ -17,6 +17,11 @@ class IndicateurInline(admin.TabularInline):
 class RapportVSMEAdmin(admin.ModelAdmin):
     raw_id_fields = ("entreprise",)
     inlines = (IndicateurInline,)
+    search_fields = (
+        "entreprise__denomination",
+        "entreprise__siren",
+    )
+    list_display = ("id", "entreprise", "annee")
 
 
 admin.site.register(RapportVSME, RapportVSMEAdmin)
