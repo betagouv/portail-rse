@@ -325,19 +325,20 @@ class RapportVSME(TimestampedModel):
 
     def progression_par_categorie(self, categorie):
         complet, total, pourcent = 0, 0, 0
-        for exigence_de_publication in categorie.exigences_de_publication():
-            progression_exigence = self.progression_par_exigence(
-                exigence_de_publication
-            )
-            complet += progression_exigence["complet"]
-            total += progression_exigence["total"]
+        for exigence_de_publication in self.exigences_de_publication_applicables():
+            if exigence_de_publication.categorie == categorie:
+                progression_exigence = self.progression_par_exigence(
+                    exigence_de_publication
+                )
+                complet += progression_exigence["complet"]
+                total += progression_exigence["total"]
         if total:
             pourcent = (complet / total) * 100
         return {"total": total, "complet": complet, "pourcent": int(pourcent)}
 
     def progression(self):
         complet, total, pourcent = 0, 0, 0
-        for exigence_de_publication in EXIGENCES_DE_PUBLICATION.values():
+        for exigence_de_publication in self.exigences_de_publication_applicables():
             progression_exigence = self.progression_par_exigence(
                 exigence_de_publication
             )
@@ -348,24 +349,25 @@ class RapportVSME(TimestampedModel):
         return {"total": total, "complet": complet, "pourcent": int(pourcent)}
 
     def exigences_de_publication_applicables(self):
+        module_par_defaut = "base"
         indicateur_choix_module = "B1-24-a"
         try:
             choix_module = self.indicateurs.get(
                 schema_id=indicateur_choix_module
-            ).data.get("choix_module")
+            ).data.get("choix_module", module_par_defaut)
         except ObjectDoesNotExist:
-            choix_module = "base"
-        exigences_de_publication = EXIGENCES_DE_PUBLICATION.values()
+            choix_module = module_par_defaut
+        exigences_de_publication_module_complet = EXIGENCES_DE_PUBLICATION.values()
         exigences_de_publication_module_base = [
             exigence
-            for exigence in exigences_de_publication
+            for exigence in exigences_de_publication_module_complet
             if exigence.code.startswith("B")
         ]
         match choix_module:
             case "base":
                 return exigences_de_publication_module_base
             case "complet":
-                return exigences_de_publication
+                return exigences_de_publication_module_complet
 
     def pays(self):
         indicateur_pays = "B1-24-e-vi"
