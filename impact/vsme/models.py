@@ -194,6 +194,8 @@ EXIGENCES_DE_PUBLICATION = {
         "C1",
         "Stratégie : modèle économique et initiatives liées à la durabilité",
         Categorie.GENERAL,
+        "https://portail-rse.beta.gouv.fr/vsme/c1-strategie-modele-dentreprise-et-durabilite-initiatives-connexes/",
+        remplissable=True,
     ),
     "C2": ExigenceDePublication(
         "C2",

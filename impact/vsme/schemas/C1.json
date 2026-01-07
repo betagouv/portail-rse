@@ -1,0 +1,56 @@
+{
+    "C1-47-a": {
+        "titre": "Produits et services proposés",
+        "description": "Décrire les grands groupes de produits et/ou services proposés par l'entreprise afin de donner une vision claire de son activité.",
+        "ancre": "produits_et_services",
+        "champs": [
+            {
+                "id": "produits_et_services",
+                "label": "Description des grands groupes de produits et/ou services proposés",
+                "type": "texte_long",
+                "obligatoire": true
+            }
+        ]
+    },
+    "C1-47-b": {
+        "titre": "Marchés sur lesquels l'entreprise exerce ses activités",
+        "description": "Décrire le ou les grands marchés sur lesquels l'entreprise exerce ses activités.",
+        "ancre": "marches",
+        "champs": [
+            {
+                "id": "marches",
+                "label": "Description des grands marchés sur lesquels l'entreprise exerce ses activités",
+                "type": "texte_long",
+                "obligatoire": true
+            }
+        ]
+    },
+    "C1-47-c": {
+        "titre": "Principales relations d'affaires",
+        "description": "Décrire les principales relations d’affaires de l'entreprise.",
+        "ancre": "relations_affaires",
+        "champs": [
+            {
+                "id": "relations_affaires",
+                "label": "Description des principales relations d’affaires",
+                "description": "Pour décrire les principales relations avec les consommateurs et les fournisseurs, l’entreprise indique le nombre estimé de fournisseurs, ainsi que les secteurs et régions géographiques correspondants (c’est-à-dire les pays).",
+                "type": "texte_long",
+                "obligatoire": true
+            }
+        ]
+    },
+    "C1-47-d": {
+        "titre": "Éléments clés liés aux questions de durabilité",
+        "description": "Décrire brièvement les principaux éléments de la stratégie qui se rattachent à des enjeux de durabilité ou qui les influencent.",
+        "ancre": "strategie_durabilite",
+        "champs": [
+            {
+                "id": "strategie_durabilite",
+                "label": "Description des éléments clés liés aux questions de durabilité",
+                "type": "texte_long",
+                "obligatoire": true
+            }
+        ],
+        "si_pertinent": true
+    }
+}
