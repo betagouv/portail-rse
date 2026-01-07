@@ -313,7 +313,6 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
             infos_preremplissage = preremplit_indicateur(
                 indicateur_schema_id, rapport_vsme
             )
-        data = ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data)
         multiform = create_multiform_from_schema(
             indicateur_schema,
             rapport_vsme,

@@ -9,7 +9,7 @@ class IndicateurInline(admin.TabularInline):
     readonly_fields = (
         "schema_id",
         "schema_version",
-        "data",
+        "_data",
     )
     extra = 0
 
