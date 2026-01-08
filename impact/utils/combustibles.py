@@ -1,3 +1,6 @@
+# Récupéré du tableur excel VSME de l'EFRAG
+# NCV est en TJ/Gg
+# densité est en kg/L (pour les liquides) ou kg/m³ (pour les gaz)
 from decimal import Decimal
 
 COMBUSTIBLES = {
