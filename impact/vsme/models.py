@@ -486,11 +486,18 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                         if quantite:
                             match infos_combustible["unite"]:
                                 case "t":
-                                    masse = quantite
+                                    masse_en_t = quantite
                                 case "L" | "m3":
-                                    masse = quantite * infos_combustible["densite"]
+                                    masse_en_t = (
+                                        quantite * infos_combustible["densite"] / 1000
+                                    )
+                            nvc_en_mwh_par_t = infos_combustible["NCV"] * Decimal(
+                                "0.277778"
+                            )
+                            # NCV est en TJ/Gg dans infos_combustible
+                            # 1 TJ = 277.778 MWh et 1 Gg = 1000 t
                             energie = arrondit_2_decimales_si_superieur_a_1(
-                                masse * infos_combustible["NCV"]
+                                masse_en_t * nvc_en_mwh_par_t
                             )
                             data["consommation_energie_par_combustible"][index][
                                 "energie"
