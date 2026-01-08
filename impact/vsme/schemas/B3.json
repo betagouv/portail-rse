@@ -98,12 +98,14 @@
                     {
                         "id": "densite",
                         "label": "Densité",
+                        "description": "Unité : kg/L (pour les liquides) ou kg/m³ (pour les gaz)",
                         "type": "texte",
                         "calculé": true
                     },
                     {
                         "id": "NCV",
-                        "label": "NCV",
+                        "label": "Valeur Calorifique Nette (NCV)",
+                        "description": "Unité : TJ/Gg",
                         "type": "texte",
                         "calculé": true
                     },
