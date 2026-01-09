@@ -104,6 +104,7 @@ def create_multiform_from_schema(
                 )
 
         def disable_fields(self):
+            # désactive tous les champs sauf le champ non pertinent
             for form in self.forms:
                 if isinstance(form, forms.Form):
                     for field in form.fields:
@@ -117,6 +118,12 @@ def create_multiform_from_schema(
                         for field in form_table.fields:
                             form_table.fields[field].disabled = True
                             form_table.fields[field].required = False
+
+        def disable_all_fields(self):
+            self.disable_fields()
+            # désactive aussi le champ non pertinent si présent
+            if self.si_pertinent:
+                self.forms[0].fields[NON_PERTINENT_FIELD_NAME].disabled = True
 
     def _dynamicform_factory():
         class _DynamicForm(DsfrForm):
