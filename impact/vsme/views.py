@@ -236,6 +236,9 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
     exigence_de_publication = ExigenceDePublication.par_indicateur_schema_id(
         indicateur_schema_id
     )
+    indicateur_est_applicable, explication_non_applicable = (
+        rapport_vsme.indicateur_est_applicable(indicateur_schema_id)
+    )
 
     try:
         indicateur = rapport_vsme.indicateurs.get(schema_id=indicateur_schema_id)
@@ -243,6 +246,8 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
         indicateur = None
 
     if request.method == "POST":
+        if not indicateur_est_applicable:
+            raise PermissionDenied()
         if delete_field_name := request.POST.get("supprimer-ligne"):
             data = request.POST.copy()
             data[delete_field_name] = True
@@ -321,11 +326,16 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
             initial=data,
         )
 
+        if not indicateur_est_applicable:
+            multiform.disable_all_fields()
+
     context = {
         "entreprise": rapport_vsme.entreprise,
         "multiform": multiform,
         "indicateur_schema": indicateur_schema,
         "indicateur_schema_id": indicateur_schema_id,
+        "indicateur_est_applicable": indicateur_est_applicable,
+        "explication_non_applicable": explication_non_applicable,
         "rapport_vsme": rapport_vsme,
         "exigence_de_publication": exigence_de_publication,
     }

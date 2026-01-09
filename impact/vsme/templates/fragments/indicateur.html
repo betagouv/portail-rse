@@ -20,7 +20,13 @@
                           hx-swap="morph:innerHTML">
                         {% csrf_token %}
 
-                        {% if multiform.preremplissage %}
+                        {% if not indicateur_est_applicable %}
+                            <div class="fr-callout fr-icon-alert-line fr-callout--brown-cafe-creme">
+                                <p class="fr-callout__text">
+                                    Cet indicateur n'est pas applicable car {{ explication_non_applicable }}.
+                                </p>
+                            </div>
+                        {% elif multiform.preremplissage %}
                             <div class="fr-callout fr-callout--green-menthe">
                                 <p class="fr-callout__text">
                                     Cet indicateur a été prérempli avec les données issues de <a href="{{ multiform.preremplissage.source.url }}" target="_blank" rel="noopener external" class="fr-link">{{ multiform.preremplissage.source.nom }}</a>.
@@ -106,7 +112,7 @@
                                                     {% if form.indicator_type == "table" %}
                                                         <!-- Bouton de suppression de ligne -->
                                                         <td class="indicateur-cellule">
-                                                            <button type="submit" name="supprimer-ligne" value="{{ form_table.DELETE.html_name }}" class="fr-btn fr-icon-delete-line fr-btn--tertiary-no-outline" title="Supprimer">Supprimer</button>
+                                                            <button type="submit" name="supprimer-ligne" value="{{ form_table.DELETE.html_name }}" class="fr-btn fr-icon-delete-line fr-btn--tertiary-no-outline" title="Supprimer" {% if not indicateur_est_applicable %}disabled{% endif %}>Supprimer</button>
                                                         </td>
                                                     {% endif %}
                                                 </tr>
@@ -127,7 +133,7 @@
                                 {% endif %}
                                 {% if form.indicator_type == "table" %}
                                     <!-- Bouton d'ajout de ligne -->
-                                    <button type="submit" name="ajouter-ligne" value="{{ form.id }}" class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-circle-line fr-mb-2w">Ajouter une ligne</button>
+                                    <button type="submit" name="ajouter-ligne" value="{{ form.id }}" class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-circle-line fr-mb-2w" {% if not indicateur_est_applicable %}disabled{% endif %}>Ajouter une ligne</button>
                                 {% endif %}
                                 <div class="fr-mb-2w"></div>
                             {% else %}
@@ -152,7 +158,7 @@
                 </div>
                 <div class="fr-modal__footer">
                     <div class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
-                        <button type="submit" name="enregistrer" form="form-indicateur" class="fr-btn fr-icon-checkbox-circle-line fr-btn--icon-left">Enregistrer</button>
+                        <button type="submit" name="enregistrer" form="form-indicateur" class="fr-btn fr-icon-checkbox-circle-line fr-btn--icon-left" {% if not indicateur_est_applicable %}disabled{% endif %}>Enregistrer</button>
                         <button aria-controls="htmx-modal-indicateur" class="fr-btn fr-btn--secondary">Annuler</button>
                     </div>
                 </div>

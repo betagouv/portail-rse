@@ -265,11 +265,11 @@ class RapportVSME(TimestampedModel):
         indicateurs_applicables = [
             ind
             for ind in exigence_de_publication_schema
-            if self.indicateur_est_applicable(ind)
+            if self.indicateur_est_applicable(ind)[0]
         ]
         return indicateurs_applicables
 
-    def indicateur_est_applicable(self, indicateur_schema_id):
+    def indicateur_est_applicable(self, indicateur_schema_id) -> tuple[bool, str]:
         match indicateur_schema_id.split("-"):
             case ["B1", "24", "d"]:  # indicateur liste filiales
                 indicateur_type_de_perimetre = "B1-24-c"
@@ -282,7 +282,12 @@ class RapportVSME(TimestampedModel):
                     )
                 except ObjectDoesNotExist:
                     base_consolidee = False
-                return base_consolidee
+                explication_non_applicable = (
+                    "le rapport de durabilité est établi sur une base individuelle"
+                    if not base_consolidee
+                    else ""
+                )
+                return (base_consolidee, explication_non_applicable)
             case ["B2", "26", p]:  # indicateurs spécifiques aux coopératives
                 indicateur_forme_juridique = "B1-24-e-i"
                 try:
@@ -294,11 +299,22 @@ class RapportVSME(TimestampedModel):
                     ) or forme_juridique.get("forme_juridique") in ("51", "63")
                 except ObjectDoesNotExist:
                     est_cooperative = False
-                return est_cooperative
+                explication_non_applicable = (
+                    "la forme juridique renseignée par l'entreprise n'est pas une coopérative"
+                    if not est_cooperative
+                    else ""
+                )
+                return (est_cooperative, explication_non_applicable)
             case ["B8", "39", "c"]:  # indicateur effectifs par pays
-                return len(self.pays()) > 1
+                plusieurs_pays_d_exercice = len(self.pays()) > 1
+                explication_non_applicable = (
+                    "l'entreprise n'a pas renseigné plusieurs pays d'exercice"
+                    if not plusieurs_pays_d_exercice
+                    else ""
+                )
+                return (plusieurs_pays_d_exercice, explication_non_applicable)
             case _:
-                return True
+                return (True, "")
 
     def indicateurs_completes(self, exigence_de_publication):
         return self.indicateurs.filter(
