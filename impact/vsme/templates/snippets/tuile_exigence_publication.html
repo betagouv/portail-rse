@@ -3,7 +3,7 @@
 {% if exigence.url_infos %}
     <div class="fr-grid-row fr-mb-1w">
         <div class="fr-col">
-            <div class="fr-tile fr-enlarge-link fr-tile--horizontal progression-vsme--{% if categorie.value.id == 'informations-generales' %}general{% elif categorie.value.id == 'environnement' %}env{% elif categorie.value.id == 'social' %}social{% else %}gov{% endif %}">
+            <div class="fr-tile fr-enlarge-link fr-tile--horizontal progression-vsme--{% if exigence.categorie.value.id == 'informations-generales' %}general{% elif exigence.categorie.value.id == 'environnement' %}env{% elif exigence.categorie.value.id == 'social' %}social{% else %}gov{% endif %}">
                 <div class="fr-tile__body">
                     <div class="fr-tile__content">
                         <h3 class="fr-tile__title">
@@ -15,7 +15,7 @@
                             {% endif %}
                         </h3>
 
-                        {% if exigence.remplissable %}
+                        {% if exigence.remplissable and exigence.est_applicable %}
                             <p class="fr-tile__desc desc-exigence-publication">
                                 {% progression_exigence rapport_vsme exigence as progression %}
                                 Complétion : {{ progression.pourcent }} %

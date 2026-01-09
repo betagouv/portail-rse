@@ -183,10 +183,17 @@ def categorie_vsme(request, rapport_vsme, categorie_id):
     categorie = Categorie.par_id(categorie_id)
     if not categorie:
         raise Http404("Catégorie VSME inconnue")
+    exigences_de_publication_applicables = (
+        rapport_vsme.exigences_de_publication_applicables()
+    )
+    exigences_de_publication = categorie.exigences_de_publication()
+    for exigence in exigences_de_publication:
+        exigence.est_applicable = exigence in exigences_de_publication_applicables
     context = tableau_de_bord_menu_context(rapport_vsme.entreprise)
     context |= {
         "rapport_vsme": rapport_vsme,
         "categorie": categorie,
+        "exigences_de_publication": exigences_de_publication,
     }
     return render(request, "vsme/categorie.html", context=context)
 
