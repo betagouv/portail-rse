@@ -1,0 +1,17 @@
+{
+    "C9-65": {
+        "titre": "Ratio de mixité au sein de l’organe de gouvernance",
+        "description": "Si l’entreprise dispose d’un organe de gouvernance (conseil d’administration, conseil de surveillance ou équivalent), publier le ratio de mixité (hommes/femmes) de cet organe.",
+        "ancre": "ratio_mixite_organe_gouvernance",
+        "champs": [
+            {
+                "id": "ratio_mixite_organe_gouvernance",
+                "label": "Ratio de mixité au sein de l’organe de gouvernance",
+                "type": "nombre_decimal",
+                "min": 0,
+                "obligatoire": true
+            }
+        ],
+        "si_pertinent": "L'entreprise ne dispose pas d'organe de gouvernance"
+    }
+}

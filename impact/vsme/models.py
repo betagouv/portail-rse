@@ -233,8 +233,10 @@ EXIGENCES_DE_PUBLICATION = {
     ),
     "C9": ExigenceDePublication(
         "C9",
-        "Ratio femmes/hommes au sein de l'organe de gouvernance",
+        "Ratio de mixité au sein de l'organe de gouvernance",
         Categorie.GOUVERNANCE,
+        "https://portail-rse.beta.gouv.fr/vsme/c9-ratio-de-mixite-au-sein-des-organes-de-gouvernance/",
+        remplissable=True,
     ),
 }
 
