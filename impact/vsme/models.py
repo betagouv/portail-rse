@@ -77,11 +77,11 @@ class Categorie(Enum):
                 return c
 
     def exigences_de_publication(self):
-        return (
+        return [
             exigence
             for code, exigence in EXIGENCES_DE_PUBLICATION.items()
             if exigence.categorie == self
-        )
+        ]
 
 
 @dataclass
