@@ -365,7 +365,7 @@ class RapportVSME(TimestampedModel):
         return {"total": total, "complet": complet, "pourcent": int(pourcent)}
 
     def exigences_de_publication_applicables(self):
-        module_par_defaut = "base"
+        module_par_defaut = "complet"
         indicateur_choix_module = "B1-24-a"
         try:
             choix_module = self.indicateurs.get(
