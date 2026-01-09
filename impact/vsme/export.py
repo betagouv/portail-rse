@@ -30,7 +30,7 @@ def export_exigence_de_publication(exigence_de_publication, workbook, rapport_vs
         "B2-26": "E5",
         "B3-29-p1": "A4",
         "B3-29-p2": "D5",
-        "B3-30": "P4",
+        "B3-30": "R4",
         "B4-32-p1": "A4",
         "B4-32-p2": "D4",
         "B4-32-p3": "G4",
