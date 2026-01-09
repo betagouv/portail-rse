@@ -283,7 +283,7 @@ class RapportVSME(TimestampedModel):
                 except ObjectDoesNotExist:
                     base_consolidee = False
                 explication_non_applicable = (
-                    "le rapport de durabilité est établi sur une base individuelle"
+                    "l'entreprise a sélectionné une base individuelle dans l'indicateur 'Type de périmètre' de B1"
                     if not base_consolidee
                     else ""
                 )
@@ -300,7 +300,7 @@ class RapportVSME(TimestampedModel):
                 except ObjectDoesNotExist:
                     est_cooperative = False
                 explication_non_applicable = (
-                    "la forme juridique renseignée par l'entreprise n'est pas une coopérative"
+                    "la forme juridique renseignée par l'entreprise dans l'indicateur 'Forme juridique' de B1 n'est pas une coopérative"
                     if not est_cooperative
                     else ""
                 )
@@ -308,11 +308,19 @@ class RapportVSME(TimestampedModel):
             case ["B8", "39", "c"]:  # indicateur effectifs par pays
                 plusieurs_pays_d_exercice = len(self.pays()) > 1
                 explication_non_applicable = (
-                    "l'entreprise n'a pas renseigné plusieurs pays d'exercice"
+                    "l'entreprise n'a pas renseigné plusieurs pays d'exercice dans l'indicateur 'Pays d'exercice' de B1"
                     if not plusieurs_pays_d_exercice
                     else ""
                 )
                 return (plusieurs_pays_d_exercice, explication_non_applicable)
+            case [exigence, *_] if exigence.startswith("C"):
+                module_complet = self.choix_module() == "complet"
+                explication_non_applicable = (
+                    "l'entreprise a sélectionné uniquement le module de base dans l'indicateur 'Base d'établissement' de B1"
+                    if not module_complet
+                    else ""
+                )
+                return (module_complet, explication_non_applicable)
             case _:
                 return (True, "")
 
@@ -365,14 +373,7 @@ class RapportVSME(TimestampedModel):
         return {"total": total, "complet": complet, "pourcent": int(pourcent)}
 
     def exigences_de_publication_applicables(self):
-        module_par_defaut = "complet"
-        indicateur_choix_module = "B1-24-a"
-        try:
-            choix_module = self.indicateurs.get(
-                schema_id=indicateur_choix_module
-            ).data.get("choix_module", module_par_defaut)
-        except ObjectDoesNotExist:
-            choix_module = module_par_defaut
+        choix_module = self.choix_module()
         exigences_de_publication_module_complet = EXIGENCES_DE_PUBLICATION.values()
         exigences_de_publication_module_base = [
             exigence
@@ -384,6 +385,17 @@ class RapportVSME(TimestampedModel):
                 return exigences_de_publication_module_base
             case "complet":
                 return exigences_de_publication_module_complet
+
+    def choix_module(self):
+        module_par_defaut = "complet"
+        indicateur_choix_module = "B1-24-a"
+        try:
+            choix_module = self.indicateurs.get(
+                schema_id=indicateur_choix_module
+            ).data.get("choix_module", module_par_defaut)
+        except ObjectDoesNotExist:
+            choix_module = module_par_defaut
+        return choix_module
 
     def pays(self):
         indicateur_pays = "B1-24-e-vi"
