@@ -210,6 +210,8 @@ def create_simple_field_from_schema(field_schema, rapport_vsme):
             field_kwargs["max_value"] = field_schema.get("max")
             field = forms.IntegerField(**field_kwargs)
         case "nombre_decimal":
+            field_kwargs["min_value"] = field_schema.get("min")
+            field_kwargs["max_value"] = field_schema.get("max")
             field = forms.DecimalField(**field_kwargs)
         case "date":
             field = forms.DateField(
