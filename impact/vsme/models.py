@@ -10,6 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
+from django.urls.base import reverse
 
 from utils.combustibles import COMBUSTIBLES
 from utils.models import TimestampedModel
@@ -283,7 +284,7 @@ class RapportVSME(TimestampedModel):
                 except ObjectDoesNotExist:
                     base_consolidee = False
                 explication_non_applicable = (
-                    "l'entreprise a sélectionné une base individuelle dans l'indicateur 'Type de périmètre' de B1"
+                    "l'entreprise n'a pas sélectionné une base consolidée dans l'indicateur 'Type de périmètre'"
                     if not base_consolidee
                     else ""
                 )
@@ -299,24 +300,33 @@ class RapportVSME(TimestampedModel):
                     ) or forme_juridique.get("forme_juridique") in ("51", "63")
                 except ObjectDoesNotExist:
                     est_cooperative = False
+                B1_url = reverse(
+                    "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
+                )
                 explication_non_applicable = (
-                    "la forme juridique renseignée par l'entreprise dans l'indicateur 'Forme juridique' de B1 n'est pas une coopérative"
+                    f"la forme juridique renseignée par l'entreprise dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur 'Forme juridique' de B1</a> n'est pas une coopérative"
                     if not est_cooperative
                     else ""
                 )
                 return (est_cooperative, explication_non_applicable)
             case ["B8", "39", "c"]:  # indicateur effectifs par pays
                 plusieurs_pays_d_exercice = len(self.pays()) > 1
+                B1_url = reverse(
+                    "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
+                )
                 explication_non_applicable = (
-                    "l'entreprise n'a pas renseigné plusieurs pays d'exercice dans l'indicateur 'Pays d'exercice' de B1"
+                    f"l'entreprise n'a pas renseigné plusieurs pays d'exercice dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur 'Pays d'exercice' de B1</a>"
                     if not plusieurs_pays_d_exercice
                     else ""
                 )
                 return (plusieurs_pays_d_exercice, explication_non_applicable)
             case [exigence, *_] if exigence.startswith("C"):
                 module_complet = self.choix_module() == "complet"
+                B1_url = reverse(
+                    "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
+                )
                 explication_non_applicable = (
-                    "l'entreprise a sélectionné uniquement le module de base dans l'indicateur 'Base d'établissement' de B1"
+                    f"l'entreprise a sélectionné uniquement le module de base dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur 'Base d'établissement' de B1</a>"
                     if not module_complet
                     else ""
                 )

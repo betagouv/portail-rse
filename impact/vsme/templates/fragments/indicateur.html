@@ -23,7 +23,7 @@
                         {% if not indicateur_est_applicable %}
                             <div class="fr-callout fr-icon-alert-line fr-callout--brown-cafe-creme">
                                 <p class="fr-callout__text">
-                                    Cet indicateur n'est pas applicable car {{ explication_non_applicable }}.
+                                    Cet indicateur n'est pas applicable car {{ explication_non_applicable | safe }}.
                                 </p>
                             </div>
                         {% elif multiform.preremplissage %}
