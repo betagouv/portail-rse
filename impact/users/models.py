@@ -73,6 +73,12 @@ class User(AbstractBaseUser, TimestampedModel):
         null=True,
     )
 
+    is_conseiller_rse = models.BooleanField(
+        verbose_name="est conseiller RSE",
+        default=False,
+        help_text="Indique si l'utilisateur est un conseiller RSE externe",
+    )
+
     objects = UserManager()
 
     USERNAME_FIELD = "email"
@@ -106,3 +112,13 @@ class User(AbstractBaseUser, TimestampedModel):
     def created_with_oidc(self):
         # l'utilisateur a été créé via OIDC
         return not self.has_usable_password() and bool(self.oidc_sub_id)
+
+    @property
+    def doit_choisir_type_utilisateur(self) -> bool:
+        """L'utilisateur doit-il choisir entre membre d'entreprise ou conseiller RSE ?
+
+        Retourne True si l'utilisateur n'a pas encore fait de choix :
+        - n'est pas marqué comme conseiller RSE
+        - n'a aucune habilitation sur une entreprise
+        """
+        return not self.is_conseiller_rse and not self.entreprises.exists()
