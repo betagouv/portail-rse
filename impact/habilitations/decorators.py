@@ -1,6 +1,6 @@
 from functools import wraps
 
-from django.http import HttpResponseForbidden
+from django.core.exceptions import PermissionDenied
 
 from .enums import UserRole
 from .models import Habilitation
@@ -19,12 +19,12 @@ def role(*required_roles):
             # par le middleware `ExtendUserMiddleware`
             user = request.user
             if not user.is_authenticated:
-                return HttpResponseForbidden("L'utilisateur n'est pas authentifié.")
+                raise PermissionDenied("L'utilisateur n'est pas authentifié.")
 
             # la donnée stockée en session est le SIREN de l'entreprise (pas sa PK)
             siren_entreprise = request.session.get("entreprise")
             if not siren_entreprise:
-                return HttpResponseForbidden(
+                raise PermissionDenied(
                     "Entreprise manquante pour la vérification des permissions."
                 )
 
@@ -36,7 +36,7 @@ def role(*required_roles):
                     break
 
             if not entreprise_courante:
-                return HttpResponseForbidden(
+                raise PermissionDenied(
                     "L'utilisateur n'est pas rattaché à l'entreprise courante."
                 )
 
@@ -45,14 +45,14 @@ def role(*required_roles):
                     entreprise=entreprise_courante, utilisateur=user
                 )
             except Habilitation.DoesNotExist:
-                return HttpResponseForbidden(
+                raise PermissionDenied(
                     "L'utilisateur n'a pas d'habilitation pour l'entreprise courante."
                 )
 
             if habilitation.role and not UserRole.autorise(
                 UserRole(habilitation.role), *required_roles
             ):
-                return HttpResponseForbidden("L'utilisateur n'a pas le rôle requis.")
+                raise PermissionDenied("L'utilisateur n'a pas le rôle requis.")
 
             # Si tout est OK, exécuter la vue originale
             return view_func(request, *args, **kwargs)
