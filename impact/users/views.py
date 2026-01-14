@@ -168,6 +168,83 @@ def invitation(request, id_invitation, code):
     )
 
 
+def invitation_proprietaire_tiers(request, id_invitation, code):
+    """Landing page pour invitation propriétaire par conseiller RSE.
+
+    Valide l'invitation puis redirige vers ProConnect.
+    L'invitation est stockée en session pour être récupérée après authentification.
+    """
+    try:
+        invitation = Invitation.objects.get(id=id_invitation)
+    except Invitation.DoesNotExist:
+        messages.error(request, "Cette invitation n'existe pas.")
+        return redirect(reverse("erreur_terminale"))
+
+    if invitation.est_expiree:
+        messages.error(
+            request,
+            "L'invitation est expirée. Veuillez contacter le conseiller RSE qui a créé cette invitation.",
+        )
+        return redirect(reverse("erreur_terminale"))
+
+    if not check_token(invitation, "invitation_proprietaire_tiers", code):
+        messages.error(request, "Ce lien d'invitation est invalide.")
+        return redirect(reverse("erreur_terminale"))
+
+    if invitation.date_acceptation:
+        messages.warning(request, "Cette invitation a déjà été acceptée.")
+        return redirect("reglementations:tableau_de_bord", invitation.entreprise.siren)
+
+    # Si utilisateur déjà connecté via ProConnect
+    if request.user.is_authenticated:
+        if invitation.email != request.user.email:
+            messages.error(
+                request, "Cette invitation ne correspond pas à votre adresse e-mail."
+            )
+            return redirect(reverse("erreur_terminale"))
+        # Rediriger vers acceptation directe
+        return redirect("users:accepter_role_proprietaire", id_invitation, code)
+
+    # Stocker contexte en session et rediriger vers ProConnect
+    request.session["pending_invitation_proprietaire"] = {
+        "id": invitation.id,
+        "code": code,
+        "email": invitation.email,
+        "entreprise_siren": invitation.entreprise.siren,
+    }
+    request.session["oidc_login_next"] = reverse(
+        "users:finaliser_invitation_proprietaire"
+    )
+    request.session.save()
+
+    return redirect("oidc_authentication_init")
+
+
+@login_required()
+def finaliser_invitation_proprietaire(request):
+    """Finalise l'invitation propriétaire après authentification ProConnect."""
+    pending = request.session.pop("pending_invitation_proprietaire", None)
+    if not pending:
+        messages.error(request, "Aucune invitation en attente.")
+        return redirect("reglementations:tableau_de_bord")
+
+    # Vérifier que l'email ProConnect correspond à l'invitation
+    if request.user.email != pending["email"]:
+        messages.error(
+            request,
+            f"L'adresse e-mail de votre compte ProConnect ({request.user.email}) "
+            f"ne correspond pas à l'invitation ({pending['email']}).",
+        )
+        return redirect(reverse("erreur_terminale"))
+
+    # Rediriger vers page d'acceptation existante
+    return redirect(
+        "users:accepter_role_proprietaire",
+        pending["id"],
+        pending["code"],
+    )
+
+
 def deconnexion(request):
     """Déconnexion par méthode GET
 
@@ -682,9 +759,11 @@ def _envoie_email_invitation_proprietaire_tiers(request, invitation):
             args=[invitation.id, code],
         )
     else:
-        # Email pour nouvel utilisateur → page de création de compte
-        code = make_token(invitation, "invitation")
-        path = reverse("users:invitation", args=[invitation.id, code])
+        # Nouvel utilisateur → landing ProConnect
+        code = make_token(invitation, "invitation_proprietaire_tiers")
+        path = reverse(
+            "users:invitation_proprietaire_tiers", args=[invitation.id, code]
+        )
 
     inviteur_nom = f"{invitation.inviteur.prenom} {invitation.inviteur.nom}".strip()
     email.merge_global_data = {
@@ -712,7 +791,11 @@ def accepter_role_proprietaire(request, id_invitation, code):
         )
         return redirect(reverse("erreur_terminale"))
 
-    if not check_token(invitation, "invitation_proprietaire", code):
+    # Accepter les deux types de tokens (existant et nouveau via ProConnect)
+    token_valide = check_token(
+        invitation, "invitation_proprietaire", code
+    ) or check_token(invitation, "invitation_proprietaire_tiers", code)
+    if not token_valide:
         messages.error(request, "Ce lien d'invitation est invalide.")
         return redirect(reverse("erreur_terminale"))
 
