@@ -431,22 +431,43 @@ def preremplit_indicateur(indicateur_schema_id, rapport_vsme):
 def export_vsme(request, rapport_vsme):
     chemin_xlsx = Path(settings.BASE_DIR, f"vsme/xlsx/VSME.xlsx")
     workbook = load_workbook(chemin_xlsx)
-    for exigence_de_publication in EXIGENCES_DE_PUBLICATION.values():
-        # Les exigences de publications sont ajoutées au fur et à mesure de leur intégration sur le portail au template d'export_vsme
-        if exigence_de_publication.code in (
-            "B1",
-            "B2",
-            "B3",
-            "B4",
-            "B5",
-            "B6",
-            "B7",
-            "B8",
-            "B9",
-            "B10",
-            "B11",
-        ):
+
+    # Les exigences de publications sont ajoutées au fur et à mesure de leur intégration sur le portail au template d'export_vsme
+    codes_exigences_de_publication_exportables = (
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "B5",
+        "B6",
+        "B7",
+        "B8",
+        "B9",
+        "B10",
+        "B11",
+        "C1",
+    )
+
+    exigences_de_publication_applicables = (
+        rapport_vsme.exigences_de_publication_applicables()
+    )
+    for exigence_de_publication in exigences_de_publication_applicables:
+        if exigence_de_publication.code in codes_exigences_de_publication_exportables:
             export_exigence_de_publication(
                 exigence_de_publication, workbook, rapport_vsme
             )
+
+    # supprime les onglets des exigences de publication non applicables
+    codes_exigences_de_publication_applicables = [
+        e.code for e in exigences_de_publication_applicables
+    ]
+    codes_exigences_de_publication_a_supprimer = [
+        code
+        for code in codes_exigences_de_publication_exportables
+        if code not in codes_exigences_de_publication_applicables
+    ]
+    for code in codes_exigences_de_publication_a_supprimer:
+        nom_onglet = code
+        workbook.remove(workbook[nom_onglet])
+
     return xlsx_response(workbook, "vsme.xlsx")

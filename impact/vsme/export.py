@@ -53,6 +53,10 @@ def export_exigence_de_publication(exigence_de_publication, workbook, rapport_vs
         "B10-42-d": "H4",
         "B11-43-p1": "A4",
         "B11-43-p2": "B4",
+        "C1-47-a": "A4",
+        "C1-47-b": "B4",
+        "C1-47-c": "C4",
+        "C1-47-d": "D4",
     }
 
     for indicateur_schema_id in rapport_vsme.indicateurs_applicables(
