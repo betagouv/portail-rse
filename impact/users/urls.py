@@ -11,7 +11,9 @@ from .views import account
 from .views import choix_type_utilisateur
 from .views import creation
 from .views import deconnexion
+from .views import finaliser_invitation_proprietaire
 from .views import invitation
+from .views import invitation_proprietaire_tiers
 from .views import PasswordResetConfirmView
 from .views import PasswordResetView
 from .views import post_login_dispatch
@@ -83,6 +85,16 @@ urlpatterns = [
         "accepter-proprietaire/<int:id_invitation>/<str:code>",
         accepter_role_proprietaire,
         name="accepter_role_proprietaire",
+    ),
+    path(
+        "invitation-proprietaire/<int:id_invitation>/<str:code>",
+        invitation_proprietaire_tiers,
+        name="invitation_proprietaire_tiers",
+    ),
+    path(
+        "finaliser-invitation-proprietaire",
+        finaliser_invitation_proprietaire,
+        name="finaliser_invitation_proprietaire",
     ),
     # Routes HTMX pour le formulaire conseiller
     path(
