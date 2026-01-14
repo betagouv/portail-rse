@@ -903,3 +903,33 @@ def test_preremplissage_siren(client):
     preremplissage_form = response.context["form"]
     assert preremplissage_form["siren"].value() == siren
     assert preremplissage_form["denomination"].value() == denomination
+
+
+@pytest.mark.django_db
+def test_conseiller_rse_ne_peut_pas_modifier_qualification(
+    client, entreprise_factory, alice, django_user_model
+):
+    """Un conseiller RSE (EDITEUR) ne peut pas accéder à la page de qualification."""
+    from habilitations.enums import UserRole
+
+    # Créer une entreprise avec un propriétaire
+    entreprise = entreprise_factory(siren="123456789")
+    Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE)
+
+    # Créer un conseiller RSE avec rôle EDITEUR
+    conseiller = django_user_model.objects.create(
+        email="conseiller@test.fr", is_conseiller_rse=True
+    )
+    Habilitation.ajouter(entreprise, conseiller, UserRole.EDITEUR)
+
+    # Se connecter en tant que conseiller
+    client.force_login(conseiller)
+
+    # Essayer d'accéder à la page de qualification
+    response = client.get(
+        reverse("entreprises:qualification", kwargs={"siren": "123456789"})
+    )
+
+    # Vérifier qu'on reçoit une erreur 403
+    assert response.status_code == 403
+    assertTemplateUsed(response, "403.html")
