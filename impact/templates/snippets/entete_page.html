@@ -67,6 +67,10 @@
                     </li>
                 </ul>
                 <ul class="fr-nav__list">
+                    {% if user.is_conseiller_rse %}
+                        {% absolute_url 'users:tableau_de_bord_conseiller' as url_conseiller %}
+                        <li class="fr-nav__item"><a class="fr-nav__link" href="{{ url_conseiller }}" target="_self"{% if request.path == url_conseiller %} aria-current="page"{% endif %}>Espace conseillers RSE</a></li>
+                    {% endif %}
                     {% if user.entreprise_set.count >= 2 %}
                         <li class="fr-nav__item">
                             {% absolute_url 'reglementations:tableau_de_bord' current_entreprise.siren as url_page %}
