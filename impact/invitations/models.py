@@ -33,6 +33,11 @@ class Invitation(TimestampedModel):
         blank=True,
     )
     date_acceptation = models.DateTimeField(null=True)
+    est_invitation_proprietaire_tiers = models.BooleanField(
+        default=False,
+        verbose_name="Invitation propriétaire pour un tiers",
+        help_text="Invitation créée par un conseiller RSE pour un futur propriétaire",
+    )
 
     @property
     def date_expiration(self):
