@@ -18,6 +18,8 @@ from entreprises.models import convertit_code_NAF
 from entreprises.models import convertit_code_pays
 from entreprises.models import Entreprise
 from entreprises.models import est_dans_EEE
+from habilitations.enums import UserRole
+from habilitations.models import Habilitation
 
 
 @pytest.mark.django_db(transaction=True)
@@ -800,3 +802,142 @@ def test_convertit_code_NAF():
 def test_convertit_code_NAF_sans_correspondance():
     assert convertit_code_NAF(None) is None
     assert convertit_code_NAF("yolo") is None
+
+
+# Tests pour la propriété a_proprietaire_non_conseiller
+
+
+@pytest.fixture
+def conseiller_rse(django_user_model):
+    return django_user_model.objects.create(
+        prenom="Claire",
+        nom="Conseillère",
+        email="claire@conseil-rse.test",
+        is_email_confirmed=True,
+        is_conseiller_rse=True,
+    )
+
+
+@pytest.mark.django_db
+def test_entreprise_sans_habilitation_na_pas_de_proprietaire_non_conseiller(
+    entreprise_factory,
+):
+    """Une entreprise sans aucune habilitation n'a pas de propriétaire non conseiller."""
+    entreprise = entreprise_factory()
+
+    assert not entreprise.a_proprietaire_non_conseiller
+
+
+@pytest.mark.django_db
+def test_entreprise_avec_proprietaire_standard(alice, entreprise_factory):
+    """Une entreprise avec un propriétaire standard a un propriétaire non conseiller."""
+    entreprise = entreprise_factory()
+    Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE)
+
+    assert entreprise.a_proprietaire_non_conseiller
+
+
+@pytest.mark.django_db
+def test_entreprise_avec_uniquement_conseiller_rse(conseiller_rse, entreprise_factory):
+    """Une entreprise avec uniquement un conseiller RSE n'a pas de propriétaire non conseiller."""
+    entreprise = entreprise_factory()
+    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.EDITEUR)
+
+    assert not entreprise.a_proprietaire_non_conseiller
+
+
+@pytest.mark.django_db
+def test_entreprise_avec_conseiller_et_proprietaire_standard(
+    alice, conseiller_rse, entreprise_factory
+):
+    """Une entreprise avec un conseiller RSE et un propriétaire standard a un propriétaire non conseiller."""
+    entreprise = entreprise_factory()
+    Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE)
+    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.EDITEUR)
+
+    assert entreprise.a_proprietaire_non_conseiller
+
+
+@pytest.mark.django_db
+def test_entreprise_avec_editeur_standard_na_pas_de_proprietaire_non_conseiller(
+    alice, entreprise_factory
+):
+    """Une entreprise avec uniquement un éditeur standard n'a pas de propriétaire non conseiller."""
+    entreprise = entreprise_factory()
+    Habilitation.ajouter(entreprise, alice, UserRole.EDITEUR)
+
+    assert not entreprise.a_proprietaire_non_conseiller
+
+
+# Tests pour la propriété est_structure_vacante
+
+from invitations.models import Invitation
+
+
+@pytest.mark.django_db
+def test_structure_vacante_avec_invitation_proprietaire_tiers(
+    conseiller_rse, entreprise_factory
+):
+    """Une structure est vacante si elle a une invitation propriétaire tiers en attente."""
+    entreprise = entreprise_factory()
+    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.EDITEUR)
+    Invitation.objects.create(
+        entreprise=entreprise,
+        email="futur@proprietaire.test",
+        role=UserRole.PROPRIETAIRE,
+        inviteur=conseiller_rse,
+        est_invitation_proprietaire_tiers=True,
+    )
+
+    assert entreprise.est_structure_vacante
+
+
+@pytest.mark.django_db
+def test_structure_non_vacante_avec_proprietaire_valide(
+    alice, conseiller_rse, entreprise_factory
+):
+    """Une structure n'est pas vacante si elle a un propriétaire validé."""
+    entreprise = entreprise_factory()
+    Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE)
+    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.EDITEUR)
+    Invitation.objects.create(
+        entreprise=entreprise,
+        email="autre@proprietaire.test",
+        role=UserRole.PROPRIETAIRE,
+        inviteur=conseiller_rse,
+        est_invitation_proprietaire_tiers=True,
+    )
+
+    assert not entreprise.est_structure_vacante
+
+
+@pytest.mark.django_db
+def test_structure_non_vacante_sans_invitation_proprietaire_tiers(
+    conseiller_rse, entreprise_factory
+):
+    """Une structure n'est pas vacante si elle n'a pas d'invitation propriétaire tiers."""
+    entreprise = entreprise_factory()
+    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.EDITEUR)
+    # Pas d'invitation
+
+    assert not entreprise.est_structure_vacante
+
+
+@pytest.mark.django_db
+def test_structure_non_vacante_invitation_acceptee(
+    alice, conseiller_rse, entreprise_factory
+):
+    """Une structure n'est pas vacante si l'invitation a été acceptée."""
+    entreprise = entreprise_factory()
+    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.EDITEUR)
+    invitation = Invitation.objects.create(
+        entreprise=entreprise,
+        email="alice@test.com",
+        role=UserRole.PROPRIETAIRE,
+        inviteur=conseiller_rse,
+        est_invitation_proprietaire_tiers=True,
+    )
+    # Simuler l'acceptation
+    invitation.accepter(alice)
+
+    assert not entreprise.est_structure_vacante
