@@ -470,4 +470,11 @@ def export_vsme(request, rapport_vsme):
         nom_onglet = code
         workbook.remove(workbook[nom_onglet])
 
+    # adapte le texte présent dans une cellule du premier onglet
+    if rapport_vsme.choix_module() == "complet":
+        texte = "Module complet"
+    else:
+        texte = "Module de base"
+    workbook[">>> "]["C13"] = texte
+
     return xlsx_response(workbook, "vsme.xlsx")
