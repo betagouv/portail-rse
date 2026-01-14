@@ -215,6 +215,10 @@ def test_formulaire_prerempli_avec_la_simulation_précédente(status_est_soumis,
 
 
 @pytest.mark.django_db
+@pytest.mark.skipif(
+    settings.OIDC_ENABLED,
+    reason="Test non pertinent avec OIDC activé - le formulaire de création classique n'est pas disponible",
+)
 def test_formulaire_creation_compte_prerempli_avec_le_siren_de_la_simulation_précédente(
     client,
 ):
