@@ -41,6 +41,44 @@ REGLEMENTATIONS = [
 ]
 
 
+def calculer_metriques_entreprise(entreprise):
+    """Calcule les metriques synthetiques pour une entreprise.
+
+    Returns:
+        dict: {
+            'nombre_reglementations_applicables': int,
+            'pourcentage_vsme': int
+        }
+    """
+    # Recuperer les caracteristiques actuelles
+    caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
+
+    # Calcul du nombre de reglementations applicables
+    nombre_reglementations = 0
+    if caracteristiques:
+        for reglementation in REGLEMENTATIONS:
+            try:
+                if reglementation.est_soumis(caracteristiques):
+                    nombre_reglementations += 1
+            except Exception:
+                pass
+
+    # Calcul du pourcentage VSME
+    annee_precedente = date.today().year - 1
+    try:
+        rapport_vsme = RapportVSME.objects.get(
+            entreprise=entreprise, annee=annee_precedente
+        )
+        pourcentage_vsme = rapport_vsme.progression()["pourcent"]
+    except RapportVSME.DoesNotExist:
+        pourcentage_vsme = 0
+
+    return {
+        "nombre_reglementations_applicables": nombre_reglementations,
+        "pourcentage_vsme": pourcentage_vsme,
+    }
+
+
 def tableau_de_bord_menu_context(entreprise, page_resume=False):
     return {
         "entreprise": entreprise,
