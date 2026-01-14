@@ -6,12 +6,18 @@ from django.urls import reverse_lazy
 from .forms import LoginForm
 from .forms import PasswordResetForm
 from .forms import SetPasswordForm
+from .views import accepter_role_proprietaire
 from .views import account
+from .views import choix_type_utilisateur
 from .views import creation
 from .views import deconnexion
 from .views import invitation
 from .views import PasswordResetConfirmView
 from .views import PasswordResetView
+from .views import post_login_dispatch
+from .views import preremplissage_siren_conseiller
+from .views import tableau_de_bord_conseiller
+from .views import verifier_statut_entreprise
 from users.views import confirm_email
 
 app_name = "users"
@@ -58,4 +64,35 @@ urlpatterns = [
         name="confirm_email",
     ),
     path("creation", _creation_view, name="creation"),
+    path(
+        "post-login-dispatch",
+        post_login_dispatch,
+        name="post_login_dispatch",
+    ),
+    path(
+        "choix-type-utilisateur",
+        choix_type_utilisateur,
+        name="choix_type_utilisateur",
+    ),
+    path(
+        "tableau-de-bord-conseiller",
+        tableau_de_bord_conseiller,
+        name="tableau_de_bord_conseiller",
+    ),
+    path(
+        "accepter-proprietaire/<int:id_invitation>/<str:code>",
+        accepter_role_proprietaire,
+        name="accepter_role_proprietaire",
+    ),
+    # Routes HTMX pour le formulaire conseiller
+    path(
+        "fragments/verifier-statut-entreprise",
+        verifier_statut_entreprise,
+        name="verifier_statut_entreprise",
+    ),
+    path(
+        "fragments/preremplissage-siren-conseiller",
+        preremplissage_siren_conseiller,
+        name="preremplissage_siren_conseiller",
+    ),
 ]
