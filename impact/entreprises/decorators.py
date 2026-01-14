@@ -8,7 +8,6 @@ from django.urls import reverse_lazy
 
 from entreprises.exceptions import EntrepriseNonQualifieeError
 from entreprises.models import Entreprise
-from entreprises.views import get_current_entreprise
 from habilitations.models import Habilitation
 
 
@@ -31,6 +30,9 @@ def entreprise_requise(function):
     @wraps(function)
     def wrap(request, siren=None, **kwargs):
         if not siren:
+            # Import local pour éviter import circulaire
+            from entreprises.views import get_current_entreprise
+
             entreprise = get_current_entreprise(request)
             if not entreprise:
                 msg = "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à votre tableau de bord."
