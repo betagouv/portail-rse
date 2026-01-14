@@ -6,7 +6,7 @@
 {% block content %}
     <div class="fr-container fr-my-4w">
         <!-- Section 1 : En-tête avec navigation -->
-        <div class="fr-grid-row fr-mb-4w">
+        <div class="fr-grid-row fr-mb-2w">
             <div class="fr-col-12">
                 <h1>Espace Conseiller RSE</h1>
                 <p class="fr-text--lead">
@@ -18,22 +18,19 @@
 
         <!-- Section 2 : Tuiles d'accès rapide (placeholders) -->
         <div class="fr-grid-row fr-grid-row--gutters fr-mb-6w">
-            <div class="fr-col-12">
-                <h2>Accès rapide</h2>
-            </div>
             <div class="fr-col-12 fr-col-md-4">
                 <div class="fr-tile fr-enlarge-link">
                     <div class="fr-tile__body">
-                        <div class="fr-tile__content">
+                        <div class="fr-tile__content" style="text-align: left;">
                             <h3 class="fr-tile__title">
-                                <a href="#">Placeholder 1</a>
+                                <a href="{% url 'simulation' %}">Comprendre le contexte RSE de l'entreprise</a>
                             </h3>
-                            <p class="fr-tile__desc">Description à définir</p>
+                            <p class="fr-tile__desc">En quelques clics, identifiez les principales obligations réglementaires et les attentes économiques qui s'appliquent à chaque entreprise, afin de poser un diagnostic RSE clair et priorisé.</p>
                         </div>
                     </div>
                     <div class="fr-tile__header">
                         <div class="fr-card__img">
-                            <img class="fr-responsive-img fr-ratio-3x2" src="{% static 'img/dashboard.png' %}" alt="" />
+                            <img class="fr-responsive-img fr-ratio-3x2" src="{% static 'img/simulation.png' %}" alt="Simulation" />
                         </div>
                     </div>
                 </div>
@@ -41,11 +38,11 @@
             <div class="fr-col-12 fr-col-md-4">
                 <div class="fr-tile fr-enlarge-link">
                     <div class="fr-tile__body">
-                        <div class="fr-tile__content">
+                        <div class="fr-tile__content" style="text-align: left;">
                             <h3 class="fr-tile__title">
-                                <a href="#">Placeholder 2</a>
+                                <a href="#ajouter_entreprise">Lancer l'accompagnement d'une entreprise</a>
                             </h3>
-                            <p class="fr-tile__desc">Description à définir</p>
+                            <p class="fr-tile__desc">Démarrez l'accompagnement en créant le profil de l'entreprise sur le Portail RSE afin de structurer les premières étapes de sa démarche de durabilité.</p>
                         </div>
                     </div>
                     <div class="fr-tile__header">
@@ -58,11 +55,11 @@
             <div class="fr-col-12 fr-col-md-4">
                 <div class="fr-tile fr-enlarge-link">
                     <div class="fr-tile__body">
-                        <div class="fr-tile__content">
+                        <div class="fr-tile__content" style="text-align: left;">
                             <h3 class="fr-tile__title">
-                                <a href="#">Placeholder 3</a>
+                                <a href="#mes_entreprises">Piloter les démarches de durabilité</a>
                             </h3>
-                            <p class="fr-tile__desc">Description à définir</p>
+                            <p class="fr-tile__desc">Suivez l'avancement des démarches RSE de vos entreprises, centralisez les informations clés et accompagnez-les dans la durée grâce à une vision consolidée.</p>
                         </div>
                     </div>
                     <div class="fr-tile__header">
@@ -75,7 +72,7 @@
         </div>
 
         <!-- Section 3 : Résumé des entreprises en gestion -->
-        <div class="fr-grid-row fr-mb-6w">
+        <div class="fr-grid-row fr-mb-2w" id="mes_entreprises">
             <div class="fr-col-12">
                 <h2>Mes entreprises en gestion</h2>
                 {% if habilitations_enrichies %}
@@ -88,7 +85,6 @@
                                             <tr>
                                                 <th scope="col">Dénomination</th>
                                                 <th scope="col">SIREN</th>
-                                                <th scope="col">Statut</th>
                                                 <th scope="col">Informations</th>
                                                 <th scope="col">Actions</th>
                                             </tr>
@@ -99,23 +95,15 @@
                                                     <td>{{ item.entreprise.denomination }}</td>
                                                     <td>{{ item.entreprise.siren }}</td>
                                                     <td>
-                                                        {% if item.entreprise.est_structure_vacante %}
-                                                            <span class="fr-badge fr-badge--warning fr-badge--no-icon">Sans propriétaire</span>
-                                                        {% else %}
-                                                            <span class="fr-badge fr-badge--success fr-badge--no-icon">Active</span>
-                                                        {% endif %}
-                                                    </td>
-                                                    <td>
-                                                        <ul class="fr-raw-list fr-text--sm">
+                                                        <span class="fr-text--sm">
                                                             {% with pluriel=item.nombre_reglementations|pluralize %}
-                                                                <li>
-                                                                    Réglementation{{ pluriel }} applicable{{ pluriel }}&nbsp;: <strong>{{ item.nombre_reglementations }}</strong>
-                                                                </li>
+                                                                Réglementation{{ pluriel }} applicable{{ pluriel }}&nbsp;: <strong>{{ item.nombre_reglementations }}</strong>
                                                             {% endwith %}
-                                                            <li>
-                                                                Progression VSME&nbsp;: <strong>{{ item.pourcentage_vsme }}%</strong>
-                                                            </li>
-                                                        </ul>
+                                                        </span>
+                                                        <span class="fr-mx-1w fr-text--sm">|</span>
+                                                        <span class="fr-text--sm">
+                                                            Progression VSME&nbsp;: <strong>{{ item.pourcentage_vsme }}%</strong>
+                                                        </span>
                                                     </td>
                                                     <td>
                                                         <a href="{% url 'reglementations:tableau_de_bord' item.entreprise.siren %}" class="fr-btn fr-btn--sm fr-icon-arrow-right-line fr-btn--icon-right">
@@ -142,7 +130,7 @@
         </div>
 
         <!-- Section 4 : Formulaire unifié d'ajout d'entreprise -->
-        <div class="fr-grid-row">
+        <div class="fr-grid-row" id="ajouter_entreprise">
             <div class="fr-col-12 fr-col-md-8">
                 <h2>Ajouter une entreprise en gestion</h2>
                 <p>Recherchez une entreprise par son SIREN pour vous y rattacher.</p>
