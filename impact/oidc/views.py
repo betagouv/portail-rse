@@ -65,6 +65,13 @@ def dispatch_view(request):
         },
     )
 
+    # Nouvel utilisateur : doit choisir entre conseiller RSE et membre d'entreprise
+    # On ne propose le choix que si l'utilisateur ne l'a pas encore fait
+    if request.user.doit_choisir_type_utilisateur and not request.session.get(
+        "type_utilisateur_choisi"
+    ):
+        return redirect("users:choix_type_utilisateur")
+
     # vérification de l'existence de l'entreprise choisie via ProConnect
     try:
         entreprise = Entreprise.objects.get(siren=oidc_siren)
