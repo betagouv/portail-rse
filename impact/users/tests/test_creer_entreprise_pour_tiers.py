@@ -415,10 +415,10 @@ def test_email_invitation_utilisateur_existant_route_acceptation(
 
 
 @pytest.mark.django_db
-def test_email_invitation_nouvel_utilisateur_route_creation(
+def test_email_invitation_nouvel_utilisateur_route_proconnect(
     client, conseiller_rse, entreprise_factory, mailoutbox
 ):
-    """L'URL dans l'email pointe vers la route invitation pour un nouvel utilisateur."""
+    """L'URL dans l'email pointe vers la landing ProConnect pour un nouvel utilisateur."""
     entreprise = entreprise_factory(siren="333000333")
 
     client.force_login(conseiller_rse)
@@ -435,9 +435,9 @@ def test_email_invitation_nouvel_utilisateur_route_creation(
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
 
-    # L'URL doit pointer vers la route invitation (création de compte)
+    # L'URL doit pointer vers la landing ProConnect (invitation-proprietaire)
     invitation_url = mail.merge_global_data.get("invitation_url", "")
-    assert "invitation" in invitation_url
+    assert "invitation-proprietaire" in invitation_url
     assert "accepter-proprietaire" not in invitation_url
 
 
