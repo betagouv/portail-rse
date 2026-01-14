@@ -21,6 +21,10 @@ from utils.tokens import make_token
 from utils.tokens import uidb64
 
 
+@pytest.mark.skipif(
+    settings.OIDC_ENABLED,
+    reason="Test non pertinent avec OIDC activé - le formulaire de création classique n'est pas disponible",
+)
 def test_page_creation(client):
     response = client.get("/creation")
 
@@ -30,6 +34,10 @@ def test_page_creation(client):
 
 
 @pytest.mark.network
+@pytest.mark.skipif(
+    settings.OIDC_ENABLED,
+    reason="Test non pertinent avec OIDC activé - le formulaire de création classique n'est pas disponible",
+)
 def test_create_user_with_real_siren(client, db, mailoutbox):
     data = {
         "prenom": "Alice",
@@ -97,6 +105,10 @@ def test_create_user_with_real_siren(client, db, mailoutbox):
 
 
 @pytest.mark.network
+@pytest.mark.skipif(
+    settings.OIDC_ENABLED,
+    reason="Test non pertinent avec OIDC activé - le formulaire de création classique n'est pas disponible",
+)
 def test_create_user_with_invalid_siren(client, db):
     data = {
         "prenom": "Alice",
@@ -123,6 +135,10 @@ def test_create_user_with_invalid_siren(client, db):
     assert not Entreprise.objects.filter(siren="123456789")
 
 
+@pytest.mark.skipif(
+    settings.OIDC_ENABLED,
+    reason="Test non pertinent avec OIDC activé - le formulaire de création classique n'est pas disponible",
+)
 def test_create_user_but_cant_send_confirm_email(
     client, db, mailoutbox, mocker, mock_api_infos_entreprise
 ):
@@ -155,6 +171,10 @@ def test_create_user_but_cant_send_confirm_email(
     )
 
 
+@pytest.mark.skipif(
+    settings.OIDC_ENABLED,
+    reason="Test non pertinent avec OIDC activé - le formulaire de création classique n'est pas disponible",
+)
 def test_échec_lors_de_la_création_car_un_propriétaire_de_l_entreprise_existe_déjà(
     client, alice, entreprise_non_qualifiee
 ):

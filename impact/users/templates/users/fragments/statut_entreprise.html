@@ -1,0 +1,45 @@
+{% load filters %}
+
+{% if statut == "deja_rattache" %}
+    <div class="fr-alert fr-alert--warning fr-mb-2w">
+        <h3 class="fr-alert__title">Entreprise déjà en gestion</h3>
+        <p>
+            Vous êtes déjà rattaché à l'entreprise <strong>{{ entreprise.denomination }}</strong>.
+            Vous pouvez accéder directement à son tableau de bord.
+        </p>
+        <a href="{% url 'reglementations:tableau_de_bord' entreprise.siren %}" class="fr-btn fr-btn--sm fr-mt-2w">
+            Accéder au tableau de bord
+        </a>
+    </div>
+
+{% elif statut == "avec_proprietaire" %}
+    <div class="fr-callout fr-callout--green-emeraude fr-icon-check-line fr-mb-2w">
+        <p class="fr-callout__text">
+            L'entreprise <strong>{{ entreprise.denomination }}</strong> a un propriétaire.
+            Vous serez rattaché en tant qu'<strong>Editeur</strong>.
+        </p>
+    </div>
+
+{% elif statut == "sans_proprietaire" %}
+    <div class="fr-callout fr-callout--orange-terre-battue fr-icon-warning-line fr-mb-2w">
+        <p class="fr-callout__text">
+            L'entreprise <strong>{{ entreprise.denomination }}</strong> n'a pas encore de propriétaire.
+            Veuillez indiquer l'email du futur propriétaire.
+        </p>
+    </div>
+    {% include 'snippets/field.html' with field=form.email_futur_proprietaire %}
+
+{% elif statut == "a_creer" %}
+    <div class="fr-callout fr-callout--blue-france fr-icon-add-line fr-mb-2w">
+        <p class="fr-callout__text">
+            Cette entreprise n'existe pas encore sur Portail RSE.
+            Elle sera creee et vous serez rattache comme <strong>Editeur</strong>.
+            Veuillez indiquer l'email du futur proprietaire.
+        </p>
+    </div>
+    {% include 'snippets/field.html' with field=form.email_futur_proprietaire %}
+
+{% else %}
+    <!-- Statut inconnu - en attente de saisie SIREN valide -->
+    <div></div>
+{% endif %}

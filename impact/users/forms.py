@@ -136,3 +136,42 @@ class PasswordResetForm(DsfrForm, BasePasswordResetForm):
 
 class SetPasswordForm(DsfrForm, BaseSetPasswordForm):
     pass
+
+
+class ChoixTypeUtilisateurForm(DsfrForm, forms.Form):
+    TYPE_MEMBRE_ENTREPRISE = "membre_entreprise"
+    TYPE_CONSEILLER_RSE = "conseiller_rse"
+
+    TYPE_CHOICES = [
+        (TYPE_MEMBRE_ENTREPRISE, "Je suis membre d'une entreprise"),
+        (TYPE_CONSEILLER_RSE, "Je suis conseiller RSE"),
+    ]
+
+    type_utilisateur = forms.ChoiceField(
+        label="Quel est votre profil ?",
+        choices=TYPE_CHOICES,
+        widget=forms.RadioSelect,
+    )
+
+
+class AjoutEntrepriseConseillerForm(DsfrForm, PreremplissageSirenForm):
+    """Formulaire unifié pour qu'un conseiller RSE ajoute une entreprise en gestion.
+
+    Gère tous les cas :
+    - Entreprise existante avec propriétaire : rattachement simple
+    - Entreprise existante sans propriétaire : rattachement + invitation propriétaire
+    - Entreprise inexistante : création + rattachement + invitation propriétaire
+    """
+
+    email_futur_proprietaire = forms.EmailField(
+        label="Adresse e-mail du futur propriétaire",
+        required=False,  # Requis dynamiquement selon le contexte
+        help_text="Cette personne recevra une invitation pour devenir propriétaire de l'entreprise.",
+    )
+    fonctions = forms.CharField(
+        label="Fonction(s) dans l'accompagnement",
+        min_length=FONCTIONS_MIN_LENGTH,
+        max_length=FONCTIONS_MAX_LENGTH,
+        required=False,
+        help_text="Exemple : Consultant CSRD, Accompagnement BDESE, etc.",
+    )
