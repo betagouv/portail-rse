@@ -750,6 +750,47 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B11(
     assert onglet["A4"].value == 0
 
 
+def test_telechargement_d_un_rapport_vsme_C1_present_si_choix_module_complet(
+    client, rapport_vsme, alice
+):
+    indicateur_choix_module = "B1-24-a"
+    rapport_vsme.indicateurs.create(
+        schema_id=indicateur_choix_module,
+        data={"choix_module": "complet"},
+    )
+
+    texte_long = """
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus fermentum tellus vitae elit consequat, eget sollicitudin justo sodales. Maecenas semper mi id nisl posuere condimentum. Phasellus ac lectus efficitur, efficitur nibh id, convallis purus. Quisque venenatis tortor et turpis dapibus congue. Cras tempor feugiat mollis. Nam elementum rutrum erat, sed ullamcorper neque semper ut. Sed diam nisl, blandit eget mauris sed, dapibus cursus odio. Proin porttitor suscipit sapien, nec dapibus ex fermentum nec. Phasellus tellus libero, tristique vehicula ligula nec, porta egestas eros.
+
+    Mauris euismod maximus nisl, in suscipit quam sollicitudin eget. Phasellus non facilisis sapien. Morbi sit amet pharetra lorem. Pellentesque dapibus turpis neque, eget egestas quam consequat et. Mauris finibus quis augue ut posuere. Praesent in pretium ipsum, id mollis tortor. Donec viverra nunc eu finibus aliquam. Aliquam vitae nisl nec eros ullamcorper volutpat. Maecenas sodales at lorem ut maximus. Proin rhoncus lacinia mauris, eget suscipit velit ornare nec. Donec tempus lorem leo, quis malesuada orci pharetra eu. Vivamus rutrum, ipsum eu condimentum aliquam, lectus augue elementum nisl, vel vestibulum diam nunc a metus. Maecenas nec risus efficitur, pharetra lectus consectetur, varius lectus.
+    """
+    rapport_vsme.indicateurs.create(
+        schema_id="C1-47-a",
+        data={"produits_et_services": texte_long},
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook["C1"]
+    assert onglet["A4"].value == texte_long
+
+
+def test_telechargement_d_un_rapport_vsme_C1_absent_si_choix_module_base(
+    client, rapport_vsme, alice
+):
+    indicateur_choix_module = "B1-24-a"
+    rapport_vsme.indicateurs.create(
+        schema_id=indicateur_choix_module,
+        data={"choix_module": "base"},
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
+    workbook = load_workbook(filename=BytesIO(response.content))
+    assert "C1" not in workbook.sheetnames
+
+
 def test_telechargement_d_un_rapport_vsme_inexistant(client, entreprise_factory, alice):
     entreprise = entreprise_factory(utilisateur=alice)
     client.force_login(alice)
