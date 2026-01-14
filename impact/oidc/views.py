@@ -65,6 +65,18 @@ def dispatch_view(request):
         },
     )
 
+    # Invitation en attente : rediriger vers la finalisation de l'invitation
+    # (cas où oidc_login_next n'a pas été préservé lors de l'authentification ProConnect)
+    if pending := request.session.get("pending_invitation_proprietaire"):
+        logger.info(
+            "oidc:pending_invitation",
+            {
+                "invitation_id": pending.get("id"),
+                "entreprise_siren": pending.get("entreprise_siren"),
+            },
+        )
+        return redirect("users:finaliser_invitation_proprietaire")
+
     # Nouvel utilisateur : doit choisir entre conseiller RSE et membre d'entreprise
     # On ne propose le choix que si l'utilisateur ne l'a pas encore fait
     if request.user.doit_choisir_type_utilisateur and not request.session.get(
