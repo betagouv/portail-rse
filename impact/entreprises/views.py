@@ -5,18 +5,19 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import BadRequest
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.exceptions import PermissionDenied
-from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
 
 import api.infos_entreprise
+from .decorators import entreprise_requise
+from .models import Entreprise
 from api.exceptions import APIError
 from entreprises.forms import EntrepriseAttachForm
 from entreprises.forms import EntrepriseDetachForm
 from entreprises.forms import EntrepriseQualificationForm
 from entreprises.forms import PreremplissageSirenForm
-from entreprises.models import Entreprise
+from habilitations.decorators import role
+from habilitations.enums import UserRole
 from habilitations.models import Habilitation
 from habilitations.models import HabilitationError
 from users.forms import message_erreur_proprietaires
@@ -130,10 +131,11 @@ def attach(request):
 
 
 @login_required
-def qualification(request, siren):
-    entreprise = get_object_or_404(Entreprise, siren=siren)
-    if not Habilitation.existe(entreprise, request.user):
-        raise PermissionDenied
+@entreprise_requise
+@role(UserRole.PROPRIETAIRE)
+def qualification(request, entreprise):
+    # Le décorateur @entreprise_requise fournit déjà l'entreprise et vérifie l'habilitation
+    # Le décorateur @role vérifie que l'utilisateur est PROPRIETAIRE
 
     if request.POST:
         form = EntrepriseQualificationForm(data=request.POST, entreprise=entreprise)
@@ -143,7 +145,7 @@ def qualification(request, siren):
             messages.success(
                 request, "Les informations de l'entreprise ont été mises à jour."
             )
-            return redirect("reglementations:tableau_de_bord", siren=siren)
+            return redirect("reglementations:tableau_de_bord", siren=entreprise.siren)
         else:
             messages.error(
                 request,
