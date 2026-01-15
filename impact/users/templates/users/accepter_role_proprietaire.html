@@ -6,48 +6,42 @@
     <div class="fr-container fr-my-4w">
         <div class="fr-grid-row fr-grid-row--center">
             <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
-                <div class="fr-card">
-                    <div class="fr-card__body">
-                        <div class="fr-card__content">
-                            <h1 class="fr-card__title">Accepter le rôle de propriétaire</h1>
+                <h1>Accepter le rôle de propriétaire</h1>
 
-                            <p class="fr-card__desc fr-mt-2w">
-                                <strong>{{ invitation.inviteur.prenom }} {{ invitation.inviteur.nom }}</strong>
-                                vous a invité(e) à devenir propriétaire de l'entreprise :
-                            </p>
+                <p class="fr-mt-2w">
+                    <strong>{{ invitation.inviteur.prenom }} {{ invitation.inviteur.nom }}</strong>
+                    vous a invité(e) à devenir propriétaire de l'entreprise :
+                </p>
 
-                            <div class="fr-highlight fr-mt-2w fr-mb-2w">
-                                <p>
-                                    <strong>{{ invitation.entreprise.denomination }}</strong><br>
-                                    SIREN : {{ invitation.entreprise.siren }}
-                                </p>
-                            </div>
+                <div class="fr-highlight fr-mt-2w fr-mb-2w">
+                    <p>
+                        <strong>{{ invitation.entreprise.denomination }}</strong><br>
+                        SIREN : {{ invitation.entreprise.siren }}
+                    </p>
+                </div>
 
-                            <p class="fr-text--sm fr-mt-2w">
-                                En acceptant cette invitation, vous deviendrez <strong>propriétaire</strong> de cette entreprise
-                                sur Portail RSE. Vous aurez accès à toutes les fonctionnalités de gestion et pourrez
-                                inviter d'autres membres.
-                            </p>
+                <p class="fr-text--sm fr-mt-2w">
+                    En acceptant cette invitation, vous deviendrez <strong>propriétaire</strong> de cette entreprise
+                    sur le Portail RSE. Vous aurez accès à toutes les fonctionnalités de gestion et pourrez
+                    inviter d'autres membres.
+                </p>
 
-                            <form method="post" class="fr-mt-4w">
-                                {% csrf_token %}
-                                <button type="submit" class="fr-btn">
-                                    Accepter et devenir propriétaire
-                                </button>
-                            </form>
+                <form method="post" class="fr-mt-4w">
+                    {% csrf_token %}
+                    <button type="submit" class="fr-btn">
+                        Accepter et devenir propriétaire
+                    </button>
+                </form>
 
-                            <div class="fr-mt-4w">
-                                <h4>Qu'est-ce que le rôle de propriétaire ?</h4>
-                                <p>En tant que <strong>propriétaire</strong>, vous pourrez :</p>
-                                <ul>
-                                    <li>Gérer les obligations réglementaires de l'entreprise (CSRD, BDESE, etc.)</li>
-                                    <li>Inviter d'autres membres de votre organisation</li>
-                                    <li>Gérer les droits d'accès des utilisateurs</li>
-                                    <li>Accéder à toutes les fonctionnalités du tableau de bord</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+                <div class="fr-mt-4w">
+                    <h2 class="fr-h6">Qu'est-ce que le rôle de propriétaire ?</h2>
+                    <p>En tant que <strong>propriétaire</strong>, vous pourrez :</p>
+                    <ul>
+                        <li>Gérer les obligations réglementaires de l'entreprise (CSRD, BDESE, etc.)</li>
+                        <li>Inviter d'autres membres de votre organisation</li>
+                        <li>Gérer les droits d'accès des utilisateurs</li>
+                        <li>Accéder à toutes les fonctionnalités du tableau de bord</li>
+                    </ul>
                 </div>
             </div>
         </div>
