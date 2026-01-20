@@ -59,6 +59,22 @@ def test_acces_annee_n_plus_1_avec_cloture_30_juin(client, entreprise_factory, a
     ).exists()
 
 
+def test_acces_avec_annee_valide_en_paramètre(client, entreprise_factory, alice):
+    """utile pour le changement d'année en HTMX"""
+    entreprise = entreprise_factory(utilisateur=alice)
+    entreprise.date_cloture_exercice = date(2023, 12, 31)
+    entreprise.save()
+    client.force_login(alice)
+
+    url = reverse("vsme:categories_vsme", args=[entreprise.siren]) + "?annee=2026"
+    response = client.get(url, headers={"HX-Request": "true"}, follow=False)
+
+    assert response.status_code == 200
+    assert response.headers["HX-Redirect"] == reverse(
+        "vsme:categories_vsme", args=[entreprise.siren, 2026]
+    )
+
+
 @pytest.mark.parametrize(
     "annee",
     [

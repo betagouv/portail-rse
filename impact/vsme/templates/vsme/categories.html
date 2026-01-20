@@ -22,10 +22,10 @@
                             <label class="fr-label" for="select-annee">
                                 Année du rapport VSME
                             </label>
-                            <select class="fr-select" id="select-annee" name="annee">
+                            <select class="fr-select" id="select-annee" name="annee"
+                                    hx-get="{% url 'vsme:categories_vsme' entreprise.siren %}">
                                 {% for annee in annees_disponibles reversed %}
-                                    <option value="{{ annee }}" {% if annee == rapport_vsme.annee %}selected{% endif %}
-                                            hx-get="{% url 'vsme:categories_vsme' entreprise.siren annee %}">
+                                    <option value="{{ annee }}" {% if annee == rapport_vsme.annee %}selected{% endif %}>
                                         {{ annee }}{% if annee == annee_par_defaut %} (par défaut){% endif %}
                                     </option>
                                 {% endfor %}

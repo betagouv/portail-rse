@@ -118,6 +118,7 @@ def etape_vsme(request, siren, etape):
 @entreprise_qualifiee_requise
 def categories_vsme(request, entreprise_qualifiee, annee=None):
     if htmx.is_htmx(request):
+        annee = request.GET["annee"]
         redirect_to = reverse(
             "vsme:categories_vsme",
             args=[entreprise_qualifiee.siren, annee],
