@@ -1,0 +1,33 @@
+{
+    "C2-48": {
+        "titre": "Description des pratiques et politiques de durabilité",
+        "description": "Indiquer les pratiques, politiques et initiatives futures mises en place pour réduire les impacts négatifs et renforcer les impacts positifs de l’entreprise sur la société et l’environnement, afin de contribuer à une économie plus durable.",
+        "ancre": "description_durabilite",
+        "champs": [
+            {
+                "id": "description_durabilite",
+                "label": "Description des pratiques et politiques de durabilité",
+                "description": "",
+                "type": "tableau_lignes_fixes",
+                "colonnes": [
+                    {
+                        "id": "description_pratiques",
+                        "label": "Description des pratiques",
+                        "type": "texte_long"
+                    },
+                    {
+                        "id": "description_cibles",
+                        "label": "Description des cibles",
+                        "type": "texte_long"
+                    },
+                    {
+                        "id": "niveau_hierarchique",
+                        "label": "Niveau hiérarchique le plus élevé parmi les salariés qui est responsable de la mise en œuvre des politiques",
+                        "type": "texte"
+                    }
+                ],
+                "lignes": "THEMATIQUES_DURABILITE"
+            }
+        ]
+    }
+}
