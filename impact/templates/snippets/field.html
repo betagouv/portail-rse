@@ -17,15 +17,15 @@
             </div>
         {% endblock %}
 
-    {% elif widget_type == 'CheckboxSelectMultiple' %}
+    {% elif widget_type == 'CheckboxSelectMultiple' or widget_type == 'RadioSelect' %}
         <fieldset class="fr-fieldset {% if field.errors %}fr-fieldset--error{% endif %}" id="{{ field.name }}" role="group" {% if field.field.disabled %}disabled{% endif %} aria-labelledby="{{ field.name }}-legend {{ field.name }}-messages">
             <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="{{ field.name }}-legend">{{ field.label }}</legend>
-            {% for checkbox in field %}
+            {% for choice in field %}
                 <div class="fr-fieldset__element">
-                    <div class="fr-checkbox-group">
-                        {{ checkbox.tag }}
-                        <label class="fr-label" for="{{ checkbox.id_for_label }}">
-                            {{ checkbox.choice_label }}
+                    <div class="{{ fr_group_class }}">
+                        {{ choice.tag }}
+                        <label class="fr-label" for="{{ choice.id_for_label }}">
+                            {{ choice.choice_label }}
                         </label>
                     </div>
                 </div>
