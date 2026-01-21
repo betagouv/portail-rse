@@ -152,6 +152,7 @@ def create_multiform_from_schema(
                 | "nombre_decimal"
                 | "date"
                 | "choix_binaire"
+                | "choix_binaire_radio"
                 | "choix_unique"
                 | "choix_multiple"
                 | "auto_id"

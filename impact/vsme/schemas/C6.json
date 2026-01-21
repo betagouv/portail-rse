@@ -1,0 +1,40 @@
+{
+    "C6-61-ab": {
+        "titre": "Politiques en matière de droits de l’homme",
+        "description": "Indiquer les processus et politiques en matières de droits de l'homme dans l'entreprise.",
+        "ancre": "politiques_droits_de_l_homme",
+        "champs": [
+            {
+                "id": "politique_travail_des_enfants",
+                "label": "La politique de l'entreprise couvre-t-elle le travail des enfants ?",
+                "type": "choix_binaire_radio"
+            },
+            {
+                "id": "politique_travail_force",
+                "label": "La politique de l'entreprise couvre-t-elle le travail forcé ?",
+                "type": "choix_binaire_radio"
+            },
+            {
+                "id": "politique_traite_des_etres_humains",
+                "label": "La politique de l'entreprise couvre-t-elle la traite des êtres humains ? ",
+                "type": "choix_binaire_radio"
+            },
+            {
+                "id": "politique_discrimination",
+                "label": "La politique de l'entreprise couvre-t-elle la discrimination ?",
+                "type": "choix_binaire_radio"
+            },
+            {
+                "id": "politique_prevention_des_accidents",
+                "label": "La politique de l'entreprise couvre-t-elle la prévention des accidents ?",
+                "type": "choix_binaire_radio"
+            },
+            {
+                "id": "autres_politiques",
+                "label": "Autres thèmes couverts par la politique de l'entreprise",
+                "type": "texte"
+            }
+        ],
+        "si_pertinent": "L'entreprise ne dispose pas d’un code de conduite ou d’une politique en matière de droits de l’homme pour son personnel"
+    }
+}
