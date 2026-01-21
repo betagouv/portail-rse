@@ -7,27 +7,32 @@
             {
                 "id": "politique_travail_des_enfants",
                 "label": "La politique de l'entreprise couvre-t-elle le travail des enfants ?",
-                "type": "choix_binaire_radio"
+                "type": "choix_binaire_radio",
+                "obligatoire": true
             },
             {
                 "id": "politique_travail_force",
                 "label": "La politique de l'entreprise couvre-t-elle le travail forcé ?",
-                "type": "choix_binaire_radio"
+                "type": "choix_binaire_radio",
+                "obligatoire": true
             },
             {
                 "id": "politique_traite_des_etres_humains",
                 "label": "La politique de l'entreprise couvre-t-elle la traite des êtres humains ? ",
-                "type": "choix_binaire_radio"
+                "type": "choix_binaire_radio",
+                "obligatoire": true
             },
             {
                 "id": "politique_discrimination",
                 "label": "La politique de l'entreprise couvre-t-elle la discrimination ?",
-                "type": "choix_binaire_radio"
+                "type": "choix_binaire_radio",
+                "obligatoire": true
             },
             {
                 "id": "politique_prevention_des_accidents",
                 "label": "La politique de l'entreprise couvre-t-elle la prévention des accidents ?",
-                "type": "choix_binaire_radio"
+                "type": "choix_binaire_radio",
+                "obligatoire": true
             },
             {
                 "id": "autres_politiques",
@@ -36,5 +41,18 @@
             }
         ],
         "si_pertinent": "L'entreprise ne dispose pas d’un code de conduite ou d’une politique en matière de droits de l’homme pour son personnel"
+    },
+    "C6-61-c": {
+        "titre": "Mécanisme de traitement des plaintes pour le personnel",
+        "description": "Indiquer si l'entreprise dispose d’un mécanisme de traitement des plaintes pour son personnel.",
+        "ancre": "mecanisme_traitement_des_plaintes",
+        "champs": [
+            {
+                "id": "mecanisme_traitement_des_plaintes",
+                "label": "L'entreprise dispose-t-elle d’un mécanisme permettant aux salariés de déposer des plaintes relatives aux droits de l’homme et aux conditions de travail ?",
+                "type": "choix_binaire_radio",
+                "obligatoire": true
+            }
+        ]
     }
 }
