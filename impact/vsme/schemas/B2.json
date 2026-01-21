@@ -69,48 +69,7 @@
                         "type": "choix_binaire_radio"
                     }
                 ],
-                "lignes": [
-                    {
-                        "id": "changement_climatique",
-                        "label": "Changement climatique"
-                    },
-                    {
-                        "id": "pollution",
-                        "label": "Pollution"
-                    },
-                    {
-                        "id": "eau",
-                        "label": "Eau et ressources aquatiques et marines"
-                    },
-                    {
-                        "id": "biodiversite",
-                        "label": "Biodiversité et écosystèmes"
-                    },
-                    {
-                        "id": "economie_circulaire",
-                        "label": "Économie circulaire"
-                    },
-                    {
-                        "id": "personnel",
-                        "label": "Personnel propre à l'entreprise"
-                    },
-                    {
-                        "id": "travailleurs",
-                        "label": "Travailleurs dans la chaîne de valeur"
-                    },
-                    {
-                        "id": "communautes",
-                        "label": "Communautés affectées"
-                    },
-                    {
-                        "id": "consommateurs",
-                        "label": "Consommateurs et utilisateurs finaux"
-                    },
-                    {
-                        "id": "conduite_affaires",
-                        "label": "Conduite des affaires et lutte contre la corruption"
-                    }
-                ]
+                "lignes": "THEMATIQUES_DURABILITE"
             }
         ],
         "si_pertinent": true

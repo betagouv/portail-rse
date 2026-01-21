@@ -202,6 +202,8 @@ EXIGENCES_DE_PUBLICATION = {
         "C2",
         "Description des pratiques, des politiques et des initiatives futures pour une transition vers une économie plus durable ",
         Categorie.GENERAL,
+        "https://portail-rse.beta.gouv.fr/vsme/c2-description-des-pratiques-des-politiques-et-des-initiatives-futures/",
+        remplissable=True,
     ),
     "C3": ExigenceDePublication(
         "C3",

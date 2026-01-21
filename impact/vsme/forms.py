@@ -437,6 +437,20 @@ def create_Formset_from_schema(field_schema, rapport_vsme, extra=0):
     return FormSet
 
 
+THEMATIQUES_DURABILITE = {
+    "changement_climatique": "Changement climatique",
+    "pollution": "Pollution",
+    "eau": "Eau et ressources aquatiques et marines",
+    "biodiversite": "Biodiversité et écosystèmes",
+    "economie_circulaire": "Économie circulaire",
+    "personnel": "Personnel propre à l'entreprise",
+    "travailleurs": "Travailleurs dans la chaîne de valeur",
+    "communautes": "Communautés affectées",
+    "consommateurs": "Consommateurs et utilisateurs finaux",
+    "conduite_affaires": "Conduite des affaires et lutte contre la corruption",
+}
+
+
 def calculate_rows(lignes, rapport_vsme):
     match lignes:
         case "PAYS":
@@ -446,6 +460,12 @@ def calculate_rows(lignes, rapport_vsme):
                 for code_pays in codes_pays
             ]
             return pays
+        case "THEMATIQUES_DURABILITE":
+            thematiques_durabilites = [
+                {"id": id, "label": label}
+                for id, label in THEMATIQUES_DURABILITE.items()
+            ]
+            return thematiques_durabilites
         case list():
             return lignes
 
@@ -494,6 +514,28 @@ def calculate_extra_validators(field_id, rapport_vsme):
         case "effectifs_type_de_contrat" | "effectifs_genre" | "effectifs_pays":
             nombre_salaries = rapport_vsme.nombre_salaries() or 0
             return [effectif_total_validator(nombre_salaries)]
+        case "description_durabilite":
+            thematiques_durabilite_avec_pratiques = []
+            thematiques_durabilite_avec_cibles = []
+            indicateur_declaration_durabilite = "B2-26"
+            try:
+                declaration_durabilite = rapport_vsme.indicateurs.get(
+                    schema_id=indicateur_declaration_durabilite
+                ).data.get("declaration_durabilite")
+                if declaration_durabilite:
+                    for thematique, data in declaration_durabilite.items():
+                        if data.get("pratique"):
+                            thematiques_durabilite_avec_pratiques.append(thematique)
+                        if data.get("cibles"):
+                            thematiques_durabilite_avec_cibles.append(thematique)
+            except ObjectDoesNotExist:
+                pass
+            return [
+                pratiques_et_cibles_validator(
+                    thematiques_durabilite_avec_pratiques,
+                    thematiques_durabilite_avec_cibles,
+                )
+            ]
     return []
 
 
@@ -527,3 +569,35 @@ def effectif_total_validator(nombre_salaries_B1):
             )
 
     return validator
+
+
+def pratiques_et_cibles_validator(
+    thematiques_durabilite_avec_pratiques, thematiques_durabilite_avec_cibles
+):
+    index_thematiques_durabilite_avec_pratiques = []
+    index_thematiques_durabilite_avec_cibles = []
+    for index, thematique in enumerate(THEMATIQUES_DURABILITE.keys()):
+        if thematique in thematiques_durabilite_avec_pratiques:
+            index_thematiques_durabilite_avec_pratiques.append(index)
+        if thematique in thematiques_durabilite_avec_cibles:
+            index_thematiques_durabilite_avec_cibles.append(index)
+
+    def validator(forms):
+        error = False
+        for index, form in enumerate(forms):
+            if (
+                index in index_thematiques_durabilite_avec_pratiques
+                and not form.cleaned_data.get("description_pratiques")
+            ):
+                error = True
+                form.add_error("description_pratiques", "Description manquante")
+            if (
+                index in index_thematiques_durabilite_avec_cibles
+                and not form.cleaned_data.get("description_cibles")
+            ):
+                error = True
+                form.add_error("description_cibles", "Description manquante")
+        if error:
+            raise ValidationError(
+                "Certaines descriptions de pratiques et/ou de cibles sont manquantes"
+            )
