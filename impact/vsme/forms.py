@@ -464,6 +464,20 @@ def calculate_auto_id_field(columns):
             return column["id"]
 
 
+THEMATIQUES_DURABILITE = {
+    "changement_climatique": "Changement climatique",
+    "pollution": "Pollution",
+    "eau": "Eau et ressources aquatiques et marines",
+    "biodiversite": "Biodiversité et écosystèmes",
+    "economie_circulaire": "Économie circulaire",
+    "personnel": "Personnel propre à l'entreprise",
+    "travailleurs": "Travailleurs dans la chaîne de valeur",
+    "communautes": "Communautés affectées",
+    "consommateurs": "Consommateurs et utilisateurs finaux",
+    "conduite_affaires": "Conduite des affaires et lutte contre la corruption",
+}
+
+
 def calculate_rows(lignes, rapport_vsme):
     match lignes:
         case "PAYS":
@@ -478,6 +492,12 @@ def calculate_rows(lignes, rapport_vsme):
             rows = [
                 {"id": str(risque["id"]), "label": risque["description"]}
                 for risque in risques_climatiques
+            ]
+            return rows
+        case "THEMATIQUES_DURABILITE":
+            rows = [
+                {"id": id, "label": label}
+                for id, label in THEMATIQUES_DURABILITE.items()
             ]
             return rows
         case list():
@@ -528,6 +548,29 @@ def calculate_extra_validators(field_id, rapport_vsme):
         case "effectifs_type_de_contrat" | "effectifs_genre" | "effectifs_pays":
             nombre_salaries = rapport_vsme.nombre_salaries or 0
             return [effectif_total_validator(nombre_salaries)]
+        case "description_durabilite":
+            thematiques_avec_pratiques = []
+            thematiques_avec_cibles = []
+            indicateur_declaration_durabilite = "B2-26"
+            try:
+                declaration_durabilite = rapport_vsme.indicateurs.get(
+                    schema_id=indicateur_declaration_durabilite
+                ).data.get("declaration_durabilite")
+                if declaration_durabilite:
+                    for thematique, data in declaration_durabilite.items():
+                        if data.get("pratiques"):
+                            thematiques_avec_pratiques.append(thematique)
+                        if data.get("cibles"):
+                            thematiques_avec_cibles.append(thematique)
+                if thematiques_avec_pratiques or thematiques_avec_cibles:
+                    return [
+                        pratiques_et_cibles_validator(
+                            thematiques_avec_pratiques,
+                            thematiques_avec_cibles,
+                        )
+                    ]
+            except ObjectDoesNotExist:
+                pass
     return []
 
 
@@ -558,6 +601,38 @@ def effectif_total_validator(nombre_salaries_B1):
         if nombre_salaries_total != nombre_salaries_B1:
             raise ValidationError(
                 f"Le total du nombre de salariés doit être égal à celui indiqué dans l'indicateur de B1 : {nombre_salaries_B1}"
+            )
+
+    return validator
+
+
+def pratiques_et_cibles_validator(
+    thematiques_avec_pratiques, thematiques_durabilite_avec_cibles
+):
+    index_thematiques_avec_pratiques = []
+    index_thematiques_avec_cibles = []
+    for index, thematique in enumerate(THEMATIQUES_DURABILITE.keys()):
+        if thematique in thematiques_avec_pratiques:
+            index_thematiques_avec_pratiques.append(index)
+        if thematique in thematiques_durabilite_avec_cibles:
+            index_thematiques_avec_cibles.append(index)
+
+    def validator(forms):
+        error = False
+        for index, form in enumerate(forms):
+            if index in index_thematiques_avec_pratiques and not form.cleaned_data.get(
+                "description_pratiques"
+            ):
+                error = True
+                form.add_error("description_pratiques", "Description manquante")
+            if index in index_thematiques_avec_cibles and not form.cleaned_data.get(
+                "description_cibles"
+            ):
+                error = True
+                form.add_error("description_cibles", "Description manquante")
+        if error:
+            raise ValidationError(
+                "Certaines descriptions de pratiques et/ou de cibles sont manquantes"
             )
 
     return validator
