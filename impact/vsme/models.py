@@ -482,14 +482,16 @@ class Indicateur(TimestampedModel):
                     for colonne in champ["colonnes"]:
                         if colonne["type"] == "nombre_decimal":
                             for ligne in data.get(champ["id"], []):
-                                string_data = ligne[colonne["id"]]
+                                string_data = ligne.get(colonne["id"])
                                 if string_data:
                                     ligne[colonne["id"]] = Decimal(string_data)
                 case "tableau_lignes_fixes":
                     for colonne in champ["colonnes"]:
                         if colonne["type"] == "nombre_decimal":
                             for ligne in data.get(champ["id"], {}):
-                                string_data = data[champ["id"]][ligne][colonne["id"]]
+                                string_data = data[champ["id"]][ligne].get(
+                                    colonne["id"]
+                                )
                                 if string_data:
                                     data[champ["id"]][ligne][colonne["id"]] = Decimal(
                                         string_data

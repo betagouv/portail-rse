@@ -60,3 +60,26 @@ def test_nombre_decimal_dans_les_donnees_d_un_indicateur(rapport_vsme):
     ]["contrat_permanent"]["nombre_salaries"]
     assert isinstance(nb_salaries_décodé, Decimal)
     assert nb_salaries_décodé == Decimal("40.5")
+
+
+def test_nombre_decimal_dans_les_données_non_stockees_d_un_indicateur(rapport_vsme):
+    indicateur_nombre_decimal_non_stocké = rapport_vsme.indicateurs.create(
+        schema_id="B3-29-p2",
+        data={
+            "consommation_energie_par_combustible": [
+                {"type_combustible": "Biodiesel", "quantite": Decimal("10.4")},
+            ],  # type tableau avec une colonne "densite" calculée de type nombre_decimal ajoutée au schema après l'enregistrement de premières données en prod
+        },
+    )
+
+    indicateur_nombre_decimal_non_stocké.refresh_from_db()
+    densité_encodée = indicateur_nombre_decimal_non_stocké._data[
+        "consommation_energie_par_combustible"
+    ][0].get("densite")
+    assert not densité_encodée  # valeur non stockée
+
+    densité_décodée = indicateur_nombre_decimal_non_stocké.data[
+        "consommation_energie_par_combustible"
+    ][0]["densite"]
+    assert isinstance(densité_décodée, Decimal)
+    assert densité_décodée == Decimal("0.85")
