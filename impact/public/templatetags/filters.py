@@ -51,12 +51,14 @@ def svelte_container_id(field):
 
 @register.filter
 def fr_group_class(field):
-    match field.field:
-        case forms.BooleanField():
+    match field.field.widget:
+        case forms.widgets.CheckboxInput() | forms.widgets.CheckboxSelectMultiple():
             return "fr-checkbox-group"
-        case forms.ChoiceField():
+        case forms.widgets.Select():
             return "fr-select-group"
-        case forms.FileField():
+        case forms.widgets.RadioSelect():
+            return "fr-radio-group"
+        case forms.widgets.ClearableFileInput():
             return "fr-upload-group"
         case _:
             return "fr-input-group"
