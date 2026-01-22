@@ -18,19 +18,13 @@
                     <li class="fr-sidemenu__item {% if 'reglementations' in request.path %}fr-sidemenu__item--active{% endif %}">
                         <a class="fr-sidemenu__link" href="{% url 'reglementations:index' entreprise.siren %}" target="_self" {% if 'reglementations' in request.path %}aria-current="page"{% endif %}>
                             <span class="fr-icon-article-line fr-mr-1w" aria-hidden="true"></span>
-                            Mes réglementations
+                            Mes réglementations RSE
                         </a>
                     </li>
-                    <li class="fr-sidemenu__item {% if 'indicateurs' in request.path %}fr-sidemenu__item--active{% endif %}">
-                        <a class="fr-sidemenu__link" href="{% url 'vsme:categories_vsme' entreprise.siren annee_precedente %}" target="_self" {% if 'indicateurs' in request.path %}aria-current="page"{% endif %}>
+                    <li class="fr-sidemenu__item {% if 'reglementations' in request.path %}fr-sidemenu__item--active{% endif %}">
+                        <a class="fr-sidemenu__link" href="{% url 'reglementations:rapport' entreprise.siren %}" target="_self" {% if 'rapport' in request.path or 'indicateurs' in request.path or 'analyses' in request.path %}aria-current="page"{% endif %}>
                             <span class="fr-icon-bar-chart-box-line fr-mr-1w" aria-hidden="true"></span>
-                            Mes indicateurs
-                        </a>
-                    </li>
-                    <li class="fr-sidemenu__item {% if 'analyses' in request.path %}fr-sidemenu__item--active{% endif %}">
-                        <a class="fr-sidemenu__link" href="{% url 'analyseia:analyses'%}" target="_self" {% if 'analyses' in request.path %}aria-current="page"{% endif %}>
-                            <span class="fr-icon-bar-chart-box-line fr-mr-1w" aria-hidden="true"></span>
-                            Mes analyses IA
+                            Mon rapport de durabilité
                         </a>
                     </li>
                 </ul>

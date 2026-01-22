@@ -17,11 +17,13 @@ from reglementations.views import REGLEMENTATIONS
 
 RESUME_URL = "/tableau-de-bord/{siren}/"
 REGLEMENTATIONS_URL = "/tableau-de-bord/{siren}/reglementations/"
+RAPPORT_URL = "/tableau-de-bord/{siren}/rapport/"
 RESUME_URL_GENERIQUE = "/tableau-de-bord/"
 REGLEMENTATIONS_URL_GENERIQUE = "/tableau-de-bord/reglementations/"
+RAPPORT_URL_GENERIQUE = "/tableau-de-bord/rapport/"
 
 
-@pytest.mark.parametrize("url", [RESUME_URL, REGLEMENTATIONS_URL])
+@pytest.mark.parametrize("url", [RESUME_URL, REGLEMENTATIONS_URL, RAPPORT_URL])
 def test_tableau_de_bord_est_prive(url, client, entreprise_factory, alice):
     entreprise = entreprise_factory()
 
@@ -38,7 +40,7 @@ def test_tableau_de_bord_est_prive(url, client, entreprise_factory, alice):
     assert response.status_code == 403
 
 
-@pytest.mark.parametrize("url", [RESUME_URL, REGLEMENTATIONS_URL])
+@pytest.mark.parametrize("url", [RESUME_URL, REGLEMENTATIONS_URL, RAPPORT_URL])
 def test_tableau_de_bord_avec_utilisateur_authentifie(
     url, client, entreprise_factory, alice
 ):
@@ -89,7 +91,7 @@ def test_tableau_de_bord_entreprise_qualifiee_dans_le_passe(
     ), content
 
 
-@pytest.mark.parametrize("url", [RESUME_URL, REGLEMENTATIONS_URL])
+@pytest.mark.parametrize("url", [RESUME_URL, REGLEMENTATIONS_URL, RAPPORT_URL])
 def test_tableau_de_bord_entreprise_inexistante(url, client, alice):
     client.force_login(alice)
 
@@ -99,7 +101,9 @@ def test_tableau_de_bord_entreprise_inexistante(url, client, alice):
     assert response.status_code == 404
 
 
-@pytest.mark.parametrize("url", [RESUME_URL_GENERIQUE, REGLEMENTATIONS_URL_GENERIQUE])
+@pytest.mark.parametrize(
+    "url", [RESUME_URL_GENERIQUE, REGLEMENTATIONS_URL_GENERIQUE, RAPPORT_URL_GENERIQUE]
+)
 def test_tableau_de_bord_sans_siren_redirige_vers_celui_de_l_entreprise_courante(
     url, client, entreprise_factory, alice
 ):
@@ -123,7 +127,9 @@ def test_tableau_de_bord_sans_slash_final(client, entreprise_factory, alice):
     assert response.url == "/tableau-de-bord/"
 
 
-@pytest.mark.parametrize("url", [RESUME_URL_GENERIQUE, REGLEMENTATIONS_URL_GENERIQUE])
+@pytest.mark.parametrize(
+    "url", [RESUME_URL_GENERIQUE, REGLEMENTATIONS_URL_GENERIQUE, RAPPORT_URL_GENERIQUE]
+)
 def test_tableau_de_bord_sans_siren_et_sans_entreprise(url, client, alice):
     # Cas limite où un utilisateur n'est rattaché à aucune entreprise
     client.force_login(alice)

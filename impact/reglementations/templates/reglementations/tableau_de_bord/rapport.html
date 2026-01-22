@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% load static %}
+{% load filters %}
+
+{% block title %}Tableau de bord - Portail RSE{% endblock %}
+
+{% block content %}
+    <div class="fr-container fr-my-4w">
+        <div class="fr-grid-row">
+            {% include "snippets/tableau_de_bord_menu.html" %}
+
+            <div class="fr-col-12 fr-col-md-9">
+                <div class="fr-grid-row fr-grid-row--gutters fr-my-4w">
+                    <div class="fr-col">
+                        <div class="fr-tile fr-enlarge-link">
+                            <div class="fr-tile__body">
+                                <div class="fr-tile__content">
+                                    <h2 class="fr-tile__title">
+                                        <a href="https://portail-rse.beta.gouv.fr/sensibiliser-vos-clients-%C3%A0-la-rse/les-ressources-ma-demarche-volontaire-de-durabilite/analyser-la-double-materialite/">
+                                            Lancer une démarche de durabilité
+                                        </a>
+                                    </h2>
+                                    <p class="fr-tile__desc">Réalisez une analyse de double matérialité afin d’identifier et de prioriser vos enjeux de durabilité, et engager vos équipes dans une démarche stratégique.</p>
+                                </div>
+                            </div>
+                            <div class="fr-tile__header">
+                                <div class="fr-card__img">
+                                    <img class="fr-responsive-img fr-ratio-3x2" src="{% static 'img/espace_csrd/phase1.png' %}" alt="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fr-col">
+                        <div class="fr-tile fr-enlarge-link">
+                            <div class="fr-tile__body">
+                                <div class="fr-tile__content">
+                                    <h2 class="fr-tile__title">
+                                        <a href="{% url 'analyseia:analyses'%}">
+                                            Identifier mes informations déjà disponibles
+                                        </a>
+                                    </h2>
+                                    <p class="fr-tile__desc">Repérez et cartographiez vos données de durabilité existantes grâce à notre intelligence artificielle, afin de structurer efficacement votre socle d’informations.</p>
+                                </div>
+                            </div>
+                            <div class="fr-tile__header">
+                                <div class="fr-card__img">
+                                    <img class="fr-responsive-img fr-ratio-3x2" src="{% static 'img/analyseia.png' %}" alt="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fr-col">
+                        <div class="fr-tile fr-enlarge-link">
+                            <div class="fr-tile__body">
+                                <div class="fr-tile__content">
+                                    <h2 class="fr-tile__title">
+                                        <a href="{% url 'vsme:categories_vsme' entreprise.siren annee_precedente %}">
+                                            Collecter et suivre mes informations de durabilité
+                                        </a>
+                                    </h2>
+                                    <p class="fr-tile__desc">Repérez et cartographiez vos données de durabilité existantes grâce à notre intelligence artificielle, afin de structurer efficacement votre socle d’informations.</p>
+                                </div>
+                            </div>
+                            <div class="fr-tile__header">
+                                <div class="fr-card__img">
+                                    <img class="fr-responsive-img fr-ratio-3x2" src="{% static 'img/espace_csrd/phase2.png' %}" alt="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fr-col">
+                        <div class="fr-tile fr-enlarge-link">
+                            <div class="fr-tile__body">
+                                <div class="fr-tile__content">
+                                    <h2 class="fr-tile__title">
+                                        Rédiger et valoriser mon rapport volontaire de durabilité
+                                    </h2>
+                                    <p class="fr-tile__desc">Mettez en forme votre rapport de durabilité et valorisez vos engagements en le partageant avec vos parties prenantes.</p>
+                                </div>
+                            </div>
+                            <div class="fr-tile__header">
+                                <div class="fr-card__img">
+                                    <img class="fr-responsive-img fr-ratio-3x2" src="{% static 'img/espace_csrd/phase3.png' %}" alt="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

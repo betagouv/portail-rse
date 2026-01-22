@@ -134,6 +134,18 @@ def index(request, entreprise):
 
 @login_required
 @entreprise_requise
+@log_path("app:tableauDeBord:rapport")
+def rapport(request, entreprise):
+    context = tableau_de_bord_menu_context(entreprise)
+    return render(
+        request,
+        "reglementations/tableau_de_bord/rapport.html",
+        context=context,
+    )
+
+
+@login_required
+@entreprise_requise
 @log_path("app:reglementations")
 def reglementations(request, entreprise):
     caracteristiques = (
