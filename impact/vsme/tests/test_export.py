@@ -791,6 +791,46 @@ def test_telechargement_d_un_rapport_vsme_C1_absent_si_choix_module_base(
     assert "C1" not in workbook.sheetnames
 
 
+def test_telechargement_d_un_rapport_vsme_C6(client, rapport_vsme, alice):
+    rapport_vsme.indicateurs.create(
+        schema_id="C6-61-ab",
+        data={
+            "politique_travail_des_enfants": True,
+            "politique_travail_force": True,
+            "politique_traite_des_etres_humains": False,
+            "politique_discrimination": True,
+            "politique_prevention_des_accidents": True,
+            "autres_politiques": "Politique santé",
+        },
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook["C6"]
+    assert onglet["A4"].value == "OUI"
+    assert onglet["B4"].value == "OUI"
+    assert onglet["C4"].value == "NON"
+    assert onglet["D4"].value == "OUI"
+    assert onglet["E4"].value == "OUI"
+    assert onglet["F4"].value == "Politique santé"
+
+
+def test_telechargement_d_un_rapport_vsme_C9(client, rapport_vsme, alice):
+    rapport_vsme.indicateurs.create(
+        schema_id="C9-65",
+        data={
+            "ratio_mixite_organe_gouvernance": 1,
+        },
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook["C9"]
+    assert onglet["A4"].value == 1
+
+
 def test_telechargement_d_un_rapport_vsme_inexistant(client, entreprise_factory, alice):
     entreprise = entreprise_factory(utilisateur=alice)
     client.force_login(alice)

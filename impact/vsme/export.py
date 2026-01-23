@@ -57,6 +57,8 @@ def export_exigence_de_publication(exigence_de_publication, workbook, rapport_vs
         "C1-47-b": "B4",
         "C1-47-c": "C4",
         "C1-47-d": "D4",
+        "C6-61-ab": "A4",
+        "C6-61-c": "G4",
         "C9-65": "A4",
     }
 
