@@ -447,6 +447,7 @@ def export_vsme(request, rapport_vsme):
         "B10",
         "B11",
         "C1",
+        "C6",
         "C9",
     )
 
