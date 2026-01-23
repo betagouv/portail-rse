@@ -2,7 +2,7 @@
 {% with fr_group_class=field|fr_group_class field_type=field|field_type widget_type=field|widget_type %}
     {% if widget_type == 'CheckboxInput' %}
         {% block boolean_field %}
-            <div class="{{ fr_group_class }} {% if field.errors %}{{ fr_group_class }}--error{% endif %}">
+            <div class="{{ fr_group_class }} {% if field.errors %}{{ fr_group_class }}--error{% endif %} {% if not fieldset_id %}fr-mb-3w{% endif %}">
                 {{ field }}
                 <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label|safe }}
                     <span class="fr-hint-text">{{ field.help_text|safe }}</span>
