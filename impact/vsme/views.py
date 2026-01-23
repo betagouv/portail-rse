@@ -15,7 +15,7 @@ from django.urls.base import reverse
 from openpyxl import load_workbook
 
 import utils.htmx as htmx
-from entreprises.decorators import entreprise_qualifiee_requise
+from entreprises.decorators import entreprise_requise
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
 from habilitations.models import Habilitation
@@ -115,30 +115,30 @@ def etape_vsme(request, siren, etape):
 
 
 @login_required
-@entreprise_qualifiee_requise
-def categories_vsme(request, entreprise_qualifiee, annee=None):
+@entreprise_requise
+def categories_vsme(request, entreprise, annee=None):
     if htmx.is_htmx(request):
         annee = request.GET["annee"]
         redirect_to = reverse(
             "vsme:categories_vsme",
-            args=[entreprise_qualifiee.siren, annee],
+            args=[entreprise.siren, annee],
         )
         return htmx.HttpResponseHXRedirect(redirect_to)
 
-    annee_par_defaut = get_annee_rapport_par_defaut(entreprise_qualifiee)
+    annee_par_defaut = get_annee_rapport_par_defaut(entreprise)
     annee = annee or annee_par_defaut
 
     # Vérifier que l'année est valide pour cette entreprise
-    if not annee_est_valide(annee, entreprise_qualifiee):
+    if not annee_est_valide(annee, entreprise):
         messages.error(
             request,
             f"L'année {annee} n'est pas valide pour un rapport VSME. "
-            f"Les rapports doivent être créés pour une année entre 2020 et {get_annee_max_valide(entreprise_qualifiee)}.",
+            f"Les rapports doivent être créés pour une année entre 2020 et {get_annee_max_valide(entreprise)}.",
         )
-        return redirect("vsme:categories_vsme", siren=entreprise_qualifiee.siren)
+        return redirect("vsme:categories_vsme", siren=entreprise.siren)
 
     rapport_vsme, created = RapportVSME.objects.get_or_create(
-        entreprise=entreprise_qualifiee, annee=annee
+        entreprise=entreprise, annee=annee
     )
 
     # Message informatif lors du changement d'année
@@ -155,11 +155,11 @@ def categories_vsme(request, entreprise_qualifiee, annee=None):
                 request, f"Vous travaillez sur le rapport VSME de l'année {annee}."
             )
 
-    context = tableau_de_bord_menu_context(entreprise_qualifiee)
+    context = tableau_de_bord_menu_context(entreprise)
     context |= {
         "rapport_vsme": rapport_vsme,
         "annee_courante": annee,
-        "annees_disponibles": get_annees_valides(entreprise_qualifiee),
+        "annees_disponibles": get_annees_valides(entreprise),
         "annee_par_defaut": annee_par_defaut,
     }
     return render(request, "vsme/categories.html", context=context)
