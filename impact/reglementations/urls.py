@@ -31,6 +31,11 @@ urlpatterns = [
         name="rapport",
     ),
     path(
+        "tableau-de-bord/<str:siren>/rapport/analyse-double-materialite",
+        views.analyse_double_materialite,
+        name="analyse_double_materialite",
+    ),
+    path(
         "tableau-de-bord/<str:siren>/",
         views.tableau_de_bord,
         name="tableau_de_bord",
