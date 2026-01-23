@@ -19,7 +19,10 @@
 
     {% elif widget_type == 'CheckboxSelectMultiple' or widget_type == 'RadioSelect' %}
         <fieldset class="fr-fieldset {% if field.errors %}fr-fieldset--error{% endif %}" id="{{ field.name }}" role="group" {% if field.field.disabled %}disabled{% endif %} aria-labelledby="{{ field.name }}-legend {{ field.name }}-messages">
-            <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="{{ field.name }}-legend">{{ field.label }}</legend>
+            <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="{{ field.name }}-legend">
+                {{ field.label }}
+                <span class="fr-hint-text">{{ field.help_text|safe }}</span>
+            </legend>
             {% for choice in field %}
                 <div class="fr-fieldset__element">
                     <div class="{{ fr_group_class }}">

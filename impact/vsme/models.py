@@ -232,6 +232,8 @@ EXIGENCES_DE_PUBLICATION = {
         "C8",
         "Recettes de certains secteurs et exclusion des indices de référence de l'UE",
         Categorie.GOUVERNANCE,
+        "https://portail-rse.beta.gouv.fr/vsme/c8-chiffre-daffaires-de-certains-secteurs-et-exclusion-des-indices-de-reference-de-lunion/",
+        remplissable=True,
     ),
     "C9": ExigenceDePublication(
         "C9",

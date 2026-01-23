@@ -1,0 +1,78 @@
+{
+    "C8-63": {
+        "titre": "Chiffre d’affaires dans certains secteurs sensibles",
+        "description": "Indiquer le chiffre d’affaires généré si l’entreprise exerce ses activités dans les secteurs suivants : armes controversées, tabac, combustibles fossiles (avec ventilation charbon, pétrole, gaz), pesticides et produits agrochimiques.",
+        "ancre": "chiffre_affaires_secteurs_sensibles",
+        "champs": [
+            {
+                "id": "chiffre_affaires_armes_controversees",
+                "label": "Chiffre d’affaires issu des armes controversées",
+                "description": "Mines antipersonnel, sous-munitions, armes chimiques, biologiques. Unité : euros",
+                "type": "nombre_entier",
+                "min": 0,
+                "unité": "euros",
+                "obligatoire": true
+            },
+            {
+                "id": "chiffre_affaires_tabac",
+                "label": "Chiffre d’affaires issu du tabac",
+                "description": "Culture et production. Unité : euros",
+                "type": "nombre_entier",
+                "min": 0,
+                "unité": "euros",
+                "obligatoire": true
+            },
+            {
+                "id": "chiffre_affaires_charbon",
+                "label": "Chiffre d’affaires issu des combustibles fossiles du charbon",
+                "description": "Unité : euros",
+                "type": "nombre_entier",
+                "min": 0,
+                "unité": "euros",
+                "obligatoire": true
+            },
+            {
+                "id": "chiffre_affaires_petrole",
+                "label": "Chiffre d’affaires issu des combustibles fossiles du pétrole",
+                "description": "Unité : euros",
+                "type": "nombre_entier",
+                "min": 0,
+                "unité": "euros",
+                "obligatoire": true
+            },
+            {
+                "id": "chiffre_affaires_gaz",
+                "label": "Chiffre d’affaires issu des combustibles fossiles du gaz",
+                "description": "Unité : euros",
+                "type": "nombre_entier",
+                "min": 0,
+                "unité": "euros",
+                "obligatoire": true
+            },
+            {
+                "id": "chiffre_affaires_pesticides",
+                "label": "Chiffre d’affaires issu des pesticides et produits agrochimiques",
+                "description": "Unité : euros",
+                "type": "nombre_entier",
+                "min": 0,
+                "unité": "euros",
+                "obligatoire": true
+            }
+        ],
+        "si_pertinent": "L'entreprise n'exerce pas d'activité dans les secteurs sensibles"
+    },
+    "C8-64": {
+        "titre": "Exclusion des indices de référence de l’Union Européenne (« Accord de Paris »)",
+        "description": "Indiquer si l’entreprise est exclue des indices de référence de l’Union alignés sur l’Accord de Paris.",
+        "ancre": "exclusion_indices_de_reference",
+        "champs": [
+            {
+                "id": "exclusion_indices_de_reference",
+                "label": "L’entreprise est-elle exclue des indices de référence « Accord de Paris » de l’Union ?",
+                "description": "Conformément à l’article 12, paragraphe 1, du règlement délégué (UE) 2020/1818 de la Commission, les entreprises exclues des indices de référence « accord de Paris » de l’Union sont les suivantes :<ul><li> les entreprises qui tirent au moins 1 % de leur chiffre d’affaires de la prospection, de l’extraction, de la distribution ou du raffinage de houille et de lignite;</li><li>les entreprises qui tirent au moins 10 % de leur chiffre d’affaires de la prospection, de l’extraction, de la distribution ou du raffinage de combustibles liquides;</li><li>les entreprises qui tirent au moins 50 % de leur chiffre d’affaires de la prospection, de l’extraction, de la fabrication ou de la distribution de combustibles gazeux; et</li><li>les entreprises qui tirent au moins 50 % de leur chiffre d’affaires d’activités de production d’électricité présentant une intensité d’émission de GES supérieure à 100 g CO2 e/kWh.</li></ul>",
+                "type": "choix_binaire_radio",
+                "obligatoire": true
+            }
+        ]
+    }
+}
