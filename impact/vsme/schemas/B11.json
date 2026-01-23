@@ -16,12 +16,13 @@
     },
     "B11-43-p2": {
         "titre": "Montant total des amendes infligées pour corruption",
-        "description": "Indiquez le montant total des amendes financières imposées à l'entreprise pour des infractions aux lois anticorruption ou antifraude. Unité : euros",
+        "description": "Indiquez le montant total des amendes financières imposées à l'entreprise pour des infractions aux lois anticorruption ou antifraude.",
         "ancre": "montant_amendes",
         "champs": [
             {
                 "id": "montant_amendes",
                 "label": "Montant total des amendes",
+                "description": "Unité : euros",
                 "type": "nombre_decimal",
                 "unité": "euros",
                 "obligatoire": true

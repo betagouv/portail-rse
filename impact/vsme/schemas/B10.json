@@ -18,18 +18,18 @@
             {
                 "id": "remuneration_horaire_hommes",
                 "label": "Rémunération horaire brute moyenne des salariés hommes en euros",
-                "description": "Correspond à la rémunération brute hebdomadaire (ou annuelle) divisée par le nombre moyen d’heures travaillées par semaine (ou par an)",
+                "description": "Correspond à la rémunération brute hebdomadaire (ou annuelle) en euros divisée par le nombre moyen d’heures travaillées par semaine (ou par an)",
                 "type": "nombre_decimal",
-                "unité": "euros",
+                "unité": "euros/heure",
                 "provoque_calcul_des_champs": ["ecart_remuneration_hommes_femmes"],
                 "obligatoire": true
             },
             {
                 "id": "remuneration_horaire_femmes",
                 "label": "Rémunération horaire brute moyenne des salariés femmes en euros",
-                "description": "Correspond à la rémunération brute hebdomadaire (ou annuelle) divisée par le nombre moyen d’heures travaillées par semaine (ou par an)",
+                "description": "Correspond à la rémunération brute hebdomadaire (ou annuelle) en euros divisée par le nombre moyen d’heures travaillées par semaine (ou par an)",
                 "type": "nombre_decimal",
-                "unité": "euros",
+                "unité": "euros/heure",
                 "provoque_calcul_des_champs": ["ecart_remuneration_hommes_femmes"],
                 "obligatoire": true
             },
