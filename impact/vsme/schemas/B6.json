@@ -7,7 +7,7 @@
             {
                 "id": "total_prelevements_eau",
                 "label": "Total des prélèvements d’eau sur l’ensemble des sites",
-                "description": "Unité : m³",
+                "description": "Unité : m³",
                 "type": "nombre_decimal",
                 "unité": "m3",
                 "obligatoire": true
@@ -15,7 +15,7 @@
             {
                 "id": "total_prelevements_eau_sites_sensibles",
                 "label": "Total des prélèvement d’eau sur les sites situés dans les zones soumises à un stress hydrique élevé",
-                "description": "Unité : m³",
+                "description": "Unité : m³",
                 "type": "nombre_decimal",
                 "unité": "m3",
                 "obligatoire": true
@@ -30,7 +30,7 @@
             {
                 "id": "consommation_eau",
                 "label": "Consommation d’eau",
-                "description": "Unité : m³",
+                "description": "Unité : m³",
                 "type": "nombre_decimal",
                 "unité": "m3",
                 "obligatoire": true

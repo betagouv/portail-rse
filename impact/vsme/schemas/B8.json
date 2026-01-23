@@ -95,7 +95,8 @@
         "champs": [
             {
                 "id": "taux_rotation_personnel",
-                "label": "Taux de rotation du personnel (en %)",
+                "label": "Taux de rotation du personnel",
+                "description": "Unité : %",
                 "type": "nombre_decimal",
                 "unité": "%",
                 "obligatoire": true

@@ -12,21 +12,21 @@
                     {
                         "id": "renouvelable",
                         "label": "Renouvelable",
-                        "description": "Unité : MWh",
+                        "description": "Unité : MWh",
                         "type": "nombre_decimal",
                         "provoque_calcul_des_champs": ["total"]
                     },
                     {
                         "id": "non_renouvelable",
                         "label": "Non renouvelable",
-                        "description": "Unité : MWh",
+                        "description": "Unité : MWh",
                         "type": "nombre_decimal",
                         "provoque_calcul_des_champs": ["total"]
                     },
                     {
                         "id": "total",
                         "label": "Total",
-                        "description": "Unité : MWh",
+                        "description": "Unité : MWh",
                         "type": "nombre_decimal",
                         "calculé": true
                     }
@@ -98,14 +98,14 @@
                     {
                         "id": "densite",
                         "label": "Densité",
-                        "description": "Unité : kg/L (pour les liquides) ou kg/m³ (pour les gaz)",
+                        "description": "Unité : kg/L (pour les liquides) ou kg/m³ (pour les gaz)",
                         "type": "nombre_decimal",
                         "calculé": true
                     },
                     {
                         "id": "NCV",
                         "label": "Valeur Calorifique Nette (NCV)",
-                        "description": "Unité : TJ/Gg",
+                        "description": "Unité : TJ/Gg",
                         "type": "nombre_decimal",
                         "calculé": true
                     },
@@ -138,7 +138,7 @@
                     {
                         "id": "energie",
                         "label": "Énergie calculée",
-                        "description": "Unité : MWh",
+                        "description": "Unité : MWh",
                         "type": "nombre_decimal",
                         "calculé": true
                     }
@@ -174,7 +174,7 @@
                     {
                         "id": "energie",
                         "label": "Énergie consommée",
-                        "description": "Unité : MWh",
+                        "description": "Unité : MWh",
                         "type": "nombre_decimal",
                         "provoque_calcul_des_champs": ["consommation_combustible_par_type"],
                         "obligatoire": true
@@ -190,21 +190,21 @@
                     {
                         "id": "renouvelable",
                         "label": "Renouvelable",
-                        "description": "Unité : MWh",
+                        "description": "Unité : MWh",
                         "type": "nombre_decimal",
                         "calculé": true
                     },
                     {
                         "id": "non_renouvelable",
                         "label": "Non renouvelable",
-                        "description": "Unité : MWh",
+                        "description": "Unité : MWh",
                         "type": "nombre_decimal",
                         "calculé": true
                     },
                     {
                         "id": "total",
                         "label": "Total",
-                        "description": "Unité : MWh",
+                        "description": "Unité : MWh",
                         "type": "nombre_decimal",
                         "calculé": true
                     }
@@ -231,21 +231,21 @@
                     {
                         "id": "scope_1",
                         "label": "Scope 1",
-                        "description": "Unité : teqCO₂",
+                        "description": "Unité : teqCO₂",
                         "type": "nombre_decimal",
                         "provoque_calcul_des_champs": ["total", "intensite_GES"]
                     },
                     {
                         "id": "scope_2_localisation",
                         "label": "Scope 2 basé sur la localisation",
-                        "description": "Unité : teqCO₂",
+                        "description": "Unité : teqCO₂",
                         "type": "nombre_decimal",
                         "provoque_calcul_des_champs": ["total", "intensite_GES"]
                     },
                     {
                         "id": "total",
                         "label": "Total",
-                        "description": "Unité : teqCO₂",
+                        "description": "Unité : teqCO₂",
                         "type": "nombre_decimal",
                         "calculé": true
                     }

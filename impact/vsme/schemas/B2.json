@@ -15,12 +15,13 @@
     },
     "B2-26-p2": {
         "titre": "Investissement dans l'économie sociale",
-        "description": "Indiquer les investissements financiers consentis dans le capital ou les actifs des entités de l’économie sociale. Unité : euros",
+        "description": "Indiquer les investissements financiers consentis dans le capital ou les actifs des entités de l’économie sociale.",
         "ancre": "cooperatives",
         "champs": [
             {
                 "id": "investissement_economie_sociale",
                 "label": "Investissement dans l'économie sociale",
+                "description": "Unité : euros",
                 "type": "nombre_entier",
                 "unité": "euros",
                 "obligatoire": true

@@ -140,12 +140,13 @@
     },
     "B1-24-e-iii": {
         "titre": "Total du bilan en euros",
-        "description": "Indiquer le total du bilan (total des actifs en unités monétaires). Unité : euros",
+        "description": "Indiquer le total du bilan (total des actifs en unités monétaires).",
         "ancre": "bilan",
         "champs": [
             {
                 "id": "bilan",
                 "label": "Bilan",
+                "description": "Unité : euros",
                 "type": "nombre_entier",
                 "unité": "euros",
                 "obligatoire": true
@@ -154,13 +155,15 @@
     },
     "B1-24-e-iv": {
         "titre": "Chiffre d’affaires en euros",
-        "description": "Indiquer le montant net du chiffre d’affaires réalisé sur le périmètre consolidé de l’organisation au cours de l’année de référence. Unité : euros",
+        "description": "Indiquer le montant net du chiffre d’affaires réalisé sur le périmètre consolidé de l’organisation au cours de l’année de référence.",
         "ancre": "chiffre_affaires",
         "champs": [
             {
                 "id": "chiffre_affaires",
                 "label": "Chiffre d’affaires",
+                "description": "Unité : euros",
                 "type": "nombre_entier",
+                "min": 0,
                 "unité": "euros",
                 "obligatoire": true
             }
