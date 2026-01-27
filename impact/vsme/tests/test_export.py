@@ -831,6 +831,32 @@ def test_telechargement_d_un_rapport_vsme_C9(client, rapport_vsme, alice):
     assert onglet["A4"].value == 1
 
 
+def test_telechargement_d_un_rapport_vsme_C8(client, rapport_vsme, alice):
+    rapport_vsme.indicateurs.create(
+        schema_id="C8-63",
+        data={
+            "chiffre_affaires_armes_controversees": 10,
+            "chiffre_affaires_tabac": 20,
+            "chiffre_affaires_charbon": 30,
+            "chiffre_affaires_petrole": 40,
+            "chiffre_affaires_gaz": 0,
+            "chiffre_affaires_pesticides": 50,
+        },
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook["C8"]
+    assert onglet["A4"].value == 10
+    assert onglet["B4"].value == 20
+    assert onglet["C4"].value == 30
+    assert onglet["D4"].value == 40
+    assert onglet["E4"].value == 0
+    assert onglet["F4"].value == 70
+    assert onglet["G4"].value == 50
+
+
 def test_telechargement_d_un_rapport_vsme_inexistant(client, entreprise_factory, alice):
     entreprise = entreprise_factory(utilisateur=alice)
     client.force_login(alice)
