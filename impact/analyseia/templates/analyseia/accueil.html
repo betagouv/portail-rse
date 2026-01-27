@@ -7,6 +7,23 @@
         <div class="fr-grid-row">
             {% include "snippets/tableau_de_bord_menu.html" %}
             <div class="fr-col">
+
+                <nav role="navigation" class="fr-breadcrumb" aria-label="vous êtes ici :">
+                  <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">
+                    Voir le fil d’Ariane
+                  </button>
+                  <div class="fr-collapse" id="breadcrumb-1">
+                    <ol class="fr-breadcrumb__list">
+                      <li>
+                        <a class="fr-breadcrumb__link" href="{% url 'reglementations:rapport' entreprise.siren %}">Mon rapport de durabilité</a>
+                      </li>
+                      <li>
+                        <a class="fr-breadcrumb__link" aria-current="page">Cartographie IA</a>
+                      </li>
+                    </ol>
+                  </div>
+                </nav>
+
                 <h1>Cartographiez vos données de durabilité avec l'IA</h1>
                 <p>
                     L'IA scanne vos rapports et documents internes pour repérer les phrases et données liées à la durabilité.
