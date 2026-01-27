@@ -29,6 +29,7 @@
                 "type": "nombre_entier",
                 "min": 0,
                 "unité": "euros",
+                "provoque_calcul_des_champs": ["chiffre_affaires_combustibles_fossiles"],
                 "obligatoire": true
             },
             {
@@ -38,6 +39,7 @@
                 "type": "nombre_entier",
                 "min": 0,
                 "unité": "euros",
+                "provoque_calcul_des_champs": ["chiffre_affaires_combustibles_fossiles"],
                 "obligatoire": true
             },
             {
@@ -47,7 +49,17 @@
                 "type": "nombre_entier",
                 "min": 0,
                 "unité": "euros",
+                "provoque_calcul_des_champs": ["chiffre_affaires_combustibles_fossiles"],
                 "obligatoire": true
+            },
+            {
+                "id": "chiffre_affaires_combustibles_fossiles",
+                "label": "Total du chiffre d’affaires issu des combustibles fossiles (charbon, pétrole, gaz)",
+                "description": "Calculé automatiquement en fonction des données renseignées dans les autres champs. Unité : euros",
+                "type": "nombre_entier",
+                "min": 0,
+                "unité": "euros",
+                "calculé": true
             },
             {
                 "id": "chiffre_affaires_pesticides",

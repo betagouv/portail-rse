@@ -82,6 +82,10 @@
     cursor: pointer;
 }
 
+/* champ output disabled */
+.output--disabled {
+    color: var(--text-disabled-grey);
+}
 
 /* Texte d'erreur, sans l'icône d'erreur à gauche */
 .text-error-color-no-decoration {
