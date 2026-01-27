@@ -694,6 +694,15 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                                 ] = nombre_moyen_heures_formation
                 except ObjectDoesNotExist:
                     pass
+        case "C8-63":
+            chiffre_affaires_charbon = data.get("chiffre_affaires_charbon") or 0
+            chiffre_affaires_petrole = data.get("chiffre_affaires_petrole") or 0
+            chiffre_affaires_gaz = data.get("chiffre_affaires_gaz") or 0
+            data["chiffre_affaires_combustibles_fossiles"] = (
+                chiffre_affaires_charbon
+                + chiffre_affaires_petrole
+                + chiffre_affaires_gaz
+            )
     return data
 
 
