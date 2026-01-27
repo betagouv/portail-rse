@@ -255,7 +255,8 @@ def create_simple_field_from_schema(field_schema, rapport_vsme):
         field.trigger_computed_fields = computed_fields
     if field_schema.get("calculé", False):
         field.is_computed = True
-
+    if "défaut" in field_schema:
+        field.initial = field_schema["défaut"]
     return field
 
 

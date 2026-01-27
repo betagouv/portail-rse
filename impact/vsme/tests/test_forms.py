@@ -461,3 +461,27 @@ def test_multiform_tableau_lignes_fixes_vide_invalide(
     multiform = multiform_class(data)
 
     assert not multiform.is_valid()
+
+
+def test_multiform_champ_avec_valeur_par_défaut(rapport_vsme):
+    CHAMP_AVEC_VALEUR_PAR_DEFAUT = {
+        "id": "chiffre_affaires_tabac",
+        "label": "Chiffre d’affaires issu des armes controversées",
+        "type": "nombre_entier",
+        "défaut": 0,
+        "unité": "ans",
+        "obligatoire": True,
+    }
+    indicateur_schema = {
+        "schema_id": "TEST-1",
+        "titre": "Test simple",
+        "description": "Description test",
+        "ancre": "test",
+        "champs": [CHAMP_AVEC_VALEUR_PAR_DEFAUT],
+    }
+
+    multiform_class = create_multiform_from_schema(indicateur_schema, rapport_vsme)
+
+    Form = multiform_class.Forms[0]
+    assert Form.base_fields["chiffre_affaires_tabac"].initial == 0
+    assert Form.base_fields["chiffre_affaires_tabac"].required
