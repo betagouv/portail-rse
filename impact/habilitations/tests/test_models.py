@@ -1,9 +1,20 @@
 import pytest
 
+from habilitations.enums import UserRole
 from habilitations.models import Habilitation
 from habilitations.models import HabilitationError
-from habilitations.models import UserRole
 from invitations.models import Invitation
+
+
+@pytest.fixture
+def conseiller_rse(django_user_model):
+    return django_user_model.objects.create(
+        prenom="Claire",
+        nom="Conseillère",
+        email="claire@conseil-rse.test",
+        is_email_confirmed=True,
+        is_conseiller_rse=True,
+    )
 
 
 @pytest.mark.django_db
@@ -58,3 +69,44 @@ def test_ajouter_habilitation_avec_invitation(alice, entreprise_factory):
 
     habilitation = Habilitation.objects.pour(entreprise, alice)
     assert habilitation.invitation == invitation
+
+
+# Tests pour les conseillers RSE
+
+
+@pytest.mark.django_db
+def test_conseiller_rse_ne_peut_pas_etre_proprietaire(
+    conseiller_rse, entreprise_factory
+):
+    """Un conseiller RSE ne peut pas obtenir le rôle PROPRIETAIRE."""
+    entreprise = entreprise_factory()
+
+    with pytest.raises(HabilitationError) as exc_info:
+        Habilitation.ajouter(entreprise, conseiller_rse, UserRole.PROPRIETAIRE)
+
+    assert "conseiller RSE ne peut pas être propriétaire" in str(exc_info.value)
+
+
+@pytest.mark.django_db
+def test_conseiller_rse_peut_etre_editeur(conseiller_rse, entreprise_factory):
+    """Un conseiller RSE peut obtenir le rôle EDITEUR."""
+    entreprise = entreprise_factory()
+
+    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.EDITEUR, "Consultant RSE")
+
+    habilitation = Habilitation.objects.pour(entreprise, conseiller_rse)
+    assert habilitation.role == UserRole.EDITEUR
+    assert habilitation.fonctions == "Consultant RSE"
+
+
+@pytest.mark.django_db
+def test_utilisateur_standard_peut_etre_proprietaire(alice, entreprise_factory):
+    """Un utilisateur standard (non conseiller) peut être propriétaire."""
+    entreprise = entreprise_factory()
+
+    assert not alice.is_conseiller_rse
+
+    Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE, "Présidente")
+
+    habilitation = Habilitation.objects.pour(entreprise, alice)
+    assert habilitation.role == UserRole.PROPRIETAIRE
