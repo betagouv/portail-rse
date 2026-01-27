@@ -19,6 +19,9 @@
                     <div class="fr-collapse" id="breadcrumb-1">
                         <ol class="fr-breadcrumb__list">
                             <li>
+                                <a class="fr-breadcrumb__link" href="{% url 'reglementations:rapport' entreprise.siren %}">Mon rapport de durabilité</a>
+                            </li>
+                            <li>
                                 <a class="fr-breadcrumb__link" href="{% url 'vsme:categories_vsme' entreprise.siren rapport_vsme.annee %}">Mes indicateurs</a>
                             </li>
                             <li>
