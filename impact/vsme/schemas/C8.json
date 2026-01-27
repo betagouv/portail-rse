@@ -10,6 +10,7 @@
                 "description": "Mines antipersonnel, sous-munitions, armes chimiques, biologiques. Unité : euros",
                 "type": "nombre_entier",
                 "min": 0,
+                "défaut": 0,
                 "unité": "euros",
                 "obligatoire": true
             },
@@ -19,6 +20,7 @@
                 "description": "Culture et production. Unité : euros",
                 "type": "nombre_entier",
                 "min": 0,
+                "défaut": 0,
                 "unité": "euros",
                 "obligatoire": true
             },
@@ -28,6 +30,7 @@
                 "description": "Unité : euros",
                 "type": "nombre_entier",
                 "min": 0,
+                "défaut": 0,
                 "unité": "euros",
                 "provoque_calcul_des_champs": ["chiffre_affaires_combustibles_fossiles"],
                 "obligatoire": true
@@ -38,6 +41,7 @@
                 "description": "Unité : euros",
                 "type": "nombre_entier",
                 "min": 0,
+                "défaut": 0,
                 "unité": "euros",
                 "provoque_calcul_des_champs": ["chiffre_affaires_combustibles_fossiles"],
                 "obligatoire": true
@@ -48,6 +52,7 @@
                 "description": "Unité : euros",
                 "type": "nombre_entier",
                 "min": 0,
+                "défaut": 0,
                 "unité": "euros",
                 "provoque_calcul_des_champs": ["chiffre_affaires_combustibles_fossiles"],
                 "obligatoire": true
@@ -67,6 +72,7 @@
                 "description": "Unité : euros",
                 "type": "nombre_entier",
                 "min": 0,
+                "défaut": 0,
                 "unité": "euros",
                 "obligatoire": true
             }
