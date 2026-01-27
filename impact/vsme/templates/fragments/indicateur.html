@@ -145,6 +145,7 @@
                                             </label>
                                             <output id="{{ field.id_for_label }}">{{ field|get_field_display|default_if_none:"<p class='fr-badge fr-badge--sm'>auto</p>" }}</output>
                                             <img id="htmx-indicator-{{ field.name }}" src="{% static 'img/spinner.svg' %}" alt="Spinner d'attente" height="30em" class="htmx-indicator">
+                                        </div>
                                     {% else %}
                                         {% include 'snippets/field.html' %}
                                     {% endif %}
