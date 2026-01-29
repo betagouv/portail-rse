@@ -217,6 +217,8 @@ EXIGENCES_DE_PUBLICATION = {
         "C5",
         "Caractéristiques supplémentaires (générales) des effectifs",
         Categorie.SOCIAL,
+        "https://portail-rse.beta.gouv.fr/vsme/c5-caracteristiques-suppl%C3%A9mentaires-du-personnel/",
+        remplissable=True,
     ),
     "C6": ExigenceDePublication(
         "C6",
@@ -694,6 +696,14 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                                 ] = nombre_moyen_heures_formation
                 except ObjectDoesNotExist:
                     pass
+        case "C5-59":
+            nombre_femmes = data.get("nombre_femmes_parmi_encadrement")
+            nombre_hommes = data.get("nombre_hommes_parmi_encadrement")
+            if nombre_hommes and nombre_femmes is not None:
+                ratio = round(nombre_femmes / nombre_hommes, 2)
+                data["ratio_femmes_hommes_encadrement"] = ratio
+            elif nombre_hommes == 0:
+                data["ratio_femmes_hommes_encadrement"] = "n/a"
         case "C8-63":
             chiffre_affaires_charbon = data.get("chiffre_affaires_charbon") or 0
             chiffre_affaires_petrole = data.get("chiffre_affaires_petrole") or 0

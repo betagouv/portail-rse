@@ -1,0 +1,50 @@
+{
+    "C5-59": {
+        "titre": "Ratio femmes/hommes au niveau de l'encadrement",
+        "description": "Indiquer le ratio de femmes par rapport aux hommes au niveau de l’encadrement pour la période de référence.",
+        "ancre": "ratio_encadrement",
+        "champs": [
+            {
+                "id": "nombre_hommes_parmi_encadrement",
+                "label": "Nombre de salariés hommes occupant des postes de direction",
+                "type": "nombre_decimal",
+                "provoque_calcul_des_champs": ["ratio_femmes_hommes_encadrement"],
+                "obligatoire": true
+            },
+            {
+                "id": "nombre_femmes_parmi_encadrement",
+                "label": "Nombre de salariées femmes occupant des postes de direction",
+                "type": "nombre_decimal",
+                "provoque_calcul_des_champs": ["ratio_femmes_hommes_encadrement"],
+                "obligatoire": true
+            },
+            {
+                "id": "ratio_femmes_hommes_encadrement",
+                "label": "Ratio femmes/hommes au niveau de l'encadrement",
+                "type": "nombre_decimal",
+                "calculé": true
+            }
+        ],
+        "si_pertinent": true
+    },
+    "C5-60": {
+        "titre": "Travailleurs indépendants et salariés temporaires",
+        "description": "Indiquer le nombre de travailleurs indépendants sans personnel qui travaillent exclusivement pour l'entreprise, ainsi que le nombre de salariés temporaires mis à disposition par des entreprises exerçant principalement des « activités liées à l’emploi ».",
+        "ancre": "travailleurs_independants_et_salaries_temporaires",
+        "champs": [
+            {
+                "id": "nombre_travailleurs_independants",
+                "label": "Total des travailleurs indépendants sans personnel qui travaillent exclusivement pour l’entreprise",
+                "type": "nombre_decimal",
+                "obligatoire": true
+            },
+            {
+                "id": "nombre_salaries_temporaires",
+                "label": "Total des travailleurs temporaires mis à disposition par des entreprises exerçant principalement des activités liées à l’emploi",
+                "type": "nombre_decimal",
+                "obligatoire": true
+            }
+        ],
+        "si_pertinent": true
+    }
+}
