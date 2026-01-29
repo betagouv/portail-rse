@@ -6,6 +6,7 @@ from django.core.management import call_command
 from freezegun import freeze_time
 
 from habilitations.models import Habilitation
+from habilitations.models import UserRole
 
 
 @pytest.mark.django_db(transaction=True)
@@ -13,15 +14,23 @@ def test_import_des_contacts(
     db, mocker, settings, alice, entreprise_non_qualifiee, entreprise_factory
 ):
     alice.is_email_confirmed = True
-    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
+    alice.is_conseiller_rse = True
+    alice.save()
+    Habilitation.ajouter(
+        entreprise_non_qualifiee, alice, fonctions="Présidente", role=UserRole.EDITEUR
+    )
     entreprise_non_qualifiee_2 = entreprise_factory(
         siren="111111111", denomination="Artisans", tranche_bilan=None
     )
-    Habilitation.ajouter(entreprise_non_qualifiee_2, alice, fonctions="Présidente")
+    Habilitation.ajouter(
+        entreprise_non_qualifiee_2, alice, fonctions="Présidente", role=UserRole.EDITEUR
+    )
     entreprise_qualifiee = entreprise_factory(
         siren="222222222", denomination="Coopérative"
     )
-    Habilitation.ajouter(entreprise_qualifiee, alice, fonctions="Présidente")
+    Habilitation.ajouter(
+        entreprise_qualifiee, alice, fonctions="Présidente", role=UserRole.EDITEUR
+    )
     settings.BREVO_API_KEY = "BREVO_API_KEY"
     mocked_import_contacts = mocker.patch(
         "sib_api_v3_sdk.ContactsApi.import_contacts",
@@ -39,6 +48,7 @@ def test_import_des_contacts(
                 "PORTAIL_RSE_ID": alice.id,
                 "PORTAIL_RSE_DATE_INSCRIPTION": alice.created_at.strftime("%d-%m-%Y"),
                 "EMAIL_CONFIRME": "yes",
+                "CONSEILLER_RSE": "yes",
                 "ENTREPRISES_NON_QUALIFIEES": f"{entreprise_non_qualifiee.denomination}, {entreprise_non_qualifiee_2.denomination}",
             },
         }
