@@ -279,6 +279,13 @@ class RapportVSME(TimestampedModel):
         return indicateurs_applicables
 
     def indicateur_est_applicable(self, indicateur_schema_id) -> tuple[bool, str]:
+        if indicateur_schema_id.startswith("C"):  # indicateurs module complet
+            if self.choix_module() != "complet":
+                B1_url = reverse(
+                    "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
+                )
+                explication_non_applicable = f"l'entreprise a sélectionné uniquement le module de base dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur 'Base d'établissement' de B1</a>"
+                return (False, explication_non_applicable)
         match indicateur_schema_id.split("-"):
             case ["B1", "24", "d"]:  # indicateur liste filiales
                 indicateur_type_de_perimetre = "B1-24-c"
@@ -328,17 +335,16 @@ class RapportVSME(TimestampedModel):
                     else ""
                 )
                 return (plusieurs_pays_d_exercice, explication_non_applicable)
-            case [exigence, *_] if exigence.startswith("C"):
-                module_complet = self.choix_module() == "complet"
-                B1_url = reverse(
-                    "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
-                )
-                explication_non_applicable = (
-                    f"l'entreprise a sélectionné uniquement le module de base dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur 'Base d'établissement' de B1</a>"
-                    if not module_complet
-                    else ""
-                )
-                return (module_complet, explication_non_applicable)
+            case ["C5", _]:  # indicateurs supplémentaires des effectifs
+                nombre_salaries = self.nombre_salaries()
+                if nombre_salaries is not None and nombre_salaries < 50:
+                    B1_url = reverse(
+                        "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
+                    )
+                    explication_non_applicable = f"le nombre de salariés renseigné dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur 'Nombre de salariés' de B1</a> est inférieur à 50"
+                    return (False, explication_non_applicable)
+                else:
+                    return (True, "")
             case _:
                 return (True, "")
 
@@ -425,7 +431,7 @@ class RapportVSME(TimestampedModel):
             codes_pays = []
         return codes_pays
 
-    def nombre_salaries(self):
+    def nombre_salaries(self) -> int | None:
         indicateur_nombre_salaries = "B1-24-e-v"
         try:
             nombre_salaries = self.indicateurs.get(

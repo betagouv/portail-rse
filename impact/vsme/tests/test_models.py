@@ -1,5 +1,7 @@
 from decimal import Decimal
 
+import pytest
+
 
 def test_nombre_decimal_dans_les_donnees_d_un_indicateur(rapport_vsme):
     indicateur_simple = rapport_vsme.indicateurs.create(
@@ -83,3 +85,60 @@ def test_nombre_decimal_dans_les_données_non_stockees_d_un_indicateur(rapport_v
     ][0]["densite"]
     assert isinstance(densité_décodée, Decimal)
     assert densité_décodée == Decimal("0.85")
+
+
+@pytest.mark.parametrize("indicateur_schema_id", ["C5-59", "C5-60"])
+def test_applicabilité_indicateurs_C5_si_moins_de_50_salariés(
+    indicateur_schema_id, rapport_vsme
+):
+    rapport_vsme.indicateurs.create(
+        schema_id="B1-24-e-v",  # indicateur nombre salariés
+        data={"methode_comptabilisation": "ETP", "nombre_salaries": 49},
+    )
+
+    est_applicable, explication = rapport_vsme.indicateur_est_applicable(
+        indicateur_schema_id
+    )
+
+    assert not est_applicable
+    assert "est inférieur à 50" in explication
+
+    rapport_vsme.indicateurs.create(
+        schema_id="B1-24-a",  # indicateur choix module
+        data={"choix_module": "base"},
+    )
+
+    est_applicable, explication = rapport_vsme.indicateur_est_applicable(
+        indicateur_schema_id
+    )
+
+    assert not est_applicable
+    assert "l'entreprise a sélectionné uniquement le module de base" in explication
+
+
+@pytest.mark.parametrize("indicateur_schema_id", ["C5-59", "C5-60"])
+def test_applicabilité_indicateurs_C5_si_50_salariés_ou_plus(
+    indicateur_schema_id, rapport_vsme
+):
+    rapport_vsme.indicateurs.create(
+        schema_id="B1-24-e-v",  # indicateur nombre salariés
+        data={"methode_comptabilisation": "ETP", "nombre_salaries": 50},
+    )
+
+    est_applicable, explication = rapport_vsme.indicateur_est_applicable(
+        indicateur_schema_id
+    )
+
+    assert est_applicable
+
+    rapport_vsme.indicateurs.create(
+        schema_id="B1-24-a",  # indicateur choix module
+        data={"choix_module": "base"},
+    )
+
+    est_applicable, explication = rapport_vsme.indicateur_est_applicable(
+        indicateur_schema_id
+    )
+
+    assert not est_applicable
+    assert "l'entreprise a sélectionné uniquement le module de base" in explication
