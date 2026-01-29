@@ -13,6 +13,7 @@ from conftest import CODE_PAYS_PORTUGAL
 from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
+from habilitations.enums import UserRole
 from habilitations.models import Habilitation
 from invitations.models import Invitation
 from metabase.models import AnalyseIA as MetabaseAnalyseIA
@@ -272,8 +273,11 @@ def test_synchronise_une_entreprise_avec_un_utilisateur(
         email="alice@portail-rse.test",
         reception_actualites=False,
         is_email_confirmed=True,
+        is_conseiller_rse=True,
     )
-    habilitation = Habilitation.ajouter(entreprise, utilisateur, fonctions="Présidente")
+    habilitation = Habilitation.ajouter(
+        entreprise, utilisateur, fonctions="Présidente", role=UserRole.EDITEUR
+    )
 
     call_command("sync_metabase")
 
@@ -288,6 +292,7 @@ def test_synchronise_une_entreprise_avec_un_utilisateur(
     assert metabase_utilisateur.connecte_le == utilisateur.last_login
     assert metabase_utilisateur.reception_actualites is False
     assert metabase_utilisateur.email_confirme is True
+    assert metabase_utilisateur.conseiller_rse is True
     assert metabase_utilisateur.nombre_entreprises == 1
 
     assert MetabaseHabilitation.objects.count() == 1
