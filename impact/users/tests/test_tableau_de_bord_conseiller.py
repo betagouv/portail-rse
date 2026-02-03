@@ -1,8 +1,10 @@
 import pytest
 from django.urls import reverse
 
+from entreprises.models import Entreprise
 from habilitations.enums import UserRole
 from habilitations.models import Habilitation
+from invitations.models import Invitation
 
 
 @pytest.fixture
@@ -61,7 +63,7 @@ def test_tableau_de_bord_conseiller_affiche_entreprises_en_gestion(
 def test_rattachement_entreprise_existante_avec_proprietaire(
     client, conseiller_rse, alice, entreprise_factory
 ):
-    """Un conseiller peut se rattacher à une entreprise avec un propriétaire."""
+    """Un conseiller ne peut pas se rattacher à une entreprise avec un propriétaire."""
     entreprise = entreprise_factory(siren="123456789")
     Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE)
 
@@ -71,68 +73,65 @@ def test_rattachement_entreprise_existante_avec_proprietaire(
         {"siren": "123456789", "fonctions": "Consultant CSRD"},
     )
 
-    # Vérifier que le conseiller a été rattaché
-    assert Habilitation.existe(entreprise, conseiller_rse)
-    habilitation = Habilitation.pour(entreprise, conseiller_rse)
-    assert habilitation.role == UserRole.EDITEUR
-    assert habilitation.fonctions == "Consultant CSRD"
+    assert (
+        Habilitation.objects.filter(entreprise=entreprise, user=conseiller_rse).count()
+        == 0
+    )
 
 
 @pytest.mark.django_db
 def test_rattachement_entreprise_inexistante(client, conseiller_rse):
-    """Un conseiller ne peut pas se rattacher à une entreprise inexistante."""
+    """Un conseiller peut se rattacher à une entreprise inexistante."""
     client.force_login(conseiller_rse)
 
     response = client.post(
         reverse("users:tableau_de_bord_conseiller"),
-        {"siren": "999999999"},
+        {
+            "siren": "999999999",
+            "fonctions": "Consultant CSRD",
+            "email_futur_proprietaire": "futur@proprietaire.test",
+        },
         follow=True,
     )
 
-    assert "n'existe pas encore" in response.content.decode()
+    entreprise = Entreprise.objects.get(siren="999999999")
+    assert Habilitation.existe(entreprise, conseiller_rse)
+    habilitation = Habilitation.pour(entreprise, conseiller_rse)
+    assert habilitation.role == UserRole.PROPRIETAIRE
+    assert habilitation.fonctions == "Consultant CSRD"
+    invitation = Invitation.objects.get(
+        entreprise=entreprise, email="futur@proprietaire.test"
+    )
+    assert invitation.role == UserRole.PROPRIETAIRE
 
 
 @pytest.mark.django_db
 def test_rattachement_entreprise_sans_proprietaire(
     client, conseiller_rse, entreprise_factory
 ):
-    """Un conseiller ne peut pas se rattacher à une entreprise sans propriétaire."""
+    """Un conseiller peut se rattacher à une entreprise sans propriétaire."""
     entreprise = entreprise_factory(siren="123456789")
     # Aucun propriétaire ajouté
 
     client.force_login(conseiller_rse)
     response = client.post(
         reverse("users:tableau_de_bord_conseiller"),
-        {"siren": "123456789"},
+        {
+            "siren": "123456789",
+            "fonctions": "Consultant CSRD",
+            "email_futur_proprietaire": "futur@proprietaire.test",
+        },
         follow=True,
     )
 
-    assert "n'a pas encore de propriétaire" in response.content.decode()
-    assert not Habilitation.existe(entreprise, conseiller_rse)
-
-
-@pytest.mark.django_db
-def test_rattachement_entreprise_uniquement_avec_conseillers(
-    client, conseiller_rse, entreprise_factory, django_user_model
-):
-    """Un conseiller ne peut pas se rattacher si l'entreprise n'a que des conseillers."""
-    autre_conseiller = django_user_model.objects.create(
-        email="autre@conseil.test",
-        is_conseiller_rse=True,
+    assert Habilitation.existe(entreprise, conseiller_rse)
+    habilitation = Habilitation.pour(entreprise, conseiller_rse)
+    assert habilitation.role == UserRole.PROPRIETAIRE
+    assert habilitation.fonctions == "Consultant CSRD"
+    invitation = Invitation.objects.get(
+        entreprise=entreprise, email="futur@proprietaire.test"
     )
-
-    entreprise = entreprise_factory(siren="123456789")
-    Habilitation.ajouter(entreprise, autre_conseiller, UserRole.EDITEUR)
-
-    client.force_login(conseiller_rse)
-    response = client.post(
-        reverse("users:tableau_de_bord_conseiller"),
-        {"siren": "123456789"},
-        follow=True,
-    )
-
-    assert "n'a pas encore de propriétaire" in response.content.decode()
-    assert not Habilitation.existe(entreprise, conseiller_rse)
+    assert invitation.role == UserRole.PROPRIETAIRE
 
 
 @pytest.mark.django_db
@@ -145,7 +144,11 @@ def test_rattachement_deja_existant(client, conseiller_rse, alice, entreprise_fa
     client.force_login(conseiller_rse)
     response = client.post(
         reverse("users:tableau_de_bord_conseiller"),
-        {"siren": "123456789"},
+        {
+            "siren": "123456789",
+            "fonctions": "Consultant CSRD",
+            "email_futur_proprietaire": "futur@proprietaire.test",
+        },
         follow=True,
     )
 

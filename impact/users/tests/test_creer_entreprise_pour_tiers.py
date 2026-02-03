@@ -54,7 +54,7 @@ def test_acces_autorise_conseiller(client, conseiller_rse):
 def test_rattachement_entreprise_existante_avec_proprietaire(
     client, conseiller_rse, alice, entreprise_factory
 ):
-    """Un conseiller peut se rattacher a une entreprise existante avec proprietaire."""
+    """Un conseiller ne peut pas se rattacher a une entreprise existante avec proprietaire."""
     entreprise = entreprise_factory(siren="123456789")
     Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE)
 
@@ -63,16 +63,14 @@ def test_rattachement_entreprise_existante_avec_proprietaire(
         reverse("users:tableau_de_bord_conseiller"),
         {
             "siren": "123456789",
+            "email_futur_proprietaire": "futur@proprietaire.test",
             "fonctions": "Consultant CSRD",
         },
         follow=True,
     )
 
-    # Verifier que le conseiller a ete rattache comme EDITEUR
-    assert Habilitation.existe(entreprise, conseiller_rse)
-    habilitation = Habilitation.pour(entreprise, conseiller_rse)
-    assert habilitation.role == UserRole.EDITEUR
-    assert habilitation.fonctions == "Consultant CSRD"
+    # Verifier que le conseiller n'a pas été rattaché comme EDITEUR
+    assert not Habilitation.existe(entreprise, conseiller_rse)
 
     # Pas d'invitation creee car il y a deja un proprietaire
     assert not Invitation.objects.filter(entreprise=entreprise).exists()
@@ -96,7 +94,8 @@ def test_rattachement_entreprise_sans_proprietaire_sans_email_echoue(
         reverse("users:tableau_de_bord_conseiller"),
         {
             "siren": "234567890",
-            # Pas d'email_futur_proprietaire
+            "email_futur_proprietaire": "",
+            "fonctions": "Accompagnement BDESE",
         },
     )
 
@@ -128,7 +127,7 @@ def test_rattachement_entreprise_sans_proprietaire_avec_email_reussit(
     # Verifier le rattachement
     assert Habilitation.existe(entreprise, conseiller_rse)
     habilitation = Habilitation.pour(entreprise, conseiller_rse)
-    assert habilitation.role == UserRole.EDITEUR
+    assert habilitation.role == UserRole.PROPRIETAIRE
 
     # Verifier l'invitation creee
     invitation = Invitation.objects.get(entreprise=entreprise)
@@ -180,10 +179,9 @@ def test_creation_entreprise_reussie(
         },
     )
 
-    # Verifier que le conseiller a ete rattache comme EDITEUR
     assert Habilitation.existe(entreprise, conseiller_rse)
     habilitation = Habilitation.pour(entreprise, conseiller_rse)
-    assert habilitation.role == UserRole.EDITEUR
+    assert habilitation.role == UserRole.PROPRIETAIRE
     assert habilitation.fonctions == "Consultant CSRD"
 
     # Verifier que l'invitation a ete creee
@@ -231,7 +229,7 @@ def test_badge_structure_vacante_affiche_dans_tableau_de_bord(
     entreprise = entreprise_factory(siren="333444555")
 
     # Rattacher le conseiller
-    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.EDITEUR)
+    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.PROPRIETAIRE)
 
     # Créer une invitation propriétaire tiers non acceptée
     Invitation.objects.create(
@@ -259,7 +257,7 @@ def test_badge_active_affiche_quand_proprietaire_valide(
     Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE)
 
     # Rattacher le conseiller
-    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.EDITEUR)
+    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.PROPRIETAIRE)
 
     client.force_login(conseiller_rse)
     response = client.get(reverse("users:tableau_de_bord_conseiller"))
@@ -323,11 +321,7 @@ def test_verifier_statut_entreprise_inexistante(client, conseiller_rse):
     )
 
     content = response.content.decode()
-    assert (
-        "existe pas" in content.lower()
-        or "a_creer" in content.lower()
-        or "creee" in content.lower()
-    )
+    assert "créée" in content.lower()
 
 
 @pytest.mark.django_db
@@ -337,7 +331,7 @@ def test_verifier_statut_entreprise_deja_rattache(
     """L'endpoint retourne le statut déjà rattaché si le conseiller est déjà rattaché."""
     entreprise = entreprise_factory(siren="888999111")
     # Rattacher le conseiller
-    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.EDITEUR)
+    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.PROPRIETAIRE)
 
     client.force_login(conseiller_rse)
     response = client.get(
@@ -505,7 +499,7 @@ def test_invitation_expiree_refuse_acceptation(
 
     # Créer l'invitation avec une date de création dans le passé
     entreprise = entreprise_factory(siren="555000555")
-    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.EDITEUR)
+    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.PROPRIETAIRE)
 
     with freeze_time(date_creation_passee):
         invitation = Invitation.objects.create(
@@ -535,40 +529,3 @@ def test_invitation_expiree_refuse_acceptation(
     # L'invitation devrait être refusée avec un message d'expiration
     content = response.content.decode()
     assert "expir" in content.lower() or response.status_code == 302
-
-
-@pytest.mark.django_db
-def test_conseiller_ne_peut_pas_devenir_proprietaire(
-    client, conseiller_rse, entreprise_factory
-):
-    """Un conseiller RSE ne peut pas accepter le rôle de propriétaire."""
-
-    # Créer une entreprise et une invitation pour le conseiller lui-même
-    entreprise = entreprise_factory(siren="666000666")
-    invitation = Invitation.objects.create(
-        entreprise=entreprise,
-        email=conseiller_rse.email,
-        role=UserRole.PROPRIETAIRE,
-        est_invitation_proprietaire_tiers=True,
-    )
-    code = make_token(invitation, "invitation_proprietaire")
-
-    client.force_login(conseiller_rse)
-    response = client.post(
-        reverse(
-            "users:accepter_role_proprietaire",
-            args=[invitation.id, code],
-        ),
-        follow=True,
-    )
-
-    # Vérifier que l'habilitation n'a pas été créée
-    assert not Habilitation.objects.filter(
-        entreprise=entreprise,
-        user=conseiller_rse,
-        role=UserRole.PROPRIETAIRE,
-    ).exists()
-
-    # Vérifier qu'un message d'erreur est affiché
-    content = response.content.decode()
-    assert "conseiller" in content.lower() or "propriétaire" in content.lower()

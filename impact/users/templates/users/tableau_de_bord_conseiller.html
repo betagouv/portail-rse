@@ -148,32 +148,28 @@
 
                     {% include 'users/fragments/siren_field_conseiller.html' %}
 
-                    <!-- Zone dynamique HTMX pour le statut de l'entreprise -->
-                    <div id="statut-entreprise-container" class="fr-mt-2w">
-                        {% if statut %}
-                            {% include 'users/fragments/statut_entreprise.html' %}
-                        {% endif %}
-                    </div>
+                    <fieldset class="fr-fieldset" aria-label="Modification des informations personnelles">
 
-                    <div id="champ-fonctions">
-                        {% include 'snippets/field.html' with field=form.fonctions %}
-                    </div>
+                    <!-- Zone dynamique HTMX pour le statut de l'entreprise -->
+                        <div id="statut-entreprise-container" class="fr-fieldset__element">
+                            {% if statut %}
+                                {% include 'users/fragments/statut_entreprise.html' %}
+                            {% endif %}
+                        </div>
+
+                        <div id="champ-fonctions" class="fr-fieldset__element">
+                            {% include 'snippets/field.html' with field=form.fonctions %}
+                        </div>
+
+                        <div class="fr-fieldset__element">
+                            {% include 'snippets/field.html' with field=form.email_futur_proprietaire %}
+                        </div>
+                    </fieldset>
 
                     <button type="submit" class="fr-btn fr-mt-2w" id="btn-ajouter-entreprise">
                         Ajouter l'entreprise
                     </button>
                 </form>
-
-                <div class="fr-callout fr-callout--info fr-icon-information-line fr-mt-4w">
-                    <p class="fr-callout__text">
-                        <strong>Fonctionnement :</strong>
-                    </p>
-                    <ul>
-                        <li>Si l'entreprise existe et a un propriétaire : vous serez rattaché comme "Editeur"</li>
-                        <li>Si l'entreprise existe sans propriétaire : vous devrez indiquer l'e-mail du futur propriétaire</li>
-                        <li>Si l'entreprise n'existe pas : elle sera créée et vous devrez indiquer l'e-mail du futur propriétaire</li>
-                    </ul>
-                </div>
             </div>
         </div>
     </div>
