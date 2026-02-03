@@ -156,11 +156,6 @@ class Habilitation(TimestampedModel):
         fonctions=None,
         invitation=None,
     ):
-        # Un conseiller RSE ne peut pas être propriétaire d'une entreprise
-        if utilisateur.is_conseiller_rse and role == UserRole.PROPRIETAIRE:
-            raise HabilitationError(
-                "Un conseiller RSE ne peut pas être propriétaire d'une entreprise."
-            )
         h = cls(user=utilisateur, entreprise=entreprise, role=role)
         if fonctions:
             h.fonctions = fonctions

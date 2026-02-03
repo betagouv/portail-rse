@@ -75,16 +75,14 @@ def test_ajouter_habilitation_avec_invitation(alice, entreprise_factory):
 
 
 @pytest.mark.django_db
-def test_conseiller_rse_ne_peut_pas_etre_proprietaire(
-    conseiller_rse, entreprise_factory
-):
-    """Un conseiller RSE ne peut pas obtenir le rôle PROPRIETAIRE."""
+def test_conseiller_rse_peut_etre_proprietaire(conseiller_rse, entreprise_factory):
+    """Un conseiller RSE peut obtenir le rôle PROPRIETAIRE."""
     entreprise = entreprise_factory()
 
-    with pytest.raises(HabilitationError) as exc_info:
-        Habilitation.ajouter(entreprise, conseiller_rse, UserRole.PROPRIETAIRE)
+    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.PROPRIETAIRE)
 
-    assert "conseiller RSE ne peut pas être propriétaire" in str(exc_info.value)
+    habilitation = Habilitation.objects.pour(entreprise, conseiller_rse)
+    assert habilitation.role == UserRole.PROPRIETAIRE
 
 
 @pytest.mark.django_db

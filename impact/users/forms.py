@@ -162,14 +162,14 @@ class AjoutEntrepriseConseillerForm(DsfrForm, PreremplissageSirenForm):
     """Formulaire unifié pour qu'un conseiller RSE ajoute une entreprise en gestion.
 
     Gère tous les cas :
-    - Entreprise existante avec propriétaire : rattachement simple
+    - Entreprise existante avec propriétaire : pas de rattachement
     - Entreprise existante sans propriétaire : rattachement + invitation propriétaire
     - Entreprise inexistante : création + rattachement + invitation propriétaire
     """
 
     email_futur_proprietaire = forms.EmailField(
         label="Adresse e-mail du futur propriétaire",
-        required=False,  # Requis dynamiquement selon le contexte
+        required=True,
         help_text="Cette personne recevra une invitation pour devenir propriétaire de l'entreprise.",
     )
     fonctions = forms.CharField(

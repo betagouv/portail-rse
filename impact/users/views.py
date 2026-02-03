@@ -400,7 +400,7 @@ def tableau_de_bord_conseiller(request):
     """Tableau de bord pour les conseillers RSE.
 
     Gère l'ajout d'entreprise avec logique unifiée :
-    - Entreprise existante avec propriétaire : rattachement simple
+    - Entreprise existante avec propriétaire : refus attachement
     - Entreprise existante sans propriétaire : rattachement + invitation propriétaire
     - Entreprise inexistante : création + rattachement + invitation propriétaire
     """
@@ -451,42 +451,20 @@ def tableau_de_bord_conseiller(request):
                         )
                         return redirect("users:tableau_de_bord_conseiller")
 
-                    # CAS 1a : A un propriétaire → rattachement simple
-                    if entreprise.a_proprietaire_non_conseiller:
-                        Habilitation.ajouter(
-                            entreprise,
-                            request.user,
-                            UserRole.EDITEUR,
-                            fonctions=form.cleaned_data.get("fonctions"),
-                        )
-                        messages.success(
+                    # CAS 1a : A un propriétaire → pas de rattachement
+                    if entreprise.proprietaires:
+                        messages.error(
                             request,
-                            f"Vous avez été rattaché à l'entreprise {entreprise.denomination}.",
+                            f"Vous n'avez pas été rattaché à l'entreprise {entreprise.denomination} car un compte y est déjà attachée. Demandez à votre client de vous inviter sur l'entreprise.",
                         )
                         return redirect("users:tableau_de_bord_conseiller")
 
                     # CAS 1b : Pas de propriétaire → rattachement + invitation
                     else:
-                        if not email_proprietaire:
-                            form.add_error(
-                                "email_futur_proprietaire",
-                                "L'entreprise n'a pas de propriétaire. Veuillez indiquer l'email du futur propriétaire.",
-                            )
-                            return render(
-                                request,
-                                "users/tableau_de_bord_conseiller.html",
-                                {
-                                    "habilitations_enrichies": habilitations_enrichies,
-                                    "form": form,
-                                    "statut": "sans_proprietaire",
-                                    "entreprise": entreprise,
-                                },
-                            )
-
                         Habilitation.ajouter(
                             entreprise,
                             request.user,
-                            UserRole.EDITEUR,
+                            UserRole.PROPRIETAIRE,
                             fonctions=form.cleaned_data.get("fonctions"),
                         )
                         _creer_invitation_proprietaire(
@@ -501,26 +479,11 @@ def tableau_de_bord_conseiller(request):
 
                 # CAS 2 : Entreprise n'existe pas → création + rattachement + invitation
                 else:
-                    if not email_proprietaire:
-                        form.add_error(
-                            "email_futur_proprietaire",
-                            "L'entreprise n'existe pas encore. Veuillez indiquer l'email du futur propriétaire.",
-                        )
-                        return render(
-                            request,
-                            "users/tableau_de_bord_conseiller.html",
-                            {
-                                "habilitations_enrichies": habilitations_enrichies,
-                                "form": form,
-                                "statut": "a_creer",
-                            },
-                        )
-
                     entreprise = Entreprise.search_and_create_entreprise(siren)
                     Habilitation.ajouter(
                         entreprise,
                         request.user,
-                        UserRole.EDITEUR,
+                        UserRole.PROPRIETAIRE,
                         fonctions=form.cleaned_data.get("fonctions"),
                     )
                     _creer_invitation_proprietaire(

@@ -273,6 +273,12 @@ class Entreprise(TimestampedModel):
         ).exists()
 
     @property
+    def proprietaires(self):
+        return self.habilitation_set.filter(
+            role="proprietaire",
+        )
+
+    @property
     def est_structure_vacante(self) -> bool:
         """Vérifie si l'entreprise est une structure vacante.
 
