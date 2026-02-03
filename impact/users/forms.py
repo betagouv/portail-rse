@@ -124,9 +124,13 @@ def message_erreur_proprietaires(proprietaires_presents):
 class UserEditionForm(DsfrForm, forms.ModelForm):
     class Meta:
         model = User
-        fields = ("prenom", "nom", "email", "reception_actualites")
+        fields = ("prenom", "nom", "email", "is_conseiller_rse", "reception_actualites")
         labels = {
+            "is_conseiller_rse": "Je suis conseiller RSE",
             "reception_actualites": "Je souhaite recevoir les actualités du Portail RSE (optionnel)",
+        }
+        help_texts = {
+            "is_conseiller_rse": None,
         }
 
 
