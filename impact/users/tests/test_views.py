@@ -343,6 +343,7 @@ def test_edit_account_info(client, alice_with_password):
         "nom": "Dylan",
         "email": alice.email,
         "reception_actualites": "checked",
+        "is_conseiller_rse": "checked",
         "action": "update-account",
     }
 
@@ -358,6 +359,7 @@ def test_edit_account_info(client, alice_with_password):
     assert alice.prenom == "Bob"
     assert alice.nom == "Dylan"
     assert alice.reception_actualites
+    assert alice.is_conseiller_rse
     assert alice.check_password("Passw0rd!123")
 
 

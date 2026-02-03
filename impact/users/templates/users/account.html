@@ -28,6 +28,7 @@
                             </div>
                         {% endif %}
                         <div class="fr-fieldset__element">
+                            {% include 'snippets/field.html' with field=account_form.is_conseiller_rse %}
                             {% include 'snippets/field.html' with field=account_form.reception_actualites %}
                         </div>
                     </fieldset>
