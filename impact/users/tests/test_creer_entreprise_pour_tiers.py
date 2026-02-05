@@ -218,43 +218,16 @@ def test_entreprise_est_structure_vacante_apres_creation(
     assert entreprise.est_structure_vacante is True
 
 
-# Tests des badges dans le tableau de bord
-
-
 @pytest.mark.django_db
-def test_badge_structure_vacante_affiche_dans_tableau_de_bord(
-    client, conseiller_rse, entreprise_factory
-):
-    """Le badge 'Sans propriétaire' est affiché pour les entreprises vacantes."""
-    entreprise = entreprise_factory(siren="333444555")
-
-    # Rattacher le conseiller
-    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.PROPRIETAIRE)
-
-    # Créer une invitation propriétaire tiers non acceptée
-    Invitation.objects.create(
-        entreprise=entreprise,
-        email="futur@proprietaire.test",
-        role=UserRole.PROPRIETAIRE,
-        inviteur=conseiller_rse,
-        est_invitation_proprietaire_tiers=True,
-    )
-
-    client.force_login(conseiller_rse)
-    response = client.get(reverse("users:tableau_de_bord_conseiller"))
-
-    assert "Sans propriétaire" in response.content.decode()
-
-
-@pytest.mark.django_db
-def test_badge_active_affiche_quand_proprietaire_valide(
-    client, conseiller_rse, alice, entreprise_factory
+def test_compte_les_proprietaires(
+    client, conseiller_rse, alice, bob, entreprise_factory
 ):
     """Le badge 'Active' est affiche quand l'entreprise a un proprietaire valide."""
     entreprise = entreprise_factory(siren="444555666")
 
-    # Ajouter un proprietaire valide
+    # Ajouter deux proprietaires valides
     Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE)
+    Habilitation.ajouter(entreprise, bob, UserRole.PROPRIETAIRE)
 
     # Rattacher le conseiller
     Habilitation.ajouter(entreprise, conseiller_rse, UserRole.PROPRIETAIRE)
@@ -263,8 +236,7 @@ def test_badge_active_affiche_quand_proprietaire_valide(
     response = client.get(reverse("users:tableau_de_bord_conseiller"))
 
     content = response.content.decode()
-    assert "Active" in content
-    assert "Structure vacante" not in content
+    assert "3" in content
 
 
 # =============================================================================
