@@ -71,10 +71,10 @@
             </div>
         </div>
 
-        <!-- Section 3 : Résumé des entreprises en gestion -->
+        <!-- Section 3 : Résumé des entreprises accompagnées -->
         <div class="fr-grid-row fr-mb-2w" id="mes_entreprises">
             <div class="fr-col-12">
-                <h2>Mes entreprises en gestion</h2>
+                <h2>Mes entreprises accompagnées</h2>
                 {% if habilitations_enrichies %}
                     <div class="fr-table--sm fr-table fr-table">
                         <div class="fr-table__wrapper">
@@ -140,7 +140,7 @@
         <!-- Section 4 : Formulaire unifié d'ajout d'entreprise -->
         <div class="fr-grid-row" id="ajouter_entreprise">
             <div class="fr-col-12 fr-col-md-8">
-                <h2>Ajouter une entreprise en gestion</h2>
+                <h2>Accompagner une nouvelle entreprise</h2>
                 <p>Recherchez une entreprise par son SIREN pour vous y rattacher.</p>
 
                 <form method="post" action="{% url 'users:tableau_de_bord_conseiller' %}">
@@ -167,7 +167,7 @@
                     </fieldset>
 
                     <button type="submit" class="fr-btn fr-mt-2w" id="btn-ajouter-entreprise">
-                        Ajouter l'entreprise
+                        Accompagner cette entreprise
                     </button>
                 </form>
             </div>
