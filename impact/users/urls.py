@@ -19,7 +19,6 @@ from .views import PasswordResetView
 from .views import post_login_dispatch
 from .views import preremplissage_siren_conseiller
 from .views import tableau_de_bord_conseiller
-from .views import verifier_statut_entreprise
 from users.views import confirm_email
 
 app_name = "users"
@@ -97,11 +96,6 @@ urlpatterns = [
         name="finaliser_invitation_proprietaire",
     ),
     # Routes HTMX pour le formulaire conseiller
-    path(
-        "fragments/verifier-statut-entreprise",
-        verifier_statut_entreprise,
-        name="verifier_statut_entreprise",
-    ),
     path(
         "fragments/preremplissage-siren-conseiller",
         preremplissage_siren_conseiller,

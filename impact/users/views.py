@@ -523,112 +523,6 @@ def _creer_invitation_proprietaire(request, entreprise, email_proprietaire):
     return invitation
 
 
-def _generer_fragments_oob_formulaire(request, afficher_champs):
-    """Génère des fragments HTMX OOB pour afficher/masquer les champs du formulaire.
-
-    Args:
-        request: Requête HTTP
-        afficher_champs: True pour afficher, False pour masquer
-
-    Returns:
-        str: HTML avec attributs hx-swap-oob pour mise à jour simultanée
-    """
-    if afficher_champs:
-        # Rendre le champ fonctions avec son contenu
-        form = AjoutEntrepriseConseillerForm()
-        from django.template.loader import render_to_string
-
-        champ_fonctions_content = render_to_string(
-            "snippets/field.html", {"field": form["fonctions"]}, request=request
-        )
-        champ_fonctions_html = f'<div id="champ-fonctions" hx-swap-oob="true">{champ_fonctions_content}</div>'
-        bouton_html = '<button type="submit" class="fr-btn fr-mt-2w" id="btn-ajouter-entreprise" hx-swap-oob="true">Ajouter l\'entreprise</button>'
-    else:
-        champ_fonctions_html = (
-            '<div id="champ-fonctions" hx-swap-oob="true" style="display: none;"></div>'
-        )
-        bouton_html = '<button type="submit" class="fr-btn fr-mt-2w" id="btn-ajouter-entreprise" hx-swap-oob="true" style="display: none;">Ajouter l\'entreprise</button>'
-
-    return f"{champ_fonctions_html}\n{bouton_html}"
-
-
-@login_required()
-def verifier_statut_entreprise(request):
-    """Retourne un fragment HTML indiquant si l'email propriétaire est requis.
-
-    Endpoint HTMX appelé dynamiquement lors de la saisie du SIREN.
-    """
-    if not request.user.is_conseiller_rse:
-        statut_html = render(
-            request, "users/fragments/statut_entreprise.html", {"statut": "inconnu"}
-        ).content.decode()
-        oob_html = _generer_fragments_oob_formulaire(request, afficher_champs=False)
-        return HttpResponse(f"{statut_html}\n{oob_html}")
-
-    siren = request.GET.get("siren", "").strip()
-
-    if not siren or len(siren) != 9:
-        statut_html = render(
-            request,
-            "users/fragments/statut_entreprise.html",
-            {"statut": "inconnu"},
-        ).content.decode()
-        oob_html = _generer_fragments_oob_formulaire(request, afficher_champs=False)
-        return HttpResponse(f"{statut_html}\n{oob_html}")
-
-    try:
-        entreprise = Entreprise.objects.get(siren=siren)
-
-        # Vérifier si le conseiller est déjà rattaché
-        if Habilitation.existe(entreprise, request.user):
-            statut_html = render(
-                request,
-                "users/fragments/statut_entreprise.html",
-                {
-                    "statut": "deja_rattache",
-                    "entreprise": entreprise,
-                },
-            ).content.decode()
-            oob_html = _generer_fragments_oob_formulaire(request, afficher_champs=False)
-            return HttpResponse(f"{statut_html}\n{oob_html}")
-
-        if entreprise.a_proprietaire_non_conseiller:
-            statut_html = render(
-                request,
-                "users/fragments/statut_entreprise.html",
-                {
-                    "statut": "avec_proprietaire",
-                    "entreprise": entreprise,
-                },
-            ).content.decode()
-            oob_html = _generer_fragments_oob_formulaire(request, afficher_champs=True)
-            return HttpResponse(f"{statut_html}\n{oob_html}")
-        else:
-            statut_html = render(
-                request,
-                "users/fragments/statut_entreprise.html",
-                {
-                    "statut": "sans_proprietaire",
-                    "entreprise": entreprise,
-                    "form": AjoutEntrepriseConseillerForm(),
-                },
-            ).content.decode()
-            oob_html = _generer_fragments_oob_formulaire(request, afficher_champs=True)
-            return HttpResponse(f"{statut_html}\n{oob_html}")
-    except Entreprise.DoesNotExist:
-        statut_html = render(
-            request,
-            "users/fragments/statut_entreprise.html",
-            {
-                "statut": "a_creer",
-                "siren": siren,
-                "form": AjoutEntrepriseConseillerForm(),
-            },
-        ).content.decode()
-        oob_html = _generer_fragments_oob_formulaire(request, afficher_champs=True)
-        return HttpResponse(f"{statut_html}\n{oob_html}")
-
-
 @login_required()
 def preremplissage_siren_conseiller(request):
     """Preremplissage SIREN pour conseillers avec mise à jour OOB du statut."""
@@ -647,7 +541,6 @@ def preremplissage_siren_conseiller(request):
 
     # Générer le fragment de statut
     statut_context = {"statut": "inconnu"}
-    afficher_champs = False  # Par défaut, masquer les champs
 
     if siren and len(siren) == 9:
         try:
@@ -659,27 +552,23 @@ def preremplissage_siren_conseiller(request):
                     "statut": "deja_rattache",
                     "entreprise": entreprise,
                 }
-                afficher_champs = False
             elif entreprise.a_proprietaire_non_conseiller:
                 statut_context = {
                     "statut": "avec_proprietaire",
                     "entreprise": entreprise,
                 }
-                afficher_champs = True
             else:
                 statut_context = {
                     "statut": "sans_proprietaire",
                     "entreprise": entreprise,
                     "form": AjoutEntrepriseConseillerForm(),
                 }
-                afficher_champs = True
         except Entreprise.DoesNotExist:
             statut_context = {
                 "statut": "a_creer",
                 "siren": siren,
                 "form": AjoutEntrepriseConseillerForm(),
             }
-            afficher_champs = True
 
     statut_html = render(
         request,
@@ -687,12 +576,9 @@ def preremplissage_siren_conseiller(request):
         statut_context,
     ).content.decode()
 
-    # Générer les fragments OOB pour afficher/masquer les champs
-    oob_champs = _generer_fragments_oob_formulaire(request, afficher_champs)
-
     # Combiner tous les fragments avec OOB swap
     oob_statut = f'<div id="statut-entreprise-container" hx-swap-oob="innerHTML">{statut_html}</div>'
-    response_html = f"{siren_html}\n{oob_statut}\n{oob_champs}"
+    response_html = f"{siren_html}\n{oob_statut}\n"
 
     return HttpResponse(response_html)
 
