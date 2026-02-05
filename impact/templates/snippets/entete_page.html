@@ -79,16 +79,14 @@
                             </button>
                             <div class="fr-collapse fr-menu" id="menu-1">
                                 <ul class="fr-menu__list">
-                                    {% for entreprise in user.entreprises %}
-                                        {% absolute_url 'reglementations:tableau_de_bord' entreprise.siren as url_page %}
+                                    {% for habilitation in user.habilitation_set.all %}
+                                        {% absolute_url 'reglementations:tableau_de_bord' habilitation.entreprise.siren as url_page %}
                                         <li>
                                             <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>
-                                                {{ entreprise.denomination }}
+                                                {{ habilitation.entreprise.denomination }}
                                                 {% if user.is_conseiller_rse %}
-                                                    {% if entreprise.est_structure_vacante %}
-                                                        <span class="fr-badge fr-badge--sm fr-badge--warning fr-badge--no-icon">Sans propriétaire</span>
-                                                    {% else %}
-                                                        <span class="fr-badge fr-badge--sm fr-badge--success fr-badge--no-icon">Active</span>
+                                                    {% if habilitation.is_conseiller_rse %}
+                                                        <span class="fr-badge fr-badge--sm fr-badge--no-icon">accompagnée</span>
                                                     {% endif %}
                                                 {% endif %}
                                             </a>

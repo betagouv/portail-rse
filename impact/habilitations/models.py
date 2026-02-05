@@ -59,6 +59,10 @@ class Habilitation(TimestampedModel):
         default=UserRole.PROPRIETAIRE,
         verbose_name="rôle",
     )
+    is_conseiller_rse = models.BooleanField(
+        default=False,
+        verbose_name="conseiller RSE",
+    )
 
     # TODO: isoler les utilisations
     fonctions = models.CharField(
@@ -154,9 +158,15 @@ class Habilitation(TimestampedModel):
         utilisateur,
         role=UserRole.PROPRIETAIRE,
         fonctions=None,
+        is_conseiller_rse=False,
         invitation=None,
     ):
-        h = cls(user=utilisateur, entreprise=entreprise, role=role)
+        h = cls(
+            user=utilisateur,
+            entreprise=entreprise,
+            role=role,
+            is_conseiller_rse=is_conseiller_rse,
+        )
         if fonctions:
             h.fonctions = fonctions
         if invitation:

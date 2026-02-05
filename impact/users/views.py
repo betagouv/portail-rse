@@ -466,6 +466,7 @@ def tableau_de_bord_conseiller(request):
                             request.user,
                             UserRole.PROPRIETAIRE,
                             fonctions=form.cleaned_data.get("fonctions"),
+                            is_conseiller_rse=True,
                         )
                         _creer_invitation_proprietaire(
                             request, entreprise, email_proprietaire
@@ -485,6 +486,7 @@ def tableau_de_bord_conseiller(request):
                         request.user,
                         UserRole.PROPRIETAIRE,
                         fonctions=form.cleaned_data.get("fonctions"),
+                        is_conseiller_rse=True,
                     )
                     _creer_invitation_proprietaire(
                         request, entreprise, email_proprietaire
