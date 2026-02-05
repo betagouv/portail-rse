@@ -32,7 +32,7 @@
                             {% include 'snippets/field.html' with field=account_form.reception_actualites %}
                         </div>
                     </fieldset>
-                    <button type="submit" class="fr-btn" name="action" value="update-account">Modifier mon compte</button>
+                    <button type="submit" class="fr-btn fr-icon-pencil-line fr-btn--icon-left" name="action" value="update-account">Modifier mon compte</button>
                 </form>
                 {% if not proconnect %}
                     <form action="{% url 'users:account' %}" method="post" class="fr-mt-4w">
@@ -48,7 +48,7 @@
                                 </div>
                             </fieldset>
                         </div>
-                        <button type="submit" class="fr-btn" name="action" value="update-password">Modifier mon mot de passe</button>
+                        <button type="submit" class="fr-btn fr-icon-pencil-line fr-btn--icon-left" name="action" value="update-password">Modifier mon mot de passe</button>
                     </form>
                 {% else %}
                     <h2 class="fr-h6 fr-mt-4w">Mot de passe</h2>
