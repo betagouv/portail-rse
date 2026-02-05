@@ -98,6 +98,7 @@ def test_rattachement_entreprise_inexistante(client, conseiller_rse):
     assert Habilitation.existe(entreprise, conseiller_rse)
     habilitation = Habilitation.pour(entreprise, conseiller_rse)
     assert habilitation.role == UserRole.PROPRIETAIRE
+    assert habilitation.is_conseiller_rse
     assert habilitation.fonctions == "Consultant CSRD"
     invitation = Invitation.objects.get(
         entreprise=entreprise, email="futur@proprietaire.test"
@@ -127,6 +128,7 @@ def test_rattachement_entreprise_sans_proprietaire(
     assert Habilitation.existe(entreprise, conseiller_rse)
     habilitation = Habilitation.pour(entreprise, conseiller_rse)
     assert habilitation.role == UserRole.PROPRIETAIRE
+    assert habilitation.is_conseiller_rse
     assert habilitation.fonctions == "Consultant CSRD"
     invitation = Invitation.objects.get(
         entreprise=entreprise, email="futur@proprietaire.test"
