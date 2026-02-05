@@ -101,9 +101,11 @@
                     {% else %}
                         <li class="fr-nav__item"><a class="fr-nav__link" href="{% absolute_url 'reglementations:tableau_de_bord' %}">Tableau de bord</a></li>
                     {% endif %}
-                    <li class="fr-nav__item">
-                        <a class="fr-nav__link" href="{{ sites_faciles_base_url }}/les-ressources" target="_self">Ressources</a>
-                    </li>
+                    {% if user.is_conseiller_rse %}
+                        <li class="fr-nav__item">
+                            <a class="fr-nav__link" href="{{ sites_faciles_base_url }}/ressources-conseillers-rse/" target="_self">Ressources</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </nav>
         {% endif %}

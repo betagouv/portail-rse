@@ -159,7 +159,7 @@ class ChoixTypeUtilisateurForm(DsfrForm, forms.Form):
 
 
 class AjoutEntrepriseConseillerForm(DsfrForm, PreremplissageSirenForm):
-    """Formulaire unifié pour qu'un conseiller RSE ajoute une entreprise en gestion.
+    """Formulaire unifié pour qu'un conseiller RSE ajoute une entreprise accompagnée.
 
     Gère tous les cas :
     - Entreprise existante avec propriétaire : pas de rattachement
