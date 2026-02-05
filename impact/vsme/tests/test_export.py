@@ -1,3 +1,4 @@
+from decimal import Decimal
 from io import BytesIO
 
 from django.urls import reverse
@@ -789,6 +790,24 @@ def test_telechargement_d_un_rapport_vsme_C1_absent_si_choix_module_base(
     response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
     workbook = load_workbook(filename=BytesIO(response.content))
     assert "C1" not in workbook.sheetnames
+
+
+def test_telechargement_d_un_rapport_vsme_C5(client, rapport_vsme, alice):
+    rapport_vsme.indicateurs.create(
+        schema_id="C5-59",
+        data={
+            "nombre_hommes_parmi_encadrement": Decimal("10.0"),
+            "nombre_femmes_parmi_encadrement": Decimal("1.5"),
+        },
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook["C5"]
+    assert onglet["A4"].value == 10
+    assert onglet["B4"].value == 1.5
+    assert onglet["C4"].value == 0.15  # ratio femmes/hommes calculé automatiquement
 
 
 def test_telechargement_d_un_rapport_vsme_C6(client, rapport_vsme, alice):
