@@ -44,7 +44,7 @@ def test_acces_autorise_conseiller(client, conseiller_rse):
     response = client.get(reverse("users:tableau_de_bord_conseiller"))
 
     assert response.status_code == 200
-    assert "Ajouter une entreprise en gestion" in response.content.decode()
+    assert "Accompagner cette entreprise" in response.content.decode()
 
 
 # Tests du formulaire unifie : CAS 1a - Entreprise existante avec proprietaire
