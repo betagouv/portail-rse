@@ -12,7 +12,7 @@ class Utilisateur(models.Model):
     connecte_le = models.DateField(null=True)
     reception_actualites = models.BooleanField()
     email_confirme = models.BooleanField()
-    conseiller_rse = models.BooleanField()
+    conseiller_rse = models.BooleanField(null=True)
 
     nombre_entreprises = models.IntegerField()
 

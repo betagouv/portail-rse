@@ -75,7 +75,8 @@ class User(AbstractBaseUser, TimestampedModel):
 
     is_conseiller_rse = models.BooleanField(
         verbose_name="est conseiller RSE",
-        default=False,
+        null=True,
+        blank=True,
         help_text="Indique si l'utilisateur est un conseiller RSE externe",
     )
 
