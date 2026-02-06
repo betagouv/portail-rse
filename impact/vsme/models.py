@@ -228,7 +228,11 @@ EXIGENCES_DE_PUBLICATION = {
         remplissable=True,
     ),
     "C7": ExigenceDePublication(
-        "C7", "Incidents graves en matière de droits de l’homme", Categorie.SOCIAL
+        "C7",
+        "Incidents graves en matière de droits de l’homme",
+        Categorie.SOCIAL,
+        "https://portail-rse.beta.gouv.fr/vsme/c7-incidents-graves-en-mati%C3%A8re-de-droits-de-lhomme/",
+        remplissable=True,
     ),
     "C8": ExigenceDePublication(
         "C8",
