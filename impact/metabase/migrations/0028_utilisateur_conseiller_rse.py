@@ -13,7 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="utilisateur",
             name="conseiller_rse",
-            field=models.BooleanField(default=False),
+            field=models.BooleanField(null=True),
             preserve_default=False,
         ),
     ]

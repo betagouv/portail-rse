@@ -269,7 +269,7 @@ class Entreprise(TimestampedModel):
         """
         return self.habilitation_set.filter(
             role="proprietaire",
-            user__is_conseiller_rse=False,
+            is_conseiller_rse=False,
         ).exists()
 
     @property

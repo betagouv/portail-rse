@@ -14,8 +14,9 @@ class Migration(migrations.Migration):
             model_name="user",
             name="is_conseiller_rse",
             field=models.BooleanField(
-                default=False,
+                blank=True,
                 help_text="Indique si l'utilisateur est un conseiller RSE externe",
+                null=True,
                 verbose_name="est conseiller RSE",
             ),
         ),
