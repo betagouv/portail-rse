@@ -228,6 +228,7 @@ class Command(BaseCommand):
                 connecte_le=utilisateur.last_login,
                 reception_actualites=utilisateur.reception_actualites,
                 email_confirme=utilisateur.is_email_confirmed,
+                conseiller_rse=utilisateur.is_conseiller_rse,
                 nombre_entreprises=utilisateur.nombre_entreprises,
             )
             bulk.append(mb_utilisateur)

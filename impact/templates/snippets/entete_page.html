@@ -67,6 +67,10 @@
                     </li>
                 </ul>
                 <ul class="fr-nav__list">
+                    {% if user.is_conseiller_rse %}
+                        {% absolute_url 'users:tableau_de_bord_conseiller' as url_conseiller %}
+                        <li class="fr-nav__item"><a class="fr-nav__link" href="{{ url_conseiller }}" target="_self"{% if request.path == url_conseiller %} aria-current="page"{% endif %}>Espace conseillers RSE</a></li>
+                    {% endif %}
                     {% if user.entreprise_set.count >= 2 %}
                         <li class="fr-nav__item">
                             {% absolute_url 'reglementations:tableau_de_bord' current_entreprise.siren as url_page %}
@@ -75,9 +79,18 @@
                             </button>
                             <div class="fr-collapse fr-menu" id="menu-1">
                                 <ul class="fr-menu__list">
-                                    {% for entreprise in user.entreprises %}
-                                        {% absolute_url 'reglementations:tableau_de_bord' entreprise.siren as url_page %}
-                                        <li><a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>{{ entreprise.denomination }}</a></li>
+                                    {% for habilitation in user.habilitation_set.all %}
+                                        {% absolute_url 'reglementations:tableau_de_bord' habilitation.entreprise.siren as url_page %}
+                                        <li>
+                                            <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>
+                                                {{ habilitation.entreprise.denomination }}
+                                                {% if user.is_conseiller_rse %}
+                                                    {% if habilitation.is_conseiller_rse %}
+                                                        <span class="fr-badge fr-badge--sm fr-badge--no-icon">accompagnée</span>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </a>
+                                        </li>
                                     {% endfor %}
                                 </ul>
                             </div>
@@ -88,9 +101,11 @@
                     {% else %}
                         <li class="fr-nav__item"><a class="fr-nav__link" href="{% absolute_url 'reglementations:tableau_de_bord' %}">Tableau de bord</a></li>
                     {% endif %}
-                    <li class="fr-nav__item">
-                        <a class="fr-nav__link" href="{{ sites_faciles_base_url }}/les-ressources" target="_self">Ressources</a>
-                    </li>
+                    {% if user.is_conseiller_rse %}
+                        <li class="fr-nav__item">
+                            <a class="fr-nav__link" href="{{ sites_faciles_base_url }}/sensibiliser-vos-clients-%C3%A0-la-rse/" target="_self">Ressources</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </nav>
         {% endif %}

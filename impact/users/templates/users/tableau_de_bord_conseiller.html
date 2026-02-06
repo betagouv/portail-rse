@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Espace Conseiller RSE - Portail RSE{% endblock %}
+
+{% block content %}
+    <div class="fr-container fr-my-4w">
+        <!-- Section 1 : En-tête avec navigation -->
+        <div class="fr-grid-row fr-mb-2w">
+            <div class="fr-col-12">
+                <h1>Espace Conseiller RSE</h1>
+                <p class="fr-text--lead">
+                    Gérez vos missions d'accompagnement RSE depuis cet espace dédié.
+                </p>
+            </div>
+        </div>
+
+
+        <!-- Section 2 : Tuiles d'accès rapide (placeholders) -->
+        <div class="fr-grid-row fr-grid-row--gutters fr-mb-6w">
+            <div class="fr-col-12 fr-col-md-4">
+                <div class="fr-tile fr-enlarge-link">
+                    <div class="fr-tile__body">
+                        <div class="fr-tile__content" style="text-align: left;">
+                            <h3 class="fr-tile__title">
+                                <a href="{% url 'simulation' %}">Comprendre le contexte RSE de l'entreprise</a>
+                            </h3>
+                            <p class="fr-tile__desc">En quelques clics, identifiez les principales obligations réglementaires et les attentes économiques qui s'appliquent à chaque entreprise, afin de poser un diagnostic RSE clair et priorisé.</p>
+                        </div>
+                    </div>
+                    <div class="fr-tile__header">
+                        <div class="fr-card__img">
+                            <img class="fr-responsive-img fr-ratio-3x2" src="{% static 'img/simulation.png' %}" alt="Simulation" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="fr-col-12 fr-col-md-4">
+                <div class="fr-tile fr-enlarge-link">
+                    <div class="fr-tile__body">
+                        <div class="fr-tile__content" style="text-align: left;">
+                            <h3 class="fr-tile__title">
+                                <a href="#ajouter_entreprise">Lancer l'accompagnement d'une entreprise</a>
+                            </h3>
+                            <p class="fr-tile__desc">Démarrez l'accompagnement en créant le profil de l'entreprise sur le Portail RSE afin de structurer les premières étapes de sa démarche de durabilité.</p>
+                        </div>
+                    </div>
+                    <div class="fr-tile__header">
+                        <div class="fr-card__img">
+                            <img class="fr-responsive-img fr-ratio-3x2" src="{% static 'img/dashboard.png' %}" alt="" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="fr-col-12 fr-col-md-4">
+                <div class="fr-tile fr-enlarge-link">
+                    <div class="fr-tile__body">
+                        <div class="fr-tile__content" style="text-align: left;">
+                            <h3 class="fr-tile__title">
+                                <a href="#mes_entreprises">Piloter les démarches de durabilité</a>
+                            </h3>
+                            <p class="fr-tile__desc">Suivez l'avancement des démarches RSE de vos entreprises, centralisez les informations clés et accompagnez-les dans la durée grâce à une vision consolidée.</p>
+                        </div>
+                    </div>
+                    <div class="fr-tile__header">
+                        <div class="fr-card__img">
+                            <img class="fr-responsive-img fr-ratio-3x2" src="{% static 'img/equilibre.png' %}" alt="" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 3 : Résumé des entreprises accompagnées -->
+        <div class="fr-grid-row fr-mb-2w" id="mes_entreprises">
+            <div class="fr-col-12">
+                <h2>Mes entreprises accompagnées</h2>
+                {% if habilitations_enrichies %}
+                    <div class="fr-table--sm fr-table fr-table">
+                        <div class="fr-table__wrapper">
+                            <div class="fr-table__container">
+                                <div class="fr-table__content">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Dénomination</th>
+                                                <th scope="col">SIREN</th>
+                                                <th scope="col">Informations</th>
+                                                <th scope="col">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for item in habilitations_enrichies %}
+                                                <tr>
+                                                    <td>{{ item.entreprise.denomination }}</td>
+                                                    <td>{{ item.entreprise.siren }}</td>
+                                                    <td>
+                                                        <span class="fr-text--sm">
+                                                            {% with pluriel=item.nombre_reglementations|pluralize %}
+                                                                Réglementation{{ pluriel }} applicable{{ pluriel }}&nbsp;: <strong>{{ item.nombre_reglementations }}</strong>
+                                                            {% endwith %}
+                                                        </span>
+                                                        <span class="fr-mx-1w fr-text--sm">|</span>
+                                                        <span class="fr-text--sm">
+                                                            Progression VSME&nbsp;: <strong>{{ item.pourcentage_vsme }}%</strong>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <a href="{% url 'reglementations:tableau_de_bord' item.entreprise.siren %}" class="fr-btn fr-btn--sm fr-icon-arrow-right-line fr-btn--icon-left">
+                                                            Accéder au tableau de bord
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="fr-callout fr-icon-information-line">
+                        <p class="fr-callout__text">
+                            Vous n'êtes rattaché à aucune entreprise pour le moment.
+                            Utilisez le formulaire ci-dessous pour ajouter une entreprise en gestion.
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Section 4 : Formulaire unifié d'ajout d'entreprise -->
+        <div class="fr-grid-row" id="ajouter_entreprise">
+            <div class="fr-col-12 fr-col-md-8">
+                <h2>Accompagner une nouvelle entreprise</h2>
+                <p>Recherchez une entreprise par son SIREN pour vous y rattacher.</p>
+
+                <form method="post" action="{% url 'users:tableau_de_bord_conseiller' %}">
+                    {% csrf_token %}
+
+                    {% include 'users/fragments/siren_field_conseiller.html' %}
+
+                    <fieldset class="fr-fieldset" aria-label="Modification des informations personnelles">
+
+                    <!-- Zone dynamique HTMX pour le statut de l'entreprise -->
+                        <div id="statut-entreprise-container" class="fr-fieldset__element">
+                            {% if statut %}
+                                {% include 'users/fragments/statut_entreprise.html' %}
+                            {% endif %}
+                        </div>
+
+                        <div id="champ-fonctions" class="fr-fieldset__element">
+                            {% include 'snippets/field.html' with field=form.fonctions %}
+                        </div>
+
+                        <div class="fr-fieldset__element">
+                            {% include 'snippets/field.html' with field=form.email_futur_proprietaire %}
+                        </div>
+                    </fieldset>
+
+                    <button type="submit" class="fr-btn fr-mt-2w" id="btn-ajouter-entreprise">
+                        Accompagner cette entreprise
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Réinitialiser le statut quand le champ de recherche est vidé
+    // Utilise la délégation d'événements pour fonctionner après les swaps HTMX
+        document.addEventListener('input', function(event) {
+            if (event.target && event.target.id === 'id_recherche') {
+                if (event.target.value.trim() === '') {
+                // Appeler le préremplissage avec des valeurs vides pour réinitialiser
+                    htmx.ajax('GET', '{% url "users:preremplissage_siren_conseiller" %}?siren=&denomination=', {
+                        target: '#htmx-preremplissage-target',
+                        swap: 'outerHTML'
+                    });
+                }
+            }
+        });
+    </script>
+{% endblock %}

@@ -9,10 +9,13 @@ from django.contrib.auth.views import (
 from django.contrib.auth.views import PasswordResetView as BasePasswordResetView
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailMessage
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
 
+from .forms import AjoutEntrepriseConseillerForm
+from .forms import ChoixTypeUtilisateurForm
 from .forms import UserCreationForm
 from .forms import UserEditionForm
 from .forms import UserInvitationForm
@@ -20,9 +23,12 @@ from .forms import UserPasswordForm
 from .models import User
 from api.exceptions import APIError
 from entreprises.models import Entreprise
+from habilitations.enums import UserRole
 from habilitations.models import Habilitation
+from habilitations.models import HabilitationError
 from invitations.models import Invitation
 from logs import event_logger as logger
+from reglementations.views import calculer_metriques_entreprise
 from users.forms import message_erreur_proprietaires
 from utils.tokens import check_token
 from utils.tokens import make_token
@@ -162,6 +168,83 @@ def invitation(request, id_invitation, code):
     )
 
 
+def invitation_proprietaire_tiers(request, id_invitation, code):
+    """Landing page pour invitation propriétaire par conseiller RSE.
+
+    Valide l'invitation puis redirige vers ProConnect.
+    L'invitation est stockée en session pour être récupérée après authentification.
+    """
+    try:
+        invitation = Invitation.objects.get(id=id_invitation)
+    except Invitation.DoesNotExist:
+        messages.error(request, "Cette invitation n'existe pas.")
+        return redirect(reverse("erreur_terminale"))
+
+    if invitation.est_expiree:
+        messages.error(
+            request,
+            "L'invitation est expirée. Veuillez contacter le conseiller RSE qui a créé cette invitation.",
+        )
+        return redirect(reverse("erreur_terminale"))
+
+    if not check_token(invitation, "invitation_proprietaire_tiers", code):
+        messages.error(request, "Ce lien d'invitation est invalide.")
+        return redirect(reverse("erreur_terminale"))
+
+    if invitation.date_acceptation:
+        messages.warning(request, "Cette invitation a déjà été acceptée.")
+        return redirect("reglementations:tableau_de_bord", invitation.entreprise.siren)
+
+    # Si utilisateur déjà connecté via ProConnect
+    if request.user.is_authenticated:
+        if invitation.email != request.user.email:
+            messages.error(
+                request, "Cette invitation ne correspond pas à votre adresse e-mail."
+            )
+            return redirect(reverse("erreur_terminale"))
+        # Rediriger vers acceptation directe
+        return redirect("users:accepter_role_proprietaire", id_invitation, code)
+
+    # Stocker contexte en session et rediriger vers ProConnect
+    request.session["pending_invitation_proprietaire"] = {
+        "id": invitation.id,
+        "code": code,
+        "email": invitation.email,
+        "entreprise_siren": invitation.entreprise.siren,
+    }
+    request.session["oidc_login_next"] = reverse(
+        "users:finaliser_invitation_proprietaire"
+    )
+    request.session.save()
+
+    return redirect("oidc_authentication_init")
+
+
+@login_required()
+def finaliser_invitation_proprietaire(request):
+    """Finalise l'invitation propriétaire après authentification ProConnect."""
+    pending = request.session.pop("pending_invitation_proprietaire", None)
+    if not pending:
+        messages.error(request, "Aucune invitation en attente.")
+        return redirect("reglementations:tableau_de_bord")
+
+    # Vérifier que l'email ProConnect correspond à l'invitation
+    if request.user.email != pending["email"]:
+        messages.error(
+            request,
+            f"L'adresse e-mail de votre compte ProConnect ({request.user.email}) "
+            f"ne correspond pas à l'invitation ({pending['email']}).",
+        )
+        return redirect(reverse("erreur_terminale"))
+
+    # Rediriger vers page d'acceptation existante
+    return redirect(
+        "users:accepter_role_proprietaire",
+        pending["id"],
+        pending["code"],
+    )
+
+
 def deconnexion(request):
     """Déconnexion par méthode GET
 
@@ -253,3 +336,349 @@ class PasswordResetConfirmView(BasePasswordResetConfirmView):
         )
         messages.error(self.request, error_message)
         return response
+
+
+@login_required()
+def post_login_dispatch(request):
+    """Vue de dispatch après connexion (classique ou OIDC).
+
+    Redirige l'utilisateur vers la bonne page selon son profil :
+    - Si doit choisir son type → page de choix
+    - Si conseiller RSE sans entreprise → tableau de bord conseiller
+    - Sinon → tableau de bord entreprise (comportement par défaut)
+    """
+    # Si l'utilisateur doit choisir son type et ne l'a pas encore fait
+    if request.user.doit_choisir_type_utilisateur and not request.session.get(
+        "type_utilisateur_choisi"
+    ):
+        return redirect("users:choix_type_utilisateur")
+
+    # Si c'est un conseiller RSE, rediriger vers son tableau de bord
+    if request.user.is_conseiller_rse:
+        return redirect("users:tableau_de_bord_conseiller")
+
+    # Comportement par défaut : tableau de bord entreprise
+    return redirect("reglementations:tableau_de_bord")
+
+
+@login_required()
+def choix_type_utilisateur(request):
+    """Vue pour choisir entre conseiller RSE et membre d'entreprise.
+
+    Cette vue est affichée aux nouveaux utilisateurs connectés via ProConnect
+    qui n'ont pas encore d'habilitation sur une entreprise.
+    """
+    # Vérifier que l'utilisateur doit faire ce choix
+    if not request.user.doit_choisir_type_utilisateur:
+        return redirect("users:post_login_dispatch")
+
+    if request.method == "POST":
+        form = ChoixTypeUtilisateurForm(request.POST)
+        if form.is_valid():
+            type_choisi = form.cleaned_data["type_utilisateur"]
+
+            if type_choisi == ChoixTypeUtilisateurForm.TYPE_CONSEILLER_RSE:
+                request.user.is_conseiller_rse = True
+                request.user.save()
+                messages.success(
+                    request,
+                    "Vous êtes maintenant identifié comme conseiller RSE.",
+                )
+                return redirect("users:tableau_de_bord_conseiller")
+            else:
+                # Membre d'entreprise : marquer le choix fait et rediriger vers le dispatch
+                request.session["type_utilisateur_choisi"] = True
+                return redirect("users:post_login_dispatch")
+    else:
+        form = ChoixTypeUtilisateurForm()
+
+    return render(request, "users/choix_type_utilisateur.html", {"form": form})
+
+
+@login_required()
+def tableau_de_bord_conseiller(request):
+    """Tableau de bord pour les conseillers RSE.
+
+    Gère l'ajout d'entreprise avec logique unifiée :
+    - Entreprise existante avec propriétaire : refus attachement
+    - Entreprise existante sans propriétaire : rattachement + invitation propriétaire
+    - Entreprise inexistante : création + rattachement + invitation propriétaire
+    """
+    # Vérifier que l'utilisateur est bien un conseiller RSE
+    if not request.user.is_conseiller_rse:
+        messages.error(
+            request,
+            "Vous devez être identifié comme conseiller RSE pour accéder à cette page.",
+        )
+        return redirect("entreprises:entreprises")
+
+    # Récupérer les entreprises en gestion (avec habilitation EDITEUR)
+    habilitations = Habilitation.objects.filter(user=request.user).select_related(
+        "entreprise"
+    )
+
+    # Enrichir chaque habilitation avec les metriques
+    habilitations_enrichies = []
+    for habilitation in habilitations:
+        metriques = calculer_metriques_entreprise(habilitation.entreprise)
+        habilitations_enrichies.append(
+            {
+                "habilitation": habilitation,
+                "entreprise": habilitation.entreprise,
+                "nombre_reglementations": metriques[
+                    "nombre_reglementations_applicables"
+                ],
+                "pourcentage_vsme": metriques["pourcentage_vsme"],
+            }
+        )
+
+    if request.method == "POST":
+        form = AjoutEntrepriseConseillerForm(request.POST)
+        if form.is_valid():
+            try:
+                siren = form.cleaned_data["siren"]
+                email_proprietaire = form.cleaned_data.get("email_futur_proprietaire")
+
+                # CAS 1 : Entreprise existe
+                if Entreprise.objects.filter(siren=siren).exists():
+                    entreprise = Entreprise.objects.get(siren=siren)
+
+                    # Vérifier si le conseiller n'est pas déjà rattaché
+                    if Habilitation.existe(entreprise, request.user):
+                        messages.warning(
+                            request,
+                            f"Vous êtes déjà rattaché à l'entreprise {entreprise.denomination}.",
+                        )
+                        return redirect("users:tableau_de_bord_conseiller")
+
+                    # CAS 1a : A un propriétaire → pas de rattachement
+                    if entreprise.proprietaires:
+                        messages.error(
+                            request,
+                            f"Vous n'avez pas été rattaché à l'entreprise {entreprise.denomination} car un compte y est déjà attachée. Demandez à votre client de vous inviter sur l'entreprise.",
+                        )
+                        return redirect("users:tableau_de_bord_conseiller")
+
+                    # CAS 1b : Pas de propriétaire → rattachement + invitation
+                    else:
+                        Habilitation.ajouter(
+                            entreprise,
+                            request.user,
+                            UserRole.PROPRIETAIRE,
+                            fonctions=form.cleaned_data.get("fonctions"),
+                            is_conseiller_rse=True,
+                        )
+                        _creer_invitation_proprietaire(
+                            request, entreprise, email_proprietaire
+                        )
+                        messages.success(
+                            request,
+                            f"Vous avez été rattaché à l'entreprise {entreprise.denomination}. "
+                            f"Une invitation a été envoyée à {email_proprietaire} pour devenir propriétaire.",
+                        )
+                        return redirect("users:tableau_de_bord_conseiller")
+
+                # CAS 2 : Entreprise n'existe pas → création + rattachement + invitation
+                else:
+                    entreprise = Entreprise.search_and_create_entreprise(siren)
+                    Habilitation.ajouter(
+                        entreprise,
+                        request.user,
+                        UserRole.PROPRIETAIRE,
+                        fonctions=form.cleaned_data.get("fonctions"),
+                        is_conseiller_rse=True,
+                    )
+                    _creer_invitation_proprietaire(
+                        request, entreprise, email_proprietaire
+                    )
+                    messages.success(
+                        request,
+                        f"L'entreprise {entreprise.denomination} a été créée. "
+                        f"Une invitation a été envoyée à {email_proprietaire} pour devenir propriétaire.",
+                    )
+                    return redirect("users:tableau_de_bord_conseiller")
+
+            except APIError as exception:
+                messages.error(request, str(exception))
+            except HabilitationError as exception:
+                messages.error(request, str(exception))
+    else:
+        form = AjoutEntrepriseConseillerForm()
+
+    return render(
+        request,
+        "users/tableau_de_bord_conseiller.html",
+        {"habilitations_enrichies": habilitations_enrichies, "form": form},
+    )
+
+
+def _creer_invitation_proprietaire(request, entreprise, email_proprietaire):
+    """Crée une invitation propriétaire et envoie l'email."""
+    invitation = Invitation.objects.create(
+        entreprise=entreprise,
+        email=email_proprietaire,
+        role=UserRole.PROPRIETAIRE,
+        inviteur=request.user,
+        est_invitation_proprietaire_tiers=True,
+    )
+    _envoie_email_invitation_proprietaire_tiers(request, invitation)
+    return invitation
+
+
+@login_required()
+def preremplissage_siren_conseiller(request):
+    """Preremplissage SIREN pour conseillers avec mise à jour OOB du statut."""
+    from entreprises.forms import PreremplissageSirenForm
+
+    siren = request.GET.get("siren", "").strip()
+    denomination = request.GET.get("denomination", "")
+
+    # Générer le fragment du champ SIREN (template spécifique conseiller)
+    form = PreremplissageSirenForm({"siren": siren, "denomination": denomination})
+    siren_html = render(
+        request,
+        "users/fragments/siren_field_conseiller.html",
+        {"form": form},
+    ).content.decode()
+
+    # Générer le fragment de statut
+    statut_context = {"statut": "inconnu"}
+
+    if siren and len(siren) == 9:
+        try:
+            entreprise = Entreprise.objects.get(siren=siren)
+
+            # Vérifier si le conseiller est déjà rattaché
+            if Habilitation.existe(entreprise, request.user):
+                statut_context = {
+                    "statut": "deja_rattache",
+                    "entreprise": entreprise,
+                }
+            elif entreprise.a_proprietaire_non_conseiller:
+                statut_context = {
+                    "statut": "avec_proprietaire",
+                    "entreprise": entreprise,
+                }
+            else:
+                statut_context = {
+                    "statut": "sans_proprietaire",
+                    "entreprise": entreprise,
+                    "form": AjoutEntrepriseConseillerForm(),
+                }
+        except Entreprise.DoesNotExist:
+            statut_context = {
+                "statut": "a_creer",
+                "siren": siren,
+                "form": AjoutEntrepriseConseillerForm(),
+            }
+
+    statut_html = render(
+        request,
+        "users/fragments/statut_entreprise.html",
+        statut_context,
+    ).content.decode()
+
+    # Combiner tous les fragments avec OOB swap
+    oob_statut = f'<div id="statut-entreprise-container" hx-swap-oob="innerHTML">{statut_html}</div>'
+    response_html = f"{siren_html}\n{oob_statut}\n"
+
+    return HttpResponse(response_html)
+
+
+def _envoie_email_invitation_proprietaire_tiers(request, invitation):
+    """Envoie un email d'invitation au futur propriétaire.
+
+    Utilise le même template que les invitations standard (BREVO_INVITATION_TEMPLATE)
+    avec les mêmes variables pour une cohérence des emails.
+    """
+    email = EmailMessage(
+        to=[invitation.email],
+        from_email=settings.DEFAULT_FROM_EMAIL,
+    )
+
+    # Utiliser le template d'invitation standard
+    email.template_id = settings.BREVO_INVITATION_TEMPLATE
+
+    # Vérifier si l'utilisateur existe déjà
+    utilisateur_existe = User.objects.filter(email=invitation.email).exists()
+
+    if utilisateur_existe:
+        # Email pour utilisateur existant → page d'acceptation du rôle
+        code = make_token(invitation, "invitation_proprietaire")
+        path = reverse(
+            "users:accepter_role_proprietaire",
+            args=[invitation.id, code],
+        )
+    else:
+        # Nouvel utilisateur → landing ProConnect
+        code = make_token(invitation, "invitation_proprietaire_tiers")
+        path = reverse(
+            "users:invitation_proprietaire_tiers", args=[invitation.id, code]
+        )
+
+    inviteur_nom = f"{invitation.inviteur.prenom} {invitation.inviteur.nom}".strip()
+    email.merge_global_data = {
+        "denomination_entreprise": invitation.entreprise.denomination,
+        "invitation_url": request.build_absolute_uri(path),
+        "inviteur": inviteur_nom or "Un conseiller RSE",
+        "role": UserRole(invitation.role).label,
+    }
+    return email.send()
+
+
+@login_required()
+def accepter_role_proprietaire(request, id_invitation, code):
+    """Permet à un utilisateur existant d'accepter le rôle de propriétaire."""
+    try:
+        invitation = Invitation.objects.get(id=id_invitation)
+    except Invitation.DoesNotExist:
+        messages.error(request, "Cette invitation n'existe pas.")
+        return redirect(reverse("erreur_terminale"))
+
+    if invitation.est_expiree:
+        messages.error(
+            request,
+            "L'invitation est expirée. Veuillez contacter le conseiller RSE qui a créé cette invitation.",
+        )
+        return redirect(reverse("erreur_terminale"))
+
+    # Accepter les deux types de tokens (existant et nouveau via ProConnect)
+    token_valide = check_token(
+        invitation, "invitation_proprietaire", code
+    ) or check_token(invitation, "invitation_proprietaire_tiers", code)
+    if not token_valide:
+        messages.error(request, "Ce lien d'invitation est invalide.")
+        return redirect(reverse("erreur_terminale"))
+
+    if invitation.email != request.user.email:
+        messages.error(
+            request,
+            "Cette invitation ne correspond pas à votre adresse e-mail.",
+        )
+        return redirect(reverse("erreur_terminale"))
+
+    if invitation.date_acceptation:
+        messages.warning(
+            request,
+            "Cette invitation a déjà été acceptée.",
+        )
+        return redirect("reglementations:tableau_de_bord", invitation.entreprise.siren)
+
+    if request.method == "POST":
+        try:
+            invitation.accepter(request.user)
+            messages.success(
+                request,
+                f"Vous êtes maintenant propriétaire de l'entreprise {invitation.entreprise.denomination}.",
+            )
+            return redirect(
+                "reglementations:tableau_de_bord", invitation.entreprise.siren
+            )
+        except HabilitationError as exception:
+            messages.error(request, str(exception))
+
+    return render(
+        request,
+        "users/accepter_role_proprietaire.html",
+        {"invitation": invitation},
+    )

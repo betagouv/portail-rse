@@ -1,11 +1,13 @@
 from unittest.mock import Mock
 
 import pytest
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 
 from habilitations.decorators import role
 from habilitations.enums import UserRole
 from habilitations.models import Habilitation
+
 
 # Exemple de vue pour les tests
 def example_view(_):
@@ -52,21 +54,24 @@ def test_role_lecteur(mock_request):
 
 # Test pour un utilisateur sans les droits nécessaires
 def test_role_forbidden(alice, entreprise_non_qualifiee):
+    # Utiliser Habilitation.ajouter() pour créer correctement la relation
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, UserRole.LECTEUR)
+
+    # Recharger alice pour avoir les relations à jour
+    from users.models import User
+
+    alice = User.objects.prefetch_related("entreprise_set", "habilitation_set").get(
+        pk=alice.pk
+    )
+
     mock_request = Mock()
     mock_request.user = alice
-    mock_request.session = {"entreprise": entreprise_non_qualifiee}
-    Habilitation(
-        user=alice, entreprise=entreprise_non_qualifiee, role=UserRole.LECTEUR
-    ).save()
+    mock_request.session = {"entreprise": entreprise_non_qualifiee.siren}
 
-    mock_request.user.role = UserRole.LECTEUR
     decorated_view = role(UserRole.PROPRIETAIRE)(example_view)
-    response = decorated_view(mock_request)
-    assert response.status_code == 403
-    assert (
-        response.content
-        == "L'utilisateur n'est pas rattaché à l'entreprise courante.".encode("utf-8")
-    )
+
+    with pytest.raises(PermissionDenied, match="L'utilisateur n'a pas le rôle requis"):
+        decorated_view(mock_request)
 
 
 # Test pour un utilisateur avec un rôle supérieur
