@@ -85,7 +85,6 @@
                                             <tr>
                                                 <th scope="col">Dénomination</th>
                                                 <th scope="col">SIREN</th>
-                                                <th scope="col">Propriétaires</th>
                                                 <th scope="col">Informations</th>
                                                 <th scope="col">Actions</th>
                                             </tr>
@@ -95,18 +94,6 @@
                                                 <tr>
                                                     <td>{{ item.entreprise.denomination }}</td>
                                                     <td>{{ item.entreprise.siren }}</td>
-                                                    <td>
-                                                        {% if item.entreprise.proprietaires.count > 1 %}
-                                                            <span class="fr-badge fr-badge--sm fr-badge--no-icon fr-badge--success"
-                                                                  title="Plusieurs propriétaires sur l'entreprise">{{ item.entreprise.proprietaires.count }}</span>
-                                                        {% elif item.habilitation.is_conseiller_rse %}
-                                                            <span class="fr-badge fr-badge--sm fr-badge--no-icon fr-badge--warning"
-                                                                  title="Un seul propriétaire qui est aussi le conseiller RSE de l'entreprise">{{ item.entreprise.proprietaires.count }}</span>
-                                                        {% else %}
-                                                            <span class="fr-badge fr-badge--sm fr-badge--no-icon"
-                                                                  title="Votre entreprise">{{ item.entreprise.proprietaires.count }}</span>
-                                                        {% endif %}
-                                                    </td>
                                                     <td>
                                                         <span class="fr-text--sm">
                                                             {% with pluriel=item.nombre_reglementations|pluralize %}
