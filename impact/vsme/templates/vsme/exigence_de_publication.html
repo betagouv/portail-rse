@@ -55,7 +55,7 @@
                                     <tbody>
                                         {% for indicateur in indicateurs %}
                                             <tr>
-                                                <td>{{ indicateur.titre }}</td>
+                                                <td class="fr-cell--multiline">{{ indicateur.titre }}</td>
                                                 <td>
                                                     {% if not indicateur.est_applicable %}
                                                         <p class="fr-badge fr-badge--brown-cafe-creme">NON APPLICABLE</p>

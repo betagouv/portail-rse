@@ -1,0 +1,59 @@
+{
+    "C7-62-ab": {
+        "titre": "Incidents graves en matière de droits de l’homme au sein du personnel",
+        "description": "Indiquer si l'entreprise a confirmé des incidents grave en matière de droits de l'homme au sein de son personnel et préciser les actions entreprises pour y répondre.",
+        "ancre": "incidents_droits_de_l_homme_internes",
+        "champs": [
+            {
+                "id": "incidents_travail_des_enfants_internes",
+                "label": "L’entreprise a-t-elle confirmé des incidents graves au sein de son personnel liés au travail des enfants ?",
+                "type": "choix_binaire_radio",
+                "obligatoire": true
+            },
+            {
+                "id": "incidents_travail_force_internes",
+                "label": "L’entreprise a-t-elle confirmé des incidents graves au sein de son personnel liés au travail forcé ?",
+                "type": "choix_binaire_radio",
+                "obligatoire": true
+            },
+            {
+                "id": "incidents_traite_des_etres_humains_internes",
+                "label": "L’entreprise a-t-elle confirmé des incidents graves au sein de son personnel liés à la traite des êtres humains ? ",
+                "type": "choix_binaire_radio",
+                "obligatoire": true
+            },
+            {
+                "id": "incidents_discrimination_internes",
+                "label": "L’entreprise a-t-elle confirmé des incidents graves au sein de son personnel liés à la discrimination ?",
+                "type": "choix_binaire_radio",
+                "obligatoire": true
+            },
+            {
+                "id": "autres_incidents_internes",
+                "label": "Autres thèmes concernant des indidents graves confirmés relatifs aux droits de l’homme",
+                "type": "texte"
+            },
+            {
+                "id": "actions_incidents_internes",
+                "label": "Description des actions mises en oeuvre pour gérer les indidents confirmés",
+                "type": "texte_long"
+            }
+        ],
+        "si_pertinent": "L'entreprise n'a pas confirmé d'incidents graves liés aux droits de l’homme au sein de son personnel"
+    },
+    "C7-62-c": {
+        "titre": "Incidents graves en matière de droits de l’homme dans la chaîne de valeur et auprès des parties prenantes externes",
+        "description": "Indiquer si l'entreprise a connaissance d’incidents graves confirmés en matière de droits de l’homme impliquant des travailleurs de la chaîne de valeur, des communautés affectées, des consommateurs et des utilisateurs finaux.",
+        "ancre": "incidents_droits_de_l_homme_externes",
+        "champs": [
+            {
+                "id": "incidents_droits_de_l_homme_externes",
+                "label": "Spécification des incidents",
+                "description": "Spécification de tout incident confirmé impliquant des travailleurs de la chaîne de valeur, des communautés affectées, des consommateurs ou des utilisateurs finaux",
+                "type": "texte_long",
+                "obligatoire": true
+            }
+        ],
+        "si_pertinent": "L'entreprise n'a pas connaissance d’incidents confirmés impliquant des travailleurs de la chaîne de valeur, des communautés affectées, des consommateurs ou des utilisateurs finaux"
+    }
+}
