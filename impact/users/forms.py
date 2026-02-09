@@ -168,9 +168,9 @@ class AjoutEntrepriseConseillerForm(DsfrForm, PreremplissageSirenForm):
     """
 
     email_futur_proprietaire = forms.EmailField(
-        label="Adresse e-mail du futur propriétaire",
+        label="Adresse e-mail du contact principal de l’entreprise accompagnée",
         required=True,
-        help_text="Cette personne recevra une invitation pour devenir propriétaire de l'entreprise.",
+        help_text="Une invitation lui sera envoyée afin qu’elle puisse accéder au tableau de bord de son entreprise.",
     )
     fonctions = forms.CharField(
         label="Fonction(s) dans l'accompagnement",
