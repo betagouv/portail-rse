@@ -13,17 +13,6 @@
                 <h1>Bienvenue, {{ user.prenom|capfirst }} !</h1>
                 <p>Prêt à faire progresser votre démarche RSE ?</p>
 
-                {% if entreprise.est_structure_vacante %}
-                    <div class="fr-callout fr-callout--orange-terre-battue fr-icon-warning-line fr-mb-4w">
-                        <h3 class="fr-callout__title">Structure en attente de propriétaire</h3>
-                        <p class="fr-callout__text">
-                            Cette entreprise n'a pas encore de propriétaire validé.
-                            Une invitation a été envoyée au futur propriétaire.
-                            En attendant sa validation, certaines fonctionnalités peuvent être limitées.
-                        </p>
-                    </div>
-                {% endif %}
-
                 <!-- Ligne 1 : 3 tuiles -->
                 <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
                     <!-- Tuile 1 : Réglementations applicables -->

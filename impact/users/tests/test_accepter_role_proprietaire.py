@@ -91,31 +91,6 @@ def test_acceptation_cree_habilitation_proprietaire(
 
 
 @pytest.mark.django_db
-def test_structure_plus_vacante_apres_acceptation(
-    client, futur_proprietaire, invitation_proprietaire_tiers
-):
-    """L'entreprise n'est plus vacante apres acceptation."""
-    entreprise = invitation_proprietaire_tiers.entreprise
-
-    # Verifier qu'elle est vacante avant
-    assert entreprise.est_structure_vacante is True
-
-    client.force_login(futur_proprietaire)
-    code = make_token(invitation_proprietaire_tiers, "invitation_proprietaire")
-
-    client.post(
-        reverse(
-            "users:accepter_role_proprietaire",
-            args=[invitation_proprietaire_tiers.id, code],
-        )
-    )
-
-    # Verifier qu'elle n'est plus vacante apres
-    entreprise.refresh_from_db()
-    assert entreprise.est_structure_vacante is False
-
-
-@pytest.mark.django_db
 def test_token_invalide_refuse(
     client, futur_proprietaire, invitation_proprietaire_tiers
 ):

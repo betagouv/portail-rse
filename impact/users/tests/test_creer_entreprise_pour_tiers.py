@@ -194,29 +194,6 @@ def test_creation_entreprise_reussie(
 
 
 @pytest.mark.django_db
-@patch("users.views.Entreprise.search_and_create_entreprise")
-@patch("users.views._envoie_email_invitation_proprietaire_tiers")
-def test_entreprise_est_structure_vacante_apres_creation(
-    mock_email, mock_search, client, conseiller_rse, entreprise_factory
-):
-    """L'entreprise creee est une structure vacante."""
-    entreprise = entreprise_factory(siren="222333444")
-    mock_search.return_value = entreprise
-
-    client.force_login(conseiller_rse)
-    client.post(
-        reverse("users:tableau_de_bord_conseiller"),
-        {
-            "siren": "222333444",
-            "email_futur_proprietaire": "futur@proprietaire.test",
-        },
-    )
-
-    entreprise.refresh_from_db()
-    assert entreprise.est_structure_vacante is True
-
-
-@pytest.mark.django_db
 def test_compte_les_proprietaires(
     client, conseiller_rse, alice, bob, entreprise_factory
 ):
