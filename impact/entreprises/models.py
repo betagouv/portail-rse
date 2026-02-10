@@ -278,30 +278,6 @@ class Entreprise(TimestampedModel):
             role="proprietaire",
         )
 
-    @property
-    def est_structure_vacante(self) -> bool:
-        """Vérifie si l'entreprise est une structure vacante.
-
-        Une structure est vacante si :
-        - Elle n'a pas de propriétaire non-conseiller validé
-        - Elle a au moins une invitation propriétaire tiers en attente (non expirée)
-        """
-        from invitations.models import Invitation
-
-        if self.a_proprietaire_non_conseiller:
-            return False
-
-        invitations_en_attente = Invitation.objects.filter(
-            entreprise=self,
-            role="proprietaire",
-            est_invitation_proprietaire_tiers=True,
-            date_acceptation__isnull=True,
-        )
-        for invitation in invitations_en_attente:
-            if not invitation.est_expiree:
-                return True
-        return False
-
     def caracteristiques_annuelles(self, annee):
         try:
             return CaracteristiquesAnnuelles.objects.get(
