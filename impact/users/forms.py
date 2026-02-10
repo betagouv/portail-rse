@@ -156,6 +156,11 @@ class ChoixTypeUtilisateurForm(DsfrForm, forms.Form):
         choices=TYPE_CHOICES,
         widget=forms.RadioSelect,
     )
+    fonction_rse = forms.ChoiceField(
+        label="Fonction(s) dans l'accompagnement",
+        choices=User._meta.get_field("fonction_rse").choices,
+        required=False,
+    )
 
 
 class AjoutEntrepriseConseillerForm(DsfrForm, PreremplissageSirenForm):
@@ -171,11 +176,4 @@ class AjoutEntrepriseConseillerForm(DsfrForm, PreremplissageSirenForm):
         label="Adresse e-mail du contact principal de l’entreprise accompagnée",
         required=True,
         help_text="Une invitation lui sera envoyée afin qu’elle puisse accéder au tableau de bord de son entreprise.",
-    )
-    fonctions = forms.CharField(
-        label="Fonction(s) dans l'accompagnement",
-        min_length=FONCTIONS_MIN_LENGTH,
-        max_length=FONCTIONS_MAX_LENGTH,
-        required=False,
-        help_text="Exemple : Consultant CSRD, Accompagnement BDESE, etc.",
     )

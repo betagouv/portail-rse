@@ -29,7 +29,7 @@ class UserManager(BaseUserManager):
         return user
 
 
-SURNAME_MAX_LENGTH = NAME_MAX_LENGTH = 50
+SURNAME_MAX_LENGTH = NAME_MAX_LENGTH = FONCTION_MAX_LENGTH = 50
 
 
 class User(AbstractBaseUser, TimestampedModel):
@@ -78,6 +78,19 @@ class User(AbstractBaseUser, TimestampedModel):
         null=True,
         blank=True,
         help_text="Indique si l'utilisateur est un conseiller RSE externe",
+    )
+    fonction_rse = models.CharField(
+        verbose_name="Fonction dans l'accompagnement",
+        max_length=FONCTION_MAX_LENGTH,
+        choices=[
+            ("consultant", "Consultant"),
+            ("auditeur", "Auditeur / expert comptable"),
+            ("finance", "Finance durable & investissement"),
+            ("fédération", "Fédération / structure d’accompagnement"),
+            ("public", "Conseiller CCI / acteur public RSE"),
+            ("autre", "Autre"),
+        ],
+        null=True,
     )
 
     objects = UserManager()
