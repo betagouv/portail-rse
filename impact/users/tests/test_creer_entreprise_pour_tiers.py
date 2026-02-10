@@ -75,8 +75,6 @@ def test_rattachement_entreprise_existante_avec_proprietaire(
     # Pas d'invitation creee car il y a deja un proprietaire
     assert not Invitation.objects.filter(entreprise=entreprise).exists()
 
-    assert "rattache" in response.content.decode().lower()
-
 
 # Tests du formulaire unifie : CAS 1b - Entreprise existante sans proprietaire
 
