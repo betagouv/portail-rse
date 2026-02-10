@@ -43,6 +43,7 @@ class UserAdmin(BaseUserAdmin):
                     "acceptation_cgu",
                     "reception_actualites",
                     "is_conseiller_rse",
+                    "fonction_rse",
                     "last_login",
                 )
             },

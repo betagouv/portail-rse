@@ -111,11 +111,15 @@ def test_choix_conseiller_rse_met_a_jour_utilisateur(client, django_user_model):
 
     response = client.post(
         reverse("users:choix_type_utilisateur"),
-        {"type_utilisateur": ChoixTypeUtilisateurForm.TYPE_CONSEILLER_RSE},
+        {
+            "type_utilisateur": ChoixTypeUtilisateurForm.TYPE_CONSEILLER_RSE,
+            "fonction_rse": "auditeur",
+        },
     )
 
     utilisateur.refresh_from_db()
     assert utilisateur.is_conseiller_rse
+    assert utilisateur.fonction_rse == "auditeur"
     assert response.status_code == 302
 
 
@@ -130,9 +134,13 @@ def test_choix_membre_entreprise_marque_session(client, django_user_model):
 
     response = client.post(
         reverse("users:choix_type_utilisateur"),
-        {"type_utilisateur": ChoixTypeUtilisateurForm.TYPE_MEMBRE_ENTREPRISE},
+        {
+            "type_utilisateur": ChoixTypeUtilisateurForm.TYPE_MEMBRE_ENTREPRISE,
+            "fonction_rse": "",
+        },
     )
 
     assert client.session.get("type_utilisateur_choisi") is True
+    assert not utilisateur.fonction_rse
     assert response.status_code == 302
     assert response.url == reverse("users:post_login_dispatch")

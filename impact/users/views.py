@@ -379,6 +379,7 @@ def choix_type_utilisateur(request):
 
             if type_choisi == ChoixTypeUtilisateurForm.TYPE_CONSEILLER_RSE:
                 request.user.is_conseiller_rse = True
+                request.user.fonction_rse = form.cleaned_data["fonction_rse"]
                 request.user.save()
                 messages.success(
                     request,

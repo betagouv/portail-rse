@@ -88,7 +88,6 @@ def test_rattachement_entreprise_inexistante(client, conseiller_rse):
         reverse("users:tableau_de_bord_conseiller"),
         {
             "siren": "999999999",
-            "fonctions": "Consultant CSRD",
             "email_futur_proprietaire": "futur@proprietaire.test",
         },
         follow=True,
@@ -99,7 +98,7 @@ def test_rattachement_entreprise_inexistante(client, conseiller_rse):
     habilitation = Habilitation.pour(entreprise, conseiller_rse)
     assert habilitation.role == UserRole.PROPRIETAIRE
     assert habilitation.is_conseiller_rse
-    assert habilitation.fonctions == "Consultant CSRD"
+    assert not habilitation.fonctions
     invitation = Invitation.objects.get(
         entreprise=entreprise, email="futur@proprietaire.test"
     )
@@ -119,7 +118,6 @@ def test_rattachement_entreprise_sans_proprietaire(
         reverse("users:tableau_de_bord_conseiller"),
         {
             "siren": "123456789",
-            "fonctions": "Consultant CSRD",
             "email_futur_proprietaire": "futur@proprietaire.test",
         },
         follow=True,
@@ -129,7 +127,7 @@ def test_rattachement_entreprise_sans_proprietaire(
     habilitation = Habilitation.pour(entreprise, conseiller_rse)
     assert habilitation.role == UserRole.PROPRIETAIRE
     assert habilitation.is_conseiller_rse
-    assert habilitation.fonctions == "Consultant CSRD"
+    assert not habilitation.fonctions
     invitation = Invitation.objects.get(
         entreprise=entreprise, email="futur@proprietaire.test"
     )
@@ -148,7 +146,6 @@ def test_rattachement_deja_existant(client, conseiller_rse, alice, entreprise_fa
         reverse("users:tableau_de_bord_conseiller"),
         {
             "siren": "123456789",
-            "fonctions": "Consultant CSRD",
             "email_futur_proprietaire": "futur@proprietaire.test",
         },
         follow=True,

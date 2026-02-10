@@ -64,7 +64,6 @@ def test_rattachement_entreprise_existante_avec_proprietaire(
         {
             "siren": "123456789",
             "email_futur_proprietaire": "futur@proprietaire.test",
-            "fonctions": "Consultant CSRD",
         },
         follow=True,
     )
@@ -93,7 +92,6 @@ def test_rattachement_entreprise_sans_proprietaire_sans_email_echoue(
         {
             "siren": "234567890",
             "email_futur_proprietaire": "",
-            "fonctions": "Accompagnement BDESE",
         },
     )
 
@@ -117,7 +115,6 @@ def test_rattachement_entreprise_sans_proprietaire_avec_email_reussit(
         {
             "siren": "345678901",
             "email_futur_proprietaire": "futur@proprietaire.test",
-            "fonctions": "Accompagnement BDESE",
         },
         follow=True,
     )
@@ -173,14 +170,13 @@ def test_creation_entreprise_reussie(
         {
             "siren": "111222333",
             "email_futur_proprietaire": "futur@proprietaire.test",
-            "fonctions": "Consultant CSRD",
         },
     )
 
     assert Habilitation.existe(entreprise, conseiller_rse)
     habilitation = Habilitation.pour(entreprise, conseiller_rse)
     assert habilitation.role == UserRole.PROPRIETAIRE
-    assert habilitation.fonctions == "Consultant CSRD"
+    assert not habilitation.fonctions
 
     # Verifier que l'invitation a ete creee
     invitation = Invitation.objects.get(entreprise=entreprise)
