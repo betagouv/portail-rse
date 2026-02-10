@@ -107,21 +107,24 @@
         <!-- Script en version es6 module et nomodule pour les navigateurs ne le supportant pas -->
         <script type="module" src="{% static 'dsfr/dsfr/dsfr.module.js' %}"></script>
         <script type="text/javascript" nomodule src="{% static 'dsfr/dsfr/dsfr.nomodule.min.js' %}"></script>
-        <script
-            src="https://browser.sentry-cdn.com/8.28.0/bundle.tracing.min.js"
-            integrity="sha384-GVaBBYGuaNuY8QXk8YojAIgLouf6OZ9bSBQRZ69jdPLVgNCZr6yFpW5vU/yXHXRb"
-            crossorigin="anonymous"
-            nonce="{{ request.csp_nonce }}"
-        ></script>
-        <script nonce="{{ request.csp_nonce }}">
-            Sentry.init({
-                dsn: '{{ sentry_dsn }}',
-                environment: '{{ sentry_env }}',
-                tracesSampleRate: 0.1,
-            });
-        </script>
+        {% if sentry_js_enabled %}
+            <!-- Sentry -->
+            <script nonce="{{ request.csp_nonce }}">
+                // Configure sentryOnLoad before adding the Loader Script
+                window.sentryOnLoad = function () {
+                    Sentry.init({
+                        environment: '{{ sentry_env }}',
+                    });
+                };
+            </script>
+            <script
+                src="https://sentry.incubateur.net/js-sdk-loader/cab8f8212fcb489e9275dd9f859964a3.min.js"
+                crossorigin="anonymous"
+                nonce="{{ request.csp_nonce }}">
+            </script>
+        {% endif %}
         {% if matomo_enabled %}
-	<!-- Tarte au citron -->
+	        <!-- Tarte au citron -->
             <script type="text/javascript" src="{% static 'js/tarteaucitron.js' %}" nonce="{{ request.csp_nonce }}"></script>
             <script nonce="{{ request.csp_nonce }}">
                 tarteaucitron.init({
@@ -133,7 +136,7 @@
                     "mandatoryCta": false,
                     "cookieDomain": "{{ cookie_domain }}",
                 });
-	    // Service Youtube
+	            // Service Youtube
                 (tarteaucitron.job = tarteaucitron.job || []).push('youtube');
             </script>
             <script type="text/javascript" src="{% static 'js/tarteaucitron.matomo.service.js' %}" nonce="{{ request.csp_nonce }}"></script>
@@ -144,8 +147,7 @@
             </script>
         {% endif %}
 
-	<!-- Scripts JS complementaires -->
+	    <!-- Scripts JS complementaires -->
         {% block extra_js %}{% endblock %}
-
     </body>
 </html>

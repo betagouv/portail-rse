@@ -263,6 +263,10 @@ MAX_JOURS_HABILITATION = 30
 # Sentry
 SENTRY_DSN = os.getenv("SENTRY_DSN")
 SENTRY_ENV = os.getenv("SENTRY_ENV", "production")
+SENTRY_SECURITY_HEADER_ENDPOINT = os.getenv("SENTRY_SECURITY_HEADER_ENDPOINT", "")
+SENTRY_JS_ENABLED = bool(SENTRY_SECURITY_HEADER_ENDPOINT) or os.getenv(
+    "SENTRY_JS_ENABLED", False
+)
 
 if SENTRY_DSN:
     import sentry_sdk
@@ -371,7 +375,7 @@ if DEBUG:
     }
 
 # Report URI : Sentry will log CSP violations to this URI if set
-if SENTRY_SECURITY_HEADER_ENDPOINT := os.getenv("SENTRY_SECURITY_HEADER_ENDPOINT", ""):
+if SENTRY_SECURITY_HEADER_ENDPOINT:
     # `report-uri` directive is deprecated in favor of `report-to`
     # however django-csp CSP internal building is using it.
     # According to Sentry documentation, the report URI must pass a `sentry_environment`
