@@ -81,15 +81,12 @@ def export_exigence_de_publication(exigence_de_publication, workbook, rapport_vs
             worksheet = workbook[exigence_de_publication.code]
             _export_indicateur(
                 indicateur,
-                rapport_vsme,
                 worksheet,
                 SCHEMA_ID_VERS_CELLULE[indicateur_schema_id],
             )
 
 
-def _export_indicateur(
-    indicateur, rapport_vsme, worksheet, adresse_cellule_depart: str
-):
+def _export_indicateur(indicateur, worksheet, adresse_cellule_depart: str):
     indicateur_data = indicateur.data
     if indicateur_data.get(NON_PERTINENT_FIELD_NAME):
         return
