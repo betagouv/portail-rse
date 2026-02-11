@@ -205,8 +205,10 @@ def exigence_de_publication_vsme(request, rapport_vsme, exigence_de_publication_
     exigence_de_publication = EXIGENCES_DE_PUBLICATION.get(exigence_de_publication_code)
     if not exigence_de_publication or not exigence_de_publication.remplissable:
         raise Http404("Exigence de publication VSME inconnue")
-    indicateurs_completes = rapport_vsme.indicateurs_completes(exigence_de_publication)
-    indicateurs_applicables = rapport_vsme.indicateurs_applicables(
+    indicateurs_completes = rapport_vsme.indicateurs_completes_par_exigence(
+        exigence_de_publication
+    )
+    indicateurs_applicables = rapport_vsme.indicateurs_applicables_par_exigence(
         exigence_de_publication
     )
     exigence_de_publication_schema = exigence_de_publication.load_json_schema()

@@ -113,6 +113,9 @@ class ExigenceDePublication:
         code = indicateur_schema_id.split("-")[0]
         return cls.par_code(code)
 
+    def indicateurs(self):
+        return self.load_json_schema().keys()
+
 
 EXIGENCES_DE_PUBLICATION = {
     "B1": ExigenceDePublication(
@@ -270,13 +273,23 @@ class RapportVSME(TimestampedModel):
         ]
         indexes = [models.Index(fields=["annee"])]
 
-    def indicateurs_applicables(self, exigence_de_publication):
+    def indicateurs_applicables_par_exigence(self, exigence_de_publication):
         exigence_de_publication_schema = exigence_de_publication.load_json_schema()
         indicateurs_applicables = [
             ind
             for ind in exigence_de_publication_schema
             if self.indicateur_est_applicable(ind)[0]
         ]
+        return indicateurs_applicables
+
+    @cached_property
+    def indicateurs_applicables(self):
+        indicateurs_applicables = []
+        for exigence_de_publication in self.exigences_de_publication_applicables():
+            if exigence_de_publication.remplissable:
+                for indicateur_schema_id in exigence_de_publication.indicateurs():
+                    if self.indicateur_est_applicable(indicateur_schema_id)[0]:
+                        indicateurs_applicables.append(indicateur_schema_id)
         return indicateurs_applicables
 
     def indicateur_est_applicable(self, indicateur_schema_id) -> tuple[bool, str]:
@@ -349,18 +362,26 @@ class RapportVSME(TimestampedModel):
             case _:
                 return (True, "")
 
-    def indicateurs_completes(self, exigence_de_publication):
+    def indicateurs_completes_par_exigence(self, exigence_de_publication):
         return self.indicateurs.filter(
             schema_id__startswith=exigence_de_publication.code
         ).values_list("schema_id", flat=True)
 
+    @cached_property
+    def indicateurs_completes(self):
+        return self.indicateurs.values_list("schema_id", flat=True)
+
     def progression_par_exigence(self, exigence_de_publication):
         if not exigence_de_publication.remplissable:
             return {"total": 0, "complet": 0, "pourcent": 0}
-        indicateurs_applicables = set(
-            self.indicateurs_applicables(exigence_de_publication)
+
+        indicateurs_exigences = set(exigence_de_publication.indicateurs())
+        indicateurs_applicables = indicateurs_exigences.intersection(
+            set(self.indicateurs_applicables)
         )
-        indicateurs_completes = set(self.indicateurs_completes(exigence_de_publication))
+        indicateurs_completes = indicateurs_exigences.intersection(
+            set(self.indicateurs_completes)
+        )
         indicateurs_completes_et_applicables = indicateurs_applicables.intersection(
             indicateurs_completes
         )
