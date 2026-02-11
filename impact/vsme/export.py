@@ -1,4 +1,3 @@
-from django.core.exceptions import ObjectDoesNotExist
 from openpyxl.cell import Cell
 from openpyxl.utils.cell import column_index_from_string
 from openpyxl.utils.cell import coordinate_from_string
@@ -10,7 +9,9 @@ from vsme.forms import NON_PERTINENT_FIELD_NAME
 from vsme.models import EXIGENCES_DE_PUBLICATION
 
 
-def export_exigence_de_publication(exigence_de_publication, workbook, rapport_vsme):
+def export_exigence_de_publication(
+    exigence_de_publication, workbook, indicateurs_par_schema_id
+):
     SCHEMA_ID_VERS_CELLULE = {
         "B1-24-a": "A4",
         "B1-24-b": "B4",
@@ -68,22 +69,17 @@ def export_exigence_de_publication(exigence_de_publication, workbook, rapport_vs
         "C9-65": "A4",
     }
 
-    for indicateur_schema_id in rapport_vsme.indicateurs_applicables(
-        exigence_de_publication
-    ):
-        if indicateur_schema_id in SCHEMA_ID_VERS_CELLULE:
-            try:
-                indicateur = rapport_vsme.indicateurs.get(
-                    schema_id=indicateur_schema_id
-                )
-            except ObjectDoesNotExist:
-                continue
-            worksheet = workbook[exigence_de_publication.code]
-            _export_indicateur(
-                indicateur,
-                worksheet,
-                SCHEMA_ID_VERS_CELLULE[indicateur_schema_id],
-            )
+    for indicateur_schema_id in SCHEMA_ID_VERS_CELLULE:
+        try:
+            indicateur = indicateurs_par_schema_id[indicateur_schema_id]
+        except KeyError:
+            continue
+        worksheet = workbook[exigence_de_publication.code]
+        _export_indicateur(
+            indicateur,
+            worksheet,
+            SCHEMA_ID_VERS_CELLULE[indicateur_schema_id],
+        )
 
 
 def _export_indicateur(indicateur, worksheet, adresse_cellule_depart: str):
