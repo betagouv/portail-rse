@@ -1,0 +1,57 @@
+{
+    "C4-57": {
+        "titre": "Aléas et risques climatiques recensés",
+        "description": "Si l'entreprise a identifié des aléas liés au changement climatique et/ou des événements de transition créant des risques climatiques, en fournir une description, indiquer l'évaluation de son exposition, préciser les horizons temporels et indiquer les actions d'adaptation entreprises.",
+        "ancre": "aleas_et_risques_climatiques",
+        "champs": [
+            {
+                "id": "aleas_et_risques_climatiques",
+                "label": "Aléas et risques climatiques recensés",
+                "type": "tableau",
+                "obligatoire": true,
+                "colonnes": [
+                    {
+                        "id": "description",
+                        "label": "Description",
+                        "type": "texte",
+                        "obligatoire": true
+                    },
+                    {
+                        "id": "methode_evaluation",
+                        "label": "Méthode d'évaluation",
+                        "description": "Méthode d’évaluation de l’exposition et de la sensibilité des actifs, activités et chaîne de valeur",
+                        "type": "texte",
+                        "obligatoire": true
+                    },
+                    {
+                        "id": "horizon_temporel",
+                        "label": "Horizon temporel",
+                        "type": "choix_unique",
+                        "choix": [
+                            {
+                                "id": "court_terme",
+                                "label": "Court terme"
+                            },
+                            {
+                                "id": "moyen_terme",
+                                "label": "Moyen terme"
+                            },
+                                                        {
+                                "id": "long_terme",
+                                "label": "Long terme"
+                            }
+                        ],
+                        "obligatoire": true
+                    },
+                    {
+                        "id": "actions_entreprises",
+                        "label": "Actions d’adaptation entreprises",
+                        "type": "texte_long",
+                        "obligatoire": true
+                    }
+                ]
+            }
+        ],
+        "si_pertinent": "L'entreprise n'a pas recensé d'aléas ou d'événements liés au changement climatique entraînant des risques"
+    }
+}

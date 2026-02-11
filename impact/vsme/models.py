@@ -217,6 +217,8 @@ EXIGENCES_DE_PUBLICATION = {
         "C4",
         "Risques climatiques",
         Categorie.ENVIRONNEMENT,
+        "https://portail-rse.beta.gouv.fr/vsme/c4-risques-climatiques/",
+        remplissable=True,
     ),
     "C5": ExigenceDePublication(
         "C5",
