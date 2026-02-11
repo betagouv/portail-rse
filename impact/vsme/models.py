@@ -11,6 +11,7 @@ from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.urls.base import reverse
+from django.utils.functional import cached_property
 
 from utils.combustibles import COMBUSTIBLES
 from utils.models import TimestampedModel
@@ -284,7 +285,7 @@ class RapportVSME(TimestampedModel):
 
     def indicateur_est_applicable(self, indicateur_schema_id) -> tuple[bool, str]:
         if indicateur_schema_id.startswith("C"):  # indicateurs module complet
-            if self.choix_module() != "complet":
+            if self.choix_module != "complet":
                 B1_url = reverse(
                     "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
                 )
@@ -329,7 +330,7 @@ class RapportVSME(TimestampedModel):
                 )
                 return (est_cooperative, explication_non_applicable)
             case ["B8", "39", "c"]:  # indicateur effectifs par pays
-                plusieurs_pays_d_exercice = len(self.pays()) > 1
+                plusieurs_pays_d_exercice = len(self.pays) > 1
                 B1_url = reverse(
                     "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
                 )
@@ -340,7 +341,7 @@ class RapportVSME(TimestampedModel):
                 )
                 return (plusieurs_pays_d_exercice, explication_non_applicable)
             case ["C5", _]:  # indicateurs supplémentaires des effectifs
-                nombre_salaries = self.nombre_salaries()
+                nombre_salaries = self.nombre_salaries
                 if nombre_salaries is not None and nombre_salaries < 50:
                     B1_url = reverse(
                         "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
@@ -401,7 +402,7 @@ class RapportVSME(TimestampedModel):
         return {"total": total, "complet": complet, "pourcent": int(pourcent)}
 
     def exigences_de_publication_applicables(self):
-        choix_module = self.choix_module()
+        choix_module = self.choix_module
         exigences_de_publication_module_complet = EXIGENCES_DE_PUBLICATION.values()
         exigences_de_publication_module_base = [
             exigence
@@ -414,7 +415,7 @@ class RapportVSME(TimestampedModel):
             case "complet":
                 return exigences_de_publication_module_complet
 
-    def choix_module(self):
+    def get_choix_module(self):
         module_par_defaut = "complet"
         indicateur_choix_module = "B1-24-a"
         try:
@@ -425,7 +426,9 @@ class RapportVSME(TimestampedModel):
             choix_module = module_par_defaut
         return choix_module
 
-    def pays(self):
+    choix_module = cached_property(get_choix_module)
+
+    def get_pays(self):
         indicateur_pays = "B1-24-e-vi"
         try:
             codes_pays = self.indicateurs.get(schema_id=indicateur_pays).data.get(
@@ -435,7 +438,9 @@ class RapportVSME(TimestampedModel):
             codes_pays = []
         return codes_pays
 
-    def nombre_salaries(self) -> int | None:
+    pays = cached_property(get_pays)
+
+    def get_nombre_salaries(self) -> int | None:
         indicateur_nombre_salaries = "B1-24-e-v"
         try:
             nombre_salaries = self.indicateurs.get(
@@ -444,6 +449,8 @@ class RapportVSME(TimestampedModel):
         except ObjectDoesNotExist:
             nombre_salaries = None
         return nombre_salaries
+
+    nombre_salaries = cached_property(get_nombre_salaries)
 
 
 class Indicateur(TimestampedModel):
@@ -657,7 +664,7 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                 "nombre_salaries_conventions_collectives"
             )
             if nombre_salaries_conventions_collectives is not None:
-                nombre_salaries = rapport_vsme.nombre_salaries()
+                nombre_salaries = rapport_vsme.nombre_salaries
                 if nombre_salaries:
                     taux = (
                         100 * nombre_salaries_conventions_collectives / nombre_salaries

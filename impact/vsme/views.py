@@ -408,7 +408,7 @@ def preremplit_indicateur(indicateur_schema_id, rapport_vsme):
                 }
         case "B8-40" | "B10-42-b":
             # indicateur taux de rotation du personnel | écart rémunération hommes/femmes
-            nombre_salaries = rapport_vsme.nombre_salaries()
+            nombre_salaries = rapport_vsme.nombre_salaries
             if nombre_salaries is None:
                 pass
             elif nombre_salaries < 50 or (
@@ -482,7 +482,7 @@ def export_vsme(request, rapport_vsme):
         workbook.remove(workbook[nom_onglet])
 
     # adapte le texte présent dans une cellule du premier onglet
-    if rapport_vsme.choix_module() == "complet":
+    if rapport_vsme.choix_module == "complet":
         texte = "Module complet"
     else:
         texte = "Module de base"
