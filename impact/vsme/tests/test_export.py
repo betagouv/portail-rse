@@ -835,19 +835,29 @@ def test_telechargement_d_un_rapport_vsme_C6(client, rapport_vsme, alice):
     assert onglet["F4"].value == "Politique santé"
 
 
-def test_telechargement_d_un_rapport_vsme_C9(client, rapport_vsme, alice):
+def test_telechargement_d_un_rapport_vsme_C7(client, rapport_vsme, alice):
     rapport_vsme.indicateurs.create(
-        schema_id="C9-65",
+        schema_id="C7-62-ab",
         data={
-            "ratio_mixite_organe_gouvernance": 1,
+            "incidents_travail_des_enfants_internes": True,
+            "incidents_travail_force_internes": False,
+            "incidents_traite_des_etres_humains_internes": False,
+            "incidents_discrimination_internes": False,
+            "autres_incidents_internes": "Santé et sécurité",
+            "actions_incidents_internes": "Lorem Ipsum",
         },
     )
     client.force_login(alice)
 
     response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
     workbook = load_workbook(filename=BytesIO(response.content))
-    onglet = workbook["C9"]
-    assert onglet["A4"].value == 1
+    onglet = workbook["C7"]
+    assert onglet["A4"].value == "OUI"
+    assert onglet["B4"].value == "NON"
+    assert onglet["C4"].value == "NON"
+    assert onglet["D4"].value == "NON"
+    assert onglet["E4"].value == "Santé et sécurité"
+    assert onglet["F4"].value == "Lorem Ipsum"
 
 
 def test_telechargement_d_un_rapport_vsme_C8(client, rapport_vsme, alice):
@@ -874,6 +884,21 @@ def test_telechargement_d_un_rapport_vsme_C8(client, rapport_vsme, alice):
     assert onglet["E4"].value == 0
     assert onglet["F4"].value == 70
     assert onglet["G4"].value == 50
+
+
+def test_telechargement_d_un_rapport_vsme_C9(client, rapport_vsme, alice):
+    rapport_vsme.indicateurs.create(
+        schema_id="C9-65",
+        data={
+            "ratio_mixite_organe_gouvernance": 1,
+        },
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook["C9"]
+    assert onglet["A4"].value == 1
 
 
 def test_telechargement_d_un_rapport_vsme_inexistant(client, entreprise_factory, alice):
