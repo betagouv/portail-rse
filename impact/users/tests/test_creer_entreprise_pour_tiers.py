@@ -242,8 +242,8 @@ def test_email_invitation_envoye_avec_bonnes_donnees(
     assert list(mail.to) == ["nouveau@proprietaire.test"]
     assert mail.from_email == settings.DEFAULT_FROM_EMAIL
 
-    # Vérifier le template utilisé (même template que l'invitation standard)
-    assert mail.template_id == settings.BREVO_INVITATION_TEMPLATE
+    # Vérifier le template utilisé (template dédié, différent de l'invitation standard)
+    assert mail.template_id == settings.BREVO_INVITATION_PROPRIETAIRE_TIERS_TEMPLATE
 
 
 @pytest.mark.django_db
@@ -319,8 +319,8 @@ def test_contenu_email_variables_template(
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
 
-    # Vérifier que le template standard est utilisé
-    assert mail.template_id == settings.BREVO_INVITATION_TEMPLATE
+    # Vérifier que le template dédié est utilisé
+    assert mail.template_id == settings.BREVO_INVITATION_PROPRIETAIRE_TIERS_TEMPLATE
 
     # Vérifier les variables du template (mêmes que l'invitation standard)
     merge_data = mail.merge_global_data

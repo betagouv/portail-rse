@@ -598,7 +598,7 @@ def _envoie_email_invitation_proprietaire_tiers(request, invitation):
     )
 
     # Utiliser le template d'invitation standard
-    email.template_id = settings.BREVO_INVITATION_TEMPLATE
+    email.template_id = settings.BREVO_INVITATION_PROPRIETAIRE_TIERS_TEMPLATE
 
     # Vérifier si l'utilisateur existe déjà
     utilisateur_existe = User.objects.filter(email=invitation.email).exists()
