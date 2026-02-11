@@ -430,6 +430,11 @@ def preremplit_indicateur(indicateur_schema_id, rapport_vsme):
 @login_required
 @rapport_vsme_requis
 def export_vsme(request, rapport_vsme):
+    indicateurs_par_schema_id = {}
+    for indicateur in rapport_vsme.indicateurs.all():
+        if rapport_vsme.indicateur_est_applicable(indicateur.schema_id)[0]:
+            indicateurs_par_schema_id[indicateur.schema_id] = indicateur
+
     chemin_xlsx = Path(settings.BASE_DIR, f"vsme/xlsx/VSME.xlsx")
     workbook = load_workbook(chemin_xlsx)
 
@@ -459,7 +464,7 @@ def export_vsme(request, rapport_vsme):
     for exigence_de_publication in exigences_de_publication_applicables:
         if exigence_de_publication.code in codes_exigences_de_publication_exportables:
             export_exigence_de_publication(
-                exigence_de_publication, workbook, rapport_vsme
+                exigence_de_publication, workbook, indicateurs_par_schema_id
             )
 
     # supprime les onglets des exigences de publication non applicables
