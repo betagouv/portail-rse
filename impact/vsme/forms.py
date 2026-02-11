@@ -442,7 +442,7 @@ def create_Formset_from_schema(field_schema, rapport_vsme, extra=0):
 def calculate_rows(lignes, rapport_vsme):
     match lignes:
         case "PAYS":
-            codes_pays = rapport_vsme.pays()
+            codes_pays = rapport_vsme.pays
             pays = [
                 {"id": code_pays, "label": CODES_PAYS_ISO_3166_1[code_pays]}
                 for code_pays in codes_pays
@@ -494,7 +494,7 @@ def calculate_extra_validators(field_id, rapport_vsme):
         case "gestion_dechets":
             return [dechets_total_validator]
         case "effectifs_type_de_contrat" | "effectifs_genre" | "effectifs_pays":
-            nombre_salaries = rapport_vsme.nombre_salaries() or 0
+            nombre_salaries = rapport_vsme.nombre_salaries or 0
             return [effectif_total_validator(nombre_salaries)]
     return []
 
