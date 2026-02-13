@@ -27,8 +27,21 @@
                                 {% include 'snippets/field.html' with field=account_form.email %}
                             </div>
                         {% endif %}
-                        <div class="fr-fieldset__element">
+                        <div class="fr-fieldset__element"
+                             hx-get="{% url 'users:preremplissage_etat_conseiller_rse'%}"
+                             hx-trigger="change from:#id_is_conseiller_rse"
+                             hx-target="#conseiller_rse"
+                             hx-vals='js:{"is_conseiller_rse": document.querySelector("#id_is_conseiller_rse").checked}'
+                             hx-swap="innerHTML">
                             {% include 'snippets/field.html' with field=account_form.is_conseiller_rse %}
+                            <div id="conseiller_rse">
+                                {% if user.is_conseiller_rse %}
+                                    {% include 'snippets/field.html' with field=account_form.fonction_rse %}
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="fr-fieldset__element">
                             {% include 'snippets/field.html' with field=account_form.reception_actualites %}
                         </div>
                     </fieldset>

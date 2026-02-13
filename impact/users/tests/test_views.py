@@ -344,6 +344,7 @@ def test_edit_account_info(client, alice_with_password):
         "email": alice.email,
         "reception_actualites": "checked",
         "is_conseiller_rse": "checked",
+        "fonction_rse": "auditeur",
         "action": "update-account",
     }
 
@@ -360,6 +361,7 @@ def test_edit_account_info(client, alice_with_password):
     assert alice.nom == "Dylan"
     assert alice.reception_actualites
     assert alice.is_conseiller_rse
+    assert alice.fonction_rse == "auditeur"
     assert alice.check_password("Passw0rd!123")
 
 
@@ -674,3 +676,33 @@ def test_echec_d_invitation_car_l_email_ne_correspond_pas(
     assert not User.objects.filter(email="autre@email.test")
     content = html.unescape(response.content.decode("utf-8"))
     assert "L'e-mail ne correspond pas à l'invitation." in content, content
+
+
+def test_preremplissage_etat_conseiller_rse(client, db, entreprise_factory, alice):
+    alice.is_conseiller_rse = True
+    alice.fonction_rse = "auditeur"
+    alice.save()
+    entreprise = entreprise_factory(siren=settings.SIREN_ENTREPRISE_TEST)
+    Habilitation.ajouter(entreprise, alice)
+    client.force_login(alice)
+
+    data = {
+        "is_conseiller_rse": "true",
+    }
+    response = client.get(
+        reverse("users:preremplissage_etat_conseiller_rse"), data=data
+    )
+
+    assert response.status_code == 200
+    assert "auditeur" in response.content.decode()
+
+    # si non conseiller RSE, alors ne pas afficher le champ fonction_rse
+    data = {
+        "is_conseiller_rse": "false",
+    }
+    response = client.get(
+        reverse("users:preremplissage_etat_conseiller_rse"), data=data
+    )
+
+    assert response.status_code == 200
+    assert response.content.decode().strip() == ""
