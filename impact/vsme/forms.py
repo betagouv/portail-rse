@@ -189,7 +189,9 @@ def create_simple_field_from_schema(field_schema, rapport_vsme):
         field_kwargs["help_text"] = description
     match field_type:
         case "auto_id":
-            field = forms.IntegerField(min_value=1, required=True)
+            field_kwargs["min_value"] = 1
+            field_kwargs["required"] = True
+            field = forms.IntegerField(**field_kwargs)
             field.auto_id = True
         case "texte":
             field_kwargs["max_length"] = field_schema.get("max_length", 255)
