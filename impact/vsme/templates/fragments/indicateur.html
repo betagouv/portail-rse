@@ -44,7 +44,7 @@
                                         <caption>
                                             <span class="fr-label">{{ form.label }}</span>
                                             {% if form.description %}
-                                                <p class="fr-text--xs fr-mb-1w">{{ form.description | safe }}</p>
+                                                <p class="fr-text--xs fr-mb-1w">{{ form.description|safe }}</p>
                                             {% endif %}
                                             {% if form.non_form_errors %}
                                                 <p class="fr-error-text">
@@ -121,13 +121,11 @@
                                     </table>
                                 {% else %}
                                     <!-- tableau sans ligne -->
-                                    <span class="fr-label">
-                                        {{ form.label }}
-                                    </span>
-                                    <p class="fr-text--xs fr-mb-1w">
-                                        {{ form.description|safe }}
-                                    </p>
-                                    <p class="fr-text--xs fr-mb-1w">
+                                    <span class="fr-label">{{ form.label }}</span>
+                                    {% if form.description %}
+                                        <p class="fr-text--xs fr-mb-1w">{{ form.description|safe }}</p>
+                                    {% endif %}
+                                    <p class="fr-text--xs fr-my-1w">
                                         Aucune ligne dans ce tableau
                                     </p>
                                 {% endif %}
