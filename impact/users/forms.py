@@ -125,10 +125,22 @@ class UserEditionForm(DsfrForm, forms.ModelForm):
     is_conseiller_rse = forms.BooleanField(
         required=False, label="Je suis conseiller RSE"
     )
+    fonction_rse = forms.ChoiceField(
+        label="Fonction(s) dans l'accompagnement",
+        choices=User._meta.get_field("fonction_rse").choices,
+        required=False,
+    )
 
     class Meta:
         model = User
-        fields = ("prenom", "nom", "email", "is_conseiller_rse", "reception_actualites")
+        fields = (
+            "prenom",
+            "nom",
+            "email",
+            "is_conseiller_rse",
+            "fonction_rse",
+            "reception_actualites",
+        )
         labels = {
             "reception_actualites": "Je souhaite recevoir les actualités du Portail RSE (optionnel)",
         }
