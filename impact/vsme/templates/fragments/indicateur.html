@@ -112,7 +112,7 @@
                                                     {% if form.indicator_type == "table" %}
                                                         <!-- Bouton de suppression de ligne -->
                                                         <td class="indicateur-cellule">
-                                                            <button type="submit" name="supprimer-ligne" value="{{ form_table.DELETE.html_name }}" class="fr-btn fr-icon-delete-line fr-btn--tertiary-no-outline" title="Supprimer" {% if not indicateur_est_applicable %}disabled{% endif %}>Supprimer</button>
+                                                            <button type="submit" name="supprimer-ligne" value="{{ form_table.DELETE.html_name }}" class="fr-btn fr-icon-delete-line fr-btn--tertiary-no-outline" title="Supprimer" {% if not indicateur_est_applicable or multiform.non_pertinent %}disabled{% endif %}>Supprimer</button>
                                                         </td>
                                                     {% endif %}
                                                 </tr>
@@ -133,7 +133,7 @@
                                 {% endif %}
                                 {% if form.indicator_type == "table" %}
                                     <!-- Bouton d'ajout de ligne -->
-                                    <button type="submit" name="ajouter-ligne" value="{{ form.id }}" class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-circle-line fr-mb-2w" {% if not indicateur_est_applicable %}disabled{% endif %}>Ajouter une ligne</button>
+                                    <button type="submit" name="ajouter-ligne" value="{{ form.id }}" class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-circle-line fr-mb-2w" {% if not indicateur_est_applicable or multiform.non_pertinent %}disabled{% endif %}>Ajouter une ligne</button>
                                 {% endif %}
                                 <div class="fr-mb-2w"></div>
                             {% else %}
