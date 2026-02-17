@@ -468,11 +468,18 @@ def calculate_rows(lignes, rapport_vsme):
     match lignes:
         case "PAYS":
             codes_pays = rapport_vsme.pays
-            pays = [
+            rows = [
                 {"id": code_pays, "label": CODES_PAYS_ISO_3166_1[code_pays]}
                 for code_pays in codes_pays
             ]
-            return pays
+            return rows
+        case "RISQUES_CLIMATIQUES":
+            risques_climatiques = rapport_vsme.risques_climatiques
+            rows = [
+                {"id": str(risque["id"]), "label": risque["description"]}
+                for risque in risques_climatiques
+            ]
+            return rows
         case list():
             return lignes
 
