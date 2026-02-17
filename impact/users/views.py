@@ -520,7 +520,6 @@ def _creer_invitation_proprietaire(request, entreprise, email_proprietaire):
         email=email_proprietaire,
         role=UserRole.PROPRIETAIRE,
         inviteur=request.user,
-        est_invitation_proprietaire_tiers=True,
     )
     _envoie_email_invitation_proprietaire_tiers(request, invitation)
     return invitation

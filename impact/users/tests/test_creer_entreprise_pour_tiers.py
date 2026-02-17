@@ -117,7 +117,6 @@ def test_rattachement_entreprise_sans_proprietaire_avec_email_reussit(
     invitation = Invitation.objects.get(entreprise=entreprise)
     assert invitation.email == "futur@proprietaire.test"
     assert invitation.role == UserRole.PROPRIETAIRE
-    assert invitation.est_invitation_proprietaire_tiers is True
     assert invitation.inviteur == conseiller_rse
 
     # Verifier que l'email a ete envoye
@@ -171,7 +170,6 @@ def test_creation_entreprise_reussie(
     invitation = Invitation.objects.get(entreprise=entreprise)
     assert invitation.email == "futur@proprietaire.test"
     assert invitation.role == UserRole.PROPRIETAIRE
-    assert invitation.est_invitation_proprietaire_tiers is True
     assert invitation.inviteur == conseiller_rse
 
     # Verifier que l'email a ete envoye
@@ -360,7 +358,6 @@ def test_invitation_expiree_refuse_acceptation(
             email=alice.email,
             role=UserRole.PROPRIETAIRE,
             inviteur=conseiller_rse,
-            est_invitation_proprietaire_tiers=True,
         )
 
     # Générer le token (le token est valide car basé sur PK et email)
