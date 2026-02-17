@@ -18,6 +18,7 @@
                     {
                         "id": "description",
                         "label": "Description",
+                        "description": "Brève description de l'aléa ou de l'événement lié à la transition climatique",
                         "type": "texte",
                         "obligatoire": true
                     },
@@ -52,6 +53,7 @@
                         "id": "actions_entreprises",
                         "label": "Actions d’adaptation entreprises",
                         "type": "texte_long",
+                        "nombre_lignes": 3,
                         "obligatoire": true
                     }
                 ]
