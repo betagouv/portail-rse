@@ -476,6 +476,25 @@ class RapportVSME(TimestampedModel):
 
     nombre_salaries = cached_property(get_nombre_salaries)
 
+    def get_risques_climatiques(self) -> list:
+        indicateur_risques_climatiques = "C4-57"
+        try:
+            risques_climatiques = self.indicateurs.get(
+                schema_id=indicateur_risques_climatiques
+            ).data.get("aleas_et_risques_climatiques", [])
+            risques_climatiques = [
+                {
+                    "id": risque["id_risque"],
+                    "description": risque["description"],
+                }
+                for risque in risques_climatiques
+            ]
+        except ObjectDoesNotExist:
+            risques_climatiques = []
+        return risques_climatiques
+
+    risques_climatiques = cached_property(get_risques_climatiques)
+
 
 class Indicateur(TimestampedModel):
     rapport_vsme = models.ForeignKey(
