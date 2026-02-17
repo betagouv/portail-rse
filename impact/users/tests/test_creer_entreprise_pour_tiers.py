@@ -1,10 +1,14 @@
 """Tests pour le formulaire unifie d'ajout d'entreprise conseiller RSE."""
 
+from datetime import datetime
+from datetime import timedelta
+from datetime import timezone
 from unittest.mock import patch
 
 import pytest
 from django.conf import settings
 from django.urls import reverse
+from freezegun import freeze_time
 
 from habilitations.enums import UserRole
 from habilitations.models import Habilitation
@@ -340,10 +344,6 @@ def test_invitation_expiree_refuse_acceptation(
     client, alice, entreprise_factory, conseiller_rse
 ):
     """Une invitation expirée est refusée."""
-    from datetime import datetime
-    from datetime import timedelta
-    from datetime import timezone
-    from freezegun import freeze_time
 
     # Date de création dans le passé (il y a 31 jours)
     date_creation_passee = datetime.now(timezone.utc) - timedelta(days=31)

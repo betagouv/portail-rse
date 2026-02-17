@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from habilitations.decorators import role
 from habilitations.enums import UserRole
 from habilitations.models import Habilitation
+from users.models import User
 
 
 # Exemple de vue pour les tests
@@ -58,8 +59,6 @@ def test_role_forbidden(alice, entreprise_non_qualifiee):
     Habilitation.ajouter(entreprise_non_qualifiee, alice, UserRole.LECTEUR)
 
     # Recharger alice pour avoir les relations à jour
-    from users.models import User
-
     alice = User.objects.prefetch_related("entreprise_set", "habilitation_set").get(
         pk=alice.pk
     )
