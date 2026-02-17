@@ -135,4 +135,4 @@ class User(AbstractBaseUser, TimestampedModel):
         - n'est pas marqué comme conseiller RSE
         - n'a aucune habilitation sur une entreprise
         """
-        return not self.is_conseiller_rse and not self.entreprises.exists()
+        return self.is_conseiller_rse is None

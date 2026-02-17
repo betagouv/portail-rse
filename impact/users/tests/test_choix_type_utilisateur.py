@@ -1,8 +1,6 @@
 import pytest
 from django.urls import reverse
 
-from habilitations.enums import UserRole
-from habilitations.models import Habilitation
 from users.forms import ChoixTypeUtilisateurForm
 
 
@@ -11,7 +9,6 @@ def test_choix_type_utilisateur_affiche_formulaire(client, django_user_model):
     """La vue affiche le formulaire de choix pour un nouvel utilisateur."""
     utilisateur = django_user_model.objects.create(
         email="nouveau@test.fr",
-        is_conseiller_rse=False,
     )
     client.force_login(utilisateur)
 
@@ -23,22 +20,12 @@ def test_choix_type_utilisateur_affiche_formulaire(client, django_user_model):
 
 
 @pytest.mark.django_db
-def test_choix_type_utilisateur_redirige_si_deja_conseiller(client, conseiller_rse):
-    """Un conseiller RSE est redirigé car il n'a pas à faire ce choix."""
-    client.force_login(conseiller_rse)
-
-    response = client.get(reverse("users:choix_type_utilisateur"))
-
-    assert response.status_code == 302
-
-
-@pytest.mark.django_db
-def test_choix_type_utilisateur_redirige_si_deja_membre(
-    client, alice, entreprise_factory
+@pytest.mark.parametrize("is_conseiller_rse", [True, False])
+def test_choix_type_utilisateur_redirige_si_deja_choisi(
+    is_conseiller_rse, client, alice
 ):
-    """Un membre d'entreprise est redirigé car il n'a pas à faire ce choix."""
-    entreprise = entreprise_factory()
-    Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE)
+    alice.is_conseiller_rse = is_conseiller_rse
+    alice.save()
     client.force_login(alice)
 
     response = client.get(reverse("users:choix_type_utilisateur"))
@@ -51,7 +38,6 @@ def test_choix_conseiller_rse_met_a_jour_utilisateur(client, django_user_model):
     """Choisir 'conseiller RSE' met à jour is_conseiller_rse."""
     utilisateur = django_user_model.objects.create(
         email="nouveau@test.fr",
-        is_conseiller_rse=False,
     )
     client.force_login(utilisateur)
 
@@ -74,7 +60,6 @@ def test_choix_membre_entreprise_marque_session(client, django_user_model):
     """Choisir 'membre entreprise' marque la session et redirige vers dispatch."""
     utilisateur = django_user_model.objects.create(
         email="nouveau@test.fr",
-        is_conseiller_rse=False,
     )
     client.force_login(utilisateur)
 
