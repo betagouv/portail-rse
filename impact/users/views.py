@@ -22,6 +22,7 @@ from .forms import UserInvitationForm
 from .forms import UserPasswordForm
 from .models import User
 from api.exceptions import APIError
+from entreprises.forms import PreremplissageSirenForm
 from entreprises.models import Entreprise
 from habilitations.enums import UserRole
 from habilitations.models import Habilitation
@@ -539,8 +540,6 @@ def preremplissage_etat_conseiller_rse(request):
 @login_required()
 def preremplissage_siren_conseiller(request):
     """Preremplissage SIREN pour conseillers avec mise à jour OOB du statut."""
-    from entreprises.forms import PreremplissageSirenForm
-
     siren = request.GET.get("siren", "").strip()
     denomination = request.GET.get("denomination", "")
 
