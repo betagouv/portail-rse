@@ -807,17 +807,6 @@ def test_convertit_code_NAF_sans_correspondance():
 # Tests pour la propriété a_proprietaire_non_conseiller
 
 
-@pytest.fixture
-def conseiller_rse(django_user_model):
-    return django_user_model.objects.create(
-        prenom="Claire",
-        nom="Conseillère",
-        email="claire@conseil-rse.test",
-        is_email_confirmed=True,
-        is_conseiller_rse=True,
-    )
-
-
 @pytest.mark.django_db
 def test_entreprise_sans_habilitation_na_pas_de_proprietaire_non_conseiller(
     entreprise_factory,

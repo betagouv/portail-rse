@@ -12,17 +12,6 @@ from invitations.models import Invitation
 from utils.tokens import make_token
 
 
-@pytest.fixture
-def conseiller_rse(django_user_model):
-    return django_user_model.objects.create(
-        prenom="Claire",
-        nom="Conseillere",
-        email="claire@conseil-rse.test",
-        is_email_confirmed=True,
-        is_conseiller_rse=True,
-    )
-
-
 # Tests d'acces au tableau de bord conseiller
 
 
