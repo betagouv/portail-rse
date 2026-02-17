@@ -203,8 +203,10 @@ def create_simple_field_from_schema(field_schema, rapport_vsme):
                 **field_kwargs,
             )
         case "texte_long":
+            rows = field_schema.get("nombre_lignes")
+            attrs = {"rows": rows} if rows else None
             field = forms.CharField(
-                widget=forms.Textarea(),
+                widget=forms.Textarea(attrs),
                 **field_kwargs,
             )
         case "nombre_entier" | "auto_id":
