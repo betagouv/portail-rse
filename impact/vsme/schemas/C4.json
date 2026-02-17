@@ -11,6 +11,11 @@
                 "obligatoire": true,
                 "colonnes": [
                     {
+                        "id": "id_risque",
+                        "label": "Risque n°",
+                        "type": "auto_id"
+                    },
+                    {
                         "id": "description",
                         "label": "Description",
                         "type": "texte",

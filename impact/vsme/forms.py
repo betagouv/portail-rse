@@ -24,7 +24,6 @@ def create_multiform_from_schema(
     schema,
     rapport_vsme,
     id_tableau_ligne_ajoutee=None,
-    ajoute_ligne_vide=False,
     infos_preremplissage=None,
 ):
     indicateur_url = reverse(
@@ -165,7 +164,7 @@ def create_multiform_from_schema(
                     _MultiForm.add_Form(_DynamicForm)
                     _DynamicForm = _dynamicform_factory()
                 if id_tableau_ligne_ajoutee == field_name:
-                    extra = 1 if ajoute_ligne_vide else 0
+                    extra = 1
                 else:
                     extra = 0
                 FormSet = create_Formset_from_schema(field, rapport_vsme, extra=extra)
@@ -323,6 +322,8 @@ def create_Formset_from_schema(field_schema, rapport_vsme, extra=0):
     field_type = field_schema["type"]
     calculated_rows = calculate_rows(field_schema.get("lignes"), rapport_vsme)
     extra_validators = calculate_extra_validators(field_schema["id"], rapport_vsme)
+    auto_id_field = calculate_auto_id_field(field_schema["colonnes"])
+    min_num = 1 if field_schema.get("obligatoire", False) else 0
 
     class TableauFormSet(DsfrFormSet):
         id = field_schema["id"]
@@ -357,12 +358,26 @@ def create_Formset_from_schema(field_schema, rapport_vsme, extra=0):
         def __init__(self, *args, **kwargs):
             if kwargs.get("initial"):
                 formset_initial = kwargs["initial"].get(self.id)
-                kwargs["initial"] = formset_initial
+                formset_initial = formset_initial or []
+            else:
+                formset_initial = []
+            formset_initial = self.add_auto_id_if_needed(formset_initial)
+            kwargs["initial"] = formset_initial
             self.default_error_messages["too_few_forms"] = (
                 "Le tableau doit contenir au moins une ligne."
             )
             kwargs["prefix"] = self.id
             super().__init__(*args, **kwargs)
+
+        def add_auto_id_if_needed(self, formset_initial):
+            if auto_id_field and (extra or len(formset_initial) < min_num):
+                next_auto_id = (
+                    1 if not formset_initial else formset_initial[-1][auto_id_field] + 1
+                )
+                extra_formset = [{auto_id_field: next_auto_id}]
+                formset_initial = formset_initial + extra_formset
+                self.extra = 0  # la nouvelle ligne sera ajoutée dans les données initiales, il ne faut donc PAS ajouter une ligne extra en plus
+            return formset_initial
 
         @property
         def cleaned_data(self):
@@ -423,7 +438,7 @@ def create_Formset_from_schema(field_schema, rapport_vsme, extra=0):
             formset=TableauLignesLibresFormSet,
             extra=extra,
             can_delete=True,
-            min_num=1 if field_schema.get("obligatoire", False) else 0,
+            min_num=min_num,
             validate_min=True,
         )
     else:  # "tableau_lignes_fixes"
@@ -439,6 +454,12 @@ def create_Formset_from_schema(field_schema, rapport_vsme, extra=0):
         )
 
     return FormSet
+
+
+def calculate_auto_id_field(columns):
+    for column in columns:
+        if column["type"] == "auto_id":
+            return column["id"]
 
 
 def calculate_rows(lignes, rapport_vsme):

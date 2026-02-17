@@ -291,12 +291,10 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
                 data = ajoute_donnes_calculees(
                     indicateur_schema_id, rapport_vsme, multiform.cleaned_data
                 )
-                data, ligne_ajoutee = ajoute_auto_id_eventuel(indicateur_schema, data)
                 multiform = create_multiform_from_schema(
                     indicateur_schema,
                     rapport_vsme,
                     id_tableau_ligne_ajoutee=request.POST["ajouter-ligne"],
-                    ajoute_ligne_vide=not ligne_ajoutee,
                 )(initial=data)
         elif "supprimer-ligne" in request.POST:
             if multiform.is_valid():
@@ -324,7 +322,6 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
         infos_preremplissage = None
         data = indicateur.data if indicateur else {}
         if not data:
-            data, _ = ajoute_auto_id_eventuel(indicateur_schema, data)
             infos_preremplissage = preremplit_indicateur(
                 indicateur_schema_id, rapport_vsme
             )
@@ -364,33 +361,6 @@ def load_indicateur_schema(indicateur_schema_id):
         )
     except KeyError:
         raise IndicateurInconnu()
-
-
-def ajoute_auto_id_eventuel(indicateur_schema, data):
-    data = data.copy()
-    tableaux = [
-        champ for champ in indicateur_schema["champs"] if champ["type"] == "tableau"
-    ]
-    if not tableaux:
-        return data, False
-    for tableau in tableaux:
-        tableau_id = tableau["id"]
-        colonnes = tableau["colonnes"]
-        champ_auto_id = [
-            champ["id"] for champ in colonnes if champ["type"] == "auto_id"
-        ]
-        if champ_auto_id:
-            champ_auto_id = champ_auto_id[0]
-            prochain_id = (
-                1
-                if not data.get(tableau_id)
-                else data[tableau_id][-1][champ_auto_id] + 1
-            )
-            nouvelle_ligne = [{champ_auto_id: prochain_id}]
-            data[tableau_id] = data.get(tableau_id, []) + nouvelle_ligne
-            return data, True
-        else:
-            return data, False
 
 
 def preremplit_indicateur(indicateur_schema_id, rapport_vsme):
