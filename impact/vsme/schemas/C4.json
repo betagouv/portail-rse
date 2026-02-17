@@ -60,5 +60,71 @@
             }
         ],
         "si_pertinent": "L'entreprise n'a pas recensé d'aléas ou d'événements liés au changement climatique entraînant des risques"
+    },
+    "C4-58": {
+        "titre": "Impacts financiers potentiels des risques climatiques",
+        "description": "Indiquer les impacts négatifs potentiels des risques climatiques sur les performances financières ou les activités de l'entreprise, en précisant leur niveau d'importance (élevé, moyen ou faible), et à quel horizon (court, moyen, long terme).",
+        "ancre": "impacts_financiers_risques_climatiques",
+        "champs": [
+            {
+                "id": "impacts_financiers_risques_climatiques",
+                "label": "Impacts financiers potentiels des risques climatiques",
+                "type": "tableau_lignes_fixes",
+                "colonnes": [
+                    {
+                        "id": "impacts_financiers",
+                        "label": "Ce risque a-t-il des impacts financiers potentiels ?",
+                        "type": "choix_binaire_radio",
+                        "obligatoire": true
+                    },
+                    {
+                        "id": "description_impacts_financiers",
+                        "label": "Description des impacts financiers potentiels",
+                        "type": "texte_long",
+                        "nombre_lignes": 3
+                    },
+                    {
+                        "id": "niveau_risque",
+                        "label": "Niveau de risque",
+                        "type": "choix_unique",
+                        "choix": [
+                            {
+                                "id": "eleve",
+                                "label": "Élevé"
+                            },
+                            {
+                                "id": "moyen",
+                                "label": "Moyen"
+                            },
+                            {
+                                "id": "faible",
+                                "label": "Faible"
+                            }
+                        ]
+                    },
+                    {
+                        "id": "horizon",
+                        "label": "Horizon temporel",
+                        "type": "choix_unique",
+                        "choix": [
+                            {
+                                "id": "court_terme",
+                                "label": "Court terme"
+                            },
+                            {
+                                "id": "moyen_terme",
+                                "label": "Moyen terme"
+                            },
+                            {
+                                "id": "long_terme",
+                                "label": "Long terme"
+                            }
+                        ]
+                    }
+                ],
+                "lignes": "RISQUES_CLIMATIQUES"
+            }
+        ],
+        "si_pertinent": true
     }
 }
