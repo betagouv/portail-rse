@@ -27,7 +27,6 @@ def invitation_proprietaire_tiers(entreprise_factory, conseiller_rse):
         email="pierre@entreprise.test",
         role=UserRole.PROPRIETAIRE,
         inviteur=conseiller_rse,
-        est_invitation_proprietaire_tiers=True,
     )
 
 
