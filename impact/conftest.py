@@ -58,6 +58,17 @@ def bob(django_user_model):
 
 
 @pytest.fixture
+def conseiller_rse(django_user_model):
+    return django_user_model.objects.create(
+        prenom="Claire",
+        nom="Conseillère",
+        email="claire@conseil-rse.test",
+        is_email_confirmed=True,
+        is_conseiller_rse=True,
+    )
+
+
+@pytest.fixture
 def entreprise_non_qualifiee(alice):
     entreprise = Entreprise.objects.create(
         siren="000000001",

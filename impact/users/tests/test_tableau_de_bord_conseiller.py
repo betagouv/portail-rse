@@ -7,17 +7,6 @@ from habilitations.models import Habilitation
 from invitations.models import Invitation
 
 
-@pytest.fixture
-def conseiller_rse(django_user_model):
-    return django_user_model.objects.create(
-        prenom="Claire",
-        nom="Conseillère",
-        email="claire@conseil-rse.test",
-        is_email_confirmed=True,
-        is_conseiller_rse=True,
-    )
-
-
 @pytest.mark.django_db
 def test_tableau_de_bord_conseiller_acces_refuse_non_conseiller(client, alice):
     """Un utilisateur non-conseiller ne peut pas accéder au tableau de bord conseiller."""
