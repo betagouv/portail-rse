@@ -64,36 +64,17 @@ def test_ajouter_habilitation_avec_invitation(alice, entreprise_factory):
 
 
 @pytest.mark.django_db
-def test_conseiller_rse_peut_etre_proprietaire(conseiller_rse, entreprise_factory):
+@pytest.mark.parametrize("is_conseiller_rse", [True, False])
+@pytest.mark.parametrize("role", [UserRole.PROPRIETAIRE, UserRole.EDITEUR])
+def test_etat_conseiller_rse_est_independant_des_droits(
+    is_conseiller_rse, role, alice, entreprise_factory
+):
     """Un conseiller RSE peut obtenir le rôle PROPRIETAIRE."""
     entreprise = entreprise_factory()
+    alice.is_conseiller_rse = is_conseiller_rse
+    alice.save()
 
-    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.PROPRIETAIRE)
-
-    habilitation = Habilitation.objects.pour(entreprise, conseiller_rse)
-    assert habilitation.role == UserRole.PROPRIETAIRE
-
-
-@pytest.mark.django_db
-def test_conseiller_rse_peut_etre_editeur(conseiller_rse, entreprise_factory):
-    """Un conseiller RSE peut obtenir le rôle EDITEUR."""
-    entreprise = entreprise_factory()
-
-    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.EDITEUR, "Consultant RSE")
-
-    habilitation = Habilitation.objects.pour(entreprise, conseiller_rse)
-    assert habilitation.role == UserRole.EDITEUR
-    assert habilitation.fonctions == "Consultant RSE"
-
-
-@pytest.mark.django_db
-def test_utilisateur_standard_peut_etre_proprietaire(alice, entreprise_factory):
-    """Un utilisateur standard (non conseiller) peut être propriétaire."""
-    entreprise = entreprise_factory()
-
-    assert not alice.is_conseiller_rse
-
-    Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE, "Présidente")
+    Habilitation.ajouter(entreprise, alice, role=role)
 
     habilitation = Habilitation.objects.pour(entreprise, alice)
-    assert habilitation.role == UserRole.PROPRIETAIRE
+    assert habilitation.role == role
