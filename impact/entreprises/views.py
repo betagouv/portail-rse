@@ -16,8 +16,6 @@ from entreprises.forms import EntrepriseAttachForm
 from entreprises.forms import EntrepriseDetachForm
 from entreprises.forms import EntrepriseQualificationForm
 from entreprises.forms import PreremplissageSirenForm
-from habilitations.decorators import role
-from habilitations.enums import UserRole
 from habilitations.models import Habilitation
 from habilitations.models import HabilitationError
 from users.forms import message_erreur_proprietaires
@@ -132,7 +130,6 @@ def attach(request):
 
 @login_required
 @entreprise_requise
-@role(UserRole.PROPRIETAIRE)
 def qualification(request, entreprise):
     # Le décorateur @entreprise_requise fournit déjà l'entreprise et vérifie l'habilitation
     # Le décorateur @role vérifie que l'utilisateur est PROPRIETAIRE
