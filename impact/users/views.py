@@ -196,7 +196,7 @@ def invitation_proprietaire_tiers(request, id_invitation, code):
         messages.warning(request, "Cette invitation a déjà été acceptée.")
         return redirect("reglementations:tableau_de_bord", invitation.entreprise.siren)
 
-    # Si utilisateur déjà connecté via ProConnect
+    # Si utilisateur déjà connecté
     if request.user.is_authenticated:
         if invitation.email != request.user.email:
             messages.error(
@@ -598,7 +598,7 @@ def preremplissage_siren_conseiller(request):
 def _envoie_email_invitation_proprietaire_tiers(request, invitation):
     """Envoie un email d'invitation au futur propriétaire.
 
-    Utilise le même template que les invitations standard (BREVO_INVITATION_TEMPLATE)
+    Utilise le template dédié (BREVO_INVITATION_PROPRIETAIRE_TIERS_TEMPLATE)
     avec les mêmes variables pour une cohérence des emails.
     """
     email = EmailMessage(
@@ -606,7 +606,6 @@ def _envoie_email_invitation_proprietaire_tiers(request, invitation):
         from_email=settings.DEFAULT_FROM_EMAIL,
     )
 
-    # Utiliser le template d'invitation standard
     email.template_id = settings.BREVO_INVITATION_PROPRIETAIRE_TIERS_TEMPLATE
 
     # Vérifier si l'utilisateur existe déjà
