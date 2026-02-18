@@ -1,7 +1,8 @@
 """script générant de connaitre la position et le département des entreprises inscrites
 
-suppose qu'une extraction des entreprises soit fournie (entreprises.csv)
+suppose qu'une extraction des entreprises soit fournie (entreprises.csv) contenant un siren par ligne, par exemple depuis metabase
 """
+
 import time
 
 import requests
@@ -118,20 +119,35 @@ DEPARTEMENTS = {
 
 
 def run():
+    compteur = 0
+    compteur_succes = 0
+    compteur_echec = 0
     with open("entreprises-part.csv") as f_src, open("results.csv", "w") as f_dst:
         for ligne in f_src.readlines():
-            siren, nom = ligne.split(",")[:2]
+            siren = ligne.replace("\n", "")
             succes, donnees = recup_donnees(siren)
-            print([succes, siren, donnees])
             if succes:
                 coordonnees = donnees["coordonnees"]
-                departement = extrait_departement(donnees["code_postal"])
-                output = (
-                    f"{siren},{coordonnees},{departement},{DEPARTEMENTS[departement]}\n"
-                )
+                code_postal = donnees["code_postal"]
+                departement = extrait_departement(code_postal)
+                try:
+                    nom_departement = DEPARTEMENTS[departement]
+                except KeyError:
+                    nom_departement = ""
+                output = f"{siren},{coordonnees},{code_postal},{departement},{nom_departement}\n"
                 f_dst.write(output)
-                compteur += 1
-            time.sleep(0.4)
+                compteur_succes += 1
+            else:
+                print(donnees)
+                compteur_echec += 1
+            compteur += 1
+            if compteur % 100 == 0:
+                print(
+                    f"{compteur} ENTREPRISES RECHERCHEES, {compteur_succes} SUCCES, {compteur_echec} ECHECS"
+                )
+            time.sleep(0.15)
+    print(f"NB SUCCES = {compteur_succes}")
+    print(f"NB ECHECS = {compteur_echec}")
 
 
 def recup_donnees(siren):
@@ -149,11 +165,15 @@ def recup_donnees(siren):
             if "NON-DIFFUSIBLE" in code_postal:
                 return False, f"ERREUR NON DIFFUSIBLE {siren}"
             code_postal = f"{code_postal:0>5}"
-        except KeyError:  # TypeError: unsupported format string passed to NoneType.__format__, KeyError: 'code_postal'
+        except (
+            KeyError
+        ):  # TypeError: unsupported format string passed to NoneType.__format__, KeyError: 'code_postal'
             return False, f"ERREUR CODE POSTAL {code_postal} {siren}"
         try:
             coordonnees = data["siege"]["coordonnees"].replace(",", " ")
-        except AttributeError:  # AttributeError: 'NoneType' object has no attribute 'replace'
+        except (
+            AttributeError
+        ):  # AttributeError: 'NoneType' object has no attribute 'replace'
             return False, f"ERREUR COORDONNEES {siren}"
         return True, {"code_postal": code_postal, "coordonnees": coordonnees}
     else:
