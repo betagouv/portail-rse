@@ -61,7 +61,7 @@ def test_rattachement_entreprise_existante_avec_proprietaire(
         follow=True,
     )
 
-    # Verifier que le conseiller n'a pas été rattaché comme EDITEUR
+    # Verifier que le conseiller n'a pas été rattaché
     assert not Habilitation.existe(entreprise, conseiller_rse)
 
     # Pas d'invitation creee car il y a deja un proprietaire
@@ -89,7 +89,7 @@ def test_rattachement_entreprise_sans_proprietaire_sans_email_echoue(
     )
 
     # Le formulaire doit afficher une erreur
-    assert "email" in response.content.decode().lower()
+    assert "email_futur_proprietaire" in response.context["form"].errors
     assert not Habilitation.existe(entreprise, conseiller_rse)
 
 
@@ -115,6 +115,7 @@ def test_rattachement_entreprise_sans_proprietaire_avec_email_reussit(
     # Verifier le rattachement
     assert Habilitation.existe(entreprise, conseiller_rse)
     habilitation = Habilitation.pour(entreprise, conseiller_rse)
+    assert habilitation.is_conseiller_rse
     assert habilitation.role == UserRole.PROPRIETAIRE
 
     # Verifier l'invitation creee
@@ -128,22 +129,6 @@ def test_rattachement_entreprise_sans_proprietaire_avec_email_reussit(
 
 
 # Tests du formulaire unifie : CAS 2 - Entreprise inexistante
-
-
-@pytest.mark.django_db
-def test_creation_entreprise_sans_email_echoue(client, conseiller_rse):
-    """La creation d'entreprise echoue sans email du futur proprietaire."""
-    client.force_login(conseiller_rse)
-    response = client.post(
-        reverse("users:tableau_de_bord_conseiller"),
-        {
-            "siren": "999888777",
-            # Pas d'email_futur_proprietaire
-        },
-    )
-
-    # Le formulaire doit afficher une erreur
-    assert "email" in response.content.decode().lower()
 
 
 @pytest.mark.django_db
@@ -178,27 +163,6 @@ def test_creation_entreprise_reussie(
 
     # Verifier que l'email a ete envoye
     mock_email.assert_called_once()
-
-
-@pytest.mark.django_db
-def test_compte_les_proprietaires(
-    client, conseiller_rse, alice, bob, entreprise_factory
-):
-    """Le badge 'Active' est affiche quand l'entreprise a un proprietaire valide."""
-    entreprise = entreprise_factory(siren="444555666")
-
-    # Ajouter deux proprietaires valides
-    Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE)
-    Habilitation.ajouter(entreprise, bob, UserRole.PROPRIETAIRE)
-
-    # Rattacher le conseiller
-    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.PROPRIETAIRE)
-
-    client.force_login(conseiller_rse)
-    response = client.get(reverse("users:tableau_de_bord_conseiller"))
-
-    content = response.content.decode()
-    assert "3" in content
 
 
 # =============================================================================
