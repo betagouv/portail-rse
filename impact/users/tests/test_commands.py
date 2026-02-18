@@ -16,15 +16,11 @@ def test_import_des_contacts(
     alice.is_email_confirmed = True
     alice.is_conseiller_rse = True
     alice.save()
-    Habilitation.ajouter(
-        entreprise_non_qualifiee, alice, fonctions="Présidente", role=UserRole.EDITEUR
-    )
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
     entreprise_non_qualifiee_2 = entreprise_factory(
         siren="111111111", denomination="Artisans", tranche_bilan=None
     )
-    Habilitation.ajouter(
-        entreprise_non_qualifiee_2, alice, fonctions="Présidente", role=UserRole.EDITEUR
-    )
+    Habilitation.ajouter(entreprise_non_qualifiee_2, alice, fonctions="Présidente")
     entreprise_qualifiee = entreprise_factory(
         siren="222222222", denomination="Coopérative"
     )
