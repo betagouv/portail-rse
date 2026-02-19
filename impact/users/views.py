@@ -9,7 +9,6 @@ from django.contrib.auth.views import (
 from django.contrib.auth.views import PasswordResetView as BasePasswordResetView
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailMessage
-from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -22,7 +21,6 @@ from .forms import UserInvitationForm
 from .forms import UserPasswordForm
 from .models import User
 from api.exceptions import APIError
-from entreprises.forms import PreremplissageSirenForm
 from entreprises.models import Entreprise
 from habilitations.enums import UserRole
 from habilitations.models import Habilitation
@@ -504,6 +502,8 @@ def tableau_de_bord_conseiller(request):
                 messages.error(request, str(exception))
             except HabilitationError as exception:
                 messages.error(request, str(exception))
+        else:
+            messages.error(request, "Le formulaire est incomplet.")
     else:
         form = AjoutEntrepriseConseillerForm()
 
@@ -534,64 +534,6 @@ def preremplissage_formulaire_compte(request):
         "users/fragments/account_form.html",
         {"account_form": account_form},
     )
-
-
-@login_required()
-def preremplissage_siren_conseiller(request):
-    """Preremplissage SIREN pour conseillers avec mise à jour OOB du statut."""
-    siren = request.GET.get("siren", "").strip()
-    denomination = request.GET.get("denomination", "")
-
-    # Générer le fragment du champ SIREN (template spécifique conseiller)
-    form = PreremplissageSirenForm({"siren": siren, "denomination": denomination})
-    siren_html = render(
-        request,
-        "users/fragments/siren_field_conseiller.html",
-        {"form": form},
-    ).content.decode()
-
-    # Générer le fragment de statut
-    statut_context = {"statut": "inconnu"}
-
-    if siren and len(siren) == 9:
-        try:
-            entreprise = Entreprise.objects.get(siren=siren)
-
-            # Vérifier si le conseiller est déjà rattaché
-            if Habilitation.existe(entreprise, request.user):
-                statut_context = {
-                    "statut": "deja_rattache",
-                    "entreprise": entreprise,
-                }
-            elif entreprise.a_proprietaire_non_conseiller:
-                statut_context = {
-                    "statut": "avec_proprietaire",
-                    "entreprise": entreprise,
-                }
-            else:
-                statut_context = {
-                    "statut": "sans_proprietaire",
-                    "entreprise": entreprise,
-                    "form": AjoutEntrepriseConseillerForm(),
-                }
-        except Entreprise.DoesNotExist:
-            statut_context = {
-                "statut": "a_creer",
-                "siren": siren,
-                "form": AjoutEntrepriseConseillerForm(),
-            }
-
-    statut_html = render(
-        request,
-        "users/fragments/statut_entreprise.html",
-        statut_context,
-    ).content.decode()
-
-    # Combiner tous les fragments avec OOB swap
-    oob_statut = f'<div id="statut-entreprise-container" hx-swap-oob="innerHTML">{statut_html}</div>'
-    response_html = f"{siren_html}\n{oob_statut}\n"
-
-    return HttpResponse(response_html)
 
 
 def _envoie_email_invitation_proprietaire_tiers(request, invitation):
