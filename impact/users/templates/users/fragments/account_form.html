@@ -1,0 +1,36 @@
+<form action="{% url 'users:account' %}" id="account-form" method="post"
+      hx-post="{% url 'users:preremplissage_formulaire_compte'%}"
+
+      hx-trigger="change from:#id_is_conseiller_rse"
+      hx-target="#account-form"
+      hx-swap="innerHTML">
+
+    <p>Sauf mention contraire “(optionnel)” dans le label, tous les champs sont obligatoires.</p>
+    {% csrf_token %}
+    <h2 class="fr-h6">Informations personnelles</h2>
+    <fieldset class="fr-fieldset" aria-label="Modification des informations personnelles">
+        <div class="fr-fieldset__element">
+            {% include 'snippets/field.html' with field=account_form.prenom %}
+        </div>
+        <div class="fr-fieldset__element">
+            {% include 'snippets/field.html' with field=account_form.nom %}
+        </div>
+        {% if not proconnect %}
+            <div class="fr-fieldset__element">
+                {% include 'snippets/field.html' with field=account_form.email %}
+            </div>
+        {% endif %}
+        <div class="fr-fieldset__element">
+            {% include 'snippets/field.html' with field=account_form.is_conseiller_rse %}
+
+            {% if account_form.is_conseiller_rse.value %}
+                {% include 'snippets/field.html' with field=account_form.fonction_rse %}
+            {% endif %}
+        </div>
+
+        <div class="fr-fieldset__element">
+            {% include 'snippets/field.html' with field=account_form.reception_actualites %}
+        </div>
+    </fieldset>
+    <button type="submit" class="fr-btn fr-icon-pencil-line fr-btn--icon-left" name="action" value="update-account">Enregistrer</button>
+</form>

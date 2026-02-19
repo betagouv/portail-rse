@@ -11,42 +11,8 @@
         </div>
         <div class="fr-grid-row fr-grid-row--center fr-mt-2w">
             <div class="fr-col-12">
-                <form action="{% url 'users:account' %}" method="post">
-                    <p>Sauf mention contraire “(optionnel)” dans le label, tous les champs sont obligatoires.</p>
-                    {% csrf_token %}
-                    <h2 class="fr-h6">Informations personnelles</h2>
-                    <fieldset class="fr-fieldset" aria-label="Modification des informations personnelles">
-                        <div class="fr-fieldset__element">
-                            {% include 'snippets/field.html' with field=account_form.prenom %}
-                        </div>
-                        <div class="fr-fieldset__element">
-                            {% include 'snippets/field.html' with field=account_form.nom %}
-                        </div>
-                        {% if not proconnect %}
-                            <div class="fr-fieldset__element">
-                                {% include 'snippets/field.html' with field=account_form.email %}
-                            </div>
-                        {% endif %}
-                        <div class="fr-fieldset__element"
-                             hx-get="{% url 'users:preremplissage_etat_conseiller_rse'%}"
-                             hx-trigger="change from:#id_is_conseiller_rse"
-                             hx-target="#conseiller_rse"
-                             hx-vals='js:{"is_conseiller_rse": document.querySelector("#id_is_conseiller_rse").checked}'
-                             hx-swap="innerHTML">
-                            {% include 'snippets/field.html' with field=account_form.is_conseiller_rse %}
-                            <div id="conseiller_rse">
-                                {% if user.is_conseiller_rse %}
-                                    {% include 'snippets/field.html' with field=account_form.fonction_rse %}
-                                {% endif %}
-                            </div>
-                        </div>
+                {% include 'users/fragments/account_form.html' with account_form=account_form %}
 
-                        <div class="fr-fieldset__element">
-                            {% include 'snippets/field.html' with field=account_form.reception_actualites %}
-                        </div>
-                    </fieldset>
-                    <button type="submit" class="fr-btn fr-icon-pencil-line fr-btn--icon-left" name="action" value="update-account">Enregistrer</button>
-                </form>
                 {% if not proconnect %}
                     <form action="{% url 'users:account' %}" method="post" class="fr-mt-4w">
                         {% csrf_token %}

@@ -527,13 +527,12 @@ def _creer_invitation_proprietaire(request, entreprise, email_proprietaire):
 
 
 @login_required()
-def preremplissage_etat_conseiller_rse(request):
-    is_conseiller_rse = request.GET["is_conseiller_rse"] == "true"
-    account_form = UserEditionForm(instance=request.user)
+def preremplissage_formulaire_compte(request):
+    account_form = UserEditionForm(request.POST, instance=request.user)
     return render(
         request,
-        "users/fragments/etat_conseiller.html",
-        {"is_conseiller_rse": is_conseiller_rse, "account_form": account_form},
+        "users/fragments/account_form.html",
+        {"account_form": account_form},
     )
 
 

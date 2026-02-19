@@ -678,7 +678,9 @@ def test_echec_d_invitation_car_l_email_ne_correspond_pas(
     assert "L'e-mail ne correspond pas à l'invitation." in content, content
 
 
-def test_preremplissage_etat_conseiller_rse(client, db, entreprise_factory, alice):
+def test_htmx_affiche_facultativement_le_champ_fonction_rse_selon_l_etat_conseiller_rse(
+    client, db, entreprise_factory, alice
+):
     alice.is_conseiller_rse = True
     alice.fonction_rse = "auditeur"
     alice.save()
@@ -689,9 +691,7 @@ def test_preremplissage_etat_conseiller_rse(client, db, entreprise_factory, alic
     data = {
         "is_conseiller_rse": "true",
     }
-    response = client.get(
-        reverse("users:preremplissage_etat_conseiller_rse"), data=data
-    )
+    response = client.post(reverse("users:preremplissage_formulaire_compte"), data=data)
 
     assert response.status_code == 200
     assert "auditeur" in response.content.decode()
@@ -700,9 +700,7 @@ def test_preremplissage_etat_conseiller_rse(client, db, entreprise_factory, alic
     data = {
         "is_conseiller_rse": "false",
     }
-    response = client.get(
-        reverse("users:preremplissage_etat_conseiller_rse"), data=data
-    )
+    response = client.post(reverse("users:preremplissage_formulaire_compte"), data=data)
 
     assert response.status_code == 200
-    assert response.content.decode().strip() == ""
+    assert "auditeur" not in response.content.decode()
