@@ -138,11 +138,6 @@
                     <fieldset class="fr-fieldset" aria-label="Modification des informations personnelles">
 
                     <!-- Zone dynamique HTMX pour le statut de l'entreprise -->
-                        <div id="statut-entreprise-container" class="fr-fieldset__element">
-                            {% if statut %}
-                                {% include 'users/fragments/statut_entreprise.html' %}
-                            {% endif %}
-                        </div>
 
                         <div class="fr-fieldset__element">
                             {% include 'snippets/field.html' with field=form.email_futur_proprietaire %}
