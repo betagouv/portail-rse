@@ -128,7 +128,7 @@ def invitation(request, id_invitation, code):
     if invitation.est_expiree:
         messages.error(
             request,
-            "L'invitation est expirée. Vous devez demander une nouvelle invitation à un des propriétaires de l'entreprise sur Portail-RSE.",
+            "L'invitation est expirée. Vous devez demander une nouvelle invitation à un des propriétaires de l'entreprise sur Portail RSE.",
         )
         return redirect(reverse("erreur_terminale"))
     if not check_token(invitation, "invitation", code):
