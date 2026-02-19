@@ -18,7 +18,6 @@ from .views import PasswordResetConfirmView
 from .views import PasswordResetView
 from .views import post_login_dispatch
 from .views import preremplissage_formulaire_compte
-from .views import preremplissage_siren_conseiller
 from .views import tableau_de_bord_conseiller
 from users.views import confirm_email
 
@@ -95,12 +94,6 @@ urlpatterns = [
         "finaliser-invitation-proprietaire",
         finaliser_invitation_proprietaire,
         name="finaliser_invitation_proprietaire",
-    ),
-    # Route HTMX pour le formulaire conseiller
-    path(
-        "fragments/preremplissage-siren-conseiller",
-        preremplissage_siren_conseiller,
-        name="preremplissage_siren_conseiller",
     ),
     # Route HTMX pour la modification de compte
     path(
