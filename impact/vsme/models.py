@@ -320,12 +320,9 @@ class RapportVSME(TimestampedModel):
                     )
                 except ObjectDoesNotExist:
                     base_consolidee = False
-                explication_non_applicable = (
-                    "l'entreprise n'a pas sélectionné une base consolidée dans l'indicateur 'Type de périmètre'"
-                    if not base_consolidee
-                    else ""
-                )
-                return (base_consolidee, explication_non_applicable)
+                if not base_consolidee:
+                    explication_non_applicable = "l'entreprise n'a pas sélectionné une base consolidée dans l'indicateur 'Type de périmètre'"
+                    return (False, explication_non_applicable)
             case ["B2", "26", p]:  # indicateurs spécifiques aux coopératives
                 indicateur_forme_juridique = "B1-24-e-i"
                 try:
@@ -337,26 +334,20 @@ class RapportVSME(TimestampedModel):
                     ) or forme_juridique.get("forme_juridique") in ("51", "63")
                 except ObjectDoesNotExist:
                     est_cooperative = False
-                B1_url = reverse(
-                    "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
-                )
-                explication_non_applicable = (
-                    f"la forme juridique renseignée par l'entreprise dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur 'Forme juridique' de B1</a> n'est pas une coopérative"
-                    if not est_cooperative
-                    else ""
-                )
-                return (est_cooperative, explication_non_applicable)
+                if not est_cooperative:
+                    B1_url = reverse(
+                        "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
+                    )
+                    explication_non_applicable = f"la forme juridique renseignée par l'entreprise dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur 'Forme juridique' de B1</a> n'est pas une coopérative"
+                    return (False, explication_non_applicable)
             case ["B8", "39", "c"]:  # indicateur effectifs par pays
                 plusieurs_pays_d_exercice = len(self.pays) > 1
-                B1_url = reverse(
-                    "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
-                )
-                explication_non_applicable = (
-                    f"l'entreprise n'a pas renseigné plusieurs pays d'exercice dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur 'Pays d'exercice' de B1</a>"
-                    if not plusieurs_pays_d_exercice
-                    else ""
-                )
-                return (plusieurs_pays_d_exercice, explication_non_applicable)
+                if not plusieurs_pays_d_exercice:
+                    B1_url = reverse(
+                        "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
+                    )
+                    explication_non_applicable = f"l'entreprise n'a pas renseigné plusieurs pays d'exercice dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur 'Pays d'exercice' de B1</a>"
+                    return (False, explication_non_applicable)
             case ["C5", _]:  # indicateurs supplémentaires des effectifs
                 nombre_salaries = self.nombre_salaries
                 if nombre_salaries is not None and nombre_salaries < 50:
@@ -365,17 +356,12 @@ class RapportVSME(TimestampedModel):
                     )
                     explication_non_applicable = f"le nombre de salariés renseigné dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur 'Nombre de salariés' de B1</a> est inférieur à 50"
                     return (False, explication_non_applicable)
-                else:
-                    return (True, "")
             case ["C4", "58"]:  # indicateur impacts financiers des risques climatiques
                 risques_climatiques = self.risques_climatiques
                 if not risques_climatiques:
                     explication_non_applicable = f"l'entreprise n'a pas renseigné de risque climatique dans l'indicateur 'Aléas et risques climatiques recensés'"
                     return (False, explication_non_applicable)
-                else:
-                    return (True, "")
-            case _:
-                return (True, "")
+        return (True, "")
 
     def indicateurs_completes_par_exigence(self, exigence_de_publication):
         return self.indicateurs.filter(
