@@ -1,3 +1,5 @@
+from django.core.exceptions import ObjectDoesNotExist
+
 from .htmx import is_htmx
 from users.models import User
 
@@ -26,7 +28,10 @@ class ExtendUserMiddleware:
             request.entreprises = request.user.entreprise_set.all()
 
             if entreprise := request.session.get("entreprise"):
-                request.entreprise = request.entreprises.get(siren=entreprise)
+                try:
+                    request.entreprise = request.entreprises.get(siren=entreprise)
+                except ObjectDoesNotExist:
+                    pass
 
         response = self.get_response(request)
 
