@@ -792,6 +792,73 @@ def test_telechargement_d_un_rapport_vsme_C1_absent_si_choix_module_base(
     assert "C1" not in workbook.sheetnames
 
 
+def test_telechargement_d_un_rapport_vsme_C4(client, rapport_vsme, alice):
+    rapport_vsme.indicateurs.create(
+        schema_id="C4-57",
+        data={
+            "aleas_et_risques_climatiques": [
+                {
+                    "id_risque": 1,
+                    "description": "Risque 1",
+                    "methode_evaluation": "Méthode 1",
+                    "horizon_temporel": "court_terme",
+                    "actions_entreprises": "Lorem Ipsum",
+                },
+                {
+                    "id_risque": 2,
+                    "description": "Risque 2",
+                    "methode_evaluation": "Méthode 2",
+                    "horizon_temporel": "moyen_terme",
+                    "actions_entreprises": "Lorem Ipsum",
+                },
+            ],
+        },
+    )
+    rapport_vsme.indicateurs.create(
+        schema_id="C4-58",
+        data={
+            "impacts_financiers_risques_climatiques": {
+                "1": {
+                    "impacts_financiers": True,
+                    "description_impacts_financiers": "Lorem Ipsum",
+                    "niveau_risque": "moyen",
+                    "horizon": "moyen_terme",
+                },
+                "2": {
+                    "impacts_financiers": False,
+                    "description_impacts_financiers": "",
+                    "niveau_risque": "eleve",
+                    "horizon": "court_terme",
+                },
+            }
+        },
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook["C4"]
+    assert onglet["A4"].value == 1
+    assert onglet["B4"].value == "Risque 1"
+    assert onglet["C4"].value == "Méthode 1"
+    assert onglet["D4"].value == "Court terme"
+    assert onglet["E4"].value == "Lorem Ipsum"
+    assert onglet["F4"].value == "OUI"
+    assert onglet["G4"].value == "Lorem Ipsum"
+    assert onglet["H4"].value == "Moyen"
+    assert onglet["I4"].value == "Moyen terme"
+
+    assert onglet["A5"].value == 2
+    assert onglet["B5"].value == "Risque 2"
+    assert onglet["C5"].value == "Méthode 2"
+    assert onglet["D5"].value == "Moyen terme"
+    assert onglet["E5"].value == "Lorem Ipsum"
+    assert onglet["F5"].value == "NON"
+    assert not onglet["G5"].value
+    assert onglet["H5"].value == "Élevé"
+    assert onglet["I5"].value == "Court terme"
+
+
 def test_telechargement_d_un_rapport_vsme_C5(client, rapport_vsme, alice):
     rapport_vsme.indicateurs.create(
         schema_id="C5-59",
