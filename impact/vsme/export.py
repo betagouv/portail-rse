@@ -5,7 +5,6 @@ from openpyxl.utils.cell import coordinate_from_string
 from utils.categories_juridiques import CATEGORIES_JURIDIQUES_NIVEAU_II
 from utils.codes_nace import CODES_NACE
 from utils.pays import CODES_PAYS_ISO_3166_1
-from vsme.forms import NON_PERTINENT_FIELD_NAME
 from vsme.models import EXIGENCES_DE_PUBLICATION
 
 
@@ -90,9 +89,9 @@ def export_exigence_de_publication(
 
 
 def _export_indicateur(indicateur, worksheet, adresse_cellule_depart: str):
-    indicateur_data = indicateur.data
-    if indicateur_data.get(NON_PERTINENT_FIELD_NAME):
+    if indicateur.est_non_pertinent:
         return
+    indicateur_data = indicateur.data
     colonne_depart, ligne_depart = coordinate_from_string(adresse_cellule_depart)
     index_colonne_depart = column_index_from_string(colonne_depart)
     prochaine_cellule_destination = worksheet.cell(
