@@ -54,6 +54,8 @@ SCHEMA_ID_VERS_CELLULE = {
     "C1-47-b": "B4",
     "C1-47-c": "C4",
     "C1-47-d": "D4",
+    "C4-57": "A4",
+    "C4-58": "F4",
     "C5-59": "A4",
     "C5-60": "D4",
     "C6-61-ab": "A4",
@@ -194,6 +196,15 @@ def _export_tableau_lignes_fixes(champ, data, cellule_depart: Cell) -> Cell:
                     "nombre_salaries"
                 ]
             prochaine_cellule_destination = cellule_depart.offset(column=2)
+        case "RISQUES_CLIMATIQUES":
+            for offset_ligne, (id_risque, data_risque) in enumerate(data.items()):
+                for offset_colonne, colonne in enumerate(colonnes):
+                    _export_champ(
+                        colonne,
+                        data_risque[colonne["id"]],
+                        cellule_depart.offset(row=offset_ligne, column=offset_colonne),
+                    )
+            prochaine_cellule_destination = cellule_depart.offset(column=len(colonnes))
         case list():
             colonnes_ids = [colonne["id"] for colonne in colonnes]
             if len(colonnes_ids) == 1:
