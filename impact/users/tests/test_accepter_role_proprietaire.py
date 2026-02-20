@@ -31,25 +31,6 @@ def invitation_proprietaire_tiers(entreprise_factory, conseiller_rse):
 
 
 @pytest.mark.django_db
-def test_acces_page_acceptation_avec_token_valide(
-    client, futur_proprietaire, invitation_proprietaire_tiers
-):
-    """Un utilisateur peut acceder a la page d'acceptation avec un token valide."""
-    client.force_login(futur_proprietaire)
-    code = make_token(invitation_proprietaire_tiers, "invitation_proprietaire")
-
-    response = client.get(
-        reverse(
-            "users:accepter_role_proprietaire",
-            args=[invitation_proprietaire_tiers.id, code],
-        )
-    )
-
-    assert response.status_code == 200
-    assert "Accepter le rôle de propriétaire" in response.content.decode()
-
-
-@pytest.mark.django_db
 def test_acceptation_cree_habilitation_proprietaire(
     client, futur_proprietaire, invitation_proprietaire_tiers
 ):
@@ -57,11 +38,12 @@ def test_acceptation_cree_habilitation_proprietaire(
     client.force_login(futur_proprietaire)
     code = make_token(invitation_proprietaire_tiers, "invitation_proprietaire")
 
-    response = client.post(
+    response = client.get(
         reverse(
             "users:accepter_role_proprietaire",
             args=[invitation_proprietaire_tiers.id, code],
-        )
+        ),
+        follow=True,
     )
 
     # Verifier que l'habilitation a ete creee
@@ -77,6 +59,12 @@ def test_acceptation_cree_habilitation_proprietaire(
     invitation_proprietaire_tiers.refresh_from_db()
     assert invitation_proprietaire_tiers.date_acceptation is not None
 
+    assert response.status_code == 200
+    assert response.redirect_chain == [
+        (reverse("reglementations:tableau_de_bord", kwargs={"siren": "123456789"}), 302)
+    ]
+    assert "Vous êtes maintenant ajouté à l'entreprise" in response.content.decode()
+
 
 @pytest.mark.django_db
 def test_token_invalide_refuse(
@@ -89,10 +77,12 @@ def test_token_invalide_refuse(
         reverse(
             "users:accepter_role_proprietaire",
             args=[invitation_proprietaire_tiers.id, "invalid_token"],
-        )
+        ),
+        follow=True,
     )
 
-    assert response.status_code == 302
+    assert response.status_code == 200
+    assert response.redirect_chain == [(reverse("erreur_terminale"), 302)]
 
 
 @pytest.mark.django_db
@@ -105,10 +95,12 @@ def test_email_different_refuse(client, alice, invitation_proprietaire_tiers):
         reverse(
             "users:accepter_role_proprietaire",
             args=[invitation_proprietaire_tiers.id, code],
-        )
+        ),
+        follow=True,
     )
 
-    assert response.status_code == 302
+    assert response.status_code == 200
+    assert response.redirect_chain == [(reverse("erreur_terminale"), 302)]
 
 
 @pytest.mark.django_db
@@ -130,6 +122,10 @@ def test_invitation_deja_acceptee_redirige(
         follow=True,
     )
 
+    assert response.status_code == 200
+    assert response.redirect_chain == [
+        (reverse("reglementations:tableau_de_bord", kwargs={"siren": "123456789"}), 302)
+    ]
     assert "déjà été acceptée" in response.content.decode()
 
 
@@ -142,7 +138,9 @@ def test_invitation_inexistante_erreur(client, futur_proprietaire):
         reverse(
             "users:accepter_role_proprietaire",
             args=[99999, "some_code"],
-        )
+        ),
+        follow=True,
     )
 
-    assert response.status_code == 302
+    assert response.status_code == 200
+    assert response.redirect_chain == [(reverse("erreur_terminale"), 302)]

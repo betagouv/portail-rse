@@ -614,21 +614,15 @@ def accepter_role_proprietaire(request, id_invitation, code):
         )
         return redirect("reglementations:tableau_de_bord", invitation.entreprise.siren)
 
-    if request.method == "POST":
-        try:
-            invitation.accepter(request.user)
-            messages.success(
-                request,
-                f"Vous êtes maintenant propriétaire de l'entreprise {invitation.entreprise.denomination}.",
-            )
-            return redirect(
-                "reglementations:tableau_de_bord", invitation.entreprise.siren
-            )
-        except HabilitationError as exception:
-            messages.error(request, str(exception))
-
-    return render(
-        request,
-        "users/accepter_role_proprietaire.html",
-        {"invitation": invitation},
-    )
+    try:
+        invitation.accepter(request.user)
+        messages.success(
+            request,
+            f"Vous êtes maintenant ajouté à l'entreprise {invitation.entreprise.denomination}.",
+        )
+        return redirect("reglementations:tableau_de_bord", invitation.entreprise.siren)
+    except HabilitationError as exception:
+        messages.error(request, "Une erreur lors de l'acceptation est survenue.")
+    except Exception as exception:
+        messages.error(request, "Une erreur est survenue.")
+    return redirect(reverse("erreur_terminale"))
