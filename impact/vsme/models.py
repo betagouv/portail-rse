@@ -15,6 +15,7 @@ from django.utils.functional import cached_property
 
 from utils.combustibles import COMBUSTIBLES
 from utils.models import TimestampedModel
+from vsme.forms import NON_PERTINENT_FIELD_NAME
 
 
 ANNEE_DEBUT_VSME = 2020  # Première année où les rapports VSME peuvent être créés
@@ -216,6 +217,8 @@ EXIGENCES_DE_PUBLICATION = {
         "C4",
         "Risques climatiques",
         Categorie.ENVIRONNEMENT,
+        "https://portail-rse.beta.gouv.fr/vsme/c4-risques-climatiques/",
+        remplissable=True,
     ),
     "C5": ExigenceDePublication(
         "C5",
@@ -316,12 +319,9 @@ class RapportVSME(TimestampedModel):
                     )
                 except ObjectDoesNotExist:
                     base_consolidee = False
-                explication_non_applicable = (
-                    "l'entreprise n'a pas sélectionné une base consolidée dans l'indicateur 'Type de périmètre'"
-                    if not base_consolidee
-                    else ""
-                )
-                return (base_consolidee, explication_non_applicable)
+                if not base_consolidee:
+                    explication_non_applicable = "l'entreprise n'a pas sélectionné une base consolidée dans l'indicateur 'Type de périmètre'"
+                    return (False, explication_non_applicable)
             case ["B2", "26", p]:  # indicateurs spécifiques aux coopératives
                 indicateur_forme_juridique = "B1-24-e-i"
                 try:
@@ -333,26 +333,20 @@ class RapportVSME(TimestampedModel):
                     ) or forme_juridique.get("forme_juridique") in ("51", "63")
                 except ObjectDoesNotExist:
                     est_cooperative = False
-                B1_url = reverse(
-                    "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
-                )
-                explication_non_applicable = (
-                    f"la forme juridique renseignée par l'entreprise dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur 'Forme juridique' de B1</a> n'est pas une coopérative"
-                    if not est_cooperative
-                    else ""
-                )
-                return (est_cooperative, explication_non_applicable)
+                if not est_cooperative:
+                    B1_url = reverse(
+                        "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
+                    )
+                    explication_non_applicable = f"la forme juridique renseignée par l'entreprise dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur 'Forme juridique' de B1</a> n'est pas une coopérative"
+                    return (False, explication_non_applicable)
             case ["B8", "39", "c"]:  # indicateur effectifs par pays
                 plusieurs_pays_d_exercice = len(self.pays) > 1
-                B1_url = reverse(
-                    "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
-                )
-                explication_non_applicable = (
-                    f"l'entreprise n'a pas renseigné plusieurs pays d'exercice dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur 'Pays d'exercice' de B1</a>"
-                    if not plusieurs_pays_d_exercice
-                    else ""
-                )
-                return (plusieurs_pays_d_exercice, explication_non_applicable)
+                if not plusieurs_pays_d_exercice:
+                    B1_url = reverse(
+                        "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
+                    )
+                    explication_non_applicable = f"l'entreprise n'a pas renseigné plusieurs pays d'exercice dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur 'Pays d'exercice' de B1</a>"
+                    return (False, explication_non_applicable)
             case ["C5", _]:  # indicateurs supplémentaires des effectifs
                 nombre_salaries = self.nombre_salaries
                 if nombre_salaries is not None and nombre_salaries < 50:
@@ -361,10 +355,12 @@ class RapportVSME(TimestampedModel):
                     )
                     explication_non_applicable = f"le nombre de salariés renseigné dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur 'Nombre de salariés' de B1</a> est inférieur à 50"
                     return (False, explication_non_applicable)
-                else:
-                    return (True, "")
-            case _:
-                return (True, "")
+            case ["C4", "58"]:  # indicateur impacts financiers des risques climatiques
+                risques_climatiques = self.risques_climatiques
+                if not risques_climatiques:
+                    explication_non_applicable = f"l'entreprise n'a pas renseigné de risque climatique dans l'indicateur 'Aléas et risques climatiques recensés'"
+                    return (False, explication_non_applicable)
+        return (True, "")
 
     def indicateurs_completes_par_exigence(self, exigence_de_publication):
         return self.indicateurs.filter(
@@ -473,6 +469,30 @@ class RapportVSME(TimestampedModel):
 
     nombre_salaries = cached_property(get_nombre_salaries)
 
+    def get_risques_climatiques(self) -> list:
+        indicateur_schema_id = "C4-57"
+        try:
+            indicateur_risques_climatiques = self.indicateurs.get(
+                schema_id=indicateur_schema_id
+            )
+            if indicateur_risques_climatiques.est_non_pertinent:
+                return []
+            risques_climatiques = indicateur_risques_climatiques.data.get(
+                "aleas_et_risques_climatiques", []
+            )
+            risques_climatiques = [
+                {
+                    "id": risque["id_risque"],
+                    "description": risque["description"],
+                }
+                for risque in risques_climatiques
+            ]
+        except ObjectDoesNotExist:
+            risques_climatiques = []
+        return risques_climatiques
+
+    risques_climatiques = cached_property(get_risques_climatiques)
+
 
 class Indicateur(TimestampedModel):
     rapport_vsme = models.ForeignKey(
@@ -551,6 +571,10 @@ class Indicateur(TimestampedModel):
     @data.setter
     def data(self, cleaned_data):
         self._data = cleaned_data
+
+    @property
+    def est_non_pertinent(self) -> bool:
+        return bool(self._data and self._data.get(NON_PERTINENT_FIELD_NAME))
 
 
 def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
