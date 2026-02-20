@@ -16,6 +16,7 @@ from django.utils.functional import cached_property
 
 from utils.combustibles import COMBUSTIBLES
 from utils.models import TimestampedModel
+from vsme.forms import NON_PERTINENT_FIELD_NAME
 
 
 ANNEE_DEBUT_VSME = 2020  # Première année où les rapports VSME peuvent être créés
@@ -366,6 +367,13 @@ class RapportVSME(TimestampedModel):
                     return (False, explication_non_applicable)
                 else:
                     return (True, "")
+            case ["C4", "58"]:  # indicateur impacts financiers des risques climatiques
+                risques_climatiques = self.risques_climatiques
+                if not risques_climatiques:
+                    explication_non_applicable = f"l'entreprise n'a pas renseigné de risque climatique dans l'indicateur 'Aléas et risques climatiques recensés'"
+                    return (False, explication_non_applicable)
+                else:
+                    return (True, "")
             case _:
                 return (True, "")
 
@@ -477,11 +485,16 @@ class RapportVSME(TimestampedModel):
     nombre_salaries = cached_property(get_nombre_salaries)
 
     def get_risques_climatiques(self) -> list:
-        indicateur_risques_climatiques = "C4-57"
+        indicateur_schema_id = "C4-57"
         try:
-            risques_climatiques = self.indicateurs.get(
-                schema_id=indicateur_risques_climatiques
-            ).data.get("aleas_et_risques_climatiques", [])
+            indicateur_risques_climatiques = self.indicateurs.get(
+                schema_id=indicateur_schema_id
+            )
+            if indicateur_risques_climatiques.est_non_pertinent:
+                return []
+            risques_climatiques = indicateur_risques_climatiques.data.get(
+                "aleas_et_risques_climatiques", []
+            )
             risques_climatiques = [
                 {
                     "id": risque["id_risque"],
@@ -573,6 +586,10 @@ class Indicateur(TimestampedModel):
     @data.setter
     def data(self, cleaned_data):
         self._data = cleaned_data
+
+    @property
+    def est_non_pertinent(self) -> bool:
+        return bool(self._data and self._data.get(NON_PERTINENT_FIELD_NAME))
 
 
 def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
