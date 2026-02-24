@@ -1,3 +1,4 @@
+import copy
 import json
 import os
 from dataclasses import dataclass
@@ -514,8 +515,8 @@ class Indicateur(TimestampedModel):
         return schema_exigence[self.schema_id]
 
     @property
-    def data(self):
-        data = self._data
+    def data(self) -> dict:
+        data = copy.deepcopy(self._data) if self._data else {}
         # décode les champs de type nombre_decimal qui sont encodés en string lors du stockage
         for champ in self.schema["champs"]:
             match champ["type"]:

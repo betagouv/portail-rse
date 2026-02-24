@@ -1,3 +1,4 @@
+import copy
 from decimal import Decimal
 
 import pytest
@@ -85,6 +86,61 @@ def test_nombre_decimal_dans_les_données_non_stockees_d_un_indicateur(rapport_v
     ][0]["densite"]
     assert isinstance(densité_décodée, Decimal)
     assert densité_décodée == Decimal("0.85")
+
+
+def test_donnees_calculees_ajoutees_dans_les_données_d_un_indicateur_à_la_lecture_mais_pas_en_ecriture(
+    rapport_vsme,
+):
+    raw_data = {
+        "consommation_energie_par_combustible": [
+            {
+                "type_combustible": "Anthracite",
+                "quantite": "10",
+            },
+            {
+                "type_combustible": "Gas/Diesel oil",
+                "quantite": "103300",
+            },
+        ],
+    }
+
+    indicateur = rapport_vsme.indicateurs.create(
+        schema_id="B3-29-p2", data=copy.deepcopy(raw_data)
+    )
+
+    assert indicateur._data == raw_data
+    assert indicateur.data == {
+        "consommation_energie_par_combustible": [
+            {
+                "type_combustible": "Anthracite",
+                "etat_chimique": "solide",
+                "etat_renouvelabilite": "non_renouvelable",
+                "densite": "n/a",
+                "NCV": Decimal("26.70"),
+                "quantite": Decimal("10"),
+                "unite": "t",
+                "energie": Decimal("74.17"),
+            },
+            {
+                "type_combustible": "Gas/Diesel oil",
+                "etat_chimique": "liquide",
+                "etat_renouvelabilite": "non_renouvelable",
+                "densite": Decimal("0.84"),
+                "NCV": Decimal("43.00"),
+                "quantite": Decimal("103300"),
+                "unite": "L",
+                "energie": Decimal("1036.44"),
+            },
+        ],
+        "consommation_combustible_par_type": {
+            "consommation_energie": {
+                "renouvelable": 0,
+                "non_renouvelable": Decimal("1110.61"),
+                "total": Decimal("1110.61"),
+            }
+        },
+    }  # les données calculées sont ajoutées à la lecture
+    assert indicateur._data == raw_data  # mais les données brutes restent inchangées
 
 
 @pytest.mark.parametrize("indicateur_schema_id", ["C5-59", "C5-60"])
