@@ -901,6 +901,27 @@ def test_telechargement_d_un_rapport_vsme_C9(client, rapport_vsme, alice):
     assert onglet["A4"].value == 1
 
 
+def test_telechargement_d_un_rapport_vsme_plusieurs_exigences_de_publications(
+    client, rapport_vsme, alice
+):
+    rapport_vsme.indicateurs.create(
+        schema_id="B1-24-a",
+        data={"choix_module": "complet"},
+    )
+    rapport_vsme.indicateurs.create(
+        schema_id="B11-43-p1",
+        data={"non_pertinent": False, "nombre_condamnations": 0},
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet_B1 = workbook["B1"]
+    onglet_B11 = workbook["B11"]
+    assert onglet_B1["A4"].value == "Module complet"
+    assert onglet_B11["A4"].value == 0
+
+
 def test_telechargement_d_un_rapport_vsme_inexistant(client, entreprise_factory, alice):
     entreprise = entreprise_factory(utilisateur=alice)
     client.force_login(alice)
