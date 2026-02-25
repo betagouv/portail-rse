@@ -306,7 +306,7 @@ class RapportVSME(TimestampedModel):
                 B1_url = reverse(
                     "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
                 )
-                explication_non_applicable = f"l'entreprise a sélectionné uniquement le module de base dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur 'Base d'établissement' de B1</a>"
+                explication_non_applicable = f"l'entreprise a sélectionné uniquement le module de base dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur « Base d'établissement » de B1</a>"
                 return (False, explication_non_applicable)
         match indicateur_schema_id.split("-"):
             case ["B1", "24", "d"]:  # indicateur liste filiales
@@ -321,7 +321,10 @@ class RapportVSME(TimestampedModel):
                 except ObjectDoesNotExist:
                     base_consolidee = False
                 if not base_consolidee:
-                    explication_non_applicable = "l'entreprise n'a pas sélectionné une base consolidée dans l'indicateur 'Type de périmètre'"
+                    B1_url = reverse(
+                        "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
+                    )
+                    explication_non_applicable = f"l'entreprise n'a pas sélectionné une base consolidée dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur « Type de périmètre » de B1</a>"
                     return (False, explication_non_applicable)
             case ["B2", "26", p]:  # indicateurs spécifiques aux coopératives
                 indicateur_forme_juridique = "B1-24-e-i"
@@ -338,7 +341,7 @@ class RapportVSME(TimestampedModel):
                     B1_url = reverse(
                         "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
                     )
-                    explication_non_applicable = f"la forme juridique renseignée par l'entreprise dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur 'Forme juridique' de B1</a> n'est pas une coopérative"
+                    explication_non_applicable = f"la forme juridique renseignée par l'entreprise dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur « Forme juridique » de B1</a> n'est pas une coopérative"
                     return (False, explication_non_applicable)
             case ["B8", "39", "c"]:  # indicateur effectifs par pays
                 plusieurs_pays_d_exercice = len(self.pays) > 1
@@ -346,7 +349,7 @@ class RapportVSME(TimestampedModel):
                     B1_url = reverse(
                         "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
                     )
-                    explication_non_applicable = f"l'entreprise n'a pas renseigné plusieurs pays d'exercice dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur 'Pays d'exercice' de B1</a>"
+                    explication_non_applicable = f"l'entreprise n'a pas renseigné plusieurs pays d'exercice dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur « Pays d'exercice » de B1</a>"
                     return (False, explication_non_applicable)
             case ["C5", _]:  # indicateurs supplémentaires des effectifs
                 nombre_salaries = self.nombre_salaries
@@ -354,12 +357,15 @@ class RapportVSME(TimestampedModel):
                     B1_url = reverse(
                         "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
                     )
-                    explication_non_applicable = f"le nombre de salariés renseigné dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur 'Nombre de salariés' de B1</a> est inférieur à 50"
+                    explication_non_applicable = f"le nombre de salariés renseigné dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur « Nombre de salariés » de B1</a> est inférieur à 50"
                     return (False, explication_non_applicable)
             case ["C4", "58"]:  # indicateur impacts financiers des risques climatiques
                 risques_climatiques = self.risques_climatiques
                 if not risques_climatiques:
-                    explication_non_applicable = f"l'entreprise n'a pas renseigné de risque climatique dans l'indicateur 'Aléas et risques climatiques recensés'"
+                    C4_url = reverse(
+                        "vsme:exigence_de_publication_vsme", args=[self.id, "C4"]
+                    )
+                    explication_non_applicable = f"l'entreprise n'a pas renseigné de risque climatique dans <a class='fr-link' href='{C4_url}' target='_blank' rel='noopener external'>l'indicateur « Aléas et risques climatiques recensés » de C4</a>"
                     return (False, explication_non_applicable)
         return (True, "")
 
