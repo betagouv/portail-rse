@@ -3,6 +3,7 @@ from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
 from unittest import mock
+from uuid import uuid4
 
 import pytest
 from django.conf import settings
@@ -334,7 +335,9 @@ def alice_with_password(alice):
     return alice
 
 
-def test_edit_account_info(client, alice_with_password):
+def test_edit_account_info_when_user_authenticated_by_password(
+    client, alice_with_password
+):
     alice = alice_with_password
     client.force_login(alice)
 
@@ -363,6 +366,39 @@ def test_edit_account_info(client, alice_with_password):
     assert alice.is_conseiller_rse
     assert alice.fonction_rse == "auditeur"
     assert alice.check_password("Passw0rd!123")
+
+
+def test_edit_account_info_when_user_authenticated_by_proconnect(client, alice):
+    alice.oidc_sub_id = str(uuid4())
+    alice.set_unusable_password()
+    alice.save()
+    client.force_login(alice)
+    EMAIL = alice.email
+
+    data = {
+        "prenom": "Bob",
+        "nom": "Dylan",
+        "reception_actualites": "checked",
+        "is_conseiller_rse": "checked",
+        "fonction_rse": "auditeur",
+        "action": "update-account",
+    }
+
+    response = client.post("/mon-compte", data=data, follow=True)
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [(reverse("users:account"), 302)]
+
+    content = response.content.decode("utf-8")
+    assert "Votre compte a bien été modifié." in content
+
+    alice.refresh_from_db()
+    assert alice.prenom == "Bob"
+    assert alice.nom == "Dylan"
+    assert alice.email == EMAIL
+    assert alice.reception_actualites
+    assert alice.is_conseiller_rse
+    assert alice.fonction_rse == "auditeur"
 
 
 def test_edit_email(client, alice_with_password, mailoutbox):

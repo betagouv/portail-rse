@@ -15,6 +15,7 @@ from django.urls import reverse
 
 from .forms import AjoutEntrepriseConseillerForm
 from .forms import ChoixTypeUtilisateurForm
+from .forms import ProconnectUserEditionForm
 from .forms import UserCreationForm
 from .forms import UserEditionForm
 from .forms import UserInvitationForm
@@ -118,6 +119,7 @@ def confirm_email(request, uidb64, token):
 
 
 def invitation(request, id_invitation, code):
+    """L'invité arrive sur cette page grâce au lien contenu dans l'e-mail qu'il a reçu."""
     try:
         invitation = Invitation.objects.get(id=id_invitation)
     except Invitation.DoesNotExist:
@@ -270,7 +272,10 @@ def deconnexion(request):
 
 @login_required()
 def account(request):
-    account_form = UserEditionForm(instance=request.user)
+    if request.user.created_with_oidc:
+        account_form = ProconnectUserEditionForm(instance=request.user)
+    else:
+        account_form = UserEditionForm(instance=request.user)
     password_form = UserPasswordForm(instance=request.user)
     if request.POST:
         if request.POST["action"] == "update-password":
@@ -288,7 +293,12 @@ def account(request):
                 )
                 messages.error(request, error_message)
         else:
-            account_form = UserEditionForm(request.POST, instance=request.user)
+            if request.user.created_with_oidc:
+                account_form = ProconnectUserEditionForm(
+                    request.POST, instance=request.user
+                )
+            else:
+                account_form = UserEditionForm(request.POST, instance=request.user)
             if account_form.is_valid():
                 account_form.save()
                 if "email" in account_form.changed_data:
