@@ -121,7 +121,7 @@ def message_erreur_proprietaires(proprietaires_presents):
     return message
 
 
-class UserEditionForm(DsfrForm, forms.ModelForm):
+class _AbstractUserEditionForm(DsfrForm, forms.ModelForm):
     is_conseiller_rse = forms.BooleanField(
         required=False, label="Je suis conseiller RSE"
     )
@@ -136,7 +136,6 @@ class UserEditionForm(DsfrForm, forms.ModelForm):
         fields = (
             "prenom",
             "nom",
-            "email",
             "is_conseiller_rse",
             "fonction_rse",
             "reception_actualites",
@@ -144,6 +143,21 @@ class UserEditionForm(DsfrForm, forms.ModelForm):
         labels = {
             "reception_actualites": "Je souhaite recevoir les actualités du Portail RSE (optionnel)",
         }
+
+
+class UserEditionForm(_AbstractUserEditionForm):
+
+    class Meta:
+        model = User
+        fields = _AbstractUserEditionForm.Meta.fields + ("email",)
+        labels = _AbstractUserEditionForm.Meta.labels
+
+
+class ProconnectUserEditionForm(_AbstractUserEditionForm):
+    class Meta:
+        model = User
+        fields = _AbstractUserEditionForm.Meta.fields
+        labels = _AbstractUserEditionForm.Meta.labels
 
 
 class PasswordResetForm(DsfrForm, BasePasswordResetForm):

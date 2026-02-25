@@ -15,11 +15,13 @@
         <div class="fr-fieldset__element">
             {% include 'snippets/field.html' with field=account_form.nom %}
         </div>
-        {% if not proconnect %}
-            <div class="fr-fieldset__element">
+        <div class="fr-fieldset__element">
+            {% if user.created_with_oidc %}
+                Email : {{ request.user.email }}
+            {% else %}
                 {% include 'snippets/field.html' with field=account_form.email %}
-            </div>
-        {% endif %}
+            {% endif %}
+        </div>
         <div class="fr-fieldset__element">
             {% include 'snippets/field.html' with field=account_form.is_conseiller_rse %}
 
