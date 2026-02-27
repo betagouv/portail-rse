@@ -11,7 +11,6 @@ from .views import account
 from .views import choix_type_utilisateur
 from .views import creation
 from .views import deconnexion
-from .views import finaliser_invitation_proprietaire
 from .views import invitation
 from .views import invitation_proprietaire_tiers
 from .views import PasswordResetConfirmView
@@ -89,11 +88,6 @@ urlpatterns = [
         "invitation-proprietaire/<int:id_invitation>/<str:code>",
         invitation_proprietaire_tiers,
         name="invitation_proprietaire_tiers",
-    ),
-    path(
-        "finaliser-invitation-proprietaire",
-        finaliser_invitation_proprietaire,
-        name="finaliser_invitation_proprietaire",
     ),
     # Route HTMX pour la modification de compte
     path(

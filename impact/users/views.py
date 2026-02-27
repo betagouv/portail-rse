@@ -206,44 +206,13 @@ def invitation_proprietaire_tiers(request, id_invitation, code):
         # Rediriger vers acceptation directe
         return redirect("users:accepter_role_proprietaire", id_invitation, code)
 
-    # Stocker contexte en session et rediriger vers ProConnect
-    request.session["pending_invitation_proprietaire"] = {
-        "id": invitation.id,
-        "code": code,
-        "email": invitation.email,
-        "entreprise_siren": invitation.entreprise.siren,
-    }
+    # Rediriger vers ProConnect
     request.session["oidc_login_next"] = reverse(
-        "users:finaliser_invitation_proprietaire"
+        "users:accepter_role_proprietaire", args=[id_invitation, code]
     )
     request.session.save()
 
     return redirect("oidc_authentication_init")
-
-
-@login_required()
-def finaliser_invitation_proprietaire(request):
-    """Finalise l'invitation propriétaire après authentification ProConnect."""
-    pending = request.session.pop("pending_invitation_proprietaire", None)
-    if not pending:
-        messages.error(request, "Aucune invitation en attente.")
-        return redirect("reglementations:tableau_de_bord")
-
-    # Vérifier que l'email ProConnect correspond à l'invitation
-    if request.user.email != pending["email"]:
-        messages.error(
-            request,
-            f"L'adresse e-mail de votre compte ProConnect ({request.user.email}) "
-            f"ne correspond pas à l'invitation ({pending['email']}).",
-        )
-        return redirect(reverse("erreur_terminale"))
-
-    # Rediriger vers page d'acceptation existante
-    return redirect(
-        "users:accepter_role_proprietaire",
-        pending["id"],
-        pending["code"],
-    )
 
 
 def deconnexion(request):
