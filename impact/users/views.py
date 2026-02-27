@@ -214,7 +214,7 @@ def invitation_proprietaire_tiers(request, id_invitation, code):
         "entreprise_siren": invitation.entreprise.siren,
     }
     request.session["oidc_login_next"] = reverse(
-        "users:finaliser_invitation_proprietaire"
+        "users:accepter_role_proprietaire", args=[id_invitation, code]
     )
     request.session.save()
 
