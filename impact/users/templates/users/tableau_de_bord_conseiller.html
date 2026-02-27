@@ -92,7 +92,7 @@
                                         <tbody>
                                             {% for item in habilitations_enrichies %}
                                                 <tr>
-                                                    <td>{{ item.entreprise.denomination }}</td>
+                                                    <td class="fr-cell--multiline">{{ item.entreprise.denomination }}</td>
                                                     <td>{{ item.entreprise.siren }}</td>
                                                     <td>
                                                         <span class="fr-text--sm">
@@ -151,20 +151,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-    // Réinitialiser le statut quand le champ de recherche est vidé
-    // Utilise la délégation d'événements pour fonctionner après les swaps HTMX
-        document.addEventListener('input', function(event) {
-            if (event.target && event.target.id === 'id_recherche') {
-                if (event.target.value.trim() === '') {
-                // Appeler le préremplissage avec des valeurs vides pour réinitialiser
-                    htmx.ajax('GET', '{% url "users:preremplissage_siren_conseiller" %}?siren=&denomination=', {
-                        target: '#htmx-preremplissage-target',
-                        swap: 'outerHTML'
-                    });
-                }
-            }
-        });
-    </script>
 {% endblock %}

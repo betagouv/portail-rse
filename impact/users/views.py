@@ -9,20 +9,19 @@ from django.contrib.auth.views import (
 from django.contrib.auth.views import PasswordResetView as BasePasswordResetView
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailMessage
-from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
 
 from .forms import AjoutEntrepriseConseillerForm
 from .forms import ChoixTypeUtilisateurForm
+from .forms import ProconnectUserEditionForm
 from .forms import UserCreationForm
 from .forms import UserEditionForm
 from .forms import UserInvitationForm
 from .forms import UserPasswordForm
 from .models import User
 from api.exceptions import APIError
-from entreprises.forms import PreremplissageSirenForm
 from entreprises.models import Entreprise
 from habilitations.enums import UserRole
 from habilitations.models import Habilitation
@@ -120,6 +119,7 @@ def confirm_email(request, uidb64, token):
 
 
 def invitation(request, id_invitation, code):
+    """L'invité arrive sur cette page grâce au lien contenu dans l'e-mail qu'il a reçu."""
     try:
         invitation = Invitation.objects.get(id=id_invitation)
     except Invitation.DoesNotExist:
@@ -272,7 +272,10 @@ def deconnexion(request):
 
 @login_required()
 def account(request):
-    account_form = UserEditionForm(instance=request.user)
+    if request.user.created_with_oidc:
+        account_form = ProconnectUserEditionForm(instance=request.user)
+    else:
+        account_form = UserEditionForm(instance=request.user)
     password_form = UserPasswordForm(instance=request.user)
     if request.POST:
         if request.POST["action"] == "update-password":
@@ -290,7 +293,12 @@ def account(request):
                 )
                 messages.error(request, error_message)
         else:
-            account_form = UserEditionForm(request.POST, instance=request.user)
+            if request.user.created_with_oidc:
+                account_form = ProconnectUserEditionForm(
+                    request.POST, instance=request.user
+                )
+            else:
+                account_form = UserEditionForm(request.POST, instance=request.user)
             if account_form.is_valid():
                 account_form.save()
                 if "email" in account_form.changed_data:
@@ -504,6 +512,8 @@ def tableau_de_bord_conseiller(request):
                 messages.error(request, str(exception))
             except HabilitationError as exception:
                 messages.error(request, str(exception))
+        else:
+            messages.error(request, "Le formulaire est incomplet.")
     else:
         form = AjoutEntrepriseConseillerForm()
 
@@ -534,64 +544,6 @@ def preremplissage_formulaire_compte(request):
         "users/fragments/account_form.html",
         {"account_form": account_form},
     )
-
-
-@login_required()
-def preremplissage_siren_conseiller(request):
-    """Preremplissage SIREN pour conseillers avec mise à jour OOB du statut."""
-    siren = request.GET.get("siren", "").strip()
-    denomination = request.GET.get("denomination", "")
-
-    # Générer le fragment du champ SIREN (template spécifique conseiller)
-    form = PreremplissageSirenForm({"siren": siren, "denomination": denomination})
-    siren_html = render(
-        request,
-        "users/fragments/siren_field_conseiller.html",
-        {"form": form},
-    ).content.decode()
-
-    # Générer le fragment de statut
-    statut_context = {"statut": "inconnu"}
-
-    if siren and len(siren) == 9:
-        try:
-            entreprise = Entreprise.objects.get(siren=siren)
-
-            # Vérifier si le conseiller est déjà rattaché
-            if Habilitation.existe(entreprise, request.user):
-                statut_context = {
-                    "statut": "deja_rattache",
-                    "entreprise": entreprise,
-                }
-            elif entreprise.a_proprietaire_non_conseiller:
-                statut_context = {
-                    "statut": "avec_proprietaire",
-                    "entreprise": entreprise,
-                }
-            else:
-                statut_context = {
-                    "statut": "sans_proprietaire",
-                    "entreprise": entreprise,
-                    "form": AjoutEntrepriseConseillerForm(),
-                }
-        except Entreprise.DoesNotExist:
-            statut_context = {
-                "statut": "a_creer",
-                "siren": siren,
-                "form": AjoutEntrepriseConseillerForm(),
-            }
-
-    statut_html = render(
-        request,
-        "users/fragments/statut_entreprise.html",
-        statut_context,
-    ).content.decode()
-
-    # Combiner tous les fragments avec OOB swap
-    oob_statut = f'<div id="statut-entreprise-container" hx-swap-oob="innerHTML">{statut_html}</div>'
-    response_html = f"{siren_html}\n{oob_statut}\n"
-
-    return HttpResponse(response_html)
 
 
 def _envoie_email_invitation_proprietaire_tiers(request, invitation):
@@ -672,21 +624,15 @@ def accepter_role_proprietaire(request, id_invitation, code):
         )
         return redirect("reglementations:tableau_de_bord", invitation.entreprise.siren)
 
-    if request.method == "POST":
-        try:
-            invitation.accepter(request.user)
-            messages.success(
-                request,
-                f"Vous êtes maintenant propriétaire de l'entreprise {invitation.entreprise.denomination}.",
-            )
-            return redirect(
-                "reglementations:tableau_de_bord", invitation.entreprise.siren
-            )
-        except HabilitationError as exception:
-            messages.error(request, str(exception))
-
-    return render(
-        request,
-        "users/accepter_role_proprietaire.html",
-        {"invitation": invitation},
-    )
+    try:
+        invitation.accepter(request.user)
+        messages.success(
+            request,
+            f"Vous êtes maintenant ajouté à l'entreprise {invitation.entreprise.denomination}.",
+        )
+        return redirect("reglementations:tableau_de_bord", invitation.entreprise.siren)
+    except HabilitationError as exception:
+        messages.error(request, "Une erreur lors de l'acceptation est survenue.")
+    except Exception as exception:
+        messages.error(request, "Une erreur est survenue.")
+    return redirect(reverse("erreur_terminale"))
