@@ -17,6 +17,7 @@ from logs import event_logger as logger
 from logs import log_path
 from reglementations.utils import VSMEReglementation
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
+from reglementations.views.base import InsuffisammentQualifieeError
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.bdese import BDESEReglementation
 from reglementations.views.bges import BGESReglementation
@@ -125,7 +126,7 @@ def tableau_de_bord(request, entreprise):
         try:
             if reglementation.est_soumis(caracteristiques):
                 reglementations_applicables.append(reglementation)
-        except Exception:
+        except InsuffisammentQualifieeError:
             # Si on ne peut pas calculer, on ignore cette réglementation
             pass
 
