@@ -593,6 +593,13 @@ def accepter_role_proprietaire(request, id_invitation, code):
         )
         return redirect("reglementations:tableau_de_bord", invitation.entreprise.siren)
 
+    if request.user.is_conseiller_rse is None:
+        # Le cas d'usage imaginé est que la personne invitée est un responsable de l'entreprise.
+        # On préremplit pour simplifier la navigation future (pas de choix lors de la prochaine
+        # connexion).
+        request.user.is_conseiller_rse = False
+        request.user.save()
+
     invitation.accepter(request.user)
     messages.success(
         request,
