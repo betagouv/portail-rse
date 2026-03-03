@@ -565,7 +565,6 @@
                 "sha256:f145bba11b878005c496e93e257c1e88f154d278d2638e6450d17e0f31e558d2",
                 "sha256:fe346b143ff9685e40192a4960938545c699054ba11d4f9029f94751e3f71d87"
             ],
-            "index": "pypi",
             "markers": "python_version >= '3.8' and python_full_version not in '3.9.0, 3.9.1'",
             "version": "==46.0.5"
         },
@@ -929,12 +928,12 @@
         },
         "joserfc": {
             "hashes": [
-                "sha256:1b4cebf769eeb8105d2e3433cae49e7217c83e4abf8493e91e7d0f0ad3579fdd",
-                "sha256:b15a5ea3a464c37e8006105665c159a288892fa73856fa40be60266dbc20b49d"
+                "sha256:6beab3635358cbc565cb94fb4c53d0557e6d10a15b933e2134939351590bda9a",
+                "sha256:c00c2830db969b836cba197e830e738dd9dda0955f1794e55d3c636f17f5c9a6"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.9'",
-            "version": "==1.4.2"
+            "version": "==1.6.3"
         },
         "mozilla-django-oidc": {
             "hashes": [
