@@ -80,7 +80,9 @@ make test
 La cible `make install` l'installe directement.
 
 
-## Migrations en recette
+## Recette
+
+### Migrations
 
 ```
 scalingo --app ${PROJET} run python3 impact/manage.py migrate
@@ -116,6 +118,13 @@ Penser à créer à nouveau le super utilisateur une fois l'application redéplo
 ```
 scalingo --app ${PROJET} run python3 impact/manage.py createsuperuser
 ```
+
+
+### Utilisateurs Proconnect
+
+2026-03-03 : lors de création de compte avec Proconnect, il faut utiliser `yopmail.com` et pas `yopmail.fr`.
+Il est aussi possible de faire des alias sur https://messagerie.numerique.gouv.fr pour renvoyer les e-mails
+vers son adresse Beta-Gouv.
 
 
 ## Consommation et mémoire en recette et production
