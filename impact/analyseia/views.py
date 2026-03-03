@@ -28,7 +28,7 @@ from .helpers import synthese_analyse
 from .models import AnalyseIA
 from api import analyse_ia
 from api.exceptions import APIError
-from entreprises.decorators import entreprise_qualifiee_requise
+from entreprises.decorators import entreprise_requise
 from reglementations.enums import ESRS
 from reglementations.views import tableau_de_bord_menu_context
 from reglementations.views.csrd.csrd import contexte_d_etape
@@ -46,18 +46,16 @@ def _contexte_analyses(entreprise, form=None):
 
 
 @login_required
-@entreprise_qualifiee_requise
-def analyses(request, entreprise_qualifiee):
-    return render(
-        request, "analyseia/accueil.html", _contexte_analyses(entreprise_qualifiee)
-    )
+@entreprise_requise
+def analyses(request, entreprise):
+    return render(request, "analyseia/accueil.html", _contexte_analyses(entreprise))
 
 
 @login_required
-@entreprise_qualifiee_requise
+@entreprise_requise
 @csrd_valide_si_presente
 @require_http_methods(["POST"])
-def ajout_document(request, entreprise_qualifiee, csrd=None):
+def ajout_document(request, entreprise, csrd=None):
     relation = "csrd" if csrd else "entreprises"
     data = {**request.POST}
     form = AnalyseIAForm(data=data, files=request.FILES)
@@ -69,16 +67,14 @@ def ajout_document(request, entreprise_qualifiee, csrd=None):
         if csrd:
             form.instance.rapports_csrd.add(csrd)
         else:
-            entreprise_qualifiee.analyses_ia.add(form.instance)
+            entreprise.analyses_ia.add(form.instance)
         messages.success(request, "Document ajouté")
         if relation == "entreprises":
-            redirection = redirect(
-                "analyseia:analyses", siren=entreprise_qualifiee.siren
-            )
+            redirection = redirect("analyseia:analyses", siren=entreprise.siren)
         else:
             redirection = redirect(
                 "reglementations:gestion_csrd",
-                siren=entreprise_qualifiee.siren,
+                siren=entreprise.siren,
                 id_etape="analyse-ecart",
             )
         return redirection
@@ -87,7 +83,7 @@ def ajout_document(request, entreprise_qualifiee, csrd=None):
             return render(
                 request,
                 "analyseia/accueil.html",
-                _contexte_analyses(entreprise_qualifiee, form),
+                _contexte_analyses(entreprise, form),
                 status=400,
             )
         else:
@@ -266,9 +262,9 @@ def _envoie_resultat_ia_email(entreprise, resultat_ia_url):
 
 
 @login_required
-@entreprise_qualifiee_requise
+@entreprise_requise
 @csrd_valide_si_presente
-def synthese_resultat(request, entreprise_qualifiee, csrd=None):
+def synthese_resultat(request, entreprise, csrd=None):
     rendu = "esrs" if csrd else "theme"
     chemin_xlsx = Path(
         settings.BASE_DIR, f"analyseia/xlsx/{rendu}/template_synthese_ESG.xlsx"
@@ -276,7 +272,7 @@ def synthese_resultat(request, entreprise_qualifiee, csrd=None):
     workbook = load_workbook(chemin_xlsx)
     if rendu == "theme":
         worksheet = workbook["Phrases relatives aux ESG"]
-        documents = entreprise_qualifiee.analyses_ia.reussies()
+        documents = entreprise.analyses_ia.reussies()
     else:
         worksheet = workbook["Phrases relatives aux ESRS"]
         documents = csrd.analyses_ia.reussies()
@@ -288,9 +284,9 @@ def synthese_resultat(request, entreprise_qualifiee, csrd=None):
 
 
 @login_required
-@entreprise_qualifiee_requise
+@entreprise_requise
 @csrd_valide_si_presente
-def synthese_resultat_par_ESRS(request, entreprise_qualifiee, code_esrs, csrd=None):
+def synthese_resultat_par_ESRS(request, entreprise, code_esrs, csrd=None):
     if code_esrs not in ESRS.codes():
         raise Http404
 
@@ -306,7 +302,7 @@ def synthese_resultat_par_ESRS(request, entreprise_qualifiee, code_esrs, csrd=No
     worksheet["C14"] = titre
     if rendu == "theme":
         worksheet = workbook["Phrases relatives aux ESG"]
-        documents = entreprise_qualifiee.analyses_ia.reussies()
+        documents = entreprise.analyses_ia.reussies()
     else:
         worksheet = workbook["Phrases relatives aux ESRS"]
         documents = csrd.analyses_ia.reussies()
