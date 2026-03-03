@@ -2,7 +2,6 @@ import pytest
 from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed
 
-from habilitations.models import Habilitation
 from vsme.models import EXIGENCES_DE_PUBLICATION
 
 INDICATEURS_VSME_BASE_URL = "/indicateurs/vsme/"
@@ -31,11 +30,12 @@ def test_categories_vsme_est_prive(client, entreprise_factory, alice):
 
 
 def test_categories_vsme_avec_utilisateur_authentifie(
-    client, entreprise_qualifiee, alice
+    client, entreprise_factory, alice
 ):
+    entreprise = entreprise_factory(utilisateur=alice)
     client.force_login(alice)
 
-    url = INDICATEURS_VSME_URL.format(siren=entreprise_qualifiee.siren, annee=2024)
+    url = INDICATEURS_VSME_URL.format(siren=entreprise.siren, annee=2024)
     response = client.get(url)
 
     assert response.status_code == 200
@@ -44,30 +44,15 @@ def test_categories_vsme_avec_utilisateur_authentifie(
     assertTemplateUsed(response, "vsme/categories.html")
 
 
-def test_categories_vsme_entreprise_non_qualifiee_redirige_vers_la_qualification(
-    client, entreprise_non_qualifiee, alice
-):
-    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
-    client.force_login(alice)
-
-    url = INDICATEURS_VSME_URL.format(siren=entreprise_non_qualifiee.siren, annee=2024)
-    response = client.get(url, follow=True)
-
-    assert response.status_code == 200
-    url = f"/entreprises/{entreprise_non_qualifiee.siren}"
-    assert response.redirect_chain == [(url, 302)]
-
-
-def test_categories_vsme_sans_siren_et_sans_annee(client, entreprise_qualifiee, alice):
+def test_categories_vsme_sans_siren_et_sans_annee(client, entreprise_factory, alice):
+    entreprise = entreprise_factory(utilisateur=alice)
     client.force_login(alice)
 
     url = INDICATEURS_VSME_BASE_URL
     response = client.get(url, follow=True)
 
     assert response.status_code == 200
-    assert response.redirect_chain == [
-        (f"/indicateurs/vsme/{entreprise_qualifiee.siren}/", 302)
-    ]
+    assert response.redirect_chain == [(f"/indicateurs/vsme/{entreprise.siren}/", 302)]
 
 
 @pytest.mark.parametrize(
