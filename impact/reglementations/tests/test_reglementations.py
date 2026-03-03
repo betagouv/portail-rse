@@ -1,9 +1,14 @@
+import html
+from datetime import date
 from datetime import datetime
+from datetime import timedelta
 
 import pytest
+from freezegun import freeze_time
 
 import reglementations.views  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
+from habilitations.models import Habilitation
 from reglementations.models import RapportCSRD
 from reglementations.utils import VSMEReglementation
 from reglementations.views import REGLEMENTATIONS
@@ -54,6 +59,47 @@ def test_reglementations(client, entreprise_factory, alice):
         )
 
 
+def test_reglementations_entreprise_non_qualifiee_redirige_vers_la_qualification(
+    client, entreprise_non_qualifiee, alice
+):
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
+    client.force_login(alice)
+
+    url = f"/tableau-de-bord/{entreprise_non_qualifiee.siren}/reglementations/"
+    response = client.get(url, follow=True)
+
+    assert response.status_code == 200
+    url = f"/entreprises/{entreprise_non_qualifiee.siren}"
+    assert response.redirect_chain == [(url, 302)]
+
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        f"Veuillez renseigner le profil de l'entreprise pour accéder à cette partie du tableau de bord."
+        in content
+    ), content
+
+
+def test_reglementations_entreprise_qualifiee_dans_le_passe(
+    client, entreprise_factory, alice
+):
+    date_cloture_exercice = date(2024, 12, 31)
+    entreprise = entreprise_factory(
+        utilisateur=alice, date_cloture_exercice=date_cloture_exercice
+    )
+
+    url = f"/tableau-de-bord/{entreprise.siren}/reglementations/"
+    with freeze_time(date_cloture_exercice + timedelta(days=367)):
+        client.force_login(alice)
+        response = client.get(url)
+
+    assert response.status_code == 200
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        f"Les informations affichées sont basées sur l'exercice comptable {date_cloture_exercice.year}."
+        in content
+    ), content
+
+
 @pytest.mark.parametrize("reglementation", REGLEMENTATIONS)
 def test_reglementation(reglementation, client, entreprise_factory, alice):
     entreprise = entreprise_factory(
@@ -74,6 +120,49 @@ def test_reglementation(reglementation, client, entreprise_factory, alice):
     assert context["entreprise"] == entreprise
     assert context["reglementation"] == reglementation
     assert context["status"] == status
+
+
+@pytest.mark.parametrize("reglementation", REGLEMENTATIONS)
+def test_reglementation_entreprise_non_qualifiee_redirige_vers_la_qualification(
+    reglementation, client, entreprise_non_qualifiee, alice
+):
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
+    client.force_login(alice)
+
+    url = f"/tableau-de-bord/{entreprise_non_qualifiee.siren}/reglementations/{reglementation.id}/"
+    response = client.get(url, follow=True)
+
+    assert response.status_code == 200
+    url = f"/entreprises/{entreprise_non_qualifiee.siren}"
+    assert response.redirect_chain == [(url, 302)]
+
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        f"Veuillez renseigner le profil de l'entreprise pour accéder à cette partie du tableau de bord."
+        in content
+    ), content
+
+
+@pytest.mark.parametrize("reglementation", REGLEMENTATIONS)
+def test_reglementation_entreprise_qualifiee_dans_le_passe(
+    reglementation, client, entreprise_factory, alice
+):
+    date_cloture_exercice = date(2024, 12, 31)
+    entreprise = entreprise_factory(
+        utilisateur=alice, date_cloture_exercice=date_cloture_exercice
+    )
+
+    url = f"/tableau-de-bord/{entreprise.siren}/reglementations/{reglementation.id}/"
+    with freeze_time(date_cloture_exercice + timedelta(days=367)):
+        client.force_login(alice)
+        response = client.get(url)
+
+    assert response.status_code == 200
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        f"Les informations affichées sont basées sur l'exercice comptable {date_cloture_exercice.year}."
+        in content
+    ), content
 
 
 def test_reglementation_inexistante(client, entreprise_factory, alice):
