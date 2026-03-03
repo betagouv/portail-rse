@@ -55,6 +55,9 @@ def test_acceptation_cree_habilitation_proprietaire(
     )
     assert habilitation.role == UserRole.PROPRIETAIRE
 
+    futur_proprietaire.refresh_from_db()
+    assert futur_proprietaire.is_conseiller_rse is False
+
     # Verifier que l'invitation a ete acceptee
     invitation_proprietaire_tiers.refresh_from_db()
     assert invitation_proprietaire_tiers.date_acceptation is not None
