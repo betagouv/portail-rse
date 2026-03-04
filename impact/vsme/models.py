@@ -213,6 +213,8 @@ EXIGENCES_DE_PUBLICATION = {
         "C3",
         "Cibles de réduction des émissions de GES et transition climatique",
         Categorie.ENVIRONNEMENT,
+        "https://portail-rse.beta.gouv.fr/vsme/c3-cibles-de-r%C3%A9duction-des-%C3%A9missions-de-ges-et-transition-climatique/",
+        remplissable=True,
     ),
     "C4": ExigenceDePublication(
         "C4",
@@ -763,6 +765,75 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                                 data["nombre_heures_formation_par_genre"][genre][
                                     "nombre_moyen_heures_formation"
                                 ] = nombre_moyen_heures_formation
+                except ObjectDoesNotExist:
+                    pass
+        case "C3-54-p1" | "C3-54-p2":
+            if indicateur_schema_id == "C3-54-p1":  # scope 1 et 2
+                tableau_cibles_id = "cibles_reduction_emissions_GES_scope_1_2"
+                tableau_total_id = "total_reduction_emissions_GES_scope_1_2"
+                ligne_total_id = "total_scope_1_2_localisation"
+            else:  # scope 3
+                tableau_cibles_id = "cibles_reduction_emissions_GES_scope_3"
+                tableau_total_id = "total_reduction_emissions_GES_scope_3"
+                ligne_total_id = "total_scope_3"
+            total_cible = 0
+            total_reference = 0
+            tableau_cibles = data.get(tableau_cibles_id) or {}
+            for ligne in tableau_cibles:
+                valeur_cible = tableau_cibles[ligne].get("valeur_cible")
+                valeur_reference = tableau_cibles[ligne].get("valeur_reference")
+                if valeur_cible:
+                    total_cible += valeur_cible
+                if valeur_reference:
+                    total_reference += valeur_reference
+                if valeur_cible is not None and valeur_reference:
+                    reduction = (valeur_cible - valeur_reference) / valeur_reference
+                    pourcentage_reduction = f"{reduction:.1%}"
+                    tableau_cibles[ligne][
+                        "pourcentage_reduction"
+                    ] = pourcentage_reduction
+            data[tableau_total_id][ligne_total_id]["valeur_cible"] = total_cible
+            data[tableau_total_id][ligne_total_id]["valeur_reference"] = total_reference
+            if total_reference:
+                total_reduction = (total_cible - total_reference) / total_reference
+                pourcentage_total_reduction = f"{total_reduction:.1%}"
+                data[tableau_total_id][ligne_total_id][
+                    "pourcentage_reduction"
+                ] = pourcentage_total_reduction
+            if indicateur_schema_id == "C3-54-p2":  # scope 3
+                # il faut encore ajouter le total scope 1 + 2 + 3
+                try:
+                    indicateur_scope_1_2 = "C3-54-p1"
+                    ligne_total = (
+                        rapport_vsme.indicateurs.get(schema_id=indicateur_scope_1_2)
+                        .data.get("total_reduction_emissions_GES_scope_1_2", {})
+                        .get("total_scope_1_2_localisation", {})
+                    )
+                    if ligne_total:
+                        valeur_cible_scope_1_2 = ligne_total.get("valeur_cible") or 0
+                        valeur_reference_scope_1_2 = (
+                            ligne_total.get("valeur_reference") or 0
+                        )
+                        valeur_cible_scope_1_2_3 = total_cible + valeur_cible_scope_1_2
+                        valeur_reference_scope_1_2_3 = (
+                            total_reference + valeur_reference_scope_1_2
+                        )
+                        data[tableau_total_id]["total_scope_1_2_3"][
+                            "valeur_cible"
+                        ] = valeur_cible_scope_1_2_3
+                        data[tableau_total_id]["total_scope_1_2_3"][
+                            "valeur_reference"
+                        ] = valeur_reference_scope_1_2_3
+                        if valeur_reference_scope_1_2_3:
+                            reduction_scope_1_2_3 = (
+                                valeur_cible_scope_1_2_3 - valeur_reference_scope_1_2_3
+                            ) / valeur_reference_scope_1_2_3
+                            pourcentage_reduction_scope_1_2_3 = (
+                                f"{reduction_scope_1_2_3:.1%}"
+                            )
+                            data[tableau_total_id]["total_scope_1_2_3"][
+                                "pourcentage_reduction"
+                            ] = pourcentage_reduction_scope_1_2_3
                 except ObjectDoesNotExist:
                     pass
         case "C5-59":
