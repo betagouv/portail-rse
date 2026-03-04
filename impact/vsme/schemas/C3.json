@@ -1,0 +1,251 @@
+{
+    "C3-54-p1": {
+        "titre": "Cibles de réduction des émissions de GES des scopes 1 et 2",
+        "description": "Si l'entreprise a fixé des objectifs de réduction des émissions de gaz à effet de serre, publier ses cibles pour le scope 1 et 2 (basé sur la localisation).",
+        "ancre": "cibles_reduction_emissions_GES",
+        "champs": [
+            {
+                "id": "annee_cible",
+                "label": "Année cible",
+                "type": "nombre_entier",
+                "min": 2020,
+                "obligatoire": true
+            },
+            {
+                "id": "annee_reference",
+                "label": "Année de référence",
+                "type": "nombre_entier",
+                "min": 2000,
+                "obligatoire": true
+            },
+            {
+                "id": "cibles_reduction_emissions_GES_scope_1_2",
+                "label": "Cibles de réduction des émissions de GES des scopes 1 et 2 (basé sur la localisation)",
+                "type": "tableau_lignes_fixes",
+                "obligatoire": true,
+                "colonnes": [
+                    {
+                        "id": "valeur_cible",
+                        "label": "Valeur de l'année cible",
+                        "description": "Unité : teqCO₂",
+                        "type": "nombre_decimal",
+                        "provoque_calcul_des_champs": ["pourcentage_reduction", "valeur_cible"]
+                    },
+                    {
+                        "id": "valeur_reference",
+                        "label": "Valeur de l'année de référence",
+                        "description": "Unité : teqCO₂",
+                        "type": "nombre_decimal",
+                        "provoque_calcul_des_champs": ["pourcentage_reduction", "valeur_reference"]
+                    },
+                    {
+                        "id": "pourcentage_reduction",
+                        "label": "Réduction en pourcentage par rapport à l'année de référence",
+                        "description": "Calculé automatiquement",
+                        "type": "nombre_decimal",
+                        "calculé": true
+                    },
+                    {
+                        "id": "actions_prevues",
+                        "label": "Principales actions prévues",
+                        "type": "texte_long",
+                        "nombre_lignes": 3
+                    }
+                ],
+                "lignes": [
+                    {
+                        "id": "scope_1",
+                        "label": "Scope 1"
+                    },
+                    {
+                        "id": "scope_2_localisation",
+                        "label": "Scope 2 basé sur la localisation"
+                    }
+                ]
+            },
+            {
+                "id": "total_reduction_emissions_GES_scope_1_2",
+                "label": "Total",
+                "description": "Calculé automatiquement",
+                "type": "tableau_lignes_fixes",
+                "obligatoire": true,
+                "colonnes": [
+                    {
+                        "id": "valeur_cible",
+                        "label": "Valeur de l'année cible",
+                        "description": "Unité : teqCO₂. Calculé automatiquement.",
+                        "type": "nombre_decimal",
+                        "calculé": true
+                    },
+                    {
+                        "id": "valeur_reference",
+                        "label": "Valeur de l'année de référence",
+                        "description": "Unité : teqCO₂. Calculé automatiquement.",
+                        "type": "nombre_decimal",
+                        "calculé": true
+                    },
+                    {
+                        "id": "pourcentage_reduction",
+                        "label": "Réduction en pourcentage par rapport à l'année de référence",
+                        "description": "Calculé automatiquement",
+                        "type": "nombre_decimal",
+                        "calculé": true
+                    }
+                ],
+                "lignes": [
+                    {
+                        "id": "total_scope_1_2_localisation",
+                        "label": "Émissions totales des GES du Scope 1 et 2 (basé sur la localisation)"
+                    }
+                ]
+            }
+        ],
+        "si_pertinent": "L'entreprise n'a pas fixé des cibles de réduction des émissions de GES"
+    },
+    "C3-54-p2": {
+        "titre": "Cibles de réduction des émissions de GES du scope 3",
+        "description": "Si l'entreprise a fixé des objectifs de réduction des émissions de gaz à effet de serre, publier ses cibles pour le scope 3.",
+        "ancre": "cibles_reduction_emissions_GES",
+        "champs": [
+            {
+                "id": "cibles_reduction_emissions_GES_scope_3",
+                "label": "Cibles de réduction des émissions de GES des scopes 3",
+                "description": "L'année cible et l'année de référence ont été définies dans l'indicateur précédent.",
+                "type": "tableau_lignes_fixes",
+                "obligatoire": true,
+                "colonnes": [
+                    {
+                        "id": "valeur_cible",
+                        "label": "Valeur de l'année cible",
+                        "description": "Unité : teqCO₂",
+                        "type": "nombre_decimal",
+                        "provoque_calcul_des_champs": ["pourcentage_reduction", "valeur_cible"]
+                    },
+                    {
+                        "id": "valeur_reference",
+                        "label": "Valeur de l'année de référence",
+                        "description": "Unité : teqCO₂",
+                        "type": "nombre_decimal",
+                        "provoque_calcul_des_champs": ["pourcentage_reduction", "valeur_reference"]
+                    },
+                    {
+                        "id": "pourcentage_reduction",
+                        "label": "Réduction en pourcentage par rapport à l'année de référence",
+                        "description": "Calculé automatiquement",
+                        "type": "nombre_decimal",
+                        "calculé": true
+                    },
+                    {
+                        "id": "actions_prevues",
+                        "label": "Principales actions prévues",
+                        "type": "texte_long",
+                        "nombre_lignes": 3
+                    }
+                ],
+                "lignes": [
+                    {
+                        "id": "biens_et_services_achetes",
+                        "label": "1. Biens et services achetés"
+                    },
+                    {
+                        "id": "biens_investissement",
+                        "label": "2. Biens d'investissement"
+                    },
+                    {
+                        "id": "activites_secteurs_combustibles",
+                        "label": "3. Activités relevant des secteurs des combustibles et de l'énergie"
+                    },
+                    {
+                        "id": "transport_distribution_amont",
+                        "label": "4. Transport et distribution en amont"
+                    },
+                    {
+                        "id": "dechets_produits",
+                        "label": "5. Déchets produits lors de l'exploitation"
+                    },
+                    {
+                        "id": "voyages_affaires",
+                        "label": "6. Voyages d'affaires"
+                    },
+                    {
+                        "id": "deplacements_domicile_travail",
+                        "label": "7. Déplacements domicile-travail des salariés"
+                    },
+                    {
+                        "id": "actifs_loues_amont",
+                        "label": "8. Actifs loués en amont"
+                    },
+                    {
+                        "id": "acheminement_aval",
+                        "label": "9. Acheminement en aval"
+                    },
+                    {
+                        "id": "transformation_produits_vendus",
+                        "label": "10. Transformation des produits vendus"
+                    },
+                    {
+                        "id": "utilisation_produits_vendus",
+                        "label": "11. Utilisation des produits vendus"
+                    },
+                    {
+                        "id": "traitement_fin_de_vie_produits_vendus",
+                        "label": "12. Traitement en fin de vie des produits vendus"
+                    },
+                    {
+                        "id": "actifs_loues_aval",
+                        "label": "13. Actifs loués en aval"
+                    },
+                    {
+                        "id": "franchises",
+                        "label": "14. Franchises"
+                    },
+                    {
+                        "id": "investissements",
+                        "label": "15. Investissements"
+                    }
+                ]
+            },
+            {
+                "id": "total_reduction_emissions_GES_scope_3",
+                "label": "Total cible de réduction des émissions de GES des scopes 3",
+                "description": "L'année cible et l'année de référence ont été définies dans l'indicateur précédent. Calculé automatiquement",
+                "type": "tableau_lignes_fixes",
+                "obligatoire": true,
+                "colonnes": [
+                    {
+                        "id": "valeur_cible",
+                        "label": "Valeur de l’année cible",
+                        "description": "Unité : teqCO₂. Calculé automatiquement.",
+                        "type": "nombre_decimal",
+                        "calculé": true
+                    },
+                    {
+                        "id": "valeur_reference",
+                        "label": "Valeur de l’année de référence",
+                        "description": "Unité : teqCO₂. Calculé automatiquement.",
+                        "type": "nombre_decimal",
+                        "calculé": true
+                    },
+                    {
+                        "id": "pourcentage_reduction",
+                        "label": "Réduction en pourcentage par rapport à l'année de référence",
+                        "description": "Calculé automatiquement",
+                        "type": "nombre_decimal",
+                        "calculé": true
+                    }
+                ],
+                "lignes": [
+                    {
+                        "id": "total_scope_3",
+                        "label": "Émissions totales des GES du Scope 3"
+                    },
+                    {
+                        "id": "total_scope_1_2_3",
+                        "label": "Émissions totales des GES du Scope 1, 2 et 3"
+                    }
+                ]
+            }
+        ],
+        "si_pertinent": "L'entreprise n'a pas fixé des cibles de réduction des émissions de GES pour le scope 3"
+    }
+}
