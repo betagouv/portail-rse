@@ -218,14 +218,14 @@
             }
         ]
     },
-    "B3-30": {
-        "titre": "Estimation des émissions brutes de gaz à effet de serre (GES)",
-        "description": "L’entreprise publie ses émissions brutes de GES en tonnes équivalent CO₂ (teqCO₂), ventilées entre le scope 1 (émissions directes) et le scope 2 basé sur la localisation (émissions indirectes liées à l’énergie achetée).",
+    "B3-30-p1": {
+        "titre": "Estimation des émissions brutes de GES des scopes 1 et 2",
+        "description": "L’entreprise publie ses émissions brutes de gaz à effet de serre (GES) en tonnes équivalent CO₂ (teqCO₂), ventilées entre le scope 1 (émissions directes) et le scope 2 basé sur la localisation (émissions indirectes liées à l’énergie achetée).",
         "ancre": "estimation_emissions_GES",
         "champs": [
             {
                 "id": "estimation_emissions_GES",
-                "label": "Estimation des émissions brutes de gaz à effet de serre",
+                "label": "Estimation des émissions brutes de gaz à effet de serre des scopes 1 et 2",
                 "type": "tableau_lignes_fixes",
                 "colonnes": [
                     {
@@ -253,7 +253,7 @@
                 "lignes": [
                     {
                         "id": "emissions_brutes_GES",
-                        "label": "Emissions brutes de GES"
+                        "label": "Émissions brutes de GES"
                     }
                 ]
             },
@@ -265,5 +265,115 @@
                 "calculé": true
             }
         ]
+    },
+    "B3-30-p2": {
+        "titre": "Estimation des émissions brutes de GES du scope 3",
+        "description": "Facultativement, l'entreprise publie ses émissions brutes de gaz à effet de serre (GES) en tonnes équivalent CO₂ (teqCO₂), ventilées entre les catégories du scope 3.",
+        "ancre": "estimation_emissions_GES",
+        "champs": [
+            {
+                "id": "estimation_emissions_GES_scope_3",
+                "label": "Estimation des émissions brutes de gaz à effet de serre du scope 3",
+                "type": "tableau_lignes_fixes",
+                "colonnes": [
+                    {
+                        "id": "emissions_brutes_GES",
+                        "label": "Émissions brutes de GES",
+                        "description": "Unité : teqCO₂",
+                        "type": "nombre_decimal",
+                        "provoque_calcul_des_champs": ["total_emissions_brutes_GES"]
+                    }
+                ],
+                "lignes": [
+                    {
+                        "id": "biens_et_services_achetes",
+                        "label": "1. Biens et services achetés"
+                    },
+                    {
+                        "id": "biens_investissement",
+                        "label": "2. Biens d'investissement"
+                    },
+                    {
+                        "id": "activites_secteurs_combustibles",
+                        "label": "3. Activités relevant des secteurs des combustibles et de l'énergie"
+                    },
+                    {
+                        "id": "transport_distribution_amont",
+                        "label": "4. Transport et distribution en amont"
+                    },
+                    {
+                        "id": "dechets_produits",
+                        "label": "5. Déchets produits lors de l'exploitation"
+                    },
+                    {
+                        "id": "voyages_affaires",
+                        "label": "6. Voyages d'affaires"
+                    },
+                    {
+                        "id": "deplacements_domicile_travail",
+                        "label": "7. Déplacements domicile-travail des salariés"
+                    },
+                    {
+                        "id": "actifs_loues_amont",
+                        "label": "8. Actifs loués en amont"
+                    },
+                    {
+                        "id": "acheminement_aval",
+                        "label": "9. Acheminement en aval"
+                    },
+                    {
+                        "id": "transformation_produits_vendus",
+                        "label": "10. Transformation des produits vendus"
+                    },
+                    {
+                        "id": "utilisation_produits_vendus",
+                        "label": "11. Utilisation des produits vendus"
+                    },
+                    {
+                        "id": "traitement_fin_de_vie_produits_vendus",
+                        "label": "12. Traitement en fin de vie des produits vendus"
+                    },
+                    {
+                        "id": "actifs_loues_aval",
+                        "label": "13. Actifs loués en aval"
+                    },
+                    {
+                        "id": "franchises",
+                        "label": "14. Franchises"
+                    },
+                    {
+                        "id": "investissements",
+                        "label": "15. Investissements"
+                    }
+                ]
+            },
+            {
+                "id": "total_estimation_emissions_GES_scope_3",
+                "label": "Total des émissions brutes de gaz à effet de serre",
+                "description": "Calculé automatiquement.",
+                "type": "tableau_lignes_fixes",
+                "obligatoire": true,
+                "colonnes": [
+                    {
+                        "id": "total_emissions_brutes_GES",
+                        "label": "Émissions brutes de GES",
+                        "description": "Unité : teqCO₂",
+                        "type": "nombre_decimal",
+                        "calculé": true
+                    }
+                ],
+                "lignes": [
+                    {
+                        "id": "scope_3",
+                        "label": "Émissions totales des GES du scope 3"
+                    },
+                    {
+                        "id": "total_scopes_1_2_3",
+                        "label": "Émissions totales des GES des scopes 1, 2 (basé sur la localisation) et 3"
+                    }
+                ]
+            }
+        ],
+        "si_pertinent": true
     }
 }
