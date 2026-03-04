@@ -674,7 +674,7 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                     ),
                 }
             }
-        case "B3-30":
+        case "B3-30-p1":
             emissions = data.get("estimation_emissions_GES", {}).get(
                 "emissions_brutes_GES"
             )
@@ -700,6 +700,33 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                 except ObjectDoesNotExist:
                     intensite_GES = "n/a"
                 data["intensite_GES"] = intensite_GES
+        case "B3-30-p2":
+            total_emissions_scope_3 = 0
+            emissions = data.get("estimation_emissions_GES_scope_3") or {}
+            for ligne in emissions:
+                emission = emissions[ligne].get("emissions_brutes_GES")
+                if emission:
+                    total_emissions_scope_3 += emission
+            data["total_estimation_emissions_GES_scope_3"]["scope_3"][
+                "total_emissions_brutes_GES"
+            ] = total_emissions_scope_3
+            try:
+                indicateur_scopes_1_2 = "B3-30-p1"
+                total_emissions_scopes_1_2 = (
+                    rapport_vsme.indicateurs.get(schema_id=indicateur_scopes_1_2)
+                    .data.get("estimation_emissions_GES", {})
+                    .get("emissions_brutes_GES", {})
+                    .get("total")
+                )
+                if total_emissions_scopes_1_2 is not None:
+                    total_emissions_scopes_1_2_3 = (
+                        total_emissions_scopes_1_2 + total_emissions_scope_3
+                    )
+                    data["total_estimation_emissions_GES_scope_3"][
+                        "total_scopes_1_2_3"
+                    ]["total_emissions_brutes_GES"] = total_emissions_scopes_1_2_3
+            except ObjectDoesNotExist:
+                pass
         case "B10-42-b":
             remuneration_hommes = data.get("remuneration_horaire_hommes")
             remuneration_femmes = data.get("remuneration_horaire_femmes")
@@ -769,9 +796,9 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                     pass
         case "C3-54-p1" | "C3-54-p2":
             if indicateur_schema_id == "C3-54-p1":  # scope 1 et 2
-                tableau_cibles_id = "cibles_reduction_emissions_GES_scope_1_2"
-                tableau_total_id = "total_reduction_emissions_GES_scope_1_2"
-                ligne_total_id = "total_scope_1_2_localisation"
+                tableau_cibles_id = "cibles_reduction_emissions_GES_scopes_1_2"
+                tableau_total_id = "total_reduction_emissions_GES_scopes_1_2"
+                ligne_total_id = "total_scopes_1_2_localisation"
             else:  # scope 3
                 tableau_cibles_id = "cibles_reduction_emissions_GES_scope_3"
                 tableau_total_id = "total_reduction_emissions_GES_scope_3"
@@ -803,37 +830,40 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
             if indicateur_schema_id == "C3-54-p2":  # scope 3
                 # il faut encore ajouter le total scope 1 + 2 + 3
                 try:
-                    indicateur_scope_1_2 = "C3-54-p1"
+                    indicateur_scopes_1_2 = "C3-54-p1"
                     ligne_total = (
-                        rapport_vsme.indicateurs.get(schema_id=indicateur_scope_1_2)
-                        .data.get("total_reduction_emissions_GES_scope_1_2", {})
-                        .get("total_scope_1_2_localisation", {})
+                        rapport_vsme.indicateurs.get(schema_id=indicateur_scopes_1_2)
+                        .data.get("total_reduction_emissions_GES_scopes_1_2", {})
+                        .get("total_scopes_1_2_localisation", {})
                     )
                     if ligne_total:
-                        valeur_cible_scope_1_2 = ligne_total.get("valeur_cible") or 0
-                        valeur_reference_scope_1_2 = (
+                        valeur_cible_scopes_1_2 = ligne_total.get("valeur_cible") or 0
+                        valeur_reference_scopes_1_2 = (
                             ligne_total.get("valeur_reference") or 0
                         )
-                        valeur_cible_scope_1_2_3 = total_cible + valeur_cible_scope_1_2
-                        valeur_reference_scope_1_2_3 = (
-                            total_reference + valeur_reference_scope_1_2
+                        valeur_cible_scopes_1_2_3 = (
+                            total_cible + valeur_cible_scopes_1_2
                         )
-                        data[tableau_total_id]["total_scope_1_2_3"][
+                        valeur_reference_scopes_1_2_3 = (
+                            total_reference + valeur_reference_scopes_1_2
+                        )
+                        data[tableau_total_id]["total_scopes_1_2_3"][
                             "valeur_cible"
-                        ] = valeur_cible_scope_1_2_3
-                        data[tableau_total_id]["total_scope_1_2_3"][
+                        ] = valeur_cible_scopes_1_2_3
+                        data[tableau_total_id]["total_scopes_1_2_3"][
                             "valeur_reference"
-                        ] = valeur_reference_scope_1_2_3
-                        if valeur_reference_scope_1_2_3:
-                            reduction_scope_1_2_3 = (
-                                valeur_cible_scope_1_2_3 - valeur_reference_scope_1_2_3
-                            ) / valeur_reference_scope_1_2_3
-                            pourcentage_reduction_scope_1_2_3 = (
-                                f"{reduction_scope_1_2_3:.1%}"
+                        ] = valeur_reference_scopes_1_2_3
+                        if valeur_reference_scopes_1_2_3:
+                            reduction_scopes_1_2_3 = (
+                                valeur_cible_scopes_1_2_3
+                                - valeur_reference_scopes_1_2_3
+                            ) / valeur_reference_scopes_1_2_3
+                            pourcentage_reduction_scopes_1_2_3 = (
+                                f"{reduction_scopes_1_2_3:.1%}"
                             )
-                            data[tableau_total_id]["total_scope_1_2_3"][
+                            data[tableau_total_id]["total_scopes_1_2_3"][
                                 "pourcentage_reduction"
-                            ] = pourcentage_reduction_scope_1_2_3
+                            ] = pourcentage_reduction_scopes_1_2_3
                 except ObjectDoesNotExist:
                     pass
         case "C5-59":
