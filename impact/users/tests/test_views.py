@@ -3,7 +3,6 @@ from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
 from unittest import mock
-from uuid import uuid4
 
 import pytest
 from django.conf import settings
@@ -368,10 +367,10 @@ def test_edit_account_info_when_user_authenticated_by_password(
     assert alice.check_password("Passw0rd!123")
 
 
-def test_edit_account_info_when_user_authenticated_by_proconnect(client, alice):
-    alice.oidc_sub_id = str(uuid4())
-    alice.set_unusable_password()
-    alice.save()
+def test_edit_account_info_when_user_authenticated_by_proconnect(
+    client, alice_sur_proconnect
+):
+    alice = alice_sur_proconnect
     client.force_login(alice)
     EMAIL = alice.email
 
