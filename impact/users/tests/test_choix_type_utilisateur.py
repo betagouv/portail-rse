@@ -34,7 +34,9 @@ def test_choix_type_utilisateur_redirige_si_deja_choisi(
 
 
 @pytest.mark.django_db
-def test_choix_conseiller_rse_met_a_jour_utilisateur(client, django_user_model):
+def test_choix_conseiller_rse_met_a_jour_utilisateur__choix_conseiller(
+    client, django_user_model
+):
     """Choisir 'conseiller RSE' met à jour is_conseiller_rse."""
     utilisateur = django_user_model.objects.create(
         email="nouveau@test.fr",
@@ -50,13 +52,15 @@ def test_choix_conseiller_rse_met_a_jour_utilisateur(client, django_user_model):
     )
 
     utilisateur.refresh_from_db()
-    assert utilisateur.is_conseiller_rse
+    assert utilisateur.is_conseiller_rse is True
     assert utilisateur.fonction_rse == "auditeur"
     assert response.status_code == 302
 
 
 @pytest.mark.django_db
-def test_choix_membre_entreprise_marque_session(client, django_user_model):
+def test_choix_conseiller_rse_met_a_jour_utilisateur__choix_membre(
+    client, django_user_model
+):
     """Choisir 'membre entreprise' marque la session et redirige vers dispatch."""
     utilisateur = django_user_model.objects.create(
         email="nouveau@test.fr",
@@ -71,7 +75,8 @@ def test_choix_membre_entreprise_marque_session(client, django_user_model):
         },
     )
 
-    assert client.session.get("type_utilisateur_choisi") is True
+    utilisateur.refresh_from_db()
+    assert utilisateur.is_conseiller_rse is False
     assert not utilisateur.fonction_rse
     assert response.status_code == 302
-    assert response.url == reverse("users:post_login_dispatch")
+    assert response.url == reverse("reglementations:tableau_de_bord")

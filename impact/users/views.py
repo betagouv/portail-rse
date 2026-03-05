@@ -326,9 +326,7 @@ def post_login_dispatch(request):
     - Sinon → tableau de bord entreprise (comportement par défaut)
     """
     # Si l'utilisateur doit choisir son type et ne l'a pas encore fait
-    if request.user.doit_choisir_type_utilisateur and not request.session.get(
-        "type_utilisateur_choisi"
-    ):
+    if request.user.doit_choisir_type_utilisateur:
         return redirect("users:choix_type_utilisateur")
 
     # Si c'est un conseiller RSE, rediriger vers son tableau de bord
@@ -365,9 +363,10 @@ def choix_type_utilisateur(request):
                 )
                 return redirect("users:tableau_de_bord_conseiller")
             else:
-                # Membre d'entreprise : marquer le choix fait et rediriger vers le dispatch
-                request.session["type_utilisateur_choisi"] = True
-                return redirect("users:post_login_dispatch")
+                request.user.is_conseiller_rse = False
+                request.user.save()
+                return redirect("reglementations:tableau_de_bord")
+
     else:
         form = ChoixTypeUtilisateurForm()
 

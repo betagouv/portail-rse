@@ -131,8 +131,6 @@ class User(AbstractBaseUser, TimestampedModel):
     def doit_choisir_type_utilisateur(self) -> bool:
         """L'utilisateur doit-il choisir entre membre d'entreprise ou conseiller RSE ?
 
-        Retourne True si l'utilisateur n'a pas encore fait de choix :
-        - n'est pas marqué comme conseiller RSE
-        - n'a aucune habilitation sur une entreprise
+        Retourne True si l'utilisateur n'a pas encore fait de choix
         """
         return self.is_conseiller_rse is None
