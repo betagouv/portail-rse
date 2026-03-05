@@ -527,22 +527,8 @@ def _envoie_email_invitation_proprietaire_tiers(request, invitation):
 
     email.template_id = settings.BREVO_INVITATION_PROPRIETAIRE_TIERS_TEMPLATE
 
-    # Vérifier si l'utilisateur existe déjà
-    utilisateur_existe = User.objects.filter(email=invitation.email).exists()
-
-    if utilisateur_existe:
-        # Email pour utilisateur existant → page d'acceptation du rôle
-        code = make_token(invitation, "invitation_proprietaire")
-        path = reverse(
-            "users:accepter_role_proprietaire",
-            args=[invitation.id, code],
-        )
-    else:
-        # Nouvel utilisateur → landing ProConnect
-        code = make_token(invitation, "invitation_proprietaire_tiers")
-        path = reverse(
-            "users:invitation_proprietaire_tiers", args=[invitation.id, code]
-        )
+    code = make_token(invitation, "invitation_proprietaire_tiers")
+    path = reverse("users:invitation_proprietaire_tiers", args=[invitation.id, code])
 
     inviteur_nom = f"{invitation.inviteur.prenom} {invitation.inviteur.nom}".strip()
     email.merge_global_data = {

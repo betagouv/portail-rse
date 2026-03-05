@@ -202,32 +202,6 @@ def test_email_invitation_envoye_avec_bonnes_donnees(
 
 
 @pytest.mark.django_db
-def test_email_invitation_utilisateur_existant_route_acceptation(
-    client, conseiller_rse, alice, entreprise_factory, mailoutbox
-):
-    """L'URL dans l'email pointe vers accepter_role_proprietaire pour un utilisateur existant."""
-    entreprise = entreprise_factory(siren="222000222")
-
-    client.force_login(conseiller_rse)
-    client.post(
-        reverse("users:tableau_de_bord_conseiller"),
-        {
-            "siren": "222000222",
-            "email_futur_proprietaire": alice.email,  # Utilisateur existant
-            "fonctions": "Accompagnement BDESE",
-        },
-        follow=True,
-    )
-
-    assert len(mailoutbox) == 1
-    mail = mailoutbox[0]
-
-    # L'URL doit pointer vers la route d'acceptation pour utilisateurs existants
-    invitation_url = mail.merge_global_data.get("invitation_url", "")
-    assert "accepter-proprietaire" in invitation_url
-
-
-@pytest.mark.django_db
 def test_email_invitation_nouvel_utilisateur_route_proconnect(
     client, conseiller_rse, entreprise_factory, mailoutbox
 ):
