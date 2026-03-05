@@ -54,12 +54,6 @@ def proconnect_dispatch_view(request):
     oidc_siren = request.session["oidc_user_claims"]["siren"]
     entreprise = None
 
-    if request.session.get("oidc_login_next"):
-        # cas d'une invitation faite par un conseiller
-        url_destination = self.request.session.get("oidc_login_next")
-    else:
-        url_destination = resolve_url(settings.LOGIN_REDIRECT_URL)
-
     logger.info(
         "oidc:login",
         {
@@ -106,6 +100,11 @@ def proconnect_dispatch_view(request):
     else:
         Habilitation.ajouter(entreprise, request.user)
 
+    if request.session.get("oidc_login_next"):
+        # cas d'une invitation faite par un conseiller
+        url_destination = self.request.session.get("oidc_login_next")
+    else:
+        url_destination = resolve_url(settings.LOGIN_REDIRECT_URL)
     return redirect(url_destination)
 
 
