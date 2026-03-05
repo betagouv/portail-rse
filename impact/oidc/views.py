@@ -24,7 +24,7 @@ class OIDCAuthenticationCallbackView(CallbackView):
         - utilisateur existant pour entreprise inconnue,
         - utilisateur existant pour entreprise existante
     => plutôt que de rediriger vers `LOGIN_REDIRECT_URL` ou `next_url`,
-       on redirige vers `oidc.views.dispatch_view()` pour traitement.
+       on redirige vers `oidc.views.proconnect_dispatch_view()` pour traitement.
     Note :
         Certaines portions de la vue de "dispatch" sont dupliquées ou remaniées.
         AMA il est préférable d'avoir les 2 types de connexion compartimentés.
@@ -42,7 +42,7 @@ class OIDCAuthenticationCallbackView(CallbackView):
         return next_url or resolve_url("/oidc/dispatch")
 
 
-def dispatch_view(request):
+def proconnect_dispatch_view(request):
     """
     En cas de succès d'une connexion ProConnect, cette vue 'récupère' le routage
     pour pouvoir aiguiller ou traiter les cas spécifiques.
