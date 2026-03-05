@@ -1,4 +1,5 @@
 from datetime import date
+from uuid import uuid4
 
 import pytest
 
@@ -42,6 +43,14 @@ def alice(django_user_model):
         reception_actualites=False,
         is_email_confirmed=True,
     )
+    return alice
+
+
+@pytest.fixture
+def alice_sur_proconnect(django_user_model, alice):
+    alice.oidc_sub_id = str(uuid4())
+    alice.set_unusable_password()
+    alice.save()
     return alice
 
 

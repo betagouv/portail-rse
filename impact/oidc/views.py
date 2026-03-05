@@ -38,8 +38,7 @@ class OIDCAuthenticationCallbackView(CallbackView):
 
     @property
     def success_url(self):
-        next_url = self.request.session.get("oidc_login_next", None)
-        return next_url or resolve_url("/oidc/dispatch")
+        return resolve_url("/oidc/dispatch/")
 
 
 def proconnect_dispatch_view(request):
@@ -54,7 +53,12 @@ def proconnect_dispatch_view(request):
 
     oidc_siren = request.session["oidc_user_claims"]["siren"]
     entreprise = None
-    url_destination = resolve_url(settings.LOGIN_REDIRECT_URL)
+
+    if request.session.get("oidc_login_next"):
+        # cas d'une invitation faite par un conseiller
+        url_destination = self.request.session.get("oidc_login_next")
+    else:
+        url_destination = resolve_url(settings.LOGIN_REDIRECT_URL)
 
     logger.info(
         "oidc:login",
@@ -64,13 +68,6 @@ def proconnect_dispatch_view(request):
             "session": request.session.session_key,
         },
     )
-
-    # Nouvel utilisateur : doit choisir entre conseiller RSE et membre d'entreprise
-    # On ne propose le choix que si l'utilisateur ne l'a pas encore fait
-    # if request.user.doit_choisir_type_utilisateur and not request.session.get(
-    #    "type_utilisateur_choisi"
-    # ):
-    #    return redirect("users:choix_type_utilisateur")
 
     # vérification de l'existence de l'entreprise choisie via ProConnect
     try:
@@ -95,15 +92,6 @@ def proconnect_dispatch_view(request):
             )
             logger.error(msg)
             return HttpResponseServerError(msg)
-        else:
-            # on sélectione l'entreprise nouvellement créée pour le tableau de bord
-            request.session["entreprise"] = oidc_siren
-            request.session.save()
-            messages.success(
-                request,
-                f"L'entreprise {entreprise} a bien été créé et vous en êtes le premier membre propriétaire.",
-            )
-            return redirect(url_destination)
 
     # l'entreprise existe déjà en base :
     # l'utilisateur connecté en est-il membre ?
@@ -115,19 +103,10 @@ def proconnect_dispatch_view(request):
             request,
             f"Vous avez choisi de vous connecter via ProConnect avec : {entreprise}.",
         )
-        return redirect(url_destination)
-
-    # cas limite :
-    # une entreprise est existante, mais sans utilisateur rattaché
-    # par ex. suite à une suppression de l'utilisateur via l'admin
-    # => l'utilisateur devient propriétaire
-    if Habilitation.objects.filter(entreprise=entreprise).count() == 0:
+    else:
         Habilitation.ajouter(entreprise, request.user)
-        return redirect(url_destination)
 
-    # l'entreprise et l'utilisateur existent mais l'utilisateur n'en est pas membre
-    messages.warning(request, _message_erreur_proprietaire(entreprise))
-    return redirect("entreprises:entreprises")
+    return redirect(url_destination)
 
 
 # Fonctions utilitaires
