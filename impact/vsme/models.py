@@ -391,6 +391,37 @@ class RapportVSME(TimestampedModel):
                         "vsme:exigence_de_publication_vsme", args=[self.id, "B3"]
                     )
                     explication_non_applicable = f"l'entreprise n'a pas publié ses émissions de GES du scope 3 dans <a class='fr-link' href='{B3_url}' target='_blank' rel='noopener external'>l'indicateur « Estimation des émissions brutes de GES du scope 3 » de B3</a>"
+            case [
+                "C2",
+                "48",
+            ]:  # indicateur description des pratiques et politiques de durabilité
+                try:
+                    indicateur_declaration_durabilite = self.indicateurs.get(
+                        schema_id="B2-26"
+                    )
+                    if indicateur_declaration_durabilite.est_non_pertinent:
+                        au_moins_une_pratique_declaree = False
+                    else:
+                        declaration_durabilite = (
+                            indicateur_declaration_durabilite.data.get(
+                                "declaration_durabilite", {}
+                            )
+                        )
+                        au_moins_une_pratique_declaree = any(
+                            [
+                                bool(
+                                    declaration_durabilite[thematique].get("pratiques")
+                                )
+                                for thematique in declaration_durabilite
+                            ]
+                        )
+                except ObjectDoesNotExist:
+                    au_moins_une_pratique_declaree = False
+                if not au_moins_une_pratique_declaree:
+                    B2_url = reverse(
+                        "vsme:exigence_de_publication_vsme", args=[self.id, "B2"]
+                    )
+                    explication_non_applicable = f"l'entreprise n'a pas déclaré de pratiques, politiques ou initiatives futures en matière de durabilité dans <a class='fr-link' href='{B2_url}' target='_blank' rel='noopener external'>l'indicateur « Déclaration des pratiques et politiques de durabilité » de B2</a>"
                     return (False, explication_non_applicable)
             case ["C5", _]:  # indicateurs supplémentaires des effectifs
                 nombre_salaries = self.nombre_salaries
