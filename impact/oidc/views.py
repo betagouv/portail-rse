@@ -5,6 +5,7 @@ from django.http.response import HttpResponseBadRequest
 from django.http.response import HttpResponseServerError
 from django.shortcuts import redirect
 from django.shortcuts import resolve_url
+from django.urls import reverse
 from lasuite.oidc_login.views import OIDCAuthenticationCallbackView as CallbackView
 
 import api.infos_entreprise as api_entreprise
@@ -38,7 +39,7 @@ class OIDCAuthenticationCallbackView(CallbackView):
 
     @property
     def success_url(self):
-        return resolve_url("/oidc/dispatch/")
+        return reverse("proconnect_dispatch_view")
 
 
 def proconnect_dispatch_view(request):
