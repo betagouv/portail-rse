@@ -5,17 +5,17 @@
         "ancre": "cibles_reduction_emissions_GES",
         "champs": [
             {
-                "id": "annee_cible",
-                "label": "Année cible",
-                "type": "nombre_entier",
-                "min": 2020,
-                "obligatoire": true
-            },
-            {
                 "id": "annee_reference",
                 "label": "Année de référence",
                 "type": "nombre_entier",
                 "min": 2000,
+                "obligatoire": true
+            },
+            {
+                "id": "annee_cible",
+                "label": "Année cible",
+                "type": "nombre_entier",
+                "min": 2020,
                 "obligatoire": true
             },
             {
@@ -25,18 +25,18 @@
                 "obligatoire": true,
                 "colonnes": [
                     {
-                        "id": "valeur_cible",
-                        "label": "Valeur de l'année cible",
-                        "description": "Unité : teqCO₂",
-                        "type": "nombre_decimal",
-                        "provoque_calcul_des_champs": ["pourcentage_reduction", "valeur_cible"]
-                    },
-                    {
                         "id": "valeur_reference",
                         "label": "Valeur de l'année de référence",
                         "description": "Unité : teqCO₂",
                         "type": "nombre_decimal",
                         "provoque_calcul_des_champs": ["pourcentage_reduction", "valeur_reference"]
+                    },
+                    {
+                        "id": "valeur_cible",
+                        "label": "Valeur de l'année cible",
+                        "description": "Unité : teqCO₂",
+                        "type": "nombre_decimal",
+                        "provoque_calcul_des_champs": ["pourcentage_reduction", "valeur_cible"]
                     },
                     {
                         "id": "pourcentage_reduction",
@@ -71,15 +71,15 @@
                 "obligatoire": true,
                 "colonnes": [
                     {
-                        "id": "valeur_cible",
-                        "label": "Valeur de l'année cible",
+                        "id": "valeur_reference",
+                        "label": "Valeur de l'année de référence",
                         "description": "Unité : teqCO₂. Calculé automatiquement.",
                         "type": "nombre_decimal",
                         "calculé": true
                     },
                     {
-                        "id": "valeur_reference",
-                        "label": "Valeur de l'année de référence",
+                        "id": "valeur_cible",
+                        "label": "Valeur de l'année cible",
                         "description": "Unité : teqCO₂. Calculé automatiquement.",
                         "type": "nombre_decimal",
                         "calculé": true
@@ -115,18 +115,18 @@
                 "obligatoire": true,
                 "colonnes": [
                     {
-                        "id": "valeur_cible",
-                        "label": "Valeur de l'année cible",
-                        "description": "Unité : teqCO₂",
-                        "type": "nombre_decimal",
-                        "provoque_calcul_des_champs": ["pourcentage_reduction", "valeur_cible"]
-                    },
-                    {
                         "id": "valeur_reference",
                         "label": "Valeur de l'année de référence",
                         "description": "Unité : teqCO₂",
                         "type": "nombre_decimal",
                         "provoque_calcul_des_champs": ["pourcentage_reduction", "valeur_reference"]
+                    },
+                    {
+                        "id": "valeur_cible",
+                        "label": "Valeur de l'année cible",
+                        "description": "Unité : teqCO₂",
+                        "type": "nombre_decimal",
+                        "provoque_calcul_des_champs": ["pourcentage_reduction", "valeur_cible"]
                     },
                     {
                         "id": "pourcentage_reduction",
@@ -213,15 +213,15 @@
                 "obligatoire": true,
                 "colonnes": [
                     {
-                        "id": "valeur_cible",
-                        "label": "Valeur de l’année cible",
+                        "id": "valeur_reference",
+                        "label": "Valeur de l’année de référence",
                         "description": "Unité : teqCO₂. Calculé automatiquement.",
                         "type": "nombre_decimal",
                         "calculé": true
                     },
                     {
-                        "id": "valeur_reference",
-                        "label": "Valeur de l’année de référence",
+                        "id": "valeur_cible",
+                        "label": "Valeur de l’année cible",
                         "description": "Unité : teqCO₂. Calculé automatiquement.",
                         "type": "nombre_decimal",
                         "calculé": true
