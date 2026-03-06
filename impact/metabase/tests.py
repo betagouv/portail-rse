@@ -577,7 +577,7 @@ def test_synchronise_les_rapports_VSME(alice, entreprise_factory, mock_api_egapr
         entreprise=entreprise_avec_vsme_terminee, annee=2024
     )
 
-    vsme_commencee.indicateurs.create(
+    indicateur_vsme_commencee = vsme_commencee.indicateurs.create(
         schema_id="B1-24-a", data={"yolo": "yolo"}  # indicateur réel de B1
     )
 
@@ -586,11 +586,13 @@ def test_synchronise_les_rapports_VSME(alice, entreprise_factory, mock_api_egapr
         for exigence in EXIGENCES_DE_PUBLICATION.values()
         if exigence.remplissable
     ]
-    for exigence in EXIGENCES_REMPLISSABLES:
-        for indicateur in exigence.load_json_schema():
-            vsme_terminee.indicateurs.create(
+    for index_exigence, exigence in enumerate(EXIGENCES_REMPLISSABLES):
+        for index_indicateur, indicateur in enumerate(exigence.load_json_schema()):
+            indicateur = vsme_terminee.indicateurs.create(
                 schema_id=indicateur, data={"yolo": "yolo"}
             )
+            if index_exigence == index_indicateur == 0:
+                indicateur_vsme_terminee = indicateur
 
     call_command("sync_metabase")
 
@@ -601,6 +603,7 @@ def test_synchronise_les_rapports_VSME(alice, entreprise_factory, mock_api_egapr
     )
     assert metabase_vsme_vide.cree_le
     assert metabase_vsme_vide.modifie_le
+    assert not metabase_vsme_vide.premier_indicateur_cree_le
     assert metabase_vsme_vide.statut == MetabaseVSME.STATUT_EN_COURS
     assert metabase_vsme_vide.nb_indicateurs_completes == 0
     assert metabase_vsme_vide.progression == 0
@@ -609,6 +612,10 @@ def test_synchronise_les_rapports_VSME(alice, entreprise_factory, mock_api_egapr
 
     metabase_vsme_commencee = MetabaseVSME.objects.get(
         entreprise__siren=entreprise_avec_vsme_commencee.siren
+    )
+    assert (
+        metabase_vsme_commencee.premier_indicateur_cree_le
+        == indicateur_vsme_commencee.created_at
     )
     assert metabase_vsme_commencee.statut == MetabaseVSME.STATUT_EN_COURS
     assert metabase_vsme_commencee.nb_indicateurs_completes == 1
@@ -620,6 +627,10 @@ def test_synchronise_les_rapports_VSME(alice, entreprise_factory, mock_api_egapr
 
     metabase_vsme_terminee = MetabaseVSME.objects.get(
         entreprise__siren=entreprise_avec_vsme_terminee.siren
+    )
+    assert (
+        metabase_vsme_terminee.premier_indicateur_cree_le
+        == indicateur_vsme_terminee.created_at
     )
     assert metabase_vsme_terminee.statut == MetabaseVSME.STATUT_A_JOUR
     assert metabase_vsme_terminee.nb_indicateurs_completes > 1
