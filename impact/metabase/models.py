@@ -108,6 +108,7 @@ class BGES(Reglementation):
 class VSME(Reglementation):
     cree_le = models.DateTimeField()
     modifie_le = models.DateTimeField()
+    premier_indicateur_cree_le = models.DateTimeField(null=True)
     nb_indicateurs_completes = models.IntegerField(default=0)
     progression = models.IntegerField(default=0)
     progression_B1 = models.IntegerField(default=0)

@@ -9,6 +9,7 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.db.models import Count
 from django.db.models import Max
+from django.db.models import Min
 from django.db.models import Prefetch
 
 from analyseia.models import AnalyseIA
@@ -381,6 +382,7 @@ class Command(BaseCommand):
             dernier_rapport := RapportVSME.objects.annotate(
                 nb_indicateurs=Count("indicateurs"),
                 derniere_modif_indicateur=Max("indicateurs__updated_at"),
+                premier_indicateur_cree_le=Min("indicateurs__created_at"),
             )
             .filter(entreprise_id=entreprise.id)
             .order_by("-annee")
@@ -391,6 +393,7 @@ class Command(BaseCommand):
             cree_le = dernier_rapport.created_at
             if dernier_rapport.nb_indicateurs > 0:
                 modifie_le = dernier_rapport.derniere_modif_indicateur
+                premier_indicateur_cree_le = dernier_rapport.premier_indicateur_cree_le
                 progression = dernier_rapport.progression()["pourcent"]
                 progression_par_exigence = {}
                 for code, exigence in EXIGENCES_DE_PUBLICATION.items():
@@ -399,6 +402,7 @@ class Command(BaseCommand):
                     )
             else:
                 modifie_le = dernier_rapport.updated_at
+                premier_indicateur_cree_le = None
                 progression = 0
                 progression_par_exigence = {
                     f"progression_{code}": 0 for code in EXIGENCES_DE_PUBLICATION
@@ -414,6 +418,7 @@ class Command(BaseCommand):
                 ),
                 cree_le=cree_le,
                 modifie_le=modifie_le,
+                premier_indicateur_cree_le=premier_indicateur_cree_le,
                 nb_indicateurs_completes=dernier_rapport.nb_indicateurs,
                 progression=progression,
                 **progression_par_exigence,
