@@ -100,9 +100,11 @@ def proconnect_dispatch_view(request):
     else:
         Habilitation.ajouter(entreprise, request.user)
 
-    if request.session.get("oidc_login_next"):
+    if request.session.get("page_suivante"):
         # cas d'une invitation faite par un conseiller
-        url_destination = self.request.session.get("oidc_login_next")
+        url_destination = request.session.get("page_suivante")
+        request.session["page_suivante"] = None
+        request.session.save()
     else:
         url_destination = resolve_url(settings.LOGIN_REDIRECT_URL)
     return redirect(url_destination)
