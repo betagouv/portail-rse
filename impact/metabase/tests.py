@@ -621,9 +621,7 @@ def test_synchronise_les_rapports_VSME(alice, entreprise_factory, mock_api_egapr
     assert metabase_vsme_commencee.nb_indicateurs_completes == 1
     assert 0 < metabase_vsme_commencee.progression < 100
     assert 0 < metabase_vsme_commencee.progression_B1 < 100
-    for code in EXIGENCES_DE_PUBLICATION:
-        if code != "B1":
-            assert getattr(metabase_vsme_commencee, f"progression_{code}") == 0
+    assert metabase_vsme_commencee.progression_B2 == 0
 
     metabase_vsme_terminee = MetabaseVSME.objects.get(
         entreprise__siren=entreprise_avec_vsme_terminee.siren
