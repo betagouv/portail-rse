@@ -207,7 +207,7 @@ def invitation_proprietaire_tiers(request, id_invitation, code):
         return redirect("users:accepter_role_proprietaire", id_invitation, code)
 
     # Rediriger vers ProConnect
-    request.session["oidc_login_next"] = reverse(
+    request.session["page_suivante"] = reverse(
         "users:accepter_role_proprietaire", args=[id_invitation, code]
     )
     request.session.save()
