@@ -353,6 +353,43 @@ class RapportVSME(TimestampedModel):
                     )
                     explication_non_applicable = f"l'entreprise n'a pas renseigné plusieurs pays d'exercice dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur « Pays d'exercice » de B1</a>"
                     return (False, explication_non_applicable)
+            case [
+                "C3",
+                "54",
+                "p2",
+            ]:  # indicateur cibles de réduction des émissions de GES scope 3
+                try:
+                    indicateur_emissions_GES_scope_3 = self.indicateurs.get(
+                        schema_id="B3-30-p2"
+                    )
+                    publie_emissions_GES_scope_3 = (
+                        not indicateur_emissions_GES_scope_3.est_non_pertinent
+                    )
+                except ObjectDoesNotExist:
+                    publie_emissions_GES_scope_3 = False
+                if publie_emissions_GES_scope_3:
+                    try:
+                        indicateur_cibles_reduction_scopes_1_2 = self.indicateurs.get(
+                            schema_id="C3-54-p1"
+                        )
+                        pas_de_cibles = (
+                            indicateur_cibles_reduction_scopes_1_2.est_non_pertinent
+                        )
+                        if pas_de_cibles:
+                            C3_url = reverse(
+                                "vsme:exigence_de_publication_vsme",
+                                args=[self.id, "C3"],
+                            )
+                            explication_non_applicable = f"l'entreprise n'a pas fixé de cibles de réduction des émissions de GES dans <a class='fr-link' href='{C3_url}' target='_blank' rel='noopener external'>l'indicateur « Cibles de réduction des émissions de GES des scopes 1 et 2 » de C3</a>"
+                            return (False, explication_non_applicable)
+                    except ObjectDoesNotExist:
+                        pass
+                else:
+                    B3_url = reverse(
+                        "vsme:exigence_de_publication_vsme", args=[self.id, "B3"]
+                    )
+                    explication_non_applicable = f"l'entreprise n'a pas publié ses émissions de GES du scope 3 dans <a class='fr-link' href='{B3_url}' target='_blank' rel='noopener external'>l'indicateur « Estimation des émissions brutes de GES du scope 3 » de B3</a>"
+                    return (False, explication_non_applicable)
             case ["C5", _]:  # indicateurs supplémentaires des effectifs
                 nombre_salaries = self.nombre_salaries
                 if nombre_salaries is not None and nombre_salaries < 50:
