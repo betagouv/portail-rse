@@ -126,7 +126,13 @@ def create_multiform_from_schema(
 
     def _dynamicform_factory():
         class _DynamicForm(DsfrForm):
-            pass
+            extra_validator = calculate_form_extra_validator(schema["schema_id"])
+
+            def clean(self):
+                cleaned_data = super().clean()
+                if self.extra_validator:
+                    self.extra_validator(cleaned_data)
+                return cleaned_data
 
         return _DynamicForm
 
@@ -323,7 +329,9 @@ class DatalistTextInput(forms.TextInput):
 def create_Formset_from_schema(field_schema, rapport_vsme, extra=0):
     field_type = field_schema["type"]
     calculated_rows = calculate_rows(field_schema.get("lignes"), rapport_vsme)
-    extra_validators = calculate_extra_validators(field_schema["id"], rapport_vsme)
+    extra_validators = calculate_formset_extra_validators(
+        field_schema["id"], rapport_vsme
+    )
     auto_id_field = calculate_auto_id_field(field_schema["colonnes"])
     min_num = 1 if field_schema.get("obligatoire", False) else 0
 
@@ -521,7 +529,28 @@ def calculate_choices(choix, rapport_vsme):
     return choices
 
 
-def calculate_extra_validators(field_id, rapport_vsme):
+def calculate_form_extra_validator(indicateur_schema_id):
+    match indicateur_schema_id:
+        case "C3-55":
+            return plan_transition_climatique_validator
+    return
+
+
+def plan_transition_climatique_validator(form, cleaned_data):
+    if cleaned_data["plan_transition_climatique"]:
+        field_ids = [
+            "description_plan_transition_climatique",
+            "contribution_reduction_emissions_GES",
+        ]
+        for field_id in field_ids:
+            if not cleaned_data.get(field_id):
+                form.add_error(
+                    field_id,
+                    "Ce champ est obligatoire si l'entreprise dispose d'un plan de transition climatique.",
+                )
+
+
+def calculate_formset_extra_validators(field_id, rapport_vsme):
     match field_id:
         case "gestion_dechets":
             return [dechets_total_validator]

@@ -247,5 +247,37 @@
             }
         ],
         "si_pertinent": "L'entreprise n'a pas fixé des cibles de réduction des émissions de GES pour le scope 3"
+    },
+    "C3-55": {
+        "titre": "Plan de transition climatique",
+        "description": "Pour les entreprises opérant dans un secteur à fort impact climatique, indiquer si elles disposent d’un plan de transition pour l’atténuation du changement climatique. Si oui, en donner les grandes lignes et expliquer sa contribution à la réduction des émissions. Si non, indiquer si un plan est prévu et à quelle échéance.",
+        "ancre": "plan_transition_climatique",
+        "champs": [
+            {
+                "id": "plan_transition_climatique",
+                "label": "L'entreprise dispose-t-elle d'un plan de transition climatique ?",
+                "type": "choix_binaire_radio",
+                "obligatoire": "true"
+            },
+            {
+                "id": "description_plan_transition_climatique",
+                "label": "Description du plan de transition climatique",
+                "description": "Si l'entreprise dispose d'un plan de transition climatique, indiquer les grandes lignes de celui-ci.",
+                "type": "texte_long"
+            },
+            {
+                "id": "contribution_reduction_emissions_GES",
+                "label": "Contribution du plan de transition climatique à la réduction des émissions de GES",
+                "description": "Si l'entreprise dispose d'un plan de transition climatique, indiquer la contribution de celui-ci à la réduction des émissions de GES.",
+                "type": "texte_long"
+            },
+            {
+                "id": "plan_transition_climatique_prevu",
+                "label": "Année prévue d'adoption d'un plan de transition climatique",
+                "description": "Si l'entreprise ne dispose pas d'un plan de transition climatique, indiquer si un plan est prévu et en quelle année. Laisser vide si l'entreprise ne prévoit pas d'adopter de plan de transition climatique ou si elle en a déjà un.",
+                "type": "nombre_entier",
+                "min": 2025
+            }
+        ]
     }
 }
