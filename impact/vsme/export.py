@@ -28,6 +28,7 @@ SCHEMA_ID_VERS_CELLULE = {
     "B3-29-p1": "A4",
     "B3-29-p2": "D5",
     "B3-30-p1": "R4",
+    "B3-30-p2": "V4",
     "B4-32-p1": "A4",
     "B4-32-p2": "D4",
     "B4-32-p3": "G4",
@@ -54,6 +55,9 @@ SCHEMA_ID_VERS_CELLULE = {
     "C1-47-b": "B4",
     "C1-47-c": "C4",
     "C1-47-d": "D4",
+    "C3-54-p1": "A4",
+    "C3-54-p2": "I4",
+    "C3-55": "M4",
     "C4-57": "A4",
     "C4-58": "F4",
     "C5-59": "A4",
@@ -183,6 +187,17 @@ def _export_tableau(champ, data, cellule_depart: Cell) -> Cell:
 
 
 def _export_tableau_lignes_fixes(champ, data, cellule_depart: Cell) -> Cell:
+    match champ["id"]:
+        # hack car l'export excel de ces indicateurs qui contiennent des tableaux lignes fixes est trop complexe
+        # à cause du décalage produit par les premières colonnes contenant les labels des lignes écrits en dur dans le template
+        # TODO: il faudrait plutôt coder l'export des labels de lignes plutôt que laisser cette responsabilité au template
+        case "cibles_reduction_emissions_GES_scopes_1_2":
+            # cell.parent permet de récupérer le worksheet
+            cellule_depart = cellule_depart.parent["D4"]
+        case "total_reduction_emissions_GES_scopes_1_2":
+            cellule_depart = cellule_depart.parent["D6"]
+        case "total_reduction_emissions_GES_scope_3":
+            cellule_depart = cellule_depart.parent["I19"]
     lignes = champ["lignes"]
     colonnes = champ["colonnes"]
     match lignes:

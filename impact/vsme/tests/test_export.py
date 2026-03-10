@@ -792,6 +792,49 @@ def test_telechargement_d_un_rapport_vsme_C1_absent_si_choix_module_base(
     assert "C1" not in workbook.sheetnames
 
 
+def test_telechargement_d_un_rapport_vsme_C3(client, rapport_vsme, alice):
+    rapport_vsme.indicateurs.create(
+        schema_id="C3-54-p1",
+        data={
+            "annee_reference": 2020,
+            "annee_cible": 2030,
+            "cibles_reduction_emissions_GES_scopes_1_2": {
+                "scope_1": {
+                    "valeur_reference": Decimal("100"),
+                    "valeur_cible": Decimal("70"),
+                    "actions_prevues": "Lorem ipsum",
+                },
+                "scope_2_localisation": {
+                    "valeur_reference": Decimal("50"),
+                    "valeur_cible": Decimal("40"),
+                    "actions_prevues": "Lorem ipsum",
+                },
+            },
+        },
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook["C3"]
+    assert onglet["A4"].value == 2020
+    assert onglet["B4"].value == 2030
+    assert onglet["D4"].value == 100
+    assert onglet["E4"].value == 70
+    assert onglet["F4"].value == "-30.0%"  # réduction calculée
+    assert onglet["G4"].value == "Lorem ipsum"
+
+    assert onglet["D5"].value == 50
+    assert onglet["E5"].value == 40
+    assert onglet["F5"].value == "-20.0%"  # réduction calculée
+    assert onglet["G5"].value == "Lorem ipsum"
+
+    assert onglet["D6"].value == 150  # total calculé
+    assert onglet["E6"].value == 110  # total calculé
+    assert onglet["F6"].value == "-26.7%"  # réduction totale calculée
+    assert not onglet["G6"].value
+
+
 def test_telechargement_d_un_rapport_vsme_C4(client, rapport_vsme, alice):
     rapport_vsme.indicateurs.create(
         schema_id="C4-57",

@@ -744,6 +744,7 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                 emission = emissions[ligne].get("emissions_brutes_GES")
                 if emission:
                     total_emissions_scope_3 += emission
+            data["total_estimation_emissions_GES_scope_3"] = {}
             data["total_estimation_emissions_GES_scope_3"]["total_scope_3"] = {
                 "total_emissions_brutes_GES": total_emissions_scope_3
             }
@@ -856,6 +857,7 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                     tableau_cibles[ligne][
                         "pourcentage_reduction"
                     ] = pourcentage_reduction
+            data[tableau_total_id] = {}
             data[tableau_total_id][ligne_total_id] = {
                 "valeur_cible": total_cible,
                 "valeur_reference": total_reference,
