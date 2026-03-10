@@ -1,4 +1,3 @@
-import pytest
 from django.urls import reverse
 
 from entreprises.models import Entreprise
@@ -7,7 +6,6 @@ from habilitations.models import Habilitation
 from invitations.models import Invitation
 
 
-@pytest.mark.django_db
 def test_tableau_de_bord_conseiller_acces_refuse_non_conseiller(client, alice):
     """Un utilisateur non-conseiller ne peut pas accéder au tableau de bord conseiller."""
     client.force_login(alice)
@@ -17,7 +15,6 @@ def test_tableau_de_bord_conseiller_acces_refuse_non_conseiller(client, alice):
     assert response.status_code == 302
 
 
-@pytest.mark.django_db
 def test_tableau_de_bord_conseiller_affiche_page(client, conseiller_rse):
     """Un conseiller RSE peut accéder au tableau de bord conseiller."""
     client.force_login(conseiller_rse)
@@ -28,7 +25,6 @@ def test_tableau_de_bord_conseiller_affiche_page(client, conseiller_rse):
     assert "Espace Conseiller RSE" in response.content.decode()
 
 
-@pytest.mark.django_db
 def test_tableau_de_bord_conseiller_affiche_entreprises_en_gestion(
     client, conseiller_rse, entreprise_factory
 ):
@@ -48,7 +44,6 @@ def test_tableau_de_bord_conseiller_affiche_entreprises_en_gestion(
     assert entreprise2.denomination in content
 
 
-@pytest.mark.django_db
 def test_rattachement_entreprise_existante_avec_proprietaire(
     client, conseiller_rse, alice, entreprise_factory
 ):
@@ -68,7 +63,6 @@ def test_rattachement_entreprise_existante_avec_proprietaire(
     )
 
 
-@pytest.mark.django_db
 def test_rattachement_entreprise_inexistante(client, conseiller_rse):
     """Un conseiller peut se rattacher à une entreprise inexistante."""
     client.force_login(conseiller_rse)
@@ -95,7 +89,6 @@ def test_rattachement_entreprise_inexistante(client, conseiller_rse):
     assert invitation.role == UserRole.PROPRIETAIRE
 
 
-@pytest.mark.django_db
 def test_rattachement_entreprise_sans_proprietaire(
     client, conseiller_rse, entreprise_factory
 ):
@@ -124,7 +117,6 @@ def test_rattachement_entreprise_sans_proprietaire(
     assert invitation.role == UserRole.PROPRIETAIRE
 
 
-@pytest.mark.django_db
 def test_rattachement_deja_existant(client, conseiller_rse, alice, entreprise_factory):
     """Un conseiller ne peut pas se rattacher deux fois à la même entreprise."""
     entreprise = entreprise_factory(siren="123456789")
@@ -144,7 +136,6 @@ def test_rattachement_deja_existant(client, conseiller_rse, alice, entreprise_fa
     assert "déjà rattaché" in response.content.decode()
 
 
-@pytest.mark.django_db
 def test_lien_espace_conseiller_visible_pour_conseiller(
     client, conseiller_rse, entreprise_factory, alice
 ):
@@ -164,7 +155,6 @@ def test_lien_espace_conseiller_visible_pour_conseiller(
     assert reverse("users:tableau_de_bord_conseiller") in content
 
 
-@pytest.mark.django_db
 def test_lien_espace_conseiller_invisible_pour_non_conseiller(
     client, alice, entreprise_factory
 ):
