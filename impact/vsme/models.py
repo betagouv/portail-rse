@@ -744,9 +744,9 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                 emission = emissions[ligne].get("emissions_brutes_GES")
                 if emission:
                     total_emissions_scope_3 += emission
-            data["total_estimation_emissions_GES_scope_3"]["scope_3"][
-                "total_emissions_brutes_GES"
-            ] = total_emissions_scope_3
+            data["total_estimation_emissions_GES_scope_3"]["total_scope_3"] = {
+                "total_emissions_brutes_GES": total_emissions_scope_3
+            }
             try:
                 indicateur_scopes_1_2 = "B3-30-p1"
                 total_emissions_scopes_1_2 = (
@@ -761,7 +761,7 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                     )
                     data["total_estimation_emissions_GES_scope_3"][
                         "total_scopes_1_2_3"
-                    ]["total_emissions_brutes_GES"] = total_emissions_scopes_1_2_3
+                    ] = {"total_emissions_brutes_GES": total_emissions_scopes_1_2_3}
             except ObjectDoesNotExist:
                 pass
         case "B10-42-b":
@@ -856,8 +856,10 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                     tableau_cibles[ligne][
                         "pourcentage_reduction"
                     ] = pourcentage_reduction
-            data[tableau_total_id][ligne_total_id]["valeur_cible"] = total_cible
-            data[tableau_total_id][ligne_total_id]["valeur_reference"] = total_reference
+            data[tableau_total_id][ligne_total_id] = {
+                "valeur_cible": total_cible,
+                "valeur_reference": total_reference,
+            }
             if total_reference:
                 total_reduction = (total_cible - total_reference) / total_reference
                 pourcentage_total_reduction = f"{total_reduction:.1%}"
@@ -884,12 +886,10 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                         valeur_reference_scopes_1_2_3 = (
                             total_reference + valeur_reference_scopes_1_2
                         )
-                        data[tableau_total_id]["total_scopes_1_2_3"][
-                            "valeur_cible"
-                        ] = valeur_cible_scopes_1_2_3
-                        data[tableau_total_id]["total_scopes_1_2_3"][
-                            "valeur_reference"
-                        ] = valeur_reference_scopes_1_2_3
+                        data[tableau_total_id]["total_scopes_1_2_3"] = {
+                            "valeur_cible": valeur_cible_scopes_1_2_3,
+                            "valeur_reference": valeur_reference_scopes_1_2_3,
+                        }
                         if valeur_reference_scopes_1_2_3:
                             reduction_scopes_1_2_3 = (
                                 valeur_cible_scopes_1_2_3

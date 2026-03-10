@@ -65,8 +65,8 @@
             },
             {
                 "id": "total_reduction_emissions_GES_scopes_1_2",
-                "label": "Total",
-                "description": "Calculé automatiquement",
+                "label": "Cumul des cibles de réduction des émissions de GES",
+                "description": "Calculé automatiquement en fonction des données renseignées précédemment",
                 "type": "tableau_lignes_fixes",
                 "obligatoire": true,
                 "colonnes": [
@@ -95,7 +95,7 @@
                 "lignes": [
                     {
                         "id": "total_scopes_1_2_localisation",
-                        "label": "Émissions totales des GES du Scope 1 et 2 (basé sur la localisation)"
+                        "label": "Total scopes 1 et 2 (basé sur la localisation)"
                     }
                 ]
             }
@@ -109,7 +109,7 @@
         "champs": [
             {
                 "id": "cibles_reduction_emissions_GES_scope_3",
-                "label": "Cibles de réduction des émissions de GES des scopes 3",
+                "label": "Cibles de réduction des émissions de GES du scope 3",
                 "description": "L'année cible et l'année de référence ont été définies dans l'indicateur précédent.",
                 "type": "tableau_lignes_fixes",
                 "obligatoire": true,
@@ -207,8 +207,8 @@
             },
             {
                 "id": "total_reduction_emissions_GES_scope_3",
-                "label": "Total cible de réduction des émissions de GES des scopes 3",
-                "description": "L'année cible et l'année de référence ont été définies dans l'indicateur précédent. Calculé automatiquement.",
+                "label": "Cumul des cibles de réduction des émissions de GES",
+                "description": "L'année cible et l'année de référence ont été définies dans l'indicateur précédent. Calculé automatiquement en fonction des données renseignées précédemment.",
                 "type": "tableau_lignes_fixes",
                 "obligatoire": true,
                 "colonnes": [
@@ -237,11 +237,11 @@
                 "lignes": [
                     {
                         "id": "total_scope_3",
-                        "label": "Émissions totales des GES des scopes 3"
+                        "label": "Total du scope 3"
                     },
                     {
                         "id": "total_scopes_1_2_3",
-                        "label": "Émissions totales des GES des scopes 1, 2 (basé sur la localisation) et 3"
+                        "label": "Total des scopes 1, 2 (basé sur la localisation) et 3"
                     }
                 ]
             }
