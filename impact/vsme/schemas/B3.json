@@ -349,8 +349,8 @@
             },
             {
                 "id": "total_estimation_emissions_GES_scope_3",
-                "label": "Total des émissions brutes de gaz à effet de serre",
-                "description": "Calculé automatiquement.",
+                "label": "Estimation des émissions brutes de gaz à effet de serre cumulées",
+                "description": "Calculé automatiquement en fonction des données renseignées précédemment.",
                 "type": "tableau_lignes_fixes",
                 "obligatoire": true,
                 "colonnes": [
@@ -364,12 +364,12 @@
                 ],
                 "lignes": [
                     {
-                        "id": "scope_3",
-                        "label": "Émissions totales des GES du scope 3"
+                        "id": "total_scope_3",
+                        "label": "Total du scope 3"
                     },
                     {
                         "id": "total_scopes_1_2_3",
-                        "label": "Émissions totales des GES des scopes 1, 2 (basé sur la localisation) et 3"
+                        "label": "Total des scopes 1, 2 (basé sur la localisation) et 3"
                     }
                 ]
             }
