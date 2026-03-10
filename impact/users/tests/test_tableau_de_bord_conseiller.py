@@ -1,3 +1,4 @@
+import pytest
 from django.urls import reverse
 
 from entreprises.models import Entreprise
@@ -63,10 +64,13 @@ def test_rattachement_entreprise_existante_avec_proprietaire(
     )
 
 
-def test_rattachement_entreprise_inexistante(client, conseiller_rse):
+@pytest.mark.network
+def test_rattachement_entreprise_inexistante(
+    client, conseiller_rse, mock_api_infos_entreprise
+):
     """Un conseiller peut se rattacher à une entreprise inexistante."""
     client.force_login(conseiller_rse)
-    SIREN = "999999999"
+    SIREN = mock_api_infos_entreprise.return_value["siren"]
 
     response = client.post(
         reverse("users:tableau_de_bord_conseiller"),
