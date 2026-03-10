@@ -76,6 +76,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "oidc.middlewares.OIDCMiddleware",
     # ajout d'informations à l'utilisateur juste après l'identification
     "utils.middlewares.ExtendUserMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -474,26 +475,15 @@ METABASE_NB_ASYNC_CALLS = int(os.getenv("METABASE_NB_ASYNC_CALLS", 100))
 # On garde l'identification classique par modèle quoi qu'il advienne
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
+    "oidc.backends.CustomOIDCAuthenticationBackend",
 ]
 # Configuration des endpoints ProConnect
 # Pointe par défaut sur la production, à modifier pour l'intégration (recette),
 OIDC_PC_DOMAIN = os.getenv("OIDC_PC_DOMAIN", "auth.agentconnect.gouv.fr")
 OIDC_PC_ISSUER = os.getenv("OIDC_PC_ISSUER", f"{OIDC_PC_DOMAIN}/api/v2")
 
-# l'activation de ProConnect est configurable par variable d'environnement
-OIDC_ENABLED = os.getenv("OIDC_ENABLED", "false") == "true"
-
-if OIDC_ENABLED:
-    MIDDLEWARE.append("oidc.middlewares.OIDCMiddleware")
-
 # mentionné dans la documentation
 OIDC_AUTH_REQUEST_EXTRA_PARAMS = {"acr_values": "eidas1"}
-
-if OIDC_ENABLED:
-    # ajoute OIDC comme mode possible d'identification
-    AUTHENTICATION_BACKENDS += [
-        "oidc.backends.CustomOIDCAuthenticationBackend",
-    ]
 
 # Authentication to support OIDC silent login flows via the 'silent' query parameter
 OIDC_AUTHENTICATE_CLASS = "lasuite.oidc_login.views.OIDCAuthenticationRequestView"

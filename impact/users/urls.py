@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.contrib.auth import views as auth_views
 from django.urls import path
 from django.urls import reverse_lazy
@@ -26,8 +25,6 @@ _connexion_view = auth_views.LoginView.as_view(
     template_name="users/login.html", authentication_form=LoginForm
 )
 
-# certaines options de gestion du compte et des identifiants sont absentes avec ProConnect
-_creation_view = _connexion_view if settings.OIDC_ENABLED else creation
 
 urlpatterns = [
     path(
@@ -63,7 +60,7 @@ urlpatterns = [
         confirm_email,
         name="confirm_email",
     ),
-    path("creation", _creation_view, name="creation"),
+    path("creation", creation, name="creation"),
     path(
         "post-login-dispatch",
         post_login_dispatch,

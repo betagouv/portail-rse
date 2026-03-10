@@ -36,16 +36,12 @@ urlpatterns = (
         path("", include("users.urls")),
         path("", include("vsme.urls")),
         path("", include("analyseia.urls")),
+        path("oidc/", include("oidc.urls")),
         path("trigger-error-for-sentry-debug/", trigger_error),
     ]
     + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 )
-
-if settings.OIDC_ENABLED:
-    urlpatterns += [
-        path("oidc/", include("oidc.urls")),
-    ]
 
 if settings.DEBUG_TOOLBAR:
     urlpatterns.extend(debug_toolbar_urls())

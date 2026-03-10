@@ -12,11 +12,7 @@
                     Créez un compte ou connectez-vous pour piloter et suivre vos réglementations.
                 </div>
 
-                {% if oidc_enabled %}
-                    {% include "includes/login_proconnect.html" %}
-                {% else %}
-                    {% include "includes/login_email_password.html" %}
-                {% endif %}
+                {% include "includes/login_proconnect.html" %}
 
             </div>
             <div class="fr-col-lg-6 fr-col-12">
