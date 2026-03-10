@@ -2,7 +2,6 @@ import html
 from datetime import datetime
 from datetime import timedelta
 from datetime import timezone
-from unittest import mock
 
 import pytest
 from django.conf import settings
@@ -10,7 +9,6 @@ from django.urls import reverse
 from freezegun import freeze_time
 from pytest_django.asserts import assertTemplateUsed
 
-from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from habilitations.models import FONCTIONS_MAX_LENGTH
 from habilitations.models import FONCTIONS_MIN_LENGTH
@@ -21,181 +19,11 @@ from utils.tokens import make_token
 from utils.tokens import uidb64
 
 
-@pytest.mark.skipif(
-    settings.OIDC_ENABLED,
-    reason="Test non pertinent avec OIDC activé - le formulaire de création classique n'est pas disponible",
-)
 def test_page_creation(client):
-    response = client.get("/creation")
+    response = client.get("/creation", follow=True)
 
     assert response.status_code == 200
-    content = response.content.decode("utf-8")
-    assert "<!-- page creation compte -->" in content
-
-
-@pytest.mark.network
-@pytest.mark.skipif(
-    settings.OIDC_ENABLED,
-    reason="Test non pertinent avec OIDC activé - le formulaire de création classique n'est pas disponible",
-)
-def test_create_user_with_real_siren(client, db, mailoutbox):
-    data = {
-        "prenom": "Alice",
-        "nom": "User",
-        "email": "user@domaine.test",
-        "password1": "Passw0rd!123",
-        "password2": "Passw0rd!123",
-        "siren": "130025265",  #  Dinum
-        "acceptation_cgu": "checked",
-        "reception_actualites": "checked",
-        "fonctions": "Présidente",
-    }
-
-    response = client.post("/creation", data=data, follow=True)
-
-    assert response.status_code == 200
-    reglementation_url = reverse(
-        "reglementations:tableau_de_bord", kwargs={"siren": "130025265"}
-    )
-    assert response.redirect_chain == [
-        (reglementation_url, 302),
-        (f"{reverse('users:login')}?next={reglementation_url}", 302),
-    ]
-
-    assert (
-        "Votre compte a bien été créé. Un e-mail de confirmation a été envoyé à user@domaine.test. Confirmez votre adresse e-mail en cliquant sur le lien reçu avant de vous connecter."
-        in response.content.decode("utf-8")
-    )
-
-    user = User.objects.get(email="user@domaine.test")
-    entreprise = Entreprise.objects.get(siren="130025265")
-    assert entreprise.denomination == "DIRECTION INTERMINISTERIELLE DU NUMERIQUE"
-    assert entreprise.categorie_juridique_sirene == 7120
-    assert entreprise.code_pays_etranger_sirene is None
-    assert entreprise.code_NAF == "84.11Z"
-    assert not CaracteristiquesAnnuelles.objects.filter(entreprise=entreprise)
-    assert user.created_at
-    assert user.updated_at
-    assert user.email == "user@domaine.test"
-    assert user.prenom == "Alice"
-    assert user.nom == "User"
-    assert user.acceptation_cgu == True
-    assert user.reception_actualites == True
-    assert user.check_password("Passw0rd!123")
-    assert user.is_email_confirmed == False
-    assert user in entreprise.users.all()
-    assert user.uidb64
-    assert Habilitation.pour(entreprise, user).fonctions == "Présidente"
-    assert len(mailoutbox) == 1
-    mail = mailoutbox[0]
-    assert mail.from_email == settings.DEFAULT_FROM_EMAIL
-    assert list(mail.to) == ["user@domaine.test"]
-    assert mail.template_id == settings.BREVO_CONFIRMATION_EMAIL_TEMPLATE
-    assert mail.merge_global_data == {
-        "confirm_email_url": response.wsgi_request.build_absolute_uri(
-            reverse(
-                "users:confirm_email",
-                kwargs={
-                    "uidb64": uidb64(user),
-                    "token": make_token(user, "confirm_email"),
-                },
-            )
-        )
-    }
-
-
-@pytest.mark.network
-@pytest.mark.skipif(
-    settings.OIDC_ENABLED,
-    reason="Test non pertinent avec OIDC activé - le formulaire de création classique n'est pas disponible",
-)
-def test_create_user_with_invalid_siren(client, db):
-    data = {
-        "prenom": "Alice",
-        "nom": "User",
-        "email": "user@domaine.test",
-        "password1": "Passw0rd!123",
-        "password2": "Passw0rd!123",
-        "siren": "000000000",  # Invalid
-        "acceptation_cgu": "checked",
-        "fonctions": "Présidente",
-    }
-
-    response = client.post("/creation", data=data)
-
-    assert response.status_code == 200
-
-    content = html.unescape(response.content.decode("utf-8"))
-    assert (
-        "L'entreprise n'a pas été trouvée. Vérifiez que le SIREN est correct."
-        in content
-    )
-
-    assert not User.objects.filter(email="user@domaine.test")
-    assert not Entreprise.objects.filter(siren="123456789")
-
-
-@pytest.mark.skipif(
-    settings.OIDC_ENABLED,
-    reason="Test non pertinent avec OIDC activé - le formulaire de création classique n'est pas disponible",
-)
-def test_create_user_but_cant_send_confirm_email(
-    client, db, mailoutbox, mocker, mock_api_infos_entreprise
-):
-    mock_send_confirm_email = mocker.patch(
-        "users.views._send_confirm_email", return_value=False
-    )
-
-    data = {
-        "prenom": "Alice",
-        "nom": "User",
-        "email": "user@domaine.test",
-        "password1": "Passw0rd!123",
-        "password2": "Passw0rd!123",
-        "siren": "130025265",  #  Dinum
-        "acceptation_cgu": "checked",
-        "reception_actualites": "",
-        "fonctions": "Présidente",
-    }
-
-    response = client.post("/creation", data=data, follow=True)
-
-    assert response.status_code == 200
-    user = User.objects.get(email="user@domaine.test")
-    mock_send_confirm_email.assert_called_once_with(mock.ANY, user)
-
-    content = html.unescape(response.content.decode("utf-8"))
-    assert (
-        "L'e-mail de confirmation n'a pas pu être envoyé à user@domaine.test. Contactez-nous si cette adresse est légitime."
-        in content
-    )
-
-
-@pytest.mark.skipif(
-    settings.OIDC_ENABLED,
-    reason="Test non pertinent avec OIDC activé - le formulaire de création classique n'est pas disponible",
-)
-def test_échec_lors_de_la_création_car_un_propriétaire_de_l_entreprise_existe_déjà(
-    client, alice, entreprise_non_qualifiee
-):
-    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
-    data = {
-        "prenom": "Bob",
-        "nom": "User",
-        "email": "bob@domaine.test",
-        "password1": "Passw0rd!123",
-        "password2": "Passw0rd!123",
-        "siren": entreprise_non_qualifiee.siren,
-        "acceptation_cgu": "checked",
-        "fonctions": "Présidente",
-    }
-
-    response = client.post("/creation", data=data, follow=True)
-
-    assert response.status_code == 200
-    assert not User.objects.filter(email="bob@domaine.test")
-    content = html.unescape(response.content.decode("utf-8"))
-    assert "Il existe déjà un propriétaire sur cette entreprise." in content, content
+    assert response.redirect_chain == [(reverse("users:login"), 302)]
 
 
 def test_confirm_email(client, alice):

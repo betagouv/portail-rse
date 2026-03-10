@@ -16,7 +16,6 @@ from django.urls import reverse
 from .forms import AjoutEntrepriseConseillerForm
 from .forms import ChoixTypeUtilisateurForm
 from .forms import ProconnectUserEditionForm
-from .forms import UserCreationForm
 from .forms import UserEditionForm
 from .forms import UserInvitationForm
 from .forms import UserPasswordForm
@@ -29,53 +28,17 @@ from habilitations.models import HabilitationError
 from invitations.models import Invitation
 from logs import event_logger as logger
 from reglementations.views import calculer_metriques_entreprise
-from users.forms import message_erreur_proprietaires
 from utils.tokens import check_token
 from utils.tokens import make_token
 from utils.tokens import uidb64
 
 
 def creation(request):
-    if request.method == "POST":
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            try:
-                siren = form.cleaned_data["siren"]
-                if entreprises := Entreprise.objects.filter(siren=siren):
-                    entreprise = entreprises[0]
-                    if habilitations := Habilitation.objects.filter(
-                        entreprise=entreprise
-                    ):
-                        proprietaires_presents = [
-                            habilitation.user for habilitation in habilitations
-                        ]
-                        messages.error(
-                            request,
-                            message_erreur_proprietaires(proprietaires_presents),
-                        )
-                        return render(request, "users/creation.html", {"form": form})
+    """Fin des créations de compte sur le service. Fait uniquement avec ProConnect
 
-                else:
-                    entreprise = Entreprise.search_and_create_entreprise(siren)
-                user = form.save()
-                Habilitation.ajouter(
-                    entreprise,
-                    user,
-                    fonctions=form.cleaned_data["fonctions"],
-                )
-                if _send_confirm_email(request, user):
-                    success_message = f"Votre compte a bien été créé. Un e-mail de confirmation a été envoyé à {user.email}. Confirmez votre adresse e-mail en cliquant sur le lien reçu avant de vous connecter."
-                    messages.success(request, success_message)
-                else:
-                    error_message = f"L'e-mail de confirmation n'a pas pu être envoyé à {user.email}. Contactez-nous si cette adresse est légitime."
-                    messages.error(request, error_message)
-                return redirect("reglementations:tableau_de_bord", siren)
-            except APIError as exception:
-                messages.error(request, exception)
-    else:
-        simulation_data = request.session.get("simulation")
-        form = UserCreationForm(initial=simulation_data)
-    return render(request, "users/creation.html", {"form": form})
+    Redirection pour éviter des 404 aux utilisateurs et pour le SEO
+    """
+    return redirect(reverse("users:login"))
 
 
 def _send_confirm_email(request, user):
