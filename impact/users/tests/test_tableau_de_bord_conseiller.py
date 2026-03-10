@@ -72,17 +72,18 @@ def test_rattachement_entreprise_existante_avec_proprietaire(
 def test_rattachement_entreprise_inexistante(client, conseiller_rse):
     """Un conseiller peut se rattacher à une entreprise inexistante."""
     client.force_login(conseiller_rse)
+    SIREN = "999999999"
 
     response = client.post(
         reverse("users:tableau_de_bord_conseiller"),
         {
-            "siren": "999999999",
+            "siren": SIREN,
             "email_futur_proprietaire": "futur@proprietaire.test",
         },
         follow=True,
     )
 
-    entreprise = Entreprise.objects.get(siren="999999999")
+    entreprise = Entreprise.objects.get(siren=SIREN)
     assert Habilitation.existe(entreprise, conseiller_rse)
     habilitation = Habilitation.pour(entreprise, conseiller_rse)
     assert habilitation.role == UserRole.PROPRIETAIRE
