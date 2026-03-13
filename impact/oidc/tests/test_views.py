@@ -71,3 +71,27 @@ def test_proconnect_dispatch_view_ne_fait_que_rediriger_si_habilitation_et_entre
     assert habilitation.role == UserRole.PROPRIETAIRE
     assert response.status_code == 200
     assert response.redirect_chain[0] == ("/post-login-dispatch", 302)
+
+
+def test_proconnect_dispatch_view_ne_crée_pas_d_habilitation_si_proprietaire_déjà_présent(
+    client, entreprise_factory, alice_sur_proconnect, bob
+):
+    siren = "123456789"
+    entreprise = entreprise_factory(siren=siren)
+    Habilitation.ajouter(entreprise, bob)
+    session = client.session
+    session["oidc_user_claims"] = {
+        "sub": alice_sur_proconnect.oidc_sub_id,
+        "siren": siren,
+    }
+    session.save()
+    client.force_login(alice_sur_proconnect)
+
+    response = client.get("/oidc/dispatch/", follow=True)
+
+    assert not Habilitation.objects.filter(
+        entreprise=entreprise, user=alice_sur_proconnect
+    )
+    messages = list(response.context["messages"])
+    assert "Il existe déjà un propriétaire pour l'entreprise" in messages[0].message
+    assert response.redirect_chain[0] == ("/post-login-dispatch", 302)
