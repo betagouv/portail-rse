@@ -98,6 +98,9 @@ def proconnect_dispatch_view(request):
             request,
             f"Vous avez choisi de vous connecter via ProConnect avec : {entreprise}.",
         )
+    elif Habilitation.objects.filter(entreprise=entreprise).count():
+        # d'autres utilisateurs sont membres de l'entreprise
+        messages.warning(request, _message_erreur_proprietaire(entreprise))
     else:
         Habilitation.ajouter(entreprise, request.user)
 
