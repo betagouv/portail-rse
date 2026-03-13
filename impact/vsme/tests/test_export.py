@@ -792,6 +792,58 @@ def test_telechargement_d_un_rapport_vsme_C1_absent_si_choix_module_base(
     assert "C1" not in workbook.sheetnames
 
 
+def test_telechargement_d_un_rapport_vsme_C2(client, rapport_vsme, alice):
+    # active l'unique indicateur de C2 en déclarant des pratiques durables dans l'indicateur de B2
+    rapport_vsme.indicateurs.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B2-26",
+        data={
+            "declaration_durabilite": {
+                "changement_climatique": {
+                    "pratiques": True,
+                    "accessibles": True,
+                    "cibles": True,
+                },
+                "pollution": {
+                    "pratiques": True,
+                    "accessibles": True,
+                    "cibles": False,
+                },
+            }
+        },
+    )
+
+    rapport_vsme.indicateurs.create(
+        schema_id="C2-48",
+        data={
+            "description_durabilite": {
+                "changement_climatique": {
+                    "description_pratiques": "Lorem ipsum",
+                    "description_cibles": "Lorem ipsum",
+                    "niveau_hierarchique": "Cadre",
+                },
+                "pollution": {
+                    "description_pratiques": "Lorem ipsum",
+                    "description_cibles": "",
+                    "niveau_hierarchique": "",
+                },
+            }
+        },
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook["C2"]
+    assert onglet["B5"].value == "Lorem ipsum"
+    assert onglet["C5"].value == "Lorem ipsum"
+    assert onglet["D5"].value == "Cadre"
+
+    assert onglet["B6"].value == "Lorem ipsum"
+    assert not onglet["C6"].value
+    assert not onglet["D6"].value
+
+
 def test_telechargement_d_un_rapport_vsme_C4(client, rapport_vsme, alice):
     rapport_vsme.indicateurs.create(
         schema_id="C4-57",
