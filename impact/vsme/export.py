@@ -5,6 +5,7 @@ from openpyxl.utils.cell import coordinate_from_string
 from utils.categories_juridiques import CATEGORIES_JURIDIQUES_NIVEAU_II
 from utils.codes_nace import CODES_NACE
 from utils.pays import CODES_PAYS_ISO_3166_1
+from vsme.forms import THEMATIQUES_DURABILITE
 from vsme.models import EXIGENCES_DE_PUBLICATION
 
 
@@ -54,6 +55,7 @@ SCHEMA_ID_VERS_CELLULE = {
     "C1-47-b": "B4",
     "C1-47-c": "C4",
     "C1-47-d": "D4",
+    "C2-48": "B5",
     "C4-57": "A4",
     "C4-58": "F4",
     "C5-59": "A4",
@@ -205,12 +207,15 @@ def _export_tableau_lignes_fixes(champ, data, cellule_depart: Cell) -> Cell:
                         cellule_depart.offset(row=offset_ligne, column=offset_colonne),
                     )
             prochaine_cellule_destination = cellule_depart.offset(column=len(colonnes))
-        case list():
+        case "THEMATIQUES_DURABILITE" | list():
             colonnes_ids = [colonne["id"] for colonne in colonnes]
+            if lignes == "THEMATIQUES_DURABILITE":
+                lignes_ids = list(THEMATIQUES_DURABILITE.keys())
+            else:
+                lignes_ids = [ligne["id"] for ligne in lignes]
             if len(colonnes_ids) == 1:
                 # L'export des lignes se fait en colonnes plutôt qu'en lignes
                 for id_ligne, data_ligne in data.items():
-                    lignes_ids = [ligne["id"] for ligne in champ["lignes"]]
                     offset_colonne = lignes_ids.index(id_ligne)
                     _export_champ(
                         colonnes[0],
@@ -222,7 +227,6 @@ def _export_tableau_lignes_fixes(champ, data, cellule_depart: Cell) -> Cell:
                 )
             else:
                 for id_ligne, data_ligne in data.items():
-                    lignes_ids = [ligne["id"] for ligne in champ["lignes"]]
                     offset_ligne = lignes_ids.index(id_ligne)
                     for id_colonne, data_cellule in data_ligne.items():
                         offset_colonne = colonnes_ids.index(id_colonne)

@@ -208,6 +208,8 @@ EXIGENCES_DE_PUBLICATION = {
         "C2",
         "Description des pratiques, des politiques et des initiatives futures pour une transition vers une économie plus durable ",
         Categorie.GENERAL,
+        "https://portail-rse.beta.gouv.fr/vsme/c2-description-des-pratiques-des-politiques-et-des-initiatives-futures/",
+        remplissable=True,
     ),
     "C3": ExigenceDePublication(
         "C3",
@@ -350,6 +352,38 @@ class RapportVSME(TimestampedModel):
                         "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
                     )
                     explication_non_applicable = f"l'entreprise n'a pas renseigné plusieurs pays d'exercice dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur « Pays d'exercice » de B1</a>"
+                    return (False, explication_non_applicable)
+            case [
+                "C2",
+                "48",
+            ]:  # indicateur description des pratiques et politiques de durabilité
+                try:
+                    indicateur_declaration_durabilite = self.indicateurs.get(
+                        schema_id="B2-26"
+                    )
+                    if indicateur_declaration_durabilite.est_non_pertinent:
+                        au_moins_une_pratique_declaree = False
+                    else:
+                        declaration_durabilite = (
+                            indicateur_declaration_durabilite.data.get(
+                                "declaration_durabilite", {}
+                            )
+                        )
+                        au_moins_une_pratique_declaree = any(
+                            [
+                                bool(
+                                    declaration_durabilite[thematique].get("pratiques")
+                                )
+                                for thematique in declaration_durabilite
+                            ]
+                        )
+                except ObjectDoesNotExist:
+                    au_moins_une_pratique_declaree = False
+                if not au_moins_une_pratique_declaree:
+                    B2_url = reverse(
+                        "vsme:exigence_de_publication_vsme", args=[self.id, "B2"]
+                    )
+                    explication_non_applicable = f"l'entreprise n'a pas déclaré de pratiques, politiques ou initiatives futures en matière de durabilité dans <a class='fr-link' href='{B2_url}' target='_blank' rel='noopener external'>l'indicateur « Déclaration des pratiques et politiques de durabilité » de B2</a>"
                     return (False, explication_non_applicable)
             case ["C5", _]:  # indicateurs supplémentaires des effectifs
                 nombre_salaries = self.nombre_salaries

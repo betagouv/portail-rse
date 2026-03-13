@@ -16,12 +16,6 @@
           Vous y trouverez toute la documentation utile pour vous familiariser avec les VSME (Voluntary reporting standard for SMEs).
         </p>
 
-        <div class="fr-alert fr-alert--info">
-          <p>
-            Cet espace est en cours de construction. Il sera enrichi dans les prochains mois avec pour ambition de pouvoir compléter les indicateurs VSME directement depuis votre tableau de bord.
-          </p>
-        </div>
-
 	{# section 2 #}
         <div class="fr-pt-5w">
           <h2>Contexte</h2>
@@ -109,7 +103,7 @@
               </button>
             </h3>
             <div class="fr-collapse" id="accordion-1">
-              <a href={% static "/docs/vsme/VSME-Digital-Template-1.1.1.xlsx" %}>Téléchargez l'Excel pour commencer votre reporting</a>
+              <a href="{% static 'docs/vsme/VSME-Digital-Template-1.1.1.xlsx' %}">Téléchargez l'Excel pour commencer votre reporting</a>
             </div>
           </section>
 
@@ -120,7 +114,7 @@
               </button>
             </h3>
             <div class="fr-collapse" id="accordion-2">
-              <a href="{% static '/docs/vsme/vsme-norme-volontaire-pour-pme-non-cotee.pdf' %}" target="_blank">Consultez les standards pour réaliser votre reporting</a>
+              <a href="{% static 'docs/vsme/vsme-norme-volontaire-pour-pme-non-cotee.pdf' %}" target="_blank">Consultez les standards pour réaliser votre reporting</a>
             </div>
           </section>
 

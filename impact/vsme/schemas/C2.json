@@ -1,0 +1,36 @@
+{
+    "C2-48": {
+        "titre": "Description des pratiques et politiques de durabilité",
+        "description": "Indiquer les pratiques, politiques et initiatives futures mises en place pour réduire les impacts négatifs et renforcer les impacts positifs de l’entreprise sur la société et l’environnement, afin de contribuer à une économie plus durable.",
+        "ancre": "description_durabilite",
+        "champs": [
+            {
+                "id": "description_durabilite",
+                "label": "Description des pratiques et politiques de durabilité",
+                "description": "Pour chaque thématique, si l'entreprise a répondu OUI dans l'indicateur « Déclaration des pratiques et politiques de durabilité » de B2 à propos de l'existence de pratiques, politiques ou initiatives futures, elle les décrit brièvement ainsi que les actions qui en découlent (si la pratique/politique/initiative concerne des fournisseurs ou des clients, elle doit le mentionner).<br>Si l'entreprise a répondu OUI à propose de la définition des cibles concernant cette thématique, elle précise lesquelles.<br>Enfin l’entreprise peut préciser quel est le niveau hiérarchique le plus élevé parmi ses salariés qui est responsable de la mise en œuvre des politiques si cela a été déterminé par l’entreprise.",
+                "type": "tableau_lignes_fixes",
+                "colonnes": [
+                    {
+                        "id": "description_pratiques",
+                        "label": "Description des pratiques, politiques ou initiatives futures",
+                        "type": "texte_long",
+                        "nombre_lignes": 3
+                    },
+                    {
+                        "id": "description_cibles",
+                        "label": "Description des cibles définies",
+                        "type": "texte_long",
+                        "nombre_lignes": 3
+                    },
+                    {
+                        "id": "niveau_hierarchique",
+                        "label": "Niveau hiérarchique le plus élevé responsable de la mise en œuvre des politiques",
+                        "type": "texte_long",
+                        "nombre_lignes": 3
+                    }
+                ],
+                "lignes": "THEMATIQUES_DURABILITE"
+            }
+        ]
+    }
+}
