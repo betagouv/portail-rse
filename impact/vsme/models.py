@@ -213,6 +213,8 @@ EXIGENCES_DE_PUBLICATION = {
         "C3",
         "Cibles de réduction des émissions de GES et transition climatique",
         Categorie.ENVIRONNEMENT,
+        "https://portail-rse.beta.gouv.fr/vsme/c3-cibles-de-r%C3%A9duction-des-%C3%A9missions-de-ges-et-transition-climatique/",
+        remplissable=True,
     ),
     "C4": ExigenceDePublication(
         "C4",
@@ -350,6 +352,43 @@ class RapportVSME(TimestampedModel):
                         "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
                     )
                     explication_non_applicable = f"l'entreprise n'a pas renseigné plusieurs pays d'exercice dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur « Pays d'exercice » de B1</a>"
+                    return (False, explication_non_applicable)
+            case [
+                "C3",
+                "54",
+                "p2",
+            ]:  # indicateur cibles de réduction des émissions de GES scope 3
+                try:
+                    indicateur_emissions_GES_scope_3 = self.indicateurs.get(
+                        schema_id="B3-30-p2"
+                    )
+                    publie_emissions_GES_scope_3 = (
+                        not indicateur_emissions_GES_scope_3.est_non_pertinent
+                    )
+                except ObjectDoesNotExist:
+                    publie_emissions_GES_scope_3 = False
+                if publie_emissions_GES_scope_3:
+                    try:
+                        indicateur_cibles_reduction_scopes_1_2 = self.indicateurs.get(
+                            schema_id="C3-54-p1"
+                        )
+                        pas_de_cibles = (
+                            indicateur_cibles_reduction_scopes_1_2.est_non_pertinent
+                        )
+                        if pas_de_cibles:
+                            C3_url = reverse(
+                                "vsme:exigence_de_publication_vsme",
+                                args=[self.id, "C3"],
+                            )
+                            explication_non_applicable = f"l'entreprise n'a pas fixé de cibles de réduction des émissions de GES dans <a class='fr-link' href='{C3_url}' target='_blank' rel='noopener external'>l'indicateur « Cibles de réduction des émissions de GES des scopes 1 et 2 » de C3</a>"
+                            return (False, explication_non_applicable)
+                    except ObjectDoesNotExist:
+                        pass
+                else:
+                    B3_url = reverse(
+                        "vsme:exigence_de_publication_vsme", args=[self.id, "B3"]
+                    )
+                    explication_non_applicable = f"l'entreprise n'a pas publié ses émissions de GES du scope 3 dans <a class='fr-link' href='{B3_url}' target='_blank' rel='noopener external'>l'indicateur « Estimation des émissions brutes de GES du scope 3 » de B3</a>"
                     return (False, explication_non_applicable)
             case ["C5", _]:  # indicateurs supplémentaires des effectifs
                 nombre_salaries = self.nombre_salaries
@@ -672,7 +711,7 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                     ),
                 }
             }
-        case "B3-30":
+        case "B3-30-p1":
             emissions = data.get("estimation_emissions_GES", {}).get(
                 "emissions_brutes_GES"
             )
@@ -698,6 +737,34 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                 except ObjectDoesNotExist:
                     intensite_GES = "n/a"
                 data["intensite_GES"] = intensite_GES
+        case "B3-30-p2":
+            total_emissions_scope_3 = 0
+            emissions = data.get("estimation_emissions_GES_scope_3") or {}
+            for ligne in emissions:
+                emission = emissions[ligne].get("emissions_brutes_GES")
+                if emission:
+                    total_emissions_scope_3 += emission
+            data["total_estimation_emissions_GES_scope_3"] = {}
+            data["total_estimation_emissions_GES_scope_3"]["total_scope_3"] = {
+                "total_emissions_brutes_GES": total_emissions_scope_3
+            }
+            try:
+                indicateur_scopes_1_2 = "B3-30-p1"
+                total_emissions_scopes_1_2 = (
+                    rapport_vsme.indicateurs.get(schema_id=indicateur_scopes_1_2)
+                    .data.get("estimation_emissions_GES", {})
+                    .get("emissions_brutes_GES", {})
+                    .get("total")
+                )
+                if total_emissions_scopes_1_2 is not None:
+                    total_emissions_scopes_1_2_3 = (
+                        total_emissions_scopes_1_2 + total_emissions_scope_3
+                    )
+                    data["total_estimation_emissions_GES_scope_3"][
+                        "total_scopes_1_2_3"
+                    ] = {"total_emissions_brutes_GES": total_emissions_scopes_1_2_3}
+            except ObjectDoesNotExist:
+                pass
         case "B10-42-b":
             remuneration_hommes = data.get("remuneration_horaire_hommes")
             remuneration_femmes = data.get("remuneration_horaire_femmes")
@@ -763,6 +830,79 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                                 data["nombre_heures_formation_par_genre"][genre][
                                     "nombre_moyen_heures_formation"
                                 ] = nombre_moyen_heures_formation
+                except ObjectDoesNotExist:
+                    pass
+        case "C3-54-p1" | "C3-54-p2":
+            if indicateur_schema_id == "C3-54-p1":  # scope 1 et 2
+                tableau_cibles_id = "cibles_reduction_emissions_GES_scopes_1_2"
+                tableau_total_id = "total_reduction_emissions_GES_scopes_1_2"
+                ligne_total_id = "total_scopes_1_2_localisation"
+            else:  # scope 3
+                tableau_cibles_id = "cibles_reduction_emissions_GES_scope_3"
+                tableau_total_id = "total_reduction_emissions_GES_scope_3"
+                ligne_total_id = "total_scope_3"
+            total_cible = 0
+            total_reference = 0
+            tableau_cibles = data.get(tableau_cibles_id) or {}
+            for ligne in tableau_cibles:
+                valeur_cible = tableau_cibles[ligne].get("valeur_cible")
+                valeur_reference = tableau_cibles[ligne].get("valeur_reference")
+                if valeur_cible:
+                    total_cible += valeur_cible
+                if valeur_reference:
+                    total_reference += valeur_reference
+                if valeur_cible is not None and valeur_reference:
+                    reduction = (valeur_cible - valeur_reference) / valeur_reference
+                    pourcentage_reduction = f"{reduction:.1%}"
+                    tableau_cibles[ligne][
+                        "pourcentage_reduction"
+                    ] = pourcentage_reduction
+            data[tableau_total_id] = {}
+            data[tableau_total_id][ligne_total_id] = {
+                "valeur_cible": total_cible,
+                "valeur_reference": total_reference,
+            }
+            if total_reference:
+                total_reduction = (total_cible - total_reference) / total_reference
+                pourcentage_total_reduction = f"{total_reduction:.1%}"
+                data[tableau_total_id][ligne_total_id][
+                    "pourcentage_reduction"
+                ] = pourcentage_total_reduction
+            if indicateur_schema_id == "C3-54-p2":  # scope 3
+                # il faut encore ajouter le total scope 1 + 2 + 3
+                try:
+                    indicateur_scopes_1_2 = "C3-54-p1"
+                    ligne_total = (
+                        rapport_vsme.indicateurs.get(schema_id=indicateur_scopes_1_2)
+                        .data.get("total_reduction_emissions_GES_scopes_1_2", {})
+                        .get("total_scopes_1_2_localisation", {})
+                    )
+                    if ligne_total:
+                        valeur_cible_scopes_1_2 = ligne_total.get("valeur_cible") or 0
+                        valeur_reference_scopes_1_2 = (
+                            ligne_total.get("valeur_reference") or 0
+                        )
+                        valeur_cible_scopes_1_2_3 = (
+                            total_cible + valeur_cible_scopes_1_2
+                        )
+                        valeur_reference_scopes_1_2_3 = (
+                            total_reference + valeur_reference_scopes_1_2
+                        )
+                        data[tableau_total_id]["total_scopes_1_2_3"] = {
+                            "valeur_cible": valeur_cible_scopes_1_2_3,
+                            "valeur_reference": valeur_reference_scopes_1_2_3,
+                        }
+                        if valeur_reference_scopes_1_2_3:
+                            reduction_scopes_1_2_3 = (
+                                valeur_cible_scopes_1_2_3
+                                - valeur_reference_scopes_1_2_3
+                            ) / valeur_reference_scopes_1_2_3
+                            pourcentage_reduction_scopes_1_2_3 = (
+                                f"{reduction_scopes_1_2_3:.1%}"
+                            )
+                            data[tableau_total_id]["total_scopes_1_2_3"][
+                                "pourcentage_reduction"
+                            ] = pourcentage_reduction_scopes_1_2_3
                 except ObjectDoesNotExist:
                     pass
         case "C5-59":
