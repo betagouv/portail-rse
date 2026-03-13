@@ -1,3 +1,4 @@
+import pytest
 from django.urls import reverse
 
 from entreprises.models import Entreprise
@@ -5,10 +6,11 @@ from habilitations.enums import UserRole
 from habilitations.models import Habilitation
 
 
+@pytest.mark.network
 def test_proconnect_dispatch_view_cree_l_entreprise_sélectionnée_et_ajoute_l_habilitation(
-    client, alice_sur_proconnect
+    client, alice_sur_proconnect, mock_api_infos_entreprise
 ):
-    siren = "123456789"
+    siren = mock_api_infos_entreprise.return_value["siren"]
     session = client.session
     session["oidc_user_claims"] = {
         "sub": alice_sur_proconnect.oidc_sub_id,
