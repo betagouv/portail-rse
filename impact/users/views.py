@@ -24,7 +24,7 @@ from entreprises.models import Entreprise
 from habilitations.enums import UserRole
 from habilitations.models import Habilitation
 from habilitations.models import HabilitationError
-from habilitations.views import _cree_invitation
+from habilitations.views import cree_invitation
 from invitations.models import Invitation
 from logs import event_logger as logger
 from reglementations.views import calculer_metriques_entreprise
@@ -368,7 +368,7 @@ def tableau_de_bord_conseiller(request):
                             fonctions=form.cleaned_data.get("fonctions"),
                             is_conseiller_rse=True,
                         )
-                        _cree_invitation(
+                        cree_invitation(
                             request,
                             entreprise,
                             email_proprietaire,
@@ -392,7 +392,7 @@ def tableau_de_bord_conseiller(request):
                         fonctions=form.cleaned_data.get("fonctions"),
                         is_conseiller_rse=True,
                     )
-                    _cree_invitation(
+                    cree_invitation(
                         request,
                         entreprise,
                         email_proprietaire,

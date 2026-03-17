@@ -50,7 +50,7 @@ def invitation(request, siren):
             else:
                 _ajoute_membre(request, entreprise, utilisateur, role)
         except ObjectDoesNotExist:
-            _cree_invitation(
+            cree_invitation(
                 request, entreprise, email, role, settings.BREVO_INVITATION_TEMPLATE
             )
             messages.success(request, "L'invitation a été envoyée.")
@@ -118,7 +118,7 @@ def _envoie_email_d_ajout(request, entreprise, utilisateur):
     email.send()
 
 
-def _cree_invitation(request, entreprise, email, role, template_id):
+def cree_invitation(request, entreprise, email, role, template_id):
     invitation = Invitation.objects.create(
         entreprise=entreprise,
         email=email,
