@@ -93,19 +93,6 @@ class UserCreationForm(UserPasswordForm, PreremplissageSirenForm):
         }
 
 
-class UserInvitationForm(UserCreationForm):
-    siren = None
-
-    def __init__(self, *args, **kwargs):
-        invitation = kwargs.pop("invitation", None)
-        super().__init__(*args, **kwargs)
-        if invitation:
-            self.fields["fonctions"].label = (
-                f"Fonction(s) dans la société {invitation.entreprise.denomination}"
-            )
-            self.fields["email"].initial = invitation.email
-
-
 def message_erreur_proprietaires(proprietaires_presents):
     if len(proprietaires_presents) == 1:
         email_cache = cache_partiellement_un_email(proprietaires_presents[0].email)
