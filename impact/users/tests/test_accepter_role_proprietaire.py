@@ -133,6 +133,37 @@ def test_invitation_deja_acceptee_redirige(
 
 
 @pytest.mark.django_db
+def test_acceptation_avec_token_invitation(
+    client, futur_proprietaire, invitation_proprietaire_tiers
+):
+    """L'acceptation fonctionne aussi avec un token de type 'invitation'."""
+    client.force_login(futur_proprietaire)
+    code = make_token(invitation_proprietaire_tiers, "invitation")
+
+    response = client.get(
+        reverse(
+            "users:accepter_role_proprietaire",
+            args=[invitation_proprietaire_tiers.id, code],
+        ),
+        follow=True,
+    )
+
+    assert Habilitation.existe(
+        invitation_proprietaire_tiers.entreprise, futur_proprietaire
+    )
+    habilitation = Habilitation.pour(
+        invitation_proprietaire_tiers.entreprise, futur_proprietaire
+    )
+    assert habilitation.role == UserRole.PROPRIETAIRE
+
+    invitation_proprietaire_tiers.refresh_from_db()
+    assert invitation_proprietaire_tiers.date_acceptation is not None
+
+    assert response.status_code == 200
+    assert "Vous êtes maintenant ajouté à l'entreprise" in response.content.decode()
+
+
+@pytest.mark.django_db
 def test_invitation_inexistante_erreur(client, futur_proprietaire):
     """Une invitation inexistante retourne une erreur."""
     client.force_login(futur_proprietaire)
