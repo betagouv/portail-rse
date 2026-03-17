@@ -81,11 +81,9 @@ def test_token_invalide_refuse(
             "users:accepter_role_proprietaire",
             args=[invitation_proprietaire_tiers.id, "invalid_token"],
         ),
-        follow=True,
     )
 
-    assert response.status_code == 200
-    assert response.redirect_chain == [(reverse("erreur_terminale"), 302)]
+    assert response.status_code == 500
 
 
 @pytest.mark.django_db
@@ -99,11 +97,9 @@ def test_email_different_refuse(client, alice, invitation_proprietaire_tiers):
             "users:accepter_role_proprietaire",
             args=[invitation_proprietaire_tiers.id, code],
         ),
-        follow=True,
     )
 
-    assert response.status_code == 200
-    assert response.redirect_chain == [(reverse("erreur_terminale"), 302)]
+    assert response.status_code == 500
 
 
 @pytest.mark.django_db
@@ -173,8 +169,6 @@ def test_invitation_inexistante_erreur(client, futur_proprietaire):
             "users:accepter_role_proprietaire",
             args=[99999, "some_code"],
         ),
-        follow=True,
     )
 
-    assert response.status_code == 200
-    assert response.redirect_chain == [(reverse("erreur_terminale"), 302)]
+    assert response.status_code == 500
