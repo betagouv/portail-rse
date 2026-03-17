@@ -222,9 +222,9 @@ def test_email_invitation_nouvel_utilisateur_route_proconnect(
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
 
-    # L'URL doit pointer vers la landing ProConnect (invitation-proprietaire)
+    # L'URL doit pointer vers la vue invitation unifiée
     invitation_url = mail.merge_global_data.get("invitation_url", "")
-    assert "invitation-proprietaire" in invitation_url
+    assert "/invitation/" in invitation_url
     assert "accepter-proprietaire" not in invitation_url
 
 
