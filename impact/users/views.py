@@ -7,6 +7,7 @@ from django.contrib.auth.views import (
     PasswordResetConfirmView as BasePasswordResetConfirmView,
 )
 from django.contrib.auth.views import PasswordResetView as BasePasswordResetView
+from django.core.exceptions import BadRequest
 from django.core.exceptions import ValidationError
 from django.core.mail import EmailMessage
 from django.shortcuts import redirect
@@ -76,9 +77,7 @@ def confirm_email(request, uidb64, token):
         success_message = "Votre adresse e-mail a bien été confirmée. Vous pouvez à présent vous connecter."
         messages.success(request, success_message)
         return redirect("users:login")
-    fail_message = "Le lien de confirmation est invalide."
-    messages.error(request, fail_message)
-    return redirect(reverse("erreur_terminale"))
+    raise BadRequest("Le lien de confirmation est invalide.")
 
 
 def invitation(request, id_invitation, code):
@@ -89,22 +88,18 @@ def invitation(request, id_invitation, code):
     try:
         invitation = Invitation.objects.get(id=id_invitation)
     except Invitation.DoesNotExist:
-        messages.error(request, "Cette invitation n'existe pas.")
-        return redirect(reverse("erreur_terminale"))
+        raise BadRequest("Cette invitation n'existe pas.")
 
     if invitation.est_expiree:
-        messages.error(
-            request,
-            "L'invitation est expirée. Vous devez demander une nouvelle invitation à la personne qui a créé cette invitation.",
+        raise BadRequest(
+            "L'invitation est expirée. Vous devez demander une nouvelle invitation à la personne qui a créé cette invitation."
         )
-        return redirect(reverse("erreur_terminale"))
 
     if not (
         check_token(invitation, "invitation", code)
         or check_token(invitation, "invitation_proprietaire_tiers", code)
     ):
-        messages.error(request, "Cette invitation est incorrecte.")
-        return redirect(reverse("erreur_terminale"))
+        raise BadRequest("Cette invitation est incorrecte.")
 
     if invitation.date_acceptation:
         messages.warning(request, "Cette invitation a déjà été acceptée.")
@@ -113,10 +108,9 @@ def invitation(request, id_invitation, code):
     # Si utilisateur déjà connecté
     if request.user.is_authenticated:
         if invitation.email != request.user.email:
-            messages.error(
-                request, "Cette invitation ne correspond pas à votre adresse e-mail."
+            raise BadRequest(
+                "Cette invitation ne correspond pas à votre adresse e-mail."
             )
-            return redirect(reverse("erreur_terminale"))
         # Rediriger vers acceptation directe
         return redirect("users:accepter_role_proprietaire", id_invitation, code)
 
@@ -439,15 +433,12 @@ def accepter_role_proprietaire(request, id_invitation, code):
     try:
         invitation = Invitation.objects.get(id=id_invitation)
     except Invitation.DoesNotExist:
-        messages.error(request, "Cette invitation n'existe pas.")
-        return redirect(reverse("erreur_terminale"))
+        raise BadRequest("Cette invitation n'existe pas.")
 
     if invitation.est_expiree:
-        messages.error(
-            request,
-            "L'invitation est expirée. Veuillez contacter le conseiller RSE qui a créé cette invitation.",
+        raise BadRequest(
+            "L'invitation est expirée. Veuillez contacter le conseiller RSE qui a créé cette invitation."
         )
-        return redirect(reverse("erreur_terminale"))
 
     token_valide = (
         check_token(invitation, "invitation", code)
@@ -457,15 +448,10 @@ def accepter_role_proprietaire(request, id_invitation, code):
         or check_token(invitation, "invitation_proprietaire_tiers", code)
     )
     if not token_valide:
-        messages.error(request, "Ce lien d'invitation est invalide.")
-        return redirect(reverse("erreur_terminale"))
+        raise BadRequest("Ce lien d'invitation est invalide.")
 
     if invitation.email != request.user.email:
-        messages.error(
-            request,
-            "Cette invitation ne correspond pas à votre adresse e-mail.",
-        )
-        return redirect(reverse("erreur_terminale"))
+        raise BadRequest("Cette invitation ne correspond pas à votre adresse e-mail.")
 
     if invitation.date_acceptation:
         messages.warning(
