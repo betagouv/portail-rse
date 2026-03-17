@@ -24,6 +24,7 @@ from entreprises.models import Entreprise
 from habilitations.enums import UserRole
 from habilitations.models import Habilitation
 from habilitations.models import HabilitationError
+from habilitations.views import _cree_invitation
 from invitations.models import Invitation
 from logs import event_logger as logger
 from reglementations.views import calculer_metriques_entreprise
@@ -367,8 +368,12 @@ def tableau_de_bord_conseiller(request):
                             fonctions=form.cleaned_data.get("fonctions"),
                             is_conseiller_rse=True,
                         )
-                        _creer_invitation_proprietaire(
-                            request, entreprise, email_proprietaire
+                        _cree_invitation(
+                            request,
+                            entreprise,
+                            email_proprietaire,
+                            UserRole.PROPRIETAIRE,
+                            template_id=settings.BREVO_INVITATION_PROPRIETAIRE_TIERS_TEMPLATE,
                         )
                         messages.success(
                             request,
@@ -387,8 +392,12 @@ def tableau_de_bord_conseiller(request):
                         fonctions=form.cleaned_data.get("fonctions"),
                         is_conseiller_rse=True,
                     )
-                    _creer_invitation_proprietaire(
-                        request, entreprise, email_proprietaire
+                    _cree_invitation(
+                        request,
+                        entreprise,
+                        email_proprietaire,
+                        UserRole.PROPRIETAIRE,
+                        template_id=settings.BREVO_INVITATION_PROPRIETAIRE_TIERS_TEMPLATE,
                     )
                     messages.success(
                         request,
@@ -413,18 +422,6 @@ def tableau_de_bord_conseiller(request):
     )
 
 
-def _creer_invitation_proprietaire(request, entreprise, email_proprietaire):
-    """Crée une invitation propriétaire et envoie l'email."""
-    invitation = Invitation.objects.create(
-        entreprise=entreprise,
-        email=email_proprietaire,
-        role=UserRole.PROPRIETAIRE,
-        inviteur=request.user,
-    )
-    _envoie_email_invitation_proprietaire_tiers(request, invitation)
-    return invitation
-
-
 @login_required()
 def preremplissage_formulaire_compte(request):
     account_form = UserEditionForm(request.POST, instance=request.user)
@@ -433,32 +430,6 @@ def preremplissage_formulaire_compte(request):
         "users/fragments/account_form.html",
         {"account_form": account_form},
     )
-
-
-def _envoie_email_invitation_proprietaire_tiers(request, invitation):
-    """Envoie un email d'invitation au futur propriétaire.
-
-    Utilise le template dédié (BREVO_INVITATION_PROPRIETAIRE_TIERS_TEMPLATE)
-    avec les mêmes variables pour une cohérence des emails.
-    """
-    email = EmailMessage(
-        to=[invitation.email],
-        from_email=settings.DEFAULT_FROM_EMAIL,
-    )
-
-    email.template_id = settings.BREVO_INVITATION_PROPRIETAIRE_TIERS_TEMPLATE
-
-    code = make_token(invitation, "invitation")
-    path = reverse("users:invitation", args=[invitation.id, code])
-
-    inviteur_nom = f"{invitation.inviteur.prenom} {invitation.inviteur.nom}".strip()
-    email.merge_global_data = {
-        "denomination_entreprise": invitation.entreprise.denomination,
-        "invitation_url": request.build_absolute_uri(path),
-        "inviteur": inviteur_nom or "Un conseiller RSE",
-        "role": UserRole(invitation.role).label,
-    }
-    return email.send()
 
 
 @login_required()
