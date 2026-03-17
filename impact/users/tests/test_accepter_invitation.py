@@ -76,8 +76,7 @@ def test_token_invalide_refuse(client, utilisateur_invite, invitation):
         follow=True,
     )
 
-    assert response.status_code == 200
-    assert response.redirect_chain == [(reverse("erreur_terminale"), 302)]
+    assert response.status_code == 400
 
 
 @pytest.mark.django_db
@@ -94,8 +93,7 @@ def test_email_different_refuse(client, alice, invitation):
         follow=True,
     )
 
-    assert response.status_code == 200
-    assert response.redirect_chain == [(reverse("erreur_terminale"), 302)]
+    assert response.status_code == 400
 
 
 @pytest.mark.django_db
@@ -135,5 +133,4 @@ def test_invitation_inexistante_erreur(client, utilisateur_invite):
         follow=True,
     )
 
-    assert response.status_code == 200
-    assert response.redirect_chain == [(reverse("erreur_terminale"), 302)]
+    assert response.status_code == 400
