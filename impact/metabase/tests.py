@@ -581,12 +581,7 @@ def test_synchronise_les_rapports_VSME(alice, entreprise_factory, mock_api_egapr
         schema_id="B1-24-a", data={"yolo": "yolo"}  # indicateur réel de B1
     )
 
-    EXIGENCES_REMPLISSABLES = [
-        exigence
-        for exigence in EXIGENCES_DE_PUBLICATION.values()
-        if exigence.remplissable
-    ]
-    for index_exigence, exigence in enumerate(EXIGENCES_REMPLISSABLES):
+    for index_exigence, exigence in enumerate(EXIGENCES_DE_PUBLICATION.values()):
         for index_indicateur, indicateur in enumerate(exigence.load_json_schema()):
             indicateur = vsme_terminee.indicateurs.create(
                 schema_id=indicateur, data={"yolo": "yolo"}
@@ -633,11 +628,8 @@ def test_synchronise_les_rapports_VSME(alice, entreprise_factory, mock_api_egapr
     assert metabase_vsme_terminee.statut == MetabaseVSME.STATUT_A_JOUR
     assert metabase_vsme_terminee.nb_indicateurs_completes > 1
     assert metabase_vsme_terminee.progression == 100
-    for code, exigence in EXIGENCES_DE_PUBLICATION.items():
-        if exigence.remplissable:
-            assert getattr(metabase_vsme_terminee, f"progression_{code}") == 100
-        else:
-            assert getattr(metabase_vsme_terminee, f"progression_{code}") == 0
+    for code in EXIGENCES_DE_PUBLICATION:
+        assert getattr(metabase_vsme_terminee, f"progression_{code}") == 100
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
