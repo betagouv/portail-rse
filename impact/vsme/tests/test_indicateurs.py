@@ -127,14 +127,7 @@ def test_categorie_vsme_est_privee(client, bob, rapport_vsme):
     assert response.status_code == 403
 
 
-EXIGENCES_DE_PUBLICATION_REMPLISSABLES = [
-    e for code, e in EXIGENCES_DE_PUBLICATION.items() if e.remplissable
-]
-
-
-@pytest.mark.parametrize(
-    "exigence_de_publication", EXIGENCES_DE_PUBLICATION_REMPLISSABLES
-)
+@pytest.mark.parametrize("exigence_de_publication", EXIGENCES_DE_PUBLICATION.values())
 def test_exigence_de_publication_vsme_avec_utilisateur_authentifie(
     exigence_de_publication, client, alice, rapport_vsme
 ):
