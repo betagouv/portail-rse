@@ -7,12 +7,8 @@
                 <div class="fr-tile__body">
                     <div class="fr-tile__content">
                         <h3 class="fr-tile__title">
-                            {% if exigence.remplissable %}
-                                {% url 'vsme:exigence_de_publication_vsme' rapport_vsme.id exigence.code as url_page %}
-                                <a href="{{ url_page }}" class="progression-vsme--title">{{ exigence.code }} – {{ exigence.nom }}</a>
-                            {% else %}
-                                <a href="{{ exigence.url_infos }}" class="progression-vsme--title">{{ exigence.code }} – {{ exigence.nom }}</a>
-                            {% endif %}
+                            {% url 'vsme:exigence_de_publication_vsme' rapport_vsme.id exigence.code as url_page %}
+                            <a href="{{ url_page }}" class="progression-vsme--title">{{ exigence.code }} – {{ exigence.nom }}</a>
                         </h3>
 
                         {% if not exigence.est_applicable %}
@@ -21,11 +17,11 @@
                             </div>
                         {% endif %}
 
-                        {% if exigence.remplissable and exigence.est_applicable %}
+                        {% if exigence.est_applicable %}
                             <p class="fr-tile__desc desc-exigence-publication">
                                 {% progression_exigence rapport_vsme exigence as progression %}
-                                Complétion : {{ progression.pourcent }} %
-                                <progress max="100" value="{{ progression.pourcent }}" class="progression-exigence-publication">{{ progression.pourcent }} %</progress>
+                                Complétion : {{ progression.pourcent }} %
+                                <progress max="100" value="{{ progression.pourcent }}" class="progression-exigence-publication">{{ progression.pourcent }} %</progress>
                             </p>
                         {% endif %}
                     </div>

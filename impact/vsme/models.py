@@ -94,9 +94,6 @@ class ExigenceDePublication:
     nom: str
     categorie: "Categorie"
     url_infos: str = ""
-    remplissable: bool = (
-        False  # nous intégrons les exigences de publication une par une, toutes ne le sont pas encore
-    )
 
     def load_json_schema(self):
         # Get the directory of the current file
@@ -125,140 +122,120 @@ EXIGENCES_DE_PUBLICATION = {
         "Base d’établissement",
         Categorie.GENERAL,
         "https://portail-rse.beta.gouv.fr/vsme/b1-base-de-preparation/",
-        remplissable=True,
     ),
     "B2": ExigenceDePublication(
         "B2",
         "Pratiques, politiques et initiatives futures pour une transition vers une économie plus durable",
         Categorie.GENERAL,
         "https://portail-rse.beta.gouv.fr/vsme/b2-pratiques-politiques-et-initiatives-futures-en-vue-de-la-transition-vers-une-economie-plus-durable/",
-        remplissable=True,
     ),
     "B3": ExigenceDePublication(
         "B3",
         "Énergie et émissions de gaz à effet de serre",
         Categorie.ENVIRONNEMENT,
         "https://portail-rse.beta.gouv.fr/vsme/b3-energie-et-emissions-de-gaz-a-effet-de-serre/",
-        remplissable=True,
     ),
     "B4": ExigenceDePublication(
         "B4",
         "Pollution de l’air, de l’eau et des sols",
         Categorie.ENVIRONNEMENT,
         "https://portail-rse.beta.gouv.fr/vsme/b4-pollution-de-l-air-de-l-eau-et-des-sols/",
-        remplissable=True,
     ),
     "B5": ExigenceDePublication(
         "B5",
         "Biodiversité",
         Categorie.ENVIRONNEMENT,
         "https://portail-rse.beta.gouv.fr/vsme/b5-biodiversite/",
-        remplissable=True,
     ),
     "B6": ExigenceDePublication(
         "B6",
         "Eau",
         Categorie.ENVIRONNEMENT,
         "https://portail-rse.beta.gouv.fr/vsme/b6-eau/",
-        remplissable=True,
     ),
     "B7": ExigenceDePublication(
         "B7",
         "Utilisation des ressources, économie circulaire et gestion des déchets",
         Categorie.ENVIRONNEMENT,
         "https://portail-rse.beta.gouv.fr/vsme/b7-utilisation-des-ressources-economie-circulaire-et-gestion-des-dechets/",
-        remplissable=True,
     ),
     "B8": ExigenceDePublication(
         "B8",
         "Effectifs : caractéristiques générales",
         Categorie.SOCIAL,
         "https://portail-rse.beta.gouv.fr/vsme/b8-effectifs-caracteristiques-generales/",
-        remplissable=True,
     ),
     "B9": ExigenceDePublication(
         "B9",
         "Effectifs : santé et sécurité",
         Categorie.SOCIAL,
         "https://portail-rse.beta.gouv.fr/vsme/b9-effectifs-sante-et-securite/",
-        remplissable=True,
     ),
     "B10": ExigenceDePublication(
         "B10",
         "Effectifs : rémunération, négociation collective et formation",
         Categorie.SOCIAL,
         "https://portail-rse.beta.gouv.fr/vsme/b10-personnel-remuneration-negociation-collective-et-formation/",
-        remplissable=True,
     ),
     "B11": ExigenceDePublication(
         "B11",
         "Condamnations et amendes en matière de lutte contre la corruption et les actes de corruption",
         Categorie.GOUVERNANCE,
         "https://portail-rse.beta.gouv.fr/vsme/b11-condamnations-et-amendes-pour-corruption-et-versement-de-pots-de-vin/",
-        remplissable=True,
     ),
     "C1": ExigenceDePublication(
         "C1",
         "Stratégie : modèle économique et initiatives liées à la durabilité",
         Categorie.GENERAL,
         "https://portail-rse.beta.gouv.fr/vsme/c1-strategie-modele-dentreprise-et-durabilite-initiatives-connexes/",
-        remplissable=True,
     ),
     "C2": ExigenceDePublication(
         "C2",
         "Description des pratiques, des politiques et des initiatives futures pour une transition vers une économie plus durable ",
         Categorie.GENERAL,
         "https://portail-rse.beta.gouv.fr/vsme/c2-description-des-pratiques-des-politiques-et-des-initiatives-futures/",
-        remplissable=True,
     ),
     "C3": ExigenceDePublication(
         "C3",
         "Cibles de réduction des émissions de GES et transition climatique",
         Categorie.ENVIRONNEMENT,
         "https://portail-rse.beta.gouv.fr/vsme/c3-cibles-de-r%C3%A9duction-des-%C3%A9missions-de-ges-et-transition-climatique/",
-        remplissable=True,
     ),
     "C4": ExigenceDePublication(
         "C4",
         "Risques climatiques",
         Categorie.ENVIRONNEMENT,
         "https://portail-rse.beta.gouv.fr/vsme/c4-risques-climatiques/",
-        remplissable=True,
     ),
     "C5": ExigenceDePublication(
         "C5",
         "Caractéristiques supplémentaires (générales) des effectifs",
         Categorie.SOCIAL,
         "https://portail-rse.beta.gouv.fr/vsme/c5-caracteristiques-suppl%C3%A9mentaires-du-personnel/",
-        remplissable=True,
     ),
     "C6": ExigenceDePublication(
         "C6",
         "Informations complémentaires sur les effectifs de l'entreprise – Politiques et procédures en matière de droits de l’homme ",
         Categorie.SOCIAL,
         "https://portail-rse.beta.gouv.fr/vsme/c6-politiques-et-procedures-en-mati%C3%A8re-de-droits-de-lhomme/",
-        remplissable=True,
     ),
     "C7": ExigenceDePublication(
         "C7",
         "Incidents graves en matière de droits de l’homme",
         Categorie.SOCIAL,
         "https://portail-rse.beta.gouv.fr/vsme/c7-incidents-graves-en-mati%C3%A8re-de-droits-de-lhomme/",
-        remplissable=True,
     ),
     "C8": ExigenceDePublication(
         "C8",
         "Recettes de certains secteurs et exclusion des indices de référence de l'UE",
         Categorie.GOUVERNANCE,
         "https://portail-rse.beta.gouv.fr/vsme/c8-chiffre-daffaires-de-certains-secteurs-et-exclusion-des-indices-de-reference-de-lunion/",
-        remplissable=True,
     ),
     "C9": ExigenceDePublication(
         "C9",
         "Ratio de mixité au sein de l'organe de gouvernance",
         Categorie.GOUVERNANCE,
         "https://portail-rse.beta.gouv.fr/vsme/c9-ratio-de-mixite-au-sein-des-organes-de-gouvernance/",
-        remplissable=True,
     ),
 }
 
@@ -298,10 +275,9 @@ class RapportVSME(TimestampedModel):
     def indicateurs_applicables(self):
         indicateurs_applicables = []
         for exigence_de_publication in self.exigences_de_publication_applicables():
-            if exigence_de_publication.remplissable:
-                for indicateur_schema_id in exigence_de_publication.indicateurs():
-                    if self.indicateur_est_applicable(indicateur_schema_id)[0]:
-                        indicateurs_applicables.append(indicateur_schema_id)
+            for indicateur_schema_id in exigence_de_publication.indicateurs():
+                if self.indicateur_est_applicable(indicateur_schema_id)[0]:
+                    indicateurs_applicables.append(indicateur_schema_id)
         return indicateurs_applicables
 
     def indicateur_est_applicable(self, indicateur_schema_id) -> tuple[bool, str]:
@@ -451,9 +427,6 @@ class RapportVSME(TimestampedModel):
         return self.indicateurs.values_list("schema_id", flat=True)
 
     def progression_par_exigence(self, exigence_de_publication):
-        if not exigence_de_publication.remplissable:
-            return {"total": 0, "complet": 0, "pourcent": 0}
-
         indicateurs_exigences = set(exigence_de_publication.indicateurs())
         indicateurs_applicables = indicateurs_exigences.intersection(
             set(self.indicateurs_applicables)
