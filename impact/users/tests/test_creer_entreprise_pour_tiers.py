@@ -94,7 +94,7 @@ def test_rattachement_entreprise_sans_proprietaire_sans_email_echoue(
 
 
 @pytest.mark.django_db
-@patch("users.views._envoie_email_invitation_proprietaire_tiers")
+@patch("habilitations.views._envoie_email_d_invitation")
 def test_rattachement_entreprise_sans_proprietaire_avec_email_reussit(
     mock_email, client, conseiller_rse, entreprise_factory
 ):
@@ -133,7 +133,7 @@ def test_rattachement_entreprise_sans_proprietaire_avec_email_reussit(
 
 @pytest.mark.django_db
 @patch("users.views.Entreprise.search_and_create_entreprise")
-@patch("users.views._envoie_email_invitation_proprietaire_tiers")
+@patch("habilitations.views._envoie_email_d_invitation")
 def test_creation_entreprise_reussie(
     mock_email, mock_search, client, conseiller_rse, entreprise_factory
 ):
@@ -198,7 +198,7 @@ def test_email_invitation_envoye_avec_bonnes_donnees(
     assert mail.from_email == settings.DEFAULT_FROM_EMAIL
 
     # Vérifier le template utilisé (template dédié, différent de l'invitation standard)
-    assert mail.template_id == settings.BREVO_INVITATION_PROPRIETAIRE_TIERS_TEMPLATE
+    assert mail.template_id == settings.BREVO_INVITATION_CONSEILLER_RSE_TEMPLATE
 
 
 @pytest.mark.django_db
@@ -222,9 +222,9 @@ def test_email_invitation_nouvel_utilisateur_route_proconnect(
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
 
-    # L'URL doit pointer vers la landing ProConnect (invitation-proprietaire)
+    # L'URL doit pointer vers la vue invitation unifiée
     invitation_url = mail.merge_global_data.get("invitation_url", "")
-    assert "invitation-proprietaire" in invitation_url
+    assert "/invitation/" in invitation_url
     assert "accepter-proprietaire" not in invitation_url
 
 
@@ -249,7 +249,7 @@ def test_contenu_email_variables_template(
     mail = mailoutbox[0]
 
     # Vérifier que le template dédié est utilisé
-    assert mail.template_id == settings.BREVO_INVITATION_PROPRIETAIRE_TIERS_TEMPLATE
+    assert mail.template_id == settings.BREVO_INVITATION_CONSEILLER_RSE_TEMPLATE
 
     # Vérifier les variables du template (mêmes que l'invitation standard)
     merge_data = mail.merge_global_data

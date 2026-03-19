@@ -7,7 +7,6 @@ import pytest
 from django.conf import settings
 from django.urls import reverse
 from freezegun import freeze_time
-from pytest_django.asserts import assertTemplateUsed
 
 from entreprises.models import Entreprise
 from habilitations.models import FONCTIONS_MAX_LENGTH
@@ -372,7 +371,7 @@ def test_can_not_login_if_email_is_not_confirmed(client, alice_with_password):
     ), content
 
 
-def test_page_invitation(client, entreprise_factory):
+def test_page_invitation_redirige_vers_proconnect(client, entreprise_factory):
     entreprise = entreprise_factory(denomination="Ma Super Entreprise")
     invitation = Invitation.objects.create(
         entreprise=entreprise, email="alice@portail.example"
@@ -381,13 +380,8 @@ def test_page_invitation(client, entreprise_factory):
 
     response = client.get(f"/invitation/{invitation.id}/{CODE}")
 
-    assert response.status_code == 200
-    assertTemplateUsed(response, "users/creation.html")
-    content = response.content.decode("utf-8")
-    assert CODE in content, content
-    assert "alice@portail.example" in content, content
-    assert "Vous avez été invité" in content, content
-    assert "Ma Super Entreprise" in content, content
+    assert response.status_code == 302
+    assert response.url == reverse("oidc_authentication_init")
 
 
 def test_erreur_page_invitation_car_invitation_n_existe_pas(client, entreprise_factory):
@@ -421,85 +415,75 @@ def test_erreur_page_invitation_car_invitation_expirée(client, entreprise_facto
     assert "L'invitation est expirée" in content, content
 
 
-def test_creation_d_un_utilisateur_après_une_invitation(
-    client, db, entreprise_factory, mailoutbox, alice
+def test_invitation_utilisateur_connecté_redirige_vers_acceptation(
+    client, alice, entreprise_factory
 ):
     entreprise = entreprise_factory(siren="130025265")
-    Habilitation.ajouter(entreprise, alice)
+    invitation = Invitation.objects.create(entreprise=entreprise, email=alice.email)
+    CODE = make_token(invitation, "invitation")
+    client.force_login(alice)
+
+    response = client.get(f"/invitation/{invitation.id}/{CODE}")
+
+    assert response.status_code == 302
+    assert response.url == reverse(
+        "users:accepter_role_proprietaire", args=[invitation.id, CODE]
+    )
+
+
+def test_invitation_utilisateur_connecté_mauvais_email(
+    client, alice, entreprise_factory
+):
+    entreprise = entreprise_factory(siren="130025265")
     invitation = Invitation.objects.create(
-        entreprise=entreprise, email="alice@portail.example"
+        entreprise=entreprise, email="autre@email.test"
     )
     CODE = make_token(invitation, "invitation")
-    data = {
-        "prenom": "Alice",
-        "nom": "User",
-        "email": "alice@portail.example",
-        "password1": "Passw0rd!123",
-        "password2": "Passw0rd!123",
-        "acceptation_cgu": "checked",
-        "reception_actualites": "checked",
-        "fonctions": "Présidente",
-    }
+    client.force_login(alice)
 
-    now = datetime.now(timezone.utc)
-
-    with freeze_time(now):
-        response = client.post(
-            f"/invitation/{invitation.id}/{CODE}", data=data, follow=True
-        )
+    response = client.get(f"/invitation/{invitation.id}/{CODE}", follow=True)
 
     assert response.status_code == 200
-    reglementation_url = reverse(
-        "reglementations:tableau_de_bord", kwargs={"siren": entreprise.siren}
-    )
-    assert response.redirect_chain == [
-        (reglementation_url, 302),
-        (f"{reverse('users:login')}?next={reglementation_url}", 302),
-    ]
-
-    user = User.objects.get(email="alice@portail.example")
-    entreprise = Entreprise.objects.get(siren="130025265")
-    assert user.created_at
-    assert user.updated_at
-    assert user.prenom == "Alice"
-    assert user.nom == "User"
-    assert user.acceptation_cgu == True
-    assert user.reception_actualites == True
-    assert user.check_password("Passw0rd!123")
-    assert user.is_email_confirmed == True
-    assert user in entreprise.users.all()
-    assert user.uidb64
-    habilitation = Habilitation.pour(entreprise, user)
-    assert habilitation.fonctions == "Présidente"
-    assert habilitation.invitation == invitation
-    assert len(mailoutbox) == 0
-    invitation.refresh_from_db()
-    assert invitation.date_acceptation == now
+    assert response.redirect_chain == [(reverse("erreur_terminale"), 302)]
+    content = html.unescape(response.content.decode("utf-8"))
+    assert "Cette invitation ne correspond pas à votre adresse e-mail." in content
 
 
-def test_echec_d_invitation_car_le_code_ne_correspond_pas(
-    client, db, entreprise_factory, mailoutbox, alice
+def test_invitation_deja_acceptee_redirige_vers_le_tableau_de_bord(
+    client, alice, entreprise_factory
 ):
     entreprise = entreprise_factory(siren="130025265")
-    Habilitation.ajouter(entreprise, alice)
     invitation = Invitation.objects.create(
         entreprise=entreprise, email="alice@portail.example"
     )
-    CODE = "INCORRECT"
-    data = {
-        "prenom": "Alice",
-        "nom": "User",
-        "email": "alice@portail.example",
-        "password1": "Passw0rd!123",
-        "password2": "Passw0rd!123",
-        "acceptation_cgu": "checked",
-        "reception_actualites": "checked",
-        "fonctions": "Présidente",
-    }
+    invitation.accepter(alice)
+    CODE = make_token(invitation, "invitation")
 
-    response = client.post(
-        f"/invitation/{invitation.id}/{CODE}", data=data, follow=True
+    response = client.get(f"/invitation/{invitation.id}/{CODE}", follow=True)
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [
+        (
+            reverse(
+                "reglementations:tableau_de_bord",
+                kwargs={"siren": entreprise.siren},
+            ),
+            302,
+        ),
+        (
+            f"{reverse('users:login')}?next={reverse('reglementations:tableau_de_bord', kwargs={'siren': entreprise.siren})}",
+            302,
+        ),
+    ]
+
+
+def test_echec_d_invitation_car_le_code_ne_correspond_pas(client, entreprise_factory):
+    entreprise = entreprise_factory(siren="130025265")
+    invitation = Invitation.objects.create(
+        entreprise=entreprise, email="alice@portail.example"
     )
+
+    response = client.get(f"/invitation/{invitation.id}/INCORRECT", follow=True)
 
     assert response.status_code == 200
     assert response.redirect_chain == [
@@ -510,35 +494,19 @@ def test_echec_d_invitation_car_le_code_ne_correspond_pas(
     assert "Cette invitation est incorrecte." in content, content
 
 
-def test_echec_d_invitation_car_l_email_ne_correspond_pas(
-    client, db, entreprise_factory, mailoutbox, alice
+def test_invitation_proprietaire_tiers_redirige_vers_invitation(
+    client, entreprise_factory
 ):
     entreprise = entreprise_factory(siren="130025265")
-    Habilitation.ajouter(entreprise, alice)
     invitation = Invitation.objects.create(
         entreprise=entreprise, email="alice@portail.example"
     )
-    CODE = make_token(invitation, "invitation")
-    data = {
-        "prenom": "Alice",
-        "nom": "User",
-        "email": "autre@email.test",
-        "password1": "Passw0rd!123",
-        "password2": "Passw0rd!123",
-        "acceptation_cgu": "checked",
-        "reception_actualites": "checked",
-        "fonctions": "Présidente",
-    }
+    CODE = make_token(invitation, "invitation_proprietaire_tiers")
 
-    response = client.post(
-        f"/invitation/{invitation.id}/{CODE}", data=data, follow=True
-    )
+    response = client.get(f"/invitation-proprietaire/{invitation.id}/{CODE}")
 
-    assert response.status_code == 200
-    assert not User.objects.filter(email="alice@portail.example")
-    assert not User.objects.filter(email="autre@email.test")
-    content = html.unescape(response.content.decode("utf-8"))
-    assert "L'e-mail ne correspond pas à l'invitation." in content, content
+    assert response.status_code == 302
+    assert response.url == reverse("users:invitation", args=[invitation.id, CODE])
 
 
 def test_htmx_affiche_facultativement_le_champ_fonction_rse_selon_l_etat_conseiller_rse(

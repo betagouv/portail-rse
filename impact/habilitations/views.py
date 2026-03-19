@@ -50,7 +50,10 @@ def invitation(request, siren):
             else:
                 _ajoute_membre(request, entreprise, utilisateur, role)
         except ObjectDoesNotExist:
-            _cree_invitation(request, entreprise, email, role)
+            cree_invitation(
+                request, entreprise, email, role, settings.BREVO_INVITATION_TEMPLATE
+            )
+            messages.success(request, "L'invitation a été envoyée.")
         return redirect(
             reverse("reglementations:tableau_de_bord", args=[entreprise.siren])
         )
@@ -115,37 +118,34 @@ def _envoie_email_d_ajout(request, entreprise, utilisateur):
     email.send()
 
 
-def _cree_invitation(request, entreprise, email, role):
+def cree_invitation(request, entreprise, email, role, template_id):
     invitation = Invitation.objects.create(
         entreprise=entreprise,
         email=email,
         role=role,
         inviteur=request.user,
     )
-    _envoie_email_d_invitation(request, invitation)
-    messages.success(
-        request,
-        "L'invitation a été envoyée.",
-    )
+    _envoie_email_d_invitation(request, invitation, template_id)
+    return invitation
 
 
-def _envoie_email_d_invitation(request, invitation):
+def _envoie_email_d_invitation(request, invitation, template_id):
     email = EmailMessage(
         to=[invitation.email],
         from_email=settings.DEFAULT_FROM_EMAIL,
     )
-    email.template_id = settings.BREVO_INVITATION_TEMPLATE
+    email.template_id = template_id
     code = make_token(invitation, "invitation")
     path = reverse(
         "users:invitation",
         args=[invitation.id, code],
     )
-    url = f"{request.build_absolute_uri(path)}"
+    inviteur_nom = f"{invitation.inviteur.prenom} {invitation.inviteur.nom}".strip()
     email.merge_global_data = {
         "denomination_entreprise": invitation.entreprise.denomination,
-        "invitation_url": url,
-        "inviteur": f"{invitation.inviteur.prenom} {invitation.inviteur.nom}",
-        "role": invitation.get_role_display(),
+        "invitation_url": request.build_absolute_uri(path),
+        "inviteur": inviteur_nom,
+        "role": UserRole(invitation.role).label,
     }
     email.send()
 

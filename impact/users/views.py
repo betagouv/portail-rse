@@ -17,7 +17,6 @@ from .forms import AjoutEntrepriseConseillerForm
 from .forms import ChoixTypeUtilisateurForm
 from .forms import ProconnectUserEditionForm
 from .forms import UserEditionForm
-from .forms import UserInvitationForm
 from .forms import UserPasswordForm
 from .models import User
 from api.exceptions import APIError
@@ -25,6 +24,7 @@ from entreprises.models import Entreprise
 from habilitations.enums import UserRole
 from habilitations.models import Habilitation
 from habilitations.models import HabilitationError
+from habilitations.views import cree_invitation
 from invitations.models import Invitation
 from logs import event_logger as logger
 from reglementations.views import calculer_metriques_entreprise
@@ -82,61 +82,9 @@ def confirm_email(request, uidb64, token):
 
 
 def invitation(request, id_invitation, code):
-    """L'invité arrive sur cette page grâce au lien contenu dans l'e-mail qu'il a reçu."""
-    try:
-        invitation = Invitation.objects.get(id=id_invitation)
-    except Invitation.DoesNotExist:
-        messages.error(request, "Cette invitation n'existe pas.")
-        return redirect(reverse("erreur_terminale"))
-    if invitation.est_expiree:
-        messages.error(
-            request,
-            "L'invitation est expirée. Vous devez demander une nouvelle invitation à un des propriétaires de l'entreprise sur Portail RSE.",
-        )
-        return redirect(reverse("erreur_terminale"))
-    if not check_token(invitation, "invitation", code):
-        messages.error(request, "Cette invitation est incorrecte.")
-        return redirect(reverse("erreur_terminale"))
+    """L'invité arrive sur cette page grâce au lien contenu dans l'e-mail qu'il a reçu.
 
-    if request.method == "POST":
-        form = UserInvitationForm(request.POST, invitation=invitation)
-        email = form.data.get("email")
-        if invitation.email != email:
-            form.add_error("email", "L'e-mail ne correspond pas à l'invitation.")
-        if form.is_valid():
-            user = form.save()
-            user.is_email_confirmed = True
-            user.save()
-            invitation.accepter(user, fonctions=form.cleaned_data["fonctions"])
-            messages.success(
-                request,
-                "Votre compte a bien été créé. Connectez-vous pour collaborer avec les autres membres de l'entreprise.",
-            )
-            return redirect(
-                "reglementations:tableau_de_bord", invitation.entreprise.siren
-            )
-        else:
-            messages.error(
-                request, "La création a échoué car le formulaire contient des erreurs."
-            )
-    else:
-        form = UserInvitationForm(invitation=invitation)
-    return render(
-        request,
-        "users/creation.html",
-        {
-            "form": form,
-            "invitation": invitation,
-            "code": code,
-        },
-    )
-
-
-def invitation_proprietaire_tiers(request, id_invitation, code):
-    """Landing page pour invitation propriétaire par conseiller RSE.
-
-    Valide l'invitation puis redirige vers ProConnect.
-    L'invitation est stockée en session pour être récupérée après authentification.
+    Valide l'invitation puis redirige vers ProConnect pour authentification.
     """
     try:
         invitation = Invitation.objects.get(id=id_invitation)
@@ -147,12 +95,15 @@ def invitation_proprietaire_tiers(request, id_invitation, code):
     if invitation.est_expiree:
         messages.error(
             request,
-            "L'invitation est expirée. Veuillez contacter le conseiller RSE qui a créé cette invitation.",
+            "L'invitation est expirée. Vous devez demander une nouvelle invitation à la personne qui a créé cette invitation.",
         )
         return redirect(reverse("erreur_terminale"))
 
-    if not check_token(invitation, "invitation_proprietaire_tiers", code):
-        messages.error(request, "Ce lien d'invitation est invalide.")
+    if not (
+        check_token(invitation, "invitation", code)
+        or check_token(invitation, "invitation_proprietaire_tiers", code)
+    ):
+        messages.error(request, "Cette invitation est incorrecte.")
         return redirect(reverse("erreur_terminale"))
 
     if invitation.date_acceptation:
@@ -176,6 +127,15 @@ def invitation_proprietaire_tiers(request, id_invitation, code):
     request.session.save()
 
     return redirect("oidc_authentication_init")
+
+
+def invitation_proprietaire_tiers(request, id_invitation, code):
+    """Redirige vers la vue invitation unifiée.
+
+    Conservée pour ne pas casser les liens existants dans les emails déjà envoyés.
+    À supprimer lorsque toutes les invitations créées avant l'unification des invitations auront expirées. La durée actuelle de validité est de 30 jours. A supprimer après le 20 mai 2026.
+    """
+    return redirect("users:invitation", id_invitation, code)
 
 
 def deconnexion(request):
@@ -409,8 +369,12 @@ def tableau_de_bord_conseiller(request):
                             fonctions=form.cleaned_data.get("fonctions"),
                             is_conseiller_rse=True,
                         )
-                        _creer_invitation_proprietaire(
-                            request, entreprise, email_proprietaire
+                        cree_invitation(
+                            request,
+                            entreprise,
+                            email_proprietaire,
+                            UserRole.PROPRIETAIRE,
+                            template_id=settings.BREVO_INVITATION_CONSEILLER_RSE_TEMPLATE,
                         )
                         messages.success(
                             request,
@@ -429,8 +393,12 @@ def tableau_de_bord_conseiller(request):
                         fonctions=form.cleaned_data.get("fonctions"),
                         is_conseiller_rse=True,
                     )
-                    _creer_invitation_proprietaire(
-                        request, entreprise, email_proprietaire
+                    cree_invitation(
+                        request,
+                        entreprise,
+                        email_proprietaire,
+                        UserRole.PROPRIETAIRE,
+                        template_id=settings.BREVO_INVITATION_CONSEILLER_RSE_TEMPLATE,
                     )
                     messages.success(
                         request,
@@ -455,18 +423,6 @@ def tableau_de_bord_conseiller(request):
     )
 
 
-def _creer_invitation_proprietaire(request, entreprise, email_proprietaire):
-    """Crée une invitation propriétaire et envoie l'email."""
-    invitation = Invitation.objects.create(
-        entreprise=entreprise,
-        email=email_proprietaire,
-        role=UserRole.PROPRIETAIRE,
-        inviteur=request.user,
-    )
-    _envoie_email_invitation_proprietaire_tiers(request, invitation)
-    return invitation
-
-
 @login_required()
 def preremplissage_formulaire_compte(request):
     account_form = UserEditionForm(request.POST, instance=request.user)
@@ -475,32 +431,6 @@ def preremplissage_formulaire_compte(request):
         "users/fragments/account_form.html",
         {"account_form": account_form},
     )
-
-
-def _envoie_email_invitation_proprietaire_tiers(request, invitation):
-    """Envoie un email d'invitation au futur propriétaire.
-
-    Utilise le template dédié (BREVO_INVITATION_PROPRIETAIRE_TIERS_TEMPLATE)
-    avec les mêmes variables pour une cohérence des emails.
-    """
-    email = EmailMessage(
-        to=[invitation.email],
-        from_email=settings.DEFAULT_FROM_EMAIL,
-    )
-
-    email.template_id = settings.BREVO_INVITATION_PROPRIETAIRE_TIERS_TEMPLATE
-
-    code = make_token(invitation, "invitation_proprietaire_tiers")
-    path = reverse("users:invitation_proprietaire_tiers", args=[invitation.id, code])
-
-    inviteur_nom = f"{invitation.inviteur.prenom} {invitation.inviteur.nom}".strip()
-    email.merge_global_data = {
-        "denomination_entreprise": invitation.entreprise.denomination,
-        "invitation_url": request.build_absolute_uri(path),
-        "inviteur": inviteur_nom or "Un conseiller RSE",
-        "role": UserRole(invitation.role).label,
-    }
-    return email.send()
 
 
 @login_required()
@@ -519,10 +449,13 @@ def accepter_role_proprietaire(request, id_invitation, code):
         )
         return redirect(reverse("erreur_terminale"))
 
-    # Accepter les deux types de tokens (existant et nouveau via ProConnect)
-    token_valide = check_token(
-        invitation, "invitation_proprietaire", code
-    ) or check_token(invitation, "invitation_proprietaire_tiers", code)
+    token_valide = (
+        check_token(invitation, "invitation", code)
+        # Les salts suivants ne sont plus utilisés
+        # À supprimer lorsque toutes les invitations créées avant l'unification des invitations auront expirées. La durée actuelle de validité est de 30 jours. A supprimer après le 20 mai 2026.
+        or check_token(invitation, "invitation_proprietaire", code)
+        or check_token(invitation, "invitation_proprietaire_tiers", code)
+    )
     if not token_valide:
         messages.error(request, "Ce lien d'invitation est invalide.")
         return redirect(reverse("erreur_terminale"))
