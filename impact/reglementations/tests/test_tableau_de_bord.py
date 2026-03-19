@@ -137,18 +137,23 @@ def test_tableau_de_bord_resume(est_soumis, client, entreprise_factory, alice, m
     assert len(context["invitations"]) == 0
 
 
-def test_tableau_de_bord_resume_entreprise_sans_caracteristique_redirige_vers_la_qualification(
+def test_tableau_de_bord_resume_entreprise_sans_caracteristique_affiche_un_avertissement(
     client, entreprise_non_qualifiee, alice
 ):
     Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
     client.force_login(alice)
 
     url = RESUME_URL.format(siren=entreprise_non_qualifiee.siren)
-    response = client.get(url, follow=True)
+    response = client.get(url)
 
     assert response.status_code == 200
-    url = f"/entreprises/{entreprise_non_qualifiee.siren}"
-    assert response.redirect_chain == [(url, 302)]
+    context = response.context
+    assert context["nombre_reglementations_applicables"] == "?"
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        f"Le profil de votre entreprise est incomplet. Certaines réglementations ne peuvent pas être calculées."
+        in content
+    ), content
 
 
 def test_tableau_de_bord_resume_entreprise_qualifiee_dans_le_passe(
