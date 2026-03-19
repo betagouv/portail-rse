@@ -5,10 +5,10 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
-from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 
+from entreprises.decorators import entreprise_qualifiee_requise
 from entreprises.decorators import entreprise_requise
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.views import contributeurs_context
@@ -46,7 +46,7 @@ def calculer_metriques_entreprise(entreprise):
 
     Returns:
         dict: {
-            'nombre_reglementations_applicables': int,
+            'nombre_reglementations_applicables': int | "?",
             'pourcentage_vsme': int
         }
     """
@@ -54,14 +54,13 @@ def calculer_metriques_entreprise(entreprise):
     caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
 
     # Calcul du nombre de reglementations applicables
-    nombre_reglementations = 0
     if caracteristiques:
-        for reglementation in REGLEMENTATIONS:
-            try:
-                if reglementation.est_soumis(caracteristiques):
-                    nombre_reglementations += 1
-            except Exception:
-                pass
+        reglementations_applicables = [
+            r for r in REGLEMENTATIONS if r.est_soumis(caracteristiques)
+        ]
+        nombre_reglementations_applicables = len(reglementations_applicables)
+    else:
+        nombre_reglementations_applicables = "?"
 
     # Calcul du pourcentage VSME
     annee_precedente = date.today().year - 1
@@ -74,7 +73,7 @@ def calculer_metriques_entreprise(entreprise):
         pourcentage_vsme = 0
 
     return {
-        "nombre_reglementations_applicables": nombre_reglementations,
+        "nombre_reglementations_applicables": nombre_reglementations_applicables,
         "pourcentage_vsme": pourcentage_vsme,
     }
 
@@ -91,44 +90,29 @@ def tableau_de_bord_menu_context(entreprise, page_resume=False):
 @entreprise_requise
 @log_path("app:tableauDeBord")
 def tableau_de_bord(request, entreprise):
-    caracteristiques = (
-        entreprise.dernieres_caracteristiques_qualifiantes
-        or entreprise.dernieres_caracteristiques
-    )
+    caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
 
-    # Gérer le cas où il n'y a aucune caractéristique
+    # Afficher un avertissement si le profil est incomplet
     if not caracteristiques:
         messages.warning(
             request,
-            "Veuillez renseigner le profil de l'entreprise pour accéder au tableau de bord.",
+            f"Le profil de votre entreprise est incomplet. Certaines réglementations ne peuvent pas être calculées. <a href='{reverse_lazy('entreprises:qualification', args=[entreprise.siren])}'>Compléter le profil.</a>"
+            f"",
         )
-        return redirect("entreprises:qualification", siren=entreprise.siren)
+        nombre_reglementations_applicables = "?"
+    else:
+        # Afficher un avertissement si les caractéristiques ne sont pas à jour
+        if caracteristiques != entreprise.caracteristiques_actuelles():
+            messages.warning(
+                request,
+                f"Les informations affichées sont basées sur l'exercice comptable {caracteristiques.annee}. <a href='{reverse_lazy('entreprises:qualification', args=[entreprise.siren])}'>Mettre à jour le profil de l'entreprise.</a>",
+            )
 
-    # Afficher un message d'info si le profil est incomplet
-    if not caracteristiques.sont_qualifiantes:
-        messages.info(
-            request,
-            f"Le profil de votre entreprise est incomplet. Certaines réglementations ne pourront pas être calculées. "
-            f"<a href='{reverse_lazy('entreprises:qualification', args=[entreprise.siren])}'>Compléter le profil</a>",
-        )
-    # Afficher un avertissement si les caractéristiques ne sont pas à jour
-    elif caracteristiques != entreprise.caracteristiques_actuelles():
-        messages.warning(
-            request,
-            f"Les informations affichées sont basées sur l'exercice comptable {caracteristiques.annee}. <a href='{reverse_lazy('entreprises:qualification', args=[entreprise.siren])}'>Mettre à jour le profil de l'entreprise.</a>",
-        )
-
-    # Calculer les réglementations applicables (peut lever des exceptions pour certaines)
-    reglementations_applicables = []
-    for reglementation in REGLEMENTATIONS:
-        try:
-            if reglementation.est_soumis(caracteristiques):
-                reglementations_applicables.append(reglementation)
-        except Exception:
-            # Si on ne peut pas calculer, on ignore cette réglementation
-            pass
-
-    nombre_reglementations_applicables = len(reglementations_applicables)
+        # Calculer les réglementations applicables
+        reglementations_applicables = [
+            r for r in REGLEMENTATIONS if r.est_soumis(caracteristiques)
+        ]
+        nombre_reglementations_applicables = len(reglementations_applicables)
 
     # Calculer le nombre d'analyses IA réussies
     nombre_analyses_ia = entreprise.analyses_ia.reussies().count()
@@ -195,35 +179,10 @@ def analyse_double_materialite(request, entreprise):
 
 
 @login_required
-@entreprise_requise
+@entreprise_qualifiee_requise
 @log_path("app:reglementations")
 def reglementations(request, entreprise):
-    caracteristiques = (
-        entreprise.dernieres_caracteristiques_qualifiantes
-        or entreprise.dernieres_caracteristiques
-    )
-
-    # Gérer le cas où il n'y a aucune caractéristique
-    if not caracteristiques:
-        messages.warning(
-            request,
-            "Veuillez renseigner le profil de l'entreprise pour accéder aux réglementations.",
-        )
-        return redirect("entreprises:qualification", siren=entreprise.siren)
-
-    # Afficher un message d'info si le profil est incomplet
-    if not caracteristiques.sont_qualifiantes:
-        messages.info(
-            request,
-            f"Le profil de votre entreprise est incomplet. Certaines réglementations ne pourront pas être calculées. "
-            f"<a href='{reverse_lazy('entreprises:qualification', args=[entreprise.siren])}'>Compléter le profil</a>",
-        )
-    # Afficher un avertissement si les caractéristiques ne sont pas à jour
-    elif caracteristiques != entreprise.caracteristiques_actuelles():
-        messages.warning(
-            request,
-            f"Les informations affichées sont basées sur l'exercice comptable {caracteristiques.annee}. <a href='{reverse_lazy('entreprises:qualification', args=[entreprise.siren])}'>Mettre à jour le profil de l'entreprise.</a>",
-        )
+    caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
 
     reglementations = calcule_reglementations(caracteristiques)
     reglementations_a_actualiser = [
@@ -256,11 +215,6 @@ def reglementations(request, entreprise):
         for r in reglementations
         if r["status"].status == ReglementationStatus.STATUS_RECOMMANDE
     ]
-    reglementations_incalculables = [
-        r
-        for r in reglementations
-        if r["status"].status == ReglementationStatus.STATUS_INCALCULABLE
-    ]
 
     context = tableau_de_bord_menu_context(entreprise)
     context |= {
@@ -269,8 +223,7 @@ def reglementations(request, entreprise):
         "reglementations_a_jour": reglementations_a_jour,
         "autres_reglementations": reglementations_soumises
         + reglementations_recommandees
-        + reglementations_non_soumises
-        + reglementations_incalculables,
+        + reglementations_non_soumises,
     }
     return render(
         request,
@@ -291,7 +244,7 @@ def calcule_reglementations(caracteristiques: CaracteristiquesAnnuelles):
 
 
 @login_required
-@entreprise_requise
+@entreprise_qualifiee_requise
 def reglementation(request, entreprise, id_reglementation):
     reglementation = None
     for r in REGLEMENTATIONS:
@@ -301,19 +254,7 @@ def reglementation(request, entreprise, id_reglementation):
     if not reglementation:
         raise Http404
 
-    caracteristiques = (
-        entreprise.dernieres_caracteristiques_qualifiantes
-        or entreprise.dernieres_caracteristiques
-    )
-
-    # Gérer le cas où il n'y a aucune caractéristique
-    if not caracteristiques:
-        messages.warning(
-            request,
-            "Veuillez renseigner le profil de l'entreprise pour voir cette réglementation.",
-        )
-        return redirect("entreprises:qualification", siren=entreprise.siren)
-
+    caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
     status = reglementation.calculate_status(caracteristiques)
 
     template_name = f"reglementations/tableau_de_bord/{id_reglementation}.html"

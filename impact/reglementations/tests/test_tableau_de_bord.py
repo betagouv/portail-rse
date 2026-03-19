@@ -55,43 +55,6 @@ def test_tableau_de_bord_avec_utilisateur_authentifie(
     assert response.context["entreprise"] == entreprise
 
 
-@pytest.mark.parametrize("url", [RESUME_URL, REGLEMENTATIONS_URL])
-def test_tableau_de_bord_entreprise_non_qualifiee_redirige_vers_la_qualification(
-    url, client, entreprise_non_qualifiee, alice
-):
-    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
-    client.force_login(alice)
-
-    url = url.format(siren=entreprise_non_qualifiee.siren)
-    response = client.get(url, follow=True)
-
-    assert response.status_code == 200
-    url = f"/entreprises/{entreprise_non_qualifiee.siren}"
-    assert response.redirect_chain == [(url, 302)]
-
-
-@pytest.mark.parametrize("url", [RESUME_URL, REGLEMENTATIONS_URL])
-def test_tableau_de_bord_entreprise_qualifiee_dans_le_passe(
-    url, client, entreprise_factory, alice
-):
-    date_cloture_exercice = date(2024, 12, 31)
-    entreprise = entreprise_factory(
-        utilisateur=alice, date_cloture_exercice=date_cloture_exercice
-    )
-
-    url = url.format(siren=entreprise.siren)
-    with freeze_time(date_cloture_exercice + timedelta(days=367)):
-        client.force_login(alice)
-        response = client.get(url)
-
-    assert response.status_code == 200
-    content = html.unescape(response.content.decode("utf-8"))
-    assert (
-        f"Les informations affichées sont basées sur l'exercice comptable {date_cloture_exercice.year}."
-        in content
-    ), content
-
-
 @pytest.mark.parametrize("url", [RESUME_URL, REGLEMENTATIONS_URL, RAPPORT_URL, ADM_URL])
 def test_tableau_de_bord_entreprise_inexistante(url, client, alice):
     client.force_login(alice)
@@ -172,6 +135,41 @@ def test_tableau_de_bord_resume(est_soumis, client, entreprise_factory, alice, m
     assert context["form"]
     assert len(context["habilitations"]) == 1
     assert len(context["invitations"]) == 0
+
+
+def test_tableau_de_bord_resume_entreprise_sans_caracteristique_affiche_un_avertissement(
+    client, entreprise_non_qualifiee, alice
+):
+    Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
+    client.force_login(alice)
+
+    url = RESUME_URL.format(siren=entreprise_non_qualifiee.siren)
+    response = client.get(url)
+
+    assert response.status_code == 200
+    context = response.context
+    assert context["nombre_reglementations_applicables"] == "?"
+
+
+def test_tableau_de_bord_resume_entreprise_qualifiee_dans_le_passe(
+    client, entreprise_factory, alice
+):
+    date_cloture_exercice = date(2024, 12, 31)
+    entreprise = entreprise_factory(
+        utilisateur=alice, date_cloture_exercice=date_cloture_exercice
+    )
+
+    url = RESUME_URL.format(siren=entreprise.siren)
+    with freeze_time(date_cloture_exercice + timedelta(days=367)):
+        client.force_login(alice)
+        response = client.get(url)
+
+    assert response.status_code == 200
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        f"Les informations affichées sont basées sur l'exercice comptable {date_cloture_exercice.year}."
+        in content
+    ), content
 
 
 def test_tableau_de_bord_resume_n_affiche_pas_les_utilisateurs_non_confirmés(
