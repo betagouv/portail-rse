@@ -144,7 +144,7 @@ def _envoie_email_d_invitation(request, invitation, template_id):
     email.merge_global_data = {
         "denomination_entreprise": invitation.entreprise.denomination,
         "invitation_url": request.build_absolute_uri(path),
-        "inviteur": inviteur_nom or "Un conseiller RSE",
+        "inviteur": inviteur_nom,
         "role": UserRole(invitation.role).label,
     }
     email.send()
