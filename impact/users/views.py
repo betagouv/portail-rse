@@ -374,7 +374,7 @@ def tableau_de_bord_conseiller(request):
                             entreprise,
                             email_proprietaire,
                             UserRole.PROPRIETAIRE,
-                            template_id=settings.BREVO_INVITATION_PROPRIETAIRE_TIERS_TEMPLATE,
+                            template_id=settings.BREVO_INVITATION_CONSEILLER_RSE_TEMPLATE,
                         )
                         messages.success(
                             request,
@@ -398,7 +398,7 @@ def tableau_de_bord_conseiller(request):
                         entreprise,
                         email_proprietaire,
                         UserRole.PROPRIETAIRE,
-                        template_id=settings.BREVO_INVITATION_PROPRIETAIRE_TIERS_TEMPLATE,
+                        template_id=settings.BREVO_INVITATION_CONSEILLER_RSE_TEMPLATE,
                     )
                     messages.success(
                         request,
