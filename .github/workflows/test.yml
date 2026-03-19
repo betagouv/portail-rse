@@ -35,10 +35,10 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.12"
-          cache: "pipenv"
-      - name: Install pipenv
-        run: curl https://raw.githubusercontent.com/pypa/pipenv/master/get-pipenv.py | python
+          cache: "uv"
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
       - name: Install dependencies
-        run: pipenv install -d
+        run: uv sync --group dev
       - name: Run tests
-        run: pipenv run pytest -m "not network"
+        run: uv run pytest -m "not network"
