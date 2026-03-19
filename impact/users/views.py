@@ -133,6 +133,7 @@ def invitation_proprietaire_tiers(request, id_invitation, code):
     """Redirige vers la vue invitation unifiée.
 
     Conservée pour ne pas casser les liens existants dans les emails déjà envoyés.
+    À supprimer lorsque toutes les invitations créées avant l'unification des invitations auront expirées. La durée actuelle de validité est de 30 jours. A supprimer après le 20 mai 2026.
     """
     return redirect("users:invitation", id_invitation, code)
 
@@ -450,6 +451,8 @@ def accepter_role_proprietaire(request, id_invitation, code):
 
     token_valide = (
         check_token(invitation, "invitation", code)
+        # Les salts suivants ne sont plus utilisés
+        # À supprimer lorsque toutes les invitations créées avant l'unification des invitations auront expirées. La durée actuelle de validité est de 30 jours. A supprimer après le 20 mai 2026.
         or check_token(invitation, "invitation_proprietaire", code)
         or check_token(invitation, "invitation_proprietaire_tiers", code)
     )
