@@ -8,15 +8,13 @@
 
 {% block content %}
     <div class="fr-container fr-my-8w">
-        {% if not proconnect %}
-            <h2>Ajouter une entreprise</h2>
-            <form method="post" class="fr-mb-4w">
-                {% csrf_token %}
-                {% include 'fragments/siren_field.html' %}
-                {% include 'snippets/field.html' with field=form.fonctions %}
-                <button type="submit" name="action" value="attach" class="fr-btn">Ajouter cette entreprise</button>
-            </form>
-        {% endif %}
+        <h2>Ajouter une entreprise</h2>
+        <form method="post" class="fr-mb-4w">
+            {% csrf_token %}
+            {% include 'fragments/siren_field.html' %}
+            {% include 'snippets/field.html' with field=form.fonctions %}
+            <button type="submit" name="action" value="attach" class="fr-btn">Ajouter cette entreprise</button>
+        </form>
 
         <h2>Gérer mes entreprises</h2>
         {% if not user.entreprise_set.all %}
