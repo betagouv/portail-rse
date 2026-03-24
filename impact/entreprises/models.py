@@ -274,9 +274,12 @@ class Entreprise(TimestampedModel):
 
     @property
     def proprietaires(self):
-        return self.habilitation_set.filter(
-            role="proprietaire",
-        )
+        return [
+            habilitation.user
+            for habilitation in self.habilitation_set.filter(
+                role="proprietaire",
+            )
+        ]
 
     def caracteristiques_annuelles(self, annee):
         try:
