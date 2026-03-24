@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib import messages
 from django.core.exceptions import SuspiciousOperation
+from django.core.mail import EmailMessage
 from django.http.response import HttpResponseBadRequest
 from django.http.response import HttpResponseServerError
 from django.shortcuts import redirect
@@ -11,6 +12,7 @@ from lasuite.oidc_login.views import OIDCAuthenticationCallbackView as CallbackV
 import api.infos_entreprise as api_entreprise
 from api.exceptions import APIError
 from entreprises.models import Entreprise
+from habilitations.enums import UserRole
 from habilitations.models import Habilitation
 from logs import event_logger as logger
 from utils.anonymisation import cache_partiellement_un_email
@@ -88,7 +90,7 @@ def proconnect_dispatch_view(request):
             logger.error(msg)
             return HttpResponseServerError(msg)
 
-    # l'entreprise existe déjà en base :
+    # l'entreprise existe en base.
     # l'utilisateur connecté en est-il membre ?
     if Habilitation.existe(entreprise, request.user):
         # on peut directement rediriger vers le tableau de bord
@@ -100,9 +102,10 @@ def proconnect_dispatch_view(request):
         )
     elif Habilitation.objects.filter(entreprise=entreprise).count():
         # d'autres utilisateurs sont membres de l'entreprise
-        messages.warning(request, _message_erreur_proprietaire(entreprise))
+        Habilitation.ajouter(entreprise, request.user, role=UserRole.EDITEUR)
+        _envoie_email_aux_proprietaires_actuels(request, entreprise)
     else:
-        Habilitation.ajouter(entreprise, request.user)
+        Habilitation.ajouter(entreprise, request.user, role=UserRole.PROPRIETAIRE)
 
     if request.session.get("page_suivante"):
         # cas d'une invitation faite par un conseiller
@@ -130,6 +133,29 @@ def _creation_entreprise(siren, user):
     )
     Habilitation.ajouter(entreprise, user)
     return entreprise
+
+
+def _envoie_email_aux_proprietaires_actuels(request, entreprise):
+    destinataires = [utilisateur.email for utilisateur in entreprise.proprietaires]
+    email = EmailMessage(
+        to=destinataires,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+    )
+    email.template_id = settings.BREVO_ARRIVEE_NOUVEAU_MEMBRE_TEMPLATE
+    path = request.build_absolute_uri(
+        reverse(
+            "reglementations:tableau_de_bord",
+            kwargs={
+                "siren": entreprise.siren,
+            },
+        )
+    )
+    email.merge_global_data = {
+        "denomination_entreprise": entreprise.denomination,
+        "email_nouveau_membre": request.user.email,
+        "url_administration_entreprise": path,
+    }
+    email.send()
 
 
 def _message_erreur_proprietaire(entreprise):
