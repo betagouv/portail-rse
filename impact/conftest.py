@@ -67,6 +67,18 @@ def bob(django_user_model):
 
 
 @pytest.fixture
+def carole(django_user_model):
+    carole = django_user_model.objects.create(
+        prenom="Carole",
+        nom="S",
+        email="carole@portail-rse.test",
+        reception_actualites=False,
+        is_email_confirmed=True,
+    )
+    return carole
+
+
+@pytest.fixture
 def conseiller_rse(django_user_model):
     return django_user_model.objects.create(
         prenom="Claire",

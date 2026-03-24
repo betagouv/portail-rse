@@ -1,4 +1,5 @@
 import pytest
+from django.conf import settings
 from django.urls import reverse
 
 from entreprises.models import Entreprise
@@ -73,12 +74,14 @@ def test_proconnect_dispatch_view_ne_fait_que_rediriger_si_habilitation_et_entre
     assert response.redirect_chain[0] == ("/post-login-dispatch", 302)
 
 
-def test_proconnect_dispatch_view_ne_crée_pas_d_habilitation_si_proprietaire_déjà_présent(
-    client, entreprise_factory, alice_sur_proconnect, bob
+def test_proconnect_dispatch_view_crée_une_habilitation_editeur_si_proprietaire_déjà_présent(
+    client, entreprise_factory, alice_sur_proconnect, bob, carole, mailoutbox
 ):
     siren = "123456789"
-    entreprise = entreprise_factory(siren=siren)
+    denomination = "Entreprise de Bob et Carole"
+    entreprise = entreprise_factory(siren=siren, denomination=denomination)
     Habilitation.ajouter(entreprise, bob)
+    Habilitation.ajouter(entreprise, carole)
     session = client.session
     session["oidc_user_claims"] = {
         "sub": alice_sur_proconnect.oidc_sub_id,
@@ -89,9 +92,24 @@ def test_proconnect_dispatch_view_ne_crée_pas_d_habilitation_si_proprietaire_d�
 
     response = client.get("/oidc/dispatch/", follow=True)
 
-    assert not Habilitation.objects.filter(
-        entreprise=entreprise, user=alice_sur_proconnect
-    )
-    messages = list(response.context["messages"])
-    assert "Il existe déjà un propriétaire pour l'entreprise" in messages[0].message
+    habilitation = Habilitation.objects.pour(entreprise, alice_sur_proconnect)
+    assert habilitation.role == UserRole.EDITEUR
+    assert len(mailoutbox) == 1
+    mail = mailoutbox[0]
+    assert mail.from_email == settings.DEFAULT_FROM_EMAIL
+    assert list(mail.to) == [bob.email, carole.email]
+    assert mail.template_id == settings.BREVO_ARRIVEE_NOUVEAU_MEMBRE_TEMPLATE
+    assert mail.merge_global_data == {
+        "denomination_entreprise": denomination,
+        "email_nouveau_membre": alice_sur_proconnect.email,
+        "url_administration_entreprise": response.wsgi_request.build_absolute_uri(
+            reverse(
+                "reglementations:tableau_de_bord",
+                kwargs={
+                    "siren": entreprise.siren,
+                },
+            )
+        ),
+    }
+    assert response.status_code == 200
     assert response.redirect_chain[0] == ("/post-login-dispatch", 302)
