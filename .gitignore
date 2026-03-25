@@ -84,8 +84,6 @@ target/
 profile_default/
 ipython_config.py
 
-# pyenv
-.python-version
 
 # PEP 582; used by PDM, Flit and potentially other packaging tools.
 __pypackages__/
