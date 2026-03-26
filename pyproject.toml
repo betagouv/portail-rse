@@ -7,7 +7,7 @@ requires-python = ">=3.12"
 dependencies = [
     "django~=5.1.15",
     "gunicorn~=23.0.0",
-    "requests~=2.32.4",
+    "requests~=2.33.0",
     "django-weasyprint~=2.4.0",
     "psycopg~=3.2.1",
     "dj-database-url~=2.3.0",
