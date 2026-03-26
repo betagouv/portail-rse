@@ -1,7 +1,4 @@
 import logging
-import warnings
-from datetime import datetime
-from datetime import timezone
 
 from django.conf import settings
 from django.core.validators import MaxLengthValidator
@@ -74,13 +71,6 @@ class Habilitation(TimestampedModel):
         ],
         null=True,
         blank=True,
-    )
-
-    # note: au 09.04.2025, seules 32 habilitations sont confirmées (0.35%)
-    # TODO : éventuellement à déprécier après modifications sur la CSRD et BDESE
-    confirmed_at = models.DateTimeField(
-        verbose_name="confirmée le",
-        null=True,
     )
 
     invitation = models.ForeignKey(
@@ -218,22 +208,3 @@ class Habilitation(TimestampedModel):
     @classmethod
     def role_pour(cls, entreprise, utilisateur) -> UserRole:
         return UserRole(cls.pour(entreprise, utilisateur).role)
-
-    # Méthodes dépréciées : confirmation de l'habilitation
-
-    def confirm(self):
-        warnings.warn("fonctionnalité dépréciée : confirmation de l'habilitation")
-        self.confirmed_at = datetime.now(timezone.utc)
-
-    def unconfirm(self):
-        warnings.warn(
-            "fonctionnalité dépréciée : annulation de la confirmation de l'habilitation"
-        )
-        self.confirmed_at = None
-
-    @property
-    def is_confirmed(self):
-        warnings.warn(
-            "fonctionnalité dépréciée : vérification de la confirmation de l'habilitation"
-        )
-        return bool(self.confirmed_at)
