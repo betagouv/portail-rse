@@ -86,7 +86,6 @@ def grande_entreprise(entreprise_factory):
 def habilitated_user(bdese, alice):
     Habilitation.ajouter(bdese.entreprise, alice, fonctions="Présidente")
     habilitation = Habilitation.pour(bdese.entreprise, alice)
-    habilitation.confirm()
     habilitation.save()
     return alice
 

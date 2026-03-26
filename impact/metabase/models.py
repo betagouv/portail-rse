@@ -72,7 +72,6 @@ class Habilitation(models.Model):
     utilisateur = models.ForeignKey(Utilisateur, on_delete=models.CASCADE)
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
     fonctions = models.CharField(max_length=FONCTIONS_MAX_LENGTH, null=True)
-    confirmee_le = models.DateTimeField(null=True)
     invitation = models.ForeignKey(Invitation, on_delete=models.SET_NULL, null=True)
 
 

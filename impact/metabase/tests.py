@@ -305,7 +305,6 @@ def test_synchronise_une_entreprise_avec_un_utilisateur(
     assert metabase_habilitation.utilisateur == metabase_utilisateur
     assert metabase_habilitation.entreprise == metabase_entreprise
     assert metabase_habilitation.fonctions == "Présidente"
-    assert not metabase_habilitation.confirmee_le
 
     date_confirmation = datetime.now()
     habilitation.confirmed_at = date_confirmation
@@ -315,8 +314,6 @@ def test_synchronise_une_entreprise_avec_un_utilisateur(
 
     assert MetabaseHabilitation.objects.count() == 1
     metabase_habilitation = MetabaseHabilitation.objects.first()
-
-    assert metabase_habilitation.confirmee_le.date() == date_confirmation.date()
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])

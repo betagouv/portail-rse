@@ -296,7 +296,6 @@ class Command(BaseCommand):
                 utilisateur_id=habilitation.user_id,  # optimisation possible car la clé primaire de l'objet Metabase est identique à la clé primaire dans PortailRSE
                 entreprise_id=habilitation.entreprise_id,  # optimisation possible car la clé primaire de l'objet Metabase est identique à la clé primaire dans PortailRSE
                 fonctions=habilitation.fonctions,
-                confirmee_le=habilitation.confirmed_at,
                 invitation_id=(
                     habilitation.invitation_id if habilitation.invitation_id else None
                 ),  # optimisation possible car la clé primaire de l'objet Metabase est identique à la clé primaire dans PortailRSE
