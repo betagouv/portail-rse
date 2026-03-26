@@ -237,13 +237,3 @@ class Habilitation(TimestampedModel):
             "fonctionnalité dépréciée : vérification de la confirmation de l'habilitation"
         )
         return bool(self.confirmed_at)
-
-
-def is_user_habilited_on_entreprise(user, entreprise):
-    warnings.warn(
-        "fonctionnalité dépréciée : habilitation d'un utilisateur (utiliser `pour` ou `role_pour`)"
-    )
-    return (
-        Habilitation.existe(entreprise, user)
-        and Habilitation.pour(entreprise, user).is_confirmed
-    )
