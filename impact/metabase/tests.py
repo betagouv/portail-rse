@@ -557,7 +557,9 @@ def test_synchronise_les_reglementations_BGES(
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
-def test_synchronise_les_rapports_VSME(alice, entreprise_factory, mock_api_egapro):
+def test_synchronise_les_rapports_VSME_de_différentes_entreprises(
+    alice, entreprise_factory, mock_api_egapro
+):
     entreprise_sans_vsme = entreprise_factory(siren="000000001", utilisateur=alice)
     entreprise_avec_vsme_vide = entreprise_factory(siren="000000002", utilisateur=alice)
     entreprise_avec_vsme_commencee = entreprise_factory(
@@ -630,6 +632,20 @@ def test_synchronise_les_rapports_VSME(alice, entreprise_factory, mock_api_egapr
     assert metabase_vsme_terminee.progression == 100
     for code in EXIGENCES_DE_PUBLICATION:
         assert getattr(metabase_vsme_terminee, f"progression_{code}") == 100
+
+
+@pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
+def test_synchronise_tous_les_rapports_VSME_d_une_entreprise(
+    alice, entreprise_factory, mock_api_egapro
+):
+    entreprise = entreprise_factory(siren="000000001", utilisateur=alice)
+    vsme_2023 = RapportVSME.objects.create(entreprise=entreprise, annee=2023)
+    vsme_2024 = RapportVSME.objects.create(entreprise=entreprise, annee=2024)
+    vsme_2025 = RapportVSME.objects.create(entreprise=entreprise, annee=2025)
+
+    call_command("sync_metabase")
+
+    assert MetabaseVSME.objects.count() == 3
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])

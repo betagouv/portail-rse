@@ -346,8 +346,8 @@ class Command(BaseCommand):
                 entreprise.caracteristiques[0] if entreprise.caracteristiques else None
             )
             if caracteristiques:
-                if r := self._insert_vsme(caracteristiques):
-                    vsme.append(r)
+                if r := self._insert_vsmes(caracteristiques):
+                    vsme.extend(r)
 
                 if r := self._insert_csrd(caracteristiques):
                     csrd.append(r)
@@ -375,21 +375,18 @@ class Command(BaseCommand):
 
         self._success("Ajout des réglementations dans Metabase: OK")
 
-    def _insert_vsme(self, caracteristiques):
+    def _insert_vsmes(self, caracteristiques):
         entreprise = caracteristiques.entreprise
-
-        if (
-            dernier_rapport := RapportVSME.objects.annotate(
+        metabase_vsmes = []
+        for dernier_rapport in (
+            RapportVSME.objects.annotate(
                 nb_indicateurs=Count("indicateurs"),
                 derniere_modif_indicateur=Max("indicateurs__updated_at"),
                 premier_indicateur_cree_le=Min("indicateurs__created_at"),
             )
             .filter(entreprise_id=entreprise.id)
             .order_by("-annee")
-            .first()
         ):
-            # On ne synchronise que le dernier rapport actuellement, comme pour la CSRD
-            # mais on pourrait vouloir tous les rapports quand il y en a plusieurs
             cree_le = dernier_rapport.created_at
             if dernier_rapport.nb_indicateurs > 0:
                 modifie_le = dernier_rapport.derniere_modif_indicateur
@@ -408,23 +405,24 @@ class Command(BaseCommand):
                     f"progression_{code}": 0 for code in EXIGENCES_DE_PUBLICATION
                 }
 
-            return MetabaseVSME(
-                entreprise_id=entreprise.id,  # optimisation possible car la clé primaire de l'objet Metabase est identique à la clé primaire dans PortailRSE
-                est_soumise=True,
-                statut=(
-                    Reglementation.STATUT_EN_COURS
-                    if progression < 100
-                    else Reglementation.STATUT_A_JOUR
-                ),
-                cree_le=cree_le,
-                modifie_le=modifie_le,
-                premier_indicateur_cree_le=premier_indicateur_cree_le,
-                nb_indicateurs_completes=dernier_rapport.nb_indicateurs,
-                progression=progression,
-                **progression_par_exigence,
+            metabase_vsmes.append(
+                MetabaseVSME(
+                    entreprise_id=entreprise.id,  # optimisation possible car la clé primaire de l'objet Metabase est identique à la clé primaire dans PortailRSE
+                    est_soumise=True,
+                    statut=(
+                        Reglementation.STATUT_EN_COURS
+                        if progression < 100
+                        else Reglementation.STATUT_A_JOUR
+                    ),
+                    cree_le=cree_le,
+                    modifie_le=modifie_le,
+                    premier_indicateur_cree_le=premier_indicateur_cree_le,
+                    nb_indicateurs_completes=dernier_rapport.nb_indicateurs,
+                    progression=progression,
+                    **progression_par_exigence,
+                )
             )
-        else:
-            return
+        return metabase_vsmes
 
     def _insert_csrd(self, caracteristiques):
         entreprise = caracteristiques.entreprise
