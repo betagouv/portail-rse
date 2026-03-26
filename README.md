@@ -11,7 +11,7 @@ Site vitrine :
 https://portail-rse.beta.gouv.fr
 
 Service de gestion (correspond au code de ce dépôt) :
-https://portail-rse.beta.gouv.fr
+https://app.portail-rse.beta.gouv.fr
 
 Il existe un service supplémentaire externe pour l'API d'analyse de documents.
 
@@ -19,7 +19,7 @@ Il existe un service supplémentaire externe pour l'API d'analyse de documents.
 
 ### Installation du projet
 
-- Installer [`uv`](https://pypi.org/project/uv/)
+- Installer [`uv`](https://docs.astral.sh/uv/getting-started/installation/)
 - Créer le fichier de variable d'environnement `.env` à partir du fichier d'exemple `.env.example`. Si nécessaire, il est possible d'activer l'intégration avec Sentry en local en renseignant la variable d'environnement `SENTRY_DSN`.
 - Installer le projet avec :
 
@@ -28,17 +28,6 @@ make install
 ```
 
 ℹ️ Il est nécessaire d'installer le paquet système `libpq-dev` pour avoir `pg_config`.
-
-
-En cas de problème avec `uv`, il est possible de l'installer dans un environnement virtuel :
-
-```shell
-python3 -m venv venv
-. ./venv/bin/activate
-pip install uv
-# puis exécuter les commandes au début de ce paragraphe
-```
-
 
 ### Lancement en local
 
@@ -122,7 +111,10 @@ scalingo --app ${PROJET} run python3 impact/manage.py createsuperuser
 
 ### Utilisateurs Proconnect
 
-2026-03-03 : lors de création de compte avec Proconnect, il faut utiliser `yopmail.com` et pas `yopmail.fr`.
+Lors de création de compte avec l'environnement d'intégration de Proconnect, il faut utiliser `yopmail.com` et pas `yopmail.fr`.
+Si le rattachement d'une entreprise nécessite une étape de vérification France Connect, on peut utiliser les identifiants de test : cliquer sur le premier FI dans le choix des fi, identifiant `test` mdp `123.
+Documentation officielle de l'environnement d'intégration : https://partenaires.proconnect.gouv.fr/docs/fournisseur-service/identifiants-fi-test
+
 Il est aussi possible de faire des alias sur https://messagerie.numerique.gouv.fr pour renvoyer les e-mails
 vers son adresse Beta-Gouv.
 
