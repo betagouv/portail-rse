@@ -377,7 +377,7 @@ class Command(BaseCommand):
     def _insert_vsmes(self, caracteristiques):
         entreprise = caracteristiques.entreprise
         metabase_vsmes = []
-        for dernier_rapport in (
+        for rapport in (
             RapportVSME.objects.annotate(
                 nb_indicateurs=Count("indicateurs"),
                 derniere_modif_indicateur=Max("indicateurs__updated_at"),
@@ -386,18 +386,18 @@ class Command(BaseCommand):
             .filter(entreprise_id=entreprise.id)
             .order_by("-annee")
         ):
-            cree_le = dernier_rapport.created_at
-            if dernier_rapport.nb_indicateurs > 0:
-                modifie_le = dernier_rapport.derniere_modif_indicateur
-                premier_indicateur_cree_le = dernier_rapport.premier_indicateur_cree_le
-                progression = dernier_rapport.progression()["pourcent"]
+            cree_le = rapport.created_at
+            if rapport.nb_indicateurs > 0:
+                modifie_le = rapport.derniere_modif_indicateur
+                premier_indicateur_cree_le = rapport.premier_indicateur_cree_le
+                progression = rapport.progression()["pourcent"]
                 progression_par_exigence = {}
                 for code, exigence in EXIGENCES_DE_PUBLICATION.items():
                     progression_par_exigence[f"progression_{code}"] = (
-                        dernier_rapport.progression_par_exigence(exigence)["pourcent"]
+                        rapport.progression_par_exigence(exigence)["pourcent"]
                     )
             else:
-                modifie_le = dernier_rapport.updated_at
+                modifie_le = rapport.updated_at
                 premier_indicateur_cree_le = None
                 progression = 0
                 progression_par_exigence = {
@@ -416,7 +416,7 @@ class Command(BaseCommand):
                     cree_le=cree_le,
                     modifie_le=modifie_le,
                     premier_indicateur_cree_le=premier_indicateur_cree_le,
-                    nb_indicateurs_completes=dernier_rapport.nb_indicateurs,
+                    nb_indicateurs_completes=rapport.nb_indicateurs,
                     progression=progression,
                     **progression_par_exigence,
                 )
