@@ -15,6 +15,7 @@ Including another URLconf
 """
 
 from django.conf import settings
+from django.conf.urls import handler400
 from django.conf.urls.static import static
 from django.urls import include
 from django.urls import path
@@ -51,3 +52,7 @@ if settings.DEBUG:
     from django.contrib import admin
 
     urlpatterns.append(path("admin", admin.site.urls))
+
+# pour l'ensemble des exceptions BadRequest
+# d'autres handlers ont été définis pour l'interface admin
+handler400 = "utils.http.handler400"
