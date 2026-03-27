@@ -396,6 +396,32 @@ def preremplit_indicateur(indicateur_schema_id, rapport_vsme):
                         args=[rapport_vsme.id, "B1"],
                     ),
                 }
+    if infos_preremplissage:
+        return infos_preremplissage
+
+    if (
+        autres_rapports := RapportVSME.objects.filter(
+            entreprise=rapport_vsme.entreprise
+        )
+        .exclude(id=rapport_vsme.id)
+        .exclude(annee__gt=rapport_vsme.annee)
+        .order_by("-annee")
+    ):
+        for autre_rapport in autres_rapports:
+            if indicateur := Indicateur.objects.filter(
+                rapport_vsme=autre_rapport, schema_id=indicateur_schema_id
+            ).first():
+                code_exigence = indicateur_schema_id.split("-")[0]
+                infos_preremplissage["initial"] = indicateur.data
+                infos_preremplissage["source"] = {
+                    "nom": f"votre rapport VSME {autre_rapport.annee}",
+                    "url": reverse(
+                        "vsme:exigence_de_publication_vsme",
+                        args=[autre_rapport.id, code_exigence],
+                    ),
+                }
+                break
+
     return infos_preremplissage
 
 
