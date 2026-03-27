@@ -306,10 +306,6 @@ def test_synchronise_une_entreprise_avec_un_utilisateur(
     assert metabase_habilitation.entreprise == metabase_entreprise
     assert metabase_habilitation.fonctions == "Présidente"
 
-    date_confirmation = datetime.now()
-    habilitation.confirmed_at = date_confirmation
-    habilitation.save()
-
     call_command("sync_metabase")
 
     assert MetabaseHabilitation.objects.count() == 1
