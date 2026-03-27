@@ -1,6 +1,7 @@
 from django.urls.base import reverse
 
 from conftest import CODE_SA
+from vsme.models import RapportVSME
 from vsme.tests.test_indicateurs import INDICATEURS_VSME_BASE_URL
 from vsme.views import preremplit_indicateur
 
@@ -179,5 +180,65 @@ def test_preremplit_indicateur_ecart_remuneration_hommes_femmes_nb_salaries_non_
     preremplissage = preremplit_indicateur(
         indicateur_ecart_remuneration_hommes_femmes, rapport_vsme
     )
+
+    assert preremplissage == {}
+
+
+def test_preremplit_un_indicateur_si_déjà_rempli_une_année_précédente(
+    rapport_vsme,
+):
+    entreprise = rapport_vsme.entreprise
+    un_an_avant = rapport_vsme.annee - 1
+    deux_ans_avant = rapport_vsme.annee - 2
+    trois_ans_avant = rapport_vsme.annee - 3
+    # instancier rapport_vsme_trois_ans_avant avant rapport_vsme_deux_ans_avant
+    # permet de contraindre le tri par année
+    rapport_vsme_trois_ans_avant = RapportVSME.objects.create(
+        entreprise=entreprise, annee=trois_ans_avant
+    )
+    rapport_vsme_deux_ans_avant = RapportVSME.objects.create(
+        entreprise=entreprise, annee=deux_ans_avant
+    )
+    rapport_vsme_un_an_avant = RapportVSME.objects.create(
+        entreprise=entreprise, annee=un_an_avant
+    )
+    schema_id = "B2-26-p1"
+    rapport_vsme_deux_ans_avant.indicateurs.create(
+        schema_id=schema_id,
+        data={"participation_gouvernance": "explications à réutiliser"},
+    )
+    rapport_vsme_trois_ans_avant.indicateurs.create(
+        schema_id=schema_id,
+        data={"participation_gouvernance": "explications trop vieille"},
+    )
+
+    preremplissage = preremplit_indicateur(schema_id, rapport_vsme)
+
+    assert preremplissage == {
+        "initial": {"participation_gouvernance": "explications à réutiliser"},
+        "source": {
+            "nom": f"votre rapport VSME {deux_ans_avant}",
+            "url": reverse(
+                "vsme:exigence_de_publication_vsme",
+                args=[rapport_vsme_deux_ans_avant.id, "B2"],
+            ),
+        },
+    }
+
+
+def test_ne_preremplit_pas_un_indicateur_si_déjà_rempli_dans_le_futur(
+    rapport_vsme,
+):
+    entreprise = rapport_vsme.entreprise
+    un_an_apres = rapport_vsme.annee + 1
+    rapport_vsme_un_an_apres = RapportVSME.objects.create(
+        entreprise=entreprise, annee=un_an_apres
+    )
+    schema_id = "B2-26-p1"
+    rapport_vsme_un_an_apres.indicateurs.create(
+        schema_id=schema_id, data={"participation_gouvernance": "explications"}
+    )
+
+    preremplissage = preremplit_indicateur(schema_id, rapport_vsme)
 
     assert preremplissage == {}
