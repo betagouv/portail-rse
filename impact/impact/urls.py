@@ -47,7 +47,8 @@ if settings.DEBUG_TOOLBAR:
     urlpatterns.extend(debug_toolbar_urls())
 
 # note : admin site path is in a distinct file for `django-hosts`
-if settings.DEBUG:
+# /admin limité aux machines de développement
+if "127.0.0.1" in settings.ALLOWED_HOSTS:
     from django.contrib import admin
 
     urlpatterns.append(path("admin", admin.site.urls))
