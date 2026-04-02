@@ -77,6 +77,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
             date_derniere_qualification=date_derniere_qualification,
             categorie_juridique_sirene=5699,
             code_pays_etranger_sirene=CODE_PAYS_PORTUGAL,
+            code_postal="12345",
             code_NAF=CODE_NAF_CEREALES,
             effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
             effectif_securite_sociale=CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_MOINS_DE_10,
@@ -136,6 +137,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
     assert metabase_entreprise.denomination == "Entreprise A"
     assert metabase_entreprise.categorie_juridique == "SOCIETE_ANONYME"
     assert metabase_entreprise.pays == "Portugal"
+    assert metabase_entreprise.code_postal == "12345"
     assert metabase_entreprise.code_NAF == CODE_NAF_CEREALES
     assert (
         metabase_entreprise.date_cloture_exercice

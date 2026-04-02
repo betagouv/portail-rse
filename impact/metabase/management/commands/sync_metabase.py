@@ -153,6 +153,7 @@ class Command(BaseCommand):
                     else None
                 ),
                 pays=entreprise.pays,
+                code_postal=entreprise.code_postal,
                 code_NAF=entreprise.code_NAF,
                 est_interet_public=entreprise.est_interet_public,
                 est_cotee=entreprise.est_cotee,
