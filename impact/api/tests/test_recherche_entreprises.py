@@ -23,6 +23,7 @@ def test_api_recherche_par_siren_fonctionnelle():
         "denomination": "DIRECTION INTERMINISTERIELLE DU NUMERIQUE",
         "categorie_juridique_sirene": 7120,
         "code_pays_etranger_sirene": None,
+        "code_postal": "75007",
         "code_NAF": "84.11Z",
     }
 
@@ -38,7 +39,7 @@ def test_succes_recherche_par_siren_comportant_la_raison_sociale(mocker):
                 "nom_raison_sociale": "ENTREPRISE",
                 "tranche_effectif_salarie": "12",
                 "nature_juridique": "5710",
-                "siege": {"code_pays_etranger": "99139"},
+                "siege": {"code_pays_etranger": "99139", "code_postal": "2A004"},
                 "activite_principale": "01.11Z",
             }
         ],
@@ -55,6 +56,7 @@ def test_succes_recherche_par_siren_comportant_la_raison_sociale(mocker):
         "denomination": "ENTREPRISE",
         "categorie_juridique_sirene": 5710,
         "code_pays_etranger_sirene": 99139,
+        "code_postal": "2A004",
         "code_NAF": "01.11Z",
     }
     faked_request.assert_called_once_with(
@@ -73,7 +75,7 @@ def test_succes_recherche_par_siren_sans_la_raison_sociale(mocker):
                 "nom_raison_sociale": None,
                 "tranche_effectif_salarie": "12",
                 "nature_juridique": "5710",
-                "siege": {"code_pays_etranger": None},
+                "siege": {"code_pays_etranger": None, "code_postal": "33800"},
                 "activite_principale": "01.11Z",
             }
         ],
@@ -222,7 +224,7 @@ def test_recherche_par_siren_pas_de_nature_juridique(nature_juridique, mocker):
                 "nom_raison_sociale": None,
                 "tranche_effectif_salarie": "15",
                 "nature_juridique": nature_juridique,
-                "siege": {"code_pays_etranger": None},
+                "siege": {"code_pays_etranger": None, "code_postal": "33800"},
                 "activite_principale": "01.11Z",
             }
         ],
@@ -249,7 +251,7 @@ def test_recherche_par_siren_pas_de_code_pays_etranger(mocker):
                 "nom_raison_sociale": None,
                 "tranche_effectif_salarie": "15",
                 "nature_juridique": "5710",
-                "siege": {},
+                "siege": {"code_postal": "33800"},
                 "activite_principale": "01.11Z",
             }
         ],
@@ -275,7 +277,7 @@ def test_recherche_par_siren_code_pays_etranger_vaut_null_car_en_France(mocker):
                 "nom_raison_sociale": None,
                 "tranche_effectif_salarie": "15",
                 "nature_juridique": "5710",
-                "siege": {"code_pays_etranger": None},
+                "siege": {"code_pays_etranger": None, "code_postal": "33800"},
                 "activite_principale": "01.11Z",
             }
         ],
@@ -300,7 +302,7 @@ def test_recherche_par_siren_pas_d_activite_principale(activite_principale, mock
                 "nom_raison_sociale": None,
                 "tranche_effectif_salarie": "15",
                 "nature_juridique": "5710",
-                "siege": {"code_pays_etranger": None},
+                "siege": {"code_pays_etranger": None, "code_postal": "33800"},
                 "activite_principale": activite_principale,
             }
         ],

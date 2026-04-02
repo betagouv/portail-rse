@@ -55,6 +55,7 @@ def recherche_par_siren(siren):
                 categorie_juridique_sirene = None
 
             effectif = convertit_tranche_effectif(data["tranche_effectif_salarie"])
+            code_postal = data["siege"]["code_postal"]
 
             try:
                 code_pays_etranger = int(data["siege"]["code_pays_etranger"])
@@ -74,6 +75,7 @@ def recherche_par_siren(siren):
                 "denomination": denomination,
                 "categorie_juridique_sirene": categorie_juridique_sirene,
                 "code_pays_etranger_sirene": code_pays_etranger,
+                "code_postal": code_postal,
                 "code_NAF": code_NAF,
             }
         case 429:

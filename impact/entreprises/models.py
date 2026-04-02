@@ -185,6 +185,9 @@ class Entreprise(TimestampedModel):
     )
     categorie_juridique_sirene = models.IntegerField(null=True)
     code_pays_etranger_sirene = models.IntegerField(null=True, blank=True)
+    code_postal = models.CharField(
+        max_length=5, null=True, blank=True
+    )  # le code postal est une chaine pour prendre en compte de cas de villes corses (2A004 pour Ajaccio)
     code_NAF = models.CharField(max_length=6, null=True, blank=True)
     date_cloture_exercice = models.DateField(
         verbose_name="Date de clôture du dernier exercice comptable",
@@ -343,6 +346,7 @@ class Entreprise(TimestampedModel):
             denomination=infos_entreprise["denomination"],
             categorie_juridique_sirene=infos_entreprise["categorie_juridique_sirene"],
             code_pays_etranger_sirene=infos_entreprise["code_pays_etranger_sirene"],
+            code_postal=infos_entreprise["code_postal"],
             code_NAF=infos_entreprise["code_NAF"],
         )
 
