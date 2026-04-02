@@ -9,7 +9,6 @@ from django.shortcuts import resolve_url
 from django.urls import reverse
 from lasuite.oidc_login.views import OIDCAuthenticationCallbackView as CallbackView
 
-import api.infos_entreprise as api_entreprise
 from api.exceptions import APIError
 from entreprises.models import Entreprise
 from habilitations.enums import UserRole
@@ -123,14 +122,7 @@ def proconnect_dispatch_view(request):
 def _creation_entreprise(siren, user):
     # création d'une nouvelle entreprise et association de l'utilisateur
     # identifié comme premier proprietaire
-    infos_entreprise = api_entreprise.infos_entreprise(siren)
-    entreprise = Entreprise.objects.create(
-        siren=infos_entreprise["siren"],
-        denomination=infos_entreprise["denomination"],
-        categorie_juridique_sirene=infos_entreprise["categorie_juridique_sirene"],
-        code_pays_etranger_sirene=infos_entreprise["code_pays_etranger_sirene"],
-        code_NAF=infos_entreprise["code_NAF"],
-    )
+    entreprise = Entreprise.search_and_create_entreprise(siren)
     Habilitation.ajouter(entreprise, user)
     return entreprise
 
