@@ -105,6 +105,7 @@
                                 <p class="fr-card__desc">
                                     {% with caracs=entreprise.dernieres_caracteristiques_qualifiantes|default:entreprise.dernieres_caracteristiques %}
                                         Code NAF/APE : <b>{{ entreprise.code_NAF }}</b> ({{ entreprise.secteur_principal }})<br>
+                                        Code postal du siège : <b>{{ entreprise.code_postal }}</b><br>
                                         Date de clôture du dernier exercice : <b>{{ caracs.date_cloture_exercice | display_field }}</b><br>
                                         Effectif (au sens du code du travail) : <b>{{ caracs.get_effectif_display | display_field }}</b><br>
                                         Effectif (au sens du code de la Sécurité Sociale) : <b>{{ caracs.get_effectif_securite_sociale_display | display_field }}</b><br>
