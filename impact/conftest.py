@@ -198,6 +198,7 @@ def mock_api_infos_entreprise(mocker):
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         "categorie_juridique_sirene": 5710,
         "code_pays_etranger_sirene": None,
+        "code_postal": "33800",
         "code_NAF": "01.11Z",
         "date_cloture_exercice": date(2023, 12, 31),
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,

@@ -92,6 +92,7 @@ def test_search_and_create_entreprise(db, mock_api_infos_entreprise):
         "denomination": "Entreprise SAS",
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
         "categorie_juridique_sirene": 5710,
+        "code_postal": "12345",
         "code_pays_etranger_sirene": CODE_PAYS_PORTUGAL,
         "code_NAF": "01.11Z",
     }
@@ -102,6 +103,7 @@ def test_search_and_create_entreprise(db, mock_api_infos_entreprise):
     assert entreprise.denomination == "Entreprise SAS"
     assert entreprise.categorie_juridique_sirene == 5710
     assert entreprise.code_pays_etranger_sirene == CODE_PAYS_PORTUGAL
+    assert entreprise.code_postal == "12345"
     assert entreprise.code_NAF == "01.11Z"
 
 
@@ -144,6 +146,7 @@ def test_create_and_attach_to_entreprise(client, alice, mock_api_infos_entrepris
 
     assert entreprise.denomination == "Entreprise SAS"
     assert entreprise.categorie_juridique_sirene == 5710
+    assert entreprise.code_postal == "33800"
     assert entreprise.code_NAF == "01.11Z"
 
 
