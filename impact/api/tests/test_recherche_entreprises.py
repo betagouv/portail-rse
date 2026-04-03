@@ -314,7 +314,8 @@ def test_recherche_par_siren_pas_d_activite_principale(activite_principale, mock
     assert infos["code_NAF"] is None
 
 
-def test_recherche_par_siren_code_postal_non_diffusible(mocker):
+@pytest.mark.parametrize("code_postal", ["[NON-DIFFUSIBLE]", "D02 P593"])
+def test_recherche_par_siren_code_postal_au_format_incorrect(code_postal, mocker):
     SIREN = "123456789"
     json_content = {
         "total_results": 1,
@@ -326,7 +327,7 @@ def test_recherche_par_siren_code_postal_non_diffusible(mocker):
                 "nature_juridique": "5710",
                 "siege": {
                     "code_pays_etranger": None,
-                    "code_postal": "[NON-DIFFUSIBLE]",
+                    "code_postal": code_postal,
                 },
                 "activite_principale": "01.11Z",
             }
