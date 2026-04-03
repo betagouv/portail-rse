@@ -57,7 +57,10 @@ def recherche_par_siren(siren):
             effectif = convertit_tranche_effectif(data["tranche_effectif_salarie"])
 
             try:
-                if len(data["siege"]["code_postal"]) <= 5:
+                if (
+                    data["siege"]["code_postal"]
+                    and len(data["siege"]["code_postal"]) <= 5
+                ):
                     code_postal = data["siege"]["code_postal"]
                 else:
                     code_postal = None

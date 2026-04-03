@@ -314,7 +314,7 @@ def test_recherche_par_siren_pas_d_activite_principale(activite_principale, mock
     assert infos["code_NAF"] is None
 
 
-@pytest.mark.parametrize("code_postal", ["[NON-DIFFUSIBLE]", "D02 P593"])
+@pytest.mark.parametrize("code_postal", ["[NON-DIFFUSIBLE]", "D02 P593", None])
 def test_recherche_par_siren_code_postal_au_format_incorrect(code_postal, mocker):
     SIREN = "123456789"
     json_content = {
