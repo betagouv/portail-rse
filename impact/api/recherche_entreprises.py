@@ -56,10 +56,13 @@ def recherche_par_siren(siren):
 
             effectif = convertit_tranche_effectif(data["tranche_effectif_salarie"])
 
-            if data["siege"]["code_postal"] == "[NON-DIFFUSIBLE]":
+            try:
+                if data["siege"]["code_postal"] == "[NON-DIFFUSIBLE]":
+                    code_postal = None
+                else:
+                    code_postal = data["siege"]["code_postal"]
+            except KeyError:
                 code_postal = None
-            else:
-                code_postal = data["siege"]["code_postal"]
 
             try:
                 code_pays_etranger = int(data["siege"]["code_pays_etranger"])
