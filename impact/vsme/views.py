@@ -396,17 +396,14 @@ def preremplit_indicateur(indicateur_schema_id, rapport_vsme):
                         args=[rapport_vsme.id, "B1"],
                     ),
                 }
-    if infos_preremplissage:
-        return infos_preremplissage
 
-    if (
-        autres_rapports := RapportVSME.objects.filter(
-            entreprise=rapport_vsme.entreprise
+    if not infos_preremplissage:
+        autres_rapports = (
+            RapportVSME.objects.filter(entreprise=rapport_vsme.entreprise)
+            .exclude(id=rapport_vsme.id)
+            .exclude(annee__gt=rapport_vsme.annee)
+            .order_by("-annee")
         )
-        .exclude(id=rapport_vsme.id)
-        .exclude(annee__gt=rapport_vsme.annee)
-        .order_by("-annee")
-    ):
         for autre_rapport in autres_rapports:
             if indicateur := Indicateur.objects.filter(
                 rapport_vsme=autre_rapport, schema_id=indicateur_schema_id
