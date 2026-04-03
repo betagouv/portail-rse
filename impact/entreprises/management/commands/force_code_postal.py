@@ -32,5 +32,6 @@ class Command(BaseCommand):
 
 def maj(entreprise):
     infos_entreprise = api.recherche_entreprises.recherche_par_siren(entreprise.siren)
+    print(f"A AJOUTER {entreprise.siren}: {infos_entreprise["code_postal"]}")
     entreprise.code_postal = infos_entreprise["code_postal"]
     entreprise.save()
