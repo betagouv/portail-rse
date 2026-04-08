@@ -281,6 +281,25 @@ def test_edit_email(client, alice_with_password, mailoutbox):
     }
 
 
+def test_edit_account_info_and_not_conseiller_rse(client, alice_with_password):
+    alice = alice_with_password
+    client.force_login(alice)
+
+    data = {
+        "prenom": "Bob",
+        "nom": "Dylan",
+        "email": alice.email,
+        "reception_actualites": "checked",
+        "action": "update-account",
+    }
+
+    response = client.post("/mon-compte", data=data, follow=True)
+
+    alice.refresh_from_db()
+    assert not alice.is_conseiller_rse
+    assert not alice.fonction_rse
+
+
 def test_edit_password(client, alice):
     client.force_login(alice)
 
