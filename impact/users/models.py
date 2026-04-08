@@ -91,6 +91,7 @@ class User(AbstractBaseUser, TimestampedModel):
             ("autre", "Autre"),
         ],
         null=True,
+        blank=True,
     )
 
     objects = UserManager()
