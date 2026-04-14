@@ -20,7 +20,7 @@ def test_acces_sans_annee_utilise_annee_par_defaut(client, entreprise_factory, a
     response = client.get(url)
 
     assert response.status_code == 200
-    annee_par_defaut = get_annee_rapport_par_defaut(entreprise)
+    annee_par_defaut = get_annee_rapport_par_defaut(entreprise).annee
     assert RapportVSME.objects.filter(
         entreprise=entreprise, annee=annee_par_defaut
     ).exists()
@@ -34,7 +34,7 @@ def test_acces_avec_annee_valide(client, entreprise_factory, alice, annee):
     client.force_login(alice)
 
     # Vérifier que l'année est valide pour cette entreprise
-    if annee <= get_annee_max_valide(entreprise):
+    if annee <= get_annee_max_valide(entreprise).annee:
         url = reverse("vsme:categories_vsme", args=[entreprise.siren, annee])
         response = client.get(url)
 
@@ -102,7 +102,7 @@ def test_acces_annee_future_invalide(client, entreprise_factory, alice):
     client.force_login(alice)
 
     # Pour une clôture 31/12, l'année max est N, donc N+1 est invalide
-    annee_invalide = get_annee_max_valide(entreprise) + 1
+    annee_invalide = get_annee_max_valide(entreprise).annee + 1
     url = reverse("vsme:categories_vsme", args=[entreprise.siren, annee_invalide])
     response = client.get(url)
 
@@ -127,7 +127,7 @@ def test_contexte_contient_annees_disponibles_cloture_31_decembre(
 
     annees = response.context["annees_disponibles"]
     assert 2020 in annees
-    assert get_annee_rapport_par_defaut(entreprise) in annees
+    assert get_annee_rapport_par_defaut(entreprise).annee in annees
     assert date.today().year in annees  # N est disponible
     assert date.today().year + 1 not in annees  # N+1 n'est pas disponible
 

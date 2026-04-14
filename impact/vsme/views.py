@@ -125,7 +125,7 @@ def categories_vsme(request, entreprise, annee=None):
         )
         return htmx.HttpResponseHXRedirect(redirect_to)
 
-    annee_par_defaut = get_annee_rapport_par_defaut(entreprise)
+    annee_par_defaut = get_annee_rapport_par_defaut(entreprise).annee
     annee = annee or annee_par_defaut
 
     # Vérifier que l'année est valide pour cette entreprise
@@ -133,7 +133,7 @@ def categories_vsme(request, entreprise, annee=None):
         messages.error(
             request,
             f"L'année {annee} n'est pas valide pour un rapport VSME. "
-            f"Les rapports doivent être créés pour une année entre 2020 et {get_annee_max_valide(entreprise)}.",
+            f"Les rapports doivent être créés pour une année entre 2020 et {get_annee_max_valide(entreprise).annee}.",
         )
         return redirect("vsme:categories_vsme", siren=entreprise.siren)
 
