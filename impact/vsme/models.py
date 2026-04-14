@@ -22,6 +22,20 @@ from vsme.forms import NON_PERTINENT_FIELD_NAME
 ANNEE_DEBUT_VSME = 2020  # Première année où les rapports VSME peuvent être créés
 
 
+@dataclass
+class Exercice:
+    annee: int
+    label: str
+
+    def suivant(self):
+        annee_suivante = self.annee + 1
+        if "-" in self.label:
+            label_suivant = f"{self.annee}-{annee_suivante}"
+        else:
+            label_suivant = f"{annee_suivante}"
+        return Exercice(annee_suivante, label_suivant)
+
+
 def get_annee_dernier_exercice_clos(entreprise):
     """
     Retourne l'année du dernier exercice clos pour une entreprise.
@@ -29,12 +43,29 @@ def get_annee_dernier_exercice_clos(entreprise):
     """
     annee_en_cours = date.today().year
     if not entreprise or not entreprise.date_cloture_exercice:
-        return annee_en_cours - 1
+        return Exercice(annee=annee_en_cours - 1, label=f"{annee_en_cours - 1}")
     # Si la date de clôture de cette année est déjà passée, l'exercice de cette année est clos
+    exercice_sur_annee_civile = (
+        entreprise.date_cloture_exercice.month == 12
+        and entreprise.date_cloture_exercice.day == 31
+    )
     date_cloture = entreprise.date_cloture_exercice + relativedelta(year=annee_en_cours)
     if date_cloture < date.today():
-        return annee_en_cours
-    return annee_en_cours - 1
+        if exercice_sur_annee_civile:
+            return Exercice(annee=annee_en_cours, label=f"{annee_en_cours}")
+        else:
+            return Exercice(
+                annee=annee_en_cours,
+                label=f"{annee_en_cours - 1}-{annee_en_cours}",
+            )
+    if exercice_sur_annee_civile:
+        return Exercice(annee=annee_en_cours - 1, label=f"{annee_en_cours - 1}")
+
+    else:
+        return Exercice(
+            annee=annee_en_cours - 1,
+            label=f"{annee_en_cours - 2}-{annee_en_cours - 1}",
+        )
 
 
 def get_annee_rapport_par_defaut(entreprise=None):
@@ -42,16 +73,16 @@ def get_annee_rapport_par_defaut(entreprise=None):
 
 
 def get_annee_max_valide(entreprise=None):
-    return get_annee_dernier_exercice_clos(entreprise) + 1
+    return get_annee_dernier_exercice_clos(entreprise).suivant()
 
 
 def get_annees_valides(entreprise=None):
-    annee_max = get_annee_max_valide(entreprise)
+    annee_max = get_annee_max_valide(entreprise).annee
     return list(range(ANNEE_DEBUT_VSME, annee_max + 1))
 
 
 def annee_est_valide(annee, entreprise=None):
-    return ANNEE_DEBUT_VSME <= annee <= get_annee_max_valide(entreprise)
+    return ANNEE_DEBUT_VSME <= annee <= get_annee_max_valide(entreprise).annee
 
 
 def validate_annee_rapport(value):
