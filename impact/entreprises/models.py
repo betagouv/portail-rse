@@ -446,6 +446,15 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         (BILAN_100M_ET_PLUS, "100M€ ou plus"),
     ]
 
+    CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH = "0-2.75GWh"
+    CONSOMMATION_ENERGIE_ENTRE_2_75GWH_ET_23_6GWH = "2.75GWh-23.6GWh"
+    CONSOMMATION_ENERGIE_23_6GWH_ET_PLUS = "23.6GWh+"
+    CONSOMMATION_ENERGIE_CHOICES = [
+        (CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH, "inférieure à 2,75 GWh"),
+        (CONSOMMATION_ENERGIE_ENTRE_2_75GWH_ET_23_6GWH, "entre 2,75 GWh et 23,6 GWh"),
+        (CONSOMMATION_ENERGIE_23_6GWH_ET_PLUS, "supérieure ou égale à 23,6 GWh"),
+    ]
+
     entreprise = models.ForeignKey(Entreprise, on_delete=models.CASCADE)
     annee = models.IntegerField()
     date_cloture_exercice = models.DateField(
@@ -522,6 +531,12 @@ class CaracteristiquesAnnuelles(TimestampedModel):
     )
     systeme_management_energie = models.BooleanField(
         verbose_name="L'entreprise a mis en place un système de management de l’énergie",
+        null=True,
+    )
+    tranche_consommation_energie_finale = models.CharField(
+        verbose_name="Consommation annuelle moyenne d'énergie finale",
+        max_length=20,
+        choices=[BLANK_CHOICE] + CONSOMMATION_ENERGIE_CHOICES,
         null=True,
     )
 
