@@ -52,6 +52,7 @@ def test_get_annee_dernier_exercice_clos_entreprise_sans_date_cloture(
     assert get_annee_dernier_exercice_clos(entreprise) == date.today().year - 1
 
 
+@freeze_time("2025-12-12")
 def test_get_annee_dernier_exercice_clos_cloture_31_decembre(entreprise_factory, alice):
     """
     Entreprise avec clôture au 31/12 :
