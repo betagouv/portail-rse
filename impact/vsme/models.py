@@ -36,9 +36,9 @@ class Exercice:
         return Exercice(annee_suivante, label_suivant)
 
 
-def get_annee_dernier_exercice_clos(entreprise):
+def get_dernier_exercice_clos(entreprise):
     """
-    Retourne l'année du dernier exercice clos pour une entreprise.
+    Retourne le dernier exercice clos pour une entreprise.
     Si l'entreprise n'a pas de date de clôture définie, retourne N-1.
     """
     annee_en_cours = date.today().year
@@ -68,21 +68,21 @@ def get_annee_dernier_exercice_clos(entreprise):
         )
 
 
-def get_annee_rapport_par_defaut(entreprise=None):
-    return get_annee_dernier_exercice_clos(entreprise)
+def get_exercice_par_defaut(entreprise=None):
+    return get_dernier_exercice_clos(entreprise)
 
 
-def get_annee_max_valide(entreprise=None):
-    return get_annee_dernier_exercice_clos(entreprise).suivant()
+def get_exercice_max_valide(entreprise=None):
+    return get_dernier_exercice_clos(entreprise).suivant()
 
 
 def get_annees_valides(entreprise=None):
-    annee_max = get_annee_max_valide(entreprise).annee
+    annee_max = get_exercice_max_valide(entreprise).annee
     return list(range(ANNEE_DEBUT_VSME, annee_max + 1))
 
 
 def annee_est_valide(annee, entreprise=None):
-    return ANNEE_DEBUT_VSME <= annee <= get_annee_max_valide(entreprise).annee
+    return ANNEE_DEBUT_VSME <= annee <= get_exercice_max_valide(entreprise).annee
 
 
 def validate_annee_rapport(value):
