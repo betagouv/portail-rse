@@ -88,6 +88,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
             tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
             bdese_accord=False,
             systeme_management_energie=False,
+            tranche_consommation_energie_finale=CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
         )
         frozen_datetime.move_to(date_deuxieme_evolution)
         actualisation = ActualisationCaracteristiquesAnnuelles(
@@ -105,6 +106,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
             tranche_bilan_consolide=None,
             bdese_accord=True,
             systeme_management_energie=False,
+            tranche_consommation_energie_finale=CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_ENTRE_2_75GWH_ET_23_6GWH,
         )
         entreprise.actualise_caracteristiques(actualisation).save()
         frozen_datetime.move_to(date_troisieme_evolution)
@@ -123,6 +125,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
             tranche_bilan_consolide=None,
             bdese_accord=True,
             systeme_management_energie=True,
+            tranche_consommation_energie_finale=CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_23_6GWH_ET_PLUS,
         )
         entreprise.actualise_caracteristiques(actualisation).save()
 

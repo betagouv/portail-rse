@@ -133,6 +133,7 @@ def entreprise_factory(db, date_cloture_dernier_exercice):
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_30M,
         bdese_accord=False,
         systeme_management_energie=False,
+        tranche_consommation_energie_finale=CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
         utilisateur=None,
     ):
         entreprise = Entreprise.objects.create(
@@ -164,6 +165,7 @@ def entreprise_factory(db, date_cloture_dernier_exercice):
             tranche_bilan_consolide if comptes_consolides else None,
             bdese_accord,
             systeme_management_energie,
+            tranche_consommation_energie_finale,
         )
         caracteristiques = entreprise.actualise_caracteristiques(actualisation)
         caracteristiques.save()

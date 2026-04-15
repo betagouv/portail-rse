@@ -149,6 +149,7 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
             "tranche_bilan_consolide",
             "bdese_accord",
             "systeme_management_energie",
+            "tranche_consommation_energie_finale",
         ]
         labels = {
             "date_cloture_exercice": "Date de clôture du dernier exercice comptable",
@@ -295,6 +296,9 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
                 bdese_accord=self.cleaned_data["bdese_accord"],
                 systeme_management_energie=self.cleaned_data[
                     "systeme_management_energie"
+                ],
+                tranche_consommation_energie_finale=self.cleaned_data[
+                    "tranche_consommation_energie_finale"
                 ],
             )
         ).save()
