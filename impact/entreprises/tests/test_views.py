@@ -438,6 +438,7 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs_s
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         bdese_accord=True,
         systeme_management_energie=True,
+        tranche_consommation_energie_finale=CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     )
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
@@ -492,6 +493,7 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs_s
     )
     assert form["bdese_accord"].initial
     assert form["systeme_management_energie"].initial
+    assert form["tranche_consommation_energie_finale"].initial
 
 
 def test_page_de_qualification_avec_des_caracteristiques_non_qualifiantes_initialise_les_champs_sans_appel_api(
@@ -564,6 +566,7 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
         "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         "bdese_accord": True,
         "systeme_management_energie": True,
+        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_23_6GWH_ET_PLUS,
     }
 
     with freeze_time(date(2023, 10, 25)):
@@ -630,6 +633,10 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
     )
     assert caracteristiques.bdese_accord
     assert caracteristiques.systeme_management_energie
+    assert (
+        caracteristiques.tranche_consommation_energie_finale
+        == CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_23_6GWH_ET_PLUS
+    )
     assert caracteristiques.sont_qualifiantes
 
 
@@ -653,6 +660,7 @@ def test_qualifie_entreprise_sans_groupe(
         "est_interet_public": True,
         "bdese_accord": True,
         "systeme_management_energie": True,
+        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_ENTRE_2_75GWH_ET_23_6GWH,
     }
 
     url = f"/entreprises/{entreprise_non_qualifiee.siren}"
@@ -695,6 +703,10 @@ def test_qualifie_entreprise_sans_groupe(
     assert caracteristiques.tranche_bilan_consolide is None
     assert caracteristiques.bdese_accord
     assert caracteristiques.systeme_management_energie
+    assert (
+        caracteristiques.tranche_consommation_energie_finale
+        == CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_ENTRE_2_75GWH_ET_23_6GWH
+    )
     assert caracteristiques.sont_qualifiantes
 
 
@@ -749,6 +761,7 @@ def test_qualification_supprime_les_caracteristiques_annuelles_posterieures_a_la
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M,
         "bdese_accord": True,
         "systeme_management_energie": True,
+        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_ENTRE_2_75GWH_ET_23_6GWH,
     }
 
     url = f"/entreprises/{entreprise.siren}"
