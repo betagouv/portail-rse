@@ -238,6 +238,7 @@ def test_dernieres_caracteristiques_qualifiantes(entreprise_non_qualifiee):
         tranche_bilan_consolide=None,
         bdese_accord=True,
         systeme_management_energie=True,
+        tranche_consommation_energie_finale=CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     )
     caracteristiques_2023 = entreprise_non_qualifiee.actualise_caracteristiques(
         actualisation
@@ -279,6 +280,9 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
     tranche_bilan_consolide = CaracteristiquesAnnuelles.BILAN_MOINS_DE_30M
     bdese_accord = False
     systeme_management_energie = False
+    tranche_consommation_energie_finale = (
+        CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH
+    )
     date_cloture_exercice = date(2023, 7, 7)
 
     actualisation = ActualisationCaracteristiquesAnnuelles(
@@ -294,6 +298,7 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
         tranche_bilan_consolide,
         bdese_accord,
         systeme_management_energie,
+        tranche_consommation_energie_finale,
     )
     caracteristiques = entreprise_non_qualifiee.actualise_caracteristiques(
         actualisation
@@ -337,6 +342,9 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
     nouvelle_tranche_bilan_consolide = CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
     nouveau_bdese_accord = True
     nouveau_systeme_management_energie = True
+    nouvelle_tranche_consommation_energie_finale = (
+        CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_23_6GWH_ET_PLUS
+    )
 
     actualisation = ActualisationCaracteristiquesAnnuelles(
         date_cloture_exercice,
@@ -351,6 +359,7 @@ def test_actualise_caracteristiques(entreprise_non_qualifiee):
         nouvelle_tranche_bilan_consolide,
         nouveau_bdese_accord,
         nouveau_systeme_management_energie,
+        nouvelle_tranche_consommation_energie_finale,
     )
     nouvelles_caracteristiques = entreprise_non_qualifiee.actualise_caracteristiques(
         actualisation
@@ -418,6 +427,7 @@ def test_actualise_caracteristiques_conserve_attributs_entreprise_non_commités(
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         bdese_accord=False,
         systeme_management_energie=False,
+        tranche_consommation_energie_finale=CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     )
     caracteristiques = entreprise.actualise_caracteristiques(actualisation)
 
@@ -481,6 +491,7 @@ def test_caracteristiques_actuelles_selon_la_date_de_cloture(entreprise_non_qual
             tranche_bilan_consolide=None,
             bdese_accord=False,
             systeme_management_energie=False,
+            tranche_consommation_energie_finale=CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
         )
         caracs = entreprise_non_qualifiee.actualise_caracteristiques(actualisation)
         caracs.save()
