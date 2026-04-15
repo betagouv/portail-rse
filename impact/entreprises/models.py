@@ -39,6 +39,7 @@ class ActualisationCaracteristiquesAnnuelles:
     tranche_bilan_consolide: str
     bdese_accord: bool
     systeme_management_energie: bool
+    tranche_consommation_energie_finale: str | None
 
 
 @unique
@@ -390,6 +391,9 @@ class Entreprise(TimestampedModel):
         caracteristiques.bdese_accord = actualisation.bdese_accord
         caracteristiques.systeme_management_energie = (
             actualisation.systeme_management_energie
+        )
+        caracteristiques.tranche_consommation_energie_finale = (
+            actualisation.tranche_consommation_energie_finale
         )
         return caracteristiques
 

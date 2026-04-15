@@ -26,6 +26,7 @@ def test_ignore_bilan_et_ca_consolides_lorsque_pas_de_comptes_consolides():
         "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         "bdese_accord": True,
         "systeme_management_energie": True,
+        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -55,6 +56,7 @@ def test_ignore_effectifs_groupe_societe_mere_et_comptes_consolides_lorsque_pas_
         "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         "bdese_accord": True,
         "systeme_management_energie": True,
+        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -88,6 +90,7 @@ def test_erreur_si_appartient_groupe_sans_effectif_groupe():
         "tranche_bilan_consolide": "",
         "bdese_accord": True,
         "systeme_management_energie": True,
+        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -122,6 +125,7 @@ def test_erreur_si_comptes_consolides_sans_bilan_consolide():
         "tranche_bilan_consolide": "",
         "bdese_accord": True,
         "systeme_management_energie": True,
+        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -152,6 +156,7 @@ def test_erreur_si_comptes_consolides_sans_ca_consolide():
         "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         "bdese_accord": True,
         "systeme_management_energie": True,
+        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -176,6 +181,7 @@ def test_erreur_si_effectif_code_securite_sociale_superieur_a_effectif():
         "appartient_groupe": False,
         "bdese_accord": True,
         "systeme_management_energie": True,
+        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -200,6 +206,7 @@ def test_erreur_si_effectif_outre_mer_superieur_a_effectif():
         "appartient_groupe": False,
         "bdese_accord": True,
         "systeme_management_energie": True,
+        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -228,6 +235,7 @@ def test_erreur_si_effectif_france_superieur_a_effectif_international():
         "comptes_consolides": False,
         "bdese_accord": True,
         "systeme_management_energie": True,
+        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -256,6 +264,7 @@ def test_erreur_si_effectifs_superieurs_a_effectifs_groupe():
         "comptes_consolides": False,
         "bdese_accord": True,
         "systeme_management_energie": True,
+        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -284,6 +293,7 @@ def test_ok_si_effectifs_inferieurs_ou_egaux_a_effectifs_groupe():
         "comptes_consolides": False,
         "bdese_accord": True,
         "systeme_management_energie": True,
+        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -309,6 +319,7 @@ def test_erreur_si_est_societe_mere_en_France_avec_un_effectif_superieur_a_effec
         "comptes_consolides": False,
         "bdese_accord": True,
         "systeme_management_energie": True,
+        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -334,6 +345,7 @@ def test_sans_interet_public_force_non_cotee():
         "appartient_groupe": False,
         "bdese_accord": True,
         "systeme_management_energie": True,
+        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -394,6 +406,7 @@ def test_validation_code_naf(code, validates):
         "appartient_groupe": False,
         "bdese_accord": True,
         "systeme_management_energie": True,
+        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)

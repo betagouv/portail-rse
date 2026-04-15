@@ -174,6 +174,7 @@ def qualification(request, entreprise):
                 "tranche_bilan_consolide": caracs.tranche_bilan_consolide,
                 "bdese_accord": caracs.bdese_accord,
                 "systeme_management_energie": caracs.systeme_management_energie,
+                "tranche_consommation_energie_finale": caracs.tranche_consommation_energie_finale,
             }
         else:
             try:
