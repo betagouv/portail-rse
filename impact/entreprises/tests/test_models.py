@@ -77,6 +77,7 @@ def test_caracteristiques_sont_qualifiantes_avec_groupe(
         tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
         bdese_accord=True,
         systeme_management_energie=True,
+        tranche_consommation_energie_finale=CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     )
 
     assert not caracteristiques.groupe_est_qualifie
@@ -199,6 +200,12 @@ def test_caracteristiques_sont_qualifiantes_sans_groupe(
     assert not caracteristiques.sont_qualifiantes
 
     caracteristiques.systeme_management_energie = True
+
+    assert not caracteristiques.tranche_consommation_energie_finale
+
+    caracteristiques.tranche_consommation_energie_finale = (
+        CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_ENTRE_2_75GWH_ET_23_6GWH
+    )
 
     assert not caracteristiques.sont_qualifiantes
 

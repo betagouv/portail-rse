@@ -592,6 +592,7 @@ class CaracteristiquesAnnuelles(TimestampedModel):
             and self.entreprise.est_interet_public is not None
             and self.bdese_accord is not None
             and self.systeme_management_energie is not None
+            and self.tranche_consommation_energie_finale
             and self.groupe_est_qualifie
         )
 
