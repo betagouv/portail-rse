@@ -119,7 +119,6 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     assert caracteristiques.effectif_outre_mer is None
     assert caracteristiques.effectif_groupe_france is None
     assert caracteristiques.bdese_accord is None
-    assert caracteristiques.systeme_management_energie is None
 
     # les données servant à la simulation sont celles du formulaire de simulation simplifiée
     # enrichies avec des valeurs par défaut pour les champs manquants
@@ -134,7 +133,6 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     )
     assert simulation_caracs.effectif_groupe_france == effectif_groupe
     assert not simulation_caracs.bdese_accord
-    assert not simulation_caracs.systeme_management_energie
 
     # les réglementations applicables sont affichées sur la page de résultat
     assert response.status_code == 200
@@ -279,7 +277,6 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_MOINS_DE_60M,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_30M,
         bdese_accord=True,
-        systeme_management_energie=True,
     )
 
     autre_effectif = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
@@ -343,7 +340,6 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
         == CaracteristiquesAnnuelles.BILAN_MOINS_DE_30M
     )
     assert caracteristiques.bdese_accord
-    assert caracteristiques.systeme_management_energie
 
     assert mock_est_soumis.called
     caracteristiques_simulees = mock_est_soumis.call_args.args[0]

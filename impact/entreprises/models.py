@@ -38,7 +38,6 @@ class ActualisationCaracteristiquesAnnuelles:
     tranche_chiffre_affaires_consolide: str
     tranche_bilan_consolide: str
     bdese_accord: bool
-    systeme_management_energie: bool
     tranche_consommation_energie_finale: str | None
 
 
@@ -389,9 +388,6 @@ class Entreprise(TimestampedModel):
         )
         caracteristiques.tranche_bilan_consolide = actualisation.tranche_bilan_consolide
         caracteristiques.bdese_accord = actualisation.bdese_accord
-        caracteristiques.systeme_management_energie = (
-            actualisation.systeme_management_energie
-        )
         caracteristiques.tranche_consommation_energie_finale = (
             actualisation.tranche_consommation_energie_finale
         )
@@ -591,10 +587,6 @@ class CaracteristiquesAnnuelles(TimestampedModel):
         verbose_name="L'entreprise a un accord collectif d'entreprise concernant la Base de Données Économiques, Sociales et Environnementales (BDESE)",
         null=True,
     )
-    systeme_management_energie = models.BooleanField(
-        verbose_name="L'entreprise a mis en place un système de management de l’énergie",
-        null=True,
-    )
     tranche_consommation_energie_finale = models.CharField(
         verbose_name="Consommation annuelle moyenne d'énergie finale",
         max_length=20,
@@ -649,7 +641,6 @@ class CaracteristiquesAnnuelles(TimestampedModel):
             and self.entreprise.est_cotee is not None
             and self.entreprise.est_interet_public is not None
             and self.bdese_accord is not None
-            and self.systeme_management_energie is not None
             and self.tranche_consommation_energie_finale
             and self.groupe_est_qualifie
         )

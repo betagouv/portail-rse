@@ -44,7 +44,6 @@ def sont_qualifiantes(caracteristiques, entreprise):
         and caracteristiques.tranche_chiffre_affaires
         and caracteristiques.tranche_bilan
         and caracteristiques.bdese_accord is not None
-        and caracteristiques.systeme_management_energie is not None
         and groupe_est_qualifie(caracteristiques, entreprise)
     )
 
