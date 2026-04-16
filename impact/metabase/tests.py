@@ -162,6 +162,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
     assert metabase_entreprise.tranche_bilan_consolide is None
     assert metabase_entreprise.tranche_chiffre_affaires_consolide is None
     assert metabase_entreprise.bdese_accord is True
+    assert metabase_entreprise.tranche_consommation_energie_finale == "23.6GWh+"
     assert metabase_entreprise.nombre_utilisateurs == 0
 
 
