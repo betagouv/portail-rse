@@ -1,4 +1,5 @@
 from datetime import date
+from datetime import timedelta
 
 import pytest
 
@@ -317,6 +318,30 @@ def test_erreur_si_est_societe_mere_en_France_avec_un_effectif_superieur_a_effec
     assert (
         form.errors["effectif_groupe_france"][0]
         == "L'effectif du groupe France ne peut pas être inférieur à l'effectif si vous êtes la société mère du groupe et en France"
+    )
+
+
+def test_erreur_si_date_cloture_exercice_est_dans_le_futur():
+    data = {
+        "confirmation_naf": "01.11Z",
+        "date_cloture_exercice": date.today() + timedelta(days=1),
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "effectif_securite_sociale": CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249,
+        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        "est_cotee": False,
+        "appartient_groupe": False,
+        "bdese_accord": True,
+        "systeme_management_energie": True,
+    }
+
+    form = EntrepriseQualificationForm(data=data)
+
+    assert not form.is_valid()
+    assert (
+        form.errors["date_cloture_exercice"][0]
+        == "La date de clôture du dernier exercice ne peut pas être dans le futur"
     )
 
 
