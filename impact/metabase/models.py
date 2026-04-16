@@ -46,6 +46,10 @@ class Entreprise(models.Model):
     tranche_chiffre_affaires_consolide = models.CharField(max_length=9, null=True)
     tranche_bilan_consolide = models.CharField(max_length=9, null=True)
     bdese_accord = models.BooleanField(null=True)
+    tranche_consommation_energie_finale = models.CharField(
+        max_length=20,
+        null=True,
+    )
 
     nombre_utilisateurs = models.IntegerField()
 
