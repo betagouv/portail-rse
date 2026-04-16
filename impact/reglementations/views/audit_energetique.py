@@ -15,63 +15,33 @@ class AuditEnergetiqueReglementation(Reglementation):
 
     @classmethod
     def est_suffisamment_qualifiee(cls, caracteristiques):
-        return all(
-            [
-                caracteristiques.effectif is not None,
-                caracteristiques.tranche_chiffre_affaires is not None,
-                caracteristiques.tranche_bilan is not None,
-                caracteristiques.systeme_management_energie is not None,
-                caracteristiques.entreprise.appartient_groupe is not None,
-            ]
-        ) and (
-            caracteristiques.entreprise.appartient_groupe is False
-            or (
-                caracteristiques.entreprise.comptes_consolides is not None
-                and (
-                    caracteristiques.entreprise.comptes_consolides is False
-                    or caracteristiques.tranche_bilan_consolide is not None
-                )
-            )
-        )
+        return bool(caracteristiques.tranche_consommation_energie_finale)
 
     @classmethod
     def criteres_remplis(cls, caracteristiques):
-        criteres = []
-        if caracteristiques.effectif in (
-            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
-            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
-            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999,
-            CaracteristiquesAnnuelles.EFFECTIF_ENTRE_5000_ET_9999,
-            CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
-        ):
-            criteres.append("votre effectif est supérieur à 250 salariés")
+        """Inutile pour l'audit énergétique mais nécessaire car la classe parente a cette classe abstraite"""
+        return []
 
-        if caracteristiques.tranche_chiffre_affaires in (
-            CaracteristiquesAnnuelles.CA_ENTRE_50M_ET_100M,
-            CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    @classmethod
+    def obligation(cls, caracteristiques):
+        if (
+            caracteristiques.tranche_consommation_energie_finale
+            == CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_ENTRE_2_75GWH_ET_23_6GWH
         ):
-            if caracteristiques.tranche_bilan in (
-                CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
-                CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
-            ):
-                criteres.append(
-                    "votre bilan est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€"
-                )
-            elif caracteristiques.tranche_bilan_consolide in (
-                CaracteristiquesAnnuelles.BILAN_ENTRE_43M_ET_100M,
-                CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
-            ):
-                criteres.append(
-                    "votre bilan consolidé est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€"
-                )
-        return criteres
+            return "L'audit énergétique réglementaire est obligatoire avant le 11 octobre 2026, puis tous les 4 ans."
+        elif (
+            caracteristiques.tranche_consommation_energie_finale
+            == CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_23_6GWH_ET_PLUS
+        ):
+            return "Au-dessus de 23,6 GWh/an (85 TJ/an), un système de management de l'énergie certifié ISO 50001 est requis avant le 11 octobre 2027."
 
     @classmethod
     def est_soumis(cls, caracteristiques):
         super().est_soumis(caracteristiques)
-        return (
-            not caracteristiques.systeme_management_energie
-        ) and cls.criteres_remplis(caracteristiques)
+        return caracteristiques.tranche_consommation_energie_finale in (
+            CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_ENTRE_2_75GWH_ET_23_6GWH,
+            CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_23_6GWH_ET_PLUS,
+        )
 
     @classmethod
     def calculate_status(
@@ -83,8 +53,8 @@ class AuditEnergetiqueReglementation(Reglementation):
 
         if cls.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_SOUMIS
-            status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(cls.criteres_remplis(caracteristiques))}."
-            status_detail += " Vous devez réaliser un audit énergétique si vous remplissez l'une des conditions suivantes lors des deux derniers exercices comptables : soit votre effectif est supérieur à 250 salariés, soit votre bilan (ou bilan consolidé) est supérieur à 43M€ et votre chiffre d'affaires est supérieur à 50M€."
+            obligation = cls.obligation(caracteristiques)
+            status_detail = f"Vous êtes soumis à cette réglementation car votre consommation énergétique est supérieure à 2,75 GWh. {obligation}"
             primary_action = ReglementationAction(
                 "https://audit-energie.ademe.fr/",
                 "Publier mon audit sur la plateforme nationale",
@@ -92,11 +62,7 @@ class AuditEnergetiqueReglementation(Reglementation):
             )
         else:
             status = ReglementationStatus.STATUS_NON_SOUMIS
-            status_detail = "Vous n'êtes pas soumis à cette réglementation"
-            if caracteristiques.systeme_management_energie:
-                status_detail += " si le système de management de l'énergie est certifié conforme à la norme ISO 50001."
-            else:
-                status_detail += "."
+            status_detail = "Vous n'êtes pas soumis à cette réglementation."
             primary_action = None
         return ReglementationStatus(
             status, status_detail, primary_action=primary_action
