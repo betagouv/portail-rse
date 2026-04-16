@@ -132,7 +132,6 @@
                                             <b>L'entreprise est d'intérêt public</b>{% if entreprise.est_cotee %} <em>(l'entreprise est cotée sur un marché réglementé européen)</em>{% endif %}<br>
                                         {% endif %}
                                         Accord d'entreprise concernant la BDESE : <b>{{ caracs.bdese_accord | display_field }}</b><br>
-                                        Système de management de l'énergie : <b>{{ caracs.systeme_management_energie | display_field }}</b><br>
                                         Consommation énergétique : <b>{{ caracs.get_tranche_consommation_energie_finale_display | display_field }}</b><br>
                                     {% endwith %}
                                 </p>

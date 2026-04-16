@@ -437,7 +437,6 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs_s
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         bdese_accord=True,
-        systeme_management_energie=True,
         tranche_consommation_energie_finale=CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     )
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
@@ -492,7 +491,6 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs_s
         == CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
     )
     assert form["bdese_accord"].initial
-    assert form["systeme_management_energie"].initial
     assert (
         form["tranche_consommation_energie_finale"].initial
         == CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH
@@ -539,9 +537,6 @@ def test_page_de_qualification_avec_des_caracteristiques_non_qualifiantes_initia
     assert form["tranche_bilan_consolide"].initial == caracs.tranche_bilan_consolide
     assert form["bdese_accord"].initial == caracs.bdese_accord
     assert (
-        form["systeme_management_energie"].initial == caracs.systeme_management_energie
-    )
-    assert (
         form["tranche_consommation_energie_finale"].initial
         == caracs.tranche_consommation_energie_finale
     )
@@ -572,7 +567,6 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
         "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
         "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
         "bdese_accord": True,
-        "systeme_management_energie": True,
         "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_23_6GWH_ET_PLUS,
     }
 
@@ -639,7 +633,6 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
         == CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS
     )
     assert caracteristiques.bdese_accord
-    assert caracteristiques.systeme_management_energie
     assert (
         caracteristiques.tranche_consommation_energie_finale
         == CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_23_6GWH_ET_PLUS
@@ -666,7 +659,6 @@ def test_qualifie_entreprise_sans_groupe(
         "est_cotee": True,
         "est_interet_public": True,
         "bdese_accord": True,
-        "systeme_management_energie": True,
         "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_ENTRE_2_75GWH_ET_23_6GWH,
     }
 
@@ -709,7 +701,6 @@ def test_qualifie_entreprise_sans_groupe(
     assert caracteristiques.tranche_chiffre_affaires_consolide is None
     assert caracteristiques.tranche_bilan_consolide is None
     assert caracteristiques.bdese_accord
-    assert caracteristiques.systeme_management_energie
     assert (
         caracteristiques.tranche_consommation_energie_finale
         == CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_ENTRE_2_75GWH_ET_23_6GWH
@@ -767,7 +758,6 @@ def test_qualification_supprime_les_caracteristiques_annuelles_posterieures_a_la
         "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_ENTRE_900K_ET_50M,
         "tranche_bilan": CaracteristiquesAnnuelles.BILAN_ENTRE_450K_ET_25M,
         "bdese_accord": True,
-        "systeme_management_energie": True,
         "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_ENTRE_2_75GWH_ET_23_6GWH,
     }
 
