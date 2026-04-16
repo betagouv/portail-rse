@@ -493,7 +493,10 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs_s
     )
     assert form["bdese_accord"].initial
     assert form["systeme_management_energie"].initial
-    assert form["tranche_consommation_energie_finale"].initial
+    assert (
+        form["tranche_consommation_energie_finale"].initial
+        == CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH
+    )
 
 
 def test_page_de_qualification_avec_des_caracteristiques_non_qualifiantes_initialise_les_champs_sans_appel_api(
@@ -537,6 +540,10 @@ def test_page_de_qualification_avec_des_caracteristiques_non_qualifiantes_initia
     assert form["bdese_accord"].initial == caracs.bdese_accord
     assert (
         form["systeme_management_energie"].initial == caracs.systeme_management_energie
+    )
+    assert (
+        form["tranche_consommation_energie_finale"].initial
+        == caracs.tranche_consommation_energie_finale
     )
 
 
