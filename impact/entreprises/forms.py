@@ -148,12 +148,10 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
             "tranche_chiffre_affaires_consolide",
             "tranche_bilan_consolide",
             "bdese_accord",
-            "systeme_management_energie",
             "tranche_consommation_energie_finale",
         ]
         labels = {
             "date_cloture_exercice": "Date de clôture du dernier exercice comptable",
-            "systeme_management_energie": "L'entreprise a mis en place un <a target='_blank' href='https://agirpourlatransition.ademe.fr/entreprises/demarche-decarbonation-industrie/agir/structurer-demarche/mettre-en-place-systeme-management-energie'>système de management de l’énergie</a>",
         }
         help_texts = {
             "tranche_chiffre_affaires": "Montant net du chiffre d'affaires de l'exercice clos",
@@ -161,7 +159,6 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
         }
         widgets = {
             "bdese_accord": forms.CheckboxInput,
-            "systeme_management_energie": forms.CheckboxInput,
             "date_cloture_exercice": DateInput,
         }
 
@@ -294,9 +291,6 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
                 ],
                 tranche_bilan_consolide=self.cleaned_data["tranche_bilan_consolide"],
                 bdese_accord=self.cleaned_data["bdese_accord"],
-                systeme_management_energie=self.cleaned_data[
-                    "systeme_management_energie"
-                ],
                 tranche_consommation_energie_finale=self.cleaned_data[
                     "tranche_consommation_energie_finale"
                 ],

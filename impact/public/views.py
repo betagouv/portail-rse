@@ -215,7 +215,6 @@ def calcule_simulation(simulation_form):
         ],
         tranche_bilan_consolide=simulation_form.cleaned_data["tranche_bilan_consolide"],
         bdese_accord=None,
-        systeme_management_energie=None,
         tranche_consommation_energie_finale=None,
     )
     caracteristiques = entreprise.actualise_caracteristiques(actualisation)
@@ -240,7 +239,6 @@ def enrichit_les_donnees_pour_la_simulation(caracteristiques):
     if caracteristiques.entreprise.appartient_groupe:
         caracteristiques.effectif_groupe_france = caracteristiques.effectif_groupe
     caracteristiques.bdese_accord = False
-    caracteristiques.systeme_management_energie = False
     caracteristiques.tranche_consommation_energie_finale = (
         CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH
     )
