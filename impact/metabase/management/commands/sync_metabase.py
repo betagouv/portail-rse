@@ -199,11 +199,6 @@ class Command(BaseCommand):
                 bdese_accord=(
                     caracteristiques.bdese_accord if caracteristiques else None
                 ),
-                systeme_management_energie=(
-                    caracteristiques.systeme_management_energie
-                    if caracteristiques
-                    else None
-                ),
                 nombre_utilisateurs=entreprise.nombre_utilisateurs,
             )
             bulk.append(mb_entreprise)

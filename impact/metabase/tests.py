@@ -87,7 +87,6 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
             tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
             tranche_bilan=CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
             bdese_accord=False,
-            systeme_management_energie=False,
             tranche_consommation_energie_finale=CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
         )
         frozen_datetime.move_to(date_deuxieme_evolution)
@@ -105,7 +104,6 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
             tranche_chiffre_affaires_consolide=None,
             tranche_bilan_consolide=None,
             bdese_accord=True,
-            systeme_management_energie=False,
             tranche_consommation_energie_finale=CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_ENTRE_2_75GWH_ET_23_6GWH,
         )
         entreprise.actualise_caracteristiques(actualisation).save()
@@ -124,7 +122,6 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
             tranche_chiffre_affaires_consolide=None,
             tranche_bilan_consolide=None,
             bdese_accord=True,
-            systeme_management_energie=True,
             tranche_consommation_energie_finale=CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_23_6GWH_ET_PLUS,
         )
         entreprise.actualise_caracteristiques(actualisation).save()
@@ -165,7 +162,6 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
     assert metabase_entreprise.tranche_bilan_consolide is None
     assert metabase_entreprise.tranche_chiffre_affaires_consolide is None
     assert metabase_entreprise.bdese_accord is True
-    assert metabase_entreprise.systeme_management_energie is True
     assert metabase_entreprise.nombre_utilisateurs == 0
 
 
@@ -245,7 +241,6 @@ def test_synchronise_une_entreprise_sans_caracteristiques_annuelles():
     assert metabase_entreprise.tranche_chiffre_affaires is None
     assert metabase_entreprise.tranche_bilan is None
     assert metabase_entreprise.bdese_accord is None
-    assert metabase_entreprise.systeme_management_energie is None
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
