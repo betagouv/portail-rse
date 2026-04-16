@@ -133,6 +133,7 @@
                                         {% endif %}
                                         Accord d'entreprise concernant la BDESE : <b>{{ caracs.bdese_accord | display_field }}</b><br>
                                         Système de management de l'énergie : <b>{{ caracs.systeme_management_energie | display_field }}</b><br>
+                                        Consommation énergétique : <b>{{ caracs.get_tranche_consommation_energie_finale_display | display_field }}</b><br>
                                     {% endwith %}
                                 </p>
                             </div>
