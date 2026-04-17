@@ -31,7 +31,6 @@ from vsme.models import Categorie
 from vsme.models import ExigenceDePublication
 from vsme.models import EXIGENCES_DE_PUBLICATION
 from vsme.models import get_annees_valides
-from vsme.models import get_dernier_exercice_clos
 from vsme.models import Indicateur
 from vsme.models import RapportVSME
 
@@ -124,7 +123,7 @@ def categories_vsme(request, entreprise, annee=None):
         )
         return htmx.HttpResponseHXRedirect(redirect_to)
 
-    annee_par_defaut = get_dernier_exercice_clos(entreprise).annee
+    annee_par_defaut = entreprise.dernier_exercice_clos.annee
     annee = annee or annee_par_defaut
 
     # Vérifier que l'année est valide pour cette entreprise

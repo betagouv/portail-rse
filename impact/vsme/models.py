@@ -6,7 +6,6 @@ from datetime import date
 from decimal import Decimal
 from enum import Enum
 
-from dateutil.relativedelta import relativedelta
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
@@ -18,68 +17,11 @@ from utils.combustibles import COMBUSTIBLES
 from utils.models import TimestampedModel
 from vsme.forms import NON_PERTINENT_FIELD_NAME
 
-
 ANNEE_DEBUT_VSME = 2020  # Première année où les rapports VSME peuvent être créés
 
 
-@dataclass
-class Exercice:
-    date_ouverture: int
-
-    @property
-    def date_cloture(self):
-        # pour le 29 février
-        return self.date_ouverture + relativedelta(years=1) + relativedelta(days=-1)
-
-    def suivant(self):
-        return Exercice(self.date_ouverture + relativedelta(years=1))
-
-    @property
-    def annee(self):
-        return self.date_cloture.year
-
-    def __str__(self):
-        if self.date_ouverture.day == 1 and self.date_ouverture.month == 1:
-            return f"Exercice {self.date_ouverture.year}"
-        else:
-            return f"Exercice {self.date_ouverture.year}-{self.date_cloture.year}"
-
-
-def get_exercice(entreprise, annee_cloture):
-    if not entreprise.date_cloture_exercice:
-        date_ouverture = date(annee_cloture, 1, 1)
-    else:
-        date_cloture = entreprise.date_cloture_exercice + relativedelta(
-            year=annee_cloture
-        )
-        date_ouverture = date_cloture + relativedelta(days=1) + relativedelta(years=-1)
-    return Exercice(date_ouverture)
-
-
-def get_dernier_exercice_clos(entreprise):
-    """
-    Retourne le dernier exercice clos pour une entreprise.
-    Si l'entreprise n'a pas de date de clôture définie, retourne N-1.
-    """
-    annee_en_cours = date.today().year
-    if not entreprise.date_cloture_exercice:
-        date_ouverture_cette_annee = date(annee_en_cours, 1, 1)
-    else:
-        date_ouverture_cette_annee = (
-            entreprise.date_cloture_exercice
-            + relativedelta(days=1)
-            + relativedelta(year=annee_en_cours)
-        )
-    if date_ouverture_cette_annee <= date.today():
-        # Si la date de clôture de cette année est déjà passée, l'exercice de cette année est clos
-        date_ouverture = date_ouverture_cette_annee + relativedelta(years=-1)
-        return Exercice(date_ouverture=date_ouverture)
-    date_ouverture = date_ouverture_cette_annee + relativedelta(years=-2)
-    return Exercice(date_ouverture=date_ouverture)
-
-
 def get_annees_valides(entreprise):
-    annee_max = get_dernier_exercice_clos(entreprise).suivant().annee
+    annee_max = entreprise.dernier_exercice_clos.suivant().annee
     return list(range(ANNEE_DEBUT_VSME, annee_max + 1))
 
 
@@ -297,7 +239,7 @@ class RapportVSME(TimestampedModel):
 
     @property
     def exercice(self):
-        return get_exercice(self.entreprise, self.annee)
+        return self.entreprise.exercice_par_annee_cloture(self.annee)
 
     def indicateurs_applicables_par_exigence(self, exigence_de_publication):
         exigence_de_publication_schema = exigence_de_publication.load_json_schema()
