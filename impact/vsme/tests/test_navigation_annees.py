@@ -4,8 +4,7 @@ import pytest
 from django.urls import reverse
 from freezegun import freeze_time
 
-from vsme.models import get_exercice_max_valide
-from vsme.models import get_exercice_par_defaut
+from vsme.models import get_dernier_exercice_clos
 from vsme.models import RapportVSME
 
 
@@ -20,7 +19,7 @@ def test_acces_sans_annee_utilise_annee_par_defaut(client, entreprise_factory, a
     response = client.get(url)
 
     assert response.status_code == 200
-    annee_par_defaut = get_exercice_par_defaut(entreprise).annee
+    annee_par_defaut = get_dernier_exercice_clos(entreprise).annee
     assert RapportVSME.objects.filter(
         entreprise=entreprise, annee=annee_par_defaut
     ).exists()
@@ -34,12 +33,11 @@ def test_acces_avec_annee_valide(client, entreprise_factory, alice, annee):
     client.force_login(alice)
 
     # Vérifier que l'année est valide pour cette entreprise
-    if annee <= get_exercice_max_valide(entreprise).annee:
-        url = reverse("vsme:categories_vsme", args=[entreprise.siren, annee])
-        response = client.get(url)
+    url = reverse("vsme:categories_vsme", args=[entreprise.siren, annee])
+    response = client.get(url)
 
-        assert response.status_code == 200
-        assert RapportVSME.objects.filter(entreprise=entreprise, annee=annee).exists()
+    assert response.status_code == 200
+    assert RapportVSME.objects.filter(entreprise=entreprise, annee=annee).exists()
 
 
 @freeze_time("2025-12-12")
@@ -101,53 +99,11 @@ def test_acces_annee_future_invalide(client, entreprise_factory, alice):
     entreprise.save()
     client.force_login(alice)
 
-    # Pour une clôture 31/12, l'année max est N, donc N+1 est invalide
-    annee_invalide = get_exercice_max_valide(entreprise).annee + 1
+    annee_invalide = get_dernier_exercice_clos(entreprise).suivant().annee + 1
     url = reverse("vsme:categories_vsme", args=[entreprise.siren, annee_invalide])
     response = client.get(url)
 
     assert response.status_code == 302  # Redirection
-
-
-def test_contexte_contient_annees_disponibles_cloture_31_decembre(
-    client, entreprise_factory, alice
-):
-    """Avec clôture 31/12, les années disponibles vont de 2020 à N"""
-    entreprise = entreprise_factory(utilisateur=alice)
-    entreprise.date_cloture_exercice = date(2023, 12, 31)
-    entreprise.save()
-    client.force_login(alice)
-
-    url = reverse("vsme:categories_vsme", args=[entreprise.siren])
-    response = client.get(url)
-
-    assert "annees_disponibles" in response.context
-    assert "annee_courante" in response.context
-    assert "annee_par_defaut" in response.context
-
-    annees = response.context["annees_disponibles"]
-    assert 2020 in annees
-    assert get_exercice_par_defaut(entreprise).annee in annees
-    assert date.today().year in annees  # N est disponible
-    assert date.today().year + 1 not in annees  # N+1 n'est pas disponible
-
-
-@freeze_time("2025-12-12")
-def test_contexte_contient_annees_disponibles_cloture_30_juin(
-    client, entreprise_factory, alice
-):
-    entreprise = entreprise_factory(utilisateur=alice)
-    entreprise.date_cloture_exercice = date(2023, 6, 30)
-    entreprise.save()
-    client.force_login(alice)
-
-    url = reverse("vsme:categories_vsme", args=[entreprise.siren])
-    response = client.get(url)
-
-    annees = response.context["annees_disponibles"]
-    assert 2020 in annees
-    assert 2025 in annees  # N est disponible
-    assert 2026 in annees  # N+1 est disponible
 
 
 def test_message_info_annee_non_defaut(client, entreprise_factory, alice):

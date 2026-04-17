@@ -24,16 +24,23 @@ ANNEE_DEBUT_VSME = 2020  # Première année où les rapports VSME peuvent être 
 
 @dataclass
 class Exercice:
-    annee: int
-    label: str
+    date_ouverture: int
+
+    @property
+    def date_cloture(self):
+        # pour le 29 février
+        return self.date_ouverture + relativedelta(years=1) + relativedelta(days=-1)
 
     def suivant(self):
-        annee_suivante = self.annee + 1
-        if "-" in self.label:
-            label_suivant = f"{self.annee}-{annee_suivante}"
-        else:
-            label_suivant = f"{annee_suivante}"
-        return Exercice(annee_suivante, label_suivant)
+        return Exercice(self.date_ouverture + relativedelta(years=1))
+
+    @property
+    def label(self):
+        return f"{self.annee}"
+
+    @property
+    def annee(self):
+        return self.date_cloture.year
 
 
 def get_dernier_exercice_clos(entreprise):
@@ -42,47 +49,29 @@ def get_dernier_exercice_clos(entreprise):
     Si l'entreprise n'a pas de date de clôture définie, retourne N-1.
     """
     annee_en_cours = date.today().year
-    if not entreprise or not entreprise.date_cloture_exercice:
-        return Exercice(annee=annee_en_cours - 1, label=f"{annee_en_cours - 1}")
-    # Si la date de clôture de cette année est déjà passée, l'exercice de cette année est clos
-    exercice_sur_annee_civile = (
-        entreprise.date_cloture_exercice.month == 12
-        and entreprise.date_cloture_exercice.day == 31
-    )
-    date_cloture = entreprise.date_cloture_exercice + relativedelta(year=annee_en_cours)
-    if date_cloture < date.today():
-        if exercice_sur_annee_civile:
-            return Exercice(annee=annee_en_cours, label=f"{annee_en_cours}")
-        else:
-            return Exercice(
-                annee=annee_en_cours,
-                label=f"{annee_en_cours - 1}-{annee_en_cours}",
-            )
-    if exercice_sur_annee_civile:
-        return Exercice(annee=annee_en_cours - 1, label=f"{annee_en_cours - 1}")
-
+    if not entreprise.date_cloture_exercice:
+        date_ouverture_cette_annee = date(annee_en_cours, 1, 1)
     else:
-        return Exercice(
-            annee=annee_en_cours - 1,
-            label=f"{annee_en_cours - 2}-{annee_en_cours - 1}",
+        date_ouverture_cette_annee = (
+            entreprise.date_cloture_exercice
+            + relativedelta(days=1)
+            + relativedelta(year=annee_en_cours)
         )
+    if date_ouverture_cette_annee <= date.today():
+        # Si la date de clôture de cette année est déjà passée, l'exercice de cette année est clos
+        date_ouverture = date_ouverture_cette_annee + relativedelta(years=-1)
+        return Exercice(date_ouverture=date_ouverture)
+    date_ouverture = date_ouverture_cette_annee + relativedelta(years=-2)
+    return Exercice(date_ouverture=date_ouverture)
 
 
-def get_exercice_par_defaut(entreprise=None):
-    return get_dernier_exercice_clos(entreprise)
-
-
-def get_exercice_max_valide(entreprise=None):
-    return get_dernier_exercice_clos(entreprise).suivant()
-
-
-def get_annees_valides(entreprise=None):
-    annee_max = get_exercice_max_valide(entreprise).annee
+def get_annees_valides(entreprise):
+    annee_max = get_dernier_exercice_clos(entreprise).suivant().annee
     return list(range(ANNEE_DEBUT_VSME, annee_max + 1))
 
 
 def annee_est_valide(annee, entreprise=None):
-    return ANNEE_DEBUT_VSME <= annee <= get_exercice_max_valide(entreprise).annee
+    return annee in get_annees_valides(entreprise)
 
 
 def validate_annee_rapport(value):
