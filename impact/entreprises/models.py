@@ -187,10 +187,6 @@ class Exercice:
     def suivant(self):
         return Exercice(self.date_ouverture + relativedelta(years=1))
 
-    @property
-    def annee(self):
-        return self.date_cloture.year
-
     def __str__(self):
         return f"Exercice {self.annees_formattees}"
 
