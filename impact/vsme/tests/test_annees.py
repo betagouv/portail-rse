@@ -9,44 +9,11 @@ from vsme.models import annee_est_valide
 from vsme.models import Exercice
 from vsme.models import get_annees_valides
 from vsme.models import get_dernier_exercice_clos
-from vsme.models import get_exercice_max_valide
-from vsme.models import get_exercice_par_defaut
 from vsme.models import RapportVSME
 from vsme.models import validate_annee_rapport
 
 
-# Tests sans entreprise (comportement par défaut : N-1 calendaire)
-
-
-def test_get_exercice_par_defaut_sans_entreprise():
-    """Sans entreprise, l'année par défaut est N-1 calendaire"""
-    annee_attendue = date.today().year - 1
-    assert get_exercice_par_defaut() == Exercice(
-        annee=annee_attendue, label=str(annee_attendue)
-    )
-
-
-def test_get_exercice_max_valide_sans_entreprise():
-    """Sans entreprise, l'année max est N calendaire"""
-    annee_attendue = date.today().year
-    assert get_exercice_max_valide() == Exercice(
-        annee=annee_attendue, label=str(annee_attendue)
-    )
-
-
-def test_get_annees_valides_sans_entreprise():
-    annees = get_annees_valides()
-    exercice_max = get_exercice_max_valide()
-    annee_max = exercice_max.annee
-
-    assert annees[0] == ANNEE_DEBUT_VSME
-    assert annees[-1] == annee_max
-    assert len(annees) == annee_max - ANNEE_DEBUT_VSME + 1
-
-
-# Tests avec entreprise et différentes dates de clôture
-
-
+@freeze_time("2026-04-17")
 def test_get_dernier_exercice_clos_entreprise_sans_date_cloture(
     entreprise_factory, alice
 ):
@@ -55,19 +22,33 @@ def test_get_dernier_exercice_clos_entreprise_sans_date_cloture(
     entreprise.date_cloture_exercice = None
     entreprise.save()
 
-    annee_derniere = date.today().year - 1
+    date_ouverture = date(2025, 1, 1)
+    assert get_dernier_exercice_clos(entreprise) == Exercice(date_ouverture)
+
+
+@freeze_time("2026-04-17")
+def test_get_dernier_exercice_clos_cloture_la_veille(entreprise_factory, alice):
+    """
+    Entreprise avec clôture au 31/12 :
+    - Avant le 31/12 de l'année N, le dernier exercice clos est N-1
+    - Après le 31/12 de l'année N, le dernier exercice clos est N
+    """
+    entreprise = entreprise_factory(utilisateur=alice)
+    entreprise.date_cloture_exercice = date(2023, 4, 16)
+    entreprise.save()
+
+    # Aujourd'hui on est le 12 décembre 2025, donc avant la clôture du 31/12/2025
+    # Le dernier exercice clos est donc 2024
+    assert get_dernier_exercice_clos(entreprise).annee == 2026
     assert get_dernier_exercice_clos(entreprise) == Exercice(
-        annee=annee_derniere,
-        label=str(annee_derniere),
+        date_ouverture=date(2025, 4, 17)
     )
 
 
 @freeze_time("2025-12-12")
 def test_get_dernier_exercice_clos_cloture_31_decembre(entreprise_factory, alice):
     """
-    Entreprise avec clôture au 31/12 :
-    - Avant le 31/12 de l'année N, le dernier exercice clos est N-1
-    - Après le 31/12 de l'année N, le dernier exercice clos est N
+    Entreprise avec clôture au 31/12, le dernier exercice clos est N-1
     """
     entreprise = entreprise_factory(utilisateur=alice)
     entreprise.date_cloture_exercice = date(2023, 12, 31)
@@ -75,14 +56,12 @@ def test_get_dernier_exercice_clos_cloture_31_decembre(entreprise_factory, alice
 
     # Aujourd'hui on est le 12 décembre 2025, donc avant la clôture du 31/12/2025
     # Le dernier exercice clos est donc 2024
-    annee_derniere = date.today().year - 1
+    assert get_dernier_exercice_clos(entreprise).annee == 2024
     assert get_dernier_exercice_clos(entreprise) == Exercice(
-        annee=annee_derniere,
-        label=str(annee_derniere),
+        date_ouverture=date(2024, 1, 1)
     )
 
 
-@freeze_time("2025-12-12")
 def test_get_dernier_exercice_clos_cloture_30_juin(entreprise_factory, alice):
     """
     Entreprise avec clôture au 30/06 :
@@ -93,74 +72,19 @@ def test_get_dernier_exercice_clos_cloture_30_juin(entreprise_factory, alice):
     entreprise.date_cloture_exercice = date(2023, 6, 30)
     entreprise.save()
 
-    # Aujourd'hui on est le 12 décembre 2025, donc après la clôture du 30/06/2025
-    # Le dernier exercice clos est donc 2025
-    assert get_dernier_exercice_clos(entreprise) == Exercice(
-        annee=2025,
-        label="2024-2025",
-    )
+    # On est le 12 juin 2025, donc avant la clôture du 30/06/2025
+    # Le dernier exercice clos est donc 2023-2024
+    with freeze_time("2025-06-12"):
+        assert get_dernier_exercice_clos(entreprise) == Exercice(
+            date_ouverture=date(2023, 7, 1)
+        )
 
-
-def test_get_exercice_par_defaut_avec_entreprise_cloture_31_decembre(
-    entreprise_factory, alice
-):
-    """Avec une clôture au 31/12, l'année par défaut est le dernier exercice clos"""
-    entreprise = entreprise_factory(utilisateur=alice)
-    entreprise.date_cloture_exercice = date(2023, 12, 31)
-    entreprise.save()
-
-    # Le dernier exercice clos est N-1 (clôture 31/12 pas encore passée)
-    assert get_exercice_par_defaut(entreprise) == Exercice(
-        annee=date.today().year - 1,
-        label=str(date.today().year - 1),
-    )
-
-
-@freeze_time("2025-12-12")
-def test_get_exercice_par_defaut_avec_entreprise_cloture_30_juin(
-    entreprise_factory, alice
-):
-    """Avec une clôture au 30/06, l'année par défaut est le dernier exercice clos"""
-    entreprise = entreprise_factory(utilisateur=alice)
-    entreprise.date_cloture_exercice = date(2023, 6, 30)
-    entreprise.save()
-
-    # Le dernier exercice clos est N (clôture 30/06 déjà passée)
-    assert get_exercice_par_defaut(entreprise) == Exercice(
-        annee=2025,
-        label="2024-2025",
-    )
-
-
-def test_get_exercice_max_valide_avec_entreprise_cloture_31_decembre(
-    entreprise_factory, alice
-):
-    """L'année max est dernier exercice clos + 1 (permettant de préparer l'exercice en cours)"""
-    entreprise = entreprise_factory(utilisateur=alice)
-    entreprise.date_cloture_exercice = date(2023, 12, 31)
-    entreprise.save()
-
-    # Dernier exercice clos = N-1, donc max = N
-    assert get_exercice_max_valide(entreprise) == Exercice(
-        annee=date.today().year,
-        label=str(date.today().year),
-    )
-
-
-@freeze_time("2025-12-12")
-def test_get_exercice_max_valide_avec_entreprise_cloture_30_juin(
-    entreprise_factory, alice
-):
-    """L'année max est dernier exercice clos + 1"""
-    entreprise = entreprise_factory(utilisateur=alice)
-    entreprise.date_cloture_exercice = date(2023, 6, 30)
-    entreprise.save()
-
-    # Dernier exercice clos = 2025, donc max = 2026
-    assert get_exercice_max_valide(entreprise) == Exercice(
-        annee=2026,
-        label="2025-2026",
-    )
+    # On est le 12 décembre 2025, donc après la clôture du 30/06/2025
+    # Le dernier exercice clos est donc 2024-2025
+    with freeze_time("2025-12-12"):
+        assert get_dernier_exercice_clos(entreprise) == Exercice(
+            date_ouverture=date(2024, 7, 1)
+        )
 
 
 @freeze_time("2025-12-12")
@@ -170,11 +94,9 @@ def test_get_annees_valides_avec_entreprise(entreprise_factory, alice):
     entreprise.save()
 
     annees = get_annees_valides(entreprise)
-    exercice_max = get_exercice_max_valide(entreprise)
 
     assert annees[0] == ANNEE_DEBUT_VSME
-    assert annees[-1] == exercice_max.annee
-    assert 2026 in annees  # 2026 (N+1) est disponible pour clôture 30/06
+    assert annees[-1] == 2026  # (N+1) est disponible pour clôture 30/06
 
 
 def test_annee_est_valide_avec_entreprise_cloture_31_decembre(
