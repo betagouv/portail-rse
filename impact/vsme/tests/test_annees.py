@@ -4,23 +4,53 @@ import pytest
 from django.core.exceptions import ValidationError
 from freezegun import freeze_time
 
-from vsme.models import ANNEE_DEBUT_VSME
 from vsme.models import annee_est_valide
-from vsme.models import get_annees_valides
+from vsme.models import get_exercices_disponibles
 from vsme.models import RapportVSME
 from vsme.models import validate_annee_rapport
 
 
 @freeze_time("2025-12-12")
-def test_get_annees_valides_avec_entreprise(entreprise_factory, alice):
-    entreprise = entreprise_factory(utilisateur=alice)
-    entreprise.date_cloture_exercice = date(2023, 6, 30)
-    entreprise.save()
+def test_get_exercices_disponibles_avec_exercice_sur_annee_civile(entreprise_factory):
+    entreprise = entreprise_factory(date_cloture_exercice=date(2023, 12, 31))
 
-    annees = get_annees_valides(entreprise)
+    exercices = get_exercices_disponibles(entreprise)
 
-    assert annees[0] == ANNEE_DEBUT_VSME
-    assert annees[-1] == 2026  # (N+1) est disponible pour clôture 30/06
+    assert exercices == [
+        entreprise.exercice_par_annee_cloture(2020),  # ANNEE_DEBUT_VSME
+        entreprise.exercice_par_annee_cloture(2021),
+        entreprise.exercice_par_annee_cloture(2022),
+        entreprise.exercice_par_annee_cloture(2023),
+        entreprise.exercice_par_annee_cloture(2024),
+        entreprise.exercice_par_annee_cloture(2025),
+    ]
+
+
+def test_get_exercices_disponibles_avec_exercice_a_cheval_sur_deux_annees(
+    entreprise_factory,
+):
+    entreprise = entreprise_factory(date_cloture_exercice=date(2023, 6, 30))
+
+    with freeze_time("2025-04-01"):
+        assert get_exercices_disponibles(entreprise) == [
+            entreprise.exercice_par_annee_cloture(2020),  # ANNEE_DEBUT_VSME
+            entreprise.exercice_par_annee_cloture(2021),
+            entreprise.exercice_par_annee_cloture(2022),
+            entreprise.exercice_par_annee_cloture(2023),
+            entreprise.exercice_par_annee_cloture(2024),
+            entreprise.exercice_par_annee_cloture(2025),
+        ]
+
+    with freeze_time("2025-12-12"):
+        assert get_exercices_disponibles(entreprise) == [
+            entreprise.exercice_par_annee_cloture(2020),  # ANNEE_DEBUT_VSME
+            entreprise.exercice_par_annee_cloture(2021),
+            entreprise.exercice_par_annee_cloture(2022),
+            entreprise.exercice_par_annee_cloture(2023),
+            entreprise.exercice_par_annee_cloture(2024),
+            entreprise.exercice_par_annee_cloture(2025),
+            entreprise.exercice_par_annee_cloture(2026),  # (N+1)
+        ]
 
 
 def test_annee_est_valide_avec_entreprise_cloture_31_decembre(

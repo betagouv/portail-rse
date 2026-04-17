@@ -20,13 +20,18 @@ from vsme.forms import NON_PERTINENT_FIELD_NAME
 ANNEE_DEBUT_VSME = 2020  # Première année où les rapports VSME peuvent être créés
 
 
-def get_annees_valides(entreprise):
-    annee_max = entreprise.dernier_exercice_clos.suivant().annee
-    return list(range(ANNEE_DEBUT_VSME, annee_max + 1))
+def get_exercices_disponibles(entreprise):
+    derniere_annee_disponible = entreprise.exercice_en_cours.date_cloture.year
+    return [
+        entreprise.exercice_par_annee_cloture(annee)
+        for annee in range(ANNEE_DEBUT_VSME, derniere_annee_disponible + 1)
+    ]
 
 
 def annee_est_valide(annee, entreprise=None):
-    return annee in get_annees_valides(entreprise)
+    return annee in (
+        exercice.date_cloture.year for exercice in get_exercices_disponibles(entreprise)
+    )
 
 
 def validate_annee_rapport(value):

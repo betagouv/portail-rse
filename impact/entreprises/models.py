@@ -192,10 +192,14 @@ class Exercice:
         return self.date_cloture.year
 
     def __str__(self):
+        return f"Exercice {self.annees_formattees}"
+
+    @property
+    def annees_formattees(self):
         if self.date_ouverture.day == 1 and self.date_ouverture.month == 1:
-            return f"Exercice {self.date_ouverture.year}"
+            return f"{self.date_ouverture.year}"
         else:
-            return f"Exercice {self.date_ouverture.year}-{self.date_cloture.year}"
+            return f"{self.date_ouverture.year}-{self.date_cloture.year}"
 
 
 def get_dernier_exercice_clos(entreprise):
@@ -275,6 +279,10 @@ class Entreprise(TimestampedModel):
     @property
     def dernier_exercice_clos(self):
         return get_dernier_exercice_clos(self)
+
+    @property
+    def exercice_en_cours(self):
+        return self.dernier_exercice_clos.suivant()
 
     def exercice_par_annee_cloture(self, annee_cloture):
         if not self.date_cloture_exercice:
