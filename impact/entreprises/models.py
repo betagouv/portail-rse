@@ -202,28 +202,6 @@ class Exercice:
             return f"{self.date_ouverture.year}-{self.date_cloture.year}"
 
 
-def get_dernier_exercice_clos(entreprise):
-    """
-    Retourne le dernier exercice clos pour une entreprise.
-    Si l'entreprise n'a pas de date de clôture définie, retourne N-1.
-    """
-    annee_en_cours = date.today().year
-    if not entreprise.date_cloture_exercice:
-        date_ouverture_cette_annee = date(annee_en_cours, 1, 1)
-    else:
-        date_ouverture_cette_annee = (
-            entreprise.date_cloture_exercice
-            + relativedelta(days=1)
-            + relativedelta(year=annee_en_cours)
-        )
-    if date_ouverture_cette_annee <= date.today():
-        # Si la date de clôture de cette année est déjà passée, l'exercice de cette année est clos
-        date_ouverture = date_ouverture_cette_annee + relativedelta(years=-1)
-        return Exercice(date_ouverture=date_ouverture)
-    date_ouverture = date_ouverture_cette_annee + relativedelta(years=-2)
-    return Exercice(date_ouverture=date_ouverture)
-
-
 class Entreprise(TimestampedModel):
     siren = models.CharField(max_length=9, unique=True)
     denomination = models.CharField(max_length=DENOMINATION_MAX_LENGTH)
@@ -278,7 +256,21 @@ class Entreprise(TimestampedModel):
 
     @property
     def dernier_exercice_clos(self):
-        return get_dernier_exercice_clos(self)
+        annee_en_cours = date.today().year
+        if not self.date_cloture_exercice:
+            date_ouverture_cette_annee = date(annee_en_cours, 1, 1)
+        else:
+            date_ouverture_cette_annee = (
+                self.date_cloture_exercice
+                + relativedelta(days=1)
+                + relativedelta(year=annee_en_cours)
+            )
+        if date_ouverture_cette_annee <= date.today():
+            # Si la date de clôture de cette année est déjà passée, l'exercice de cette année est clos
+            date_ouverture = date_ouverture_cette_annee + relativedelta(years=-1)
+            return Exercice(date_ouverture=date_ouverture)
+        date_ouverture = date_ouverture_cette_annee + relativedelta(years=-2)
+        return Exercice(date_ouverture=date_ouverture)
 
     @property
     def exercice_en_cours(self):
