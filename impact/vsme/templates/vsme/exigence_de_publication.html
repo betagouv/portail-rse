@@ -32,7 +32,7 @@
                 <p><a href="{{ exigence_de_publication.url_infos }}" target="_blank" rel="noopener external" class="fr-link fr-icon-information-line fr-link--icon-left">En savoir plus sur les indicateurs demandés</a></p>
 
                 <div class="fr-text--lg">
-                    Exercice {{ rapport_vsme.annee }} - Du 01/01/{{ rapport_vsme.annee }} au 31/12/{{ rapport_vsme.annee }}
+                    {{ rapport_vsme.exercice }} - Du {{ rapport_vsme.exercice.date_ouverture|date:"d/m/Y" }} au {{ rapport_vsme.exercice.date_cloture|date:"d/m/Y" }}
                 </div>
 
                 <div class="fr-table fr-table--sm">

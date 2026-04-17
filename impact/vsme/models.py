@@ -35,12 +35,25 @@ class Exercice:
         return Exercice(self.date_ouverture + relativedelta(years=1))
 
     @property
-    def label(self):
-        return f"{self.annee}"
-
-    @property
     def annee(self):
         return self.date_cloture.year
+
+    def __str__(self):
+        if self.date_ouverture.day == 1 and self.date_ouverture.month == 1:
+            return f"Exercice {self.date_ouverture.year}"
+        else:
+            return f"Exercice {self.date_ouverture.year}-{self.date_cloture.year}"
+
+
+def get_exercice(entreprise, annee_cloture):
+    if not entreprise.date_cloture_exercice:
+        date_ouverture = date(annee_cloture, 1, 1)
+    else:
+        date_cloture = entreprise.date_cloture_exercice + relativedelta(
+            year=annee_cloture
+        )
+        date_ouverture = date_cloture + relativedelta(days=1) + relativedelta(years=-1)
+    return Exercice(date_ouverture)
 
 
 def get_dernier_exercice_clos(entreprise):
@@ -281,6 +294,10 @@ class RapportVSME(TimestampedModel):
             ),
         ]
         indexes = [models.Index(fields=["annee"])]
+
+    @property
+    def exercice(self):
+        return get_exercice(self.entreprise, self.annee)
 
     def indicateurs_applicables_par_exigence(self, exigence_de_publication):
         exigence_de_publication_schema = exigence_de_publication.load_json_schema()
