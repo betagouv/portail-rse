@@ -30,7 +30,7 @@ from vsme.models import annee_est_valide
 from vsme.models import Categorie
 from vsme.models import ExigenceDePublication
 from vsme.models import EXIGENCES_DE_PUBLICATION
-from vsme.models import get_annees_valides
+from vsme.models import get_exercices_disponibles
 from vsme.models import Indicateur
 from vsme.models import RapportVSME
 
@@ -149,8 +149,7 @@ def categories_vsme(request, entreprise, annee=None):
     context = tableau_de_bord_menu_context(entreprise)
     context |= {
         "rapport_vsme": rapport_vsme,
-        "annee_courante": annee,
-        "annees_disponibles": get_annees_valides(entreprise),
+        "exercices_disponibles": get_exercices_disponibles(entreprise),
     }
     return render(request, "vsme/categories.html", context=context)
 
