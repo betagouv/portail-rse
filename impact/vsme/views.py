@@ -31,8 +31,7 @@ from vsme.models import Categorie
 from vsme.models import ExigenceDePublication
 from vsme.models import EXIGENCES_DE_PUBLICATION
 from vsme.models import get_annees_valides
-from vsme.models import get_exercice_max_valide
-from vsme.models import get_exercice_par_defaut
+from vsme.models import get_dernier_exercice_clos
 from vsme.models import Indicateur
 from vsme.models import RapportVSME
 
@@ -125,15 +124,14 @@ def categories_vsme(request, entreprise, annee=None):
         )
         return htmx.HttpResponseHXRedirect(redirect_to)
 
-    annee_par_defaut = get_exercice_par_defaut(entreprise).annee
+    annee_par_defaut = get_dernier_exercice_clos(entreprise).annee
     annee = annee or annee_par_defaut
 
     # Vérifier que l'année est valide pour cette entreprise
     if not annee_est_valide(annee, entreprise):
         messages.error(
             request,
-            f"L'année {annee} n'est pas valide pour un rapport VSME. "
-            f"Les rapports doivent être créés pour une année entre 2020 et {get_exercice_max_valide(entreprise).annee}.",
+            f"L'année {annee} n'est pas valide pour un rapport VSME.",
         )
         return redirect("vsme:categories_vsme", siren=entreprise.siren)
 
