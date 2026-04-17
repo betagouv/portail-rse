@@ -123,7 +123,7 @@ def categories_vsme(request, entreprise, annee=None):
         )
         return htmx.HttpResponseHXRedirect(redirect_to)
 
-    annee_par_defaut = entreprise.dernier_exercice_clos.annee
+    annee_par_defaut = entreprise.dernier_exercice_clos.date_cloture.year
     annee = annee or annee_par_defaut
 
     # Vérifier que l'année est valide pour cette entreprise
@@ -142,22 +142,15 @@ def categories_vsme(request, entreprise, annee=None):
     # On affiche le message si l'année n'est pas l'année par défaut
     # ou si l'utilisateur vient de créer un nouveau rapport
     if annee != annee_par_defaut or created:
-        if annee == annee_par_defaut:
-            messages.info(
-                request,
-                f"Vous travaillez sur le rapport VSME de l'année {annee} (année par défaut).",
-            )
-        else:
-            messages.info(
-                request, f"Vous travaillez sur le rapport VSME de l'année {annee}."
-            )
+        messages.info(
+            request, f"Vous travaillez sur le rapport VSME de l'année {annee}."
+        )
 
     context = tableau_de_bord_menu_context(entreprise)
     context |= {
         "rapport_vsme": rapport_vsme,
         "annee_courante": annee,
         "annees_disponibles": get_annees_valides(entreprise),
-        "annee_par_defaut": annee_par_defaut,
     }
     return render(request, "vsme/categories.html", context=context)
 
