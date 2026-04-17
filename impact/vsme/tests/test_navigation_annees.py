@@ -98,7 +98,9 @@ def test_acces_annee_future_invalide(client, entreprise_factory, alice):
     entreprise.save()
     client.force_login(alice)
 
-    annee_invalide = entreprise.dernier_exercice_clos.suivant().date_cloture.year + 1
+    annee_invalide = (
+        entreprise.dernier_exercice_clos.exercice_suivant.date_cloture.year + 1
+    )
     url = reverse("vsme:categories_vsme", args=[entreprise.siren, annee_invalide])
     response = client.get(url)
 
