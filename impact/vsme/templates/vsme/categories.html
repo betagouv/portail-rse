@@ -33,13 +33,13 @@
                     <div class="fr-col-12 fr-col-md-6">
                         <div class="fr-select-group">
                             <label class="fr-label" for="select-annee">
-                                Année du rapport VSME
+                                Exercice du rapport VSME
                             </label>
                             <select class="fr-select" id="select-annee" name="annee"
                                     hx-get="{% url 'vsme:categories_vsme' entreprise.siren %}">
-                                {% for annee in annees_disponibles reversed %}
-                                    <option value="{{ annee }}" {% if annee == rapport_vsme.annee %}selected{% endif %}>
-                                        {{ annee }}
+                                {% for exercice in exercices_disponibles reversed %}
+                                    <option value="{{ exercice.date_cloture.year }}" {% if exercice.date_cloture.year == rapport_vsme.annee %}selected{% endif %}>
+                                        {{ exercice.annees_formattees }}
                                     </option>
                                 {% endfor %}
                             </select>
