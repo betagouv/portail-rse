@@ -85,7 +85,8 @@
                                             <tr>
                                                 <th scope="col">Dénomination</th>
                                                 <th scope="col">SIREN</th>
-                                                <th scope="col">Informations</th>
+                                                <th scope="col" class="fr-cell--multiline fr-cell--center">Réglementations applicables</th>
+                                                <th scope="col">Progression VSME</th>
                                                 <th scope="col">Actions</th>
                                             </tr>
                                         </thead>
@@ -94,16 +95,12 @@
                                                 <tr>
                                                     <td class="fr-cell--multiline">{{ item.entreprise.denomination }}</td>
                                                     <td>{{ item.entreprise.siren }}</td>
+                                                    <td class="fr-cell--center">
+                                                        <strong>{{ item.nombre_reglementations }}</strong>
+                                                    </td>
                                                     <td>
-                                                        <span class="fr-text--sm">
-                                                            {% with pluriel=item.nombre_reglementations|pluralize %}
-                                                                Réglementation{{ pluriel }} applicable{{ pluriel }}&nbsp;: <strong>{{ item.nombre_reglementations }}</strong>
-                                                            {% endwith %}
-                                                        </span>
-                                                        <span class="fr-mx-1w fr-text--sm">|</span>
-                                                        <span class="fr-text--sm">
-                                                            Progression VSME&nbsp;: <strong>{{ item.pourcentage_vsme }}%</strong>
-                                                        </span>
+                                                        <strong>{{ item.pourcentage_vsme }}%</strong>
+                                                        ({{ item.entreprise.dernier_exercice_clos }})
                                                     </td>
                                                     <td>
                                                         <a href="{% url 'reglementations:tableau_de_bord' item.entreprise.siren %}" class="fr-btn fr-btn--sm fr-icon-arrow-right-line fr-btn--icon-left">

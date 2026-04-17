@@ -175,6 +175,30 @@ def est_dans_EEE(code_pays_etranger):
     )
 
 
+@dataclass
+class Exercice:
+    date_ouverture: int
+
+    @property
+    def date_cloture(self):
+        # pour le 29 février
+        return self.date_ouverture + relativedelta(years=1) + relativedelta(days=-1)
+
+    @property
+    def exercice_suivant(self):
+        return Exercice(self.date_ouverture + relativedelta(years=1))
+
+    def __str__(self):
+        return f"Exercice {self.annees_formattees}"
+
+    @property
+    def annees_formattees(self):
+        if self.date_ouverture.day == 1 and self.date_ouverture.month == 1:
+            return f"{self.date_ouverture.year}"
+        else:
+            return f"{self.date_ouverture.year}-{self.date_cloture.year}"
+
+
 class Entreprise(TimestampedModel):
     siren = models.CharField(max_length=9, unique=True)
     denomination = models.CharField(max_length=DENOMINATION_MAX_LENGTH)
@@ -226,6 +250,40 @@ class Entreprise(TimestampedModel):
 
     def __str__(self):
         return f"{self.siren} {self.denomination}"
+
+    @property
+    def dernier_exercice_clos(self):
+        annee_en_cours = date.today().year
+        if not self.date_cloture_exercice:
+            date_ouverture_cette_annee = date(annee_en_cours, 1, 1)
+        else:
+            date_ouverture_cette_annee = (
+                self.date_cloture_exercice
+                + relativedelta(days=1)
+                + relativedelta(year=annee_en_cours)
+            )
+        if date_ouverture_cette_annee <= date.today():
+            # Si la date de clôture de cette année est déjà passée, l'exercice de cette année est clos
+            date_ouverture = date_ouverture_cette_annee + relativedelta(years=-1)
+            return Exercice(date_ouverture=date_ouverture)
+        date_ouverture = date_ouverture_cette_annee + relativedelta(years=-2)
+        return Exercice(date_ouverture=date_ouverture)
+
+    @property
+    def exercice_en_cours(self):
+        return self.dernier_exercice_clos.exercice_suivant
+
+    def exercice_par_annee_cloture(self, annee_cloture):
+        if not self.date_cloture_exercice:
+            date_ouverture = date(annee_cloture, 1, 1)
+        else:
+            date_cloture = self.date_cloture_exercice + relativedelta(
+                year=annee_cloture
+            )
+            date_ouverture = (
+                date_cloture + relativedelta(days=1) + relativedelta(years=-1)
+            )
+        return Exercice(date_ouverture)
 
     @property
     def dernieres_caracteristiques_qualifiantes(self):

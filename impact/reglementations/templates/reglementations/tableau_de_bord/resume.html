@@ -43,11 +43,11 @@
                             <div class="fr-tile__body">
                                 <div class="fr-tile__content">
                                     <h2 class="fr-tile__title">
-                                        <a href="{% url 'vsme:categories_vsme' entreprise.siren annee_precedente %}">
+                                        <a href="{% url 'vsme:categories_vsme' entreprise.siren entreprise.dernier_exercice_clos.date_cloture.year %}">
                                             {{ pourcentage_vsme }}%
                                         </a>
                                     </h2>
-                                    <p class="fr-tile__desc">de progression VSME</p>
+                                    <p class="fr-tile__desc">de progression VSME<br>{{ entreprise.dernier_exercice_clos.annees_formattees }}</p>
                                     <p class="fr-tile__detail">Voir mes indicateurs</p>
                                 </div>
                             </div>

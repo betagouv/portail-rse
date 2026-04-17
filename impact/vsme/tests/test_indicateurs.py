@@ -1,3 +1,5 @@
+from datetime import date
+
 import pytest
 from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed
@@ -130,6 +132,37 @@ def test_exigence_de_publication_vsme_avec_utilisateur_authentifie(
     assertTemplateUsed(response, "snippets/tableau_de_bord_menu.html")
     assertTemplateUsed(response, f"vsme/exigence_de_publication.html")
     assert response.context["exigence_de_publication"] == exigence_de_publication
+    assert f"Exercice {rapport_vsme.annee}" in response.content.decode()
+    assert (
+        f"Du 01/01/{rapport_vsme.annee} au 31/12/{rapport_vsme.annee}"
+        in response.content.decode()
+    )
+
+
+@pytest.mark.parametrize("exigence_de_publication", EXIGENCES_DE_PUBLICATION.values())
+def test_exigence_de_publication_vsme_avec_exercice_ne_correspondant_pas_a_une_annee_civile(
+    exigence_de_publication, client, alice, rapport_vsme
+):
+    entreprise = rapport_vsme.entreprise
+    entreprise.date_cloture_exercice = date(2020, 6, 30)
+    entreprise.save()
+    client.force_login(alice)
+
+    url = EXIGENCE_DE_PUBLICATION_URL.format(
+        vsme_id=rapport_vsme.id,
+        exigence_de_publication_code=exigence_de_publication.code,
+    )
+    response = client.get(url)
+
+    assert response.context["exigence_de_publication"] == exigence_de_publication
+    assert (
+        f"Exercice {rapport_vsme.annee - 1}-{rapport_vsme.annee}"
+        in response.content.decode()
+    )
+    assert (
+        f"Du 01/07/{rapport_vsme.annee - 1} au 30/06/{rapport_vsme.annee}"
+        in response.content.decode()
+    )
 
 
 def test_exigence_de_publication_vsme_inexistante_retourne_une_404(
