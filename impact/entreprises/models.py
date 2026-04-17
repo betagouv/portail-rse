@@ -16,7 +16,6 @@ from api.exceptions import APIError
 from utils.codes_naf import CODES_NAF
 from utils.models import TimestampedModel
 from utils.pays import CODES_PAYS_ETRANGER_SIRENE
-from vsme.models import get_dernier_exercice_clos
 
 DENOMINATION_MAX_LENGTH = 250
 
@@ -176,6 +175,51 @@ def est_dans_EEE(code_pays_etranger):
     )
 
 
+@dataclass
+class Exercice:
+    date_ouverture: int
+
+    @property
+    def date_cloture(self):
+        # pour le 29 février
+        return self.date_ouverture + relativedelta(years=1) + relativedelta(days=-1)
+
+    def suivant(self):
+        return Exercice(self.date_ouverture + relativedelta(years=1))
+
+    @property
+    def annee(self):
+        return self.date_cloture.year
+
+    def __str__(self):
+        if self.date_ouverture.day == 1 and self.date_ouverture.month == 1:
+            return f"Exercice {self.date_ouverture.year}"
+        else:
+            return f"Exercice {self.date_ouverture.year}-{self.date_cloture.year}"
+
+
+def get_dernier_exercice_clos(entreprise):
+    """
+    Retourne le dernier exercice clos pour une entreprise.
+    Si l'entreprise n'a pas de date de clôture définie, retourne N-1.
+    """
+    annee_en_cours = date.today().year
+    if not entreprise.date_cloture_exercice:
+        date_ouverture_cette_annee = date(annee_en_cours, 1, 1)
+    else:
+        date_ouverture_cette_annee = (
+            entreprise.date_cloture_exercice
+            + relativedelta(days=1)
+            + relativedelta(year=annee_en_cours)
+        )
+    if date_ouverture_cette_annee <= date.today():
+        # Si la date de clôture de cette année est déjà passée, l'exercice de cette année est clos
+        date_ouverture = date_ouverture_cette_annee + relativedelta(years=-1)
+        return Exercice(date_ouverture=date_ouverture)
+    date_ouverture = date_ouverture_cette_annee + relativedelta(years=-2)
+    return Exercice(date_ouverture=date_ouverture)
+
+
 class Entreprise(TimestampedModel):
     siren = models.CharField(max_length=9, unique=True)
     denomination = models.CharField(max_length=DENOMINATION_MAX_LENGTH)
@@ -231,6 +275,18 @@ class Entreprise(TimestampedModel):
     @property
     def dernier_exercice_clos(self):
         return get_dernier_exercice_clos(self)
+
+    def exercice_par_annee_cloture(self, annee_cloture):
+        if not self.date_cloture_exercice:
+            date_ouverture = date(annee_cloture, 1, 1)
+        else:
+            date_cloture = self.date_cloture_exercice + relativedelta(
+                year=annee_cloture
+            )
+            date_ouverture = (
+                date_cloture + relativedelta(days=1) + relativedelta(years=-1)
+            )
+        return Exercice(date_ouverture)
 
     @property
     def dernieres_caracteristiques_qualifiantes(self):

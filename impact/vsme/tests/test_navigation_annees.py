@@ -4,7 +4,6 @@ import pytest
 from django.urls import reverse
 from freezegun import freeze_time
 
-from vsme.models import get_dernier_exercice_clos
 from vsme.models import RapportVSME
 
 
@@ -19,7 +18,7 @@ def test_acces_sans_annee_utilise_annee_par_defaut(client, entreprise_factory, a
     response = client.get(url)
 
     assert response.status_code == 200
-    annee_par_defaut = get_dernier_exercice_clos(entreprise).annee
+    annee_par_defaut = entreprise.dernier_exercice_clos.date_cloture.year
     assert RapportVSME.objects.filter(
         entreprise=entreprise, annee=annee_par_defaut
     ).exists()
@@ -99,7 +98,7 @@ def test_acces_annee_future_invalide(client, entreprise_factory, alice):
     entreprise.save()
     client.force_login(alice)
 
-    annee_invalide = get_dernier_exercice_clos(entreprise).suivant().annee + 1
+    annee_invalide = entreprise.dernier_exercice_clos.suivant().date_cloture.year + 1
     url = reverse("vsme:categories_vsme", args=[entreprise.siren, annee_invalide])
     response = client.get(url)
 
