@@ -29,6 +29,10 @@
 
                 <h1>{{ categorie.value.label }}</h1>
 
+                <div class="fr-text--lg">
+                    {{ rapport_vsme.exercice }} - Du {{ rapport_vsme.exercice.date_ouverture|date:"d/m/Y" }} au {{ rapport_vsme.exercice.date_cloture|date:"d/m/Y" }}
+                </div>
+
                 {% for exigence in exigences_de_publication %}
                     {% include "snippets/tuile_exigence_publication.html" with exigence=exigence rapport_vsme=rapport_vsme %}
                 {% endfor %}
