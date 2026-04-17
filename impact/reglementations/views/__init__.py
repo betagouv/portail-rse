@@ -1,4 +1,3 @@
-from datetime import date
 from datetime import datetime
 
 from django.contrib import messages
@@ -63,10 +62,10 @@ def calculer_metriques_entreprise(entreprise):
         nombre_reglementations_applicables = "?"
 
     # Calcul du pourcentage VSME
-    annee_precedente = date.today().year - 1
     try:
         rapport_vsme = RapportVSME.objects.get(
-            entreprise=entreprise, annee=annee_precedente
+            entreprise=entreprise,
+            annee=entreprise.dernier_exercice_clos.date_cloture.year,
         )
         pourcentage_vsme = rapport_vsme.progression()["pourcent"]
     except RapportVSME.DoesNotExist:
@@ -82,7 +81,6 @@ def tableau_de_bord_menu_context(entreprise, page_resume=False):
     return {
         "entreprise": entreprise,
         "page_resume": page_resume,
-        "annee_precedente": date.today().year - 1,
     }
 
 
@@ -118,10 +116,10 @@ def tableau_de_bord(request, entreprise):
     nombre_analyses_ia = entreprise.analyses_ia.reussies().count()
 
     # Calculer le pourcentage de progression VSME
-    annee_precedente = date.today().year - 1
     try:
         rapport_vsme = RapportVSME.objects.get(
-            entreprise=entreprise, annee=annee_precedente
+            entreprise=entreprise,
+            annee=entreprise.dernier_exercice_clos.date_cloture.year,
         )
         pourcentage_vsme = rapport_vsme.progression()["pourcent"]
     except RapportVSME.DoesNotExist:

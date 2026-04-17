@@ -16,6 +16,7 @@ from api.exceptions import APIError
 from utils.codes_naf import CODES_NAF
 from utils.models import TimestampedModel
 from utils.pays import CODES_PAYS_ETRANGER_SIRENE
+from vsme.models import get_dernier_exercice_clos
 
 DENOMINATION_MAX_LENGTH = 250
 
@@ -226,6 +227,10 @@ class Entreprise(TimestampedModel):
 
     def __str__(self):
         return f"{self.siren} {self.denomination}"
+
+    @property
+    def dernier_exercice_clos(self):
+        return get_dernier_exercice_clos(self)
 
     @property
     def dernieres_caracteristiques_qualifiantes(self):
