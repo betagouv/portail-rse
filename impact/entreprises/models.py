@@ -184,7 +184,8 @@ class Exercice:
         # pour le 29 février
         return self.date_ouverture + relativedelta(years=1) + relativedelta(days=-1)
 
-    def suivant(self):
+    @property
+    def exercice_suivant(self):
         return Exercice(self.date_ouverture + relativedelta(years=1))
 
     def __str__(self):
@@ -270,7 +271,7 @@ class Entreprise(TimestampedModel):
 
     @property
     def exercice_en_cours(self):
-        return self.dernier_exercice_clos.suivant()
+        return self.dernier_exercice_clos.exercice_suivant
 
     def exercice_par_annee_cloture(self, annee_cloture):
         if not self.date_cloture_exercice:
