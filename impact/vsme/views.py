@@ -143,7 +143,8 @@ def categories_vsme(request, entreprise, annee=None):
     # ou si l'utilisateur vient de créer un nouveau rapport
     if annee != annee_par_defaut or created:
         messages.info(
-            request, f"Vous travaillez sur le rapport VSME de l'année {annee}."
+            request,
+            f"Vous travaillez sur le rapport VSME de l'exercice {entreprise.exercice_par_annee_cloture(annee).annees_formattees}.",
         )
 
     context = tableau_de_bord_menu_context(entreprise)
