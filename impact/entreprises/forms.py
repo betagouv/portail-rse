@@ -178,6 +178,14 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
                 "date_cloture_exercice"
             ].isoformat()
 
+    def clean_date_cloture_exercice(self):
+        date_cloture_exercice = self.cleaned_data["date_cloture_exercice"]
+        if date_cloture_exercice > date.today():
+            raise ValidationError(
+                "La date de clôture du dernier exercice ne peut pas être dans le futur"
+            )
+        return date_cloture_exercice
+
     def clean(self):
         ERREUR_CHAMP_MANQUANT_GROUPE = (
             "Ce champ est obligatoire lorsque l'entreprise appartient à un groupe"
@@ -235,12 +243,6 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
             self.add_error(
                 "effectif_groupe_france",
                 "L'effectif du groupe France ne peut pas être inférieur à l'effectif si vous êtes la société mère du groupe et en France",
-            )
-        date_cloture_exercice = self.cleaned_data.get("date_cloture_exercice")
-        if date_cloture_exercice and date_cloture_exercice > date.today():
-            self.add_error(
-                "date_cloture_exercice",
-                "La date de clôture du dernier exercice ne peut pas être dans le futur",
             )
 
         if not self.cleaned_data.get("est_interet_public"):
