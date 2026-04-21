@@ -8,16 +8,23 @@ from entreprises.forms import est_superieur
 from entreprises.models import CaracteristiquesAnnuelles
 
 
+DATA_VALIDE = {
+    "confirmation_naf": "01.11Z",
+    "date_cloture_exercice": date(2022, 12, 31),
+    "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+    "effectif_securite_sociale": CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249,
+    "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
+    "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+    "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+    "est_cotee": False,
+    "appartient_groupe": False,
+    "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
+    "bdese_accord": True,
+}
+
+
 def test_ignore_bilan_et_ca_consolides_lorsque_pas_de_comptes_consolides():
-    data = {
-        "confirmation_naf": "01.11Z",
-        "date_cloture_exercice": date(2022, 12, 31),
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "effectif_securite_sociale": CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249,
-        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
-        "est_cotee": False,
+    data = DATA_VALIDE | {
         "appartient_groupe": True,
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_groupe_france": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
@@ -25,8 +32,6 @@ def test_ignore_bilan_et_ca_consolides_lorsque_pas_de_comptes_consolides():
         "comptes_consolides": False,
         "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
         "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
-        "bdese_accord": True,
-        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -37,15 +42,7 @@ def test_ignore_bilan_et_ca_consolides_lorsque_pas_de_comptes_consolides():
 
 
 def test_ignore_effectifs_groupe_societe_mere_et_comptes_consolides_lorsque_pas_de_groupe():
-    data = {
-        "confirmation_naf": "01.11Z",
-        "date_cloture_exercice": date(2022, 12, 31),
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "effectif_securite_sociale": CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249,
-        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
-        "est_cotee": False,
+    data = DATA_VALIDE | {
         "appartient_groupe": False,
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_groupe_france": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
@@ -54,8 +51,6 @@ def test_ignore_effectifs_groupe_societe_mere_et_comptes_consolides_lorsque_pas_
         "comptes_consolides": True,
         "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
         "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
-        "bdese_accord": True,
-        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -71,15 +66,7 @@ def test_ignore_effectifs_groupe_societe_mere_et_comptes_consolides_lorsque_pas_
 
 
 def test_erreur_si_appartient_groupe_sans_effectif_groupe():
-    data = {
-        "confirmation_naf": "01.11Z",
-        "date_cloture_exercice": date(2022, 12, 31),
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "effectif_securite_sociale": CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249,
-        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
-        "est_cotee": False,
+    data = DATA_VALIDE | {
         "appartient_groupe": True,
         "effectif_groupe": "",
         "effectif_groupe_france": "",
@@ -87,8 +74,6 @@ def test_erreur_si_appartient_groupe_sans_effectif_groupe():
         "comptes_consolides": False,
         "tranche_chiffre_affaires_consolide": "",
         "tranche_bilan_consolide": "",
-        "bdese_accord": True,
-        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -105,15 +90,7 @@ def test_erreur_si_appartient_groupe_sans_effectif_groupe():
 
 
 def test_erreur_si_comptes_consolides_sans_bilan_consolide():
-    data = {
-        "confirmation_naf": "01.11Z",
-        "date_cloture_exercice": date(2022, 12, 31),
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "effectif_securite_sociale": CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249,
-        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
-        "est_cotee": False,
+    data = DATA_VALIDE | {
         "appartient_groupe": True,
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_groupe_france": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
@@ -121,8 +98,6 @@ def test_erreur_si_comptes_consolides_sans_bilan_consolide():
         "comptes_consolides": True,
         "tranche_chiffre_affaires_consolide": CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
         "tranche_bilan_consolide": "",
-        "bdese_accord": True,
-        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -135,15 +110,7 @@ def test_erreur_si_comptes_consolides_sans_bilan_consolide():
 
 
 def test_erreur_si_comptes_consolides_sans_ca_consolide():
-    data = {
-        "confirmation_naf": "01.11Z",
-        "date_cloture_exercice": date(2022, 12, 31),
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "effectif_securite_sociale": CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249,
-        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
-        "est_cotee": False,
+    data = DATA_VALIDE | {
         "appartient_groupe": True,
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_groupe_france": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
@@ -151,8 +118,6 @@ def test_erreur_si_comptes_consolides_sans_ca_consolide():
         "comptes_consolides": True,
         "tranche_chiffre_affaires_consolide": "",
         "tranche_bilan_consolide": CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
-        "bdese_accord": True,
-        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -165,18 +130,10 @@ def test_erreur_si_comptes_consolides_sans_ca_consolide():
 
 
 def test_erreur_si_effectif_code_securite_sociale_superieur_a_effectif():
-    data = {
-        "confirmation_naf": "01.11Z",
-        "date_cloture_exercice": date(2022, 12, 31),
+    data = DATA_VALIDE | {
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_securite_sociale": CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_250_ET_499,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
-        "est_cotee": False,
-        "appartient_groupe": False,
-        "bdese_accord": True,
-        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -189,18 +146,9 @@ def test_erreur_si_effectif_code_securite_sociale_superieur_a_effectif():
 
 
 def test_erreur_si_effectif_outre_mer_superieur_a_effectif():
-    data = {
-        "confirmation_naf": "01.11Z",
-        "date_cloture_exercice": date(2022, 12, 31),
+    data = DATA_VALIDE | {
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "effectif_securite_sociale": CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249,
         "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
-        "est_cotee": False,
-        "appartient_groupe": False,
-        "bdese_accord": True,
-        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -213,22 +161,12 @@ def test_erreur_si_effectif_outre_mer_superieur_a_effectif():
 
 
 def test_erreur_si_effectif_france_superieur_a_effectif_international():
-    data = {
-        "confirmation_naf": "01.11Z",
-        "date_cloture_exercice": date(2022, 12, 31),
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "effectif_securite_sociale": CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249,
-        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
-        "est_cotee": False,
+    data = DATA_VALIDE | {
         "appartient_groupe": True,
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_groupe_france": CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
         "societe_mere_en_france": True,
         "comptes_consolides": False,
-        "bdese_accord": True,
-        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -241,22 +179,13 @@ def test_erreur_si_effectif_france_superieur_a_effectif_international():
 
 
 def test_erreur_si_effectifs_superieurs_a_effectifs_groupe():
-    data = {
-        "confirmation_naf": "01.11Z",
-        "date_cloture_exercice": date(2022, 12, 31),
+    data = DATA_VALIDE | {
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "effectif_securite_sociale": CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249,
-        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
-        "est_cotee": False,
         "appartient_groupe": True,
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         "effectif_groupe_france": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         "societe_mere_en_france": True,
         "comptes_consolides": False,
-        "bdese_accord": True,
-        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -269,22 +198,13 @@ def test_erreur_si_effectifs_superieurs_a_effectifs_groupe():
 
 
 def test_ok_si_effectifs_inferieurs_ou_egaux_a_effectifs_groupe():
-    data = {
-        "confirmation_naf": "01.11Z",
-        "date_cloture_exercice": date(2022, 12, 31),
+    data = DATA_VALIDE | {
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499,
-        "effectif_securite_sociale": CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249,
-        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
-        "est_cotee": False,
         "appartient_groupe": True,
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_499,
         "effectif_groupe_france": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_499,
         "societe_mere_en_france": True,
         "comptes_consolides": False,
-        "bdese_accord": True,
-        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -293,23 +213,14 @@ def test_ok_si_effectifs_inferieurs_ou_egaux_a_effectifs_groupe():
 
 
 def test_erreur_si_est_societe_mere_en_France_avec_un_effectif_superieur_a_effectif_groupe_france():
-    data = {
-        "confirmation_naf": "01.11Z",
-        "date_cloture_exercice": date(2022, 12, 31),
+    data = DATA_VALIDE | {
         "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "effectif_securite_sociale": CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249,
-        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
-        "est_cotee": False,
         "appartient_groupe": True,
         "est_societe_mere": True,
         "societe_mere_en_france": True,
         "effectif_groupe": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
         "effectif_groupe_france": CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_50,
         "comptes_consolides": False,
-        "bdese_accord": True,
-        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -322,19 +233,9 @@ def test_erreur_si_est_societe_mere_en_France_avec_un_effectif_superieur_a_effec
 
 
 def test_sans_interet_public_force_non_cotee():
-    data = {
-        "confirmation_naf": "01.11Z",
-        "date_cloture_exercice": date(2022, 12, 31),
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "effectif_securite_sociale": CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249,
-        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+    data = DATA_VALIDE | {
         "est_cotee": True,
         "est_interet_public": False,
-        "appartient_groupe": False,
-        "bdese_accord": True,
-        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -372,18 +273,8 @@ def test_transforme_la_valeur_initiale_de_date_cloture_exercice_en_format_affich
 
 
 def test_erreur_si_date_cloture_exercice_est_dans_le_futur():
-    data = {
-        "confirmation_naf": "01.11Z",
+    data = DATA_VALIDE | {
         "date_cloture_exercice": date.today() + timedelta(days=1),
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "effectif_securite_sociale": CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249,
-        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
-        "est_cotee": False,
-        "appartient_groupe": False,
-        "bdese_accord": True,
-        "systeme_management_energie": True,
     }
 
     form = EntrepriseQualificationForm(data=data)
@@ -407,19 +298,8 @@ def test_erreur_si_date_cloture_exercice_est_dans_le_futur():
     ],
 )
 def test_validation_code_naf(code, validates):
-    data = {
-        "date_cloture_exercice": date(2022, 12, 31),
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "effectif_securite_sociale": CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249,
-        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_MOINS_DE_250,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
-        "est_cotee": True,
-        "est_interet_public": False,
-        "appartient_groupe": False,
-        "bdese_accord": True,
-        "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
-    }
+    data = DATA_VALIDE.copy()
+    data.pop("confirmation_naf")
 
     form = EntrepriseQualificationForm(data=data)
 
