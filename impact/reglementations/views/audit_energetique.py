@@ -19,8 +19,13 @@ class AuditEnergetiqueReglementation(Reglementation):
 
     @classmethod
     def criteres_remplis(cls, caracteristiques):
-        """Inutile pour l'audit énergétique mais nécessaire car la classe parente a cette classe abstraite"""
-        return []
+        criteres = []
+        if caracteristiques.tranche_consommation_energie_finale in (
+            CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_ENTRE_2_75GWH_ET_23_6GWH,
+            CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_23_6GWH_ET_PLUS,
+        ):
+            criteres.append("votre consommation énergétique est supérieure à 2,75 GWh")
+        return criteres
 
     @classmethod
     def obligation(cls, caracteristiques):
@@ -28,7 +33,7 @@ class AuditEnergetiqueReglementation(Reglementation):
             caracteristiques.tranche_consommation_energie_finale
             == CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_ENTRE_2_75GWH_ET_23_6GWH
         ):
-            return "L'audit énergétique réglementaire est obligatoire avant le 11 octobre 2026, puis tous les 4 ans."
+            return "Au-dessus de 2,75 GWh/an, l'audit énergétique réglementaire est obligatoire avant le 11 octobre 2026, puis tous les 4 ans."
         elif (
             caracteristiques.tranche_consommation_energie_finale
             == CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_23_6GWH_ET_PLUS
@@ -38,10 +43,7 @@ class AuditEnergetiqueReglementation(Reglementation):
     @classmethod
     def est_soumis(cls, caracteristiques):
         super().est_soumis(caracteristiques)
-        return caracteristiques.tranche_consommation_energie_finale in (
-            CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_ENTRE_2_75GWH_ET_23_6GWH,
-            CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_23_6GWH_ET_PLUS,
-        )
+        return bool(cls.criteres_remplis(caracteristiques))
 
     @classmethod
     def calculate_status(
@@ -54,7 +56,7 @@ class AuditEnergetiqueReglementation(Reglementation):
         if cls.est_soumis(caracteristiques):
             status = ReglementationStatus.STATUS_SOUMIS
             obligation = cls.obligation(caracteristiques)
-            status_detail = f"Vous êtes soumis à cette réglementation car votre consommation énergétique est supérieure à 2,75 GWh. {obligation}"
+            status_detail = f"Vous êtes soumis à cette réglementation car {', '.join(cls.criteres_remplis(caracteristiques))}. {obligation}"
             primary_action = ReglementationAction(
                 "https://audit-energie.ademe.fr/",
                 "Publier mon audit sur la plateforme nationale",
