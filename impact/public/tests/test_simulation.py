@@ -119,6 +119,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     assert caracteristiques.effectif_outre_mer is None
     assert caracteristiques.effectif_groupe_france is None
     assert caracteristiques.bdese_accord is None
+    assert caracteristiques.tranche_consommation_energie_finale is None
 
     # les données servant à la simulation sont celles du formulaire de simulation simplifiée
     # enrichies avec des valeurs par défaut pour les champs manquants
@@ -133,6 +134,10 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     )
     assert simulation_caracs.effectif_groupe_france == effectif_groupe
     assert not simulation_caracs.bdese_accord
+    assert (
+        simulation_caracs.tranche_consommation_energie_finale
+        == CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH
+    )
 
     # les réglementations applicables sont affichées sur la page de résultat
     assert response.status_code == 200
@@ -216,9 +221,6 @@ def test_formulaire_prerempli_avec_la_simulation_précédente(status_est_soumis,
 def test_simulation_par_un_utilisateur_authentifie_sur_une_nouvelle_entreprise(
     status_est_soumis, client, entreprise, mocker
 ):
-    """
-    Ce cas est encore accessible mais ne correspond pas à un parcours utilisateur normal
-    """
     client.force_login(entreprise.users.first())
 
     data = {
@@ -277,6 +279,7 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
         tranche_chiffre_affaires_consolide=CaracteristiquesAnnuelles.CA_MOINS_DE_60M,
         tranche_bilan_consolide=CaracteristiquesAnnuelles.BILAN_MOINS_DE_30M,
         bdese_accord=True,
+        tranche_consommation_energie_finale=CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_23_6GWH_ET_PLUS,
     )
 
     autre_effectif = CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS
@@ -340,6 +343,10 @@ def test_lors_d_une_simulation_les_donnees_d_une_entreprise_avec_des_caracterist
         == CaracteristiquesAnnuelles.BILAN_MOINS_DE_30M
     )
     assert caracteristiques.bdese_accord
+    assert (
+        caracteristiques.tranche_consommation_energie_finale
+        == CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_23_6GWH_ET_PLUS
+    )
 
     assert mock_est_soumis.called
     caracteristiques_simulees = mock_est_soumis.call_args.args[0]
