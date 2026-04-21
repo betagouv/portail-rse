@@ -321,30 +321,6 @@ def test_erreur_si_est_societe_mere_en_France_avec_un_effectif_superieur_a_effec
     )
 
 
-def test_erreur_si_date_cloture_exercice_est_dans_le_futur():
-    data = {
-        "confirmation_naf": "01.11Z",
-        "date_cloture_exercice": date.today() + timedelta(days=1),
-        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        "effectif_securite_sociale": CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249,
-        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
-        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
-        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
-        "est_cotee": False,
-        "appartient_groupe": False,
-        "bdese_accord": True,
-        "systeme_management_energie": True,
-    }
-
-    form = EntrepriseQualificationForm(data=data)
-
-    assert not form.is_valid()
-    assert (
-        form.errors["date_cloture_exercice"][0]
-        == "La date de clôture du dernier exercice ne peut pas être dans le futur"
-    )
-
-
 def test_sans_interet_public_force_non_cotee():
     data = {
         "confirmation_naf": "01.11Z",
@@ -393,6 +369,30 @@ def test_transforme_la_valeur_initiale_de_date_cloture_exercice_en_format_affich
     form = EntrepriseQualificationForm(initial=initial)
 
     assert form.initial["date_cloture_exercice"] == "2022-12-31"
+
+
+def test_erreur_si_date_cloture_exercice_est_dans_le_futur():
+    data = {
+        "confirmation_naf": "01.11Z",
+        "date_cloture_exercice": date.today() + timedelta(days=1),
+        "effectif": CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
+        "effectif_securite_sociale": CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249,
+        "effectif_outre_mer": CaracteristiquesAnnuelles.EFFECTIF_OUTRE_MER_250_ET_PLUS,
+        "tranche_chiffre_affaires": CaracteristiquesAnnuelles.CA_MOINS_DE_900K,
+        "tranche_bilan": CaracteristiquesAnnuelles.BILAN_MOINS_DE_450K,
+        "est_cotee": False,
+        "appartient_groupe": False,
+        "bdese_accord": True,
+        "systeme_management_energie": True,
+    }
+
+    form = EntrepriseQualificationForm(data=data)
+
+    assert not form.is_valid()
+    assert (
+        form.errors["date_cloture_exercice"][0]
+        == "La date de clôture du dernier exercice ne peut pas être dans le futur"
+    )
 
 
 @pytest.mark.parametrize(
