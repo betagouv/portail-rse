@@ -75,7 +75,7 @@ def test_calcule_statut_entre_2_75GWH_et_23_6GWH(entreprise_factory):
         "Vous êtes soumis à cette réglementation car votre consommation énergétique est supérieure à 2,75 GWh."
     )
     assert reglementation.status_detail.endswith(
-        "L'audit énergétique réglementaire est obligatoire avant le 11 octobre 2026, puis tous les 4 ans."
+        "Au-dessus de 2,75 GWh/an, l'audit énergétique réglementaire est obligatoire avant le 11 octobre 2026, puis tous les 4 ans."
     )
     assert reglementation.primary_action.url == "https://audit-energie.ademe.fr/"
     assert (
