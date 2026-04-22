@@ -156,6 +156,7 @@ class EntrepriseQualificationForm(EntrepriseForm, forms.ModelForm):
         help_texts = {
             "tranche_chiffre_affaires": "Montant net du chiffre d'affaires de l'exercice clos",
             "tranche_bilan": "Total du bilan de l'exercice clos",
+            "tranche_consommation_energie_finale": "La consommation annuelle moyenne d'énergie finale correspond à la moyenne de vos consommations sur les 3 dernières années civiles complètes, toutes sources confondues : électricité, gaz, fioul, chaleur réseau, et carburants de votre flotte de véhicules. Vous pouvez retrouver ces données sur vos factures énergétiques, auprès de vos gestionnaires de réseau (Enedis pour l'électricité, GRDF pour le gaz), et via vos relevés de cartes carburant. Le calcul s'effectue au niveau de votre SIREN (ensemble de vos sites et véhicules).",
         }
         widgets = {
             "bdese_accord": forms.CheckboxInput,
