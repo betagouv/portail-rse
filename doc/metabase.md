@@ -43,13 +43,24 @@ Dans l'application Metabase :
 
 ## Alimentation des données
 
-L'alimentation des données peut être réalisée manuellement depuis l'application Django avec la commande sync_metabase :
+L'alimentation des données peut être réalisée manuellement depuis l'application Django.
+
+### Synchronisation depuis les API externes et Portail RSE -> Metabase
+
+```
+scalingo --app {DJANGO_APP} run scripts/sync_metabase.sh
+```
+
+### Synchronisation Portail RSE -> Metabase uniquement
 
 ```
 scalingo --app {DJANGO_APP} run python3 impact/manage.py sync_metabase
 ```
 
-Elle est programmée pour se lancer automatiquement via un cron toutes les nuits à minuit.
+Des paramètres permettent de ne faire qu'une partie de la synchronisation Portail RSE -> Metabase.
+
+La synchronisation totale est programmée pour se lancer automatiquement via un cron toutes les nuits à minuit.
+
 
 ## Suppression manuelle des données
 
