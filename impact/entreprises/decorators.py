@@ -72,7 +72,7 @@ def entreprise_qualifiee_requise(function):
         else:
             messages.warning(
                 request,
-                "Veuillez compléter le profil de l'entreprise pour accéder à cette partie du tableau de bord.",
+                "Votre profil entreprise est incomplet ou doit être mis à jour suite à l'évolution d'une réglementation. Complétez-le pour avoir accès à toutes les fonctionnalités de votre tableau de bord.",
             )
             return redirect("entreprises:qualification", siren=entreprise.siren)
 

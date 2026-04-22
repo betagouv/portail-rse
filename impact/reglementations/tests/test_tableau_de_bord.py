@@ -137,7 +137,7 @@ def test_tableau_de_bord_resume(est_soumis, client, entreprise_factory, alice, m
     assert len(context["invitations"]) == 0
 
 
-def test_tableau_de_bord_resume_entreprise_sans_caracteristique_affiche_un_avertissement(
+def test_tableau_de_bord_resume_entreprise_non_qualifiee_affiche_un_avertissement(
     client, entreprise_non_qualifiee, alice
 ):
     Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
@@ -151,12 +151,12 @@ def test_tableau_de_bord_resume_entreprise_sans_caracteristique_affiche_un_avert
     assert context["nombre_reglementations_applicables"] == "?"
     content = html.unescape(response.content.decode("utf-8"))
     assert (
-        f"Le profil de votre entreprise est incomplet. Certaines réglementations ne peuvent pas être calculées."
+        f"Votre profil entreprise est incomplet ou doit être mis à jour suite à l'évolution d'une réglementation"
         in content
     ), content
 
 
-def test_tableau_de_bord_resume_entreprise_qualifiee_dans_le_passe(
+def test_tableau_de_bord_resume_entreprise_qualifiee_dans_le_passe_affiche_un_avertissement(
     client, entreprise_factory, alice
 ):
     date_cloture_exercice = date(2024, 12, 31)

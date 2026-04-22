@@ -74,7 +74,7 @@ def test_reglementations_entreprise_non_qualifiee_redirige_vers_la_qualification
 
     content = html.unescape(response.content.decode("utf-8"))
     assert (
-        f"Veuillez compléter le profil de l'entreprise pour accéder à cette partie du tableau de bord."
+        f"Votre profil entreprise est incomplet ou doit être mis à jour suite à l'évolution d'une réglementation."
         in content
     ), content
 
@@ -138,7 +138,7 @@ def test_reglementation_entreprise_non_qualifiee_redirige_vers_la_qualification(
 
     content = html.unescape(response.content.decode("utf-8"))
     assert (
-        f"Veuillez compléter le profil de l'entreprise pour accéder à cette partie du tableau de bord."
+        f"Votre profil entreprise est incomplet ou doit être mis à jour suite à l'évolution d'une réglementation."
         in content
     ), content
 

@@ -94,8 +94,7 @@ def tableau_de_bord(request, entreprise):
     if not caracteristiques:
         messages.warning(
             request,
-            f"Le profil de votre entreprise est incomplet. Certaines réglementations ne peuvent pas être calculées. <a href='{reverse_lazy('entreprises:qualification', args=[entreprise.siren])}'>Compléter le profil.</a>"
-            f"",
+            f"Votre profil entreprise est incomplet ou doit être mis à jour suite à l'évolution d'une réglementation. <a href='{reverse_lazy('entreprises:qualification', args=[entreprise.siren])}'>Complétez-le pour avoir accès à toutes les fonctionnalités de votre tableau de bord.</a>",
         )
         nombre_reglementations_applicables = "?"
     else:
