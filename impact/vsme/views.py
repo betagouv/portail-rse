@@ -20,6 +20,7 @@ from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
 from habilitations.models import Habilitation
 from logs import event_logger
+from reglementations.utils import VSMEReglementation
 from reglementations.views import tableau_de_bord_menu_context
 from utils.xlsx import xlsx_response
 from vsme.export import export_exigence_de_publication
@@ -40,14 +41,6 @@ ETAPES = {
     "module_base": "Module de base",
     "module_complet": "Module complet",
 }
-
-
-def _base_context(etape):
-    return {
-        "etape_courante": etape,
-        "titre": ETAPES[etape],
-        "etapes": ETAPES,
-    }
 
 
 # TODO: renforcer et mutualiser les permissions une fois les habilitations v2 fusionnées
@@ -85,11 +78,6 @@ def est_membre(func):
 @login_required
 @est_membre
 def etape_vsme(request, siren, etape):
-    try:
-        context = _base_context(etape)
-    except KeyError:  # l'étape n'existe pas
-        raise Http404("Etape VSME inconnue")
-
     match etape:
         case "introduction":
             template_name = "etapes/introduction.html"
@@ -97,8 +85,14 @@ def etape_vsme(request, siren, etape):
             template_name = "etapes/module-base.html"
         case "module_complet":
             template_name = "etapes/module-complet.html"
+        case _:
+            raise Http404("Etape VSME inconnue")
 
-    context |= {
+    context = {
+        "reglementation": VSMEReglementation,
+        "etape_courante": etape,
+        "titre": ETAPES[etape],
+        "etapes": ETAPES,
         "lien": reverse("vsme:etape_vsme", kwargs={"siren": siren, "etape": etape}),
         "nom_entreprise": request._nom_entreprise,
         "siren": siren,
