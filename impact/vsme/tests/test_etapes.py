@@ -78,5 +78,5 @@ def test_siren_absent_redirige_vers_l_ajout_d_entreprise_si_pas_d_entreprise(
     assert messages[0].level == WARNING
     assert (
         messages[0].message
-        == "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à l'espace VSME"
+        == "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à votre tableau de bord."
     )
