@@ -592,6 +592,7 @@ def test_synchronise_les_rapports_VSME_de_différentes_entreprises(
     metabase_vsme_vide = MetabaseVSME.objects.get(
         entreprise__siren=entreprise_avec_vsme_vide.siren
     )
+    assert metabase_vsme_vide.annee_cloture == 2024
     assert metabase_vsme_vide.cree_le
     assert metabase_vsme_vide.modifie_le
     assert not metabase_vsme_vide.premier_indicateur_cree_le

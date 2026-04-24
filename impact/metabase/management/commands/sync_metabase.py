@@ -408,6 +408,7 @@ class Command(BaseCommand):
             metabase_vsmes.append(
                 MetabaseVSME(
                     entreprise_id=entreprise.id,  # optimisation possible car la clé primaire de l'objet Metabase est identique à la clé primaire dans PortailRSE
+                    annee_cloture=rapport.annee,
                     est_soumise=True,
                     statut=(
                         Reglementation.STATUT_EN_COURS
