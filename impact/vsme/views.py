@@ -429,5 +429,6 @@ def export_vsme_xlsx(request, rapport_vsme):
 @login_required
 @rapport_vsme_requis
 def export_vsme_pptx(request, rapport_vsme):
-    presentation = Presentation()
+    chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
+    presentation = Presentation(chemin_pptx)
     return pptx_response(presentation, "vsme.pptx")
