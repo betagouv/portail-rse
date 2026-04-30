@@ -23,7 +23,7 @@ CREATE SCHEMA impact AUTHORIZATION impact;
 ```
   - définition des droits d'accès en lecture de l'utilisateur `metabase` sur les tables du schéma `impact` :
 
-```
+```sql
 GRANT USAGE ON SCHEMA impact TO metabase;
 GRANT SELECT ON ALL TABLES IN SCHEMA impact TO metabase;
 ALTER DEFAULT PRIVILEGES IN SCHEMA impact GRANT SELECT ON TABLES TO metabase;
