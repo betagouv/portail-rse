@@ -16,8 +16,8 @@ urlpatterns = [
     ),
     path(
         "vsme/<int:vsme_id>/export/xlsx",
-        views.export_vsme,
-        name="export_vsme",
+        views.export_vsme_xlsx,
+        name="export_vsme_xlsx",
     ),
     path(
         "indicateurs/vsme/",
