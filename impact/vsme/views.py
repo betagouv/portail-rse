@@ -22,7 +22,7 @@ from reglementations.utils import VSMEReglementation
 from reglementations.views import tableau_de_bord_menu_context
 from utils.pptx import pptx_response
 from utils.xlsx import xlsx_response
-from vsme.export import export_exigence_de_publication
+from vsme.export_xlsx import export_exigence_de_publication
 from vsme.forms import create_multiform_from_schema
 from vsme.forms import NON_PERTINENT_FIELD_NAME
 from vsme.models import ajoute_donnes_calculees
