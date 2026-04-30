@@ -372,7 +372,7 @@ def preremplit_indicateur(indicateur_schema_id, rapport_vsme):
 
 @login_required
 @rapport_vsme_requis
-def export_vsme(request, rapport_vsme):
+def export_vsme_xlsx(request, rapport_vsme):
     indicateurs_par_schema_id = {}
     for indicateur in rapport_vsme.indicateurs.all():
         if rapport_vsme.indicateur_est_applicable(indicateur.schema_id)[0]:
@@ -381,7 +381,7 @@ def export_vsme(request, rapport_vsme):
     chemin_xlsx = Path(settings.BASE_DIR, f"vsme/xlsx/VSME.xlsx")
     workbook = load_workbook(chemin_xlsx)
 
-    # Les exigences de publications sont ajoutées au fur et à mesure de leur intégration sur le portail au template d'export_vsme
+    # Les exigences de publications sont ajoutées au fur et à mesure de leur intégration sur le portail au template d'export_vsme_xlsx
     codes_exigences_de_publication_exportables = (
         "B1",
         "B2",
