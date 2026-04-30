@@ -12,6 +12,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls.base import reverse
 from openpyxl import load_workbook
+from pptx import Presentation
 
 import utils.htmx as htmx
 from entreprises.decorators import entreprise_requise
@@ -19,6 +20,7 @@ from habilitations.models import Habilitation
 from logs import event_logger
 from reglementations.utils import VSMEReglementation
 from reglementations.views import tableau_de_bord_menu_context
+from utils.pptx import pptx_response
 from utils.xlsx import xlsx_response
 from vsme.export import export_exigence_de_publication
 from vsme.forms import create_multiform_from_schema
@@ -444,3 +446,10 @@ def export_vsme_xlsx(request, rapport_vsme):
     workbook[">>> "]["C13"] = texte
 
     return xlsx_response(workbook, "vsme.xlsx")
+
+
+@login_required
+@rapport_vsme_requis
+def export_vsme_pptx(request, rapport_vsme):
+    presentation = Presentation()
+    return pptx_response(presentation, "vsme.pptx")

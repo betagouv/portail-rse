@@ -20,6 +20,11 @@ urlpatterns = [
         name="export_vsme_xlsx",
     ),
     path(
+        "vsme/<int:vsme_id>/export/pptx",
+        views.export_vsme_pptx,
+        name="export_vsme_pptx",
+    ),
+    path(
         "indicateurs/vsme/",
         views.categories_vsme,
         name="categories_vsme",
