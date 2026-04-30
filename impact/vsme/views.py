@@ -380,7 +380,7 @@ def export_vsme_xlsx(request, rapport_vsme):
         if rapport_vsme.indicateur_est_applicable(indicateur.schema_id)[0]:
             indicateurs_par_schema_id[indicateur.schema_id] = indicateur
 
-    chemin_xlsx = Path(settings.BASE_DIR, f"vsme/xlsx/VSME.xlsx")
+    chemin_xlsx = Path(settings.BASE_DIR, f"vsme/exports/vsme.xlsx")
     workbook = load_workbook(chemin_xlsx)
 
     # Les exigences de publications sont ajoutées au fur et à mesure de leur intégration sur le portail au template d'export_vsme_xlsx
