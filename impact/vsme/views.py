@@ -390,38 +390,16 @@ def export_vsme_xlsx(request, rapport_vsme):
     chemin_xlsx = Path(settings.BASE_DIR, f"vsme/exports/vsme.xlsx")
     workbook = load_workbook(chemin_xlsx)
 
-    # Les exigences de publications sont ajoutées au fur et à mesure de leur intégration sur le portail au template d'export_vsme_xlsx
-    codes_exigences_de_publication_exportables = (
-        "B1",
-        "B2",
-        "B3",
-        "B4",
-        "B5",
-        "B6",
-        "B7",
-        "B8",
-        "B9",
-        "B10",
-        "B11",
-        "C1",
-        "C2",
-        "C3",
-        "C4",
-        "C5",
-        "C6",
-        "C7",
-        "C8",
-        "C9",
-    )
+    # Toutes les exigences de publications sont ajoutées au template d'export_vsme_xlsx
+    codes_exigences_de_publication_exportables = EXIGENCES_DE_PUBLICATION.keys()
 
     exigences_de_publication_applicables = (
         rapport_vsme.exigences_de_publication_applicables()
     )
     for exigence_de_publication in exigences_de_publication_applicables:
-        if exigence_de_publication.code in codes_exigences_de_publication_exportables:
-            export_exigence_de_publication(
-                exigence_de_publication, workbook, indicateurs_par_schema_id
-            )
+        export_exigence_de_publication(
+            exigence_de_publication, workbook, indicateurs_par_schema_id
+        )
 
     # supprime les onglets des exigences de publication non applicables
     codes_exigences_de_publication_applicables = [
