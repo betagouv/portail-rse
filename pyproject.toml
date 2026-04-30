@@ -20,6 +20,7 @@ dependencies = [
     "django-csp~=4.0",
     "sib-api-v3-sdk~=7.6.0",
     "openpyxl~=3.1.5",
+    "python-pptx~=1.0.2",
     "django-cors-headers~=4.7.0",
     "django-storages[s3]~=1.14.5",
     "filetype~=1.2",
