@@ -136,3 +136,27 @@ def test_export_pptx_d_un_champ_choix_binaire__forme_juridique(
                 shape.text_frame.paragraphs[1].runs[0].text
                 == "Société par actions simplifiée (SAS)"
             )
+
+
+def test_export_pptx_d_un_champ_choix_multiple(entreprise_factory, alice):
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
+    indicateur = Indicateur(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-e-ii",  # Code(s) NACE
+        data={"nace": ["03.11", "03.21", "03.30"]},
+    )
+    chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
+    presentation = Presentation(chemin_pptx)
+
+    export_pptx_exigence_de_publication(
+        EXIGENCES_DE_PUBLICATION["B1"], presentation, {"B1-24-e-ii": indicateur}
+    )
+
+    shapes = presentation.slides[4].shapes
+    for shape in shapes:
+        if shape.name == "B1-24-e-ii":
+            assert (
+                shape.text_frame.paragraphs[1].runs[0].text
+                == "Pêche en mer, Aquaculture en mer, Activités de soutien à la pêche et l’aquaculture"
+            )
