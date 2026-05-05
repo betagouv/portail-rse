@@ -165,7 +165,11 @@
                 "label": "Codes NACE",
                 "type": "choix_multiple",
                 "choix": "CHOIX_NACE",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 5,
+                    "shape": "B1-24-e-ii"
+                }
             }
         ],
         "export_xlsx": {
@@ -258,7 +262,11 @@
                 "label": "Pays",
                 "type": "choix_multiple",
                 "choix": "CHOIX_PAYS",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 5,
+                    "shape": "B1-24-e-vi"
+                }
             }
         ],
         "export_xlsx": {
