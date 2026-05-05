@@ -27,9 +27,9 @@ def _export_champ(champ, data, shape):
     type_indicateur = champ["type"]
     match type_indicateur:
         case "choix_multiple":
-            prochaine_cellule_destination = _export_choix_multiple(champ, data, shape)
+            _export_choix_multiple(champ, data, shape)
         case _:
-            prochaine_cellule_destination = _export_simple(champ, data, shape)
+            _export_simple(champ, data, shape)
 
 
 def _export_simple(champ, data, shape):
