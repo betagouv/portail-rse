@@ -323,7 +323,11 @@
                         "type": "geolocalisation",
                         "obligatoire": true
                     }
-                ]
+                ],
+                "export_pptx": {
+                    "diapo": 7,
+                    "shape": "B1-25"
+                }
             }
         ],
         "export_xlsx": {
