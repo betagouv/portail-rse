@@ -370,6 +370,7 @@ class CSRDReglementation(Reglementation):
                         " Vous pouvez déléguer cette obligation à votre société-mère."
                     )
             status_detail += " Vous devez publier le Rapport de Durabilité en même temps que le rapport de gestion."
+            status_detail += "<br>⚠️ À noter : la directive Omnibus I relève les seuils d'assujettissement à 1 000 salariés et 450 M€ de CA. Ces nouveaux seuils ne s'appliqueront qu'après transposition en droit français, attendue au plus tard le 19 mars 2027. Si vous ne dépassez pas ces deux seuils, vous pourriez ne plus être concerné. Cette page sera mise à jour dès la publication du texte français."
             # notes (FV):
             # AMA, ces aspects sont métiers et devraient êtres rattaché à l'objet métier correspondant
             # c.a.d `RapportCSRD`
