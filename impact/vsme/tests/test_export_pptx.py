@@ -160,3 +160,59 @@ def test_export_pptx_d_un_champ_choix_multiple(entreprise_factory, alice):
                 shape.text_frame.paragraphs[1].runs[0].text
                 == "Pêche en mer, Aquaculture en mer, Activités de soutien à la pêche et l’aquaculture"
             )
+
+
+def test_export_pptx_d_un_champ_tableau(entreprise_factory, alice):
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
+    indicateur = Indicateur(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-e-vii",  # Liste des sites
+        data={
+            "sites": [
+                {
+                    "id_site": 1,
+                    "nom_site": "usine",
+                    "adresse": "rue du secondaire",
+                    "code_postal": "1028",
+                    "ville": "Tirana",
+                    "pays": "ALB",
+                    "geolocalisation": "[1,2]",
+                },
+                {
+                    "id_site": 2,
+                    "nom_site": "bureaux",
+                    "adresse": "rue du tertiaire",
+                    "code_postal": "33000",
+                    "ville": "Bordeaux",
+                    "pays": "FRA",
+                    "geolocalisation": "[3,4]",
+                },
+            ]
+        },
+    )
+    chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
+    presentation = Presentation(chemin_pptx)
+
+    export_pptx_exigence_de_publication(
+        EXIGENCES_DE_PUBLICATION["B1"], presentation, {"B1-24-e-vii": indicateur}
+    )
+
+    shapes = presentation.slides[6].shapes
+    for shape in shapes:
+        if shape.name == "B1-25":
+            tableau = shape.table
+            assert tableau.cell(1, 0).text == "1"
+            assert tableau.cell(1, 1).text == "usine"
+            assert tableau.cell(1, 2).text == "rue du secondaire"
+            assert tableau.cell(1, 3).text == "1028"
+            assert tableau.cell(1, 4).text == "Tirana"
+            assert tableau.cell(1, 5).text == "ALBANIE"
+            assert tableau.cell(1, 6).text == "[1,2]"
+            assert tableau.cell(2, 0).text == "2"
+            assert tableau.cell(2, 1).text == "bureaux"
+            assert tableau.cell(2, 2).text == "rue du tertiaire"
+            assert tableau.cell(2, 3).text == "33000"
+            assert tableau.cell(2, 4).text == "Bordeaux"
+            assert tableau.cell(2, 5).text == "FRANCE"
+            assert tableau.cell(2, 6).text == "[3,4]"
