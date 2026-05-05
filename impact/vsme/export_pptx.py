@@ -28,6 +28,8 @@ def _export_champ(champ, data, shape):
     match type_indicateur:
         case "choix_multiple":
             _export_choix_multiple(champ, data, shape)
+        case "tableau":
+            _export_tableau(champ, data, shape)
         case _:
             _export_simple(champ, data, shape)
 
@@ -40,3 +42,11 @@ def _export_simple(champ, data, shape):
 def _export_choix_multiple(champ, data, shape):
     valeurs = (formate_valeur(valeur, champ) for valeur in data)
     shape.text_frame.paragraphs[1].runs[0].text = ", ".join(valeurs)
+
+
+def _export_tableau(champ, data, shape):
+    for index_ligne, ligne in enumerate(data, start=1):
+        for index_data, data in enumerate(ligne.values()):
+            schema_colonne = champ["colonnes"][index_data]
+            valeur = formate_valeur(data, schema_colonne)
+            shape.table.cell(index_ligne, index_data).text = str(valeur)
