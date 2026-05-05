@@ -18,7 +18,11 @@
                         "label": "Module complet"
                     }
                 ],
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 5,
+                    "shape": "B1-24-a"
+                }
             }
         ],
         "export_xlsx": {
@@ -62,7 +66,11 @@
                         "label": "Base consolidée"
                     }
                 ],
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 5,
+                    "shape": "B1-24-c"
+                }
             }
         ],
         "export_xlsx": {
@@ -127,12 +135,20 @@
                 "label": "Forme juridique de l'entreprise",
                 "type": "choix_unique",
                 "choix": "CHOIX_FORME_JURIDIQUE",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 5,
+                    "shape": "B1-24-e-i_forme_juridique"
+                }
             },
             {
                 "id": "coopérative",
                 "label": "L’entité déclarante est une coopérative.",
-                "type": "choix_binaire"
+                "type": "choix_binaire",
+                "export_pptx": {
+                    "diapo": 5,
+                    "shape": "B1-24-e-i_coopérative"
+                }
             }
         ],
         "export_xlsx": {
@@ -167,7 +183,12 @@
                 "description": "Unité : euros",
                 "type": "nombre_entier",
                 "unité": "euros",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 5,
+                    "shape": "B1-24-e-iii"
+                }
+
             }
         ],
         "export_xlsx": {
