@@ -24,5 +24,19 @@ def _export_indicateur(indicateur, presentation):
 
 
 def _export_champ(champ, data, shape):
+    type_indicateur = champ["type"]
+    match type_indicateur:
+        case "choix_multiple":
+            prochaine_cellule_destination = _export_choix_multiple(champ, data, shape)
+        case _:
+            prochaine_cellule_destination = _export_simple(champ, data, shape)
+
+
+def _export_simple(champ, data, shape):
     valeur = formate_valeur(data, champ)
     shape.text_frame.paragraphs[1].runs[0].text = str(valeur)
+
+
+def _export_choix_multiple(champ, data, shape):
+    valeurs = (formate_valeur(valeur, champ) for valeur in data)
+    shape.text_frame.paragraphs[1].runs[0].text = ", ".join(valeurs)
