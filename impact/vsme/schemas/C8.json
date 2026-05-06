@@ -77,7 +77,10 @@
                 "obligatoire": true
             }
         ],
-        "si_pertinent": "L'entreprise n'exerce pas d'activité dans les secteurs sensibles"
+        "si_pertinent": "L'entreprise n'exerce pas d'activité dans les secteurs sensibles",
+        "export_xlsx": {
+            "cellule": "A4"
+        }
     },
     "C8-64": {
         "titre": "Exclusion des indices de référence de l’Union Européenne (« Accord de Paris »)",
@@ -91,6 +94,9 @@
                 "type": "choix_binaire_radio",
                 "obligatoire": true
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "H4"
+        }
     }
 }

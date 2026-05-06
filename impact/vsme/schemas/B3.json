@@ -38,7 +38,10 @@
                     }
                 ]
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "A4"
+        }
     },
     "B3-29-p2": {
         "titre": "Consommation de combustibles",
@@ -216,7 +219,10 @@
                     }
                 ]
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "D5"
+        }
     },
     "B3-30-p1": {
         "titre": "Estimation des émissions brutes de GES des scopes 1 et 2",
@@ -264,7 +270,10 @@
                 "type": "nombre_decimal",
                 "calculé": true
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "R4"
+        }
     },
     "B3-30-p2": {
         "titre": "Estimation des émissions brutes de GES du scope 3",
@@ -374,6 +383,9 @@
                 ]
             }
         ],
-        "si_pertinent": true
+        "si_pertinent": true,
+        "export_xlsx": {
+            "cellule": "V4"
+        }
     }
 }

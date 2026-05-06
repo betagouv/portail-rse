@@ -20,7 +20,10 @@
                 ],
                 "obligatoire": true
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "A4"
+        }
     },
     "B1-24-b": {
         "titre": "Omission d’informations",
@@ -35,7 +38,10 @@
                 "obligatoire": true
             }
         ],
-        "si_pertinent": "Aucune information n'a été omise"
+        "si_pertinent": "Aucune information n'a été omise",
+        "export_xlsx": {
+            "cellule": "B4"
+        }
     },
     "B1-24-c": {
         "titre": "Type de périmètre",
@@ -58,7 +64,10 @@
                 ],
                 "obligatoire": true
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "C4"
+        }
     },
     "B1-24-d": {
         "titre": "Liste des filiales incluses dans le rapport",
@@ -103,7 +112,10 @@
                     }
                 ]
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "D4"
+        }
     },
     "B1-24-e-i": {
         "titre": "Forme juridique de l’entreprise",
@@ -122,7 +134,10 @@
                 "label": "L’entité déclarante est une coopérative.",
                 "type": "choix_binaire"
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "I4"
+        }
     },
     "B1-24-e-ii": {
         "titre": "Code(s) NACE de l’activité principale",
@@ -136,7 +151,10 @@
                 "choix": "CHOIX_NACE",
                 "obligatoire": true
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "K4"
+        }
     },
     "B1-24-e-iii": {
         "titre": "Total du bilan en euros",
@@ -151,7 +169,10 @@
                 "unité": "euros",
                 "obligatoire": true
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "L4"
+        }
     },
     "B1-24-e-iv": {
         "titre": "Chiffre d’affaires en euros",
@@ -167,7 +188,10 @@
                 "unité": "euros",
                 "obligatoire": true
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "M4"
+        }
     },
     "B1-24-e-v": {
         "titre": "Nombre de salariés",
@@ -198,7 +222,10 @@
                 "unité": "salariés",
                 "obligatoire": true
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "N4"
+        }
     },
     "B1-24-e-vi": {
         "titre": "Pays d’exercice",
@@ -212,7 +239,10 @@
                 "choix": "CHOIX_PAYS",
                 "obligatoire": true
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "P4"
+        }
     },
     "B1-24-e-vii": {
         "titre": "Liste des sites",
@@ -266,7 +296,10 @@
                     }
                 ]
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "Q4"
+        }
     },
    "B1-25": {
         "titre": "Certifications ou labels en matière de durabilité",
@@ -310,6 +343,9 @@
                 "obligatoire": true
             }
         ],
+        "export_xlsx": {
+            "cellule": "X4"
+        },
         "si_pertinent": true
     }
 }

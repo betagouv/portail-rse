@@ -11,7 +11,10 @@
                 "obligatoire": true
             }
         ],
-        "si_pertinent": true
+        "si_pertinent": true,
+        "export_xlsx": {
+            "cellule": "A4"
+        }
     },
     "B2-26-p2": {
         "titre": "Investissement dans l'économie sociale",
@@ -27,7 +30,10 @@
                 "obligatoire": true
             }
         ],
-        "si_pertinent": true
+        "si_pertinent": true,
+        "export_xlsx": {
+            "cellule": "B4"
+        }
     },
     "B2-26-p3": {
         "titre": "Limites statutaires à la distribution des profits",
@@ -41,7 +47,10 @@
                 "obligatoire": true
             }
         ],
-        "si_pertinent": true
+        "si_pertinent": true,
+        "export_xlsx": {
+            "cellule": "C4"
+        }
     },
     "B2-26": {
         "titre": "Déclaration des pratiques et politiques de durabilité",
@@ -73,6 +82,9 @@
                 "lignes": "THEMATIQUES_DURABILITE"
             }
         ],
-        "si_pertinent": true
+        "si_pertinent": true,
+        "export_xlsx": {
+            "cellule": "E5"
+        }
     }
 }

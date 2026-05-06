@@ -31,6 +31,9 @@
                 ],
                 "lignes": "THEMATIQUES_DURABILITE"
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "B5"
+        }
     }
 }

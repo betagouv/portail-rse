@@ -10,7 +10,10 @@
                 "type": "texte_long",
                 "obligatoire": true
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "A4"
+        }
     },
     "C1-47-b": {
         "titre": "Marchés sur lesquels l'entreprise exerce ses activités",
@@ -23,7 +26,10 @@
                 "type": "texte_long",
                 "obligatoire": true
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "B4"
+        }
     },
     "C1-47-c": {
         "titre": "Principales relations d'affaires",
@@ -37,7 +43,10 @@
                 "type": "texte_long",
                 "obligatoire": true
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "C4"
+        }
     },
     "C1-47-d": {
         "titre": "Éléments clés liés aux enjeux de durabilité",
@@ -51,6 +60,9 @@
                 "obligatoire": true
             }
         ],
-        "si_pertinent": true
+        "si_pertinent": true,
+        "export_xlsx": {
+            "cellule": "D4"
+        }
     }
 }

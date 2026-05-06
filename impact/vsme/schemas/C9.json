@@ -12,6 +12,9 @@
                 "obligatoire": true
             }
         ],
-        "si_pertinent": "L'entreprise ne dispose pas d'organe de gouvernance"
+        "si_pertinent": "L'entreprise ne dispose pas d'organe de gouvernance",
+        "export_xlsx": {
+            "cellule": "A4"
+        }
     }
 }
