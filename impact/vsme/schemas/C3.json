@@ -100,7 +100,10 @@
                 ]
             }
         ],
-        "si_pertinent": "L'entreprise n'a pas fixé des cibles de réduction des émissions de GES"
+        "si_pertinent": "L'entreprise n'a pas fixé des cibles de réduction des émissions de GES",
+        "export_xlsx": {
+            "cellule": "A4"
+        }
     },
     "C3-54-p2": {
         "titre": "Cibles de réduction des émissions de GES du scope 3",
@@ -246,7 +249,10 @@
                 ]
             }
         ],
-        "si_pertinent": "L'entreprise n'a pas fixé des cibles de réduction des émissions de GES pour le scope 3"
+        "si_pertinent": "L'entreprise n'a pas fixé des cibles de réduction des émissions de GES pour le scope 3",
+        "export_xlsx": {
+            "cellule": "I4"
+        }
     },
     "C3-55": {
         "titre": "Plan de transition climatique",
@@ -278,6 +284,9 @@
                 "type": "nombre_entier",
                 "min": 2025
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "M4"
+        }
     }
 }

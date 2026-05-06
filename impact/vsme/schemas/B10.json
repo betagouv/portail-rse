@@ -8,7 +8,10 @@
                 "label": "Tous les employés perçoivent une rémunération au moins équivalente au salaire minimum",
                 "type": "choix_binaire"
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "A4"
+        }
     },
     "B10-42-b": {
         "titre": "Écart de rémunération hommes/femmes",
@@ -42,6 +45,9 @@
                 "calculé": true
             }
         ],
+        "export_xlsx": {
+            "cellule": "B4"
+        },
         "si_pertinent": "Non applicable si l’entreprise emploie moins de 150 salariés, en notant que ce seuil sera ramené à 100 salariés à partir du 7 juin 2031."
     },
     "B10-42-c": {
@@ -86,7 +92,10 @@
                 ],
                 "calculé": true
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "E4"
+        }
     },
     "B10-42-d": {
         "titre": "Nombre moyen d'heures de formation par genre",
@@ -133,6 +142,9 @@
                     }
                 ]
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "H4"
+        }
     }
 }

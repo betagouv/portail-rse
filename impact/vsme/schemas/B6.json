@@ -20,7 +20,10 @@
                 "unité": "m3",
                 "obligatoire": true
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "A4"
+        }
     },
     "B6-36": {
         "titre": "Consommation d'eau",
@@ -36,6 +39,9 @@
                 "obligatoire": true
             }
         ],
-        "si_pertinent": "Les processus de production de l'entreprise n'entraînent pas une consommation d'eau importante"
+        "si_pertinent": "Les processus de production de l'entreprise n'entraînent pas une consommation d'eau importante",
+        "export_xlsx": {
+            "cellule": "C4"
+        }
     }
 }

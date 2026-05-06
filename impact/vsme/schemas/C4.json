@@ -59,7 +59,10 @@
                 ]
             }
         ],
-        "si_pertinent": "L'entreprise n'a pas recensé d'aléas ou d'événements liés au changement climatique entraînant des risques"
+        "si_pertinent": "L'entreprise n'a pas recensé d'aléas ou d'événements liés au changement climatique entraînant des risques",
+        "export_xlsx": {
+            "cellule": "A4"
+        }
     },
     "C4-58": {
         "titre": "Impacts financiers potentiels des risques climatiques",
@@ -125,6 +128,9 @@
                 "lignes": "RISQUES_CLIMATIQUES"
             }
         ],
-        "si_pertinent": true
+        "si_pertinent": true,
+        "export_xlsx": {
+            "cellule": "F4"
+        }
     }
 }

@@ -27,7 +27,10 @@
                     }
                 ]
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "A4"
+        }
     },
     "B8-39-b": {
         "titre": "Effectifs par genre",
@@ -65,7 +68,10 @@
                     }
                 ]
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "C4"
+        }
     },
     "B8-39-c": {
         "titre": "Effectifs par pays",
@@ -86,7 +92,10 @@
                 ],
                 "lignes": "PAYS"
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "G4"
+        }
     },
     "B8-40": {
         "titre": "Taux de rotation du personnel",
@@ -102,6 +111,9 @@
                 "obligatoire": true
             }
         ],
-        "si_pertinent": "Non applicable si l’entreprise emploie moins de 50 salariés"
+        "si_pertinent": "Non applicable si l’entreprise emploie moins de 50 salariés",
+        "export_xlsx": {
+            "cellule": "I4"
+        }
     }
 }

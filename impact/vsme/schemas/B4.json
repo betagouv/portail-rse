@@ -138,7 +138,10 @@
                 "obligatoire": true
             }
         ],
-        "si_pertinent": true
+        "si_pertinent": true,
+        "export_xlsx": {
+            "cellule": "A4"
+        }
     },
     "B4-32-p2": {
         "titre": "Pollution de l'eau",
@@ -279,7 +282,10 @@
                 "obligatoire": true
             }
         ],
-        "si_pertinent": true
+        "si_pertinent": true,
+        "export_xlsx": {
+            "cellule": "D4"
+        }
     },
     "B4-32-p3": {
         "titre": "Pollution des sols",
@@ -420,6 +426,9 @@
                 "obligatoire": true
             }
         ],
-        "si_pertinent": true
+        "si_pertinent": true,
+        "export_xlsx": {
+            "cellule": "G4"
+        }
     }
 }

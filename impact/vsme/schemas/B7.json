@@ -11,7 +11,10 @@
                 "obligatoire": true
             }
         ],
-        "si_pertinent": "L'entreprise n'applique pas de principe de l'économie circulaire"
+        "si_pertinent": "L'entreprise n'applique pas de principe de l'économie circulaire",
+        "export_xlsx": {
+            "cellule": "A4"
+        }
     },
     "B7-38-ab": {
         "titre": "Gestion des déchets",
@@ -146,7 +149,10 @@
                 "obligatoire": true
             }
         ],
-        "si_pertinent": "L'entreprise ne produit que des déchets ménagers"
+        "si_pertinent": "L'entreprise ne produit que des déchets ménagers",
+        "export_xlsx": {
+            "cellule": "B4"
+        }
     },
     "B7-38-c": {
         "titre": "Flux massique annuel des matières pertinentes utilisées",
@@ -194,6 +200,9 @@
                 "obligatoire": true
             }
         ],
-        "si_pertinent": "L’entreprise n'exerce pas d'activité dans un secteur utilisant des flux de matières importants (fabrication, construction, emballage ou autres)"
+        "si_pertinent": "L’entreprise n'exerce pas d'activité dans un secteur utilisant des flux de matières importants (fabrication, construction, emballage ou autres)",
+        "export_xlsx": {
+            "cellule": "H4"
+        }
     }
 }
