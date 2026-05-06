@@ -39,7 +39,10 @@
                 "type": "texte_long"
             }
         ],
-        "si_pertinent": "L'entreprise n'a pas confirmé d'incidents graves liés aux droits de l’homme au sein de son personnel"
+        "si_pertinent": "L'entreprise n'a pas confirmé d'incidents graves liés aux droits de l’homme au sein de son personnel",
+        "export_xlsx": {
+            "cellule": "A4"
+        }
     },
     "C7-62-c": {
         "titre": "Incidents graves en matière de droits de l’homme dans la chaîne de valeur et auprès des parties prenantes externes",
@@ -54,6 +57,9 @@
                 "obligatoire": true
             }
         ],
-        "si_pertinent": "L'entreprise n'a pas connaissance d’incidents confirmés impliquant des travailleurs de la chaîne de valeur, des communautés affectées, des consommateurs ou des utilisateurs finaux"
+        "si_pertinent": "L'entreprise n'a pas connaissance d’incidents confirmés impliquant des travailleurs de la chaîne de valeur, des communautés affectées, des consommateurs ou des utilisateurs finaux",
+        "export_xlsx": {
+            "cellule": "G4"
+        }
     }
 }

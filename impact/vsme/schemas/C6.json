@@ -40,7 +40,10 @@
                 "type": "texte"
             }
         ],
-        "si_pertinent": "L'entreprise ne dispose pas d’un code de conduite ou d’une politique en matière de droits de l’homme pour son personnel"
+        "si_pertinent": "L'entreprise ne dispose pas d’un code de conduite ou d’une politique en matière de droits de l’homme pour son personnel",
+        "export_xlsx": {
+            "cellule": "A4"
+        }
     },
     "C6-61-c": {
         "titre": "Mécanisme de traitement des plaintes pour le personnel",
@@ -53,6 +56,9 @@
                 "type": "choix_binaire_radio",
                 "obligatoire": true
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "G4"
+        }
     }
 }

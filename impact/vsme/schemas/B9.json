@@ -16,7 +16,10 @@
                 "type": "nombre_decimal",
                 "obligatoire": true
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "A4"
+        }
     },
     "B9-41b": {
         "titre": "Décès dus à des accidents du travail",
@@ -29,6 +32,9 @@
                 "type": "nombre_entier",
                 "obligatoire": true
             }
-        ]
+        ],
+        "export_xlsx": {
+            "cellule": "C4"
+        }
     }
 }

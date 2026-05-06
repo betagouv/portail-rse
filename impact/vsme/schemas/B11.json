@@ -12,7 +12,10 @@
                 "obligatoire": true
             }
         ],
-        "si_pertinent": true
+        "si_pertinent": true,
+        "export_xlsx": {
+            "cellule": "A4"
+        }
     },
     "B11-43-p2": {
         "titre": "Montant total des amendes infligées pour corruption",
@@ -28,6 +31,9 @@
                 "obligatoire": true
             }
         ],
-        "si_pertinent": true
+        "si_pertinent": true,
+        "export_xlsx": {
+            "cellule": "B4"
+        }
     }
 }

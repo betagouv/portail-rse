@@ -55,7 +55,10 @@
                 "obligatoire": true
             }
         ],
-        "si_pertinent": "L'entreprise ne dispose pas de sites situés dans ou à proximité de zones sensibles sur le plan de la biodiversité"
+        "si_pertinent": "L'entreprise ne dispose pas de sites situés dans ou à proximité de zones sensibles sur le plan de la biodiversité",
+        "export_xlsx": {
+            "cellule": "A4"
+        }
     },
     "B5-34": {
         "titre": "Affectation des terres",
@@ -112,6 +115,9 @@
                 ]
             }
         ],
-        "si_pertinent": true
+        "si_pertinent": true,
+        "export_xlsx": {
+            "cellule": "F4"
+        }
     }
 }

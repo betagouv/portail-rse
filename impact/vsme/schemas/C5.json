@@ -25,7 +25,10 @@
                 "calculé": true
             }
         ],
-        "si_pertinent": true
+        "si_pertinent": true,
+        "export_xlsx": {
+            "cellule": "A4"
+        }
     },
     "C5-60": {
         "titre": "Travailleurs indépendants et salariés temporaires",
@@ -45,6 +48,9 @@
                 "obligatoire": true
             }
         ],
-        "si_pertinent": true
+        "si_pertinent": true,
+        "export_xlsx": {
+            "cellule": "D4"
+        }
     }
 }
