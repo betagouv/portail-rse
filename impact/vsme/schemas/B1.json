@@ -118,7 +118,11 @@
                         "label": "Commentaire (facultatif)",
                         "type": "texte"
                     }
-                ]
+                ],
+                "export_pptx": {
+                    "diapo": 6,
+                    "shape": "B1-25"
+                }
             }
         ],
         "export_xlsx": {
@@ -211,7 +215,11 @@
                 "type": "nombre_entier",
                 "min": 0,
                 "unité": "euros",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 5,
+                    "shape": "B1-24-e-iv"
+                }
             }
         ],
         "export_xlsx": {
@@ -245,7 +253,11 @@
                 "label": "Nombre de salariés",
                 "type": "nombre_decimal",
                 "unité": "salariés",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 5,
+                    "shape": "B1-24-e-v_nombre_salaries"
+                }
             }
         ],
         "export_xlsx": {
@@ -373,7 +385,11 @@
                         "type": "texte"
                     }
                 ],
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 8,
+                    "shape": "B1-25"
+                }
             }
         ],
         "export_xlsx": {
