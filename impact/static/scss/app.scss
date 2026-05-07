@@ -92,6 +92,14 @@
         color: var(--text-default-error);
 }
 
+/* flexbox alignant les éléments contenus en bas à droite */
+.flexbox-right {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    gap: 0.5em;
+}
+
 /* custom nav */
 
 .header-collapse {
