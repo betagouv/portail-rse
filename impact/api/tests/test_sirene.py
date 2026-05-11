@@ -25,6 +25,7 @@ def test_api_recherche_unite_legale_par_siren_fonctionnelle():
         "denomination": "DIRECTION INTERMINISTERIELLE DU NUMERIQUE",
         "categorie_juridique_sirene": 7120,
         "code_pays_etranger_sirene": None,
+        "code_postal": None,
         "code_NAF": "84.11Z",
     }
 

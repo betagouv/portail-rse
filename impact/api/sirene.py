@@ -21,7 +21,7 @@ SIRENE_TIMEOUT = 3
 
 
 def recherche_unite_legale_par_siren(siren):
-    # documentation api sirene 3.11 https://www.sirene.fr/static-resources/documentation/sommaire_311.html
+    # documentation api sirene 3.11 https://portail-api.insee.fr/catalog/api/2ba0e549-5587-3ef1-9082-99cd865de66f/doc
     url = f"https://api.insee.fr/api-sirene/3.11/siren/{siren}?date={date.today().isoformat()}"
     try:
         response = requests.get(
@@ -75,6 +75,8 @@ def recherche_unite_legale_par_siren(siren):
                 "denomination": denomination,
                 "categorie_juridique_sirene": categorie_juridique_sirene,
                 "code_pays_etranger_sirene": None,
+                # L'API sirene ne renseigne pas le code postal du siège (bien récupéré par l'API recherche entreprises). Ce dernier est seulement utilisé pour du bizdev/stats donc sans réel impact si absent.
+                "code_postal": None,
                 "code_NAF": code_NAF,
             }
         case 404:
