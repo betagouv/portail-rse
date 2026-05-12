@@ -1,10 +1,13 @@
 from vsme.export_xlsx import formate_valeur
 
 
-def export_pptx_exigence_de_publication(
-    exigence_de_publication, presentation, indicateurs_par_schema_id
-):
-    for schema_id, indicateur in indicateurs_par_schema_id.items():
+def export_rapport_vsme(rapport_vsme, presentation):
+    indicateurs = rapport_vsme.indicateurs.all()
+    export_indicateurs(indicateurs, presentation)
+
+
+def export_indicateurs(indicateurs, presentation):
+    for indicateur in indicateurs:
         _export_indicateur(indicateur, presentation)
 
 
