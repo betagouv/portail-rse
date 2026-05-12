@@ -42,3 +42,6 @@ dev = [
     "exceptiongroup~=1.2.2; python_version < '3.13'",
     "django-extensions",
 ]
+
+[tool.uv]
+exclude-newer = "30 days"
