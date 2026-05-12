@@ -22,7 +22,7 @@ from reglementations.utils import VSMEReglementation
 from reglementations.views import tableau_de_bord_menu_context
 from utils.pptx import pptx_response
 from utils.xlsx import xlsx_response
-from vsme.export_pptx import export_pptx_exigence_de_publication
+from vsme.export_pptx import export_rapport_vsme
 from vsme.export_xlsx import export_exigence_de_publication
 from vsme.forms import create_multiform_from_schema
 from vsme.forms import NON_PERTINENT_FIELD_NAME
@@ -430,16 +430,7 @@ def export_vsme_xlsx(request, rapport_vsme):
 @login_required
 @rapport_vsme_requis
 def export_vsme_pptx(request, rapport_vsme):
-    indicateurs_par_schema_id = {}
-    for indicateur in rapport_vsme.indicateurs.all():
-        indicateurs_par_schema_id[indicateur.schema_id] = indicateur
-
     chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
     presentation = Presentation(chemin_pptx)
-
-    for exigence_de_publication in EXIGENCES_DE_PUBLICATION:
-        export_pptx_exigence_de_publication(
-            exigence_de_publication, presentation, indicateurs_par_schema_id
-        )
-
+    export_rapport_vsme(rapport_vsme, presentation)
     return pptx_response(presentation, "vsme.pptx")

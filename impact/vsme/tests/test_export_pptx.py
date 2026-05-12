@@ -4,8 +4,7 @@ from django.conf import settings
 from django.urls import reverse
 from pptx import Presentation
 
-from vsme.export_pptx import export_pptx_exigence_de_publication
-from vsme.models import EXIGENCES_DE_PUBLICATION
+from vsme.export_pptx import export_indicateurs
 from vsme.models import Indicateur
 from vsme.models import RapportVSME
 
@@ -60,9 +59,7 @@ def test_export_pptx_d_un_champ_nombre_entier(entreprise_factory, alice):
     chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
     presentation = Presentation(chemin_pptx)
 
-    export_pptx_exigence_de_publication(
-        EXIGENCES_DE_PUBLICATION["B1"], presentation, {"B1-24-e-iii": indicateur}
-    )
+    export_indicateurs([indicateur], presentation)
 
     shapes = presentation.slides[4].shapes
     for shape in shapes:
@@ -81,9 +78,7 @@ def test_export_pptx_d_un_champ_choix_unique(entreprise_factory, alice):
     chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
     presentation = Presentation(chemin_pptx)
 
-    export_pptx_exigence_de_publication(
-        EXIGENCES_DE_PUBLICATION["B1"], presentation, {"B1-24-a": indicateur}
-    )
+    export_indicateurs([indicateur], presentation)
 
     shapes = presentation.slides[4].shapes
     for shape in shapes:
@@ -102,9 +97,7 @@ def test_export_pptx_d_un_champ_choix_binaire(entreprise_factory, alice):
     chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
     presentation = Presentation(chemin_pptx)
 
-    export_pptx_exigence_de_publication(
-        EXIGENCES_DE_PUBLICATION["B1"], presentation, {"B1-24-e-i": indicateur}
-    )
+    export_indicateurs([indicateur], presentation)
 
     shapes = presentation.slides[4].shapes
     for shape in shapes:
@@ -125,9 +118,7 @@ def test_export_pptx_d_un_champ_choix_binaire__forme_juridique(
     chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
     presentation = Presentation(chemin_pptx)
 
-    export_pptx_exigence_de_publication(
-        EXIGENCES_DE_PUBLICATION["B1"], presentation, {"B1-24-e-i": indicateur}
-    )
+    export_indicateurs([indicateur], presentation)
 
     shapes = presentation.slides[4].shapes
     for shape in shapes:
@@ -149,9 +140,7 @@ def test_export_pptx_d_un_champ_choix_multiple(entreprise_factory, alice):
     chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
     presentation = Presentation(chemin_pptx)
 
-    export_pptx_exigence_de_publication(
-        EXIGENCES_DE_PUBLICATION["B1"], presentation, {"B1-24-e-ii": indicateur}
-    )
+    export_indicateurs([indicateur], presentation)
 
     shapes = presentation.slides[4].shapes
     for shape in shapes:
@@ -194,9 +183,7 @@ def test_export_pptx_d_un_champ_tableau(entreprise_factory, alice):
     chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
     presentation = Presentation(chemin_pptx)
 
-    export_pptx_exigence_de_publication(
-        EXIGENCES_DE_PUBLICATION["B1"], presentation, {"B1-24-e-vii": indicateur}
-    )
+    export_indicateurs([indicateur], presentation)
 
     shapes = presentation.slides[6].shapes
     for shape in shapes:
