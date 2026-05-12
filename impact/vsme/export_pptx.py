@@ -1,9 +1,19 @@
+from utils.pptx import find_shape
+from utils.pptx import remove_shape
 from vsme.export_xlsx import formate_valeur
 
 
 def export_rapport_vsme(rapport_vsme, presentation):
     indicateurs = rapport_vsme.indicateurs.all()
     export_indicateurs(indicateurs, presentation)
+
+
+def export_sommaire(rapport_vsme, presentation):
+    if rapport_vsme.choix_module == "base":
+        NUMERO_DIAPO_SOMMAIRE = 3
+        shapes = presentation.slides[NUMERO_DIAPO_SOMMAIRE - 1].shapes
+        shape = find_shape(shapes, "Round Same-side Corner of Rectangle 21")
+        remove_shape(shape)
 
 
 def export_indicateurs(indicateurs, presentation):

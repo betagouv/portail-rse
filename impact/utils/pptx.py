@@ -15,3 +15,17 @@ def pptx_response(presentation, filename):
     response["Content-Disposition"] = f"filename={filename}"
 
     return response
+
+
+def find_shape(shapes, name):
+    for shape in shapes:
+        if shape.name == name:
+            return shape
+        if shape.shape_type == 6:  # GROUPE
+            result = find_shape(shape.shapes, name)
+            if result:
+                return result
+
+
+def remove_shape(shape):
+    shape._element.getparent().remove(shape._element)

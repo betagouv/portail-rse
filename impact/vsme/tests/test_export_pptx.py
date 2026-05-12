@@ -1,10 +1,13 @@
 from pathlib import Path
 
+import pytest
 from django.conf import settings
 from django.urls import reverse
 from pptx import Presentation
 
 from vsme.export_pptx import export_indicateurs
+from vsme.export_pptx import export_sommaire
+from vsme.export_pptx import find_shape
 from vsme.models import Indicateur
 from vsme.models import RapportVSME
 
@@ -45,6 +48,32 @@ def test_telechargement_d_un_rapport_vsme_au_format_pptx(
     assert (
         response["content-type"]
         == "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    )
+
+
+@pytest.mark.parametrize(
+    "visibilite_selon_module", [("base", False), ("complet", True)]
+)
+def test_export_du_sommaire_pptx_selon_le_module_selectionné(
+    visibilite_selon_module, entreprise_factory, alice
+):
+    choix_module, visibilite = visibilite_selon_module
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
+    indicateur = Indicateur(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-a",  # choix du module
+        data={"choix_module": choix_module},
+    )
+    indicateur.save()
+    chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
+    presentation = Presentation(chemin_pptx)
+
+    export_sommaire(rapport_vsme, presentation)
+
+    shapes = presentation.slides[2].shapes
+    assert (
+        bool(find_shape(shapes, "Round Same-side Corner of Rectangle 21")) == visibilite
     )
 
 
