@@ -5,6 +5,8 @@ from django.conf import settings
 from django.urls import reverse
 from pptx import Presentation
 from pptx.dml.color import RGBColor
+from pptx.enum.text import PP_ALIGN
+from pptx.util import Pt
 
 from vsme.export_pptx import export_indicateurs
 from vsme.export_pptx import export_sommaire
@@ -309,4 +311,5 @@ def test_export_pptx_d_un_champ_tableau_à_lignes_fixes(entreprise_factory, alic
             para_non = tableau.cell(1, 1).text_frame.paragraphs[0]
             assert para_oui.font.color.rgb == RGBColor(0x14, 0x5C, 0x30)
             assert para_non.font.color.rgb == RGBColor(0xC0, 0x00, 0x00)
-            assert para_oui.alignment == para_non.alignment  # centré
+            assert para_oui.alignment == para_non.alignment == PP_ALIGN.CENTER
+            assert para_oui.font.size == para_non.font.size == Pt(10)
