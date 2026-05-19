@@ -232,3 +232,73 @@ def test_export_pptx_d_un_champ_tableau(entreprise_factory, alice):
             assert tableau.cell(2, 4).text == "Bordeaux"
             assert tableau.cell(2, 5).text == "FRANCE"
             assert tableau.cell(2, 6).text == "[3,4]"
+
+
+def test_export_pptx_d_un_champ_tableau_à_lignes_fixes(entreprise_factory, alice):
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
+    indicateur = Indicateur(
+        rapport_vsme=rapport_vsme,
+        schema_id="B2-26",  # Déclaration des pratiques et politiques de durabilité
+        data={
+            "non_pertinent": False,
+            "declaration_durabilite": {
+                "changement_climatique": {
+                    "pratiques": False,
+                    "accessibles": False,
+                    "cibles": True,
+                },
+                "pollution": {"pratiques": True, "accessibles": True, "cibles": False},
+                "eau": {"pratiques": False, "accessibles": False, "cibles": True},
+                "biodiversite": {
+                    "pratiques": True,
+                    "accessibles": True,
+                    "cibles": False,
+                },
+                "economie_circulaire": {
+                    "pratiques": False,
+                    "accessibles": False,
+                    "cibles": True,
+                },
+                "personnel": {"pratiques": True, "accessibles": True, "cibles": False},
+                "travailleurs": {
+                    "pratiques": False,
+                    "accessibles": False,
+                    "cibles": True,
+                },
+                "communautes": {
+                    "pratiques": True,
+                    "accessibles": True,
+                    "cibles": False,
+                },
+                "consommateurs": {
+                    "pratiques": False,
+                    "accessibles": False,
+                    "cibles": True,
+                },
+                "conduite_affaires": {
+                    "pratiques": True,
+                    "accessibles": True,
+                    "cibles": False,
+                },
+            },
+        },
+    )
+    chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
+    presentation = Presentation(chemin_pptx)
+
+    export_indicateurs([indicateur], presentation)
+
+    shapes = presentation.slides[11].shapes
+    for shape in shapes:
+        if shape.name == "Table 5":
+            tableau = shape.table
+            assert tableau.cell(1, 0).text == "Changement climatique"
+            assert tableau.cell(1, 1).text == "NON"
+            assert tableau.cell(1, 2).text == "NON"
+            assert tableau.cell(1, 3).text == "OUI"
+            assert tableau.cell(2, 0).text == "Pollution"
+            assert tableau.cell(2, 1).text == "OUI"
+            assert tableau.cell(2, 2).text == "OUI"
+            assert tableau.cell(2, 3).text == "NON"
+    assert False
