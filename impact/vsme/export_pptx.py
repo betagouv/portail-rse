@@ -1,3 +1,7 @@
+from pptx.dml.color import RGBColor
+from pptx.enum.text import PP_ALIGN
+from pptx.util import Pt
+
 from utils.pptx import find_shape
 from utils.pptx import remove_shape
 from vsme.export_xlsx import formate_valeur
@@ -87,7 +91,22 @@ def _export_tableau_lignes_fixes(champ, data, shape):
                 offset_ligne = lignes_ids.index(id_ligne)
                 for id_colonne, data_cellule in data_ligne.items():
                     offset_colonne = colonnes_ids.index(id_colonne)
-                    valeur = formate_valeur(data_cellule, colonnes[offset_colonne])
+                    champ = colonnes[offset_colonne]
+                    valeur = formate_valeur(data_cellule, champ)
                     index_ligne = offset_ligne + 1
                     index_colonne = offset_colonne + 1
-                    shape.table.cell(index_ligne, index_colonne).text = str(valeur)
+                    cell = shape.table.cell(index_ligne, index_colonne)
+                    cell.text = str(valeur)
+                    _appliquer_style_cellule(cell, data_cellule, champ)
+
+
+def _appliquer_style_cellule(cell, data_cellule, champ):
+    ROUGE = RGBColor(192, 0, 0)
+    VERT = RGBColor(20, 92, 48)
+    for para in cell.text_frame.paragraphs:
+        para.alignment = PP_ALIGN.CENTER
+        para.font.size = Pt(10)
+        if data_cellule:
+            para.font.color.rgb = VERT
+        else:
+            para.font.color.rgb = ROUGE

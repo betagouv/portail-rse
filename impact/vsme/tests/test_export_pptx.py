@@ -4,6 +4,7 @@ import pytest
 from django.conf import settings
 from django.urls import reverse
 from pptx import Presentation
+from pptx.dml.color import RGBColor
 
 from vsme.export_pptx import export_indicateurs
 from vsme.export_pptx import export_sommaire
@@ -304,4 +305,8 @@ def test_export_pptx_d_un_champ_tableau_à_lignes_fixes(entreprise_factory, alic
             assert tableau.cell(2, 1).text == "OUI"
             assert tableau.cell(2, 2).text == "OUI"
             assert tableau.cell(2, 3).text == "NON"
-    assert False
+            para_oui = tableau.cell(1, 3).text_frame.paragraphs[0]
+            para_non = tableau.cell(1, 1).text_frame.paragraphs[0]
+            assert para_oui.font.color.rgb == RGBColor(0x14, 0x5C, 0x30)
+            assert para_non.font.color.rgb == RGBColor(0xC0, 0x00, 0x00)
+            assert para_oui.alignment == para_non.alignment  # centré
