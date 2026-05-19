@@ -79,7 +79,11 @@
                         "type": "choix_binaire_radio"
                     }
                 ],
-                "lignes": "THEMATIQUES_DURABILITE"
+                "lignes": "THEMATIQUES_DURABILITE",
+                "export_pptx": {
+                    "diapo": 12,
+                    "shape": "Table 5"
+                }
             }
         ],
         "si_pertinent": true,
