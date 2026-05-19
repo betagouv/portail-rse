@@ -1,6 +1,7 @@
 from utils.pptx import find_shape
 from utils.pptx import remove_shape
 from vsme.export_xlsx import formate_valeur
+from vsme.forms import THEMATIQUES_DURABILITE
 
 
 def export_rapport_vsme(rapport_vsme, presentation):
@@ -43,6 +44,8 @@ def _export_champ(champ, data, shape):
             _export_choix_multiple(champ, data, shape)
         case "tableau":
             _export_tableau(champ, data, shape)
+        case "tableau_lignes_fixes":
+            _export_tableau_lignes_fixes(champ, data, shape)
         case _:
             _export_simple(champ, data, shape)
 
@@ -63,3 +66,24 @@ def _export_tableau(champ, data, shape):
             schema_colonne = champ["colonnes"][index_data]
             valeur = formate_valeur(data, schema_colonne)
             shape.table.cell(index_ligne, index_data).text = str(valeur)
+
+
+def _export_tableau_lignes_fixes(champ, data, shape):
+    lignes = champ["lignes"]
+    colonnes = champ["colonnes"]
+    match lignes:
+        case "THEMATIQUES_DURABILITE" | list():
+            colonnes_ids = [colonne["id"] for colonne in colonnes]
+            if lignes == "THEMATIQUES_DURABILITE":
+                lignes_ids = list(THEMATIQUES_DURABILITE.keys())
+            else:
+                lignes_ids = [ligne["id"] for ligne in lignes]
+
+            for id_ligne, data_ligne in data.items():
+                offset_ligne = lignes_ids.index(id_ligne)
+                for id_colonne, data_cellule in data_ligne.items():
+                    offset_colonne = colonnes_ids.index(id_colonne)
+                    valeur = formate_valeur(data_cellule, colonnes[offset_colonne])
+                    index_ligne = offset_ligne + 1
+                    index_colonne = offset_colonne + 1
+                    shape.table.cell(index_ligne, index_colonne).text = str(valeur)
