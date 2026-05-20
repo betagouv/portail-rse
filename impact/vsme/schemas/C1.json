@@ -8,7 +8,11 @@
                 "id": "produits_et_services",
                 "label": "Description des grands groupes de produits et/ou services proposés",
                 "type": "texte_long",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 14,
+                    "shape": "Rounded Rectangle 1"
+                }
             }
         ],
         "export_xlsx": {
@@ -24,7 +28,11 @@
                 "id": "marches",
                 "label": "Description des grands marchés sur lesquels l'entreprise exerce ses activités",
                 "type": "texte_long",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 14,
+                    "shape": "Rounded Rectangle 10"
+                }
             }
         ],
         "export_xlsx": {
@@ -41,7 +49,11 @@
                 "label": "Description des principales relations d’affaires",
                 "description": "Pour décrire les principales relations avec les consommateurs et les fournisseurs, l’entreprise indique le nombre estimé de fournisseurs, ainsi que les secteurs et régions géographiques correspondants (c’est-à-dire les pays).",
                 "type": "texte_long",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 15,
+                    "shape": "Rounded Rectangle 1"
+                }
             }
         ],
         "export_xlsx": {
@@ -57,7 +69,11 @@
                 "id": "strategie_durabilite",
                 "label": "Description des éléments clés liés aux enjeux de durabilité",
                 "type": "texte_long",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 15,
+                    "shape": "Rounded Rectangle 10"
+                }
             }
         ],
         "si_pertinent": true,
