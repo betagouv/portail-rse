@@ -6,6 +6,7 @@ from vsme.forms import THEMATIQUES_DURABILITE
 
 def export_rapport_vsme(rapport_vsme, presentation):
     indicateurs = rapport_vsme.indicateurs.all()
+    export_sommaire(rapport_vsme, presentation)
     export_indicateurs(indicateurs, presentation)
 
 
@@ -13,8 +14,11 @@ def export_sommaire(rapport_vsme, presentation):
     if rapport_vsme.choix_module == "base":
         NUMERO_DIAPO_SOMMAIRE = 3
         shapes = presentation.slides[NUMERO_DIAPO_SOMMAIRE - 1].shapes
-        shape = find_shape(shapes, "Round Same-side Corner of Rectangle 21")
-        remove_shape(shape)
+        for num_shape in ("22", "23", "39", "40", "47", "48", "49", "54", "55", "56"):
+            shape = find_shape(
+                shapes, f"Round Same-side Corner of Rectangle {num_shape}"
+            )
+            remove_shape(shape)
 
 
 def export_indicateurs(indicateurs, presentation):
