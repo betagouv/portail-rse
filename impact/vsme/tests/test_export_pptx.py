@@ -73,7 +73,10 @@ def test_export_du_sommaire_pptx_selon_le_module_selectionné(
 
     shapes = presentation.slides[2].shapes
     assert (
-        bool(find_shape(shapes, "Round Same-side Corner of Rectangle 21")) == visibilite
+        bool(find_shape(shapes, "Round Same-side Corner of Rectangle 22")) == visibilite
+    )
+    assert (
+        bool(find_shape(shapes, "Round Same-side Corner of Rectangle 23")) == visibilite
     )
 
 
