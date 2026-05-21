@@ -601,7 +601,7 @@ def test_synchronise_les_rapports_VSME_de_différentes_entreprises(
     assert not metabase_vsme_vide.premier_indicateur_cree_le
     assert metabase_vsme_vide.statut == MetabaseVSME.STATUT_EN_COURS
     assert metabase_vsme_vide.nb_indicateurs_completes == 0
-    assert metabase_vsme_vide.choix_module == RapportVSME.CHOIX_MODULE_PAR_DEFAUT
+    assert not metabase_vsme_vide.choix_module
     assert metabase_vsme_vide.progression == 0
     for code in EXIGENCES_DE_PUBLICATION:
         assert getattr(metabase_vsme_vide, f"progression_{code}") == 0
@@ -629,7 +629,7 @@ def test_synchronise_les_rapports_VSME_de_différentes_entreprises(
     )
     assert metabase_vsme_terminee.statut == MetabaseVSME.STATUT_A_JOUR
     assert metabase_vsme_terminee.nb_indicateurs_completes > 1
-    assert metabase_vsme_terminee.choix_module == RapportVSME.CHOIX_MODULE_PAR_DEFAUT
+    assert not metabase_vsme_terminee.choix_module
     assert metabase_vsme_terminee.progression == 100
     for code in EXIGENCES_DE_PUBLICATION:
         assert getattr(metabase_vsme_terminee, f"progression_{code}") == 100
