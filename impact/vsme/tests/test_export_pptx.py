@@ -102,6 +102,26 @@ def test_export_pptx_d_un_champ_nombre_entier(entreprise_factory, alice):
             assert shape.text_frame.paragraphs[1].runs[0].text == "12345"
 
 
+def test_export_pptx_d_un_champ_texte_long(entreprise_factory, alice):
+    """il peut avoir des 'paragraphs' vides à la fin qu'il faut ignorer"""
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
+    indicateur = Indicateur(
+        rapport_vsme=rapport_vsme,
+        schema_id="B7-37",  # Principes de l'économie circulaire
+        data={"non_pertinent": False, "economie_circulaire": "PRINCIPES"},
+    )
+    chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
+    presentation = Presentation(chemin_pptx)
+
+    export_indicateurs([indicateur], presentation)
+
+    shapes = presentation.slides[37].shapes
+    for shape in shapes:
+        if shape.name == "Rounded Rectangle 8":
+            assert shape.text_frame.paragraphs[1].runs[0].text == "PRINCIPES"
+
+
 def test_export_pptx_d_un_champ_choix_unique(entreprise_factory, alice):
     entreprise = entreprise_factory(utilisateur=alice)
     rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
