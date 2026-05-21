@@ -385,6 +385,7 @@ class Command(BaseCommand):
                 premier_indicateur_cree_le=Min("indicateurs__created_at"),
             )
             .filter(entreprise_id=entreprise.id)
+            .prefetch_related("indicateurs")
             .order_by("-annee")
         ):
             cree_le = rapport.created_at
