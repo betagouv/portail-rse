@@ -238,6 +238,8 @@ def test_export_pptx_d_un_champ_tableau(entreprise_factory, alice):
             assert tableau.cell(2, 4).text == "Bordeaux"
             assert tableau.cell(2, 5).text == "FRANCE"
             assert tableau.cell(2, 6).text == "[3,4]"
+            paragraph = tableau.cell(2, 6).text_frame.paragraphs[0]
+            assert paragraph.font.size == Pt(10)
 
 
 def test_export_pptx_d_un_champ_tableau_à_lignes_fixes(entreprise_factory, alice):
