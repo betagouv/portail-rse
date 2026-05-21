@@ -250,6 +250,14 @@ class RapportVSME(TimestampedModel):
     def exercice(self):
         return self.entreprise.exercice_par_annee_cloture(self.annee)
 
+    @cached_property
+    def _indicateurs_par_schema_id(self):
+        # Construit un index en mémoire à partir de self.indicateurs.all() afin que
+        # les lookups par schema_id soient gratuits quand le prefetch est en place.
+        return {
+            indicateur.schema_id: indicateur for indicateur in self.indicateurs.all()
+        }
+
     def indicateurs_applicables_par_exigence(self, exigence_de_publication):
         exigence_de_publication_schema = exigence_de_publication.load_json_schema()
         indicateurs_applicables = [
@@ -279,16 +287,14 @@ class RapportVSME(TimestampedModel):
                 return (False, explication_non_applicable)
         match indicateur_schema_id.split("-"):
             case ["B1", "24", "d"]:  # indicateur liste filiales
-                indicateur_type_de_perimetre = "B1-24-c"
-                try:
-                    base_consolidee = (
-                        self.indicateurs.get(
-                            schema_id=indicateur_type_de_perimetre
-                        ).data.get("type_perimetre")
-                        == "consolidee"
-                    )
-                except ObjectDoesNotExist:
-                    base_consolidee = False
+                indicateur_type_de_perimetre = self._indicateurs_par_schema_id.get(
+                    "B1-24-c"
+                )
+                base_consolidee = (
+                    indicateur_type_de_perimetre
+                    and indicateur_type_de_perimetre.data.get("type_perimetre")
+                    == "consolidee"
+                )
                 if not base_consolidee:
                     B1_url = reverse(
                         "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
@@ -296,16 +302,16 @@ class RapportVSME(TimestampedModel):
                     explication_non_applicable = f"l'entreprise n'a pas sélectionné une base consolidée dans <a class='fr-link' href='{B1_url}' target='_blank' rel='noopener external'>l'indicateur « Type de périmètre » de B1</a>"
                     return (False, explication_non_applicable)
             case ["B2", "26", p]:  # indicateurs spécifiques aux coopératives
-                indicateur_forme_juridique = "B1-24-e-i"
-                try:
-                    forme_juridique = self.indicateurs.get(
-                        schema_id=indicateur_forme_juridique
-                    ).data
+                indicateur_forme_juridique = self._indicateurs_par_schema_id.get(
+                    "B1-24-e-i"
+                )
+                if not indicateur_forme_juridique:
+                    est_cooperative = False
+                else:
+                    forme_juridique = indicateur_forme_juridique.data
                     est_cooperative = forme_juridique.get(
                         "coopérative"
                     ) or forme_juridique.get("forme_juridique") in ("51", "63")
-                except ObjectDoesNotExist:
-                    est_cooperative = False
                 if not est_cooperative:
                     B1_url = reverse(
                         "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
@@ -325,32 +331,27 @@ class RapportVSME(TimestampedModel):
                 "54",
                 "p2",
             ]:  # indicateur cibles de réduction des émissions de GES scope 3
-                try:
-                    indicateur_emissions_GES_scope_3 = self.indicateurs.get(
-                        schema_id="B3-30-p2"
-                    )
-                    publie_emissions_GES_scope_3 = (
-                        not indicateur_emissions_GES_scope_3.est_non_pertinent
-                    )
-                except ObjectDoesNotExist:
-                    publie_emissions_GES_scope_3 = False
+                indicateur_emissions_GES_scope_3 = self._indicateurs_par_schema_id.get(
+                    "B3-30-p2"
+                )
+                publie_emissions_GES_scope_3 = (
+                    indicateur_emissions_GES_scope_3
+                    and not indicateur_emissions_GES_scope_3.est_non_pertinent
+                )
                 if publie_emissions_GES_scope_3:
-                    try:
-                        indicateur_cibles_reduction_scopes_1_2 = self.indicateurs.get(
-                            schema_id="C3-54-p1"
+                    indicateur_cibles_reduction_scopes_1_2 = (
+                        self._indicateurs_par_schema_id.get("C3-54-p1")
+                    )
+                    if (
+                        indicateur_cibles_reduction_scopes_1_2
+                        and indicateur_cibles_reduction_scopes_1_2.est_non_pertinent
+                    ):
+                        C3_url = reverse(
+                            "vsme:exigence_de_publication_vsme",
+                            args=[self.id, "C3"],
                         )
-                        pas_de_cibles = (
-                            indicateur_cibles_reduction_scopes_1_2.est_non_pertinent
-                        )
-                        if pas_de_cibles:
-                            C3_url = reverse(
-                                "vsme:exigence_de_publication_vsme",
-                                args=[self.id, "C3"],
-                            )
-                            explication_non_applicable = f"l'entreprise n'a pas fixé de cibles de réduction des émissions de GES dans <a class='fr-link' href='{C3_url}' target='_blank' rel='noopener external'>l'indicateur « Cibles de réduction des émissions de GES des scopes 1 et 2 » de C3</a>"
-                            return (False, explication_non_applicable)
-                    except ObjectDoesNotExist:
-                        pass
+                        explication_non_applicable = f"l'entreprise n'a pas fixé de cibles de réduction des émissions de GES dans <a class='fr-link' href='{C3_url}' target='_blank' rel='noopener external'>l'indicateur « Cibles de réduction des émissions de GES des scopes 1 et 2 » de C3</a>"
+                        return (False, explication_non_applicable)
                 else:
                     B3_url = reverse(
                         "vsme:exigence_de_publication_vsme", args=[self.id, "B3"]
@@ -360,28 +361,24 @@ class RapportVSME(TimestampedModel):
                 "C2",
                 "48",
             ]:  # indicateur description des pratiques et politiques de durabilité
-                try:
-                    indicateur_declaration_durabilite = self.indicateurs.get(
-                        schema_id="B2-26"
-                    )
-                    if indicateur_declaration_durabilite.est_non_pertinent:
-                        au_moins_une_pratique_declaree = False
-                    else:
-                        declaration_durabilite = (
-                            indicateur_declaration_durabilite.data.get(
-                                "declaration_durabilite", {}
-                            )
-                        )
-                        au_moins_une_pratique_declaree = any(
-                            [
-                                bool(
-                                    declaration_durabilite[thematique].get("pratiques")
-                                )
-                                for thematique in declaration_durabilite
-                            ]
-                        )
-                except ObjectDoesNotExist:
+                indicateur_declaration_durabilite = self._indicateurs_par_schema_id.get(
+                    "B2-26"
+                )
+                if (
+                    not indicateur_declaration_durabilite
+                    or indicateur_declaration_durabilite.est_non_pertinent
+                ):
                     au_moins_une_pratique_declaree = False
+                else:
+                    declaration_durabilite = indicateur_declaration_durabilite.data.get(
+                        "declaration_durabilite", {}
+                    )
+                    au_moins_une_pratique_declaree = any(
+                        [
+                            bool(declaration_durabilite[thematique].get("pratiques"))
+                            for thematique in declaration_durabilite
+                        ]
+                    )
                 if not au_moins_une_pratique_declaree:
                     B2_url = reverse(
                         "vsme:exigence_de_publication_vsme", args=[self.id, "B2"]
@@ -407,13 +404,15 @@ class RapportVSME(TimestampedModel):
         return (True, "")
 
     def indicateurs_completes_par_exigence(self, exigence_de_publication):
-        return self.indicateurs.filter(
-            schema_id__startswith=exigence_de_publication.code
-        ).values_list("schema_id", flat=True)
+        return [
+            schema_id
+            for schema_id in self._indicateurs_par_schema_id
+            if schema_id.startswith(exigence_de_publication.code)
+        ]
 
     @cached_property
     def indicateurs_completes(self):
-        return self.indicateurs.values_list("schema_id", flat=True)
+        return list(self._indicateurs_par_schema_id)
 
     def progression_par_exigence(self, exigence_de_publication):
         indicateurs_exigences = set(exigence_de_publication.indicateurs())
@@ -474,62 +473,46 @@ class RapportVSME(TimestampedModel):
                 return exigences_de_publication_module_complet
 
     def get_choix_module(self) -> str | None:
-        indicateur_choix_module = "B1-24-a"
-        try:
-            choix_module = self.indicateurs.get(
-                schema_id=indicateur_choix_module
-            ).data.get("choix_module")
-        except ObjectDoesNotExist:
-            choix_module = None
-        return choix_module
+        indicateur_choix_module = self._indicateurs_par_schema_id.get("B1-24-a")
+        if not indicateur_choix_module:
+            return None
+        return indicateur_choix_module.data.get("choix_module")
 
     choix_module = cached_property(get_choix_module)
 
     def get_pays(self):
-        indicateur_pays = "B1-24-e-vi"
-        try:
-            codes_pays = self.indicateurs.get(schema_id=indicateur_pays).data.get(
-                "pays", []
-            )
-        except ObjectDoesNotExist:
-            codes_pays = []
-        return codes_pays
+        indicateur_pays = self._indicateurs_par_schema_id.get("B1-24-e-vi")
+        if not indicateur_pays:
+            return []
+        return indicateur_pays.data.get("pays", [])
 
     pays = cached_property(get_pays)
 
     def get_nombre_salaries(self) -> int | None:
-        indicateur_nombre_salaries = "B1-24-e-v"
-        try:
-            nombre_salaries = self.indicateurs.get(
-                schema_id=indicateur_nombre_salaries
-            ).data.get("nombre_salaries")
-        except ObjectDoesNotExist:
-            nombre_salaries = None
-        return nombre_salaries
+        indicateur_nombre_salaries = self._indicateurs_par_schema_id.get("B1-24-e-v")
+        if not indicateur_nombre_salaries:
+            return None
+        return indicateur_nombre_salaries.data.get("nombre_salaries")
 
     nombre_salaries = cached_property(get_nombre_salaries)
 
     def get_risques_climatiques(self) -> list:
-        indicateur_schema_id = "C4-57"
-        try:
-            indicateur_risques_climatiques = self.indicateurs.get(
-                schema_id=indicateur_schema_id
-            )
-            if indicateur_risques_climatiques.est_non_pertinent:
-                return []
-            risques_climatiques = indicateur_risques_climatiques.data.get(
-                "aleas_et_risques_climatiques", []
-            )
-            risques_climatiques = [
-                {
-                    "id": risque["id_risque"],
-                    "description": risque["description"],
-                }
-                for risque in risques_climatiques
-            ]
-        except ObjectDoesNotExist:
-            risques_climatiques = []
-        return risques_climatiques
+        indicateur_risques_climatiques = self._indicateurs_par_schema_id.get("C4-57")
+        if (
+            not indicateur_risques_climatiques
+            or indicateur_risques_climatiques.est_non_pertinent
+        ):
+            return []
+        risques_climatiques = indicateur_risques_climatiques.data.get(
+            "aleas_et_risques_climatiques", []
+        )
+        return [
+            {
+                "id": risque["id_risque"],
+                "description": risque["description"],
+            }
+            for risque in risques_climatiques
+        ]
 
     risques_climatiques = cached_property(get_risques_climatiques)
 
