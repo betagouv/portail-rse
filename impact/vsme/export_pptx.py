@@ -74,7 +74,10 @@ def _export_tableau(champ, data, shape):
         for index_data, data in enumerate(ligne.values()):
             schema_colonne = champ["colonnes"][index_data]
             valeur = formate_valeur(data, schema_colonne)
-            shape.table.cell(index_ligne, index_data).text = str(valeur)
+            data_cellule = str(valeur)
+            cell = shape.table.cell(index_ligne, index_data)
+            cell.text = data_cellule
+            _appliquer_style_cellule(cell, data_cellule, schema_colonne)
 
 
 def _export_tableau_lignes_fixes(champ, data, shape):
@@ -102,12 +105,14 @@ def _export_tableau_lignes_fixes(champ, data, shape):
 
 
 def _appliquer_style_cellule(cell, data_cellule, champ):
-    ROUGE = RGBColor(192, 0, 0)
-    VERT = RGBColor(20, 92, 48)
+    type_indicateur = champ["type"]
     for para in cell.text_frame.paragraphs:
-        para.alignment = PP_ALIGN.CENTER
         para.font.size = Pt(10)
-        if data_cellule:
-            para.font.color.rgb = VERT
-        else:
-            para.font.color.rgb = ROUGE
+        if type_indicateur == "choix_binaire_radio":
+            ROUGE = RGBColor(192, 0, 0)
+            VERT = RGBColor(20, 92, 48)
+            para.alignment = PP_ALIGN.CENTER
+            if data_cellule:
+                para.font.color.rgb = VERT
+            else:
+                para.font.color.rgb = ROUGE
