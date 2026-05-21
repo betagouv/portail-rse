@@ -39,6 +39,7 @@ from reglementations.views.bges import BGESReglementation
 from reglementations.views.csrd.csrd import CSRDReglementation
 from reglementations.views.index_egapro import IndexEgaproReglementation
 from users.models import User as PortailRSEUtilisateur
+from vsme.models import CHOIX_MODULE_PAR_DEFAUT
 from vsme.models import EXIGENCES_DE_PUBLICATION
 from vsme.models import RapportVSME
 
@@ -397,6 +398,9 @@ class Command(BaseCommand):
                     progression_par_exigence[f"progression_{code}"] = (
                         rapport.progression_par_exigence(exigence)["pourcent"]
                     )
+                choix_module = (
+                    rapport.choix_module
+                )  # mis en cache lors du calcul de progression
             else:
                 modifie_le = rapport.updated_at
                 premier_indicateur_cree_le = None
@@ -404,6 +408,7 @@ class Command(BaseCommand):
                 progression_par_exigence = {
                     f"progression_{code}": 0 for code in EXIGENCES_DE_PUBLICATION
                 }
+                choix_module = CHOIX_MODULE_PAR_DEFAUT
 
             metabase_vsmes.append(
                 MetabaseVSME(
@@ -419,6 +424,7 @@ class Command(BaseCommand):
                     modifie_le=modifie_le,
                     premier_indicateur_cree_le=premier_indicateur_cree_le,
                     nb_indicateurs_completes=rapport.nb_indicateurs,
+                    choix_module=choix_module,
                     progression=progression,
                     **progression_par_exigence,
                 )
