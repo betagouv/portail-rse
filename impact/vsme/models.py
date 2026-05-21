@@ -18,6 +18,7 @@ from utils.models import TimestampedModel
 from vsme.forms import NON_PERTINENT_FIELD_NAME
 
 ANNEE_DEBUT_VSME = 2020  # Première année où les rapports VSME peuvent être créés
+CHOIX_MODULE_PAR_DEFAUT = "complet"
 
 
 def get_exercices_disponibles(entreprise):
@@ -469,14 +470,13 @@ class RapportVSME(TimestampedModel):
                 return exigences_de_publication_module_complet
 
     def get_choix_module(self):
-        module_par_defaut = "complet"
         indicateur_choix_module = "B1-24-a"
         try:
             choix_module = self.indicateurs.get(
                 schema_id=indicateur_choix_module
-            ).data.get("choix_module", module_par_defaut)
+            ).data.get("choix_module", CHOIX_MODULE_PAR_DEFAUT)
         except ObjectDoesNotExist:
-            choix_module = module_par_defaut
+            choix_module = CHOIX_MODULE_PAR_DEFAUT
         return choix_module
 
     choix_module = cached_property(get_choix_module)

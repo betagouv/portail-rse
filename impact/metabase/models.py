@@ -112,6 +112,7 @@ class VSME(Reglementation):
     cree_le = models.DateTimeField()
     modifie_le = models.DateTimeField()
     annee_cloture = models.PositiveIntegerField()
+    choix_module = models.CharField(max_length=10, null=True)
     premier_indicateur_cree_le = models.DateTimeField(null=True)
     nb_indicateurs_completes = models.IntegerField(default=0)
     progression = models.IntegerField(default=0)

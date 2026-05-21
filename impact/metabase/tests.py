@@ -574,7 +574,8 @@ def test_synchronise_les_rapports_VSME_de_différentes_entreprises(
     )
 
     indicateur_vsme_commencee = vsme_commencee.indicateurs.create(
-        schema_id="B1-24-a", data={"yolo": "yolo"}  # indicateur réel de B1
+        schema_id="B1-24-a",
+        data={"choix_module": "base"},  # indicateur choix module de B1
     )
 
     for index_exigence, exigence in enumerate(EXIGENCES_DE_PUBLICATION.values()):
@@ -598,6 +599,7 @@ def test_synchronise_les_rapports_VSME_de_différentes_entreprises(
     assert not metabase_vsme_vide.premier_indicateur_cree_le
     assert metabase_vsme_vide.statut == MetabaseVSME.STATUT_EN_COURS
     assert metabase_vsme_vide.nb_indicateurs_completes == 0
+    assert metabase_vsme_vide.choix_module == "complet"
     assert metabase_vsme_vide.progression == 0
     for code in EXIGENCES_DE_PUBLICATION:
         assert getattr(metabase_vsme_vide, f"progression_{code}") == 0
@@ -611,6 +613,7 @@ def test_synchronise_les_rapports_VSME_de_différentes_entreprises(
     )
     assert metabase_vsme_commencee.statut == MetabaseVSME.STATUT_EN_COURS
     assert metabase_vsme_commencee.nb_indicateurs_completes == 1
+    assert metabase_vsme_commencee.choix_module == "base"
     assert 0 < metabase_vsme_commencee.progression < 100
     assert 0 < metabase_vsme_commencee.progression_B1 < 100
     assert metabase_vsme_commencee.progression_B2 == 0
@@ -624,6 +627,7 @@ def test_synchronise_les_rapports_VSME_de_différentes_entreprises(
     )
     assert metabase_vsme_terminee.statut == MetabaseVSME.STATUT_A_JOUR
     assert metabase_vsme_terminee.nb_indicateurs_completes > 1
+    assert metabase_vsme_terminee.choix_module == "complet"
     assert metabase_vsme_terminee.progression == 100
     for code in EXIGENCES_DE_PUBLICATION:
         assert getattr(metabase_vsme_terminee, f"progression_{code}") == 100
