@@ -39,7 +39,6 @@ from reglementations.views.bges import BGESReglementation
 from reglementations.views.csrd.csrd import CSRDReglementation
 from reglementations.views.index_egapro import IndexEgaproReglementation
 from users.models import User as PortailRSEUtilisateur
-from vsme.models import CHOIX_MODULE_PAR_DEFAUT
 from vsme.models import EXIGENCES_DE_PUBLICATION
 from vsme.models import RapportVSME
 
@@ -408,7 +407,7 @@ class Command(BaseCommand):
                 progression_par_exigence = {
                     f"progression_{code}": 0 for code in EXIGENCES_DE_PUBLICATION
                 }
-                choix_module = CHOIX_MODULE_PAR_DEFAUT
+                choix_module = RapportVSME.CHOIX_MODULE_PAR_DEFAUT
 
             metabase_vsmes.append(
                 MetabaseVSME(
