@@ -242,7 +242,9 @@ def test_export_pptx_d_un_champ_tableau(entreprise_factory, alice):
             assert paragraph.font.size == Pt(10)
 
 
-def test_export_pptx_d_un_champ_tableau_à_lignes_fixes(entreprise_factory, alice):
+def test_export_pptx_d_un_champ_tableau_à_lignes_fixes_avec_choix_binaire_radio(
+    entreprise_factory, alice
+):
     entreprise = entreprise_factory(utilisateur=alice)
     rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
     indicateur = Indicateur(
@@ -315,3 +317,54 @@ def test_export_pptx_d_un_champ_tableau_à_lignes_fixes(entreprise_factory, alic
             assert para_non.font.color.rgb == RGBColor(0xC0, 0x00, 0x00)
             assert para_oui.alignment == para_non.alignment == PP_ALIGN.CENTER
             assert para_oui.font.size == para_non.font.size == Pt(10)
+
+
+def test_export_pptx_d_un_champ_tableau_à_lignes_fixes_avec_données_vides(
+    entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
+    indicateur = Indicateur(
+        rapport_vsme=rapport_vsme,
+        schema_id="B3-30-p2",  # Déclaration des pratiques et politiques de durabilité
+        data={
+            "non_pertinent": False,
+            "estimation_emissions_GES_scope_3": {
+                "biens_et_services_achetes": {"emissions_brutes_GES": "23"},
+                "biens_investissement": {"emissions_brutes_GES": "44"},
+                "activites_secteurs_combustibles": {"emissions_brutes_GES": None},
+                "transport_distribution_amont": {"emissions_brutes_GES": None},
+                "dechets_produits": {"emissions_brutes_GES": None},
+                "voyages_affaires": {"emissions_brutes_GES": None},
+                "deplacements_domicile_travail": {"emissions_brutes_GES": None},
+                "actifs_loues_amont": {"emissions_brutes_GES": None},
+                "acheminement_aval": {"emissions_brutes_GES": None},
+                "transformation_produits_vendus": {"emissions_brutes_GES": None},
+                "utilisation_produits_vendus": {"emissions_brutes_GES": None},
+                "traitement_fin_de_vie_produits_vendus": {"emissions_brutes_GES": None},
+                "actifs_loues_aval": {"emissions_brutes_GES": None},
+                "franchises": {"emissions_brutes_GES": None},
+                "investissements": {"emissions_brutes_GES": None},
+            },
+            "total_estimation_emissions_GES_scope_3": {
+                "total_scope_3": {"total_emissions_brutes_GES": None},
+                "total_scopes_1_2_3": {"total_emissions_brutes_GES": None},
+            },
+        },
+    )
+    chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
+    presentation = Presentation(chemin_pptx)
+
+    export_indicateurs([indicateur], presentation)
+
+    shapes = presentation.slides[24].shapes
+    for shape in shapes:
+        if shape.name == "Table 18":
+            tableau = shape.table
+            assert tableau.cell(1, 0).text == "1. Biens et services achetés"
+            assert tableau.cell(1, 1).text == "23"
+            assert (
+                tableau.cell(3, 0).text
+                == "3. Activités relevant des secteurs des combustibles et de l'énergie"
+            )
+            assert tableau.cell(3, 1).text == "0"

@@ -4,7 +4,7 @@ from pptx.util import Pt
 
 from utils.pptx import find_shape
 from utils.pptx import remove_shape
-from vsme.export_xlsx import formate_valeur
+from vsme.export_xlsx import formate_valeur as formate_valeur_xlsx
 from vsme.forms import THEMATIQUES_DURABILITE
 
 
@@ -69,12 +69,20 @@ def _export_choix_multiple(champ, data, shape):
     shape.text_frame.paragraphs[1].runs[0].text = ", ".join(valeurs)
 
 
+def formate_valeur(valeur, champ):
+    match champ["type"]:
+        case "nombre_decimal" | "auto_id":
+            return str(valeur) if valeur else "0"
+        case _:
+            return formate_valeur_xlsx(valeur, champ)
+
+
 def _export_tableau(champ, data, shape):
     for index_ligne, ligne in enumerate(data, start=1):
         for index_data, data in enumerate(ligne.values()):
             schema_colonne = champ["colonnes"][index_data]
             valeur = formate_valeur(data, schema_colonne)
-            data_cellule = str(valeur)
+            data_cellule = formate_valeur(valeur, champ)
             cell = shape.table.cell(index_ligne, index_data)
             cell.text = data_cellule
             _appliquer_style_cellule(cell, data_cellule, schema_colonne)
@@ -96,11 +104,10 @@ def _export_tableau_lignes_fixes(champ, data, shape):
                 for id_colonne, data_cellule in data_ligne.items():
                     offset_colonne = colonnes_ids.index(id_colonne)
                     champ = colonnes[offset_colonne]
-                    valeur = formate_valeur(data_cellule, champ)
                     index_ligne = offset_ligne + 1
                     index_colonne = offset_colonne + 1
                     cell = shape.table.cell(index_ligne, index_colonne)
-                    cell.text = str(valeur)
+                    cell.text = formate_valeur(data_cellule, champ)
                     _appliquer_style_cellule(cell, data_cellule, champ)
 
 
