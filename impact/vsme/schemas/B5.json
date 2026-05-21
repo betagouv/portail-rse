@@ -116,7 +116,11 @@
                         "id": "surface_totale",
                         "label": "Utilisation totale des terres"
                     }
-                ]
+                ],
+                "export_pptx": {
+                    "diapo": 35,
+                    "shape": "Table 7"
+                }
             }
         ],
         "si_pertinent": true,
