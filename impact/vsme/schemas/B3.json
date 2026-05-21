@@ -36,7 +36,11 @@
                         "id": "consommation_energie",
                         "label": "Consommation d’énergie"
                     }
-                ]
+                ],
+                "export_pptx": {
+                    "diapo": 24,
+                    "shape": "Table 13"
+                }
             }
         ],
         "export_xlsx": {
@@ -217,7 +221,11 @@
                         "id": "consommation_energie",
                         "label": "Consommation d’énergie"
                     }
-                ]
+                ],
+                "export_pptx": {
+                    "diapo": 24,
+                    "shape": "Table 14"
+                }
             }
         ],
         "export_xlsx": {
@@ -261,7 +269,11 @@
                         "id": "emissions_brutes_GES",
                         "label": "Émissions brutes de GES"
                     }
-                ]
+                ],
+                "export_pptx": {
+                    "diapo": 24,
+                    "shape": "Table 18"
+                }
             },
             {
                 "id": "intensite_GES",
@@ -354,7 +366,11 @@
                         "id": "investissements",
                         "label": "15. Investissements"
                     }
-                ]
+                ],
+                "export_pptx": {
+                    "diapo": 25,
+                    "shape": "Table 18"
+                }
             },
             {
                 "id": "total_estimation_emissions_GES_scope_3",
