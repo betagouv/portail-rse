@@ -18,7 +18,6 @@ from utils.models import TimestampedModel
 from vsme.forms import NON_PERTINENT_FIELD_NAME
 
 ANNEE_DEBUT_VSME = 2020  # Première année où les rapports VSME peuvent être créés
-CHOIX_MODULE_PAR_DEFAUT = "complet"
 
 
 def get_exercices_disponibles(entreprise):
@@ -222,6 +221,10 @@ EXIGENCES_DE_PUBLICATION = {
 
 
 class RapportVSME(TimestampedModel):
+    CHOIX_MODULE_BASE = "base"
+    CHOIX_MODULE_COMPLET = "complet"
+    CHOIX_MODULE_PAR_DEFAUT = CHOIX_MODULE_COMPLET
+
     entreprise = models.ForeignKey(
         "entreprises.Entreprise",
         on_delete=models.CASCADE,
@@ -267,7 +270,7 @@ class RapportVSME(TimestampedModel):
 
     def indicateur_est_applicable(self, indicateur_schema_id) -> tuple[bool, str]:
         if indicateur_schema_id.startswith("C"):  # indicateurs module complet
-            if self.choix_module != "complet":
+            if self.choix_module != self.CHOIX_MODULE_COMPLET:
                 B1_url = reverse(
                     "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
                 )
@@ -464,9 +467,9 @@ class RapportVSME(TimestampedModel):
             if exigence.code.startswith("B")
         ]
         match choix_module:
-            case "base":
+            case self.CHOIX_MODULE_BASE:
                 return exigences_de_publication_module_base
-            case "complet":
+            case self.CHOIX_MODULE_COMPLET:
                 return exigences_de_publication_module_complet
 
     def get_choix_module(self):
@@ -474,9 +477,9 @@ class RapportVSME(TimestampedModel):
         try:
             choix_module = self.indicateurs.get(
                 schema_id=indicateur_choix_module
-            ).data.get("choix_module", CHOIX_MODULE_PAR_DEFAUT)
+            ).data.get("choix_module", self.CHOIX_MODULE_PAR_DEFAUT)
         except ObjectDoesNotExist:
-            choix_module = CHOIX_MODULE_PAR_DEFAUT
+            choix_module = self.CHOIX_MODULE_PAR_DEFAUT
         return choix_module
 
     choix_module = cached_property(get_choix_module)

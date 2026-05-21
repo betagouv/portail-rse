@@ -152,7 +152,7 @@ def test_applicabilité_indicateurs_C5_si_moins_de_50_salariés(
         data={"methode_comptabilisation": "ETP", "nombre_salaries": 49},
     )
     rapport_vsme.choix_module = (
-        "complet"  # définit la valeur de la propriété mise en cache choix_module
+        rapport_vsme.CHOIX_MODULE_COMPLET  # définit la valeur de la propriété mise en cache choix_module
     )
 
     est_applicable, explication = rapport_vsme.indicateur_est_applicable(
@@ -163,7 +163,7 @@ def test_applicabilité_indicateurs_C5_si_moins_de_50_salariés(
     assert "est inférieur à 50" in explication
 
     rapport_vsme.choix_module = (
-        "base"  # modifie la valeur de la propriété mise en cache choix_module
+        rapport_vsme.CHOIX_MODULE_BASE  # modifie la valeur de la propriété mise en cache choix_module
     )
 
     est_applicable, explication = rapport_vsme.indicateur_est_applicable(
@@ -183,7 +183,7 @@ def test_applicabilité_indicateurs_C5_si_50_salariés_ou_plus(
         data={"methode_comptabilisation": "ETP", "nombre_salaries": 50},
     )
     rapport_vsme.choix_module = (
-        "complet"  # définit la valeur de la propriété mise en cache choix_module
+        rapport_vsme.CHOIX_MODULE_COMPLET  # définit la valeur de la propriété mise en cache choix_module
     )
 
     est_applicable, explication = rapport_vsme.indicateur_est_applicable(
@@ -193,7 +193,7 @@ def test_applicabilité_indicateurs_C5_si_50_salariés_ou_plus(
     assert est_applicable
 
     rapport_vsme.choix_module = (
-        "base"  # modifie la valeur de la propriété mise en cache choix_module
+        rapport_vsme.CHOIX_MODULE_BASE  # modifie la valeur de la propriété mise en cache choix_module
     )
 
     est_applicable, explication = rapport_vsme.indicateur_est_applicable(

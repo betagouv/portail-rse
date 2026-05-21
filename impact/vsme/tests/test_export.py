@@ -16,7 +16,7 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B1_intégralement_rempl
     Indicateur.objects.create(
         rapport_vsme=rapport_vsme,
         schema_id="B1-24-a",
-        data={"choix_module": "complet"},
+        data={"choix_module": rapport_vsme.CHOIX_MODULE_COMPLET},
     )
     Indicateur.objects.create(
         rapport_vsme=rapport_vsme,
@@ -757,7 +757,7 @@ def test_telechargement_d_un_rapport_vsme_C1_present_si_choix_module_complet(
     indicateur_choix_module = "B1-24-a"
     rapport_vsme.indicateurs.create(
         schema_id=indicateur_choix_module,
-        data={"choix_module": "complet"},
+        data={"choix_module": rapport_vsme.CHOIX_MODULE_COMPLET},
     )
 
     texte_long = """
@@ -783,7 +783,7 @@ def test_telechargement_d_un_rapport_vsme_C1_absent_si_choix_module_base(
     indicateur_choix_module = "B1-24-a"
     rapport_vsme.indicateurs.create(
         schema_id=indicateur_choix_module,
-        data={"choix_module": "base"},
+        data={"choix_module": rapport_vsme.CHOIX_MODULE_BASE},
     )
     client.force_login(alice)
 
@@ -1068,7 +1068,7 @@ def test_telechargement_d_un_rapport_vsme_plusieurs_exigences_de_publications(
 ):
     rapport_vsme.indicateurs.create(
         schema_id="B1-24-a",
-        data={"choix_module": "complet"},
+        data={"choix_module": rapport_vsme.CHOIX_MODULE_COMPLET},
     )
     rapport_vsme.indicateurs.create(
         schema_id="B11-43-p1",
