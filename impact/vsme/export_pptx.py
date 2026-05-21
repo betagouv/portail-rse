@@ -63,7 +63,11 @@ def _export_champ(champ, data, shape):
 def _export_simple(champ, data, shape):
     valeur = formate_valeur(data, champ)
     paragraphs = shape.text_frame.paragraphs
-    shape.text_frame.paragraphs[-1].runs[0].text = str(valeur)
+    paragraphe_a_remplir = None
+    for paragraphe in shape.text_frame.paragraphs:
+        if paragraphe.runs:
+            paragraphe_a_remplir = paragraphe
+    paragraphe_a_remplir.runs[0].text = str(valeur)
 
 
 def _export_choix_multiple(champ, data, shape):
