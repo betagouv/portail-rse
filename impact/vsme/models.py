@@ -270,7 +270,8 @@ class RapportVSME(TimestampedModel):
 
     def indicateur_est_applicable(self, indicateur_schema_id) -> tuple[bool, str]:
         if indicateur_schema_id.startswith("C"):  # indicateurs module complet
-            if self.choix_module != self.CHOIX_MODULE_COMPLET:
+            choix_module = self.choix_module or self.CHOIX_MODULE_PAR_DEFAUT
+            if choix_module != self.CHOIX_MODULE_COMPLET:
                 B1_url = reverse(
                     "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
                 )
@@ -459,7 +460,7 @@ class RapportVSME(TimestampedModel):
         return {"total": total, "complet": complet, "pourcent": int(pourcent)}
 
     def exigences_de_publication_applicables(self):
-        choix_module = self.choix_module
+        choix_module = self.choix_module or self.CHOIX_MODULE_PAR_DEFAUT
         exigences_de_publication_module_complet = EXIGENCES_DE_PUBLICATION.values()
         exigences_de_publication_module_base = [
             exigence
@@ -472,14 +473,14 @@ class RapportVSME(TimestampedModel):
             case self.CHOIX_MODULE_COMPLET:
                 return exigences_de_publication_module_complet
 
-    def get_choix_module(self):
+    def get_choix_module(self) -> str | None:
         indicateur_choix_module = "B1-24-a"
         try:
             choix_module = self.indicateurs.get(
                 schema_id=indicateur_choix_module
-            ).data.get("choix_module", self.CHOIX_MODULE_PAR_DEFAUT)
+            ).data.get("choix_module")
         except ObjectDoesNotExist:
-            choix_module = self.CHOIX_MODULE_PAR_DEFAUT
+            choix_module = None
         return choix_module
 
     choix_module = cached_property(get_choix_module)

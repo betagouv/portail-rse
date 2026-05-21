@@ -407,7 +407,7 @@ class Command(BaseCommand):
                 progression_par_exigence = {
                     f"progression_{code}": 0 for code in EXIGENCES_DE_PUBLICATION
                 }
-                choix_module = RapportVSME.CHOIX_MODULE_PAR_DEFAUT
+                choix_module = None
 
             metabase_vsmes.append(
                 MetabaseVSME(
