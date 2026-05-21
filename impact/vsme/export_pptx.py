@@ -73,10 +73,10 @@ def _export_choix_multiple(champ, data, shape):
 
 def formate_valeur(valeur, champ):
     match champ["type"]:
-        case "nombre_decimal" | "auto_id":
+        case "nombre_entier" | "nombre_decimal" | "auto_id":
             return str(valeur) if valeur else "0"
         case _:
-            return formate_valeur_xlsx(valeur, champ)
+            return str(formate_valeur_xlsx(valeur, champ))
 
 
 def _export_tableau(champ, data, shape):
@@ -86,12 +86,10 @@ def _export_tableau(champ, data, shape):
         _ajoute_ligne_tableau(table)
 
     for index_ligne, ligne in enumerate(data, start=1):
-        for index_data, data in enumerate(ligne.values()):
+        for index_data, data_cellule in enumerate(ligne.values()):
             schema_colonne = champ["colonnes"][index_data]
-            valeur = formate_valeur(data, schema_colonne)
-            data_cellule = formate_valeur(valeur, champ)
             cell = table.cell(index_ligne, index_data)
-            cell.text = data_cellule
+            cell.text = formate_valeur(data_cellule, schema_colonne)
             _appliquer_style_cellule(cell, data_cellule, schema_colonne)
 
 

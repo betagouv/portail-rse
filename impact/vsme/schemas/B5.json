@@ -52,7 +52,11 @@
                         "type": "choix_binaire_radio"
                     }
                 ],
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 33,
+                    "shape": "Table 4"
+                }
             }
         ],
         "si_pertinent": "L'entreprise ne dispose pas de sites situés dans ou à proximité de zones sensibles sur le plan de la biodiversité",
