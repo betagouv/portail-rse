@@ -135,7 +135,11 @@
                         "obligatoire": true
                     }
                 ],
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 26,
+                    "shape": "Table 5"
+                }
             }
         ],
         "si_pertinent": true,
@@ -279,7 +283,11 @@
                         "obligatoire": true
                     }
                 ],
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 28,
+                    "shape": "Table 5"
+                }
             }
         ],
         "si_pertinent": true,
@@ -423,7 +431,11 @@
                         "obligatoire": true
                     }
                 ],
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 30,
+                    "shape": "Table 5"
+                }
             }
         ],
         "si_pertinent": true,

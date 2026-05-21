@@ -1,3 +1,5 @@
+import copy
+
 from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN
 from pptx.util import Pt
@@ -78,14 +80,28 @@ def formate_valeur(valeur, champ):
 
 
 def _export_tableau(champ, data, shape):
+    table = shape.table
+    nombre_lignes_a_ajouter = len(data) - 1  # première ligne déjà présente donc -1
+    for _ in range(nombre_lignes_a_ajouter):
+        _ajouter_ligne_tableau(table)
+
     for index_ligne, ligne in enumerate(data, start=1):
         for index_data, data in enumerate(ligne.values()):
             schema_colonne = champ["colonnes"][index_data]
             valeur = formate_valeur(data, schema_colonne)
             data_cellule = formate_valeur(valeur, champ)
-            cell = shape.table.cell(index_ligne, index_data)
+            cell = table.cell(index_ligne, index_data)
             cell.text = data_cellule
             _appliquer_style_cellule(cell, data_cellule, schema_colonne)
+
+
+def _ajouter_ligne_tableau(table):
+    tr_source = table.rows[1]._tr
+    tr_nouveau = copy.deepcopy(tr_source)
+    ns = "http://schemas.openxmlformats.org/drawingml/2006/main"
+    for t in tr_nouveau.findall(f".//{{{ns}}}t"):
+        t.text = ""
+    table._tbl.append(tr_nouveau)
 
 
 def _export_tableau_lignes_fixes(champ, data, shape):
