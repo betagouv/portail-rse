@@ -129,10 +129,10 @@ def _appliquer_style_cellule(cell, data_cellule, champ):
     type_indicateur = champ["type"]
     for para in cell.text_frame.paragraphs:
         para.font.size = Pt(10)
+        para.alignment = PP_ALIGN.CENTER
         if type_indicateur == "choix_binaire_radio":
             ROUGE = RGBColor(192, 0, 0)
             VERT = RGBColor(20, 92, 48)
-            para.alignment = PP_ALIGN.CENTER
             if data_cellule:
                 para.font.color.rgb = VERT
             else:
