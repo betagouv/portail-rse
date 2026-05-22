@@ -426,4 +426,5 @@ def export_vsme_pptx(request, rapport_vsme):
     chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
     presentation = Presentation(chemin_pptx)
     export_rapport_vsme(rapport_vsme, presentation)
+
     return pptx_response(presentation, "vsme.pptx")

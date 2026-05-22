@@ -6,14 +6,18 @@ from pptx.util import Pt
 
 from utils.pptx import find_shape
 from utils.pptx import remove_shape
+from utils.pptx import remove_slide
 from vsme.export_xlsx import formate_valeur as formate_valeur_xlsx
 from vsme.forms import THEMATIQUES_DURABILITE
+from vsme.models import ExigenceDePublication
+from vsme.models import EXIGENCES_DE_PUBLICATION
 
 
 def export_rapport_vsme(rapport_vsme, presentation):
     indicateurs = rapport_vsme.indicateurs.all()
     export_sommaire(rapport_vsme, presentation)
     export_indicateurs(indicateurs, presentation)
+    supprime_diapos_inutiles(rapport_vsme, presentation)
 
 
 def export_sommaire(rapport_vsme, presentation):
@@ -25,6 +29,49 @@ def export_sommaire(rapport_vsme, presentation):
                 shapes, f"Round Same-side Corner of Rectangle {num_shape}"
             )
             remove_shape(shape)
+
+
+def supprime_diapos_inutiles(rapport_vsme, presentation):
+    diapos_a_supprimer = selectionne_diapos_a_supprimer(rapport_vsme, presentation)
+    for diapo_a_supprimer in diapos_a_supprimer:
+        index_diapo = diapo_a_supprimer - 1
+        remove_slide(presentation, index_diapo)
+
+
+def selectionne_diapos_a_supprimer(rapport_vsme, presentation):
+    diapos_a_supprimer = set()
+
+    tous_les_indicateur_schema_ids = [
+        schema_id
+        for exigence in EXIGENCES_DE_PUBLICATION.values()
+        for schema_id in exigence.indicateurs()
+    ]
+
+    for indicateur_schema_id in tous_les_indicateur_schema_ids:
+        schema_exigence = ExigenceDePublication.par_indicateur_schema_id(
+            indicateur_schema_id
+        ).load_json_schema()
+        schema_indicateur = schema_exigence[indicateur_schema_id]
+        if rapport_vsme.indicateur_est_applicable(indicateur_schema_id)[0]:
+            # supprimer les diapos non applicables
+            for champ in schema_indicateur["champs"]:
+                if (
+                    "export_pptx" in champ
+                    and "diapo_non_applicable" in champ["export_pptx"]
+                ):
+                    diapo_a_supprimer = champ["export_pptx"]["diapo_non_applicable"]
+                    diapos_a_supprimer.add(diapo_a_supprimer)
+        else:
+            # supprimer les diapos applicables
+            for champ in schema_indicateur["champs"]:
+                if (
+                    "export_pptx" in champ
+                    and "diapo_non_applicable" in champ["export_pptx"]
+                ):
+                    diapo_a_supprimer = champ["export_pptx"]["diapo"]
+                    diapos_a_supprimer.add(diapo_a_supprimer)
+
+    return sorted(diapos_a_supprimer, reverse=True)
 
 
 def export_indicateurs(indicateurs, presentation):

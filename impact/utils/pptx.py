@@ -1,6 +1,7 @@
 from io import BytesIO
 
 from django.http import HttpResponse
+from pptx.oxml.ns import qn
 
 
 def pptx_response(presentation, filename):
@@ -29,3 +30,12 @@ def find_shape(shapes, name):
 
 def remove_shape(shape):
     shape._element.getparent().remove(shape._element)
+
+
+def remove_slide(presentation, slide_index):
+    """supprime la diapo et sa référence pour être plus portable"""
+    xml_slides = presentation.slides._sldIdLst
+    slide_elem = xml_slides[slide_index]
+    rId = slide_elem.get(qn("r:id"))
+    presentation.part.drop_rel(rId)
+    xml_slides.remove(slide_elem)
