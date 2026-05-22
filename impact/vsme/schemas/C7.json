@@ -30,12 +30,12 @@
             },
             {
                 "id": "autres_incidents_internes",
-                "label": "Autres thèmes concernant des indidents graves confirmés relatifs aux droits de l’homme",
+                "label": "Autres thèmes concernant des incidents graves confirmés relatifs aux droits de l’homme",
                 "type": "texte"
             },
             {
                 "id": "actions_incidents_internes",
-                "label": "Description des actions mises en oeuvre pour gérer les indidents confirmés",
+                "label": "Description des actions mises en oeuvre pour gérer les incidents confirmés",
                 "type": "texte_long"
             }
         ],
