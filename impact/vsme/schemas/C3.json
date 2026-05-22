@@ -61,7 +61,11 @@
                         "id": "scope_2_localisation",
                         "label": "Scope 2 basé sur la localisation"
                     }
-                ]
+                ],
+                "export_pptx": {
+                    "diapo": 46,
+                    "shape": "Table 9"
+                }
             },
             {
                 "id": "total_reduction_emissions_GES_scopes_1_2",
@@ -269,20 +273,32 @@
                 "id": "description_plan_transition_climatique",
                 "label": "Description du plan de transition climatique",
                 "description": "Si l'entreprise dispose d'un plan de transition climatique, indiquer les grandes lignes de celui-ci.",
-                "type": "texte_long"
+                "type": "texte_long",
+                "export_pptx": {
+                    "diapo": 52,
+                    "shape": "Rounded Rectangle 8"
+                }
             },
             {
                 "id": "contribution_reduction_emissions_GES",
                 "label": "Contribution du plan de transition climatique à la réduction des émissions de GES",
                 "description": "Si l'entreprise dispose d'un plan de transition climatique, indiquer la contribution de celui-ci à la réduction des émissions de GES.",
-                "type": "texte_long"
+                "type": "texte_long",
+                "export_pptx": {
+                    "diapo": 53,
+                    "shape": "Rounded Rectangle 8"
+                }
             },
             {
                 "id": "plan_transition_climatique_prevu",
                 "label": "Année prévue d'adoption d'un plan de transition climatique",
                 "description": "Si l'entreprise ne dispose pas d'un plan de transition climatique, indiquer si un plan est prévu et en quelle année. Laisser vide si l'entreprise ne prévoit pas d'adopter de plan de transition climatique ou si elle en a déjà un.",
                 "type": "nombre_entier",
-                "min": 2025
+                "min": 2025,
+                "export_pptx": {
+                    "diapo": 53,
+                    "shape": "Rounded Rectangle 9"
+                }
             }
         ],
         "export_xlsx": {

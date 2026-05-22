@@ -56,7 +56,11 @@
                         "nombre_lignes": 3,
                         "obligatoire": true
                     }
-                ]
+                ],
+                "export_pptx": {
+                    "diapo": 54,
+                    "shape": "Table 11"
+                }
             }
         ],
         "si_pertinent": "L'entreprise n'a pas recensé d'aléas ou d'événements liés au changement climatique entraînant des risques",
@@ -125,7 +129,11 @@
                         ]
                     }
                 ],
-                "lignes": "RISQUES_CLIMATIQUES"
+                "lignes": "RISQUES_CLIMATIQUES",
+                "export_pptx": {
+                    "diapo": 56,
+                    "shape": "Table 9"
+                }
             }
         ],
         "si_pertinent": true,
