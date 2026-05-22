@@ -11,6 +11,8 @@ from pptx.util import Pt
 from vsme.export_pptx import export_indicateurs
 from vsme.export_pptx import export_sommaire
 from vsme.export_pptx import find_shape
+from vsme.export_pptx import selectionne_diapos_a_supprimer
+from vsme.models import ExigenceDePublication
 from vsme.models import Indicateur
 from vsme.models import RapportVSME
 
@@ -388,3 +390,60 @@ def test_export_pptx_d_un_champ_tableau_à_lignes_fixes_avec_données_vides(
                 == "3. Activités relevant des secteurs des combustibles et de l'énergie"
             )
             assert tableau.cell(3, 1).text == "0"
+
+
+def test_selectionne_diapos_a_supprimer_d_un_indicateur_non_applicable(
+    entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
+    indicateur = Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-e-i",  # Forme juridique de l’entreprise
+        data={"forme_juridique": "57", "coopérative": False},
+    )
+    chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
+    presentation = Presentation(chemin_pptx)
+
+    diapos_a_supprimer = selectionne_diapos_a_supprimer(rapport_vsme, presentation)
+
+    # "B2-26-p1" "Participation effective à la gouvernance" est non applicable
+    # donc suppression de 'diapo'
+    schema_indicateur = list(
+        ExigenceDePublication.par_indicateur_schema_id("B2-26-p1")
+        .load_json_schema()
+        .values()
+    )[0]
+    index_diapo_a_supprimer = schema_indicateur["champs"][0]["export_pptx"][
+        "diapo"
+    ]  # 10
+    assert diapos_a_supprimer == [index_diapo_a_supprimer]
+
+
+def test_selectionne_diapos_a_supprimer_d_un_indicateur_applicable(
+    entreprise_factory, alice
+):
+    # il faut supprimer la diapo non applicable
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
+    indicateur = Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-e-i",  # Forme juridique de l’entreprise
+        data={"forme_juridique": "57", "coopérative": True},
+    )
+    chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
+    presentation = Presentation(chemin_pptx)
+
+    diapos_a_supprimer = selectionne_diapos_a_supprimer(rapport_vsme, presentation)
+
+    # "B2-26-p1" "Participation effective à la gouvernance" est applicable
+    # donc suppression de 'diapo_non_applicable'
+    schema_indicateur = list(
+        ExigenceDePublication.par_indicateur_schema_id("B2-26-p1")
+        .load_json_schema()
+        .values()
+    )[0]
+    index_diapo_a_supprimer = schema_indicateur["champs"][0]["export_pptx"][
+        "diapo_non_applicable"
+    ]  # 9
+    assert diapos_a_supprimer == [index_diapo_a_supprimer]
