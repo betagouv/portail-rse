@@ -201,7 +201,11 @@
                         "obligatoire": true
                     }
                 ],
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 44,
+                    "shape": "Table 10"
+                }
             }
         ],
         "si_pertinent": "L’entreprise n'exerce pas d'activité dans un secteur utilisant des flux de matières importants (fabrication, construction, emballage ou autres)",
