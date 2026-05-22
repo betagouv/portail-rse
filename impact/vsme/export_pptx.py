@@ -85,6 +85,14 @@ def formate_valeur(valeur, champ):
 
 def _export_tableau(champ, data, shape):
     table = shape.table
+
+    nombre_lignes_a_garder = 2  # titre et première ligne de données
+    trs_a_supprimer = [
+        table.rows[i]._tr for i in range(nombre_lignes_a_garder, len(table.rows))
+    ]
+    for tr in trs_a_supprimer:
+        table._tbl.remove(tr)
+
     nombre_lignes_a_ajouter = len(data) - 1  # première ligne déjà présente donc -1
     for _ in range(nombre_lignes_a_ajouter):
         _ajouter_ligne_tableau(table)
