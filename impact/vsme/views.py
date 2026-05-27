@@ -194,6 +194,14 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
     exigence_de_publication = ExigenceDePublication.par_indicateur_schema_id(
         indicateur_schema_id
     )
+    exigence_de_publication_url = reverse(
+        "vsme:exigence_de_publication_vsme",
+        args=[rapport_vsme.id, exigence_de_publication.code],
+    )
+
+    if not htmx.is_htmx(request):
+        return redirect(exigence_de_publication_url)
+
     indicateur_est_applicable, explication_non_applicable = (
         rapport_vsme.indicateur_est_applicable(indicateur_schema_id)
     )
@@ -232,12 +240,7 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
                     request,
                     f"L'indicateur « {indicateur_schema["titre"]} » a bien été enregistré.",
                 )
-                redirect_to = reverse(
-                    "vsme:exigence_de_publication_vsme",
-                    args=[rapport_vsme.id, exigence_de_publication.code],
-                )
-                if htmx.is_htmx(request):
-                    return htmx.HttpResponseHXRedirect(redirect_to)
+                return htmx.HttpResponseHXRedirect(exigence_de_publication_url)
         elif "ajouter-ligne" in request.POST:
             if multiform.is_valid():
                 data = ajoute_donnes_calculees(

@@ -16,7 +16,11 @@ def test_indicateur_calculé_affiche_les_donnees_calculées(client, alice, rappo
         INDICATEURS_VSME_BASE_URL
         + f"{rapport_vsme.id}/indicateur/{indicateur_conventions_collectives}/"
     )
-    response = client.post(url, {"nombre_salaries_conventions_collectives": 10})
+    response = client.post(
+        url,
+        {"nombre_salaries_conventions_collectives": 10},
+        headers={"HX-Request": "true"},
+    )
 
     assert response.status_code == 200
     context = response.context
@@ -36,7 +40,11 @@ def test_indicateur_calculé_affiche_na_si_incalculable(client, alice, rapport_v
         INDICATEURS_VSME_BASE_URL
         + f"{rapport_vsme.id}/indicateur/{indicateur_conventions_collectives}/"
     )
-    response = client.post(url, {"nombre_salaries_conventions_collectives": 10})
+    response = client.post(
+        url,
+        {"nombre_salaries_conventions_collectives": 10},
+        headers={"HX-Request": "true"},
+    )
 
     assert response.status_code == 200
     context = response.context

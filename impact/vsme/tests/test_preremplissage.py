@@ -50,7 +50,7 @@ def test_indicateur_prerempli_affiche_le_preremplissage(client, alice, rapport_v
     client.force_login(alice)
 
     url = INDICATEURS_VSME_BASE_URL + f"{rapport_vsme.id}/indicateur/B1-24-e-i/"
-    response = client.get(url)
+    response = client.get(url, headers={"HX-Request": "true"})
 
     assert response.status_code == 200
     context = response.context
@@ -71,7 +71,7 @@ def test_indicateur_deja_complete_n_affiche_pas_le_preremplissage(
     client.force_login(alice)
 
     url = INDICATEURS_VSME_BASE_URL + f"{rapport_vsme.id}/indicateur/B1-24-e-i/"
-    response = client.get(url)
+    response = client.get(url, headers={"HX-Request": "true"})
 
     assert response.status_code == 200
     context = response.context
