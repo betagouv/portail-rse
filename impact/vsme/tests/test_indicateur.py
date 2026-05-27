@@ -70,3 +70,13 @@ def test_indicateur_vsme_est_prive(client, bob, rapport_vsme):
     response = client.get(url)
 
     assert response.status_code == 403
+
+
+def test_indicateur_vsme_htmx_non_authentifie_renvoie_hx_redirect(client, rapport_vsme):
+    """Évite d'injecter la page de connexion dans la modale et de casser l'affichage"""
+    url = INDICATEUR_VSME_URL.format(vsme_id=rapport_vsme.id)
+    response = client.get(url, headers={"HX-Request": "true"})
+
+    connexion_url = reverse("users:login")
+    assert response.status_code == 200
+    assert response["HX-Redirect"] == f"{connexion_url}?next={url}"

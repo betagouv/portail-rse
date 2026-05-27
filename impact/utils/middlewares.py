@@ -1,7 +1,9 @@
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
-from .htmx import is_htmx
 from users.models import User
+from utils.htmx import HttpResponseHXRedirect
+from utils.htmx import is_htmx
 
 
 class ExtendUserMiddleware:
@@ -72,5 +74,28 @@ class HTMXRequestMiddleware:
         request.htmx = request.headers.get("HX-Request") == "true"
 
         response = self.get_response(request)
+
+        return response
+
+
+class HTMXAuthRedirectMiddleware:
+    """
+    Convertit une redirection HTTP vers la page de connexion en réponse `HX-Redirect`
+    lorsque la requête est HTMX, pour éviter d'injecter la page de connexion
+    dans la cible HTMX (typiquement une modale).
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+
+        if (
+            is_htmx(request)
+            and response.status_code == 302
+            and response.url.startswith(settings.LOGIN_URL)
+        ):
+            return HttpResponseHXRedirect(response.url)
 
         return response
