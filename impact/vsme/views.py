@@ -228,6 +228,10 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
                         data=multiform.cleaned_data,
                     )
                 indicateur.save()
+                messages.success(
+                    request,
+                    f"L'indicateur « {indicateur_schema["titre"]} » a bien été enregistré.",
+                )
                 redirect_to = reverse(
                     "vsme:exigence_de_publication_vsme",
                     args=[rapport_vsme.id, exigence_de_publication.code],
