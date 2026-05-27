@@ -7,14 +7,30 @@ from vsme.tests.test_indicateurs import INDICATEURS_VSME_BASE_URL
 INDICATEUR_VSME_URL = INDICATEURS_VSME_BASE_URL + "{vsme_id}/indicateur/B1-24-a/"
 
 
-def test_indicateur_vsme_avec_utilisateur_authentifie(client, alice, rapport_vsme):
+def test_indicateur_vsme_htmx_renvoie_le_fragment(client, alice, rapport_vsme):
+    client.force_login(alice)
+
+    url = INDICATEUR_VSME_URL.format(vsme_id=rapport_vsme.id)
+    response = client.get(url, headers={"HX-Request": "true"})
+
+    assert response.status_code == 200
+    assertTemplateUsed(response, "fragments/indicateur.html")
+
+
+def test_indicateur_vsme_non_htmx_redirige_vers_l_exigence(client, alice, rapport_vsme):
     client.force_login(alice)
 
     url = INDICATEUR_VSME_URL.format(vsme_id=rapport_vsme.id)
     response = client.get(url)
 
-    assert response.status_code == 200
-    assertTemplateUsed(response, f"fragments/indicateur.html")
+    assert response.status_code == 302
+    assert response.url == reverse(
+        "vsme:exigence_de_publication_vsme",
+        kwargs={
+            "vsme_id": rapport_vsme.id,
+            "exigence_de_publication_code": "B1",
+        },
+    )
 
 
 @pytest.mark.parametrize("indicateur_schema_id", ["ZZZ", "B1-ZZZ"])
