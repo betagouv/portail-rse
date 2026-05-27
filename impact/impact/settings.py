@@ -84,6 +84,7 @@ MIDDLEWARE = [
     # middlewares touchant à l'utilisation d'HTMX
     "utils.middlewares.HTMXRequestMiddleware",
     "utils.middlewares.HTMXRetargetMiddleware",
+    "utils.middlewares.HTMXAuthRedirectMiddleware",
     # django-hosts : doit être à la fin
     "django_hosts.middleware.HostsResponseMiddleware",
 ]
