@@ -15,9 +15,21 @@ from vsme.models import EXIGENCES_DE_PUBLICATION
 
 def export_rapport_vsme(rapport_vsme, presentation):
     indicateurs = rapport_vsme.indicateurs.all()
+    export_couverture(rapport_vsme, presentation)
     export_sommaire(rapport_vsme, presentation)
     export_indicateurs(indicateurs, presentation)
     supprime_diapos_inutiles(rapport_vsme, presentation)
+
+
+def export_couverture(rapport_vsme, presentation):
+    shapes = presentation.slides[0].shapes
+    shape_titre = find_shape(shapes, "ZoneTexte 9")
+    shape_titre.text_frame.paragraphs[0].runs[
+        0
+    ].text = rapport_vsme.entreprise.denomination
+    shape_titre.text_frame.paragraphs[1].runs[
+        0
+    ].text = f"Rapport VSME {rapport_vsme.annee}"
 
 
 def export_sommaire(rapport_vsme, presentation):
