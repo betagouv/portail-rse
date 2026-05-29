@@ -10,7 +10,11 @@
                 "description": "Unité : m³",
                 "type": "nombre_decimal",
                 "unité": "m3",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 36,
+                    "shape": "Rounded Rectangle 13"
+                }
             },
             {
                 "id": "total_prelevements_eau_sites_sensibles",
@@ -18,7 +22,11 @@
                 "description": "Unité : m³",
                 "type": "nombre_decimal",
                 "unité": "m3",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 36,
+                    "shape": "Rounded Rectangle 14"
+                }
             }
         ],
         "export_xlsx": {
@@ -36,7 +44,11 @@
                 "description": "Unité : m³",
                 "type": "nombre_decimal",
                 "unité": "m3",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 36,
+                    "shape": "Rounded Rectangle 15"
+                }
             }
         ],
         "si_pertinent": "Les processus de production de l'entreprise n'entraînent pas une consommation d'eau importante",
