@@ -280,7 +280,11 @@
                 "label": "Intensité GES",
                 "description": "Calculée automatiquement en divisant le total des émissions brutes de gaz à effet de serre par le chiffre d'affaires renseigné dans B1.",
                 "type": "nombre_decimal",
-                "calculé": true
+                "calculé": true,
+                "export_pptx": {
+                    "diapo": 24,
+                    "shape": "Rounded Rectangle 5"
+                }
             }
         ],
         "export_xlsx": {

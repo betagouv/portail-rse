@@ -203,7 +203,7 @@
                 ],
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 44,
+                    "diapo": 43,
                     "shape": "Table 10"
                 }
             }
