@@ -9,20 +9,32 @@
                 "label": "Nombre de salariés hommes occupant des postes de direction",
                 "type": "nombre_decimal",
                 "provoque_calcul_des_champs": ["ratio_femmes_hommes_encadrement"],
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 66,
+                    "shape": "Rounded Rectangle 13"
+                }
             },
             {
                 "id": "nombre_femmes_parmi_encadrement",
                 "label": "Nombre de salariées femmes occupant des postes de direction",
                 "type": "nombre_decimal",
                 "provoque_calcul_des_champs": ["ratio_femmes_hommes_encadrement"],
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 66,
+                    "shape": "Rounded Rectangle 12"
+                }
             },
             {
                 "id": "ratio_femmes_hommes_encadrement",
                 "label": "Ratio femmes/hommes au niveau de l'encadrement",
                 "type": "nombre_decimal",
-                "calculé": true
+                "calculé": true,
+                "export_pptx": {
+                    "diapo": 66,
+                    "shape": "Rounded Rectangle 14"
+                }
             }
         ],
         "si_pertinent": true,
@@ -39,13 +51,21 @@
                 "id": "nombre_travailleurs_independants",
                 "label": "Total des travailleurs indépendants sans personnel qui travaillent exclusivement pour l’entreprise",
                 "type": "nombre_decimal",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 66,
+                    "shape": "Rounded Rectangle 15"
+                }
             },
             {
                 "id": "nombre_salaries_temporaires",
                 "label": "Total des travailleurs temporaires mis à disposition par des entreprises exerçant principalement des activités liées à l’emploi",
                 "type": "nombre_decimal",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 66,
+                    "shape": "Rounded Rectangle 18"
+                }
             }
         ],
         "si_pertinent": true,

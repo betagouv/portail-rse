@@ -8,13 +8,21 @@
                 "id": "nombre_accidents_travail",
                 "label": "Nombre d'accidents du travail",
                 "type": "nombre_entier",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 62,
+                    "shape": "Rounded Rectangle 2"
+                }
             },
             {
                 "id": "taux_accidents_travail",
                 "label": "Taux d’accidents du travail comptabilisables",
                 "type": "nombre_decimal",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 62,
+                    "shape": "Rounded Rectangle 9"
+                }
             }
         ],
         "export_xlsx": {
@@ -30,7 +38,11 @@
                 "id": "deces_accidents_travail",
                 "label": "Nombre de décès dus à des accidents du travail",
                 "type": "nombre_entier",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 62,
+                    "shape": "Rounded Rectangle 11"
+                }
             }
         ],
         "export_xlsx": {
