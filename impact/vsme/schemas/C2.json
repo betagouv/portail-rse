@@ -29,7 +29,31 @@
                         "nombre_lignes": 3
                     }
                 ],
-                "lignes": "THEMATIQUES_DURABILITE"
+                "lignes": "THEMATIQUES_DURABILITE",
+                "export_pptx": {
+                    "multidiapos": [
+                        {
+                            "diapo": 17,
+                            "shape": "Table 8"
+                        },
+                        {
+                            "diapo": 18,
+                            "shape": "Table 8"
+                        },
+                        {
+                            "diapo": 19,
+                            "shape": "Table 8"
+                        },
+                        {
+                            "diapo": 20,
+                            "shape": "Table 8"
+                        },
+                        {
+                            "diapo": 21,
+                            "shape": "Table 8"
+                        }
+                    ]
+                }
             }
         ],
         "export_xlsx": {

@@ -9,14 +9,22 @@
                 "label": "Année de référence",
                 "type": "nombre_entier",
                 "min": 2000,
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 45,
+                    "shape": "Rounded Rectangle 10"
+                }
             },
             {
                 "id": "annee_cible",
                 "label": "Année cible",
                 "type": "nombre_entier",
                 "min": 2020,
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 45,
+                    "shape": "Rounded Rectangle 11"
+                }
             },
             {
                 "id": "cibles_reduction_emissions_GES_scopes_1_2",
@@ -61,11 +69,7 @@
                         "id": "scope_2_localisation",
                         "label": "Scope 2 basé sur la localisation"
                     }
-                ],
-                "export_pptx": {
-                    "diapo": 47,
-                    "shape": "Table 9"
-                }
+                ]
             },
             {
                 "id": "total_reduction_emissions_GES_scopes_1_2",
@@ -210,7 +214,20 @@
                         "id": "investissements",
                         "label": "15. Investissements"
                     }
-                ]
+                ],
+                "export_pptx": {
+                    "multidiapos": [
+                        {
+                            "diapo": 47,
+                            "shape": "Table 9"
+                        },
+                        {
+                            "diapo": 48,
+                            "shape": "Table 9"
+                        }
+                    ],
+                    "diapo_non_pertinent": 49
+                }
             },
             {
                 "id": "total_reduction_emissions_GES_scope_3",
