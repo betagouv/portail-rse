@@ -25,7 +25,11 @@
                         "id": "contrat_temporaire",
                         "label": "Contrat temporaire"
                     }
-                ]
+                ],
+                "export_pptx": {
+                    "diapo": 59,
+                    "shape": "Table 9"
+                }
             }
         ],
         "export_xlsx": {
@@ -66,7 +70,11 @@
                         "id": "non_communique",
                         "label": "Non communiqué"
                     }
-                ]
+                ],
+                "export_pptx": {
+                    "diapo": 59,
+                    "shape": "Table 11"
+                }
             }
         ],
         "export_xlsx": {
@@ -90,7 +98,11 @@
                         "obligatoire": true
                     }
                 ],
-                "lignes": "PAYS"
+                "lignes": "PAYS",
+                "export_pptx": {
+                    "diapo": 61,
+                    "shape": "Table 9"
+                }
             }
         ],
         "export_xlsx": {

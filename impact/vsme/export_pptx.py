@@ -4,6 +4,7 @@ from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN
 from pptx.util import Pt
 
+from utils.pays import CODES_PAYS_ISO_3166_1
 from utils.pptx import find_shape
 from utils.pptx import remove_shape
 from utils.pptx import remove_slide
@@ -214,6 +215,17 @@ def _export_tableau_lignes_fixes(champ, data, shape):
     lignes = champ["lignes"]
     colonnes = champ["colonnes"]
     match lignes:
+        case "PAYS":
+            table = shape.table
+            _formate_hauteur_tableau(data, table)
+            for offset_ligne, (code_pays, data_ligne) in enumerate(data.items()):
+                cell = table.cell(offset_ligne + 1, 0)
+                cell.text = CODES_PAYS_ISO_3166_1[code_pays]
+                for offset_colonne, colonne in enumerate(colonnes):
+                    data_cellule = data_ligne.get(colonne["id"])
+                    cell = table.cell(offset_ligne + 1, offset_colonne + 1)
+                    cell.text = formate_valeur(data_cellule, colonne)
+                    _appliquer_style_cellule(cell, data_cellule, colonne)
         case "RISQUES_CLIMATIQUES":
             table = shape.table
             _formate_hauteur_tableau(data, table)
