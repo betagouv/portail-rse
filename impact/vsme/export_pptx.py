@@ -214,6 +214,19 @@ def _export_tableau_lignes_fixes(champ, data, shape):
     lignes = champ["lignes"]
     colonnes = champ["colonnes"]
     match lignes:
+        case "RISQUES_CLIMATIQUES":
+            table = shape.table
+            _formate_hauteur_tableau(data, table)
+            for offset_ligne, (id_risque, data_ligne) in enumerate(data.items()):
+                cell = table.cell(offset_ligne + 1, 0)
+                cell.text = formate_valeur(id_risque, {"type": "auto_id"})
+                _appliquer_style_cellule(cell, id_risque, {"type": "auto_id"})
+
+                for offset_colonne, colonne in enumerate(colonnes):
+                    data_cellule = data_ligne.get(colonne["id"])
+                    cell = table.cell(offset_ligne + 1, offset_colonne + 1)
+                    cell.text = formate_valeur(data_cellule, colonne)
+                    _appliquer_style_cellule(cell, data_cellule, colonne)
         case "THEMATIQUES_DURABILITE" | list():
             colonnes_ids = [colonne["id"] for colonne in colonnes]
             if lignes == "THEMATIQUES_DURABILITE":
