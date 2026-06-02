@@ -178,7 +178,17 @@ def formate_valeur(valeur, champ):
 
 def _export_tableau(champ, data, shape):
     table = shape.table
+    _formate_hauteur_tableau(data, table)
 
+    for index_ligne, ligne in enumerate(data, start=1):
+        for index_data, data_cellule in enumerate(ligne.values()):
+            schema_colonne = champ["colonnes"][index_data]
+            cell = table.cell(index_ligne, index_data)
+            cell.text = formate_valeur(data_cellule, schema_colonne)
+            _appliquer_style_cellule(cell, data_cellule, schema_colonne)
+
+
+def _formate_hauteur_tableau(data, table):
     nombre_lignes_a_garder = 2  # titre et première ligne de données
     trs_a_supprimer = [
         table.rows[i]._tr for i in range(nombre_lignes_a_garder, len(table.rows))
@@ -189,13 +199,6 @@ def _export_tableau(champ, data, shape):
     nombre_lignes_a_ajouter = len(data) - 1  # première ligne déjà présente donc -1
     for _ in range(nombre_lignes_a_ajouter):
         _ajoute_ligne_tableau(table)
-
-    for index_ligne, ligne in enumerate(data, start=1):
-        for index_data, data_cellule in enumerate(ligne.values()):
-            schema_colonne = champ["colonnes"][index_data]
-            cell = table.cell(index_ligne, index_data)
-            cell.text = formate_valeur(data_cellule, schema_colonne)
-            _appliquer_style_cellule(cell, data_cellule, schema_colonne)
 
 
 def _ajoute_ligne_tableau(table):
