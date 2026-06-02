@@ -392,6 +392,103 @@ def test_export_pptx_d_un_champ_tableau_à_lignes_fixes_avec_données_vides(
             assert tableau.cell(3, 1).text == "0"
 
 
+def test_export_pptx_d_un_champ_tableau_à_lignes_fixes_sur_plusieurs_diapos(
+    entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
+    indicateur = Indicateur(
+        rapport_vsme=rapport_vsme,
+        schema_id="C2-48",
+        data={
+            "description_durabilite": {
+                "changement_climatique": {
+                    "description_pratiques": "a",
+                    "description_cibles": "b",
+                    "niveau_hierarchique": "c",
+                },
+                "pollution": {
+                    "description_pratiques": "d",
+                    "description_cibles": "e",
+                    "niveau_hierarchique": "f",
+                },
+                "eau": {
+                    "description_pratiques": "g",
+                    "description_cibles": "h",
+                    "niveau_hierarchique": "i",
+                },
+                "biodiversite": {
+                    "description_pratiques": "j",
+                    "description_cibles": "k",
+                    "niveau_hierarchique": "l",
+                },
+                "economie_circulaire": {
+                    "description_pratiques": "m",
+                    "description_cibles": "n",
+                    "niveau_hierarchique": "o",
+                },
+                "personnel": {
+                    "description_pratiques": "p",
+                    "description_cibles": "q",
+                    "niveau_hierarchique": "r",
+                },
+                "travailleurs": {
+                    "description_pratiques": "s",
+                    "description_cibles": "t",
+                    "niveau_hierarchique": "u",
+                },
+                "communautes": {
+                    "description_pratiques": "v",
+                    "description_cibles": "w",
+                    "niveau_hierarchique": "x",
+                },
+                "consommateurs": {
+                    "description_pratiques": "y",
+                    "description_cibles": "z",
+                    "niveau_hierarchique": "aa",
+                },
+                "conduite_affaires": {
+                    "description_pratiques": "bb",
+                    "description_cibles": "cc",
+                    "niveau_hierarchique": "dd",
+                },
+            }
+        },
+    )
+    chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
+    presentation = Presentation(chemin_pptx)
+
+    export_indicateurs([indicateur], presentation)
+
+    shapes = presentation.slides[16].shapes
+    for shape in shapes:
+        if shape.name == "Table 8":
+            tableau = shape.table
+            assert tableau.cell(1, 0).text == "Changement climatique"
+            assert tableau.cell(1, 1).text == "a"
+            assert tableau.cell(2, 0).text == "Pollution"
+            assert tableau.cell(2, 1).text == "d"
+    shapes = presentation.slides[17].shapes
+    for shape in shapes:
+        if shape.name == "Table 8":
+            tableau = shape.table
+            assert tableau.cell(1, 0).text == "Eau et ressources aquatiques et marines"
+            assert tableau.cell(1, 1).text == "g"
+            assert tableau.cell(2, 0).text == "Biodiversité et écosystèmes"
+            assert tableau.cell(2, 1).text == "j"
+    shapes = presentation.slides[20].shapes
+    for shape in shapes:
+        if shape.name == "Table 8":
+            tableau = shape.table
+            assert tableau.cell(1, 0).text == "Consommateurs et utilisateurs finaux"
+            assert tableau.cell(1, 1).text == "y"
+            assert (
+                tableau.cell(2, 0).text
+                == "Conduite des affaires et lutte contre la corruption"
+            )
+            assert tableau.cell(2, 1).text == "bb"
+
+
 def test_selectionne_diapos_a_supprimer_d_un_indicateur_non_applicable(
     entreprise_factory, alice
 ):

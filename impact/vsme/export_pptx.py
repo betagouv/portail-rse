@@ -93,17 +93,51 @@ def export_indicateurs(indicateurs, presentation):
 
 def _export_indicateur(indicateur, presentation):
     for champ in indicateur.schema["champs"]:
-        if "export_pptx" in champ:
-            data = indicateur.data.get(champ["id"])
-            export_pptx = champ["export_pptx"]
-            numero_diapo = export_pptx["diapo"]
-            diapo = presentation.slides[
-                numero_diapo - 1
-            ]  # décalage: slide 5 est à l'index 4
-            nom_shape = export_pptx["shape"]
-            for shape in diapo.shapes:
-                if shape.name == nom_shape:
-                    _export_champ(champ, data, shape)
+        if "export_pptx" not in champ:
+            continue
+        data = indicateur.data.get(champ["id"])
+        export_pptx = champ["export_pptx"]
+        if "multidiapos" in export_pptx:
+            _export_champ_multidiapos(champ, data, export_pptx, presentation)
+        else:
+            _export_champ_monodiapo(champ, data, export_pptx, presentation)
+
+
+def _export_champ_multidiapos(champ, data, export_pptx, presentation):
+    multidiapos = export_pptx["multidiapos"]
+    lignes = champ["lignes"]
+    if lignes == "THEMATIQUES_DURABILITE":
+        label_to_id = {v: k for k, v in THEMATIQUES_DURABILITE.items()}
+    else:
+        label_to_id = {ligne["label"]: ligne["id"] for ligne in lignes}
+    colonnes = champ["colonnes"]
+    for diapo_info in multidiapos:
+        diapo = presentation.slides[diapo_info["diapo"] - 1]
+        shape = find_shape(diapo.shapes, diapo_info["shape"])
+        if not shape:
+            continue
+        table = shape.table
+        for row_index in range(1, len(table.rows)):
+            label = table.cell(row_index, 0).text.strip()
+            if label not in label_to_id:
+                continue
+            ligne_id = label_to_id[label]
+            data_ligne = data[ligne_id]
+            for col_index, colonne in enumerate(colonnes):
+                data_cellule = data_ligne.get(colonne["id"])
+                cell = table.cell(row_index, col_index + 1)
+                cell.text = formate_valeur(data_cellule, colonne)
+                _appliquer_style_cellule(cell, data_cellule, colonne)
+
+
+def _export_champ_monodiapo(champ, data, export_pptx, presentation):
+    numero_diapo = export_pptx["diapo"]
+    diapo = presentation.slides[numero_diapo - 1]
+    nom_shape = export_pptx["shape"]
+    shape = find_shape(diapo.shapes, nom_shape)
+    if not shape:
+        print("Non trouvé", champ["id"], nom_shape)
+    _export_champ(champ, data, shape)
 
 
 def _export_champ(champ, data, shape):
