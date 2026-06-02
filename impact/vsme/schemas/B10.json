@@ -6,7 +6,11 @@
             {
                 "id": "respect_salaire_minimum",
                 "label": "Tous les employés perçoivent une rémunération au moins équivalente au salaire minimum",
-                "type": "choix_binaire"
+                "type": "choix_binaire",
+                "export_pptx": {
+                    "diapo": 63,
+                    "shape": "Rounded Rectangle 1"
+                }
             }
         ],
         "export_xlsx": {
@@ -25,7 +29,11 @@
                 "type": "nombre_decimal",
                 "unité": "euros/heure",
                 "provoque_calcul_des_champs": ["ecart_remuneration_hommes_femmes"],
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 63,
+                    "shape": "Rounded Rectangle 4"
+                }
             },
             {
                 "id": "remuneration_horaire_femmes",
@@ -34,7 +42,11 @@
                 "type": "nombre_decimal",
                 "unité": "euros/heure",
                 "provoque_calcul_des_champs": ["ecart_remuneration_hommes_femmes"],
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 63,
+                    "shape": "Rounded Rectangle 2"
+                }
             },
             {
                 "id": "ecart_remuneration_hommes_femmes",
@@ -42,7 +54,11 @@
                 "description": "Calculé automatiquement et exprimé en pourcentage du niveau moyen de rémunération des hommes",
                 "type": "nombre_decimal",
                 "unité": "%",
-                "calculé": true
+                "calculé": true,
+                "export_pptx": {
+                    "diapo": 63,
+                    "shape": "Rounded Rectangle 8"
+                }
             }
         ],
         "export_xlsx": {
@@ -61,7 +77,11 @@
                 "type": "nombre_decimal",
                 "unité": "salariés",
                 "obligatoire": true,
-                "provoque_calcul_des_champs": ["taux_couverture_conventions_collectives"]
+                "provoque_calcul_des_champs": ["taux_couverture_conventions_collectives"],
+                "export_pptx": {
+                    "diapo": 63,
+                    "shape": "Rounded Rectangle 23"
+                }
             },
             {
                 "id": "taux_couverture_conventions_collectives",
@@ -90,7 +110,11 @@
                         "label": "Entre 80 et 100%"
                     }
                 ],
-                "calculé": true
+                "calculé": true,
+                "export_pptx": {
+                    "diapo": 63,
+                    "shape": "Rounded Rectangle 24"
+                }
             }
         ],
         "export_xlsx": {
@@ -140,7 +164,11 @@
                         "id": "non_communique",
                         "label": "Non communiqué"
                     }
-                ]
+                ],
+                "export_pptx": {
+                    "diapo": 65,
+                    "shape": "Table 2"
+                }
             }
         ],
         "export_xlsx": {
