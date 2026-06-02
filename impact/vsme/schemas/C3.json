@@ -69,7 +69,11 @@
                         "id": "scope_2_localisation",
                         "label": "Scope 2 basé sur la localisation"
                     }
-                ]
+                ],
+                "export_pptx": {
+                    "diapo": 45,
+                    "shape": "Table 9"
+                }
             },
             {
                 "id": "total_reduction_emissions_GES_scopes_1_2",
