@@ -18,7 +18,7 @@
             },
             {
                 "id": "incidents_traite_des_etres_humains_internes",
-                "label": "L’entreprise a-t-elle confirmé des incidents graves au sein de son personnel liés à la traite des êtres humains ? ",
+                "label": "L’entreprise a-t-elle confirmé des incidents graves au sein de son personnel liés à la traite des êtres humains ?",
                 "type": "choix_binaire_radio",
                 "obligatoire": true
             },

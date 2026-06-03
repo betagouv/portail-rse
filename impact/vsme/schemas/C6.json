@@ -18,7 +18,7 @@
             },
             {
                 "id": "politique_traite_des_etres_humains",
-                "label": "La politique de l'entreprise couvre-t-elle la traite des êtres humains ? ",
+                "label": "La politique de l'entreprise couvre-t-elle la traite des êtres humains ?",
                 "type": "choix_binaire_radio",
                 "obligatoire": true
             },
