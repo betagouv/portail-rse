@@ -55,6 +55,17 @@ def test_import_des_contacts(
     assert request_contact_import.empty_contacts_attributes == True
 
 
+def test_import_des_contacts_annulé_si_list_id_absent(mocker, settings):
+    settings.BREVO_API_KEY = "BREVO_API_KEY"
+    mocked_import_contacts = mocker.patch(
+        "sib_api_v3_sdk.ContactsApi.import_contacts",
+    )
+
+    call_command("import_utilisateurs_brevo")
+
+    assert not mocked_import_contacts.called
+
+
 @pytest.mark.django_db(transaction=True)
 def test_supprime_utilisateurs_non_confirmes(django_user_model):
     il_y_a_deux_mois = date.today() + relativedelta(months=-2)

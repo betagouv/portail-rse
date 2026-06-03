@@ -15,11 +15,25 @@ def _client_api():
 
 
 class Command(BaseCommand):
+    help = "Importe les utilisateurs dans Brevo"
+
     def add_arguments(self, parser):
-        parser.add_argument("list_id", type=int)
+        parser.add_argument(
+            "list_id",
+            nargs="?",
+            type=int,
+            help="ID de la liste de contacts Brevo dans laquelle les utilisateurs seront importés. Si aucun ID n'est fourni, la commande ne fait rien.",
+        )
 
     def handle(self, *args, **options):
         list_id = options["list_id"]
+        if list_id is None:
+            self.stdout.write(
+                self.style.SUCCESS(
+                    "Aucun ID de liste de contacts fourni. Import des utilisateurs dans Brevo annulé."
+                )
+            )
+            return
         client_api = _client_api()
         api_instance = ContactsApi(client_api)
         request_contact_import = RequestContactImport()
@@ -47,3 +61,6 @@ class Command(BaseCommand):
         request_contact_import.update_existing_contacts = True
         request_contact_import.empty_contacts_attributes = True
         api_instance.import_contacts(request_contact_import)
+        self.stdout.write(
+            self.style.SUCCESS("Import des utilisateurs dans Brevo teminé.")
+        )
