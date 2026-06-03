@@ -41,6 +41,7 @@ def test_import_des_contacts(
         {
             "email": alice.email,
             "attributes": {
+                "EXT_ID": alice.id,
                 "PORTAIL_RSE_ID": alice.id,
                 "PORTAIL_RSE_DATE_INSCRIPTION": alice.created_at.strftime("%d-%m-%Y"),
                 "EMAIL_CONFIRME": "yes",
