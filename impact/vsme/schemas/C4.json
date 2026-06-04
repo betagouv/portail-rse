@@ -59,7 +59,8 @@
                 ],
                 "export_pptx": {
                     "diapo": 53,
-                    "shape": "Table 11"
+                    "shape": "Table 11",
+                    "diapo_non_pertinent": 54
                 }
             }
         ],
@@ -132,7 +133,8 @@
                 "lignes": "RISQUES_CLIMATIQUES",
                 "export_pptx": {
                     "diapo": 55,
-                    "shape": "Table 9"
+                    "shape": "Table 9",
+                    "diapo_non_pertinent": 57
                 }
             }
         ],

@@ -20,7 +20,7 @@ def export_rapport_vsme(rapport_vsme, presentation):
     export_couverture(rapport_vsme, presentation)
     export_sommaire(rapport_vsme, presentation)
     export_indicateurs(indicateurs, presentation)
-    supprime_diapos_inutiles(rapport_vsme, presentation)
+    supprime_diapos_inutiles(indicateurs, rapport_vsme, presentation)
 
 
 def export_couverture(rapport_vsme, presentation):
@@ -45,14 +45,32 @@ def export_sommaire(rapport_vsme, presentation):
             remove_shape(shape)
 
 
-def supprime_diapos_inutiles(rapport_vsme, presentation):
-    diapos_a_supprimer = selectionne_diapos_a_supprimer(rapport_vsme, presentation)
-    for diapo_a_supprimer in diapos_a_supprimer:
+def supprime_diapos_inutiles(indicateurs, rapport_vsme, presentation):
+    diapos_a_supprimer = selectionne_diapos_non_pertinents(
+        indicateurs
+    ) | selectionne_diapos_non_applicables(rapport_vsme)
+    for diapo_a_supprimer in sorted(diapos_a_supprimer, reverse=True):
         index_diapo = diapo_a_supprimer - 1
         remove_slide(presentation, index_diapo)
 
 
-def selectionne_diapos_a_supprimer(rapport_vsme, presentation):
+def selectionne_diapos_non_pertinents(indicateurs):
+    diapos_a_supprimer = set()
+    for indicateur in indicateurs:
+        for champ in indicateur.schema["champs"]:
+            if "export_pptx" not in champ:
+                continue
+            export_pptx = champ["export_pptx"]
+            if "diapo_non_pertinent" not in export_pptx:
+                continue
+            if indicateur.est_non_pertinent:
+                diapos_a_supprimer.add(export_pptx["diapo"])
+            else:
+                diapos_a_supprimer.add(export_pptx["diapo_non_pertinent"])
+    return diapos_a_supprimer
+
+
+def selectionne_diapos_non_applicables(rapport_vsme):
     diapos_a_supprimer = set()
 
     tous_les_indicateur_schema_ids = [
@@ -85,7 +103,7 @@ def selectionne_diapos_a_supprimer(rapport_vsme, presentation):
                     diapo_a_supprimer = champ["export_pptx"]["diapo"]
                     diapos_a_supprimer.add(diapo_a_supprimer)
 
-    return sorted(diapos_a_supprimer, reverse=True)
+    return diapos_a_supprimer
 
 
 def export_indicateurs(indicateurs, presentation):
@@ -94,6 +112,9 @@ def export_indicateurs(indicateurs, presentation):
 
 
 def _export_indicateur(indicateur, presentation):
+    if indicateur.est_non_pertinent:
+        return
+
     for champ in indicateur.schema["champs"]:
         if "export_pptx" not in champ:
             continue

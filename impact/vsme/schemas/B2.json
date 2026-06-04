@@ -95,7 +95,8 @@
                 "lignes": "THEMATIQUES_DURABILITE",
                 "export_pptx": {
                     "diapo": 12,
-                    "shape": "Table 5"
+                    "shape": "Table 5",
+                    "diapo_non_pertinent": 13
                 }
             }
         ],

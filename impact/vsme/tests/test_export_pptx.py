@@ -12,7 +12,8 @@ from vsme.export_pptx import export_indicateurs
 from vsme.export_pptx import export_sommaire
 from vsme.export_pptx import find_shape
 from vsme.export_pptx import formate_valeur
-from vsme.export_pptx import selectionne_diapos_a_supprimer
+from vsme.export_pptx import selectionne_diapos_non_applicables
+from vsme.export_pptx import selectionne_diapos_non_pertinents
 from vsme.models import ExigenceDePublication
 from vsme.models import Indicateur
 from vsme.models import RapportVSME
@@ -490,23 +491,21 @@ def test_export_pptx_d_un_champ_tableau_à_lignes_fixes_sur_plusieurs_diapos(
             assert tableau.cell(2, 1).text == "bb"
 
 
-def test_selectionne_diapos_a_supprimer_d_un_indicateur_non_applicable(
+def test_selectionne_diapos_non_applicables_d_un_indicateur_non_applicable(
     entreprise_factory, alice
 ):
     entreprise = entreprise_factory(utilisateur=alice)
     rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
-    indicateur = Indicateur.objects.create(
+    Indicateur.objects.create(
         rapport_vsme=rapport_vsme,
         schema_id="B1-24-e-i",  # Forme juridique de l’entreprise
         data={"forme_juridique": "57", "coopérative": False},
     )
-    chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
-    presentation = Presentation(chemin_pptx)
 
-    diapos_a_supprimer = selectionne_diapos_a_supprimer(rapport_vsme, presentation)
+    diapos_a_supprimer = selectionne_diapos_non_applicables(rapport_vsme)
 
     # "B2-26-p1" "Participation effective à la gouvernance" est non applicable
-    # donc suppression de 'diapo'
+    # donc suppression de ‘diapo’
     schema_indicateur = list(
         ExigenceDePublication.par_indicateur_schema_id("B2-26-p1")
         .load_json_schema()
@@ -515,24 +514,22 @@ def test_selectionne_diapos_a_supprimer_d_un_indicateur_non_applicable(
     index_diapo_a_supprimer = schema_indicateur["champs"][0]["export_pptx"][
         "diapo"
     ]  # 10
-    assert diapos_a_supprimer == [index_diapo_a_supprimer]
+    assert diapos_a_supprimer == {index_diapo_a_supprimer}
 
 
-def test_selectionne_diapos_a_supprimer_d_un_indicateur_applicable(
+def test_selectionne_diapos_non_applicables_d_un_indicateur_applicable(
     entreprise_factory, alice
 ):
     # il faut supprimer la diapo non applicable
     entreprise = entreprise_factory(utilisateur=alice)
     rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
-    indicateur = Indicateur.objects.create(
+    Indicateur.objects.create(
         rapport_vsme=rapport_vsme,
         schema_id="B1-24-e-i",  # Forme juridique de l’entreprise
         data={"forme_juridique": "57", "coopérative": True},
     )
-    chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
-    presentation = Presentation(chemin_pptx)
 
-    diapos_a_supprimer = selectionne_diapos_a_supprimer(rapport_vsme, presentation)
+    diapos_a_supprimer = selectionne_diapos_non_applicables(rapport_vsme)
 
     # "B2-26-p1" "Participation effective à la gouvernance" est applicable
     # donc suppression de 'diapo_non_applicable'
@@ -544,7 +541,7 @@ def test_selectionne_diapos_a_supprimer_d_un_indicateur_applicable(
     index_diapo_a_supprimer = schema_indicateur["champs"][0]["export_pptx"][
         "diapo_non_applicable"
     ]  # 9
-    assert diapos_a_supprimer == [index_diapo_a_supprimer]
+    assert diapos_a_supprimer == {index_diapo_a_supprimer}
 
 
 @pytest.mark.parametrize(
@@ -573,3 +570,40 @@ def test_selectionne_diapos_a_supprimer_d_un_indicateur_applicable(
 )
 def test_formate_valeur(valeur, champ, attendu):
     assert formate_valeur(valeur, champ) == attendu
+
+
+def test_export_pptx_d_un_indicateur_non_pertinent(entreprise_factory, alice):
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
+    indicateur = Indicateur(
+        rapport_vsme=rapport_vsme,
+        schema_id="B7-37",
+        data={"non_pertinent": True, "economie_circulaire": "PRINCIPES"},
+    )
+    chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
+    presentation = Presentation(chemin_pptx)
+
+    export_indicateurs([indicateur], presentation)
+
+    shapes = presentation.slides[37].shapes
+    for shape in shapes:
+        if shape.name == "Rounded Rectangle 8":
+            assert shape.text_frame.paragraphs[1].runs[0].text != "PRINCIPES"
+
+
+@pytest.mark.parametrize(
+    "non_pertinent, diapo_a_supprimer",
+    [(True, {12}), (False, {13})],
+)
+def test_selectionne_diapos_non_pertinents(
+    non_pertinent, diapo_a_supprimer, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
+    indicateur = Indicateur(
+        rapport_vsme=rapport_vsme,
+        schema_id="B2-26",
+        data={"non_pertinent": non_pertinent},
+    )
+
+    assert selectionne_diapos_non_pertinents([indicateur]) == diapo_a_supprimer

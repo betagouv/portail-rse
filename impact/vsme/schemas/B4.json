@@ -138,7 +138,8 @@
                 "obligatoire": true,
                 "export_pptx": {
                     "diapo": 26,
-                    "shape": "Table 5"
+                    "shape": "Table 5",
+                    "diapo_non_pertinent": 27
                 }
             }
         ],
@@ -286,7 +287,8 @@
                 "obligatoire": true,
                 "export_pptx": {
                     "diapo": 28,
-                    "shape": "Table 5"
+                    "shape": "Table 5",
+                    "diapo_non_pertinent": 29
                 }
             }
         ],
@@ -434,7 +436,8 @@
                 "obligatoire": true,
                 "export_pptx": {
                     "diapo": 30,
-                    "shape": "Table 5"
+                    "shape": "Table 5",
+                    "diapo_non_pertinent": 31
                 }
             }
         ],
