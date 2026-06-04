@@ -173,7 +173,14 @@ def _export_choix_multiple(champ, data, shape):
 def formate_valeur(valeur, champ):
     match champ["type"]:
         case "nombre_entier" | "nombre_decimal" | "auto_id":
-            return str(valeur) if valeur else "0"
+            if isinstance(valeur, str) and valeur.endswith("%"):
+                valeur = valeur[:-1]
+            if "unité" in champ:
+                unite = champ["unité"]
+                valeur_formatee = f"{valeur} {unite}" if valeur else f"0 {unite}"
+            else:
+                valeur_formatee = f"{valeur}" if valeur else "0"
+            return valeur_formatee
         case _:
             return str(formate_valeur_xlsx(valeur, champ))
 

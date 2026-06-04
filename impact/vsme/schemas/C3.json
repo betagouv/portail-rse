@@ -51,6 +51,7 @@
                         "label": "Réduction en pourcentage par rapport à l'année de référence",
                         "description": "Calculé automatiquement",
                         "type": "nombre_decimal",
+                        "unité": "%",
                         "calculé": true
                     },
                     {
@@ -148,6 +149,7 @@
                         "label": "Réduction en pourcentage par rapport à l'année de référence",
                         "description": "Calculé automatiquement",
                         "type": "nombre_decimal",
+                        "unité": "%",
                         "calculé": true
                     },
                     {

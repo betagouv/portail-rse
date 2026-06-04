@@ -11,6 +11,7 @@ from pptx.util import Pt
 from vsme.export_pptx import export_indicateurs
 from vsme.export_pptx import export_sommaire
 from vsme.export_pptx import find_shape
+from vsme.export_pptx import formate_valeur
 from vsme.export_pptx import selectionne_diapos_a_supprimer
 from vsme.models import ExigenceDePublication
 from vsme.models import Indicateur
@@ -101,7 +102,7 @@ def test_export_pptx_d_un_champ_nombre_entier(entreprise_factory, alice):
     shapes = presentation.slides[4].shapes
     for shape in shapes:
         if shape.name == "B1-24-e-iii":
-            assert shape.text_frame.paragraphs[1].runs[0].text == "12345"
+            assert shape.text_frame.paragraphs[1].runs[0].text == "12345 euros"
 
 
 def test_export_pptx_d_un_champ_texte_long(entreprise_factory, alice):
@@ -544,3 +545,31 @@ def test_selectionne_diapos_a_supprimer_d_un_indicateur_applicable(
         "diapo_non_applicable"
     ]  # 9
     assert diapos_a_supprimer == [index_diapo_a_supprimer]
+
+
+@pytest.mark.parametrize(
+    "valeur, champ, attendu",
+    [
+        (42, {"type": "nombre_entier"}, "42"),
+        (None, {"type": "nombre_entier"}, "0"),
+        (0, {"type": "nombre_entier"}, "0"),
+        (42, {"type": "nombre_entier", "unité": "kg"}, "42 kg"),
+        (None, {"type": "nombre_entier", "unité": "kg"}, "0 kg"),
+        (0, {"type": "nombre_entier", "unité": "kg"}, "0 kg"),
+        (3.14, {"type": "nombre_decimal"}, "3.14"),
+        (None, {"type": "nombre_decimal"}, "0"),
+        (3.14, {"type": "nombre_decimal", "unité": "tonnes"}, "3.14 tonnes"),
+        (None, {"type": "nombre_decimal", "unité": "tonnes"}, "0 tonnes"),
+        (1, {"type": "auto_id"}, "1"),
+        (
+            "-50.0%",
+            {"type": "nombre_decimal", "unité": "%", "calculé": True},
+            "-50.0 %",
+        ),
+        (None, {"type": "auto_id"}, "0"),
+        (True, {"type": "choix_binaire"}, "OUI"),
+        (False, {"type": "choix_binaire"}, "NON"),
+    ],
+)
+def test_formate_valeur(valeur, champ, attendu):
+    assert formate_valeur(valeur, champ) == attendu
