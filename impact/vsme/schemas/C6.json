@@ -11,7 +11,8 @@
                 "obligatoire": true,
                 "export_pptx": {
                     "diapo": 68,
-                    "shape": "Rounded Rectangle 2"
+                    "shape": "Rounded Rectangle 2",
+                    "diapo_non_pertinent": 69
                 }
             },
             {
@@ -21,7 +22,8 @@
                 "obligatoire": true,
                 "export_pptx": {
                     "diapo": 68,
-                    "shape": "Rounded Rectangle 10"
+                    "shape": "Rounded Rectangle 10",
+                    "diapo_non_pertinent": 69
                 }
             },
             {
@@ -31,7 +33,8 @@
                 "obligatoire": true,
                 "export_pptx": {
                     "diapo": 68,
-                    "shape": "Rounded Rectangle 11"
+                    "shape": "Rounded Rectangle 11",
+                    "diapo_non_pertinent": 69
                 }
             },
             {
@@ -41,7 +44,8 @@
                 "obligatoire": true,
                 "export_pptx": {
                     "diapo": 68,
-                    "shape": "Rounded Rectangle 12"
+                    "shape": "Rounded Rectangle 12",
+                    "diapo_non_pertinent": 69
                 }
             },
             {
@@ -51,7 +55,8 @@
                 "obligatoire": true,
                 "export_pptx": {
                     "diapo": 68,
-                    "shape": "Rounded Rectangle 13"
+                    "shape": "Rounded Rectangle 13",
+                    "diapo_non_pertinent": 69
                 }
             },
             {
@@ -60,7 +65,8 @@
                 "type": "texte",
                 "export_pptx": {
                     "diapo": 70,
-                    "shape": "Rounded Rectangle 10"
+                    "shape": "Rounded Rectangle 10",
+                    "diapo_non_pertinent": 69
                 }
             }
         ],

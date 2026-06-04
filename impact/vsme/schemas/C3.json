@@ -73,7 +73,8 @@
                 ],
                 "export_pptx": {
                     "diapo": 45,
-                    "shape": "Table 9"
+                    "shape": "Table 9",
+                    "diapo_non_pertinent": 46
                 }
             },
             {
@@ -299,7 +300,8 @@
                 "type": "texte_long",
                 "export_pptx": {
                     "diapo": 51,
-                    "shape": "Rounded Rectangle 8"
+                    "shape": "Rounded Rectangle 8",
+                    "diapo_non_pertinent": 50
                 }
             },
             {

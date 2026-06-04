@@ -55,7 +55,8 @@
                 "obligatoire": true,
                 "export_pptx": {
                     "diapo": 33,
-                    "shape": "Table 4"
+                    "shape": "Table 4",
+                    "diapo_non_pertinent": 32
                 }
             }
         ],
@@ -119,7 +120,8 @@
                 ],
                 "export_pptx": {
                     "diapo": 35,
-                    "shape": "Table 7"
+                    "shape": "Table 7",
+                    "diapo_non_pertinent": 34
                 }
             }
         ],
