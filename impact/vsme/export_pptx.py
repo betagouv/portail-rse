@@ -1,6 +1,7 @@
 import copy
 
 from pptx.dml.color import RGBColor
+from pptx.enum.text import MSO_ANCHOR
 from pptx.enum.text import PP_ALIGN
 from pptx.util import Pt
 
@@ -260,6 +261,7 @@ def _export_tableau_lignes_fixes(champ, data, shape):
 
 def _appliquer_style_cellule(cell, data_cellule, champ):
     type_indicateur = champ["type"]
+    cell.vertical_anchor = MSO_ANCHOR.MIDDLE
     for para in cell.text_frame.paragraphs:
         para.font.size = Pt(10)
         para.alignment = PP_ALIGN.CENTER
