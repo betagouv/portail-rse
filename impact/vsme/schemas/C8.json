@@ -12,7 +12,11 @@
                 "min": 0,
                 "défaut": 0,
                 "unité": "euros",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 78,
+                    "shape": "Rounded Rectangle 8"
+                }
             },
             {
                 "id": "chiffre_affaires_tabac",
@@ -22,7 +26,11 @@
                 "min": 0,
                 "défaut": 0,
                 "unité": "euros",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 78,
+                    "shape": "Rounded Rectangle 11"
+                }
             },
             {
                 "id": "chiffre_affaires_charbon",
@@ -33,7 +41,11 @@
                 "défaut": 0,
                 "unité": "euros",
                 "provoque_calcul_des_champs": ["chiffre_affaires_combustibles_fossiles"],
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 78,
+                    "shape": "Rounded Rectangle 12"
+                }
             },
             {
                 "id": "chiffre_affaires_petrole",
@@ -44,7 +56,11 @@
                 "défaut": 0,
                 "unité": "euros",
                 "provoque_calcul_des_champs": ["chiffre_affaires_combustibles_fossiles"],
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 78,
+                    "shape": "Rounded Rectangle 13"
+                }
             },
             {
                 "id": "chiffre_affaires_gaz",
@@ -55,7 +71,11 @@
                 "défaut": 0,
                 "unité": "euros",
                 "provoque_calcul_des_champs": ["chiffre_affaires_combustibles_fossiles"],
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 78,
+                    "shape": "Rounded Rectangle 14"
+                }
             },
             {
                 "id": "chiffre_affaires_combustibles_fossiles",
@@ -64,7 +84,11 @@
                 "type": "nombre_entier",
                 "min": 0,
                 "unité": "euros",
-                "calculé": true
+                "calculé": true,
+                "export_pptx": {
+                    "diapo": 78,
+                    "shape": "Rounded Rectangle 15"
+                }
             },
             {
                 "id": "chiffre_affaires_pesticides",
@@ -74,7 +98,11 @@
                 "min": 0,
                 "défaut": 0,
                 "unité": "euros",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 78,
+                    "shape": "Rounded Rectangle 18"
+                }
             }
         ],
         "si_pertinent": "L'entreprise n'exerce pas d'activité dans les secteurs sensibles",
@@ -92,7 +120,11 @@
                 "label": "L’entreprise est-elle exclue des indices de référence « Accord de Paris » de l’Union ?",
                 "description": "Conformément à l’article 12, paragraphe 1, du règlement délégué (UE) 2020/1818 de la Commission, les entreprises exclues des indices de référence « accord de Paris » de l’Union sont les suivantes :<ul><li> les entreprises qui tirent au moins 1 % de leur chiffre d’affaires de la prospection, de l’extraction, de la distribution ou du raffinage de houille et de lignite;</li><li>les entreprises qui tirent au moins 10 % de leur chiffre d’affaires de la prospection, de l’extraction, de la distribution ou du raffinage de combustibles liquides;</li><li>les entreprises qui tirent au moins 50 % de leur chiffre d’affaires de la prospection, de l’extraction, de la fabrication ou de la distribution de combustibles gazeux; et</li><li>les entreprises qui tirent au moins 50 % de leur chiffre d’affaires d’activités de production d’électricité présentant une intensité d’émission de GES supérieure à 100 g CO2 e/kWh.</li></ul>",
                 "type": "choix_binaire_radio",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 80,
+                    "shape": "Rounded Rectangle 9"
+                }
             }
         ],
         "export_xlsx": {

@@ -120,7 +120,11 @@
                 "description": "Unité : %",
                 "type": "nombre_decimal",
                 "unité": "%",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 59,
+                    "shape": "Rounded Rectangle 12"
+                }
             }
         ],
         "si_pertinent": "Non applicable si l’entreprise emploie moins de 50 salariés",

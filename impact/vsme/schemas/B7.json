@@ -150,7 +150,11 @@
                         "obligatoire": true
                     }
                 ],
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 41,
+                    "shape": "Table 9"
+                }
             }
         ],
         "si_pertinent": "L'entreprise ne produit que des déchets ménagers",

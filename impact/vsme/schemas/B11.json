@@ -9,7 +9,11 @@
                 "label": "Nombre de condamnations",
                 "type": "nombre_entier",
                 "unité": "condamnations",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 76,
+                    "shape": "Rounded Rectangle 2"
+                }
             }
         ],
         "si_pertinent": true,
@@ -28,7 +32,11 @@
                 "description": "Unité : euros",
                 "type": "nombre_decimal",
                 "unité": "euros",
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 76,
+                    "shape": "Rounded Rectangle 13"
+                }
             }
         ],
         "si_pertinent": true,
