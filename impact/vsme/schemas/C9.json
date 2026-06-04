@@ -9,7 +9,11 @@
                 "label": "Ratio de mixité au sein de l’organe de gouvernance",
                 "type": "nombre_decimal",
                 "min": 0,
-                "obligatoire": true
+                "obligatoire": true,
+                "export_pptx": {
+                    "diapo": 81,
+                    "shape": "Rounded Rectangle 1"
+                }
             }
         ],
         "si_pertinent": "L'entreprise ne dispose pas d'organe de gouvernance",
