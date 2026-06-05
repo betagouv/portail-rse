@@ -12,6 +12,7 @@ from vsme.export_pptx import export_indicateurs
 from vsme.export_pptx import export_sommaire
 from vsme.export_pptx import find_shape
 from vsme.export_pptx import formate_valeur
+from vsme.export_pptx import selectionne_diapos_modules_complets
 from vsme.export_pptx import selectionne_diapos_non_applicables
 from vsme.export_pptx import selectionne_diapos_non_pertinents
 from vsme.models import ExigenceDePublication
@@ -589,6 +590,30 @@ def test_export_pptx_d_un_indicateur_non_pertinent(entreprise_factory, alice):
     for shape in shapes:
         if shape.name == "Rounded Rectangle 8":
             assert shape.text_frame.paragraphs[1].runs[0].text != "PRINCIPES"
+
+
+@pytest.mark.parametrize(
+    "choix_module, diapos_modules_complets_vides",
+    [("complet", True), ("base", False)],
+)
+def test_selectionne_diapos_modules_complets(
+    choix_module, diapos_modules_complets_vides, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-a",
+        data={"choix_module": choix_module},
+    )
+
+    diapos = selectionne_diapos_modules_complets(rapport_vsme)
+
+    if diapos_modules_complets_vides:
+        assert diapos == set()
+    else:
+        # diapos C1 (diapo simple) et C2 (multidiapos)
+        assert {14, 15, 17, 18, 19, 20, 21}.issubset(diapos)
 
 
 @pytest.mark.parametrize(

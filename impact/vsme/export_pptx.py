@@ -37,18 +37,38 @@ def export_couverture(rapport_vsme, presentation):
 def export_sommaire(rapport_vsme, presentation):
     if rapport_vsme.choix_module == "base":
         NUMERO_DIAPO_SOMMAIRE = 3
-        shapes = presentation.slides[NUMERO_DIAPO_SOMMAIRE - 1].shapes
-        for num_shape in ("22", "23", "39", "40", "47", "48", "49", "54", "55", "56"):
-            shape = find_shape(
-                shapes, f"Round Same-side Corner of Rectangle {num_shape}"
-            )
-            remove_shape(shape)
+        _remove_shapes_from_slide(
+            presentation,
+            NUMERO_DIAPO_SOMMAIRE,
+            ("22", "23", "39", "40", "47", "48", "49", "54", "55", "56"),
+        )
+
+        NUMERO_DIAPO_INFOS = 4
+        _remove_shapes_from_slide(presentation, NUMERO_DIAPO_INFOS, ("22", "23"))
+
+        NUMERO_DIAPO_ENV = 23
+        _remove_shapes_from_slide(presentation, NUMERO_DIAPO_ENV, ("31", "32"))
+
+        NUMERO_DIAPO_SOCIAL = 58
+        _remove_shapes_from_slide(presentation, NUMERO_DIAPO_SOCIAL, ("10", "11", "12"))
+
+        NUMERO_DIAPO_GOUV = 75
+        _remove_shapes_from_slide(presentation, NUMERO_DIAPO_GOUV, ("17", "18", "20"))
+
+
+def _remove_shapes_from_slide(presentation, slide_num, shape_nums):
+    shapes = presentation.slides[slide_num - 1].shapes
+    for num_shape in shape_nums:
+        shape = find_shape(shapes, f"Round Same-side Corner of Rectangle {num_shape}")
+        remove_shape(shape)
 
 
 def supprime_diapos_inutiles(indicateurs, rapport_vsme, presentation):
-    diapos_a_supprimer = selectionne_diapos_non_pertinents(
-        indicateurs
-    ) | selectionne_diapos_non_applicables(rapport_vsme)
+    diapos_a_supprimer = (
+        selectionne_diapos_non_pertinents(indicateurs)
+        | selectionne_diapos_non_applicables(rapport_vsme)
+        | selectionne_diapos_modules_complets(rapport_vsme)
+    )
     for diapo_a_supprimer in sorted(diapos_a_supprimer, reverse=True):
         index_diapo = diapo_a_supprimer - 1
         remove_slide(presentation, index_diapo)
@@ -103,6 +123,28 @@ def selectionne_diapos_non_applicables(rapport_vsme):
                     diapo_a_supprimer = champ["export_pptx"]["diapo"]
                     diapos_a_supprimer.add(diapo_a_supprimer)
 
+    return diapos_a_supprimer
+
+
+def selectionne_diapos_modules_complets(rapport_vsme):
+    if rapport_vsme.choix_module == "complet":
+        return set()
+    diapos_a_supprimer = set()
+    for code, exigence in EXIGENCES_DE_PUBLICATION.items():
+        if not code.startswith("C"):
+            continue
+        schema = exigence.load_json_schema()
+        for schema_indicateur in schema.values():
+            for champ in schema_indicateur["champs"]:
+                export_pptx = champ.get("export_pptx")
+                if not export_pptx:
+                    continue
+                if "diapo" in export_pptx:
+                    diapos_a_supprimer.add(export_pptx["diapo"])
+                if "diapo_non_pertinent" in export_pptx:
+                    diapos_a_supprimer.add(export_pptx["diapo_non_pertinent"])
+                for multidiapo in export_pptx.get("multidiapos", []):
+                    diapos_a_supprimer.add(multidiapo["diapo"])
     return diapos_a_supprimer
 
 
