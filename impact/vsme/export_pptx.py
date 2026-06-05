@@ -120,8 +120,11 @@ def selectionne_diapos_non_applicables(rapport_vsme):
                     "export_pptx" in champ
                     and "diapo_non_applicable" in champ["export_pptx"]
                 ):
-                    diapo_a_supprimer = champ["export_pptx"]["diapo"]
-                    diapos_a_supprimer.add(diapo_a_supprimer)
+                    export_pptx = champ["export_pptx"]
+                    if "diapo" in export_pptx:
+                        diapos_a_supprimer.add(export_pptx["diapo"])
+                    for multidiapo in export_pptx.get("multidiapos", []):
+                        diapos_a_supprimer.add(multidiapo["diapo"])
 
     return diapos_a_supprimer
 

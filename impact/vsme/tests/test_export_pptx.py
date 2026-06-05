@@ -515,7 +515,7 @@ def test_selectionne_diapos_non_applicables_d_un_indicateur_non_applicable(
     index_diapo_a_supprimer = schema_indicateur["champs"][0]["export_pptx"][
         "diapo"
     ]  # 10
-    assert diapos_a_supprimer == {index_diapo_a_supprimer}
+    assert index_diapo_a_supprimer in diapos_a_supprimer
 
 
 def test_selectionne_diapos_non_applicables_d_un_indicateur_applicable(
@@ -542,7 +542,7 @@ def test_selectionne_diapos_non_applicables_d_un_indicateur_applicable(
     index_diapo_a_supprimer = schema_indicateur["champs"][0]["export_pptx"][
         "diapo_non_applicable"
     ]  # 9
-    assert diapos_a_supprimer == {index_diapo_a_supprimer}
+    assert index_diapo_a_supprimer in diapos_a_supprimer
 
 
 @pytest.mark.parametrize(
