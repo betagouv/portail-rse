@@ -259,7 +259,13 @@ def _export_tableau(champ, data, shape):
         for index_data, data_cellule in enumerate(ligne.values()):
             schema_colonne = champ["colonnes"][index_data]
             cell = table.cell(index_ligne, index_data)
-            cell.text = formate_valeur(data_cellule, schema_colonne)
+            if champ["id"] == "gestion_dechets" and index_data == 0:
+                # cas particulier du tableau B7-38-ab qui aurait un texte
+                # beaucoup trop long dans sa première colonne
+                texte = str(data_cellule)
+            else:
+                texte = formate_valeur(data_cellule, schema_colonne)
+            cell.text = texte
             _appliquer_style_cellule(cell, data_cellule, schema_colonne)
 
 
