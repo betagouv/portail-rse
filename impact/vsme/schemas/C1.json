@@ -31,7 +31,7 @@
                 "obligatoire": true,
                 "export_pptx": {
                     "diapo": 14,
-                    "shape": "Rounded Rectangle 10"
+                    "shape": "Rounded Rectangle 8"
                 }
             }
         ],
@@ -72,7 +72,7 @@
                 "obligatoire": true,
                 "export_pptx": {
                     "diapo": 15,
-                    "shape": "Rounded Rectangle 10"
+                    "shape": "Rounded Rectangle 8"
                 }
             }
         ],

@@ -11,7 +11,7 @@
                 "obligatoire": true,
                 "export_pptx": {
                     "diapo": 71,
-                    "shape": "Rounded Rectangle 10"
+                    "shape": "Rounded Rectangle 1"
                 }
             },
             {
