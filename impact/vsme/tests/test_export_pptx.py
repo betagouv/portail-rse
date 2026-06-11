@@ -592,6 +592,61 @@ def test_export_pptx_d_un_indicateur_non_pertinent(entreprise_factory, alice):
             assert shape.text_frame.paragraphs[1].runs[0].text != "PRINCIPES"
 
 
+def test_export_pptx_d_un_indicateur_non_pertinent_inscrit_le_texte_non_pertinent(
+    entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
+    indicateur = Indicateur(
+        rapport_vsme=rapport_vsme,
+        schema_id="B2-26-p1",
+        data={
+            "non_pertinent": True,
+            "participation_gouvernance": "texte de participation",
+        },
+    )
+    chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
+    presentation = Presentation(chemin_pptx)
+
+    export_indicateurs([indicateur], presentation)
+
+    shapes = presentation.slides[9].shapes  # diapo 10
+    for shape in shapes:
+        if shape.name == "Rounded Rectangle 1":
+            paragraphe = None
+            for p in shape.text_frame.paragraphs:
+                if p.runs:
+                    paragraphe = p
+            assert paragraphe.runs[0].text == "Non pertinent"
+
+
+def test_export_pptx_d_un_indicateur_non_pertinent_inscrit_le_texte_si_pertinent(
+    entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
+    indicateur = Indicateur(
+        rapport_vsme=rapport_vsme,
+        schema_id="B6-36",
+        data={"non_pertinent": True, "consommation_eau": "500"},
+    )
+    chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
+    presentation = Presentation(chemin_pptx)
+
+    export_indicateurs([indicateur], presentation)
+
+    shapes = presentation.slides[35].shapes  # diapo 36
+    for shape in shapes:
+        if shape.name == "Rounded Rectangle 15":
+            paragraphe = None
+            for p in shape.text_frame.paragraphs:
+                if p.runs:
+                    paragraphe = p
+            assert paragraphe.runs[0].text == (
+                "Les processus de production de l'entreprise n'entraînent pas une consommation d'eau importante"
+            )
+
+
 @pytest.mark.parametrize(
     "choix_module, diapos_modules_complets_vides",
     [("complet", True), ("base", False)],
