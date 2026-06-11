@@ -236,7 +236,7 @@ def _export_simple(champ, data, shape):
     for paragraphe in shape.text_frame.paragraphs:
         if paragraphe.runs:
             paragraphe_a_remplir = paragraphe
-    paragraphe_a_remplir.runs[0].text = str(valeur)
+    paragraphe_a_remplir.runs[0].text = valeur
 
 
 def _export_choix_multiple(champ, data, shape):
