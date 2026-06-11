@@ -157,18 +157,26 @@ def export_indicateurs(indicateurs, presentation):
 
 
 def _export_indicateur(indicateur, presentation):
-    if indicateur.est_non_pertinent:
-        return
-
     for champ in indicateur.schema["champs"]:
         if "export_pptx" not in champ:
             continue
-        data = indicateur.data.get(champ["id"])
         export_pptx = champ["export_pptx"]
-        if "multidiapos" in export_pptx:
-            _export_champ_multidiapos(champ, data, export_pptx, presentation)
+        if indicateur.est_non_pertinent:
+            # insère le texte de non pertinence si est coché par l'utilisateur
+            texte = (
+                "Non pertinent"
+                if indicateur.schema["si_pertinent"] is True
+                else indicateur.schema["si_pertinent"]
+            )
+            _export_champ_monodiapo(
+                {"type": "non_pertinent"}, texte, export_pptx, presentation
+            )
         else:
-            _export_champ_monodiapo(champ, data, export_pptx, presentation)
+            data = indicateur.data.get(champ["id"])
+            if "multidiapos" in export_pptx:
+                _export_champ_multidiapos(champ, data, export_pptx, presentation)
+            else:
+                _export_champ_monodiapo(champ, data, export_pptx, presentation)
 
 
 def _export_champ_multidiapos(champ, data, export_pptx, presentation):
@@ -247,6 +255,8 @@ def formate_valeur(valeur, champ):
             else:
                 valeur_formatee = f"{valeur}" if valeur else "0"
             return valeur_formatee
+        case "non_pertinent":
+            return valeur
         case _:
             return str(formate_valeur_xlsx(valeur, champ))
 
