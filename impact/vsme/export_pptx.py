@@ -244,8 +244,6 @@ def _export_champ_monodiapo(champ, data, export_pptx, presentation):
     diapo = presentation.slides[numero_diapo - 1]
     nom_shape = export_pptx["shape"]
     shape = find_shape(diapo.shapes, nom_shape)
-    if not shape:
-        print("Non trouvé", champ["id"], nom_shape)
     _export_champ(champ, data, shape)
 
 
