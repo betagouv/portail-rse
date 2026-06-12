@@ -236,7 +236,7 @@ def _export_champ_multidiapos(champ, data, export_pptx, presentation):
                 data_cellule = data_ligne.get(colonne["id"])
                 cell = table.cell(row_index, col_index + 1)
                 cell.text = formate_valeur(data_cellule, colonne)
-                _appliquer_style_cellule(cell, data_cellule, colonne)
+                _applique_style_cellule(cell, data_cellule, colonne)
 
 
 def _export_champ_monodiapo(champ, data, export_pptx, presentation):
@@ -307,7 +307,7 @@ def _export_tableau(champ, data, shape):
             else:
                 texte = formate_valeur(data_cellule, schema_colonne)
             cell.text = texte
-            _appliquer_style_cellule(cell, data_cellule, schema_colonne)
+            _applique_style_cellule(cell, data_cellule, schema_colonne)
 
 
 def _formate_hauteur_tableau(data, table):
@@ -346,20 +346,20 @@ def _export_tableau_lignes_fixes(champ, data, shape):
                     data_cellule = data_ligne.get(colonne["id"])
                     cell = table.cell(offset_ligne + 1, offset_colonne + 1)
                     cell.text = formate_valeur(data_cellule, colonne)
-                    _appliquer_style_cellule(cell, data_cellule, colonne)
+                    _applique_style_cellule(cell, data_cellule, colonne)
         case "RISQUES_CLIMATIQUES":
             table = shape.table
             _formate_hauteur_tableau(data, table)
             for offset_ligne, (id_risque, data_ligne) in enumerate(data.items()):
                 cell = table.cell(offset_ligne + 1, 0)
                 cell.text = formate_valeur(id_risque, {"type": "auto_id"})
-                _appliquer_style_cellule(cell, id_risque, {"type": "auto_id"})
+                _applique_style_cellule(cell, id_risque, {"type": "auto_id"})
 
                 for offset_colonne, colonne in enumerate(colonnes):
                     data_cellule = data_ligne.get(colonne["id"])
                     cell = table.cell(offset_ligne + 1, offset_colonne + 1)
                     cell.text = formate_valeur(data_cellule, colonne)
-                    _appliquer_style_cellule(cell, data_cellule, colonne)
+                    _applique_style_cellule(cell, data_cellule, colonne)
         case "THEMATIQUES_DURABILITE" | list():
             colonnes_ids = [colonne["id"] for colonne in colonnes]
             if lignes == "THEMATIQUES_DURABILITE":
@@ -376,10 +376,10 @@ def _export_tableau_lignes_fixes(champ, data, shape):
                     index_colonne = offset_colonne + 1
                     cell = shape.table.cell(index_ligne, index_colonne)
                     cell.text = formate_valeur(data_cellule, champ)
-                    _appliquer_style_cellule(cell, data_cellule, champ)
+                    _applique_style_cellule(cell, data_cellule, champ)
 
 
-def _appliquer_style_cellule(cell, data_cellule, champ):
+def _applique_style_cellule(cell, data_cellule, champ):
     type_indicateur = champ["type"]
     cell.vertical_anchor = MSO_ANCHOR.MIDDLE
     for para in cell.text_frame.paragraphs:
