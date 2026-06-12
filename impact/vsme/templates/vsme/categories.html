@@ -47,7 +47,13 @@
                     </div>
                     <div class="fr-col-12 fr-col-md-6 flexbox-right">
                         <a class="fr-btn fr-btn--icon-left fr-icon-download-line" href="{% url 'vsme:export_vsme_xlsx' rapport_vsme.id %}">Tableur .xlsx</a>
-                        <a class="fr-btn fr-btn--icon-left fr-icon-download-line" href="{% url 'vsme:export_vsme_pptx' rapport_vsme.id %}">Rapport .pptx</a>
+                        <a class="fr-btn fr-btn--icon-left fr-icon-download-line"
+                           {% if rapport_vsme.progression.pourcent == 100 %}
+                               href="{% url 'vsme:export_vsme_pptx' rapport_vsme.id %}"
+                           {% else %}
+                               title="Remplissez l'ensemble des indicateurs pour télécharger la présentation .pptx"
+                           {% endif %}
+                        >Rapport .pptx</a>
                     </div>
                 </div>
 
