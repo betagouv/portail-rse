@@ -106,7 +106,7 @@ def selectionne_diapos_non_applicables(rapport_vsme):
         ).load_json_schema()
         schema_indicateur = schema_exigence[indicateur_schema_id]
         if rapport_vsme.indicateur_est_applicable(indicateur_schema_id)[0]:
-            # supprimer les diapos non applicables
+            # supprimer les diapos non applicables (uniquement diapo_non_applicable)
             for champ in schema_indicateur["champs"]:
                 if (
                     "export_pptx" in champ
@@ -115,7 +115,7 @@ def selectionne_diapos_non_applicables(rapport_vsme):
                     diapo_a_supprimer = champ["export_pptx"]["diapo_non_applicable"]
                     diapos_a_supprimer.add(diapo_a_supprimer)
         else:
-            # supprimer les diapos applicables
+            # supprimer les diapos applicables (diapo et diapo_non_pertinent)
             for champ in schema_indicateur["champs"]:
                 if (
                     "export_pptx" in champ
@@ -124,6 +124,12 @@ def selectionne_diapos_non_applicables(rapport_vsme):
                     export_pptx = champ["export_pptx"]
                     if "diapo" in export_pptx:
                         diapos_a_supprimer.add(export_pptx["diapo"])
+                    if "diapo_non_pertinent" in export_pptx and not (
+                        "diapo_non_applicable" in export_pptx
+                        and export_pptx["diapo_non_pertinent"]
+                        == export_pptx["diapo_non_applicable"]
+                    ):
+                        diapos_a_supprimer.add(export_pptx["diapo_non_pertinent"])
                     for multidiapo in export_pptx.get("multidiapos", []):
                         diapos_a_supprimer.add(multidiapo["diapo"])
 
@@ -185,6 +191,10 @@ def _export_indicateur(indicateur, presentation):
             continue
         export_pptx = champ["export_pptx"]
         if indicateur.est_non_pertinent:
+            if "diapo_non_pertinent" in export_pptx:
+                # une diapo dédiée existe. inutile de remplir
+                continue
+
             # insère le texte de non pertinence si est coché par l'utilisateur
             texte = (
                 "Non pertinent"

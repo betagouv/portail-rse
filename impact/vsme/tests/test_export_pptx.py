@@ -687,3 +687,58 @@ def test_selectionne_diapos_non_pertinents(
     )
 
     assert selectionne_diapos_non_pertinents([indicateur]) == diapo_a_supprimer
+
+
+def test_selectionne_diapos_non_applicables_C4_57_et_C4_58_non_applicables(
+    entreprise_factory, alice
+):
+    # Module de base → C4-57 et C4-58 non applicables.
+    # C4-57 : diapo_non_pertinent (54) == diapo_non_applicable (54) → seule diapo (53) supprimée.
+    # C4-58 : diapo_non_pertinent (57) != diapo_non_applicable (56) → diapo (55) et diapo_non_pertinent (57) supprimées.
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-a",
+        data={"choix_module": "base"},
+    )
+
+    diapos_a_supprimer = selectionne_diapos_non_applicables(rapport_vsme)
+
+    assert 53 in diapos_a_supprimer
+    assert 54 not in diapos_a_supprimer
+    assert 55 in diapos_a_supprimer
+    assert 56 not in diapos_a_supprimer
+    assert 57 in diapos_a_supprimer
+
+
+def test_selectionne_diapos_non_applicables_C4_57_et_C4_58_applicables(
+    entreprise_factory, alice
+):
+    # Module complet → C4-57 et C4-58 applicables.
+    # C4-58 nécessite des risques climatiques dans C4-57 pour être applicable.
+    # Seule diapo_non_applicable est supprimée (54 et 56).
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-a",
+        data={"choix_module": "complet"},
+    )
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="C4-57",
+        data={
+            "aleas_et_risques_climatiques": [
+                {"id_risque": 1, "description": "inondation"}
+            ]
+        },
+    )
+
+    diapos_a_supprimer = selectionne_diapos_non_applicables(rapport_vsme)
+
+    assert 53 not in diapos_a_supprimer
+    assert 54 in diapos_a_supprimer
+    assert 55 not in diapos_a_supprimer
+    assert 56 in diapos_a_supprimer
+    assert 57 not in diapos_a_supprimer
