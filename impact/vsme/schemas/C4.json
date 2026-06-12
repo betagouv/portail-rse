@@ -60,6 +60,7 @@
                 "export_pptx": {
                     "diapo": 53,
                     "shape": "Table 11",
+                    "diapo_non_applicable": 54,
                     "diapo_non_pertinent": 54
                 }
             }
@@ -134,6 +135,7 @@
                 "export_pptx": {
                     "diapo": 55,
                     "shape": "Table 9",
+                    "diapo_non_applicable": 56,
                     "diapo_non_pertinent": 57
                 }
             }
