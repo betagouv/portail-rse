@@ -68,6 +68,7 @@ def supprime_diapos_inutiles(indicateurs, rapport_vsme, presentation):
         selectionne_diapos_non_pertinents(indicateurs)
         | selectionne_diapos_non_applicables(rapport_vsme)
         | selectionne_diapos_modules_complets(rapport_vsme)
+        | selectionne_diapos_jamais_utilisees(rapport_vsme)
     )
     for diapo_a_supprimer in sorted(diapos_a_supprimer, reverse=True):
         index_diapo = diapo_a_supprimer - 1
@@ -149,6 +150,28 @@ def selectionne_diapos_modules_complets(rapport_vsme):
                 for multidiapo in export_pptx.get("multidiapos", []):
                     diapos_a_supprimer.add(multidiapo["diapo"])
     return diapos_a_supprimer
+
+
+def selectionne_diapos_jamais_utilisees(indicateurs):
+    """Ensemble des diapos ne servant jamais
+
+    Ce sont des cas de diapos montrant des champs tous non pertinent alors que certains
+    peuvent être pertinents quand d'autres ne le sont pas.
+    Ce remplissage de la non-pertinence est traité dans le remplissage des champs
+    """
+    return {
+        11,  # B2 Pratiques, politiques et initiatives...
+        16,  #  C1 Stratégie : modèle économique et initiatives...
+        37,  #  B6 Eau
+        60,  #  B8 Effectifs : caractéristiques générales
+        64,  #  B10 Effectifs : rémunération, négociation...
+        67,  # C5 Caractéristiques supplémentaires (générales)...
+        69,  # C6 Informations complémentaires sur les effectifs...
+        72,  # C7 Incidents graves en matière de droits de l’homme
+        74,  # C7 Incidents graves en matière de droits de l’homme (2)
+        77,  # B11 Condamnations et amendes en matière de lutte...
+        79,  # C8 Recettes de certains secteurs et exclusion...
+    }
 
 
 def export_indicateurs(indicateurs, presentation):
