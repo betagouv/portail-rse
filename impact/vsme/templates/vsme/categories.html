@@ -30,7 +30,7 @@
                 <h1>Mes indicateurs</h1>
 
                 <div class="fr-grid-row fr-grid-row--gutters fr-pb-1w fr-mb-1w">
-                    <div class="fr-col-12 fr-col-md-6">
+                    <div class="fr-col-4">
                         <div class="fr-select-group">
                             <label class="fr-label" for="select-annee">
                                 Exercice du rapport VSME
@@ -45,15 +45,18 @@
                             </select>
                         </div>
                     </div>
-                    <div class="fr-col-12 fr-col-md-6 flexbox-right">
-                        <a class="fr-btn fr-btn--icon-left fr-icon-download-line" href="{% url 'vsme:export_vsme_xlsx' rapport_vsme.id %}">Tableur .xlsx</a>
+                    <div class="fr-col-8 flexbox-right">
                         <a class="fr-btn fr-btn--icon-left fr-icon-download-line"
                            {% if rapport_vsme.progression.pourcent == 100 %}
                                href="{% url 'vsme:export_vsme_pptx' rapport_vsme.id %}"
+                               title="Téléchargez le rapport de durabilité au format .pptx"
                            {% else %}
                                title="Remplissez l'ensemble des indicateurs pour télécharger la présentation .pptx"
                            {% endif %}
-                        >Rapport .pptx</a>
+                        >Export rapport de durabilité</a>
+                        <a class="fr-btn fr-btn--icon-left fr-icon-download-line"
+                           href="{% url 'vsme:export_vsme_xlsx' rapport_vsme.id %}"
+                           title="Téléchargez les données au format .xlsx">Export tableur</a>
                     </div>
                 </div>
 
