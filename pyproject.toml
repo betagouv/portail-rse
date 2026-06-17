@@ -24,7 +24,7 @@ dependencies = [
     "django-storages[s3]~=1.14.5",
     "filetype~=1.2",
     # tables de travail analytics / Metabase,
-    "aiohttp~=3.14.0",
+    "aiohttp~=3.14.1",
     "responses~=0.25.8",
     "geojson~=3.2.0",
     # gestion OIDC / ProConnect,
