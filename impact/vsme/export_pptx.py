@@ -297,10 +297,10 @@ def _export_tableau(champ, data, shape):
     _formate_hauteur_tableau(data, table)
 
     for index_ligne, ligne in enumerate(data, start=1):
-        for index_data, data_cellule in enumerate(ligne.values()):
-            schema_colonne = champ["colonnes"][index_data]
-            cell = table.cell(index_ligne, index_data)
-            if champ["id"] == "gestion_dechets" and index_data == 0:
+        for index_colonne, schema_colonne in enumerate(champ["colonnes"]):
+            data_cellule = ligne[schema_colonne["id"]]
+            cell = table.cell(index_ligne, index_colonne)
+            if champ["id"] == "gestion_dechets" and index_colonne == 0:
                 # cas particulier du tableau B7-38-ab qui aurait un texte
                 # beaucoup trop long dans sa première colonne
                 texte = str(data_cellule)
