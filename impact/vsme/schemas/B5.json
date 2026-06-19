@@ -18,7 +18,11 @@
                         "id": "m2",
                         "label": "mètres carrés (m²)"
                     }
-                ]
+                ],
+                "export_pptx": {
+                    "diapo": 33,
+                    "shape": "Rounded Rectangle 16"
+                }
             },
             {
                 "id": "sites_zones_sensibles",

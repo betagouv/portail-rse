@@ -400,7 +400,11 @@
                         "id": "total_scopes_1_2_3",
                         "label": "Total des scopes 1, 2 (basé sur la localisation) et 3"
                     }
-                ]
+                ],
+                "export_pptx": {
+                    "diapo": 25,
+                    "shape": "Table 1"
+                }
             }
         ],
         "si_pertinent": true,
