@@ -342,6 +342,10 @@ def _export_tableau_lignes_fixes(champ, data, shape):
             for offset_ligne, (code_pays, data_ligne) in enumerate(data.items()):
                 cell = table.cell(offset_ligne + 1, 0)
                 cell.text = CODES_PAYS_ISO_3166_1[code_pays]
+                colonne = colonnes[0]
+                data_cellule = data_ligne.get(colonne["id"])
+                _applique_style_cellule(cell, data_cellule, colonne)
+
                 for offset_colonne, colonne in enumerate(colonnes):
                     data_cellule = data_ligne.get(colonne["id"])
                     cell = table.cell(offset_ligne + 1, offset_colonne + 1)
