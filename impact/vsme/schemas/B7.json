@@ -10,7 +10,7 @@
                 "type": "texte_long",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 38,
+                    "diapo": 39,
                     "shape": "Rounded Rectangle 8"
                 }
             }
@@ -152,9 +152,9 @@
                 ],
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 41,
+                    "diapo": 42,
                     "shape": "Table 9",
-                    "diapo_non_pertinent": 42
+                    "diapo_non_pertinent": 43
                 }
             }
         ],
@@ -208,9 +208,9 @@
                 ],
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 43,
+                    "diapo": 44,
                     "shape": "Table 10",
-                    "diapo_non_pertinent": 44
+                    "diapo_non_pertinent": 45
                 }
             }
         ],

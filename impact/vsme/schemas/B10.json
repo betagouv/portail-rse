@@ -8,7 +8,7 @@
                 "label": "Tous les employés perçoivent une rémunération au moins équivalente au salaire minimum",
                 "type": "choix_binaire",
                 "export_pptx": {
-                    "diapo": 63,
+                    "diapo": 64,
                     "shape": "Rounded Rectangle 1"
                 }
             }
@@ -31,7 +31,7 @@
                 "provoque_calcul_des_champs": ["ecart_remuneration_hommes_femmes"],
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 63,
+                    "diapo": 64,
                     "shape": "Rounded Rectangle 4"
                 }
             },
@@ -44,7 +44,7 @@
                 "provoque_calcul_des_champs": ["ecart_remuneration_hommes_femmes"],
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 63,
+                    "diapo": 64,
                     "shape": "Rounded Rectangle 2"
                 }
             },
@@ -56,7 +56,7 @@
                 "unité": "%",
                 "calculé": true,
                 "export_pptx": {
-                    "diapo": 63,
+                    "diapo": 64,
                     "shape": "Rounded Rectangle 8"
                 }
             }
@@ -79,7 +79,7 @@
                 "obligatoire": true,
                 "provoque_calcul_des_champs": ["taux_couverture_conventions_collectives"],
                 "export_pptx": {
-                    "diapo": 63,
+                    "diapo": 64,
                     "shape": "Rounded Rectangle 23"
                 }
             },
@@ -112,7 +112,7 @@
                 ],
                 "calculé": true,
                 "export_pptx": {
-                    "diapo": 63,
+                    "diapo": 64,
                     "shape": "Rounded Rectangle 24"
                 }
             }
@@ -166,7 +166,7 @@
                     }
                 ],
                 "export_pptx": {
-                    "diapo": 65,
+                    "diapo": 66,
                     "shape": "Table 2"
                 }
             }

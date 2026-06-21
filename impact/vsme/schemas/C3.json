@@ -11,7 +11,7 @@
                 "min": 2000,
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 45,
+                    "diapo": 46,
                     "shape": "Rounded Rectangle 10"
                 }
             },
@@ -22,7 +22,7 @@
                 "min": 2020,
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 45,
+                    "diapo": 46,
                     "shape": "Rounded Rectangle 11"
                 }
             },
@@ -72,9 +72,9 @@
                     }
                 ],
                 "export_pptx": {
-                    "diapo": 45,
+                    "diapo": 46,
                     "shape": "Table 9",
-                    "diapo_non_pertinent": 46
+                    "diapo_non_pertinent": 47
                 }
             },
             {
@@ -225,15 +225,15 @@
                 "export_pptx": {
                     "multidiapos": [
                         {
-                            "diapo": 47,
+                            "diapo": 48,
                             "shape": "Table 9"
                         },
                         {
-                            "diapo": 48,
+                            "diapo": 49,
                             "shape": "Table 9"
                         }
                     ],
-                    "diapo_non_pertinent": 49
+                    "diapo_non_pertinent": 50
                 }
             },
             {
@@ -299,9 +299,9 @@
                 "description": "Si l'entreprise dispose d'un plan de transition climatique, indiquer les grandes lignes de celui-ci.",
                 "type": "texte_long",
                 "export_pptx": {
-                    "diapo": 51,
+                    "diapo": 52,
                     "shape": "Rounded Rectangle 8",
-                    "diapo_non_pertinent": 50
+                    "diapo_non_pertinent": 51
                 }
             },
             {
@@ -310,7 +310,7 @@
                 "description": "Si l'entreprise dispose d'un plan de transition climatique, indiquer la contribution de celui-ci à la réduction des émissions de GES.",
                 "type": "texte_long",
                 "export_pptx": {
-                    "diapo": 52,
+                    "diapo": 53,
                     "shape": "Rounded Rectangle 10"
                 }
             },
@@ -321,7 +321,7 @@
                 "type": "nombre_entier",
                 "min": 2025,
                 "export_pptx": {
-                    "diapo": 52,
+                    "diapo": 53,
                     "shape": "Rounded Rectangle 11"
                 }
             }

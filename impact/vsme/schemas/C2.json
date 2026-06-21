@@ -33,10 +33,6 @@
                 "export_pptx": {
                     "multidiapos": [
                         {
-                            "diapo": 17,
-                            "shape": "Table 8"
-                        },
-                        {
                             "diapo": 18,
                             "shape": "Table 8"
                         },
@@ -50,6 +46,10 @@
                         },
                         {
                             "diapo": 21,
+                            "shape": "Table 8"
+                        },
+                        {
+                            "diapo": 22,
                             "shape": "Table 8"
                         }
                     ],

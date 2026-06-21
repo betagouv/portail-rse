@@ -10,7 +10,7 @@
                 "type": "choix_binaire_radio",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 71,
+                    "diapo": 72,
                     "shape": "Rounded Rectangle 1"
                 }
             },
@@ -20,7 +20,7 @@
                 "type": "choix_binaire_radio",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 71,
+                    "diapo": 72,
                     "shape": "Rounded Rectangle 11"
                 }
             },
@@ -30,7 +30,7 @@
                 "type": "choix_binaire_radio",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 71,
+                    "diapo": 72,
                     "shape": "Rounded Rectangle 12"
                 }
             },
@@ -40,7 +40,7 @@
                 "type": "choix_binaire_radio",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 71,
+                    "diapo": 72,
                     "shape": "Rounded Rectangle 13"
                 }
             },
@@ -49,7 +49,7 @@
                 "label": "Autres thèmes concernant des incidents graves confirmés relatifs aux droits de l’homme",
                 "type": "texte",
                 "export_pptx": {
-                    "diapo": 71,
+                    "diapo": 72,
                     "shape": "Rounded Rectangle 14"
                 }
             },
@@ -58,7 +58,7 @@
                 "label": "Description des actions mises en oeuvre pour gérer les incidents confirmés",
                 "type": "texte_long",
                 "export_pptx": {
-                    "diapo": 73,
+                    "diapo": 74,
                     "shape": "Rounded Rectangle 9"
                 }
             }
@@ -80,7 +80,7 @@
                 "type": "texte_long",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 73,
+                    "diapo": 74,
                     "shape": "Rounded Rectangle 1"
                 }
             }

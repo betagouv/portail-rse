@@ -11,7 +11,7 @@
                 "provoque_calcul_des_champs": ["ratio_femmes_hommes_encadrement"],
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 66,
+                    "diapo": 67,
                     "shape": "Rounded Rectangle 13"
                 }
             },
@@ -22,7 +22,7 @@
                 "provoque_calcul_des_champs": ["ratio_femmes_hommes_encadrement"],
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 66,
+                    "diapo": 67,
                     "shape": "Rounded Rectangle 12"
                 }
             },
@@ -32,7 +32,7 @@
                 "type": "nombre_decimal",
                 "calculé": true,
                 "export_pptx": {
-                    "diapo": 66,
+                    "diapo": 67,
                     "shape": "Rounded Rectangle 14"
                 }
             }
@@ -53,7 +53,7 @@
                 "type": "nombre_decimal",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 66,
+                    "diapo": 67,
                     "shape": "Rounded Rectangle 15"
                 }
             },
@@ -63,7 +63,7 @@
                 "type": "nombre_decimal",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 66,
+                    "diapo": 67,
                     "shape": "Rounded Rectangle 18"
                 }
             }

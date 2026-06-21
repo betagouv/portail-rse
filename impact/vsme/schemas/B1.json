@@ -388,7 +388,8 @@
                 "obligatoire": true,
                 "export_pptx": {
                     "diapo": 8,
-                    "shape": "B1-25"
+                    "shape": "B1-25",
+                    "diapo_non_pertinent": 9
                 }
             }
         ],

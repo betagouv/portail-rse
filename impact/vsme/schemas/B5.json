@@ -20,7 +20,7 @@
                     }
                 ],
                 "export_pptx": {
-                    "diapo": 33,
+                    "diapo": 34,
                     "shape": "Rounded Rectangle 16"
                 }
             },
@@ -58,9 +58,9 @@
                 ],
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 33,
+                    "diapo": 34,
                     "shape": "Table 4",
-                    "diapo_non_pertinent": 32
+                    "diapo_non_pertinent": 33
                 }
             }
         ],
@@ -123,9 +123,9 @@
                     }
                 ],
                 "export_pptx": {
-                    "diapo": 35,
+                    "diapo": 36,
                     "shape": "Table 7",
-                    "diapo_non_pertinent": 34
+                    "diapo_non_pertinent": 35
                 }
             }
         ],
