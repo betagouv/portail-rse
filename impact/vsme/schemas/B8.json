@@ -27,7 +27,7 @@
                     }
                 ],
                 "export_pptx": {
-                    "diapo": 59,
+                    "diapo": 60,
                     "shape": "Table 9"
                 }
             }
@@ -72,7 +72,7 @@
                     }
                 ],
                 "export_pptx": {
-                    "diapo": 59,
+                    "diapo": 60,
                     "shape": "Table 11"
                 }
             }
@@ -100,7 +100,7 @@
                 ],
                 "lignes": "PAYS",
                 "export_pptx": {
-                    "diapo": 61,
+                    "diapo": 62,
                     "shape": "Table 9"
                 }
             }
@@ -122,7 +122,7 @@
                 "unité": "%",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 59,
+                    "diapo": 60,
                     "shape": "Rounded Rectangle 12"
                 }
             }

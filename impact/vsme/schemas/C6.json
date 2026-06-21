@@ -10,9 +10,9 @@
                 "type": "choix_binaire_radio",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 68,
+                    "diapo": 69,
                     "shape": "Rounded Rectangle 9",
-                    "diapo_non_pertinent": 69
+                    "diapo_non_pertinent": 70
                 }
             },
             {
@@ -21,9 +21,9 @@
                 "type": "choix_binaire_radio",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 68,
+                    "diapo": 69,
                     "shape": "Rounded Rectangle 10",
-                    "diapo_non_pertinent": 69
+                    "diapo_non_pertinent": 70
                 }
             },
             {
@@ -32,9 +32,9 @@
                 "type": "choix_binaire_radio",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 68,
+                    "diapo": 69,
                     "shape": "Rounded Rectangle 11",
-                    "diapo_non_pertinent": 69
+                    "diapo_non_pertinent": 70
                 }
             },
             {
@@ -43,9 +43,9 @@
                 "type": "choix_binaire_radio",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 68,
+                    "diapo": 69,
                     "shape": "Rounded Rectangle 12",
-                    "diapo_non_pertinent": 69
+                    "diapo_non_pertinent": 70
                 }
             },
             {
@@ -54,9 +54,9 @@
                 "type": "choix_binaire_radio",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 68,
+                    "diapo": 69,
                     "shape": "Rounded Rectangle 13",
-                    "diapo_non_pertinent": 69
+                    "diapo_non_pertinent": 70
                 }
             },
             {
@@ -64,9 +64,9 @@
                 "label": "Autres thèmes couverts par la politique de l'entreprise",
                 "type": "texte",
                 "export_pptx": {
-                    "diapo": 70,
+                    "diapo": 71,
                     "shape": "Rounded Rectangle 10",
-                    "diapo_non_pertinent": 69
+                    "diapo_non_pertinent": 70
                 }
             }
         ],
@@ -86,7 +86,7 @@
                 "type": "choix_binaire_radio",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 70,
+                    "diapo": 71,
                     "shape": "Rounded Rectangle 2"
                 }
             }
