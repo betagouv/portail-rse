@@ -90,6 +90,19 @@ def conseiller_rse(django_user_model):
 
 
 @pytest.fixture
+def user_test(django_user_model, settings):
+    settings.USER_TEST_EMAIL = "test@test.test"
+    user_test = django_user_model.objects.create(
+        prenom="Test",
+        nom="Test",
+        email="test@test.test",
+        reception_actualites=False,
+        is_email_confirmed=True,
+    )
+    return user_test
+
+
+@pytest.fixture
 def entreprise_non_qualifiee(alice):
     entreprise = Entreprise.objects.create(
         siren="000000001",
