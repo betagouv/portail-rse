@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core.management import call_command
 from freezegun import freeze_time
 
-from habilitations.management.commands.supprime_utilisateurs_sur_entreprise_test import (
+from habilitations.management.commands.nettoie_utilisateur_et_entreprise_test import (
     Command,
 )
 from habilitations.models import Habilitation
@@ -75,7 +75,7 @@ def test_nettoie_entreprise_test_ne_laisse_que_l_entreprise_test_sur_le_compte_u
 
     Habilitation.ajouter(autre_entreprise, user_test)
 
-    call_command("supprime_utilisateurs_sur_entreprise_test")
+    call_command("nettoie_utilisateur_et_entreprise_test")
 
     user_test.refresh_from_db()
     assert Habilitation.existe(entreprise_test, user_test)
