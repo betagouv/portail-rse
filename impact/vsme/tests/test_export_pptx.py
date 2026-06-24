@@ -545,6 +545,52 @@ def test_selectionne_diapos_non_applicables_d_un_indicateur_applicable(
     assert index_diapo_a_supprimer in diapos_a_supprimer
 
 
+def test_selectionne_diapos_non_applicables_C5_applicable(entreprise_factory, alice):
+    # Module complet et au moins 50 salariés → C5 applicable.
+    # Seule la diapo non applicable (68) est supprimée, la diapo (67) est gardée.
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-a",
+        data={"choix_module": "complet"},
+    )
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-e-v",
+        data={"nombre_salaries": 100},
+    )
+
+    diapos_a_supprimer = selectionne_diapos_non_applicables(rapport_vsme)
+
+    assert 67 not in diapos_a_supprimer
+    assert 68 in diapos_a_supprimer
+
+
+def test_selectionne_diapos_non_applicables_C5_non_applicable(
+    entreprise_factory, alice
+):
+    # Moins de 50 salariés → C5 non applicable.
+    # La diapo (67) est supprimée, la diapo non applicable (68) est gardée.
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-a",
+        data={"choix_module": "complet"},
+    )
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B1-24-e-v",
+        data={"nombre_salaries": 10},
+    )
+
+    diapos_a_supprimer = selectionne_diapos_non_applicables(rapport_vsme)
+
+    assert 67 in diapos_a_supprimer
+    assert 68 not in diapos_a_supprimer
+
+
 @pytest.mark.parametrize(
     "valeur, champ, attendu",
     [

@@ -14,7 +14,7 @@
                 "unité": "euros",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 79,
+                    "diapo": 80,
                     "shape": "Rounded Rectangle 8"
                 }
             },
@@ -28,7 +28,7 @@
                 "unité": "euros",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 79,
+                    "diapo": 80,
                     "shape": "Rounded Rectangle 11"
                 }
             },
@@ -43,7 +43,7 @@
                 "provoque_calcul_des_champs": ["chiffre_affaires_combustibles_fossiles"],
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 79,
+                    "diapo": 80,
                     "shape": "Rounded Rectangle 12"
                 }
             },
@@ -58,7 +58,7 @@
                 "provoque_calcul_des_champs": ["chiffre_affaires_combustibles_fossiles"],
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 79,
+                    "diapo": 80,
                     "shape": "Rounded Rectangle 13"
                 }
             },
@@ -73,7 +73,7 @@
                 "provoque_calcul_des_champs": ["chiffre_affaires_combustibles_fossiles"],
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 79,
+                    "diapo": 80,
                     "shape": "Rounded Rectangle 14"
                 }
             },
@@ -86,7 +86,7 @@
                 "unité": "euros",
                 "calculé": true,
                 "export_pptx": {
-                    "diapo": 79,
+                    "diapo": 80,
                     "shape": "Rounded Rectangle 15"
                 }
             },
@@ -100,7 +100,7 @@
                 "unité": "euros",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 79,
+                    "diapo": 80,
                     "shape": "Rounded Rectangle 18"
                 }
             }
@@ -122,7 +122,7 @@
                 "type": "choix_binaire_radio",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 81,
+                    "diapo": 82,
                     "shape": "Rounded Rectangle 9"
                 }
             }

@@ -12,7 +12,8 @@
                 "obligatoire": true,
                 "export_pptx": {
                     "diapo": 67,
-                    "shape": "Rounded Rectangle 13"
+                    "shape": "Rounded Rectangle 13",
+                    "diapo_non_applicable": 68
                 }
             },
             {
@@ -23,7 +24,8 @@
                 "obligatoire": true,
                 "export_pptx": {
                     "diapo": 67,
-                    "shape": "Rounded Rectangle 12"
+                    "shape": "Rounded Rectangle 12",
+                    "diapo_non_applicable": 68
                 }
             },
             {
@@ -33,7 +35,8 @@
                 "calculé": true,
                 "export_pptx": {
                     "diapo": 67,
-                    "shape": "Rounded Rectangle 14"
+                    "shape": "Rounded Rectangle 14",
+                    "diapo_non_applicable": 68
                 }
             }
         ],
@@ -54,7 +57,8 @@
                 "obligatoire": true,
                 "export_pptx": {
                     "diapo": 67,
-                    "shape": "Rounded Rectangle 15"
+                    "shape": "Rounded Rectangle 15",
+                    "diapo_non_applicable": 68
                 }
             },
             {
@@ -64,7 +68,8 @@
                 "obligatoire": true,
                 "export_pptx": {
                     "diapo": 67,
-                    "shape": "Rounded Rectangle 18"
+                    "shape": "Rounded Rectangle 18",
+                    "diapo_non_applicable": 68
                 }
             }
         ],
