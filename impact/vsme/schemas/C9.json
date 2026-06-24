@@ -11,9 +11,9 @@
                 "min": 0,
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 82,
+                    "diapo": 83,
                     "shape": "Rounded Rectangle 1",
-                    "diapo_non_pertinent": 83
+                    "diapo_non_pertinent": 84
                 }
             }
         ],
