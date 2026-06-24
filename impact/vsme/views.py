@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls.base import reverse
+from django.views.decorators.http import require_POST
 from openpyxl import load_workbook
 from pptx import Presentation
 
@@ -305,6 +306,31 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
         "exigence_de_publication": exigence_de_publication,
     }
     return render(request, "fragments/indicateur.html", context=context)
+
+
+@login_required
+@rapport_vsme_requis
+@require_POST
+def reinitialiser_indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
+    try:
+        indicateur_schema = load_indicateur_schema(indicateur_schema_id)
+    except IndicateurInconnu:
+        raise Http404("Indicateur VSME inconnu")
+
+    rapport_vsme.indicateurs.filter(schema_id=indicateur_schema_id).delete()
+
+    exigence_de_publication = ExigenceDePublication.par_indicateur_schema_id(
+        indicateur_schema_id
+    )
+    messages.success(
+        request,
+        f"L'indicateur « {indicateur_schema['titre']} » a bien été réinitialisé.",
+    )
+    return redirect(
+        "vsme:exigence_de_publication_vsme",
+        vsme_id=rapport_vsme.id,
+        exigence_de_publication_code=exigence_de_publication.code,
+    )
 
 
 def load_indicateur_schema(indicateur_schema_id):
