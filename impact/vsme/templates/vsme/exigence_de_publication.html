@@ -47,7 +47,7 @@
                                         <tr>
                                             <th>Indicateur</th>
                                             <th>Statut</th>
-                                            <th>Action</th>
+                                            <th>Actions</th>
                                         </tr>
                                     </thead>
 
@@ -75,6 +75,13 @@
                                                             Voir
                                                         {% endif %}
                                                     </button>
+                                                    {% if indicateur.est_complete and indicateur.est_applicable %}
+                                                        <button aria-controls="modal-reinitialiser-{{ indicateur.id }}" data-fr-opened="false"
+                                                                type="button" class="fr-btn fr-btn--tertiary fr-icon-refresh-line"
+                                                                title="Réinitialiser">
+                                                            Réinitialiser
+                                                        </button>
+                                                    {% endif %}
                                                 </td>
                                             </tr>
                                         {% endfor %}
@@ -86,6 +93,37 @@
                 </div>
 
                 <dialog id="htmx-modal-indicateur" class="fr-modal fr-modal--top" aria-labelledby="htmx-modal-indicateur-title" data-fr-concealing-backdrop="true"></dialog>
+
+                {% for indicateur in indicateurs %}
+                    {% if indicateur.est_complete and indicateur.est_applicable %}
+                        <dialog id="modal-reinitialiser-{{ indicateur.id }}" class="fr-modal fr-modal--top" aria-labelledby="modal-reinitialiser-{{ indicateur.id }}-title" data-fr-concealing-backdrop="true">
+                            <div class="fr-container fr-container--fluid fr-container-md">
+                                <div class="fr-grid-row fr-grid-row--center">
+                                    <div class="fr-col-12 fr-col-md-10">
+                                        <div class="fr-modal__body">
+                                            <div class="fr-modal__header">
+                                                <button type="button" class="fr-btn--close fr-btn" title="Fermer" aria-controls="modal-reinitialiser-{{ indicateur.id }}">Fermer</button>
+                                            </div>
+                                            <div class="fr-modal__content">
+                                                <p id="modal-reinitialiser-{{ indicateur.id }}-title" class="fr-modal__title">Réinitialiser l'indicateur</p>
+                                                <p>Voulez-vous vraiment réinitialiser l'indicateur « {{ indicateur.titre }} » ? Les données actuellement enregistrées seront définitivement supprimées.</p>
+                                                <form id="form-reinitialiser-{{ indicateur.id }}" method="post" action="{% url 'vsme:reinitialiser_indicateur_vsme' rapport_vsme.id indicateur.id %}">
+                                                    {% csrf_token %}
+                                                </form>
+                                            </div>
+                                            <div class="fr-modal__footer">
+                                                <div class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
+                                                    <button type="submit" form="form-reinitialiser-{{ indicateur.id }}" class="fr-btn fr-icon-refresh-line fr-btn--icon-left">Réinitialiser</button>
+                                                    <button class="fr-btn fr-btn--secondary" aria-controls="modal-reinitialiser-{{ indicateur.id }}">Annuler</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </dialog>
+                    {% endif %}
+                {% endfor %}
 
             </div>
         </div>
