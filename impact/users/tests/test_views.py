@@ -52,10 +52,9 @@ def test_fail_to_confirm_email_due_to_invalid_token(client, alice):
     uid = uidb64(alice)
 
     url = f"/confirme-email/{uid}/invalid-token/"
-    response = client.get(url, follow=True)
+    response = client.get(url)
 
-    assert response.status_code == 200
-    assert response.redirect_chain == [(reverse("erreur_terminale"), 302)]
+    assert response.status_code == 400
     content = html.unescape(response.content.decode("utf-8"))
     assert "Le lien de confirmation est invalide." in content
 
@@ -69,10 +68,9 @@ def test_fail_to_confirm_email_due_to_invalid_user(client, alice):
     token = make_token(alice, "confirm_email")
 
     url = f"/confirme-email/invalid-user/{token}/"
-    response = client.get(url, follow=True)
+    response = client.get(url)
 
-    assert response.status_code == 200
-    assert response.redirect_chain == [(reverse("erreur_terminale"), 302)]
+    assert response.status_code == 400
     content = html.unescape(response.content.decode("utf-8"))
     assert "Le lien de confirmation est invalide." in content
 
@@ -407,10 +405,9 @@ def test_erreur_page_invitation_car_invitation_n_existe_pas(client, entreprise_f
     entreprise = entreprise_factory(siren="130025265")  # Dinum
     now = datetime(2025, 5, 9, 14, 30, tzinfo=timezone.utc)
 
-    response = client.get(f"/invitation/42/CODE", follow=True)
+    response = client.get(f"/invitation/42/CODE")
 
-    assert response.status_code == 200
-    assert response.redirect_chain == [(reverse("erreur_terminale"), 302)]
+    assert response.status_code == 400
     content = html.unescape(response.content.decode("utf-8"))
     assert "Cette invitation n'existe pas." in content, content
 
@@ -425,12 +422,10 @@ def test_erreur_page_invitation_car_invitation_expirée(client, entreprise_facto
     CODE = make_token(invitation, "invitation")
 
     with freeze_time(now + timedelta(settings.INVITATION_MAX_AGE + 1)):
-        response = client.get(f"/invitation/{invitation.id}/{CODE}", follow=True)
+        response = client.get(f"/invitation/{invitation.id}/{CODE}")
 
-    assert response.status_code == 200
-    assert response.redirect_chain == [(reverse("erreur_terminale"), 302)]
+    assert response.status_code == 400
     content = html.unescape(response.content.decode("utf-8"))
-    assert CODE not in content
     assert "L'invitation est expirée" in content, content
 
 
@@ -460,10 +455,9 @@ def test_invitation_utilisateur_connecté_mauvais_email(
     CODE = make_token(invitation, "invitation")
     client.force_login(alice)
 
-    response = client.get(f"/invitation/{invitation.id}/{CODE}", follow=True)
+    response = client.get(f"/invitation/{invitation.id}/{CODE}")
 
-    assert response.status_code == 200
-    assert response.redirect_chain == [(reverse("erreur_terminale"), 302)]
+    assert response.status_code == 400
     content = html.unescape(response.content.decode("utf-8"))
     assert "Cette invitation ne correspond pas à votre adresse e-mail." in content
 
@@ -502,12 +496,9 @@ def test_echec_d_invitation_car_le_code_ne_correspond_pas(client, entreprise_fac
         entreprise=entreprise, email="alice@portail.example"
     )
 
-    response = client.get(f"/invitation/{invitation.id}/INCORRECT", follow=True)
+    response = client.get(f"/invitation/{invitation.id}/INCORRECT")
 
-    assert response.status_code == 200
-    assert response.redirect_chain == [
-        (reverse("erreur_terminale"), 302),
-    ]
+    assert response.status_code == 400
     assert not User.objects.filter(email="alice@portail.example")
     content = html.unescape(response.content.decode("utf-8"))
     assert "Cette invitation est incorrecte." in content, content
