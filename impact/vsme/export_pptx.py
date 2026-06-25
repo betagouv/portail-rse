@@ -85,7 +85,11 @@ def selectionne_diapos_non_pertinents(indicateurs):
             if "diapo_non_pertinent" not in export_pptx:
                 continue
             if indicateur.est_non_pertinent:
-                diapos_a_supprimer.add(export_pptx["diapo"])
+                if "diapo" in export_pptx:
+                    diapos_a_supprimer.add(export_pptx["diapo"])
+                else:  # multidiapo
+                    for multidiapo in export_pptx["multidiapos"]:
+                        diapos_a_supprimer.add(multidiapo["diapo"])
             else:
                 diapos_a_supprimer.add(export_pptx["diapo_non_pertinent"])
     return diapos_a_supprimer

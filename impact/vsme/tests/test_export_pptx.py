@@ -735,6 +735,22 @@ def test_selectionne_diapos_non_pertinents(
     assert selectionne_diapos_non_pertinents([indicateur]) == diapo_a_supprimer
 
 
+def test_selectionne_multidiapos_non_pertinents(entreprise_factory, alice):
+    # C3-54-p2 est un indicateur multidiapos
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
+    indicateur = Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="C3-54-p2",
+        data={"non_pertinent": True},
+    )
+
+    diapos_a_supprimer = selectionne_diapos_non_pertinents([indicateur])
+
+    assert 48 in diapos_a_supprimer
+    assert 49 in diapos_a_supprimer
+
+
 def test_selectionne_diapos_non_applicables_C4_57_et_C4_58_non_applicables(
     entreprise_factory, alice
 ):
