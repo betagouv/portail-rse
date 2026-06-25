@@ -11,9 +11,9 @@
                 "min": 0,
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 83,
+                    "diapo": "C9-mixite",
                     "shape": "Rounded Rectangle 1",
-                    "diapo_non_pertinent": 84
+                    "diapo_non_pertinent": "C9-mixite-non-pertinent"
                 }
             }
         ],

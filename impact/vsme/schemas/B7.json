@@ -10,7 +10,7 @@
                 "type": "texte_long",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 39,
+                    "diapo": "B7-economie-circulaire",
                     "shape": "Rounded Rectangle 8"
                 }
             }
@@ -152,9 +152,9 @@
                 ],
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 42,
+                    "diapo": "B7-gestion-dechets",
                     "shape": "Table 9",
-                    "diapo_non_pertinent": 43
+                    "diapo_non_pertinent": "B7-gestion-dechets-non-pertinent"
                 }
             }
         ],
@@ -208,9 +208,9 @@
                 ],
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 44,
+                    "diapo": "B7-flux-massique",
                     "shape": "Table 10",
-                    "diapo_non_pertinent": 45
+                    "diapo_non_pertinent": "B7-flux-massique-non-pertinent"
                 }
             }
         ],

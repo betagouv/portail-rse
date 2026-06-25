@@ -11,9 +11,9 @@
                 "provoque_calcul_des_champs": ["ratio_femmes_hommes_encadrement"],
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 67,
+                    "diapo": "C5-effectifs",
                     "shape": "Rounded Rectangle 13",
-                    "diapo_non_applicable": 68
+                    "diapo_non_applicable": "C5-effectifs-non-applicable"
                 }
             },
             {
@@ -23,9 +23,9 @@
                 "provoque_calcul_des_champs": ["ratio_femmes_hommes_encadrement"],
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 67,
+                    "diapo": "C5-effectifs",
                     "shape": "Rounded Rectangle 12",
-                    "diapo_non_applicable": 68
+                    "diapo_non_applicable": "C5-effectifs-non-applicable"
                 }
             },
             {
@@ -34,9 +34,9 @@
                 "type": "nombre_decimal",
                 "calculé": true,
                 "export_pptx": {
-                    "diapo": 67,
+                    "diapo": "C5-effectifs",
                     "shape": "Rounded Rectangle 14",
-                    "diapo_non_applicable": 68
+                    "diapo_non_applicable": "C5-effectifs-non-applicable"
                 }
             }
         ],
@@ -56,9 +56,9 @@
                 "type": "nombre_decimal",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 67,
+                    "diapo": "C5-effectifs",
                     "shape": "Rounded Rectangle 15",
-                    "diapo_non_applicable": 68
+                    "diapo_non_applicable": "C5-effectifs-non-applicable"
                 }
             },
             {
@@ -67,9 +67,9 @@
                 "type": "nombre_decimal",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 67,
+                    "diapo": "C5-effectifs",
                     "shape": "Rounded Rectangle 18",
-                    "diapo_non_applicable": 68
+                    "diapo_non_applicable": "C5-effectifs-non-applicable"
                 }
             }
         ],

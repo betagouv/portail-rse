@@ -20,7 +20,7 @@
                 ],
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 5,
+                    "diapo": "B1-infos-generales",
                     "shape": "B1-24-a"
                 }
             }
@@ -68,7 +68,7 @@
                 ],
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 5,
+                    "diapo": "B1-infos-generales",
                     "shape": "B1-24-c"
                 }
             }
@@ -120,7 +120,7 @@
                     }
                 ],
                 "export_pptx": {
-                    "diapo": 6,
+                    "diapo": "B1-filiales",
                     "shape": "B1-25"
                 }
             }
@@ -141,7 +141,7 @@
                 "choix": "CHOIX_FORME_JURIDIQUE",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 5,
+                    "diapo": "B1-infos-generales",
                     "shape": "B1-24-e-i_forme_juridique"
                 }
             },
@@ -150,7 +150,7 @@
                 "label": "L’entité déclarante est une coopérative.",
                 "type": "choix_binaire",
                 "export_pptx": {
-                    "diapo": 5,
+                    "diapo": "B1-infos-generales",
                     "shape": "B1-24-e-i_coopérative"
                 }
             }
@@ -171,7 +171,7 @@
                 "choix": "CHOIX_NACE",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 5,
+                    "diapo": "B1-infos-generales",
                     "shape": "B1-24-e-ii"
                 }
             }
@@ -193,7 +193,7 @@
                 "unité": "euros",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 5,
+                    "diapo": "B1-infos-generales",
                     "shape": "B1-24-e-iii"
                 }
 
@@ -217,7 +217,7 @@
                 "unité": "euros",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 5,
+                    "diapo": "B1-infos-generales",
                     "shape": "B1-24-e-iv"
                 }
             }
@@ -255,7 +255,7 @@
                 "unité": "salariés",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 5,
+                    "diapo": "B1-infos-generales",
                     "shape": "B1-24-e-v_nombre_salaries"
                 }
             }
@@ -276,7 +276,7 @@
                 "choix": "CHOIX_PAYS",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 5,
+                    "diapo": "B1-infos-generales",
                     "shape": "B1-24-e-vi"
                 }
             }
@@ -337,7 +337,7 @@
                     }
                 ],
                 "export_pptx": {
-                    "diapo": 7,
+                    "diapo": "B1-sites",
                     "shape": "B1-25"
                 }
             }
@@ -387,9 +387,9 @@
                 ],
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 8,
+                    "diapo": "B1-certifications",
                     "shape": "B1-25",
-                    "diapo_non_pertinent": 9
+                    "diapo_non_pertinent": "B1-certifications-non-pertinent"
                 }
             }
         ],

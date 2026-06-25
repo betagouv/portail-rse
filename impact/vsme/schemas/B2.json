@@ -10,9 +10,9 @@
                 "type": "texte_long",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 11,
+                    "diapo": "B2-participation",
                     "shape": "Rounded Rectangle 1",
-                    "diapo_non_applicable": 10
+                    "diapo_non_applicable": "B2-non-applicable"
                 }
             }
         ],
@@ -34,7 +34,7 @@
                 "unité": "euros",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 11,
+                    "diapo": "B2-participation",
                     "shape": "Rounded Rectangle 2"
                 }
             }
@@ -55,7 +55,7 @@
                 "type": "texte_long",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 11,
+                    "diapo": "B2-participation",
                     "shape": "Rounded Rectangle 6"
                 }
             }
@@ -94,9 +94,9 @@
                 ],
                 "lignes": "THEMATIQUES_DURABILITE",
                 "export_pptx": {
-                    "diapo": 13,
+                    "diapo": "B2-pratiques",
                     "shape": "Table 5",
-                    "diapo_non_pertinent": 14
+                    "diapo_non_pertinent": "B2-pratiques-non-pertinent"
                 }
             }
         ],

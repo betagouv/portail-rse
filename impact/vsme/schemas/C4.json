@@ -58,10 +58,10 @@
                     }
                 ],
                 "export_pptx": {
-                    "diapo": 54,
+                    "diapo": "C4-aleas",
                     "shape": "Table 11",
-                    "diapo_non_applicable": 55,
-                    "diapo_non_pertinent": 55
+                    "diapo_non_applicable": "C4-aleas-non-pertinent",
+                    "diapo_non_pertinent": "C4-aleas-non-pertinent"
                 }
             }
         ],
@@ -133,10 +133,10 @@
                 ],
                 "lignes": "RISQUES_CLIMATIQUES",
                 "export_pptx": {
-                    "diapo": 56,
+                    "diapo": "C4-impacts-financiers",
                     "shape": "Table 9",
-                    "diapo_non_applicable": 57,
-                    "diapo_non_pertinent": 58
+                    "diapo_non_applicable": "C4-impacts-financiers-non-applicable",
+                    "diapo_non_pertinent": "C4-impacts-financiers-non-pertinents"
                 }
             }
         ],

@@ -20,7 +20,7 @@
                     }
                 ],
                 "export_pptx": {
-                    "diapo": 34,
+                    "diapo": "B5-surface",
                     "shape": "Rounded Rectangle 16"
                 }
             },
@@ -58,9 +58,9 @@
                 ],
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 34,
+                    "diapo": "B5-surface",
                     "shape": "Table 4",
-                    "diapo_non_pertinent": 33
+                    "diapo_non_pertinent": "B5-biodiversite-non-pertinent"
                 }
             }
         ],
@@ -123,9 +123,9 @@
                     }
                 ],
                 "export_pptx": {
-                    "diapo": 36,
+                    "diapo": "B5-affection-terres",
                     "shape": "Table 7",
-                    "diapo_non_pertinent": 35
+                    "diapo_non_pertinent": "B5-affection-terres-non-pertinent"
                 }
             }
         ],

@@ -137,9 +137,9 @@
                 ],
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 27,
+                    "diapo": "B4-pollution-air",
                     "shape": "Table 5",
-                    "diapo_non_pertinent": 28
+                    "diapo_non_pertinent": "B4-pollution-air-non-pertinent"
                 }
             }
         ],
@@ -286,9 +286,9 @@
                 ],
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 29,
+                    "diapo": "B4-pollution-eau",
                     "shape": "Table 5",
-                    "diapo_non_pertinent": 30
+                    "diapo_non_pertinent": "B4-pollution-eau-non-pertinent"
                 }
             }
         ],
@@ -435,9 +435,9 @@
                 ],
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 31,
+                    "diapo": "B4-pollution-sol",
                     "shape": "Table 5",
-                    "diapo_non_pertinent": 32
+                    "diapo_non_pertinent": "B4-pollution-sol-non-pertinent"
                 }
             }
         ],

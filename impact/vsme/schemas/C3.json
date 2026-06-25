@@ -11,7 +11,7 @@
                 "min": 2000,
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 46,
+                    "diapo": "C3-reduction-scope1et2",
                     "shape": "Rounded Rectangle 10"
                 }
             },
@@ -22,7 +22,7 @@
                 "min": 2020,
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 46,
+                    "diapo": "C3-reduction-scope1et2",
                     "shape": "Rounded Rectangle 11"
                 }
             },
@@ -72,9 +72,9 @@
                     }
                 ],
                 "export_pptx": {
-                    "diapo": 46,
+                    "diapo": "C3-reduction-scope1et2",
                     "shape": "Table 9",
-                    "diapo_non_pertinent": 47
+                    "diapo_non_pertinent": "C3-reduction-scope1et2-non-pertinent"
                 }
             },
             {
@@ -225,15 +225,15 @@
                 "export_pptx": {
                     "multidiapos": [
                         {
-                            "diapo": 48,
+                            "diapo": "C3-reduction-scope3-1",
                             "shape": "Table 9"
                         },
                         {
-                            "diapo": 49,
+                            "diapo": "C3-reduction-scope3-2",
                             "shape": "Table 9"
                         }
                     ],
-                    "diapo_non_pertinent": 50
+                    "diapo_non_pertinent": "C3-reduction-scope3-non-applicable"
                 }
             },
             {
@@ -299,9 +299,9 @@
                 "description": "Si l'entreprise dispose d'un plan de transition climatique, indiquer les grandes lignes de celui-ci.",
                 "type": "texte_long",
                 "export_pptx": {
-                    "diapo": 52,
+                    "diapo": "C3-plan-transition",
                     "shape": "Rounded Rectangle 8",
-                    "diapo_non_pertinent": 51
+                    "diapo_non_pertinent": "C3-plan-transition-non-pertinent"
                 }
             },
             {
@@ -310,7 +310,7 @@
                 "description": "Si l'entreprise dispose d'un plan de transition climatique, indiquer la contribution de celui-ci à la réduction des émissions de GES.",
                 "type": "texte_long",
                 "export_pptx": {
-                    "diapo": 53,
+                    "diapo": "C3-contribution-plan",
                     "shape": "Rounded Rectangle 10"
                 }
             },
@@ -321,7 +321,7 @@
                 "type": "nombre_entier",
                 "min": 2025,
                 "export_pptx": {
-                    "diapo": 53,
+                    "diapo": "C3-contribution-plan",
                     "shape": "Rounded Rectangle 11"
                 }
             }

@@ -38,7 +38,7 @@
                     }
                 ],
                 "export_pptx": {
-                    "diapo": 25,
+                    "diapo": "B3-consommation",
                     "shape": "Table 13"
                 }
             }
@@ -223,7 +223,7 @@
                     }
                 ],
                 "export_pptx": {
-                    "diapo": 25,
+                    "diapo": "B3-consommation",
                     "shape": "Table 14"
                 }
             }
@@ -271,7 +271,7 @@
                     }
                 ],
                 "export_pptx": {
-                    "diapo": 25,
+                    "diapo": "B3-consommation",
                     "shape": "Table 18"
                 }
             },
@@ -282,7 +282,7 @@
                 "type": "nombre_decimal",
                 "calculé": true,
                 "export_pptx": {
-                    "diapo": 25,
+                    "diapo": "B3-consommation",
                     "shape": "Rounded Rectangle 5"
                 }
             }
@@ -372,7 +372,7 @@
                     }
                 ],
                 "export_pptx": {
-                    "diapo": 26,
+                    "diapo": "B3-scope3",
                     "shape": "Table 18"
                 }
             },
@@ -402,7 +402,7 @@
                     }
                 ],
                 "export_pptx": {
-                    "diapo": 26,
+                    "diapo": "B3-scope3",
                     "shape": "Table 1"
                 }
             }

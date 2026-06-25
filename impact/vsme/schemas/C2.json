@@ -33,27 +33,27 @@
                 "export_pptx": {
                     "multidiapos": [
                         {
-                            "diapo": 18,
+                            "diapo": "C2-pratiques-1",
                             "shape": "Table 8"
                         },
                         {
-                            "diapo": 19,
+                            "diapo": "C2-pratiques-2",
                             "shape": "Table 8"
                         },
                         {
-                            "diapo": 20,
+                            "diapo": "C2-pratiques-3",
                             "shape": "Table 8"
                         },
                         {
-                            "diapo": 21,
+                            "diapo": "C2-pratiques-4",
                             "shape": "Table 8"
                         },
                         {
-                            "diapo": 22,
+                            "diapo": "C2-pratiques-5",
                             "shape": "Table 8"
                         }
                     ],
-                    "diapo_non_applicable": 23
+                    "diapo_non_applicable": "C2-pratiques-non-applicable"
                 }
             }
         ],
