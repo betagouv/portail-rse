@@ -7,6 +7,8 @@ from pptx.util import Pt
 
 from utils.pays import CODES_PAYS_ISO_3166_1
 from utils.pptx import find_shape
+from utils.pptx import find_slide
+from utils.pptx import find_slide_index
 from utils.pptx import remove_shape
 from utils.pptx import remove_slide
 from vsme.export_xlsx import formate_valeur as formate_valeur_xlsx
@@ -24,7 +26,7 @@ def export_rapport_vsme(rapport_vsme, presentation):
 
 
 def export_couverture(rapport_vsme, presentation):
-    shapes = presentation.slides[0].shapes
+    shapes = find_slide(presentation, "couverture").shapes
     shape_titre = find_shape(shapes, "ZoneTexte 9")
     shape_titre.text_frame.paragraphs[0].runs[
         0
@@ -36,28 +38,19 @@ def export_couverture(rapport_vsme, presentation):
 
 def export_sommaire(rapport_vsme, presentation):
     if rapport_vsme.choix_module == "base":
-        NUMERO_DIAPO_SOMMAIRE = 3
         _remove_shapes_from_slide(
             presentation,
-            NUMERO_DIAPO_SOMMAIRE,
+            "sommaire",
             ("22", "23", "39", "40", "47", "48", "49", "54", "55", "56"),
         )
-
-        NUMERO_DIAPO_INFOS = 4
-        _remove_shapes_from_slide(presentation, NUMERO_DIAPO_INFOS, ("22", "23"))
-
-        NUMERO_DIAPO_ENV = 24
-        _remove_shapes_from_slide(presentation, NUMERO_DIAPO_ENV, ("31", "32"))
-
-        NUMERO_DIAPO_SOCIAL = 59
-        _remove_shapes_from_slide(presentation, NUMERO_DIAPO_SOCIAL, ("10", "11", "12"))
-
-        NUMERO_DIAPO_GOUV = 77
-        _remove_shapes_from_slide(presentation, NUMERO_DIAPO_GOUV, ("17", "18", "20"))
+        _remove_shapes_from_slide(presentation, "information-generale", ("22", "23"))
+        _remove_shapes_from_slide(presentation, "environnement", ("31", "32"))
+        _remove_shapes_from_slide(presentation, "social", ("10", "11", "12"))
+        _remove_shapes_from_slide(presentation, "gouvernance", ("17", "18", "20"))
 
 
 def _remove_shapes_from_slide(presentation, slide_num, shape_nums):
-    shapes = presentation.slides[slide_num - 1].shapes
+    shapes = find_slide(presentation, slide_num).shapes
     for num_shape in shape_nums:
         shape = find_shape(shapes, f"Round Same-side Corner of Rectangle {num_shape}")
         remove_shape(shape)
@@ -70,8 +63,10 @@ def supprime_diapos_inutiles(indicateurs, rapport_vsme, presentation):
         | selectionne_diapos_modules_complets(rapport_vsme)
         | selectionne_diapos_jamais_utilisees(rapport_vsme)
     )
-    for diapo_a_supprimer in sorted(diapos_a_supprimer, reverse=True):
-        index_diapo = diapo_a_supprimer - 1
+    index_diapos_a_supprimer = (
+        find_slide_index(presentation, index) for index in diapos_a_supprimer
+    )
+    for index_diapo in sorted(index_diapos_a_supprimer, reverse=True):
         remove_slide(presentation, index_diapo)
 
 
@@ -170,17 +165,17 @@ def selectionne_diapos_jamais_utilisees(indicateurs):
     Ce remplissage de la non-pertinence est traité dans le remplissage des champs
     """
     return {
-        12,  # B2 Pratiques, politiques et initiatives...
-        17,  #  C1 Stratégie : modèle économique et initiatives...
-        38,  #  B6 Eau
-        61,  #  B8 Effectifs : caractéristiques générales
-        65,  #  B10 Effectifs : rémunération, négociation...
-        69,  # C5 Caractéristiques supplémentaires (générales)...
-        71,  # C6 Informations complémentaires sur les effectifs...
-        74,  # C7 Incidents graves en matière de droits de l’homme
-        76,  # C7 Incidents graves en matière de droits de l’homme (2)
-        79,  # B11 Condamnations et amendes en matière de lutte...
-        81,  # C8 Recettes de certains secteurs et exclusion...
+        "B2-non-pertinent",  # Pratiques, politiques et initiatives...
+        "C1-relations-affaires-partiellement-non-pertinent",  #  Stratégie : modèle économique et initiatives...
+        "B6-prelevements-partiellement-non-pertinent",  #  Eau
+        "B8-effectifs-contrat-partiellement-non-applicable",  #  Effectifs : caractéristiques générales
+        "B10-remuneration-partiellement-non-applicable",  #  Effectifs : rémunération, négociation...
+        "C5-effectifs-non-pertinent",  # Caractéristiques supplémentaires (générales)...
+        "C6-droits-homme-non-pertinent",  # Informations complémentaires sur les effectifs...
+        "C7-incidents-graves-non-pertinent",  # Incidents graves en matière de droits de l’homme
+        "C7-actions-non-pertinent",  # Incidents graves en matière de droits de l’homme (2)
+        "B11-condamnations-non-pertinent",  # Condamnations et amendes en matière de lutte...
+        "C8-chiffre-affaires-non-pertinent",  # Recettes de certains secteurs et exclusion...
     }
 
 
@@ -225,7 +220,7 @@ def _export_champ_multidiapos(champ, data, export_pptx, presentation):
         label_to_id = {ligne["label"]: ligne["id"] for ligne in lignes}
     colonnes = champ["colonnes"]
     for diapo_info in multidiapos:
-        diapo = presentation.slides[diapo_info["diapo"] - 1]
+        diapo = find_slide(presentation, diapo_info["diapo"])
         shape = find_shape(diapo.shapes, diapo_info["shape"])
         if not shape:
             continue
@@ -245,7 +240,7 @@ def _export_champ_multidiapos(champ, data, export_pptx, presentation):
 
 def _export_champ_monodiapo(champ, data, export_pptx, presentation):
     numero_diapo = export_pptx["diapo"]
-    diapo = presentation.slides[numero_diapo - 1]
+    diapo = find_slide(presentation, numero_diapo)
     nom_shape = export_pptx["shape"]
     shape = find_shape(diapo.shapes, nom_shape)
     _export_champ(champ, data, shape)

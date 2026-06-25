@@ -10,7 +10,7 @@
                 "type": "texte_long",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 15,
+                    "diapo": "C1-produits",
                     "shape": "Rounded Rectangle 1"
                 }
             }
@@ -30,7 +30,7 @@
                 "type": "texte_long",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 15,
+                    "diapo": "C1-produits",
                     "shape": "Rounded Rectangle 8"
                 }
             }
@@ -51,7 +51,7 @@
                 "type": "texte_long",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 16,
+                    "diapo": "C1-relations-affaires",
                     "shape": "Rounded Rectangle 1"
                 }
             }
@@ -71,7 +71,7 @@
                 "type": "texte_long",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 16,
+                    "diapo": "C1-relations-affaires",
                     "shape": "Rounded Rectangle 8"
                 }
             }

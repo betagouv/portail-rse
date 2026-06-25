@@ -8,6 +8,7 @@ from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN
 from pptx.util import Pt
 
+from utils.pptx import find_slide
 from vsme.export_pptx import export_indicateurs
 from vsme.export_pptx import export_sommaire
 from vsme.export_pptx import find_shape
@@ -79,7 +80,7 @@ def test_export_du_sommaire_pptx_selon_le_module_selectionné(
 
     export_sommaire(rapport_vsme, presentation)
 
-    shapes = presentation.slides[2].shapes
+    shapes = find_slide(presentation, "sommaire").shapes
     assert (
         bool(find_shape(shapes, "Round Same-side Corner of Rectangle 22")) == visibilite
     )
@@ -101,7 +102,7 @@ def test_export_pptx_d_un_champ_nombre_entier(entreprise_factory, alice):
 
     export_indicateurs([indicateur], presentation)
 
-    shapes = presentation.slides[4].shapes
+    shapes = find_slide(presentation, "B1-infos-generales").shapes
     for shape in shapes:
         if shape.name == "B1-24-e-iii":
             assert shape.text_frame.paragraphs[1].runs[0].text == "12345 euros"
@@ -121,7 +122,7 @@ def test_export_pptx_d_un_champ_texte_long(entreprise_factory, alice):
 
     export_indicateurs([indicateur], presentation)
 
-    shapes = presentation.slides[38].shapes
+    shapes = find_slide(presentation, "B7-economie-circulaire").shapes
     for shape in shapes:
         if shape.name == "Rounded Rectangle 8":
             assert shape.text_frame.paragraphs[1].runs[0].text == "PRINCIPES"
@@ -140,7 +141,7 @@ def test_export_pptx_d_un_champ_choix_unique(entreprise_factory, alice):
 
     export_indicateurs([indicateur], presentation)
 
-    shapes = presentation.slides[4].shapes
+    shapes = find_slide(presentation, "B1-infos-generales").shapes
     for shape in shapes:
         if shape.name == "B1-24-a":
             assert shape.text_frame.paragraphs[1].runs[0].text == "Module complet"
@@ -159,7 +160,7 @@ def test_export_pptx_d_un_champ_choix_binaire(entreprise_factory, alice):
 
     export_indicateurs([indicateur], presentation)
 
-    shapes = presentation.slides[4].shapes
+    shapes = find_slide(presentation, "B1-infos-generales").shapes
     for shape in shapes:
         if shape.name == "B1-24-e-i_coopérative":
             assert shape.text_frame.paragraphs[1].runs[0].text == "OUI"
@@ -180,7 +181,7 @@ def test_export_pptx_d_un_champ_choix_binaire__forme_juridique(
 
     export_indicateurs([indicateur], presentation)
 
-    shapes = presentation.slides[4].shapes
+    shapes = find_slide(presentation, "B1-infos-generales").shapes
     for shape in shapes:
         if shape.name == "B1-24-e-i_forme_juridique":
             assert (
@@ -202,7 +203,7 @@ def test_export_pptx_d_un_champ_choix_multiple(entreprise_factory, alice):
 
     export_indicateurs([indicateur], presentation)
 
-    shapes = presentation.slides[4].shapes
+    shapes = find_slide(presentation, "B1-infos-generales").shapes
     for shape in shapes:
         if shape.name == "B1-24-e-ii":
             assert (
@@ -245,7 +246,7 @@ def test_export_pptx_d_un_champ_tableau(entreprise_factory, alice):
 
     export_indicateurs([indicateur], presentation)
 
-    shapes = presentation.slides[6].shapes
+    shapes = find_slide(presentation, "B1-sites").shapes
     for shape in shapes:
         if shape.name == "B1-25":
             tableau = shape.table
@@ -324,7 +325,7 @@ def test_export_pptx_d_un_champ_tableau_à_lignes_fixes_avec_choix_binaire_radio
 
     export_indicateurs([indicateur], presentation)
 
-    shapes = presentation.slides[12].shapes
+    shapes = find_slide(presentation, "B2-pratiques").shapes
     for shape in shapes:
         if shape.name == "Table 5":
             tableau = shape.table
@@ -382,7 +383,7 @@ def test_export_pptx_d_un_champ_tableau_à_lignes_fixes_avec_données_vides(
 
     export_indicateurs([indicateur], presentation)
 
-    shapes = presentation.slides[25].shapes
+    shapes = find_slide(presentation, "B3-scope3").shapes
     for shape in shapes:
         if shape.name == "Table 18":
             tableau = shape.table
@@ -463,7 +464,7 @@ def test_export_pptx_d_un_champ_tableau_à_lignes_fixes_sur_plusieurs_diapos(
 
     export_indicateurs([indicateur], presentation)
 
-    shapes = presentation.slides[17].shapes
+    shapes = find_slide(presentation, "C2-pratiques-1").shapes
     for shape in shapes:
         if shape.name == "Table 8":
             tableau = shape.table
@@ -471,7 +472,7 @@ def test_export_pptx_d_un_champ_tableau_à_lignes_fixes_sur_plusieurs_diapos(
             assert tableau.cell(1, 1).text == "a"
             assert tableau.cell(2, 0).text == "Pollution"
             assert tableau.cell(2, 1).text == "d"
-    shapes = presentation.slides[18].shapes
+    shapes = find_slide(presentation, "C2-pratiques-2").shapes
     for shape in shapes:
         if shape.name == "Table 8":
             tableau = shape.table
@@ -479,7 +480,7 @@ def test_export_pptx_d_un_champ_tableau_à_lignes_fixes_sur_plusieurs_diapos(
             assert tableau.cell(1, 1).text == "g"
             assert tableau.cell(2, 0).text == "Biodiversité et écosystèmes"
             assert tableau.cell(2, 1).text == "j"
-    shapes = presentation.slides[21].shapes
+    shapes = find_slide(presentation, "C2-pratiques-5").shapes
     for shape in shapes:
         if shape.name == "Table 8":
             tableau = shape.table
@@ -563,8 +564,8 @@ def test_selectionne_diapos_non_applicables_C5_applicable(entreprise_factory, al
 
     diapos_a_supprimer = selectionne_diapos_non_applicables(rapport_vsme)
 
-    assert 67 not in diapos_a_supprimer
-    assert 68 in diapos_a_supprimer
+    assert "C5-effectifs" not in diapos_a_supprimer
+    assert "C5-effectifs-non-applicable" in diapos_a_supprimer
 
 
 def test_selectionne_diapos_non_applicables_C5_non_applicable(
@@ -587,8 +588,8 @@ def test_selectionne_diapos_non_applicables_C5_non_applicable(
 
     diapos_a_supprimer = selectionne_diapos_non_applicables(rapport_vsme)
 
-    assert 67 in diapos_a_supprimer
-    assert 68 not in diapos_a_supprimer
+    assert "C5-effectifs" in diapos_a_supprimer
+    assert "C5-effectifs-non-applicable" not in diapos_a_supprimer
 
 
 @pytest.mark.parametrize(
@@ -632,7 +633,7 @@ def test_export_pptx_d_un_indicateur_non_pertinent(entreprise_factory, alice):
 
     export_indicateurs([indicateur], presentation)
 
-    shapes = presentation.slides[38].shapes
+    shapes = find_slide(presentation, "B7-economie-circulaire").shapes
     for shape in shapes:
         if shape.name == "Rounded Rectangle 8":
             assert shape.text_frame.paragraphs[1].runs[0].text != "PRINCIPES"
@@ -656,7 +657,7 @@ def test_export_pptx_d_un_indicateur_non_pertinent_inscrit_le_texte_non_pertinen
 
     export_indicateurs([indicateur], presentation)
 
-    shapes = presentation.slides[10].shapes  # diapo 11
+    shapes = find_slide(presentation, "B2-participation").shapes
     for shape in shapes:
         if shape.name == "Rounded Rectangle 1":
             paragraphe = None
@@ -681,7 +682,7 @@ def test_export_pptx_d_un_indicateur_non_pertinent_inscrit_le_texte_si_pertinent
 
     export_indicateurs([indicateur], presentation)
 
-    shapes = presentation.slides[36].shapes  # diapo 37
+    shapes = find_slide(presentation, "B6-prelevements").shapes
     for shape in shapes:
         if shape.name == "Rounded Rectangle 15":
             paragraphe = None
@@ -714,12 +715,20 @@ def test_selectionne_diapos_modules_complets(
         assert diapos == set()
     else:
         # diapos C1 (diapo simple) et C2 (multidiapos)
-        assert {15, 16, 18, 19, 20, 21, 22}.issubset(diapos)
+        assert {
+            "C1-produits",
+            "C1-relations-affaires",
+            "C2-pratiques-1",
+            "C2-pratiques-2",
+            "C2-pratiques-3",
+            "C2-pratiques-4",
+            "C2-pratiques-5",
+        }.issubset(diapos)
 
 
 @pytest.mark.parametrize(
     "non_pertinent, diapo_a_supprimer",
-    [(True, {13}), (False, {14})],
+    [(True, {"B2-pratiques"}), (False, {"B2-pratiques-non-pertinent"})],
 )
 def test_selectionne_diapos_non_pertinents(
     non_pertinent, diapo_a_supprimer, entreprise_factory, alice
@@ -747,8 +756,8 @@ def test_selectionne_multidiapos_non_pertinents(entreprise_factory, alice):
 
     diapos_a_supprimer = selectionne_diapos_non_pertinents([indicateur])
 
-    assert 48 in diapos_a_supprimer
-    assert 49 in diapos_a_supprimer
+    assert "C3-reduction-scope3-1" in diapos_a_supprimer
+    assert "C3-reduction-scope3-2" in diapos_a_supprimer
 
 
 def test_selectionne_diapos_non_applicables_C4_57_et_C4_58_non_applicables(
@@ -767,11 +776,11 @@ def test_selectionne_diapos_non_applicables_C4_57_et_C4_58_non_applicables(
 
     diapos_a_supprimer = selectionne_diapos_non_applicables(rapport_vsme)
 
-    assert 54 in diapos_a_supprimer
-    assert 55 not in diapos_a_supprimer
-    assert 56 in diapos_a_supprimer
-    assert 57 not in diapos_a_supprimer
-    assert 58 in diapos_a_supprimer
+    assert "C4-aleas" in diapos_a_supprimer
+    assert "C4-aleas-non-pertinent" not in diapos_a_supprimer
+    assert "C4-impacts-financiers" in diapos_a_supprimer
+    assert "C4-impacts-financiers-non-applicable" not in diapos_a_supprimer
+    assert "C4-impacts-financiers-non-pertinents" in diapos_a_supprimer
 
 
 def test_selectionne_diapos_non_applicables_C4_57_et_C4_58_applicables(
@@ -799,8 +808,8 @@ def test_selectionne_diapos_non_applicables_C4_57_et_C4_58_applicables(
 
     diapos_a_supprimer = selectionne_diapos_non_applicables(rapport_vsme)
 
-    assert 54 not in diapos_a_supprimer
-    assert 55 in diapos_a_supprimer
-    assert 56 not in diapos_a_supprimer
-    assert 57 in diapos_a_supprimer
-    assert 58 not in diapos_a_supprimer
+    assert "C4-aleas" not in diapos_a_supprimer
+    assert "C4-aleas-non-pertinent" in diapos_a_supprimer
+    assert "C4-impacts-financiers" not in diapos_a_supprimer
+    assert "C4-impacts-financiers-non-applicable" in diapos_a_supprimer
+    assert "C4-impacts-financiers-non-pertinents" not in diapos_a_supprimer

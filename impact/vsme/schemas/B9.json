@@ -10,7 +10,7 @@
                 "type": "nombre_entier",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 63,
+                    "diapo": "B9-accidents",
                     "shape": "Rounded Rectangle 2"
                 }
             },
@@ -20,7 +20,7 @@
                 "type": "nombre_decimal",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 63,
+                    "diapo": "B9-accidents",
                     "shape": "Rounded Rectangle 9"
                 }
             }
@@ -40,7 +40,7 @@
                 "type": "nombre_entier",
                 "obligatoire": true,
                 "export_pptx": {
-                    "diapo": 63,
+                    "diapo": "B9-accidents",
                     "shape": "Rounded Rectangle 11"
                 }
             }
