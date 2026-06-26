@@ -31,6 +31,7 @@ NOMS_DIAPO = [
     "environnement",
     "B3-consommation",
     "B3-scope3",
+    "B3-scope3-non-pertinent",
     "B4-pollution-air",
     "B4-pollution-air-non-pertinent",
     "B4-pollution-eau",
