@@ -373,7 +373,8 @@
                 ],
                 "export_pptx": {
                     "diapo": "B3-scope3",
-                    "shape": "Table 18"
+                    "shape": "Table 18",
+                    "diapo_non_pertinent": "B3-scope3-non-pertinent"
                 }
             },
             {
@@ -403,7 +404,8 @@
                 ],
                 "export_pptx": {
                     "diapo": "B3-scope3",
-                    "shape": "Table 1"
+                    "shape": "Table 1",
+                    "diapo_non_pertinent": "B3-scope3-non-pertinent"
                 }
             }
         ],
