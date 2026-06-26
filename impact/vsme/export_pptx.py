@@ -28,6 +28,14 @@ def export_rapport_vsme(rapport_vsme, presentation):
 def export_couverture(rapport_vsme, presentation):
     shapes = find_slide(presentation, "couverture").shapes
     shape_titre = find_shape(shapes, "ZoneTexte 9")
+
+    # vide les titres
+    for run in shape_titre.text_frame.paragraphs[0].runs:
+        run.text = ""
+    for run in shape_titre.text_frame.paragraphs[1].runs:
+        run.text = ""
+
+    # avant de les remplir
     shape_titre.text_frame.paragraphs[0].runs[
         0
     ].text = rapport_vsme.entreprise.denomination
