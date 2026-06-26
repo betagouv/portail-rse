@@ -61,7 +61,6 @@ def supprime_diapos_inutiles(indicateurs, rapport_vsme, presentation):
         selectionne_diapos_non_pertinents(indicateurs)
         | selectionne_diapos_non_applicables(rapport_vsme)
         | selectionne_diapos_modules_complets(rapport_vsme)
-        | selectionne_diapos_jamais_utilisees(rapport_vsme)
     )
     index_diapos_a_supprimer = (
         find_slide_index(presentation, index) for index in diapos_a_supprimer
@@ -155,28 +154,6 @@ def selectionne_diapos_modules_complets(rapport_vsme):
                 for multidiapo in export_pptx.get("multidiapos", []):
                     diapos_a_supprimer.add(multidiapo["diapo"])
     return diapos_a_supprimer
-
-
-def selectionne_diapos_jamais_utilisees(indicateurs):
-    """Ensemble des diapos ne servant jamais
-
-    Ce sont des cas de diapos montrant des champs tous non pertinent alors que certains
-    peuvent être pertinents quand d'autres ne le sont pas.
-    Ce remplissage de la non-pertinence est traité dans le remplissage des champs
-    """
-    return {
-        "B2-non-pertinent",  # Pratiques, politiques et initiatives...
-        "C1-relations-affaires-partiellement-non-pertinent",  #  Stratégie : modèle économique et initiatives...
-        "B6-prelevements-partiellement-non-pertinent",  #  Eau
-        "B8-effectifs-contrat-partiellement-non-applicable",  #  Effectifs : caractéristiques générales
-        "B10-remuneration-partiellement-non-applicable",  #  Effectifs : rémunération, négociation...
-        "C5-effectifs-non-pertinent",  # Caractéristiques supplémentaires (générales)...
-        "C6-droits-homme-non-pertinent",  # Informations complémentaires sur les effectifs...
-        "C7-incidents-graves-non-pertinent",  # Incidents graves en matière de droits de l’homme
-        "C7-actions-non-pertinent",  # Incidents graves en matière de droits de l’homme (2)
-        "B11-condamnations-non-pertinent",  # Condamnations et amendes en matière de lutte...
-        "C8-chiffre-affaires-non-pertinent",  # Recettes de certains secteurs et exclusion...
-    }
 
 
 def export_indicateurs(indicateurs, presentation):
