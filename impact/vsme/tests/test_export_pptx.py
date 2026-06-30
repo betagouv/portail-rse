@@ -238,6 +238,7 @@ def test_export_pptx_d_un_champ_tableau(entreprise_factory, alice):
                     "pays": "FRA",
                     "geolocalisation": "[3,4]",
                 },
+                {},  # il existe des cas en BdD avec un champ vide à la fin
             ]
         },
     )
