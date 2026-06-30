@@ -216,11 +216,11 @@ def _export_champ_multidiapos(champ, data, export_pptx, presentation):
                 continue
             ligne_id = label_to_id[label]
             data_ligne = data[ligne_id]
-            for col_index, colonne in enumerate(colonnes):
-                data_cellule = data_ligne.get(colonne["id"])
-                cell = table.cell(row_index, col_index + 1)
-                cell.text = formate_valeur(data_cellule, colonne)
-                _applique_style_cellule(cell, data_cellule, colonne)
+            for index_colonne, schema_colonne in enumerate(colonnes):
+                data_cellule = data_ligne.get(schema_colonne["id"])
+                cell = table.cell(row_index, index_colonne + 1)
+                cell.text = formate_valeur(data_cellule, schema_colonne)
+                _applique_style_cellule(cell, data_cellule, schema_colonne)
 
 
 def _export_champ_monodiapo(champ, data, export_pptx, presentation):
@@ -328,15 +328,15 @@ def _export_tableau_lignes_fixes(champ, data, shape):
             for offset_ligne, (code_pays, data_ligne) in enumerate(data.items()):
                 cell = table.cell(offset_ligne + 1, 0)
                 cell.text = CODES_PAYS_ISO_3166_1[code_pays]
-                colonne = colonnes[0]
-                data_cellule = data_ligne.get(colonne["id"])
-                _applique_style_cellule(cell, data_cellule, colonne)
+                schema_colonne = colonnes[0]
+                data_cellule = data_ligne.get(schema_colonne["id"])
+                _applique_style_cellule(cell, data_cellule, schema_colonne)
 
-                for offset_colonne, colonne in enumerate(colonnes):
-                    data_cellule = data_ligne.get(colonne["id"])
+                for offset_colonne, schema_colonne in enumerate(colonnes):
+                    data_cellule = data_ligne.get(schema_colonne["id"])
                     cell = table.cell(offset_ligne + 1, offset_colonne + 1)
-                    cell.text = formate_valeur(data_cellule, colonne)
-                    _applique_style_cellule(cell, data_cellule, colonne)
+                    cell.text = formate_valeur(data_cellule, schema_colonne)
+                    _applique_style_cellule(cell, data_cellule, schema_colonne)
         case "RISQUES_CLIMATIQUES":
             table = shape.table
             _formate_hauteur_tableau(data, table)
@@ -345,11 +345,11 @@ def _export_tableau_lignes_fixes(champ, data, shape):
                 cell.text = formate_valeur(id_risque, {"type": "auto_id"})
                 _applique_style_cellule(cell, id_risque, {"type": "auto_id"})
 
-                for offset_colonne, colonne in enumerate(colonnes):
-                    data_cellule = data_ligne.get(colonne["id"])
+                for offset_colonne, schema_colonne in enumerate(colonnes):
+                    data_cellule = data_ligne.get(schema_colonne["id"])
                     cell = table.cell(offset_ligne + 1, offset_colonne + 1)
-                    cell.text = formate_valeur(data_cellule, colonne)
-                    _applique_style_cellule(cell, data_cellule, colonne)
+                    cell.text = formate_valeur(data_cellule, schema_colonne)
+                    _applique_style_cellule(cell, data_cellule, schema_colonne)
         case "THEMATIQUES_DURABILITE" | list():
             colonnes_ids = [colonne["id"] for colonne in colonnes]
             if lignes == "THEMATIQUES_DURABILITE":
