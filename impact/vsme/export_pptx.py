@@ -281,6 +281,8 @@ def _export_tableau(champ, data, shape):
     _formate_hauteur_tableau(data, table)
 
     for index_ligne, ligne in enumerate(data, start=1):
+        if not ligne:
+            continue
         for index_colonne, schema_colonne in enumerate(champ["colonnes"]):
             data_cellule = ligne[schema_colonne["id"]]
             cell = table.cell(index_ligne, index_colonne)
