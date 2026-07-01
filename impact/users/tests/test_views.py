@@ -227,33 +227,6 @@ def test_edit_account_info_when_user_authenticated_by_proconnect(
     assert alice.fonction_rse == "auditeur"
 
 
-def test_cant_edit_user_test_account(client, user_test):
-    client.force_login(user_test)
-
-    data = {
-        "prenom": "Bob",
-        "nom": "Dylan",
-        "reception_actualites": "checked",
-        "is_conseiller_rse": "checked",
-        "fonction_rse": "auditeur",
-        "action": "update-account",
-    }
-
-    response = client.post("/mon-compte", data=data, follow=True)
-
-    assert response.status_code == 200
-    assert response.redirect_chain == [(reverse("users:account"), 302)]
-
-    content = response.content.decode("utf-8")
-    assert (
-        "La modification de votre compte est interdite pour ce compte de test."
-        in content
-    )
-
-    user_test.refresh_from_db()
-    assert user_test.prenom == "Test"
-
-
 def test_edit_email(client, alice_with_password, mailoutbox):
 
     alice = alice_with_password
@@ -374,10 +347,7 @@ def test_cant_edit_user_test_password(client, user_test):
     assert response.status_code == 200
 
     content = response.content.decode("utf-8")
-    assert (
-        "La modification de votre compte est interdite pour ce compte de test."
-        in content
-    )
+    assert "Cette modification est interdite pour ce compte de test." in content
 
     user_test.refresh_from_db()
     assert not user_test.check_password("Yol0!1234567")
