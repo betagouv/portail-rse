@@ -53,7 +53,7 @@ def schema_existe(schema_id):
 
     Dans ce cas, les données enregistrées ne correspondent plus à rien."""
     for exigence in EXIGENCES_DE_PUBLICATION.values():
-        if schema_id in exigence.indicateurs():
+        if schema_id in exigence.schema_ids():
             return True
     return False
 
@@ -102,7 +102,7 @@ class ExigenceDePublication:
         code = indicateur_schema_id.split("-")[0]
         return cls.par_code(code)
 
-    def indicateurs(self):
+    def schema_ids(self):
         return self.load_json_schema().keys()
 
 
@@ -273,7 +273,7 @@ class RapportVSME(TimestampedModel):
     def indicateurs_applicables(self):
         indicateurs_applicables = []
         for exigence_de_publication in self.exigences_de_publication_applicables():
-            for indicateur_schema_id in exigence_de_publication.indicateurs():
+            for indicateur_schema_id in exigence_de_publication.schema_ids():
                 if self.indicateur_est_applicable(indicateur_schema_id)[0]:
                     indicateurs_applicables.append(indicateur_schema_id)
         return indicateurs_applicables
@@ -426,7 +426,7 @@ class RapportVSME(TimestampedModel):
         return self.indicateurs.values_list("schema_id", flat=True)
 
     def progression_par_exigence(self, exigence_de_publication):
-        indicateurs_exigences = set(exigence_de_publication.indicateurs())
+        indicateurs_exigences = set(exigence_de_publication.schema_ids())
         indicateurs_applicables = indicateurs_exigences.intersection(
             set(self.indicateurs_applicables)
         )
