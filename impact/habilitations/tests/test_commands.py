@@ -80,3 +80,16 @@ def test_nettoie_entreprise_test_ne_laisse_que_l_entreprise_test_sur_le_compte_u
     user_test.refresh_from_db()
     assert Habilitation.existe(entreprise_test, user_test)
     assert not Habilitation.existe(autre_entreprise, user_test)
+
+
+def test_nettoie_utilisateur_test_force_non_conseiller_rse(
+    user_test, entreprise_factory
+):
+    entreprise_test = entreprise_factory(siren=settings.SIREN_ENTREPRISE_TEST)
+    user_test.is_conseiller_rse = True
+    user_test.save()
+
+    call_command("nettoie_utilisateur_et_entreprise_test")
+
+    user_test.refresh_from_db()
+    assert not user_test.is_conseiller_rse
