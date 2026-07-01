@@ -260,11 +260,11 @@ INVITATION_MAX_AGE = int(
 # Entreprise test
 # On permet l'utilisation d'une entreprise fictive de test créée manuellement en base
 # pour des utilisateurs potentiels qui n'ont pas d'entreprise mais qui souhaitent tester le portail
-# et s'inscrire avec cette entreprise test, comme les étudiants par exemple
 SIREN_ENTREPRISE_TEST = "000000001"
-
 # Délai avant suppression de l'habilitation sur l'entreprise test
 MAX_JOURS_HABILITATION = 30
+# Compte utilisateur test pour les utilisateurs qui n'ont même pas d'accès proconnect comme les étudiants par exemple.
+USER_TEST_EMAIL = os.getenv("USER_TEST_EMAIL")
 
 # Sentry
 SENTRY_DSN = os.getenv("SENTRY_DSN")

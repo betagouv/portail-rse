@@ -171,6 +171,12 @@ def account(request):
     password_form = UserPasswordForm(instance=request.user)
     if request.POST:
         if request.POST["action"] == "update-password":
+            if request.user.email == settings.USER_TEST_EMAIL:
+                messages.error(
+                    request,
+                    "Cette modification est interdite pour ce compte de test.",
+                )
+                return redirect("users:account")
             password_form = UserPasswordForm(request.POST, instance=request.user)
             if password_form.is_valid():
                 password_form.save()

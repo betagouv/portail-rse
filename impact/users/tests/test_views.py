@@ -228,6 +228,7 @@ def test_edit_account_info_when_user_authenticated_by_proconnect(
 
 
 def test_edit_email(client, alice_with_password, mailoutbox):
+
     alice = alice_with_password
     client.force_login(alice)
 
@@ -331,6 +332,25 @@ def test_edit_password(client, alice):
 
     alice.refresh_from_db()
     assert alice.check_password("Yol0!1234567")
+
+
+def test_cant_edit_user_test_password(client, user_test):
+    client.force_login(user_test)
+
+    data = {
+        "password1": "Yol0!1234567",
+        "password2": "Yol0!1234567",
+        "action": "update-password",
+    }
+
+    response = client.post("/mon-compte", data=data, follow=True)
+    assert response.status_code == 200
+
+    content = response.content.decode("utf-8")
+    assert "Cette modification est interdite pour ce compte de test." in content
+
+    user_test.refresh_from_db()
+    assert not user_test.check_password("Yol0!1234567")
 
 
 def test_edit_different_password(client, alice_with_password):
