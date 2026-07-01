@@ -12,7 +12,7 @@ from vsme.models import EXIGENCES_DE_PUBLICATION
 def export_exigence_de_publication(
     exigence_de_publication, workbook, indicateurs_par_schema_id
 ):
-    schema_ids = exigence_de_publication.indicateurs()
+    schema_ids = exigence_de_publication.indicateur_schema_ids()
     for indicateur_schema_id in schema_ids:
         try:
             indicateur = indicateurs_par_schema_id[indicateur_schema_id]

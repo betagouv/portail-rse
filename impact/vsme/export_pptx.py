@@ -108,7 +108,7 @@ def selectionne_diapos_non_applicables(rapport_vsme):
     tous_les_indicateur_schema_ids = [
         schema_id
         for exigence in EXIGENCES_DE_PUBLICATION.values()
-        for schema_id in exigence.indicateurs()
+        for schema_id in exigence.indicateur_schema_ids()
     ]
 
     for indicateur_schema_id in tous_les_indicateur_schema_ids:
