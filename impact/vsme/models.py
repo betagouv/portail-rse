@@ -48,6 +48,16 @@ def validate_annee_rapport(value):
         )
 
 
+def schema_existe(schema_id):
+    """Un schéma peut disparaitre.
+
+    Dans ce cas, les données enregistrées ne correspondent plus à rien."""
+    for exigence in EXIGENCES_DE_PUBLICATION.values():
+        if schema_id in exigence.indicateurs():
+            return True
+    return False
+
+
 class Categorie(Enum):
     GENERAL = {"id": "informations-generales", "label": "Informations générales"}
     ENVIRONNEMENT = {"id": "environnement", "label": "Environnement"}
