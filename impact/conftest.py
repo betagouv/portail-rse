@@ -98,6 +98,7 @@ def user_test(django_user_model, settings):
         email="test@test.test",
         reception_actualites=False,
         is_email_confirmed=True,
+        is_conseiller_rse=False,
     )
     return user_test
 
