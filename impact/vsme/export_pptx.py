@@ -15,10 +15,15 @@ from vsme.export_xlsx import formate_valeur as formate_valeur_xlsx
 from vsme.forms import THEMATIQUES_DURABILITE
 from vsme.models import ExigenceDePublication
 from vsme.models import EXIGENCES_DE_PUBLICATION
+from vsme.models import schema_existe
 
 
 def export_rapport_vsme(rapport_vsme, presentation):
-    indicateurs = rapport_vsme.indicateurs.all()
+    indicateurs = [
+        indicateur
+        for indicateur in rapport_vsme.indicateurs.all()
+        if schema_existe(indicateur.schema_id)
+    ]
     export_couverture(rapport_vsme, presentation)
     export_sommaire(rapport_vsme, presentation)
     export_indicateurs(indicateurs, presentation)

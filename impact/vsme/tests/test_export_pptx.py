@@ -10,6 +10,7 @@ from pptx.util import Pt
 
 from utils.pptx import find_slide
 from vsme.export_pptx import export_indicateurs
+from vsme.export_pptx import export_rapport_vsme
 from vsme.export_pptx import export_sommaire
 from vsme.export_pptx import find_shape
 from vsme.export_pptx import formate_valeur
@@ -58,6 +59,26 @@ def test_telechargement_d_un_rapport_vsme_au_format_pptx(
         response["content-type"]
         == "application/vnd.openxmlformats-officedocument.presentationml.presentation"
     )
+
+
+def test_telechargement_d_un_rapport_vsme_au_format_pptx_fonctionne_avec_anciens_indicateurs_en_base(
+    entreprise_factory, alice
+):
+    """certains indicateurs ont disparu et ne doive pas empècher l'export du pptx"""
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
+    indicateur = Indicateur(
+        rapport_vsme=rapport_vsme,
+        schema_id="B99-99",  # ce module n'existe pas dans les schémaa JSON
+        data={"ancienne_donnee": "ne sert plus"},
+    )
+    indicateur.save()
+    chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
+    presentation = Presentation(chemin_pptx)
+
+    export_rapport_vsme(rapport_vsme, presentation)
+
+    # réussite car ne lève pas d'exception KeyError
 
 
 @pytest.mark.parametrize(
