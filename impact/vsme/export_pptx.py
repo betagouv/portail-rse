@@ -356,7 +356,6 @@ def _export_tableau_lignes_fixes(champ, data, shape):
                     cell.text = formate_valeur(data_cellule, schema_colonne)
                     _applique_style_cellule(cell, data_cellule, schema_colonne)
         case "THEMATIQUES_DURABILITE" | list():
-            colonnes_ids = [colonne["id"] for colonne in colonnes]
             if lignes == "THEMATIQUES_DURABILITE":
                 lignes_ids = list(THEMATIQUES_DURABILITE.keys())
             else:
@@ -368,14 +367,13 @@ def _export_tableau_lignes_fixes(champ, data, shape):
                 offset_ligne_car_titre_colonnes = 1
             for id_ligne, data_ligne in data.items():
                 offset_ligne = lignes_ids.index(id_ligne)
-                for id_colonne, data_cellule in data_ligne.items():
-                    offset_colonne = colonnes_ids.index(id_colonne)
-                    champ = colonnes[offset_colonne]
+                for offset_colonne, schema_colonne in enumerate(colonnes):
+                    data_cellule = data_ligne.get(schema_colonne["id"])
                     index_ligne = offset_ligne + offset_ligne_car_titre_colonnes
                     index_colonne = offset_colonne + 1
                     cell = shape.table.cell(index_ligne, index_colonne)
-                    cell.text = formate_valeur(data_cellule, champ)
-                    _applique_style_cellule(cell, data_cellule, champ)
+                    cell.text = formate_valeur(data_cellule, schema_colonne)
+                    _applique_style_cellule(cell, data_cellule, schema_colonne)
 
 
 def _applique_style_cellule(cell, data_cellule, champ):
