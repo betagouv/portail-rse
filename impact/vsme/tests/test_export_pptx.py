@@ -767,7 +767,7 @@ def test_selectionne_diapos_modules_complets(
     if diapos_modules_complets_vides:
         assert diapos == set()
     else:
-        # diapos C1 (diapo simple) et C2 (multidiapos)
+        # diapos C1 (diapo simple), C2 (multidiapos) et C5 non applicable
         assert {
             "C1-produits",
             "C1-relations-affaires",
@@ -776,6 +776,7 @@ def test_selectionne_diapos_modules_complets(
             "C2-pratiques-3",
             "C2-pratiques-4",
             "C2-pratiques-5",
+            "C5-effectifs-non-applicable",
         }.issubset(diapos)
 
 
