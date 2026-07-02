@@ -103,6 +103,7 @@
                         "label": "Réduction en pourcentage par rapport à l'année de référence",
                         "description": "Calculé automatiquement",
                         "type": "nombre_decimal",
+                        "unité": "%",
                         "calculé": true
                     }
                 ],
@@ -111,7 +112,13 @@
                         "id": "total_scopes_1_2_localisation",
                         "label": "Total scopes 1 et 2 (basé sur la localisation)"
                     }
-                ]
+                ],
+                "export_pptx": {
+                    "diapo": "C3-reduction-scope1et2",
+                    "shape": "Table 3",
+                    "sans_titre_colonne": true,
+                    "diapo_non_pertinent": "C3-reduction-scope1et2-non-pertinent"
+                }
             }
         ],
         "si_pertinent": "L'entreprise n'a pas fixé des cibles de réduction des émissions de GES",
@@ -262,6 +269,7 @@
                         "label": "Réduction en pourcentage par rapport à l'année de référence",
                         "description": "Calculé automatiquement",
                         "type": "nombre_decimal",
+                        "unité": "%",
                         "calculé": true
                     }
                 ],
@@ -274,7 +282,12 @@
                         "id": "total_scopes_1_2_3",
                         "label": "Total des scopes 1, 2 (basé sur la localisation) et 3"
                     }
-                ]
+                ],
+                "export_pptx": {
+                    "diapo": "C3-reduction-scope3-2",
+                    "shape": "Table 6",
+                    "diapo_non_pertinent": "C3-reduction-scope3-non-applicable"
+                }
             }
         ],
         "si_pertinent": "L'entreprise n'a pas fixé des cibles de réduction des émissions de GES pour le scope 3",

@@ -418,6 +418,37 @@ def test_export_pptx_d_un_champ_tableau_à_lignes_fixes_avec_données_vides(
             assert tableau.cell(3, 1).text == "0"
 
 
+def test_export_pptx_d_un_champ_tableau_à_lignes_fixes_sans_titre_colonne(
+    entreprise_factory, alice
+):
+    """le tableau du cumul des cibles (C3-54-p1) n'a pas de ligne de titre,
+    la donnée doit donc remplir directement la première ligne du tableau"""
+    entreprise = entreprise_factory(utilisateur=alice)
+    rapport_vsme = RapportVSME.objects.create(entreprise=entreprise, annee=2026)
+    indicateur = Indicateur(
+        rapport_vsme=rapport_vsme,
+        schema_id="C3-54-p1",
+        data={
+            "cibles_reduction_emissions_GES_scopes_1_2": {
+                "scope_1": {"valeur_reference": 600, "valeur_cible": 200},
+                "scope_2_localisation": {"valeur_reference": 400, "valeur_cible": 200},
+            }
+        },
+    )
+    chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
+    presentation = Presentation(chemin_pptx)
+
+    export_indicateurs([indicateur], presentation)
+
+    shapes = find_slide(presentation, "C3-reduction-scope1et2").shapes
+    for shape in shapes:
+        if shape.name == "Table 3":
+            tableau = shape.table
+            assert tableau.cell(0, 1).text == "1000"
+            assert tableau.cell(0, 2).text == "400"
+            assert tableau.cell(0, 3).text == "-60.0 %"
+
+
 def test_export_pptx_d_un_champ_tableau_à_lignes_fixes_sur_plusieurs_diapos(
     entreprise_factory, alice
 ):

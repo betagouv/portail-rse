@@ -362,12 +362,16 @@ def _export_tableau_lignes_fixes(champ, data, shape):
             else:
                 lignes_ids = [ligne["id"] for ligne in lignes]
 
+            if champ["export_pptx"].get("sans_titre_colonne"):
+                offset_ligne_car_titre_colonnes = 0
+            else:
+                offset_ligne_car_titre_colonnes = 1
             for id_ligne, data_ligne in data.items():
                 offset_ligne = lignes_ids.index(id_ligne)
                 for id_colonne, data_cellule in data_ligne.items():
                     offset_colonne = colonnes_ids.index(id_colonne)
                     champ = colonnes[offset_colonne]
-                    index_ligne = offset_ligne + 1
+                    index_ligne = offset_ligne + offset_ligne_car_titre_colonnes
                     index_colonne = offset_colonne + 1
                     cell = shape.table.cell(index_ligne, index_colonne)
                     cell.text = formate_valeur(data_cellule, champ)
