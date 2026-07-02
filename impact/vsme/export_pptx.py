@@ -160,12 +160,13 @@ def selectionne_diapos_modules_complets(rapport_vsme):
                 export_pptx = champ.get("export_pptx")
                 if not export_pptx:
                     continue
-                if "diapo" in export_pptx:
-                    diapos_a_supprimer.add(export_pptx["diapo"])
-                if "diapo_non_pertinent" in export_pptx:
-                    diapos_a_supprimer.add(export_pptx["diapo_non_pertinent"])
-                if "diapo_non_applicable" in export_pptx:
-                    diapos_a_supprimer.add(export_pptx["diapo_non_applicable"])
+                for type_diapo in (
+                    "diapo",
+                    "diapo_non_pertinent",
+                    "diapo_non_applicable",
+                ):
+                    if type_diapo in export_pptx:
+                        diapos_a_supprimer.add(export_pptx[type_diapo])
                 for multidiapo in export_pptx.get("multidiapos", []):
                     diapos_a_supprimer.add(multidiapo["diapo"])
     return diapos_a_supprimer
