@@ -6,7 +6,7 @@ run:
 
 web:
 # utile pour débugger en ajoutant des breakpoint() dans le code et permettre leur exécution dans le terminal sans interception des commandes par honcho
-	PYTHONUNBUFFERED=true python impact/manage.py runserver
+	PYTHONUNBUFFERED=true uv run python impact/manage.py runserver
 
 install:
 	uv sync --group dev
