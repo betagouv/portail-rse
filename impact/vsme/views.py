@@ -65,7 +65,6 @@ def etape_vsme(request, entreprise, etape):
         "etapes": ETAPES,
     }
 
-    # note : exemple de log en base
     event_logger.info(
         "view:vsme",
         {"etape": etape, "siren": entreprise.siren, "idUtilisateur": request.user.pk},
@@ -409,6 +408,11 @@ def preremplit_indicateur(indicateur_schema_id, rapport_vsme):
 @login_required
 @rapport_vsme_requis
 def export_vsme_xlsx(request, rapport_vsme):
+    event_logger.info(
+        "view:export_vsme_xlsx",
+        {"rapportVsme": rapport_vsme.id, "idUtilisateur": request.user.pk},
+    )
+
     indicateurs_par_schema_id = {}
     for indicateur in rapport_vsme.indicateurs.all():
         if rapport_vsme.indicateur_est_applicable(indicateur.schema_id)[0]:
@@ -456,6 +460,11 @@ def export_vsme_xlsx(request, rapport_vsme):
 @login_required
 @rapport_vsme_requis
 def export_vsme_pptx(request, rapport_vsme):
+    event_logger.info(
+        "view:export_vsme_pptx",
+        {"rapportVsme": rapport_vsme.id, "idUtilisateur": request.user.pk},
+    )
+
     chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
     presentation = Presentation(chemin_pptx)
     export_rapport_vsme(rapport_vsme, presentation)
