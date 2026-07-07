@@ -46,17 +46,53 @@
                         </div>
                     </div>
                     <div class="fr-col-8 flexbox-right">
-                        <a class="fr-btn fr-btn--icon-left fr-icon-download-line"
-                           {% if rapport_vsme.progression.pourcent == 100 %}
-                               href="{% url 'vsme:export_vsme_pptx' rapport_vsme.id %}"
-                               title="Téléchargez le rapport de durabilité au format .pptx"
-                           {% else %}
-                               title="Remplissez l'ensemble des indicateurs pour télécharger la présentation .pptx"
-                           {% endif %}
-                        >Export rapport de durabilité</a>
-                        <a class="fr-btn fr-btn--icon-left fr-icon-download-line"
-                           href="{% url 'vsme:export_vsme_xlsx' rapport_vsme.id %}"
-                           title="Téléchargez les données au format .xlsx">Export tableur</a>
+                        <button data-fr-opened="false" aria-controls="modal" type="button" class="fr-btn">Exporter les données VSME</button>
+
+                        <dialog id="modal" class="fr-modal" aria-labelledby="modal-title" aria-modal="true">
+                            <div class="fr-container fr-container--fluid fr-container-md">
+                                <div class="fr-grid-row fr-grid-row--center">
+                                    <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
+                                        <div class="fr-modal__body">
+                                            <div class="fr-modal__header">
+                                                <button aria-controls="modal" title="Fermer" type="button" class="fr-btn--close fr-btn">Fermer</button>
+                                            </div>
+                                            <div class="fr-modal__content">
+                                                <h2 id="modal-title" class="fr-modal__title">
+                                                    Exporter les données VSME {{ rapport_vsme.annee }}
+                                                </h2>
+                                                <p>
+                                                    {% if rapport_vsme.progression.pourcent == 100 %}
+                                                        Rapport de durabilité au format .pptx :
+                                                        <br>
+                                                        <a class="fr-btn fr-btn--icon-left fr-icon-download-line"
+                                                           href="{% url 'vsme:export_vsme_pptx' rapport_vsme.id %}"
+                                                           title="Téléchargez le rapport de durabilité au format .pptx"
+                                                        >Export rapport de durabilité</a>
+                                                    {% else %}
+                                                        Le rapport de durabilité au format .pptx sera disponible lorsque l'ensemble des indicateurs (Général, Environnement, Social et Gouvernance) seront remplis.
+                                                        <br>
+                                                        Un rapport d'exemple est disponible pour avoir un aperçu du fichier final :
+                                                        <br>
+                                                        <a class="fr-btn fr-btn--icon-left fr-icon-download-line"
+                                                           href="XXX"
+                                                           title="Téléchargez l'exemple de rapport de durabilité au format .pptx"
+                                                        >Exemple de rapport de durabilité</a>
+                                                    {% endif %}
+                                                    <br>
+                                                    <br>
+                                                    Rapport de durabilité au format .xlsx :
+                                                    <br>
+                                                    <a class="fr-btn fr-btn--icon-left fr-icon-download-line"
+                                                       href="{% url 'vsme:export_vsme_xlsx' rapport_vsme.id %}"
+                                                       title="Téléchargez les données au format .xlsx">Export tableur</a>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </dialog>
+
                     </div>
                 </div>
 
