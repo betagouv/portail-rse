@@ -30,7 +30,6 @@ class UserAdmin(BaseUserAdmin):
     readonly_fields = ("last_login",)
     list_display = ("id", "email", "is_staff", "uidb64")
     list_filter = ("is_staff",)
-    search_fields = ["id"]
     fieldsets = (
         (
             None,
