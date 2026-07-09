@@ -240,7 +240,8 @@
                             "shape": "Table 9"
                         }
                     ],
-                    "diapo_non_pertinent": "C3-reduction-scope3-non-applicable"
+                    "diapo_non_pertinent": "C3-reduction-scope3-non-pertinent",
+                    "diapo_non_applicable": "C3-reduction-scope3-non-applicable"
                 }
             },
             {
@@ -286,7 +287,8 @@
                 "export_pptx": {
                     "diapo": "C3-reduction-scope3-2",
                     "shape": "Table 6",
-                    "diapo_non_pertinent": "C3-reduction-scope3-non-applicable"
+                    "diapo_non_pertinent": "C3-reduction-scope3-non-pertinent",
+                    "diapo_non_applicable": "C3-reduction-scope3-non-applicable"
                 }
             }
         ],
