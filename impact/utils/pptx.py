@@ -52,6 +52,7 @@ NOMS_DIAPO = [
     "C3-reduction-scope1et2-non-pertinent",
     "C3-reduction-scope3-1",
     "C3-reduction-scope3-2",
+    "C3-reduction-scope3-non-pertinent",
     "C3-reduction-scope3-non-applicable",
     "C3-plan-transition-non-pertinent",
     "C3-plan-transition",
