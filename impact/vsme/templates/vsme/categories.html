@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% load progression_vsme %}
 
@@ -74,7 +75,7 @@
                                                         Un rapport d'exemple est disponible pour avoir un aperçu du fichier final :
                                                         <br>
                                                         <a class="fr-btn fr-btn--icon-left fr-icon-download-line"
-                                                           href="XXX"
+                                                           href="{% static 'VSME/exemple_rapport_vsme.pptx' %}"
                                                            title="Téléchargez l'exemple de rapport de durabilité au format .pptx"
                                                         >Exemple de rapport de durabilité</a>
                                                     {% endif %}
