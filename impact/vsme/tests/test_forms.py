@@ -116,6 +116,25 @@ def indicateur_champs_et_tableau():
 
 
 @pytest.fixture
+def indicateur_si_pertinent_avec_champ_calcule():
+    return {
+        "schema_id": "TEST-CALC",
+        "titre": "Test champ calculé",
+        "description": "Description test",
+        "champs": [
+            CHAMP_NOM,
+            {
+                "id": "pourcentage",
+                "label": "Pourcentage",
+                "type": "nombre_decimal",
+                "calculé": True,
+            },
+        ],
+        "si_pertinent": True,
+    }
+
+
+@pytest.fixture
 def indicateur_avec_tableau_lignes_fixes():
     return {
         "schema_id": "TEST-5",
@@ -356,6 +375,26 @@ def test_multiform_si_pertinent_validation_avec_non_pertinent(
     assert multiform.cleaned_data["non_pertinent"] is True
     assert not multiform.cleaned_data["nom"]
     assert not multiform.cleaned_data["age"]
+
+
+def test_multiform_non_pertinent_champ_calculé_ne_provoque_pas_erreur_validation(
+    indicateur_si_pertinent_avec_champ_calcule, rapport_vsme
+):
+    # Reproduit en particulier le scénario suivant :
+    # Des données ont été enregistrées. Quand le champ est calculé, il est remplit avec une valeur non numérique qui ne correspond pas au type de champ (ici texte "n/a"), et cette valeur est passée en valeur initiale au formulaire.
+    # Lorsque l'utilisateur coche la case non pertinent tous les champs sont désactivés, y compris le champ calculé, et Django valide alors sa valeur initiale qui ne doit pas provoquer d'erreur.
+    # Un champ calculé ne doit jamais provoquer d'erreur de validation.
+
+    multiform_class = create_multiform_from_schema(
+        indicateur_si_pertinent_avec_champ_calcule, rapport_vsme
+    )
+    initial = {"pourcentage": "n/a"}
+    data = {"non_pertinent": True}
+    multiform = multiform_class(data, initial=initial)
+
+    assert multiform.is_valid()
+    assert multiform.cleaned_data["non_pertinent"] is True
+    assert multiform.cleaned_data["pourcentage"] is None
 
 
 def test_multiform_si_pertinent_label_personnalisé(
