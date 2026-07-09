@@ -264,6 +264,8 @@ def create_simple_field_from_schema(field_schema, rapport_vsme):
         field.trigger_computed_fields = computed_fields
     if field_schema.get("calculé", False):
         field.is_computed = True
+        # Un champ calculé n'est jamais saisi par l'utilisateur, jamais stocké en base et ne doit pas provoquer d'erreur de validation
+        field.clean = lambda x: None
     if "défaut" in field_schema:
         field.initial = field_schema["défaut"]
     return field
