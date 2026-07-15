@@ -446,7 +446,7 @@ def test_export_pptx_d_un_champ_tableau_à_lignes_fixes_sans_titre_colonne(
             tableau = shape.table
             assert tableau.cell(0, 1).text == "1000"
             assert tableau.cell(0, 2).text == "400"
-            assert tableau.cell(0, 3).text == "-60.0 %"
+            assert tableau.cell(0, 3).text == "-60.0%"
 
 
 def test_export_pptx_d_un_champ_tableau_à_lignes_fixes_sur_plusieurs_diapos(
@@ -660,9 +660,9 @@ def test_selectionne_diapos_non_applicables_C5_non_applicable(
         (None, {"type": "nombre_decimal", "unité": "tonnes"}, "0 tonnes"),
         (1, {"type": "auto_id"}, "1"),
         (
-            "-50.0%",
+            "n/a",
             {"type": "nombre_decimal", "unité": "%", "calculé": True},
-            "-50.0 %",
+            "n/a",
         ),
         (None, {"type": "auto_id"}, "0"),
         (True, {"type": "choix_binaire"}, "OUI"),
