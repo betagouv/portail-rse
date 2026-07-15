@@ -270,8 +270,9 @@ def _export_choix_multiple(champ, data, shape):
 def formate_valeur(valeur, champ):
     match champ["type"]:
         case "nombre_entier" | "nombre_decimal" | "auto_id":
-            if isinstance(valeur, str) and valeur.endswith("%"):
-                valeur = valeur[:-1]
+            if isinstance(valeur, str):
+                # certains champs calculés peuvent renvoyer des str dans certaines circonstances, notamment la chaîne "n/a"
+                return valeur
             if "unité" in champ:
                 unite = champ["unité"]
                 valeur_formatee = f"{valeur} {unite}" if valeur else f"0 {unite}"

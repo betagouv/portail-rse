@@ -50,8 +50,7 @@
                         "id": "pourcentage_reduction",
                         "label": "Réduction en pourcentage par rapport à l'année de référence",
                         "description": "Calculé automatiquement",
-                        "type": "nombre_decimal",
-                        "unité": "%",
+                        "type": "texte",
                         "calculé": true
                     },
                     {
