@@ -1,3 +1,4 @@
+import sentry_sdk
 from django.conf import settings
 from django.contrib import messages
 from django.core.exceptions import SuspiciousOperation
@@ -80,13 +81,11 @@ def proconnect_dispatch_view(request):
         except APIError as ex:
             logger.error(f"Impossible de contacter l'API entreprise : {ex}")
             return HttpResponseBadRequest(
-                f"Impossible de contacter l'API entreprise, veuillez-vous déconnecter et rééssayer ultérieurement ({ex})"
+                f"Impossible de contacter l'API entreprise, veuillez-vous déconnecter et rééssayer ultérieurement."
             )
         except Exception as ex:
-            msg = (
-                f"Erreur lors de la creation de l'entreprise SIREN: {oidc_siren} : {ex}"
-            )
-            logger.error(msg)
+            msg = f"Erreur lors de la création de l'entreprise SIREN: {oidc_siren}"
+            sentry_sdk.capture_exception(ex)
             return HttpResponseServerError(msg)
 
     # l'entreprise existe en base.
