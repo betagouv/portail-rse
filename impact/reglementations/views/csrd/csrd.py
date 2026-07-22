@@ -569,7 +569,7 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
     # la suppression de la notion de propriétaire implique une gestion des droits
     # par ex. un lecteur ne pourra pas créer de rapport CSRD
     if not request.session.get("rapport_csrd_courant"):
-        # un lecteur ou un éditeur ne peuvent pas créer de rapport CSRD
+        # un lecteur ou un contributeur ne peuvent pas créer de rapport CSRD
         if role == UserRole.PROPRIETAIRE:
             # les prefetch de l'enjeu parent évitent des N+1 au niveau du template
             csrd, _ = RapportCSRD.objects.prefetch_related(

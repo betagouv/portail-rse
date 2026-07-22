@@ -33,8 +33,8 @@ def test_tableau_de_bord_conseiller_affiche_entreprises_en_gestion(
     entreprise1 = entreprise_factory(siren="123456789")
     entreprise2 = entreprise_factory(siren="987654321")
 
-    Habilitation.ajouter(entreprise1, conseiller_rse, UserRole.EDITEUR)
-    Habilitation.ajouter(entreprise2, conseiller_rse, UserRole.EDITEUR)
+    Habilitation.ajouter(entreprise1, conseiller_rse, UserRole.CONTRIBUTEUR)
+    Habilitation.ajouter(entreprise2, conseiller_rse, UserRole.CONTRIBUTEUR)
 
     client.force_login(conseiller_rse)
     response = client.get(reverse("users:tableau_de_bord_conseiller"))
@@ -125,7 +125,7 @@ def test_rattachement_deja_existant(client, conseiller_rse, alice, entreprise_fa
     """Un conseiller ne peut pas se rattacher deux fois à la même entreprise."""
     entreprise = entreprise_factory(siren="123456789")
     Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE)
-    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.EDITEUR)
+    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.CONTRIBUTEUR)
 
     client.force_login(conseiller_rse)
     response = client.post(
@@ -147,7 +147,7 @@ def test_lien_espace_conseiller_visible_pour_conseiller(
     entreprise = entreprise_factory(siren="123456789")
     Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE)
     # Le conseiller doit aussi être rattaché à l'entreprise pour accéder au tableau de bord
-    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.EDITEUR)
+    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.CONTRIBUTEUR)
 
     client.force_login(conseiller_rse)
     response = client.get(
