@@ -68,7 +68,7 @@ def invitation(request, siren):
         )
 
 
-def contributeurs_context(request, entreprise):
+def utilisateurs_context(request, entreprise):
     invitation_form = request.session.pop("invitation_form", None)
     context = {
         "form": (

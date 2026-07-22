@@ -125,7 +125,7 @@ def test_tableau_de_bord_resume(est_soumis, client, entreprise_factory, alice, m
 
     assert response.status_code == 200
     assertTemplateUsed(response, "reglementations/tableau_de_bord/resume.html")
-    assertTemplateUsed(response, "snippets/contributeurs.html")
+    assertTemplateUsed(response, "snippets/utilisateurs.html")
     context = response.context
     assert context["entreprise"] == entreprise
     if est_soumis:
