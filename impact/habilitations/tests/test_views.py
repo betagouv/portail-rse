@@ -48,7 +48,7 @@ def test_succès_invitation_a_devenir_membre(
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
     EMAIL_INVITE = "bob@bob.test"
-    data = {"email": EMAIL_INVITE, "role": UserRole.EDITEUR}
+    data = {"email": EMAIL_INVITE, "role": UserRole.CONTRIBUTEUR}
     url = f"/invitation/{entreprise.siren}"
     redirect_url = reverse("reglementations:tableau_de_bord", args=[entreprise.siren])
 
@@ -60,7 +60,7 @@ def test_succès_invitation_a_devenir_membre(
     invitations = Invitation.objects.filter(entreprise=entreprise, email=EMAIL_INVITE)
     assert len(invitations) == 1
     invitation = invitations[0]
-    assert invitation.role == "editeur"
+    assert invitation.role == UserRole.CONTRIBUTEUR
     assert invitation.inviteur == alice
     assert response.redirect_chain == [(redirect_url, 302)]
     content = html.unescape(response.content.decode("utf-8"))
@@ -108,7 +108,7 @@ def test_erreur_invitation_a_devenir_membre_car_deja_membre(
     client.force_login(alice)
     client.get(reverse("reglementations:tableau_de_bord", args=[entreprise.siren]))
 
-    data = {"email": bob.email, "role": UserRole.EDITEUR}
+    data = {"email": bob.email, "role": UserRole.CONTRIBUTEUR}
     url = f"/invitation/{entreprise.siren}"
 
     response = client.post(url, data=data, follow=True)
@@ -125,7 +125,7 @@ def test_acces_vues_actions(client, entreprise_factory, alice, bob):
     # les vues traitant les actions d'habilitation doivent être accessibles aux propriétaires uniquement
     entreprise = entreprise_factory()
     h1 = Habilitation.ajouter(entreprise, bob, role=UserRole.PROPRIETAIRE)
-    h2 = Habilitation.ajouter(entreprise, alice, role=UserRole.EDITEUR)
+    h2 = Habilitation.ajouter(entreprise, alice, role=UserRole.CONTRIBUTEUR)
 
     # La session doit être affectée à une variable pour être utilisable
     # https://docs.djangoproject.com/en/5.2/topics/testing/tools/#django.test.Client.session

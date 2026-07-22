@@ -101,7 +101,7 @@ def proconnect_dispatch_view(request):
         )
     elif Habilitation.objects.filter(entreprise=entreprise).count():
         # d'autres utilisateurs sont membres de l'entreprise
-        Habilitation.ajouter(entreprise, request.user, role=UserRole.EDITEUR)
+        Habilitation.ajouter(entreprise, request.user, role=UserRole.CONTRIBUTEUR)
         _envoie_email_aux_proprietaires_actuels(request, entreprise)
     else:
         Habilitation.ajouter(entreprise, request.user, role=UserRole.PROPRIETAIRE)

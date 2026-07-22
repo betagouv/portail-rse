@@ -277,7 +277,7 @@ def test_synchronise_une_entreprise_avec_un_utilisateur(
         is_conseiller_rse=True,
     )
     habilitation = Habilitation.ajouter(
-        entreprise, utilisateur, fonctions="Présidente", role=UserRole.EDITEUR
+        entreprise, utilisateur, fonctions="Présidente", role=UserRole.CONTRIBUTEUR
     )
 
     call_command("sync_metabase")

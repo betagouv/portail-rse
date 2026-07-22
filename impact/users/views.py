@@ -319,7 +319,7 @@ def tableau_de_bord_conseiller(request):
         )
         return redirect("entreprises:entreprises")
 
-    # Récupérer les entreprises en gestion (avec habilitation EDITEUR)
+    # Récupérer les entreprises en gestion
     habilitations = Habilitation.objects.filter(user=request.user).select_related(
         "entreprise"
     )

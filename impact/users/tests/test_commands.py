@@ -25,7 +25,7 @@ def test_import_des_contacts(
         siren="222222222", denomination="Coopérative"
     )
     Habilitation.ajouter(
-        entreprise_qualifiee, alice, fonctions="Présidente", role=UserRole.EDITEUR
+        entreprise_qualifiee, alice, fonctions="Présidente", role=UserRole.CONTRIBUTEUR
     )
     settings.BREVO_API_KEY = "BREVO_API_KEY"
     mocked_import_contacts = mocker.patch(

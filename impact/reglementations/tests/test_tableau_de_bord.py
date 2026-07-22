@@ -216,7 +216,7 @@ def test_tableau_de_bord_resume_n_affiche_pas_les_invitations_acceptées(
 
 
 @pytest.mark.parametrize(
-    "role,resultat", ((UserRole.PROPRIETAIRE, True), (UserRole.EDITEUR, False))
+    "role,resultat", ((UserRole.PROPRIETAIRE, True), (UserRole.CONTRIBUTEUR, False))
 )
 def test_visibilite_formulaire_invitation(
     client, bob, entreprise_factory, role, resultat
@@ -237,12 +237,12 @@ def test_visibilite_formulaire_invitation(
 
 
 @pytest.mark.parametrize(
-    "role,resultat", ((UserRole.PROPRIETAIRE, True), (UserRole.EDITEUR, False))
+    "role,resultat", ((UserRole.PROPRIETAIRE, True), (UserRole.CONTRIBUTEUR, False))
 )
 def test_visibilite_actions(client, bob, alice, entreprise_factory, role, resultat):
     entreprise = entreprise_factory()
     Habilitation.ajouter(entreprise, bob, role=role)
-    Habilitation.ajouter(entreprise, alice, role=UserRole.EDITEUR)
+    Habilitation.ajouter(entreprise, alice, role=UserRole.CONTRIBUTEUR)
     client.force_login(bob)
     url = RESUME_URL.format(siren=entreprise.siren)
 

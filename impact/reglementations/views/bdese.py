@@ -312,7 +312,7 @@ def bdese_step(request, siren, annee, step):
     role = Habilitation.role_pour(entreprise, request.user)
     classe_bdese = BDESEReglementation.classe_entreprise(entreprise)
 
-    # les lecteurs et éditeurs ne sont pas habilités à créer une BDESE
+    # les lecteurs et contributeurs ne sont pas habilités à créer une BDESE
     if role == UserRole.PROPRIETAIRE:
         bdese = get_or_create_bdese(entreprise, annee)
     else:

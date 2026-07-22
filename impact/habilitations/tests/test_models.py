@@ -27,7 +27,7 @@ def test_retirer_habilitation(alice, entreprise_factory):
     with pytest.raises(HabilitationError):
         Habilitation.retirer(entreprise, alice)
 
-    h.role = UserRole.EDITEUR
+    h.role = UserRole.CONTRIBUTEUR
     h.save()
     Habilitation.retirer(entreprise, alice)
 
@@ -37,7 +37,7 @@ def test_retirer_habilitation(alice, entreprise_factory):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "role", [UserRole.PROPRIETAIRE, UserRole.LECTEUR, UserRole.EDITEUR]
+    "role", [UserRole.PROPRIETAIRE, UserRole.LECTEUR, UserRole.CONTRIBUTEUR]
 )
 def test_ajouter_habilitation_avec_differents_roles(alice, entreprise_factory, role):
     entreprise = entreprise_factory()
@@ -65,7 +65,7 @@ def test_ajouter_habilitation_avec_invitation(alice, entreprise_factory):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("is_conseiller_rse", [True, False])
-@pytest.mark.parametrize("role", [UserRole.PROPRIETAIRE, UserRole.EDITEUR])
+@pytest.mark.parametrize("role", [UserRole.PROPRIETAIRE, UserRole.CONTRIBUTEUR])
 def test_etat_conseiller_rse_est_independant_des_droits(
     is_conseiller_rse, role, alice, entreprise_factory
 ):

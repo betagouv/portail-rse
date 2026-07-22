@@ -54,12 +54,12 @@ def test_utilisateur_non_membre_ne_peut_pas_inviter_un_tiers(
     assert not Invitation.objects.filter(entreprise=entreprise_cible).exists()
 
 
-def test_editeur_ne_peut_pas_inviter(client, alice, bob, entreprise_factory):
+def test_contributeur_ne_peut_pas_inviter(client, alice, bob, entreprise_factory):
     entreprise = entreprise_factory()
-    Habilitation.ajouter(entreprise, alice, role=UserRole.EDITEUR)
+    Habilitation.ajouter(entreprise, alice, role=UserRole.CONTRIBUTEUR)
     client.force_login(alice)
 
-    data = {"email": bob.email, "role": UserRole.EDITEUR}
+    data = {"email": bob.email, "role": UserRole.CONTRIBUTEUR}
     url = f"/invitation/{entreprise.siren}"
 
     response = client.post(url, data=data)
@@ -81,7 +81,7 @@ def test_proprietaire_peut_inviter(client, alice, bob, entreprise_factory, mailo
         reverse("reglementations:tableau_de_bord", kwargs={"siren": entreprise.siren})
     )
 
-    data = {"email": bob.email, "role": UserRole.EDITEUR}
+    data = {"email": bob.email, "role": UserRole.CONTRIBUTEUR}
     url = f"/invitation/{entreprise.siren}"
 
     response = client.post(url, data=data, follow=True)
@@ -214,7 +214,7 @@ def test_attaque_gerer_habilitation_autre_entreprise(
         is_email_confirmed=True,
     )
     habilitation_jane = Habilitation.ajouter(
-        entreprise_bob, jane, role=UserRole.EDITEUR
+        entreprise_bob, jane, role=UserRole.CONTRIBUTEUR
     )
 
     client.force_login(alice)
@@ -237,7 +237,7 @@ def test_attaque_gerer_habilitation_autre_entreprise(
         response.status_code == 403
     ), "Alice ne doit pas pouvoir modifier l'habilitation de Jane"
     assert (
-        habilitation_jane.role == UserRole.EDITEUR.value
+        habilitation_jane.role == UserRole.CONTRIBUTEUR.value
     ), "Le rôle de Jane ne doit pas changer"
 
     response = client.delete(f"/habilitation/{habilitation_jane.id}")

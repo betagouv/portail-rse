@@ -20,7 +20,7 @@ def futur_proprietaire(django_user_model):
 @pytest.fixture
 def invitation_proprietaire_tiers(entreprise_factory, conseiller_rse):
     entreprise = entreprise_factory(siren="123456789")
-    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.EDITEUR)
+    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.CONTRIBUTEUR)
 
     return Invitation.objects.create(
         entreprise=entreprise,

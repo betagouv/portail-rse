@@ -74,7 +74,7 @@ def test_proconnect_dispatch_view_ne_fait_que_rediriger_si_habilitation_et_entre
     assert response.redirect_chain[0] == ("/post-login-dispatch", 302)
 
 
-def test_proconnect_dispatch_view_crée_une_habilitation_editeur_si_proprietaire_déjà_présent(
+def test_proconnect_dispatch_view_crée_une_habilitation_contributeur_si_proprietaire_déjà_présent(
     client, entreprise_factory, alice_sur_proconnect, bob, carole, mailoutbox
 ):
     siren = "123456789"
@@ -93,7 +93,7 @@ def test_proconnect_dispatch_view_crée_une_habilitation_editeur_si_proprietaire
     response = client.get("/oidc/dispatch/", follow=True)
 
     habilitation = Habilitation.objects.pour(entreprise, alice_sur_proconnect)
-    assert habilitation.role == UserRole.EDITEUR
+    assert habilitation.role == UserRole.CONTRIBUTEUR
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
     assert mail.from_email == settings.DEFAULT_FROM_EMAIL
