@@ -831,7 +831,7 @@ def test_entreprise_avec_proprietaire_standard(alice, entreprise_factory):
 def test_entreprise_avec_uniquement_conseiller_rse(conseiller_rse, entreprise_factory):
     """Une entreprise avec uniquement un conseiller RSE n'a pas de propriétaire non conseiller."""
     entreprise = entreprise_factory()
-    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.EDITEUR)
+    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.CONTRIBUTEUR)
 
     assert not entreprise.a_proprietaire_non_conseiller
 
@@ -843,17 +843,17 @@ def test_entreprise_avec_conseiller_et_proprietaire_standard(
     """Une entreprise avec un conseiller RSE et un propriétaire standard a un propriétaire non conseiller."""
     entreprise = entreprise_factory()
     Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE)
-    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.EDITEUR)
+    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.CONTRIBUTEUR)
 
     assert entreprise.a_proprietaire_non_conseiller
 
 
 @pytest.mark.django_db
-def test_entreprise_avec_editeur_standard_na_pas_de_proprietaire_non_conseiller(
+def test_entreprise_avec_contributeur_standard_na_pas_de_proprietaire_non_conseiller(
     alice, entreprise_factory
 ):
-    """Une entreprise avec uniquement un éditeur standard n'a pas de propriétaire non conseiller."""
+    """Une entreprise avec uniquement un contributeur standard n'a pas de propriétaire non conseiller."""
     entreprise = entreprise_factory()
-    Habilitation.ajouter(entreprise, alice, UserRole.EDITEUR)
+    Habilitation.ajouter(entreprise, alice, UserRole.CONTRIBUTEUR)
 
     assert not entreprise.a_proprietaire_non_conseiller

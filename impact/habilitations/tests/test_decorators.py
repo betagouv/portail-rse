@@ -35,10 +35,10 @@ def test_role_proprietaire(mock_request):
     assert response.content == b"OK"
 
 
-# Test pour un utilisateur avec le rôle EDITEUR
-def test_role_editeur(mock_request):
-    mock_request.user.role = UserRole.EDITEUR
-    decorated_view = role(UserRole.EDITEUR)(example_view)
+# Test pour un utilisateur avec le rôle CONTRIBUTEUR
+def test_role_contributeur(mock_request):
+    mock_request.user.role = UserRole.CONTRIBUTEUR
+    decorated_view = role(UserRole.CONTRIBUTEUR)(example_view)
     response = decorated_view(mock_request)
     assert response.status_code == 200
     assert response.content == b"OK"
@@ -76,7 +76,7 @@ def test_role_forbidden(alice, entreprise_non_qualifiee):
 # Test pour un utilisateur avec un rôle supérieur
 def test_role_superieur(mock_request):
     mock_request.user.role = UserRole.PROPRIETAIRE
-    decorated_view = role(UserRole.EDITEUR)(example_view)
+    decorated_view = role(UserRole.CONTRIBUTEUR)(example_view)
     response = decorated_view(mock_request)
     assert response.status_code == 200
     assert response.content == b"OK"

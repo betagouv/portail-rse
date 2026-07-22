@@ -55,7 +55,7 @@ def test_accepter(alice, entreprise_factory, django_user_model):
         entreprise=entreprise,
         email="bob@domaine.test",
         inviteur=alice,
-        role=UserRole.EDITEUR,
+        role=UserRole.CONTRIBUTEUR,
     )
     date_acceptation = datetime(2025, 5, 9, 14, 30, tzinfo=timezone.utc)
     bob = django_user_model.objects.create(
@@ -73,4 +73,4 @@ def test_accepter(alice, entreprise_factory, django_user_model):
     habilitation = Habilitation.pour(entreprise, bob)
     assert habilitation.fonctions == "Testeur"
     assert habilitation.invitation == invitation
-    assert habilitation.role == UserRole.EDITEUR
+    assert habilitation.role == UserRole.CONTRIBUTEUR
