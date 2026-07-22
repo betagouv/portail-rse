@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 
 from .toutes_reglementations import REGLEMENTATIONS
 from entreprises.decorators import entreprise_requise
-from habilitations.views import contributeurs_context
+from habilitations.views import utilisateurs_context
 from logs import log_path
 from vsme.models import RapportVSME
 
@@ -59,7 +59,7 @@ def tableau_de_bord(request, entreprise):
         pourcentage_vsme = 0
 
     context = tableau_de_bord_menu_context(entreprise, page_resume=True)
-    context |= contributeurs_context(request, entreprise)
+    context |= utilisateurs_context(request, entreprise)
     context |= {
         "nombre_reglementations_applicables": nombre_reglementations_applicables,
         "nombre_analyses_ia": nombre_analyses_ia,
