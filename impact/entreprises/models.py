@@ -322,18 +322,6 @@ class Entreprise(TimestampedModel):
         return f"""{resultat["code"]} - {resultat["label"]}""" if resultat else None
 
     @property
-    def a_proprietaire_non_conseiller(self) -> bool:
-        """Vérifie si l'entreprise a au moins un propriétaire qui n'est pas conseiller RSE.
-
-        Une entreprise est considérée comme "active" si elle a au moins un propriétaire
-        qui n'est pas un conseiller RSE externe.
-        """
-        return self.habilitation_set.filter(
-            role="proprietaire",
-            is_conseiller_rse=False,
-        ).exists()
-
-    @property
     def proprietaires(self):
         return [
             habilitation.user

@@ -18,8 +18,6 @@ from entreprises.models import convertit_code_NAF
 from entreprises.models import convertit_code_pays
 from entreprises.models import Entreprise
 from entreprises.models import est_dans_EEE
-from habilitations.enums import UserRole
-from habilitations.models import Habilitation
 
 
 @pytest.mark.django_db(transaction=True)
@@ -803,57 +801,3 @@ def test_convertit_code_NAF():
 def test_convertit_code_NAF_sans_correspondance():
     assert convertit_code_NAF(None) is None
     assert convertit_code_NAF("yolo") is None
-
-
-# Tests pour la propriété a_proprietaire_non_conseiller
-
-
-@pytest.mark.django_db
-def test_entreprise_sans_habilitation_na_pas_de_proprietaire_non_conseiller(
-    entreprise_factory,
-):
-    """Une entreprise sans aucune habilitation n'a pas de propriétaire non conseiller."""
-    entreprise = entreprise_factory()
-
-    assert not entreprise.a_proprietaire_non_conseiller
-
-
-@pytest.mark.django_db
-def test_entreprise_avec_proprietaire_standard(alice, entreprise_factory):
-    """Une entreprise avec un propriétaire standard a un propriétaire non conseiller."""
-    entreprise = entreprise_factory()
-    Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE)
-
-    assert entreprise.a_proprietaire_non_conseiller
-
-
-@pytest.mark.django_db
-def test_entreprise_avec_uniquement_conseiller_rse(conseiller_rse, entreprise_factory):
-    """Une entreprise avec uniquement un conseiller RSE n'a pas de propriétaire non conseiller."""
-    entreprise = entreprise_factory()
-    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.CONTRIBUTEUR)
-
-    assert not entreprise.a_proprietaire_non_conseiller
-
-
-@pytest.mark.django_db
-def test_entreprise_avec_conseiller_et_proprietaire_standard(
-    alice, conseiller_rse, entreprise_factory
-):
-    """Une entreprise avec un conseiller RSE et un propriétaire standard a un propriétaire non conseiller."""
-    entreprise = entreprise_factory()
-    Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE)
-    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.CONTRIBUTEUR)
-
-    assert entreprise.a_proprietaire_non_conseiller
-
-
-@pytest.mark.django_db
-def test_entreprise_avec_contributeur_standard_na_pas_de_proprietaire_non_conseiller(
-    alice, entreprise_factory
-):
-    """Une entreprise avec uniquement un contributeur standard n'a pas de propriétaire non conseiller."""
-    entreprise = entreprise_factory()
-    Habilitation.ajouter(entreprise, alice, UserRole.CONTRIBUTEUR)
-
-    assert not entreprise.a_proprietaire_non_conseiller
