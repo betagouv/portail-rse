@@ -466,7 +466,7 @@ def test_invitation_utilisateur_connecté_redirige_vers_acceptation(
 
     assert response.status_code == 302
     assert response.url == reverse(
-        "users:accepter_role_proprietaire", args=[invitation.id, CODE]
+        "users:accepter_invitation", args=[invitation.id, CODE]
     )
 
 

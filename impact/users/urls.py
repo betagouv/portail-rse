@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from .forms import LoginForm
 from .forms import PasswordResetForm
 from .forms import SetPasswordForm
-from .views import accepter_role_proprietaire
+from .views import accepter_invitation
 from .views import account
 from .views import choix_type_utilisateur
 from .views import creation
@@ -76,9 +76,9 @@ urlpatterns = [
         name="tableau_de_bord_conseiller",
     ),
     path(
-        "accepter-proprietaire/<int:id_invitation>/<str:code>",
-        accepter_role_proprietaire,
-        name="accepter_role_proprietaire",
+        "accepter-invitation/<int:id_invitation>/<str:code>",
+        accepter_invitation,
+        name="accepter_invitation",
     ),
     # Route HTMX pour la modification de compte
     path(

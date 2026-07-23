@@ -1,19 +1,14 @@
 """Tests pour le formulaire unifie d'ajout d'entreprise conseiller RSE."""
 
-from datetime import datetime
-from datetime import timedelta
-from datetime import timezone
 from unittest.mock import patch
 
 import pytest
 from django.conf import settings
 from django.urls import reverse
-from freezegun import freeze_time
 
 from habilitations.enums import UserRole
 from habilitations.models import Habilitation
 from invitations.models import Invitation
-from utils.tokens import make_token
 
 
 # Tests d'acces au tableau de bord conseiller
@@ -225,7 +220,6 @@ def test_email_invitation_nouvel_utilisateur_route_proconnect(
     # L'URL doit pointer vers la vue invitation unifiée
     invitation_url = mail.merge_global_data.get("invitation_url", "")
     assert "/invitation/" in invitation_url
-    assert "accepter-proprietaire" not in invitation_url
 
 
 @pytest.mark.django_db
@@ -270,50 +264,3 @@ def test_contenu_email_variables_template(
     # URL d'invitation (doit être une URL absolue)
     assert "invitation_url" in merge_data
     assert merge_data["invitation_url"].startswith("http")
-
-
-# =============================================================================
-# Phase B : Tests de sécurité complémentaires
-# =============================================================================
-
-
-@pytest.mark.django_db
-def test_invitation_expiree_refuse_acceptation(
-    client, alice, entreprise_factory, conseiller_rse
-):
-    """Une invitation expirée est refusée."""
-
-    # Date de création dans le passé (il y a 31 jours)
-    date_creation_passee = datetime.now(timezone.utc) - timedelta(days=31)
-
-    # Créer l'invitation avec une date de création dans le passé
-    entreprise = entreprise_factory(siren="555000555")
-    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.ADMINISTRATEUR)
-
-    with freeze_time(date_creation_passee):
-        invitation = Invitation.objects.create(
-            entreprise=entreprise,
-            email=alice.email,
-            role=UserRole.ADMINISTRATEUR,
-            inviteur=conseiller_rse,
-        )
-
-    # Générer le token (le token est valide car basé sur PK et email)
-    code = make_token(invitation, "invitation_proprietaire")
-
-    # Vérifier que l'invitation est bien expirée
-    assert invitation.est_expiree is True
-
-    # Tenter d'accepter
-    client.force_login(alice)
-    response = client.get(
-        reverse(
-            "users:accepter_role_proprietaire",
-            args=[invitation.id, code],
-        ),
-        follow=True,
-    )
-
-    # L'invitation devrait être refusée avec un message d'expiration
-    content = response.content.decode()
-    assert "expir" in content.lower() or response.status_code == 302

@@ -115,11 +115,11 @@ def invitation(request, id_invitation, code):
             )
             return redirect(reverse("erreur_terminale"))
         # Rediriger vers acceptation directe
-        return redirect("users:accepter_role_proprietaire", id_invitation, code)
+        return redirect("users:accepter_invitation", id_invitation, code)
 
     # Rediriger vers ProConnect
     request.session["page_suivante"] = reverse(
-        "users:accepter_role_proprietaire", args=[id_invitation, code]
+        "users:accepter_invitation", args=[id_invitation, code]
     )
     request.session.save()
 
@@ -430,9 +430,8 @@ def preremplissage_formulaire_compte(request):
 
 
 @login_required()
-def accepter_role_proprietaire(request, id_invitation, code):
-    """Permet à un utilisateur existant d'accepter le rôle de propriétaire."""
-    # TODO: vérifier si la vue permet bien d'accepter n'importe quelle invitation, pas juste celle de propriétaire/administrateur et la renommer accepter_invitation
+def accepter_invitation(request, id_invitation, code):
+    """Permet à un utilisateur existant d'accepter une invitation (quel que soit le rôle)."""
     try:
         invitation = Invitation.objects.get(id=id_invitation)
     except Invitation.DoesNotExist:
@@ -446,14 +445,7 @@ def accepter_role_proprietaire(request, id_invitation, code):
         )
         return redirect(reverse("erreur_terminale"))
 
-    token_valide = (
-        check_token(invitation, "invitation", code)
-        # Les salts suivants ne sont plus utilisés
-        # À supprimer lorsque toutes les invitations créées avant l'unification des invitations auront expirées. La durée actuelle de validité est de 30 jours. A supprimer après le 20 mai 2026.
-        or check_token(invitation, "invitation_proprietaire", code)
-        or check_token(invitation, "invitation_proprietaire_tiers", code)
-    )
-    if not token_valide:
+    if not check_token(invitation, "invitation", code):
         messages.error(request, "Ce lien d'invitation est invalide.")
         return redirect(reverse("erreur_terminale"))
 

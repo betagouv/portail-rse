@@ -8,7 +8,7 @@ from utils.tokens import make_token
 
 
 @pytest.fixture
-def futur_proprietaire(django_user_model):
+def utilisateur_invite(django_user_model):
     return django_user_model.objects.create(
         prenom="Pierre",
         nom="Proprietaire",
@@ -17,50 +17,44 @@ def futur_proprietaire(django_user_model):
     )
 
 
-@pytest.fixture
-def invitation_proprietaire_tiers(entreprise_factory, conseiller_rse):
+@pytest.fixture(params=[UserRole.ADMINISTRATEUR, UserRole.CONTRIBUTEUR])
+def invitation(request, entreprise_factory, conseiller_rse):
     entreprise = entreprise_factory(siren="123456789")
     Habilitation.ajouter(entreprise, conseiller_rse, UserRole.CONTRIBUTEUR)
 
     return Invitation.objects.create(
         entreprise=entreprise,
         email="pierre@entreprise.test",
-        role=UserRole.ADMINISTRATEUR,
+        role=request.param,
         inviteur=conseiller_rse,
     )
 
 
 @pytest.mark.django_db
-def test_acceptation_cree_habilitation_proprietaire(
-    client, futur_proprietaire, invitation_proprietaire_tiers
-):
-    """L'acceptation cree une habilitation PROPRIETAIRE."""
-    client.force_login(futur_proprietaire)
-    code = make_token(invitation_proprietaire_tiers, "invitation_proprietaire")
+def test_acceptation_cree_habilitation(client, utilisateur_invite, invitation):
+    """L'acceptation cree une habilitation avec le bon rôle."""
+    client.force_login(utilisateur_invite)
+    code = make_token(invitation, "invitation")
 
     response = client.get(
         reverse(
-            "users:accepter_role_proprietaire",
-            args=[invitation_proprietaire_tiers.id, code],
+            "users:accepter_invitation",
+            args=[invitation.id, code],
         ),
         follow=True,
     )
 
     # Verifier que l'habilitation a ete creee
-    assert Habilitation.existe(
-        invitation_proprietaire_tiers.entreprise, futur_proprietaire
-    )
-    habilitation = Habilitation.pour(
-        invitation_proprietaire_tiers.entreprise, futur_proprietaire
-    )
-    assert habilitation.role == UserRole.ADMINISTRATEUR
+    assert Habilitation.existe(invitation.entreprise, utilisateur_invite)
+    habilitation = Habilitation.pour(invitation.entreprise, utilisateur_invite)
+    assert habilitation.role == invitation.role
 
-    futur_proprietaire.refresh_from_db()
-    assert futur_proprietaire.is_conseiller_rse is False
+    utilisateur_invite.refresh_from_db()
+    assert utilisateur_invite.is_conseiller_rse is False
 
     # Verifier que l'invitation a ete acceptee
-    invitation_proprietaire_tiers.refresh_from_db()
-    assert invitation_proprietaire_tiers.date_acceptation is not None
+    invitation.refresh_from_db()
+    assert invitation.date_acceptation is not None
 
     assert response.status_code == 200
     assert response.redirect_chain == [
@@ -70,16 +64,14 @@ def test_acceptation_cree_habilitation_proprietaire(
 
 
 @pytest.mark.django_db
-def test_token_invalide_refuse(
-    client, futur_proprietaire, invitation_proprietaire_tiers
-):
+def test_token_invalide_refuse(client, utilisateur_invite, invitation):
     """Un token invalide est refuse."""
-    client.force_login(futur_proprietaire)
+    client.force_login(utilisateur_invite)
 
     response = client.get(
         reverse(
-            "users:accepter_role_proprietaire",
-            args=[invitation_proprietaire_tiers.id, "invalid_token"],
+            "users:accepter_invitation",
+            args=[invitation.id, "invalid_token"],
         ),
         follow=True,
     )
@@ -89,15 +81,15 @@ def test_token_invalide_refuse(
 
 
 @pytest.mark.django_db
-def test_email_different_refuse(client, alice, invitation_proprietaire_tiers):
+def test_email_different_refuse(client, alice, invitation):
     """Un utilisateur avec un email different est refuse."""
     client.force_login(alice)  # alice a un email different
-    code = make_token(invitation_proprietaire_tiers, "invitation_proprietaire")
+    code = make_token(invitation, "invitation")
 
     response = client.get(
         reverse(
-            "users:accepter_role_proprietaire",
-            args=[invitation_proprietaire_tiers.id, code],
+            "users:accepter_invitation",
+            args=[invitation.id, code],
         ),
         follow=True,
     )
@@ -107,20 +99,18 @@ def test_email_different_refuse(client, alice, invitation_proprietaire_tiers):
 
 
 @pytest.mark.django_db
-def test_invitation_deja_acceptee_redirige(
-    client, futur_proprietaire, invitation_proprietaire_tiers
-):
+def test_invitation_deja_acceptee_redirige(client, utilisateur_invite, invitation):
     """Une invitation deja acceptee redirige vers le tableau de bord."""
     # Accepter l'invitation
-    invitation_proprietaire_tiers.accepter(futur_proprietaire)
+    invitation.accepter(utilisateur_invite)
 
-    client.force_login(futur_proprietaire)
-    code = make_token(invitation_proprietaire_tiers, "invitation_proprietaire")
+    client.force_login(utilisateur_invite)
+    code = make_token(invitation, "invitation")
 
     response = client.get(
         reverse(
-            "users:accepter_role_proprietaire",
-            args=[invitation_proprietaire_tiers.id, code],
+            "users:accepter_invitation",
+            args=[invitation.id, code],
         ),
         follow=True,
     )
@@ -133,44 +123,13 @@ def test_invitation_deja_acceptee_redirige(
 
 
 @pytest.mark.django_db
-def test_acceptation_avec_token_invitation(
-    client, futur_proprietaire, invitation_proprietaire_tiers
-):
-    """L'acceptation fonctionne aussi avec un token de type 'invitation'."""
-    client.force_login(futur_proprietaire)
-    code = make_token(invitation_proprietaire_tiers, "invitation")
-
-    response = client.get(
-        reverse(
-            "users:accepter_role_proprietaire",
-            args=[invitation_proprietaire_tiers.id, code],
-        ),
-        follow=True,
-    )
-
-    assert Habilitation.existe(
-        invitation_proprietaire_tiers.entreprise, futur_proprietaire
-    )
-    habilitation = Habilitation.pour(
-        invitation_proprietaire_tiers.entreprise, futur_proprietaire
-    )
-    assert habilitation.role == UserRole.ADMINISTRATEUR
-
-    invitation_proprietaire_tiers.refresh_from_db()
-    assert invitation_proprietaire_tiers.date_acceptation is not None
-
-    assert response.status_code == 200
-    assert "Vous êtes maintenant ajouté à l'entreprise" in response.content.decode()
-
-
-@pytest.mark.django_db
-def test_invitation_inexistante_erreur(client, futur_proprietaire):
+def test_invitation_inexistante_erreur(client, utilisateur_invite):
     """Une invitation inexistante retourne une erreur."""
-    client.force_login(futur_proprietaire)
+    client.force_login(utilisateur_invite)
 
     response = client.get(
         reverse(
-            "users:accepter_role_proprietaire",
+            "users:accepter_invitation",
             args=[99999, "some_code"],
         ),
         follow=True,
