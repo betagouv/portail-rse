@@ -102,9 +102,9 @@ def proconnect_dispatch_view(request):
     elif Habilitation.objects.filter(entreprise=entreprise).count():
         # d'autres utilisateurs sont membres de l'entreprise
         Habilitation.ajouter(entreprise, request.user, role=UserRole.CONTRIBUTEUR)
-        _envoie_email_aux_proprietaires_actuels(request, entreprise)
+        _envoie_email_aux_administrateurs_actuels(request, entreprise)
     else:
-        Habilitation.ajouter(entreprise, request.user, role=UserRole.PROPRIETAIRE)
+        Habilitation.ajouter(entreprise, request.user, role=UserRole.ADMINISTRATEUR)
 
     if request.session.get("page_suivante"):
         # cas d'une invitation faite par un conseiller
@@ -121,14 +121,14 @@ def proconnect_dispatch_view(request):
 
 def _creation_entreprise(siren, user):
     # création d'une nouvelle entreprise et association de l'utilisateur
-    # identifié comme premier proprietaire
+    # identifié comme premier administrateur
     entreprise = Entreprise.search_and_create_entreprise(siren)
-    Habilitation.ajouter(entreprise, user)
+    Habilitation.ajouter(entreprise, user, role=UserRole.ADMINISTRATEUR)
     return entreprise
 
 
-def _envoie_email_aux_proprietaires_actuels(request, entreprise):
-    destinataires = [utilisateur.email for utilisateur in entreprise.proprietaires]
+def _envoie_email_aux_administrateurs_actuels(request, entreprise):
+    destinataires = [utilisateur.email for utilisateur in entreprise.administrateurs]
     email = EmailMessage(
         to=destinataires,
         from_email=settings.DEFAULT_FROM_EMAIL,
@@ -150,18 +150,18 @@ def _envoie_email_aux_proprietaires_actuels(request, entreprise):
     email.send()
 
 
-def _message_erreur_proprietaire(entreprise):
+def _message_erreur_administrateur(entreprise):
     # petite duplication et petit changement de texte, mais pas de dépendance vers `users`
-    proprietaires = Habilitation.objects.filter(
-        entreprise=entreprise, role="proprietaire"
+    administrateurs = Habilitation.objects.filter(
+        entreprise=entreprise, role=UserRole.ADMINISTRATEUR
     ).select_related("user")
 
-    if proprietaires.count() == 1:
-        email_cache = cache_partiellement_un_email(proprietaires[0].user.email)
-        message = f"Il existe déjà un propriétaire pour l'entreprise {entreprise}. Contactez la personne concernée ({email_cache}) ou notre support (contact@portail-rse.beta.gouv.fr)."
-    elif proprietaires.count() > 1:
+    if administrateurs.count() == 1:
+        email_cache = cache_partiellement_un_email(administrateurs[0].user.email)
+        message = f"Il existe déjà un administrateur pour l'entreprise {entreprise}. Contactez la personne concernée ({email_cache}) ou notre support (contact@portail-rse.beta.gouv.fr)."
+    elif administrateurs.count() > 1:
         emails_caches = ", ".join(
-            [cache_partiellement_un_email(h.user.email) for h in proprietaires]
+            [cache_partiellement_un_email(h.user.email) for h in administrateurs]
         )
-        message = f"Il existe déjà des propriétaires pour l'entreprise {entreprise}. Contactez une des personnes concernées ({emails_caches}) ou notre support (contact@portail-rse.beta.gouv.fr)."
+        message = f"Il existe déjà des administrateurs pour l'entreprise {entreprise}. Contactez une des personnes concernées ({emails_caches}) ou notre support (contact@portail-rse.beta.gouv.fr)."
     return message

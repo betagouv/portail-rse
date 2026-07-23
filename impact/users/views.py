@@ -307,9 +307,9 @@ def tableau_de_bord_conseiller(request):
     """Tableau de bord pour les conseillers RSE.
 
     Gère l'ajout d'entreprise avec logique unifiée :
-    - Entreprise existante avec propriétaire : refus attachement
-    - Entreprise existante sans propriétaire : rattachement + invitation propriétaire
-    - Entreprise inexistante : création + rattachement + invitation propriétaire
+    - Entreprise existante avec administrateur : refus attachement
+    - Entreprise existante sans administrateur : rattachement + invitation administrateur
+    - Entreprise inexistante : création + rattachement + invitation administrateur
     """
     # Vérifier que l'utilisateur est bien un conseiller RSE
     if not request.user.is_conseiller_rse:
@@ -344,7 +344,9 @@ def tableau_de_bord_conseiller(request):
         if form.is_valid():
             try:
                 siren = form.cleaned_data["siren"]
-                email_proprietaire = form.cleaned_data.get("email_futur_proprietaire")
+                email_administrateur = form.cleaned_data.get(
+                    "email_futur_administrateur"
+                )
 
                 # CAS 1 : Entreprise existe
                 if Entreprise.objects.filter(siren=siren).exists():
@@ -358,34 +360,34 @@ def tableau_de_bord_conseiller(request):
                         )
                         return redirect("users:tableau_de_bord_conseiller")
 
-                    # CAS 1a : A un propriétaire → pas de rattachement
-                    if entreprise.proprietaires:
+                    # CAS 1a : A un administrateur → pas de rattachement
+                    if entreprise.administrateurs:
                         messages.error(
                             request,
                             f"Vous n'avez pas été rattaché à l'entreprise {entreprise.denomination} car un compte y est déjà attachée. Demandez à votre client de vous inviter sur l'entreprise.",
                         )
                         return redirect("users:tableau_de_bord_conseiller")
 
-                    # CAS 1b : Pas de propriétaire → rattachement + invitation
+                    # CAS 1b : Pas d'administrateur → rattachement + invitation
                     else:
                         Habilitation.ajouter(
                             entreprise,
                             request.user,
-                            UserRole.PROPRIETAIRE,
+                            UserRole.ADMINISTRATEUR,
                             fonctions=form.cleaned_data.get("fonctions"),
                             is_conseiller_rse=True,
                         )
                         cree_invitation(
                             request,
                             entreprise,
-                            email_proprietaire,
-                            UserRole.PROPRIETAIRE,
+                            email_administrateur,
+                            UserRole.ADMINISTRATEUR,
                             template_id=settings.BREVO_INVITATION_CONSEILLER_RSE_TEMPLATE,
                         )
                         messages.success(
                             request,
                             f"Vous avez été rattaché à l'entreprise {entreprise.denomination}. "
-                            f"Une invitation a été envoyée à {email_proprietaire} pour devenir propriétaire.",
+                            f"Une invitation a été envoyée à {email_administrateur} pour devenir administrateur.",
                         )
                         return redirect("users:tableau_de_bord_conseiller")
 
@@ -395,21 +397,21 @@ def tableau_de_bord_conseiller(request):
                     Habilitation.ajouter(
                         entreprise,
                         request.user,
-                        UserRole.PROPRIETAIRE,
+                        UserRole.ADMINISTRATEUR,
                         fonctions=form.cleaned_data.get("fonctions"),
                         is_conseiller_rse=True,
                     )
                     cree_invitation(
                         request,
                         entreprise,
-                        email_proprietaire,
-                        UserRole.PROPRIETAIRE,
+                        email_administrateur,
+                        UserRole.ADMINISTRATEUR,
                         template_id=settings.BREVO_INVITATION_CONSEILLER_RSE_TEMPLATE,
                     )
                     messages.success(
                         request,
                         f"L'entreprise {entreprise.denomination} a été créée. "
-                        f"Une invitation a été envoyée à {email_proprietaire} pour devenir propriétaire.",
+                        f"Une invitation a été envoyée à {email_administrateur} pour devenir administrateur.",
                     )
                     return redirect("users:tableau_de_bord_conseiller")
 
@@ -442,6 +444,7 @@ def preremplissage_formulaire_compte(request):
 @login_required()
 def accepter_role_proprietaire(request, id_invitation, code):
     """Permet à un utilisateur existant d'accepter le rôle de propriétaire."""
+    # TODO: vérifier si la vue permet bien d'accepter n'importe quelle invitation, pas juste celle de propriétaire/administrateur et la renommer accepter_invitation
     try:
         invitation = Invitation.objects.get(id=id_invitation)
     except Invitation.DoesNotExist:

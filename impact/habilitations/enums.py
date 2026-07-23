@@ -6,14 +6,17 @@ from django.db import models
 class UserRole(models.TextChoices):
     """
     Gestion simple (simpliste?) des rôles d'utilisation:
-     - un PROPRIETAIRE possède les droits de LECTEUR et CONTRIBUTEUR
+     - un ADMINISTRATEUR possède les droits de LECTEUR et CONTRIBUTEUR
      - un CONTRIBUTEUR a aussi les droits de LECTEUR
      - un LECTEUR est moins que rien
     Pourra être remanié au besoin si des besoins plus fins sont nécessaires,
     le principal est de *centraliser* l'évaluation des droits.
     """
 
-    PROPRIETAIRE = "proprietaire", "Propriétaire"
+    ADMINISTRATEUR = (
+        "proprietaire",
+        "Administrateur",
+    )  # TODO: migrer la valeur "proprietaire" à "administrateur"
     CONTRIBUTEUR = (
         "editeur",
         "Contributeur",

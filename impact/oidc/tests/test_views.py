@@ -24,7 +24,7 @@ def test_proconnect_dispatch_view_cree_l_entreprise_sélectionnée_et_ajoute_l_h
 
     entreprise = Entreprise.objects.get(siren=siren)
     habilitation = Habilitation.objects.pour(entreprise, alice_sur_proconnect)
-    assert habilitation.role == UserRole.PROPRIETAIRE
+    assert habilitation.role == UserRole.ADMINISTRATEUR
 
     assert response.status_code == 200
     assert response.redirect_chain[0] == ("/post-login-dispatch", 302)
@@ -47,7 +47,7 @@ def test_proconnect_dispatch_view_ajoute_l_habilitation_à_l_entreprise_déjà_e
     response = client.get("/oidc/dispatch/", follow=True)
 
     habilitation = Habilitation.objects.pour(entreprise, alice_sur_proconnect)
-    assert habilitation.role == UserRole.PROPRIETAIRE
+    assert habilitation.role == UserRole.ADMINISTRATEUR
     assert response.status_code == 200
     assert response.redirect_chain[0] == ("/post-login-dispatch", 302)
 
@@ -69,12 +69,12 @@ def test_proconnect_dispatch_view_ne_fait_que_rediriger_si_habilitation_et_entre
     response = client.get("/oidc/dispatch/", follow=True)
 
     habilitation = Habilitation.objects.pour(entreprise, alice_sur_proconnect)
-    assert habilitation.role == UserRole.PROPRIETAIRE
+    assert habilitation.role == UserRole.ADMINISTRATEUR
     assert response.status_code == 200
     assert response.redirect_chain[0] == ("/post-login-dispatch", 302)
 
 
-def test_proconnect_dispatch_view_crée_une_habilitation_contributeur_si_proprietaire_déjà_présent(
+def test_proconnect_dispatch_view_crée_une_habilitation_contributeur_si_administrateur_déjà_présent(
     client, entreprise_factory, alice_sur_proconnect, bob, carole, mailoutbox
 ):
     siren = "123456789"

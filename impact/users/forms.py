@@ -93,18 +93,18 @@ class UserCreationForm(UserPasswordForm, PreremplissageSirenForm):
         }
 
 
-def message_erreur_proprietaires(proprietaires_presents):
-    if len(proprietaires_presents) == 1:
-        email_cache = cache_partiellement_un_email(proprietaires_presents[0].email)
-        message = f"Il existe déjà un propriétaire sur cette entreprise. Contactez la personne concernée ({email_cache}) ou notre support (contact@portail-rse.beta.gouv.fr)."
+def message_erreur_administrateurs(administrateurs_presents):
+    if len(administrateurs_presents) == 1:
+        email_cache = cache_partiellement_un_email(administrateurs_presents[0].email)
+        message = f"Il existe déjà un administrateur sur cette entreprise. Contactez la personne concernée ({email_cache}) ou notre support (contact@portail-rse.beta.gouv.fr)."
     else:
         emails_caches = ", ".join(
             [
-                cache_partiellement_un_email(proprietaire.email)
-                for proprietaire in proprietaires_presents
+                cache_partiellement_un_email(administrateur.email)
+                for administrateur in administrateurs_presents
             ]
         )
-        message = f"Il existe déjà des propriétaires sur cette entreprise. Contactez une des personnes concernées ({emails_caches}) ou notre support (contact@portail-rse.beta.gouv.fr)."
+        message = f"Il existe déjà des administrateurs sur cette entreprise. Contactez une des personnes concernées ({emails_caches}) ou notre support (contact@portail-rse.beta.gouv.fr)."
     return message
 
 
@@ -180,12 +180,12 @@ class AjoutEntrepriseConseillerForm(DsfrForm, PreremplissageSirenForm):
     """Formulaire unifié pour qu'un conseiller RSE ajoute une entreprise accompagnée.
 
     Gère tous les cas :
-    - Entreprise existante avec propriétaire : pas de rattachement
-    - Entreprise existante sans propriétaire : rattachement + invitation propriétaire
-    - Entreprise inexistante : création + rattachement + invitation propriétaire
+    - Entreprise existante avec administrateur : pas de rattachement
+    - Entreprise existante sans administrateur : rattachement + invitation administrateur
+    - Entreprise inexistante : création + rattachement + invitation administrateur
     """
 
-    email_futur_proprietaire = forms.EmailField(
+    email_futur_administrateur = forms.EmailField(
         label="Adresse e-mail du contact principal de l’entreprise accompagnée",
         required=True,
         help_text="Une invitation lui sera envoyée afin qu’elle puisse accéder au tableau de bord de son entreprise.",

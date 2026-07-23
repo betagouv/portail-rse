@@ -25,7 +25,7 @@ from utils.tokens import make_token
 
 @login_required()
 @require_http_methods(["POST"])
-@role(UserRole.PROPRIETAIRE)
+@role(UserRole.ADMINISTRATEUR)
 def invitation(request, siren):
     # le SIREN dans l'URL doit correspondre au SIREN de l'entreprise courante en session
     siren_session = request.session.get("entreprise")
@@ -150,13 +150,13 @@ def _envoie_email_d_invitation(request, invitation, template_id):
     email.send()
 
 
-# Gestion des droits par les propriétaires
+# Gestion des droits par les administrateurs
 
 
 @login_required
 @require_http_methods(["DELETE", "POST"])
 @csrf_exempt
-@role(UserRole.PROPRIETAIRE)
+@role(UserRole.ADMINISTRATEUR)
 def gerer_habilitation(request, id: int):
     habilitation = get_object_or_404(Habilitation, pk=id)
 

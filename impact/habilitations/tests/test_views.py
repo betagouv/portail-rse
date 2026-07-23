@@ -15,7 +15,7 @@ def test_une_invitation_a_devenir_membre_pour_un_compte_existant_est_activée_di
     entreprise = entreprise_factory()
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
-    data = {"email": bob.email, "role": UserRole.PROPRIETAIRE}
+    data = {"email": bob.email, "role": UserRole.ADMINISTRATEUR}
     url = f"/invitation/{entreprise.siren}"
     redirect_url = reverse("reglementations:tableau_de_bord", args=[entreprise.siren])
 
@@ -25,7 +25,7 @@ def test_une_invitation_a_devenir_membre_pour_un_compte_existant_est_activée_di
     response = client.post(url, data=data, follow=True)
 
     invitation = Invitation.objects.get(entreprise=entreprise, email=bob.email)
-    assert invitation.role == UserRole.PROPRIETAIRE.value
+    assert invitation.role == UserRole.ADMINISTRATEUR.value
     assert invitation.inviteur == alice
     assert invitation.date_acceptation
     assert Habilitation.objects.filter(
@@ -122,9 +122,9 @@ def test_erreur_invitation_a_devenir_membre_car_deja_membre(
 
 
 def test_acces_vues_actions(client, entreprise_factory, alice, bob):
-    # les vues traitant les actions d'habilitation doivent être accessibles aux propriétaires uniquement
+    # les vues traitant les actions d'habilitation doivent être accessibles aux administrateurs uniquement
     entreprise = entreprise_factory()
-    h1 = Habilitation.ajouter(entreprise, bob, role=UserRole.PROPRIETAIRE)
+    h1 = Habilitation.ajouter(entreprise, bob, role=UserRole.ADMINISTRATEUR)
     h2 = Habilitation.ajouter(entreprise, alice, role=UserRole.CONTRIBUTEUR)
 
     # La session doit être affectée à une variable pour être utilisable
@@ -137,7 +137,7 @@ def test_acces_vues_actions(client, entreprise_factory, alice, bob):
     client.force_login(alice)
     response = client.post(
         reverse("habilitations:gerer_habilitation", kwargs={"id": h1.pk}),
-        data={"role": UserRole.PROPRIETAIRE},
+        data={"role": UserRole.ADMINISTRATEUR},
     )
     assert (
         response.status_code == 403
@@ -150,7 +150,7 @@ def test_acces_vues_actions(client, entreprise_factory, alice, bob):
         response.status_code == 403
     ), "Cet accès (DELETE/suppression) ne doit pas être autorisé pour Alice"
 
-    # bob est propriétaire : il doit pouvoir tout faire
+    # bob est administrateur : il doit pouvoir tout faire
     client.force_login(bob)
     session = client.session
     session["entreprise"] = entreprise.siren
@@ -165,12 +165,12 @@ def test_acces_vues_actions(client, entreprise_factory, alice, bob):
 
     response = client.post(
         reverse("habilitations:gerer_habilitation", kwargs={"id": h2.pk}),
-        data={"role": UserRole.PROPRIETAIRE},
+        data={"role": UserRole.ADMINISTRATEUR},
     )
     assert (
         response.status_code == 303
     ), "Le type de méthode doit être une redirection (303)"
-    assert UserRole.PROPRIETAIRE == Habilitation.role_pour(entreprise, alice)
+    assert UserRole.ADMINISTRATEUR == Habilitation.role_pour(entreprise, alice)
 
     response = client.delete(
         reverse("habilitations:gerer_habilitation", kwargs={"id": h2.pk})
@@ -185,7 +185,7 @@ def test_acces_vues_actions(client, entreprise_factory, alice, bob):
 def test_auto_modification(client, entreprise_factory, bob):
     # un utilisateur ne peut pas modifier ses habilitations
     entreprise = entreprise_factory()
-    habilitation = Habilitation.ajouter(entreprise, bob, role=UserRole.PROPRIETAIRE)
+    habilitation = Habilitation.ajouter(entreprise, bob, role=UserRole.ADMINISTRATEUR)
     session = client.session
     session["entreprise"] = entreprise.siren
     session.save()

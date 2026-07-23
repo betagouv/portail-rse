@@ -25,10 +25,10 @@ def mock_request(entreprise_non_qualifiee, alice):
     return request
 
 
-# Test pour un utilisateur avec le rôle PROPRIETAIRE
-def test_role_proprietaire(mock_request):
-    mock_request.user.role = UserRole.PROPRIETAIRE
-    decorated_view = role(UserRole.PROPRIETAIRE)(example_view)
+# Test pour un utilisateur avec le rôle ADMINISTRATEUR
+def test_role_administrateur(mock_request):
+    mock_request.user.role = UserRole.ADMINISTRATEUR
+    decorated_view = role(UserRole.ADMINISTRATEUR)(example_view)
     response = decorated_view(mock_request)
     print(response.content)
     assert response.status_code == 200
@@ -67,7 +67,7 @@ def test_role_forbidden(alice, entreprise_non_qualifiee):
     mock_request.user = alice
     mock_request.session = {"entreprise": entreprise_non_qualifiee.siren}
 
-    decorated_view = role(UserRole.PROPRIETAIRE)(example_view)
+    decorated_view = role(UserRole.ADMINISTRATEUR)(example_view)
 
     with pytest.raises(PermissionDenied, match="L'utilisateur n'a pas le rôle requis"):
         decorated_view(mock_request)
@@ -75,7 +75,7 @@ def test_role_forbidden(alice, entreprise_non_qualifiee):
 
 # Test pour un utilisateur avec un rôle supérieur
 def test_role_superieur(mock_request):
-    mock_request.user.role = UserRole.PROPRIETAIRE
+    mock_request.user.role = UserRole.ADMINISTRATEUR
     decorated_view = role(UserRole.CONTRIBUTEUR)(example_view)
     response = decorated_view(mock_request)
     assert response.status_code == 200

@@ -18,7 +18,7 @@ from entreprises.forms import EntrepriseQualificationForm
 from entreprises.forms import PreremplissageSirenForm
 from habilitations.models import Habilitation
 from habilitations.models import HabilitationError
-from users.forms import message_erreur_proprietaires
+from users.forms import message_erreur_administrateurs
 
 
 def get_current_entreprise(request):
@@ -94,13 +94,13 @@ def attach(request):
                         raise _InvalidRequest(
                             "Impossible d'ajouter cette entreprise. Vous y êtes déjà rattaché·e."
                         )
-                cause_erreur = message_erreur_proprietaires(
+                cause_erreur = message_erreur_administrateurs(
                     [habilitation.user for habilitation in habilitations]
                 )
             if habilitations := Habilitation.objects.filter(
                 entreprise=entreprise
             ).all():
-                cause_erreur = message_erreur_proprietaires(
+                cause_erreur = message_erreur_administrateurs(
                     [habilitation.user for habilitation in habilitations]
                 )
                 raise _InvalidRequest(
@@ -132,7 +132,6 @@ def attach(request):
 @entreprise_requise
 def qualification(request, entreprise):
     # Le décorateur @entreprise_requise fournit déjà l'entreprise et vérifie l'habilitation
-    # Le décorateur @role vérifie que l'utilisateur est PROPRIETAIRE
 
     if request.POST:
         form = EntrepriseQualificationForm(data=request.POST, entreprise=entreprise)
