@@ -13,14 +13,8 @@ class UserRole(models.TextChoices):
     le principal est de *centraliser* l'évaluation des droits.
     """
 
-    ADMINISTRATEUR = (
-        "proprietaire",
-        "Administrateur",
-    )  # TODO: migrer la valeur "proprietaire" à "administrateur"
-    CONTRIBUTEUR = (
-        "editeur",
-        "Contributeur",
-    )  # TODO: migrer la valeur "editeur" à "contributeur"
+    ADMINISTRATEUR = "administrateur", "Administrateur"
+    CONTRIBUTEUR = "contributeur", "Contributeur"
     LECTEUR = "lecteur", "Lecteur"
 
     @override

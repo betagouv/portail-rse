@@ -19,10 +19,8 @@
         {% endif %}
         <select class="fr-select" aria-describedby="select-role-messages" id="select-role" name="role">
             <option value="" selected disabled>Sélectionnez un rôle</option>
-            {# TODO: migrer la valeur "proprietaire" à "administrateur" #}
-            <option value="proprietaire">Administrateur</option>
-            {# TODO: migrer la valeur "editeur" à "contributeur" #}
-            <option value="editeur">Contributeur</option>
+            <option value="administrateur">Administrateur</option>
+            <option value="contributeur">Contributeur</option>
         </select>
         <div class="fr-messages-group" id="select-1-messages" aria-live="polite">
         </div>

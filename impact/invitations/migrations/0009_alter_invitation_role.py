@@ -15,8 +15,8 @@ class Migration(migrations.Migration):
             name="role",
             field=models.CharField(
                 choices=[
-                    ("proprietaire", "Administrateur"),
-                    ("editeur", "Contributeur"),
+                    ("administrateur", "Administrateur"),
+                    ("contributeur", "Contributeur"),
                     ("lecteur", "Lecteur"),
                 ],
                 max_length=20,
