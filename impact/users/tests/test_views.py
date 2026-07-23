@@ -533,21 +533,6 @@ def test_echec_d_invitation_car_le_code_ne_correspond_pas(client, entreprise_fac
     assert "Cette invitation est incorrecte." in content, content
 
 
-def test_invitation_proprietaire_tiers_redirige_vers_invitation(
-    client, entreprise_factory
-):
-    entreprise = entreprise_factory(siren="130025265")
-    invitation = Invitation.objects.create(
-        entreprise=entreprise, email="alice@portail.example"
-    )
-    CODE = make_token(invitation, "invitation_proprietaire_tiers")
-
-    response = client.get(f"/invitation-proprietaire/{invitation.id}/{CODE}")
-
-    assert response.status_code == 302
-    assert response.url == reverse("users:invitation", args=[invitation.id, CODE])
-
-
 def test_htmx_affiche_facultativement_le_champ_fonction_rse_selon_l_etat_conseiller_rse(
     client, db, entreprise_factory, alice
 ):

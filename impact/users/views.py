@@ -99,10 +99,7 @@ def invitation(request, id_invitation, code):
         )
         return redirect(reverse("erreur_terminale"))
 
-    if not (
-        check_token(invitation, "invitation", code)
-        or check_token(invitation, "invitation_proprietaire_tiers", code)
-    ):
+    if not check_token(invitation, "invitation", code):
         messages.error(request, "Cette invitation est incorrecte.")
         return redirect(reverse("erreur_terminale"))
 
@@ -127,15 +124,6 @@ def invitation(request, id_invitation, code):
     request.session.save()
 
     return redirect("oidc_authentication_init")
-
-
-def invitation_proprietaire_tiers(request, id_invitation, code):
-    """Redirige vers la vue invitation unifiée.
-
-    Conservée pour ne pas casser les liens existants dans les emails déjà envoyés.
-    À supprimer lorsque toutes les invitations créées avant l'unification des invitations auront expirées. La durée actuelle de validité est de 30 jours. A supprimer après le 20 mai 2026.
-    """
-    return redirect("users:invitation", id_invitation, code)
 
 
 def deconnexion(request):
