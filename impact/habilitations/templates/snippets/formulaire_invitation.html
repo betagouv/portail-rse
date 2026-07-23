@@ -8,7 +8,7 @@
             Rôle de l'utilisateur invité
             <span class="fr-hint-text">
                 Sélectionnez le rôle du nouvel utilisateur au sein de l'entreprise :
-                un propriétaire dispose des droits d'un contributeur et peut gérer les habilitations des utilisateurs d'une entreprise.
+                un administrateur dispose des droits d'un contributeur et peut gérer les habilitations des utilisateurs d'une entreprise.
                 Un contributeur peut créer et modifier de nouvelles réglementations pour l'entreprise.
             </span>
         </label>
@@ -19,7 +19,8 @@
         {% endif %}
         <select class="fr-select" aria-describedby="select-role-messages" id="select-role" name="role">
             <option value="" selected disabled>Sélectionnez un rôle</option>
-            <option value="proprietaire">Propriétaire</option>
+            {# TODO: migrer la valeur "proprietaire" à "administrateur" #}
+            <option value="proprietaire">Administrateur</option>
             {# TODO: migrer la valeur "editeur" à "contributeur" #}
             <option value="editeur">Contributeur</option>
         </select>

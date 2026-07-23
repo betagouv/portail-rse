@@ -45,12 +45,12 @@ def test_tableau_de_bord_conseiller_affiche_entreprises_en_gestion(
     assert entreprise2.denomination in content
 
 
-def test_rattachement_entreprise_existante_avec_proprietaire(
+def test_rattachement_entreprise_existante_avec_administrateur(
     client, conseiller_rse, alice, entreprise_factory
 ):
-    """Un conseiller ne peut pas se rattacher à une entreprise avec un propriétaire."""
+    """Un conseiller ne peut pas se rattacher à une entreprise avec un administrateur."""
     entreprise = entreprise_factory(siren="123456789")
-    Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE)
+    Habilitation.ajouter(entreprise, alice, UserRole.ADMINISTRATEUR)
 
     client.force_login(conseiller_rse)
     response = client.post(
@@ -76,7 +76,7 @@ def test_rattachement_entreprise_inexistante(
         reverse("users:tableau_de_bord_conseiller"),
         {
             "siren": SIREN,
-            "email_futur_proprietaire": "futur@proprietaire.test",
+            "email_futur_administrateur": "futur@entreprise.test",
         },
         follow=True,
     )
@@ -84,47 +84,47 @@ def test_rattachement_entreprise_inexistante(
     entreprise = Entreprise.objects.get(siren=SIREN)
     assert Habilitation.existe(entreprise, conseiller_rse)
     habilitation = Habilitation.pour(entreprise, conseiller_rse)
-    assert habilitation.role == UserRole.PROPRIETAIRE
+    assert habilitation.role == UserRole.ADMINISTRATEUR
     assert habilitation.is_conseiller_rse
     assert not habilitation.fonctions
     invitation = Invitation.objects.get(
-        entreprise=entreprise, email="futur@proprietaire.test"
+        entreprise=entreprise, email="futur@entreprise.test"
     )
-    assert invitation.role == UserRole.PROPRIETAIRE
+    assert invitation.role == UserRole.ADMINISTRATEUR
 
 
-def test_rattachement_entreprise_sans_proprietaire(
+def test_rattachement_entreprise_sans_administrateur(
     client, conseiller_rse, entreprise_factory
 ):
-    """Un conseiller peut se rattacher à une entreprise sans propriétaire."""
+    """Un conseiller peut se rattacher à une entreprise sans administrateur."""
     entreprise = entreprise_factory(siren="123456789")
-    # Aucun propriétaire ajouté
+    # Aucun administrateur ajouté
 
     client.force_login(conseiller_rse)
     response = client.post(
         reverse("users:tableau_de_bord_conseiller"),
         {
             "siren": "123456789",
-            "email_futur_proprietaire": "futur@proprietaire.test",
+            "email_futur_administrateur": "futur@proprietaire.test",
         },
         follow=True,
     )
 
     assert Habilitation.existe(entreprise, conseiller_rse)
     habilitation = Habilitation.pour(entreprise, conseiller_rse)
-    assert habilitation.role == UserRole.PROPRIETAIRE
+    assert habilitation.role == UserRole.ADMINISTRATEUR
     assert habilitation.is_conseiller_rse
     assert not habilitation.fonctions
     invitation = Invitation.objects.get(
         entreprise=entreprise, email="futur@proprietaire.test"
     )
-    assert invitation.role == UserRole.PROPRIETAIRE
+    assert invitation.role == UserRole.ADMINISTRATEUR
 
 
 def test_rattachement_deja_existant(client, conseiller_rse, alice, entreprise_factory):
     """Un conseiller ne peut pas se rattacher deux fois à la même entreprise."""
     entreprise = entreprise_factory(siren="123456789")
-    Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE)
+    Habilitation.ajouter(entreprise, alice, UserRole.ADMINISTRATEUR)
     Habilitation.ajouter(entreprise, conseiller_rse, UserRole.CONTRIBUTEUR)
 
     client.force_login(conseiller_rse)
@@ -132,7 +132,7 @@ def test_rattachement_deja_existant(client, conseiller_rse, alice, entreprise_fa
         reverse("users:tableau_de_bord_conseiller"),
         {
             "siren": "123456789",
-            "email_futur_proprietaire": "futur@proprietaire.test",
+            "email_futur_administrateur": "futur@proprietaire.test",
         },
         follow=True,
     )
@@ -145,7 +145,7 @@ def test_lien_espace_conseiller_visible_pour_conseiller(
 ):
     """Le lien 'Espace conseillers RSE' est visible dans l'entête pour un conseiller RSE."""
     entreprise = entreprise_factory(siren="123456789")
-    Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE)
+    Habilitation.ajouter(entreprise, alice, UserRole.ADMINISTRATEUR)
     # Le conseiller doit aussi être rattaché à l'entreprise pour accéder au tableau de bord
     Habilitation.ajouter(entreprise, conseiller_rse, UserRole.CONTRIBUTEUR)
 
@@ -164,7 +164,7 @@ def test_lien_espace_conseiller_invisible_pour_non_conseiller(
 ):
     """Le lien 'Espace conseillers RSE' n'est pas visible pour un utilisateur non-conseiller."""
     entreprise = entreprise_factory(siren="123456789")
-    Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE)
+    Habilitation.ajouter(entreprise, alice, UserRole.ADMINISTRATEUR)
 
     client.force_login(alice)
     response = client.get(

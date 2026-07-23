@@ -9,19 +9,19 @@ from invitations.models import Invitation
 @pytest.mark.django_db
 def test_ajouter_habilitation(alice, entreprise_factory):
     entreprise = entreprise_factory()
-    Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE, "présidente")
+    Habilitation.ajouter(entreprise, alice, UserRole.ADMINISTRATEUR, "présidente")
 
     habilitation = Habilitation.objects.pour(entreprise, alice)
 
     assert habilitation, "Il devrait exister une habilitation"
     assert habilitation.fonctions == "présidente", "La fonction est incorrecte"
-    assert habilitation.role == UserRole.PROPRIETAIRE, "Le rôle est incorrect"
+    assert habilitation.role == UserRole.ADMINISTRATEUR, "Le rôle est incorrect"
 
 
 @pytest.mark.django_db
 def test_retirer_habilitation(alice, entreprise_factory):
     entreprise = entreprise_factory()
-    Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE, "présidente")
+    Habilitation.ajouter(entreprise, alice, UserRole.ADMINISTRATEUR, "présidente")
     h = Habilitation.pour(entreprise, alice)
 
     with pytest.raises(HabilitationError):
@@ -37,7 +37,7 @@ def test_retirer_habilitation(alice, entreprise_factory):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "role", [UserRole.PROPRIETAIRE, UserRole.LECTEUR, UserRole.CONTRIBUTEUR]
+    "role", [UserRole.ADMINISTRATEUR, UserRole.LECTEUR, UserRole.CONTRIBUTEUR]
 )
 def test_ajouter_habilitation_avec_differents_roles(alice, entreprise_factory, role):
     entreprise = entreprise_factory()
@@ -65,11 +65,11 @@ def test_ajouter_habilitation_avec_invitation(alice, entreprise_factory):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("is_conseiller_rse", [True, False])
-@pytest.mark.parametrize("role", [UserRole.PROPRIETAIRE, UserRole.CONTRIBUTEUR])
+@pytest.mark.parametrize("role", [UserRole.ADMINISTRATEUR, UserRole.CONTRIBUTEUR])
 def test_etat_conseiller_rse_est_independant_des_droits(
     is_conseiller_rse, role, alice, entreprise_factory
 ):
-    """Un conseiller RSE peut obtenir le rôle PROPRIETAIRE."""
+    """Un conseiller RSE peut obtenir le rôle ADMINISTRATEUR."""
     entreprise = entreprise_factory()
     alice.is_conseiller_rse = is_conseiller_rse
     alice.save()

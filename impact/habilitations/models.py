@@ -53,7 +53,7 @@ class Habilitation(TimestampedModel):
     role = models.CharField(
         max_length=20,
         choices=UserRole.choices,
-        default=UserRole.PROPRIETAIRE,
+        default=UserRole.ADMINISTRATEUR,
         verbose_name="rôle",
     )
     is_conseiller_rse = models.BooleanField(
@@ -146,7 +146,7 @@ class Habilitation(TimestampedModel):
         cls,
         entreprise,
         utilisateur,
-        role=UserRole.PROPRIETAIRE,
+        role=UserRole.ADMINISTRATEUR,
         fonctions=None,
         is_conseiller_rse=False,
         invitation=None,
@@ -173,16 +173,16 @@ class Habilitation(TimestampedModel):
 
     @classmethod
     def retirer(cls, entreprise, utilisateur):
-        # on vérifie que l'entreprise disposera d'un propriétaire
+        # on vérifie que l'entreprise disposera d'un administrateur
         # après le retrait
         habilitations = cls.objects.parEntreprise(entreprise).parRole(
-            UserRole.PROPRIETAIRE
+            UserRole.ADMINISTRATEUR
         )
         if habilitations.count() == 1:
             h = habilitations.first()
             if h.user == utilisateur:
                 raise HabilitationError(
-                    "Vous ne pouvez pas quitter cette entreprise car vous en êtes le seul propriétaire. Commencez par ajouter un nouveau propriétaire à l'entreprise avant de la quitter. En cas de problème n'hésitez pas à contacter le support."
+                    "Vous ne pouvez pas quitter cette entreprise car vous en êtes le seul administrateur. Commencez par ajouter un nouvel administrateur à l'entreprise avant de la quitter. En cas de problème n'hésitez pas à contacter le support."
                 )
 
         try:

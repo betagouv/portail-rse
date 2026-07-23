@@ -1,4 +1,4 @@
-from users.forms import message_erreur_proprietaires
+from users.forms import message_erreur_administrateurs
 from users.forms import UserCreationForm
 
 
@@ -79,18 +79,18 @@ def test_succès_lors_de_la_création_même_si_l_entreprise_existe_déjà(
     assert bound_form.is_valid()
 
 
-def test_message_si_l_entreprise_a_un_ou_des_propriétaires(db, alice, bob):
+def test_message_si_l_entreprise_a_un_ou_des_administrateurs(db, alice, bob):
     alice.email = "alice.cooper@mail.example"
     alice.save()
     bob.email = "bob@domaine.test"
     bob.save()
 
     assert (
-        message_erreur_proprietaires([alice])
-        == "Il existe déjà un propriétaire sur cette entreprise. Contactez la personne concernée (a**********r@mail.example) ou notre support (contact@portail-rse.beta.gouv.fr)."
+        message_erreur_administrateurs([alice])
+        == "Il existe déjà un administrateur sur cette entreprise. Contactez la personne concernée (a**********r@mail.example) ou notre support (contact@portail-rse.beta.gouv.fr)."
     )
 
     assert (
-        message_erreur_proprietaires([alice, bob])
-        == "Il existe déjà des propriétaires sur cette entreprise. Contactez une des personnes concernées (a**********r@mail.example, b*b@domaine.test) ou notre support (contact@portail-rse.beta.gouv.fr)."
+        message_erreur_administrateurs([alice, bob])
+        == "Il existe déjà des administrateurs sur cette entreprise. Contactez une des personnes concernées (a**********r@mail.example, b*b@domaine.test) ou notre support (contact@portail-rse.beta.gouv.fr)."
     )

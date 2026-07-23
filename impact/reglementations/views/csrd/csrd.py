@@ -570,7 +570,7 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
     # par ex. un lecteur ne pourra pas créer de rapport CSRD
     if not request.session.get("rapport_csrd_courant"):
         # un lecteur ou un contributeur ne peuvent pas créer de rapport CSRD
-        if role == UserRole.PROPRIETAIRE:
+        if role == UserRole.ADMINISTRATEUR:
             # les prefetch de l'enjeu parent évitent des N+1 au niveau du template
             csrd, _ = RapportCSRD.objects.prefetch_related(
                 "enjeux", "enjeux__parent"
@@ -580,7 +580,7 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
                 annee=annee,
             )
         else:
-            # si l'utilisateur n'est pas propriétaire, il ne peut que consulter
+            # si l'utilisateur n'est pas administrateur, il ne peut que consulter
             # ou modifier un rapport existant
             csrd = RapportCSRD.objects.filter(
                 entreprise=entreprise,
@@ -588,11 +588,11 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
                 annee=annee,
             )
             if not csrd.exists():
-                # pas de rapport existant créé par un propriétaire :
+                # pas de rapport existant créé par un administrateur :
                 # on notifie et on bloque l'accès
                 messages.warning(
                     request,
-                    "Il n'y a pas encore de rapport CSRD créé pour cette année (possible uniquement en ayant le rôle propriétaire).",
+                    "Il n'y a pas encore de rapport CSRD créé pour cette année (possible uniquement en ayant le rôle administrateur).",
                 )
                 return redirect("reglementations:tableau_de_bord", siren=siren)
 

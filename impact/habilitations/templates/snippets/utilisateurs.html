@@ -1,12 +1,13 @@
 {% load filters %}
 
+{# TODO: migrer la valeur "proprietaire" à "administrateur" #}
 {% if habilitation.role == "proprietaire"%}
     <h2>Gérer les utilisateurs</h2>
     <p>Partagez l'accès aux informations clés de votre tableau de bord à des membres de votre entreprise, consultants ou accompagnants RSE.</p>
 {% else %}
     <h2>Utilisateurs de l'entreprise</h2>
     <div class="fr-callout fr-icon-info-line">
-        <p class="fr-callout__text">Seuls les propriétaires peuvent gérer les habilitations et ajouter de nouveaux utilisateurs.</p>
+        <p class="fr-callout__text">Seuls les administrateurs peuvent gérer les habilitations et ajouter de nouveaux utilisateurs.</p>
     </div>
 {% endif %}
 
@@ -43,6 +44,7 @@
                                         <td><span class="fr-badge fr-badge--info fr-badge--no-icon">{{ h.get_role_display }}</span></td>
                                         <td>
                                             {% if user != habilitation.user %}
+                                                {# TODO: migrer la valeur "proprietaire" à "administrateur" #}
                                                 {% if habilitation.role == "proprietaire" %}
                                                     <ul class="fr-btns-group--inline fr-btns-group--equisized">
                                                         <li><button class="fr-btn fr-icon-delete-line fr-btn--icon-left fr-btn--primary" aria-controls="modaleRetirer-{{ h.pk }}" data-fr-opened="false">Retirer</button></li>
@@ -69,7 +71,7 @@
         </div>
     </div>
 {% else %}
-    <p>Aucun propriétaire</p>
+    <p>Aucun administrateur</p>
 {% endif %}
 
 {% if invitations %}
@@ -108,6 +110,7 @@
     </div>
 {% endif %}
 
+{# TODO: migrer la valeur "proprietaire" à "administrateur" #}
 {% if habilitation.role == "proprietaire" %}
     {% include "snippets/formulaire_invitation.html" %}
 {% endif %}

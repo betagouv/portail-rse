@@ -214,7 +214,7 @@ def test_fail_because_already_existing_habilitation(client, alice, entreprise_fa
     )
 
 
-def test_échec_car_déjà_un_propriétaire_présent_sur_l_entreprise(
+def test_échec_car_déjà_un_administrateur_présent_sur_l_entreprise(
     client, alice, bob, entreprise_factory
 ):
     entreprise = entreprise_factory()
@@ -228,7 +228,7 @@ def test_échec_car_déjà_un_propriétaire_présent_sur_l_entreprise(
     assert response.status_code == 200
     content = html.unescape(response.content.decode("utf-8"))
     assert (
-        "Impossible d'ajouter cette entreprise. Il existe déjà un propriétaire sur cette entreprise. Contactez la personne concernée (a***e@portail-rse.test) ou notre support (contact@portail-rse.beta.gouv.fr)."
+        "Impossible d'ajouter cette entreprise. Il existe déjà un administrateur sur cette entreprise. Contactez la personne concernée (a***e@portail-rse.test) ou notre support (contact@portail-rse.beta.gouv.fr)."
         in content
     )
 
@@ -238,7 +238,7 @@ def test_detach_from_an_entreprise(
     is_entreprise_in_session, client, alice, bob, entreprise_factory
 ):
     entreprise = entreprise_factory()
-    # Bob est ajouté car il faut toujours un propriétaire restant
+    # Bob est ajouté car il faut toujours un administrateur restant
     Habilitation.ajouter(entreprise, bob, fonctions="Vice-président")
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
@@ -287,7 +287,7 @@ def test_fail_to_detach_to_an_entreprise_which_does_not_exist(client, alice):
     assert (reverse("entreprises:entreprises"), 302) in response.redirect_chain
 
 
-def test_echec_quitter_entreprise_car_dernier_proprietaire(
+def test_echec_quitter_entreprise_car_dernier_administrateur(
     client, alice, entreprise_factory
 ):
     entreprise = entreprise_factory(utilisateur=alice)

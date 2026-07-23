@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             name="role",
             field=models.CharField(
                 choices=[
-                    ("proprietaire", "Propriétaire"),
+                    ("proprietaire", "Administrateur"),
                     ("editeur", "Contributeur"),
                     ("lecteur", "Lecteur"),
                 ],

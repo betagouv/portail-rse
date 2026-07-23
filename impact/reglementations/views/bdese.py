@@ -313,14 +313,14 @@ def bdese_step(request, siren, annee, step):
     classe_bdese = BDESEReglementation.classe_entreprise(entreprise)
 
     # les lecteurs et contributeurs ne sont pas habilités à créer une BDESE
-    if role == UserRole.PROPRIETAIRE:
+    if role == UserRole.ADMINISTRATEUR:
         bdese = get_or_create_bdese(entreprise, annee)
     else:
         bdese = classe_bdese.objects.filter(entreprise=entreprise, annee=annee)
         if not bdese.exists():
             messages.warning(
                 request,
-                "Aucune BDESE existante pour l'instant (création possible par un utilisateur propriétaire)",
+                "Aucune BDESE existante pour l'instant (création possible par un utilisateur administrateur)",
             )
             return redirect("reglementations:tableau_de_bord", siren=siren)
         bdese = bdese.first()

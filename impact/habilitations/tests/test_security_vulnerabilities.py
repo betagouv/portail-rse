@@ -8,7 +8,7 @@ from users.models import User
 
 def test_utilisateur_non_authentifie_ne_peut_pas_inviter(client, entreprise_factory):
     entreprise = entreprise_factory()
-    data = {"email": "attacker@evil.com", "role": UserRole.PROPRIETAIRE}
+    data = {"email": "attacker@evil.com", "role": UserRole.ADMINISTRATEUR}
     url = f"/invitation/{entreprise.siren}"
 
     response = client.post(url, data=data)
@@ -24,7 +24,7 @@ def test_utilisateur_non_membre_ne_peut_pas_inviter_vers_entreprise_tierce(
     entreprise_cible = entreprise_factory()
     client.force_login(alice)
 
-    data = {"email": alice.email, "role": UserRole.PROPRIETAIRE}
+    data = {"email": alice.email, "role": UserRole.ADMINISTRATEUR}
     url = f"/invitation/{entreprise_cible.siren}"
 
     response = client.post(url, data=data)
@@ -42,7 +42,7 @@ def test_utilisateur_non_membre_ne_peut_pas_inviter_un_tiers(
     entreprise_cible = entreprise_factory()
     client.force_login(alice)
 
-    data = {"email": bob.email, "role": UserRole.PROPRIETAIRE}
+    data = {"email": bob.email, "role": UserRole.ADMINISTRATEUR}
     url = f"/invitation/{entreprise_cible.siren}"
 
     response = client.post(url, data=data)
@@ -71,9 +71,11 @@ def test_contributeur_ne_peut_pas_inviter(client, alice, bob, entreprise_factory
     )
 
 
-def test_proprietaire_peut_inviter(client, alice, bob, entreprise_factory, mailoutbox):
+def test_administrateur_peut_inviter(
+    client, alice, bob, entreprise_factory, mailoutbox
+):
     entreprise = entreprise_factory()
-    Habilitation.ajouter(entreprise, alice, role=UserRole.PROPRIETAIRE)
+    Habilitation.ajouter(entreprise, alice, role=UserRole.ADMINISTRATEUR)
     client.force_login(alice)
 
     # un simple login ne met pas l'entreprise courante en session
@@ -96,13 +98,13 @@ def test_invitation_avec_siren_arbitraire(
     client, alice, entreprise_factory, entreprise_unique_factory
 ):
     entreprise_alice = entreprise_factory()
-    Habilitation.ajouter(entreprise_alice, alice, role=UserRole.PROPRIETAIRE)
+    Habilitation.ajouter(entreprise_alice, alice, role=UserRole.ADMINISTRATEUR)
 
     entreprise_victime = entreprise_unique_factory()
 
     client.force_login(alice)
 
-    data = {"email": alice.email, "role": UserRole.PROPRIETAIRE}
+    data = {"email": alice.email, "role": UserRole.ADMINISTRATEUR}
     url = f"/invitation/{entreprise_victime.siren}"
 
     response = client.post(url, data=data)
@@ -120,14 +122,14 @@ def test_invitation_avec_siren_arbitraire(
 
 def test_attaque_avec_curl(client, alice, bob, entreprise_factory):
     entreprise_bob = entreprise_factory()
-    Habilitation.ajouter(entreprise_bob, bob, role=UserRole.PROPRIETAIRE)
+    Habilitation.ajouter(entreprise_bob, bob, role=UserRole.ADMINISTRATEUR)
 
     client.force_login(alice)
 
     data = {
         "csrfmiddlewaretoken": "zDgWFRoFkVf8N7q03zKVEA8NLircTAQEOMakgzJZpCQQR5JjghKkkLGlTWZwFZev",
         "email": alice.email,
-        "role": "proprietaire",
+        "role": UserRole.ADMINISTRATEUR,
     }
     url = f"/invitation/{entreprise_bob.siren}"
 
@@ -148,12 +150,12 @@ def test_invitation_depuis_autre_entreprise(
     entreprise_alice = entreprise_factory()
     entreprise_bob = entreprise_unique_factory()
 
-    Habilitation.ajouter(entreprise_alice, alice, role=UserRole.PROPRIETAIRE)
-    Habilitation.ajouter(entreprise_bob, bob, role=UserRole.PROPRIETAIRE)
+    Habilitation.ajouter(entreprise_alice, alice, role=UserRole.ADMINISTRATEUR)
+    Habilitation.ajouter(entreprise_bob, bob, role=UserRole.ADMINISTRATEUR)
 
     client.force_login(alice)
 
-    data = {"email": "complice@evil.com", "role": UserRole.PROPRIETAIRE}
+    data = {"email": "complice@evil.com", "role": UserRole.ADMINISTRATEUR}
     url = f"/invitation/{entreprise_bob.siren}"
 
     response = client.post(url, data=data)
@@ -168,9 +170,9 @@ def test_attaque_reelle_avec_session_etablie(
     client, alice, bob, entreprise_unique_factory
 ):
     entreprise_alice = entreprise_unique_factory(siren="111111111")
-    Habilitation.ajouter(entreprise_alice, alice, role=UserRole.PROPRIETAIRE)
+    Habilitation.ajouter(entreprise_alice, alice, role=UserRole.ADMINISTRATEUR)
     entreprise_bob = entreprise_unique_factory(siren="222222222")
-    Habilitation.ajouter(entreprise_bob, bob, role=UserRole.PROPRIETAIRE)
+    Habilitation.ajouter(entreprise_bob, bob, role=UserRole.ADMINISTRATEUR)
 
     client.force_login(alice)
     response = client.get(
@@ -182,7 +184,7 @@ def test_attaque_reelle_avec_session_etablie(
     assert response.status_code == 200
     assert client.session.get("entreprise") == entreprise_alice.siren
 
-    data = {"email": alice.email, "role": UserRole.PROPRIETAIRE}
+    data = {"email": alice.email, "role": UserRole.ADMINISTRATEUR}
     url = f"/invitation/{entreprise_bob.siren}"
 
     response = client.post(url, data=data)
@@ -202,10 +204,10 @@ def test_attaque_gerer_habilitation_autre_entreprise(
     client, alice, bob, entreprise_unique_factory
 ):
     entreprise_alice = entreprise_unique_factory(siren="333333333")
-    Habilitation.ajouter(entreprise_alice, alice, role=UserRole.PROPRIETAIRE)
+    Habilitation.ajouter(entreprise_alice, alice, role=UserRole.ADMINISTRATEUR)
 
     entreprise_bob = entreprise_unique_factory(siren="444444444")
-    Habilitation.ajouter(entreprise_bob, bob, role=UserRole.PROPRIETAIRE)
+    Habilitation.ajouter(entreprise_bob, bob, role=UserRole.ADMINISTRATEUR)
 
     jane = User.objects.create(
         email="jane@portail-rse.test",
@@ -228,7 +230,7 @@ def test_attaque_gerer_habilitation_autre_entreprise(
 
     response = client.post(
         f"/habilitation/{habilitation_jane.id}",
-        data={"role": UserRole.PROPRIETAIRE},
+        data={"role": UserRole.ADMINISTRATEUR},
         content_type="application/x-www-form-urlencoded",
     )
 

@@ -25,7 +25,7 @@ def invitation_proprietaire_tiers(entreprise_factory, conseiller_rse):
     return Invitation.objects.create(
         entreprise=entreprise,
         email="pierre@entreprise.test",
-        role=UserRole.PROPRIETAIRE,
+        role=UserRole.ADMINISTRATEUR,
         inviteur=conseiller_rse,
     )
 
@@ -53,7 +53,7 @@ def test_acceptation_cree_habilitation_proprietaire(
     habilitation = Habilitation.pour(
         invitation_proprietaire_tiers.entreprise, futur_proprietaire
     )
-    assert habilitation.role == UserRole.PROPRIETAIRE
+    assert habilitation.role == UserRole.ADMINISTRATEUR
 
     futur_proprietaire.refresh_from_db()
     assert futur_proprietaire.is_conseiller_rse is False
@@ -154,7 +154,7 @@ def test_acceptation_avec_token_invitation(
     habilitation = Habilitation.pour(
         invitation_proprietaire_tiers.entreprise, futur_proprietaire
     )
-    assert habilitation.role == UserRole.PROPRIETAIRE
+    assert habilitation.role == UserRole.ADMINISTRATEUR
 
     invitation_proprietaire_tiers.refresh_from_db()
     assert invitation_proprietaire_tiers.date_acceptation is not None
