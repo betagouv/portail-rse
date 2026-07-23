@@ -1,7 +1,6 @@
 {% load filters %}
 
-{# TODO: migrer la valeur "proprietaire" à "administrateur" #}
-{% if habilitation.role == "proprietaire"%}
+{% if habilitation.role == "administrateur"%}
     <h2>Gérer les utilisateurs</h2>
     <p>Partagez l'accès aux informations clés de votre tableau de bord à des membres de votre entreprise, consultants ou accompagnants RSE.</p>
 {% else %}
@@ -44,8 +43,7 @@
                                         <td><span class="fr-badge fr-badge--info fr-badge--no-icon">{{ h.get_role_display }}</span></td>
                                         <td>
                                             {% if user != habilitation.user %}
-                                                {# TODO: migrer la valeur "proprietaire" à "administrateur" #}
-                                                {% if habilitation.role == "proprietaire" %}
+                                                {% if habilitation.role == "administrateur" %}
                                                     <ul class="fr-btns-group--inline fr-btns-group--equisized">
                                                         <li><button class="fr-btn fr-icon-delete-line fr-btn--icon-left fr-btn--primary" aria-controls="modaleRetirer-{{ h.pk }}" data-fr-opened="false">Retirer</button></li>
                                                         <li><button class="fr-ml-1w fr-btn fr-icon-pencil-line fr-btn--icon-left fr-btn--secondary" aria-controls="modaleModifier-{{ h.pk }}" data-fr-opened="false">Modifier</button></li>
@@ -110,7 +108,6 @@
     </div>
 {% endif %}
 
-{# TODO: migrer la valeur "proprietaire" à "administrateur" #}
-{% if habilitation.role == "proprietaire" %}
+{% if habilitation.role == "administrateur" %}
     {% include "snippets/formulaire_invitation.html" %}
 {% endif %}

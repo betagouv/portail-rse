@@ -16,8 +16,7 @@
                                     </legend>
                                     <div class="fr-fieldset__element">
                                         <div class="fr-radio-group">
-                                            {# TODO: migrer la valeur "proprietaire" à "administrateur" #}
-                                            <input type="radio" id="role-administrateur-{{ pk }}" value="proprietaire" name="role" {% if role == "proprietaire" %}checked{% endif %}>
+                                            <input type="radio" id="role-administrateur-{{ pk }}" value="administrateur" name="role" {% if role == "administrateur" %}checked{% endif %}>
                                             <label class="fr-label" for="role-administrateur-{{ pk }}">Administrateur
                                                 <span class="fr-hint-text">Un administrateur dispose des droits d'un contributeur et peut gérer les habilitations des utilisateurs d'une entreprise.</span>
                                             </label>
@@ -25,8 +24,7 @@
                                     </div>
                                     <div class="fr-fieldset__element">
                                         <div class="fr-radio-group">
-                                            {# TODO: migrer la valeur "editeur" à "contributeur" #}
-                                            <input type="radio" id="role-contributeur-{{ pk }}" value="editeur" name="role" {% if role == "editeur" %}checked{% endif %}>
+                                            <input type="radio" id="role-contributeur-{{ pk }}" value="contributeur" name="role" {% if role == "contributeur" %}checked{% endif %}>
                                             <label class="fr-label" for="role-contributeur-{{ pk }}">Contributeur
                                                 <span class="fr-hint-text">Un contributeur peut créer et modifier de nouvelles réglementations pour l'entreprise.</span>
                                             </label>
