@@ -40,23 +40,23 @@ def test_acces_autorise_conseiller(client, conseiller_rse):
     assert "Accompagner cette entreprise" in response.content.decode()
 
 
-# Tests du formulaire unifie : CAS 1a - Entreprise existante avec proprietaire
+# Tests du formulaire unifie : CAS 1a - Entreprise existante avec administrateur
 
 
 @pytest.mark.django_db
-def test_rattachement_entreprise_existante_avec_proprietaire(
+def test_rattachement_entreprise_existante_avec_administrateur(
     client, conseiller_rse, alice, entreprise_factory
 ):
-    """Un conseiller ne peut pas se rattacher a une entreprise existante avec proprietaire."""
+    """Un conseiller ne peut pas se rattacher a une entreprise existante avec administrateur."""
     entreprise = entreprise_factory(siren="123456789")
-    Habilitation.ajouter(entreprise, alice, UserRole.PROPRIETAIRE)
+    Habilitation.ajouter(entreprise, alice, UserRole.ADMINISTRATEUR)
 
     client.force_login(conseiller_rse)
     response = client.post(
         reverse("users:tableau_de_bord_conseiller"),
         {
             "siren": "123456789",
-            "email_futur_proprietaire": "futur@proprietaire.test",
+            "email_futur_administrateur": "futur@entreprise.test",
         },
         follow=True,
     )
@@ -64,50 +64,50 @@ def test_rattachement_entreprise_existante_avec_proprietaire(
     # Verifier que le conseiller n'a pas été rattaché
     assert not Habilitation.existe(entreprise, conseiller_rse)
 
-    # Pas d'invitation creee car il y a deja un proprietaire
+    # Pas d'invitation creee car il y a deja un administrateur
     assert not Invitation.objects.filter(entreprise=entreprise).exists()
 
 
-# Tests du formulaire unifie : CAS 1b - Entreprise existante sans proprietaire
+# Tests du formulaire unifie : CAS 1b - Entreprise existante sans administrateur
 
 
 @pytest.mark.django_db
-def test_rattachement_entreprise_sans_proprietaire_sans_email_echoue(
+def test_rattachement_entreprise_sans_administrateur_sans_email_echoue(
     client, conseiller_rse, entreprise_factory
 ):
-    """Le rattachement sans email echoue si l'entreprise n'a pas de proprietaire."""
+    """Le rattachement sans email echoue si l'entreprise n'a pas d'administrateur."""
     entreprise = entreprise_factory(siren="234567890")
-    # Pas de proprietaire ajoute
+    # Pas d'administrateur ajoute
 
     client.force_login(conseiller_rse)
     response = client.post(
         reverse("users:tableau_de_bord_conseiller"),
         {
             "siren": "234567890",
-            "email_futur_proprietaire": "",
+            "email_futur_administrateur": "",
         },
     )
 
     # Le formulaire doit afficher une erreur
-    assert "email_futur_proprietaire" in response.context["form"].errors
+    assert "email_futur_administrateur" in response.context["form"].errors
     assert not Habilitation.existe(entreprise, conseiller_rse)
 
 
 @pytest.mark.django_db
 @patch("habilitations.views._envoie_email_d_invitation")
-def test_rattachement_entreprise_sans_proprietaire_avec_email_reussit(
+def test_rattachement_entreprise_sans_administrateur_avec_email_reussit(
     mock_email, client, conseiller_rse, entreprise_factory
 ):
-    """Le rattachement reussit avec email si l'entreprise n'a pas de proprietaire."""
+    """Le rattachement reussit avec email si l'entreprise n'a pas d'administrateur."""
     entreprise = entreprise_factory(siren="345678901")
-    # Pas de proprietaire ajoute
+    # Pas d'administrateur ajoute
 
     client.force_login(conseiller_rse)
     response = client.post(
         reverse("users:tableau_de_bord_conseiller"),
         {
             "siren": "345678901",
-            "email_futur_proprietaire": "futur@proprietaire.test",
+            "email_futur_administrateur": "futur@entreprise.test",
         },
         follow=True,
     )
@@ -116,12 +116,12 @@ def test_rattachement_entreprise_sans_proprietaire_avec_email_reussit(
     assert Habilitation.existe(entreprise, conseiller_rse)
     habilitation = Habilitation.pour(entreprise, conseiller_rse)
     assert habilitation.is_conseiller_rse
-    assert habilitation.role == UserRole.PROPRIETAIRE
+    assert habilitation.role == UserRole.ADMINISTRATEUR
 
     # Verifier l'invitation creee
     invitation = Invitation.objects.get(entreprise=entreprise)
-    assert invitation.email == "futur@proprietaire.test"
-    assert invitation.role == UserRole.PROPRIETAIRE
+    assert invitation.email == "futur@entreprise.test"
+    assert invitation.role == UserRole.ADMINISTRATEUR
     assert invitation.inviteur == conseiller_rse
 
     # Verifier que l'email a ete envoye
@@ -146,19 +146,19 @@ def test_creation_entreprise_reussie(
         reverse("users:tableau_de_bord_conseiller"),
         {
             "siren": "111222333",
-            "email_futur_proprietaire": "futur@proprietaire.test",
+            "email_futur_administrateur": "futur@entreprise.test",
         },
     )
 
     assert Habilitation.existe(entreprise, conseiller_rse)
     habilitation = Habilitation.pour(entreprise, conseiller_rse)
-    assert habilitation.role == UserRole.PROPRIETAIRE
+    assert habilitation.role == UserRole.ADMINISTRATEUR
     assert not habilitation.fonctions
 
     # Verifier que l'invitation a ete creee
     invitation = Invitation.objects.get(entreprise=entreprise)
-    assert invitation.email == "futur@proprietaire.test"
-    assert invitation.role == UserRole.PROPRIETAIRE
+    assert invitation.email == "futur@entreprise.test"
+    assert invitation.role == UserRole.ADMINISTRATEUR
     assert invitation.inviteur == conseiller_rse
 
     # Verifier que l'email a ete envoye
@@ -176,14 +176,14 @@ def test_email_invitation_envoye_avec_bonnes_donnees(
 ):
     """L'email d'invitation est envoyé avec les bonnes données (sans mock)."""
     entreprise = entreprise_factory(siren="111000111")
-    # Pas de propriétaire
+    # Pas d'administrateur
 
     client.force_login(conseiller_rse)
     client.post(
         reverse("users:tableau_de_bord_conseiller"),
         {
             "siren": "111000111",
-            "email_futur_proprietaire": "nouveau@proprietaire.test",
+            "email_futur_administrateur": "futur@entreprise.test",
             "fonctions": "Consultant CSRD",
         },
         follow=True,
@@ -194,7 +194,7 @@ def test_email_invitation_envoye_avec_bonnes_donnees(
     mail = mailoutbox[0]
 
     # Vérifier les destinataires et expéditeur
-    assert list(mail.to) == ["nouveau@proprietaire.test"]
+    assert list(mail.to) == ["futur@entreprise.test"]
     assert mail.from_email == settings.DEFAULT_FROM_EMAIL
 
     # Vérifier le template utilisé (template dédié, différent de l'invitation standard)
@@ -213,7 +213,7 @@ def test_email_invitation_nouvel_utilisateur_route_proconnect(
         reverse("users:tableau_de_bord_conseiller"),
         {
             "siren": "333000333",
-            "email_futur_proprietaire": "inconnu@nouveau.test",  # Email inexistant
+            "email_futur_administrateur": "inconnu@nouveau.test",  # Email inexistant
             "fonctions": "Consultant",
         },
         follow=True,
@@ -240,7 +240,7 @@ def test_contenu_email_variables_template(
         reverse("users:tableau_de_bord_conseiller"),
         {
             "siren": "444000444",
-            "email_futur_proprietaire": "futur@test.com",
+            "email_futur_administrateur": "futur@entreprise.test",
         },
         follow=True,
     )
@@ -265,7 +265,7 @@ def test_contenu_email_variables_template(
 
     # Rôle (même variable que l'invitation standard)
     assert "role" in merge_data
-    assert merge_data["role"] == "Propriétaire"
+    assert merge_data["role"] == "Administrateur"
 
     # URL d'invitation (doit être une URL absolue)
     assert "invitation_url" in merge_data
@@ -288,13 +288,13 @@ def test_invitation_expiree_refuse_acceptation(
 
     # Créer l'invitation avec une date de création dans le passé
     entreprise = entreprise_factory(siren="555000555")
-    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.PROPRIETAIRE)
+    Habilitation.ajouter(entreprise, conseiller_rse, UserRole.ADMINISTRATEUR)
 
     with freeze_time(date_creation_passee):
         invitation = Invitation.objects.create(
             entreprise=entreprise,
             email=alice.email,
-            role=UserRole.PROPRIETAIRE,
+            role=UserRole.ADMINISTRATEUR,
             inviteur=conseiller_rse,
         )
 

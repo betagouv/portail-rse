@@ -341,7 +341,7 @@ def test_synchronise_les_invitations(entreprise_factory, alice, django_user_mode
     invitation = Invitation.objects.create(
         entreprise=entreprise,
         email="bob@portail-rse.test",
-        role="proprietaire",
+        role=UserRole.ADMINISTRATEUR,
         inviteur=alice,
     )
 
@@ -358,7 +358,7 @@ def test_synchronise_les_invitations(entreprise_factory, alice, django_user_mode
     assert metabase_invitation.modifiee_le == invitation.updated_at
     assert metabase_invitation.inviteur == metabase_utilisateur
     assert metabase_invitation.entreprise == metabase_entreprise
-    assert metabase_invitation.role == "proprietaire"
+    assert metabase_invitation.role == UserRole.ADMINISTRATEUR
     assert not metabase_invitation.date_acceptation
 
     # L'invitation est acceptée par Bob

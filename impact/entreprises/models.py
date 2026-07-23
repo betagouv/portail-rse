@@ -13,6 +13,7 @@ from django.utils import timezone
 import api
 from analyseia.models import AnalyseIA
 from api.exceptions import APIError
+from habilitations.enums import UserRole
 from utils.codes_naf import CODES_NAF
 from utils.models import TimestampedModel
 from utils.pays import CODES_PAYS_ETRANGER_SIRENE
@@ -322,11 +323,11 @@ class Entreprise(TimestampedModel):
         return f"""{resultat["code"]} - {resultat["label"]}""" if resultat else None
 
     @property
-    def proprietaires(self):
+    def administrateurs(self):
         return [
             habilitation.user
             for habilitation in self.habilitation_set.filter(
-                role="proprietaire",
+                role=UserRole.ADMINISTRATEUR,
             )
         ]
 
