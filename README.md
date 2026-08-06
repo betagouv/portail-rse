@@ -1,6 +1,6 @@
-[![test](https://github.com/betagouv/portail-rse/actions/workflows/test.yml/badge.svg)](https://github.com/betagouv/portail-rse/actions/workflows/test.yml)
-
 # Portail RSE
+
+[![test](https://github.com/betagouv/portail-rse/actions/workflows/test.yml/badge.svg)](https://github.com/betagouv/portail-rse/actions/workflows/test.yml)
 
 ## Liens utiles
 
