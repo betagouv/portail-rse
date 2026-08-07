@@ -10,6 +10,21 @@
                 <div class="fr-container container-simulation">
                     <div class="fr-grid-row fr-grid-row--center">
                         <div class="fr-col">
+                            <nav role="navigation" class="fr-breadcrumb" aria-label="vous êtes ici :">
+                                <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">
+                                    Voir le fil d’Ariane
+                                </button>
+                                <div class="fr-collapse" id="breadcrumb-1">
+                                    <ol class="fr-breadcrumb__list">
+                                        <li>
+                                            <a class="fr-breadcrumb__link" href="{% url 'users:tableau_de_bord_conseiller' %}">Espace conseiller RSE</a>
+                                        </li>
+                                        <li>
+                                            <a class="fr-breadcrumb__link" aria-current="page">Simuler les obligations</a>
+                                        </li>
+                                    </ol>
+                                </div>
+                            </nav>
                             <h2>Vérifiez vos obligations</h2>
                             <p>
                                 Effectuez une simulation simplifiée pour connaître les réglementations applicables à votre entreprise.<br>
