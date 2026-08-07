@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
+from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 
@@ -143,24 +144,34 @@ def tableau_de_bord(request, entreprise):
 @entreprise_requise
 @log_path("app:tableauDeBord:index")
 def index(request, entreprise):
-    context = tableau_de_bord_menu_context(entreprise)
-    return render(
-        request,
-        "reglementations/tableau_de_bord/index.html",
-        context=context,
-    )
+    """Cette page n'est plus utilisée.
+
+    On renvoie vers la page principale du tableau de bord plutôt qu'une 404 à un
+    utilisateur viendrait sur cette page.
+    """
+    return redirect("reglementations:tableau_de_bord", siren=entreprise.siren)
 
 
 @login_required
 @entreprise_requise
 @log_path("app:tableauDeBord:rapport")
 def rapport(request, entreprise):
-    context = tableau_de_bord_menu_context(entreprise)
-    return render(
-        request,
-        "reglementations/tableau_de_bord/rapport.html",
-        context=context,
-    )
+    """Cette page n'est plus utilisée.
+
+    On renvoie vers la page principale du tableau de bord plutôt qu'une 404 à un
+    utilisateur viendrait sur cette page.
+    """
+    return redirect("reglementations:tableau_de_bord", siren=entreprise.siren)
+
+
+def rapport_generique(request):
+    """Cette page n'est plus utilisée maus l'URL pourrait être dans le site vitrine.
+
+    On renvoie vers la page principale du tableau de bord plutôt qu'une 404 à un
+    utilisateur viendrait sur cette page.
+    Aucune vérification, la page suivante s'en charge.
+    """
+    return redirect("reglementations:tableau_de_bord")
 
 
 @login_required

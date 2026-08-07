@@ -22,8 +22,8 @@ urlpatterns = [
     ),
     path(
         "tableau-de-bord/rapport/",
-        views.rapport,
-        name="rapport",
+        views.rapport_generique,
+        name="rapport_generique",
     ),
     path(
         "tableau-de-bord/<str:siren>/rapport/",
