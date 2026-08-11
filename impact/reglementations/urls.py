@@ -2,12 +2,13 @@ from django.urls import path
 from django.urls.conf import include
 
 from reglementations import views
+from reglementations.views import tableau_de_bord
 
 app_name = "reglementations"
 urlpatterns = [
     path(
         "tableau-de-bord/",
-        views.tableau_de_bord,
+        tableau_de_bord.tableau_de_bord,
         name="tableau_de_bord",
     ),
     path(
@@ -22,27 +23,27 @@ urlpatterns = [
     ),
     path(
         "tableau-de-bord/rapport/",
-        views.rapport_generique,
+        tableau_de_bord.rapport_generique,
         name="rapport_generique",
     ),
     path(
         "tableau-de-bord/<str:siren>/rapport/",
-        views.rapport,
+        tableau_de_bord.rapport,
         name="rapport",
     ),
     path(
         "tableau-de-bord/<str:siren>/rapport/analyse-double-materialite",
-        views.analyse_double_materialite,
+        tableau_de_bord.analyse_double_materialite,
         name="analyse_double_materialite",
     ),
     path(
         "tableau-de-bord/<str:siren>/",
-        views.tableau_de_bord,
+        tableau_de_bord.tableau_de_bord,
         name="tableau_de_bord",
     ),
     path(
         "tableau-de-bord/<str:siren>/reglementations/index/",
-        views.index,
+        tableau_de_bord.index,
         name="index",
     ),
     path(
