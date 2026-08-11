@@ -2,6 +2,7 @@ from django.urls import path
 from django.urls.conf import include
 
 from reglementations import views
+from reglementations.views import anticipation
 from reglementations.views import tableau_de_bord
 
 app_name = "reglementations"
@@ -55,6 +56,11 @@ urlpatterns = [
         "tableau-de-bord/<str:siren>/reglementations/<str:id_reglementation>/",
         views.reglementation,
         name="reglementation",
+    ),
+    path(
+        "tableau-de-bord/<str:siren>/anticipation/",
+        anticipation.anticiper,
+        name="anticipation",
     ),
     path(
         "bdese/<str:siren>/<int:annee>/<int:step>",
