@@ -20,31 +20,36 @@
                                 <a class="fr-breadcrumb__link" href="{% url 'reglementations:tableau_de_bord' entreprise.siren %}">Tableau de bord</a>
                             </li>
                             <li>
-                                <a class="fr-breadcrumb__link" aria-current="page">Gérer mes réglementations</a>
+                                <a class="fr-breadcrumb__link" aria-current="page">
+                                    {% if anticipation %}
+                                        Anticiper vos futures réglementations
+                                    {% else %}
+                                        Gérer mes réglementations
+                                    {% endif %}
+                                </a>
                             </li>
                         </ol>
                     </div>
                 </nav>
 
-                <div class="fr-grid-row fr-grid-row--top fr-grid-row--gutters fr-pb-1w fr-mb-1w">
-                    {% if anticipation %}
-                        <div class="fr-col-8">
-                            <h1>Anticiper le futur</h1>
-                        </div>
-                    {% else %}
-                        <div class="fr-col-8">
-                            <h1>Gérer mes réglementations</h1>
-                        </div>
-
-                        <div class="fr-col-4 flexbox-right">
-                            <a class="fr-btn fr-btn--icon-left fr-icon-calendar-event-line fr-btn--primary" href="{% url 'reglementations:anticipation' entreprise.siren %}">Anticiper le futur</a>
-                        </div>
-                    {% endif %}
-                </div>
+                {% if anticipation %}
+                    <h1>Anticiper vos futures réglementations</h1>
+                {% else %}
+                    <h1>Gérer mes réglementations</h1>
+                {% endif %}
 
                 <p>
-                    Découvrez les réglementations auxquelles votre entreprise {% if anticipation %}serait{% else %}est{% endif %} soumise
+                    Découvrez les réglementations auxquelles votre entreprise {% if anticipation %}serait{% else %}est{% endif %} soumise.
                 </p>
+
+                {% if not anticipation %}
+                    <div class="fr-callout fr-icon-info-line">
+                        <h3 class="fr-callout__title">Anticiper vos futures réglementations</h3>
+                        <p class="fr-callout__text">Vous pouvez aussi tester différentes hypothèses concernant votre entreprise et voir quelles réglementations sont applicables. Les changements effectués ne seront pas enregistrés.</p>
+
+                        <a class="fr-btn fr-btn--icon-left fr-icon-calendar-event-line fr-btn--primary" href="{% url 'reglementations:anticipation' entreprise.siren %}">Anticiper</a>
+                    </div>
+                {% endif %}
 
                 {% if reglementations_a_actualiser %}
                     <div class="fr-container fr-mb-2w dashboard dashboard-category dashboard--a-actualiser">
