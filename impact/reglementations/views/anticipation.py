@@ -5,11 +5,13 @@ from django.shortcuts import render
 from .tableau_de_bord import tableau_de_bord_menu_context
 from .toutes_reglementations import etats_reglementations_selon_caracteristiques
 from entreprises.decorators import entreprise_requise
+from logs import log_path
 from reglementations.forms.anticipation import AnticipationForm
 
 
 @login_required
 @entreprise_requise
+@log_path("app:tableauDeBord:anticiper")
 def anticiper(request, entreprise):
     if request.POST:
         form = AnticipationForm(request.POST, entreprise=entreprise)
