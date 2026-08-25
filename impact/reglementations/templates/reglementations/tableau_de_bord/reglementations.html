@@ -42,15 +42,6 @@
                     Découvrez les réglementations auxquelles votre entreprise {% if anticipation %}serait{% else %}est{% endif %} soumise.
                 </p>
 
-                {% if not anticipation %}
-                    <div class="fr-callout fr-icon-info-line">
-                        <h3 class="fr-callout__title">Anticiper vos futures réglementations</h3>
-                        <p class="fr-callout__text">Vous pouvez aussi tester différentes hypothèses concernant votre entreprise et voir quelles réglementations sont applicables. Les changements effectués ne seront pas enregistrés.</p>
-
-                        <a class="fr-btn fr-btn--icon-left fr-icon-calendar-event-line fr-btn--primary" href="{% url 'reglementations:anticipation' entreprise.siren %}">Anticiper</a>
-                    </div>
-                {% endif %}
-
                 {% if reglementations_a_actualiser %}
                     <div class="fr-container fr-mb-2w dashboard dashboard-category dashboard--a-actualiser">
                         <h2>À mettre à jour</h2>
