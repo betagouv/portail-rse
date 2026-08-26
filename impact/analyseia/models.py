@@ -8,9 +8,6 @@ from django.core.files.storage import default_storage
 from utils.models import TimestampedModel
 
 
-# TODO : refactor ?
-
-
 class AnalyseIAQuerySet(models.QuerySet):
     def reussies(self):
         return self.filter(etat__exact="success")
@@ -33,19 +30,34 @@ class AnalyseIA(TimestampedModel):
     fichier = models.FileField(storage=select_storage, upload_to=upload_path)
     nom = models.CharField(max_length=255, verbose_name="nom d'origine")
     resultat_json = models.JSONField(
-        null=True, blank=True, verbose_name="résultat de l'analyse IA au format JSON"
+        null=True, blank=True, verbose_name="résultat de l'analyse IA v1 au format JSON"
     )
     etat = models.CharField(
         max_length=144,
         null=True,
         blank=True,
-        verbose_name="dernier état connu du traitement d'analyse IA envoyé par le serveur IA",
+        verbose_name="dernier état connu du traitement d'analyse IA v1 envoyé par le serveur IA",
     )
     message = models.CharField(
         max_length=144,
         null=True,
         blank=True,
-        verbose_name="éventuel message précisant l'état envoyé par le serveur IA",
+        verbose_name="éventuel message précisant l'état envoyé par le serveur IA v1",
+    )
+    resultat_json_v2 = models.JSONField(
+        null=True, blank=True, verbose_name="résultat de l'analyse IA v2 au format JSON"
+    )
+    etat_v2 = models.CharField(
+        max_length=144,
+        null=True,
+        blank=True,
+        verbose_name="dernier état connu du traitement d'analyse IA v2 envoyé par le serveur IA",
+    )
+    message_v2 = models.CharField(
+        max_length=144,
+        null=True,
+        blank=True,
+        verbose_name="éventuel message précisant l'état envoyé par le serveur IA v2",
     )
 
     class Meta:
