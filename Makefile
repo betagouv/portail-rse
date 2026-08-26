@@ -21,7 +21,7 @@ migrate:
 	uv run python impact/manage.py migrate metabase --database=metabase
 
 migrations:
-	uv run python impact/manage.py makemigrations entreprises habilitations invitations metabase public reglementations users vsme
+	uv run python impact/manage.py makemigrations analyseia entreprises habilitations invitations metabase public reglementations users vsme
 
 sync_metabase:
 	uv run impact/manage.py sync_metabase
