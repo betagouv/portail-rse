@@ -27,12 +27,12 @@ urlpatterns = [
         name="suppression",
     ),
     path(
-        "analyses/<int:id_analyse>/lancement_analyse/",
+        "analyses/<int:id_analyse>/lancement_analyse/v<int:version_ia>",
         lancement_analyse,
         name="lancement_analyse",
     ),
     path(
-        "analyses/<int:id_analyse>/etat/",
+        "analyses/<int:id_analyse>/etat/v<int:version_ia>",
         actualisation_etat,
         name="actualisation_etat",
     ),  # callback API IA
