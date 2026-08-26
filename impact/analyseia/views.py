@@ -129,9 +129,12 @@ def lancement_analyse(request, analyse, version_ia):
                 )
             )
             etat = analyse_ia.lancement_analyse(
-                analyse.id, analyse.fichier.url, callback_url
+                analyse.id, analyse.fichier.url, version_ia, callback_url
             )
-            analyse.etat = etat
+            if version_ia == 1:
+                analyse.etat = etat
+            else:
+                analyse.etat_v2 = etat
             analyse.save()
             messages.success(
                 request,
@@ -159,11 +162,18 @@ def actualisation_etat(request, id_analyse, version_ia):
     analyse = get_object_or_404(AnalyseIA, pk=id_analyse)
     try:
         status = request.POST["status"]
-        analyse.etat = status
-        if message := request.POST.get("msg"):
-            analyse.message = message
-        if status == "success":
-            analyse.resultat_json = request.POST["resultat_json"]
+        if version_ia == 1:
+            analyse.etat = status
+            if message := request.POST.get("msg"):
+                analyse.message = message
+            if status == "success":
+                analyse.resultat_json = request.POST["resultat_json"]
+        else:
+            analyse.etat_v2 = status
+            if message := request.POST.get("msg"):
+                analyse.message_v2 = message
+            if status == "success":
+                analyse.resultat_json_v2 = json.loads(request.POST["resultat_json"])
     except KeyError:
         return HttpResponseBadRequest()
     analyse.save()

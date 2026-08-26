@@ -317,12 +317,44 @@ def test_lancement_d_analyse_IA_v1_liée_à_une_entreprise_par_utilisateur_autor
             },
         )
     )
-
     mock_api_analyse_ia.assert_called_once_with(
-        analyse.id, analyse.fichier.url, callback_url
+        analyse.id, analyse.fichier.url, VERSION_IA, callback_url
     )
     analyse.refresh_from_db()
     assert analyse.etat == "pending"
+    assert analyse.etat_v2 is None
+    assert response.status_code == 200
+    assert "L'analyse a bien été lancée." in response.content.decode("utf-8")
+    assert response.redirect_chain == [
+        (ANALYSES_URL.format(siren=analyse.entreprise.siren), 302)
+    ]
+
+
+def test_lancement_d_analyse_IA_v2_liée_à_une_entreprise_par_utilisateur_autorise(
+    client, mock_api_analyse_ia, analyse, alice
+):
+    client.force_login(alice)
+    VERSION_IA = 2
+
+    url = LANCEMENT_ANALYSE_URL.format(analyse_id=analyse.id, version_ia=VERSION_IA)
+    response = client.post(url, follow=True)
+
+    callback_url = response.wsgi_request.build_absolute_uri(
+        reverse(
+            "analyseia:actualisation_etat",
+            kwargs={
+                "id_analyse": analyse.id,
+                "version_ia": VERSION_IA,
+            },
+        )
+    )
+
+    mock_api_analyse_ia.assert_called_once_with(
+        analyse.id, analyse.fichier.url, VERSION_IA, callback_url
+    )
+    analyse.refresh_from_db()
+    assert analyse.etat is None
+    assert analyse.etat_v2 == "pending"
     assert response.status_code == 200
     assert "L'analyse a bien été lancée." in response.content.decode("utf-8")
     assert response.redirect_chain == [
@@ -352,7 +384,7 @@ def test_lancement_d_analyse_IA_liée_à_un_rapport_csrd_par_utilisateur_autoris
     )
 
     mock_api_analyse_ia.assert_called_once_with(
-        analyse.id, analyse.fichier.url, callback_url
+        analyse.id, analyse.fichier.url, VERSION_IA, callback_url
     )
     analyse.refresh_from_db()
     assert analyse.etat == "pending"
@@ -405,7 +437,7 @@ def test_lancement_d_analyse_IA_erreur_API(client, mock_api_analyse_ia, analyse,
     assert message_erreur in content
 
 
-def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_1(
+def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_v1_processing(
     client, analyse, mailoutbox
 ):
     url = ACTUALISATION_ETAT_URL.format(analyse_id=analyse.id, version_ia=1)
@@ -418,10 +450,11 @@ def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_1(
 
     analyse.refresh_from_db()
     assert analyse.etat == "processing"
+    assert analyse.etat_v2 is None
     assert len(mailoutbox) == 0
 
 
-def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_2(
+def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_v1_erreur(
     client, analyse, mailoutbox, alice
 ):
     url = ACTUALISATION_ETAT_URL.format(analyse_id=analyse.id, version_ia=1)
@@ -436,6 +469,8 @@ def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_2(
     analyse.refresh_from_db()
     assert analyse.etat == "error"
     assert analyse.message == "MESSAGE"
+    assert analyse.etat_v2 is None
+    assert analyse.message_v2 is None
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
     assert mail.from_email == settings.DEFAULT_FROM_EMAIL
@@ -443,7 +478,7 @@ def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_2(
     assert mail.template_id == settings.BREVO_RESULTAT_ANALYSE_IA_TEMPLATE
 
 
-def test_serveur_IA_envoie_le_resultat_de_l_analyse_liée_à_une_entreprise(
+def test_serveur_IA_envoie_le_resultat_de_l_analyse_v1_liée_à_une_entreprise(
     client, analyse, mailoutbox, alice
 ):
     RESULTATS = """{
@@ -477,6 +512,8 @@ def test_serveur_IA_envoie_le_resultat_de_l_analyse_liée_à_une_entreprise(
     analyse.refresh_from_db()
     assert analyse.etat == "success"
     assert analyse.resultat_json == RESULTATS
+    assert analyse.etat_v2 is None
+    assert analyse.resultat_json_v2 is None
 
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
@@ -584,6 +621,114 @@ def test_envoie_resultat_ia_email_non_bloquant(client, analyse, mocker):
     capture_exception_mock.assert_called_once()
     args, _ = capture_exception_mock.call_args
     assert isinstance(args[0], Exception)
+
+
+def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_v2_processing(
+    client, analyse, mailoutbox
+):
+    url = ACTUALISATION_ETAT_URL.format(analyse_id=analyse.id, version_ia=2)
+    client.post(
+        url,
+        {
+            "status": "processing",
+        },
+    )
+
+    analyse.refresh_from_db()
+    assert analyse.etat is None
+    assert analyse.etat_v2 == "processing"
+    assert len(mailoutbox) == 0
+
+
+def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_v2_erreur(
+    client, analyse, mailoutbox, alice
+):
+    url = ACTUALISATION_ETAT_URL.format(analyse_id=analyse.id, version_ia=2)
+    client.post(
+        url,
+        {
+            "status": "error",
+            "msg": "MESSAGE",
+        },
+    )
+
+    analyse.refresh_from_db()
+    assert analyse.etat is None
+    assert analyse.message is None
+    assert analyse.etat_v2 == "error"
+    assert analyse.message_v2 == "MESSAGE"
+    assert len(mailoutbox) == 1
+    mail = mailoutbox[0]
+    assert mail.from_email == settings.DEFAULT_FROM_EMAIL
+    assert list(mail.to) == [alice.email]
+    assert mail.template_id == settings.BREVO_RESULTAT_ANALYSE_IA_TEMPLATE
+
+
+def test_serveur_IA_envoie_le_resultat_de_l_analyse_v2(
+    client, analyse, mailoutbox, alice
+):
+    RESULTATS = """[{"Code indicateur": "B3_1", "Mots cl\\u00e9s trouv\\u00e9s": "\\u00e9missions, \\u00e9nergie, d\\u00e9veloppement, durable, bilan", "Mots cl\\u00e9s utilis\\u00e9s": "scope 1, \\u00e9missions, CO\\u2082, GHG, carbone, \\u00e9nergie, d\\u00e9veloppement durable, bilan carbone, climat, d\\u00e9carbonation", "M\\u00e9trique": "\\u00c9missions directes de GES (scope 1)", "Pages candidates": [4, 8, 9, 5, 7, 11], "Pages conserv\\u00e9es": [4, 8, 9, 5, 7, 11], "Paragraphe source": "NA", "Retrieval par page": [{"keywords_found": ["\\u00e9missions", "\\u00e9nergie", "d\\u00e9veloppement", "durable"], "page": 4, "passed": true, "score": 4, "thresholds": null}], "Th\\u00e9matique": "\\u00c9nergie et \\u00e9missions de GES", "Unit\\u00e9 extraite": "NA", "Valeur": "NA"}]"""
+
+    url = ACTUALISATION_ETAT_URL.format(analyse_id=analyse.id, version_ia=2)
+    response = client.post(
+        url,
+        {
+            "status": "success",
+            "resultat_json": RESULTATS,
+        },
+    )
+
+    analyse.refresh_from_db()
+    assert analyse.etat is None
+    assert analyse.resultat_json is None
+    assert analyse.etat_v2 == "success"
+    assert analyse.resultat_json_v2 == [
+        {
+            "Code indicateur": "B3_1",
+            "Mots clés trouvés": "émissions, énergie, développement, durable, bilan",
+            "Mots clés utilisés": "scope 1, émissions, CO₂, GHG, carbone, énergie, "
+            "développement durable, bilan carbone, climat, "
+            "décarbonation",
+            "Métrique": "Émissions directes de GES (scope 1)",
+            "Pages candidates": [4, 8, 9, 5, 7, 11],
+            "Pages conservées": [4, 8, 9, 5, 7, 11],
+            "Paragraphe source": "NA",
+            "Retrieval par page": [
+                {
+                    "keywords_found": [
+                        "émissions",
+                        "énergie",
+                        "développement",
+                        "durable",
+                    ],
+                    "page": 4,
+                    "passed": True,
+                    "score": 4,
+                    "thresholds": None,
+                }
+            ],
+            "Thématique": "Énergie et émissions de GES",
+            "Unité extraite": "NA",
+            "Valeur": "NA",
+        }
+    ]
+
+    assert len(mailoutbox) == 1
+    mail = mailoutbox[0]
+    assert mail.from_email == settings.DEFAULT_FROM_EMAIL
+    assert list(mail.to) == [alice.email]
+    assert mail.template_id == settings.BREVO_RESULTAT_ANALYSE_IA_TEMPLATE
+    assert mail.merge_global_data == {
+        "resultat_ia_url": response.wsgi_request.build_absolute_uri(
+            reverse(
+                "analyseia:analyses",
+                kwargs={
+                    "siren": analyse.entreprise.siren,
+                },
+            )
+        )
+        + "#onglets"
+    }
 
 
 def test_serveur_IA_envoie_une_requête_invalide(client, analyse, mailoutbox):

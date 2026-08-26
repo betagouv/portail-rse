@@ -10,9 +10,9 @@ NOM_API = "analyse IA"
 ANALYSE_IA_TIMEOUT = 3
 
 
-def lancement_analyse(document_id, document_url, callback_url):
+def lancement_analyse(document_id, document_url, version_ia, callback_url):
     try:
-        url = f"{settings.API_ANALYSE_IA_BASE_URL}/run-task"
+        url = f"{settings.API_ANALYSE_IA_BASE_URL}/run-task/v{version_ia}"
         response = requests.post(
             url,
             {
