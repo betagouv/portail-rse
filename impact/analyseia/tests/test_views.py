@@ -12,8 +12,8 @@ AJOUT_DOCUMENT_URL = ANALYSES_URL + "ajout_document/"
 AJOUT_DOCUMENT_LIE_CSRD_URL = ANALYSES_URL + "ajout_document/{csrd_id}"
 ANALYSE_BASE_URL = "/analyses/{analyse_id}/"
 SUPPRESSION_ANALYSE_URL = ANALYSE_BASE_URL + "suppression/"
-LANCEMENT_ANALYSE_URL = ANALYSE_BASE_URL + "lancement_analyse/"
-ACTUALISATION_ETAT_URL = ANALYSE_BASE_URL + "etat/"
+LANCEMENT_ANALYSE_URL = ANALYSE_BASE_URL + "lancement_analyse/v{version_ia}"
+ACTUALISATION_ETAT_URL = ANALYSE_BASE_URL + "etat/v{version_ia}"
 CSRD_ANALYSE_ECART_URL = "/csrd/{siren}/etape-analyse-ecart"
 
 
@@ -299,12 +299,13 @@ def test_suppression_analyse_inexistante(client, analyse, alice):
     assert AnalyseIA.objects.count() == 1
 
 
-def test_lancement_d_analyse_IA_liée_à_une_entreprise_par_utilisateur_autorise(
+def test_lancement_d_analyse_IA_v1_liée_à_une_entreprise_par_utilisateur_autorise(
     client, mock_api_analyse_ia, analyse, alice
 ):
     client.force_login(alice)
+    VERSION_IA = 1
 
-    url = LANCEMENT_ANALYSE_URL.format(analyse_id=analyse.id)
+    url = LANCEMENT_ANALYSE_URL.format(analyse_id=analyse.id, version_ia=VERSION_IA)
     response = client.post(url, follow=True)
 
     callback_url = response.wsgi_request.build_absolute_uri(
@@ -312,6 +313,7 @@ def test_lancement_d_analyse_IA_liée_à_une_entreprise_par_utilisateur_autorise
             "analyseia:actualisation_etat",
             kwargs={
                 "id_analyse": analyse.id,
+                "version_ia": VERSION_IA,
             },
         )
     )
@@ -334,8 +336,9 @@ def test_lancement_d_analyse_IA_liée_à_un_rapport_csrd_par_utilisateur_autoris
     analyse = analyse_avec_csrd
     csrd = analyse.rapports_csrd.first()
     client.force_login(alice)
+    VERSION_IA = 1
+    url = LANCEMENT_ANALYSE_URL.format(analyse_id=analyse.id, version_ia=VERSION_IA)
 
-    url = LANCEMENT_ANALYSE_URL.format(analyse_id=analyse.id)
     response = client.post(url, follow=True)
 
     callback_url = response.wsgi_request.build_absolute_uri(
@@ -343,6 +346,7 @@ def test_lancement_d_analyse_IA_liée_à_un_rapport_csrd_par_utilisateur_autoris
             "analyseia:actualisation_etat",
             kwargs={
                 "id_analyse": analyse.id,
+                "version_ia": VERSION_IA,
             },
         )
     )
@@ -364,7 +368,7 @@ def test_lancement_d_analyse_IA_par_utilisateur_non_autorise(
 ):
     client.force_login(bob)
 
-    url = LANCEMENT_ANALYSE_URL.format(analyse_id=analyse.id)
+    url = LANCEMENT_ANALYSE_URL.format(analyse_id=analyse.id, version_ia=1)
     response = client.post(
         url,
     )
@@ -377,7 +381,7 @@ def test_lancement_d_analyse_IA_par_utilisateur_non_autorise(
 def test_lancement_d_analyse_IA_redirige_vers_la_connexion_si_non_connecté(
     client, mock_api_analyse_ia, analyse
 ):
-    url = LANCEMENT_ANALYSE_URL.format(analyse_id=analyse.id)
+    url = LANCEMENT_ANALYSE_URL.format(analyse_id=analyse.id, version_ia=1)
     response = client.post(url)
 
     assert response.status_code == 302
@@ -392,7 +396,7 @@ def test_lancement_d_analyse_IA_erreur_API(client, mock_api_analyse_ia, analyse,
     mock_api_analyse_ia.side_effect = APIError(message_erreur)
     client.force_login(alice)
 
-    url = LANCEMENT_ANALYSE_URL.format(analyse_id=analyse.id)
+    url = LANCEMENT_ANALYSE_URL.format(analyse_id=analyse.id, version_ia=1)
     response = client.post(url, follow=True)
 
     analyse.refresh_from_db()
@@ -404,7 +408,7 @@ def test_lancement_d_analyse_IA_erreur_API(client, mock_api_analyse_ia, analyse,
 def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_1(
     client, analyse, mailoutbox
 ):
-    url = ACTUALISATION_ETAT_URL.format(analyse_id=analyse.id)
+    url = ACTUALISATION_ETAT_URL.format(analyse_id=analyse.id, version_ia=1)
     client.post(
         url,
         {
@@ -420,7 +424,7 @@ def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_1(
 def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_2(
     client, analyse, mailoutbox, alice
 ):
-    url = ACTUALISATION_ETAT_URL.format(analyse_id=analyse.id)
+    url = ACTUALISATION_ETAT_URL.format(analyse_id=analyse.id, version_ia=1)
     client.post(
         url,
         {
@@ -461,7 +465,7 @@ def test_serveur_IA_envoie_le_resultat_de_l_analyse_liée_à_une_entreprise(
   ]
   }"""
 
-    url = ACTUALISATION_ETAT_URL.format(analyse_id=analyse.id)
+    url = ACTUALISATION_ETAT_URL.format(analyse_id=analyse.id, version_ia=1)
     response = client.post(
         url,
         {
@@ -516,7 +520,7 @@ def test_serveur_IA_envoie_le_resultat_de_l_analyse_liée_à_un_rapport_csrd(
   ]
   }"""
 
-    url = ACTUALISATION_ETAT_URL.format(analyse_id=analyse.id)
+    url = ACTUALISATION_ETAT_URL.format(analyse_id=analyse.id, version_ia=1)
     response = client.post(
         url,
         {
@@ -564,7 +568,7 @@ def test_envoie_resultat_ia_email_non_bloquant(client, analyse, mocker):
   ]
   }"""
 
-    url = ACTUALISATION_ETAT_URL.format(analyse_id=analyse.id)
+    url = ACTUALISATION_ETAT_URL.format(analyse_id=analyse.id, version_ia=1)
     response = client.post(
         url,
         {
@@ -583,7 +587,7 @@ def test_envoie_resultat_ia_email_non_bloquant(client, analyse, mocker):
 
 
 def test_serveur_IA_envoie_une_requête_invalide(client, analyse, mailoutbox):
-    url = ACTUALISATION_ETAT_URL.format(analyse_id=analyse.id)
+    url = ACTUALISATION_ETAT_URL.format(analyse_id=analyse.id, version_ia=1)
     response = client.post(
         url,
         {

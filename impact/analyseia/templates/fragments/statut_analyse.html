@@ -32,7 +32,7 @@
     </td>
     <td>
         {% if not analyse.etat %}
-            <form action="{% url 'analyseia:lancement_analyse' analyse.id %}" method="post">
+            <form action="{% url 'analyseia:lancement_analyse' analyse.id 1 %}" method="post">
                 {% csrf_token %}
                 <button type="submit"
                         class="fr-btn fr-btn--sm fr-btn--icon-left fr-icon-play-circle-line">Lancer une

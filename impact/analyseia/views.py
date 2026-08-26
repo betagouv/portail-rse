@@ -116,7 +116,7 @@ def suppression(request, analyse):
 @login_required
 @analyse_requise
 @require_http_methods(["POST"])
-def lancement_analyse(request, analyse):
+def lancement_analyse(request, analyse, version_ia):
     if analyse.etat != "success":
         try:
             callback_url = request.build_absolute_uri(
@@ -124,6 +124,7 @@ def lancement_analyse(request, analyse):
                     "analyseia:actualisation_etat",
                     kwargs={
                         "id_analyse": analyse.id,
+                        "version_ia": version_ia,
                     },
                 )
             )
@@ -153,7 +154,7 @@ def lancement_analyse(request, analyse):
 
 @csrf_exempt
 @require_http_methods(["POST"])
-def actualisation_etat(request, id_analyse):
+def actualisation_etat(request, id_analyse, version_ia):
     # callback pour l'API IA qui renvoie le statut de l'analyse IA à la fin de chaque étape de l'analyse
     analyse = get_object_or_404(AnalyseIA, pk=id_analyse)
     try:
