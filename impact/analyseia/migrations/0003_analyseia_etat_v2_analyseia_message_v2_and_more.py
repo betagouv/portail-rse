@@ -68,4 +68,19 @@ class Migration(migrations.Migration):
                 verbose_name="résultat de l'analyse IA v1 au format JSON",
             ),
         ),
+        migrations.RenameField(
+            model_name="analyseia",
+            old_name="etat",
+            new_name="etat_v1",
+        ),
+        migrations.RenameField(
+            model_name="analyseia",
+            old_name="message",
+            new_name="message_v1",
+        ),
+        migrations.RenameField(
+            model_name="analyseia",
+            old_name="resultat_json",
+            new_name="resultat_json_v1",
+        ),
     ]
