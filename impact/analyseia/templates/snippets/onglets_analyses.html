@@ -12,17 +12,26 @@
     <ul class="fr-tabs__list" role="tablist" aria-label="onglets-analyse-ecart">
         <li role="presentation">
             <button id="onglet-fichiers" class="fr-tabs__tab fr-icon-file-fill fr-tabs__tab--icon-left"
-                    tabindex="{% if onglet_resultats_actif %}-1{% else %}0{% endif %}" role="tab"
-                    aria-selected="{% if onglet_resultats_actif %}false{% else %}true{% endif %}"
+                    tabindex="{% if onglet_resultats_enjeux_actif %}-1{% else %}0{% endif %}" role="tab"
+                    aria-selected="{% if onglet_resultats_enjeux_actif %}false{% else %}true{% endif %}"
                     aria-controls="onglet-fichiers-panel">Vos fichiers ({{ analyses_ia.count }})</button>
         </li>
         <li role="presentation">
-            <button id="onglet-resultats"
+            <button id="onglet-resultats-durabilite"
                     class="fr-tabs__tab fr-icon-line-chart-fill fr-tabs__tab--icon-left"
-                    tabindex="{% if onglet_resultats_actif %}0{% else %}-1{% endif %}" role="tab"
-                    aria-selected="{% if onglet_resultats_actif %}true{% else %}false{% endif %}"
-                    aria-controls="onglet-resultats-panel">Résultats de l'analyse</button>
+                    tabindex="{% if onglet_resultats_enjeux_actif %}0{% else %}-1{% endif %}" role="tab"
+                    aria-selected="{% if onglet_resultats_enjeux_actif %}true{% else %}false{% endif %}"
+                    aria-controls="onglet-resultats-enjeux-panel">Résultats de l'analyse Enjeux de durabilité</button>
         </li>
+        {% if not csrd %}
+            <li role="presentation">
+                <button id="onglet-resultats-vsme"
+                        class="fr-tabs__tab fr-icon-line-chart-fill fr-tabs__tab--icon-left"
+                        tabindex="-1" role="tab"
+                        aria-selected="false"
+                        aria-controls="onglet-resultats-vsme-panel">Résultats de l'analyse VSME</button>
+            </li>
+        {% endif %}
     </ul>
     <div id="onglet-fichiers-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel"
          aria-labelledby="onglet-fichiers" tabindex="0">
@@ -89,9 +98,7 @@
         {% endif %}
     </div>
 
-    {# à remanier #}
-
-    <div id="onglet-resultats-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="onglet-resultats"
+    <div id="onglet-resultats-enjeux-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="onglet-resultats-enjeux"
          tabindex="0">
         <div class="fr-container">
             {% if synthese.nb_documents_analyses %}
@@ -352,4 +359,270 @@
             {% endif %}
         </div>
     </div>
+
+    {% if not csrd %}
+        <div id="onglet-resultats-vsme-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="onglet-resultats-vsme"
+             tabindex="0">
+            <div class="fr-container">
+                VSME
+                {% if synthese.nb_documents_analyses %}
+                    <div class="fr-grid-row fr-grid-row--gutters fr-pb-4w">
+                        <div class="fr-col">
+                            <div class="fr-tile">
+                                <div class="fr-tile__body">
+                                    <div class="fr-tile__content">
+                                        <h3 class="fr-tile__title">
+                                            {{ synthese.nb_documents_analyses }}
+                                        </h3>
+                                        <p class="fr-tile__desc">
+                                            document{{ synthese.nb_documents_analyses|pluralize }}
+                                            analysé{{ synthese.nb_documents_analyses|pluralize }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="fr-tile__header">
+                                    <div class="fr-tile__pictogram">
+                                        <svg aria-hidden="true" class="fr-artwork"
+                                             viewBox="0 0 80 80" width="80px" height="80px">
+                                            <use class="fr-artwork-decorative"
+                                                 href="{% static 'dsfr'%}/artwork/pictograms/leisure/book.svg#artwork-decorative">
+                                            </use>
+                                            <use class="fr-artwork-minor"
+                                                 href="{% static 'dsfr'%}/artwork/pictograms/leisure/book.svg#artwork-minor">
+                                            </use>
+                                            <use class="fr-artwork-major"
+                                                 href="{% static 'dsfr'%}/artwork/pictograms/leisure/book.svg#artwork-major">
+                                            </use>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fr-col">
+                            <div class="fr-tile">
+                                <div class="fr-tile__body">
+                                    <div class="fr-tile__content">
+                                        <h3 class="fr-tile__title">
+                                            {{synthese.nb_phrases_pertinentes_detectees }}
+                                        </h3>
+                                        <p class="fr-tile__desc">
+                                            phrase{{ synthese.nb_phrases_pertinentes_detectees|pluralize }}
+                                            pertinente{{ synthese.nb_phrases_pertinentes_detectees|pluralize }}
+                                            détectée{{ synthese.nb_phrases_pertinentes_detectees|pluralize }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="fr-tile__header">
+                                    <div class="fr-tile__pictogram">
+                                        <svg aria-hidden="true" class="fr-artwork"
+                                             viewBox="0 0 80 80" width="80px" height="80px">
+                                            <use class="fr-artwork-decorative"
+                                                 href="{% static 'dsfr'%}/artwork/pictograms/document/document.svg#artwork-decorative">
+                                            </use>
+                                            <use class="fr-artwork-minor"
+                                                 href="{% static 'dsfr'%}/artwork/pictograms/document/document.svg#artwork-minor">
+                                            </use>
+                                            <use class="fr-artwork-major"
+                                                 href="{% static 'dsfr'%}/artwork/pictograms/document/document.svg#artwork-major">
+                                            </use>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fr-col">
+                            <div class="fr-tile">
+                                <div class="fr-tile__body">
+                                    <div class="fr-tile__content">
+                                        <h3 class="fr-tile__title">
+                                            {{ synthese.nb_esrs_thematiques_detectees }}
+                                        </h3>
+                                        <p class="fr-tile__desc">
+                                            {% if csrd %}ESRS thématique{% else %}Thème{% endif %}{{ synthese.nb_esrs_thematiques_detectees|pluralize }}
+                                            détecté{{ synthese.nb_esrs_thematiques_detectees|pluralize }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="fr-tile__header">
+                                    <div class="fr-tile__pictogram">
+                                        <svg aria-hidden="true" class="fr-artwork"
+                                             viewBox="0 0 80 80" width="80px" height="80px">
+                                            <use class="fr-artwork-decorative"
+                                                 href="{% static 'dsfr'%}/artwork/pictograms/digital/data-visualization.svg#artwork-decorative">
+                                            </use>
+                                            <use class="fr-artwork-minor"
+                                                 href="{% static 'dsfr'%}/artwork/pictograms/digital/data-visualization.svg#artwork-minor">
+                                            </use>
+                                            <use class="fr-artwork-major"
+                                                 href="{% static 'dsfr'%}/artwork/pictograms/digital/data-visualization.svg#artwork-major">
+                                            </use>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fr-grid-row fr-grid-row--center fr-pb-4w">
+
+                        <a class="fr-btn fr-btn--icon-left fr-icon-download-line"
+                           href="{{ synthese_resultat_url }}">Télécharger la
+                            synthèse de tous les résultats (xlsx)</a>
+
+                    </div>
+                    <div class="fr-grid-row">
+                        <h4>Résultats par {% if csrd %}ESRS{% else %}catégorie{% endif %}</h4>
+                        <div class="fr-container fr-pb-6w">
+
+                            <div class="fr-grid-row fr-grid-row--gutters esrs-organizer">
+                                <div class="fr-col-lg-4 fr-col-12">
+                                    <div class="esrs-organizer--container esrs-organizer--env">
+                                        <div class="esrs-organizer--header">
+                                            <h4 class="esrs-organizer--title">Environnement
+                                            </h4>
+                                        </div>
+
+                                        <div class="esrs-organizer--content">
+                                            {% if synthese.phrases_environnement %}
+                                                {% for phrases_par_esrs in synthese.phrases_environnement %}
+                                                    {% if csrd %}
+                                                        {% url 'analyseia:synthese_resultat_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs csrd.id as synthese_resultat_par_ESRS_url %}
+                                                    {% else %}
+                                                        {% url 'analyseia:synthese_resultat_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs as synthese_resultat_par_ESRS_url %}
+                                                    {% endif %}
+                                                    <div class="esrs-organizer--esrs">
+                                                        <div class="esrs-organizer--card">
+                                                            <div
+                                                                class="esrs-organizer--card-title">
+                                                                <p
+                                                                    class="fr-badge fr-badge--sm">
+                                                                    {{ phrases_par_esrs.nombre_phrases }}
+                                                                    phrase{{ phrases_par_esrs.nombre_phrases|pluralize }}
+                                                                    pertinente{{ phrases_par_esrs.nombre_phrases|pluralize }}
+                                                                </p>
+                                                                <b>{{ phrases_par_esrs.titre }}</b>
+                                                                <a class="fr-btn fr-btn--sm fr-btn--secondary fr-icon-download-line"
+                                                                   title="Télécharger le tableur contenant les phrases correspondant à {% if csrd %}cet ESRS{% else %}ce thème{% endif %}"
+                                                                   href="{{ synthese_resultat_par_ESRS_url }}"
+                                                                   target="_blank">Télécharger le tableur contenant les phrases correspondant à {% if csrd %}cet ESRS{% else %}ce thème{% endif %}</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            {% else %}
+                                                <div class="esrs-organizer--esrs">
+                                                    <div class="esrs-organizer--card">
+                                                        <div
+                                                            class="esrs-organizer--card-title">
+                                                            Aucune phrase pertinente
+                                                            trouvée
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="fr-col-lg-4 fr-col-12">
+                                    <div class="esrs-organizer--container esrs-organizer--social">
+                                        <div class="esrs-organizer--header">
+                                            <h4 class="esrs-organizer--title">Social</h4>
+                                        </div>
+                                        <div class="esrs-organizer--content">
+                                            {% if synthese.phrases_social %}
+                                                {% for phrases_par_esrs in synthese.phrases_social %}
+                                                    {% if csrd %}
+                                                        {% url 'analyseia:synthese_resultat_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs csrd.id as synthese_resultat_par_ESRS_url %}
+                                                    {% else %}
+                                                        {% url 'analyseia:synthese_resultat_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs as synthese_resultat_par_ESRS_url %}
+                                                    {% endif %}
+                                                    <div class="esrs-organizer--esrs">
+                                                        <div class="esrs-organizer--card">
+                                                            <div
+                                                                class="esrs-organizer--card-title">
+                                                                <p
+                                                                    class="fr-badge fr-badge--sm">
+                                                                    {{ phrases_par_esrs.nombre_phrases }}
+                                                                    phrase{{ phrases_par_esrs.nombre_phrases|pluralize }}
+                                                                    pertinente{{ phrases_par_esrs.nombre_phrases|pluralize }}
+                                                                </p>
+                                                                <b>{{ phrases_par_esrs.titre }}</b>
+                                                                <a class="fr-btn fr-btn--sm fr-btn--secondary fr-icon-download-line"
+                                                                   title="Télécharger le tableur contenant les phrases correspondant à {% if csrd %}cet ESRS{% else %}ce thème{% endif %}"
+                                                                   href="{{ synthese_resultat_par_ESRS_url }}"
+                                                                   target="_blank">Télécharger le tableur contenant les phrases correspondant à {% if csrd %}cet ESRS{% else %}ce thème{% endif %}</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            {% else %}
+                                                <div class="esrs-organizer--esrs">
+                                                    <div class="esrs-organizer--card">
+                                                        <div
+                                                            class="esrs-organizer--card-title">
+                                                            Aucune phrase pertinente
+                                                            trouvée
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="fr-col-lg-4 fr-col-12">
+                                    <div class="esrs-organizer--container esrs-organizer--gov">
+                                        <div class="esrs-organizer--header">
+                                            <h4 class="esrs-organizer--title">Gouvernance
+                                            </h4>
+                                        </div>
+                                        <div class="esrs-organizer--content">
+                                            {% if synthese.phrases_gouvernance %}
+                                                {% for phrases_par_esrs in synthese.phrases_gouvernance %}
+                                                    {% if csrd %}
+                                                        {% url 'analyseia:synthese_resultat_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs csrd.id as synthese_resultat_par_ESRS_url %}
+                                                    {% else %}
+                                                        {% url 'analyseia:synthese_resultat_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs as synthese_resultat_par_ESRS_url %}
+                                                    {% endif %}
+                                                    <div class="esrs-organizer--esrs">
+                                                        <div class="esrs-organizer--card">
+                                                            <div
+                                                                class="esrs-organizer--card-title">
+                                                                <p
+                                                                    class="fr-badge fr-badge--sm">
+                                                                    {{ phrases_par_esrs.nombre_phrases }}
+                                                                    phrase{{ phrases_par_esrs.nombre_phrases|pluralize }}
+                                                                    pertinente{{ phrases_par_esrs.nombre_phrases|pluralize }}
+                                                                </p>
+                                                                <b>{{ phrases_par_esrs.titre }}</b>
+                                                                <a class="fr-btn fr-btn--sm fr-btn--secondary fr-icon-download-line"
+                                                                   title="Télécharger le tableur contenant les phrases correspondant à {% if csrd %}cet ESRS{% else %}ce thème{% endif %}"
+                                                                   href="{{ synthese_resultat_par_ESRS_url }}"
+                                                                   target="_blank">Télécharger le tableur contenant les phrases correspondant à {% if csrd %}cet ESRS{% else %}ce thème{% endif %}</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            {% else %}
+                                                <div class="esrs-organizer--esrs">
+                                                    <div class="esrs-organizer--card">
+                                                        <div
+                                                            class="esrs-organizer--card-title">
+                                                            Aucune phrase pertinente
+                                                            trouvée
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    Aucun document analysé.
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+
 </div>

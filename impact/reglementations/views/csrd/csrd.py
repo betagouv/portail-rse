@@ -637,7 +637,7 @@ def contexte_d_etape(id_etape, csrd, form=None):
                 "synthese": synthese_analyse(
                     csrd.analyses_ia.reussies(), prefixe_ESRS=True
                 ),
-                "onglet_resultats_actif": csrd.analyses_ia.reussies().exists()
+                "onglet_resultats_enjeux_actif": csrd.analyses_ia.reussies().exists()
                 and not csrd.analyses_ia.non_lancees(),
             }
         case "redaction-rapport-durabilite":
