@@ -117,7 +117,7 @@ def suppression(request, analyse):
 @analyse_requise
 @require_http_methods(["POST"])
 def lancement_analyse(request, analyse, version_ia):
-    if analyse.etat != "success":
+    if analyse.etat_v1 != "success":
         try:
             callback_url = request.build_absolute_uri(
                 reverse(
@@ -132,7 +132,7 @@ def lancement_analyse(request, analyse, version_ia):
                 analyse.id, analyse.fichier.url, version_ia, callback_url
             )
             if version_ia == 1:
-                analyse.etat = etat
+                analyse.etat_v1 = etat
             else:
                 analyse.etat_v2 = etat
             analyse.save()
@@ -165,11 +165,11 @@ def actualisation_etat(request, id_analyse, version_ia):
         message = request.POST.get("msg")
         resultat_json = request.POST.get("resultat_json")
         if version_ia == 1:
-            analyse.etat = status
+            analyse.etat_v1 = status
             if message:
-                analyse.message = message
+                analyse.message_v1 = message
             if status == "success":
-                analyse.resultat_json = resultat_json
+                analyse.resultat_json_v1 = resultat_json
         else:
             analyse.etat_v2 = status
             if message:
@@ -231,9 +231,9 @@ def resultat(request, analyse, rendu):
 def _ajoute_lignes_resultat_ia(
     worksheet, document, avec_nom_fichier, contrainte_esrs, prefixe_ESRS=False
 ):
-    if not document.resultat_json:
+    if not document.resultat_json_v1:
         return
-    data = json.loads(document.resultat_json)
+    data = json.loads(document.resultat_json_v1)
     for esrs, contenus in data.items():
         for contenu in contenus:
             if esrs != "Non ESRS" and (

@@ -237,7 +237,7 @@ def test_progression_avancement_csrd(csrd):
 def test_rapport_csrd_avec_documents(csrd):
     document_1 = AnalyseIA.objects.create()
     document_1.rapports_csrd.add(csrd)
-    document_2 = AnalyseIA.objects.create(etat="pending")
+    document_2 = AnalyseIA.objects.create(etat_v1="pending")
     document_2.rapports_csrd.add(csrd)
 
     assert list(csrd.analyses_ia.reussies()) == []
@@ -245,8 +245,8 @@ def test_rapport_csrd_avec_documents(csrd):
     assert document_1.nombre_de_phrases_pertinentes == 0
     assert document_2.nombre_de_phrases_pertinentes == 0
 
-    document_2.etat = "success"
-    document_2.resultat_json = """{
+    document_2.etat_v1 = "success"
+    document_2.resultat_json_v1 = """{
     "ESRS E1": [
       {
         "PAGES": 1,

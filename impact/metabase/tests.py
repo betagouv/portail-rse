@@ -854,8 +854,8 @@ def test_synchronise_les_analyses_ia(entreprise_factory, alice):
     )
     analyse_reussie = entreprise.analyses_ia.create(
         fichier=ContentFile("pdf file data", name="fichier_correct.pdf"),
-        etat="success",
-        resultat_json="""{
+        etat_v1="success",
+        resultat_json_v1="""{
   "ESRS E1": [
     {
       "PAGES": 1,
@@ -878,8 +878,8 @@ def test_synchronise_les_analyses_ia(entreprise_factory, alice):
     )
     analyse_erronee = entreprise.analyses_ia.create(
         fichier=ContentFile("pdf file data", name="fichier_corrompu.pdf"),
-        etat="error",
-        message="Une erreur est survenue",
+        etat_v1="error",
+        message_v1="Une erreur est survenue",
     )
 
     call_command("sync_metabase", entreprises=True, analyses=True)

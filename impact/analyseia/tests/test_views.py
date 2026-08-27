@@ -321,7 +321,7 @@ def test_lancement_d_analyse_IA_v1_liée_à_une_entreprise_par_utilisateur_autor
         analyse.id, analyse.fichier.url, VERSION_IA, callback_url
     )
     analyse.refresh_from_db()
-    assert analyse.etat == "pending"
+    assert analyse.etat_v1 == "pending"
     assert analyse.etat_v2 is None
     assert response.status_code == 200
     assert "L'analyse a bien été lancée." in response.content.decode("utf-8")
@@ -353,7 +353,7 @@ def test_lancement_d_analyse_IA_v2_liée_à_une_entreprise_par_utilisateur_autor
         analyse.id, analyse.fichier.url, VERSION_IA, callback_url
     )
     analyse.refresh_from_db()
-    assert analyse.etat is None
+    assert analyse.etat_v1 is None
     assert analyse.etat_v2 == "pending"
     assert response.status_code == 200
     assert "L'analyse a bien été lancée." in response.content.decode("utf-8")
@@ -387,7 +387,7 @@ def test_lancement_d_analyse_IA_liée_à_un_rapport_csrd_par_utilisateur_autoris
         analyse.id, analyse.fichier.url, VERSION_IA, callback_url
     )
     analyse.refresh_from_db()
-    assert analyse.etat == "pending"
+    assert analyse.etat_v1 == "pending"
     assert response.status_code == 200
     assert "L'analyse a bien été lancée." in response.content.decode("utf-8")
     assert response.redirect_chain == [
@@ -406,7 +406,7 @@ def test_lancement_d_analyse_IA_par_utilisateur_non_autorise(
     )
 
     assert response.status_code == 403
-    assert not analyse.etat
+    assert not analyse.etat_v1
     assert not mock_api_analyse_ia.called
 
 
@@ -417,7 +417,7 @@ def test_lancement_d_analyse_IA_redirige_vers_la_connexion_si_non_connecté(
     response = client.post(url)
 
     assert response.status_code == 302
-    assert not analyse.etat
+    assert not analyse.etat_v1
     assert not mock_api_analyse_ia.called
 
 
@@ -432,7 +432,7 @@ def test_lancement_d_analyse_IA_erreur_API(client, mock_api_analyse_ia, analyse,
     response = client.post(url, follow=True)
 
     analyse.refresh_from_db()
-    assert not analyse.etat
+    assert not analyse.etat_v1
     content = response.content.decode("utf-8")
     assert message_erreur in content
 
@@ -449,7 +449,7 @@ def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_v1_processing(
     )
 
     analyse.refresh_from_db()
-    assert analyse.etat == "processing"
+    assert analyse.etat_v1 == "processing"
     assert analyse.etat_v2 is None
     assert len(mailoutbox) == 0
 
@@ -467,8 +467,8 @@ def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_v1_erreur(
     )
 
     analyse.refresh_from_db()
-    assert analyse.etat == "error"
-    assert analyse.message == "MESSAGE"
+    assert analyse.etat_v1 == "error"
+    assert analyse.message_v1 == "MESSAGE"
     assert analyse.etat_v2 is None
     assert analyse.message_v2 is None
     assert len(mailoutbox) == 1
@@ -510,8 +510,8 @@ def test_serveur_IA_envoie_le_resultat_de_l_analyse_v1_liée_à_une_entreprise(
     )
 
     analyse.refresh_from_db()
-    assert analyse.etat == "success"
-    assert analyse.resultat_json == RESULTATS
+    assert analyse.etat_v1 == "success"
+    assert analyse.resultat_json_v1 == RESULTATS
     assert analyse.etat_v2 is None
     assert analyse.resultat_json_v2 is None
 
@@ -567,8 +567,8 @@ def test_serveur_IA_envoie_le_resultat_de_l_analyse_liée_à_un_rapport_csrd(
     )
 
     analyse.refresh_from_db()
-    assert analyse.etat == "success"
-    assert analyse.resultat_json == RESULTATS
+    assert analyse.etat_v1 == "success"
+    assert analyse.resultat_json_v1 == RESULTATS
 
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
@@ -615,8 +615,8 @@ def test_envoie_resultat_ia_email_non_bloquant(client, analyse, mocker):
     )
 
     analyse.refresh_from_db()
-    assert analyse.etat == "success"
-    assert analyse.resultat_json == RESULTATS
+    assert analyse.etat_v1 == "success"
+    assert analyse.resultat_json_v1 == RESULTATS
 
     capture_exception_mock.assert_called_once()
     args, _ = capture_exception_mock.call_args
@@ -635,7 +635,7 @@ def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_v2_processing(
     )
 
     analyse.refresh_from_db()
-    assert analyse.etat is None
+    assert analyse.etat_v1 is None
     assert analyse.etat_v2 == "processing"
     assert len(mailoutbox) == 0
 
@@ -653,8 +653,8 @@ def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_v2_erreur(
     )
 
     analyse.refresh_from_db()
-    assert analyse.etat is None
-    assert analyse.message is None
+    assert analyse.etat_v1 is None
+    assert analyse.message_v1 is None
     assert analyse.etat_v2 == "error"
     assert analyse.message_v2 == "MESSAGE"
     assert len(mailoutbox) == 1
@@ -679,8 +679,8 @@ def test_serveur_IA_envoie_le_resultat_de_l_analyse_v2(
     )
 
     analyse.refresh_from_db()
-    assert analyse.etat is None
-    assert analyse.resultat_json is None
+    assert analyse.etat_v1 is None
+    assert analyse.resultat_json_v1 is None
     assert analyse.etat_v2 == "success"
     assert analyse.resultat_json_v2 == [
         {
@@ -742,5 +742,5 @@ def test_serveur_IA_envoie_une_requête_invalide(client, analyse, mailoutbox):
 
     assert response.status_code == 400
     analyse.refresh_from_db()
-    assert not analyse.etat
+    assert not analyse.etat_v1
     assert len(mailoutbox) == 0

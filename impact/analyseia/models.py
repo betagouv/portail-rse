@@ -10,10 +10,10 @@ from utils.models import TimestampedModel
 
 class AnalyseIAQuerySet(models.QuerySet):
     def reussies(self):
-        return self.filter(etat__exact="success")
+        return self.filter(etat_v1__exact="success")
 
     def non_lancees(self):
-        return self.filter(etat__isnull=True)
+        return self.filter(etat_v1__isnull=True)
 
 
 def select_storage():
@@ -29,16 +29,16 @@ def upload_path(instance, filename):
 class AnalyseIA(TimestampedModel):
     fichier = models.FileField(storage=select_storage, upload_to=upload_path)
     nom = models.CharField(max_length=255, verbose_name="nom d'origine")
-    resultat_json = models.JSONField(
+    resultat_json_v1 = models.JSONField(
         null=True, blank=True, verbose_name="résultat de l'analyse IA v1 au format JSON"
     )
-    etat = models.CharField(
+    etat_v1 = models.CharField(
         max_length=144,
         null=True,
         blank=True,
         verbose_name="dernier état connu du traitement d'analyse IA v1 envoyé par le serveur IA",
     )
-    message = models.CharField(
+    message_v1 = models.CharField(
         max_length=144,
         null=True,
         blank=True,
@@ -78,7 +78,7 @@ class AnalyseIA(TimestampedModel):
     @property
     def nombre_de_phrases_pertinentes(self):
         try:
-            data = json.loads(self.resultat_json)
+            data = json.loads(self.resultat_json_v1)
         except TypeError:  # cas d'un fichier non traité
             return 0
         quantite = 0
@@ -90,7 +90,7 @@ class AnalyseIA(TimestampedModel):
     @property
     def nombre_de_phrases(self):
         try:
-            data = json.loads(self.resultat_json)
+            data = json.loads(self.resultat_json_v1)
         except TypeError:  # cas d'un fichier non traité
             return 0
         quantite = 0
