@@ -12,6 +12,9 @@ class AnalyseIAQuerySet(models.QuerySet):
     def reussies(self):
         return self.filter(etat_v1__exact="success")
 
+    def v2_reussies(self):
+        return self.filter(etat_v2__exact="success")
+
     def non_lancees(self):
         return self.filter(etat_v1__isnull=True)
 

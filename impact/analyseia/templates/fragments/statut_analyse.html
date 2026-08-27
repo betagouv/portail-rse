@@ -31,7 +31,7 @@
 		{# MaJ du deuxième onglet en fin de traitement #}
                 <p class="fr-badge fr-badge--sm fr-badge--success"
                    {% if request.htmx %}
-                       hx-trigger="load" hx-get="" hx-target="#onglet-resultats-panel" hx-select="#onglet-resultats-panel"
+                       hx-trigger="load" hx-get="" hx-target="#onglet-resultats-enjeux-panel" hx-select="#onglet-resultats-enjeux-panel"
                    {% endif %}
                 >Traité</p>
 			{# Pas d'attributs hx-* ici, le polling s'arrête #}
