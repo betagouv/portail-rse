@@ -673,12 +673,14 @@ class Command(BaseCommand):
                 entreprise_id=entreprise_id,  # optimisation possible car la clé primaire de l'objet Metabase est identique à la clé primaire dans PortailRSE
                 csrd=analyse.id in analyses_de_rapports_csrd,
                 nom_fichier=analyse.nom,
-                etat=analyse.etat,
-                message=analyse.message,
-                nb_phrases=analyse.nombre_de_phrases if analyse.resultat_json else None,
+                etat=analyse.etat_v1,
+                message=analyse.message_v1,
+                nb_phrases=(
+                    analyse.nombre_de_phrases if analyse.resultat_json_v1 else None
+                ),
                 nb_phrases_pertinentes=(
                     analyse.nombre_de_phrases_pertinentes
-                    if analyse.resultat_json
+                    if analyse.resultat_json_v1
                     else None
                 ),
             )

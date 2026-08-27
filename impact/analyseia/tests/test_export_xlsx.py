@@ -11,8 +11,8 @@ def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(
 ):
     entreprise = entreprise_factory(utilisateur=alice)
     document = entreprise.analyses_ia.create(
-        etat="success",
-        resultat_json="""{
+        etat_v1="success",
+        resultat_json_v1="""{
   "ESRS E1": [
     {
       "PAGES": 1,
@@ -81,7 +81,7 @@ def test_telechargement_des_resultats_IA_d_une_analyse_non_terminee(
 ):
     entreprise = entreprise_factory(utilisateur=alice)
     analyse = entreprise.analyses_ia.create(
-        etat="processing",
+        etat_v1="processing",
     )
 
     client.force_login(alice)
@@ -135,8 +135,8 @@ def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_x
 ):
     entreprise = entreprise_factory(utilisateur=alice)
     entreprise.analyses_ia.create(
-        etat="success",
-        resultat_json="""{
+        etat_v1="success",
+        resultat_json_v1="""{
   "ESRS E1": [
     {
       "PAGES": 1,
@@ -152,8 +152,8 @@ def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_x
   }""",
     )
     entreprise.analyses_ia.create(
-        etat="success",
-        resultat_json="""{
+        etat_v1="success",
+        resultat_json_v1="""{
   "ESRS E2": [
     {
       "PAGES": 6,
@@ -163,7 +163,7 @@ def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_x
   }""",
     )
     entreprise.analyses_ia.create(
-        etat="processing",
+        etat_v1="processing",
     )
     client.force_login(alice)
 
@@ -196,8 +196,8 @@ def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_x
     client, csrd, alice
 ):
     csrd.analyses_ia.create(
-        etat="success",
-        resultat_json="""{
+        etat_v1="success",
+        resultat_json_v1="""{
   "ESRS E1": [
     {
       "PAGES": 1,
@@ -213,8 +213,8 @@ def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_x
   }""",
     )
     csrd.analyses_ia.create(
-        etat="success",
-        resultat_json="""{
+        etat_v1="success",
+        resultat_json_v1="""{
   "ESRS E2": [
     {
       "PAGES": 6,
@@ -224,7 +224,7 @@ def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_x
   }""",
     )
     csrd.analyses_ia.create(
-        etat="processing",
+        etat_v1="processing",
     )
     client.force_login(alice)
 
@@ -289,8 +289,8 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx_lié_à_une_entrep
 ):
     entreprise = entreprise_factory(utilisateur=alice)
     entreprise.analyses_ia.create(
-        etat="success",
-        resultat_json="""{
+        etat_v1="success",
+        resultat_json_v1="""{
   "ESRS E1": [
     {
       "PAGES": 1,
@@ -312,8 +312,8 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx_lié_à_une_entrep
   }""",
     )
     entreprise.analyses_ia.create(
-        etat="success",
-        resultat_json="""{
+        etat_v1="success",
+        resultat_json_v1="""{
   "ESRS E5": [
     {
       "PAGES": 6,
@@ -323,7 +323,7 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx_lié_à_une_entrep
   }""",
     )
     entreprise.analyses_ia.create(
-        etat="processing",
+        etat_v1="processing",
     )
     client.force_login(alice)
 
@@ -360,8 +360,8 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx_lié_à_une_CSRD(
     client, csrd, alice
 ):
     csrd.analyses_ia.create(
-        etat="success",
-        resultat_json="""{
+        etat_v1="success",
+        resultat_json_v1="""{
   "ESRS E1": [
     {
       "PAGES": 1,
@@ -383,8 +383,8 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx_lié_à_une_CSRD(
   }""",
     )
     csrd.analyses_ia.create(
-        etat="success",
-        resultat_json="""{
+        etat_v1="success",
+        resultat_json_v1="""{
   "ESRS E2": [
     {
       "PAGES": 6,
@@ -394,7 +394,7 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx_lié_à_une_CSRD(
   }""",
     )
     csrd.analyses_ia.create(
-        etat="processing",
+        etat_v1="processing",
     )
     client.force_login(alice)
 

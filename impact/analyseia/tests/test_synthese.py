@@ -3,8 +3,8 @@ from analyseia.models import AnalyseIA
 
 ANALYSES = [
     AnalyseIA(
-        etat="success",
-        resultat_json="""{
+        etat_v1="success",
+        resultat_json_v1="""{
   "ESRS E1": [
     {
       "PAGES": 1,
@@ -24,8 +24,8 @@ ANALYSES = [
   }""",
     ),
     AnalyseIA(
-        etat="success",
-        resultat_json="""{
+        etat_v1="success",
+        resultat_json_v1="""{
   "ESRS E2 - Pollution": [
     {
       "PAGES": 6,
