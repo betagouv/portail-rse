@@ -29,9 +29,9 @@ def synthese_analyse(analyses, prefixe_ESRS=False):
     nb_phrases_pertinentes_detectees = 0
     esrs_thematiques_detectees = set()
     for analyse in analyses:
-        if not analyse.resultat_json:
+        if not analyse.resultat_json_v1:
             break
-        for esrs, phrases in json.loads(analyse.resultat_json).items():
+        for esrs, phrases in json.loads(analyse.resultat_json_v1).items():
             if esrs == "Non ESRS":
                 break
 
