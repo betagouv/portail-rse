@@ -101,3 +101,7 @@ class AnalyseIA(TimestampedModel):
     @property
     def entreprise(self):
         return self.entreprises.first() or self.rapports_csrd.first().entreprise
+
+    @property
+    def est_liee_a_une_entreprise(self):
+        return self.entreprises.count()
