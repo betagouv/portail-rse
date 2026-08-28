@@ -1,4 +1,4 @@
-<tr id="analyse-{{ analyse.id }}-v1">
+<tr hx-target="this" hx-swap="outerHTML">
     {% comment %}
     Le rendu du tableau est différent selon la page visitée :
     - dans l'analyse IA, on affiche l'analyse v1 (enjeux de durabilité) et v2 (VSME)
@@ -6,118 +6,115 @@
     Le fragment renvoyé par statut_analyse contient les deux <tr> (v1 et v2) : chaque polling
     utilise hx-select pour n'extraire et ne remplacer que sa propre ligne.
     {% endcomment %}
-    <td {% if analyse.est_liee_a_une_entreprise %}rowspan="2"{% endif %}>
+    <td class="fr-cell--multiline">
         {{ analyse.nom }}
     </td>
-    <td {% if analyse.est_liee_a_une_entreprise %}rowspan="2"{% endif %}>
+
+    <td>
         {{ analyse.created_at|date:"d b Y" }}
     </td>
+
     <td>
         <div
             {% if analyse.etat_v1 in "pending,processing,text_processed,analysis_complete" %}
                 hx-get="{% url 'analyseia:statut_analyse' analyse.id %}" {# URL de la vue qui renvoie ce fragment #}
                 hx-trigger="every 5s" {# Déclencheur toutes les 5 secondes #}
-                hx-select="#analyse-{{ analyse.id }}-v1"
-                hx-target="closest tr"
-                hx-swap="outerHTML"
             {% endif %}>
             {% if analyse.etat_v1 in "pending,processing,text_processed,analysis_complete" %}
-                <p class="fr-badge fr-badge--new">En cours d'analyse</p>
+                <p class="fr-badge fr-badge--sm fr-badge--new">En cours d'analyse</p>
                 {% if analyse.message_v1 %}
-                    <p class="fr-text--sm">{{ analyse.message_v1 }}</p>
+                    <div class="fr-cell__desc">
+                        {{ analyse.message_v1 }}
+                    </div>
                 {% endif %}
             {% elif analyse.etat_v1 == "success" %}
 		{# MaJ du deuxième onglet en fin de traitement #}
-                <p class="fr-badge fr-badge--success"
+                <p class="fr-badge fr-badge--sm fr-badge--success"
                    {% if request.htmx %}
                        hx-trigger="load" hx-get="" hx-target="#onglet-resultats-panel" hx-select="#onglet-resultats-panel"
                    {% endif %}
                 >Traité</p>
 			{# Pas d'attributs hx-* ici, le polling s'arrête #}
             {% elif analyse.etat_v1 == "error" %}
-                <p class="fr-badge fr-badge--error">Traitement impossible</p>
+                <p class="fr-badge fr-badge--sm fr-badge--error">Traitement impossible</p>
                 <p class="fr-text--sm text-error-color-no-decoration">{{ analyse.message_v1 }}</p>
             {% endif %}
         </div>
-    </td>
-    <td>
+
         {% if not analyse.etat_v1 %}
             <form action="{% url 'analyseia:lancement_analyse' analyse.id 1 %}" method="post">
                 {% csrf_token %}
                 <button type="submit"
-                        class="fr-btn fr-btn--sm fr-btn--icon-left fr-icon-play-circle-line">Lancer une
-                    analyse Enjeux de durabilité</button>
+                        class="fr-btn fr-btn--sm fr-btn--icon-left fr-icon-play-circle-line"
+                        title="Lancer l'analyse du document pour y trouver des références aux enjeux de durabilité">Lancer une
+                    analyse</button>
             </form>
         {% elif analyse.etat_v1 == "success" %}
-            <a class="fr-btn fr-btn--sm fr-btn--icon-left fr-icon-download-line"
+            <a class="fr-link fr-link--download" download="true"
                href="{% url 'analyseia:resultat' analyse.id 'theme' %}"
-               title="Télécharger le résultat">Télécharger les enjeux de durabilité</a>
+               title="Télécharger le résultat de l'analyse des enjeux de durabilité">Télécharger le résultat<span class="fr-link__detail">XLSX</a>
         {% endif %}
     </td>
-    <td {% if analyse.est_liee_a_une_entreprise %}rowspan="2"{% endif %}>
-		<!-- les règles d'utilisation et l'implémentation du dsfr ne permettent pas d'avoir un groupe de boutons avec des icônes seules et du texte mélangés -->
-		<!-- <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--sm fr-btns-group--icon-left"> -->
-        <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--sm">
-            <li>
-                <a class="fr-btn fr-btn--secondary fr-icon-external-link-line"
-                   title="Voir le document dans un nouvel onglet" href="{{ analyse.fichier.url }}"
-                   target="_blank">Voir le document dans un nouvel onglet</a>
-            </li>
-            <li>
-                <form action="{% url 'analyseia:suppression' analyse.id %}"
-                      method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="fr-btn fr-btn--secondary fr-icon-delete-line"
-                            title="Supprimer le document">Supprimer le document</button>
-                </form>
-            </li>
-        </ul>
+
+    <td>
+        <div
+            {% if analyse.etat_v2 in "pending,processing,text_processed,analysis_complete" %}
+                hx-get="{% url 'analyseia:statut_analyse' analyse.id %}" {# URL de la vue qui renvoie ce fragment #}
+                hx-trigger="every 5s" {# Déclencheur toutes les 5 secondes #}
+            {% endif %}>
+            {% if analyse.etat_v2 in "pending,processing,text_processed,analysis_complete" %}
+                <p class="fr-mb-2v fr-badge fr-badge--sm fr-badge--new">En cours d'analyse</p>
+                {% if analyse.message_v2 %}
+                    <div class="fr-cell__desc">
+                        {{ analyse.message_v2 }}
+                    </div>
+                {% endif %}
+            {% elif analyse.etat_v2 == "success" %}
+	            {# MaJ du troisième onglet en fin de traitement #}
+                <p class="fr-badge fr-badge--sm fr-badge--success"
+                   {% if request.htmx %}
+                       hx-trigger="load" hx-get="" hx-target="#onglet-resultats-panel" hx-select="#onglet-resultats-panel"
+                   {% endif %}
+                >Traité</p>
+		    {# Pas d'attributs hx-* ici, le polling s'arrête #}
+            {% elif analyse.etat_v2 == "error" %}
+                <p class="fr-badge fr-badge--sm fr-badge--error">Traitement impossible</p>
+                <p class="fr-text--sm text-error-color-no-decoration">{{ analyse.message_v2 }}</p>
+            {% endif %}
+        </div>
+
+        {% if not analyse.etat_v2 %}
+            <form action="{% url 'analyseia:lancement_analyse' analyse.id 2 %}" method="post">
+                {% csrf_token %}
+                <button type="submit"
+                        class="fr-btn fr-btn--sm fr-btn--icon-left fr-icon-play-circle-line"
+                        title="Lancer l'analyse du document pour y trouver des références à la VSME">Lancer une
+                    analyse</button>
+            </form>
+        {% elif analyse.etat_v2 == "success" %}
+            <a class="fr-link fr-link--download" download="true"
+               href="{% url 'analyseia:resultat' analyse.id 'theme' %}"
+               title="Télécharger le résultat de l'analyse VSME">Télécharger le résultat<span class="fr-link__detail">XLSX</a>
+        {% endif %}
+    </td>
+
+    <td>
+        <a class="fr-btn fr-btn--sm fr-btn--secondary fr-icon-external-link-line"
+           title="Voir le document dans un nouvel onglet" href="{{ analyse.fichier.url }}"
+           target="_blank">Voir le document dans un nouvel onglet</a>
+
+    </td>
+    <td>
+
+        <form action="{% url 'analyseia:suppression' analyse.id %}"
+              method="post">
+            {% csrf_token %}
+            <button type="submit" class="fr-btn fr-btn--sm fr-btn--secondary fr-icon-delete-line"
+                    title="Supprimer le document">Supprimer le document</button>
+        </form>
     </td>
 </tr>
 
 {% if analyse.est_liee_a_une_entreprise %}
-    <tr id="analyse-{{ analyse.id }}-v2">
-        <td>
-            <div
-                {% if analyse.etat_v2 in "pending,processing,text_processed,analysis_complete" %}
-                    hx-get="{% url 'analyseia:statut_analyse' analyse.id %}" {# URL de la vue qui renvoie ce fragment #}
-                    hx-trigger="every 5s" {# Déclencheur toutes les 5 secondes #}
-                    hx-select="#analyse-{{ analyse.id }}-v2"
-                    hx-target="closest tr"
-                    hx-swap="outerHTML"
-                {% endif %}>
-                {% if analyse.etat_v2 in "pending,processing,text_processed,analysis_complete" %}
-                    <p class="fr-badge fr-badge--new">En cours d'analyse</p>
-                    {% if analyse.message_v2 %}
-                        <p class="fr-text--sm">{{ analyse.message_v2 }}</p>
-                    {% endif %}
-                {% elif analyse.etat_v2 == "success" %}
-		            {# MaJ du troisième onglet en fin de traitement #}
-                    <p class="fr-badge fr-badge--success"
-                       {% if request.htmx %}
-                           hx-trigger="load" hx-get="" hx-target="#onglet-resultats-panel" hx-select="#onglet-resultats-panel"
-                       {% endif %}
-                    >Traité</p>
-			    {# Pas d'attributs hx-* ici, le polling s'arrête #}
-                {% elif analyse.etat_v2 == "error" %}
-                    <p class="fr-badge fr-badge--error">Traitement impossible</p>
-                    <p class="fr-text--sm text-error-color-no-decoration">{{ analyse.message_v2 }}</p>
-                {% endif %}
-            </div>
-        </td>
-        <td>
-            {% if not analyse.etat_v2 %}
-                <form action="{% url 'analyseia:lancement_analyse' analyse.id 2 %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit"
-                            class="fr-btn fr-btn--sm fr-btn--icon-left fr-icon-play-circle-line">Lancer une
-                        analyse VSME</button>
-                </form>
-            {% elif analyse.etat_v2 == "success" %}
-                <a class="fr-btn fr-btn--sm fr-btn--icon-left fr-icon-download-line"
-                   href="{% url 'analyseia:resultat' analyse.id 'theme' %}"
-                   title="Télécharger le résultat">Télécharger le résultat VSME</a>
-            {% endif %}
-        </td>
-    </tr>
+
 {% endif %}
