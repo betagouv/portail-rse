@@ -545,3 +545,8 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 BLOCKED_IP_SUBNETS = os.getenv("BLOCKED_IP_SUBNETS", "")
 # Do we log filtered requests ?
 BLOCKED_IP_SUBNETS_LOG = os.getenv("BLOCKED_IP_SUBNETS_LOG", "false") == "true"
+
+# Limite relevée pour le tableau des sites de l'indicateur VSME B1-24-e-vii
+# (formset ~7 champs/site) qui dépassait la limite par défaut (1000) lorsque plus de 142 sites — TooManyFieldsSent.
+# La protection DATA_UPLOAD_MAX_MEMORY_SIZE reste inchangée
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10000
