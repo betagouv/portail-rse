@@ -1,3 +1,4 @@
+import pytest
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
@@ -330,11 +331,14 @@ def test_lancement_d_analyse_IA_v1_liée_à_une_entreprise_par_utilisateur_autor
     ]
 
 
+@pytest.mark.parametrize("etat_v1", [None, "success"])
 def test_lancement_d_analyse_IA_v2_liée_à_une_entreprise_par_utilisateur_autorise(
-    client, mock_api_analyse_ia, analyse, alice
+    etat_v1, client, mock_api_analyse_ia, analyse, alice
 ):
     client.force_login(alice)
     VERSION_IA = 2
+    analyse.etat_v1 = etat_v1
+    analyse.save()
 
     url = LANCEMENT_ANALYSE_URL.format(analyse_id=analyse.id, version_ia=VERSION_IA)
     response = client.post(url, follow=True)
@@ -353,7 +357,7 @@ def test_lancement_d_analyse_IA_v2_liée_à_une_entreprise_par_utilisateur_autor
         analyse.id, analyse.fichier.url, VERSION_IA, callback_url
     )
     analyse.refresh_from_db()
-    assert analyse.etat_v1 is None
+    assert analyse.etat_v1 == etat_v1
     assert analyse.etat_v2 == "pending"
     assert response.status_code == 200
     assert "L'analyse a bien été lancée." in response.content.decode("utf-8")
