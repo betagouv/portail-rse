@@ -76,10 +76,18 @@ Cela supprime le schéma, il faut donc le recréer ensuite et attribuer à nouve
 
 ## Mise à jour de Metabase
 
+Les versions disponibles sont visibles sur https://github.com/metabase/metabase/releases
+La doc relative au support des versions est disponible sur https://www.metabase.com/version-support
+
 Pour modifier la version de Metabase il faut :
+  - déclencher un backup manuel de la bdd pour rollback au cas où la mise à jour se passe mal et noter la version de metabase actuelle
   - mettre à jour la version souhaitée dans la variable d'environnement `METABASE_VERSION` de l'application Metabase sur Scalingo
   - faire un nouveau déploiement (comme indiqué dans [la documentation de Scalingo](https://doc.scalingo.com/platform/getting-started/getting-started-with-metabase#updating-metabase))
 
   ```
   scalingo --app my-app deploy https://github.com/Scalingo/metabase-scalingo/archive/refs/heads/master.tar.gz
   ```
+
+Si la mise à jour échoue :
+  - restorer le dernier backup en suivant [la procédure de restore de scalingo depuis un container One-Off](https://doc.scalingo.com/databases/postgresql/shared-resources/guides/restoring#from-a-one-off-container)
+  - redéployer l'ancienne version de metabase
