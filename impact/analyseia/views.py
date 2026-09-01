@@ -117,7 +117,9 @@ def suppression(request, analyse):
 @analyse_requise
 @require_http_methods(["POST"])
 def lancement_analyse(request, analyse, version_ia):
-    if analyse.etat_v1 != "success":
+    if (version_ia == 1 and analyse.etat_v1 != "success") or (
+        version_ia == 2 and analyse.etat_v2 != "success"
+    ):
         try:
             callback_url = request.build_absolute_uri(
                 reverse(
