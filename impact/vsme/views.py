@@ -214,6 +214,8 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
     except ObjectDoesNotExist:
         indicateur = None
 
+    analyses_ia = []
+
     if request.method == "POST":
         if not indicateur_est_applicable:
             raise PermissionDenied()
@@ -278,6 +280,28 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
 
     else:  # GET
         infos_preremplissage = None
+        infos_analyses_ia = rapport_vsme.entreprise.analyses_ia.filter(
+            resultat_json_v2__has_key=indicateur_schema_id
+        ).values("nom", "resultat_json_v2")
+        analyses_ia = [
+            {
+                "nom": info_analyses_ia["nom"],
+                "resultats": info_analyses_ia["resultat_json_v2"][indicateur_schema_id],
+            }
+            for info_analyses_ia in infos_analyses_ia
+        ]
+        for analyse_ia in analyses_ia:
+            for resultat in analyse_ia["resultats"]:
+                for champ in indicateur_schema["champs"]:
+                    if champ["id"] == resultat["champ_id"]:
+                        if champ["type"] not in ("nombre_decimal", "nombre_entier"):
+                            resultat["unite"] = ""
+                        if resultat["colonne_id"]:
+                            for colonne in champ["colonnes"]:
+                                if colonne["id"] == resultat["colonne_id"]:
+                                    colonne_label = colonne["label"]
+                            resultat["colonne_label"] = colonne_label
+
         data = indicateur.data if indicateur else {}
         if not data:
             infos_preremplissage = preremplit_indicateur(
@@ -295,6 +319,7 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
             multiform.disable_all_fields()
 
     context = {
+        "analyses_ia": analyses_ia,
         "entreprise": rapport_vsme.entreprise,
         "multiform": multiform,
         "indicateur_schema": indicateur_schema,
