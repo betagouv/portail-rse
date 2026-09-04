@@ -38,135 +38,137 @@
                         {% for form in multiform.forms %}
                             {% if form.indicator_type == "table" or form.indicator_type == "table_lignes_fixes" %}
 
-                                <section class="fr-accordion">
-                                    <h3 class="fr-accordion__title">
-                                        <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-id">On a trouvé un truc !</button>
-                                    </h3>
-                                    <div class="fr-collapse" id="accordion-id">
-                                        {% for analyse in resultats_ia %}
-                                            <h4 class="fr-h4">dans {{ analyse.nom }}</h4>
-
-                                            {% for resultat in analyse.resultat %}
-                                                {% if resultat.champ_id == form.id %}
-                                                    <p>{{ resultat.valeur }}</p>
-                                                {% endif %}
+                                {% if analyses_ia %}
+                                    <section class="fr-accordion">
+                                        <h3 class="fr-accordion__title">
+                                            <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-id"><span class="fr-icon-sparkling-2-line" aria-hidden="true"></span> Information trouvée dans les documents analysés</button>
+                                        </h3>
+                                        <div class="fr-collapse" id="accordion-id">
+                                            {% for analyse in analyses_ia %}
+                                                <h4 class="fr-h6">dans {{ analyse.nom }}</h4>
+                                                {% for resultat in analyse.resultats %}
+                                                    {% if resultat.champ_id == form.id %}
+                                                        <p>{{ resultat.colonne_label}}: {{ resultat.valeur }} {{ resultat.unite }} -> trouvé dans {{ resultat.paragraphe }}</p>
+                                                    {% endif %}
+                                                {% endfor %}
                                             {% endfor %}
-                                            </div>
-                                            </section>
+                                        </div>
+                                    </section>
+                                {% endif %}
 
-                                        {% endfor %}
-                                        {{ form.management_form }}
-                                        {% if form.forms %}
+
+                                {{ form.management_form }}
+                                {% if form.forms %}
                                     <!-- Lignes présentes dans le tableau-->
-                                            <table class="indicateur-tableau fr-mb-1w">
-                                                <caption>
-                                                    <span class="fr-label">{{ form.label }}</span>
-                                                    {% if form.description %}
-                                                        <p class="fr-text--xs fr-mb-1w">{{ form.description|safe }}</p>
-                                                    {% endif %}
-                                                    {% if form.non_form_errors %}
-                                                        <p class="fr-error-text">
-                                                            {% for error in form.non_form_errors %}
-                                                                {{ error|escape }}
-                                                            {% endfor %}
-                                                        </p>
-                                                    {% endif %}
-                                                </caption>
-                                                <thead>
-                                                    {% if form.indicator_type == "table_lignes_fixes" %}
-                                                <!-- Colonne des en-têtes de ligne -->
-                                                        <th scope="col"></th>
-                                                    {% endif %}
-                                                    {% for field in form.empty_form %}
-                                                        {% if field.name != "DELETE" %}
-                                                            <th scope="col">
-                                                                <label for="{{ field.id_for_label }}">{{ field.label }}
-                                                                    <span class="fr-hint-text">{{ field.help_text|safe }}</span>
-                                                                </label>
-                                                            </th>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                    {% if form.indicator_type == "table" %}
-                                                <!-- Colonne des boutons de suppression de ligne -->
-                                                        <th>Supprimer</th>
-                                                    {% endif %}
-                                                </thead>
-                                                <tbody>
-                                                    {% for form_table in form %}
-                                                        <tr>
-                                                            {% if form.indicator_type == "table_lignes_fixes" %}
-                                                        <!-- En-tête de ligne -->
-                                                                <td>{% with row=form.rows|index:forloop.counter0 %}{{ row.label }}{% endwith %}</td>
-                                                            {% endif %}
-                                                            {% for field in form_table %}
-                                                                {% if field.name != "DELETE" %}
-                                                                    <td class="indicateur-cellule
-                                                                               {% if field|widget_type == 'RadioSelect' %}indicateur-cellule--flex-container{% endif %}
-                                                                               {% if field.field.geolocalisation and not field.errors %}indicateur-cellule--geolocalisation{% endif %}">
-                                                                        {% if field.field.auto_id %}
-                                                                            {{ field.value }}
-                                                                            {{ field.as_hidden }}
-                                                                        {% elif field.field.is_computed %}
-                                                                            {{ field|get_field_display|default_if_none:"<span class='fr-badge fr-badge--sm'>auto</span>" }}
-                                                                            <img id="htmx-indicator-{{ field.name }}-{{ forloop.parentloop.counter0 }}" src="{% static 'img/spinner.svg' %}" alt="Spinner d'attente" height="30em" class="htmx-indicator">
-                                                                        {% else %}
-                                                                            {{ field }}
-                                                                            {% if field.field.geolocalisation and field.value and not field.errors %}
-                                                                                <span>
-                                                                                    <a class="fr-btn fr-icon-map-pin-2-line fr-btn--tertiary-no-outline" title="Voir le site - nouvel onglet" href="{% url_geolocalisation field.value %}" target="_blank" rel="noopener external" class="fr-link">Voir</a>
-                                                                                </span>
-                                                                            {% endif %}
-                                                                            {% if field.errors %}
-                                                                                <p id="{{ field.name }}-error-desc-error" class="fr-error-text">
-                                                                                    {% for error in field.errors %}
-                                                                                        {{ error|escape }}
-                                                                                    {% endfor %}
-                                                                                </p>
-                                                                            {% endif %}
-                                                                        {% endif %}
-                                                                    </td>
-                                                                {% endif %}
-                                                            {% endfor %}
-                                                            {% if form.indicator_type == "table" %}
-                                                        <!-- Bouton de suppression de ligne -->
-                                                                <td class="indicateur-cellule">
-                                                                    <button type="button"
-                                                                            hx-post="{% url 'vsme:indicateur_vsme' rapport_vsme.id indicateur_schema_id %}"
-                                                                            hx-vals='{"supprimer-ligne": "{{ form_table.DELETE.html_name }}"}'
-                                                                            hx-confirm="Êtes-vous sûr de vouloir supprimer cette ligne ?"
-                                                                            class="fr-btn fr-icon-delete-line fr-btn--tertiary-no-outline"
-                                                                            title="Supprimer"
-                                                                            {% if not indicateur_est_applicable or multiform.non_pertinent %}disabled{% endif %}>
-                                                                        Supprimer
-                                                                    </button>
-                                                                </td>
-                                                            {% endif %}
-                                                        </tr>
-                                                    {% endfor %}
-                                                </tbody>
-                                            </table>
-                                        {% else %}
-                                    <!-- tableau sans ligne -->
+                                    <table class="indicateur-tableau fr-mb-1w">
+                                        <caption>
                                             <span class="fr-label">{{ form.label }}</span>
                                             {% if form.description %}
                                                 <p class="fr-text--xs fr-mb-1w">{{ form.description|safe }}</p>
                                             {% endif %}
-                                            <p class="fr-text--xs fr-my-1w">
-                                                Aucune ligne dans ce tableau
-                                            </p>
-                                        {% endif %}
-                                        {% if form.indicator_type == "table" %}
+                                            {% if form.non_form_errors %}
+                                                <p class="fr-error-text">
+                                                    {% for error in form.non_form_errors %}
+                                                        {{ error|escape }}
+                                                    {% endfor %}
+                                                </p>
+                                            {% endif %}
+                                        </caption>
+                                        <thead>
+                                            {% if form.indicator_type == "table_lignes_fixes" %}
+                                                <!-- Colonne des en-têtes de ligne -->
+                                                <th scope="col"></th>
+                                            {% endif %}
+                                            {% for field in form.empty_form %}
+                                                {% if field.name != "DELETE" %}
+                                                    <th scope="col">
+                                                        <label for="{{ field.id_for_label }}">{{ field.label }}
+                                                            <span class="fr-hint-text">{{ field.help_text|safe }}</span>
+                                                        </label>
+                                                    </th>
+                                                {% endif %}
+                                            {% endfor %}
+                                            {% if form.indicator_type == "table" %}
+                                                <!-- Colonne des boutons de suppression de ligne -->
+                                                <th>Supprimer</th>
+                                            {% endif %}
+                                        </thead>
+                                        <tbody>
+                                            {% for form_table in form %}
+                                                <tr>
+                                                    {% if form.indicator_type == "table_lignes_fixes" %}
+                                                        <!-- En-tête de ligne -->
+                                                        <td>{% with row=form.rows|index:forloop.counter0 %}{{ row.label }}{% endwith %}</td>
+                                                    {% endif %}
+                                                    {% for field in form_table %}
+                                                        {% if field.name != "DELETE" %}
+                                                            <td class="indicateur-cellule
+                                                                       {% if field|widget_type == 'RadioSelect' %}indicateur-cellule--flex-container{% endif %}
+                                                                       {% if field.field.geolocalisation and not field.errors %}indicateur-cellule--geolocalisation{% endif %}">
+                                                                {% if field.field.auto_id %}
+                                                                    {{ field.value }}
+                                                                    {{ field.as_hidden }}
+                                                                {% elif field.field.is_computed %}
+                                                                    {{ field|get_field_display|default_if_none:"<span class='fr-badge fr-badge--sm'>auto</span>" }}
+                                                                    <img id="htmx-indicator-{{ field.name }}-{{ forloop.parentloop.counter0 }}" src="{% static 'img/spinner.svg' %}" alt="Spinner d'attente" height="30em" class="htmx-indicator">
+                                                                {% else %}
+                                                                    {{ field }}
+                                                                    {% if field.field.geolocalisation and field.value and not field.errors %}
+                                                                        <span>
+                                                                            <a class="fr-btn fr-icon-map-pin-2-line fr-btn--tertiary-no-outline" title="Voir le site - nouvel onglet" href="{% url_geolocalisation field.value %}" target="_blank" rel="noopener external" class="fr-link">Voir</a>
+                                                                        </span>
+                                                                    {% endif %}
+                                                                    {% if field.errors %}
+                                                                        <p id="{{ field.name }}-error-desc-error" class="fr-error-text">
+                                                                            {% for error in field.errors %}
+                                                                                {{ error|escape }}
+                                                                            {% endfor %}
+                                                                        </p>
+                                                                    {% endif %}
+                                                                {% endif %}
+                                                            </td>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% if form.indicator_type == "table" %}
+                                                        <!-- Bouton de suppression de ligne -->
+                                                        <td class="indicateur-cellule">
+                                                            <button type="button"
+                                                                    hx-post="{% url 'vsme:indicateur_vsme' rapport_vsme.id indicateur_schema_id %}"
+                                                                    hx-vals='{"supprimer-ligne": "{{ form_table.DELETE.html_name }}"}'
+                                                                    hx-confirm="Êtes-vous sûr de vouloir supprimer cette ligne ?"
+                                                                    class="fr-btn fr-icon-delete-line fr-btn--tertiary-no-outline"
+                                                                    title="Supprimer"
+                                                                    {% if not indicateur_est_applicable or multiform.non_pertinent %}disabled{% endif %}>
+                                                                Supprimer
+                                                            </button>
+                                                        </td>
+                                                    {% endif %}
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% else %}
+                                    <!-- tableau sans ligne -->
+                                    <span class="fr-label">{{ form.label }}</span>
+                                    {% if form.description %}
+                                        <p class="fr-text--xs fr-mb-1w">{{ form.description|safe }}</p>
+                                    {% endif %}
+                                    <p class="fr-text--xs fr-my-1w">
+                                        Aucune ligne dans ce tableau
+                                    </p>
+                                {% endif %}
+                                {% if form.indicator_type == "table" %}
                                     <!-- Bouton d'ajout de ligne -->
-                                            <button type="button"
-                                                    hx-post="{% url 'vsme:indicateur_vsme' rapport_vsme.id indicateur_schema_id %}"
-                                                    hx-vals='{"ajouter-ligne": "{{ form.id }}"}'
-                                                    class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-circle-line fr-mb-2w"
-                                                    title="Supprimer"
-                                                    {% if not indicateur_est_applicable or multiform.non_pertinent %}disabled{% endif %}>
-                                                Ajouter une ligne
-                                            </button>
-                                        {% endif %}
-                                        <div class="fr-mb-2w"></div>
+                                    <button type="button"
+                                            hx-post="{% url 'vsme:indicateur_vsme' rapport_vsme.id indicateur_schema_id %}"
+                                            hx-vals='{"ajouter-ligne": "{{ form.id }}"}'
+                                            class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-add-circle-line fr-mb-2w"
+                                            title="Supprimer"
+                                            {% if not indicateur_est_applicable or multiform.non_pertinent %}disabled{% endif %}>
+                                        Ajouter une ligne
+                                    </button>
+                                {% endif %}
+                                <div class="fr-mb-2w"></div>
                             {% else %}
                                 {% for field in form %}
                                     {% if field.field.is_computed %}
