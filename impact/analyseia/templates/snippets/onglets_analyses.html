@@ -2,10 +2,10 @@
 
 {% if csrd %}
     {% url 'analyseia:ajout_document' csrd.entreprise.siren csrd.id as ajout_document_url %}
-    {% url 'analyseia:synthese_resultat' entreprise.siren csrd.id as synthese_resultat_url %}
+    {% url 'analyseia:synthese_resultat_v1' entreprise.siren csrd.id as synthese_resultat_v1_url %}
 {% else %}
     {% url 'analyseia:ajout_document' entreprise.siren as ajout_document_url %}
-    {% url 'analyseia:synthese_resultat' entreprise.siren as synthese_resultat_url %}
+    {% url 'analyseia:synthese_resultat_v1' entreprise.siren as synthese_resultat_v1_url %}
 {% endif %}
 
 <div class="fr-tabs" id="onglets">
@@ -193,7 +193,7 @@
                 <div class="fr-grid-row fr-grid-row--center fr-pb-4w">
 
                     <a class="fr-btn fr-btn--icon-left fr-icon-download-line"
-                       href="{{ synthese_resultat_url }}">Télécharger la
+                       href="{{ synthese_resultat_v1_url }}">Télécharger la
                         synthèse de tous les résultats (xlsx)</a>
 
                 </div>
@@ -213,9 +213,9 @@
                                         {% if synthese.phrases_environnement %}
                                             {% for phrases_par_esrs in synthese.phrases_environnement %}
                                                 {% if csrd %}
-                                                    {% url 'analyseia:synthese_resultat_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs csrd.id as synthese_resultat_par_ESRS_url %}
+                                                    {% url 'analyseia:synthese_resultat_v1_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs csrd.id as synthese_resultat_v1_par_ESRS_url %}
                                                 {% else %}
-                                                    {% url 'analyseia:synthese_resultat_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs as synthese_resultat_par_ESRS_url %}
+                                                    {% url 'analyseia:synthese_resultat_v1_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs as synthese_resultat_v1_par_ESRS_url %}
                                                 {% endif %}
                                                 <div class="esrs-organizer--esrs">
                                                     <div class="esrs-organizer--card">
@@ -230,7 +230,7 @@
                                                             <b>{{ phrases_par_esrs.titre }}</b>
                                                             <a class="fr-btn fr-btn--sm fr-btn--secondary fr-icon-download-line"
                                                                title="Télécharger le tableur contenant les phrases correspondant à {% if csrd %}cet ESRS{% else %}ce thème{% endif %}"
-                                                               href="{{ synthese_resultat_par_ESRS_url }}"
+                                                               href="{{ synthese_resultat_v1_par_ESRS_url }}"
                                                                target="_blank">Télécharger le tableur contenant les phrases correspondant à {% if csrd %}cet ESRS{% else %}ce thème{% endif %}</a>
                                                         </div>
                                                     </div>
@@ -259,9 +259,9 @@
                                         {% if synthese.phrases_social %}
                                             {% for phrases_par_esrs in synthese.phrases_social %}
                                                 {% if csrd %}
-                                                    {% url 'analyseia:synthese_resultat_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs csrd.id as synthese_resultat_par_ESRS_url %}
+                                                    {% url 'analyseia:synthese_resultat_v1_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs csrd.id as synthese_resultat_v1_par_ESRS_url %}
                                                 {% else %}
-                                                    {% url 'analyseia:synthese_resultat_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs as synthese_resultat_par_ESRS_url %}
+                                                    {% url 'analyseia:synthese_resultat_v1_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs as synthese_resultat_v1_par_ESRS_url %}
                                                 {% endif %}
                                                 <div class="esrs-organizer--esrs">
                                                     <div class="esrs-organizer--card">
@@ -276,7 +276,7 @@
                                                             <b>{{ phrases_par_esrs.titre }}</b>
                                                             <a class="fr-btn fr-btn--sm fr-btn--secondary fr-icon-download-line"
                                                                title="Télécharger le tableur contenant les phrases correspondant à {% if csrd %}cet ESRS{% else %}ce thème{% endif %}"
-                                                               href="{{ synthese_resultat_par_ESRS_url }}"
+                                                               href="{{ synthese_resultat_v1_par_ESRS_url }}"
                                                                target="_blank">Télécharger le tableur contenant les phrases correspondant à {% if csrd %}cet ESRS{% else %}ce thème{% endif %}</a>
                                                         </div>
                                                     </div>
@@ -306,9 +306,9 @@
                                         {% if synthese.phrases_gouvernance %}
                                             {% for phrases_par_esrs in synthese.phrases_gouvernance %}
                                                 {% if csrd %}
-                                                    {% url 'analyseia:synthese_resultat_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs csrd.id as synthese_resultat_par_ESRS_url %}
+                                                    {% url 'analyseia:synthese_resultat_v1_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs csrd.id as synthese_resultat_v1_par_ESRS_url %}
                                                 {% else %}
-                                                    {% url 'analyseia:synthese_resultat_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs as synthese_resultat_par_ESRS_url %}
+                                                    {% url 'analyseia:synthese_resultat_v1_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs as synthese_resultat_v1_par_ESRS_url %}
                                                 {% endif %}
                                                 <div class="esrs-organizer--esrs">
                                                     <div class="esrs-organizer--card">
@@ -323,7 +323,7 @@
                                                             <b>{{ phrases_par_esrs.titre }}</b>
                                                             <a class="fr-btn fr-btn--sm fr-btn--secondary fr-icon-download-line"
                                                                title="Télécharger le tableur contenant les phrases correspondant à {% if csrd %}cet ESRS{% else %}ce thème{% endif %}"
-                                                               href="{{ synthese_resultat_par_ESRS_url }}"
+                                                               href="{{ synthese_resultat_v1_par_ESRS_url }}"
                                                                target="_blank">Télécharger le tableur contenant les phrases correspondant à {% if csrd %}cet ESRS{% else %}ce thème{% endif %}</a>
                                                         </div>
                                                     </div>
@@ -350,5 +350,4 @@
                 Aucun document analysé.
             {% endif %}
         </div>
-    </div>
 </div>

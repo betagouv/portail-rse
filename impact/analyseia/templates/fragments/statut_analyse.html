@@ -51,7 +51,7 @@
             </form>
         {% elif analyse.etat_v1 == "success" %}
             <a class="fr-link fr-link--download" download="true"
-               href="{% url 'analyseia:resultat' analyse.id 'theme' %}"
+               href="{% url 'analyseia:resultat_v1' analyse.id 'theme' %}"
                title="Télécharger le résultat de l'analyse des enjeux de durabilité">Télécharger le résultat<span class="fr-link__detail">XLSX</a>
         {% endif %}
     </td>
@@ -93,7 +93,7 @@
             </form>
         {% elif analyse.etat_v2 == "success" %}
             <a class="fr-link fr-link--download" download="true"
-               href="{% url 'analyseia:resultat' analyse.id 'theme' %}"
+               href="{% url 'analyseia:resultat_v1' analyse.id 'theme' %}"
                title="Télécharger le résultat de l'analyse VSME">Télécharger le résultat<span class="fr-link__detail">XLSX</a>
         {% endif %}
     </td>

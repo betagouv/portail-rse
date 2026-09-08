@@ -4,11 +4,11 @@ from .views import actualisation_etat
 from .views import ajout_document
 from .views import analyses
 from .views import lancement_analyse
-from .views import resultat
+from .views import resultat_v1
 from .views import statut_analyse_ia
 from .views import suppression
-from .views import synthese_resultat
-from .views import synthese_resultat_par_ESRS
+from .views import synthese_resultat_v1
+from .views import synthese_resultat_v1_par_ESRS
 
 app_name = "analyseia"
 
@@ -38,28 +38,28 @@ urlpatterns = [
     ),  # callback API IA
     path(
         "analyses/<int:id_analyse>/resultat/<str:rendu>",
-        resultat,
-        name="resultat",
+        resultat_v1,
+        name="resultat_v1",
     ),
     path(
         "analyses/<str:siren>/synthese/",
-        synthese_resultat,
-        name="synthese_resultat",
+        synthese_resultat_v1,
+        name="synthese_resultat_v1",
     ),
     path(
         "analyses/<str:siren>/synthese/<int:csrd_id>",
-        synthese_resultat,
-        name="synthese_resultat",
+        synthese_resultat_v1,
+        name="synthese_resultat_v1",
     ),
     path(
         "analyses/<str:siren>/<str:code_esrs>/<int:csrd_id>",
-        synthese_resultat_par_ESRS,
-        name="synthese_resultat_par_ESRS",
+        synthese_resultat_v1_par_ESRS,
+        name="synthese_resultat_v1_par_ESRS",
     ),
     path(
         "analyses/<str:siren>/<str:code_esrs>",
-        synthese_resultat_par_ESRS,
-        name="synthese_resultat_par_ESRS",
+        synthese_resultat_v1_par_ESRS,
+        name="synthese_resultat_v1_par_ESRS",
     ),
     path(
         "fragments/statut/<int:id_analyse>/",
