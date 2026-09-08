@@ -35,7 +35,7 @@ def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(
     client.force_login(alice)
 
     response = client.get(
-        reverse("analyseia:resultat", args=[document.id, rendu]),
+        reverse("analyseia:resultat_v1", args=[document.id, rendu]),
     )
 
     assert response["Content-Disposition"] == "filename=resultats.xlsx"
@@ -87,7 +87,7 @@ def test_telechargement_des_resultats_IA_d_une_analyse_non_terminee(
     client.force_login(alice)
 
     response = client.get(
-        reverse("analyseia:resultat", args=[analyse.id, rendu]),
+        reverse("analyseia:resultat_v1", args=[analyse.id, rendu]),
     )
 
     assert response["Content-Disposition"] == "filename=resultats.xlsx"
@@ -111,7 +111,7 @@ def test_telechargement_des_resultats_IA_d_un_document_inexistant(
     client.force_login(alice)
 
     response = client.get(
-        reverse("analyseia:resultat", args=[42, rendu]),
+        reverse("analyseia:resultat_v1", args=[42, rendu]),
     )
 
     assert response.status_code == 404
@@ -124,7 +124,7 @@ def test_telechargement_des_resultats_IA_d_un_document_redirige_vers_la_connexio
     entreprise = entreprise_factory(siren="000000089", utilisateur=alice)
 
     response = client.get(
-        reverse("analyseia:resultat", args=[analyse.id, rendu]),
+        reverse("analyseia:resultat_v1", args=[analyse.id, rendu]),
     )
 
     assert response.status_code == 302
@@ -168,7 +168,7 @@ def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_x
     client.force_login(alice)
 
     response = client.get(
-        reverse("analyseia:synthese_resultat", args=[entreprise.siren]),
+        reverse("analyseia:synthese_resultat_v1", args=[entreprise.siren]),
     )
 
     assert response["Content-Disposition"] == "filename=synthese_resultats.xlsx"
@@ -229,7 +229,9 @@ def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_x
     client.force_login(alice)
 
     response = client.get(
-        reverse("analyseia:synthese_resultat", args=[csrd.entreprise.siren, csrd.id]),
+        reverse(
+            "analyseia:synthese_resultat_v1", args=[csrd.entreprise.siren, csrd.id]
+        ),
     )
 
     assert response["Content-Disposition"] == "filename=synthese_resultats.xlsx"
@@ -260,7 +262,7 @@ def test_telechargement_des_resultats_IA_de_l_ensemble_des_documents_d_un_rappor
     client.force_login(alice)
 
     response = client.get(
-        reverse("analyseia:synthese_resultat", args=[entreprise.siren, 42]),
+        reverse("analyseia:synthese_resultat_v1", args=[entreprise.siren, 42]),
     )
 
     assert response.status_code == 404
@@ -272,13 +274,13 @@ def test_telechargement_des_resultats_IA_de_l_ensemble_des_documents_redirige_ve
     entreprise = entreprise_factory(utilisateur=alice)
 
     response = client.get(
-        reverse("analyseia:synthese_resultat", args=[entreprise.siren]),
+        reverse("analyseia:synthese_resultat_v1", args=[entreprise.siren]),
     )
 
     assert response.status_code == 302
 
     response = client.get(
-        reverse("analyseia:synthese_resultat", args=[entreprise.siren, 42]),
+        reverse("analyseia:synthese_resultat_v1", args=[entreprise.siren, 42]),
     )
 
     assert response.status_code == 302
@@ -328,7 +330,9 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx_lié_à_une_entrep
     client.force_login(alice)
 
     response = client.get(
-        reverse("analyseia:synthese_resultat_par_ESRS", args=[entreprise.siren, "E5"]),
+        reverse(
+            "analyseia:synthese_resultat_v1_par_ESRS", args=[entreprise.siren, "E5"]
+        ),
     )
 
     assert (
@@ -400,7 +404,7 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx_lié_à_une_CSRD(
 
     response = client.get(
         reverse(
-            "analyseia:synthese_resultat_par_ESRS",
+            "analyseia:synthese_resultat_v1_par_ESRS",
             args=[csrd.entreprise.siren, "E2", csrd.id],
         ),
     )
@@ -432,13 +436,15 @@ def test_telechargement_des_resultats_IA_par_ESRS_d_une_entreprise_inexistante(
     client.force_login(alice)
 
     response = client.get(
-        reverse("analyseia:synthese_resultat_par_ESRS", args=["123456789", "E2"]),
+        reverse("analyseia:synthese_resultat_v1_par_ESRS", args=["123456789", "E2"]),
     )
 
     assert response.status_code == 404
 
     response = client.get(
-        reverse("analyseia:synthese_resultat_par_ESRS", args=["123456789", "E2", 42]),
+        reverse(
+            "analyseia:synthese_resultat_v1_par_ESRS", args=["123456789", "E2", 42]
+        ),
     )
 
     assert response.status_code == 404
@@ -453,14 +459,16 @@ def test_telechargement_des_resultats_IA_par_ESRS_d_un_ESRS_inexistant(
     client.force_login(alice)
 
     response = client.get(
-        reverse("analyseia:synthese_resultat_par_ESRS", args=[entreprise.siren, "H8"]),
+        reverse(
+            "analyseia:synthese_resultat_v1_par_ESRS", args=[entreprise.siren, "H8"]
+        ),
     )
 
     assert response.status_code == 404
 
     response = client.get(
         reverse(
-            "analyseia:synthese_resultat_par_ESRS",
+            "analyseia:synthese_resultat_v1_par_ESRS",
             args=[entreprise.siren, "H8", csrd.id],
         ),
     )
@@ -477,14 +485,16 @@ def test_telechargement_des_resultats_IA_par_ESRS_redirige_vers_la_connexion_si_
     entreprise = csrd.entreprise
 
     response = client.get(
-        reverse("analyseia:synthese_resultat_par_ESRS", args=[entreprise.siren, "E2"]),
+        reverse(
+            "analyseia:synthese_resultat_v1_par_ESRS", args=[entreprise.siren, "E2"]
+        ),
     )
 
     assert response.status_code == 302
 
     response = client.get(
         reverse(
-            "analyseia:synthese_resultat_par_ESRS",
+            "analyseia:synthese_resultat_v1_par_ESRS",
             args=[entreprise.siren, "E2", csrd.id],
         ),
     )
@@ -500,7 +510,7 @@ def test_telechargement_des_resultats_IA_par_ESRS_d_un_rapport_csrd_inexistant(
 
     response = client.get(
         reverse(
-            "analyseia:synthese_resultat_par_ESRS", args=[entreprise.siren, "E2", 42]
+            "analyseia:synthese_resultat_v1_par_ESRS", args=[entreprise.siren, "E2", 42]
         ),
     )
 

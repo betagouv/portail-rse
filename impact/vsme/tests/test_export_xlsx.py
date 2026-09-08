@@ -1104,7 +1104,7 @@ def test_telechargement_d_un_rapport_vsme_redirige_vers_la_connexion_si_non_conn
     assert response.status_code == 302
 
     response = client.get(
-        reverse("analyseia:synthese_resultat", args=[entreprise.siren, 42]),
+        reverse("analyseia:synthese_resultat_v1", args=[entreprise.siren, 42]),
     )
 
     assert response.status_code == 302
