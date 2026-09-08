@@ -5,6 +5,7 @@ from .views import ajout_document
 from .views import analyses
 from .views import lancement_analyse
 from .views import resultat_v1
+from .views import resultat_v2
 from .views import statut_analyse_ia
 from .views import suppression
 from .views import synthese_resultat_v1
@@ -60,6 +61,11 @@ urlpatterns = [
         "analyses/<str:siren>/<str:code_esrs>",
         synthese_resultat_v1_par_ESRS,
         name="synthese_resultat_v1_par_ESRS",
+    ),
+    path(
+        "analyses/v2/<int:id_analyse>/resultat",
+        resultat_v2,
+        name="resultat_v2",
     ),
     path(
         "fragments/statut/<int:id_analyse>/",
