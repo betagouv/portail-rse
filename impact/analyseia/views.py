@@ -365,6 +365,51 @@ def synthese_resultat_v1_par_ESRS(request, entreprise, code_esrs, csrd=None):
     return xlsx_response(workbook, nom_de_fichier)
 
 
+@login_required
+@analyse_requise
+def resultat_v2(request, analyse):
+    chemin_xlsx = Path(settings.BASE_DIR, "analyseia/xlsx/v2/template_infos_VSME.xlsx")
+    workbook = load_workbook(chemin_xlsx)
+    worksheet = workbook["Informations VSME"]
+    _ajoute_lignes_resultat_ia_v2(worksheet, analyse)
+    return xlsx_response(workbook, "resultats_vsme.xlsx")
+
+
+def _ajoute_lignes_resultat_ia_v2(worksheet, document):
+    if not document.resultat_json_v2:
+        return
+    from vsme.models import Indicateur
+
+    for code_indicateur, contenus in document.resultat_json_v2.items():
+        schema_indicateur = Indicateur.get_schema(code_indicateur)
+        schema_champs = schema_indicateur["champs"]
+        for contenu in contenus:
+            for schema_champ in schema_champs:
+                if schema_champ["id"] == contenu["champ_id"]:
+                    label_champ = schema_champ["label"]
+                    label_colonne = ""
+                    if contenu["colonne_id"] and "colonnes" in schema_champ:
+                        for schema_colonne in schema_champ["colonnes"]:
+                            if contenu["colonne_id"] == schema_colonne["id"]:
+                                label_colonne = schema_colonne["label"]
+                                break
+                    break
+            ligne = [
+                schema_indicateur["titre"],
+                document.nom,
+                label_champ,
+                label_colonne,
+                contenu["valeur"],
+                contenu["unite"],
+                contenu["paragraphe"],
+            ]
+            try:
+                worksheet.append(ligne)
+            except IllegalCharacterError:
+                ligne[-1] = ILLEGAL_CHARACTERS_RE.sub("", contenu["TEXTS"])
+                worksheet.append(ligne)
+
+
 # Fragments / HTMX
 
 
