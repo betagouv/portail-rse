@@ -241,7 +241,7 @@ def _extraction_resultat_v2(resultat_json):
 
 @login_required
 @analyse_requise
-def resultat(request, analyse, rendu):
+def resultat_v1(request, analyse, rendu):
     chemin_xlsx = Path(
         settings.BASE_DIR, f"analyseia/xlsx/{rendu}/template_synthese_ESG.xlsx"
     )
@@ -254,14 +254,14 @@ def resultat(request, analyse, rendu):
         worksheet = workbook["Phrases relatives aux ESRS"]
 
     prefixe_ESRS = rendu == "esrs"
-    _ajoute_lignes_resultat_ia(worksheet, analyse, True, None, prefixe_ESRS)
+    _ajoute_lignes_resultat_ia_v1(worksheet, analyse, True, None, prefixe_ESRS)
     return xlsx_response(workbook, "resultats.xlsx")
 
 
 # TODO: externaliser ?
 
 
-def _ajoute_lignes_resultat_ia(
+def _ajoute_lignes_resultat_ia_v1(
     worksheet, document, avec_nom_fichier, contrainte_esrs, prefixe_ESRS=False
 ):
     if not document.resultat_json_v1:
@@ -310,7 +310,7 @@ def _envoie_resultat_ia_email(entreprise, resultat_ia_url):
 @login_required
 @entreprise_requise
 @csrd_valide_si_presente
-def synthese_resultat(request, entreprise, csrd=None):
+def synthese_resultat_v1(request, entreprise, csrd=None):
     rendu = "esrs" if csrd else "theme"
     chemin_xlsx = Path(
         settings.BASE_DIR, f"analyseia/xlsx/{rendu}/template_synthese_ESG.xlsx"
@@ -325,14 +325,14 @@ def synthese_resultat(request, entreprise, csrd=None):
 
     prefixe_ESRS = rendu == "esrs"
     for document in documents:
-        _ajoute_lignes_resultat_ia(worksheet, document, True, None, prefixe_ESRS)
+        _ajoute_lignes_resultat_ia_v1(worksheet, document, True, None, prefixe_ESRS)
     return xlsx_response(workbook, "synthese_resultats.xlsx")
 
 
 @login_required
 @entreprise_requise
 @csrd_valide_si_presente
-def synthese_resultat_par_ESRS(request, entreprise, code_esrs, csrd=None):
+def synthese_resultat_v1_par_ESRS(request, entreprise, code_esrs, csrd=None):
     if code_esrs not in ESRS.codes():
         raise Http404
 
@@ -354,7 +354,9 @@ def synthese_resultat_par_ESRS(request, entreprise, code_esrs, csrd=None):
         documents = csrd.analyses_ia.reussies()
 
     for document in documents:
-        _ajoute_lignes_resultat_ia(worksheet, document, True, code_esrs, prefixe_ESRS)
+        _ajoute_lignes_resultat_ia_v1(
+            worksheet, document, True, code_esrs, prefixe_ESRS
+        )
     if rendu == "theme":
         titre_pour_nom_de_fichier = normalise_titre_pour_nom_de_fichier(titre)
         nom_de_fichier = f"resultats_{titre_pour_nom_de_fichier}.xlsx"
