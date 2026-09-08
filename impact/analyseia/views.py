@@ -177,7 +177,7 @@ def actualisation_etat(request, id_analyse, version_ia):
             if message:
                 analyse.message_v2 = message
             if status == "success":
-                analyse.resultat_json_v2 = json.loads(resultat_json)
+                analyse.resultat_json_v2 = _extraction_resultat_v2(resultat_json)
     except KeyError:
         return HttpResponseBadRequest()
     analyse.save()
@@ -206,6 +206,37 @@ def actualisation_etat(request, id_analyse, version_ia):
                 sentry_sdk.capture_exception(e)
 
     return HttpResponse("OK")
+
+
+def _extraction_resultat_v2(resultat_json):
+    resultats = json.loads(resultat_json)
+    donnees_a_enregistrer = {}
+    for resultat in resultats:
+
+        code_indicateur = resultat["matched_rse_code"]
+        if code_indicateur != "nan" and resultat["Valeur"] != "NA":
+            if code_indicateur not in donnees_a_enregistrer:
+                donnees_a_enregistrer[code_indicateur] = []
+            colonne_id = (
+                resultat["matched_rse_colonne_id"]
+                if resultat["matched_rse_colonne_id"] != "nan"
+                else None
+            )
+            unite = (
+                resultat["Unité extraite"]
+                if resultat["Unité extraite"] != "NA"
+                else None
+            )
+            donnees_a_enregistrer[code_indicateur].append(
+                {
+                    "unite": unite,
+                    "valeur": resultat["Valeur"],
+                    "paragraphe": resultat["Paragraphe source"],
+                    "champ_id": resultat["matched_rse_champs_id"],
+                    "colonne_id": colonne_id,
+                }
+            )
+    return donnees_a_enregistrer
 
 
 @login_required

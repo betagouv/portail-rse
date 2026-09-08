@@ -671,7 +671,12 @@ def test_serveur_IA_envoie_l_etat_d_avancement_de_l_analyse_v2_erreur(
 def test_serveur_IA_envoie_le_resultat_de_l_analyse_v2(
     client, analyse, mailoutbox, alice
 ):
-    RESULTATS = """[{"Code indicateur": "B3_1", "Mots cl\\u00e9s trouv\\u00e9s": "\\u00e9missions, \\u00e9nergie, d\\u00e9veloppement, durable, bilan", "Mots cl\\u00e9s utilis\\u00e9s": "scope 1, \\u00e9missions, CO\\u2082, GHG, carbone, \\u00e9nergie, d\\u00e9veloppement durable, bilan carbone, climat, d\\u00e9carbonation", "M\\u00e9trique": "\\u00c9missions directes de GES (scope 1)", "Pages candidates": [4, 8, 9, 5, 7, 11], "Pages conserv\\u00e9es": [4, 8, 9, 5, 7, 11], "Paragraphe source": "NA", "Retrieval par page": [{"keywords_found": ["\\u00e9missions", "\\u00e9nergie", "d\\u00e9veloppement", "durable"], "page": 4, "passed": true, "score": 4, "thresholds": null}], "Th\\u00e9matique": "\\u00c9nergie et \\u00e9missions de GES", "Unit\\u00e9 extraite": "NA", "Valeur": "NA"}]"""
+    RESULTATS = """[
+    {"Code indicateur": "B3_2", "Paragraphe source": "Le management a une responsabilite RSE.", "Unit\\u00e9 extraite": "texte", "Valeur": "Le management", "matched_rse_code": "nan", "matched_rse_champs_id": "nan", "matched_rse_colonne_id": "NA"},
+    {"Code indicateur": "B3_1", "Mots cl\\u00e9s trouv\\u00e9s": "\\u00e9missions, \\u00e9nergie, d\\u00e9veloppement, durable, bilan", "Mots cl\\u00e9s utilis\\u00e9s": "scope 1, \\u00e9missions, CO\\u2082, GHG, carbone, \\u00e9nergie, d\\u00e9veloppement durable, bilan carbone, climat, d\\u00e9carbonation", "M\\u00e9trique": "\\u00c9missions directes de GES (scope 1)", "Pages candidates": [4, 8, 9, 5, 7, 11], "Pages conserv\\u00e9es": [4, 8, 9, 5, 7, 11], "Paragraphe source": "Emission de 12 tonnes environ", "Retrieval par page": [{"keywords_found": ["\\u00e9missions", "\\u00e9nergie", "d\\u00e9veloppement", "durable"], "page": 4, "passed": true, "score": 4, "thresholds": null}], "Th\\u00e9matique": "\\u00c9nergie et \\u00e9missions de GES", "Unit\\u00e9 extraite": "tonne", "Valeur": "12", "matched_rse_code": "B3-30", "matched_rse_champs_id": "estimation_emissions_GES", "matched_rse_colonne_id": "scope_1"},
+    {"Code indicateur": "B3_1", "Mots cl\\u00e9s trouv\\u00e9s": "\\u00e9missions, \\u00e9nergie, d\\u00e9veloppement, durable, bilan", "Mots cl\\u00e9s utilis\\u00e9s": "scope 1, \\u00e9missions, CO\\u2082, GHG, carbone, \\u00e9nergie, d\\u00e9veloppement durable, bilan carbone, climat, d\\u00e9carbonation", "M\\u00e9trique": "\\u00c9missions directes de GES (scope 1)", "Pages candidates": [4, 8, 9, 5, 7, 11], "Pages conserv\\u00e9es": [4, 8, 9, 5, 7, 11], "Paragraphe source": "PARAGRAPHE", "Retrieval par page": [{"keywords_found": ["\\u00e9missions", "\\u00e9nergie", "d\\u00e9veloppement", "durable"], "page": 4, "passed": true, "score": 4, "thresholds": null}], "Th\\u00e9matique": "\\u00c9nergie et \\u00e9missions de GES", "Unit\\u00e9 extraite": "NA", "Valeur": "1234", "matched_rse_code": "B3-30", "matched_rse_champs_id": "estimation_emissions_GES", "matched_rse_colonne_id": "nan"},
+    {"Code indicateur": "B3_3", "Mots cl\\u00e9s trouv\\u00e9s": "", "Mots cl\\u00e9s utilis\\u00e9s": "", "M\\u00e9trique": "\\u00c9missions directes de GES (scope 1)", "Pages candidates": [4, 8, 9, 5, 7, 11], "Pages conserv\\u00e9es": [4, 8, 9, 5, 7, 11], "Paragraphe source": "NA", "Retrieval par page": [{"keywords_found": ["\\u00e9missions", "\\u00e9nergie", "d\\u00e9veloppement", "durable"], "page": 4, "passed": true, "score": 4, "thresholds": null}], "Th\\u00e9matique": "\\u00c9nergie et \\u00e9missions de GES", "Unit\\u00e9 extraite": "NA", "Valeur": "NA", "matched_rse_code": "B3-31", "matched_rse_champs_id": "risques_climatiques", "matched_rse_colonne_id": "nom_colonne"}
+    ]"""
 
     url = ACTUALISATION_ETAT_URL.format(analyse_id=analyse.id, version_ia=2)
     response = client.post(
@@ -686,36 +691,26 @@ def test_serveur_IA_envoie_le_resultat_de_l_analyse_v2(
     assert analyse.etat_v1 is None
     assert analyse.resultat_json_v1 is None
     assert analyse.etat_v2 == "success"
-    assert analyse.resultat_json_v2 == [
-        {
-            "Code indicateur": "B3_1",
-            "Mots clés trouvés": "émissions, énergie, développement, durable, bilan",
-            "Mots clés utilisés": "scope 1, émissions, CO₂, GHG, carbone, énergie, "
-            "développement durable, bilan carbone, climat, "
-            "décarbonation",
-            "Métrique": "Émissions directes de GES (scope 1)",
-            "Pages candidates": [4, 8, 9, 5, 7, 11],
-            "Pages conservées": [4, 8, 9, 5, 7, 11],
-            "Paragraphe source": "NA",
-            "Retrieval par page": [
-                {
-                    "keywords_found": [
-                        "émissions",
-                        "énergie",
-                        "développement",
-                        "durable",
-                    ],
-                    "page": 4,
-                    "passed": True,
-                    "score": 4,
-                    "thresholds": None,
-                }
-            ],
-            "Thématique": "Énergie et émissions de GES",
-            "Unité extraite": "NA",
-            "Valeur": "NA",
-        }
-    ]
+    assert analyse.resultat_json_v2 == {
+        "B3-30": [
+            # ignorer "B3_2" car "matched_rse_champs_id" non renseigné ("nan")
+            {
+                "unite": "tonne",
+                "valeur": "12",
+                "paragraphe": "Emission de 12 tonnes environ",
+                "champ_id": "estimation_emissions_GES",
+                "colonne_id": "scope_1",
+            },
+            {
+                "unite": None,
+                "valeur": "1234",
+                "paragraphe": "PARAGRAPHE",
+                "champ_id": "estimation_emissions_GES",
+                "colonne_id": None,
+            },
+            # ignorer "B3_3" car "Valeur" non renseigné ("NA")
+        ]
+    }
 
     assert len(mailoutbox) == 1
     mail = mailoutbox[0]
