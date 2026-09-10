@@ -9,7 +9,7 @@ from utils.models import TimestampedModel
 
 
 class AnalyseIAQuerySet(models.QuerySet):
-    def reussies(self):
+    def v1_reussies(self):
         return self.filter(etat_v1__exact="success")
 
     def v2_reussies(self):

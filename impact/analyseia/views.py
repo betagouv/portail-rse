@@ -41,7 +41,7 @@ def _contexte_analyses(entreprise, form=None):
     context |= {
         "form": form or AnalyseIAForm(),
         "analyses_ia": entreprise.analyses_ia.all(),
-        "synthese_v1": synthese_analyse_v1(entreprise.analyses_ia.reussies()),
+        "synthese_v1": synthese_analyse_v1(entreprise.analyses_ia.v1_reussies()),
         "synthese_v2": synthese_analyse_v2(entreprise.analyses_ia.v2_reussies()),
     }
     return context
@@ -320,10 +320,10 @@ def synthese_resultat_v1(request, entreprise, csrd=None):
     workbook = load_workbook(chemin_xlsx)
     if rendu == "theme":
         worksheet = workbook["Phrases relatives aux ESG"]
-        documents = entreprise.analyses_ia.reussies()
+        documents = entreprise.analyses_ia.v1_reussies()
     else:
         worksheet = workbook["Phrases relatives aux ESRS"]
-        documents = csrd.analyses_ia.reussies()
+        documents = csrd.analyses_ia.v1_reussies()
 
     prefixe_ESRS = rendu == "esrs"
     for document in documents:
@@ -350,10 +350,10 @@ def synthese_resultat_v1_par_ESRS(request, entreprise, code_esrs, csrd=None):
     worksheet["C14"] = titre
     if rendu == "theme":
         worksheet = workbook["Phrases relatives aux ESG"]
-        documents = entreprise.analyses_ia.reussies()
+        documents = entreprise.analyses_ia.v1_reussies()
     else:
         worksheet = workbook["Phrases relatives aux ESRS"]
-        documents = csrd.analyses_ia.reussies()
+        documents = csrd.analyses_ia.v1_reussies()
 
     for document in documents:
         _ajoute_lignes_resultat_ia_v1(
