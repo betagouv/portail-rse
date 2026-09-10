@@ -240,7 +240,7 @@ def test_rapport_csrd_avec_documents(csrd):
     document_2 = AnalyseIA.objects.create(etat_v1="pending")
     document_2.rapports_csrd.add(csrd)
 
-    assert list(csrd.analyses_ia.reussies()) == []
+    assert list(csrd.analyses_ia.v1_reussies()) == []
     assert list(csrd.analyses_ia.non_lancees()) == [document_1]
     assert document_1.nombre_de_phrases_pertinentes == 0
     assert document_2.nombre_de_phrases_pertinentes == 0
@@ -272,5 +272,5 @@ def test_rapport_csrd_avec_documents(csrd):
     }"""
     document_2.save()
 
-    assert list(csrd.analyses_ia.reussies()) == [document_2]
+    assert list(csrd.analyses_ia.v1_reussies()) == [document_2]
     assert document_2.nombre_de_phrases_pertinentes == 3
