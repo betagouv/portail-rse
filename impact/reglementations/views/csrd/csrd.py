@@ -638,7 +638,7 @@ def contexte_d_etape(id_etape, csrd, form=None):
                     csrd.analyses_ia.v1_reussies(), prefixe_ESRS=True
                 ),
                 "onglet_resultats_enjeux_actif": csrd.analyses_ia.v1_reussies().exists()
-                and not csrd.analyses_ia.non_lancees(),
+                and not csrd.analyses_ia.v1_non_lancees(),
             }
         case "redaction-rapport-durabilite":
             context |= {"form": LienRapportCSRDForm(instance=csrd)}
