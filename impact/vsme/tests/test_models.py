@@ -3,6 +3,8 @@ from decimal import Decimal
 
 import pytest
 
+from vsme.models import Indicateur
+
 
 def test_nombre_decimal_dans_les_donnees_d_un_indicateur(rapport_vsme):
     indicateur_simple = rapport_vsme.indicateurs.create(
@@ -202,3 +204,34 @@ def test_applicabilité_indicateurs_C5_si_50_salariés_ou_plus(
 
     assert not est_applicable
     assert "l'entreprise a sélectionné uniquement le module de base" in explication
+
+
+def test_acces_au_schema_d_un_indicateur(rapport_vsme):
+    indicateur = rapport_vsme.indicateurs.create(
+        schema_id="B1-24-a",  # indicateur base
+        data={"base_etablissement": "base"},
+    )
+
+    assert (
+        indicateur.schema
+        == Indicateur.get_schema("B1-24-a")
+        == {
+            "titre": "Base d’établissement",
+            "description": "Indiquer si vous utilisez le module de base ou le module complet pour votre déclaration de la norme VSME.",
+            "ancre": "choix_module",
+            "champs": [
+                {
+                    "id": "choix_module",
+                    "label": "Choix du module",
+                    "type": "choix_unique",
+                    "choix": [
+                        {"id": "base", "label": "Module de base"},
+                        {"id": "complet", "label": "Module complet"},
+                    ],
+                    "obligatoire": True,
+                    "export_pptx": {"diapo": "B1-infos-generales", "shape": "B1-24-a"},
+                }
+            ],
+            "export_xlsx": {"cellule": "A4"},
+        }
+    )
