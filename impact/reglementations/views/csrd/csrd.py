@@ -21,7 +21,7 @@ from openpyxl import load_workbook
 from openpyxl import Workbook
 
 from analyseia.forms import AnalyseIAForm
-from analyseia.helpers import synthese_analyse
+from analyseia.helpers import synthese_analyse_v1
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
@@ -634,7 +634,7 @@ def contexte_d_etape(id_etape, csrd, form=None):
             context |= {
                 "form": form or AnalyseIAForm(),
                 "analyses_ia": csrd.analyses_ia.all(),
-                "synthese": synthese_analyse(
+                "synthese_v1": synthese_analyse_v1(
                     csrd.analyses_ia.reussies(), prefixe_ESRS=True
                 ),
                 "onglet_resultats_actif": csrd.analyses_ia.reussies().exists()

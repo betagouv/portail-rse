@@ -1,4 +1,4 @@
-from analyseia.helpers import synthese_analyse
+from analyseia.helpers import synthese_analyse_v1
 from analyseia.models import AnalyseIA
 
 ANALYSES = [
@@ -50,7 +50,7 @@ ANALYSES = [
 
 
 def test_synthese_analyse_avec_prefixe_ESRS():
-    stats = synthese_analyse(ANALYSES, prefixe_ESRS=True)
+    stats = synthese_analyse_v1(ANALYSES, prefixe_ESRS=True)
 
     assert stats == {
         "phrases_environnement": [
@@ -80,7 +80,7 @@ def test_synthese_analyse_avec_prefixe_ESRS():
 
 
 def test_synthese_analyse_sans_prefixe_ESRS():
-    stats = synthese_analyse(ANALYSES, prefixe_ESRS=False)
+    stats = synthese_analyse_v1(ANALYSES, prefixe_ESRS=False)
 
     assert stats == {
         "phrases_environnement": [
