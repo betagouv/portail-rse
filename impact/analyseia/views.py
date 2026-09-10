@@ -24,7 +24,7 @@ from .decorators import csrd_valide_si_presente
 from .forms import AnalyseIAForm
 from .helpers import normalise_titre_esrs
 from .helpers import normalise_titre_pour_nom_de_fichier
-from .helpers import synthese_analyse
+from .helpers import synthese_analyse_v1
 from .models import AnalyseIA
 from api import analyse_ia
 from api.exceptions import APIError
@@ -40,7 +40,7 @@ def _contexte_analyses(entreprise, form=None):
     context |= {
         "form": form or AnalyseIAForm(),
         "analyses_ia": entreprise.analyses_ia.all(),
-        "synthese": synthese_analyse(entreprise.analyses_ia.reussies()),
+        "synthese_v1": synthese_analyse_v1(entreprise.analyses_ia.reussies()),
     }
     return context
 
