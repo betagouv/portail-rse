@@ -124,3 +124,79 @@ def test_telechargement_des_resultats_IA_d_un_document_redirige_vers_la_connexio
     )
 
     assert response.status_code == 302
+
+
+def test_telechargement_de_la_synthese_des_resultats_IA_de_l_ensemble_des_documents_au_format_xlsx(
+    client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    entreprise.analyses_ia.create(
+        nom="NOM1.pdf",
+        etat_v2="success",
+        resultat_json_v2={
+            "B3-30-p1": [
+                {
+                    "unite": "tonne",
+                    "valeur": "12",
+                    "paragraphe": "Emission de 12 tonnes environ",
+                    "champ_id": "estimation_emissions_GES",
+                    "colonne_id": "scope_1",
+                },
+            ]
+        },
+    )
+    entreprise.analyses_ia.create(
+        nom="NOM2.pdf",
+        etat_v2="success",
+        resultat_json_v2={
+            "B3-30-p1": [
+                {
+                    "unite": None,
+                    "valeur": "1234",
+                    "paragraphe": "PARAGRAPHE",
+                    "champ_id": "estimation_emissions_GES",
+                    "colonne_id": None,
+                },
+            ]
+        },
+    )
+    entreprise.analyses_ia.create(
+        etat_v2="processing",
+    )
+    client.force_login(alice)
+
+    response = client.get(
+        reverse("analyseia:synthese_resultat_v2", args=[entreprise.siren]),
+    )
+
+    assert response["Content-Disposition"] == "filename=resultats_vsme.xlsx"
+    assert (
+        response["content-type"]
+        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+    )
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook["Informations VSME"]
+    assert onglet["A1"].value == "Indicateur"
+    assert onglet["B1"].value == "Fichier"
+    assert (
+        onglet["A2"].value == "Estimation des émissions brutes de GES des scopes 1 et 2"
+    )
+    assert onglet["B2"].value == "NOM1.pdf"
+    assert onglet["E2"].value == "12"
+    assert (
+        onglet["A3"].value == "Estimation des émissions brutes de GES des scopes 1 et 2"
+    )
+    assert onglet["B3"].value == "NOM2.pdf"
+    assert onglet["E3"].value == "1234"
+
+
+def test_telechargement_de_la_synthese_des_resultats_IA_redirige_vers_la_connexion_si_non_connecté(
+    client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+
+    response = client.get(
+        reverse("analyseia:synthese_resultat_v2", args=[entreprise.siren]),
+    )
+
+    assert response.status_code == 302
