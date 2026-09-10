@@ -6,6 +6,7 @@
 {% else %}
     {% url 'analyseia:ajout_document' entreprise.siren as ajout_document_url %}
     {% url 'analyseia:synthese_resultat_v1' entreprise.siren as synthese_resultat_v1_url %}
+    {% url 'analyseia:synthese_resultat_v2' entreprise.siren as synthese_resultat_v2_url %}
 {% endif %}
 
 <div class="fr-tabs" id="onglets">
@@ -460,6 +461,12 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="fr-grid-row fr-grid-row--center fr-pb-4w">
+                        <a class="fr-btn fr-btn--icon-left fr-icon-download-line"
+                           href="{{ synthese_resultat_v2_url }}">Télécharger la
+                            synthèse de tous les résultats (xlsx)</a>
                     </div>
                 {% else %}
                     Aucun document analysé.
