@@ -578,10 +578,14 @@ class Indicateur(TimestampedModel):
 
     @property
     def schema(self):
+        return self.__class__.get_schema(self.schema_id)
+
+    @classmethod
+    def get_schema(cls, schema_id):
         schema_exigence = ExigenceDePublication.par_indicateur_schema_id(
-            self.schema_id
+            schema_id
         ).load_json_schema()
-        return schema_exigence[self.schema_id]
+        return schema_exigence[schema_id]
 
     @property
     def data(self) -> dict:
