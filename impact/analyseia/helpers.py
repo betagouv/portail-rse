@@ -20,7 +20,7 @@ def normalise_titre_esrs(titre_esrs, prefixe_ESRS=True):
     return titre
 
 
-def synthese_analyse(analyses, prefixe_ESRS=False):
+def synthese_analyse_v1(analyses, prefixe_ESRS=False):
     resultat = {
         "phrases_environnement": {},
         "phrases_social": {},
