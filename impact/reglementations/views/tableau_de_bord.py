@@ -46,7 +46,7 @@ def tableau_de_bord(request, entreprise):
         nombre_reglementations_applicables = len(reglementations_applicables)
 
     # Calculer le nombre d'analyses IA réussies
-    nombre_analyses_ia = entreprise.analyses_ia.reussies().count()
+    nombre_analyses_ia = entreprise.analyses_ia.v1_reussies().count()
 
     # Calculer le pourcentage de progression VSME
     try:
