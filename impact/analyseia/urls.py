@@ -10,6 +10,7 @@ from .views import statut_analyse_ia
 from .views import suppression
 from .views import synthese_resultat_v1
 from .views import synthese_resultat_v1_par_ESRS
+from .views import synthese_resultat_v2
 
 app_name = "analyseia"
 
@@ -66,6 +67,11 @@ urlpatterns = [
         "analyses/v2/<int:id_analyse>/resultat",
         resultat_v2,
         name="resultat_v2",
+    ),
+    path(
+        "analyses/<str:siren>/synthese/v2",
+        synthese_resultat_v2,
+        name="synthese_resultat_v2",
     ),
     path(
         "fragments/statut/<int:id_analyse>/",
