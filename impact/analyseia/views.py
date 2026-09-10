@@ -243,7 +243,7 @@ def _extraction_resultat_v2(resultat_json):
 @analyse_requise
 def resultat_v1(request, analyse, rendu):
     chemin_xlsx = Path(
-        settings.BASE_DIR, f"analyseia/xlsx/{rendu}/template_synthese_ESG.xlsx"
+        settings.BASE_DIR, f"analyseia/xlsx/v1/{rendu}/template_synthese_ESG.xlsx"
     )
     workbook = load_workbook(chemin_xlsx)
     worksheet = workbook[">>>"]
@@ -313,7 +313,7 @@ def _envoie_resultat_ia_email(entreprise, resultat_ia_url):
 def synthese_resultat_v1(request, entreprise, csrd=None):
     rendu = "esrs" if csrd else "theme"
     chemin_xlsx = Path(
-        settings.BASE_DIR, f"analyseia/xlsx/{rendu}/template_synthese_ESG.xlsx"
+        settings.BASE_DIR, f"analyseia/xlsx/v1/{rendu}/template_synthese_ESG.xlsx"
     )
     workbook = load_workbook(chemin_xlsx)
     if rendu == "theme":
@@ -340,7 +340,7 @@ def synthese_resultat_v1_par_ESRS(request, entreprise, code_esrs, csrd=None):
     prefixe_ESRS = rendu == "esrs"
     chemin_xlsx = Path(
         settings.BASE_DIR,
-        f"analyseia/xlsx/{rendu}/template_synthese_{code_esrs[0]}.xlsx",
+        f"analyseia/xlsx/v1/{rendu}/template_synthese_{code_esrs[0]}.xlsx",
     )
     workbook = load_workbook(chemin_xlsx)
     worksheet = workbook[">>>"]
