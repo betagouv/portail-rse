@@ -412,6 +412,17 @@ def _ajoute_lignes_resultat_ia_v2(worksheet, document):
                 worksheet.append(ligne)
 
 
+@login_required
+@entreprise_requise
+def synthese_resultat_v2(request, entreprise):
+    chemin_xlsx = Path(settings.BASE_DIR, "analyseia/xlsx/v2/template_infos_VSME.xlsx")
+    workbook = load_workbook(chemin_xlsx)
+    worksheet = workbook["Informations VSME"]
+    for analyse in entreprise.analyses_ia.v2_reussies():
+        _ajoute_lignes_resultat_ia_v2(worksheet, analyse)
+    return xlsx_response(workbook, "resultats_vsme.xlsx")
+
+
 # Fragments / HTMX
 
 
