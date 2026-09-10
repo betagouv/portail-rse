@@ -93,18 +93,18 @@
     <div id="onglet-resultats-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="onglet-resultats"
          tabindex="0">
         <div class="fr-container">
-            {% if synthese.nb_documents_analyses %}
+            {% if synthese_v1.nb_documents_analyses %}
                 <div class="fr-grid-row fr-grid-row--gutters fr-pb-4w">
                     <div class="fr-col">
                         <div class="fr-tile">
                             <div class="fr-tile__body">
                                 <div class="fr-tile__content">
                                     <h3 class="fr-tile__title">
-                                        {{ synthese.nb_documents_analyses }}
+                                        {{ synthese_v1.nb_documents_analyses }}
                                     </h3>
                                     <p class="fr-tile__desc">
-                                        document{{ synthese.nb_documents_analyses|pluralize }}
-                                        analysé{{ synthese.nb_documents_analyses|pluralize }}
+                                        document{{ synthese_v1.nb_documents_analyses|pluralize }}
+                                        analysé{{ synthese_v1.nb_documents_analyses|pluralize }}
                                     </p>
                                 </div>
                             </div>
@@ -131,12 +131,12 @@
                             <div class="fr-tile__body">
                                 <div class="fr-tile__content">
                                     <h3 class="fr-tile__title">
-                                        {{synthese.nb_phrases_pertinentes_detectees }}
+                                        {{synthese_v1.nb_phrases_pertinentes_detectees }}
                                     </h3>
                                     <p class="fr-tile__desc">
-                                        phrase{{ synthese.nb_phrases_pertinentes_detectees|pluralize }}
-                                        pertinente{{ synthese.nb_phrases_pertinentes_detectees|pluralize }}
-                                        détectée{{ synthese.nb_phrases_pertinentes_detectees|pluralize }}
+                                        phrase{{ synthese_v1.nb_phrases_pertinentes_detectees|pluralize }}
+                                        pertinente{{ synthese_v1.nb_phrases_pertinentes_detectees|pluralize }}
+                                        détectée{{ synthese_v1.nb_phrases_pertinentes_detectees|pluralize }}
                                     </p>
                                 </div>
                             </div>
@@ -163,11 +163,11 @@
                             <div class="fr-tile__body">
                                 <div class="fr-tile__content">
                                     <h3 class="fr-tile__title">
-                                        {{ synthese.nb_esrs_thematiques_detectees }}
+                                        {{ synthese_v1.nb_esrs_thematiques_detectees }}
                                     </h3>
                                     <p class="fr-tile__desc">
-                                        {% if csrd %}ESRS thématique{% else %}Thème{% endif %}{{ synthese.nb_esrs_thematiques_detectees|pluralize }}
-                                        détecté{{ synthese.nb_esrs_thematiques_detectees|pluralize }}
+                                        {% if csrd %}ESRS thématique{% else %}Thème{% endif %}{{ synthese_v1.nb_esrs_thematiques_detectees|pluralize }}
+                                        détecté{{ synthese_v1.nb_esrs_thematiques_detectees|pluralize }}
                                     </p>
                                 </div>
                             </div>
@@ -210,8 +210,8 @@
                                     </div>
 
                                     <div class="esrs-organizer--content">
-                                        {% if synthese.phrases_environnement %}
-                                            {% for phrases_par_esrs in synthese.phrases_environnement %}
+                                        {% if synthese_v1.phrases_environnement %}
+                                            {% for phrases_par_esrs in synthese_v1.phrases_environnement %}
                                                 {% if csrd %}
                                                     {% url 'analyseia:synthese_resultat_v1_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs csrd.id as synthese_resultat_v1_par_ESRS_url %}
                                                 {% else %}
@@ -256,8 +256,8 @@
                                         <h4 class="esrs-organizer--title">Social</h4>
                                     </div>
                                     <div class="esrs-organizer--content">
-                                        {% if synthese.phrases_social %}
-                                            {% for phrases_par_esrs in synthese.phrases_social %}
+                                        {% if synthese_v1.phrases_social %}
+                                            {% for phrases_par_esrs in synthese_v1.phrases_social %}
                                                 {% if csrd %}
                                                     {% url 'analyseia:synthese_resultat_v1_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs csrd.id as synthese_resultat_v1_par_ESRS_url %}
                                                 {% else %}
@@ -303,8 +303,8 @@
                                         </h4>
                                     </div>
                                     <div class="esrs-organizer--content">
-                                        {% if synthese.phrases_gouvernance %}
-                                            {% for phrases_par_esrs in synthese.phrases_gouvernance %}
+                                        {% if synthese_v1.phrases_gouvernance %}
+                                            {% for phrases_par_esrs in synthese_v1.phrases_gouvernance %}
                                                 {% if csrd %}
                                                     {% url 'analyseia:synthese_resultat_v1_par_ESRS' entreprise.siren phrases_par_esrs.code_esrs csrd.id as synthese_resultat_v1_par_ESRS_url %}
                                                 {% else %}

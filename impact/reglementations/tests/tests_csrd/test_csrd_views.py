@@ -44,7 +44,7 @@ def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
         )
     elif etape.endswith("analyse-ecart"):
         assertTemplateUsed(response, "reglementations/csrd/etape-analyse-ecart.html")
-        assert context["synthese"] == {
+        assert context["synthese_v1"] == {
             "phrases_environnement": [],
             "phrases_social": [],
             "phrases_gouvernance": [],
