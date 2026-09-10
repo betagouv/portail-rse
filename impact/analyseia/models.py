@@ -15,7 +15,7 @@ class AnalyseIAQuerySet(models.QuerySet):
     def v2_reussies(self):
         return self.filter(etat_v2__exact="success")
 
-    def non_lancees(self):
+    def v1_non_lancees(self):
         return self.filter(etat_v1__isnull=True)
 
 
