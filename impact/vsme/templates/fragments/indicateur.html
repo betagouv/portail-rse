@@ -51,8 +51,10 @@
                                                         {% if resultat.champ_id == form.id %}
                                                             <li>
                                                                 {% if resultat.colonne_label %}{{ resultat.colonne_label }} :<p />{% endif %}
-                                                                {{ resultat.valeur }}{% if resultat.unite %} {{ resultat.unite }}{% endif %}.
-                                                                <p />Information trouvée dans ce paragraphe :
+                                                                <div class="fr-highlight">
+                                                                    <p>{{ resultat.valeur }}{% if resultat.unite %} {{ resultat.unite }}{% endif %}.</p>
+                                                                </div>
+                                                                Information trouvée dans ce paragraphe :
                                                                 <figure class="fr-quote">
                                                                     <blockquote>
                                                                         <p class="fr-text--md">{{ resultat.paragraphe }}</p>
