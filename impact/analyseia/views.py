@@ -201,6 +201,7 @@ def actualisation_etat(request, id_analyse, version_ia):
             _envoie_resultat_ia_email(
                 analyse.entreprise,
                 f"{request.build_absolute_uri(path)}#onglets",
+                version_ia,
             )
         except Exception as e:
             with sentry_sdk.new_scope() as scope:
@@ -294,7 +295,7 @@ def _ajoute_lignes_resultat_ia_v1(
                     worksheet.append(ligne)
 
 
-def _envoie_resultat_ia_email(entreprise, resultat_ia_url):
+def _envoie_resultat_ia_email(entreprise, resultat_ia_url, version_ia):
     destinataires = [utilisateur.email for utilisateur in entreprise.users.all()]
 
     email = EmailMessage(
@@ -305,6 +306,7 @@ def _envoie_resultat_ia_email(entreprise, resultat_ia_url):
 
     email.merge_global_data = {
         "resultat_ia_url": resultat_ia_url,
+        "version_ia": version_ia,
     }
     email.send()
 
