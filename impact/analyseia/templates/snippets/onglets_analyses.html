@@ -72,11 +72,11 @@
                                         <th scope="col">
                                             Date d'ajout
                                         </th>
-                                        <th scope="col">
+                                        <th scope="col" title="Pour réaliser la CSRD (Corporate Sustainability Reporting Directive), une entreprise doit identifier les impacts matériels, les risques et les opportunités liés aux enjeux environnementaux, sociaux et de gouvernance dans ses propres activités et dans la chaîne de valeur en amont et en aval. L'analyse des enjeux permet de rechercher dans les documents pdf que vous avez ajouté des informations susceptibles de faire partie de vos enjeux ESG (Environnement, Social et Gouvernance).">
                                             Analyse Enjeux de durabilité
                                         </th>
                                         {% if not csrd %}
-                                            <th scope="col">
+                                            <th scope="col" title="Pour réaliser la VSME (Volontary Sustainability Reporting Standard for non-listed SMEs), une entreprise doit fournir des indicateurs concernant les critères ESG (Environnement, Social et Gouvernance). L'analyse VSME permet de rechercher dans les documents pdf que vous avez ajouté des informations susceptibles de faire des informations à fournir.">
                                                 Analyse VSME
                                             </th>
                                         {% endif %}
@@ -357,7 +357,8 @@
                     </div>
                 </div>
             {% else %}
-                Aucun document analysé.
+                <p>Aucun document analysé.</p>
+                <p>Pour réaliser la CSRD (Corporate Sustainability Reporting Directive), une entreprise doit identifier les impacts matériels, les risques et les opportunités liés aux enjeux environnementaux, sociaux et de gouvernance dans ses propres activités et dans la chaîne de valeur en amont et en aval. L'analyse des enjeux permet de rechercher dans les documents pdf que vous avez ajouté des informations susceptibles de faire partie de vos enjeux ESG (Environnement, Social et Gouvernance).</p>
             {% endif %}
         </div>
     </div>
@@ -471,7 +472,8 @@
                             synthèse de tous les résultats (xlsx)</a>
                     </div>
                 {% else %}
-                    Aucun document analysé.
+                    <p>Aucun document analysé.</p>
+                    <p>Pour réaliser la VSME (Volontary Sustainability Reporting Standard for non-listed SMEs), une entreprise doit fournir des indicateurs concernant les critères ESG (Environnement, Social et Gouvernance). L'analyse VSME permet de rechercher dans les documents pdf que vous avez ajouté des informations susceptibles de faire des informations à fournir.</p>
                 {% endif %}
             </div>
         </div>
