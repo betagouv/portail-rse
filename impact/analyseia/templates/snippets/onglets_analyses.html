@@ -75,9 +75,11 @@
                                         <th scope="col">
                                             Analyse Enjeux de durabilité
                                         </th>
-                                        <th scope="col">
-                                            Analyse VSME
-                                        </th>
+                                        {% if not csrd %}
+                                            <th scope="col">
+                                                Analyse VSME
+                                            </th>
+                                        {% endif %}
                                         <th scope="col">Voir</th>
                                         <th scope="col">Supprimer</th>
                                     </tr>
