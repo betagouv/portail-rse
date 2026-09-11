@@ -525,6 +525,7 @@ def test_serveur_IA_envoie_le_resultat_de_l_analyse_v1_liée_à_une_entreprise(
     assert list(mail.to) == [alice.email]
     assert mail.template_id == settings.BREVO_RESULTAT_ANALYSE_IA_TEMPLATE
     assert mail.merge_global_data == {
+        "version_ia": 1,
         "resultat_ia_url": response.wsgi_request.build_absolute_uri(
             reverse(
                 "analyseia:analyses",
@@ -533,7 +534,7 @@ def test_serveur_IA_envoie_le_resultat_de_l_analyse_v1_liée_à_une_entreprise(
                 },
             )
         )
-        + "#onglets"
+        + "#onglets",
     }
 
 
@@ -580,6 +581,7 @@ def test_serveur_IA_envoie_le_resultat_de_l_analyse_liée_à_un_rapport_csrd(
     assert list(mail.to) == [alice.email]
     assert mail.template_id == settings.BREVO_RESULTAT_ANALYSE_IA_TEMPLATE
     assert mail.merge_global_data == {
+        "version_ia": 1,
         "resultat_ia_url": response.wsgi_request.build_absolute_uri(
             reverse(
                 "reglementations:gestion_csrd",
@@ -589,7 +591,7 @@ def test_serveur_IA_envoie_le_resultat_de_l_analyse_liée_à_un_rapport_csrd(
                 },
             )
         )
-        + "#onglets"
+        + "#onglets",
     }
 
 
@@ -718,6 +720,7 @@ def test_serveur_IA_envoie_le_resultat_de_l_analyse_v2(
     assert list(mail.to) == [alice.email]
     assert mail.template_id == settings.BREVO_RESULTAT_ANALYSE_IA_TEMPLATE
     assert mail.merge_global_data == {
+        "version_ia": 2,
         "resultat_ia_url": response.wsgi_request.build_absolute_uri(
             reverse(
                 "analyseia:analyses",
@@ -726,7 +729,7 @@ def test_serveur_IA_envoie_le_resultat_de_l_analyse_v2(
                 },
             )
         )
-        + "#onglets"
+        + "#onglets",
     }
 
 
