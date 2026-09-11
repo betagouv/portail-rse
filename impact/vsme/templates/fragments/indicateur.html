@@ -39,9 +39,9 @@
                             {% if form.indicator_type == "table" or form.indicator_type == "table_lignes_fixes" %}
 
                                 {% if analyses_ia %}
-                                    <section class="fr-accordion">
+                                    <section class="fr-accordion fr-mb-8v">
                                         <h3 class="fr-accordion__title">
-                                            <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-id"><span class="fr-icon-sparkling-2-line" aria-hidden="true"></span> Information trouvée dans les documents analysés</button>
+                                            <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-id"><span class="fr-icon-sparkling-2-line" aria-hidden="true"></span> Informations trouvées dans les documents analysés</button>
                                         </h3>
                                         <div class="fr-collapse" id="accordion-id">
                                             {% for analyse in analyses_ia %}
@@ -49,8 +49,16 @@
                                                 <ul>
                                                     {% for resultat in analyse.resultats %}
                                                         {% if resultat.champ_id == form.id %}
-                                                            <li>{% if resultat.colonne_label %}{{ resultat.colonne_label }} : {% endif %}{{ resultat.valeur }}{% if resultat.unite %} {{ resultat.unite }}{% endif %}.
-                                                                <p />Information trouvée dans le paragraphe « {{ resultat.paragraphe }} »</li>
+                                                            <li>
+                                                                {% if resultat.colonne_label %}{{ resultat.colonne_label }} :<p />{% endif %}
+                                                                {{ resultat.valeur }}{% if resultat.unite %} {{ resultat.unite }}{% endif %}.
+                                                                <p />Information trouvée dans ce paragraphe :
+                                                                <figure class="fr-quote">
+                                                                    <blockquote>
+                                                                        <p class="fr-text--md">{{ resultat.paragraphe }}</p>
+                                                                    </blockquote>
+                                                                </figure>
+                                                            </li>
                                                         {% endif %}
                                                     {% endfor %}
                                                 </ul>
@@ -58,7 +66,6 @@
                                         </div>
                                     </section>
                                 {% endif %}
-
 
                                 {{ form.management_form }}
                                 {% if form.forms %}
