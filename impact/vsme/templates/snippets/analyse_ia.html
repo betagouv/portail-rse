@@ -1,0 +1,39 @@
+{% load analyses_ia %}
+{% if analyses_ia|a_une_correspondance:champs_ids %}
+    <section class="fr-accordion fr-mb-8v">
+        <h3 class="fr-accordion__title">
+            <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-ia-{{ accordion_id_suffix }}"><span class="fr-icon-sparkling-2-line" aria-hidden="true"></span> Informations trouvées dans les documents analysés</button>
+        </h3>
+        <div class="fr-collapse" id="accordion-ia-{{ accordion_id_suffix }}">
+            {% for analyse in analyses_ia %}
+                {% with resultats=analyse.resultats|resultats_correspondants:champs_ids %}
+                    {% if resultats %}
+                        <h4 class="fr-h6">dans le fichier {{ analyse.nom }}</h4>
+                        <ul>
+                            {% for resultat in resultats %}
+                                <li>
+                                    {% if est_tableau %}
+                                        {% if resultat.colonne_label %}{{ resultat.colonne_label }} :<p />{% endif %}
+                                        <div class="fr-highlight">
+                                            <p>{{ resultat.valeur }}{% if resultat.unite %} {{ resultat.unite }}{% endif %}.</p>
+                                        </div>
+                                    {% else %}
+                                        {{ resultat.champ_label }} :<p />
+                                        {{ resultat.valeur }}{% if resultat.unite %} {{ resultat.unite }}{% endif %}.
+                                        <p />
+                                    {% endif %}
+                                    Information trouvée dans ce paragraphe :
+                                    <figure class="fr-quote">
+                                        <blockquote>
+                                            <p class="fr-text--md">{{ resultat.paragraphe }}</p>
+                                        </blockquote>
+                                    </figure>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}
+            {% endfor %}
+        </div>
+    </section>
+{% endif %}
