@@ -1,6 +1,7 @@
 {% load geolocalisation %}
 {% load filters %}
 {% load static %}
+{% load analyses_ia %}
 
 <div class="fr-container fr-container--fluid fr-container-md">
     <div class="fr-grid-row fr-grid-row--center">
@@ -38,36 +39,7 @@
                         {% for form in multiform.forms %}
                             {% if form.indicator_type == "table" or form.indicator_type == "table_lignes_fixes" %}
 
-                                {% if analyses_ia %}
-                                    <section class="fr-accordion fr-mb-8v">
-                                        <h3 class="fr-accordion__title">
-                                            <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-id"><span class="fr-icon-sparkling-2-line" aria-hidden="true"></span> Informations trouvées dans les documents analysés</button>
-                                        </h3>
-                                        <div class="fr-collapse" id="accordion-id">
-                                            {% for analyse in analyses_ia %}
-                                                <h4 class="fr-h6">dans le fichier {{ analyse.nom }}</h4>
-                                                <ul>
-                                                    {% for resultat in analyse.resultats %}
-                                                        {% if resultat.champ_id == form.id %}
-                                                            <li>
-                                                                {% if resultat.colonne_label %}{{ resultat.colonne_label }} :<p />{% endif %}
-                                                                <div class="fr-highlight">
-                                                                    <p>{{ resultat.valeur }}{% if resultat.unite %} {{ resultat.unite }}{% endif %}.</p>
-                                                                </div>
-                                                                Information trouvée dans ce paragraphe :
-                                                                <figure class="fr-quote">
-                                                                    <blockquote>
-                                                                        <p class="fr-text--md">{{ resultat.paragraphe }}</p>
-                                                                    </blockquote>
-                                                                </figure>
-                                                            </li>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </ul>
-                                            {% endfor %}
-                                        </div>
-                                    </section>
-                                {% endif %}
+                                {% include 'snippets/analyse_ia.html' with analyses_ia=analyses_ia champs_ids=form.id accordion_id_suffix=form.id est_tableau=True only %}
 
                                 {{ form.management_form }}
                                 {% if form.forms %}
@@ -182,7 +154,10 @@
                                 {% endif %}
                                 <div class="fr-mb-2w"></div>
                             {% else %}
+
                                 {% for field in form %}
+                                    {% include 'snippets/analyse_ia.html' with analyses_ia=analyses_ia champs_ids=field.name accordion_id_suffix=field.name est_tableau=False only %}
+
                                     {% if field.field.is_computed %}
                                         <div class="fr-input-group {% if field.field.disabled %}fr-input-group--disabled{% endif %}">
                                             <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label }}
