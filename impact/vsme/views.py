@@ -293,7 +293,14 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
         for analyse_ia in analyses_ia:
             for resultat in analyse_ia["resultats"]:
                 for champ in indicateur_schema["champs"]:
+
                     if champ["id"] == resultat["champ_id"]:
+                        if champ["type"] in ("tableau", "tableau_lignes_fixes"):
+                            resultat["champ_label"] = indicateur_schema
+                            ["titre"]
+                        else:
+                            resultat["champ_label"] = champ["label"]
+
                         if champ["type"] not in ("nombre_decimal", "nombre_entier"):
                             resultat["unite"] = ""
                         if resultat["colonne_id"]:
