@@ -14,48 +14,6 @@
         {{ analyse.created_at|date:"d/m/Y" }}
     </td>
 
-    <td>
-        <div
-            {% if analyse.etat_v1 in "pending,processing,text_processed,analysis_complete" %}
-                hx-get="{% url 'analyseia:statut_analyse' analyse.id %}" {# URL de la vue qui renvoie ce fragment #}
-                hx-trigger="every 5s" {# Déclencheur toutes les 5 secondes #}
-            {% endif %}>
-            {% if analyse.etat_v1 in "pending,processing,text_processed,analysis_complete" %}
-                <p class="fr-badge fr-badge--sm fr-badge--new">En cours d'analyse</p>
-                {% if analyse.message_v1 %}
-                    <div class="fr-cell__desc">
-                        {{ analyse.message_v1 }}
-                    </div>
-                {% endif %}
-            {% elif analyse.etat_v1 == "success" %}
-		{# MaJ du deuxième onglet en fin de traitement #}
-                <p class="fr-badge fr-badge--sm fr-badge--success"
-                   {% if request.htmx %}
-                       hx-trigger="load" hx-get="" hx-target="#onglet-resultats-enjeux-panel" hx-select="#onglet-resultats-enjeux-panel"
-                   {% endif %}
-                >Traité</p>
-			{# Pas d'attributs hx-* ici, le polling s'arrête #}
-            {% elif analyse.etat_v1 == "error" %}
-                <p class="fr-badge fr-badge--sm fr-badge--error">Traitement impossible</p>
-                <p class="fr-text--sm text-error-color-no-decoration">{{ analyse.message_v1 }}</p>
-            {% endif %}
-        </div>
-
-        {% if not analyse.etat_v1 %}
-            <form action="{% url 'analyseia:lancement_analyse' analyse.id 1 %}" method="post">
-                {% csrf_token %}
-                <button type="submit"
-                        class="fr-btn fr-btn--sm fr-btn--icon-left fr-icon-play-circle-line"
-                        title="Lancer l'analyse du document pour y trouver des références aux enjeux de durabilité">Lancer une
-                    analyse</button>
-            </form>
-        {% elif analyse.etat_v1 == "success" %}
-            <a class="fr-link fr-link--download" download="true"
-               href="{% url 'analyseia:resultat_v1' analyse.id 'theme' %}"
-               title="Télécharger le résultat de l'analyse des enjeux de durabilité">Télécharger le résultat<span class="fr-link__detail">XLSX</a>
-        {% endif %}
-    </td>
-
     {% if not csrd %}
         <td>
             <div
@@ -99,6 +57,49 @@
             {% endif %}
         </td>
     {% endif %}
+
+    <td>
+        <div
+            {% if analyse.etat_v1 in "pending,processing,text_processed,analysis_complete" %}
+                hx-get="{% url 'analyseia:statut_analyse' analyse.id %}" {# URL de la vue qui renvoie ce fragment #}
+                hx-trigger="every 5s" {# Déclencheur toutes les 5 secondes #}
+            {% endif %}>
+            {% if analyse.etat_v1 in "pending,processing,text_processed,analysis_complete" %}
+                <p class="fr-badge fr-badge--sm fr-badge--new">En cours d'analyse</p>
+                {% if analyse.message_v1 %}
+                    <div class="fr-cell__desc">
+                        {{ analyse.message_v1 }}
+                    </div>
+                {% endif %}
+            {% elif analyse.etat_v1 == "success" %}
+		{# MaJ du deuxième onglet en fin de traitement #}
+                <p class="fr-badge fr-badge--sm fr-badge--success"
+                   {% if request.htmx %}
+                       hx-trigger="load" hx-get="" hx-target="#onglet-resultats-enjeux-panel" hx-select="#onglet-resultats-enjeux-panel"
+                   {% endif %}
+                >Traité</p>
+			{# Pas d'attributs hx-* ici, le polling s'arrête #}
+            {% elif analyse.etat_v1 == "error" %}
+                <p class="fr-badge fr-badge--sm fr-badge--error">Traitement impossible</p>
+                <p class="fr-text--sm text-error-color-no-decoration">{{ analyse.message_v1 }}</p>
+            {% endif %}
+        </div>
+
+        {% if not analyse.etat_v1 %}
+            <form action="{% url 'analyseia:lancement_analyse' analyse.id 1 %}" method="post">
+                {% csrf_token %}
+                <button type="submit"
+                        class="fr-btn fr-btn--sm fr-btn--icon-left fr-icon-play-circle-line"
+                        title="Lancer l'analyse du document pour y trouver des références aux enjeux de durabilité">Lancer une
+                    analyse</button>
+            </form>
+        {% elif analyse.etat_v1 == "success" %}
+            <a class="fr-link fr-link--download" download="true"
+               href="{% url 'analyseia:resultat_v1' analyse.id 'theme' %}"
+               title="Télécharger le résultat de l'analyse des enjeux de durabilité">Télécharger le résultat<span class="fr-link__detail">XLSX</a>
+        {% endif %}
+    </td>
+
 
     <td>
         <a class="fr-btn fr-btn--sm fr-btn--secondary fr-icon-external-link-line"
