@@ -1,10 +1,12 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Statistiques - Portail RSE{% endblock %}
 
 {% block content %}
     <div class="fr-container fr-my-8w">
         <h1>Statistiques d'usage</h1>
+        {% comment %}
         <script src="https://stats.portail-rse.beta.gouv.fr/app/iframeResizer.js" nonce="{{ request.csp_nonce }}"></script>
         <iframe
             id="metabaseIframe"
@@ -13,6 +15,13 @@
             style="width: 1px; min-width: 100%"
             allowtransparency
         ></iframe>
+        {% endcomment %}
+
+        <p>Les statistiques sont temporairement en maintenance. Voici les statistiques au 15 septembre 2026.</p>
+
+        <img src="{% static 'img/stats/stats-1.png' %}">
+        <img src="{% static 'img/stats/stats-2.png' %}">
+        <img src="{% static 'img/stats/stats-3.png' %}">
     </div>
     <script nonce="{{ request.csp_nonce }}">
         <!-- No `unsafe-inline` CSP by getting the event handler out of the iframe element -->
