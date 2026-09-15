@@ -10,6 +10,7 @@ from freezegun import freeze_time
 from pytest_django.asserts import assertTemplateNotUsed
 from pytest_django.asserts import assertTemplateUsed
 
+from analyseia.models import AnalyseIA
 from habilitations.enums import UserRole
 from habilitations.models import Habilitation
 from invitations.models import Invitation
@@ -108,6 +109,9 @@ def test_tableau_de_bord_sans_siren_et_sans_entreprise(url, client, alice):
 def test_tableau_de_bord_resume(est_soumis, client, entreprise_factory, alice, mocker):
     entreprise = entreprise_factory(utilisateur=alice)
     client.force_login(alice)
+    analyse = AnalyseIA.objects.create(etat_v1="success", etat_v2="success")
+    entreprise.analyses_ia.add(analyse)
+    entreprise.save()
     for REGLEMENTATION in REGLEMENTATIONS:
         mocker.patch(
             f"{REGLEMENTATION.__module__}.{REGLEMENTATION.__name__}.est_soumis",
@@ -129,6 +133,7 @@ def test_tableau_de_bord_resume(est_soumis, client, entreprise_factory, alice, m
     assert context["form"]
     assert len(context["habilitations"]) == 1
     assert len(context["invitations"]) == 0
+    assert context["nombre_analyses_ia"] == 2
 
 
 def test_tableau_de_bord_resume_entreprise_non_qualifiee_affiche_un_avertissement(
