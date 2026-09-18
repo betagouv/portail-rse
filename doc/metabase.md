@@ -34,7 +34,7 @@ Dans l'application Django :
   - création automatique des tables dans la base de données de Metabase via la commande de migration de django :
 
 ```
-scalingo --app {DJANGO_APP} run python3 impact/manage.py migrate metabase --database metabase
+scalingo --app {DJANGO_APP} run "python3 impact/manage.py migrate metabase --database metabase"
 ```
 
 Dans l'application Metabase :
