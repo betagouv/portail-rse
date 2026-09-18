@@ -2,35 +2,57 @@
 
 Le Portail RSE utilise trois applications Scalingo associées chacune à une base de données PostgreSQL :
  - une application Django, déployée via Scalingo à partir de ce repo
- - une application Metabase, déployée via Scalingo à partir de https://github.com/Scalingo/metabase-scalingo
- - une application vide Metabase-data servant uniquement pour sa base de données PostgreSQL associée (Scalingo ne permet pas d'avoir plusieurs bdd associées à une seule application)
+ - une application Metabase, déployée via Scalingo
+ - une BdD dédiée (Dedicated Resources) portail-rse-metabase-production-data-dr servant uniquement pour sa base de données PostgreSQL associée (Scalingo ne permet pas d'avoir plusieurs bdd associées à une seule application)
 
 Metabase n'a pas d'accès à la base de données de l'application Django (cf l'ADR [2023-02-08 Metabase](ADR/2023-02-08%20Metabase)).
-C'est l'application Django elle-même qui alimente la base de données séparée Metabase-data dans un schéma postgreSQL `impact` dédié.
+C'est l'application Django elle-même qui alimente la base de données séparée Metabase-data dans un schéma postgreSQL `portail_rse` dédié.
 
 
 ## Pré-requis
 
+### Base de données dédiée
+
+- [créer une base dédiée](https://doc.scalingo.com/databases/postgresql/dedicated-resources/getting-started/provisioning)
+- [configurer la connexion réseau](https://doc.scalingo.com/databases/postgresql/dedicated-resources/getting-started/accessing#allowing-scalingo-apps-to-reach-a-dedicated-resources-database)
+
+### Configuration de la base de données
+
 Dans la base de données de Metabase-data :
   - création manuelle de l'utilisateur `metabase` depuis l'interface de scalingo avec des droits de lecture (read only)
-  - création manuelle de l'utilisateur `impact` depuis l'interface de scalingo avec des droits d'écriture
-  - création manuelle du schéma `impact` depuis une console pgsql :
+  - création manuelle de l'utilisateur `portail_rse` depuis l'interface de scalingo avec des droits d'écriture
+  - création manuelle du schéma `portail_rse` depuis une console pgsql :
 
 ```
-$ scalingo --app {METABASE_DATA_APP} pgsql-console
-\c {METABASE_DATA_DATABASE} impact
-CREATE SCHEMA impact AUTHORIZATION impact;
+$ scalingo --region osc-secnum-fr1 --app {PRODUCTION_APP} bash
+$ psql {postgres://ADMIN_DATABASE_URL}
+CREATE SCHEMA portail_rse AUTHORIZATION portail_rse;
 ```
-  - définition des droits d'accès en lecture de l'utilisateur `metabase` sur les tables du schéma `impact` :
+  - définition des droits d'accès en lecture de l'utilisateur `metabase` sur les tables du schéma `portail_rse` :
 
 ```sql
-GRANT USAGE ON SCHEMA impact TO metabase;
-GRANT SELECT ON ALL TABLES IN SCHEMA impact TO metabase;
-ALTER DEFAULT PRIVILEGES IN SCHEMA impact GRANT SELECT ON TABLES TO metabase;
+GRANT USAGE ON SCHEMA portail_rse TO metabase;
+GRANT SELECT ON ALL TABLES IN SCHEMA portail_rse TO metabase;
+ALTER DEFAULT PRIVILEGES FOR ROLE portail_rse IN SCHEMA portail_rse GRANT SELECT ON TABLES TO metabase;
 ```
 
+Avec le compte portail_rse
+```sql
+ALTER ROLE portail_rse SET search_path TO portail_rse;
+```
+
+Avec le compte metabase
+```sql
+ALTER ROLE metabase SET search_path TO portail_rse;
+```
+
+Les deux commandes précédentes sont nécessaires avec l'utilisation d'une base de données dédiées (dedicated resources).
+En effet, le paramètre `currentSchema=portail_rse` qui était utilisé dans `METABASE_DATABASE_URL` n'est pas passé correctement.
+(cela fonctionnait avec une app classique Scalingo.) Il faut donc définir quel est le schéma à utiliser d'une autre manière.
+
+
 Dans l'application Django :
-  - présence de la variable d'environnement `METABASE_DATABASE_URL` contenant les informations de connexion à la base de données de Metabase-data avec l'utilisateur `impact` et l'option `currentSchema=impact`
+  - présence de la variable d'environnement `METABASE_DATABASE_URL` contenant les informations de connexion à la base de données de Metabase-data avec l'utilisateur `portail_rse`
   - création automatique des tables dans la base de données de Metabase via la commande de migration de django :
 
 ```
@@ -38,7 +60,7 @@ scalingo --app {DJANGO_APP} run python3 impact/manage.py migrate metabase --data
 ```
 
 Dans l'application Metabase :
-  - ajout de la source de données `Impact` depuis l'interface de Metabase configurée avec l'utilisateur `metabase` et seulement le schéma `impact`
+  - ajout de la source de données `Portail RSE` depuis l'interface de Metabase configurée avec l'utilisateur `metabase` et seulement le schéma `portail_rse`. Le plus simple est de fournir l'URL posgresql:// de l'utilisateur `metabase`.
 
 
 ## Alimentation des données
@@ -68,8 +90,8 @@ En cas de besoin :
 
 ```
 $ scalingo --app {METABASE_DATA_APP} pgsql-console
-\c {METABASE_DATA_DATABASE} impact
-DROP SCHEMA impact CASCADE;
+\c {METABASE_DATA_DATABASE} portail_rse
+DROP SCHEMA portail_rse CASCADE;
 ```
 
 Cela supprime le schéma, il faut donc le recréer ensuite et attribuer à nouveau les droits d'accès à l'utilisateur `metabase`.
