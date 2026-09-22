@@ -385,7 +385,10 @@ def _ajoute_lignes_resultat_ia_v2(worksheet, document):
         return
 
     for code_indicateur, contenus in document.resultat_json_v2.items():
-        schema_indicateur = Indicateur.get_schema(code_indicateur)
+        try:
+            schema_indicateur = Indicateur.get_schema(code_indicateur)
+        except KeyError:  # l'indicateur n'existe pas ou plus
+            continue
         schema_champs = schema_indicateur["champs"]
         for contenu in contenus:
             for schema_champ in schema_champs:

@@ -79,6 +79,51 @@ def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(
     assert onglet["G3"].value == "PARAGRAPHE"
 
 
+def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(
+    client, entreprise_factory, alice
+):
+    """L'indicateur B3-30 n'existe pas dans les schémas actuels VSME mais a existé par le passé.
+    Il ne doit pas empêcher l'export xlsx.
+    """
+    entreprise = entreprise_factory(utilisateur=alice)
+    document = entreprise.analyses_ia.create(
+        nom="NOM.pdf",
+        etat_v2="success",
+        resultat_json_v2={
+            "B3-30": [
+                {
+                    "unite": "tonne",
+                    "valeur": "12",
+                    "champ_id": "indicateur_disparu",
+                    "paragraphe": "cet indicateur a disparu",
+                    "colonne_id": None,
+                },
+            ]
+        },
+    )
+
+    client.force_login(alice)
+
+    response = client.get(
+        reverse("analyseia:resultat_v2", args=[document.id]),
+    )
+
+    assert response["Content-Disposition"] == "filename=resultats_vsme.xlsx"
+    assert (
+        response["content-type"]
+        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+    )
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook["Informations VSME"]
+    assert onglet["A1"].value == "Indicateur"
+    assert onglet["B1"].value == "Fichier"
+    assert onglet["C1"].value == "Champ"
+    assert onglet["D1"].value == "Colonne"
+    assert onglet["E1"].value == "Valeur"
+    assert onglet["F1"].value == "Unité"
+    assert onglet["G1"].value == "Paragraphe"
+
+
 def test_telechargement_des_resultats_IA_d_une_analyse_non_terminee(
     client, entreprise_factory, alice
 ):
