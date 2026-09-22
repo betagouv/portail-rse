@@ -17,13 +17,6 @@
                     aria-selected="{% if onglet_resultats_enjeux_actif %}false{% else %}true{% endif %}"
                     aria-controls="onglet-fichiers-panel">Vos fichiers ({{ analyses_ia.count }})</button>
         </li>
-        <li role="presentation">
-            <button id="onglet-resultats-durabilite"
-                    class="fr-tabs__tab fr-icon-line-chart-fill fr-tabs__tab--icon-left"
-                    tabindex="{% if onglet_resultats_enjeux_actif %}0{% else %}-1{% endif %}" role="tab"
-                    aria-selected="{% if onglet_resultats_enjeux_actif %}true{% else %}false{% endif %}"
-                    aria-controls="onglet-resultats-enjeux-panel">Résultats de l'analyse ESRS</button>
-        </li>
         {% if not csrd %}
             <li role="presentation">
                 <button id="onglet-resultats-vsme"
@@ -33,6 +26,13 @@
                         aria-controls="onglet-resultats-vsme-panel">Résultats de l'analyse VSME</button>
             </li>
         {% endif %}
+        <li role="presentation">
+            <button id="onglet-resultats-durabilite"
+                    class="fr-tabs__tab fr-icon-line-chart-fill fr-tabs__tab--icon-left"
+                    tabindex="{% if onglet_resultats_enjeux_actif %}0{% else %}-1{% endif %}" role="tab"
+                    aria-selected="{% if onglet_resultats_enjeux_actif %}true{% else %}false{% endif %}"
+                    aria-controls="onglet-resultats-enjeux-panel">Résultats de l'analyse ESRS</button>
+        </li>
     </ul>
     <div id="onglet-fichiers-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel"
          aria-labelledby="onglet-fichiers" tabindex="0">
