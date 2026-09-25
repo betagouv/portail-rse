@@ -67,18 +67,15 @@ def synthese_analyse_v1(analyses, prefixe_ESRS=False):
 
 def synthese_analyse_v2(analyses):
     resultat = {
-        "nb_phrases_pertinentes_detectees": 0,
-        "nb_documents_analyses": len(analyses),
+        "nb_documents_analyses": 0,
+        "nb_indicateurs_detectes": 0,
+        "nb_informations_detectees": 0,
     }
     champs_detectes = set()
     for analyse in analyses:
         if not analyse.resultat_json_v2:
             break
-        for schema_id, contenus in analyse.resultat_json_v2.items():
-            resultat["nb_phrases_pertinentes_detectees"] += len(contenus)
-            for contenu in contenus:
-                champs_detectes.add(
-                    (schema_id, contenu["champ_id"], contenu["colonne_id"])
-                )
-    resultat["nb_champs_differents_detectes"] = len(champs_detectes)
+        resultat["nb_documents_analyses"] += 1
+        resultat["nb_indicateurs_detectes"] += analyse.nombre_d_indicateurs
+        resultat["nb_informations_detectees"] += analyse.nombre_d_informations
     return resultat

@@ -80,6 +80,7 @@ class AnalyseIA(TimestampedModel):
 
     @property
     def nombre_de_phrases_pertinentes(self):
+        """analyse v1 uniquement"""
         try:
             data = json.loads(self.resultat_json_v1)
         except TypeError:  # cas d'un fichier non traité
@@ -92,6 +93,7 @@ class AnalyseIA(TimestampedModel):
 
     @property
     def nombre_de_phrases(self):
+        """analyse v1 uniquement"""
         try:
             data = json.loads(self.resultat_json_v1)
         except TypeError:  # cas d'un fichier non traité
@@ -100,6 +102,22 @@ class AnalyseIA(TimestampedModel):
         for esrs, phrases in data.items():
             quantite += len(phrases)
         return quantite
+
+    @property
+    def nombre_d_indicateurs(self):
+        """analyse v2 uniquement"""
+        if self.resultat_json_v2:
+            return len(self.resultat_json_v2)
+        else:
+            return 0
+
+    @property
+    def nombre_d_informations(self):
+        """analyse v2 uniquement"""
+        if self.resultat_json_v2:
+            return sum((len(infos) for infos in self.resultat_json_v2.values()))
+        else:
+            return 0
 
     @property
     def entreprise(self):
