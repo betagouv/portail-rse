@@ -10,6 +10,16 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RenameField(
+            model_name="analyseia",
+            old_name="etat",
+            new_name="etat_v1",
+        ),
+        migrations.RenameField(
+            model_name="analyseia",
+            old_name="message",
+            new_name="message_v1",
+        ),
         migrations.AddField(
             model_name="analyseia",
             name="etat_v2",
