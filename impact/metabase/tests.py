@@ -875,11 +875,32 @@ def test_synchronise_les_analyses_ia(entreprise_factory, alice):
     }
   ]
   }""",
+        etat_v2="success",
+        resultat_json_v2={
+            "B3-30-p1": [
+                {
+                    "unite": "tonne",
+                    "valeur": "12",
+                    "paragraphe": "Emission de 12 tonnes environ",
+                    "champ_id": "estimation_emissions_GES",
+                    "colonne_id": "scope_1",
+                },
+                {
+                    "unite": None,
+                    "valeur": "1234",
+                    "paragraphe": "PARAGRAPHE",
+                    "champ_id": "estimation_emissions_GES",
+                    "colonne_id": None,
+                },
+            ]
+        },
     )
     analyse_erronee = entreprise.analyses_ia.create(
         fichier=ContentFile("pdf file data", name="fichier_corrompu.pdf"),
         etat_v1="error",
         message_v1="Une erreur est survenue",
+        etat_v2="error",
+        message_v2="Une erreur est survenue",
     )
 
     call_command("sync_metabase", entreprises=True, analyses=True)
@@ -896,6 +917,10 @@ def test_synchronise_les_analyses_ia(entreprise_factory, alice):
     assert not metabase_analyse.message
     assert not metabase_analyse.nb_phrases
     assert not metabase_analyse.nb_phrases_pertinentes
+    assert not metabase_analyse.etat_v2
+    assert not metabase_analyse.message_v2
+    assert not metabase_analyse.nb_indicateurs
+    assert not metabase_analyse.nb_informations
 
     metabase_analyse_csrd = MetabaseAnalyseIA.objects.get(
         impact_id=analyse_avec_csrd.id
@@ -909,9 +934,19 @@ def test_synchronise_les_analyses_ia(entreprise_factory, alice):
     assert metabase_analyse_reussie.etat == "success"
     assert metabase_analyse_reussie.nb_phrases == 3
     assert metabase_analyse_reussie.nb_phrases_pertinentes == 2
+    assert metabase_analyse_reussie.etat_v2 == "success"
+    assert (
+        metabase_analyse_reussie.nb_indicateurs == analyse_reussie.nombre_d_indicateurs
+    )
+    assert (
+        metabase_analyse_reussie.nb_informations
+        == analyse_reussie.nombre_d_informations
+    )
 
     metabase_analyse_erronee = MetabaseAnalyseIA.objects.get(
         impact_id=analyse_erronee.id
     )
     assert metabase_analyse_erronee.etat == "error"
     assert metabase_analyse_erronee.message == "Une erreur est survenue"
+    assert metabase_analyse_erronee.etat_v2 == "error"
+    assert metabase_analyse_erronee.message_v2 == "Une erreur est survenue"
