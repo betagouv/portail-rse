@@ -683,6 +683,10 @@ class Command(BaseCommand):
                     if analyse.resultat_json_v1
                     else None
                 ),
+                etat_v2=analyse.etat_v2,
+                message_v2=analyse.message_v2,
+                nb_indicateurs=analyse.nombre_d_indicateurs,
+                nb_informations=analyse.nombre_d_informations,
             )
             bulk.append(mb_analyse)
 

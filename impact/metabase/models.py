@@ -162,6 +162,10 @@ class AnalyseIA(models.Model):
     message = models.CharField(max_length=144, null=True)
     nb_phrases = models.IntegerField(null=True)
     nb_phrases_pertinentes = models.IntegerField(null=True)
+    etat_v2 = models.CharField(max_length=144, null=True)
+    message_v2 = models.CharField(max_length=144, null=True)
+    nb_indicateurs = models.IntegerField(null=True)
+    nb_informations = models.IntegerField(null=True)
 
 
 # Tables temporaires / de travail
