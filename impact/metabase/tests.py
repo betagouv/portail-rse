@@ -913,8 +913,8 @@ def test_synchronise_les_analyses_ia(entreprise_factory, alice):
     assert metabase_analyse.entreprise.siren == analyse.entreprise.siren
     assert metabase_analyse.nom_fichier == "fichier.pdf"
     assert not metabase_analyse.csrd
-    assert not metabase_analyse.etat
-    assert not metabase_analyse.message
+    assert not metabase_analyse.etat_v1
+    assert not metabase_analyse.message_v1
     assert not metabase_analyse.nb_phrases
     assert not metabase_analyse.nb_phrases_pertinentes
     assert not metabase_analyse.etat_v2
@@ -931,7 +931,7 @@ def test_synchronise_les_analyses_ia(entreprise_factory, alice):
     metabase_analyse_reussie = MetabaseAnalyseIA.objects.get(
         impact_id=analyse_reussie.id
     )
-    assert metabase_analyse_reussie.etat == "success"
+    assert metabase_analyse_reussie.etat_v1 == "success"
     assert metabase_analyse_reussie.nb_phrases == 3
     assert metabase_analyse_reussie.nb_phrases_pertinentes == 2
     assert metabase_analyse_reussie.etat_v2 == "success"
@@ -946,7 +946,7 @@ def test_synchronise_les_analyses_ia(entreprise_factory, alice):
     metabase_analyse_erronee = MetabaseAnalyseIA.objects.get(
         impact_id=analyse_erronee.id
     )
-    assert metabase_analyse_erronee.etat == "error"
-    assert metabase_analyse_erronee.message == "Une erreur est survenue"
+    assert metabase_analyse_erronee.etat_v1 == "error"
+    assert metabase_analyse_erronee.message_v1 == "Une erreur est survenue"
     assert metabase_analyse_erronee.etat_v2 == "error"
     assert metabase_analyse_erronee.message_v2 == "Une erreur est survenue"
