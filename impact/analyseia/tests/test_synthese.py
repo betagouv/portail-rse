@@ -155,6 +155,10 @@ ANALYSES_V2 = [
             ]
         },
     ),
+    AnalyseIA(
+        etat_v2=None,
+        resultat_json_v2=None,
+    ),
 ]
 
 
@@ -162,7 +166,7 @@ def test_synthese_analyse_v2():
     stats = synthese_analyse_v2(ANALYSES_V2)
 
     assert stats == {
-        "nb_phrases_pertinentes_detectees": 4,
         "nb_documents_analyses": 2,
-        "nb_champs_differents_detectes": 3,
+        "nb_indicateurs_detectes": 3,
+        "nb_informations_detectees": 4,
     }
