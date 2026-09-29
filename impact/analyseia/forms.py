@@ -32,7 +32,7 @@ class AnalyseIAForm(ModelForm):
             validate_pdf_content,
             validate_file_size,
         ],
-        help_text="Sélectionnez des documents contenant des <b>données publiques</b> susceptibles de répondre à vos exigences ESG.<br>Taille maximale : <b>50 Mo</b>. Format supporté : <b>PDF</b>. Langue du document : <b>Français</b>.",
+        help_text="Sélectionnez les documents contenant des <b>données publiques</b> susceptibles de répondre à votre reporting ESG.<br>Taille maximale : <b>50 Mo</b>. Format supporté : <b>PDF</b>. Langue du document : <b>Français</b>.",
     )
 
     class Meta:
