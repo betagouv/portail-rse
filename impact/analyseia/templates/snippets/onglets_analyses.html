@@ -73,11 +73,11 @@
                                             Date d'ajout
                                         </th>
                                         {% if not csrd %}
-                                            <th scope="col" title="Pour réaliser la VSME (Volontary Sustainability Reporting Standard for non-listed SMEs), une entreprise doit fournir des indicateurs concernant les critères ESG (Environnement, Social et Gouvernance). L'analyse VSME permet de rechercher dans les documents pdf que vous avez ajouté des informations susceptibles de faire des informations à fournir.">
+                                            <th scope="col" title="Pour réaliser la VSME (Volontary Sustainability Reporting Standard for non-listed SMEs), une entreprise doit fournir des indicateurs concernant les critères ESG (Environnement, Social et Gouvernance). L'analyse VSME permet de rechercher dans les documents PDF que vous avez ajouté des informations susceptibles de faire des informations à fournir.">
                                                 Analyse VSME
                                             </th>
                                         {% endif %}
-                                        <th scope="col" title="Pour réaliser la CSRD (Corporate Sustainability Reporting Directive), une entreprise doit identifier les impacts matériels, les risques et les opportunités liés aux enjeux environnementaux, sociaux et de gouvernance dans ses propres activités et dans la chaîne de valeur en amont et en aval. L'analyse des enjeux permet de rechercher dans les documents pdf que vous avez ajouté des informations susceptibles de faire partie de vos enjeux ESG (Environnement, Social et Gouvernance).">
+                                        <th scope="col" title="Pour réaliser la CSRD (Corporate Sustainability Reporting Directive), une entreprise doit identifier les impacts matériels, les risques et les opportunités liés aux enjeux environnementaux, sociaux et de gouvernance dans ses propres activités et dans la chaîne de valeur en amont et en aval. L'analyse ESRS permet de rechercher dans les documents PDF que vous avez ajouté des informations susceptibles de faire partie de vos enjeux ESG (Environnement, Social et Gouvernance).">
                                             Analyse ESRS
                                         </th>
                                         <th scope="col">Voir</th>
@@ -358,7 +358,7 @@
                 </div>
             {% else %}
                 <p>Aucun document analysé.</p>
-                <p>Pour réaliser la CSRD (Corporate Sustainability Reporting Directive), une entreprise doit identifier les impacts matériels, les risques et les opportunités liés aux enjeux environnementaux, sociaux et de gouvernance dans ses propres activités et dans la chaîne de valeur en amont et en aval. L'analyse des enjeux permet de rechercher dans les documents pdf que vous avez ajouté des informations susceptibles de faire partie de vos enjeux ESG (Environnement, Social et Gouvernance).</p>
+                <p>Pour réaliser la CSRD (Corporate Sustainability Reporting Directive), une entreprise doit identifier les impacts matériels, les risques et les opportunités liés aux enjeux environnementaux, sociaux et de gouvernance dans ses propres activités et dans la chaîne de valeur en amont et en aval. L'analyse ESRS permet de rechercher dans les documents PDF que vous avez ajouté des informations susceptibles de faire partie de vos enjeux ESG (Environnement, Social et Gouvernance).</p>
             {% endif %}
         </div>
     </div>
@@ -469,9 +469,12 @@
                            href="{{ synthese_resultat_v2_url }}">Télécharger la
                             synthèse de tous les résultats (xlsx)</a>
                     </div>
+                    <p>
+                        Retrouvez directement les suggestions de données ajoutées dans la <a href="{% url 'vsme:categories_vsme' entreprise.siren entreprise.dernier_exercice_clos.date_cloture.year %}">page de saisie du rapport VSME</a> pour renseigner plus rapidement vos indicateurs.
+                    </p>
                 {% else %}
                     <p>Aucun document analysé.</p>
-                    <p>Pour réaliser la VSME (Volontary Sustainability Reporting Standard for non-listed SMEs), une entreprise doit fournir des indicateurs concernant les critères ESG (Environnement, Social et Gouvernance). L'analyse VSME permet de rechercher dans les documents pdf que vous avez ajouté des informations susceptibles de faire des informations à fournir.</p>
+                    <p>Pour réaliser la VSME (Volontary Sustainability Reporting Standard for non-listed SMEs), une entreprise doit fournir des indicateurs concernant les critères ESG (Environnement, Social et Gouvernance). L'analyse VSME permet de rechercher dans les documents PDF que vous avez ajouté des informations susceptibles de faire des informations à fournir.</p>
                 {% endif %}
             </div>
         </div>
