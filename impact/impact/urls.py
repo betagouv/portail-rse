@@ -56,4 +56,5 @@ if "127.0.0.1" in settings.ALLOWED_HOSTS:
 
 # pour l'ensemble des exceptions BadRequest
 # d'autres handlers ont été définis pour l'interface admin
+# (cf. impact/impact/admin_urls.py)
 handler400 = "utils.http.handler400"
