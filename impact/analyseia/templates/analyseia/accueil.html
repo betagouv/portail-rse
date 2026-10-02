@@ -26,14 +26,15 @@
 
         <h1>Analysez vos données de durabilité avec l'IA</h1>
         <p>
-          L'IA scanne vos rapports et documents internes pour repérer les phrases et données liées à la durabilité.
-          Elle les extrait automatiquement et les organise selon les thématiques environnementales, sociales et de gouvernance, vous permettant d'identifier rapidement ce que vous avez déjà et ce qu'il vous manque.
+          L'IA scanne vos rapports et documents internes pour repérer les informations et indicateurs/données liées à la durabilité.
+          Elle les extrait automatiquement et les organise selon les thématiques environnementales, sociales et de gouvernance.
+          Cela vous permet d'identifier rapidement ce que vous avez déjà et ce qu'il vous manque.
         </p>
         <h6>Comment faire ?</h6>
         <ul class="csrd-list csrd-list--bold">
-          <li>Téléversez vos documents publics susceptibles de contenir des informations ESG (rapports annuels, documents de durabilité, politiques internes)</li>
+          <li>Téléversez vos documents susceptibles de contenir des informations ESG (rapports annuels, documents de durabilité, politiques internes)</li>
           <li>
-            Après analyse de l'IA, retrouvez vos données classées par thématique de durabilité et retrouvez ces suggestions directement les points de données correspondants de votre <a href="{% url 'vsme:categories_vsme' entreprise.siren entreprise.dernier_exercice_clos.date_cloture.year %}">questionnaire vsme</a>
+            Après analyse de l'IA, vos données sont classées par thématique de durabilité. Vous pouvez retrouver ces suggestions automatiquement intégrées aux points de données correspondants de votre <a href="{% url 'vsme:categories_vsme' entreprise.siren entreprise.dernier_exercice_clos.date_cloture.year %}">questionnaire VS</a> (ex-VSME)
           </li>
         </ul>
       </div>
