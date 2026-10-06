@@ -17,6 +17,9 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        self.supprime_utilisateurs_non_confirmes(options)
+
+    def supprime_utilisateurs_non_confirmes(self, options):
         il_y_a_deux_mois = date.today() + relativedelta(months=-2)
 
         if utilisateurs_a_supprimer := User.objects.filter(
