@@ -88,7 +88,7 @@ def test_supprime_utilisateurs_non_confirmes(django_user_model):
             is_email_confirmed=False,
         )
 
-    call_command("supprime_utilisateurs_non_confirmes")
+    call_command("supprime_utilisateurs_non_confirmes_ou_non_revenus")
 
     with pytest.raises(django_user_model.DoesNotExist):
         assert alice.refresh_from_db()
@@ -107,6 +107,6 @@ def test_check_supprime_utilisateurs_non_confirmes(django_user_model):
             is_email_confirmed=False,
         )
 
-    call_command("supprime_utilisateurs_non_confirmes", check=True)
+    call_command("supprime_utilisateurs_non_confirmes_ou_non_revenus", check=True)
 
     alice.refresh_from_db()
