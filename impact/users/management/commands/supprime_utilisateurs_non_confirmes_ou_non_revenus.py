@@ -18,6 +18,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.supprime_utilisateurs_non_confirmes(options)
+        self.anonymise_utilisateurs_non_revenus(options)
 
     def supprime_utilisateurs_non_confirmes(self, options):
         il_y_a_deux_mois = date.today() + relativedelta(months=-2)
@@ -40,3 +41,21 @@ class Command(BaseCommand):
                     )
         else:
             self.stdout.write("Aucun utilisateur à supprimer")
+
+    def anonymise_utilisateurs_non_revenus(self, options):
+        il_y_a_trois_ans = date.today() + relativedelta(years=-3)
+
+        if utilisateurs_a_anonymiser := User.objects.filter(
+            last_login__date__lt=il_y_a_trois_ans
+        ):
+            self.stdout.write(
+                "%s utilisateurs à anonymiser" % len(utilisateurs_a_anonymiser)
+            )
+            for utilisateur in utilisateurs_a_anonymiser:
+                utilisateur.email = f"{utilisateur.id}@anonyme.invalid"
+                utilisateur.prenom = "Personne"
+                utilisateur.nom = "anonymisée"
+                utilisateur.is_active = False
+                utilisateur.save()
+        else:
+            self.stdout.write("Aucun utilisateur à anonymiser")
