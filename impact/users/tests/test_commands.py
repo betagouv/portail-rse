@@ -110,3 +110,44 @@ def test_check_supprime_utilisateurs_non_confirmes(django_user_model):
     call_command("supprime_utilisateurs_non_confirmes_ou_non_revenus", check=True)
 
     alice.refresh_from_db()
+
+
+@pytest.mark.django_db(transaction=True)
+def test_anonymise_utilisateurs_non_revenus(django_user_model):
+    il_y_a_quatre_ans = date.today() + relativedelta(years=-4)
+    il_y_a_trois_ans = date.today() + relativedelta(years=-3)
+    il_y_a_moins_de_trois_ans = il_y_a_trois_ans + relativedelta(days=1)
+    il_y_a_plus_de_trois_ans = il_y_a_trois_ans + relativedelta(days=-1)
+
+    with freeze_time(il_y_a_quatre_ans) as frozen_datetime:
+        alice = django_user_model.objects.create(
+            prenom="Alice",
+            nom="Cooper",
+            email="alice@portail-rse.test",
+            is_email_confirmed=True,
+        )
+        bob = django_user_model.objects.create(
+            prenom="Bob",
+            nom="NOM",
+            email="bob@portail-rse.test",
+            is_email_confirmed=True,
+        )
+
+    alice.last_login = il_y_a_plus_de_trois_ans
+    alice.save()
+
+    bob.last_login = il_y_a_moins_de_trois_ans
+    bob.save()
+
+    call_command("supprime_utilisateurs_non_confirmes_ou_non_revenus")
+
+    alice.refresh_from_db()
+    assert alice.prenom == "Personne"
+    assert alice.nom == "anonymisée"
+    assert alice.email == str(alice.id) + "@anonyme.invalid"
+    assert not alice.is_active
+    bob.refresh_from_db()
+    assert bob.prenom == "Bob"
+    assert bob.nom == "NOM"
+    assert bob.email == "bob@portail-rse.test"
+    assert bob.is_active
