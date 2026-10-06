@@ -641,6 +641,20 @@ th .fr-hint-text {
 }
 
 
+// partenaires en pied de page
+
+.fr-footer__partners-main {
+    ul {
+        display: flex;
+        gap: 1rem;
+        padding-inline-start: 0;
+    }
+    .fr-footer__logo {
+        height: 3.5rem;
+    }
+}
+
+
 // communs
 
 .rse-list {
