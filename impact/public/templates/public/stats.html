@@ -6,26 +6,18 @@
 {% block content %}
     <div class="fr-container fr-my-8w">
         <h1>Statistiques d'usage</h1>
-        {% comment %}
-        <script src="https://stats.portail-rse.beta.gouv.fr/app/iframeResizer.js" nonce="{{ request.csp_nonce }}"></script>
+        <script src="https://lesentreprises-sengagent-data-warehouse.osc-fr1.scalingo.io/app/iframeResizer.js" nonce="{{ request.csp_nonce }}"></script>
         <iframe
             id="metabaseIframe"
-            src="https://stats.portail-rse.beta.gouv.fr/public/dashboard/f6ef598f-5852-4bcb-9576-582d9fdc5eaa#titled=false&bordered=false"
-            title="Dashboard Metabase"
+            src="https://lesentreprises-sengagent-data-warehouse.osc-fr1.scalingo.io/public/dashboard/fe50e875-5246-4129-9b32-9a62c6b3ab3b"
+            title="Statistiques Portail RSE sur Metabase"
             style="width: 1px; min-width: 100%"
             allowtransparency
         ></iframe>
-        {% endcomment %}
 
-        <p>Les statistiques sont temporairement en maintenance. Voici les statistiques au 15 septembre 2026.</p>
-
-        <img src="{% static 'img/stats/stats-1.png' %}">
-        <img src="{% static 'img/stats/stats-2.png' %}">
-        <img src="{% static 'img/stats/stats-3.png' %}">
-    </div>
-    <script nonce="{{ request.csp_nonce }}">
-        <!-- No `unsafe-inline` CSP by getting the event handler out of the iframe element -->
-        document.getElementById('metabaseIframe').onload = iFrameResize({}, '#metabaseIframe');
-    </script>
+        <script nonce="{{ request.csp_nonce }}">
+            <!-- No `unsafe-inline` CSP by getting the event handler out of the iframe element -->
+            document.getElementById('metabaseIframe').onload = iFrameResize({}, '#metabaseIframe');
+        </script>
 <!-- page stats -->
 {% endblock %}
