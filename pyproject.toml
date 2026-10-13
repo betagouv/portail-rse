@@ -58,6 +58,7 @@ select = [
 ]
 ignore = [
     "E501", # line-too-long
+    "E712", # des fois, on veut vraiment tester une égalité avec True
     "E722", # bare-except
     "D100", # public module
     "D101", # public class
@@ -69,6 +70,7 @@ ignore = [
     "D107", # public init
     "D203", # no-blank-line-before-class
     "D213", # multi-line-summary-second-line
+    "D400", # format docstring
 ]
 
 [tool.ruff.lint.isort]
