@@ -43,3 +43,36 @@ dev = [
     "exceptiongroup~=1.2.2; python_version < '3.13'",
     "django-extensions",
 ]
+
+[tool.ruff.lint]
+select = [
+    "B", # flake8-bugbear
+    "D", # pydocstyle
+    "E", # pycodestyle
+    "FURB", # refurb
+    "F", # pyflakes
+    "I", # isort
+    "PERF", # perflint
+    "PIE", # flake8-pie
+    "UP", # pyupgrade
+]
+ignore = [
+    "E501", # line-too-long
+    "E722", # bare-except
+    "D100", # public module
+    "D101", # public class
+    "D102", # public method
+    "D103", # public function
+    "D104", # public package
+    "D105", # magic method
+    "D106", # nested class
+    "D107", # public init
+    "D203", # no-blank-line-before-class
+    "D213", # multi-line-summary-second-line
+]
+
+[tool.ruff.lint.isort]
+force-single-line = true
+
+[tool.ruff.format]
+docstring-code-format = true
