@@ -22,6 +22,6 @@ repos:
     hooks:
       - id: black
 -   repo: https://github.com/rtts/djhtml
-    rev: 3.0.6
+    rev: 3.0.11
     hooks:
       - id: djhtml
