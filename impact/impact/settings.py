@@ -15,9 +15,7 @@ from pathlib import Path
 
 import dj_database_url
 from corsheaders.defaults import default_headers
-from csp.constants import NONCE
-from csp.constants import SELF
-from csp.constants import UNSAFE_INLINE
+from csp.constants import NONCE, SELF, UNSAFE_INLINE
 from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -339,6 +337,7 @@ CSP_CONFIGURATION = {
         "frame-src": [
             SELF,
             "stats.portail-rse.beta.gouv.fr",
+            "lesentreprises-sengagent-data-warehouse.osc-fr1.scalingo.io",  # iframe stats Metabase
         ],
         "font-src": [
             SELF,
