@@ -1,7 +1,6 @@
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import BaseUserManager
 from django.db import models
-
 from utils.models import TimestampedModel
 from utils.tokens import uidb64
 
@@ -93,6 +92,7 @@ class User(AbstractBaseUser, TimestampedModel):
         null=True,
         blank=True,
     )
+    date_alerte_anonymisation = models.DateTimeField(null=True, blank=True)
 
     objects = UserManager()
 
