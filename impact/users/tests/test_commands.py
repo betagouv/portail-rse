@@ -3,8 +3,8 @@ from datetime import date
 import pytest
 from dateutil.relativedelta import relativedelta
 from django.core.management import call_command
+from django.utils import timezone
 from freezegun import freeze_time
-
 from habilitations.models import Habilitation
 from habilitations.models import UserRole
 
@@ -72,7 +72,7 @@ def test_supprime_utilisateurs_non_confirmes(django_user_model):
     il_y_a_moins_de_deux_mois = il_y_a_deux_mois + relativedelta(days=1)
     il_y_a_plus_de_deux_mois = il_y_a_deux_mois + relativedelta(days=-1)
 
-    with freeze_time(il_y_a_plus_de_deux_mois) as frozen_datetime:
+    with freeze_time(il_y_a_plus_de_deux_mois):
         alice = django_user_model.objects.create(
             email="alice@portail-rse.test",
             is_email_confirmed=False,
@@ -82,7 +82,7 @@ def test_supprime_utilisateurs_non_confirmes(django_user_model):
             is_email_confirmed=True,
         )
 
-    with freeze_time(il_y_a_moins_de_deux_mois) as frozen_datetime:
+    with freeze_time(il_y_a_moins_de_deux_mois):
         charlie = django_user_model.objects.create(
             email="charlie@portail-rse.test",
             is_email_confirmed=False,
@@ -101,7 +101,7 @@ def test_check_supprime_utilisateurs_non_confirmes(django_user_model):
     il_y_a_deux_mois = date.today() + relativedelta(months=-2)
     il_y_a_plus_de_deux_mois = il_y_a_deux_mois + relativedelta(days=-1)
 
-    with freeze_time(il_y_a_plus_de_deux_mois) as frozen_datetime:
+    with freeze_time(il_y_a_plus_de_deux_mois):
         alice = django_user_model.objects.create(
             email="alice@portail-rse.test",
             is_email_confirmed=False,
@@ -113,13 +113,19 @@ def test_check_supprime_utilisateurs_non_confirmes(django_user_model):
 
 
 @pytest.mark.django_db(transaction=True)
-def test_anonymise_utilisateurs_non_revenus(django_user_model):
-    il_y_a_quatre_ans = date.today() + relativedelta(years=-4)
-    il_y_a_trois_ans = date.today() + relativedelta(years=-3)
-    il_y_a_moins_de_trois_ans = il_y_a_trois_ans + relativedelta(days=1)
-    il_y_a_plus_de_trois_ans = il_y_a_trois_ans + relativedelta(days=-1)
+def test_previent_les_utilisateurs_non_revenus_d_une_possible_anonymisation(
+    django_user_model,
+):
+    il_y_a_trois_ans = timezone.now() + relativedelta(years=-3)
+    il_y_a_deux_ans_et_onze_mois = timezone.now() + relativedelta(years=-2, months=-11)
+    il_y_a_moins_de_deux_ans_et_onze_mois = (
+        il_y_a_deux_ans_et_onze_mois + relativedelta(days=1)
+    )
+    il_y_a_plus_de_deux_ans_et_onze_mois = il_y_a_deux_ans_et_onze_mois + relativedelta(
+        days=-1
+    )
 
-    with freeze_time(il_y_a_quatre_ans) as frozen_datetime:
+    with freeze_time(il_y_a_trois_ans):
         alice = django_user_model.objects.create(
             prenom="Alice",
             nom="Cooper",
@@ -133,10 +139,78 @@ def test_anonymise_utilisateurs_non_revenus(django_user_model):
             is_email_confirmed=True,
         )
 
-    alice.last_login = il_y_a_plus_de_trois_ans
+    alice.last_login = il_y_a_plus_de_deux_ans_et_onze_mois
     alice.save()
 
-    bob.last_login = il_y_a_moins_de_trois_ans
+    bob.last_login = il_y_a_moins_de_deux_ans_et_onze_mois
+    bob.save()
+
+    maintenant = timezone.now()
+    with freeze_time(maintenant):
+        call_command("supprime_utilisateurs_non_confirmes_ou_non_revenus")
+
+    alice.refresh_from_db()
+    assert alice.date_alerte_anonymisation == maintenant
+    assert alice.email == "alice@portail-rse.test"  # pas encore anonymisée
+    bob.refresh_from_db()
+    assert not bob.date_alerte_anonymisation
+    assert bob.email == "bob@portail-rse.test"
+
+
+@pytest.mark.django_db(transaction=True)
+def test_n_alerte_pas_de_nouveau_un_utilisateur_deja_alerte(django_user_model):
+    il_y_a_quatre_ans = timezone.now() + relativedelta(years=-4)
+    alice = django_user_model.objects.create(
+        prenom="Alice",
+        nom="Cooper",
+        email="alice@portail-rse.test",
+        is_email_confirmed=True,
+        last_login=il_y_a_quatre_ans,
+    )
+
+    maintenant = timezone.now()
+    with freeze_time(maintenant):
+        call_command("supprime_utilisateurs_non_confirmes_ou_non_revenus")
+
+    with freeze_time(maintenant + relativedelta(days=1)):
+        call_command("supprime_utilisateurs_non_confirmes_ou_non_revenus")
+
+    alice.refresh_from_db()
+    assert alice.date_alerte_anonymisation == maintenant
+    assert alice.prenom == "Alice"
+
+
+@pytest.mark.django_db(transaction=True)
+def test_anonymise_utilisateurs_non_revenus(django_user_model):
+    il_y_a_quatre_ans = date.today() + relativedelta(years=-4)
+    il_y_a_trente_jours = timezone.now() + relativedelta(days=-30)
+    il_y_a_moins_de_trente_jours = il_y_a_trente_jours + relativedelta(days=1)
+    il_y_a_plus_de_trente_jours = il_y_a_trente_jours + relativedelta(days=-1)
+
+    with freeze_time(il_y_a_quatre_ans):
+        alice = django_user_model.objects.create(
+            prenom="Alice",
+            nom="Cooper",
+            email="alice@portail-rse.test",
+            is_email_confirmed=True,
+        )
+        bob = django_user_model.objects.create(
+            prenom="Bob",
+            nom="NOM",
+            email="bob@portail-rse.test",
+            is_email_confirmed=True,
+        )
+        carole = django_user_model.objects.create(
+            prenom="Carole",
+            nom="NOM",
+            email="carole@portail-rse.test",
+            is_email_confirmed=True,
+        )
+
+    alice.date_alerte_anonymisation = il_y_a_plus_de_trente_jours
+    alice.save()
+
+    bob.date_alerte_anonymisation = il_y_a_moins_de_trente_jours
     bob.save()
 
     call_command("supprime_utilisateurs_non_confirmes_ou_non_revenus")
@@ -151,3 +225,5 @@ def test_anonymise_utilisateurs_non_revenus(django_user_model):
     assert bob.nom == "NOM"
     assert bob.email == "bob@portail-rse.test"
     assert bob.is_active
+    carole.refresh_from_db()
+    assert carole.prenom == "Carole"  # pas d'alerte donc pas d'anonymisation
