@@ -27,18 +27,15 @@ class Command(BaseCommand):
             is_email_confirmed=False, created_at__date__lt=il_y_a_deux_mois
         ):
             self.stdout.write(
-                "%s utilisateurs à supprimer" % len(utilisateurs_a_supprimer)
+                f"{len(utilisateurs_a_supprimer)} utilisateurs à supprimer"
             )
             for utilisateur in utilisateurs_a_supprimer:
+                message = f"Utilisateur à supprimer {utilisateur.email}"
                 if options["check"]:
-                    self.stdout.write("Utilisateur à supprimer %s" % utilisateur.email)
+                    self.stdout.write(message)
                 else:
                     utilisateur.delete()
-                    self.stdout.write(
-                        self.style.SUCCESS(
-                            "Utilisateur supprimé %s" % utilisateur.email
-                        )
-                    )
+                    self.stdout.write(self.style.SUCCESS(message))
         else:
             self.stdout.write("Aucun utilisateur à supprimer")
 
@@ -49,7 +46,7 @@ class Command(BaseCommand):
             last_login__date__lt=il_y_a_trois_ans
         ):
             self.stdout.write(
-                "%s utilisateurs à anonymiser" % len(utilisateurs_a_anonymiser)
+                f"{len(utilisateurs_a_anonymiser)} utilisateurs à anonymiser"
             )
             for utilisateur in utilisateurs_a_anonymiser:
                 utilisateur.email = f"{utilisateur.id}@anonyme.invalid"
