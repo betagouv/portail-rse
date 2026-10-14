@@ -3,6 +3,7 @@ from datetime import date
 
 import pytest
 from dateutil.relativedelta import relativedelta
+from django.conf import settings
 from django.core.management import call_command
 from django.utils import timezone
 from freezegun import freeze_time
@@ -115,7 +116,7 @@ def test_check_supprime_utilisateurs_non_confirmes(django_user_model):
 
 @pytest.mark.django_db(transaction=True)
 def test_previent_les_utilisateurs_non_revenus_d_une_possible_anonymisation(
-    django_user_model,
+    django_user_model, mailoutbox
 ):
     il_y_a_trois_ans = timezone.now() + relativedelta(years=-3)
     il_y_a_deux_ans_et_onze_mois = timezone.now() + relativedelta(years=-2, months=-11)
@@ -157,21 +158,27 @@ def test_previent_les_utilisateurs_non_revenus_d_une_possible_anonymisation(
     assert not bob.date_alerte_anonymisation
     assert bob.email == "bob@portail-rse.test"
 
+    assert len(mailoutbox) == 1
+    mail = mailoutbox[0]
+    assert mail.from_email == settings.DEFAULT_FROM_EMAIL
+    assert list(mail.to) == [alice.email]
+    assert mail.template_id == settings.BREVO_ANONYMISATION_FUTURE_TEMPLATE
+
 
 @pytest.mark.django_db(transaction=True)
-def test_n_alerte_pas_de_nouveau_un_utilisateur_deja_alerte(django_user_model):
-    il_y_a_quatre_ans = timezone.now() + relativedelta(years=-4)
+def test_n_alerte_pas_de_nouveau_un_utilisateur_deja_alerte(
+    django_user_model, mailoutbox
+):
+    maintenant = timezone.now()
+    il_y_a_quatre_ans = maintenant + relativedelta(years=-4)
     alice = django_user_model.objects.create(
         prenom="Alice",
         nom="Cooper",
         email="alice@portail-rse.test",
         is_email_confirmed=True,
         last_login=il_y_a_quatre_ans,
+        date_alerte_anonymisation=maintenant,
     )
-
-    maintenant = timezone.now()
-    with freeze_time(maintenant):
-        call_command("supprime_utilisateurs_non_confirmes_ou_non_revenus")
 
     with freeze_time(maintenant + relativedelta(days=1)):
         call_command("supprime_utilisateurs_non_confirmes_ou_non_revenus")
@@ -179,6 +186,7 @@ def test_n_alerte_pas_de_nouveau_un_utilisateur_deja_alerte(django_user_model):
     alice.refresh_from_db()
     assert alice.date_alerte_anonymisation == maintenant
     assert alice.prenom == "Alice"
+    assert len(mailoutbox) == 0
 
 
 @pytest.mark.django_db(transaction=True)

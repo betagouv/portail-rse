@@ -1,6 +1,8 @@
 from datetime import date
 
 from dateutil.relativedelta import relativedelta
+from django.conf import settings
+from django.core.mail import EmailMessage
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
@@ -55,6 +57,7 @@ class Command(BaseCommand):
             )
             for utilisateur in utilisateurs_a_alerter:
                 utilisateur.date_alerte_anonymisation = timezone.now()
+                _envoie_email_pour_risque_d_anomysation(utilisateur)
                 utilisateur.save()
         else:
             self.stdout.write("Aucun utilisateur à alerter avant anonymisation")
@@ -78,3 +81,12 @@ class Command(BaseCommand):
                 utilisateur.save()
         else:
             self.stdout.write("Aucun utilisateur à anonymiser")
+
+
+def _envoie_email_pour_risque_d_anomysation(utilisateur):
+    email = EmailMessage(
+        to=[utilisateur.email],
+        from_email=settings.DEFAULT_FROM_EMAIL,
+    )
+    email.template_id = settings.BREVO_ANONYMISATION_FUTURE_TEMPLATE
+    email.send()
