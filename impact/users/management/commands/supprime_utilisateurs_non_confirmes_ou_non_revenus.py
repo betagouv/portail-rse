@@ -51,6 +51,7 @@ class Command(BaseCommand):
         if utilisateurs_a_alerter := User.objects.filter(
             last_login__date__lt=il_y_a_deux_ans_et_onze_mois,
             date_alerte_anonymisation__isnull=True,
+            is_active=True,
         ):
             self.stdout.write(
                 f"{len(utilisateurs_a_alerter)} utilisateurs à alerter avant anonymisation"
@@ -71,7 +72,8 @@ class Command(BaseCommand):
         il_y_a_trente_jours = timezone.now() + relativedelta(days=-30)
 
         if utilisateurs_a_anonymiser := User.objects.filter(
-            date_alerte_anonymisation__date__lt=il_y_a_trente_jours
+            date_alerte_anonymisation__date__lt=il_y_a_trente_jours,
+            is_active=True,
         ):
             self.stdout.write(
                 f"{len(utilisateurs_a_anonymiser)} utilisateurs à anonymiser"
