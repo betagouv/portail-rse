@@ -16,7 +16,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "--check",
             action="store_true",
-            help="log seulement les utilisateurs sans les supprimer réellement",
+            help="log seulement les utilisateurs sans les supprimer, alerter ou anonymiser réellement",
         )
 
     def handle(self, *args, **options):
@@ -56,9 +56,14 @@ class Command(BaseCommand):
                 f"{len(utilisateurs_a_alerter)} utilisateurs à alerter avant anonymisation"
             )
             for utilisateur in utilisateurs_a_alerter:
-                utilisateur.date_alerte_anonymisation = timezone.now()
-                _envoie_email_pour_risque_d_anomysation(utilisateur)
-                utilisateur.save()
+                message = f"Utilisateur à alerter {utilisateur.email}"
+                if options["check"]:
+                    self.stdout.write(message)
+                else:
+                    utilisateur.date_alerte_anonymisation = timezone.now()
+                    _envoie_email_pour_risque_d_anomysation(utilisateur)
+                    utilisateur.save()
+                    self.stdout.write(self.style.SUCCESS(message))
         else:
             self.stdout.write("Aucun utilisateur à alerter avant anonymisation")
 
@@ -72,13 +77,18 @@ class Command(BaseCommand):
                 f"{len(utilisateurs_a_anonymiser)} utilisateurs à anonymiser"
             )
             for utilisateur in utilisateurs_a_anonymiser:
-                utilisateur.email = f"{utilisateur.id}@anonyme.invalid"
-                utilisateur.prenom = "Personne"
-                utilisateur.nom = "anonymisée"
-                utilisateur.is_active = False
-                utilisateur.oidc_sub_id = None
-                utilisateur.set_unusable_password()
-                utilisateur.save()
+                message = f"Utilisateur à anonymiser {utilisateur.email}"
+                if options["check"]:
+                    self.stdout.write(message)
+                else:
+                    utilisateur.email = f"{utilisateur.id}@anonyme.invalid"
+                    utilisateur.prenom = "Personne"
+                    utilisateur.nom = "anonymisée"
+                    utilisateur.is_active = False
+                    utilisateur.oidc_sub_id = None
+                    utilisateur.set_unusable_password()
+                    utilisateur.save()
+                    self.stdout.write(self.style.SUCCESS(message))
         else:
             self.stdout.write("Aucun utilisateur à anonymiser")
 
