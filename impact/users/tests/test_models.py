@@ -1,5 +1,5 @@
 import pytest
-
+from django.utils import timezone
 
 # Tests pour la propriété doit_choisir_type_utilisateur
 
@@ -18,3 +18,14 @@ def test_nouvel_utilisateur_doit_choisir_type(django_user_model):
 def test_conseiller_rse_na_pas_a_choisir(conseiller_rse):
     """Un conseiller RSE n'a pas à choisir son type."""
     assert not conseiller_rse.doit_choisir_type_utilisateur
+
+
+@pytest.mark.django_db
+def test_connexion_annule_alerte_anonymisation(client, alice):
+    alice.date_alerte_anonymisation = timezone.now()
+    alice.save()
+
+    client.force_login(alice)
+
+    alice.refresh_from_db()
+    assert alice.date_alerte_anonymisation is None
