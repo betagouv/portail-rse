@@ -62,7 +62,7 @@ class Command(BaseCommand):
                     self.stdout.write(message)
                 else:
                     utilisateur.date_alerte_anonymisation = timezone.now()
-                    _envoie_email_pour_risque_d_anomysation(utilisateur)
+                    _envoie_email_pour_risque_d_anonymisation(utilisateur)
                     utilisateur.save()
                     self.stdout.write(self.style.SUCCESS(message))
         else:
@@ -95,7 +95,7 @@ class Command(BaseCommand):
             self.stdout.write("Aucun utilisateur à anonymiser")
 
 
-def _envoie_email_pour_risque_d_anomysation(utilisateur):
+def _envoie_email_pour_risque_d_anonymisation(utilisateur):
     email = EmailMessage(
         to=[utilisateur.email],
         from_email=settings.DEFAULT_FROM_EMAIL,
