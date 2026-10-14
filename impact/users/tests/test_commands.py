@@ -1,3 +1,4 @@
+import uuid
 from datetime import date
 
 import pytest
@@ -208,6 +209,8 @@ def test_anonymise_utilisateurs_non_revenus(django_user_model):
         )
 
     alice.date_alerte_anonymisation = il_y_a_plus_de_trente_jours
+    alice.oidc_sub_id = uuid.uuid4()
+    alice.set_password("mot-de-passe")
     alice.save()
 
     bob.date_alerte_anonymisation = il_y_a_moins_de_trente_jours
@@ -220,6 +223,8 @@ def test_anonymise_utilisateurs_non_revenus(django_user_model):
     assert alice.nom == "anonymisée"
     assert alice.email == str(alice.id) + "@anonyme.invalid"
     assert not alice.is_active
+    assert alice.oidc_sub_id is None
+    assert not alice.has_usable_password()
     bob.refresh_from_db()
     assert bob.prenom == "Bob"
     assert bob.nom == "NOM"
