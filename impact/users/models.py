@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import BaseUserManager
+from django.contrib.auth.signals import user_logged_in
 from django.db import models
+from django.dispatch import receiver
 from utils.models import TimestampedModel
 from utils.tokens import uidb64
 
@@ -135,3 +137,10 @@ class User(AbstractBaseUser, TimestampedModel):
         Retourne True si l'utilisateur n'a pas encore fait de choix
         """
         return self.is_conseiller_rse is None
+
+
+@receiver(user_logged_in)
+def annule_alerte_anonymisation(sender, user, **kwargs):
+    if user.date_alerte_anonymisation:
+        user.date_alerte_anonymisation = None
+        user.save(update_fields=["date_alerte_anonymisation"])
