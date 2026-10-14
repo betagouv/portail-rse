@@ -73,6 +73,8 @@ class Command(BaseCommand):
                 utilisateur.prenom = "Personne"
                 utilisateur.nom = "anonymisée"
                 utilisateur.is_active = False
+                utilisateur.oidc_sub_id = None
+                utilisateur.set_unusable_password()
                 utilisateur.save()
         else:
             self.stdout.write("Aucun utilisateur à anonymiser")
