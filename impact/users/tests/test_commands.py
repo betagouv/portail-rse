@@ -190,6 +190,40 @@ def test_n_alerte_pas_de_nouveau_un_utilisateur_deja_alerte(
 
 
 @pytest.mark.django_db(transaction=True)
+def test_check_n_alerte_pas_les_utilisateurs_non_revenus(django_user_model, mailoutbox):
+    il_y_a_trois_ans = timezone.now() + relativedelta(years=-3)
+    alice = django_user_model.objects.create(
+        email="alice@portail-rse.test",
+        is_email_confirmed=True,
+        last_login=il_y_a_trois_ans,
+    )
+
+    call_command("supprime_utilisateurs_non_confirmes_ou_non_revenus", check=True)
+
+    alice.refresh_from_db()
+    assert not alice.date_alerte_anonymisation
+    assert len(mailoutbox) == 0
+
+
+@pytest.mark.django_db(transaction=True)
+def test_check_n_anonymise_pas_les_utilisateurs_non_revenus(django_user_model):
+    il_y_a_plus_de_trente_jours = timezone.now() + relativedelta(days=-31)
+    alice = django_user_model.objects.create(
+        prenom="Alice",
+        email="alice@portail-rse.test",
+        is_email_confirmed=True,
+        date_alerte_anonymisation=il_y_a_plus_de_trente_jours,
+    )
+
+    call_command("supprime_utilisateurs_non_confirmes_ou_non_revenus", check=True)
+
+    alice.refresh_from_db()
+    assert alice.prenom == "Alice"
+    assert alice.email == "alice@portail-rse.test"
+    assert alice.is_active
+
+
+@pytest.mark.django_db(transaction=True)
 def test_anonymise_utilisateurs_non_revenus(django_user_model):
     il_y_a_quatre_ans = date.today() + relativedelta(years=-4)
     il_y_a_trente_jours = timezone.now() + relativedelta(days=-30)
