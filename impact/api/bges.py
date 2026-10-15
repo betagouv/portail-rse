@@ -34,7 +34,7 @@ def last_reporting_year(siren):
 
 def extract_last_reporting_year(json_data) -> int | None:
     # pour réutilisation lors d'extraction des données des tables temporaires
-    if members := json_data["hydra:member"]:
+    if members := json_data["member"]:
         first_member = members[0]
         last_year = first_member["identitySheet"]["reportingYear"]
         for member in members[1:]:
