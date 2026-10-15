@@ -4,6 +4,7 @@ from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.core.management.base import BaseCommand
+from django.db.models import Q
 from django.utils import timezone
 
 from users.models import User
@@ -50,7 +51,11 @@ class Command(BaseCommand):
         )
 
         if utilisateurs_a_alerter := User.objects.filter(
-            last_login__date__lt=il_y_a_deux_ans_et_onze_mois,
+            Q(last_login__date__lt=il_y_a_deux_ans_et_onze_mois)
+            | Q(
+                last_login__isnull=True,
+                created_at__date__lt=il_y_a_deux_ans_et_onze_mois,
+            ),
             date_alerte_anonymisation__isnull=True,
             is_active=True,
         ):
