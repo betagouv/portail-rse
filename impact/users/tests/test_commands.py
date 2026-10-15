@@ -10,6 +10,8 @@ from freezegun import freeze_time
 from habilitations.models import Habilitation
 from habilitations.models import UserRole
 
+from users.models import anonymise_un_utilisateur
+
 
 @pytest.mark.django_db(transaction=True)
 def test_import_des_contacts(
@@ -55,6 +57,25 @@ def test_import_des_contacts(
     assert request_contact_import.list_ids == [42]
     assert request_contact_import.update_existing_contacts == True
     assert request_contact_import.empty_contacts_attributes == True
+
+
+@pytest.mark.django_db(transaction=True)
+def test_import_des_contacts_exclut_les_utilisateurs_anonymises(
+    mocker, settings, alice, bob
+):
+    anonymise_un_utilisateur(bob)
+    settings.BREVO_API_KEY = "BREVO_API_KEY"
+    mocked_import_contacts = mocker.patch(
+        "sib_api_v3_sdk.ContactsApi.import_contacts",
+    )
+
+    call_command("import_utilisateurs_brevo", 42)
+
+    args, _ = mocked_import_contacts.call_args
+    request_contact_import = args[0]
+    assert [contact["email"] for contact in request_contact_import.json_body] == [
+        alice.email
+    ]
 
 
 def test_import_des_contacts_annulé_si_list_id_absent(mocker, settings):
