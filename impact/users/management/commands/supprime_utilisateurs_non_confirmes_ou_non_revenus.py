@@ -7,6 +7,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from users.models import User
+from users.models import anonymise_un_utilisateur
 
 
 class Command(BaseCommand):
@@ -91,13 +92,7 @@ class Command(BaseCommand):
                 if options["check"]:
                     self.stdout.write(message)
                 else:
-                    utilisateur.email = f"{utilisateur.id}@anonyme.invalid"
-                    utilisateur.prenom = "Personne"
-                    utilisateur.nom = "anonymisée"
-                    utilisateur.is_active = False
-                    utilisateur.oidc_sub_id = None
-                    utilisateur.set_unusable_password()
-                    utilisateur.save()
+                    anonymise_un_utilisateur(utilisateur)
                     self.stdout.write(self.style.SUCCESS(message))
         else:
             self.stdout.write("Aucun utilisateur à anonymiser")
