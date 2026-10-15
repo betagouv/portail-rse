@@ -56,6 +56,7 @@ class Command(BaseCommand):
                 },
             }
             for user in User.objects.all()
+            if not user.est_anonyme
         ]
         request_contact_import.list_ids = [list_id]
         request_contact_import.update_existing_contacts = True
