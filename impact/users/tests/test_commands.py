@@ -187,6 +187,40 @@ def test_previent_les_utilisateurs_non_revenus_d_une_possible_anonymisation(
 
 
 @pytest.mark.django_db(transaction=True)
+def test_previent_les_utilisateurs_jamais_connectes_d_une_possible_anonymisation(
+    django_user_model, mailoutbox
+):
+    il_y_a_deux_ans_et_onze_mois = timezone.now() + relativedelta(years=-2, months=-11)
+    il_y_a_moins_de_deux_ans_et_onze_mois = (
+        il_y_a_deux_ans_et_onze_mois + relativedelta(days=1)
+    )
+    il_y_a_plus_de_deux_ans_et_onze_mois = il_y_a_deux_ans_et_onze_mois + relativedelta(
+        days=-1
+    )
+
+    with freeze_time(il_y_a_plus_de_deux_ans_et_onze_mois):
+        alice = django_user_model.objects.create(
+            email="alice@portail-rse.test",
+            is_email_confirmed=True,
+        )
+    with freeze_time(il_y_a_moins_de_deux_ans_et_onze_mois):
+        bob = django_user_model.objects.create(
+            email="bob@portail-rse.test",
+            is_email_confirmed=True,
+        )
+
+    call_command("supprime_utilisateurs_non_confirmes_ou_non_revenus")
+
+    alice.refresh_from_db()
+    assert alice.last_login is None
+    assert alice.date_alerte_anonymisation
+    bob.refresh_from_db()
+    assert bob.last_login is None
+    assert not bob.date_alerte_anonymisation
+    assert [list(mail.to) for mail in mailoutbox] == [[alice.email]]
+
+
+@pytest.mark.django_db(transaction=True)
 def test_n_alerte_pas_de_nouveau_un_utilisateur_deja_alerte(
     django_user_model, mailoutbox
 ):
