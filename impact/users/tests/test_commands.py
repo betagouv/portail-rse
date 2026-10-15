@@ -261,19 +261,11 @@ def test_anonymise_utilisateurs_non_revenus(django_user_model):
     call_command("supprime_utilisateurs_non_confirmes_ou_non_revenus")
 
     alice.refresh_from_db()
-    assert alice.prenom == "Personne"
-    assert alice.nom == "anonymisée"
-    assert alice.email == str(alice.id) + "@anonyme.invalid"
-    assert not alice.is_active
-    assert alice.oidc_sub_id is None
-    assert not alice.has_usable_password()
+    assert alice.est_anonyme
     bob.refresh_from_db()
-    assert bob.prenom == "Bob"
-    assert bob.nom == "NOM"
-    assert bob.email == "bob@portail-rse.test"
-    assert bob.is_active
+    assert not bob.est_anonyme
     carole.refresh_from_db()
-    assert carole.prenom == "Carole"  # pas d'alerte donc pas d'anonymisation
+    assert not carole.est_anonyme  # pas d'alerte donc pas d'anonymisation
 
 
 @pytest.mark.django_db(transaction=True)
