@@ -138,6 +138,20 @@ class User(AbstractBaseUser, TimestampedModel):
         """
         return self.is_conseiller_rse is None
 
+    @property
+    def est_anonyme(self):
+        return self.email.endswith("@anonyme.invalid")
+
+
+def anonymise_un_utilisateur(user):
+    user.email = f"{user.id}@anonyme.invalid"
+    user.prenom = "Personne"
+    user.nom = "anonymisée"
+    user.is_active = False
+    user.oidc_sub_id = None
+    user.set_unusable_password()
+    user.save()
+
 
 @receiver(user_logged_in)
 def annule_alerte_anonymisation(sender, user, **kwargs):
