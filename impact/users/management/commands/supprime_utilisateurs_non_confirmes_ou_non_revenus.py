@@ -61,8 +61,16 @@ class Command(BaseCommand):
                 if options["check"]:
                     self.stdout.write(message)
                 else:
+                    try:
+                        _envoie_email_pour_risque_d_anonymisation(utilisateur)
+                    except Exception as e:
+                        self.stderr.write(
+                            self.style.ERROR(
+                                f"Échec de l'alerte de {utilisateur.email} : {e}"
+                            )
+                        )
+                        continue
                     utilisateur.date_alerte_anonymisation = timezone.now()
-                    _envoie_email_pour_risque_d_anonymisation(utilisateur)
                     utilisateur.save()
                     self.stdout.write(self.style.SUCCESS(message))
         else:
