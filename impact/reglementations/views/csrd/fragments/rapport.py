@@ -7,9 +7,11 @@ from django.views.decorators.http import require_http_methods
 
 from reglementations.forms.csrd import LienRapportCSRDForm
 from reglementations.models.csrd import RapportCSRD
+from reglementations.views.csrd.decorators import csrd_required
 
 
 @login_required
+@csrd_required
 @require_http_methods(["POST"])
 @csrf_exempt
 def selection_rapport(request, csrd_id):
@@ -23,6 +25,7 @@ def selection_rapport(request, csrd_id):
 
 
 @login_required
+@csrd_required
 @require_http_methods(["POST"])
 def soumettre_lien_rapport(request, csrd_id):
     csrd = get_object_or_404(RapportCSRD, pk=csrd_id)
