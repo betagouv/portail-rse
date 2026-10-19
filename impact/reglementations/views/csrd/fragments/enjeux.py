@@ -1,8 +1,8 @@
-"""
-Fragments HTMX pour la sélection des enjeux par ESRS
-"""
+"""Fragments HTMX pour la sélection des enjeux par ESRS"""
+
 import logging
 
+import utils.htmx as htmx
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import HttpResponseRedirect
 from django.shortcuts import render
@@ -10,7 +10,6 @@ from django.shortcuts import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
-import utils.htmx as htmx
 from reglementations.enums import ESRS
 from reglementations.enums import ThemeESRS
 from reglementations.enums import TitreESRS
@@ -20,7 +19,6 @@ from reglementations.models.csrd import Enjeu
 from reglementations.models.csrd import RapportCSRD
 from reglementations.views.csrd.decorators import csrd_required
 from reglementations.views.csrd.decorators import enjeu_required
-
 
 """
 Vues de fragments HTMX :
@@ -156,6 +154,8 @@ def suppression_enjeu(request, enjeu_id):
     )
 
 
+@login_required
+@csrd_required
 def rafraichissement_esg(request, csrd_id):
     csrd = RapportCSRD.objects.get(id=csrd_id)
     context = {"csrd": csrd}

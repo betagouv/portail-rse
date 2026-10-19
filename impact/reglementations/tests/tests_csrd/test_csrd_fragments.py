@@ -1,4 +1,5 @@
 import pytest
+from django.conf import settings
 from django.shortcuts import reverse
 from django.utils.timezone import now
 
@@ -108,3 +109,72 @@ def test_selection_annee_rapport(
     assert rapport_csrd_precedent.pk == client.session.get(
         "rapport_csrd_courant"
     ), "Le rapport CSRD actuel est différent du rapport sélectionné"
+
+
+def test_soumission_lien_rapport_par_utilisateur_non_autorise(
+    client, rapport_csrd_courant, bob
+):
+    url = reverse(
+        "reglementations:soumettre_lien_rapport",
+        kwargs={"csrd_id": rapport_csrd_courant.pk},
+    )
+    client.force_login(bob)
+
+    response = client.post(url, data={"lien_rapport": "https://exemple.com"})
+
+    assert response.status_code == 403
+    rapport_csrd_courant.refresh_from_db()
+    assert not rapport_csrd_courant.lien_rapport
+
+
+def test_selection_rapport_par_utilisateur_non_autorise(
+    client, rapport_csrd_courant, bob
+):
+    url = reverse(
+        "reglementations:selection_rapport",
+        kwargs={"csrd_id": rapport_csrd_courant.pk},
+    )
+    client.force_login(bob)
+
+    response = client.post(url)
+
+    assert response.status_code == 403
+    assert not client.session.get("rapport_csrd_courant")
+
+
+def test_rafraichissement_esg(client, rapport_csrd_courant, alice):
+    url = reverse(
+        "reglementations:rafraichissement_esg",
+        kwargs={"csrd_id": rapport_csrd_courant.pk},
+    )
+    client.force_login(alice)
+
+    response = client.get(url)
+
+    assert response.status_code == 200
+
+
+def test_rafraichissement_esg_par_utilisateur_anonyme(client, rapport_csrd_courant):
+    url = reverse(
+        "reglementations:rafraichissement_esg",
+        kwargs={"csrd_id": rapport_csrd_courant.pk},
+    )
+
+    response = client.get(url)
+
+    assert response.status_code == 302
+    assert response.url.startswith(settings.LOGIN_URL)
+
+
+def test_rafraichissement_esg_par_utilisateur_non_autorise(
+    client, rapport_csrd_courant, bob
+):
+    url = reverse(
+        "reglementations:rafraichissement_esg",
+        kwargs={"csrd_id": rapport_csrd_courant.pk},
+    )
+    client.force_login(bob)
+
+    response = client.get(url)
+
+    assert response.status_code == 403
