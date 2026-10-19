@@ -432,8 +432,8 @@ def synthese_resultat_v2(request, entreprise):
 
 
 @login_required
-def statut_analyse_ia(request, id_analyse):
-    analyse = get_object_or_404(AnalyseIA, pk=id_analyse)
+@analyse_requise
+def statut_analyse_ia(request, analyse):
     return render(
         request,
         "fragments/statut_analyse.html",

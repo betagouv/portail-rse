@@ -758,3 +758,12 @@ def test_statut_analyse_ia_par_utilisateur_autorise(client, analyse, alice):
     assert response.status_code == 200
     assertTemplateUsed(response, "fragments/statut_analyse.html")
     assert response.context["analyse"] == analyse
+
+
+def test_statut_analyse_ia_par_utilisateur_non_autorise(client, analyse, bob):
+    client.force_login(bob)
+
+    url = reverse("analyseia:statut_analyse", args=[analyse.id])
+    response = client.get(url)
+
+    assert response.status_code == 403
