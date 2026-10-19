@@ -1,4 +1,5 @@
 import pytest
+
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
@@ -746,3 +747,14 @@ def test_serveur_IA_envoie_une_requête_invalide(client, analyse, mailoutbox):
     analyse.refresh_from_db()
     assert not analyse.etat_v1
     assert len(mailoutbox) == 0
+
+
+def test_statut_analyse_ia_par_utilisateur_autorise(client, analyse, alice):
+    client.force_login(alice)
+
+    url = reverse("analyseia:statut_analyse", args=[analyse.id])
+    response = client.get(url)
+
+    assert response.status_code == 200
+    assertTemplateUsed(response, "fragments/statut_analyse.html")
+    assert response.context["analyse"] == analyse
