@@ -272,6 +272,22 @@ def test_categories_vsme_partage_du_rapport_par_email(
     Presentation(BytesIO(contenu))
 
 
+def test_categories_vsme_partage_du_rapport_echappe_l_email_dans_le_message(
+    client, entreprise_factory, alice, mailoutbox
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    client.force_login(alice)
+
+    url = INDICATEURS_VSME_URL.format(siren=entreprise.siren, annee=2024)
+    response = client.post(
+        url, {"email": '"<script>alert(1)</script>"@example.com'}, follow=True
+    )
+
+    content = response.content.decode("utf-8")
+    assert "<script>alert(1)</script>" not in content
+    assert "&lt;script&gt;alert(1)&lt;/script&gt;" in content
+
+
 def test_categories_vsme_partage_du_rapport_avec_email_invalide(
     client, entreprise_factory, alice, mailoutbox
 ):
@@ -283,4 +299,8 @@ def test_categories_vsme_partage_du_rapport_avec_email_invalide(
 
     assert response.status_code == 200
     assert response.context["form"].errors["email"]
+    assert (
+        "Le rapport VSME n'a pas été envoyé car l'adresse e-mail n'est pas valide."
+        in response.content.decode("utf-8")
+    )
     assert len(mailoutbox) == 0
