@@ -11,6 +11,7 @@ from pytest_django.asserts import assertTemplateUsed
 from utils.pptx import PPTX_CONTENT_TYPE
 from utils.xlsx import XLSX_CONTENT_TYPE
 from vsme.models import EXIGENCES_DE_PUBLICATION
+from vsme.models import RapportVSME
 
 INDICATEURS_VSME_BASE_URL = "/indicateurs/vsme/"
 INDICATEURS_VSME_URL = INDICATEURS_VSME_BASE_URL + "{siren}/{annee}/"
@@ -232,10 +233,13 @@ def test_categories_vsme_formulaire_de_partage_non_valide_en_get(
 
 
 def test_categories_vsme_partage_du_rapport_par_email(
-    client, entreprise_factory, alice, mailoutbox
+    client, entreprise_factory, alice, mailoutbox, mocker
 ):
     entreprise = entreprise_factory(
         utilisateur=alice, date_cloture_exercice=date(2024, 6, 30)
+    )
+    mocker.patch.object(
+        RapportVSME, "est_complet", new_callable=mocker.PropertyMock, return_value=True
     )
     client.force_login(alice)
 
@@ -273,9 +277,12 @@ def test_categories_vsme_partage_du_rapport_par_email(
 
 
 def test_categories_vsme_partage_du_rapport_echappe_l_email_dans_le_message(
-    client, entreprise_factory, alice, mailoutbox
+    client, entreprise_factory, alice, mailoutbox, mocker
 ):
     entreprise = entreprise_factory(utilisateur=alice)
+    mocker.patch.object(
+        RapportVSME, "est_complet", new_callable=mocker.PropertyMock, return_value=True
+    )
     client.force_login(alice)
 
     url = INDICATEURS_VSME_URL.format(siren=entreprise.siren, annee=2024)
@@ -288,10 +295,26 @@ def test_categories_vsme_partage_du_rapport_echappe_l_email_dans_le_message(
     assert "&lt;script&gt;alert(1)&lt;/script&gt;" in content
 
 
-def test_categories_vsme_partage_du_rapport_avec_email_invalide(
+def test_categories_vsme_partage_refuse_si_rapport_incomplet(
     client, entreprise_factory, alice, mailoutbox
 ):
     entreprise = entreprise_factory(utilisateur=alice)
+    client.force_login(alice)
+
+    url = INDICATEURS_VSME_URL.format(siren=entreprise.siren, annee=2024)
+    response = client.post(url, {"email": "destinataire@example.com"})
+
+    assert response.status_code == 403
+    assert len(mailoutbox) == 0
+
+
+def test_categories_vsme_partage_du_rapport_avec_email_invalide(
+    client, entreprise_factory, alice, mailoutbox, mocker
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    mocker.patch.object(
+        RapportVSME, "est_complet", new_callable=mocker.PropertyMock, return_value=True
+    )
     client.force_login(alice)
 
     url = INDICATEURS_VSME_URL.format(siren=entreprise.siren, annee=2024)
