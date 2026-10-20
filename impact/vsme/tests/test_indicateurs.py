@@ -72,7 +72,7 @@ def test_categorie_vsme_avec_utilisateur_authentifie(
     # vérifie que tous les templates sont bien chargés dans la page résultante
     assertTemplateUsed(response, "base.html")
     assertTemplateUsed(response, "snippets/tableau_de_bord_menu.html")
-    assertTemplateUsed(response, f"vsme/categorie.html")
+    assertTemplateUsed(response, "vsme/categorie.html")
     assert response.context["categorie"].value["id"] == categorie_id
 
 
@@ -130,7 +130,7 @@ def test_exigence_de_publication_vsme_avec_utilisateur_authentifie(
     # vérifie que tous les templates sont bien chargés dans la page résultante
     assertTemplateUsed(response, "base.html")
     assertTemplateUsed(response, "snippets/tableau_de_bord_menu.html")
-    assertTemplateUsed(response, f"vsme/exigence_de_publication.html")
+    assertTemplateUsed(response, "vsme/exigence_de_publication.html")
     assert response.context["exigence_de_publication"] == exigence_de_publication
     assert f"Exercice {rapport_vsme.annee}" in response.content.decode()
     assert (
