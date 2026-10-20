@@ -254,7 +254,6 @@ def _export_champ(champ, data, shape):
 
 def _export_simple(champ, data, shape):
     valeur = formate_valeur(data, champ)
-    paragraphs = shape.text_frame.paragraphs
     paragraphe_a_remplir = None
     for paragraphe in shape.text_frame.paragraphs:
         if paragraphe.runs:
