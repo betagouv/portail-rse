@@ -9,7 +9,6 @@ from django.urls.base import reverse
 from django.utils.html import format_html
 from django.utils.html import format_html_join
 from django.utils.safestring import mark_safe
-
 from utils.categories_juridiques import CATEGORIES_JURIDIQUES_NIVEAU_II
 from utils.codes_nace import CODES_NACE
 from utils.combustibles import COMBUSTIBLES
@@ -541,7 +540,7 @@ def calculate_choices(choix, rapport_vsme):
                     schema_id=indicateur_sites
                 ).data.get("sites", [])
                 choices = (
-                    (site["id_site"], f"{site["id_site"]} - {site["nom_site"]}")
+                    (site["id_site"], f"{site['id_site']} - {site['nom_site']}")
                     for site in sites
                 )
             except ObjectDoesNotExist:
@@ -618,7 +617,7 @@ def dechets_total_validator(forms):
             if total_dechets != recyclage_ou_reutilisation + elimines:
                 form.add_error("total_dechets", "Total invalide")
                 raise ValidationError(
-                    f"Le total des déchets produits doit être égal à la somme des déchets recyclés et éliminés"
+                    "Le total des déchets produits doit être égal à la somme des déchets recyclés et éliminés"
                 )
 
 

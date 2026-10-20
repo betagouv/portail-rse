@@ -12,7 +12,7 @@ from utils.pptx import find_slide_index
 from utils.pptx import remove_shape
 from utils.pptx import remove_slide
 from vsme.export_xlsx import formate_valeur as formate_valeur_xlsx
-from vsme.forms import THEMATIQUES_DURABILITE
+from vsme.forms.vsme import THEMATIQUES_DURABILITE
 from vsme.models import ExigenceDePublication
 from vsme.models import EXIGENCES_DE_PUBLICATION
 from vsme.models import schema_existe
