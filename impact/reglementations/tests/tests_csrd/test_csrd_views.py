@@ -15,7 +15,7 @@ from reglementations.models.csrd import RapportCSRD
 @pytest.mark.parametrize("etape", EtapeCSRD.ETAPES_VALIDABLES)
 def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
     entreprise = entreprise_factory()
-    url = "/csrd/{siren}/etape-{etape}".format(siren=entreprise.siren, etape=etape)
+    url = f"/csrd/{entreprise.siren}/etape-{etape}"
 
     response = client.get(url)
 
@@ -79,7 +79,7 @@ ETAPES_ENREGISTRABLES = EtapeCSRD.ETAPES_VALIDABLES[:-1]
 @pytest.mark.parametrize("etape", ETAPES_ENREGISTRABLES)
 def test_enregistrement_de_l_étape_de_la_csrd(etape, client, csrd, alice):
     client.force_login(alice)
-    url = "/csrd/{siren}/etape-{etape}".format(siren=csrd.entreprise.siren, etape=etape)
+    url = f"/csrd/{csrd.entreprise.siren}/etape-{etape}"
 
     client.post(url, follow=True)
 
@@ -94,7 +94,7 @@ def test_enregistrement_de_l_étape_de_la_csrd_retourne_une_404_si_aucune_CSRD(
     entreprise = entreprise_factory()
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
-    url = "/csrd/{siren}/etape-{etape}".format(siren=entreprise.siren, etape=etape)
+    url = f"/csrd/{entreprise.siren}/etape-{etape}"
 
     response = client.post(url, follow=True)
 
@@ -168,7 +168,7 @@ def test_liste_des_enjeux_csrd_au_format_xlsx(client, csrd, alice):
 
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
 
@@ -216,9 +216,9 @@ def test_liste_des_enjeux_csrd(client, csrd, alice):
     enjeu_attenuation.selection = False
     enjeu_attenuation.save()
 
-    assert (
-        enjeux.filter(selection=False).count() == 1
-    ), "Un des enjeux doit être désélectionné"
+    assert enjeux.filter(selection=False).count() == 1, (
+        "Un des enjeux doit être désélectionné"
+    )
 
     client.force_login(alice)
     response = client.get(f"/csrd/fragments/liste_enjeux_selectionnes/{csrd.id}/1")
@@ -255,7 +255,7 @@ def test_datapoints_pour_enjeux_materiels_au_format_xlsx(client, csrd, alice):
 
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     noms_onglet = workbook.sheetnames
@@ -299,7 +299,7 @@ def test_datapoints_pour_enjeux_non_materiels_au_format_xlsx(client, csrd, alice
 
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     noms_onglet = workbook.sheetnames
@@ -311,9 +311,9 @@ def test_datapoints_pour_enjeux_non_materiels_au_format_xlsx(client, csrd, alice
     assert "ESRS2 MDR" not in noms_onglet
 
     # Vérification de la présence des ESRS non-selectionnés
-    assert (
-        "ESRS E3" in noms_onglet
-    ), "les enjeux non-sélectionnés doivent apparaitre dans le fichier"
+    assert "ESRS E3" in noms_onglet, (
+        "les enjeux non-sélectionnés doivent apparaitre dans le fichier"
+    )
 
 
 def test_datapoints_csrd__au_format_xlsx_retourne_une_404_si_entreprise_inexistante(

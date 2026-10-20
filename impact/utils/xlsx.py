@@ -15,7 +15,7 @@ def xlsx_bytes(workbook):
 def xlsx_response(workbook, filename):
     response = HttpResponse(
         xlsx_bytes(workbook),
-        content_type="application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet",
+        content_type=XLSX_CONTENT_TYPE,
     )
     response["Content-Disposition"] = f"filename={filename}"
 
