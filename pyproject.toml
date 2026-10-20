@@ -44,6 +44,9 @@ dev = [
     "django-extensions",
 ]
 
+[tool.ruff]
+src = ["impact"]
+
 [tool.ruff.lint]
 select = [
     "B", # flake8-bugbear
@@ -73,6 +76,7 @@ ignore = [
 
 [tool.ruff.lint.isort]
 force-single-line = true
+order-by-type = false
 
 [tool.ruff.format]
 docstring-code-format = true
