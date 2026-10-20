@@ -12,6 +12,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls.base import reverse
+from django.utils.html import escape
 from django.views.decorators.http import require_POST
 from openpyxl import load_workbook
 from pptx import Presentation
@@ -110,8 +111,15 @@ def categories_vsme(request, entreprise, annee=None):
         if partage_form.is_valid():
             email = partage_form.cleaned_data["email"]
             _envoie_partage_vsme_email(rapport_vsme, email)
-            messages.success(request, f"Le rapport VSME a été envoyé à {email}.")
+            messages.success(
+                request, f"Le rapport VSME a été envoyé à {escape(email)}."
+            )
             return redirect(request.path)
+        else:
+            messages.error(
+                request,
+                "Le rapport VSME n'a pas été envoyé car l'adresse e-mail n'est pas valide.",
+            )
     else:
         partage_form = PartageForm()
 
