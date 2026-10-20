@@ -3,6 +3,9 @@ from io import BytesIO
 from django.http import HttpResponse
 from pptx.oxml.ns import qn
 
+PPTX_CONTENT_TYPE = (
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+)
 
 NOMS_DIAPO = [
     "couverture",
@@ -85,14 +88,16 @@ NOMS_DIAPO = [
 ]
 
 
-def pptx_response(presentation, filename):
+def pptx_bytes(presentation):
     buffer = BytesIO()
     presentation.save(buffer)
-    buffer.seek(0)
+    return buffer.getvalue()
 
+
+def pptx_response(presentation, filename):
     response = HttpResponse(
-        buffer.read(),
-        content_type="application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        pptx_bytes(presentation),
+        content_type=PPTX_CONTENT_TYPE,
     )
     response["Content-Disposition"] = f"filename={filename}"
 
