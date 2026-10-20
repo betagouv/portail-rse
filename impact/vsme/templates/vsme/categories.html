@@ -49,7 +49,7 @@
 
                     <div class="fr-col-8 flexbox-right">
                         <button data-fr-opened="false" aria-controls="modale-export-vsme" type="button" class="fr-btn">Exporter mon rapport VSME</button>
-                        <button data-fr-opened="false" aria-controls="modale-partage-vsme" type="button" class="fr-btn fr-btn--secondary">Partager mon rapport VSME</button>
+                        <button data-fr-opened="{% if form.errors %}true{% else %}false{% endif %}" aria-controls="modale-partage-vsme" type="button" class="fr-btn fr-btn--secondary">Partager mon rapport VSME</button>
 
                         <dialog id="modale-export-vsme" class="fr-modal fr-modal--top" aria-labelledby="fr-modal-title-modale-export-vsme" aria-modal="true">
                             <div class="fr-container fr-container--fluid fr-container-md">
