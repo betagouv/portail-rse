@@ -41,7 +41,7 @@ def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(
     assert response["Content-Disposition"] == "filename=resultats.xlsx"
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook[">>>"]
@@ -93,7 +93,7 @@ def test_telechargement_des_resultats_IA_d_une_analyse_non_terminee(
     assert response["Content-Disposition"] == "filename=resultats.xlsx"
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook[">>>"]
@@ -174,7 +174,7 @@ def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_x
     assert response["Content-Disposition"] == "filename=synthese_resultats.xlsx"
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook[">>>"]
@@ -237,7 +237,7 @@ def test_telechargement_des_resultats_ia_de_l_ensemble_des_documents_au_format_x
     assert response["Content-Disposition"] == "filename=synthese_resultats.xlsx"
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook[">>>"]
@@ -341,7 +341,7 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx_lié_à_une_entrep
     )
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook[">>>"]
@@ -412,7 +412,7 @@ def test_telechargement_des_resultats_par_ESRS_au_format_xlsx_lié_à_une_CSRD(
     assert response["Content-Disposition"] == "filename=resultats_ESRS_E2.xlsx"
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook[">>>"]

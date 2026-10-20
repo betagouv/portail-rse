@@ -136,7 +136,7 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B1_intégralement_rempl
     assert response["Content-Disposition"] == "filename=vsme.xlsx"
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook["B1"]
@@ -212,7 +212,7 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B1_avec_indicateurs_non
     assert response["Content-Disposition"] == "filename=vsme.xlsx"
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook["B1"]
@@ -310,7 +310,7 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B2(
     assert response["Content-Disposition"] == "filename=vsme.xlsx"
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet_b2 = workbook["B2"]
@@ -465,7 +465,7 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B4(
     assert response["Content-Disposition"] == "filename=vsme.xlsx"
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook["B4"]
@@ -534,7 +534,7 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B5(
     assert response["Content-Disposition"] == "filename=vsme.xlsx"
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook["B5"]
@@ -565,7 +565,7 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B6(
     assert response["Content-Disposition"] == "filename=vsme.xlsx"
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook["B6"]
@@ -590,7 +590,7 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B7(
     assert response["Content-Disposition"] == "filename=vsme.xlsx"
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook["B7"]
@@ -637,7 +637,7 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B8(
     assert response["Content-Disposition"] == "filename=vsme.xlsx"
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook["B8"]
@@ -666,7 +666,7 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B9(
     assert response["Content-Disposition"] == "filename=vsme.xlsx"
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook["B9"]
@@ -693,7 +693,7 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B10(
     assert response["Content-Disposition"] == "filename=vsme.xlsx"
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook["B10"]
@@ -720,7 +720,7 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B10_avec_champ_calculé
     assert response["Content-Disposition"] == "filename=vsme.xlsx"
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook["B10"]
@@ -744,7 +744,7 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B11(
     assert response["Content-Disposition"] == "filename=vsme.xlsx"
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook["B11"]

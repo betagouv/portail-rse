@@ -40,7 +40,7 @@ def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(
     assert response["Content-Disposition"] == "filename=resultats_vsme.xlsx"
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook["Informations VSME"]
@@ -111,7 +111,7 @@ def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(
     assert response["Content-Disposition"] == "filename=resultats_vsme.xlsx"
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook["Informations VSME"]
@@ -141,7 +141,7 @@ def test_telechargement_des_resultats_IA_d_une_analyse_non_terminee(
     assert response["Content-Disposition"] == "filename=resultats_vsme.xlsx"
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
 
@@ -217,7 +217,7 @@ def test_telechargement_de_la_synthese_des_resultats_IA_de_l_ensemble_des_docume
     assert response["Content-Disposition"] == "filename=resultats_vsme.xlsx"
     assert (
         response["content-type"]
-        == "application/vnd.openxmlformatsofficedocument.spreadsheetml.sheet"
+        == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook["Informations VSME"]
