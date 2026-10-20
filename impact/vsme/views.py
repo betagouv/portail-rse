@@ -107,6 +107,8 @@ def categories_vsme(request, entreprise, annee=None):
     )
 
     if request.method == "POST":
+        if not rapport_vsme.est_complet:
+            raise PermissionDenied()
         partage_form = PartageForm(data=request.POST)
         if partage_form.is_valid():
             email = partage_form.cleaned_data["email"]
