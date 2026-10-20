@@ -1,9 +1,15 @@
 from datetime import date
+from io import BytesIO
 
 import pytest
+from django.conf import settings
 from django.urls import reverse
+from openpyxl import load_workbook
+from pptx import Presentation
 from pytest_django.asserts import assertTemplateUsed
 
+from utils.pptx import PPTX_CONTENT_TYPE
+from utils.xlsx import XLSX_CONTENT_TYPE
 from vsme.models import EXIGENCES_DE_PUBLICATION
 
 INDICATEURS_VSME_BASE_URL = "/indicateurs/vsme/"
@@ -207,3 +213,74 @@ def test_exigence_de_publication_vsme_est_privee(client, bob, rapport_vsme):
     response = client.get(url)
 
     assert response.status_code == 403
+
+
+# Partage du rapport VSME par e-mail
+
+
+def test_categories_vsme_formulaire_de_partage_non_valide_en_get(
+    client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    client.force_login(alice)
+
+    url = INDICATEURS_VSME_URL.format(siren=entreprise.siren, annee=2024)
+    response = client.get(url)
+
+    form = response.context["form"]
+    assert not form.is_bound
+
+
+def test_categories_vsme_partage_du_rapport_par_email(
+    client, entreprise_factory, alice, mailoutbox
+):
+    entreprise = entreprise_factory(
+        utilisateur=alice, date_cloture_exercice=date(2024, 6, 30)
+    )
+    client.force_login(alice)
+
+    url = INDICATEURS_VSME_URL.format(siren=entreprise.siren, annee=2024)
+    response = client.post(
+        url,
+        {"email": "destinataire@example.com"},
+        follow=True,
+    )
+
+    assert response.status_code == 200
+    assert response.redirect_chain == [(url, 302)]
+    assert (
+        "Le rapport VSME a été envoyé à destinataire@example.com."
+        in response.content.decode("utf-8")
+    )
+    assert len(mailoutbox) == 1
+    mail = mailoutbox[0]
+    assert mail.from_email == settings.DEFAULT_FROM_EMAIL
+    assert list(mail.to) == ["destinataire@example.com"]
+    assert mail.template_id == settings.BREVO_PARTAGE_VSME_TEMPLATE
+    assert mail.merge_global_data == {
+        "nom_entreprise": entreprise.denomination,
+        "exercice": "2023-2024",
+    }
+    assert len(mail.attachments) == 2
+    nom_fichier, contenu, type_mime = mail.attachments[0]
+    assert nom_fichier == "vsme.xlsx"
+    assert type_mime == XLSX_CONTENT_TYPE
+    load_workbook(BytesIO(contenu))
+    nom_fichier, contenu, type_mime = mail.attachments[1]
+    assert nom_fichier == "vsme.pptx"
+    assert type_mime == PPTX_CONTENT_TYPE
+    Presentation(BytesIO(contenu))
+
+
+def test_categories_vsme_partage_du_rapport_avec_email_invalide(
+    client, entreprise_factory, alice, mailoutbox
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    client.force_login(alice)
+
+    url = INDICATEURS_VSME_URL.format(siren=entreprise.siren, annee=2024)
+    response = client.post(url, {"email": "invalide"})
+
+    assert response.status_code == 200
+    assert response.context["form"].errors["email"]
+    assert len(mailoutbox) == 0
