@@ -15,7 +15,7 @@ from django.utils.functional import cached_property
 
 from utils.combustibles import COMBUSTIBLES
 from utils.models import TimestampedModel
-from vsme.forms import NON_PERTINENT_FIELD_NAME
+from vsme.forms.vsme import NON_PERTINENT_FIELD_NAME
 
 ANNEE_DEBUT_VSME = 2020  # Première année où les rapports VSME peuvent être créés
 

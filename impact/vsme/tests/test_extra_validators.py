@@ -1,6 +1,6 @@
 import pytest
 
-from vsme.forms import create_multiform_from_schema
+from vsme.forms.vsme import create_multiform_from_schema
 from vsme.models import Indicateur
 from vsme.views import load_indicateur_schema
 

@@ -25,8 +25,8 @@ from utils.pptx import pptx_response
 from utils.xlsx import xlsx_response
 from vsme.export_pptx import export_rapport_vsme
 from vsme.export_xlsx import export_exigence_de_publication
-from vsme.forms import create_multiform_from_schema
-from vsme.forms import NON_PERTINENT_FIELD_NAME
+from vsme.forms.vsme import create_multiform_from_schema
+from vsme.forms.vsme import NON_PERTINENT_FIELD_NAME
 from vsme.models import ajoute_donnes_calculees
 from vsme.models import annee_est_valide
 from vsme.models import Categorie

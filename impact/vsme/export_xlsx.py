@@ -5,7 +5,7 @@ from openpyxl.utils.cell import coordinate_from_string
 from utils.categories_juridiques import CATEGORIES_JURIDIQUES_NIVEAU_II
 from utils.codes_nace import CODES_NACE
 from utils.pays import CODES_PAYS_ISO_3166_1
-from vsme.forms import THEMATIQUES_DURABILITE
+from vsme.forms.vsme import THEMATIQUES_DURABILITE
 from vsme.models import EXIGENCES_DE_PUBLICATION
 
 

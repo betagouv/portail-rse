@@ -1,6 +1,6 @@
 import pytest
 
-from vsme.forms import create_multiform_from_schema
+from vsme.forms.vsme import create_multiform_from_schema
 
 
 CHAMP_NOM = {
