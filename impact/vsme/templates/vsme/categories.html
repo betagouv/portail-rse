@@ -59,7 +59,7 @@
                                             <div class="fr-modal__header">
                                                 <button aria-controls="modale-export-vsme" title="Fermer" type="button" class="fr-btn--close fr-btn">Fermer</button>
                                             </div>
-                                            {% if rapport_vsme.progression.pourcent == 100 %}
+                                            {% if rapport_vsme.est_complet %}
                                                 <div class="fr-modal__content">
                                                     <h2 id="fr-modal-title-modale-export-vsme" class="fr-modal__title">
                                                         Exporter mon rapport de durabilité
@@ -149,7 +149,7 @@
                                             <div class="fr-modal__header">
                                                 <button aria-controls="modale-partage-vsme" title="Fermer" type="button" class="fr-btn--close fr-btn">Fermer</button>
                                             </div>
-                                            {% if rapport_vsme.progression.pourcent == 100 %}
+                                            {% if rapport_vsme.est_complet %}
                                                 <div class="fr-modal__content">
                                                     <h2 id="fr-modal-title-modale-partage-vsme" class="fr-modal__title">
                                                         Partager mon rapport de durabilité

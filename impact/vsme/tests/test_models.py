@@ -4,6 +4,7 @@ from decimal import Decimal
 import pytest
 
 from vsme.models import Indicateur
+from vsme.models import RapportVSME
 
 
 def test_nombre_decimal_dans_les_donnees_d_un_indicateur(rapport_vsme):
@@ -235,3 +236,20 @@ def test_acces_au_schema_d_un_indicateur(rapport_vsme):
             "export_xlsx": {"cellule": "A4"},
         }
     )
+
+
+def test_rapport_vsme_vide_n_est_pas_complet(rapport_vsme):
+    assert not rapport_vsme.est_complet
+
+
+@pytest.mark.parametrize("pourcent, est_complet", [(99, False), (100, True)])
+def test_rapport_vsme_est_complet_si_progression_a_100(
+    pourcent, est_complet, rapport_vsme, mocker
+):
+    mocker.patch.object(
+        RapportVSME,
+        "progression",
+        return_value={"total": 100, "complet": pourcent, "pourcent": pourcent},
+    )
+
+    assert rapport_vsme.est_complet is est_complet
