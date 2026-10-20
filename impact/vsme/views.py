@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import PermissionDenied
+from django.core.mail import EmailMessage
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
@@ -21,10 +22,15 @@ from habilitations.models import Habilitation
 from logs import event_logger
 from reglementations.utils import VSMEReglementation
 from reglementations.views import tableau_de_bord_menu_context
+from utils.pptx import PPTX_CONTENT_TYPE
+from utils.pptx import pptx_bytes
 from utils.pptx import pptx_response
+from utils.xlsx import XLSX_CONTENT_TYPE
+from utils.xlsx import xlsx_bytes
 from utils.xlsx import xlsx_response
 from vsme.export_pptx import export_rapport_vsme
 from vsme.export_xlsx import export_exigence_de_publication
+from vsme.forms.partage import PartageForm
 from vsme.forms.vsme import create_multiform_from_schema
 from vsme.forms.vsme import NON_PERTINENT_FIELD_NAME
 from vsme.models import ajoute_donnes_calculees
@@ -99,6 +105,16 @@ def categories_vsme(request, entreprise, annee=None):
         entreprise=entreprise, annee=annee
     )
 
+    if request.method == "POST":
+        partage_form = PartageForm(data=request.POST)
+        if partage_form.is_valid():
+            email = partage_form.cleaned_data["email"]
+            _envoie_partage_vsme_email(rapport_vsme, email)
+            messages.success(request, f"Le rapport VSME a été envoyé à {email}.")
+            return redirect(request.path)
+    else:
+        partage_form = PartageForm()
+
     # Message informatif lors du changement d'année
     # On affiche le message si l'année n'est pas l'année par défaut
     # ou si l'utilisateur vient de créer un nouveau rapport
@@ -112,8 +128,24 @@ def categories_vsme(request, entreprise, annee=None):
     context |= {
         "rapport_vsme": rapport_vsme,
         "exercices_disponibles": get_exercices_disponibles(entreprise),
+        "form": partage_form,
     }
     return render(request, "vsme/categories.html", context=context)
+
+
+def _envoie_partage_vsme_email(rapport_vsme, destinataire):
+    email = EmailMessage(
+        to=[destinataire],
+        from_email=settings.DEFAULT_FROM_EMAIL,
+    )
+    email.template_id = settings.BREVO_PARTAGE_VSME_TEMPLATE
+    email.merge_global_data = {
+        "nom_entreprise": rapport_vsme.entreprise.denomination,
+        "exercice": rapport_vsme.exercice.annees_formattees,
+    }
+    email.attach("vsme.xlsx", xlsx_bytes(_genere_xlsx(rapport_vsme)), XLSX_CONTENT_TYPE)
+    email.attach("vsme.pptx", pptx_bytes(_genere_pptx(rapport_vsme)), PPTX_CONTENT_TYPE)
+    email.send()
 
 
 def rapport_vsme_requis(function):
@@ -443,6 +475,10 @@ def export_vsme_xlsx(request, rapport_vsme):
         {"rapportVsme": rapport_vsme.id, "idUtilisateur": request.user.pk},
     )
 
+    return xlsx_response(_genere_xlsx(rapport_vsme), "vsme.xlsx")
+
+
+def _genere_xlsx(rapport_vsme):
     indicateurs_par_schema_id = {}
     for indicateur in rapport_vsme.indicateurs.all():
         if rapport_vsme.indicateur_est_applicable(indicateur.schema_id)[0]:
@@ -484,7 +520,7 @@ def export_vsme_xlsx(request, rapport_vsme):
             texte = "Module de base"
     workbook[">>> "]["C13"] = texte
 
-    return xlsx_response(workbook, "vsme.xlsx")
+    return workbook
 
 
 @login_required
@@ -495,8 +531,11 @@ def export_vsme_pptx(request, rapport_vsme):
         {"rapportVsme": rapport_vsme.id, "idUtilisateur": request.user.pk},
     )
 
+    return pptx_response(_genere_pptx(rapport_vsme), "vsme.pptx")
+
+
+def _genere_pptx(rapport_vsme):
     chemin_pptx = Path(settings.BASE_DIR, "vsme/exports/vsme.pptx")
     presentation = Presentation(chemin_pptx)
     export_rapport_vsme(rapport_vsme, presentation)
-
-    return pptx_response(presentation, "vsme.pptx")
+    return presentation

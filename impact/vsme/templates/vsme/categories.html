@@ -48,9 +48,10 @@
                     </div>
 
                     <div class="fr-col-8 flexbox-right">
-                        <button data-fr-opened="false" aria-controls="modale-export-vsme" type="button" class="fr-btn">Exporter mon rapport de durabilité VSME</button>
+                        <button data-fr-opened="false" aria-controls="modale-export-vsme" type="button" class="fr-btn">Exporter mon rapport VSME</button>
+                        <button data-fr-opened="false" aria-controls="modale-partage-vsme" type="button" class="fr-btn fr-btn--secondary">Partager mon rapport VSME</button>
 
-                        <dialog id="modale-export-vsme" class="fr-modal fr-modal--top" aria-labelledby="modal-title" aria-modal="true">
+                        <dialog id="modale-export-vsme" class="fr-modal fr-modal--top" aria-labelledby="fr-modal-title-modale-export-vsme" aria-modal="true">
                             <div class="fr-container fr-container--fluid fr-container-md">
                                 <div class="fr-grid-row fr-grid-row--center">
                                     <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
@@ -60,7 +61,7 @@
                                             </div>
                                             {% if rapport_vsme.progression.pourcent == 100 %}
                                                 <div class="fr-modal__content">
-                                                    <h2 id="modal-title" class="fr-modal__title">
+                                                    <h2 id="fr-modal-title-modale-export-vsme" class="fr-modal__title">
                                                         Exporter mon rapport de durabilité
                                                     </h2>
                                                     <p>
@@ -95,7 +96,7 @@
                                                 </div>
                                             {% else %}
                                                 <div class="fr-modal__content">
-                                                    <h2 id="modal-title" class="fr-modal__title">
+                                                    <h2 id="fr-modal-title-modale-export-vsme" class="fr-modal__title">
                                                         Votre rapport n'est pas encore disponible
                                                     </h2>
                                                     <p>
@@ -140,6 +141,58 @@
                             </div>
                         </dialog>
 
+                        <dialog id="modale-partage-vsme" class="fr-modal fr-modal--top" aria-labelledby="fr-modal-title-modale-partage-vsme" aria-modal="true">
+                            <div class="fr-container fr-container--fluid fr-container-md">
+                                <div class="fr-grid-row fr-grid-row--center">
+                                    <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
+                                        <div class="fr-modal__body">
+                                            <div class="fr-modal__header">
+                                                <button aria-controls="modale-partage-vsme" title="Fermer" type="button" class="fr-btn--close fr-btn">Fermer</button>
+                                            </div>
+                                            {% if rapport_vsme.progression.pourcent == 100 %}
+                                                <div class="fr-modal__content">
+                                                    <h2 id="fr-modal-title-modale-partage-vsme" class="fr-modal__title">
+                                                        Partager mon rapport de durabilité
+                                                    </h2>
+                                                    <p>
+                                                        Exercice {{ rapport_vsme.exercice.annees_formattees }}
+                                                    </p>
+                                                    <p> Saisissez l'e-mail du destinataire de votre rapport VSME. Il recevra les fichiers exportés (xlsx et pptx) en pièce jointe.
+                                                    </p>
+                                                    <form method="post" class="fr-mt-4w">
+                                                        {% csrf_token %}
+                                                        <fieldset class="fr-fieldset fr-mt-3w">
+                                                            <div class="fr-fieldset__element">
+                                                                {% include 'snippets/field.html' with field=form.email %}
+                                                            </div>
+                                                        </fieldset>
+                                                        <button type="submit" class="fr-btn fr-icon-send-plane-fill fr-btn--icon-left">Partager le rapport VSME</button>
+                                                    </form>
+                                                </div>
+                                            {% else %}
+                                                <div class="fr-modal__content">
+                                                    <h2 id="fr-modal-title-modale-partage-vsme" class="fr-modal__title">
+                                                        Votre rapport n'est pas encore exportable
+                                                    </h2>
+                                                    <p>
+                                                        Exercice {{ rapport_vsme.exercice.annees_formattees }}
+                                                        <br>Il sera partageable lorsque tous les indicateurs seront complétés.
+                                                    </p>
+
+                                                </div>
+                                                <div class="fr-modal__footer">
+                                                    <ul class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg">
+                                                        <li>
+                                                            <button aria-controls="modale-partage-vsme" class="fr-btn">Continuer à remplir mon rapport</button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </dialog>
                     </div>
                 </div>
 
