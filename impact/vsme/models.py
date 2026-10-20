@@ -468,6 +468,10 @@ class RapportVSME(TimestampedModel):
             pourcent = (complet / total) * 100
         return {"total": total, "complet": complet, "pourcent": int(pourcent)}
 
+    @property
+    def est_complet(self):
+        return self.progression()["pourcent"] == 100
+
     def exigences_de_publication_applicables(self):
         choix_module = self.choix_module or self.CHOIX_MODULE_PAR_DEFAUT
         exigences_de_publication_module_complet = EXIGENCES_DE_PUBLICATION.values()
