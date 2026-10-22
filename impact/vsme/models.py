@@ -315,13 +315,13 @@ class RapportVSME(TimestampedModel):
                 indicateur_forme_juridique = self._indicateurs_par_schema_id.get(
                     "B1-24-e-i"
                 )
-                if not indicateur_forme_juridique:
-                    est_cooperative = False
-                else:
+                if indicateur_forme_juridique:
                     forme_juridique = indicateur_forme_juridique.data
                     est_cooperative = forme_juridique.get(
                         "coopérative"
                     ) or forme_juridique.get("forme_juridique") in ("51", "63")
+                else:
+                    est_cooperative = False
                 if not est_cooperative:
                     B1_url = reverse(
                         "vsme:exigence_de_publication_vsme", args=[self.id, "B1"]
