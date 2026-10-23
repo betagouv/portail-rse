@@ -74,7 +74,11 @@ def etape_vsme(request, entreprise, etape):
 
     event_logger.info(
         "view:vsme",
-        {"etape": etape, "siren": entreprise.siren, "idUtilisateur": request.user.pk},
+        {
+            "etape": etape,
+            "idEntreprise": entreprise.id,
+            "idUtilisateur": request.user.pk,
+        },
     )
 
     return render(request, template_name, context=context)

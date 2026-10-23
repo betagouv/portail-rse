@@ -19,7 +19,7 @@ def test_log_path_utilisateur_authentifie(alice):
     request = factory.get("/test/")
     request.user = alice
     request.session = SessionStore()
-    request.session["entreprise"] = "123456789"
+    request.session["entreprise"] = 1234
     request.session.save()
 
     ma_vue(request)
@@ -31,7 +31,7 @@ def test_log_path_utilisateur_authentifie(alice):
     assert event.level == logging.INFO
     assert event.msg == "page:test_auth"
     assert event.payload["idUtilisateur"] == alice.pk
-    assert event.payload["siren"] == "123456789"
+    assert event.payload["idEntreprise"] == 1234
     assert event.payload["session"] == request.session.session_key
 
 
@@ -58,13 +58,13 @@ def test_log_path_utilisateur_anonyme():
     event = events.first()
     assert event.msg == "page:test_anonyme"
     assert "idUtilisateur" not in event.payload
-    assert "siren" not in event.payload
+    assert "idEntreprise" not in event.payload
     assert event.payload["session"] == request.session.session_key
 
 
 @pytest.mark.django_db
-def test_log_path_avec_siren_sans_utilisateur():
-    @log_path("page:test_siren_only")
+def test_log_path_avec_id_entreprise_sans_utilisateur():
+    @log_path("page:test_id_entreprise_only")
     def ma_vue(_):
         return HttpResponse("OK")
 
@@ -74,7 +74,7 @@ def test_log_path_avec_siren_sans_utilisateur():
 
     request.user = AnonymousUser()
     request.session = SessionStore()
-    request.session["entreprise"] = "987654321"
+    request.session["entreprise"] = 9876
     request.session.save()
 
     ma_vue(request)
@@ -83,9 +83,9 @@ def test_log_path_avec_siren_sans_utilisateur():
     assert events.count() == 1
 
     event = events.first()
-    assert event.msg == "page:test_siren_only"
+    assert event.msg == "page:test_id_entreprise_only"
     assert "idUtilisateur" not in event.payload
-    assert event.payload["siren"] == "987654321"
+    assert event.payload["idEntreprise"] == 9876
     assert event.payload["session"] == request.session.session_key
 
 
@@ -109,8 +109,8 @@ def test_log_path_sans_session():
 
 
 @pytest.mark.django_db
-def test_log_path_session_sans_siren(alice):
-    @log_path("page:test_no_siren")
+def test_log_path_session_sans_id_entreprise(alice):
+    @log_path("page:test_no_id_entreprise")
     def ma_vue(_):
         return HttpResponse("OK")
 
@@ -126,9 +126,9 @@ def test_log_path_session_sans_siren(alice):
     assert events.count() == 1
 
     event = events.first()
-    assert event.msg == "page:test_no_siren"
+    assert event.msg == "page:test_no_id_entreprise"
     assert event.payload["idUtilisateur"] == alice.pk
-    assert "siren" not in event.payload
+    assert "idEntreprise" not in event.payload
     assert event.payload["session"] == request.session.session_key
 
 
@@ -164,7 +164,7 @@ def test_log_path_vue_avec_arguments(alice):
     request = factory.get("/test/")
     request.user = alice
     request.session = SessionStore()
-    request.session["entreprise"] = "111222333"
+    request.session["entreprise"] = 111
     request.session.save()
 
     response = ma_vue(request, article_id=42, slug="mon-article")
@@ -179,7 +179,7 @@ def test_log_path_vue_avec_arguments(alice):
     event = events.first()
     assert event.msg == "page:test_args"
     assert event.payload["idUtilisateur"] == alice.pk
-    assert event.payload["siren"] == "111222333"
+    assert event.payload["idEntreprise"] == 111
 
 
 @pytest.mark.django_db
@@ -249,7 +249,7 @@ def test_log_path_utilisateur_sans_attribut_user():
     request = factory.get("/test/")
     # Pas d'attribut user assigné
     request.session = SessionStore()
-    request.session["entreprise"] = "123456789"
+    request.session["entreprise"] = 1234
     request.session.save()
 
     ma_vue(request)
@@ -260,7 +260,7 @@ def test_log_path_utilisateur_sans_attribut_user():
 
     event = events.first()
     assert "idUtilisateur" not in event.payload
-    assert event.payload["siren"] == "123456789"
+    assert event.payload["idEntreprise"] == 1234
 
 
 @pytest.mark.django_db
@@ -273,7 +273,7 @@ def test_log_path_tous_champs_presents(alice):
     request = factory.get("/test/")
     request.user = alice
     request.session = SessionStore()
-    request.session["entreprise"] = "555666777"
+    request.session["entreprise"] = 555
     request.session.save()
 
     ma_vue(request)
@@ -282,12 +282,8 @@ def test_log_path_tous_champs_presents(alice):
     assert event.msg == "page:complet"
 
     # Tous les champs sont présents
-    assert "idUtilisateur" in event.payload
-    assert "siren" in event.payload
-    assert "session" in event.payload
-
     assert event.payload["idUtilisateur"] == alice.pk
-    assert event.payload["siren"] == "555666777"
+    assert event.payload["idEntreprise"] == 555
     assert event.payload["session"] is not None
 
 
@@ -323,7 +319,7 @@ def test_log_path_multiples_appels_meme_vue(alice, bob):
     request1 = factory.get("/dashboard/")
     request1.user = alice
     request1.session = SessionStore()
-    request1.session["entreprise"] = "111111111"
+    request1.session["entreprise"] = 1
     request1.session.save()
     dashboard(request1)
 
@@ -331,7 +327,7 @@ def test_log_path_multiples_appels_meme_vue(alice, bob):
     request2 = factory.get("/dashboard/")
     request2.user = bob
     request2.session = SessionStore()
-    request2.session["entreprise"] = "222222222"
+    request2.session["entreprise"] = 22
     request2.session.save()
     dashboard(request2)
 
@@ -340,8 +336,8 @@ def test_log_path_multiples_appels_meme_vue(alice, bob):
 
     # Premier log pour alice
     assert events[0].payload["idUtilisateur"] == alice.pk
-    assert events[0].payload["siren"] == "111111111"
+    assert events[0].payload["idEntreprise"] == 1
 
     # Deuxième log pour bob
     assert events[1].payload["idUtilisateur"] == bob.pk
-    assert events[1].payload["siren"] == "222222222"
+    assert events[1].payload["idEntreprise"] == 22
