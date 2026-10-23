@@ -4,8 +4,7 @@ from logs import event_logger as logger
 
 
 def log_path(msg: str):
-    """
-    Décorateur pour logger les parcours utilisateur.
+    """Décorateur pour logger les parcours utilisateur.
 
     Args:
         msg: Message à logger
@@ -16,9 +15,10 @@ def log_path(msg: str):
             ...
 
     Loggue les informations suivantes (si disponibles):
-        - idUtilisateur: PK de l'utilisateur connecté
-        - siren: SIREN de l'entreprise (depuis la session)
+        - idUtilisateur: id de l'utilisateur connecté
+        - idEntreprise: id de l'entreprise (depuis la session)
         - session: Identifiant de session
+
     """
 
     def decorator(function):
@@ -30,9 +30,9 @@ def log_path(msg: str):
             if hasattr(request, "user") and request.user.is_authenticated:
                 payload |= {"idUtilisateur": request.user.pk}
 
-            # Récupérer le SIREN depuis la session
+            # Récupérer l'ID entreprise depuis la session
             if hasattr(request, "session") and "entreprise" in request.session:
-                payload |= {"siren": request.session["entreprise"]}
+                payload |= {"idEntreprise": request.session["entreprise"]}
 
             # Récupérer l'identifiant de session
             if hasattr(request, "session") and request.session.session_key:

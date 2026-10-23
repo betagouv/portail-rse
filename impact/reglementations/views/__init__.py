@@ -104,7 +104,7 @@ def reglementation(request, entreprise, id_reglementation):
         f"app:reglementation:{id_reglementation}",
         {
             "idUtilisateur": request.user.pk,
-            "siren": request.session["entreprise"],
+            "idEntreprise": entreprise.id,
             "session": request.session.session_key,
         },
     )
