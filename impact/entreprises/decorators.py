@@ -50,7 +50,7 @@ def entreprise_requise(function):
         if not Habilitation.existe(entreprise, request.user):
             raise PermissionDenied
 
-        request.session["entreprise"] = entreprise.siren
+        request.session["entreprise"] = entreprise.id
 
         return function(request, entreprise, **kwargs)
 
