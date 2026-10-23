@@ -49,8 +49,8 @@ def index(request):
                 try:
                     entreprise = Entreprise.objects.get(siren=siren)
                     Habilitation.retirer(entreprise, request.user)
-                    entreprise_in_session = request.session.get("entreprise")
-                    if entreprise_in_session == entreprise.id:
+                    id_entreprise_en_session = request.session.get("entreprise")
+                    if id_entreprise_en_session == entreprise.id:
                         del request.session["entreprise"]
                     messages.success(
                         request,
