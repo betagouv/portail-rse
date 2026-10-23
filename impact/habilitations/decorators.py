@@ -21,9 +21,8 @@ def role(*required_roles):
             if not user.is_authenticated:
                 raise PermissionDenied("L'utilisateur n'est pas authentifié.")
 
-            # la donnée stockée en session est le SIREN de l'entreprise (pas sa PK)
-            siren_entreprise = request.session.get("entreprise")
-            if not siren_entreprise:
+            id_entreprise = request.session.get("entreprise")
+            if not id_entreprise:
                 raise PermissionDenied(
                     "Entreprise manquante pour la vérification des permissions."
                 )
@@ -31,7 +30,7 @@ def role(*required_roles):
             # on évite une dépendance vers Entreprise
             entreprise_courante = None
             for e in user.entreprises:
-                if e.siren == siren_entreprise:
+                if e.id == id_entreprise:
                     entreprise_courante = e
                     break
 

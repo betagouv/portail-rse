@@ -92,7 +92,7 @@ def proconnect_dispatch_view(request):
     # l'utilisateur connecté en est-il membre ?
     if Habilitation.existe(entreprise, request.user):
         # on peut directement rediriger vers le tableau de bord
-        request.session["entreprise"] = oidc_siren
+        request.session["entreprise"] = entreprise.id
         request.session.save()
         messages.success(
             request,

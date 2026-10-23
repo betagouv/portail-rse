@@ -19,10 +19,9 @@ from habilitations.models import Habilitation
 def test_get_current_entreprise_avec_une_entreprise_en_session(
     client, entreprise_factory
 ):
-    siren = "123456789"
-    entreprise = entreprise_factory(siren=siren)
+    entreprise = entreprise_factory()
     session = client.session
-    session["entreprise"] = siren
+    session["entreprise"] = entreprise.id
     session.save()
 
     request = client.get("/").wsgi_request
@@ -35,7 +34,7 @@ def test_get_current_entreprise_avec_une_entreprise_en_session_mais_inexistante_
     client,
 ):
     session = client.session
-    session["entreprise"] = "123456789"
+    session["entreprise"] = 1234
     session.save()
 
     request = client.get(reverse("contact")).wsgi_request
@@ -244,7 +243,7 @@ def test_detach_from_an_entreprise(
     client.force_login(alice)
     session = client.session
     if is_entreprise_in_session:
-        session["entreprise"] = entreprise.siren
+        session["entreprise"] = entreprise.id
         session.save()
 
     data = {"siren": entreprise.siren, "action": "detach"}

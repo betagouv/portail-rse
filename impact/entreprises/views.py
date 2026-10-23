@@ -22,9 +22,9 @@ from users.forms import message_erreur_administrateurs
 
 
 def get_current_entreprise(request):
-    if siren := request.session.get("entreprise"):
+    if id_entreprise := request.session.get("entreprise"):
         try:
-            entreprise = Entreprise.objects.get(siren=siren)
+            entreprise = Entreprise.objects.get(id=id_entreprise)
         except ObjectDoesNotExist:
             entreprise = None
             del request.session["entreprise"]
@@ -50,7 +50,7 @@ def index(request):
                     entreprise = Entreprise.objects.get(siren=siren)
                     Habilitation.retirer(entreprise, request.user)
                     entreprise_in_session = request.session.get("entreprise")
-                    if entreprise_in_session == entreprise.siren:
+                    if entreprise_in_session == entreprise.id:
                         del request.session["entreprise"]
                     messages.success(
                         request,

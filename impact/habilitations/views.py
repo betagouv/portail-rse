@@ -27,15 +27,14 @@ from utils.tokens import make_token
 @require_http_methods(["POST"])
 @role(UserRole.ADMINISTRATEUR)
 def invitation(request, siren):
-    # le SIREN dans l'URL doit correspondre au SIREN de l'entreprise courante en session
-    siren_session = request.session.get("entreprise")
-    if siren != siren_session:
+    # le SIREN dans l'URL doit correspondre à l'entreprise courante en session
+    id_entreprise_session = request.session.get("entreprise")
+    entreprise = get_object_or_404(Entreprise, id=id_entreprise_session)
+    if siren != entreprise.siren:
         return HttpResponseForbidden(
             "Le SIREN demandé ne correspond pas à l'entreprise courante."
         )
 
-    entreprise = get_object_or_404(Entreprise, siren=siren)
-    request.session["entreprise"] = siren
     form = InvitationForm(request.POST)
     if form.is_valid():
         email = form.cleaned_data["email"]
@@ -162,8 +161,8 @@ def gerer_habilitation(request, id: int):
 
     # Vérification critique de sécurité : l'habilitation doit appartenir
     # à l'entreprise courante en session
-    siren_session = request.session.get("entreprise")
-    if habilitation.entreprise.siren != siren_session:
+    id_entreprise_session = request.session.get("entreprise")
+    if habilitation.entreprise.id != id_entreprise_session:
         return HttpResponseForbidden(
             "Cette habilitation n'appartient pas à l'entreprise courante."
         )
@@ -201,6 +200,6 @@ def gerer_habilitation(request, id: int):
     return HttpResponseRedirectSeeOther(
         reverse(
             "reglementations:tableau_de_bord",
-            args=[request.session["entreprise"]],
+            args=[habilitation.entreprise.siren],
         )
     )
