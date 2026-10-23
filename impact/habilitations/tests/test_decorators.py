@@ -19,7 +19,7 @@ def example_view(_):
 def mock_request(entreprise_non_qualifiee, alice):
     request = Mock()
     request.user = alice
-    request.session = {"entreprise": entreprise_non_qualifiee.siren}
+    request.session = {"entreprise": entreprise_non_qualifiee.id}
     request.entreprises = [entreprise_non_qualifiee]
     Habilitation(user=alice, entreprise=entreprise_non_qualifiee).save()
     return request
@@ -30,7 +30,6 @@ def test_role_administrateur(mock_request):
     mock_request.user.role = UserRole.ADMINISTRATEUR
     decorated_view = role(UserRole.ADMINISTRATEUR)(example_view)
     response = decorated_view(mock_request)
-    print(response.content)
     assert response.status_code == 200
     assert response.content == b"OK"
 
@@ -65,7 +64,7 @@ def test_role_forbidden(alice, entreprise_non_qualifiee):
 
     mock_request = Mock()
     mock_request.user = alice
-    mock_request.session = {"entreprise": entreprise_non_qualifiee.siren}
+    mock_request.session = {"entreprise": entreprise_non_qualifiee.id}
 
     decorated_view = role(UserRole.ADMINISTRATEUR)(example_view)
 

@@ -130,7 +130,7 @@ def test_acces_vues_actions(client, entreprise_factory, alice, bob):
     # La session doit être affectée à une variable pour être utilisable
     # https://docs.djangoproject.com/en/5.2/topics/testing/tools/#django.test.Client.session
     session = client.session
-    session["entreprise"] = entreprise.siren
+    session["entreprise"] = entreprise.id
     session.save()
 
     # alice ne peut pas accéder aux fonctions de vue pour l'habilitation
@@ -153,7 +153,7 @@ def test_acces_vues_actions(client, entreprise_factory, alice, bob):
     # bob est administrateur : il doit pouvoir tout faire
     client.force_login(bob)
     session = client.session
-    session["entreprise"] = entreprise.siren
+    session["entreprise"] = entreprise.id
     session.save()
 
     response = client.get(
@@ -187,7 +187,7 @@ def test_auto_modification(client, entreprise_factory, bob):
     entreprise = entreprise_factory()
     habilitation = Habilitation.ajouter(entreprise, bob, role=UserRole.ADMINISTRATEUR)
     session = client.session
-    session["entreprise"] = entreprise.siren
+    session["entreprise"] = entreprise.id
     session.save()
 
     client.force_login(bob)

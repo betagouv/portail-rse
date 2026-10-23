@@ -29,9 +29,9 @@ class ExtendUserMiddleware:
             request.habilitations = request.user.habilitation_set.all()
             request.entreprises = request.user.entreprise_set.all()
 
-            if entreprise := request.session.get("entreprise"):
+            if id_entreprise := request.session.get("entreprise"):
                 try:
-                    request.entreprise = request.entreprises.get(siren=entreprise)
+                    request.entreprise = request.entreprises.get(id=id_entreprise)
                 except ObjectDoesNotExist:
                     pass
 

@@ -182,7 +182,7 @@ def test_attaque_reelle_avec_session_etablie(
     )
 
     assert response.status_code == 200
-    assert client.session.get("entreprise") == entreprise_alice.siren
+    assert client.session.get("entreprise") == entreprise_alice.id
 
     data = {"email": alice.email, "role": UserRole.ADMINISTRATEUR}
     url = f"/invitation/{entreprise_bob.siren}"
@@ -226,7 +226,7 @@ def test_attaque_gerer_habilitation_autre_entreprise(
         )
     )
     assert response.status_code == 200
-    assert client.session.get("entreprise") == entreprise_alice.siren
+    assert client.session.get("entreprise") == entreprise_alice.id
 
     response = client.post(
         f"/habilitation/{habilitation_jane.id}",
