@@ -127,7 +127,7 @@
 
 <div id="download-enjeux-materiels" hx-swap-oob=true>
     {% if can_download %}
-        <a class="fr-btn fr-btn--icon-left fr-icon-download-line fr-my-1w" href="{% url 'reglementations:enjeux_materiels_xlsx' csrd.entreprise.siren %}">
+        <a class="fr-btn fr-btn--icon-left fr-icon-download-line fr-my-1w" href="{% url 'reglementations:enjeux_materiels_xlsx' csrd.entreprise.id_public %}">
             Télécharger ma liste d'enjeux (XLSX)
         </a>
     {% else %}

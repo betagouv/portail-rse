@@ -23,7 +23,7 @@
                                     <ul class="fr-sidemenu__list">
                                         {% for substep in step.sous_etapes %}
                                             <li class="fr-sidemenu__item {% if etape.id == substep.id %}fr-sidemenu__item--active{% endif %}">
-                                                <a class="fr-sidemenu__link" href="{% url 'reglementations:gestion_csrd' entreprise.siren substep.id %}" target="_self"
+                                                <a class="fr-sidemenu__link" href="{% url 'reglementations:gestion_csrd' entreprise.id_public substep.id %}" target="_self"
                                                    {% if etape.id == substep.id %}aria-current="page"{% endif %}
                                                 >{{ substep.nom }}</a>
                                             </li>
@@ -33,7 +33,7 @@
                             </li>
                         {% else %}
                             <li class="fr-sidemenu__item {% if etape.id == step.id %}fr-sidemenu__item--active{% endif %}">
-                                <a class="fr-sidemenu__link" href="{% url 'reglementations:gestion_csrd' entreprise.siren step.id %}" target="_self" {% if etape.id == step.id %}aria-current="page"{% endif %}>
+                                <a class="fr-sidemenu__link" href="{% url 'reglementations:gestion_csrd' entreprise.id_public step.id %}" target="_self" {% if etape.id == step.id %}aria-current="page"{% endif %}>
                                     {% if step.is_complete %}
                                         <span class="fr-icon-success-line fr-mr-1w" aria-hidden="true"></span>
                                     {% endif %}

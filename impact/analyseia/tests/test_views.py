@@ -16,7 +16,7 @@ ANALYSE_BASE_URL = "/analyses/{analyse_id}/"
 SUPPRESSION_ANALYSE_URL = ANALYSE_BASE_URL + "suppression/"
 LANCEMENT_ANALYSE_URL = ANALYSE_BASE_URL + "lancement_analyse/v{version_ia}"
 ACTUALISATION_ETAT_URL = ANALYSE_BASE_URL + "etat/v{version_ia}"
-CSRD_ANALYSE_ECART_URL = "/csrd/{siren}/etape-analyse-ecart"
+CSRD_ANALYSE_ECART_URL = "/csrd/{id_public}/etape-analyse-ecart"
 
 
 def test_analyses_est_prive(client, entreprise_factory, alice):
@@ -59,6 +59,41 @@ def test_analyses_sans_siren(client, entreprise_factory, alice):
     assert response.redirect_chain == [
         (ANALYSES_URL.format(id_public=entreprise.id_public), 302)
     ]
+
+
+def test_ancienne_url_analyses_avec_siren_redirige_vers_l_id_public(
+    client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    client.force_login(alice)
+
+    response = client.get(f"/analyses/{entreprise.siren}/")
+
+    assert response.status_code == 302
+    assert response.url == ANALYSES_URL.format(id_public=entreprise.id_public)
+
+
+def test_ancienne_url_analyses_avec_siren_est_privee(client, entreprise_factory, alice):
+    entreprise = entreprise_factory()
+    url = f"/analyses/{entreprise.siren}/"
+
+    response = client.get(url)
+
+    assert response.status_code == 302
+    assert response.url == f"{reverse('users:login')}?next={url}"
+
+    client.force_login(alice)
+    response = client.get(url)
+
+    assert response.status_code == 403
+
+
+def test_ancienne_url_analyses_avec_siren_inexistant(client, alice):
+    client.force_login(alice)
+
+    response = client.get("/analyses/000000001/")
+
+    assert response.status_code == 404
 
 
 def test_ajout_document_liée_à_une_entreprise_par_utilisateur_autorise(
@@ -104,7 +139,7 @@ def test_ajout_document_liée_à_un_rapport_csrd_par_utilisateur_autorise(
     assert response.url == reverse(
         "reglementations:gestion_csrd",
         kwargs={
-            "siren": csrd.entreprise.siren,
+            "id_public": csrd.entreprise.id_public,
             "id_etape": "analyse-ecart",
         },
     )
@@ -282,7 +317,7 @@ def test_suppression_analyse_liée_à_un_rapport_csrd_par_utilisateur_autorise(
     assert response.url == reverse(
         "reglementations:gestion_csrd",
         kwargs={
-            "siren": entreprise.siren,
+            "id_public": entreprise.id_public,
             "id_etape": "analyse-ecart",
         },
     )
@@ -404,7 +439,7 @@ def test_lancement_d_analyse_IA_liée_à_un_rapport_csrd_par_utilisateur_autoris
     assert response.status_code == 200
     assert "L'analyse a bien été lancée." in response.content.decode("utf-8")
     assert response.redirect_chain == [
-        (CSRD_ANALYSE_ECART_URL.format(siren=csrd.entreprise.siren), 302)
+        (CSRD_ANALYSE_ECART_URL.format(id_public=csrd.entreprise.id_public), 302)
     ]
 
 
@@ -595,7 +630,7 @@ def test_serveur_IA_envoie_le_resultat_de_l_analyse_liée_à_un_rapport_csrd(
             reverse(
                 "reglementations:gestion_csrd",
                 kwargs={
-                    "siren": rapport_csrd.entreprise.siren,
+                    "id_public": rapport_csrd.entreprise.id_public,
                     "id_etape": "analyse-ecart",
                 },
             )

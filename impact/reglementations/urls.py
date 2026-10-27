@@ -68,13 +68,17 @@ urlpatterns = [
         name="anticipation",
     ),
     path(
-        "bdese/<str:siren>/<int:annee>/<int:step>",
+        "bdese/<uuid:id_public>/<int:annee>/<int:step>",
         views.bdese.bdese_step,
         name="bdese_step",
     ),
-    path("bdese/<str:siren>/<int:annee>/pdf", views.bdese.bdese_pdf, name="bdese_pdf"),
     path(
-        "bdese/<str:siren>/<int:annee>/actualiser-desactualiser",
+        "bdese/<uuid:id_public>/<int:annee>/pdf",
+        views.bdese.bdese_pdf,
+        name="bdese_pdf",
+    ),
+    path(
+        "bdese/<uuid:id_public>/<int:annee>/actualiser-desactualiser",
         views.bdese.toggle_bdese_completion,
         name="toggle_bdese_completion",
     ),

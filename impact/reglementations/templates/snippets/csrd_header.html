@@ -45,7 +45,7 @@
                 <div class="fr-alert fr-alert--info fr-mb-2w">
                     <h3 class="fr-alert__title">Rapport CSRD {{ csrd.annee }} publié</h3>
                     <p>
-                        Le lien de votre rapport de durabilité a été intégré à votre <a href="{% url 'reglementations:gestion_csrd' siren=csrd.entreprise.siren id_etape='redaction-rapport-durabilite' %}">tableau de bord</a>.
+                        Le lien de votre rapport de durabilité a été intégré à votre <a href="{% url 'reglementations:gestion_csrd' id_public=csrd.entreprise.id_public id_etape='redaction-rapport-durabilite' %}">tableau de bord</a>.
                         En cas de modification de votre rapport, pensez à mettre à jour le lien pour garder vos informations à jour.
                     </p>
                     {% if csrd.lien_rapport %}

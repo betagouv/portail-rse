@@ -69,7 +69,7 @@ def test_calculate_status_less_than_50_employees(
     assert status.primary_action.title == "Tester une BDESE"
     annee = derniere_annee_a_remplir_bdese()
     assert status.primary_action.url == reverse(
-        "reglementations:bdese_step", args=[entreprise.siren, annee, 1]
+        "reglementations:bdese_step", args=[entreprise.id_public, annee, 1]
     )
     assert status.secondary_actions == []
 
@@ -102,7 +102,7 @@ def test_calculate_status_more_than_50_employees(
     )
     assert status.primary_action.title == "Actualiser ma BDESE"
     assert status.primary_action.url == reverse(
-        "reglementations:bdese_step", args=[entreprise.siren, annee, 0]
+        "reglementations:bdese_step", args=[entreprise.id_public, annee, 0]
     )
     assert not status.secondary_actions
 
@@ -118,7 +118,7 @@ def test_calculate_status_more_than_50_employees(
     )
     assert status.primary_action.title == "Reprendre l'actualisation de ma BDESE"
     assert status.primary_action.url == reverse(
-        "reglementations:bdese_step", args=[entreprise.siren, annee, 1]
+        "reglementations:bdese_step", args=[entreprise.id_public, annee, 1]
     )
     assert (
         status.secondary_actions[0].title == f"Télécharger le pdf {annee} (brouillon)"
@@ -136,12 +136,12 @@ def test_calculate_status_more_than_50_employees(
     )
     assert status.primary_action.title == f"Télécharger le pdf {annee}"
     assert status.primary_action.url == reverse(
-        "reglementations:bdese_pdf", args=[entreprise.siren, annee]
+        "reglementations:bdese_pdf", args=[entreprise.id_public, annee]
     )
     assert len(status.secondary_actions) == 1
     assert status.secondary_actions[0].title == "Modifier ma BDESE"
     assert status.secondary_actions[0].url == reverse(
-        "reglementations:bdese_step", args=[entreprise.siren, annee, 1]
+        "reglementations:bdese_step", args=[entreprise.id_public, annee, 1]
     )
 
 
@@ -171,7 +171,7 @@ def test_calculate_status_with_bdese_accord(effectif, entreprise_factory, mocker
     )
     assert status.primary_action.title == f"Marquer ma BDESE {annee} comme actualisée"
     assert status.primary_action.url == reverse(
-        "reglementations:toggle_bdese_completion", args=[entreprise.siren, annee]
+        "reglementations:toggle_bdese_completion", args=[entreprise.id_public, annee]
     )
     assert status.secondary_actions == []
 

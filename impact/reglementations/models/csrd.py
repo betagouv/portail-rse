@@ -192,7 +192,7 @@ class RapportCSRD(TimestampedModel):
             action["lien"] = reverse_lazy(
                 "reglementations:gestion_csrd",
                 kwargs={
-                    "siren": self.entreprise.siren,
+                    "id_public": self.entreprise.id_public,
                     "id_etape": id_etape_a_faire,
                 },
             )

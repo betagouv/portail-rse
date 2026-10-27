@@ -66,7 +66,7 @@ def test_presence_annee_precedente(
     url = reverse(
         "reglementations:gestion_csrd",
         kwargs={
-            "siren": rapport_csrd_courant.entreprise.siren,
+            "id_public": rapport_csrd_courant.entreprise.id_public,
             "id_etape": "redaction-rapport-durabilite",
         },
     )
@@ -86,7 +86,7 @@ def test_selection_annee_rapport(
     url = reverse(
         "reglementations:gestion_csrd",
         kwargs={
-            "siren": rapport_csrd_courant.entreprise.siren,
+            "id_public": rapport_csrd_courant.entreprise.id_public,
             "id_etape": "redaction-rapport-durabilite",
         },
     )

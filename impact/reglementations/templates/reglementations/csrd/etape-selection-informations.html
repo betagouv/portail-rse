@@ -41,13 +41,13 @@
                     <li>Téléchargez les exigences de publications des ESRS de vos enjeux ESG prioritaires, puis sélectionnez les points de données à reporter.
                         <div>
                             <a class="fr-link fr-link--download" download
-                               href="{% url 'reglementations:datapoints_xlsx' csrd.entreprise.siren %}">Exigences de publication matérielles</a>
+                               href="{% url 'reglementations:datapoints_xlsx' csrd.entreprise.id_public %}">Exigences de publication matérielles</a>
                         </div>
                     </li>
                     <li>Complétez, si pertinent, votre analyse avec les exigences de publication des autres ESRS.
                         <div>
                             <a class="fr-link fr-link--download" download
-                               href="{% url 'reglementations:datapoints_xlsx' csrd.entreprise.siren %}?materiel=false">Exigences de publication non-matérielles</a>
+                               href="{% url 'reglementations:datapoints_xlsx' csrd.entreprise.id_public %}?materiel=false">Exigences de publication non-matérielles</a>
                         </div>
                     </li>
                 </ul>

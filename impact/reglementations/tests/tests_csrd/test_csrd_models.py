@@ -116,7 +116,7 @@ def test_debut_avancement_etapes_csrd(csrd):
     assert csrd.avancement_etapes()[0]["lien"] == reverse_lazy(
         "reglementations:gestion_csrd",
         kwargs={
-            "siren": csrd.entreprise.siren,
+            "id_public": csrd.entreprise.id_public,
             "id_etape": id_sous_etape_selection_enjeux,
         },
     )
@@ -128,7 +128,7 @@ def test_debut_avancement_etapes_csrd(csrd):
     assert csrd.avancement_etapes()[0]["lien"] == reverse_lazy(
         "reglementations:gestion_csrd",
         kwargs={
-            "siren": csrd.entreprise.siren,
+            "id_public": csrd.entreprise.id_public,
             "id_etape": id_sous_etape_selection_enjeux,
         },
     )
@@ -142,7 +142,7 @@ def test_debut_avancement_etapes_csrd(csrd):
         "lien": reverse_lazy(
             "reglementations:gestion_csrd",
             kwargs={
-                "siren": csrd.entreprise.siren,
+                "id_public": csrd.entreprise.id_public,
                 "id_etape": id_sous_etape_analyse_materialite,
             },
         ),
@@ -154,7 +154,7 @@ def test_debut_avancement_etapes_csrd(csrd):
         "lien": reverse_lazy(
             "reglementations:gestion_csrd",
             kwargs={
-                "siren": csrd.entreprise.siren,
+                "id_public": csrd.entreprise.id_public,
                 "id_etape": id_sous_etape_selection_informations,
             },
         ),
@@ -169,7 +169,7 @@ def test_debut_avancement_etapes_csrd(csrd):
         "lien": reverse_lazy(
             "reglementations:gestion_csrd",
             kwargs={
-                "siren": csrd.entreprise.siren,
+                "id_public": csrd.entreprise.id_public,
                 "id_etape": id_sous_etape_analyse_materialite,
             },
         ),
@@ -186,7 +186,7 @@ def test_debut_avancement_etapes_csrd(csrd):
         "lien": reverse_lazy(
             "reglementations:gestion_csrd",
             kwargs={
-                "siren": csrd.entreprise.siren,
+                "id_public": csrd.entreprise.id_public,
                 "id_etape": id_sous_etape_analyse_materialite,
             },
         ),
@@ -208,7 +208,7 @@ def test_fin_avancement_etapes_csrd(csrd):
     assert csrd.avancement_etapes()[-1]["lien"] == reverse_lazy(
         "reglementations:gestion_csrd",
         kwargs={
-            "siren": csrd.entreprise.siren,
+            "id_public": csrd.entreprise.id_public,
             "id_etape": id_etape_redaction,
         },
     )
