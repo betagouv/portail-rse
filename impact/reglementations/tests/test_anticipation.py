@@ -37,7 +37,9 @@ def test_page_anticipation_avec_entreprise_qualifiee_initialise_les_champs_sans_
     client.force_login(alice)
 
     response = client.get(
-        reverse("reglementations:anticipation", kwargs={"siren": entreprise.siren})
+        reverse(
+            "reglementations:anticipation", kwargs={"id_public": entreprise.id_public}
+        )
     )
 
     assert response.status_code == 200
@@ -162,7 +164,9 @@ def test_lors_d_une_anticipation_les_donnees_d_une_entreprise_avec_utilisateur_n
     )
 
     response = client.post(
-        reverse("reglementations:anticipation", kwargs={"siren": entreprise.siren}),
+        reverse(
+            "reglementations:anticipation", kwargs={"id_public": entreprise.id_public}
+        ),
         data=data,
         follow=True,
     )
@@ -216,7 +220,9 @@ def test_anticipation_avec_un_formulaire_invalide_affiche_un_message_d_erreur(
     client.force_login(alice)
 
     response = client.post(
-        reverse("reglementations:anticipation", kwargs={"siren": entreprise.siren}),
+        reverse(
+            "reglementations:anticipation", kwargs={"id_public": entreprise.id_public}
+        ),
         data={"date_cloture_exercice": "date-invalide"},
         follow=True,
     )

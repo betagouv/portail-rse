@@ -6,7 +6,7 @@
             <div class="fr-card__content">
                 <h3 class="fr-card__title">
                     {{ reglementation.title }} {% if reglementation.zone == "france" %}<span title="Réglementation Nationale">🇫🇷</span>{% elif reglementation.zone == "europe" %}<span title="Réglementation Européenne">🇪🇺</span>{% endif %}
-                    <a href="{% url 'reglementations:reglementation' entreprise.siren reglementation.id %}"></a>
+                    <a href="{% url 'reglementations:reglementation' entreprise.id_public reglementation.id %}"></a>
                 </h3>
                 <div class="fr-card__start">
                     <ul class="fr-badge-group">

@@ -100,7 +100,9 @@ def invitation(request, id_invitation, code):
 
     if invitation.date_acceptation:
         messages.warning(request, "Cette invitation a déjà été acceptée.")
-        return redirect("reglementations:tableau_de_bord", invitation.entreprise.siren)
+        return redirect(
+            "reglementations:tableau_de_bord", invitation.entreprise.id_public
+        )
 
     # Si utilisateur déjà connecté
     if request.user.is_authenticated:
@@ -447,7 +449,9 @@ def accepter_invitation(request, id_invitation, code):
             request,
             "Cette invitation a déjà été acceptée.",
         )
-        return redirect("reglementations:tableau_de_bord", invitation.entreprise.siren)
+        return redirect(
+            "reglementations:tableau_de_bord", invitation.entreprise.id_public
+        )
 
     if request.user.is_conseiller_rse is None:
         # Le cas d'usage imaginé est que la personne invitée est un responsable de l'entreprise.
@@ -461,4 +465,4 @@ def accepter_invitation(request, id_invitation, code):
         request,
         f"Vous êtes maintenant ajouté à l'entreprise {invitation.entreprise.denomination}.",
     )
-    return redirect("reglementations:tableau_de_bord", invitation.entreprise.siren)
+    return redirect("reglementations:tableau_de_bord", invitation.entreprise.id_public)

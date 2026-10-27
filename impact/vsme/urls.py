@@ -10,7 +10,7 @@ urlpatterns = [
         name="etape_vsme",
     ),
     path(
-        "vsme/<str:siren>/<str:etape>/",
+        "vsme/<uuid:id_public>/<str:etape>/",
         views.etape_vsme,
         name="etape_vsme",
     ),
@@ -30,12 +30,12 @@ urlpatterns = [
         name="categories_vsme",
     ),
     path(
-        "indicateurs/vsme/<str:siren>/",
+        "indicateurs/vsme/<uuid:id_public>/",
         views.categories_vsme,
         name="categories_vsme",
     ),
     path(
-        "indicateurs/vsme/<str:siren>/<int:annee>/",
+        "indicateurs/vsme/<uuid:id_public>/<int:annee>/",
         views.categories_vsme,
         name="categories_vsme",
     ),

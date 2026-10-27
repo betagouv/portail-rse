@@ -145,7 +145,9 @@ def resultats_simulation(request):
     simulation_form = SimulationForm(request.session["simulation"])
     if simulation_form.is_valid():
         reglementations_applicables = calcule_simulation(simulation_form)
-        siren = simulation_form.cleaned_data["siren"]
+        id_public = Entreprise.objects.get(
+            siren=simulation_form.cleaned_data["siren"]
+        ).id_public
     else:
         return redirect("simulation")
     return render(
@@ -153,7 +155,7 @@ def resultats_simulation(request):
         "public/resultats_simulation.html",
         {
             "reglementations_applicables": reglementations_applicables,
-            "siren": siren,
+            "id_public": id_public,
         },
     )
 

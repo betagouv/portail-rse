@@ -313,7 +313,7 @@ def test_echec_quitter_entreprise_redirige_vers_tableau_de_bord_si_l_utilisateur
         data=data,
         follow=True,
         HTTP_REFERER=reverse(
-            "reglementations:tableau_de_bord", args=[entreprise.siren]
+            "reglementations:tableau_de_bord", args=[entreprise.id_public]
         ),
     )
 
@@ -323,7 +323,7 @@ def test_echec_quitter_entreprise_redirige_vers_tableau_de_bord_si_l_utilisateur
 
 
 def test_qualification_page_is_not_public(client, alice, entreprise_non_qualifiee):
-    url = f"/entreprises/{entreprise_non_qualifiee.siren}"
+    url = f"/entreprises/{entreprise_non_qualifiee.id_public}"
     response = client.get(url)
 
     assert response.status_code == 302
@@ -357,7 +357,7 @@ def test_page_de_qualification_d_une_entreprise_non_qualifiee_pre_remplit_les_ch
     Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
     client.force_login(alice)
 
-    response = client.get(f"/entreprises/{entreprise_non_qualifiee.siren}")
+    response = client.get(f"/entreprises/{entreprise_non_qualifiee.id_public}")
 
     assert response.status_code == 200
     content = response.content.decode("utf-8")
@@ -402,7 +402,7 @@ def test_page_de_qualification_d_une_entreprise_non_qualifiee_avec_erreur_api_no
     mock_api_infos_entreprise.side_effect = api.exceptions.APIError("yolo")
 
     with freeze_time(date(2023, 1, 27)):
-        response = client.get(f"/entreprises/{entreprise_non_qualifiee.siren}")
+        response = client.get(f"/entreprises/{entreprise_non_qualifiee.id_public}")
 
     assert response.status_code == 200
     response.content.decode("utf-8")
@@ -442,7 +442,7 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs_s
     client.force_login(alice)
 
     with freeze_time(date(2023, 1, 27)):
-        response = client.get(f"/entreprises/{entreprise.siren}")
+        response = client.get(f"/entreprises/{entreprise.id_public}")
 
     assert response.status_code == 200
     content = response.content.decode("utf-8")
@@ -511,7 +511,7 @@ def test_page_de_qualification_avec_des_caracteristiques_non_qualifiantes_initia
     client.force_login(alice)
 
     with freeze_time(date(2023, 1, 27)):
-        response = client.get(f"/entreprises/{entreprise.siren}")
+        response = client.get(f"/entreprises/{entreprise.id_public}")
 
     mock_api_infos_entreprise.assert_not_called()
     context = response.context
@@ -570,14 +570,15 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
     }
 
     with freeze_time(date(2023, 10, 25)):
-        url = f"/entreprises/{entreprise_non_qualifiee.siren}"
+        url = f"/entreprises/{entreprise_non_qualifiee.id_public}"
         response = client.post(url, data=data, follow=True)
 
     assert response.status_code == 200
     assert response.redirect_chain == [
         (
             reverse(
-                "reglementations:tableau_de_bord", args=[entreprise_non_qualifiee.siren]
+                "reglementations:tableau_de_bord",
+                args=[entreprise_non_qualifiee.id_public],
             ),
             302,
         )
@@ -661,7 +662,7 @@ def test_qualifie_entreprise_sans_groupe(
         "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_ENTRE_2_75GWH_ET_23_6GWH,
     }
 
-    url = f"/entreprises/{entreprise_non_qualifiee.siren}"
+    url = f"/entreprises/{entreprise_non_qualifiee.id_public}"
     response = client.post(url, data=data)
 
     assert response.status_code == 302
@@ -715,7 +716,7 @@ def test_echoue_a_qualifier_l_entreprise(client, alice, entreprise_non_qualifiee
         "bdese_accord": True,
     }
 
-    url = f"/entreprises/{entreprise_non_qualifiee.siren}"
+    url = f"/entreprises/{entreprise_non_qualifiee.id_public}"
     response = client.post(url, data=data)
 
     assert response.status_code == 200
@@ -760,7 +761,7 @@ def test_qualification_supprime_les_caracteristiques_annuelles_posterieures_a_la
         "tranche_consommation_energie_finale": CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_ENTRE_2_75GWH_ET_23_6GWH,
     }
 
-    url = f"/entreprises/{entreprise.siren}"
+    url = f"/entreprises/{entreprise.id_public}"
     client.post(url, data=data)
 
     assert not entreprise.caracteristiques_annuelles(date_cloture_dernier_exercice.year)

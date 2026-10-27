@@ -14,7 +14,7 @@ def test_acces_sans_annee_utilise_annee_par_defaut(client, entreprise_factory, a
     entreprise.save()
     client.force_login(alice)
 
-    url = reverse("vsme:categories_vsme", args=[entreprise.siren])
+    url = reverse("vsme:categories_vsme", args=[entreprise.id_public])
     response = client.get(url)
 
     assert response.status_code == 200
@@ -32,7 +32,7 @@ def test_acces_avec_annee_valide(client, entreprise_factory, alice, annee):
     client.force_login(alice)
 
     # Vérifier que l'année est valide pour cette entreprise
-    url = reverse("vsme:categories_vsme", args=[entreprise.siren, annee])
+    url = reverse("vsme:categories_vsme", args=[entreprise.id_public, annee])
     response = client.get(url)
 
     assert response.status_code == 200
@@ -47,7 +47,7 @@ def test_acces_annee_n_plus_1_avec_cloture_30_juin(client, entreprise_factory, a
     client.force_login(alice)
 
     annee_n_plus_1 = 2026  # N+1 pour 2025
-    url = reverse("vsme:categories_vsme", args=[entreprise.siren, annee_n_plus_1])
+    url = reverse("vsme:categories_vsme", args=[entreprise.id_public, annee_n_plus_1])
     response = client.get(url)
 
     assert response.status_code == 200
@@ -63,12 +63,12 @@ def test_acces_avec_annee_valide_en_paramètre(client, entreprise_factory, alice
     entreprise.save()
     client.force_login(alice)
 
-    url = reverse("vsme:categories_vsme", args=[entreprise.siren]) + "?annee=2026"
+    url = reverse("vsme:categories_vsme", args=[entreprise.id_public]) + "?annee=2026"
     response = client.get(url, headers={"HX-Request": "true"}, follow=False)
 
     assert response.status_code == 200
     assert response.headers["HX-Redirect"] == reverse(
-        "vsme:categories_vsme", args=[entreprise.siren, 2026]
+        "vsme:categories_vsme", args=[entreprise.id_public, 2026]
     )
 
 
@@ -85,7 +85,7 @@ def test_acces_avec_annee_invalide(client, entreprise_factory, alice, annee):
     entreprise.save()
     client.force_login(alice)
 
-    url = reverse("vsme:categories_vsme", args=[entreprise.siren, annee])
+    url = reverse("vsme:categories_vsme", args=[entreprise.id_public, annee])
     response = client.get(url)
 
     assert response.status_code == 302  # Redirection
@@ -101,7 +101,7 @@ def test_acces_annee_future_invalide(client, entreprise_factory, alice):
     annee_invalide = (
         entreprise.dernier_exercice_clos.exercice_suivant.date_cloture.year + 1
     )
-    url = reverse("vsme:categories_vsme", args=[entreprise.siren, annee_invalide])
+    url = reverse("vsme:categories_vsme", args=[entreprise.id_public, annee_invalide])
     response = client.get(url)
 
     assert response.status_code == 302  # Redirection
@@ -114,7 +114,7 @@ def test_message_info_annee_non_defaut(client, entreprise_factory, alice):
     client.force_login(alice)
 
     # Créer un rapport pour 2022 (année non par défaut)
-    url = reverse("vsme:categories_vsme", args=[entreprise.siren, 2022])
+    url = reverse("vsme:categories_vsme", args=[entreprise.id_public, 2022])
     response = client.get(url, follow=True)
 
     # Vérifier qu'un message d'info est présent
@@ -130,14 +130,14 @@ def test_navigation_entre_annees(client, entreprise_factory, alice):
     client.force_login(alice)
 
     # Créer un rapport 2024
-    url_2024 = reverse("vsme:categories_vsme", args=[entreprise.siren, 2024])
+    url_2024 = reverse("vsme:categories_vsme", args=[entreprise.id_public, 2024])
     response_2024 = client.get(url_2024)
     assert response_2024.status_code == 200
     rapport_2024 = response_2024.context["rapport_vsme"]
     assert rapport_2024.annee == 2024
 
     # Créer un rapport 2023
-    url_2023 = reverse("vsme:categories_vsme", args=[entreprise.siren, 2023])
+    url_2023 = reverse("vsme:categories_vsme", args=[entreprise.id_public, 2023])
     response_2023 = client.get(url_2023)
     assert response_2023.status_code == 200
     rapport_2023 = response_2023.context["rapport_vsme"]
@@ -154,7 +154,7 @@ def test_get_or_create_ne_duplique_pas(client, entreprise_factory, alice):
     entreprise.save()
     client.force_login(alice)
 
-    url = reverse("vsme:categories_vsme", args=[entreprise.siren, 2023])
+    url = reverse("vsme:categories_vsme", args=[entreprise.id_public, 2023])
 
     # Premier accès
     client.get(url)

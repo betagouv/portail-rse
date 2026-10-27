@@ -141,7 +141,9 @@ def qualification(request, entreprise):
             messages.success(
                 request, "Les informations de l'entreprise ont été mises à jour."
             )
-            return redirect("reglementations:tableau_de_bord", siren=entreprise.siren)
+            return redirect(
+                "reglementations:tableau_de_bord", id_public=entreprise.id_public
+            )
         else:
             messages.error(
                 request,

@@ -44,7 +44,7 @@
                                             <td>
                                                 <ul class="fr-btns-group--md fr-btns-group--inline-reverse fr-btns-group--inline-lg">
                                                     <li>
-                                                        <a href="{% url 'reglementations:tableau_de_bord' entreprise.siren %}" class="fr-btn fr-btn--icon-left fr-icon-todo-line">Accéder au tableau de bord</a>
+                                                        <a href="{% url 'reglementations:tableau_de_bord' entreprise.id_public %}" class="fr-btn fr-btn--icon-left fr-icon-todo-line">Accéder au tableau de bord</a>
                                                     </li>
                                                     <li>
                                                         <button class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-close-circle-line" data-fr-opened="false" aria-controls="modal-detach-{{ entreprise.siren }}">

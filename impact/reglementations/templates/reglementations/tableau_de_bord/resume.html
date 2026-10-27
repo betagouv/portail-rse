@@ -21,7 +21,7 @@
                             <div class="fr-tile__body">
                                 <div class="fr-tile__content">
                                     <h2 class="fr-tile__title">
-                                        <a href="{% url 'reglementations:reglementations' entreprise.siren %}">
+                                        <a href="{% url 'reglementations:reglementations' entreprise.id_public %}">
                                             {{ nombre_reglementations_applicables }}
                                         </a>
                                     </h2>
@@ -43,7 +43,7 @@
                             <div class="fr-tile__body">
                                 <div class="fr-tile__content">
                                     <h2 class="fr-tile__title">
-                                        <a href="{% url 'vsme:categories_vsme' entreprise.siren entreprise.dernier_exercice_clos.date_cloture.year %}">
+                                        <a href="{% url 'vsme:categories_vsme' entreprise.id_public entreprise.dernier_exercice_clos.date_cloture.year %}">
                                             {{ pourcentage_vsme }}%
                                         </a>
                                     </h2>
@@ -138,7 +138,7 @@
                             <div class="fr-card__footer">
                                 <ul class="fr-btns-group--md fr-btns-group--inline-reverse fr-btns-group--inline-lg">
                                     <li>
-                                        <a href="{% url 'entreprises:qualification' entreprise.siren %}" class="fr-btn fr-btn--icon-left fr-icon-edit-line">Modifier le profil</a>
+                                        <a href="{% url 'entreprises:qualification' entreprise.id_public %}" class="fr-btn fr-btn--icon-left fr-icon-edit-line">Modifier le profil</a>
                                     </li>
                                     <li>
                                         <button class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-close-circle-line" data-fr-opened="false" aria-controls="modal-detach-{{ entreprise.siren }}">

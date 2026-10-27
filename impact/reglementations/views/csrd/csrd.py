@@ -594,7 +594,9 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
                     request,
                     "Il n'y a pas encore de rapport CSRD créé pour cette année (possible uniquement en ayant le rôle administrateur).",
                 )
-                return redirect("reglementations:tableau_de_bord", siren=siren)
+                return redirect(
+                    "reglementations:tableau_de_bord", id_public=entreprise.id_public
+                )
 
             # on récupére le rapport officiel,
             # la gestion des droits de modification éventuels est au niveau du template

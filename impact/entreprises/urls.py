@@ -5,7 +5,7 @@ from . import views
 app_name = "entreprises"
 urlpatterns = [
     path("entreprises", views.index, name="entreprises"),
-    path("entreprises/<str:siren>", views.qualification, name="qualification"),
+    path("entreprises/<uuid:id_public>", views.qualification, name="qualification"),
     path(
         "entreprises/fragments/recherche-entreprise",
         views.recherche_entreprise,

@@ -137,7 +137,7 @@ def _envoie_email_aux_administrateurs_actuels(request, entreprise):
         reverse(
             "reglementations:tableau_de_bord",
             kwargs={
-                "siren": entreprise.siren,
+                "id_public": entreprise.id_public,
             },
         )
     )

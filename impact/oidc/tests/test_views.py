@@ -106,7 +106,7 @@ def test_proconnect_dispatch_view_crée_une_habilitation_contributeur_si_adminis
             reverse(
                 "reglementations:tableau_de_bord",
                 kwargs={
-                    "siren": entreprise.siren,
+                    "id_public": entreprise.id_public,
                 },
             )
         ),
