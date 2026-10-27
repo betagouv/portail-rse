@@ -11,9 +11,10 @@ def habilitation(request):
     # ajoute l'habilitation de l'utilisateur pour l'entreprise courante
     # au context sous une forme simplifiée
     for h in request.habilitations:
-        if h.entreprise.id == id_entreprise:
+        if h.entreprise_id == id_entreprise:
             ctx |= {"role_utilisateur": h.role}
             for role in UserRole.values:
                 ctx |= {f"est_{role}": UserRole(h.role) >= UserRole(role)}
+            break
 
     return ctx
