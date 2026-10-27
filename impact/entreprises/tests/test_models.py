@@ -1,3 +1,5 @@
+import importlib
+import uuid
 from datetime import date
 from datetime import datetime
 from datetime import timedelta
@@ -52,6 +54,29 @@ def test_entreprise():
         entreprise.save()
 
     assert entreprise.updated_at == now + timedelta(1)
+
+
+def test_entreprise_a_un_id_public_uuid7_unique(db):
+    entreprise = Entreprise.objects.create(siren="123456789")
+    autre_entreprise = Entreprise.objects.create(siren="987654321")
+
+    assert entreprise.id_public.version == 7
+    assert entreprise.id_public != autre_entreprise.id_public
+
+
+def test_uuid7_depuis_date_de_la_migration_id_public():
+    migration = importlib.import_module(
+        "entreprises.migrations.0057_entreprise_id_public"
+    )
+    date = datetime(2023, 1, 27, 16, 1, 2, 345000, tzinfo=timezone.utc)
+
+    id_public = migration.uuid7_depuis_date(date)
+    autre_id_public = migration.uuid7_depuis_date(date)
+
+    assert id_public.version == 7
+    assert id_public.variant == uuid.RFC_4122
+    assert id_public.int >> 80 == int(date.timestamp() * 1000)
+    assert id_public != autre_id_public
 
 
 def test_caracteristiques_sont_qualifiantes_avec_groupe(
