@@ -1,5 +1,5 @@
 <h3 class="fr-h5">Inviter un nouvel utilisateur</h3>
-<form action="{% url 'habilitations:invitation' entreprise.siren %}" method="post">
+<form action="{% url 'habilitations:invitation' entreprise.id_public %}" method="post">
     {% csrf_token %}
     {% include 'snippets/field.html' with field=form.email %}
 		{# utilisation stricte du DSFR #}

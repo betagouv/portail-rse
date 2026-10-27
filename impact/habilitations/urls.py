@@ -5,7 +5,7 @@ from habilitations import views
 app_name = "habilitations"
 urlpatterns = [
     path(
-        "invitation/<str:siren>",
+        "invitation/<uuid:id_public>",
         views.invitation,
         name="invitation",
     ),
