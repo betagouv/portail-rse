@@ -19,7 +19,7 @@ def selection_rapport(request, csrd_id):
     request.session["rapport_csrd_courant"] = csrd_id
     return redirect(
         "reglementations:gestion_csrd",
-        siren=csrd.entreprise.siren,
+        id_public=csrd.entreprise.id_public,
         id_etape="introduction",
     )
 

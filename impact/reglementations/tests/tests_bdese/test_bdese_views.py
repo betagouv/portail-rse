@@ -18,7 +18,7 @@ from reglementations.views.bdese import render_bdese_pdf_html
 
 
 def test_bdese_is_not_public(client, alice, grande_entreprise):
-    url = f"/bdese/{grande_entreprise.siren}/2022/1"
+    url = f"/bdese/{grande_entreprise.id_public}/2022/1"
     response = client.get(url)
 
     assert response.status_code == 302
@@ -48,13 +48,13 @@ def test_yearly_bdese_is_created_at_first_authorized_request(
 
     assert not bdese_class.objects.filter(entreprise=entreprise)
 
-    url = f"/bdese/{entreprise.siren}/2021/1"
+    url = f"/bdese/{entreprise.id_public}/2021/1"
     response = client.get(url)
 
     assert response.status_code == 302
     bdese_2021 = bdese_class.objects.get(entreprise=entreprise, annee=2021)
 
-    url = f"/bdese/{entreprise.siren}/2022/1"
+    url = f"/bdese/{entreprise.id_public}/2022/1"
     response = client.get(url)
 
     bdese_2022 = bdese_class.objects.get(entreprise=entreprise, annee=2022)
@@ -62,7 +62,7 @@ def test_yearly_bdese_is_created_at_first_authorized_request(
 
 
 def bdese_step_url(bdese, step):
-    return f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/{step}"
+    return f"/bdese/{bdese.entreprise.id_public}/{bdese.annee}/{step}"
 
 
 def test_bdese_step_introuvable_si_bdese_avec_accord(bdese_avec_accord, alice, client):
@@ -89,7 +89,7 @@ def test_bdese_step_redirect_to_configuration_if_bdese_not_configured(
         (
             reverse(
                 "reglementations:bdese_step",
-                args=[bdese.entreprise.siren, bdese.annee, 0],
+                args=[bdese.entreprise.id_public, bdese.annee, 0],
             ),
             302,
         )
@@ -130,7 +130,7 @@ def test_étape_bdese_affiche_un_message_indiquant_non_soumis_le_cas_échéant(
         (
             reverse(
                 "reglementations:bdese_step",
-                args=[bdese.entreprise.siren, bdese.annee, 0],
+                args=[bdese.entreprise.id_public, bdese.annee, 0],
             ),
             302,
         )
@@ -333,7 +333,7 @@ def test_mark_step_as_incomplete(configured_bdese, habilitated_user, client):
 def test_get_pdf(bdese, habilitated_user, client):
     client.force_login(habilitated_user)
 
-    url = f"/bdese/{bdese.entreprise.siren}/{bdese.annee}/pdf"
+    url = f"/bdese/{bdese.entreprise.id_public}/{bdese.annee}/pdf"
     response = client.get(url)
 
     assert response.status_code == 200
@@ -345,7 +345,7 @@ def test_get_pdf_redirige_vers_la_qualification_si_manquante(
     client.force_login(habilitated_user)
     entreprise = bdese.entreprise
     entreprise.caracteristiques_annuelles(bdese.annee).delete()
-    url = f"/bdese/{entreprise.siren}/{bdese.annee}/pdf"
+    url = f"/bdese/{entreprise.id_public}/{bdese.annee}/pdf"
 
     response = client.get(url)
 
@@ -360,7 +360,7 @@ def test_get_pdf_introuvable_si_bdese_avec_accord(bdese_avec_accord, alice, clie
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
 
-    url = f"/bdese/{entreprise.siren}/{bdese_avec_accord.annee}/pdf"
+    url = f"/bdese/{entreprise.id_public}/{bdese_avec_accord.annee}/pdf"
     response = client.get(url)
 
     assert response.status_code == 404
@@ -541,7 +541,7 @@ def test_save_bdese_configuration_for_a_new_year(
 
     new_year = configured_bdese.annee + 1
 
-    url = f"/bdese/{configured_bdese.entreprise.siren}/{new_year}/0"
+    url = f"/bdese/{configured_bdese.entreprise.id_public}/{new_year}/0"
     response = client.get(url)
 
     # le formulaire est initialisé avec la configuration de la dernière bdese configurée
@@ -572,7 +572,7 @@ def test_save_bdese_configuration_for_a_new_year(
         (
             reverse(
                 "reglementations:bdese_step",
-                args=[configured_bdese.entreprise.siren, new_year, 0],
+                args=[configured_bdese.entreprise.id_public, new_year, 0],
             ),
             302,
         )
@@ -638,9 +638,7 @@ def test_toggle_bdese_completion(client, bdese_avec_accord, alice):
     entreprise = bdese_avec_accord.entreprise
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
-    url = (
-        f"/bdese/{entreprise.siren}/{bdese_avec_accord.annee}/actualiser-desactualiser"
-    )
+    url = f"/bdese/{entreprise.id_public}/{bdese_avec_accord.annee}/actualiser-desactualiser"
 
     response = client.get(url, follow=True)
 
@@ -663,7 +661,7 @@ def test_toggle_bdese_completion_redirige_vers_la_qualification_si_manquante(
     client.force_login(habilitated_user)
     entreprise = bdese.entreprise
     entreprise.caracteristiques_annuelles(bdese.annee).delete()
-    url = f"/bdese/{entreprise.siren}/{bdese.annee}/actualiser-desactualiser"
+    url = f"/bdese/{entreprise.id_public}/{bdese.annee}/actualiser-desactualiser"
 
     response = client.get(url)
 
@@ -679,7 +677,7 @@ def test_toggle_bdese_completion_sans_bdese_existante(
     client.force_login(alice)
     entreprise = entreprise_factory(bdese_accord=True)
     Habilitation.ajouter(entreprise=entreprise, utilisateur=alice)
-    url = f"/bdese/{entreprise.siren}/2025/actualiser-desactualiser"
+    url = f"/bdese/{entreprise.id_public}/2025/actualiser-desactualiser"
 
     response = client.get(url, follow=True)
 

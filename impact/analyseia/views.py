@@ -5,6 +5,7 @@ import sentry_sdk
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMessage
 from django.http import Http404
 from django.http import HttpResponse
@@ -30,6 +31,8 @@ from .models import AnalyseIA
 from api import analyse_ia
 from api.exceptions import APIError
 from entreprises.decorators import entreprise_requise
+from entreprises.models import Entreprise
+from habilitations.models import Habilitation
 from reglementations.enums import ESRS
 from reglementations.views import tableau_de_bord_menu_context
 from reglementations.views.csrd.csrd import contexte_d_etape
@@ -55,6 +58,15 @@ def analyses(request, entreprise):
 
 
 @login_required
+def redirection_analyses_par_siren(request, siren):
+    # les e-mails de résultats d'analyse IA envoyés avant le passage à l'id_public contiennent le SIREN
+    entreprise = get_object_or_404(Entreprise, siren=siren)
+    if not Habilitation.existe(entreprise, request.user):
+        raise PermissionDenied
+    return redirect("analyseia:analyses", id_public=entreprise.id_public)
+
+
+@login_required
 @entreprise_requise
 @csrd_valide_si_presente
 @require_http_methods(["POST"])
@@ -77,7 +89,7 @@ def ajout_document(request, entreprise, csrd=None):
         else:
             redirection = redirect(
                 "reglementations:gestion_csrd",
-                siren=entreprise.siren,
+                id_public=entreprise.id_public,
                 id_etape="analyse-ecart",
             )
         return redirection
@@ -110,7 +122,7 @@ def suppression(request, analyse):
     else:
         redirection = redirect(
             "reglementations:gestion_csrd",
-            siren=entreprise.siren,
+            id_public=entreprise.id_public,
             id_etape="analyse-ecart",
         )
     return redirection
@@ -156,7 +168,7 @@ def lancement_analyse(request, analyse, version_ia):
     else:
         redirection = redirect(
             "reglementations:gestion_csrd",
-            siren=analyse.entreprise.siren,
+            id_public=analyse.entreprise.id_public,
             id_etape="analyse-ecart",
         )
     return redirection
@@ -196,7 +208,7 @@ def actualisation_etat(request, id_analyse, version_ia):
             path = reverse(
                 "reglementations:gestion_csrd",
                 kwargs={
-                    "siren": analyse.entreprise.siren,
+                    "id_public": analyse.entreprise.id_public,
                     "id_etape": "analyse-ecart",
                 },
             )

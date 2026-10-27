@@ -1,9 +1,11 @@
 from django.urls import path
+from django.urls import re_path
 
 from .views import actualisation_etat
 from .views import ajout_document
 from .views import analyses
 from .views import lancement_analyse
+from .views import redirection_analyses_par_siren
 from .views import resultat_v1
 from .views import resultat_v2
 from .views import statut_analyse_ia
@@ -17,6 +19,7 @@ app_name = "analyseia"
 urlpatterns = [
     path("analyses/", analyses, name="analyses"),
     path("analyses/<uuid:id_public>/", analyses, name="analyses"),
+    re_path(r"^analyses/(?P<siren>\d{9})/$", redirection_analyses_par_siren),
     path(
         "analyses/<uuid:id_public>/ajout_document/",
         ajout_document,

@@ -109,7 +109,7 @@ class BDESEReglementation(Reglementation):
             primary_action = ReglementationAction(
                 reverse_lazy(
                     "reglementations:bdese_step",
-                    args=[entreprise.siren, annee, 1],
+                    args=[entreprise.id_public, annee, 1],
                 ),
                 "Tester une BDESE",
             )
@@ -134,7 +134,7 @@ class BDESEReglementation(Reglementation):
             primary_action = ReglementationAction(
                 reverse_lazy(
                     "reglementations:toggle_bdese_completion",
-                    args=[entreprise.siren, annee],
+                    args=[entreprise.id_public, annee],
                 ),
                 primary_action_title,
             )
@@ -163,7 +163,7 @@ class BDESEReglementation(Reglementation):
             primary_action = ReglementationAction(
                 reverse_lazy(
                     "reglementations:bdese_pdf",
-                    args=[entreprise.siren, annee],
+                    args=[entreprise.id_public, annee],
                 ),
                 f"Télécharger le pdf {annee}",
                 external=True,
@@ -172,7 +172,7 @@ class BDESEReglementation(Reglementation):
                 ReglementationAction(
                     reverse_lazy(
                         "reglementations:bdese_step",
-                        args=[entreprise.siren, annee, 1],
+                        args=[entreprise.id_public, annee, 1],
                     ),
                     "Modifier ma BDESE",
                 )
@@ -183,7 +183,7 @@ class BDESEReglementation(Reglementation):
             primary_action = ReglementationAction(
                 reverse_lazy(
                     "reglementations:bdese_step",
-                    args=[entreprise.siren, annee, 1],
+                    args=[entreprise.id_public, annee, 1],
                 ),
                 "Reprendre l'actualisation de ma BDESE",
             )
@@ -191,7 +191,7 @@ class BDESEReglementation(Reglementation):
                 ReglementationAction(
                     reverse_lazy(
                         "reglementations:bdese_pdf",
-                        args=[entreprise.siren, annee],
+                        args=[entreprise.id_public, annee],
                     ),
                     f"Télécharger le pdf {annee} (brouillon)",
                     external=True,
@@ -213,7 +213,7 @@ class BDESEReglementation(Reglementation):
         primary_action = ReglementationAction(
             reverse_lazy(
                 "reglementations:bdese_step",
-                args=[caracteristiques.entreprise.siren, annee, 0],
+                args=[caracteristiques.entreprise.id_public, annee, 0],
             ),
             "Actualiser ma BDESE",
         )
@@ -249,8 +249,8 @@ class BDESEReglementation(Reglementation):
 
 @login_required
 @entreprise_qualifiee_required
-def bdese_pdf(request, siren, annee):
-    entreprise = Entreprise.objects.get(siren=siren)
+def bdese_pdf(request, id_public, annee):
+    entreprise = Entreprise.objects.get(id_public=id_public)
     if not Habilitation.existe(entreprise, request.user):
         raise PermissionDenied
 
@@ -304,8 +304,8 @@ def _pdf_template_path_from_bdese(bdese):
 
 @login_required
 @entreprise_qualifiee_required
-def bdese_step(request, siren, annee, step):
-    entreprise = Entreprise.objects.get(siren=siren)
+def bdese_step(request, id_public, annee, step):
+    entreprise = Entreprise.objects.get(id_public=id_public)
     if not Habilitation.existe(entreprise, request.user):
         raise PermissionDenied
 
@@ -331,14 +331,19 @@ def bdese_step(request, siren, annee, step):
         raise Http404
     if not bdese.is_configured and step != 0:
         messages.warning(request, f"Commencez par configurer votre BDESE {annee}")
-        return redirect("reglementations:bdese_step", siren=siren, annee=annee, step=0)
+        return redirect(
+            "reglementations:bdese_step", id_public=id_public, annee=annee, step=0
+        )
 
     if request.method == "POST":
         if "mark_incomplete" in request.POST:
             bdese.mark_step_as_incomplete(step)
             bdese.save()
             return redirect(
-                "reglementations:bdese_step", siren=siren, annee=annee, step=step
+                "reglementations:bdese_step",
+                id_public=id_public,
+                annee=annee,
+                step=step,
             )
         else:
             if step == 0:
@@ -358,7 +363,10 @@ def bdese_step(request, siren, annee, step):
                     if step < len(bdese.STEPS) - 1:
                         step += 1
                 return redirect(
-                    "reglementations:bdese_step", siren=siren, annee=annee, step=step
+                    "reglementations:bdese_step",
+                    id_public=id_public,
+                    annee=annee,
+                    step=step,
                 )
             else:
                 messages.error(
@@ -495,8 +503,8 @@ def initialize_bdese_configuration(bdese: BDESE_300 | BDESE_50_300) -> dict:
 
 @login_required
 @entreprise_qualifiee_required
-def toggle_bdese_completion(request, siren, annee):
-    entreprise = Entreprise.objects.get(siren=siren)
+def toggle_bdese_completion(request, id_public, annee):
+    entreprise = Entreprise.objects.get(id_public=id_public)
     if not Habilitation.existe(entreprise, request.user):
         raise PermissionDenied
 

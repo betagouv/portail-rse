@@ -338,7 +338,7 @@ class CSRDReglementation(Reglementation):
             reverse_lazy(
                 "reglementations:gestion_csrd",
                 kwargs={
-                    "siren": caracteristiques.entreprise.siren,
+                    "id_public": caracteristiques.entreprise.id_public,
                     "id_etape": etape_suivante,
                 },
             ),
@@ -513,8 +513,21 @@ def rapport_csrd(entreprise, annee):
 
 
 @login_required
-def gestion_csrd(request, siren=None, id_etape="introduction"):
-    if not siren:
+def redirection_analyse_ecart_par_siren(request, siren):
+    # les e-mails de résultats d'analyse IA envoyés avant le passage à l'id_public contiennent le SIREN
+    entreprise = get_object_or_404(Entreprise, siren=siren)
+    if not Habilitation.existe(entreprise, request.user):
+        raise PermissionDenied
+    return redirect(
+        "reglementations:gestion_csrd",
+        id_public=entreprise.id_public,
+        id_etape="analyse-ecart",
+    )
+
+
+@login_required
+def gestion_csrd(request, id_public=None, id_etape="introduction"):
+    if not id_public:
         entreprise = get_current_entreprise(request)
         if not entreprise:
             messages.warning(
@@ -523,10 +536,12 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
             )
             return redirect("entreprises:entreprises")
         return redirect(
-            "reglementations:gestion_csrd", siren=entreprise.siren, id_etape=id_etape
+            "reglementations:gestion_csrd",
+            id_public=entreprise.id_public,
+            id_etape=id_etape,
         )
 
-    entreprise = get_object_or_404(Entreprise, siren=siren)
+    entreprise = get_object_or_404(Entreprise, id_public=id_public)
     if not Habilitation.existe(entreprise, request.user):
         raise PermissionDenied
 
@@ -552,7 +567,7 @@ def gestion_csrd(request, siren=None, id_etape="introduction"):
         csrd.save()
         return redirect(
             "reglementations:gestion_csrd",
-            siren=siren,
+            id_public=id_public,
             id_etape=EtapeCSRD.id_suivant(id_etape),
         )
 
@@ -650,8 +665,8 @@ def contexte_d_etape(id_etape, csrd, form=None):
 
 def csrd_required_with_enjeux(function):
     @wraps(function)
-    def wrap(request, siren):
-        entreprise = get_object_or_404(Entreprise, siren=siren)
+    def wrap(request, id_public):
+        entreprise = get_object_or_404(Entreprise, id_public=id_public)
         try:
             habilitation = request.user.habilitation_set.get(entreprise=entreprise)
             csrd = RapportCSRD.objects.prefetch_related("enjeux", "enjeux__parent").get(
@@ -659,7 +674,7 @@ def csrd_required_with_enjeux(function):
                 proprietaire=None,  # à supprimer une fois les documents personnels supprimés de la bdd
                 annee=datetime.now().year,
             )
-            return function(request, siren, csrd=csrd)
+            return function(request, id_public, csrd=csrd)
         except ObjectDoesNotExist:
             raise Http404("Ce rapport de durabilité n'existe pas")
 
@@ -668,13 +683,13 @@ def csrd_required_with_enjeux(function):
 
 @login_required
 @csrd_required_with_enjeux
-def enjeux_xlsx(request, siren, csrd=None):
+def enjeux_xlsx(request, id_public, csrd=None):
     return _build_xlsx(csrd.enjeux, csrd=csrd)
 
 
 @login_required
 @csrd_required_with_enjeux
-def enjeux_materiels_xlsx(request, siren, csrd=None):
+def enjeux_materiels_xlsx(request, id_public, csrd=None):
     return _build_xlsx(csrd.enjeux, csrd=csrd, materiels=True)
 
 

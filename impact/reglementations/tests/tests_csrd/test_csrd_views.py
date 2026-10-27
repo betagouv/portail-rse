@@ -12,10 +12,61 @@ from reglementations.models.csrd import Enjeu
 from reglementations.models.csrd import RapportCSRD
 
 
+def test_gestion_de_la_csrd_avec_siren_dans_l_url_est_introuvable(
+    client, alice, entreprise_factory
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    client.force_login(alice)
+
+    response = client.get(f"/csrd/{entreprise.siren}/etape-introduction")
+
+    assert response.status_code == 404
+
+
+def test_ancienne_url_analyse_ecart_avec_siren_redirige_vers_l_id_public(
+    client, alice, entreprise_factory
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    client.force_login(alice)
+
+    response = client.get(f"/csrd/{entreprise.siren}/etape-analyse-ecart")
+
+    assert response.status_code == 302
+    assert response.url == reverse(
+        "reglementations:gestion_csrd",
+        kwargs={"id_public": entreprise.id_public, "id_etape": "analyse-ecart"},
+    )
+
+
+def test_ancienne_url_analyse_ecart_avec_siren_est_privee(
+    client, alice, entreprise_factory
+):
+    entreprise = entreprise_factory()
+    url = f"/csrd/{entreprise.siren}/etape-analyse-ecart"
+
+    response = client.get(url)
+
+    assert response.status_code == 302
+    assert response.url == f"{reverse('users:login')}?next={url}"
+
+    client.force_login(alice)
+    response = client.get(url)
+
+    assert response.status_code == 403
+
+
+def test_ancienne_url_analyse_ecart_avec_siren_inexistant(client, alice):
+    client.force_login(alice)
+
+    response = client.get("/csrd/000000001/etape-analyse-ecart")
+
+    assert response.status_code == 404
+
+
 @pytest.mark.parametrize("etape", EtapeCSRD.ETAPES_VALIDABLES)
 def test_gestion_de_la_csrd(etape, client, alice, entreprise_factory):
     entreprise = entreprise_factory()
-    url = f"/csrd/{entreprise.siren}/etape-{etape}"
+    url = f"/csrd/{entreprise.id_public}/etape-{etape}"
 
     response = client.get(url)
 
@@ -66,7 +117,7 @@ def test_étape_inexistante_de_la_csrd(client, alice, entreprise_factory):
     entreprise = entreprise_factory()
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
-    etape_inexistante = f"/csrd/{entreprise.siren}/etape-4"
+    etape_inexistante = f"/csrd/{entreprise.id_public}/etape-4"
 
     response = client.get(etape_inexistante)
 
@@ -79,7 +130,7 @@ ETAPES_ENREGISTRABLES = EtapeCSRD.ETAPES_VALIDABLES[:-1]
 @pytest.mark.parametrize("etape", ETAPES_ENREGISTRABLES)
 def test_enregistrement_de_l_étape_de_la_csrd(etape, client, csrd, alice):
     client.force_login(alice)
-    url = f"/csrd/{csrd.entreprise.siren}/etape-{etape}"
+    url = f"/csrd/{csrd.entreprise.id_public}/etape-{etape}"
 
     client.post(url, follow=True)
 
@@ -94,7 +145,7 @@ def test_enregistrement_de_l_étape_de_la_csrd_retourne_une_404_si_aucune_CSRD(
     entreprise = entreprise_factory()
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
-    url = f"/csrd/{entreprise.siren}/etape-{etape}"
+    url = f"/csrd/{entreprise.id_public}/etape-{etape}"
 
     response = client.post(url, follow=True)
 
@@ -163,7 +214,7 @@ def test_liste_des_enjeux_csrd_au_format_xlsx(client, csrd, alice):
     client.force_login(alice)
 
     response = client.get(
-        f"/csrd/{csrd.entreprise.siren}/enjeux.xlsx",
+        f"/csrd/{csrd.entreprise.id_public}/enjeux.xlsx",
     )
 
     assert (
@@ -178,7 +229,7 @@ def test_liste_des_enjeux_csrd__au_format_xlsx_retourne_une_404_si_entreprise_in
     client.force_login(alice)
 
     response = client.get(
-        "/csrd/000000001/enjeux.xlsx",
+        "/csrd/00000000-0000-0000-0000-000000000000/enjeux.xlsx",
     )
 
     assert response.status_code == 404
@@ -190,7 +241,7 @@ def test_liste_des_enjeux_csrd_au_format_xlsx_retourne_une_404_si_habilitation_i
     client.force_login(alice)
 
     response = client.get(
-        f"/csrd/{entreprise_non_qualifiee.siren}/enjeux.xlsx",
+        f"/csrd/{entreprise_non_qualifiee.id_public}/enjeux.xlsx",
     )
 
     assert response.status_code == 404
@@ -203,7 +254,7 @@ def test_liste_des_enjeux_csrd_au_format_xlsx_retourne_une_404_si_csrd_inexistan
     client.force_login(alice)
 
     response = client.get(
-        f"/csrd/{entreprise_non_qualifiee.siren}/enjeux.xlsx",
+        f"/csrd/{entreprise_non_qualifiee.id_public}/enjeux.xlsx",
     )
 
     assert response.status_code == 404
@@ -250,7 +301,7 @@ def test_datapoints_pour_enjeux_materiels_au_format_xlsx(client, csrd, alice):
     client.force_login(alice)
 
     response = client.get(
-        f"/csrd/{csrd.entreprise.siren}/datapoints.xlsx",
+        f"/csrd/{csrd.entreprise.id_public}/datapoints.xlsx",
     )
 
     assert (
@@ -294,7 +345,7 @@ def test_datapoints_pour_enjeux_non_materiels_au_format_xlsx(client, csrd, alice
     client.force_login(alice)
 
     response = client.get(
-        f"/csrd/{csrd.entreprise.siren}/datapoints.xlsx?materiel=false",
+        f"/csrd/{csrd.entreprise.id_public}/datapoints.xlsx?materiel=false",
     )
 
     assert (
@@ -322,7 +373,7 @@ def test_datapoints_csrd__au_format_xlsx_retourne_une_404_si_entreprise_inexista
     client.force_login(alice)
 
     response = client.get(
-        "/csrd/000000001/datapoints.xlsx",
+        "/csrd/00000000-0000-0000-0000-000000000000/datapoints.xlsx",
     )
 
     assert response.status_code == 404
@@ -334,7 +385,7 @@ def test_datapoints_csrd_au_format_xlsx_retourne_une_404_si_habilitation_inexist
     client.force_login(alice)
 
     response = client.get(
-        f"/csrd/{entreprise_non_qualifiee.siren}/datapoints.xlsx",
+        f"/csrd/{entreprise_non_qualifiee.id_public}/datapoints.xlsx",
     )
 
     assert response.status_code == 404
@@ -347,7 +398,7 @@ def test_datapoints_csrd_au_format_xlsx_retourne_une_404_si_csrd_inexistante(
     client.force_login(alice)
 
     response = client.get(
-        f"/csrd/{entreprise_non_qualifiee.siren}/datapoints.xlsx",
+        f"/csrd/{entreprise_non_qualifiee.id_public}/datapoints.xlsx",
     )
 
     assert response.status_code == 404
@@ -365,7 +416,7 @@ def test_le_lien_analyse_d_écart_redirige_vers_l_étape_analyse_d_ecart_de_la_c
 
     assert response.status_code == 200
     redirect_url = reverse(
-        "reglementations:gestion_csrd", args=[entreprise.siren, "analyse-ecart"]
+        "reglementations:gestion_csrd", args=[entreprise.id_public, "analyse-ecart"]
     )
     assert response.redirect_chain == [(redirect_url, 302)]
 

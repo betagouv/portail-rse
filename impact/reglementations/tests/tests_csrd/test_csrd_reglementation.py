@@ -1201,7 +1201,7 @@ def test_calcule_etat_si_non_soumis(entreprise_factory):
     assert reglementation.primary_action.url == reverse(
         "reglementations:gestion_csrd",
         kwargs={
-            "siren": entreprise.siren,
+            "id_public": entreprise.id_public,
             "id_etape": "introduction",
         },
     )
@@ -1236,7 +1236,7 @@ def test_calcule_etat_si_soumis_en_2025_et_delegable(entreprise_factory):
     assert reglementation.primary_action.url == reverse(
         "reglementations:gestion_csrd",
         kwargs={
-            "siren": entreprise.siren,
+            "id_public": entreprise.id_public,
             "id_etape": "introduction",
         },
     )
@@ -1267,7 +1267,7 @@ def test_calcule_etat_si_soumis_en_2029_et_non_delegable(entreprise_factory):
     assert reglementation.primary_action.url == reverse(
         "reglementations:gestion_csrd",
         kwargs={
-            "siren": entreprise.siren,
+            "id_public": entreprise.id_public,
             "id_etape": "introduction",
         },
     )
@@ -2091,7 +2091,7 @@ def test_calcule_etat_avec_CSRD_initialisée(csrd):
     assert reglementation.primary_action.url == reverse(
         "reglementations:gestion_csrd",
         kwargs={
-            "siren": csrd.entreprise.siren,
+            "id_public": csrd.entreprise.id_public,
             "id_etape": "introduction",
         },
     )
@@ -2113,7 +2113,7 @@ def test_calcule_etat_avec_CSRD_et_étapes_validées(csrd):
     assert reglementation.primary_action.url == reverse(
         "reglementations:gestion_csrd",
         kwargs={
-            "siren": csrd.entreprise.siren,
+            "id_public": csrd.entreprise.id_public,
             "id_etape": "analyse-materialite",
         },
     )
