@@ -3,7 +3,7 @@ name = "portail-rse"
 version = "0.1.0"
 description = "Un chemin unique pour connaitre et répondre à ses obligations RSE"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.14"
 dependencies = [
     "django~=5.2.18",
     "gunicorn~=23.0.0",
@@ -40,7 +40,6 @@ dev = [
     "pre-commit",
     "honcho",
     "django-debug-toolbar",
-    "exceptiongroup~=1.2.2; python_version < '3.13'",
     "django-extensions",
 ]
 
