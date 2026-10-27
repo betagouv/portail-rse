@@ -7,7 +7,7 @@ from pytest_django.asserts import assertTemplateUsed
 def test_acces_vsme_autorise(client, entreprise_qualifiee, alice):
     client.force_login(alice)
     response = client.get(
-        f"/vsme/{entreprise_qualifiee.siren}/introduction", follow=True
+        f"/vsme/{entreprise_qualifiee.id_public}/introduction", follow=True
     )
     assert (
         response.status_code == 200
@@ -17,7 +17,7 @@ def test_acces_vsme_autorise(client, entreprise_qualifiee, alice):
 def test_acces_vsme_refuse(client, entreprise_qualifiee, bob):
     client.force_login(bob)
     response = client.get(
-        f"/vsme/{entreprise_qualifiee.siren}/introduction", follow=True
+        f"/vsme/{entreprise_qualifiee.id_public}/introduction", follow=True
     )
     assert response.status_code == 403, "Bob ne doit pas pouvoir accéder à cette page"
 
@@ -29,7 +29,9 @@ def test_chargement_templates_des_etapes_vsme(
     # vérifie que tous les templates sont bien chargés dans la page résultante
     client.force_login(alice)
 
-    response = client.get(f"/vsme/{entreprise_qualifiee.siren}/{etape}", follow=True)
+    response = client.get(
+        f"/vsme/{entreprise_qualifiee.id_public}/{etape}", follow=True
+    )
 
     assertTemplateUsed(response, "base.html")
     assertTemplateUsed(response, "snippets/entete_page.html")
@@ -42,7 +44,7 @@ def test_etape_vsme_inexistante_retourne_une_404(client, entreprise_qualifiee, a
     client.force_login(alice)
 
     response = client.get(
-        f"/vsme/{entreprise_qualifiee.siren}/n-existe-pas", follow=True
+        f"/vsme/{entreprise_qualifiee.id_public}/n-existe-pas", follow=True
     )
 
     assert response.status_code == 404
@@ -59,7 +61,7 @@ def test_siren_absent_redirige_vers_celui_de_l_entreprise_courante(
     response = client.get(url, follow=True)
 
     assert response.status_code == 200
-    redirect_url = reverse("vsme:etape_vsme", args=[entreprise.siren, etape])
+    redirect_url = reverse("vsme:etape_vsme", args=[entreprise.id_public, etape])
     assert response.redirect_chain == [(redirect_url, 302)]
 
 

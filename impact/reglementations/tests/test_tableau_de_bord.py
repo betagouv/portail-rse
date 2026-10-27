@@ -16,9 +16,9 @@ from habilitations.models import Habilitation
 from invitations.models import Invitation
 from reglementations.views import REGLEMENTATIONS
 
-RESUME_URL = "/tableau-de-bord/{siren}/"
-REGLEMENTATIONS_URL = "/tableau-de-bord/{siren}/reglementations/"
-ADM_URL = "/tableau-de-bord/{siren}/rapport/analyse-double-materialite"
+RESUME_URL = "/tableau-de-bord/{id_public}/"
+REGLEMENTATIONS_URL = "/tableau-de-bord/{id_public}/reglementations/"
+ADM_URL = "/tableau-de-bord/{id_public}/rapport/analyse-double-materialite"
 RESUME_URL_GENERIQUE = "/tableau-de-bord/"
 REGLEMENTATIONS_URL_GENERIQUE = "/tableau-de-bord/reglementations/"
 
@@ -27,7 +27,7 @@ REGLEMENTATIONS_URL_GENERIQUE = "/tableau-de-bord/reglementations/"
 def test_tableau_de_bord_est_prive(url, client, entreprise_factory, alice):
     entreprise = entreprise_factory()
 
-    url = url.format(siren=entreprise.siren)
+    url = url.format(id_public=entreprise.id_public)
     response = client.get(url)
 
     assert response.status_code == 302
@@ -47,7 +47,7 @@ def test_tableau_de_bord_avec_utilisateur_authentifie(
     entreprise = entreprise_factory(utilisateur=alice)
     client.force_login(alice)
 
-    url = url.format(siren=entreprise.siren)
+    url = url.format(id_public=entreprise.id_public)
     response = client.get(url)
 
     assert response.status_code == 200
@@ -58,8 +58,58 @@ def test_tableau_de_bord_avec_utilisateur_authentifie(
 def test_tableau_de_bord_entreprise_inexistante(url, client, alice):
     client.force_login(alice)
 
-    url = url.format(siren="yolo")
+    url = url.format(id_public="00000000-0000-0000-0000-000000000000")
     response = client.get(url)
+
+    assert response.status_code == 404
+
+
+@pytest.mark.parametrize("url", [REGLEMENTATIONS_URL, ADM_URL])
+def test_tableau_de_bord_avec_siren_dans_l_url_est_introuvable(
+    url, client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    client.force_login(alice)
+
+    url = url.format(id_public=entreprise.siren)
+    response = client.get(url)
+
+    assert response.status_code == 404
+
+
+def test_ancienne_url_tableau_de_bord_avec_siren_redirige_vers_l_id_public(
+    client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    client.force_login(alice)
+
+    response = client.get(f"/tableau-de-bord/{entreprise.siren}/")
+
+    assert response.status_code == 302
+    assert response.url == RESUME_URL.format(id_public=entreprise.id_public)
+
+
+def test_ancienne_url_tableau_de_bord_avec_siren_est_privee(
+    client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory()
+    url = f"/tableau-de-bord/{entreprise.siren}/"
+
+    response = client.get(url)
+
+    assert response.status_code == 302
+    assert response.url == f"{reverse('users:login')}?next={url}"
+
+    client.force_login(alice)
+    response = client.get(url)
+
+    assert response.status_code == 403
+
+
+def test_ancienne_url_tableau_de_bord_avec_siren_inexistant(client, alice):
+    client.force_login(alice)
+
+    response = client.get("/tableau-de-bord/000000001/")
 
     assert response.status_code == 404
 
@@ -74,7 +124,7 @@ def test_tableau_de_bord_sans_siren_redirige_vers_celui_de_l_entreprise_courante
     response = client.get(url)
 
     assert response.status_code == 302
-    assert entreprise.siren in response.url
+    assert str(entreprise.id_public) in response.url
 
 
 def test_tableau_de_bord_sans_slash_final(client, entreprise_factory, alice):
@@ -117,7 +167,7 @@ def test_tableau_de_bord_resume(est_soumis, client, entreprise_factory, alice, m
             f"{REGLEMENTATION.__module__}.{REGLEMENTATION.__name__}.est_soumis",
             return_value=est_soumis,
         )
-    url = RESUME_URL.format(siren=entreprise.siren)
+    url = RESUME_URL.format(id_public=entreprise.id_public)
 
     response = client.get(url)
 
@@ -142,7 +192,7 @@ def test_tableau_de_bord_resume_entreprise_non_qualifiee_affiche_un_avertissemen
     Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
     client.force_login(alice)
 
-    url = RESUME_URL.format(siren=entreprise_non_qualifiee.siren)
+    url = RESUME_URL.format(id_public=entreprise_non_qualifiee.id_public)
     response = client.get(url)
 
     assert response.status_code == 200
@@ -163,7 +213,7 @@ def test_tableau_de_bord_resume_entreprise_qualifiee_dans_le_passe_affiche_un_av
         utilisateur=alice, date_cloture_exercice=date_cloture_exercice
     )
 
-    url = RESUME_URL.format(siren=entreprise.siren)
+    url = RESUME_URL.format(id_public=entreprise.id_public)
     with freeze_time(date_cloture_exercice + timedelta(days=367)):
         client.force_login(alice)
         response = client.get(url)
@@ -184,7 +234,7 @@ def test_tableau_de_bord_resume_n_affiche_pas_les_utilisateurs_non_confirmés(
     bob.save()
     Habilitation.ajouter(entreprise, bob, fonctions="Président")
     client.force_login(alice)
-    url = RESUME_URL.format(siren=entreprise.siren)
+    url = RESUME_URL.format(id_public=entreprise.id_public)
 
     response = client.get(url)
 
@@ -203,7 +253,7 @@ def test_tableau_de_bord_resume_n_affiche_pas_les_invitations_acceptées(
         email=bob.email, entreprise=entreprise, date_acceptation=datetime.now()
     )
     client.force_login(alice)
-    url = RESUME_URL.format(siren=entreprise.siren)
+    url = RESUME_URL.format(id_public=entreprise.id_public)
 
     response = client.get(url)
 
@@ -223,7 +273,7 @@ def test_visibilite_formulaire_invitation(
     entreprise = entreprise_factory()
     Habilitation.ajouter(entreprise, bob, role=role)
     client.force_login(bob)
-    url = RESUME_URL.format(siren=entreprise.siren)
+    url = RESUME_URL.format(id_public=entreprise.id_public)
 
     response = client.get(url)
 
@@ -243,7 +293,7 @@ def test_visibilite_actions(client, bob, alice, entreprise_factory, role, result
     Habilitation.ajouter(entreprise, bob, role=role)
     Habilitation.ajouter(entreprise, alice, role=UserRole.CONTRIBUTEUR)
     client.force_login(bob)
-    url = RESUME_URL.format(siren=entreprise.siren)
+    url = RESUME_URL.format(id_public=entreprise.id_public)
 
     response = client.get(url)
 

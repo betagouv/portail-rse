@@ -54,7 +54,7 @@ def invitation(request, siren):
             )
             messages.success(request, "L'invitation a été envoyée.")
         return redirect(
-            reverse("reglementations:tableau_de_bord", args=[entreprise.siren])
+            reverse("reglementations:tableau_de_bord", args=[entreprise.id_public])
         )
     else:
         request.session["invitation_form"] = request.POST
@@ -63,7 +63,7 @@ def invitation(request, siren):
             "L'invitation a échoué car le formulaire contient des erreurs.",
         )
         return redirect(
-            reverse("reglementations:tableau_de_bord", args=[entreprise.siren])
+            reverse("reglementations:tableau_de_bord", args=[entreprise.id_public])
         )
 
 
@@ -200,6 +200,6 @@ def gerer_habilitation(request, id: int):
     return HttpResponseRedirectSeeOther(
         reverse(
             "reglementations:tableau_de_bord",
-            args=[habilitation.entreprise.siren],
+            args=[habilitation.entreprise.id_public],
         )
     )

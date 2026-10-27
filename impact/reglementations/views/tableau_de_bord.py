@@ -1,11 +1,15 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 
 from .toutes_reglementations import REGLEMENTATIONS
 from entreprises.decorators import entreprise_requise
+from entreprises.models import Entreprise
+from habilitations.models import Habilitation
 from habilitations.views import utilisateurs_context
 from logs import log_path
 from vsme.models import RapportVSME
@@ -19,6 +23,15 @@ def tableau_de_bord_menu_context(entreprise, page_resume=False):
 
 
 @login_required
+def redirection_tableau_de_bord_par_siren(request, siren):
+    # les e-mails d'arrivée d'un nouveau membre envoyés avant le passage à l'id_public contiennent le SIREN
+    entreprise = get_object_or_404(Entreprise, siren=siren)
+    if not Habilitation.existe(entreprise, request.user):
+        raise PermissionDenied
+    return redirect("reglementations:tableau_de_bord", id_public=entreprise.id_public)
+
+
+@login_required
 @entreprise_requise
 @log_path("app:tableauDeBord")
 def tableau_de_bord(request, entreprise):
@@ -28,7 +41,7 @@ def tableau_de_bord(request, entreprise):
     if not caracteristiques:
         messages.warning(
             request,
-            f"Votre profil entreprise est incomplet ou doit être mis à jour suite à l'évolution d'une réglementation. <a href='{reverse_lazy('entreprises:qualification', args=[entreprise.siren])}'>Complétez-le pour avoir accès à toutes les fonctionnalités de votre tableau de bord.</a>",
+            f"Votre profil entreprise est incomplet ou doit être mis à jour suite à l'évolution d'une réglementation. <a href='{reverse_lazy('entreprises:qualification', args=[entreprise.id_public])}'>Complétez-le pour avoir accès à toutes les fonctionnalités de votre tableau de bord.</a>",
         )
         nombre_reglementations_applicables = "?"
     else:
@@ -36,7 +49,7 @@ def tableau_de_bord(request, entreprise):
         if caracteristiques != entreprise.caracteristiques_actuelles():
             messages.warning(
                 request,
-                f"Les informations affichées sont basées sur l'exercice comptable {caracteristiques.annee}. <a href='{reverse_lazy('entreprises:qualification', args=[entreprise.siren])}'>Mettre à jour le profil de l'entreprise.</a>",
+                f"Les informations affichées sont basées sur l'exercice comptable {caracteristiques.annee}. <a href='{reverse_lazy('entreprises:qualification', args=[entreprise.id_public])}'>Mettre à jour le profil de l'entreprise.</a>",
             )
 
         # Calculer les réglementations applicables
@@ -85,7 +98,7 @@ def index(request, entreprise):
     On renvoie vers la page principale du tableau de bord plutôt qu'une 404 à un
     utilisateur viendrait sur cette page.
     """
-    return redirect("reglementations:tableau_de_bord", siren=entreprise.siren)
+    return redirect("reglementations:tableau_de_bord", id_public=entreprise.id_public)
 
 
 @login_required
@@ -97,7 +110,7 @@ def rapport(request, entreprise):
     On renvoie vers la page principale du tableau de bord plutôt qu'une 404 à un
     utilisateur viendrait sur cette page.
     """
-    return redirect("reglementations:tableau_de_bord", siren=entreprise.siren)
+    return redirect("reglementations:tableau_de_bord", id_public=entreprise.id_public)
 
 
 def rapport_generique(request):

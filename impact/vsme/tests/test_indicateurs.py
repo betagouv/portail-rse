@@ -14,7 +14,7 @@ from vsme.models import EXIGENCES_DE_PUBLICATION
 from vsme.models import RapportVSME
 
 INDICATEURS_VSME_BASE_URL = "/indicateurs/vsme/"
-INDICATEURS_VSME_URL = INDICATEURS_VSME_BASE_URL + "{siren}/{annee}/"
+INDICATEURS_VSME_URL = INDICATEURS_VSME_BASE_URL + "{id_public}/{annee}/"
 CATEGORIE_VSME_URL = INDICATEURS_VSME_BASE_URL + "{vsme_id}/categorie/{categorie_id}/"
 EXIGENCE_DE_PUBLICATION_URL = (
     INDICATEURS_VSME_BASE_URL
@@ -25,7 +25,7 @@ EXIGENCE_DE_PUBLICATION_URL = (
 def test_categories_vsme_est_prive(client, entreprise_factory, alice):
     entreprise = entreprise_factory()
 
-    url = INDICATEURS_VSME_URL.format(siren=entreprise.siren, annee=2024)
+    url = INDICATEURS_VSME_URL.format(id_public=entreprise.id_public, annee=2024)
     response = client.get(url)
 
     assert response.status_code == 302
@@ -44,7 +44,7 @@ def test_categories_vsme_avec_utilisateur_authentifie(
     entreprise = entreprise_factory(utilisateur=alice)
     client.force_login(alice)
 
-    url = INDICATEURS_VSME_URL.format(siren=entreprise.siren, annee=2024)
+    url = INDICATEURS_VSME_URL.format(id_public=entreprise.id_public, annee=2024)
     response = client.get(url)
 
     assert response.status_code == 200
@@ -61,7 +61,9 @@ def test_categories_vsme_sans_siren_et_sans_annee(client, entreprise_factory, al
     response = client.get(url, follow=True)
 
     assert response.status_code == 200
-    assert response.redirect_chain == [(f"/indicateurs/vsme/{entreprise.siren}/", 302)]
+    assert response.redirect_chain == [
+        (f"/indicateurs/vsme/{entreprise.id_public}/", 302)
+    ]
 
 
 @pytest.mark.parametrize(
@@ -225,7 +227,7 @@ def test_categories_vsme_formulaire_de_partage_non_valide_en_get(
     entreprise = entreprise_factory(utilisateur=alice)
     client.force_login(alice)
 
-    url = INDICATEURS_VSME_URL.format(siren=entreprise.siren, annee=2024)
+    url = INDICATEURS_VSME_URL.format(id_public=entreprise.id_public, annee=2024)
     response = client.get(url)
 
     form = response.context["form"]
@@ -243,7 +245,7 @@ def test_categories_vsme_partage_du_rapport_par_email(
     )
     client.force_login(alice)
 
-    url = INDICATEURS_VSME_URL.format(siren=entreprise.siren, annee=2024)
+    url = INDICATEURS_VSME_URL.format(id_public=entreprise.id_public, annee=2024)
     response = client.post(
         url,
         {"email": "destinataire@example.com"},
@@ -285,7 +287,7 @@ def test_categories_vsme_partage_du_rapport_echappe_l_email_dans_le_message(
     )
     client.force_login(alice)
 
-    url = INDICATEURS_VSME_URL.format(siren=entreprise.siren, annee=2024)
+    url = INDICATEURS_VSME_URL.format(id_public=entreprise.id_public, annee=2024)
     response = client.post(
         url, {"email": '"<script>alert(1)</script>"@example.com'}, follow=True
     )
@@ -301,7 +303,7 @@ def test_categories_vsme_partage_refuse_si_rapport_incomplet(
     entreprise = entreprise_factory(utilisateur=alice)
     client.force_login(alice)
 
-    url = INDICATEURS_VSME_URL.format(siren=entreprise.siren, annee=2024)
+    url = INDICATEURS_VSME_URL.format(id_public=entreprise.id_public, annee=2024)
     response = client.post(url, {"email": "destinataire@example.com"})
 
     assert response.status_code == 403
@@ -317,7 +319,7 @@ def test_categories_vsme_partage_du_rapport_avec_email_invalide(
     )
     client.force_login(alice)
 
-    url = INDICATEURS_VSME_URL.format(siren=entreprise.siren, annee=2024)
+    url = INDICATEURS_VSME_URL.format(id_public=entreprise.id_public, annee=2024)
     response = client.post(url, {"email": "invalide"})
 
     assert response.status_code == 200

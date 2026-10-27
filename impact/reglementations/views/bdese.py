@@ -322,7 +322,9 @@ def bdese_step(request, siren, annee, step):
                 request,
                 "Aucune BDESE existante pour l'instant (création possible par un utilisateur administrateur)",
             )
-            return redirect("reglementations:tableau_de_bord", siren=siren)
+            return redirect(
+                "reglementations:tableau_de_bord", id_public=entreprise.id_public
+            )
         bdese = bdese.first()
 
     if bdese.is_bdese_avec_accord:
@@ -508,4 +510,6 @@ def toggle_bdese_completion(request, siren, annee):
         else:
             success_message = "La BDESE a été marquée comme non actualisée"
         messages.success(request, success_message)
-    return redirect("reglementations:tableau_de_bord", siren=bdese.entreprise.siren)
+    return redirect(
+        "reglementations:tableau_de_bord", id_public=bdese.entreprise.id_public
+    )

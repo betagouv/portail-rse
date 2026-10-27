@@ -9,7 +9,7 @@ from analyseia.models import AnalyseIA
 from api.exceptions import APIError
 
 CONTENU_PDF = b"%PDF-1.4\n%\xd3\xeb\xe9\xe1\n1 0 obj\n<</Title (CharteEngagements"
-ANALYSES_URL = "/analyses/{siren}/"
+ANALYSES_URL = "/analyses/{id_public}/"
 AJOUT_DOCUMENT_URL = ANALYSES_URL + "ajout_document/"
 AJOUT_DOCUMENT_LIE_CSRD_URL = ANALYSES_URL + "ajout_document/{csrd_id}"
 ANALYSE_BASE_URL = "/analyses/{analyse_id}/"
@@ -22,7 +22,7 @@ CSRD_ANALYSE_ECART_URL = "/csrd/{siren}/etape-analyse-ecart"
 def test_analyses_est_prive(client, entreprise_factory, alice):
     entreprise = entreprise_factory()
 
-    url = ANALYSES_URL.format(siren=entreprise.siren)
+    url = ANALYSES_URL.format(id_public=entreprise.id_public)
     response = client.get(url)
 
     assert response.status_code == 302
@@ -39,7 +39,7 @@ def test_analyses_avec_utilisateur_authentifie(client, entreprise_factory, alice
     entreprise = entreprise_factory(utilisateur=alice)
     client.force_login(alice)
 
-    url = ANALYSES_URL.format(siren=entreprise.siren)
+    url = ANALYSES_URL.format(id_public=entreprise.id_public)
     response = client.get(url)
 
     assert response.status_code == 200
@@ -57,7 +57,7 @@ def test_analyses_sans_siren(client, entreprise_factory, alice):
 
     assert response.status_code == 200
     assert response.redirect_chain == [
-        (ANALYSES_URL.format(siren=entreprise.siren), 302)
+        (ANALYSES_URL.format(id_public=entreprise.id_public), 302)
     ]
 
 
@@ -68,7 +68,7 @@ def test_ajout_document_liée_à_une_entreprise_par_utilisateur_autorise(
     client.force_login(alice)
     fichier = SimpleUploadedFile("test.pdf", CONTENU_PDF)
 
-    url = AJOUT_DOCUMENT_URL.format(siren=entreprise.siren)
+    url = AJOUT_DOCUMENT_URL.format(id_public=entreprise.id_public)
     response = client.post(
         url,
         {"fichier": fichier},
@@ -78,7 +78,7 @@ def test_ajout_document_liée_à_une_entreprise_par_utilisateur_autorise(
     assert response.url == reverse(
         "analyseia:analyses",
         kwargs={
-            "siren": entreprise.siren,
+            "id_public": entreprise.id_public,
         },
     )
     assert entreprise.analyses_ia.count() == 1
@@ -92,7 +92,9 @@ def test_ajout_document_liée_à_un_rapport_csrd_par_utilisateur_autorise(
     client.force_login(alice)
     fichier = SimpleUploadedFile("test.pdf", CONTENU_PDF)
 
-    url = AJOUT_DOCUMENT_LIE_CSRD_URL.format(siren=entreprise.siren, csrd_id=csrd.id)
+    url = AJOUT_DOCUMENT_LIE_CSRD_URL.format(
+        id_public=entreprise.id_public, csrd_id=csrd.id
+    )
     response = client.post(
         url,
         {"fichier": fichier},
@@ -117,7 +119,7 @@ def test_ajout_document_liée_à_une_entreprise_par_utilisateur_non_autorise(
     client.force_login(bob)
     fichier = SimpleUploadedFile("test.pdf", CONTENU_PDF)
 
-    url = AJOUT_DOCUMENT_URL.format(siren=entreprise.siren)
+    url = AJOUT_DOCUMENT_URL.format(id_public=entreprise.id_public)
     response = client.post(
         url,
         {"fichier": fichier},
@@ -134,7 +136,9 @@ def test_ajout_document_liée_à_un_rapport_csrd_par_utilisateur_non_autorise(
     client.force_login(bob)
     fichier = SimpleUploadedFile("test.pdf", CONTENU_PDF)
 
-    url = AJOUT_DOCUMENT_LIE_CSRD_URL.format(siren=entreprise.siren, csrd_id=csrd.id)
+    url = AJOUT_DOCUMENT_LIE_CSRD_URL.format(
+        id_public=entreprise.id_public, csrd_id=csrd.id
+    )
     response = client.post(
         url,
         {"fichier": fichier},
@@ -148,7 +152,7 @@ def test_ajout_document_liée_à_une_entreprise_inexistante(client, alice):
     client.force_login(alice)
     fichier = SimpleUploadedFile("test.pdf", CONTENU_PDF)
 
-    url = AJOUT_DOCUMENT_URL.format(siren="0000000000")
+    url = AJOUT_DOCUMENT_URL.format(id_public="00000000-0000-0000-0000-000000000000")
     response = client.post(
         url,
         {"fichier": fichier},
@@ -165,7 +169,7 @@ def test_ajout_document_liée_à_un_rapport_csrd_inexistant(
     client.force_login(alice)
     fichier = SimpleUploadedFile("test.pdf", CONTENU_PDF)
 
-    url = AJOUT_DOCUMENT_LIE_CSRD_URL.format(siren=entreprise.siren, csrd_id=42)
+    url = AJOUT_DOCUMENT_LIE_CSRD_URL.format(id_public=entreprise.id_public, csrd_id=42)
     response = client.post(
         url,
         {"fichier": fichier},
@@ -182,7 +186,7 @@ def test_ajout_document_liée_à_une_entreprise_sans_extension_pdf(
     client.force_login(alice)
     fichier = SimpleUploadedFile("test.odt", b"libre office writer data")
 
-    url = AJOUT_DOCUMENT_URL.format(siren=entreprise.siren)
+    url = AJOUT_DOCUMENT_URL.format(id_public=entreprise.id_public)
     response = client.post(
         url,
         {"fichier": fichier},
@@ -197,7 +201,9 @@ def test_ajout_document_liée_à_un_rapport_csrd_sans_extension_pdf(client, csrd
     client.force_login(alice)
     fichier = SimpleUploadedFile("test.odt", b"libre office writer data")
 
-    url = AJOUT_DOCUMENT_LIE_CSRD_URL.format(siren=entreprise.siren, csrd_id=csrd.id)
+    url = AJOUT_DOCUMENT_LIE_CSRD_URL.format(
+        id_public=entreprise.id_public, csrd_id=csrd.id
+    )
     response = client.post(
         url,
         {"fichier": fichier},
@@ -214,7 +220,7 @@ def test_ajout_document_liée_à_une_entreprise__dont_le_contenu_n_est_pas_du_pd
     client.force_login(alice)
     fichier = SimpleUploadedFile("test.pdf", b"pas un pdf")
 
-    url = AJOUT_DOCUMENT_URL.format(siren=entreprise.siren)
+    url = AJOUT_DOCUMENT_URL.format(id_public=entreprise.id_public)
     response = client.post(
         url,
         {"fichier": fichier},
@@ -231,7 +237,9 @@ def test_ajout_document_liée_à_un_rapport_csrd_dont_le_contenu_n_est_pas_du_pd
     client.force_login(alice)
     fichier = SimpleUploadedFile("test.pdf", b"pas un pdf")
 
-    url = AJOUT_DOCUMENT_LIE_CSRD_URL.format(siren=entreprise.siren, csrd_id=csrd.id)
+    url = AJOUT_DOCUMENT_LIE_CSRD_URL.format(
+        id_public=entreprise.id_public, csrd_id=csrd.id
+    )
     response = client.post(
         url,
         {"fichier": fichier},
@@ -254,7 +262,7 @@ def test_suppression_analyse_liée_à_une_entreprise_par_utilisateur_autorise(
     assert response.url == reverse(
         "analyseia:analyses",
         kwargs={
-            "siren": entreprise.siren,
+            "id_public": entreprise.id_public,
         },
     )
     assert AnalyseIA.objects.count() == 0
@@ -328,7 +336,7 @@ def test_lancement_d_analyse_IA_v1_liée_à_une_entreprise_par_utilisateur_autor
     assert response.status_code == 200
     assert "L'analyse a bien été lancée." in response.content.decode("utf-8")
     assert response.redirect_chain == [
-        (ANALYSES_URL.format(siren=analyse.entreprise.siren), 302)
+        (ANALYSES_URL.format(id_public=analyse.entreprise.id_public), 302)
     ]
 
 
@@ -363,7 +371,7 @@ def test_lancement_d_analyse_IA_v2_liée_à_une_entreprise_par_utilisateur_autor
     assert response.status_code == 200
     assert "L'analyse a bien été lancée." in response.content.decode("utf-8")
     assert response.redirect_chain == [
-        (ANALYSES_URL.format(siren=analyse.entreprise.siren), 302)
+        (ANALYSES_URL.format(id_public=analyse.entreprise.id_public), 302)
     ]
 
 
@@ -531,7 +539,7 @@ def test_serveur_IA_envoie_le_resultat_de_l_analyse_v1_liée_à_une_entreprise(
             reverse(
                 "analyseia:analyses",
                 kwargs={
-                    "siren": analyse.entreprise.siren,
+                    "id_public": analyse.entreprise.id_public,
                 },
             )
         )
@@ -726,7 +734,7 @@ def test_serveur_IA_envoie_le_resultat_de_l_analyse_v2(
             reverse(
                 "analyseia:analyses",
                 kwargs={
-                    "siren": analyse.entreprise.siren,
+                    "id_public": analyse.entreprise.id_public,
                 },
             )
         )

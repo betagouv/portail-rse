@@ -58,7 +58,13 @@ def test_acceptation_cree_habilitation(client, utilisateur_invite, invitation):
 
     assert response.status_code == 200
     assert response.redirect_chain == [
-        (reverse("reglementations:tableau_de_bord", kwargs={"siren": "123456789"}), 302)
+        (
+            reverse(
+                "reglementations:tableau_de_bord",
+                kwargs={"id_public": invitation.entreprise.id_public},
+            ),
+            302,
+        )
     ]
     assert "Vous êtes maintenant ajouté à l'entreprise" in response.content.decode()
 
@@ -115,7 +121,13 @@ def test_invitation_deja_acceptee_redirige(client, utilisateur_invite, invitatio
 
     assert response.status_code == 200
     assert response.redirect_chain == [
-        (reverse("reglementations:tableau_de_bord", kwargs={"siren": "123456789"}), 302)
+        (
+            reverse(
+                "reglementations:tableau_de_bord",
+                kwargs={"id_public": invitation.entreprise.id_public},
+            ),
+            302,
+        )
     ]
     assert "déjà été acceptée" in response.content.decode()
 

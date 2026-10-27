@@ -91,7 +91,7 @@ def categories_vsme(request, entreprise, annee=None):
         annee = request.GET["annee"]
         redirect_to = reverse(
             "vsme:categories_vsme",
-            args=[entreprise.siren, annee],
+            args=[entreprise.id_public, annee],
         )
         return htmx.HttpResponseHXRedirect(redirect_to)
 
@@ -104,7 +104,7 @@ def categories_vsme(request, entreprise, annee=None):
             request,
             f"L'année {annee} n'est pas valide pour un rapport VSME.",
         )
-        return redirect("vsme:categories_vsme", siren=entreprise.siren)
+        return redirect("vsme:categories_vsme", id_public=entreprise.id_public)
 
     rapport_vsme, created = RapportVSME.objects.get_or_create(
         entreprise=entreprise, annee=annee

@@ -37,7 +37,7 @@ def test_reglementations(client, entreprise_factory, alice):
     )
     client.force_login(alice)
 
-    response = client.get(f"/tableau-de-bord/{entreprise.siren}/reglementations/")
+    response = client.get(f"/tableau-de-bord/{entreprise.id_public}/reglementations/")
 
     assert response.status_code == 200
 
@@ -65,11 +65,11 @@ def test_reglementations_entreprise_non_qualifiee_redirige_vers_la_qualification
     Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
     client.force_login(alice)
 
-    url = f"/tableau-de-bord/{entreprise_non_qualifiee.siren}/reglementations/"
+    url = f"/tableau-de-bord/{entreprise_non_qualifiee.id_public}/reglementations/"
     response = client.get(url, follow=True)
 
     assert response.status_code == 200
-    url = f"/entreprises/{entreprise_non_qualifiee.siren}"
+    url = f"/entreprises/{entreprise_non_qualifiee.id_public}"
     assert response.redirect_chain == [(url, 302)]
 
     content = html.unescape(response.content.decode("utf-8"))
@@ -87,7 +87,7 @@ def test_reglementations_entreprise_qualifiee_dans_le_passe(
         utilisateur=alice, date_cloture_exercice=date_cloture_exercice
     )
 
-    url = f"/tableau-de-bord/{entreprise.siren}/reglementations/"
+    url = f"/tableau-de-bord/{entreprise.id_public}/reglementations/"
     with freeze_time(date_cloture_exercice + timedelta(days=367)):
         client.force_login(alice)
         response = client.get(url)
@@ -112,7 +112,7 @@ def test_reglementation(reglementation, client, entreprise_factory, alice):
     client.force_login(alice)
 
     response = client.get(
-        f"/tableau-de-bord/{entreprise.siren}/reglementations/{reglementation.id}/"
+        f"/tableau-de-bord/{entreprise.id_public}/reglementations/{reglementation.id}/"
     )
 
     assert response.status_code == 200
@@ -129,11 +129,11 @@ def test_reglementation_entreprise_non_qualifiee_redirige_vers_la_qualification(
     Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
     client.force_login(alice)
 
-    url = f"/tableau-de-bord/{entreprise_non_qualifiee.siren}/reglementations/{reglementation.id}/"
+    url = f"/tableau-de-bord/{entreprise_non_qualifiee.id_public}/reglementations/{reglementation.id}/"
     response = client.get(url, follow=True)
 
     assert response.status_code == 200
-    url = f"/entreprises/{entreprise_non_qualifiee.siren}"
+    url = f"/entreprises/{entreprise_non_qualifiee.id_public}"
     assert response.redirect_chain == [(url, 302)]
 
     content = html.unescape(response.content.decode("utf-8"))
@@ -152,7 +152,9 @@ def test_reglementation_entreprise_qualifiee_dans_le_passe(
         utilisateur=alice, date_cloture_exercice=date_cloture_exercice
     )
 
-    url = f"/tableau-de-bord/{entreprise.siren}/reglementations/{reglementation.id}/"
+    url = (
+        f"/tableau-de-bord/{entreprise.id_public}/reglementations/{reglementation.id}/"
+    )
     with freeze_time(date_cloture_exercice + timedelta(days=367)):
         client.force_login(alice)
         response = client.get(url)
@@ -169,7 +171,9 @@ def test_reglementation_inexistante(client, entreprise_factory, alice):
     entreprise = entreprise_factory(utilisateur=alice)
     client.force_login(alice)
 
-    response = client.get(f"/tableau-de-bord/{entreprise.siren}/reglementations/yolo/")
+    response = client.get(
+        f"/tableau-de-bord/{entreprise.id_public}/reglementations/yolo/"
+    )
 
     assert response.status_code == 404
 
@@ -186,7 +190,7 @@ def test_reglementation_sans_siren_redirige_vers_celle_de_l_entreprise_courante(
     assert response.status_code == 302
     assert (
         response.url
-        == f"/tableau-de-bord/{entreprise.siren}/reglementations/{reglementation.id}/"
+        == f"/tableau-de-bord/{entreprise.id_public}/reglementations/{reglementation.id}/"
     )
 
 
@@ -199,7 +203,9 @@ def test_reglementation_sur_la_csrd_fournit_la_csrd_en_cours_au_template_si_elle
     )
     client.force_login(alice)
 
-    response = client.get(f"/tableau-de-bord/{entreprise.siren}/reglementations/csrd/")
+    response = client.get(
+        f"/tableau-de-bord/{entreprise.id_public}/reglementations/csrd/"
+    )
 
     assert response.status_code == 200
     context = response.context
@@ -210,7 +216,9 @@ def test_reglementation_sur_la_csrd_fournit_la_csrd_en_cours_au_template_si_elle
         annee=datetime.now().year,
     )
 
-    response = client.get(f"/tableau-de-bord/{entreprise.siren}/reglementations/csrd/")
+    response = client.get(
+        f"/tableau-de-bord/{entreprise.id_public}/reglementations/csrd/"
+    )
 
     assert response.status_code == 200
     context = response.context

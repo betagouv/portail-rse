@@ -19,7 +19,7 @@
                     <div class="fr-collapse" id="breadcrumb-1">
                         <ol class="fr-breadcrumb__list">
                             <li>
-                                <a class="fr-breadcrumb__link" href="{% url 'reglementations:tableau_de_bord' entreprise.siren %}">Tableau de bord</a>
+                                <a class="fr-breadcrumb__link" href="{% url 'reglementations:tableau_de_bord' entreprise.id_public %}">Tableau de bord</a>
                             </li>
                             <li>
                                 <a class="fr-breadcrumb__link" aria-current="page">Mes indicateurs VSME</a>
@@ -37,7 +37,7 @@
                                 Exercice du rapport VSME
                             </label>
                             <select class="fr-select" id="select-annee" name="annee"
-                                    hx-get="{% url 'vsme:categories_vsme' entreprise.siren %}">
+                                    hx-get="{% url 'vsme:categories_vsme' entreprise.id_public %}">
                                 {% for exercice in exercices_disponibles reversed %}
                                     <option value="{{ exercice.date_cloture.year }}" {% if exercice.date_cloture.year == rapport_vsme.annee %}selected{% endif %}>
                                         {{ exercice.annees_formattees }}

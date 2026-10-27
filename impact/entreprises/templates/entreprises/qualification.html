@@ -12,7 +12,7 @@
                     <span class="fr-tag">NAF/APE : {{ entreprise.secteur_principal }}</span>
                 </p>
 
-                <form class="fr-mt-6w" action="{% url 'entreprises:qualification' entreprise.siren %}" method="post">
+                <form class="fr-mt-6w" action="{% url 'entreprises:qualification' entreprise.id_public %}" method="post">
                     {% csrf_token %}
                     {% include 'snippets/field.html' with field=form.confirmation_naf %}
                     {% include 'snippets/field.html' with field=form.date_cloture_exercice %}

@@ -13,7 +13,7 @@
                     <p class="fr-text--sm">
                         Actuellement, vous avez accès aux tableaux de bord des entreprises
                         {% for entreprise in user.entreprises %}
-                            <a href="{% url 'reglementations:tableau_de_bord' entreprise.siren %}">
+                            <a href="{% url 'reglementations:tableau_de_bord' entreprise.id_public %}">
                                 {{ entreprise.denomination }}</a>{% if forloop.last %}.{% else %},{% endif %}
                         {% endfor %}
                     </p>
@@ -29,7 +29,7 @@
                     {% elif user.entreprise_set.count == 1 %}
                         <li>
                             {% for entreprise in user.entreprises %}
-                                <a class="fr-btn" href="{% url 'reglementations:tableau_de_bord' entreprise.siren %}">
+                                <a class="fr-btn" href="{% url 'reglementations:tableau_de_bord' entreprise.id_public %}">
                                     Accédez à votre tableau de bord
                                 </a>
                             {% endfor %}

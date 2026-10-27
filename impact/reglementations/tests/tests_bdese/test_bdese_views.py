@@ -350,7 +350,9 @@ def test_get_pdf_redirige_vers_la_qualification_si_manquante(
     response = client.get(url)
 
     assert response.status_code == 302
-    assert response.url == reverse("entreprises:qualification", args=[entreprise.siren])
+    assert response.url == reverse(
+        "entreprises:qualification", args=[entreprise.id_public]
+    )
 
 
 def test_get_pdf_introuvable_si_bdese_avec_accord(bdese_avec_accord, alice, client):
@@ -644,7 +646,7 @@ def test_toggle_bdese_completion(client, bdese_avec_accord, alice):
 
     assert response.status_code == 200
     assert response.redirect_chain == [
-        (reverse("reglementations:tableau_de_bord", args=[entreprise.siren]), 302)
+        (reverse("reglementations:tableau_de_bord", args=[entreprise.id_public]), 302)
     ]
     bdese_avec_accord.refresh_from_db()
     assert bdese_avec_accord.is_complete
@@ -666,7 +668,9 @@ def test_toggle_bdese_completion_redirige_vers_la_qualification_si_manquante(
     response = client.get(url)
 
     assert response.status_code == 302
-    assert response.url == reverse("entreprises:qualification", args=[entreprise.siren])
+    assert response.url == reverse(
+        "entreprises:qualification", args=[entreprise.id_public]
+    )
 
 
 def test_toggle_bdese_completion_sans_bdese_existante(
@@ -681,7 +685,7 @@ def test_toggle_bdese_completion_sans_bdese_existante(
 
     assert response.status_code == 200
     assert response.redirect_chain == [
-        (reverse("reglementations:tableau_de_bord", args=[entreprise.siren]), 302)
+        (reverse("reglementations:tableau_de_bord", args=[entreprise.id_public]), 302)
     ]
     bdese_avec_accord = BDESEAvecAccord.objects.get(entreprise=entreprise)
     assert bdese_avec_accord.is_complete

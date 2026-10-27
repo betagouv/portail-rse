@@ -154,6 +154,10 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     for reglementation in reglementations_applicables:
         assert reglementation.title in content
     assert "<!-- page resultats simulation -->" in content
+    assert (
+        reverse("reglementations:reglementations", args=[entreprise.id_public])
+        in content
+    )
 
 
 @pytest.mark.parametrize("status_est_soumis", [True, False])

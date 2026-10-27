@@ -151,7 +151,10 @@ def test_lien_espace_conseiller_visible_pour_conseiller(
 
     client.force_login(conseiller_rse)
     response = client.get(
-        reverse("reglementations:tableau_de_bord", kwargs={"siren": "123456789"})
+        reverse(
+            "reglementations:tableau_de_bord",
+            kwargs={"id_public": entreprise.id_public},
+        )
     )
 
     content = response.content.decode()
@@ -168,7 +171,10 @@ def test_lien_espace_conseiller_invisible_pour_non_conseiller(
 
     client.force_login(alice)
     response = client.get(
-        reverse("reglementations:tableau_de_bord", kwargs={"siren": "123456789"})
+        reverse(
+            "reglementations:tableau_de_bord",
+            kwargs={"id_public": entreprise.id_public},
+        )
     )
 
     content = response.content.decode()

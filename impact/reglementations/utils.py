@@ -55,7 +55,7 @@ class VSMEReglementation(Reglementation):
             reverse_lazy(
                 "vsme:categories_vsme",
                 kwargs={
-                    "siren": caracteristiques.entreprise.siren,
+                    "id_public": caracteristiques.entreprise.id_public,
                     "annee": date.today().year - 1,
                 },
             ),
@@ -67,7 +67,7 @@ class VSMEReglementation(Reglementation):
                 reverse_lazy(
                     "vsme:etape_vsme",
                     kwargs={
-                        "siren": caracteristiques.entreprise.siren,
+                        "id_public": caracteristiques.entreprise.id_public,
                         "etape": "introduction",
                     },
                 ),

@@ -73,7 +73,7 @@ def ajout_document(request, entreprise, csrd=None):
             entreprise.analyses_ia.add(form.instance)
         messages.success(request, "Document ajouté")
         if relation == "entreprises":
-            redirection = redirect("analyseia:analyses", siren=entreprise.siren)
+            redirection = redirect("analyseia:analyses", id_public=entreprise.id_public)
         else:
             redirection = redirect(
                 "reglementations:gestion_csrd",
@@ -106,7 +106,7 @@ def suppression(request, analyse):
     analyse.fichier.delete(save=False)
     messages.success(request, "Document supprimé")
     if relation == "entreprises":
-        redirection = redirect("analyseia:analyses", siren=entreprise.siren)
+        redirection = redirect("analyseia:analyses", id_public=entreprise.id_public)
     else:
         redirection = redirect(
             "reglementations:gestion_csrd",
@@ -150,7 +150,9 @@ def lancement_analyse(request, analyse, version_ia):
 
     relation = "entreprises" if analyse.entreprises.count() else "csrd"
     if relation == "entreprises":
-        redirection = redirect("analyseia:analyses", siren=analyse.entreprise.siren)
+        redirection = redirect(
+            "analyseia:analyses", id_public=analyse.entreprise.id_public
+        )
     else:
         redirection = redirect(
             "reglementations:gestion_csrd",
@@ -188,7 +190,7 @@ def actualisation_etat(request, id_analyse, version_ia):
         relation = "entreprises" if analyse.entreprises.count() else "csrd"
         if relation == "entreprises":
             path = reverse(
-                "analyseia:analyses", kwargs={"siren": analyse.entreprise.siren}
+                "analyseia:analyses", kwargs={"id_public": analyse.entreprise.id_public}
             )
         else:
             path = reverse(

@@ -211,7 +211,7 @@ def test_telechargement_de_la_synthese_des_resultats_IA_de_l_ensemble_des_docume
     client.force_login(alice)
 
     response = client.get(
-        reverse("analyseia:synthese_resultat_v2", args=[entreprise.siren]),
+        reverse("analyseia:synthese_resultat_v2", args=[entreprise.id_public]),
     )
 
     assert response["Content-Disposition"] == "filename=resultats_vsme.xlsx"
@@ -241,7 +241,7 @@ def test_telechargement_de_la_synthese_des_resultats_IA_redirige_vers_la_connexi
     entreprise = entreprise_factory(utilisateur=alice)
 
     response = client.get(
-        reverse("analyseia:synthese_resultat_v2", args=[entreprise.siren]),
+        reverse("analyseia:synthese_resultat_v2", args=[entreprise.id_public]),
     )
 
     assert response.status_code == 302

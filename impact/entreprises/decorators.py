@@ -21,15 +21,17 @@ def entreprise_qualifiee_required(function):
                 request,
                 e.message,
             )
-            return redirect("entreprises:qualification", siren=e.entreprise.siren)
+            return redirect(
+                "entreprises:qualification", id_public=e.entreprise.id_public
+            )
 
     return wrap
 
 
 def entreprise_requise(function):
     @wraps(function)
-    def wrap(request, siren=None, **kwargs):
-        if not siren:
+    def wrap(request, id_public=None, **kwargs):
+        if not id_public:
             # Import local pour éviter import circulaire
             from entreprises.views import get_current_entreprise
 
@@ -42,11 +44,11 @@ def entreprise_requise(function):
                 return redirect("entreprises:entreprises")
             return redirect(
                 f"{request.resolver_match.app_name}:{request.resolver_match.url_name}",
-                siren=entreprise.siren,
+                id_public=entreprise.id_public,
                 **kwargs,
             )
 
-        entreprise = get_object_or_404(Entreprise, siren=siren)
+        entreprise = get_object_or_404(Entreprise, id_public=id_public)
         if not Habilitation.existe(entreprise, request.user):
             raise PermissionDenied
 
@@ -65,7 +67,7 @@ def entreprise_qualifiee_requise(function):
             if caracteristiques != entreprise.caracteristiques_actuelles():
                 messages.warning(
                     request,
-                    f"Les informations affichées sont basées sur l'exercice comptable {caracteristiques.annee}. <a href='{reverse_lazy('entreprises:qualification', args=[entreprise.siren])}'>Mettre à jour le profil de l'entreprise.</a>",
+                    f"Les informations affichées sont basées sur l'exercice comptable {caracteristiques.annee}. <a href='{reverse_lazy('entreprises:qualification', args=[entreprise.id_public])}'>Mettre à jour le profil de l'entreprise.</a>",
                 )
             return function(request, entreprise, **kwargs)
 
@@ -74,6 +76,6 @@ def entreprise_qualifiee_requise(function):
                 request,
                 "Votre profil entreprise est incomplet ou doit être mis à jour suite à l'évolution d'une réglementation. Complétez-le pour avoir accès à toutes les fonctionnalités de votre tableau de bord.",
             )
-            return redirect("entreprises:qualification", siren=entreprise.siren)
+            return redirect("entreprises:qualification", id_public=entreprise.id_public)
 
     return wrap

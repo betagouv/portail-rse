@@ -3,7 +3,7 @@ from django.urls import reverse
 from habilitations.models import Habilitation
 
 
-RAPPORT_URL = "/tableau-de-bord/{siren}/rapport/"
+RAPPORT_URL = "/tableau-de-bord/{id_public}/rapport/"
 RAPPORT_URL_GENERIQUE = "/tableau-de-bord/rapport/"
 
 
@@ -13,14 +13,14 @@ def test_page_intermediaire_de_rapport_avec_utilisateur_authentifie_redirige_ver
     entreprise = entreprise_factory(utilisateur=alice)
     client.force_login(alice)
 
-    url = RAPPORT_URL.format(siren=entreprise.siren)
+    url = RAPPORT_URL.format(id_public=entreprise.id_public)
     response = client.get(url)
 
     assert response.status_code == 302
     assert response.url == reverse(
         "reglementations:tableau_de_bord",
         kwargs={
-            "siren": entreprise.siren,
+            "id_public": entreprise.id_public,
         },
     )
 
@@ -32,14 +32,14 @@ def test_page_intermediaire_de_rapport_avec_entreprise_non_qualifiee_redirige_ve
     Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
     client.force_login(alice)
 
-    url = RAPPORT_URL.format(siren=entreprise_non_qualifiee.siren)
+    url = RAPPORT_URL.format(id_public=entreprise_non_qualifiee.id_public)
     response = client.get(url)
 
     assert response.status_code == 302
     assert response.url == reverse(
         "reglementations:tableau_de_bord",
         kwargs={
-            "siren": entreprise_non_qualifiee.siren,
+            "id_public": entreprise_non_qualifiee.id_public,
         },
     )
 

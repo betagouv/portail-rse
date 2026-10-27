@@ -16,10 +16,14 @@ app_name = "analyseia"
 
 urlpatterns = [
     path("analyses/", analyses, name="analyses"),
-    path("analyses/<str:siren>/", analyses, name="analyses"),
-    path("analyses/<str:siren>/ajout_document/", ajout_document, name="ajout_document"),
+    path("analyses/<uuid:id_public>/", analyses, name="analyses"),
     path(
-        "analyses/<str:siren>/ajout_document/<int:csrd_id>",
+        "analyses/<uuid:id_public>/ajout_document/",
+        ajout_document,
+        name="ajout_document",
+    ),
+    path(
+        "analyses/<uuid:id_public>/ajout_document/<int:csrd_id>",
         ajout_document,
         name="ajout_document",
     ),
@@ -44,22 +48,22 @@ urlpatterns = [
         name="resultat_v1",
     ),
     path(
-        "analyses/<str:siren>/synthese/",
+        "analyses/<uuid:id_public>/synthese/",
         synthese_resultat_v1,
         name="synthese_resultat_v1",
     ),
     path(
-        "analyses/<str:siren>/synthese/<int:csrd_id>",
+        "analyses/<uuid:id_public>/synthese/<int:csrd_id>",
         synthese_resultat_v1,
         name="synthese_resultat_v1",
     ),
     path(
-        "analyses/<str:siren>/<str:code_esrs>/<int:csrd_id>",
+        "analyses/<uuid:id_public>/<str:code_esrs>/<int:csrd_id>",
         synthese_resultat_v1_par_ESRS,
         name="synthese_resultat_v1_par_ESRS",
     ),
     path(
-        "analyses/<str:siren>/<str:code_esrs>",
+        "analyses/<uuid:id_public>/<str:code_esrs>",
         synthese_resultat_v1_par_ESRS,
         name="synthese_resultat_v1_par_ESRS",
     ),
@@ -69,7 +73,7 @@ urlpatterns = [
         name="resultat_v2",
     ),
     path(
-        "analyses/<str:siren>/synthese/v2",
+        "analyses/<uuid:id_public>/synthese/v2",
         synthese_resultat_v2,
         name="synthese_resultat_v2",
     ),
