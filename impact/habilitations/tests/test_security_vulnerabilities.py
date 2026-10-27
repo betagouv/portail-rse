@@ -9,7 +9,7 @@ from users.models import User
 def test_utilisateur_non_authentifie_ne_peut_pas_inviter(client, entreprise_factory):
     entreprise = entreprise_factory()
     data = {"email": "attacker@evil.com", "role": UserRole.ADMINISTRATEUR}
-    url = f"/invitation/{entreprise.siren}"
+    url = f"/invitation/{entreprise.id_public}"
 
     response = client.post(url, data=data)
 
@@ -25,7 +25,7 @@ def test_utilisateur_non_membre_ne_peut_pas_inviter_vers_entreprise_tierce(
     client.force_login(alice)
 
     data = {"email": alice.email, "role": UserRole.ADMINISTRATEUR}
-    url = f"/invitation/{entreprise_cible.siren}"
+    url = f"/invitation/{entreprise_cible.id_public}"
 
     response = client.post(url, data=data)
 
@@ -43,7 +43,7 @@ def test_utilisateur_non_membre_ne_peut_pas_inviter_un_tiers(
     client.force_login(alice)
 
     data = {"email": bob.email, "role": UserRole.ADMINISTRATEUR}
-    url = f"/invitation/{entreprise_cible.siren}"
+    url = f"/invitation/{entreprise_cible.id_public}"
 
     response = client.post(url, data=data)
 
@@ -60,7 +60,7 @@ def test_contributeur_ne_peut_pas_inviter(client, alice, bob, entreprise_factory
     client.force_login(alice)
 
     data = {"email": bob.email, "role": UserRole.CONTRIBUTEUR}
-    url = f"/invitation/{entreprise.siren}"
+    url = f"/invitation/{entreprise.id_public}"
 
     response = client.post(url, data=data)
 
@@ -87,7 +87,7 @@ def test_administrateur_peut_inviter(
     )
 
     data = {"email": bob.email, "role": UserRole.CONTRIBUTEUR}
-    url = f"/invitation/{entreprise.siren}"
+    url = f"/invitation/{entreprise.id_public}"
 
     response = client.post(url, data=data, follow=True)
 
@@ -97,7 +97,7 @@ def test_administrateur_peut_inviter(
     assert len(mailoutbox) == 1
 
 
-def test_invitation_avec_siren_arbitraire(
+def test_invitation_avec_id_public_arbitraire(
     client, alice, entreprise_factory, entreprise_unique_factory
 ):
     entreprise_alice = entreprise_factory()
@@ -108,7 +108,7 @@ def test_invitation_avec_siren_arbitraire(
     client.force_login(alice)
 
     data = {"email": alice.email, "role": UserRole.ADMINISTRATEUR}
-    url = f"/invitation/{entreprise_victime.siren}"
+    url = f"/invitation/{entreprise_victime.id_public}"
 
     response = client.post(url, data=data)
 
@@ -134,7 +134,7 @@ def test_attaque_avec_curl(client, alice, bob, entreprise_factory):
         "email": alice.email,
         "role": UserRole.ADMINISTRATEUR,
     }
-    url = f"/invitation/{entreprise_bob.siren}"
+    url = f"/invitation/{entreprise_bob.id_public}"
 
     response = client.post(url, data=data)
 
@@ -159,7 +159,7 @@ def test_invitation_depuis_autre_entreprise(
     client.force_login(alice)
 
     data = {"email": "complice@evil.com", "role": UserRole.ADMINISTRATEUR}
-    url = f"/invitation/{entreprise_bob.siren}"
+    url = f"/invitation/{entreprise_bob.id_public}"
 
     response = client.post(url, data=data)
 
@@ -189,7 +189,7 @@ def test_attaque_reelle_avec_session_etablie(
     assert client.session.get("entreprise") == entreprise_alice.id
 
     data = {"email": alice.email, "role": UserRole.ADMINISTRATEUR}
-    url = f"/invitation/{entreprise_bob.siren}"
+    url = f"/invitation/{entreprise_bob.id_public}"
 
     response = client.post(url, data=data)
 

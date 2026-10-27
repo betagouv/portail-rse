@@ -26,13 +26,12 @@ from utils.tokens import make_token
 @login_required()
 @require_http_methods(["POST"])
 @role(UserRole.ADMINISTRATEUR)
-def invitation(request, siren):
-    # le SIREN dans l'URL doit correspondre à l'entreprise courante en session
+def invitation(request, id_public):
     id_entreprise_session = request.session.get("entreprise")
     entreprise = get_object_or_404(Entreprise, id=id_entreprise_session)
-    if siren != entreprise.siren:
+    if id_public != entreprise.id_public:
         return HttpResponseForbidden(
-            "Le SIREN demandé ne correspond pas à l'entreprise courante."
+            "L'entreprise demandée ne correspond pas à l'entreprise courante."
         )
 
     form = InvitationForm(request.POST)

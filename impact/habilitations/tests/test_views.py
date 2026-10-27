@@ -16,7 +16,7 @@ def test_une_invitation_a_devenir_membre_pour_un_compte_existant_est_activée_di
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
     client.force_login(alice)
     data = {"email": bob.email, "role": UserRole.ADMINISTRATEUR}
-    url = f"/invitation/{entreprise.siren}"
+    url = f"/invitation/{entreprise.id_public}"
     redirect_url = reverse(
         "reglementations:tableau_de_bord", args=[entreprise.id_public]
     )
@@ -51,7 +51,7 @@ def test_succès_invitation_a_devenir_membre(
     client.force_login(alice)
     EMAIL_INVITE = "bob@bob.test"
     data = {"email": EMAIL_INVITE, "role": UserRole.CONTRIBUTEUR}
-    url = f"/invitation/{entreprise.siren}"
+    url = f"/invitation/{entreprise.id_public}"
     redirect_url = reverse(
         "reglementations:tableau_de_bord", args=[entreprise.id_public]
     )
@@ -89,7 +89,7 @@ def test_erreur_invitation_a_devenir_membre_car_email_incorrect(
     data = {
         "email": EMAIL_INVITE,
     }
-    url = f"/invitation/{entreprise.siren}"
+    url = f"/invitation/{entreprise.id_public}"
 
     response = client.post(url, data=data, follow=True)
 
@@ -113,7 +113,7 @@ def test_erreur_invitation_a_devenir_membre_car_deja_membre(
     client.get(reverse("reglementations:tableau_de_bord", args=[entreprise.id_public]))
 
     data = {"email": bob.email, "role": UserRole.CONTRIBUTEUR}
-    url = f"/invitation/{entreprise.siren}"
+    url = f"/invitation/{entreprise.id_public}"
 
     response = client.post(url, data=data, follow=True)
 
