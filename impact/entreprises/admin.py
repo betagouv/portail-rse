@@ -44,6 +44,7 @@ class EntrepriseAdmin(admin.ModelAdmin):
     inlines = (HabilitationInline, CaracteristiquesInline)
     model = Entreprise
     form = EntrepriseAdminForm
+    readonly_fields = ("id_public",)
     search_fields = ("denomination", "siren")
     list_filter = (UsersFilter,)
 
