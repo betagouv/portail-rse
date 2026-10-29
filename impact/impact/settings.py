@@ -368,6 +368,8 @@ CSP_CONFIGURATION = {
             # matomo :
             "stats.beta.gouv.fr",
         ],
+        "form-action": [SELF],
+        "base-uri": [SELF],
     },
 }
 
