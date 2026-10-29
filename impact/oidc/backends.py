@@ -4,6 +4,10 @@ from lasuite.oidc_login.backends import OIDCAuthenticationBackend
 from logs import event_logger as logger
 
 
+def _sans_balise_html(valeur):
+    return valeur.replace("<", "").replace(">", "")
+
+
 class CustomOIDCAuthenticationBackend(OIDCAuthenticationBackend):
     # Pour optimiser la connexion ProConnect dans le contexte du Portail RSE
 
@@ -13,9 +17,11 @@ class CustomOIDCAuthenticationBackend(OIDCAuthenticationBackend):
 
     def get_extra_claims(self, user_info):
         # tous ces claims *doivent* correspondre à des champs du modèle
+        # il est improbable que ProConnect renvoie une injection html mais on
+        # veut être sûr que le prénom et le nom soient toujours propres.
         return {
-            "prenom": user_info["given_name"],
-            "nom": user_info["usual_name"],
+            "prenom": _sans_balise_html(user_info["given_name"]),
+            "nom": _sans_balise_html(user_info["usual_name"]),
             "siret": user_info["siret"],
             # le claim `sub` est nommé `oidc_sub_id` dans le modèle pour être plus explicite
             "oidc_sub_id": user_info["sub"],
