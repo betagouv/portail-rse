@@ -1,56 +1,14 @@
 from users.forms import message_erreur_administrateurs
-from users.forms import UserCreationForm
+from users.forms import UserPasswordForm
 
 
-def test_fail_to_create_user_without_cgu(db):
+def test_echec_si_mot_de_passe_trop_faible(db, alice):
     data = {
-        "prenom": "Alice",
-        "nom": "User",
-        "email": "user@domaine.test",
-        "password1": "Passw0rd!123",
-        "password2": "Passw0rd!123",
-        "siren": "123456789",
-        "acceptation_cgu": "",
-        "fonctions": "Présidente",
-    }
-
-    bound_form = UserCreationForm(data)
-
-    assert not bound_form.is_valid()
-    assert bound_form.errors["acceptation_cgu"] == ["Ce champ est obligatoire."]
-
-
-def test_fail_to_create_user_with_invalid_siren(db):
-    data = {
-        "prenom": "Alice",
-        "nom": "User",
-        "email": "user@domaine.test",
-        "password1": "Passw0rd!123",
-        "password2": "Passw0rd!123",
-        "siren": "123456abc",
-        "acceptation_cgu": "checked",
-        "fonctions": "Présidente",
-    }
-
-    bound_form = UserCreationForm(data)
-
-    assert not bound_form.is_valid()
-    assert bound_form.errors["siren"] == ["Le siren est incorrect"]
-
-
-def test_fail_to_create_user_with_weak_password(db):
-    data = {
-        "prenom": "Alice",
-        "nom": "User",
-        "email": "user@domaine.test",
         "password1": "password",
         "password2": "password",
-        "siren": "123456789",
-        "acceptation_cgu": "checked",
-        "fonctions": "Présidente",
     }
 
-    bound_form = UserCreationForm(data)
+    bound_form = UserPasswordForm(data, instance=alice)
 
     assert not bound_form.is_valid()
     assert bound_form.errors["password1"] == [
@@ -58,25 +16,6 @@ def test_fail_to_create_user_with_weak_password(db):
         "Ce mot de passe est trop courant.",
         "Le mot de passe doit contenir au moins une minuscule, une majuscule, un chiffre et un caractère spécial",
     ]
-
-
-def test_succès_lors_de_la_création_même_si_l_entreprise_existe_déjà(
-    db, entreprise_non_qualifiee
-):
-    data = {
-        "prenom": "Alice",
-        "nom": "User",
-        "email": "user@domaine.test",
-        "password1": "Passw0rd!123",
-        "password2": "Passw0rd!123",
-        "siren": entreprise_non_qualifiee.siren,
-        "acceptation_cgu": "checked",
-        "fonctions": "Présidente",
-    }
-
-    bound_form = UserCreationForm(data)
-
-    assert bound_form.is_valid()
 
 
 def test_message_si_l_entreprise_a_un_ou_des_administrateurs(db, alice, bob):
