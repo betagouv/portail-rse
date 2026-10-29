@@ -17,7 +17,7 @@ class LoginForm(DsfrForm, AuthenticationForm):
     )
 
     def __init__(self, *args, **kwargs):
-        super(LoginForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields["password"].label = "Mot de passe"
 
     def confirm_login_allowed(self, user):

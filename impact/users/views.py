@@ -207,7 +207,7 @@ def account(request):
 
 class PasswordResetView(BasePasswordResetView):
     def form_valid(self, form):
-        response = super(PasswordResetView, self).form_valid(form)
+        response = super().form_valid(form)
         success_message = "Un lien de ré-initialisation de votre mot de passe vous a été envoyé par e-mail. Vous devriez le recevoir d'ici quelques minutes."
         messages.success(self.request, success_message)
         return response
@@ -215,13 +215,13 @@ class PasswordResetView(BasePasswordResetView):
 
 class PasswordResetConfirmView(BasePasswordResetConfirmView):
     def form_valid(self, form):
-        response = super(PasswordResetConfirmView, self).form_valid(form)
+        response = super().form_valid(form)
         success_message = "Votre mot de passe a été réinitialisé avec succès. Vous pouvez à présent vous connecter."
         messages.success(self.request, success_message)
         return response
 
     def form_invalid(self, form):
-        response = super(PasswordResetConfirmView, self).form_invalid(form)
+        response = super().form_invalid(form)
         error_message = (
             "La réinitialisation a échoué car le formulaire contient des erreurs."
         )
