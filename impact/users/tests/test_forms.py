@@ -1,4 +1,8 @@
+import pytest
+
 from users.forms import message_erreur_administrateurs
+from users.forms import ProconnectUserEditionForm
+from users.forms import UserEditionForm
 from users.forms import UserPasswordForm
 
 
@@ -33,3 +37,19 @@ def test_message_si_l_entreprise_a_un_ou_des_administrateurs(db, alice, bob):
         message_erreur_administrateurs([alice, bob])
         == "Il existe déjà des administrateurs sur cette entreprise. Contactez une des personnes concernées (a**********r@mail.example, b*b@domaine.test) ou notre support (contact@portail-rse.beta.gouv.fr)."
     )
+
+
+@pytest.mark.parametrize("form_class", [UserEditionForm, ProconnectUserEditionForm])
+@pytest.mark.parametrize("champ", ["prenom", "nom"])
+def test_echec_si_balise_html_dans_prenom_ou_nom(db, alice, form_class, champ):
+    data = {
+        "prenom": "Alice",
+        "nom": "User",
+        "email": alice.email,
+    }
+    data[champ] = "<script>alert(1)</script>"
+
+    bound_form = form_class(data, instance=alice)
+
+    assert not bound_form.is_valid()
+    assert bound_form.errors[champ] == ["Les caractères < et > ne sont pas autorisés."]

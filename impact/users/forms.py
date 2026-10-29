@@ -110,6 +110,18 @@ class _AbstractUserEditionForm(DsfrForm, forms.ModelForm):
             "reception_actualites": "Je souhaite recevoir les actualités du Portail RSE (optionnel)",
         }
 
+    def clean_prenom(self):
+        return _sans_balise_html(self.cleaned_data["prenom"])
+
+    def clean_nom(self):
+        return _sans_balise_html(self.cleaned_data["nom"])
+
+
+def _sans_balise_html(valeur):
+    if "<" in valeur or ">" in valeur:
+        raise ValidationError("Les caractères < et > ne sont pas autorisés.")
+    return valeur
+
 
 class UserEditionForm(_AbstractUserEditionForm):
 
