@@ -202,7 +202,7 @@ class Exercice:
 
 
 class Entreprise(TimestampedModel):
-    id_public = models.UUIDField(default=uuid.uuid7, unique=True, editable=False)
+    id_public = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     siren = models.CharField(max_length=9, unique=True)
     denomination = models.CharField(max_length=DENOMINATION_MAX_LENGTH)
     date_derniere_qualification = models.DateField(
