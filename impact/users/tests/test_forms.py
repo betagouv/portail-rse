@@ -53,3 +53,18 @@ def test_echec_si_balise_html_dans_prenom_ou_nom(db, alice, form_class, champ):
 
     assert not bound_form.is_valid()
     assert bound_form.errors[champ] == ["Les caractères < et > ne sont pas autorisés."]
+
+
+def test_echec_si_balise_html_dans_email(db, alice):
+    data = {
+        "prenom": "Alice",
+        "nom": "User",
+        "email": '"<script>alert(1)</script>"@domaine.test',
+    }
+
+    bound_form = UserEditionForm(data, instance=alice)
+
+    assert not bound_form.is_valid()
+    assert bound_form.errors["email"] == [
+        "Les caractères < et > ne sont pas autorisés."
+    ]

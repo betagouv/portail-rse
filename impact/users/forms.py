@@ -9,10 +9,11 @@ from .models import User
 from entreprises.forms import PreremplissageSirenForm
 from utils.anonymisation import cache_partiellement_un_email
 from utils.forms import DsfrForm
+from utils.forms import SafeEmailField
 
 
 class LoginForm(DsfrForm, AuthenticationForm):
-    username = forms.EmailField(
+    username = SafeEmailField(
         label="Adresse e-mail", widget=forms.TextInput(attrs={"autofocus": True})
     )
 
@@ -129,6 +130,7 @@ class UserEditionForm(_AbstractUserEditionForm):
         model = User
         fields = _AbstractUserEditionForm.Meta.fields + ("email",)
         labels = _AbstractUserEditionForm.Meta.labels
+        field_classes = {"email": SafeEmailField}
 
 
 class ProconnectUserEditionForm(_AbstractUserEditionForm):
@@ -176,7 +178,7 @@ class AjoutEntrepriseConseillerForm(DsfrForm, PreremplissageSirenForm):
     - Entreprise inexistante : création + rattachement + invitation administrateur
     """
 
-    email_futur_administrateur = forms.EmailField(
+    email_futur_administrateur = SafeEmailField(
         label="Adresse e-mail du contact principal de l’entreprise accompagnée",
         required=True,
         help_text="Une invitation lui sera envoyée afin qu’elle puisse accéder au tableau de bord de son entreprise.",

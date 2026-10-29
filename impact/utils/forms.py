@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 
 
 class DsfrForm(forms.Form):
@@ -39,3 +40,11 @@ class DsfrFormSet(forms.BaseFormSet):
 
 class DateInput(forms.DateInput):
     input_type = "date"
+
+
+class SafeEmailField(forms.EmailField):
+    """Pour éviter des injections de type <script>…</script>@domaine.example"""
+    def validate(self, value):
+        super().validate(value)
+        if "<" in value or ">" in value:
+            raise ValidationError("Les caractères < et > ne sont pas autorisés.")

@@ -6,6 +6,7 @@ from entreprises.forms import SirenField
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import DENOMINATION_MAX_LENGTH
 from utils.forms import DsfrForm
+from utils.forms import SafeEmailField
 
 
 class NaiveCaptchaField(forms.CharField):
@@ -21,7 +22,7 @@ class NaiveCaptchaField(forms.CharField):
 
 
 class ContactForm(DsfrForm):
-    email = forms.EmailField(label="Votre adresse e-mail")
+    email = SafeEmailField(label="Votre adresse e-mail")
     subject = forms.CharField(
         label="Objet",
         max_length=255,
