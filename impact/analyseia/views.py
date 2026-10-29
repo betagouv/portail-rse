@@ -3,7 +3,6 @@ from pathlib import Path
 
 import sentry_sdk
 from django.conf import settings
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.core.mail import EmailMessage
@@ -36,6 +35,8 @@ from habilitations.models import Habilitation
 from reglementations.enums import ESRS
 from reglementations.views import tableau_de_bord_menu_context
 from reglementations.views.csrd.csrd import contexte_d_etape
+from utils.messages import message_error_sans_html
+from utils.messages import message_success_sans_html
 from utils.xlsx import xlsx_response
 from vsme.models import Indicateur
 
@@ -83,7 +84,7 @@ def ajout_document(request, entreprise, csrd=None):
             form.instance.rapports_csrd.add(csrd)
         else:
             entreprise.analyses_ia.add(form.instance)
-        messages.success(request, "Document ajouté")
+        message_success_sans_html(request, "Document ajouté")
         if relation == "entreprises":
             redirection = redirect("analyseia:analyses", id_public=entreprise.id_public)
         else:
@@ -116,7 +117,7 @@ def suppression(request, analyse):
     entreprise = analyse.entreprise
     analyse.delete()
     analyse.fichier.delete(save=False)
-    messages.success(request, "Document supprimé")
+    message_success_sans_html(request, "Document supprimé")
     if relation == "entreprises":
         redirection = redirect("analyseia:analyses", id_public=entreprise.id_public)
     else:
@@ -153,12 +154,12 @@ def lancement_analyse(request, analyse, version_ia):
             else:
                 analyse.etat_v2 = etat
             analyse.save()
-            messages.success(
+            message_success_sans_html(
                 request,
                 "L'analyse a bien été lancée. Celle-ci peut prendre entre quelques secondes et quelques heures. Vous recevrez un email lorsque les résultats seront disponibles.",
             )
         except APIError as exception:
-            messages.error(request, exception)
+            message_error_sans_html(request, exception)
 
     relation = "entreprises" if analyse.entreprises.count() else "csrd"
     if relation == "entreprises":

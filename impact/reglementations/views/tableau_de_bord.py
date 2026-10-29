@@ -1,4 +1,3 @@
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
@@ -12,6 +11,7 @@ from entreprises.models import Entreprise
 from habilitations.models import Habilitation
 from habilitations.views import utilisateurs_context
 from logs import log_path
+from utils.messages import message_warning_avec_html
 from vsme.models import RapportVSME
 
 
@@ -39,17 +39,23 @@ def tableau_de_bord(request, entreprise):
 
     # Afficher un avertissement si le profil est incomplet
     if not caracteristiques:
-        messages.warning(
+        url_qualification = reverse_lazy(
+            "entreprises:qualification", args=[entreprise.id_public]
+        )
+        message_warning_avec_html(
             request,
-            f"Votre profil entreprise est incomplet ou doit être mis à jour suite à l'évolution d'une réglementation. <a href='{reverse_lazy('entreprises:qualification', args=[entreprise.id_public])}'>Complétez-le pour avoir accès à toutes les fonctionnalités de votre tableau de bord.</a>",
+            t"Votre profil entreprise est incomplet ou doit être mis à jour suite à l'évolution d'une réglementation. <a href='{url_qualification}'>Complétez-le pour avoir accès à toutes les fonctionnalités de votre tableau de bord.</a>",
         )
         nombre_reglementations_applicables = "?"
     else:
         # Afficher un avertissement si les caractéristiques ne sont pas à jour
         if caracteristiques != entreprise.caracteristiques_actuelles():
-            messages.warning(
+            url_qualification = reverse_lazy(
+                "entreprises:qualification", args=[entreprise.id_public]
+            )
+            message_warning_avec_html(
                 request,
-                f"Les informations affichées sont basées sur l'exercice comptable {caracteristiques.annee}. <a href='{reverse_lazy('entreprises:qualification', args=[entreprise.id_public])}'>Mettre à jour le profil de l'entreprise.</a>",
+                t"Les informations affichées sont basées sur l'exercice comptable {caracteristiques.annee}. <a href='{url_qualification}'>Mettre à jour le profil de l'entreprise.</a>",
             )
 
         # Calculer les réglementations applicables

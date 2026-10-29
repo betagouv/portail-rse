@@ -1,4 +1,3 @@
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
@@ -30,6 +29,9 @@ from reglementations.models import derniere_annee_a_remplir_bdese
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
 from reglementations.views.base import ReglementationStatus
+from utils.messages import message_error_sans_html
+from utils.messages import message_success_sans_html
+from utils.messages import message_warning_sans_html
 
 
 class BDESEReglementation(Reglementation):
@@ -318,7 +320,7 @@ def bdese_step(request, id_public, annee, step):
     else:
         bdese = classe_bdese.objects.filter(entreprise=entreprise, annee=annee)
         if not bdese.exists():
-            messages.warning(
+            message_warning_sans_html(
                 request,
                 "Aucune BDESE existante pour l'instant (création possible par un utilisateur administrateur)",
             )
@@ -330,7 +332,7 @@ def bdese_step(request, id_public, annee, step):
     if bdese.is_bdese_avec_accord:
         raise Http404
     if not bdese.is_configured and step != 0:
-        messages.warning(request, f"Commencez par configurer votre BDESE {annee}")
+        message_warning_sans_html(request, f"Commencez par configurer votre BDESE {annee}")
         return redirect(
             "reglementations:bdese_step", id_public=id_public, annee=annee, step=0
         )
@@ -356,7 +358,7 @@ def bdese_step(request, id_public, annee, step):
                 )
             if form.is_valid():
                 bdese = form.save()
-                messages.success(request, "Étape enregistrée")
+                message_success_sans_html(request, "Étape enregistrée")
                 if "save_complete" in request.POST:
                     bdese.mark_step_as_complete(step)
                     bdese.save()
@@ -369,7 +371,7 @@ def bdese_step(request, id_public, annee, step):
                     step=step,
                 )
             else:
-                messages.error(
+                message_error_sans_html(
                     request,
                     "L'étape n'a pas été enregistrée car le formulaire contient des erreurs",
                 )
@@ -517,7 +519,7 @@ def toggle_bdese_completion(request, id_public, annee):
             success_message = "La BDESE a été marquée comme actualisée"
         else:
             success_message = "La BDESE a été marquée comme non actualisée"
-        messages.success(request, success_message)
+        message_success_sans_html(request, success_message)
     return redirect(
         "reglementations:tableau_de_bord", id_public=bdese.entreprise.id_public
     )

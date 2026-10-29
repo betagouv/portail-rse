@@ -1,7 +1,6 @@
 from datetime import date
 
 from django.conf import settings
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import BadRequest
 from django.core.exceptions import ObjectDoesNotExist
@@ -19,6 +18,8 @@ from entreprises.forms import PreremplissageSirenForm
 from habilitations.models import Habilitation
 from habilitations.models import HabilitationError
 from users.forms import message_erreur_administrateurs
+from utils.messages import message_error_sans_html
+from utils.messages import message_success_sans_html
 
 
 def get_current_entreprise(request):
@@ -52,15 +53,15 @@ def index(request):
                     id_entreprise_en_session = request.session.get("entreprise")
                     if id_entreprise_en_session == entreprise.id:
                         del request.session["entreprise"]
-                    messages.success(
+                    message_success_sans_html(
                         request,
                         f"Votre compte n'est plus rattaché à l'entreprise {entreprise.denomination}",
                     )
                     return redirect("entreprises:entreprises")
                 except ObjectDoesNotExist:
-                    messages.error(request, "Impossible de quitter cette entreprise")
+                    message_error_sans_html(request, "Impossible de quitter cette entreprise")
                 except HabilitationError as h_err:
-                    messages.error(request, str(h_err))
+                    message_error_sans_html(request, str(h_err))
             en_provenance_du_tableau_de_bord = request.META.get(
                 "HTTP_REFERER"
             ) and "tableau-de-bord" in request.META.get("HTTP_REFERER")
@@ -118,13 +119,13 @@ def attach(request):
                 "Impossible d'ajouter cette entreprise car les données sont incorrectes."
             )
     except (_InvalidRequest, APIError) as exception:
-        messages.error(
+        message_error_sans_html(
             request,
             exception,
         )
         return render(request, "entreprises/index.html", {"form": form})
 
-    messages.success(request, "L'entreprise a été ajoutée.")
+    message_success_sans_html(request, "L'entreprise a été ajoutée.")
     return redirect("entreprises:entreprises")
 
 
@@ -138,14 +139,14 @@ def qualification(request, entreprise):
         if form.is_valid():
             form.save()
 
-            messages.success(
+            message_success_sans_html(
                 request, "Les informations de l'entreprise ont été mises à jour."
             )
             return redirect(
                 "reglementations:tableau_de_bord", id_public=entreprise.id_public
             )
         else:
-            messages.error(
+            message_error_sans_html(
                 request,
                 "Les informations de l'entreprise n'ont pas été mises à jour car le formulaire contient des erreurs.",
             )

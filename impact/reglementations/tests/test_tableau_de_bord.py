@@ -203,6 +203,12 @@ def test_tableau_de_bord_resume_entreprise_non_qualifiee_affiche_un_avertissemen
         f"Votre profil entreprise est incomplet ou doit être mis à jour suite à l'évolution d'une réglementation"
         in content
     ), content
+    url_qualification = reverse(
+        "entreprises:qualification", args=[entreprise_non_qualifiee.id_public]
+    )
+    assert f"<a href='{url_qualification}'>Complétez-le" in response.content.decode(
+        "utf-8"
+    )
 
 
 def test_tableau_de_bord_resume_entreprise_qualifiee_dans_le_passe_affiche_un_avertissement(

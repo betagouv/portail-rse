@@ -199,3 +199,28 @@ def test_auto_modification(client, entreprise_factory, bob):
         reverse("habilitations:gerer_habilitation", kwargs={"id": habilitation.pk})
     )
     assert response.status_code == 400, "Bob ne peut pas modifier ses habilitations"
+
+
+def test_le_message_de_modification_d_habilitation_echappe_le_prenom_et_le_nom(
+    client, entreprise_factory, alice, bob
+):
+    entreprise = entreprise_factory()
+    Habilitation.ajouter(entreprise, bob, role=UserRole.ADMINISTRATEUR)
+    habilitation = Habilitation.ajouter(entreprise, alice, role=UserRole.CONTRIBUTEUR)
+    alice.prenom = "<script>alert(1)</script>"
+    alice.nom = "<b>User</b>"
+    alice.save()
+    client.force_login(bob)
+    session = client.session
+    session["entreprise"] = entreprise.id
+    session.save()
+
+    response = client.post(
+        reverse("habilitations:gerer_habilitation", kwargs={"id": habilitation.pk}),
+        data={"role": UserRole.ADMINISTRATEUR},
+        follow=True,
+    )
+
+    content = response.content.decode("utf-8")
+    assert "&lt;script&gt;alert(1)&lt;/script&gt; &lt;b&gt;User&lt;/b&gt;" in content
+    assert "<script>alert(1)</script>" not in content

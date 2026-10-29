@@ -1,3 +1,5 @@
+import html
+
 import pytest
 
 from django.conf import settings
@@ -369,7 +371,9 @@ def test_lancement_d_analyse_IA_v1_liée_à_une_entreprise_par_utilisateur_autor
     assert analyse.etat_v1 == "pending"
     assert analyse.etat_v2 is None
     assert response.status_code == 200
-    assert "L'analyse a bien été lancée." in response.content.decode("utf-8")
+    assert "L'analyse a bien été lancée." in html.unescape(
+        response.content.decode("utf-8")
+    )
     assert response.redirect_chain == [
         (ANALYSES_URL.format(id_public=analyse.entreprise.id_public), 302)
     ]
@@ -404,7 +408,9 @@ def test_lancement_d_analyse_IA_v2_liée_à_une_entreprise_par_utilisateur_autor
     assert analyse.etat_v1 == etat_v1
     assert analyse.etat_v2 == "pending"
     assert response.status_code == 200
-    assert "L'analyse a bien été lancée." in response.content.decode("utf-8")
+    assert "L'analyse a bien été lancée." in html.unescape(
+        response.content.decode("utf-8")
+    )
     assert response.redirect_chain == [
         (ANALYSES_URL.format(id_public=analyse.entreprise.id_public), 302)
     ]
@@ -437,7 +443,9 @@ def test_lancement_d_analyse_IA_liée_à_un_rapport_csrd_par_utilisateur_autoris
     analyse.refresh_from_db()
     assert analyse.etat_v1 == "pending"
     assert response.status_code == 200
-    assert "L'analyse a bien été lancée." in response.content.decode("utf-8")
+    assert "L'analyse a bien été lancée." in html.unescape(
+        response.content.decode("utf-8")
+    )
     assert response.redirect_chain == [
         (CSRD_ANALYSE_ECART_URL.format(id_public=csrd.entreprise.id_public), 302)
     ]

@@ -1,7 +1,6 @@
 from datetime import date
 
 from django.conf import settings
-from django.contrib import messages
 from django.core.exceptions import BadRequest
 from django.core.mail import EmailMessage
 from django.shortcuts import redirect
@@ -15,6 +14,8 @@ from entreprises.models import Entreprise
 from public.forms import ContactForm
 from public.forms import SimulationForm
 from reglementations.views import REGLEMENTATIONS
+from utils.messages import message_error_sans_html
+from utils.messages import message_success_sans_html
 
 
 def index(request):
@@ -50,14 +51,14 @@ def contact(request):
             )
             if email.send():
                 success_message = "Votre message a bien été envoyé"
-                messages.success(request, success_message)
+                message_success_sans_html(request, success_message)
                 return redirect("contact")
             else:
                 error_message = "L'envoi du message a échoué"
-                messages.error(request, error_message)
+                message_error_sans_html(request, error_message)
         else:
             error_message = "L'envoi du message a échoué"
-            messages.error(request, error_message)
+            message_error_sans_html(request, error_message)
 
     else:
         if request.user.is_authenticated:
@@ -76,7 +77,7 @@ def simulation(request):
             request.session["simulation"] = simulation_form.cleaned_data
             return redirect("resultats_simulation")
         else:
-            messages.error(
+            message_error_sans_html(
                 request,
                 "Impossible de finaliser la simulation car le formulaire contient des erreurs.",
             )

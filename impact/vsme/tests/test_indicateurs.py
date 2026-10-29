@@ -1,3 +1,4 @@
+import html
 from datetime import date
 from io import BytesIO
 
@@ -326,6 +327,6 @@ def test_categories_vsme_partage_du_rapport_avec_email_invalide(
     assert response.context["form"].errors["email"]
     assert (
         "Le rapport VSME n'a pas été envoyé car l'adresse e-mail n'est pas valide."
-        in response.content.decode("utf-8")
+        in html.unescape(response.content.decode("utf-8"))
     )
     assert len(mailoutbox) == 0

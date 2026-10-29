@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import EmailMessage
@@ -20,6 +19,8 @@ from habilitations.decorators import role
 from invitations.models import Invitation
 from users.models import User
 from utils.htmx import HttpResponseRedirectSeeOther
+from utils.messages import message_error_sans_html
+from utils.messages import message_success_sans_html
 from utils.tokens import make_token
 
 
@@ -41,7 +42,7 @@ def invitation(request, id_public):
         try:
             utilisateur = User.objects.get(email=email)
             if Habilitation.objects.filter(entreprise=entreprise, user=utilisateur):
-                messages.error(
+                message_error_sans_html(
                     request,
                     "L'invitation a échoué car cette personne est déjà membre de l'entreprise.",
                 )
@@ -51,13 +52,13 @@ def invitation(request, id_public):
             cree_invitation(
                 request, entreprise, email, role, settings.BREVO_INVITATION_TEMPLATE
             )
-            messages.success(request, "L'invitation a été envoyée.")
+            message_success_sans_html(request, "L'invitation a été envoyée.")
         return redirect(
             reverse("reglementations:tableau_de_bord", args=[entreprise.id_public])
         )
     else:
         request.session["invitation_form"] = request.POST
-        messages.error(
+        message_error_sans_html(
             request,
             "L'invitation a échoué car le formulaire contient des erreurs.",
         )
@@ -93,7 +94,7 @@ def _ajoute_membre(request, entreprise, utilisateur, role):
     )
     invitation.accepter(utilisateur)
     _envoie_email_d_ajout(request, entreprise, utilisateur)
-    messages.success(
+    message_success_sans_html(
         request,
         "L'utilisateur a été ajouté.",
     )
@@ -175,7 +176,7 @@ def gerer_habilitation(request, id: int):
         case "POST":
             habilitation.role = request.POST.get("role")
             habilitation.save()
-            messages.success(
+            message_success_sans_html(
                 request,
                 f"L'habilitation de {habilitation.user.prenom} {habilitation.user.nom} a été modifiée ({habilitation.get_role_display()})",
             )
@@ -183,10 +184,10 @@ def gerer_habilitation(request, id: int):
             try:
                 habilitation.delete()
             except HabilitationError as err:
-                messages.error(request, str(err))
+                message_error_sans_html(request, str(err))
                 return
 
-            messages.success(
+            message_success_sans_html(
                 request,
                 f"L'habilitation de {habilitation.user.prenom} {habilitation.user.nom} a été supprimée",
             )

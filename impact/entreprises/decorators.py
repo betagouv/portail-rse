@@ -1,6 +1,5 @@
 from functools import wraps
 
-from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
@@ -9,6 +8,8 @@ from django.urls import reverse_lazy
 from entreprises.exceptions import EntrepriseNonQualifieeError
 from entreprises.models import Entreprise
 from habilitations.models import Habilitation
+from utils.messages import message_warning_avec_html
+from utils.messages import message_warning_sans_html
 
 
 def entreprise_qualifiee_required(function):
@@ -17,7 +18,7 @@ def entreprise_qualifiee_required(function):
         try:
             return function(request, *args, **kwargs)
         except EntrepriseNonQualifieeError as e:
-            messages.warning(
+            message_warning_sans_html(
                 request,
                 e.message,
             )
@@ -39,8 +40,12 @@ def entreprise_requise(function):
             if not entreprise:
                 msg = "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à votre tableau de bord."
                 if request.session.get("oidc_id_token"):
-                    msg += "<br>Dans le cadre d'une connexion via ProConnect, vous pouvez vous déconnecter et vous reconnecter en précisant une autre entreprise de rattachement."
-                messages.warning(request, msg)
+                    message_warning_avec_html(
+                        request,
+                        t"{msg}<br>Dans le cadre d'une connexion via ProConnect, vous pouvez vous déconnecter et vous reconnecter en précisant une autre entreprise de rattachement.",
+                    )
+                else:
+                    message_warning_sans_html(request, msg)
                 return redirect("entreprises:entreprises")
             return redirect(
                 f"{request.resolver_match.app_name}:{request.resolver_match.url_name}",
@@ -65,14 +70,17 @@ def entreprise_qualifiee_requise(function):
     def wrap(request, entreprise, **kwargs):
         if caracteristiques := entreprise.dernieres_caracteristiques_qualifiantes:
             if caracteristiques != entreprise.caracteristiques_actuelles():
-                messages.warning(
+                url_qualification = reverse_lazy(
+                    "entreprises:qualification", args=[entreprise.id_public]
+                )
+                message_warning_avec_html(
                     request,
-                    f"Les informations affichées sont basées sur l'exercice comptable {caracteristiques.annee}. <a href='{reverse_lazy('entreprises:qualification', args=[entreprise.id_public])}'>Mettre à jour le profil de l'entreprise.</a>",
+                    t"Les informations affichées sont basées sur l'exercice comptable {caracteristiques.annee}. <a href='{url_qualification}'>Mettre à jour le profil de l'entreprise.</a>",
                 )
             return function(request, entreprise, **kwargs)
 
         else:
-            messages.warning(
+            message_warning_sans_html(
                 request,
                 "Votre profil entreprise est incomplet ou doit être mis à jour suite à l'évolution d'une réglementation. Complétez-le pour avoir accès à toutes les fonctionnalités de votre tableau de bord.",
             )

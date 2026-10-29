@@ -2,7 +2,6 @@ from functools import wraps
 from pathlib import Path
 
 from django.conf import settings
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import PermissionDenied
@@ -23,6 +22,9 @@ from habilitations.models import Habilitation
 from logs import event_logger
 from reglementations.utils import VSMEReglementation
 from reglementations.views import tableau_de_bord_menu_context
+from utils.messages import message_error_sans_html
+from utils.messages import message_info_sans_html
+from utils.messages import message_success_sans_html
 from utils.pptx import PPTX_CONTENT_TYPE
 from utils.pptx import pptx_bytes
 from utils.pptx import pptx_response
@@ -100,7 +102,7 @@ def categories_vsme(request, entreprise, annee=None):
 
     # Vérifier que l'année est valide pour cette entreprise
     if not annee_est_valide(annee, entreprise):
-        messages.error(
+        message_error_sans_html(
             request,
             f"L'année {annee} n'est pas valide pour un rapport VSME.",
         )
@@ -117,12 +119,12 @@ def categories_vsme(request, entreprise, annee=None):
         if partage_form.is_valid():
             email = partage_form.cleaned_data["email"]
             _envoie_partage_vsme_email(rapport_vsme, email)
-            messages.success(
+            message_success_sans_html(
                 request, f"Le rapport VSME a été envoyé à {escape(email)}."
             )
             return redirect(request.path)
         else:
-            messages.error(
+            message_error_sans_html(
                 request,
                 "Le rapport VSME n'a pas été envoyé car l'adresse e-mail n'est pas valide.",
             )
@@ -133,7 +135,7 @@ def categories_vsme(request, entreprise, annee=None):
     # On affiche le message si l'année n'est pas l'année par défaut
     # ou si l'utilisateur vient de créer un nouveau rapport
     if annee != annee_par_defaut or created:
-        messages.info(
+        message_info_sans_html(
             request,
             f"Vous travaillez sur le rapport VSME de l'exercice {entreprise.exercice_par_annee_cloture(annee).annees_formattees}.",
         )
@@ -287,7 +289,7 @@ def indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
                         data=multiform.cleaned_data,
                     )
                 indicateur.save()
-                messages.success(
+                message_success_sans_html(
                     request,
                     f"L'indicateur « {indicateur_schema["titre"]} » a bien été enregistré.",
                 )
@@ -397,7 +399,7 @@ def reinitialiser_indicateur_vsme(request, rapport_vsme, indicateur_schema_id):
     exigence_de_publication = ExigenceDePublication.par_indicateur_schema_id(
         indicateur_schema_id
     )
-    messages.success(
+    message_success_sans_html(
         request,
         f"L'indicateur « {indicateur_schema['titre']} » a bien été réinitialisé.",
     )
