@@ -7,8 +7,6 @@ from django.core.exceptions import ValidationError
 
 from .models import User
 from entreprises.forms import PreremplissageSirenForm
-from habilitations.models import FONCTIONS_MAX_LENGTH
-from habilitations.models import FONCTIONS_MIN_LENGTH
 from utils.anonymisation import cache_partiellement_un_email
 from utils.forms import DsfrForm
 
@@ -72,25 +70,6 @@ class UserPasswordForm(DsfrForm, forms.ModelForm):
         if commit:
             user.save()
         return user
-
-
-class UserCreationForm(UserPasswordForm, PreremplissageSirenForm):
-    fonctions = forms.CharField(
-        label="Fonction(s) dans la société",
-        min_length=FONCTIONS_MIN_LENGTH,
-        max_length=FONCTIONS_MAX_LENGTH,
-    )
-    acceptation_cgu = forms.BooleanField(
-        label="J’ai lu et j’accepte les CGU (Conditions Générales d'utilisation)",
-        required=True,
-    )
-
-    class Meta:
-        model = User
-        fields = ("email", "acceptation_cgu", "reception_actualites", "prenom", "nom")
-        labels = {
-            "reception_actualites": "Je souhaite recevoir les actualités du Portail RSE (optionnel)",
-        }
 
 
 def message_erreur_administrateurs(administrateurs_presents):

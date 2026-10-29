@@ -5,6 +5,7 @@ import pytest
 
 from entreprises.forms import EntrepriseQualificationForm
 from entreprises.forms import est_superieur
+from entreprises.forms import PreremplissageSirenForm
 from entreprises.models import CaracteristiquesAnnuelles
 
 
@@ -311,3 +312,10 @@ def test_validation_code_naf(code, validates):
     form = EntrepriseQualificationForm(data=data)
 
     assert form.is_valid() == validates, f"Validation incorrecte pour le code : {code}"
+
+
+def test_erreur_si_siren_invalide():
+    bound_form = PreremplissageSirenForm({"siren": "123456abc"})
+
+    assert not bound_form.is_valid()
+    assert bound_form.errors["siren"] == ["Le siren est incorrect"]
