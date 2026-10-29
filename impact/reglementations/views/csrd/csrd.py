@@ -5,7 +5,6 @@ from pathlib import Path
 
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import PermissionDenied
@@ -35,6 +34,7 @@ from reglementations.models import RapportCSRD
 from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
 from reglementations.views.base import ReglementationStatus
+from utils.messages import message_warning_sans_html
 from utils.xlsx import xlsx_response
 
 
@@ -530,7 +530,7 @@ def gestion_csrd(request, id_public=None, id_etape="introduction"):
     if not id_public:
         entreprise = get_current_entreprise(request)
         if not entreprise:
-            messages.warning(
+            message_warning_sans_html(
                 request,
                 "Commencez par ajouter une entreprise à votre compte utilisateur avant d'accéder à l'espace Rapport de Durabilité",
             )
@@ -605,7 +605,7 @@ def gestion_csrd(request, id_public=None, id_etape="introduction"):
             if not csrd.exists():
                 # pas de rapport existant créé par un administrateur :
                 # on notifie et on bloque l'accès
-                messages.warning(
+                message_warning_sans_html(
                     request,
                     "Il n'y a pas encore de rapport CSRD créé pour cette année (possible uniquement en ayant le rôle administrateur).",
                 )

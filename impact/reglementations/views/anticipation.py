@@ -1,4 +1,3 @@
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
@@ -7,6 +6,7 @@ from .toutes_reglementations import etats_reglementations_selon_caracteristiques
 from entreprises.decorators import entreprise_requise
 from logs import log_path
 from reglementations.forms.anticipation import AnticipationForm
+from utils.messages import message_error_sans_html
 
 
 @login_required
@@ -28,7 +28,7 @@ def anticiper(request, entreprise):
                 context=context,
             )
         else:
-            messages.error(
+            message_error_sans_html(
                 request,
                 "Impossible de finaliser cet essai car le formulaire contient des erreurs.",
             )

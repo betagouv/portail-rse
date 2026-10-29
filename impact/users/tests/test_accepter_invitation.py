@@ -1,3 +1,5 @@
+import html
+
 import pytest
 from django.urls import reverse
 
@@ -66,7 +68,9 @@ def test_acceptation_cree_habilitation(client, utilisateur_invite, invitation):
             302,
         )
     ]
-    assert "Vous êtes maintenant ajouté à l'entreprise" in response.content.decode()
+    assert "Vous êtes maintenant ajouté à l'entreprise" in html.unescape(
+        response.content.decode()
+    )
 
 
 @pytest.mark.django_db

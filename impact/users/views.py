@@ -1,6 +1,5 @@
 import django.utils.http
 from django.conf import settings
-from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import (
@@ -29,6 +28,9 @@ from habilitations.views import cree_invitation
 from invitations.models import Invitation
 from logs import event_logger as logger
 from reglementations.views import calculer_metriques_entreprise
+from utils.messages import message_error_sans_html
+from utils.messages import message_success_sans_html
+from utils.messages import message_warning_sans_html
 from utils.tokens import check_token
 from utils.tokens import make_token
 from utils.tokens import uidb64
@@ -75,7 +77,7 @@ def confirm_email(request, uidb64, token):
         user.is_email_confirmed = True
         user.save()
         success_message = "Votre adresse e-mail a bien été confirmée. Vous pouvez à présent vous connecter."
-        messages.success(request, success_message)
+        message_success_sans_html(request, success_message)
         return redirect("users:login")
     raise BadRequest("Le lien de confirmation est invalide.")
 
@@ -99,7 +101,7 @@ def invitation(request, id_invitation, code):
         raise BadRequest("Cette invitation est incorrecte.")
 
     if invitation.date_acceptation:
-        messages.warning(request, "Cette invitation a déjà été acceptée.")
+        message_warning_sans_html(request, "Cette invitation a déjà été acceptée.")
         return redirect(
             "reglementations:tableau_de_bord", invitation.entreprise.id_public
         )
@@ -156,7 +158,7 @@ def account(request):
     if request.POST:
         if request.POST["action"] == "update-password":
             if request.user.email == settings.USER_TEST_EMAIL:
-                messages.error(
+                message_error_sans_html(
                     request,
                     "Cette modification est interdite pour ce compte de test.",
                 )
@@ -167,13 +169,13 @@ def account(request):
                 success_message = (
                     "Votre mot de passe a bien été modifié. Veuillez vous reconnecter."
                 )
-                messages.success(request, success_message)
+                message_success_sans_html(request, success_message)
                 return redirect("users:account")
             else:
                 error_message = (
                     "La modification a échoué car le formulaire contient des erreurs."
                 )
-                messages.error(request, error_message)
+                message_error_sans_html(request, error_message)
         else:
             if request.user.created_with_oidc:
                 account_form = ProconnectUserEditionForm(
@@ -191,13 +193,13 @@ def account(request):
                     logout(request)
                 else:
                     success_message = "Votre compte a bien été modifié."
-                messages.success(request, success_message)
+                message_success_sans_html(request, success_message)
                 return redirect("users:account")
             else:
                 error_message = (
                     "La modification a échoué car le formulaire contient des erreurs."
                 )
-                messages.error(request, error_message)
+                message_error_sans_html(request, error_message)
     return render(
         request,
         "users/account.html",
@@ -209,7 +211,7 @@ class PasswordResetView(BasePasswordResetView):
     def form_valid(self, form):
         response = super().form_valid(form)
         success_message = "Un lien de ré-initialisation de votre mot de passe vous a été envoyé par e-mail. Vous devriez le recevoir d'ici quelques minutes."
-        messages.success(self.request, success_message)
+        message_success_sans_html(self.request, success_message)
         return response
 
 
@@ -217,7 +219,7 @@ class PasswordResetConfirmView(BasePasswordResetConfirmView):
     def form_valid(self, form):
         response = super().form_valid(form)
         success_message = "Votre mot de passe a été réinitialisé avec succès. Vous pouvez à présent vous connecter."
-        messages.success(self.request, success_message)
+        message_success_sans_html(self.request, success_message)
         return response
 
     def form_invalid(self, form):
@@ -225,7 +227,7 @@ class PasswordResetConfirmView(BasePasswordResetConfirmView):
         error_message = (
             "La réinitialisation a échoué car le formulaire contient des erreurs."
         )
-        messages.error(self.request, error_message)
+        message_error_sans_html(self.request, error_message)
         return response
 
 
@@ -270,7 +272,7 @@ def choix_type_utilisateur(request):
                 request.user.is_conseiller_rse = True
                 request.user.fonction_rse = form.cleaned_data["fonction_rse"]
                 request.user.save()
-                messages.success(
+                message_success_sans_html(
                     request,
                     "Vous êtes maintenant identifié comme conseiller RSE.",
                 )
@@ -297,7 +299,7 @@ def tableau_de_bord_conseiller(request):
     """
     # Vérifier que l'utilisateur est bien un conseiller RSE
     if not request.user.is_conseiller_rse:
-        messages.error(
+        message_error_sans_html(
             request,
             "Vous devez être identifié comme conseiller RSE pour accéder à cette page.",
         )
@@ -338,7 +340,7 @@ def tableau_de_bord_conseiller(request):
 
                     # Vérifier si le conseiller n'est pas déjà rattaché
                     if Habilitation.existe(entreprise, request.user):
-                        messages.warning(
+                        message_warning_sans_html(
                             request,
                             f"Vous êtes déjà rattaché à l'entreprise {entreprise.denomination}.",
                         )
@@ -346,7 +348,7 @@ def tableau_de_bord_conseiller(request):
 
                     # CAS 1a : A un administrateur → pas de rattachement
                     if entreprise.administrateurs:
-                        messages.error(
+                        message_error_sans_html(
                             request,
                             f"Vous n'avez pas été rattaché à l'entreprise {entreprise.denomination} car un compte y est déjà attachée. Demandez à votre client de vous inviter sur l'entreprise.",
                         )
@@ -368,7 +370,7 @@ def tableau_de_bord_conseiller(request):
                             UserRole.ADMINISTRATEUR,
                             template_id=settings.BREVO_INVITATION_CONSEILLER_RSE_TEMPLATE,
                         )
-                        messages.success(
+                        message_success_sans_html(
                             request,
                             f"Vous avez été rattaché à l'entreprise {entreprise.denomination}. "
                             f"Une invitation a été envoyée à {email_administrateur} pour devenir administrateur.",
@@ -392,7 +394,7 @@ def tableau_de_bord_conseiller(request):
                         UserRole.ADMINISTRATEUR,
                         template_id=settings.BREVO_INVITATION_CONSEILLER_RSE_TEMPLATE,
                     )
-                    messages.success(
+                    message_success_sans_html(
                         request,
                         f"L'entreprise {entreprise.denomination} a été créée. "
                         f"Une invitation a été envoyée à {email_administrateur} pour devenir administrateur.",
@@ -400,11 +402,11 @@ def tableau_de_bord_conseiller(request):
                     return redirect("users:tableau_de_bord_conseiller")
 
             except APIError as exception:
-                messages.error(request, str(exception))
+                message_error_sans_html(request, str(exception))
             except HabilitationError as exception:
-                messages.error(request, str(exception))
+                message_error_sans_html(request, str(exception))
         else:
-            messages.error(request, "Le formulaire est incomplet.")
+            message_error_sans_html(request, "Le formulaire est incomplet.")
     else:
         form = AjoutEntrepriseConseillerForm()
 
@@ -445,7 +447,7 @@ def accepter_invitation(request, id_invitation, code):
         raise BadRequest("Cette invitation ne correspond pas à votre adresse e-mail.")
 
     if invitation.date_acceptation:
-        messages.warning(
+        message_warning_sans_html(
             request,
             "Cette invitation a déjà été acceptée.",
         )
@@ -461,7 +463,7 @@ def accepter_invitation(request, id_invitation, code):
         request.user.save()
 
     invitation.accepter(request.user)
-    messages.success(
+    message_success_sans_html(
         request,
         f"Vous êtes maintenant ajouté à l'entreprise {invitation.entreprise.denomination}.",
     )

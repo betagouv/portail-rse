@@ -1,6 +1,5 @@
 import sentry_sdk
 from django.conf import settings
-from django.contrib import messages
 from django.core.exceptions import SuspiciousOperation
 from django.core.mail import EmailMessage
 from django.http.response import HttpResponseBadRequest
@@ -16,6 +15,7 @@ from habilitations.enums import UserRole
 from habilitations.models import Habilitation
 from logs import event_logger as logger
 from utils.anonymisation import cache_partiellement_un_email
+from utils.messages import message_success_sans_html
 
 
 class OIDCAuthenticationCallbackView(CallbackView):
@@ -94,7 +94,7 @@ def proconnect_dispatch_view(request):
         # on peut directement rediriger vers le tableau de bord
         request.session["entreprise"] = entreprise.id
         request.session.save()
-        messages.success(
+        message_success_sans_html(
             request,
             f"Vous avez choisi de vous connecter via ProConnect avec : {entreprise}.",
         )
