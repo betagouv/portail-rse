@@ -141,7 +141,8 @@ class Command(BaseCommand):
                     if caracteristiques
                     else entreprise.updated_at
                 ),
-                siren=entreprise.siren,
+                code_pays=entreprise.code_pays,
+                identifiant=entreprise.identifiant,
                 denomination=entreprise.denomination,
                 date_cloture_exercice=(
                     caracteristiques.date_cloture_exercice if caracteristiques else None

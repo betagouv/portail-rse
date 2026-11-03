@@ -133,7 +133,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
     assert metabase_entreprise.pk == metabase_entreprise.impact_id == entreprise.pk
     assert metabase_entreprise.ajoutee_le == date_creation
     assert metabase_entreprise.modifiee_le == date_troisieme_evolution
-    assert metabase_entreprise.siren == "000000001"
+    assert metabase_entreprise.identifiant == "000000001"
     assert metabase_entreprise.denomination == "Entreprise A"
     assert metabase_entreprise.categorie_juridique == "SOCIETE_ANONYME"
     assert metabase_entreprise.pays == "Portugal"
@@ -220,7 +220,7 @@ def test_synchronise_une_entreprise_plusieurs_fois(entreprise_factory):
     assert MetabaseEntreprise.objects.count() == 1
     metabase_entreprise = MetabaseEntreprise.objects.first()
     assert metabase_entreprise.impact_id == entreprise.pk
-    assert metabase_entreprise.siren == "000000001"
+    assert metabase_entreprise.identifiant == "000000001"
     assert metabase_entreprise.denomination == "Entreprise A"
 
 
@@ -234,7 +234,7 @@ def test_synchronise_une_entreprise_sans_caracteristiques_annuelles():
 
     metabase_entreprise = MetabaseEntreprise.objects.first()
     assert metabase_entreprise.denomination == "Entreprise SAS"
-    assert metabase_entreprise.siren == "000000001"
+    assert metabase_entreprise.identifiant == "000000001"
     assert metabase_entreprise.date_cloture_exercice is None
     assert metabase_entreprise.effectif is None
     assert metabase_entreprise.effectif_securite_sociale is None
@@ -242,6 +242,31 @@ def test_synchronise_une_entreprise_sans_caracteristiques_annuelles():
     assert metabase_entreprise.tranche_chiffre_affaires is None
     assert metabase_entreprise.tranche_bilan is None
     assert metabase_entreprise.bdese_accord is None
+
+
+@pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
+def test_synchronise_le_code_pays_et_l_identifiant_des_entreprises():
+    Entreprise.objects.create(siren="123456789", denomination="Entreprise SAS")
+    Entreprise.objects.create(
+        code_pays="MAR", identifiant="123456789000012", denomination="Entreprise SARL"
+    )
+    Entreprise.objects.create(
+        code_pays="DEU", identifiant="123456789", denomination="Entreprise GmbH"
+    )
+
+    call_command("sync_metabase")
+
+    assert MetabaseEntreprise.objects.get(denomination="Entreprise SAS").code_pays == "FRA"
+    metabase_entreprise = MetabaseEntreprise.objects.get(
+        denomination="Entreprise SARL"
+    )
+    assert metabase_entreprise.code_pays == "MAR"
+    assert metabase_entreprise.identifiant == "123456789000012"
+    metabase_entreprise = MetabaseEntreprise.objects.get(
+        denomination="Entreprise GmbH"
+    )
+    assert metabase_entreprise.code_pays == "DEU"
+    assert metabase_entreprise.identifiant == "123456789"
 
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
@@ -416,13 +441,13 @@ def test_synchronise_les_reglementations_BDESE(
     assert MetabaseBDESE.objects.count() == 4
 
     metabase_bdese_entreprise_non_soumise = MetabaseBDESE.objects.get(
-        entreprise__siren=entreprise_non_soumise.siren
+        entreprise__identifiant=entreprise_non_soumise.identifiant
     )
     assert not metabase_bdese_entreprise_non_soumise.est_soumise
     assert metabase_bdese_entreprise_non_soumise.statut is None
 
     metabase_bdese_entreprise_soumise_a_actualiser = MetabaseBDESE.objects.get(
-        entreprise__siren=entreprise_soumise_a_actualiser.siren
+        entreprise__identifiant=entreprise_soumise_a_actualiser.identifiant
     )
     assert metabase_bdese_entreprise_soumise_a_actualiser.est_soumise
     assert (
@@ -431,7 +456,7 @@ def test_synchronise_les_reglementations_BDESE(
     )
 
     metabase_bdese_entreprise_soumise_en_cours = MetabaseBDESE.objects.get(
-        entreprise__siren=entreprise_soumise_en_cours.siren
+        entreprise__identifiant=entreprise_soumise_en_cours.identifiant
     )
     assert metabase_bdese_entreprise_soumise_en_cours.est_soumise
     assert (
@@ -440,7 +465,7 @@ def test_synchronise_les_reglementations_BDESE(
     )
 
     metabase_bdese_entreprise_soumise_a_jour = MetabaseBDESE.objects.get(
-        entreprise__siren=entreprise_soumise_a_jour.siren
+        entreprise__identifiant=entreprise_soumise_a_jour.identifiant
     )
     assert metabase_bdese_entreprise_soumise_a_jour.est_soumise
     assert (
@@ -475,14 +500,14 @@ def test_synchronise_les_reglementations_IndexEgaPro(
     assert MetabaseIndexEgaPro.objects.count() == 3
 
     metabase_index_egapro_entreprise_non_soumise = MetabaseIndexEgaPro.objects.get(
-        entreprise__siren=entreprise_non_soumise.siren
+        entreprise__identifiant=entreprise_non_soumise.identifiant
     )
     assert not metabase_index_egapro_entreprise_non_soumise.est_soumise
     assert metabase_index_egapro_entreprise_non_soumise.statut is None
 
     metabase_index_egapro_entreprise_soumise_a_actualiser = (
         MetabaseIndexEgaPro.objects.get(
-            entreprise__siren=entreprise_soumise_a_actualiser.siren
+            entreprise__identifiant=entreprise_soumise_a_actualiser.identifiant
         )
     )
     assert metabase_index_egapro_entreprise_soumise_a_actualiser.est_soumise
@@ -492,7 +517,7 @@ def test_synchronise_les_reglementations_IndexEgaPro(
     )
 
     metabase_index_egapro_entreprise_soumise_a_jour = MetabaseIndexEgaPro.objects.get(
-        entreprise__siren=entreprise_soumise_a_jour.siren
+        entreprise__identifiant=entreprise_soumise_a_jour.identifiant
     )
     assert metabase_index_egapro_entreprise_soumise_a_jour.est_soumise
     assert (
@@ -529,13 +554,13 @@ def test_synchronise_les_reglementations_BGES(
     assert MetabaseBGES.objects.count() == 3
 
     metabase_bges_entreprise_non_soumise = MetabaseBGES.objects.get(
-        entreprise__siren=entreprise_non_soumise.siren
+        entreprise__identifiant=entreprise_non_soumise.identifiant
     )
     assert not metabase_bges_entreprise_non_soumise.est_soumise
     assert metabase_bges_entreprise_non_soumise.statut is None
 
     metabase_bges_entreprise_soumise_a_actualiser = MetabaseBGES.objects.get(
-        entreprise__siren=entreprise_soumise_a_actualiser.siren
+        entreprise__identifiant=entreprise_soumise_a_actualiser.identifiant
     )
     assert metabase_bges_entreprise_soumise_a_actualiser.est_soumise
     assert (
@@ -544,7 +569,7 @@ def test_synchronise_les_reglementations_BGES(
     )
 
     metabase_bges_entreprise_soumise_a_jour = MetabaseBGES.objects.get(
-        entreprise__siren=entreprise_soumise_a_jour.siren
+        entreprise__identifiant=entreprise_soumise_a_jour.identifiant
     )
     assert metabase_bges_entreprise_soumise_a_jour.est_soumise
     assert metabase_bges_entreprise_soumise_a_jour.statut == MetabaseBGES.STATUT_A_JOUR
@@ -593,7 +618,7 @@ def test_synchronise_les_rapports_VSME_de_différentes_entreprises(
     assert MetabaseVSME.objects.count() == 3
 
     metabase_vsme_vide = MetabaseVSME.objects.get(
-        entreprise__siren=entreprise_avec_vsme_vide.siren
+        entreprise__identifiant=entreprise_avec_vsme_vide.identifiant
     )
     assert metabase_vsme_vide.annee_cloture == 2024
     assert metabase_vsme_vide.cree_le
@@ -607,7 +632,7 @@ def test_synchronise_les_rapports_VSME_de_différentes_entreprises(
         assert getattr(metabase_vsme_vide, f"progression_{code}") == 0
 
     metabase_vsme_commencee = MetabaseVSME.objects.get(
-        entreprise__siren=entreprise_avec_vsme_commencee.siren
+        entreprise__identifiant=entreprise_avec_vsme_commencee.identifiant
     )
     assert (
         metabase_vsme_commencee.premier_indicateur_cree_le
@@ -621,7 +646,7 @@ def test_synchronise_les_rapports_VSME_de_différentes_entreprises(
     assert metabase_vsme_commencee.progression_B2 == 0
 
     metabase_vsme_terminee = MetabaseVSME.objects.get(
-        entreprise__siren=entreprise_avec_vsme_terminee.siren
+        entreprise__identifiant=entreprise_avec_vsme_terminee.identifiant
     )
     assert (
         metabase_vsme_terminee.premier_indicateur_cree_le
@@ -910,7 +935,7 @@ def test_synchronise_les_analyses_ia(entreprise_factory, alice):
     metabase_analyse = MetabaseAnalyseIA.objects.get(impact_id=analyse.id)
     assert metabase_analyse.ajoutee_le
     assert metabase_analyse.modifiee_le
-    assert metabase_analyse.entreprise.siren == analyse.entreprise.siren
+    assert metabase_analyse.entreprise.identifiant == analyse.entreprise.identifiant
     assert metabase_analyse.nom_fichier == "fichier.pdf"
     assert not metabase_analyse.csrd
     assert not metabase_analyse.etat_v1
@@ -925,7 +950,10 @@ def test_synchronise_les_analyses_ia(entreprise_factory, alice):
     metabase_analyse_csrd = MetabaseAnalyseIA.objects.get(
         impact_id=analyse_avec_csrd.id
     )
-    assert metabase_analyse_csrd.entreprise.siren == analyse_avec_csrd.entreprise.siren
+    assert (
+        metabase_analyse_csrd.entreprise.identifiant
+        == analyse_avec_csrd.entreprise.identifiant
+    )
     assert metabase_analyse_csrd.csrd
 
     metabase_analyse_reussie = MetabaseAnalyseIA.objects.get(
