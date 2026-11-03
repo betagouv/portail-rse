@@ -43,7 +43,7 @@ def test_rattachement_entreprise_existante_avec_administrateur(
     client, conseiller_rse, alice, entreprise_factory
 ):
     """Un conseiller ne peut pas se rattacher a une entreprise existante avec administrateur."""
-    entreprise = entreprise_factory(siren="123456789")
+    entreprise = entreprise_factory(identifiant="123456789")
     Habilitation.ajouter(entreprise, alice, UserRole.ADMINISTRATEUR)
 
     client.force_login(conseiller_rse)
@@ -71,7 +71,7 @@ def test_rattachement_entreprise_sans_administrateur_sans_email_echoue(
     client, conseiller_rse, entreprise_factory
 ):
     """Le rattachement sans email echoue si l'entreprise n'a pas d'administrateur."""
-    entreprise = entreprise_factory(siren="234567890")
+    entreprise = entreprise_factory(identifiant="234567890")
     # Pas d'administrateur ajoute
 
     client.force_login(conseiller_rse)
@@ -94,7 +94,7 @@ def test_rattachement_entreprise_sans_administrateur_avec_email_reussit(
     mock_email, client, conseiller_rse, entreprise_factory
 ):
     """Le rattachement reussit avec email si l'entreprise n'a pas d'administrateur."""
-    entreprise = entreprise_factory(siren="345678901")
+    entreprise = entreprise_factory(identifiant="345678901")
     # Pas d'administrateur ajoute
 
     client.force_login(conseiller_rse)
@@ -133,7 +133,7 @@ def test_creation_entreprise_reussie(
     mock_email, mock_search, client, conseiller_rse, entreprise_factory
 ):
     """Un conseiller peut creer une entreprise pour un tiers."""
-    entreprise = entreprise_factory(siren="111222333")
+    entreprise = entreprise_factory(identifiant="111222333")
     mock_search.return_value = entreprise
 
     client.force_login(conseiller_rse)
@@ -170,7 +170,7 @@ def test_email_invitation_envoye_avec_bonnes_donnees(
     client, conseiller_rse, entreprise_factory, mailoutbox
 ):
     """L'email d'invitation est envoyé avec les bonnes données (sans mock)."""
-    entreprise = entreprise_factory(siren="111000111")
+    entreprise = entreprise_factory(identifiant="111000111")
     # Pas d'administrateur
 
     client.force_login(conseiller_rse)
@@ -201,7 +201,7 @@ def test_email_invitation_nouvel_utilisateur_route_proconnect(
     client, conseiller_rse, entreprise_factory, mailoutbox
 ):
     """L'URL dans l'email pointe vers la landing ProConnect pour un nouvel utilisateur."""
-    entreprise = entreprise_factory(siren="333000333")
+    entreprise = entreprise_factory(identifiant="333000333")
 
     client.force_login(conseiller_rse)
     client.post(
@@ -227,7 +227,7 @@ def test_contenu_email_variables_template(
     client, conseiller_rse, entreprise_factory, mailoutbox
 ):
     """Les variables du template email sont les mêmes que pour l'invitation standard."""
-    entreprise = entreprise_factory(siren="444000444")
+    entreprise = entreprise_factory(identifiant="444000444")
 
     client.force_login(conseiller_rse)
     client.post(

@@ -64,10 +64,10 @@ def test_get_current_entreprise_avec_utilisateur_rattache_a_une_entreprise(
 
 
 def test_get_current_entreprise_avec_utilisateur_rattache_a_plusieurs_entreprise(
-    client, alice, entreprise_factory
+    client, alice, entreprise_unique_factory
 ):
-    entreprise1 = entreprise_factory(siren="000000001")
-    entreprise2 = entreprise_factory(siren="000000002")
+    entreprise1 = entreprise_unique_factory()
+    entreprise2 = entreprise_unique_factory()
     Habilitation.ajouter(entreprise1, alice, fonctions="Présidente")
     Habilitation.ajouter(entreprise2, alice, fonctions="Présidente")
     client.force_login(alice)

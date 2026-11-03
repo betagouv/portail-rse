@@ -18,11 +18,11 @@ def test_import_des_contacts(
     alice.save()
     Habilitation.ajouter(entreprise_non_qualifiee, alice, fonctions="Présidente")
     entreprise_non_qualifiee_2 = entreprise_factory(
-        siren="111111111", denomination="Artisans", tranche_bilan=None
+        identifiant="111111111", denomination="Artisans", tranche_bilan=None
     )
     Habilitation.ajouter(entreprise_non_qualifiee_2, alice, fonctions="Présidente")
     entreprise_qualifiee = entreprise_factory(
-        siren="222222222", denomination="Coopérative"
+        identifiant="222222222", denomination="Coopérative"
     )
     Habilitation.ajouter(
         entreprise_qualifiee, alice, fonctions="Présidente", role=UserRole.CONTRIBUTEUR

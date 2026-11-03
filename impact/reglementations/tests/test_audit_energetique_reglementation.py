@@ -17,7 +17,7 @@ def test_reglementation_info():
 
 def test_est_suffisamment_qualifiee(entreprise_factory):
     entreprise = entreprise_factory(
-        siren="000000001",
+        identifiant="000000001",
         tranche_consommation_energie_finale=CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     )
     caracteristiques = entreprise.dernieres_caracteristiques
@@ -32,7 +32,7 @@ def test_n_est_pas_suffisamment_qualifiee_car_sans_tranche_energie(
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
-        siren="000000001",
+        identifiant="000000001",
         tranche_consommation_energie_finale=None,
     )
     caracteristiques = entreprise.dernieres_caracteristiques
@@ -45,7 +45,7 @@ def test_n_est_pas_suffisamment_qualifiee_car_sans_tranche_energie(
 
 def test_calcule_statut_moins_de_2_75GWH(entreprise_factory):
     entreprise = entreprise_factory(
-        siren="000000001",
+        identifiant="000000001",
         tranche_consommation_energie_finale=CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_MOINS_DE_2_75GWH,
     )
 
@@ -62,7 +62,7 @@ def test_calcule_statut_moins_de_2_75GWH(entreprise_factory):
 
 def test_calcule_statut_entre_2_75GWH_et_23_6GWH(entreprise_factory):
     entreprise = entreprise_factory(
-        siren="000000001",
+        identifiant="000000001",
         tranche_consommation_energie_finale=CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_ENTRE_2_75GWH_ET_23_6GWH,
     )
 
@@ -87,7 +87,7 @@ def test_calcule_statut_entre_2_75GWH_et_23_6GWH(entreprise_factory):
 
 def test_calcule_statut_plus_de_23_6GWH(entreprise_factory):
     entreprise = entreprise_factory(
-        siren="000000001",
+        identifiant="000000001",
         tranche_consommation_energie_finale=CaracteristiquesAnnuelles.CONSOMMATION_ENERGIE_23_6GWH_ET_PLUS,
     )
 

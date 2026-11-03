@@ -35,7 +35,7 @@ def test_proconnect_dispatch_view_ajoute_l_habilitation_à_l_entreprise_déjà_e
     client, entreprise_factory, alice_sur_proconnect
 ):
     siren = "123456789"
-    entreprise = entreprise_factory(siren=siren)
+    entreprise = entreprise_factory(identifiant=siren)
     session = client.session
     session["oidc_user_claims"] = {
         "sub": alice_sur_proconnect.oidc_sub_id,
@@ -56,7 +56,7 @@ def test_proconnect_dispatch_view_ne_fait_que_rediriger_si_habilitation_et_entre
     client, entreprise_factory, alice_sur_proconnect
 ):
     siren = "123456789"
-    entreprise = entreprise_factory(siren=siren)
+    entreprise = entreprise_factory(identifiant=siren)
     Habilitation.ajouter(entreprise, alice_sur_proconnect)
     session = client.session
     session["oidc_user_claims"] = {
@@ -79,7 +79,7 @@ def test_proconnect_dispatch_view_crée_une_habilitation_contributeur_si_adminis
 ):
     siren = "123456789"
     denomination = "Entreprise de Bob et Carole"
-    entreprise = entreprise_factory(siren=siren, denomination=denomination)
+    entreprise = entreprise_factory(identifiant=siren, denomination=denomination)
     Habilitation.ajouter(entreprise, bob)
     Habilitation.ajouter(entreprise, carole)
     session = client.session

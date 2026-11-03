@@ -172,9 +172,9 @@ def test_invitation_depuis_autre_entreprise(
 def test_attaque_reelle_avec_session_etablie(
     client, alice, bob, entreprise_unique_factory
 ):
-    entreprise_alice = entreprise_unique_factory(siren="111111111")
+    entreprise_alice = entreprise_unique_factory(identifiant="111111111")
     Habilitation.ajouter(entreprise_alice, alice, role=UserRole.ADMINISTRATEUR)
-    entreprise_bob = entreprise_unique_factory(siren="222222222")
+    entreprise_bob = entreprise_unique_factory(identifiant="222222222")
     Habilitation.ajouter(entreprise_bob, bob, role=UserRole.ADMINISTRATEUR)
 
     client.force_login(alice)
@@ -207,10 +207,10 @@ def test_attaque_reelle_avec_session_etablie(
 def test_attaque_gerer_habilitation_autre_entreprise(
     client, alice, bob, entreprise_unique_factory
 ):
-    entreprise_alice = entreprise_unique_factory(siren="333333333")
+    entreprise_alice = entreprise_unique_factory(identifiant="333333333")
     Habilitation.ajouter(entreprise_alice, alice, role=UserRole.ADMINISTRATEUR)
 
-    entreprise_bob = entreprise_unique_factory(siren="444444444")
+    entreprise_bob = entreprise_unique_factory(identifiant="444444444")
     Habilitation.ajouter(entreprise_bob, bob, role=UserRole.ADMINISTRATEUR)
 
     jane = User.objects.create(

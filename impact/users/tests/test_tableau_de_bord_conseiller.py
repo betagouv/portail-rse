@@ -30,8 +30,8 @@ def test_tableau_de_bord_conseiller_affiche_entreprises_en_gestion(
     client, conseiller_rse, entreprise_factory
 ):
     """Le tableau de bord affiche les entreprises en gestion du conseiller."""
-    entreprise1 = entreprise_factory(siren="123456789")
-    entreprise2 = entreprise_factory(siren="987654321")
+    entreprise1 = entreprise_factory(identifiant="123456789")
+    entreprise2 = entreprise_factory(identifiant="987654321")
 
     Habilitation.ajouter(entreprise1, conseiller_rse, UserRole.CONTRIBUTEUR)
     Habilitation.ajouter(entreprise2, conseiller_rse, UserRole.CONTRIBUTEUR)
@@ -49,7 +49,7 @@ def test_rattachement_entreprise_existante_avec_administrateur(
     client, conseiller_rse, alice, entreprise_factory
 ):
     """Un conseiller ne peut pas se rattacher à une entreprise avec un administrateur."""
-    entreprise = entreprise_factory(siren="123456789")
+    entreprise = entreprise_factory(identifiant="123456789")
     Habilitation.ajouter(entreprise, alice, UserRole.ADMINISTRATEUR)
 
     client.force_login(conseiller_rse)
@@ -97,7 +97,7 @@ def test_rattachement_entreprise_sans_administrateur(
     client, conseiller_rse, entreprise_factory
 ):
     """Un conseiller peut se rattacher à une entreprise sans administrateur."""
-    entreprise = entreprise_factory(siren="123456789")
+    entreprise = entreprise_factory(identifiant="123456789")
     # Aucun administrateur ajouté
 
     client.force_login(conseiller_rse)
@@ -123,7 +123,7 @@ def test_rattachement_entreprise_sans_administrateur(
 
 def test_rattachement_deja_existant(client, conseiller_rse, alice, entreprise_factory):
     """Un conseiller ne peut pas se rattacher deux fois à la même entreprise."""
-    entreprise = entreprise_factory(siren="123456789")
+    entreprise = entreprise_factory(identifiant="123456789")
     Habilitation.ajouter(entreprise, alice, UserRole.ADMINISTRATEUR)
     Habilitation.ajouter(entreprise, conseiller_rse, UserRole.CONTRIBUTEUR)
 
@@ -144,7 +144,7 @@ def test_lien_espace_conseiller_visible_pour_conseiller(
     client, conseiller_rse, entreprise_factory, alice
 ):
     """Le lien 'Espace conseillers RSE' est visible dans l'entête pour un conseiller RSE."""
-    entreprise = entreprise_factory(siren="123456789")
+    entreprise = entreprise_factory(identifiant="123456789")
     Habilitation.ajouter(entreprise, alice, UserRole.ADMINISTRATEUR)
     # Le conseiller doit aussi être rattaché à l'entreprise pour accéder au tableau de bord
     Habilitation.ajouter(entreprise, conseiller_rse, UserRole.CONTRIBUTEUR)
@@ -166,7 +166,7 @@ def test_lien_espace_conseiller_invisible_pour_non_conseiller(
     client, alice, entreprise_factory
 ):
     """Le lien 'Espace conseillers RSE' n'est pas visible pour un utilisateur non-conseiller."""
-    entreprise = entreprise_factory(siren="123456789")
+    entreprise = entreprise_factory(identifiant="123456789")
     Habilitation.ajouter(entreprise, alice, UserRole.ADMINISTRATEUR)
 
     client.force_login(alice)

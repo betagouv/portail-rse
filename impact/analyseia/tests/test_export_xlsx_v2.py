@@ -162,7 +162,7 @@ def test_telechargement_des_resultats_IA_d_un_document_inexistant(
 def test_telechargement_des_resultats_IA_d_un_document_redirige_vers_la_connexion_si_non_connecté(
     client, entreprise_factory, alice, analyse
 ):
-    entreprise = entreprise_factory(siren="000000089", utilisateur=alice)
+    entreprise = entreprise_factory(identifiant="000000089", utilisateur=alice)
 
     response = client.get(
         reverse("analyseia:resultat_v2", args=[analyse.id]),

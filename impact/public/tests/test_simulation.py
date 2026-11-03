@@ -39,7 +39,7 @@ from conftest import CODE_PAYS_PORTUGAL
 @pytest.fixture
 def entreprise(db, alice, entreprise_factory):
     entreprise = entreprise_factory(
-        siren="000000001",
+        identifiant="000000001",
         denomination="Entreprise SAS",
         effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10,
     )

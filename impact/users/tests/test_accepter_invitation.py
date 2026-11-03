@@ -21,7 +21,7 @@ def utilisateur_invite(django_user_model):
 
 @pytest.fixture(params=[UserRole.ADMINISTRATEUR, UserRole.CONTRIBUTEUR])
 def invitation(request, entreprise_factory, conseiller_rse):
-    entreprise = entreprise_factory(siren="123456789")
+    entreprise = entreprise_factory(identifiant="123456789")
     Habilitation.ajouter(entreprise, conseiller_rse, UserRole.CONTRIBUTEUR)
 
     return Invitation.objects.create(

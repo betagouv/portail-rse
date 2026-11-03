@@ -9,10 +9,10 @@ from habilitations.models import Habilitation
 
 @pytest.mark.django_db
 def test_habilitation_sans_requete_supplementaire(
-    alice, entreprise_factory, django_assert_num_queries
+    alice, entreprise_unique_factory, django_assert_num_queries
 ):
-    entreprise_1 = entreprise_factory(siren="000000001")
-    entreprise_2 = entreprise_factory(siren="000000002")
+    entreprise_1 = entreprise_unique_factory()
+    entreprise_2 = entreprise_unique_factory()
     Habilitation.ajouter(entreprise_1, alice, role=UserRole.ADMINISTRATEUR)
     Habilitation.ajouter(entreprise_2, alice, role=UserRole.LECTEUR)
 

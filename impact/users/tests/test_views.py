@@ -422,7 +422,7 @@ def test_page_invitation_redirige_vers_proconnect(client, entreprise_factory):
 
 
 def test_erreur_page_invitation_car_invitation_n_existe_pas(client, entreprise_factory):
-    entreprise = entreprise_factory(siren="130025265")  # Dinum
+    entreprise = entreprise_factory(identifiant="130025265")  # Dinum
     now = datetime(2025, 5, 9, 14, 30, tzinfo=timezone.utc)
 
     response = client.get(f"/invitation/42/CODE")
@@ -433,7 +433,7 @@ def test_erreur_page_invitation_car_invitation_n_existe_pas(client, entreprise_f
 
 
 def test_erreur_page_invitation_car_invitation_expirée(client, entreprise_factory):
-    entreprise = entreprise_factory(siren="130025265")  # Dinum
+    entreprise = entreprise_factory(identifiant="130025265")  # Dinum
     now = datetime(2025, 5, 9, 14, 30, tzinfo=timezone.utc)
     with freeze_time(now):
         invitation = Invitation.objects.create(
@@ -452,7 +452,7 @@ def test_erreur_page_invitation_car_invitation_expirée(client, entreprise_facto
 def test_invitation_utilisateur_connecté_redirige_vers_acceptation(
     client, alice, entreprise_factory
 ):
-    entreprise = entreprise_factory(siren="130025265")
+    entreprise = entreprise_factory(identifiant="130025265")
     invitation = Invitation.objects.create(entreprise=entreprise, email=alice.email)
     CODE = make_token(invitation, "invitation")
     client.force_login(alice)
@@ -468,7 +468,7 @@ def test_invitation_utilisateur_connecté_redirige_vers_acceptation(
 def test_invitation_utilisateur_connecté_mauvais_email(
     client, alice, entreprise_factory
 ):
-    entreprise = entreprise_factory(siren="130025265")
+    entreprise = entreprise_factory(identifiant="130025265")
     invitation = Invitation.objects.create(
         entreprise=entreprise, email="autre@email.test"
     )
@@ -485,7 +485,7 @@ def test_invitation_utilisateur_connecté_mauvais_email(
 def test_invitation_deja_acceptee_redirige_vers_le_tableau_de_bord(
     client, alice, entreprise_factory
 ):
-    entreprise = entreprise_factory(siren="130025265")
+    entreprise = entreprise_factory(identifiant="130025265")
     invitation = Invitation.objects.create(
         entreprise=entreprise, email="alice@portail.example"
     )
@@ -511,7 +511,7 @@ def test_invitation_deja_acceptee_redirige_vers_le_tableau_de_bord(
 
 
 def test_echec_d_invitation_car_le_code_ne_correspond_pas(client, entreprise_factory):
-    entreprise = entreprise_factory(siren="130025265")
+    entreprise = entreprise_factory(identifiant="130025265")
     invitation = Invitation.objects.create(
         entreprise=entreprise, email="alice@portail.example"
     )
@@ -530,7 +530,7 @@ def test_htmx_affiche_facultativement_le_champ_fonction_rse_selon_l_etat_conseil
     alice.is_conseiller_rse = True
     alice.fonction_rse = "auditeur"
     alice.save()
-    entreprise = entreprise_factory(siren=settings.SIREN_ENTREPRISE_TEST)
+    entreprise = entreprise_factory(identifiant=settings.SIREN_ENTREPRISE_TEST)
     Habilitation.ajouter(entreprise, alice)
     client.force_login(alice)
 

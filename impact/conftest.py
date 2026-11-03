@@ -122,7 +122,8 @@ def date_cloture_dernier_exercice():
 @pytest.fixture
 def entreprise_factory(db, date_cloture_dernier_exercice):
     def create_entreprise(
-        siren="000000001",
+        code_pays="FRA",
+        identifiant="000000001",
         denomination="Entreprise SAS",
         categorie_juridique_sirene=CODE_SA,
         code_pays_etranger_sirene=None,
@@ -150,7 +151,8 @@ def entreprise_factory(db, date_cloture_dernier_exercice):
         utilisateur=None,
     ):
         entreprise = Entreprise.objects.create(
-            siren=siren,
+            code_pays=code_pays,
+            identifiant=identifiant,
             denomination=denomination,
             date_cloture_exercice=date_cloture_exercice,
             date_derniere_qualification=date_derniere_qualification,
@@ -192,13 +194,13 @@ def entreprise_factory(db, date_cloture_dernier_exercice):
 def entreprise_unique_factory(entreprise_factory):
     counter = {"value": 2}
 
-    def create_entreprise_with_unique_siren(**kwargs):
-        if "siren" not in kwargs:
-            kwargs["siren"] = f"{counter['value']:09d}"
+    def create_entreprise_with_unique_identifiant(**kwargs):
+        if "identifiant" not in kwargs:
+            kwargs["identifiant"] = f"{counter['value']:09d}"
             counter["value"] += 1
         return entreprise_factory(**kwargs)
 
-    return create_entreprise_with_unique_siren
+    return create_entreprise_with_unique_identifiant
 
 
 # the following fixtures were defined in `api.test.fixtures`,
