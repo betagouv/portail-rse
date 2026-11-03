@@ -141,9 +141,9 @@ def convertit_code_NAF(code_NAF):
             return {"code": code, "label": label}
 
 
-def est_dans_EEE(code_pays_etranger):
+def est_dans_EEE(code_pays_etranger_sirene):
     """EEE : Espace économique européen"""
-    return code_pays_etranger in (
+    return code_pays_etranger_sirene in (
         99109,  # Allemagne
         99110,  # Autriche
         99131,  # Belgique
